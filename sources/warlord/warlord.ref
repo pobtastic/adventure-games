@@ -1,0 +1,72 @@
+;
+; SkoolKit ref file for Warlord
+;
+; To build the HTML disassembly, run these commands:
+;   tap2sna.py @warlord.t2s
+;   sna2skool.py -H -c sources/warlord.ctl Warlord.z80 > sources/warlord.skool
+;   skool2html.py -H sources/warlord.skool -T dark -T wide -toOa
+
+[Config]
+Expand=#INCLUDE(Expand)
+RefFiles=../analytics.ref;../bases.ref;changelog.ref;pokes.ref
+HtmlWriterClass=sources:linking.AdventureGamesHtmlWriter
+GameDir=adventure-games/warlord
+
+[Game]
+Game=Warlord
+Logo=#SCR$02,$04,$05,$17,$04,$4000,$5800{$08}(/images/logo)
+Copyright=&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.
+Repository=https://github.com/pobtastic/warlord/
+LinkInternalOperands=1
+AddressAnchor={address#IF({base}==16)(:04x)}
+
+[PageHeaders]
+GameIndex=The complete<>RAM disassembly (work in progress)
+
+[Expand]
+[Expand]
+#DEF(#ROOM(id)
+  #IF($id>$01)(
+      UNKNOWN,
+    N/A))
+
+#DEF(#COLOUR(id)
+  #LET(ink=$id&$07)#IF({ink}>=$00)(INK:
+    #MAP({ink})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE)),
+  #LET(paper=$id>>$03&$07)#IF({paper}>=$00)(PAPER:
+    #MAP({paper})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE))
+  #LET(bright=$id&$40)#IF({bright}>$00)((BRIGHT))
+  #LET(flash=$id&$80)#IF({flash}>$00)(FLASH: ON))
+
+#DEF(#INK(id)
+  #LET(bright=$id&$40)
+  #LET(flash=$id&$80)
+  #LET(ink=$id&$07)#IF({ink}>=$00)(
+    #MAP({ink})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE))#IF({bright}>$00)( (BRIGHT))#IF({flash}>$00)( (FLASH: ON)))

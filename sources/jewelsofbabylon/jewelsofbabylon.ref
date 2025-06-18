@@ -1,0 +1,371 @@
+;
+; SkoolKit ref file for Jewels of Babylon
+;
+; To build the HTML disassembly, run these commands:
+;   tap2sna.py @jewelsofbabylon.t2s
+;   sna2skool.py -H -c sources/jewelsofbabylon.ctl JewelsofBabylon.z80 > sources/jewelsofbabylon.skool
+;   skool2html.py -H sources/jewelsofbabylon.skool -T dark -T wide -toOa
+
+[Config]
+Expand=#INCLUDE(Expand)
+RefFiles=../analytics.ref;../bases.ref;changelog.ref;locations.ref;pokes.ref
+HtmlWriterClass=sources:linking.AdventureGamesHtmlWriter
+GameDir=adventure-games/jewelsofbabylon
+
+[Game]
+Game=Jewels of Babylon
+Logo=#SCR$02,$00,$00,$11,$0B,$4000,$5800(/images/logo)
+Copyright=&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.
+Repository=https://github.com/pobtastic/jewelsofbabylon/
+LinkInternalOperands=1
+AddressAnchor={address#IF({base}==16)(:04x)}
+
+[Titles]
+GameStatusBuffer=Game Status Buffer
+
+[Paths]
+Locations=graphics/locations.html
+
+[Page:Locations]
+SectionPrefix=Location
+
+[PageHeaders]
+GameIndex=The complete<>RAM disassembly (work in progress)
+
+[Index:DataTables:Data Tables And Buffers]
+GameStatusBuffer
+
+[Index:Graphics:Graphics]
+Locations
+
+[Expand]
+#DEF(#ROOM(id)
+  #IF($id>$01)(
+    #SIM(start=$C1F0,stop=$C1FE,ix=$D3EC,de=$id)
+    #R({sim[HL]})(#MAP({sim[HL]})(
+      UNKNOWN,
+      51974:The Open Sea,
+      52010:Your Ship,
+      52070:In A Rowing Boat,
+      52088:Long Sandy Beach,
+      52110:The Dunes,
+      52161:By The Palm Trees,
+      52244:The Hillside Path,
+      52263:The Pool Of Water,
+      52300:The Narrow Gulley,
+      52367:The Hilltop,
+      52413:The Waterfall,
+      52465:The Narrow Path,
+      52504:The Thicket,
+      52563:The Cannibals' Village,
+      52587:The Woodland Path,
+      52606:The Woodland Clearing,
+      52671:The High Ridge,
+      52687:The Valley,
+      52752:The Fruit Grove,
+      52769:The Cliff Path,
+      52785:The Clifftop,
+      52820:The Rocky Path,
+      52836:Bottom Of The Rocky Slope,
+      52865:The Canyon,
+      52918:The Secluded Beach,
+      52938:The Rockpool,
+      52990:Wreckers' Cove,
+      53006:The Jungle,
+      53058:The Grassy Slope,
+      53093:The Rocky Beach,
+      53110:The Cave Mouth,
+      53137:The Cave,
+      53188:A Dead End,
+      53200:The Mossy Path,
+      53243:The Swamp,
+      53294:The Ravine,
+      53330:The Cliffs,
+      53373:The Cliff Bottom,
+      53391:The Harbour Beach,
+      53430:The Vast Cavern,
+      53447:The Passages,
+      53471:The Narrow Passage,
+      53491:The Dusty Corridor,
+      53511:The Pirate Treasure Chamber,
+      53540:The Damp Passage,
+      53589:The Wide Pit,
+      53603:The Pit Bottom,
+      53619:The Southern Side of the Pit,
+      53649:The Mighty Rock Door,
+      53671:The Bridge)),
+    N/A))
+
+#DEF(#ITEM(id)
+  #MAP($id)(
+    N/A,
+    00:"A ladder leading down to a small rowing boat alongside",
+    01:"You are alongside your ship. A ladder leads up to the deck",
+    02:"A match",
+    03:"A lighted match",
+    04:"A plank",
+    05:"A plank (spanning the pit)",
+    06:"A plank (spanning the pit)",
+    07:"A coconut",
+    08:"A rod",
+    09:"A small round hole to the side of the door",
+    10:"A hole with a rod inserted to the side of the door",
+    11:"A bottle",
+    12:"A bottle of rum",
+    13:"A bottle",
+    14:"Some fruit",
+    15:"A gun",
+    16:"An eyepatch",
+    17:"An eyepatch (worn)",
+    18:"A keg of gunpowder",
+    19:"A crocodile",
+    20:"A crocodile (with the keg in its mouth)",
+    21:"A shoe",
+    22:"A sextant",
+    23:"A watch",
+    24:"Surrounded by natives",
+    25:"The distracted natives",
+    26:"A spear",
+    27:"A strangely coloured fish",
+    28:"A red herring",
+    29:"The Jewels of Babylon",
+    30:"A crowbar",
+    31:"A key",
+    32:"A human skull",
+    33:"You are at the island",
+    34:"A sleeping pirate",
+    35:"A dead pirate",
+    36:"A dead pirate",
+    37:"A dead pirate",
+    38:"A dead pirate",
+    39:"A parrot (alive)",
+    40:"A dead parrot",
+    41:"A giant crab",
+    42:"A lion",
+    43:"A giant octopus",
+    44:"An open door",
+    45:"A closed door",
+    46:"A closed door",
+    47:"An open door",
+    48:"A closed door",
+    49:"The door is open",
+    50:"The door is closed",
+    51:"A slab of rock",
+    52:"An open trapdoor",
+    53:"The body of a sailor",
+    55:"A makeshift bridge across the ravine",
+    56:"A makeshift bridge",
+    57:"A boulder on the brink of a ledge",
+    58:"A boulder",
+    59:"A ring in the floor",
+    60:"A trail of slime",
+    66:"A very large stone",
+    74:"Moved stone (placeholder)",
+    75:"A rowing boat",
+    76:"A ship anchored offshore",
+    77:"A ship anchored offshore"))
+
+#DEF(#OBJECT(id)
+  #MAP($id)(
+    UNKNOWN,
+    00:"a match",
+    01:"a plank",
+    02:"a coconut",
+    03:"a rod",
+    04:"a bottle",
+    05:"any rum",
+    06:"any fruit",
+    07:"a gun",
+    08:"an eyepatch",
+    09:"any gunpowder",
+    10:"a keg",
+    11:"a shoe",
+    12:"a sextant",
+    13:"a watch",
+    14:"a fish",
+    15:"any jewels",
+    16:"a crowbar",
+    17:"a key",
+    18:"a skull",
+    19:"a spear",
+    20:"a ladder",
+    21:"a boat",
+    22:"any oars",
+    23:"any cannibals",
+    24:"a pirate",
+    25:"a parrot",
+    26:"a crab",
+    27:"a crocodile",
+    28:"a lion",
+    29:"a seagull",
+    30:"an octopus",
+    31:"a door",
+    32:"a sailor",
+    33:"a snake",
+    34:"a spider",
+    35:"a bridge",
+    36:"a boulder",
+    37:"a ring",
+    38:"a trapdoor",
+    39:"a cave",
+    40:"a pit",
+    41:"a ship",
+    42:"a hole",
+    43:"a deer",
+    44:"a body",
+    45:"a rat",
+    46:"a stone",
+    47:"any water"))
+
+#DEF(#TOKEN(id)
+  #MAP($id)(
+    UNKNOWN,
+    000:"MATC",
+    001:"PLAN",
+    002:"COCO",
+    003:"ROD",
+    004:"BOTT",
+    005:"RUM",
+    006:"FRUI",
+    007:"GUN",
+    008:"EYEP#RAW(,)PATC",
+    009:"GUNP#RAW(,)POWD",
+    010:"KEG",
+    011:"SHOE",
+    012:"SEXT",
+    013:"WATC",
+    014:"FISH#RAW(,)HERR",
+    015:"JEWE",
+    016:"CROW",
+    017:"KEY",
+    018:"SKUL",
+    019:"SPEA",
+    020:"LADD",
+    021:"BOAT",
+    022:"OARS",
+    023:"CANN#RAW(,)NATI",
+    024:"PIRA",
+    025:"PARR",
+    026:"CRAB",
+    027:"CROC",
+    028:"LION",
+    029:"SEAG",
+    030:"OCTO",
+    031:"DOOR",
+    032:"SAIL",
+    033:"SNAK",
+    034:"SPID",
+    035:"BRID",
+    036:"BOUL",
+    037:"RING",
+    038:"TRAP",
+    039:"CAVE",
+    040:"PIT",
+    041:"SHIP",
+    042:"xxxx",
+    043:"DEER",
+    044:"BODY",
+    045:"RAT",
+    046:"H#RAW(,)HELP",
+    047:"I#RAW(,)INVE",
+    048:"L#RAW(,)LOOK",
+    049:"N#RAW(,)NORT",
+    050:"S#RAW(,)SOUT",
+    051:"E#RAW(,)EAST",
+    052:"W#RAW(,)WEST",
+    053:"U#RAW(,)UP",
+    054:"D#RAW(,)DOWN",
+    055:"EXAM",
+    056:"LOAD",
+    057:"SAVE",
+    058:"QUIT",
+    059:"TAKE",
+    060:"GET",
+    061:"DROP",
+    062:"THRO",
+    063:"LAY#RAW(,)PLAC#RAW(,)PUT",
+    064:"KILL",
+    065:"SHOO",
+    066:"CLIM",
+    067:"EAT",
+    068:"DRIN",
+    069:"OPEN",
+    070:"CLOS#RAW(,)SHUT",
+    071:"SHOU",
+    072:"GIVE",
+    073:"INSE",
+    074:"xxxx",
+    075:"PULL",
+    076:"WEAR",
+    077:"LIGH#RAW(,)STRI",
+    078:"ENTE",
+    079:"MOVE",
+    080:"UNLO",
+    081:"ROW",
+    082:"SWIM",
+    083:"IN",
+    084:"INTO",
+    085:"TO#RAW(,)AT",
+    086:"OUT",
+    087:"OF",
+    088:"WITH#RAW(,)USIN",
+    089:"ROUN",
+    090:"RED#RAW(,)COLO",
+    091:"BABY",
+    092:"ROWI",
+    093:"DEAD",
+    094:"KICK#RAW(,)HIT#RAW(,)ATTA",
+    095:"STON",
+    096:"HOLE",
+    097:"HUMA",
+    098:"GIAN",
+    099:"xxxx",
+    100:"FUCK#RAW(,)SCRE",
+    101:"LARG",
+    102:"WATE",
+    103:"ACRO#RAW(,)OVER",
+    104:"ROCK",
+    105:"LOUD",
+    253:Separator,
+    254:Terminator))
+
+#DEF(#COLOUR(id)
+  #LET(ink=$id&$07)#IF({ink}>=$00)(INK:
+    #MAP({ink})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE)),
+  #LET(paper=$id>>$03&$07)#IF({paper}>=$00)(PAPER:
+    #MAP({paper})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE))
+  #LET(bright=$id&$40)#IF({bright}>$00)((BRIGHT))
+  #LET(flash=$id&$80)#IF({flash}>$00)(FLASH: ON))
+
+#DEF(#INK(id)
+  #LET(bright=$id&$40)
+  #LET(flash=$id&$80)
+  #LET(ink=$id&$07)#IF({ink}>=$00)(
+    #MAP({ink})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE))#IF({bright}>$00)( (BRIGHT))#IF({flash}>$00)( (FLASH: ON)))
