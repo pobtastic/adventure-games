@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at F09C</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F097.html">F097</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f09c">Map</a></td>
+<td class="next">
+Next: <a href="F12E.html">F12E</a>
+</td>
+</tr>
+</table>
+<div class="description">F09C: Action: Help</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Help</td>
+<td class="address-2"><span id="f09c"></span>F09C</td>
+<td class="instruction">CALL <a href="C470.html">Parser_ValidateNoDirectObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C470.html">Parser_ValidateNoDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f09f"></span>
+<div class="comments">
+<div class="paragraph">
+The "HELP" command can only be called on its own; you can't type "HELP CROCODILE" or "HELP WITH MATCH".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f09f"></span>F09F</td>
+<td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if there's any token set in <a href="BD66.html#bd67">UserInput_Token_2</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0a0"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help with the natives/ cannibals?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0a0"></span>F0A0</td>
+<td class="instruction">LD A,$18</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F09C.html#f0c2">Action_Help_Boulder</a> if <a href="C35F.html">ValidateItemPresent</a> reports the player isn't in the room where you're "Surrounded by natives".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0a2"></span>F0A2</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0a5"></span>F0A5</td>
+<td class="instruction">JR NZ,<a href="F09C.html#f0c2">Action_Help_Boulder</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0a7"></span>
+<div class="comments">
+<div class="paragraph">
+Provide an initial full response for the natives/ cannibals.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0a7"></span>F0A7</td>
+<td class="instruction">LD HL,$BC54</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F09C.html#f0bc">Action_Help_Cannibals</a> if bit 1 of *<a href="BC54.html">GameFlags_Help</a> is set, which relates to asking for help a second time.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0aa"></span>F0AA</td>
+<td class="instruction">BIT 1,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0ac"></span>F0AC</td>
+<td class="instruction">JR NZ,<a href="F09C.html#f0bc">Action_Help_Cannibals</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0ae"></span>
+<div class="comments">
+<div class="paragraph">
+This is the first time the player has asked for help on this topic, so flag that it's been answered from now on.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0ae"></span>F0AE</td>
+<td class="instruction">SET 1,(HL)</td>
+<td class="comment-1" rowspan="1">Set bit 1 of *<a href="BC54.html">GameFlags_Help</a> which relates to asking for help about the natives/ cannibals.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0b0"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You're really in the soup now.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0b0"></span>F0B0</td>
+<td class="instruction">LD HL,$D974</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="D974.html">D974</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0b3"></span>F0B3</td>
+<td class="instruction">CALL <a href="BAB1.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BAB1.html">PrintStringAndNewline</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0b6"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Sorry...That was in poor taste.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0b6"></span>F0B6</td>
+<td class="instruction">LD HL,$D993</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="D993.html">D993</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0b9"></span>F0B9</td>
+<td class="instruction">CALL <a href="C579.html">PausePrintStringAndScroll</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C579.html">PausePrintStringAndScroll</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0bc"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Try distracting them.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Help_Cannibals</td>
+<td class="address-2"><span id="f0bc"></span>F0BC</td>
+<td class="instruction">LD HL,$D9B4</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="D9B4.html">D9B4</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0bf"></span>F0BF</td>
+<td class="instruction">JP <a href="F03E.html">PausePrintStringAndScroll_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03E.html">PausePrintStringAndScroll_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0c2"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help with the boulder?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Help_Boulder</td>
+<td class="address-2"><span id="f0c2"></span>F0C2</td>
+<td class="instruction">LD A,$39</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F09C.html#f0cf">Action_Help_Crocodile</a> if <a href="C35F.html">ValidateItemPresent</a> reports the player isn't in the room where there's a "A boulder on the brink of a ledge".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0c4"></span>F0C4</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0c7"></span>F0C7</td>
+<td class="instruction">JR NZ,<a href="F09C.html#f0cf">Action_Help_Crocodile</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0c9"></span>
+<div class="comments">
+<div class="paragraph">
+The player is where the boulder is, so provide some pretty good help.
+</div>
+<div class="paragraph">
+Print "Keep the noise down.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0c9"></span>F0C9</td>
+<td class="instruction">LD HL,$D9CA</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="D9CA.html">D9CA</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0cc"></span>F0CC</td>
+<td class="instruction">JP <a href="F03A.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03A.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0cf"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help with the crocodile?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Help_Crocodile</td>
+<td class="address-2"><span id="f0cf"></span>F0CF</td>
+<td class="instruction">LD A,$13</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F09C.html#f0dc">label=Action_Help_CrocodileKeg</a> if <a href="C35F.html">ValidateItemPresent</a> reports the player isn't in the room where there's "A crocodile".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0d1"></span>F0D1</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0d4"></span>F0D4</td>
+<td class="instruction">JR NZ,<a href="F09C.html#f0dc">label=Action_Help_CrocodileKeg</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0d6"></span>
+<div class="comments">
+<div class="paragraph">
+The player is where the crocodile is, so provide some abstract unhelpful help.
+</div>
+<div class="paragraph">
+Print "Look at those JAWS!".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0d6"></span>F0D6</td>
+<td class="instruction">LD HL,$D9DF</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="D9DF.html">D9DF</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0d9"></span>F0D9</td>
+<td class="instruction">JP <a href="F03A.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03A.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0dc"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help with the crocodile with the keg in its mouth?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">label=Action_Help_CrocodileKeg</td>
+<td class="address-2"><span id="f0dc"></span>F0DC</td>
+<td class="instruction">LD A,$14</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F042.html">Response_WorkItOutForYourself</a> if <a href="C35F.html">ValidateItemPresent</a> reports that "A crocodile (with the keg in its mouth)" is in the same room as the player.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0de"></span>F0DE</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0e1"></span>F0E1</td>
+<td class="instruction">JP Z,<a href="F042.html">Response_WorkItOutForYourself</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0e4"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help with the giant octopus?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0e4"></span>F0E4</td>
+<td class="instruction">LD A,$2B</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F042.html">Response_WorkItOutForYourself</a> if <a href="C35F.html">ValidateItemPresent</a> reports that "A giant octopus" is in the same room as the player.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0e6"></span>F0E6</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0e9"></span>F0E9</td>
+<td class="instruction">JP Z,<a href="F042.html">Response_WorkItOutForYourself</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0ec"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help with the lion?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0ec"></span>F0EC</td>
+<td class="instruction">LD A,$2A</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F09C.html#f0f9">Action_Help_Parrot</a> if <a href="C35F.html">ValidateItemPresent</a> reports the player isn't in the room where there's "A lion".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0ee"></span>F0EE</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0f1"></span>F0F1</td>
+<td class="instruction">JR NZ,<a href="F09C.html#f0f9">Action_Help_Parrot</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0f3"></span>
+<div class="comments">
+<div class="paragraph">
+The player is where the lion is, so provide some abstract unhelpful help.
+</div>
+<div class="paragraph">
+Print "Nice pussy!".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0f3"></span>F0F3</td>
+<td class="instruction">LD HL,$DA27</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DA27.html">DA27</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0f6"></span>F0F6</td>
+<td class="instruction">JP <a href="F03A.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03A.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f0f9"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help with the parrot?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Help_Parrot</td>
+<td class="address-2"><span id="f0f9"></span>F0F9</td>
+<td class="instruction">LD A,$27</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F09C.html#f106">Action_Help_Sea</a> if <a href="C35F.html">ValidateItemPresent</a> reports the player isn't in the room where there's "A parrot (alive)".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0fb"></span>F0FB</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f0fe"></span>F0FE</td>
+<td class="instruction">JR NZ,<a href="F09C.html#f106">Action_Help_Sea</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f100"></span>
+<div class="comments">
+<div class="paragraph">
+The player is where the parrot is, so provide some abstract unhelpful help.
+</div>
+<div class="paragraph">
+Print "Pretty polly!".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f100"></span>F100</td>
+<td class="instruction">LD HL,$DA33</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DA33.html">DA33</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f103"></span>F103</td>
+<td class="instruction">JP <a href="F03A.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03A.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f106"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help when they're at sea?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Help_Sea</td>
+<td class="address-2"><span id="f106"></span>F106</td>
+<td class="instruction">LD A,($BCCB)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F09C.html#f113">Action_Help_Door</a> if the *<a href="BCCB.html">CurrentRoom</a> is not room 02: "
+
+<a href="CB06.html">The Open Sea</a>".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f109"></span>F109</td>
+<td class="instruction">CP $02</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f10b"></span>F10B</td>
+<td class="instruction">JR NZ,<a href="F09C.html#f113">Action_Help_Door</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f10d"></span>
+<div class="comments">
+<div class="paragraph">
+More unhelpful help ...
+</div>
+<div class="paragraph">
+Print "Now you're really lost.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f10d"></span>F10D</td>
+<td class="instruction">LD HL,$DA41</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DA41.html">DA41</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f110"></span>F110</td>
+<td class="instruction">JP <a href="F03A.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03A.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f113"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help with the door?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Help_Door</td>
+<td class="address-2"><span id="f113"></span>F113</td>
+<td class="instruction">LD A,$32</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F042.html">Response_WorkItOutForYourself</a> if <a href="C35F.html">ValidateItemPresent</a> reports that "The door is closed" is in the same room as the player.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f115"></span>F115</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f118"></span>F118</td>
+<td class="instruction">JP Z,<a href="F042.html">Response_WorkItOutForYourself</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f11b"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help with the pit?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f11b"></span>F11B</td>
+<td class="instruction">LD HL,$E8E9</td>
+<td class="comment-1" rowspan="2">Call <a href="C401.html">CheckActiveScenicEvents</a> with <a href="E86E.html#e8e9">Data_ItemGroup_Pit</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f11e"></span>F11E</td>
+<td class="instruction">CALL <a href="C401.html">CheckActiveScenicEvents</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f121"></span>F121</td>
+<td class="instruction">JR NZ,<a href="F09C.html#f12b">Action_Help_GiveUp</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F09C.html#f12b">Action_Help_GiveUp</a> if the player is not in the room with the pit.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f123"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help with the plank?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f123"></span>F123</td>
+<td class="instruction">LD A,$04</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F042.html">Response_WorkItOutForYourself</a> if <a href="C35F.html">ValidateItemPresent</a> reports that "A plank" is in the same room as the player.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f125"></span>F125</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f128"></span>F128</td>
+<td class="instruction">JP Z,<a href="F042.html">Response_WorkItOutForYourself</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f12b"></span>
+<div class="comments">
+<div class="paragraph">
+There's no more help available...
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Help_GiveUp</td>
+<td class="address-2"><span id="f12b"></span>F12B</td>
+<td class="instruction">JP <a href="F047.html">Response_YouReallyDontNeedIt</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F047.html">Response_YouReallyDontNeedIt</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F097.html">F097</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f09c">Map</a></td>
+<td class="next">
+Next: <a href="F12E.html">F12E</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/61596.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at EE74</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="EE63.html">EE63</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#ee74">Map</a></td>
+<td class="next">
+Next: <a href="EE90.html">EE90</a>
+</td>
+</tr>
+</table>
+<div class="description">EE74: Events: Match</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ee74"></span>
+<div class="comments">
+<div class="paragraph">
+Make the match inactive.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Event_Match</td>
+<td class="address-2"><span id="ee74"></span>EE74</td>
+<td class="instruction">LD HL,$BC66</td>
+<td class="comment-1" rowspan="2">Reset bit 6 of *<a href="BC66.html">Flag_TurnBasedEventState</a> which relates to the match being active.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee77"></span>EE77</td>
+<td class="instruction">RES 6,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee79"></span>EE79</td>
+<td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2">Call <a href="C3E4.html">CheckObjectInInventory</a> with item 03: "A lighted match".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee7b"></span>EE7B</td>
+<td class="instruction">CALL <a href="C3E4.html">CheckObjectInInventory</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee7e"></span>EE7E</td>
+<td class="instruction">JR NZ,<a href="EE74.html#ee8a">Event_Match_Return</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EE74.html#ee8a">Event_Match_Return</a> if the match is not in the players inventory.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ee80"></span>
+<div class="comments">
+<div class="paragraph">
+The player is holding the lit match, and it's burned away so handle the messaging.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee80"></span>EE80</td>
+<td class="instruction">LD HL,$BC98</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BC98.html">Count_InventoryItems</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee83"></span>EE83</td>
+<td class="instruction">DEC (HL)</td>
+<td class="comment-1" rowspan="1">Decrease *<span class="register">HL</span> by one.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ee84"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Ouch!!The match has burned away,scorching your fingers.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee84"></span>EE84</td>
+<td class="instruction">LD HL,$DB91</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DB91.html">DB91</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee87"></span>EE87</td>
+<td class="instruction">CALL <a href="BAB1.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BAB1.html">PrintStringAndNewline</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ee8a"></span>
+<div class="comments">
+<div class="paragraph">
+The match can no longer be used, so destroy it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Event_Match_Return</td>
+<td class="address-2"><span id="ee8a"></span>EE8A</td>
+<td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2">Call <a href="C3EA.html">Handler_DestroyItemEvent</a> using item: "A lighted match".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee8c"></span>EE8C</td>
+<td class="instruction">CALL <a href="C3EA.html">Handler_DestroyItemEvent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee8f"></span>EE8F</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="EE63.html">EE63</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#ee74">Map</a></td>
+<td class="next">
+Next: <a href="EE90.html">EE90</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/61044.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

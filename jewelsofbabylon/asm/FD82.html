@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at FD82</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FD6D.html">FD6D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fd82">Map</a></td>
+<td class="next">
+Next: <a href="FDB5.html">FDB5</a>
+</td>
+</tr>
+</table>
+<div class="description">FD82: Game Start</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="C592.html">GameStart_Alias</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">GameStart</td>
+<td class="address-2"><span id="fd82"></span>FD82</td>
+<td class="instruction">LD HL,$FDB5</td>
+<td class="comment-1" rowspan="4">Copy 0144 bytes from <a href="FDB5.html">DefaultGameState</a> to <a href="BBF0.html">Table_ItemLocations</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fd85"></span>FD85</td>
+<td class="instruction">LD DE,$BBF0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fd88"></span>FD88</td>
+<td class="instruction">LD BC,$0144</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fd8b"></span>FD8B</td>
+<td class="instruction">LDIR</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fd8d"></span>
+<div class="comments">
+<div class="paragraph">
+Remove a bunch of room exits (as actions in the game will open them back up).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fd8d"></span>FD8D</td>
+<td class="instruction">LD IX,$ED9E</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="ED9E.html">Table_ConfigurableExits</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fd91"></span>FD91</td>
+<td class="instruction">LD A,($BD32)</td>
+<td class="comment-1" rowspan="2"><span class="register">B</span>=*<a href="BD32.html">Count_ConfigurableExits</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fd94"></span>FD94</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fd95"></span>FD95</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 00 which "removes" the exit.</td>
+</tr>
+<tr>
+<td class="asm-label">GameStart_Loop</td>
+<td class="address-2"><span id="fd96"></span>FD96</td>
+<td class="instruction">LD L,(IX+$00)</td>
+<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>+00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fd99"></span>FD99</td>
+<td class="instruction">LD H,(IX+$01)</td>
+<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>+01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fd9c"></span>FD9C</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fd9d"></span>FD9D</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="2">Move to the next address in the table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fd9f"></span>FD9F</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fda1"></span>FDA1</td>
+<td class="instruction">DJNZ <a href="FD82.html#fd96">GameStart_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the exits counter by one and loop back to <a href="FD82.html#fd96">GameStart_Loop</a> until all the room exits have been cleared.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fda3"></span>
+<div class="comments">
+<div class="paragraph">
+Ensure two exits are "open" (as they can become blocked in the game).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fda3"></span>FDA3</td>
+<td class="instruction">LD A,$2F</td>
+<td class="comment-1" rowspan="2">Enable the exit "west to room <a href="EB10.html#ec27">2F</a>" for 
+
+<a href="CE81.html">The Canyon</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fda5"></span>FDA5</td>
+<td class="instruction">LD ($EC27),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fda8"></span>FDA8</td>
+<td class="instruction">LD A,$30</td>
+<td class="comment-1" rowspan="2">Enable the exit "north to room <a href="EB10.html#ec2a">30</a>" for 
+
+<a href="CEB6.html">The Secluded Beach</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fdaa"></span>FDAA</td>
+<td class="instruction">LD ($EC2A),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fdad"></span>FDAD</td>
+<td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2">Call <a href="EF54.html">EF54</a> to room 03: 
+
+<a href="CB2A.html">Your Ship</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fdaf"></span>FDAF</td>
+<td class="instruction">CALL <a href="EF54.html">$EF54</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fdb2"></span>FDB2</td>
+<td class="instruction">JP <a href="EDC4.html">GameLoop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EDC4.html">GameLoop</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FD6D.html">FD6D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fd82">Map</a></td>
+<td class="next">
+Next: <a href="FDB5.html">FDB5</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/64898.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

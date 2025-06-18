@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at FAA8</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FA3C.html">FA3C</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#faa8">Map</a></td>
+<td class="next">
+Next: <a href="FB16.html">FB16</a>
+</td>
+</tr>
+</table>
+<div class="description">FAA8: Action: Close/ Shut</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_CloseShut</td>
+<td class="address-2"><span id="faa8"></span>FAA8</td>
+<td class="instruction">CALL <a href="C47B.html">Parser_ValidateDirectObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C47B.html">Parser_ValidateDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faab"></span>FAAB</td>
+<td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="faac"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to close/ shut the door?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faac"></span>FAAC</td>
+<td class="instruction">LD HL,$EABE</td>
+<td class="comment-1" rowspan="2">Call <a href="C37F.html">MatchPhraseTokens</a> with <a href="E9CA.html#eabe">PhraseTokens_Door</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faaf"></span>FAAF</td>
+<td class="instruction">CALL <a href="C37F.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fab2"></span>FAB2</td>
+<td class="instruction">JR NZ,<a href="FAA8.html#fae5">CloseShut_RockDoor</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="FAA8.html#fae5">CloseShut_RockDoor</a> if the token isn't for closing the door.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fab4"></span>
+<div class="comments">
+<div class="paragraph">
+The player is trying to close the door but which door? Was it the "normal" door?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fab4"></span>FAB4</td>
+<td class="instruction">LD A,($BCCB)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="FAA8.html#fabf">Validate_CloseShut_Door</a> if *<a href="BCCB.html">CurrentRoom</a> is room 61: "
+
+<a href="D0F3.html">The Dusty Corridor</a>".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fab7"></span>FAB7</td>
+<td class="instruction">CP $61</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fab9"></span>FAB9</td>
+<td class="instruction">JR Z,<a href="FAA8.html#fabf">Validate_CloseShut_Door</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fabb"></span>FABB</td>
+<td class="instruction">CP $62</td>
+<td class="comment-1" rowspan="2">Jump to <a href="FAA8.html#fae5">CloseShut_RockDoor</a> if *<a href="BCCB.html">CurrentRoom</a> is not room 62: "
+
+<a href="D107.html">The Pirate Treasure Chamber</a>".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fabd"></span>FABD</td>
+<td class="instruction">JR NZ,<a href="FAA8.html#fae5">CloseShut_RockDoor</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fabf"></span>
+<div class="comments">
+<div class="paragraph">
+The player is in either of 
+
+<a href="D0F3.html">The Dusty Corridor</a> or 
+
+<a href="D107.html">The Pirate Treasure Chamber</a>, but the door has a few "states" it can be in.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_CloseShut_Door</td>
+<td class="address-2"><span id="fabf"></span>FABF</td>
+<td class="instruction">LD HL,$E8CA</td>
+<td class="comment-1" rowspan="2">Call <a href="C401.html">CheckActiveScenicEvents</a> with <a href="E86E.html#e8ca">Data_ItemGroup_Door</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fac2"></span>FAC2</td>
+<td class="instruction">CALL <a href="C401.html">CheckActiveScenicEvents</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fac5"></span>
+<div class="comments">
+<div class="paragraph">
+Is the door already closed?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fac5"></span>FAC5</td>
+<td class="instruction">CP $2D</td>
+<td class="comment-1" rowspan="4">Jump to <a href="F08D.html">Response_ItsAlreadyClosed</a> if the player is by item 2D: "A closed door" or item 30: "A closed door".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fac7"></span>FAC7</td>
+<td class="instruction">JP Z,<a href="F08D.html">Response_ItsAlreadyClosed</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faca"></span>FACA</td>
+<td class="instruction">CP $30</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="facc"></span>FACC</td>
+<td class="instruction">JP Z,<a href="F08D.html">Response_ItsAlreadyClosed</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="facf"></span>
+<div class="comments">
+<div class="paragraph">
+Change the door states!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="facf"></span>FACF</td>
+<td class="instruction">LD BC,$2C2D</td>
+<td class="comment-1" rowspan="2">Call <a href="C426.html">TransformItem</a> to transform item 2C ("An open door") into item 2D ("A closed door").</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fad2"></span>FAD2</td>
+<td class="instruction">CALL <a href="C426.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fad5"></span>FAD5</td>
+<td class="instruction">LD BC,$2F30</td>
+<td class="comment-1" rowspan="2">Call <a href="C426.html">TransformItem</a> to transform item 2F ("An open door") into item 30 ("A closed door").</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fad8"></span>FAD8</td>
+<td class="instruction">CALL <a href="C426.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fadb"></span>
+<div class="comments">
+<div class="paragraph">
+Now the door is shut, this closes off various routes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fadb"></span>FADB</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Write 00 to *<a href="EB10.html#ed57">ED57</a> to close off southbound access to 
+
+<a href="D107.html">The Pirate Treasure Chamber</a> from 
+
+<a href="D0F3.html">The Dusty Corridor</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fadc"></span>FADC</td>
+<td class="instruction">LD ($ED57),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fadf"></span>FADF</td>
+<td class="instruction">LD ($ED5C),A</td>
+<td class="comment-1" rowspan="1">Write 00 to *<a href="EB10.html#ed5c">ED5C</a> to close off northbound access to 
+
+<a href="D0F3.html">The Dusty Corridor</a> from 
+
+<a href="D107.html">The Pirate Treasure Chamber</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fae2"></span>FAE2</td>
+<td class="instruction">JP <a href="F06A.html">Response_OK_Duplicate</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F06A.html">Response_OK_Duplicate</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fae5"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to close/ shut the rock door?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CloseShut_RockDoor</td>
+<td class="address-2"><span id="fae5"></span>FAE5</td>
+<td class="instruction">LD HL,$EAC0</td>
+<td class="comment-1" rowspan="2">Call <a href="C37F.html">MatchPhraseTokens</a> with <a href="E9CA.html#eac0">PhraseTokens_RockDoor</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fae8"></span>FAE8</td>
+<td class="instruction">CALL <a href="C37F.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faeb"></span>FAEB</td>
+<td class="instruction">JR NZ,<a href="FAA8.html#fb05">CloseShut_TrapDoor</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="FAA8.html#fb05">CloseShut_TrapDoor</a> if the token isn't for the rock door.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="faed"></span>
+<div class="comments">
+<div class="paragraph">
+The player is trying to close the rock door, but is it in the current room with them?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faed"></span>FAED</td>
+<td class="instruction">LD A,($BCCB)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="FAA8.html#fb05">CloseShut_TrapDoor</a> if *<a href="BCCB.html">CurrentRoom</a> is not room 6A: "
+
+<a href="D191.html">The Mighty Rock Door</a>".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faf0"></span>FAF0</td>
+<td class="instruction">CP $6A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faf2"></span>FAF2</td>
+<td class="instruction">JR NZ,<a href="FAA8.html#fb05">CloseShut_TrapDoor</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="faf4"></span>
+<div class="comments">
+<div class="paragraph">
+Is the rock door already closed?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faf4"></span>FAF4</td>
+<td class="instruction">LD A,$32</td>
+<td class="comment-1" rowspan="2">Call <a href="C35F.html">ValidateItemPresent</a> with "The door is closed".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faf6"></span>FAF6</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faf9"></span>FAF9</td>
+<td class="instruction">JP Z,<a href="F08D.html">Response_ItsAlreadyClosed</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F08D.html">Response_ItsAlreadyClosed</a> if "The door is closed" is present in the current room.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fafc"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You can't.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fafc"></span>FAFC</td>
+<td class="instruction">CALL <a href="F06F.html">Response_YouCant_Duplicate</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F06F.html">Response_YouCant_Duplicate</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="faff"></span>
+<div class="comments">
+<div class="paragraph">
+Print "It's much too heavy.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faff"></span>FAFF</td>
+<td class="instruction">LD HL,$E305</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E305.html">E305</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb02"></span>FB02</td>
+<td class="instruction">JP <a href="F03A.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03A.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fb05"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to close/ shut the trapdoor?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CloseShut_TrapDoor</td>
+<td class="address-2"><span id="fb05"></span>FB05</td>
+<td class="instruction">LD HL,$EAC5</td>
+<td class="comment-1" rowspan="2">Call <a href="C37F.html">MatchPhraseTokens</a> with <a href="E9CA.html#eac5">PhraseTokens_TrapDoor</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb08"></span>FB08</td>
+<td class="instruction">CALL <a href="C37F.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb0b"></span>FB0B</td>
+<td class="instruction">JR NZ,<a href="FAA8.html#fb13">CloseShut_Invalid</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="FAA8.html#fb13">CloseShut_Invalid</a> if the token isn't for the trapdoor.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fb0d"></span>
+<div class="comments">
+<div class="paragraph">
+Print "No. I can't be bothered.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb0d"></span>FB0D</td>
+<td class="instruction">LD HL,$E31A</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E31A.html">E31A</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb10"></span>FB10</td>
+<td class="instruction">JP <a href="F03A.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03A.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fb13"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CloseShut_Invalid</td>
+<td class="address-2"><span id="fb13"></span>FB13</td>
+<td class="instruction">JP <a href="F06F.html">Response_YouCant_Duplicate</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F06F.html">Response_YouCant_Duplicate</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FA3C.html">FA3C</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#faa8">Map</a></td>
+<td class="next">
+Next: <a href="FB16.html">FB16</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/64168.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

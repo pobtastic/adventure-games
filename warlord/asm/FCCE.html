@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Warlord: Routine at FCCE</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="E99F.html">E99F</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fcce">Map</a></td>
+<td class="next">
+Next: <a href="FD02.html">FD02</a>
+</td>
+</tr>
+</table>
+<div class="description">FCCE: Game Start</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="B14A.html">GameStart_Alias</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">GameStart</td>
+<td class="address-2"><span id="fcce"></span>FCCE</td>
+<td class="instruction">LD HL,$FD02</td>
+<td class="comment-1" rowspan="4">Copy 0186 bytes from <a href="FD02.html">DefaultGameState</a> to <a href="A66C.html">A66C</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcd1"></span>FCD1</td>
+<td class="instruction">LD DE,$A66C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcd4"></span>FCD4</td>
+<td class="instruction">LD BC,$0186</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcd7"></span>FCD7</td>
+<td class="instruction">LDIR</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fcd9"></span>
+<div class="comments">
+<div class="paragraph">
+Remove a bunch of room exits (as actions in the game will open them back up).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcd9"></span>FCD9</td>
+<td class="instruction">LD IX,$E978</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="B14A.html#e978">E978</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcdd"></span>FCDD</td>
+<td class="instruction">LD A,($A7F0)</td>
+<td class="comment-1" rowspan="2"><span class="register">B</span>=*<a href="A7F0.html">A7F0</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fce0"></span>FCE0</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fce1"></span>FCE1</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 00 which "removes" the exit.</td>
+</tr>
+<tr>
+<td class="asm-label">GameStart_Loop</td>
+<td class="address-2"><span id="fce2"></span>FCE2</td>
+<td class="instruction">LD L,(IX+$00)</td>
+<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>+00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fce5"></span>FCE5</td>
+<td class="instruction">LD H,(IX+$01)</td>
+<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>+01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fce8"></span>FCE8</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fce9"></span>FCE9</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="2">Move to the next address in the table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fceb"></span>FCEB</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fced"></span>FCED</td>
+<td class="instruction">DJNZ <a href="FCCE.html#fce2">GameStart_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the exits counter by one and loop back to <a href="FCCE.html#fce2">GameStart_Loop</a> until all the room exits have been cleared.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fcef"></span>
+<div class="comments">
+<div class="paragraph">
+Ensure three exits are "open" (as they can become blocked in the game).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcef"></span>FCEF</td>
+<td class="instruction">LD A,$50</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcf1"></span>FCF1</td>
+<td class="instruction">LD ($E8F4),A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcf4"></span>FCF4</td>
+<td class="instruction">LD ($E8F6),A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcf7"></span>FCF7</td>
+<td class="instruction">LD ($E8F7),A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcfa"></span>FCFA</td>
+<td class="instruction">LD A,$02</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcfc"></span>FCFC</td>
+<td class="instruction">CALL <a href="E99F.html#eb10">$EB10</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcff"></span>FCFF</td>
+<td class="instruction">JP <a href="E99F.html">$E99F</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="E99F.html">E99F</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="E99F.html">E99F</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fcce">Map</a></td>
+<td class="next">
+Next: <a href="FD02.html">FD02</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/warlord/">Source code</a>.</div>
+<div><a href="../dec/asm/64718.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

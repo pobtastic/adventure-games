@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at F16B</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F169.html">F169</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f16b">Map</a></td>
+<td class="next">
+Next: <a href="F19D.html">F19D</a>
+</td>
+</tr>
+</table>
+<div class="description">F16B: Move Player</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="F155.html">Action_North</a>, <a href="F159.html">Action_South</a>, <a href="F15D.html">Action_East</a>, <a href="F161.html">Action_West</a> and <a href="F165.html">Action_Up</a>.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">C</td>
+<td class="register-desc">Requested direction where: <table class="">
+<tr>
+<td class="" colspan="1" rowspan="1">00</td>
+<td class="" colspan="1" rowspan="1">NORTH</td>
+</tr>
+<tr>
+<td class="" colspan="1" rowspan="1">01</td>
+<td class="" colspan="1" rowspan="1">SOUTH</td>
+</tr>
+<tr>
+<td class="" colspan="1" rowspan="1">02</td>
+<td class="" colspan="1" rowspan="1">EAST</td>
+</tr>
+<tr>
+<td class="" colspan="1" rowspan="1">03</td>
+<td class="" colspan="1" rowspan="1">WEST</td>
+</tr>
+<tr>
+<td class="" colspan="1" rowspan="1">04</td>
+<td class="" colspan="1" rowspan="1">UP</td>
+</tr>
+<tr>
+<td class="" colspan="1" rowspan="1">05</td>
+<td class="" colspan="1" rowspan="1">DOWN</td>
+</tr>
+</table></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayer</td>
+<td class="address-2"><span id="f16b"></span>F16B</td>
+<td class="instruction">CALL <a href="C470.html">Parser_ValidateNoDirectObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C470.html">Parser_ValidateNoDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f16e"></span>
+<div class="comments">
+<div class="paragraph">
+All "MOVE" commands can only be called on their own; you can't type "NORTH TO BEACH" or "UP LADDER".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f16e"></span>F16E</td>
+<td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if there's any token set in <a href="BD66.html#bd67">UserInput_Token_2</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f16f"></span>F16F</td>
+<td class="instruction">LD B,$00</td>
+<td class="comment-1" rowspan="1">Set <span class="register">B</span> to 00 so that <span class="register">BC</span> now holds the direction number.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f171"></span>F171</td>
+<td class="instruction">CALL <a href="C302.html">GetRoomPointer</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C302.html">GetRoomPointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f174"></span>F174</td>
+<td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">BC</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f175"></span>F175</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f176"></span>F176</td>
+<td class="instruction">OR A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F16B.html#f17d">CheckPlayer_RowingBoat</a> if <span class="register">A</span> is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f177"></span>F177</td>
+<td class="instruction">JR Z,<a href="F16B.html#f17d">CheckPlayer_RowingBoat</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f179"></span>F179</td>
+<td class="instruction">CALL <a href="EF54.html">$EF54</a></td>
+<td class="comment-1" rowspan="1">Call <a href="EF54.html">EF54</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f17c"></span>F17C</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f17d"></span>
+<div class="comments">
+<div class="paragraph">
+Is the player stuck out on the rowing boat?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckPlayer_RowingBoat</td>
+<td class="address-2"><span id="f17d"></span>F17D</td>
+<td class="instruction">LD A,($BCCB)</td>
+<td class="comment-1" rowspan="3">Skip forward to <a href="F16B.html#f190">CheckPlayer_AtSea</a> if the *<a href="BCCB.html">CurrentRoom</a> is not room 04: "
+
+<a href="CB66.html">In A Rowing Boat</a>".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f180"></span>F180</td>
+<td class="instruction">CP $04</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f182"></span>F182</td>
+<td class="instruction">JR NZ,<a href="F16B.html#f190">CheckPlayer_AtSea</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f184"></span>
+<div class="comments">
+<div class="paragraph">
+The player is stuck in the rowing boat...
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f184"></span>F184</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F051.html">Response_TryClimbing</a> if the player was trying to move "UP" (04). Instead they must <a href="F8D9.html#f91b">climb</a> the ladder.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f185"></span>F185</td>
+<td class="instruction">CP $04</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f187"></span>F187</td>
+<td class="instruction">JP Z,<a href="F051.html">Response_TryClimbing</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f18a"></span>F18A</td>
+<td class="instruction">JP C,<a href="F056.html">Response_TryRowing</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F056.html">Response_TryRowing</a> if the player was trying to move "NORTH", "SOUTH", "EAST" or "WEST". Instead, they need to <a href="FD02.html">row</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f18d"></span>
+<div class="comments">
+<div class="paragraph">
+Else, the player was trying to move "DOWN"...
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f18d"></span>F18D</td>
+<td class="instruction">JP <a href="F05B.html">Response_YouCantGoInThatDirection</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F05B.html">Response_YouCantGoInThatDirection</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f190"></span>
+<div class="comments">
+<div class="paragraph">
+Is the player stuck out at sea?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckPlayer_AtSea</td>
+<td class="address-2"><span id="f190"></span>F190</td>
+<td class="instruction">CP $02</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F16B.html#f19a">MovePlayer_Invalid</a> if *<a href="BCCB.html">CurrentRoom</a> is not room 02: "
+
+<a href="CB06.html">The Open Sea</a>".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f192"></span>F192</td>
+<td class="instruction">JR NZ,<a href="F16B.html#f19a">MovePlayer_Invalid</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f194"></span>
+<div class="comments">
+<div class="paragraph">
+As above, except there's now no ladder!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f194"></span>F194</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F056.html">Response_TryRowing</a> if the player was trying to move "NORTH", "SOUTH", "EAST" or "WEST".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f195"></span>F195</td>
+<td class="instruction">CP $04</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f197"></span>F197</td>
+<td class="instruction">JP C,<a href="F056.html">Response_TryRowing</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f19a"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+<div class="paragraph">
+Print "You can't go in that direction.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayer_Invalid</td>
+<td class="address-2"><span id="f19a"></span>F19A</td>
+<td class="instruction">JP <a href="F05B.html">Response_YouCantGoInThatDirection</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F05B.html">Response_YouCantGoInThatDirection</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F169.html">F169</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f16b">Map</a></td>
+<td class="next">
+Next: <a href="F19D.html">F19D</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/61803.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

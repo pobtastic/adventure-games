@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at C4EB</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C4C7.html">C4C7</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c4eb">Map</a></td>
+<td class="next">
+Next: <a href="C520.html">C520</a>
+</td>
+</tr>
+</table>
+<div class="description">C4EB: Handler: Scenic Events</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Handles checking if a scenic event should occur ... and also, handles jumping to the correct related scenic event routine to action it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ScenicEvents</td>
+<td class="address-2"><span id="c4eb"></span>C4EB</td>
+<td class="instruction">LD HL,$BC78</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BC78.html">Table_ScenicEventLocations</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c4ee"></span>C4EE</td>
+<td class="instruction">LD BC,($BD30)</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">BC</span> for *<a href="BD30.html">Count_ScenicEvents</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ScenicEvents_Loop</td>
+<td class="address-2"><span id="c4f2"></span>C4F2</td>
+<td class="instruction">LD A,($BCCB)</td>
+<td class="comment-1" rowspan="1">Load *<a href="BCCB.html">CurrentRoom</a> into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c4f5"></span>C4F5</td>
+<td class="instruction">CPIR</td>
+<td class="comment-1" rowspan="1">Search for the matching room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c4f7"></span>C4F7</td>
+<td class="instruction">JR NZ,<a href="C4EB.html#c51f">ScenicEvents_Return</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C4EB.html#c51f">ScenicEvents_Return</a> if no events at all were found in the table.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c4f9"></span>
+<div class="comments">
+<div class="paragraph">
+An event was found to be processed!
+</div>
+<div class="paragraph">
+First though, stash away the current pointer and index in the search, so this can be resumed later.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c4f9"></span>C4F9</td>
+<td class="instruction">LD ($BD7D),HL</td>
+<td class="comment-1" rowspan="1">Write the table position to *<a href="BD7D.html">TempStore_TablePointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c4fc"></span>C4FC</td>
+<td class="instruction">LD ($BD7F),BC</td>
+<td class="comment-1" rowspan="1">Write the counter to *<a href="BD7F.html">TempStore_TableIndex</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c500"></span>
+<div class="comments">
+<div class="paragraph">
+Calculate the event index and get the event handler.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c500"></span>C500</td>
+<td class="instruction">INC BC</td>
+<td class="comment-1" rowspan="1">Adjust the counter for the sum.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c501"></span>C501</td>
+<td class="instruction">LD HL,($BD30)</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="BD30.html">Count_ScenicEvents</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c504"></span>C504</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="2">Calculate the index.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c505"></span>C505</td>
+<td class="instruction">SBC HL,BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c507"></span>C507</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1">Move the index into <span class="register">DE</span> (as <a href="C1F0.html">GetTableEntry</a> uses <span class="register">E</span>).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c508"></span>C508</td>
+<td class="instruction">LD IX,($BD24)</td>
+<td class="comment-1" rowspan="1">Load <span class="register">IX</span> with *<a href="BD24.html">Pointer_JumpTable_ScenicEvents</a> which contains a pointer to the scenic event rountines jump table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c50c"></span>C50C</td>
+<td class="instruction">CALL <a href="C1F0.html">GetTableEntry</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C1F0.html">GetTableEntry</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c50f"></span>C50F</td>
+<td class="instruction">LD DE,$C514</td>
+<td class="comment-1" rowspan="2">Push <a href="C4EB.html#c514">ScenicEvents_PostProcessing</a> onto the stack (as the return address).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c512"></span>C512</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c513"></span>C513</td>
+<td class="instruction">JP (HL)</td>
+<td class="comment-1" rowspan="1">Jump to the event handler held by <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c514"></span>
+<div class="comments">
+<div class="paragraph">
+This is the return point after the handler has finished executing.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScenicEvents_PostProcessing</td>
+<td class="address-1"><span id="c514"></span>C514</td>
+<td class="instruction">LD HL,($BD7D)</td>
+<td class="comment-1" rowspan="1">Restore *<a href="BD7D.html">TempStore_TablePointer</a> to <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c517"></span>C517</td>
+<td class="instruction">LD BC,($BD7F)</td>
+<td class="comment-1" rowspan="1">Restore *<a href="BD7F.html">TempStore_TableIndex</a> to <span class="register">BC</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c51b"></span>C51B</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C4EB.html#c4f2">Handler_ScenicEvents_Loop</a> if there are any further events to process.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c51c"></span>C51C</td>
+<td class="instruction">OR C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c51d"></span>C51D</td>
+<td class="instruction">JR NZ,<a href="C4EB.html#c4f2">Handler_ScenicEvents_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label">ScenicEvents_Return</td>
+<td class="address-2"><span id="c51f"></span>C51F</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C4C7.html">C4C7</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c4eb">Map</a></td>
+<td class="next">
+Next: <a href="C520.html">C520</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/50411.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

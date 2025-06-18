@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at 61853</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="61803.html">61803</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#61853">Map</a></td>
+<td class="next">
+Next: <a href="62006.html">62006</a>
+</td>
+</tr>
+</table>
+<div class="description">61853: Action: Examine</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Examine</td>
+<td class="address-2"><span id="61853"></span>61853</td>
+<td class="instruction">CALL <a href="50299.html">Parser_ValidateDirectObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="50299.html">Parser_ValidateDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61856"></span>61856</td>
+<td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61857"></span>61857</td>
+<td class="instruction">CP 1</td>
+<td class="comment-1" rowspan="2">Jump to <a href="61536.html">Response_OneAtATimePlease</a> if <span class="register">A</span> is not equal to 1.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61859"></span>61859</td>
+<td class="instruction">JP NZ,<a href="61536.html">Response_OneAtATimePlease</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61862"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to examine ... the bottle?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61862"></span>61862</td>
+<td class="instruction">LD HL,59850</td>
+<td class="comment-1" rowspan="2">Call <a href="50047.html">MatchPhraseTokens</a> with <a href="59850.html">PhraseTokens_Bottle</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61865"></span>61865</td>
+<td class="instruction">CALL <a href="50047.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61868"></span>61868</td>
+<td class="instruction">JR NZ,<a href="61853.html#61892">Validate_Examine_Fish</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61853.html#61892">Validate_Examine_Fish</a> if the token isn't for the bottle.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61870"></span>
+<div class="comments">
+<div class="paragraph">
+The player was trying to examine the bottle, but the bottle has "states" - before you examine it for the first time it's simply "A bottle" but after, it becomes "A bottle of rum"! So is it currently only "A bottle"?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61870"></span>61870</td>
+<td class="instruction">LD HL,59514</td>
+<td class="comment-1" rowspan="2">Call <a href="50177.html">CheckActiveScenicEvents</a> with <a href="59502.html#59514">Data_ItemGroup_Bottle_1</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61873"></span>61873</td>
+<td class="instruction">CALL <a href="50177.html">CheckActiveScenicEvents</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61876"></span>61876</td>
+<td class="instruction">CP 11</td>
+<td class="comment-1" rowspan="2">Jump to <a href="61853.html#61892">Validate_Examine_Fish</a> if the bottle is not item 11: "A bottle" (if it's already been declared to contain rum).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61878"></span>61878</td>
+<td class="instruction">JR NZ,<a href="61853.html#61892">Validate_Examine_Fish</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61880"></span>
+<div class="comments">
+<div class="paragraph">
+Change the bottle state!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61880"></span>61880</td>
+<td class="instruction">LD BC,2828</td>
+<td class="comment-1" rowspan="2">Call <a href="50214.html">TransformItem</a> to transform item 11 ("A bottle") into item 12 ("A bottle of rum").</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61883"></span>61883</td>
+<td class="instruction">CALL <a href="50214.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61886"></span>
+<div class="comments">
+<div class="paragraph">
+Print "It's full of rum!".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61886"></span>61886</td>
+<td class="instruction">LD HL,55923</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="55923.html">55923</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61889"></span>61889</td>
+<td class="instruction">JP <a href="61498.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61498.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61892"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to examine ... the fish?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Examine_Fish</td>
+<td class="address-2"><span id="61892"></span>61892</td>
+<td class="instruction">LD HL,59852</td>
+<td class="comment-1" rowspan="2">Call <a href="50047.html">MatchPhraseTokens</a> with <a href="59850.html#59852">PhraseTokens_Fish</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61895"></span>61895</td>
+<td class="instruction">CALL <a href="50047.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61898"></span>61898</td>
+<td class="instruction">JR NZ,<a href="61853.html#61919">Validate_Examine_Watch</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61853.html#61919">Validate_Examine_Watch</a> if the token isn't for the fish.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61900"></span>
+<div class="comments">
+<div class="paragraph">
+The player was trying to examine the fish, it also has "states" similarly to the bottle. Before you examine it for the first time, it's simply "A strangely coloured fish" and afterwards it becomes "A red herring"!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61900"></span>61900</td>
+<td class="instruction">LD A,27</td>
+<td class="comment-1" rowspan="2">Call <a href="50015.html">ValidateItemPresent</a> with "A strangely coloured fish".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61902"></span>61902</td>
+<td class="instruction">CALL <a href="50015.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61905"></span>61905</td>
+<td class="instruction">JR NZ,<a href="61853.html#61919">Validate_Examine_Watch</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61853.html#61919">Validate_Examine_Watch</a> if "A strangely coloured fish" isn't in the current room or players inventory.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61907"></span>
+<div class="comments">
+<div class="paragraph">
+Change the fish state!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61907"></span>61907</td>
+<td class="instruction">LD BC,6940</td>
+<td class="comment-1" rowspan="2">Call <a href="50214.html">TransformItem</a> to transform item 27 ("A strangely coloured fish") into item 28 ("A red herring").</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61910"></span>61910</td>
+<td class="instruction">CALL <a href="50214.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61913"></span>
+<div class="comments">
+<div class="paragraph">
+Print "It's a red herring!".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61913"></span>61913</td>
+<td class="instruction">LD HL,55941</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="55941.html">55941</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61916"></span>61916</td>
+<td class="instruction">JP <a href="61498.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61498.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61919"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to examine ... the watch?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Examine_Watch</td>
+<td class="address-2"><span id="61919"></span>61919</td>
+<td class="instruction">LD HL,59857</td>
+<td class="comment-1" rowspan="2">Call <a href="50047.html">MatchPhraseTokens</a> with <a href="59850.html#59857">PhraseTokens_Watch</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61922"></span>61922</td>
+<td class="instruction">CALL <a href="50047.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61925"></span>61925</td>
+<td class="instruction">JR NZ,<a href="61853.html#61933">Validate_Examine_Shoe</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61853.html#61933">Validate_Examine_Shoe</a> if the token isn't for the watch.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61927"></span>
+<div class="comments">
+<div class="paragraph">
+Print "It appears to work.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61927"></span>61927</td>
+<td class="instruction">LD HL,55961</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="55961.html">55961</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61930"></span>61930</td>
+<td class="instruction">JP <a href="61498.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61498.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61933"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to examine ... the shoe?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Examine_Shoe</td>
+<td class="address-2"><span id="61933"></span>61933</td>
+<td class="instruction">LD HL,59859</td>
+<td class="comment-1" rowspan="2">Call <a href="50047.html">MatchPhraseTokens</a> with <a href="59850.html#59859">PhraseTokens_Shoe</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61936"></span>61936</td>
+<td class="instruction">CALL <a href="50047.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61939"></span>61939</td>
+<td class="instruction">JR NZ,<a href="61853.html#61947">Validate_Examine_Rod</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61853.html#61947">Validate_Examine_Rod</a> if the token isn't for the shoe.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61941"></span>
+<div class="comments">
+<div class="paragraph">
+Print "It is quite well madeand in good condition.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61941"></span>61941</td>
+<td class="instruction">LD HL,55981</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="55981.html">55981</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61944"></span>61944</td>
+<td class="instruction">JP <a href="61498.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61498.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61947"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to examine ... the rod?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Examine_Rod</td>
+<td class="address-2"><span id="61947"></span>61947</td>
+<td class="instruction">LD HL,59861</td>
+<td class="comment-1" rowspan="2">Call <a href="50047.html">MatchPhraseTokens</a> with <a href="59850.html#59861">PhraseTokens_Rod</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61950"></span>61950</td>
+<td class="instruction">CALL <a href="50047.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61953"></span>61953</td>
+<td class="instruction">JR NZ,<a href="61853.html#61961">Validate_Examine_Fruit</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61853.html#61961">Validate_Examine_Fruit</a> if the token isn't for the rod.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61955"></span>
+<div class="comments">
+<div class="paragraph">
+Print "It has a circular cross-section.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61955"></span>61955</td>
+<td class="instruction">LD HL,56026</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56026.html">56026</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61958"></span>61958</td>
+<td class="instruction">JP <a href="61498.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61498.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61961"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to examine ... the fruit?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Examine_Fruit</td>
+<td class="address-2"><span id="61961"></span>61961</td>
+<td class="instruction">LD HL,59863</td>
+<td class="comment-1" rowspan="2">Call <a href="50047.html">MatchPhraseTokens</a> with <a href="59850.html#59863">PhraseTokens_Fruit</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61964"></span>61964</td>
+<td class="instruction">CALL <a href="50047.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61967"></span>61967</td>
+<td class="instruction">JR NZ,<a href="61853.html#61975">Validate_Examine_Bridge</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61853.html#61975">Validate_Examine_Bridge</a> if the token isn't for the fruit.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61969"></span>
+<div class="comments">
+<div class="paragraph">
+Print "It looks delicious.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61969"></span>61969</td>
+<td class="instruction">LD HL,56059</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56059.html">56059</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61972"></span>61972</td>
+<td class="instruction">JP <a href="61498.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61498.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61975"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to examine ... the bridge?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Examine_Bridge</td>
+<td class="address-2"><span id="61975"></span>61975</td>
+<td class="instruction">LD HL,59865</td>
+<td class="comment-1" rowspan="2">Call <a href="50047.html">MatchPhraseTokens</a> with <a href="59850.html#59865">PhraseTokens_Bridge</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61978"></span>61978</td>
+<td class="instruction">CALL <a href="50047.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61981"></span>61981</td>
+<td class="instruction">JR NZ,<a href="61853.html#61989">Validate_Examine_Jewels</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61853.html#61989">Validate_Examine_Jewels</a> if the token isn't for the bridge.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61983"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Be careful.It won't carry much weight.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61983"></span>61983</td>
+<td class="instruction">LD HL,56079</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56079.html">56079</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61986"></span>61986</td>
+<td class="instruction">JP <a href="61498.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61498.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61989"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to examine ... the jewels?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Examine_Jewels</td>
+<td class="address-2"><span id="61989"></span>61989</td>
+<td class="instruction">LD HL,59867</td>
+<td class="comment-1" rowspan="2">Call <a href="50047.html">MatchPhraseTokens</a> with <a href="59850.html#59867">PhraseTokens_Jewels</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61992"></span>61992</td>
+<td class="instruction">CALL <a href="50047.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61995"></span>61995</td>
+<td class="instruction">JR NZ,<a href="61853.html#62003">Examine_Invalid</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61853.html#62003">Examine_Invalid</a> if the token isn't for the jewels.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61997"></span>
+<div class="comments">
+<div class="paragraph">
+Print "They are very beautifuland very heavy.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61997"></span>61997</td>
+<td class="instruction">LD HL,56119</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56119.html">56119</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62000"></span>62000</td>
+<td class="instruction">JP <a href="61498.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61498.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62003"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Examine_Invalid</td>
+<td class="address-2"><span id="62003"></span>62003</td>
+<td class="instruction">JP <a href="61541.html">Response_IDontSeeThePoint</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61541.html">Response_IDontSeeThePoint</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="61803.html">61803</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#61853">Map</a></td>
+<td class="next">
+Next: <a href="62006.html">62006</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../../asm/F19D.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

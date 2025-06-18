@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at C00A</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C003.html">C003</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c00a">Map</a></td>
+<td class="next">
+Next: <a href="C041.html">C041</a>
+</td>
+</tr>
+</table>
+<div class="description">C00A: Handler: User Input</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="C058.html">UserInput_Enter</a> and <a href="EDC4.html">GameLoop</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c00a"></span>
+<div class="comments">
+<div class="paragraph">
+Reset the screen position to defaults.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput</td>
+<td class="address-2"><span id="c00a"></span>C00A</td>
+<td class="instruction">CALL <a href="BA7F.html">SetDefaultScreenPosition</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BA7F.html">SetDefaultScreenPosition</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c00d"></span>
+<div class="comments">
+<div class="paragraph">
+Clear down the command buffer which will hold the users input.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c00d"></span>C00D</td>
+<td class="instruction">LD HL,$BD34</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BD34.html">CommandBuffer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c010"></span>C010</td>
+<td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="1">Store the ASCII code for "SPACE" ("&#32;") into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c012"></span>C012</td>
+<td class="instruction">LD B,$32</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the size of the command buffer (32 bytes).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c014"></span>
+<div class="comments">
+<div class="paragraph">
+Write "SPACE" 32 times wiping the entire command buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">EmptyCommandBuffer_Loop</td>
+<td class="address-2"><span id="c014"></span>C014</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c015"></span>C015</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c016"></span>C016</td>
+<td class="instruction">DJNZ <a href="C00A.html#c014">EmptyCommandBuffer_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the command buffer counter by one and loop back to <a href="C00A.html#c014">EmptyCommandBuffer_Loop</a> until the whole buffer is cleared.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c018"></span>
+<div class="comments">
+<div class="paragraph">
+Now print the prompt icon "&gt;".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c018"></span>C018</td>
+<td class="instruction">CALL <a href="BBD4.html">PrintInputPrompt</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BBD4.html">PrintInputPrompt</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c01b"></span>
+<div class="comments">
+<div class="paragraph">
+Initialise the command buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c01b"></span>C01B</td>
+<td class="instruction">LD HL,$BD34</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BD34.html">CommandBuffer</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c01e"></span>
+<div class="comments">
+<div class="paragraph">
+Collect the users keypress.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">UserInput_Loop</td>
+<td class="address-2"><span id="c01e"></span>C01E</td>
+<td class="instruction">CALL <a href="BA5D.html">GetUserInput</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BA5D.html">GetUserInput</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c021"></span>
+<div class="comments">
+<div class="paragraph">
+Check the two valid control keys "DELETE" and "ENTER".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c021"></span>C021</td>
+<td class="instruction">CP $0C</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C041.html">UserInput_Delete</a> if "DELETE" was pressed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c023"></span>C023</td>
+<td class="instruction">JR Z,<a href="C041.html">UserInput_Delete</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c025"></span>C025</td>
+<td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C058.html">UserInput_Enter</a> if "ENTER" was pressed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c027"></span>C027</td>
+<td class="instruction">JR Z,<a href="C058.html">UserInput_Enter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c029"></span>C029</td>
+<td class="instruction">CP $20</td>
+<td class="comment-1" rowspan="2">If the keypress was any other control key (the value being under 20 ASCII "SPACE"), it's not valid input so jump back to <a href="C00A.html#c01e">UserInput_Loop</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c02b"></span>C02B</td>
+<td class="instruction">JR C,<a href="C00A.html#c01e">UserInput_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c02d"></span>
+<div class="comments">
+<div class="paragraph">
+Test if the current position in the command buffer is at the end (<a href="BD34.html">BD65</a>) of the buffer. For example:  <table class="default">
+<tr>
+<th colspan="1" rowspan="1">Position</th>
+<th colspan="1" rowspan="1">Output</th>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">BD34</td>
+<td class="centre" colspan="1" rowspan="1">31</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">BD3B</td>
+<td class="centre" colspan="1" rowspan="1">2A</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">BD42</td>
+<td class="centre" colspan="1" rowspan="1">23</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">BD49</td>
+<td class="centre" colspan="1" rowspan="1">1C</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">BD50</td>
+<td class="centre" colspan="1" rowspan="1">15</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">BD57</td>
+<td class="centre" colspan="1" rowspan="1">0E</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">BD5E</td>
+<td class="centre" colspan="1" rowspan="1">07</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">BD65</td>
+<td class="centre" colspan="1" rowspan="1">00</td>
+</tr>
+</table>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c02d"></span>C02D</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="6">Jump back to <a href="C00A.html#c01e">UserInput_Loop</a> if the input has reached the end of the command buffer (so don't process it).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c02e"></span>C02E</td>
+<td class="instruction">LD HL,$BD65</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c031"></span>C031</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c032"></span>C032</td>
+<td class="instruction">SBC HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c034"></span>C034</td>
+<td class="instruction">EX DE,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c035"></span>C035</td>
+<td class="instruction">JR Z,<a href="C00A.html#c01e">UserInput_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c037"></span>
+<div class="comments">
+<div class="paragraph">
+The keypress is valid, so process it and print it to the screen.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c037"></span>C037</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Write the keypress into the command buffer at the current position.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c038"></span>C038</td>
+<td class="instruction">CALL <a href="BA96.html">SwitchScreenUpper</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BA96.html">SwitchScreenUpper</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c03b"></span>C03B</td>
+<td class="instruction">CALL <a href="BAC3.html">PrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BAC3.html">PrintCharacter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c03e"></span>C03E</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Increment the pointer to the command buffer by one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c03f"></span>C03F</td>
+<td class="instruction">JR <a href="C00A.html#c01e">UserInput_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="C00A.html#c01e">UserInput_Loop</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C003.html">C003</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c00a">Map</a></td>
+<td class="next">
+Next: <a href="C041.html">C041</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/49162.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

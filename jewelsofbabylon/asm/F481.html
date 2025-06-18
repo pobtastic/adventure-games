@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at F481</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F263.html">F263</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f481">Map</a></td>
+<td class="next">
+Next: <a href="F4D4.html">F4D4</a>
+</td>
+</tr>
+</table>
+<div class="description">F481: Action: Get</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Get</td>
+<td class="address-2"><span id="f481"></span>F481</td>
+<td class="instruction">CALL <a href="C47B.html">Parser_ValidateDirectObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C47B.html">Parser_ValidateDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f484"></span>F484</td>
+<td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f485"></span>
+<div class="comments">
+<div class="paragraph">
+Confirm if the player intended to "GET INTO BOAT" (or similar).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f485"></span>F485</td>
+<td class="instruction">LD HL,$EA0D</td>
+<td class="comment-1" rowspan="2">Call <a href="C37F.html">MatchPhraseTokens</a> with <a href="E9CA.html#ea0d">PhraseTokens_IntoBoat</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f488"></span>F488</td>
+<td class="instruction">CALL <a href="C37F.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f48b"></span>F48B</td>
+<td class="instruction">JR NZ,<a href="F481.html#f4ac">GetOutOfBoat_Check</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F481.html#f4ac">GetOutOfBoat_Check</a> if the token isn't for getting into the boat.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f48d"></span>
+<div class="comments">
+<div class="paragraph">
+The player has typed any variation of wanting to get into the boat.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_GetIntoBoat</td>
+<td class="address-2"><span id="f48d"></span>F48D</td>
+<td class="instruction">LD A,($BCCB)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F481.html#f498">AlreadyInTheBoat</a> if the *<a href="BCCB.html">CurrentRoom</a> is room 04: "
+
+<a href="CB66.html">In A Rowing Boat</a>". So the player is already in the boat.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f490"></span>F490</td>
+<td class="instruction">CP $04</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f492"></span>F492</td>
+<td class="instruction">JR Z,<a href="F481.html#f498">AlreadyInTheBoat</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f494"></span>F494</td>
+<td class="instruction">CP $6B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F481.html#f49e">Action_GetIntoBoat</a> if the *<a href="BCCB.html">CurrentRoom</a> is not room 6B: "
+
+<a href="CB66.html">In A Rowing Boat</a>" (a room variation, but the player being in the boat).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f496"></span>F496</td>
+<td class="instruction">JR NZ,<a href="F481.html#f49e">Action_GetIntoBoat</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f498"></span>
+<div class="comments">
+<div class="paragraph">
+The player is definitely already in the boat, so tell them this.
+</div>
+<div class="paragraph">
+Print "You're in it already.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">AlreadyInTheBoat</td>
+<td class="address-2"><span id="f498"></span>F498</td>
+<td class="instruction">LD HL,$DC21</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DC21.html">Messaging_YoureInItAlready</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f49b"></span>F49B</td>
+<td class="instruction">JP <a href="F03A.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03A.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f49e"></span>
+<div class="comments">
+<div class="paragraph">
+The player can only get into the boat from room 03: "
+
+<a href="CB2A.html">Your Ship</a>".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_GetIntoBoat</td>
+<td class="address-2"><span id="f49e"></span>F49E</td>
+<td class="instruction">CP $03</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F481.html#f4a6">WhereIsTheBoat</a> if the *<a href="BCCB.html">CurrentRoom</a> is not room 03: "
+
+<a href="CB2A.html">Your Ship</a>"</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4a0"></span>F4A0</td>
+<td class="instruction">JR NZ,<a href="F481.html#f4a6">WhereIsTheBoat</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4a2"></span>F4A2</td>
+<td class="instruction">LD A,$04</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F481.html#f4a8">SetBoatDestination</a> using room 04: 
+
+<a href="CB66.html">In A Rowing Boat</a> as the destination.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4a4"></span>F4A4</td>
+<td class="instruction">JR <a href="F481.html#f4a8">SetBoatDestination</a></td>
+</tr>
+<tr>
+<td class="asm-label">WhereIsTheBoat</td>
+<td class="address-2"><span id="f4a6"></span>F4A6</td>
+<td class="instruction">LD A,$6B</td>
+<td class="comment-1" rowspan="1">Load room 6B: 
+
+<a href="CB66.html">In A Rowing Boat</a> into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label">SetBoatDestination</td>
+<td class="address-2"><span id="f4a8"></span>F4A8</td>
+<td class="instruction">CALL <a href="EF54.html">$EF54</a></td>
+<td class="comment-1" rowspan="1">Call <a href="EF54.html">EF54</a> to set the room destination from <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4ab"></span>F4AB</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f4ac"></span>
+<div class="comments">
+<div class="paragraph">
+Confirm if the player intended to "GET OUT OF BOAT" (or similar).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">GetOutOfBoat_Check</td>
+<td class="address-2"><span id="f4ac"></span>F4AC</td>
+<td class="instruction">LD HL,$EA1D</td>
+<td class="comment-1" rowspan="2">Call <a href="C37F.html">MatchPhraseTokens</a> with <a href="E9CA.html#ea1d">PhraseTokens_OutOfBoat</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4af"></span>F4AF</td>
+<td class="instruction">CALL <a href="C37F.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4b2"></span>F4B2</td>
+<td class="instruction">JR NZ,<a href="F481.html#f4d1">Synonym_Take</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F481.html#f4d1">Synonym_Take</a> if the token isn't for the getting out of the boat.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f4b4"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="F946.html">Action_Climb</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">IsPlayerInRowingBoat_1</td>
+<td class="address-2"><span id="f4b4"></span>F4B4</td>
+<td class="instruction">LD A,($BCCB)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F481.html#f4c1">IsPlayerInRowingBoat_2</a> if the *<a href="BCCB.html">CurrentRoom</a> is not room 04: "
+
+<a href="CB66.html">In A Rowing Boat</a>".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4b7"></span>F4B7</td>
+<td class="instruction">CP $04</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4b9"></span>F4B9</td>
+<td class="instruction">JR NZ,<a href="F481.html#f4c1">IsPlayerInRowingBoat_2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4bb"></span>F4BB</td>
+<td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2">Call <a href="EF54.html">EF54</a> to room 03: 
+
+<a href="CB2A.html">Your Ship</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4bd"></span>F4BD</td>
+<td class="instruction">CALL <a href="EF54.html">$EF54</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4c0"></span>F4C0</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f4c1"></span>
+<div class="comments">
+<div class="paragraph">
+Also check the room variation, as the player is in the boat in both.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">IsPlayerInRowingBoat_2</td>
+<td class="address-2"><span id="f4c1"></span>F4C1</td>
+<td class="instruction">CP $6B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F481.html#f4cb">NotInTheBoat</a> if the *<a href="BCCB.html">CurrentRoom</a> is not room 6B: "
+
+<a href="CB66.html">In A Rowing Boat</a>".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4c3"></span>F4C3</td>
+<td class="instruction">JR NZ,<a href="F481.html#f4cb">NotInTheBoat</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4c5"></span>F4C5</td>
+<td class="instruction">LD A,$06</td>
+<td class="comment-1" rowspan="2">Call <a href="EF54.html">EF54</a> to room 06: 
+
+<a href="CB78.html">Long Sandy Beach</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4c7"></span>F4C7</td>
+<td class="instruction">CALL <a href="EF54.html">$EF54</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4ca"></span>F4CA</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f4cb"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You're not in the boat.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">NotInTheBoat</td>
+<td class="address-2"><span id="f4cb"></span>F4CB</td>
+<td class="instruction">LD HL,$DC37</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DC37.html">Messaging_YoureNotInTheBoat</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4ce"></span>F4CE</td>
+<td class="instruction">JP <a href="F03A.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03A.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f4d1"></span>
+<div class="comments">
+<div class="paragraph">
+Pivot to "TAKE" as a synonym.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Synonym_Take</td>
+<td class="address-2"><span id="f4d1"></span>F4D1</td>
+<td class="instruction">JP <a href="F263.html">Action_Take</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F263.html">Action_Take</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F263.html">F263</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f481">Map</a></td>
+<td class="next">
+Next: <a href="F4D4.html">F4D4</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/62593.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

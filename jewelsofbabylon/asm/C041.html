@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at C041</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C00A.html">C00A</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c041">Map</a></td>
+<td class="next">
+Next: <a href="C058.html">C058</a>
+</td>
+</tr>
+</table>
+<div class="description">C041: Handler: User Pressed "DELETE"</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Handles the user pressing delete.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">HL</td>
+<td class="register-desc">Current position in the command buffer</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c041"></span>
+<div class="comments">
+<div class="paragraph">
+Test if the current position in the command buffer is at the start (<a href="BD34.html">BD34</a>) of the buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">UserInput_Delete</td>
+<td class="address-2"><span id="c041"></span>C041</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="6">Jump back to <a href="C00A.html#c01e">UserInput_Loop</a> if the user is already at the beginning of the command buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c042"></span>C042</td>
+<td class="instruction">LD HL,$BD34</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c045"></span>C045</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c046"></span>C046</td>
+<td class="instruction">SBC HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c048"></span>C048</td>
+<td class="instruction">EX DE,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c049"></span>C049</td>
+<td class="instruction">JR Z,<a href="C00A.html#c01e">UserInput_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c04b"></span>
+<div class="comments">
+<div class="paragraph">
+Else delete the current character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c04b"></span>C04B</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1">Stash the pointer to the command buffer on the stack.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c04c"></span>
+<div class="comments">
+<div class="paragraph">
+Print "BACKSPACE SPACE BACKSPACE" to move the current print position on the screen to the previous character, and to delete the charactr present using a space.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c04c"></span>C04C</td>
+<td class="instruction">LD HL,$BD88</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BD88.html">Messaging_BackspaceSpaceBackspace</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c04f"></span>C04F</td>
+<td class="instruction">CALL <a href="BAA4.html">PrintString</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BAA4.html">PrintString</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c052"></span>C052</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore the pointer to the command buffer from the stack.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c053"></span>
+<div class="comments">
+<div class="paragraph">
+Now adjust the command buffer pointer to match the new position.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c053"></span>C053</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="1">Decrease the pointer to the command buffer by one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c054"></span>C054</td>
+<td class="instruction">LD (HL),$20</td>
+<td class="comment-1" rowspan="1">Write an ASCII space (20) into the command buffer at the current position.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c056"></span>C056</td>
+<td class="instruction">JR <a href="C00A.html#c01e">UserInput_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C00A.html#c01e">UserInput_Loop</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C00A.html">C00A</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c041">Map</a></td>
+<td class="next">
+Next: <a href="C058.html">C058</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/49217.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

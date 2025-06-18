@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at FC24</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FBD5.html">FBD5</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fc24">Map</a></td>
+<td class="next">
+Next: <a href="FC61.html">FC61</a>
+</td>
+</tr>
+</table>
+<div class="description">FC24: Action: Light/ Strike</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_LightStrike</td>
+<td class="address-2"><span id="fc24"></span>FC24</td>
+<td class="instruction">CALL <a href="C47B.html">Parser_ValidateDirectObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C47B.html">Parser_ValidateDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc27"></span>FC27</td>
+<td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc28"></span>FC28</td>
+<td class="instruction">CP $02</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F074.html">Response_PleaseRephraseThat_Duplicate</a> if <span class="register">A</span> is greater than 02.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc2a"></span>FC2A</td>
+<td class="instruction">JP NC,<a href="F074.html">Response_PleaseRephraseThat_Duplicate</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fc2d"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to light ... the match?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc2d"></span>FC2D</td>
+<td class="instruction">LD HL,$E9E1</td>
+<td class="comment-1" rowspan="2">Call <a href="C37F.html">MatchPhraseTokens</a> with <a href="E9CA.html#e9e1">PhraseTokens_Match</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc30"></span>FC30</td>
+<td class="instruction">CALL <a href="C37F.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fc33"></span>
+<div class="comments">
+<div class="paragraph">
+The match is the only item which is light/ strikable.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc33"></span>FC33</td>
+<td class="instruction">JR NZ,<a href="FC24.html#fc5e">LightStrike_Invalid</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="FC24.html#fc5e">LightStrike_Invalid</a> if the token isn't for the match.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fc35"></span>
+<div class="comments">
+<div class="paragraph">
+The player definitely wants to light/ strike the match ... but is it already lit?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc35"></span>FC35</td>
+<td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2">Call <a href="C35F.html">ValidateItemPresent</a> using item: "A lighted match".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc37"></span>FC37</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc3a"></span>FC3A</td>
+<td class="instruction">JP Z,<a href="F079.html">Response_YouveDoneThatAlready</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F079.html">Response_YouveDoneThatAlready</a> if the lit match is already in the players possession.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fc3d"></span>
+<div class="comments">
+<div class="paragraph">
+The match isn't already lit, but is it either in the room, or in the players inventory?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc3d"></span>FC3D</td>
+<td class="instruction">LD A,$02</td>
+<td class="comment-1" rowspan="2">Call <a href="C3E4.html">CheckObjectInInventory</a> using item 02: "A match".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc3f"></span>FC3F</td>
+<td class="instruction">CALL <a href="C3E4.html">CheckObjectInInventory</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc42"></span>FC42</td>
+<td class="instruction">JP NZ,<a href="F07E.html">Response_YoureNotCarryingIt</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F07E.html">Response_YoureNotCarryingIt</a> if the player is not holding the (unlit) match.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fc45"></span>
+<div class="comments">
+<div class="paragraph">
+The player can light the match- so go ahead and do this.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc45"></span>FC45</td>
+<td class="instruction">LD BC,$0203</td>
+<td class="comment-1" rowspan="2">Call <a href="C426.html">TransformItem</a> to transform item 02 ("A match") into item 03 ("A lighted match").</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc48"></span>FC48</td>
+<td class="instruction">CALL <a href="C426.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc4b"></span>FC4B</td>
+<td class="instruction">LD HL,$BC66</td>
+<td class="comment-1" rowspan="2">Set bit 6 of *<a href="BC66.html">Flag_TurnBasedEventState</a> which activates lighting the match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc4e"></span>FC4E</td>
+<td class="instruction">SET 6,(HL)</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fc50"></span>
+<div class="comments">
+<div class="paragraph">
+The event is turn-based, the player only has the lit match for 06 turns.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc50"></span>FC50</td>
+<td class="instruction">LD A,$06</td>
+<td class="comment-1" rowspan="2">Write 06 to *<a href="BC67.html#bc6d">Counter_Match</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc52"></span>FC52</td>
+<td class="instruction">LD ($BC6D),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc55"></span>FC55</td>
+<td class="instruction">CALL <a href="F06A.html">Response_OK_Duplicate</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F06A.html">Response_OK_Duplicate</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fc58"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The match flares into life.Hurry it will go out soon.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc58"></span>FC58</td>
+<td class="instruction">LD HL,$E4D1</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E4D1.html">Messaging_TheMatchFlaresIntoLife</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fc5b"></span>FC5B</td>
+<td class="instruction">JP <a href="F03A.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03A.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fc5e"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">LightStrike_Invalid</td>
+<td class="address-2"><span id="fc5e"></span>FC5E</td>
+<td class="instruction">JP <a href="F06F.html">Response_YouCant_Duplicate</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F06F.html">Response_YouCant_Duplicate</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FBD5.html">FBD5</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fc24">Map</a></td>
+<td class="next">
+Next: <a href="FC61.html">FC61</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/64548.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

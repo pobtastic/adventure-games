@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at C412</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C401.html">C401</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c412">Map</a></td>
+<td class="next">
+Next: <a href="C426.html">C426</a>
+</td>
+</tr>
+</table>
+<div class="description">C412: Handler: Update Object Location</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="C3EA.html">Handler_DestroyItemEvent</a>, <a href="C3F1.html">Handler_UpdateItemEventCurrentRoom</a>, <a href="C3FA.html">ScenicEventTriggered</a>, <a href="C426.html">TransformItem</a>, <a href="EF54.html">EF54</a>, <a href="F263.html">Action_Take</a>, <a href="F4D4.html">Action_DropThrow</a> and <a href="F7D6.html">Action_???</a>.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">B</td>
+<td class="register-desc">Object/ event ID</td>
+</tr>
+<tr>
+<td class="register">C</td>
+<td class="register-desc">Room ID for the update (can also be 00)</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UpdateObjectLocation</td>
+<td class="address-2"><span id="c412"></span>C412</td>
+<td class="instruction">BIT 7,B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C412.html#c41d">UpdateObjectLocation_NonScenic</a> if this is a normal object/ event.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c414"></span>C414</td>
+<td class="instruction">JR Z,<a href="C412.html#c41d">UpdateObjectLocation_NonScenic</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c416"></span>
+<div class="comments">
+<div class="paragraph">
+Handle non-scenic events.
+</div>
+<div class="paragraph">
+Prepare object/ event ID for use.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c416"></span>C416</td>
+<td class="instruction">RES 7,B</td>
+<td class="comment-1" rowspan="1">Clear the scenic flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c418"></span>C418</td>
+<td class="instruction">LD HL,$BC78</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BC78.html">Table_ScenicEventLocations</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c41b"></span>C41B</td>
+<td class="instruction">JR <a href="C412.html#c420">UpdateObjectLocation</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C412.html#c420">UpdateObjectLocation</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c41d"></span>
+<div class="comments">
+<div class="paragraph">
+Handle non-scenic events.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">UpdateObjectLocation_NonScenic</td>
+<td class="address-2"><span id="c41d"></span>C41D</td>
+<td class="instruction">LD HL,$BBF0</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BBF0.html">Table_ItemLocations</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c420"></span>
+<div class="comments">
+<div class="paragraph">
+Both object/ event types continue from here.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">UpdateObjectLocation</td>
+<td class="address-2"><span id="c420"></span>C420</td>
+<td class="instruction">LD D,$00</td>
+<td class="comment-1" rowspan="2">Load the event ID into <span class="register">DE</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c422"></span>C422</td>
+<td class="instruction">LD E,B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c423"></span>C423</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Add the event ID to the event locations table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c424"></span>C424</td>
+<td class="instruction">LD (HL),C</td>
+<td class="comment-1" rowspan="1">Update the table with the new room ID in <span class="register">C</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c425"></span>C425</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C401.html">C401</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c412">Map</a></td>
+<td class="next">
+Next: <a href="C426.html">C426</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/50194.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

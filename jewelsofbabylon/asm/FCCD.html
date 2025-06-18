@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jewels of Babylon: Routine at FCCD</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FC98.html">FC98</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fccd">Map</a></td>
+<td class="next">
+Next: <a href="FD02.html">FD02</a>
+</td>
+</tr>
+</table>
+<div class="description">FCCD: Action: Unlock</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Unlock</td>
+<td class="address-2"><span id="fccd"></span>FCCD</td>
+<td class="instruction">CALL <a href="C47B.html">Parser_ValidateDirectObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C47B.html">Parser_ValidateDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcd0"></span>FCD0</td>
+<td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fcd1"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to unlock the door?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcd1"></span>FCD1</td>
+<td class="instruction">LD HL,$EAE6</td>
+<td class="comment-1" rowspan="2">Call <a href="C37F.html">MatchPhraseTokens</a> with <a href="E9CA.html#eae6">PhraseTokens_Door_2</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcd4"></span>FCD4</td>
+<td class="instruction">CALL <a href="C37F.html">MatchPhraseTokens</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcd7"></span>FCD7</td>
+<td class="instruction">JR NZ,<a href="FCCD.html#fcff">Unlock_Invalid</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="FCCD.html#fcff">Unlock_Invalid</a> if the token isn't for the door.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fcd9"></span>
+<div class="comments">
+<div class="paragraph">
+The player was trying to unlock the door, but is the door even in the current room?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcd9"></span>FCD9</td>
+<td class="instruction">LD A,($BCCB)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F06F.html">Response_YouCant_Duplicate</a> if *<a href="BCCB.html">CurrentRoom</a> is room 6A: "
+
+<a href="D191.html">The Mighty Rock Door</a>".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcdc"></span>FCDC</td>
+<td class="instruction">CP $6A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcde"></span>FCDE</td>
+<td class="instruction">JP Z,<a href="F06F.html">Response_YouCant_Duplicate</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fce1"></span>
+<div class="comments">
+<div class="paragraph">
+It's the correct door, but is it already unlocked?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fce1"></span>FCE1</td>
+<td class="instruction">LD A,$2E</td>
+<td class="comment-1" rowspan="2">Call <a href="C35F.html">ValidateItemPresent</a> with "A closed door".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fce3"></span>FCE3</td>
+<td class="instruction">CALL <a href="C35F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fce6"></span>FCE6</td>
+<td class="instruction">JP NZ,<a href="F079.html">Response_YouveDoneThatAlready</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F079.html">Response_YouveDoneThatAlready</a> if "A closed door" isn't in the current room.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fce9"></span>
+<div class="comments">
+<div class="paragraph">
+And does the player have the key?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fce9"></span>FCE9</td>
+<td class="instruction">LD A,$1F</td>
+<td class="comment-1" rowspan="2">Call <a href="C3E4.html">CheckObjectInInventory</a> with item 1F: "A key".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fceb"></span>FCEB</td>
+<td class="instruction">CALL <a href="C3E4.html">CheckObjectInInventory</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcee"></span>FCEE</td>
+<td class="instruction">JR Z,<a href="FCCD.html#fcf6">Unlock_Door</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="FCCD.html#fcf6">Unlock_Door</a> if the key is either in the room, or in the players inventory.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fcf0"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You haven't got the key.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcf0"></span>FCF0</td>
+<td class="instruction">LD HL,$E604</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E604.html">Messaging_YouHaventGotTheKey</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcf3"></span>FCF3</td>
+<td class="instruction">JP <a href="F03A.html">PrintStringAndNewline_Alias</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F03A.html">PrintStringAndNewline_Alias</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fcf6"></span>
+<div class="comments">
+<div class="paragraph">
+Change the door state!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Unlock_Door</td>
+<td class="address-2"><span id="fcf6"></span>FCF6</td>
+<td class="instruction">LD BC,$2E2D</td>
+<td class="comment-1" rowspan="2">Call <a href="C426.html">TransformItem</a> to transform item 2E ("A closed door") into item 2D ("A closed door").</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcf9"></span>FCF9</td>
+<td class="instruction">CALL <a href="C426.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fcfc"></span>FCFC</td>
+<td class="instruction">JP <a href="F06A.html">Response_OK_Duplicate</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F06A.html">Response_OK_Duplicate</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fcff"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Unlock_Invalid</td>
+<td class="address-2"><span id="fcff"></span>FCFF</td>
+<td class="instruction">JP <a href="F06F.html">Response_YouCant_Duplicate</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F06F.html">Response_YouCant_Duplicate</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FC98.html">FC98</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fccd">Map</a></td>
+<td class="next">
+Next: <a href="FD02.html">FD02</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/jewelsofbabylon/">Source code</a>.</div>
+<div><a href="../dec/asm/64717.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>
