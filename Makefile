@@ -46,5 +46,5 @@ warlord:
 	skool2html.py $(OPTIONS) -H -c Config/GameDir=adventure-games/warlord --var pub=2 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/warlord/warlord.skool sources/warlord/warlord.ref
 
 all:
-	utils/mkhtml.py $(HTML_OPTIONS)
+	utils/mkhtml.py $(OPTIONS)
 .PHONY: all
