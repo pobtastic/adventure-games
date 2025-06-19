@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Warlord: Routine at 44034</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="43958.html">43958</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#44034">Map</a></td>
+<td class="next">
+Next: <a href="44186.html">44186</a>
+</td>
+</tr>
+</table>
+<div class="description">44034: Handler: Display Room Exits</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Handles displaying the exits available for the current room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_RoomExits</td>
+<td class="address-2"><span id="44034"></span>44034</td>
+<td class="instruction">CALL <a href="42318.html">ClearScreen</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42318.html">ClearScreen</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44037"></span>44037</td>
+<td class="instruction">LD A,24</td>
+<td class="comment-1" rowspan="2">Set up the printing position.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44039"></span>44039</td>
+<td class="instruction">CALL <a href="44205.html">Print_RoomDescription</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44042"></span>44042</td>
+<td class="instruction">CALL <a href="44186.html">GetRoomPointer</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44186.html">GetRoomPointer</a> which loads <span class="register">HL</span> with the room data pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44045"></span>44045</td>
+<td class="instruction">LD D,H</td>
+<td class="comment-1" rowspan="2">Store this in <span class="register">DE</span> for later.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44046"></span>44046</td>
+<td class="instruction">LD E,L</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44047"></span>
+<div class="comments">
+<div class="paragraph">
+Count the number of exits in the room data.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44047"></span>44047</td>
+<td class="instruction">LD B,6</td>
+<td class="comment-1" rowspan="1">Set an "exits" counter in <span class="register">B</span> of 6.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44049"></span>44049</td>
+<td class="instruction">LD C,0</td>
+<td class="comment-1" rowspan="1">Initialise <span class="register">C</span> to 0 to count the number of valid exits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44051"></span>44051</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 0 which is used just for the comparison.</td>
+</tr>
+<tr>
+<td class="asm-label">RoomExitsCount_Loop</td>
+<td class="address-2"><span id="44052"></span>44052</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="1">Does this room have an exit?</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44053"></span>44053</td>
+<td class="instruction">JR Z,<a href="44034.html#44056">RoomExitsCount_Skip</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44034.html#44056">RoomExitsCount_Skip</a> if this room doesn't have an exit for this position.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44055"></span>44055</td>
+<td class="instruction">INC C</td>
+<td class="comment-1" rowspan="1">Increment the valid exits count by one.</td>
+</tr>
+<tr>
+<td class="asm-label">RoomExitsCount_Skip</td>
+<td class="address-2"><span id="44056"></span>44056</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move to the next byte of room data.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44057"></span>44057</td>
+<td class="instruction">DJNZ <a href="44034.html#44052">RoomExitsCount_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the exits counter by one and loop back to <a href="44034.html#44052">RoomExitsCount_Loop</a> until all the exits have been checked.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44059"></span>
+<div class="comments">
+<div class="paragraph">
+Process the exits count result.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44059"></span>44059</td>
+<td class="instruction">OR C</td>
+<td class="comment-1" rowspan="2">Jump to <a href="44034.html#44166">RoomExits_YouCanSee</a> if no exits were found.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44060"></span>44060</td>
+<td class="instruction">JR Z,<a href="44034.html#44166">RoomExits_YouCanSee</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44062"></span>44062</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="44034.html#44101">RoomMultipleExits</a> if more than 1 exit was found.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44063"></span>44063</td>
+<td class="instruction">CP 1</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44065"></span>44065</td>
+<td class="instruction">JR NZ,<a href="44034.html#44101">RoomMultipleExits</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44067"></span>
+<div class="comments">
+<div class="paragraph">
+Only one exit was found:
+</div>
+<div class="paragraph">
+Print "There is an exit ".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44067"></span>44067</td>
+<td class="instruction">LD HL,43178</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43178.html">43178</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44070"></span>44070</td>
+<td class="instruction">CALL <a href="42373.html">PrintString</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42373.html">PrintString</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44073"></span>44073</td>
+<td class="instruction">LD H,D</td>
+<td class="comment-1" rowspan="2">Retrieve the room data pointer and load it into <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44074"></span>44074</td>
+<td class="instruction">LD L,E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44075"></span>44075</td>
+<td class="instruction">LD IX,43746</td>
+<td class="comment-1" rowspan="1">Set a pointer in <span class="register">IX</span> to <a href="43746.html">43746</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44079"></span>44079</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 0 which is used just for the comparison.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44080"></span>44080</td>
+<td class="instruction">JR <a href="44034.html#44087">RoomCheckForExit</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44034.html#44087">RoomCheckForExit</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44082"></span>
+<div class="comments">
+<div class="paragraph">
+Move both the pointers to the next item of data (increment by two for the direction name table pointer as it contains addresses).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RoomCheckForExit_Loop</td>
+<td class="address-2"><span id="44082"></span>44082</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move to the next byte of room data.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44083"></span>44083</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="2">Increment the direction name table pointer by two.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44085"></span>44085</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label">RoomCheckForExit</td>
+<td class="address-2"><span id="44087"></span>44087</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="44034.html#44082">RoomCheckForExit_Loop</a> if the current exit isn't a valid exit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44088"></span>44088</td>
+<td class="instruction">JR Z,<a href="44034.html#44082">RoomCheckForExit_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44090"></span>44090</td>
+<td class="instruction">LD L,(IX+0)</td>
+<td class="comment-1" rowspan="2">Get the direction name from the direction name table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44093"></span>44093</td>
+<td class="instruction">LD H,(IX+1)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44096"></span>44096</td>
+<td class="instruction">CALL <a href="42373.html">PrintString</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42373.html">PrintString</a> to print the direction name.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44099"></span>44099</td>
+<td class="instruction">JR <a href="44034.html#44160">RoomExits_PrintFullStop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44034.html#44160">RoomExits_PrintFullStop</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44101"></span>
+<div class="comments">
+<div class="paragraph">
+More than one exit was found:
+</div>
+<div class="paragraph">
+Print "There are exits:-".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RoomMultipleExits</td>
+<td class="address-2"><span id="44101"></span>44101</td>
+<td class="instruction">LD HL,43159</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43159.html">43159</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44104"></span>44104</td>
+<td class="instruction">CALL <a href="42386.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42386.html">PrintStringAndNewline</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44107"></span>44107</td>
+<td class="instruction">LD H,D</td>
+<td class="comment-1" rowspan="2">Retrieve the room data pointer and load it into <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44108"></span>44108</td>
+<td class="instruction">LD L,E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44109"></span>44109</td>
+<td class="instruction">LD IX,43746</td>
+<td class="comment-1" rowspan="1">Set a pointer in <span class="register">IX</span> to <a href="43746.html">43746</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44113"></span>44113</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 0 which is used just for the comparison.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44114"></span>44114</td>
+<td class="instruction">JR <a href="44034.html#44122">RoomCheckForExits</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44034.html#44122">RoomCheckForExits</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44116"></span>
+<div class="comments">
+<div class="paragraph">
+So as not to corrupt the pointer to the room data (as <span class="register">HL</span> is also used when printing), it's temporarily held in <span class="register">DE</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RoomExits_Initialise</td>
+<td class="address-2"><span id="44116"></span>44116</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1">Switch back the <span class="register">DE</span> and <span class="register">HL</span> registers.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44117"></span>
+<div class="comments">
+<div class="paragraph">
+Move both the pointers to the next item of data (increment by two for the direction name table pointer as it contains addresses).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RoomCheckForExits_Loop</td>
+<td class="address-2"><span id="44117"></span>44117</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move to the next byte of room data.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44118"></span>44118</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="2">Increment the direction name table pointer by two.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44120"></span>44120</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label">RoomCheckForExits</td>
+<td class="address-2"><span id="44122"></span>44122</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="44034.html#44117">RoomCheckForExits_Loop</a> if the current exit isn't a valid exit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44123"></span>44123</td>
+<td class="instruction">JR Z,<a href="44034.html#44117">RoomCheckForExits_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44125"></span>44125</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1">Temporarily store the room data pointer in <span class="register">DE</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44126"></span>44126</td>
+<td class="instruction">LD L,(IX+0)</td>
+<td class="comment-1" rowspan="2">Get the direction name from the direction name table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44129"></span>44129</td>
+<td class="instruction">LD H,(IX+1)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44132"></span>44132</td>
+<td class="instruction">CALL <a href="42373.html">PrintString</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42373.html">PrintString</a> to print the direction name.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44135"></span>44135</td>
+<td class="instruction">DEC C</td>
+<td class="comment-1" rowspan="1">Decrease the valid exits count by one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44136"></span>44136</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="44034.html#44160">RoomExits_PrintFullStop</a> if there are no more exits to process.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44137"></span>44137</td>
+<td class="instruction">CP 1</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44139"></span>44139</td>
+<td class="instruction">JR C,<a href="44034.html#44160">RoomExits_PrintFullStop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44141"></span>44141</td>
+<td class="instruction">JR Z,<a href="44034.html#44151">RoomExits_PrintAmpersand</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44034.html#44151">RoomExits_PrintAmpersand</a> if there is only one exit left to process.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44143"></span>
+<div class="comments">
+<div class="paragraph">
+Print a comma character: "<code>&#44;</code>".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44143"></span>44143</td>
+<td class="instruction">LD A,44</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=44.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44145"></span>44145</td>
+<td class="instruction">CALL <a href="42404.html">PrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42404.html">PrintCharacter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44148"></span>44148</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Reset <span class="register">A</span> back to 0 for the comparison.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44149"></span>44149</td>
+<td class="instruction">JR <a href="44034.html#44116">RoomExits_Initialise</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="44034.html#44116">RoomExits_Initialise</a> to continue processing.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44151"></span>
+<div class="comments">
+<div class="paragraph">
+Print " & ".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RoomExits_PrintAmpersand</td>
+<td class="address-2"><span id="44151"></span>44151</td>
+<td class="instruction">LD HL,43155</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43155.html">43155</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44154"></span>44154</td>
+<td class="instruction">CALL <a href="42373.html">PrintString</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42373.html">PrintString</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44157"></span>44157</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Reset <span class="register">A</span> back to 0 for the comparison.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44158"></span>44158</td>
+<td class="instruction">JR <a href="44034.html#44116">RoomExits_Initialise</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44034.html#44116">RoomExits_Initialise</a> to continue processing.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44160"></span>
+<div class="comments">
+<div class="paragraph">
+Print ".".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RoomExits_PrintFullStop</td>
+<td class="address-2"><span id="44160"></span>44160</td>
+<td class="instruction">LD HL,43541</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43541.html">43541</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44163"></span>44163</td>
+<td class="instruction">CALL <a href="42386.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42386.html">PrintStringAndNewline</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44166"></span>
+<div class="comments">
+<div class="paragraph">
+Are there any objects here?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RoomExits_YouCanSee</td>
+<td class="address-2"><span id="44166"></span>44166</td>
+<td class="instruction">LD A,(42947)</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="42947.html">42947</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44169"></span>44169</td>
+<td class="instruction">CALL <a href="44857.html">44857</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44857.html">44857</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44172"></span>44172</td>
+<td class="instruction">RET NZ</td>
+<td class="comment-1" rowspan="1">Return if no objects were found at this location.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44173"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You can see:-".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44173"></span>44173</td>
+<td class="instruction">LD HL,43140</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43140.html">43140</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44176"></span>44176</td>
+<td class="instruction">CALL <a href="42386.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42386.html">PrintStringAndNewline</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44179"></span>
+<div class="comments">
+<div class="paragraph">
+Print the objects at this location.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44179"></span>44179</td>
+<td class="instruction">LD A,(42947)</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="42947.html">42947</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44182"></span>44182</td>
+<td class="instruction">CALL <a href="43927.html">PrintObjects</a></td>
+<td class="comment-1" rowspan="1">Call <a href="43927.html">PrintObjects</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44185"></span>44185</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="43958.html">43958</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#44034">Map</a></td>
+<td class="next">
+Next: <a href="44186.html">44186</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/warlord/">Source code</a>.</div>
+<div><a href="../../asm/AC02.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>
