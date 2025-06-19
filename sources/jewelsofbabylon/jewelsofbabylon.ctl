@@ -18,17 +18,17 @@ c $5B00 Tape Loader
 @ $5B00 label=TapeLoader
 E $5B00 View the equivalent code in #WARLORD$5B00.
 N $5B00 Load the first block: screen data.
-  $5B00,$04 #REGix=#R$4000.
+  $5B00,$04 #REGix=#R$4000(#N$4000).
   $5B04,$03 #REGde=#N$1B00.
   $5B07,$02 #REGa=#N$5B.
   $5B09,$03 Call #R$5B21.
 N $5B0C Load the second block: graphics data.
-  $5B0C,$04 #REGix=#R$607C.
+  $5B0C,$04 #REGix=#R$607C(#N$607C).
   $5B10,$03 #REGde=#N$59D4.
   $5B13,$02 #REGa=#N$E1.
   $5B15,$03 Call #R$5B21.
 N $5B18 Load the third block: game data.
-  $5B18,$04 #REGix=#R$BA50.
+  $5B18,$04 #REGix=#R$BA50(#N$BA50).
   $5B1C,$03 #REGde=#N$4572.
   $5B1F,$02 #REGa=#N$21.
 N $5B21 Tape loading routine.
@@ -133,12 +133,14 @@ D $B2A7 #PUSHS #UDGTABLE
 
 c $BA50 Game Entry Point
 @ $BA50 label=GameEntryPoint
+E $BA50 View the equivalent code in #WARLORD$A531.
   $BA50,$05 #HTML(Set CAPS LOCK on, using bit 3 of *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C6A.html">FLAGS2</a>).
   $BA55,$05 Write #N$18 to *#R$BD70.
   $BA5A,$03 Jump to #R$C592.
 
 c $BA5D Get User Input
 @ $BA5D label=GetUserInput
+E $BA5D View the equivalent code in #WARLORD$A53E.
 R $BA5D O:A The keypress value
   $BA5D,$03 #HTML(#REGa=*<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3B.html">FLAGS</a>.)
   $BA60,$04 Jump back to #R$BA5D until a new key is pressed.
@@ -150,35 +152,40 @@ N $BA69 Fetch the keypress.
 
 c $BA6D Clear Screen
 @ $BA6D label=ClearScreen
+E $BA6D View the equivalent code in #WARLORD$A54E.
   $BA6D,$03 Call #R$BA96.
   $BA70,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0D6B.html">CLS</a>.)
   $BA73,$01 Return.
 
 c $BA74 Clear Lines
 @ $BA74 label=ClearLines
+E $BA74 View the equivalent code in #WARLORD$A555.
   $BA74,$03 Call #R$BA96.
   $BA77,$07 #HTML(Clear the number of lines held by *#R$BD70 from the bottom of the screen using <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0E44.html">CL_LINE</a>.)
   $BA7E,$01 Return.
 
 c $BA7F Set Default Screen Position
 @ $BA7F label=SetDefaultScreenPosition
+E $BA7F View the equivalent code in #WARLORD$A560.
   $BA7F,$03 Call #R$BA96.
-  $BA82,$03 #REGbc=#N($0321,$04,$04).
+  $BA82,$03 #REGbc=#N$0321.
   $BA85,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/0DD9.html">CL_SET</a>.)
   $BA88,$01 Return.
 
 c $BA89 Set Screen Position
 @ $BA89 label=SetScreenPosition
+E $BA89 View the equivalent code in #WARLORD$A56A.
   $BA89,$03 Call #R$BA96.
   $BA8C,$04 #REGb=*#R$BD70.
   $BA90,$05 #HTML(Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/0DD9.html">CL_SET</a>
 . with column number #N$21.)
   $BA95,$01 Return.
 
-c $BA96 Switch To Upper Screen
-@ $BA96 label=SwitchScreenUpper
+c $BA96 Switch To Normal Screen Output
+@ $BA96 label=SwitchNormalScreenOutput
+E $BA96 View the equivalent code in #WARLORD$A577.
   $BA96,$04 Stash #REGhl, #REGde, #REGbc and #REGaf on the stack.
-  $BA9A,$05 #HTML(Switch to upper screen using <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/1601.html">CHAN_OPEN</a>.)
+  $BA9A,$05 #HTML(Set current output channel to <em>normal</em> screen output using <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/1601.html">CHAN_OPEN</a> with stream #N$02.)
   $BA9F,$04 Restore #REGaf, #REGbc, #REGde and #REGhl from the stack.
   $BAA3,$01 Return.
 
@@ -186,6 +193,7 @@ c $BAA4 Print String
 @ $BAA4 label=PrintString
 D $BAA4 Standard printing loop, which prints the fetched character byte and
 . loops until the termination byte is reached (#N$FF).
+E $BAA4 View the equivalent code in #WARLORD$A585.
 R $BAA4 HL Pointer to string to be printed
   $BAA4,$03 Call #R$BA96.
 N $BAA7 Just keep looping and printing the fetched character until the
@@ -201,6 +209,7 @@ N $BAA7 Just keep looping and printing the fetched character until the
 c $BAB1 Print String And A Newline
 @ $BAB1 label=PrintStringAndNewline
 D $BAB1 Shortcut print routine which prints a newline after it's done.
+E $BAB1 View the equivalent code in #WARLORD$A592.
   $BAB1,$03 Call #R$BAA4.
 N $BAB4 Force a newline to be "printed".
   $BAB4,$02 Load a "newline" character into #REGa (#N$0D).
@@ -210,6 +219,7 @@ N $BAB4 Force a newline to be "printed".
 c $BABA Scroll Screen
 @ $BABA label=ScrollScreen
 D $BABA Scrolls the screen up and then resets the print position.
+E $BABA View the equivalent code in #WARLORD$A59B.
   $BABA,$01 Switch to the shadow registers.
 N $BABB Scroll the screen up.
   $BABB,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0DFE.html">CL_SC_ALL</a>.)
@@ -220,6 +230,7 @@ N $BABE Reset the print position.
 
 c $BAC3 Print Character
 @ $BAC3 label=PrintCharacter
+E $BAC3 View the equivalent code in #WARLORD$A5A4.
 R $BAC3 A The character to print
   $BAC3,$01 Stash the character to print on the stack.
   $BAC4,$07 #HTML(Jump to #R$BADE if *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C88.html#5C89">S_POSN</a> is not equal to #N$03.)
@@ -317,6 +328,7 @@ R $BB42 A Attribute byte value
 c $BB51 Pause Loop
 @ $BB51 label=Pause_Loop
 D $BB51 Pauses a given number of HALT loops.
+E $BB51 View the equivalent code in #WARLORD$A5C2.
 R $BB51 B Number of HALT commands to use
   $BB51,$01 Halt operation (suspend CPU until the next interrupt).
   $BB52,$02 Decrease counter by one and loop back to #R$BB51 until counter is zero.
@@ -324,12 +336,14 @@ R $BB51 B Number of HALT commands to use
 
 c $BB55 Fetch Frames
 @ $BB55 label=FetchFrames
+E $BB55 View the equivalent code in #WARLORD$A5C6.
 R $BB55 O:A #HTML(The first byte of the <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C78.html">FRAMES</a> variable.)
   $BB55,$03 #HTML(#REGa=*<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C78.html">FRAMES</a>.)
   $BB58,$01 Return.
 
 c $BB59 Save Game
 @ $BB59 label=SaveGame
+E $BB59 View the equivalent code in #WARLORD$A5CA.
   $BB59,$03 #REGa=*#R$BD32.
   $BB5C,$03 Jump to #R$BB78 if #REGa is zero.
   $BB5F,$01 #REGb=#REGa.
@@ -358,6 +372,7 @@ N $BB8D Print "#STR$BE9A,$08($b==$FF)".
 
 c $BB94 Load From Tape
 @ $BB94 label=LoadTape
+E $BB94 View the equivalent code in #WARLORD$A605.
 N $BB94 Print "#STR$BE57,$08($b==$FF)".
   $BB94,$03 #REGhl=#R$BE57.
   $BB97,$03 Call #R$BAB1.
@@ -393,6 +408,7 @@ N $BBA9 Print "#STR$BE6C,$08($b==$FF)".
 
 c $BBD4 Print Input Prompt
 @ $BBD4 label=PrintInputPrompt
+E $BBD4 View the equivalent code in #WARLORD$A647.
   $BBD4,$03 #REGhl=#N$5080 (screen buffer location).
   $BBD7,$03 Set the increment in #REGde for the next screen line.
   $BBDA,$02 #REGb=#N$08.
@@ -643,6 +659,7 @@ L $BD66,$01,$0A
 
 g $BD70 Line Number
 @ $BD70 label=LineNumber
+E $BD70 View the equivalent code in #JEWELS$A82E.
 B $BD70,$01
 
 g $BD71

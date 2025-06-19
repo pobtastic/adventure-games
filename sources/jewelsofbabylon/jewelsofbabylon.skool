@@ -236,17 +236,17 @@ b$4000 DEFB $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,
 ;
 ; Load the first block: screen data.
 @label=TapeLoader
-c$5B00 LD IX,$4000   ; #REGix=#R$4000.
+c$5B00 LD IX,$4000   ; #REGix=#R$4000(#N$4000).
  $5B04 LD DE,$1B00   ; #REGde=#N$1B00.
  $5B07 LD A,$5B      ; #REGa=#N$5B.
  $5B09 CALL $5B21    ; Call #R$5B21.
 ; Load the second block: graphics data.
- $5B0C LD IX,$607C   ; #REGix=#R$607C.
+ $5B0C LD IX,$607C   ; #REGix=#R$607C(#N$607C).
  $5B10 LD DE,$59D4   ; #REGde=#N$59D4.
  $5B13 LD A,$E1      ; #REGa=#N$E1.
  $5B15 CALL $5B21    ; Call #R$5B21.
 ; Load the third block: game data.
- $5B18 LD IX,$BA50   ; #REGix=#R$BA50.
+ $5B18 LD IX,$BA50   ; #REGix=#R$BA50(#N$BA50).
  $5B1C LD DE,$4572   ; #REGde=#N$4572.
  $5B1F LD A,$21      ; #REGa=#N$21.
 ; Tape loading routine.
@@ -3417,6 +3417,7 @@ c$BA50 LD HL,$5C6A   ; {#HTML(Set CAPS LOCK on, using bit 3 of *<a
  $BA55 LD A,$18      ; {Write #N$18 to *#R$BD70.
  $BA57 LD ($BD70),A  ; }
  $BA5A JP $C592      ; Jump to #R$C592.
+; View the equivalent code in #WARLORD$A531.
 
 ; Get User Input
 ;
@@ -3435,6 +3436,7 @@ c$BA5D LD A,($5C3B)  ; #HTML(#REGa=*<a rel="noopener nofollow"
  $BA69 LD A,($5C08)  ; #HTML(#REGa=*<a rel="noopener nofollow"
                      ; href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C08.html">LAST_K</a>.)
  $BA6C RET           ; Return.
+; View the equivalent code in #WARLORD$A53E.
 
 ; Clear Screen
 ;
@@ -3444,6 +3446,7 @@ c$BA6D CALL $BA96    ; Call #R$BA96.
  $BA70 CALL $0D6B    ; #HTML(Call <a rel="noopener nofollow"
                      ; href="https://skoolkit.ca/disassemblies/rom/hex/asm/0D6B.html">CLS</a>.)
  $BA73 RET           ; Return.
+; View the equivalent code in #WARLORD$A54E.
 
 ; Clear Lines
 @label=ClearLines
@@ -3454,16 +3457,18 @@ c$BA74 CALL $BA96    ; Call #R$BA96.
                      ; href="https://skoolkit.ca/disassemblies/rom/hex/asm/0E44.html">CL_LINE</a>.)
                      ; }
  $BA7E RET           ; Return.
+; View the equivalent code in #WARLORD$A555.
 
 ; Set Default Screen Position
 ;
 ; Used by the routines at #R$BABA and #R$C00A.
 @label=SetDefaultScreenPosition
 c$BA7F CALL $BA96    ; Call #R$BA96.
- $BA82 LD BC,$0321   ; #REGbc=#N($0321,$04,$04).
+ $BA82 LD BC,$0321   ; #REGbc=#N$0321.
  $BA85 CALL $0DD9    ; #HTML(Call <a rel="noopener nofollow"
                      ; href="https://skoolkid.github.io/rom/asm/0DD9.html">CL_SET</a>.)
  $BA88 RET           ; Return.
+; View the equivalent code in #WARLORD$A560.
 
 ; Set Screen Position
 ;
@@ -3475,25 +3480,27 @@ c$BA89 CALL $BA96    ; Call #R$BA96.
  $BA90 LD C,$21      ; {#HTML(Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/0DD9.html">CL_SET</a>
  $BA92 CALL $0DD9    ; with column number #N$21.)}
  $BA95 RET           ; Return.
+; View the equivalent code in #WARLORD$A56A.
 
-; Switch To Upper Screen
+; Switch To Normal Screen Output
 ;
 ; Used by the routines at #R$BA6D, #R$BA74, #R$BA7F, #R$BA89, #R$BAA4, #R$BAE1,
 ; #R$C00A and #R$C058.
-@label=SwitchScreenUpper
+@label=SwitchNormalScreenOutput
 c$BA96 PUSH HL       ; {Stash #REGhl, #REGde, #REGbc and #REGaf on the stack.
  $BA97 PUSH DE       ;
  $BA98 PUSH BC       ;
  $BA99 PUSH AF       ; }
- $BA9A LD A,$02      ; {#HTML(Switch to upper screen using <a rel="noopener
- $BA9C CALL $1601    ; nofollow"
-                     ; href="https://skoolkit.ca/disassemblies/rom/hex/asm/1601.html">CHAN_OPEN</a>.)
-                     ; }
+ $BA9A LD A,$02      ; {#HTML(Set current output channel to <em>normal</em>
+ $BA9C CALL $1601    ; screen output using <a rel="noopener nofollow"
+                     ; href="https://skoolkit.ca/disassemblies/rom/hex/asm/1601.html">CHAN_OPEN</a>
+                     ; with stream #N$02.)}
  $BA9F POP AF        ; {Restore #REGaf, #REGbc, #REGde and #REGhl from the
  $BAA0 POP BC        ; stack.
  $BAA1 POP DE        ;
  $BAA2 POP HL        ; }
  $BAA3 RET           ; Return.
+; View the equivalent code in #WARLORD$A577.
 
 ; Print String
 ;
@@ -3512,6 +3519,7 @@ c$BAA4 CALL $BA96    ; Call #R$BA96.
  $BAAB RET Z         ; reached.}
  $BAAC CALL $BAC3    ; Call #R$BAC3.
  $BAAF JR $BAA7      ; Jump to #R$BAA7.
+; View the equivalent code in #WARLORD$A585.
 
 ; Print String And A Newline
 ;
@@ -3522,6 +3530,7 @@ c$BAB1 CALL $BAA4    ; Call #R$BAA4.
  $BAB4 LD A,$0D      ; Load a "newline" character into #REGa (#N$0D).
  $BAB6 CALL $BAC3    ; Call #R$BAC3.
  $BAB9 RET           ; Return.
+; View the equivalent code in #WARLORD$A592.
 
 ; Scroll Screen
 ;
@@ -3535,6 +3544,7 @@ c$BABA EXX           ; Switch to the shadow registers.
  $BABE CALL $BA7F    ; Call #R$BA7F.
  $BAC1 EXX           ; Switch back to the normal registers.
  $BAC2 RET           ; Return.
+; View the equivalent code in #WARLORD$A59B.
 
 ; Print Character
 ;
@@ -3568,6 +3578,7 @@ c$BAC3 PUSH AF       ; Stash the character to print on the stack.
                      ; nofollow"
                      ; href="https://skoolkit.ca/disassemblies/rom/hex/asm/0010.html">PRINT_A_1</a>.)
  $BAE0 RET           ; Return.
+; View the equivalent code in #WARLORD$A5A4.
 
 ; Print Room Graphic
 ;
@@ -3683,6 +3694,7 @@ c$BB51 HALT          ; Halt operation (suspend CPU until the next interrupt).
  $BB52 DJNZ $BB51    ; Decrease counter by one and loop back to #R$BB51 until
                      ; counter is zero.
  $BB54 RET           ; Return.
+; View the equivalent code in #WARLORD$A5C2.
 
 ; Fetch Frames
 ;
@@ -3695,6 +3707,7 @@ c$BB51 HALT          ; Halt operation (suspend CPU until the next interrupt).
 c$BB55 LD A,($5C78)  ; #HTML(#REGa=*<a rel="noopener nofollow"
                      ; href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C78.html">FRAMES</a>.)
  $BB58 RET           ; Return.
+; View the equivalent code in #WARLORD$A5C6.
 
 ; Save Game
 ;
@@ -3729,6 +3742,7 @@ c$BB59 LD A,($BD32)  ; #REGa=*#R$BD32.
  $BB8D LD HL,$BE9A   ; #REGhl=#R$BE9A.
  $BB90 CALL $BAB1    ; Call #R$BAB1.
  $BB93 RET           ; Return.
+; View the equivalent code in #WARLORD$A5CA.
 
 ; Load From Tape
 ;
@@ -3773,6 +3787,7 @@ c$BB94 LD HL,$BE57   ; #REGhl=#R$BE57.
  $BBCE LD E,$00      ; #REGe=#N$00.
  $BBD0 CALL $C21E    ; Call #R$C21E.
  $BBD3 RET           ; Return.
+; View the equivalent code in #WARLORD$A605.
 
 ; Print Input Prompt
 ;
@@ -3796,6 +3811,7 @@ c$BBD4 LD HL,$5080   ; #REGhl=#N$5080 (screen buffer location).
 *$BBE9 LD HL,$BD85   ; #REGhl=#R$BD85.
  $BBEC CALL $BAA4    ; Call #R$BAA4.
  $BBEF RET           ; Return.
+; View the equivalent code in #WARLORD$A647.
 
 ; Table: Item Locations
 ;
@@ -4445,6 +4461,7 @@ g$BD66 DEFB $FF
 ; Line Number
 @label=LineNumber
 g$BD70 DEFB $00
+; View the equivalent code in #JEWELS$A82E.
 
 ; Game status buffer entry at BD71
 g$BD71 DEFB $00,$00,$00,$00

@@ -20,7 +20,7 @@ class AdventureGamesHtmlWriter(HtmlWriter):
 	def init(self):
 		self._type = 'asm' if self.base == 16 else 'dec/asm'
 
-	def expand_blizzardpass(self, text, index, cwd):
+	def expand_pass(self, text, index, cwd):
 		# #PASSaddress[#anchor][(link text)]
 		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
 		if not link_text:
@@ -28,11 +28,11 @@ class AdventureGamesHtmlWriter(HtmlWriter):
 		href = self._asm_relpath(cwd, address, code_id, True)
 		return end, self.format_link(f"/adventure-games/blizzardpass/{self._type}/{href}", link_text)
 
-	def expand_jewelsofbabylon(self, text, index, cwd):
+	def expand_jewels(self, text, index, cwd):
 		# #JEWELSaddress[#anchor][(link text)]
 		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
 		if not link_text:
-			link_text = "Jewels Of Babylon"
+			link_text = "The Jewels Of Babylon"
 		href = self._asm_relpath(cwd, address, code_id, True)
 		return end, self.format_link(f"/adventure-games/jewelsofbabylon/{self._type}/{href}", link_text)
 
