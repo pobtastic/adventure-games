@@ -2740,7 +2740,7 @@ b$A0EB DEFB $00,$00,$00,$00,$00,$00,$00,$00
 
 ; Game Entry Point
 ;
-; Used by the routine at #R$E99F.
+; Used by the routines at #R$E9B2 and #R$E9D0.
 @label=GameEntryPoint
 c$A531 LD HL,$5C6A   ; {#HTML(Set CAPS LOCK on, using bit 3 of *<a
  $A534 SET 3,(HL)    ; rel="noopener nofollow"
@@ -2753,7 +2753,7 @@ c$A531 LD HL,$5C6A   ; {#HTML(Set CAPS LOCK on, using bit 3 of *<a
 
 ; Get User Input
 ;
-; Used by the routines at #R$A5CA, #R$ACC2, #R$E99F and #R$FF12.
+; Used by the routines at #R$A5CA, #R$ACC2, #R$E9B2, #R$E9D0 and #R$FF12.
 ;
 ; O:A The keypress value
 @label=GetUserInput
@@ -2772,7 +2772,7 @@ c$A53E LD A,($5C3B)  ; #HTML(#REGa=*<a rel="noopener nofollow"
 
 ; Clear Screen
 ;
-; Used by the routines at #R$ABB6, #R$AC02 and #R$E99F.
+; Used by the routines at #R$ABB6, #R$AC02 and #R$E9D0.
 @label=ClearScreen
 c$A54E CALL $A577    ; Call #R$A577.
  $A551 CALL $0D6B    ; #HTML(Call <a rel="noopener nofollow"
@@ -2804,7 +2804,7 @@ c$A560 CALL $A577    ; Call #R$A577.
 
 ; Set Screen Position
 ;
-; Used by the routines at #R$ACAD and #R$E99F.
+; Used by the routines at #R$ACAD and #R$E9D0.
 @label=SetScreenPosition
 c$A56A CALL $A577    ; Call #R$A577.
  $A56D LD A,($A82E)  ; {#REGb=*#R$A82E.
@@ -2939,7 +2939,7 @@ c$A5C6 LD A,($5C78)  ; #HTML(#REGa=*<a rel="noopener nofollow"
 
 ; Save Game
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 @label=SaveGame
 c$A5CA LD A,($A7F0)  ; #REGa=*#R$A7F0.
  $A5CD OR A          ; {Jump to #R$A5E9 if #REGa is zero.
@@ -2974,7 +2974,7 @@ c$A5CA LD A,($A7F0)  ; #REGa=*#R$A7F0.
 
 ; Load From Tape
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 ;
 ; .
 ;
@@ -3636,11 +3636,20 @@ g$A77F DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $A787 DEFB $00,$0B,$00,$00,$00,$00,$00,$00
  $A78F DEFB $00,$00
 
-; Message at A791
-t$A791 DEFM $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+; Game status buffer entry at A791
+g$A791 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A799 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A7A1 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A7A9 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A7B1 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A7B9 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A7C1 DEFB $00,$00
 
 ; Game status buffer entry at A7C3
-g$A7C3 DEFB $02,$00,$00,$B1,$E0
+g$A7C3 DEFB $02,$00,$00
+
+; Game status buffer entry at A7C6
+g$A7C6 DEFW $E0B1
 
 ; Pointer: Turn-Based Events Jump Table
 ;
@@ -3649,7 +3658,7 @@ g$A7C3 DEFB $02,$00,$00,$B1,$E0
 g$A7C8 DEFW $FECB
 
 ; Game status buffer entry at A7CA
-g$A7CA DEFB $14,$E7
+g$A7CA DEFW $E714
 
 ; Pointer: Item Description Table
 ;
@@ -3658,21 +3667,35 @@ g$A7CA DEFB $14,$E7
 g$A7CC DEFW $C732
 
 ; Game status buffer entry at A7CE
-g$A7CE DEFB $F1,$FE
+g$A7CE DEFW $FEF1
 
 ; Game status buffer entry at A7D0
-g$A7D0 DEFB $FC,$FE
+g$A7D0 DEFW $FEFC
 
 ; Game status buffer entry at A7D2
-g$A7D2 DEFB $B0,$C8,$17,$E4,$3E,$C8,$08,$E3
- $A7DA DEFB $89,$FE
+g$A7D2 DEFW $C8B0
+
+; Game status buffer entry at A7D4
+g$A7D4 DEFW $E417
+
+; Game status buffer entry at A7D6
+g$A7D6 DEFW $C83E
+
+; Game status buffer entry at A7D8
+g$A7D8 DEFW $E308
+
+; Game status buffer entry at A7DA
+g$A7DA DEFW $FE89
 
 ; Pointer: Configurable Exits Table
 @label=Pointer_ConfigurableExits
 g$A7DC DEFW $E978
 
 ; Game status buffer entry at A7DE
-g$A7DE DEFB $CF,$FE,$89,$E4
+g$A7DE DEFW $FECF
+
+; Game status buffer entry at A7E0
+g$A7E0 DEFW $E489
 
 ; Pointer: Scenic Event Locations
 @label=Pointer_ScenicEventLocations
@@ -3689,10 +3712,13 @@ g$A7E4 DEFW $E4E6
 g$A7E6 DEFW $0086
 
 ; Game status buffer entry at A7E8
-g$A7E8 DEFB $39,$00,$21,$00
+g$A7E8 DEFW $0039
+
+; Game status buffer entry at A7EA
+g$A7EA DEFW $0021
 
 ; Game status buffer entry at A7EC
-g$A7EC DEFB $0B,$00
+g$A7EC DEFW $000B
 
 ; Number Of Scenic Events
 @label=Count_ScenicEvents
@@ -3721,51 +3747,215 @@ g$A82E DEFB $00
  $A83F DEFB $00,$00,$00,$00
 ; View the equivalent code in #JEWELS$BD70.
 
-; Message at A843
-t$A843 DEFM "> ",$FF,$08," ",$08,$FF,"THE ",$FF,"I don't understand.",$FF,"I don't know the word:-",$FF,"nothing.",$FF
+; Messaging: "> "
+@label=Messaging_Prompt
+t$A843 DEFM "> "     ; "#STR$A843,$08($b==$FF)".
+ $A845 DEFB $FF      ; Terminator.
 
-; Message at A884
-t$A884 DEFM $0D,"You can see:-",$FF
+; Messaging: "<BS> <BS>"
+@label=Messaging_BackspaceSpaceBackspace
+t$A846 DEFM $08," ",$08 ; "#STR$A846,$08($b==$FF)".
+ $A849 DEFB $FF         ; Terminator.
 
-; Message at A893
-t$A893 DEFM " & ",$FF
+; Messaging: "The "
+@label=Messaging_The
+t$A84A DEFM "THE "   ; "#STR$A84A,$08($b==$FF)".
+ $A84E DEFB $FF      ; Terminator.
 
-; Message at A897
-t$A897 DEFM $0D,"There are exits:-",$FF
+; Messaging: "I Don't Understand"
+@label=Messaging_IDontUnderstand
+t$A84F DEFM "I don't understand." ; "#STR$A84F,$08($b==$FF)".
+ $A862 DEFB $FF                   ; Terminator.
 
-; Message at A8AA
-t$A8AA DEFM $0D,"There is an exit ",$FF,"North",$FF,"South",$FF,"East",$FF,"West",$FF,"Up",$FF,"Down",$FF,"I can't see ",$FF," he"
- $A8EB DEFM "re.",$FF,"You are dead.",$FF,"Want another game? Y/N.",$FF
+; Messaging: "I Don't Know The Word:-"
+@label=Messaging_IDontKnowTheWord
+t$A863 DEFM "I don't know the word:-" ; "#STR$A863,$08($b==$FF)".
+ $A87A DEFB $FF                       ; Terminator.
 
-; Message at A915
-t$A915 DEFM "LOADING. Press PLAY.",$FF
+; Messaging: "Nothing"
+@label=Messaging_Nothing
+t$A87B DEFM "nothing." ; "#STR$A87B,$08($b==$FF)".
+ $A883 DEFB $FF        ; Terminator.
 
-; Message at A92A
-t$A92A DEFM "Tape error.",$0D,"Press any key to restart.",$FF
+; Messaging: "You Can See:-"
+@label=Messaging_YouCanSee
+t$A884 DEFM $0D,"You can see:-" ; "#STR$A884,$08($b==$FF)".
+ $A892 DEFB $FF                 ; Terminator.
 
-; Message at A950
-t$A950 DEFM "SAVING. Position tape.",$0D,"Press REC & PLAY,then any key.",$FF
+; Messaging: "Ampersand"
+@label=Messaging_Ampersand
+t$A893 DEFM " & "    ; "#STR$A893,$08($b==$FF)".
+ $A896 DEFB $FF      ; Terminator.
 
-; Message at A986
-t$A986 DEFM "Stop tape.Saving complete.",$FF,"Want to save the game? Y/N.",$FF
+; Messaging: "There Are Exits:-"
+@label=Messaging_ThereAreExits
+t$A897 DEFM $0D,"There are exits:-" ; "#STR$A897,$08($b==$FF)".
+ $A8A9 DEFB $FF                     ; Terminator.
 
-; Message at A9BD
-t$A9BD DEFM "Please be more specific.",$FF
+; Messaging: "There Is An Exit"
+@label=Messaging_ThereIsAnExit
+t$A8AA DEFM $0D,"There is an exit " ; "#STR$A8AA,$08($b==$FF)".
+ $A8BC DEFB $FF                     ; Terminator.
 
-; Message at A9D6
-t$A9D6 DEFM "Please rephrase that.",$FF
+; Messaging: "North"
+@label=Messaging_North
+t$A8BD DEFM "North"  ; "#STR$A8BD,$08($b==$FF)".
+ $A8C2 DEFB $FF      ; Terminator.
 
-; Message at A9EC
-t$A9EC DEFM "You can't.",$FF
+; Messaging: "South"
+@label=Messaging_South
+t$A8C3 DEFM "South"  ; "#STR$A8C3,$08($b==$FF)".
+ $A8C8 DEFB $FF      ; Terminator.
 
-; Message at A9F7
-t$A9F7 DEFM "O.K.",$FF,"You're already carrying ",$FF
+; Messaging: "East"
+@label=Messaging_East
+t$A8C9 DEFM "East"   ; "#STR$A8C9,$08($b==$FF)".
+ $A8CD DEFB $FF      ; Terminator.
 
-; Message at AA15
-t$AA15 DEFM ".",$FF,"it.",$FF,"them.",$FF,"You can't carry any more.",$FF,"You are carrying:-",$FF,"You can'"
- $AA56 DEFM "t go in that direction.",$FF,"One at a time,please!",$FF,"I don't see the poi"
- $AA97 DEFM "nt.",$FF,"You're not carrying ",$FF,"You're not carrying anything.",$FF,"You have s"
- $AAD8 DEFM "cored ",$FF,"%.",$FF
+; Messaging: "West"
+@label=Messaging_West
+t$A8CE DEFM "West"   ; "#STR$A8CE,$08($b==$FF)".
+ $A8D2 DEFB $FF      ; Terminator.
+
+; Messaging: "Up"
+@label=Messaging_Up
+t$A8D3 DEFM "Up"     ; "#STR$A8D3,$08($b==$FF)".
+ $A8D5 DEFB $FF      ; Terminator.
+
+; Messaging: "Down"
+@label=Messaging_Down
+t$A8D6 DEFM "Down"   ; "#STR$A8D6,$08($b==$FF)".
+ $A8DA DEFB $FF      ; Terminator.
+
+; Messaging: "I Can't See"
+@label=Messaging_ICantSee
+t$A8DB DEFM "I can't see " ; "#STR$A8DB,$08($b==$FF)".
+ $A8E7 DEFB $FF            ; Terminator.
+
+; Messaging: "Here"
+@label=Messaging_Here
+t$A8E8 DEFM " here." ; "#STR$A8E8,$08($b==$FF)".
+ $A8EE DEFB $FF      ; Terminator.
+
+; Messaging: "You Are Dead"
+@label=Messaging_YouAreDead
+t$A8EF DEFM "You are dead." ; "#STR$A8EF,$08($b==$FF)".
+ $A8FC DEFB $FF             ; Terminator.
+
+; Messaging: "Want Another Game? Y/N"
+@label=Messaging_WantAnotherGame
+t$A8FD DEFM "Want another game? Y/N." ; "#STR$A8FD,$08($b==$FF)".
+ $A914 DEFB $FF                       ; Terminator.
+
+; Messaging: "Loading. Press Play"
+@label=Messaging_LoadingPressPlay
+t$A915 DEFM "LOADING. Press PLAY." ; "#STR$A915,$08($b==$FF)".
+ $A929 DEFB $FF                    ; Terminator.
+
+; Messaging: "Tape Error.press Any Key To Restart"
+@label=Messaging_TapeErrorPressAnyKeyToRestart
+t$A92A DEFM "Tape error.",$0D,"Press any key to restart." ; "#STR$A92A,$08($b==$FF)".
+ $A94F DEFB $FF                                           ; Terminator.
+
+; Messaging: "Saving. Position Tape.Press Rec & Play,Then Any Key"
+@label=Messaging_SavingPositionTapePressRecPlaythenAnyKey
+t$A950 DEFM "SAVING. Position tape.",$0D,"Press REC & PLAY,then any key." ; "#STR$A950,$08($b==$FF)".
+ $A985 DEFB $FF                                                           ; Terminator.
+
+; Messaging: "Stop Tape.Saving Complete"
+@label=Messaging_StopTapeSavingComplete
+t$A986 DEFM "Stop tape.Saving complete." ; "#STR$A986,$08($b==$FF)".
+ $A9A0 DEFB $FF                          ; Terminator.
+
+; Messaging: "Want To Save The Game? Y/N"
+@label=Messaging_WantToSaveTheGame
+t$A9A1 DEFM "Want to save the game? Y/N." ; "#STR$A9A1,$08($b==$FF)".
+ $A9BC DEFB $FF                           ; Terminator.
+
+; Messaging: "Please Be More Specific"
+@label=Messaging_PleaseBeMoreSpecific
+t$A9BD DEFM "Please be more specific." ; "#STR$A9BD,$08($b==$FF)".
+ $A9D5 DEFB $FF                        ; Terminator.
+
+; Messaging: "Please Rephrase That"
+@label=Messaging_PleaseRephraseThat
+t$A9D6 DEFM "Please rephrase that." ; "#STR$A9D6,$08($b==$FF)".
+ $A9EB DEFB $FF                     ; Terminator.
+
+; Messaging: "You Can't"
+@label=Messaging_YouCant
+t$A9EC DEFM "You can't." ; "#STR$A9EC,$08($b==$FF)".
+ $A9F6 DEFB $FF          ; Terminator.
+
+; Messaging: "O.K"
+@label=Messaging_OK
+t$A9F7 DEFM "O.K."   ; "#STR$A9F7,$08($b==$FF)".
+ $A9FB DEFB $FF      ; Terminator.
+
+; Messaging: "You're Already Carrying"
+@label=Messaging_YoureAlreadyCarrying
+t$A9FC DEFM "You're already carrying " ; "#STR$A9FC,$08($b==$FF)".
+ $AA14 DEFB $FF                        ; Terminator.
+
+; Messaging: "."
+@label=Messaging_FullStop
+t$AA15 DEFM "."      ; "#STR$AA15,$08($b==$FF)".
+ $AA16 DEFB $FF      ; Terminator.
+
+; Messaging: "It"
+@label=Messaging_It
+t$AA17 DEFM "it."    ; "#STR$AA17,$08($b==$FF)".
+ $AA1A DEFB $FF      ; Terminator.
+
+; Messaging: "Them"
+@label=Messaging_Them
+t$AA1B DEFM "them."  ; "#STR$AA1B,$08($b==$FF)".
+ $AA20 DEFB $FF      ; Terminator.
+
+; Messaging: "You Can't Carry Any More"
+@label=Messaging_YouCantCarryAnyMore
+t$AA21 DEFM "You can't carry any more." ; "#STR$AA21,$08($b==$FF)".
+ $AA3A DEFB $FF                         ; Terminator.
+
+; Messaging: "You Are Carrying:-"
+@label=Messaging_YouAreCarrying
+t$AA3B DEFM "You are carrying:-" ; "#STR$AA3B,$08($b==$FF)".
+ $AA4D DEFB $FF                  ; Terminator.
+
+; Messaging: "You Can't Go In That Direction"
+@label=Messaging_YouCantGoInThatDirection
+t$AA4E DEFM "You can't go in that direction." ; "#STR$AA4E,$08($b==$FF)".
+ $AA6D DEFB $FF                               ; Terminator.
+
+; Messaging: "One At A Time,Please!"
+@label=Messaging_OneAtATimeplease
+t$AA6E DEFM "One at a time,please!" ; "#STR$AA6E,$08($b==$FF)".
+ $AA83 DEFB $FF                     ; Terminator.
+
+; Messaging: "I Don't See The Point"
+@label=Messaging_IDontSeeThePoint
+t$AA84 DEFM "I don't see the point." ; "#STR$AA84,$08($b==$FF)".
+ $AA9A DEFB $FF                      ; Terminator.
+
+; Messaging: "You're Not Carrying"
+@label=Messaging_YoureNotCarrying
+t$AA9B DEFM "You're not carrying " ; "#STR$AA9B,$08($b==$FF)".
+ $AAAF DEFB $FF                    ; Terminator.
+
+; Messaging: "You're Not Carrying Anything"
+@label=Messaging_YoureNotCarryingAnything
+t$AAB0 DEFM "You're not carrying anything." ; "#STR$AAB0,$08($b==$FF)".
+ $AACD DEFB $FF                             ; Terminator.
+
+; Messaging: "You Have Scored"
+@label=Messaging_YouHaveScored
+t$AACE DEFM "You have scored " ; "#STR$AACE,$08($b==$FF)".
+ $AADE DEFB $FF                ; Terminator.
+
+; Messaging: "%"
+@label=Messaging_Percentage
+t$AADF DEFM "%."     ; "#STR$AADF,$08($b==$FF)".
+ $AAE1 DEFB $FF      ; Terminator.
 
 ; Message at AAE2
 t$AAE2 DEFM $BD,$A8,$C3,$A8,$C9,$A8,$CE,$A8,$D3,$A8,$D6,$A8
@@ -3806,7 +3996,7 @@ c$AAFC LD HL,$A9EC   ; #REGhl=#R$A9EC.
  $AAFF CALL $A592    ; Call #R$A592.
  $AB02 RET           ; Return.
 
-; Response: "O.K."
+; Response: "O.K"
 ;
 ; .
 ;
@@ -3975,7 +4165,7 @@ c$AB88 LD D,$00      ; {Multiply the given index by #N$02 and store the result
 
 ; Print Objects
 ;
-; Used by the routines at #R$AC02 and #R$E99F.
+; Used by the routines at #R$AC02 and #R$E9D0.
 ;
 ; A #N$01 for inventory items, or room number for room objects
 @label=PrintObjects
@@ -4206,7 +4396,7 @@ c$AC02 CALL $A54E    ; Call #R$A54E.
 
 ; Get Room Pointer
 ;
-; Used by the routines at #R$AC02 and #R$E99F.
+; Used by the routines at #R$AC02 and #R$E9D0.
 ;
 ; O:HL Pointer to the room data
 @label=GetRoomPointer
@@ -4472,7 +4662,7 @@ c$AE36 INC BC        ;
 
 ; Validate If Item Is Present
 ;
-; Used by the routines at #R$AE36, #R$AEF7, #R$AFEB and #R$E99F.
+; Used by the routines at #R$AE36, #R$AEF7, #R$AFEB and #R$E9D0.
 c$AE6B PUSH HL       ;
  $AE6C PUSH DE       ;
  $AE6D LD E,A        ;
@@ -4548,7 +4738,7 @@ c$AEAF LD HL,$A824   ;
 
 ; Object/ Event Locator
 ;
-; Used by the routines at #R$AB0A, #R$AEDA, #R$AF1E, #R$AF31 and #R$E99F.
+; Used by the routines at #R$AB0A, #R$AEDA, #R$AF1E, #R$AF31 and #R$E9D0.
 c$AED1 LD E,A        ;
  $AED2 LD D,$00      ;
  $AED4 LD HL,$A66C   ;
@@ -4558,14 +4748,14 @@ c$AED1 LD E,A        ;
 
 ; Is Object In Inventory?
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 c$AEDA CALL $AED1    ;
  $AEDD CP $01        ;
  $AEDF RET           ;
 
 ; Handler: Destroy Item/ Event
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 c$AEE0 LD B,A        ;
  $AEE1 LD C,$00      ;
  $AEE3 CALL $AF08    ;
@@ -4573,7 +4763,7 @@ c$AEE0 LD B,A        ;
 
 ; Handler: Update Item/ Event For The Current Room
 ;
-; Used by the routines at #R$AFEB and #R$E99F.
+; Used by the routines at #R$AFEB and #R$E9D0.
 c$AEE7 LD B,A        ;
  $AEE8 LD A,($A7C3)  ;
  $AEEB LD C,A        ;
@@ -4582,7 +4772,7 @@ c$AEE7 LD B,A        ;
 
 ; Set Scenic Event As Triggered
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 c$AEF0 LD B,A        ;
  $AEF1 LD C,$FF      ;
  $AEF3 CALL $AF08    ;
@@ -4590,81 +4780,81 @@ c$AEF0 LD B,A        ;
 
 ; Check Active Scenic Events
 ;
-; Used by the routines at #R$AF08 and #R$E99F.
-c$AEF7 JR $AEFA      ;
-*$AEF9 INC HL        ;
-*$AEFA LD A,(HL)     ;
- $AEFB CP $FF        ;
- $AEFD JR Z,$AF06    ;
- $AEFF CALL $AE6B    ;
- $AF02 JR NZ,$AEF9   ;
- $AF04 LD A,(HL)     ;
- $AF05 RET           ;
-*$AF06 AND A         ;
- $AF07 RET           ;
+; Used by the routines at #R$AF08 and #R$E9D0.
+c$AEF7 JR $AEFA      ; Jump to #R$AEFA.
+*$AEF9 INC HL        ; Increment #REGhl by one.
+*$AEFA LD A,(HL)     ; #REGa=*#REGhl.
+ $AEFB CP $FF        ; Compare #REGa with #N$FF.
+ $AEFD JR Z,$AF06    ; Jump to #R$AF06 if #REGa is equal to #N$FF.
+ $AEFF CALL $AE6B    ; Call #R$AE6B.
+ $AF02 JR NZ,$AEF9   ; Jump to #R$AEF9 if #REGa is not equal to #N$FF.
+ $AF04 LD A,(HL)     ; #REGa=*#REGhl.
+ $AF05 RET           ; Return.
+*$AF06 AND A         ; Set flags.
+ $AF07 RET           ; Return.
 
 ; Routine at AF08
 ;
 ; Used by the routines at #R$AB0A, #R$AEE0, #R$AEE7, #R$AEF0, #R$AF1E, #R$AFEB
-; and #R$E99F.
-c$AF08 LD HL,$A66C   ;
- $AF0B LD D,$00      ;
- $AF0D LD E,B        ;
- $AF0E ADD HL,DE     ;
- $AF0F LD (HL),C     ;
- $AF10 RET           ;
- $AF11 LD B,$00      ;
- $AF13 JR $AF17      ;
-*$AF15 INC B         ;
- $AF16 INC HL        ;
-*$AF17 CALL $AEF7    ;
- $AF1A JR Z,$AF15    ;
- $AF1C LD A,B        ;
- $AF1D RET           ;
+; and #R$E9D0.
+c$AF08 LD HL,$A66C   ; #REGhl=#R$A66C.
+ $AF0B LD D,$00      ; #REGd=#N$00.
+ $AF0D LD E,B        ; #REGe=#REGb.
+ $AF0E ADD HL,DE     ; #REGhl+=#REGde.
+ $AF0F LD (HL),C     ; Write #REGc to *#REGhl.
+ $AF10 RET           ; Return.
+ $AF11 LD B,$00      ; #REGb=#N$00.
+ $AF13 JR $AF17      ; Jump to #R$AF17.
+*$AF15 INC B         ; Increment #REGb by one.
+ $AF16 INC HL        ; Increment #REGhl by one.
+*$AF17 CALL $AEF7    ; Call #R$AEF7.
+ $AF1A JR Z,$AF15    ; Jump to #R$AF15 if #REGhl is equal to #REGa.
+ $AF1C LD A,B        ; #REGa=#REGb.
+ $AF1D RET           ; Return.
 
 ; Transform Item
 ;
-; Used by the routine at #R$E99F.
-c$AF1E LD A,B        ;
- $AF1F CALL $AED1    ;
- $AF22 PUSH BC       ;
- $AF23 PUSH AF       ;
- $AF24 LD C,$00      ;
- $AF26 CALL $AF08    ;
- $AF29 POP AF        ;
- $AF2A POP BC        ;
- $AF2B LD B,C        ;
- $AF2C LD C,A        ;
- $AF2D CALL $AF08    ;
- $AF30 RET           ;
+; Used by the routine at #R$E9D0.
+c$AF1E LD A,B        ; #REGa=#REGb.
+ $AF1F CALL $AED1    ; Call #R$AED1.
+ $AF22 PUSH BC       ; {Stash #REGbc and #REGaf on the stack.
+ $AF23 PUSH AF       ; }
+ $AF24 LD C,$00      ; #REGc=#N$00.
+ $AF26 CALL $AF08    ; Call #R$AF08.
+ $AF29 POP AF        ; {Restore #REGaf and #REGbc from the stack.
+ $AF2A POP BC        ; }
+ $AF2B LD B,C        ; #REGb=#REGc.
+ $AF2C LD C,A        ; #REGc=#REGa.
+ $AF2D CALL $AF08    ; Call #R$AF08.
+ $AF30 RET           ; Return.
 
 ; Routine at AF31
-c$AF31 CALL $AED1    ;
- $AF34 LD HL,$A7C3   ;
- $AF37 CP (HL)       ;
- $AF38 RET           ;
+c$AF31 CALL $AED1    ; Call #R$AED1.
+ $AF34 LD HL,$A7C3   ; {Compare #REGa with *#R$A7C3.
+ $AF37 CP (HL)       ; }
+ $AF38 RET           ; Return.
 
 ; Check Room Objects
 ;
 ; Used by the routine at #R$AC02.
-c$AF39 LD HL,$A66C   ;
- $AF3C LD BC,($A7E6) ;
-*$AF40 CPIR          ;
- $AF42 RET NZ        ;
- $AF43 PUSH HL       ;
- $AF44 CALL $AF56    ;
- $AF47 POP HL        ;
- $AF48 JR NZ,$AF54   ;
- $AF4A LD E,A        ;
- $AF4B LD A,B        ;
- $AF4C OR C          ;
- $AF4D LD A,E        ;
- $AF4E JR NZ,$AF40   ;
- $AF50 LD A,$01      ;
- $AF52 AND A         ;
- $AF53 RET           ;
-*$AF54 XOR A         ;
- $AF55 RET           ;
+c$AF39 LD HL,$A66C   ; #REGhl=#R$A66C.
+ $AF3C LD BC,($A7E6) ; #REGbc=*#R$A7E6.
+*$AF40 CPIR          ; CPIR.
+ $AF42 RET NZ        ; Return if #REGa is not equal to *#REGhl.
+ $AF43 PUSH HL       ; Stash #REGhl on the stack.
+ $AF44 CALL $AF56    ; Call #R$AF56.
+ $AF47 POP HL        ; Restore #REGhl from the stack.
+ $AF48 JR NZ,$AF54   ; Jump to #R$AF54 if #REGa is not equal to *#REGhl.
+ $AF4A LD E,A        ; #REGe=#REGa.
+ $AF4B LD A,B        ; #REGa=#REGb.
+ $AF4C OR C          ; Set the bits from #REGc.
+ $AF4D LD A,E        ; #REGa=#REGe.
+ $AF4E JR NZ,$AF40   ; Jump to #R$AF40 if #REGa is not equal to #REGc.
+ $AF50 LD A,$01      ; #REGa=#N$01.
+ $AF52 AND A         ; Set flags.
+ $AF53 RET           ; Return.
+*$AF54 XOR A         ; #REGa=#N$00.
+ $AF55 RET           ; Return.
 
 ; Validate Object
 ;
@@ -4695,7 +4885,7 @@ c$AF56 PUSH AF       ; {Stash #REGaf and #REGbc on the stack.
 
 ; Parser: Validate No Direct Object
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 c$AF70 LD A,($A825)  ;
  $AF73 CP $FF        ;
  $AF75 RET Z         ;
@@ -4705,7 +4895,7 @@ c$AF70 LD A,($A825)  ;
 
 ; Parser: Validate Direct Object
 ;
-; Used by the routines at #R$AF9F and #R$E99F.
+; Used by the routines at #R$AF9F and #R$E9D0.
 c$AF7B LD A,($A825)  ;
  $AF7E CP $FF        ;
  $AF80 JR NZ,$AF87   ;
@@ -4730,7 +4920,7 @@ c$AF90 LD A,($A825)  ;
 
 ; Routine at AF9F
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 c$AF9F CALL $AF7B    ;
  $AFA2 RET C         ;
  $AFA3 CP $01        ;
@@ -4748,7 +4938,7 @@ c$AF9F CALL $AF7B    ;
 
 ; Routine at AFB7
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 c$AFB7 LD A,($A825)  ;
  $AFBA CP $FF        ;
  $AFBC JR NZ,$AFC3   ;
@@ -4810,7 +5000,7 @@ c$AFEB LD A,($A7EE)  ;
  $B018 LD BC,($A83D) ;
 *$B01C DJNZ $AFF6    ;
  $B01E RET           ;
-; This entry point is used by the routine at #R$E99F.
+; This entry point is used by the routine at #R$E9D0.
 *$B01F LD C,A        ;
  $B020 LD A,($A7EE)  ;
  $B023 AND A         ;
@@ -4852,7 +5042,7 @@ c$AFEB LD A,($A7EE)  ;
 
 ; Routine at B05E
 ;
-; Used by the routine at #R$E99F.
+; Used by the routines at #R$E99F and #R$E9D0.
 c$B05E LD HL,($A7E0) ;
  $B061 LD BC,($A7EA) ;
  $B065 LD A,($A824)  ;
@@ -4871,7 +5061,7 @@ c$B05E LD HL,($A7E0) ;
 
 ; Pause, Print String And Scroll
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 c$B081 LD B,$19      ;
  $B083 CALL $A5C2    ;
  $B086 CALL $A592    ;
@@ -4879,7 +5069,7 @@ c$B081 LD B,$19      ;
 
 ; Generate Random Number
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 c$B08A PUSH BC       ;
  $B08B LD C,A        ;
  $B08C CALL $A5C6    ;
@@ -4895,7 +5085,7 @@ c$B08A PUSH BC       ;
 
 ; Routine at B09A
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 c$B09A PUSH HL       ;
  $B09B LD HL,($A7C4) ;
  $B09E ADD A,L       ;
@@ -4909,7 +5099,7 @@ c$B09A PUSH HL       ;
 
 ; Routine at B0A9
 ;
-; Used by the routine at #R$E99F.
+; Used by the routines at #R$E9B2 and #R$E9D0.
 c$B0A9 LD HL,$AACE   ;
  $B0AC CALL $A585    ;
  $B0AF LD HL,($A7C4) ;
@@ -4941,7 +5131,7 @@ c$B0A9 LD HL,$AACE   ;
 
 ; Routine at B0DE
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 c$B0DE PUSH HL       ;
  $B0DF POP IX        ;
 *$B0E1 LD L,(IX+$00) ;
@@ -5016,94 +5206,1059 @@ c$B10B PUSH IX       ;
 @label=GameStart_Alias
 c$B14A JP $FCCE      ; Jump to #R$FCCE.
 
-; Message at B14D
-t$B14D DEFM "The Roman,camped.",$FF,"The captured Roman.",$FF,"The body of the Roman.",$FF,"The "
- $B18E DEFM "body of a Fomorian.",$FF,"The Fomorian tribe.",$0D,"They are trying to surrou"
- $B1CF DEFM "nd you.",$FF,"Many Fomorian bodies.",$FF,"A great fire burns in the centre",$0D,"of"
- $B210 DEFM " the cavern.",$FF,"The flickering flames cast",$0D,"menacing,distorted shadow"
- $B251 DEFM "s of",$0D,"the Fomorian warriors,on the",$0D,"cavern walls.",$FF,"A hare,caught by "
- $B292 DEFM "the leg,in a",$0D,"trap.It struggles pitifully.",$FF,"A deep pool of water.",$FF,"S"
- $B2D3 DEFM "ome salt.",$FF,"A clay pot.",$FF,"Some acorns.",$FF,"An urn.",$FF,"A raven,perched on the"
- $B314 DEFM " root of",$0D,"a large tree.",$FF,"A bronze helmet.",$FF,"A bronze helmet,which you"
- $B355 DEFM " are",$0D,"wearing.",$FF,"A fine chariot,belonging to the",$0D,"deceased.",$0D,"The body "
- $B396 DEFM "is not present.",$FF,"Some food.",$FF,"Some iron.",$FF,"A mighty stone monolith",$0D,"sta"
- $B3D7 DEFM "nding like a lone sentinel.",$FF,"An armed warrior.",$0D,"He bars your path a"
- $B418 DEFM "nd says:-",$0D,"\"You may not pass,stranger.\"",$FF,"An armed warrior.",$0D,"He sees "
- $B459 DEFM "Lug's helmet and says:-",$0D,"\"Welcome Warlord,pass freely.\"",$0D,"He then le"
- $B49A DEFM "aves.",$FF,"A multitude of shadow-like",$0D,"demons produce a whispering",$0D,"caco"
- $B4DB DEFM "phony so intense,that you",$0D,"cannot go further South.",$FF,"The vale is st"
- $B51C DEFM "rangely silent.",$FF,"A small hut,to the South.",$FF,"A vase.",$FF,"A hut,to the No"
- $B55D DEFM "rth.",$FF,"A cavern,to the West.",$FF,"A cavern,to the East.",$FF,"A cavern,to the "
- $B59E DEFM "South.",$FF,"A sword.",$FF,"Some meat.",$FF,"A human skull.",$FF,"A trader,selling some m"
- $B5DF DEFM "eat.",$FF,"A young woman.",$FF,"A pack of wolves.",$0D,"They are ready to attack.",$FF,"F"
- $B620 DEFM "ire protects the western exit.",$FF,"A bear.",$FF,"A dead bear.",$FF,"A guard at th"
- $B661 DEFM "e entrance.",$0D,"He denies you access.",$FF,"A druid.He wears an amulet",$0D,"abou"
- $B6A2 DEFM "t his neck.",$FF,"An amulet.",$FF,"An amulet,which you are wearing.",$FF,"A ring of"
- $B6E3 DEFM " crystals,set into the",$0D,"cavern floor.",$FF,"A ring of crystals,set into "
- $B724 DEFM "the",$0D,"ground.",$FF,"A pig.",$FF,"A dead pig.",$FF,"A piece of rope.",$FF,"A wild ox,tethere"
- $B765 DEFM "d to the pen by",$0D,"a length of rope.",$FF,"A dead ox,tethered by a piece o"
- $B7A6 DEFM "f",$0D,"rope.",$FF,"A dead ox.",$FF,"A cloak,which you are wearing.",$FF,"A shield.",$FF,"Fire "
- $B7E7 DEFM "protects the eastern exit.",$FF,"A stone slab,the source of a",$0D,"shimmerin"
- $B828 DEFM "g blue light.",$FF,"A shimmering stone slab with a",$0D,"sword laying upon it"
- $B869 DEFM ".",$FF,"A ladder.",$FF,"A ladder,on the floor below.",$FF,"A ladder,leading down.",$FF,"T"
- $B8AA DEFM "he wooden platform,above you,",$0D,"at the inner wall entrance.",$FF,"A ladde"
- $B8EB DEFM "r,leading upward.",$FF,"A pile of straw on the floor,",$0D,"some way below.",$FF,"S"
- $B92C DEFM "ome straw.",$FF,"A staff.",$FF,"The body of a young man,in a",$0D,"white cloak,trap"
- $B96D DEFM "ped by charred,",$0D,"fallen timbers.",$FF,"The body of a young man,trapped",$0D,"b"
- $B9AE DEFM "y charred,fallen timbers.",$FF,"A white cloak.",$FF,"Some silver.",$FF,"An open pit"
- $B9EF DEFM ",below.",$FF,"A torc.",$FF,"A torc,which you are wearing.",$FF,"A dead hare,caught "
- $BA30 DEFM "in a trap.",$FF,"The body of the Roman,",$0D,"tied at the wrists.",$FF,"the Roman",$FF,"a"
- $BA71 DEFM " Fomorian",$FF,"a boar",$FF,"any rats",$FF,"a hare",$FF,"a trap",$FF,"a pool",$FF,"any salt",$FF,"a pot",$FF,"any"
- $BAB2 DEFM " acorns",$FF,"an urn",$FF,"a torc",$FF,"a raven",$FF,"a helmet",$FF,"any food",$FF,"any iron",$FF,"a monoli"
- $BAF3 DEFM "th",$FF,"a fissure",$FF,"a warrior",$FF,"any demons",$FF,"a hut",$FF,"a vase",$FF,"a cavern",$FF,"a sword",$FF,"a"
- $BB34 DEFM "ny meat",$FF,"a trader",$FF,"a woman",$FF,"any wolves",$FF,"a bear",$FF,"a guard",$FF,"a druid",$FF,"an amu"
- $BB75 DEFM "let",$FF,"a ring",$FF,"a pig",$FF,"any rope",$FF,"an ox",$FF,"a skull",$FF,"a dhield",$FF,"a fire",$FF,"a pit",$FF,"a l"
- $BBB6 DEFM "adder",$FF,"any straw",$FF,"a staff",$FF,"a body",$FF,"a cloak",$FF,"any silver",$FF,"a platform",$FF,"any "
- $BBF7 DEFM "water",$FF,"Lug",$FF,"Danu",$FF,"Minerva",$FF,"a chariot",$FF,"a slab",$FF,"a groove",$FF,"the lake",$FF,"a hillf"
- $BC38 DEFM "ort",$FF,"a broch",$FF,"A Wooded Vale.",$0D,"At the foot of a mountain.",$FF,"A Wooded Pa"
- $BC79 DEFM "th.",$FF,"The Sea Cavern.",$FF,"The Rocky Beach.",$FF,"The Evaporation Pits.",$0D,"Large "
- $BCBA DEFM "channels trap the sea",$0D,"water to be evaporated by the",$0D,"hot sun.",$FF,"The "
- $BCFB DEFM "Deserted Farm.",$0D,"Huts lay derelict and abandoned.",$FF,"Mount Badon.",$0D,"The "
- $BD3C DEFM "inaccessible summit looms",$0D,"high above you.",$FF,"A grassy Slope.",$FF,"The Val"
- $BD7D DEFM "e of Kells.",$0D,"Sunlight filters through the",$0D,"leafy canopy made by anc"
- $BDBE DEFM "ient,",$0D,"towering oak trees.",$FF,"In a Deep Pool of Water.",$0D,"Inside the Sea"
- $BDFF DEFM " Cavern.",$0D,"You tread water vigorously to",$0D,"ward off the chill.",$FF,"A Narr"
- $BE40 DEFM "ow Underwater Passage.",$0D,"You are totally submerged.",$FF,"The Cliffs.",$0D,"Ove"
- $BE81 DEFM "rlooking the Sea.",$FF,"A Farm Track.",$FF,"The Shrine of the Nemed.",$0D,"A single"
- $BEC2 DEFM " shaft of light from",$0D,"above,pierces the inky darkness.",$FF,"A Mountain "
- $BF03 DEFM "Slope.",$FF,"A Woodland Path.",$FF,"Dense Woodland.",$0D,"The undergrowth forms a s"
- $BF44 DEFM "oft",$0D,"carpet beneath your feet.",$FF,"Lug's Cavern.",$0D,"The home of the might"
- $BF85 DEFM "y god.",$FF,"In a Deep Pool.",$0D,"Inside Lug's cavern.",$FF,"The Chalk Path.",$FF,"The B"
- $BFC6 DEFM "urial Pit.",$0D,"The grave of an elder.",$FF,"Bleak Moorland.",$FF,"Inside the Fiss"
- $C007 DEFM "ure.",$FF,"A Mountain Path.",$FF,"The Causeway.",$0D,"A narrow bridge of rock.",$FF,"The "
- $C048 DEFM "Rocky Path.",$FF,"A Narrow Path.",$FF,"The Vale of Rhia.",$FF,"The Burial Ground.",$FF,"T"
- $C089 DEFM "he Vale of Whispers.",$FF,"Cadwell Ridge.",$FF,"The Bridon Road.",$FF,"The Village "
- $C0CA DEFM "of Bridon.",$0D,"There are many people here.",$FF,"Inside the Hut.",$FF,"The Swamp."
- $C10B DEFM $0D,"Sodden paths lead off in all",$0D,"directions.",$FF,"In an Oozing Quagmire.",$0D
- $C14C DEFM "You are sinking into it....",$FF,"The Forest Edge.",$FF,"The Cadwell Road.",$FF,"Th"
- $C18D DEFM "e Lake.",$0D,"The grassy bank dips gently",$0D,"into the slowly shifting wate"
- $C1CE DEFM "r.",$FF,"A small Clearing.",$FF,"A Forest Path.",$FF,"The Deserted Broch.",$0D,"A wide to"
- $C20F DEFM "wer surrounded by an",$0D,"outer wall of fused rock.",$0D,"The entrance lays "
- $C250 DEFM "to the East.",$FF,"The Western Approach.",$FF,"The Cadwell Hillfort.",$0D,"The entr"
- $C291 DEFM "ance lays to the North.",$FF,"The Eastern Approach.",$FF,"A Grassy Plain.",$0D,"To "
- $C2D2 DEFM "the South lays a forest.",$FF,"The Circle of Stones.",$0D,"A ring of towering"
- $C313 DEFM " granite",$0D,"columns encircles you.",$FF,"A Narrow Gorge.",$FF,"Inside a Rock Cav"
- $C354 DEFM "ern.",$FF,"The Crystal Cavern.",$FF,"The Chieftain's Chamber.",$FF,"The Storage Cha"
- $C395 DEFM "mber.",$FF,"The Inner Courtyard.",$FF,"The Druid's Chamber.",$FF,"An Animal Pen.",$FF,"Th"
- $C3D6 DEFM "e Main Courtyard.",$FF,"The Vale of Shadows.",$FF,"The Enchanted Hills.",$FF,"The R"
- $C417 DEFM "uins of Mag Gerin.",$0D,"This once thriving settlement",$0D,"now lays deserte"
- $C458 DEFM "d.",$FF,"The Fomorians' Cavern.",$FF,"The Mag Gerin Road.",$FF,"The Danaan Settleme"
- $C499 DEFM "nt.",$0D,"Home of the people of the",$0D,"goddess,Danu.",$FF,"The Danaan Valley.",$FF,"Th"
- $C4DA DEFM "e Twisted Forest.",$0D,"The trees are hideously deformed",$0D,"by an evil,mal"
- $C51B DEFM "ignant presence.",$FF,"Congratulations!!",$0D,"You have completed your quest",$0D
- $C55C DEFM "and safely returned to the real",$0D,"world.",$0D,"The Roman gods reluctantly"
- $C59D DEFM " agree",$0D,"that the legions will advance",$0D,"no further North and that a "
- $C5DE DEFM "wall",$0D,"would be built to mark the limit",$0D,"of their territory.",$FF,"The Val"
- $C61F DEFM "e of Cuchulainn.",$FF,"A Guard Chamber.",$FF,"The Entrance Passage.",$FF,"The Outer"
- $C660 DEFM " Courtyard.",$FF,"A Muddy Passage.",$FF,"The Entrance to the Inner Wall.",$FF,"Insi"
- $C6A1 DEFM "de the Inner Wall Entrance.",$FF,"The Northern Chamber.",$FF,"The Western Cha"
- $C6E2 DEFM "mber.",$FF,"The Eastern Chamber.",$0D,"Almost totally gutted by fire.",$FF,"The Sou"
- $C723 DEFM "thern Chamber.",$FF
+; Messaging: "The Roman"
+@label=Messaging_TheRoman
+t$B14D DEFM "The Roman,camped." ; "#STR$B14D,$08($b==$FF)".
+ $B15E DEFB $FF                 ; Terminator.
+
+; Messaging: "The Captured Roman"
+@label=Messaging_TheCapturedRoman
+t$B15F DEFM "The captured Roman." ; "#STR$B15F,$08($b==$FF)".
+ $B172 DEFB $FF                   ; Terminator.
+
+; Messaging: "The Body Of The Roman"
+@label=Messaging_TheBodyOfTheRoman
+t$B173 DEFM "The body of the Roman." ; "#STR$B173,$08($b==$FF)".
+ $B189 DEFB $FF                      ; Terminator.
+
+; Messaging: "The Body Of A Fomorian"
+@label=Messaging_BodyOfAFomorian
+t$B18A DEFM "The body of a Fomorian." ; "#STR$B18A,$08($b==$FF)".
+ $B1A1 DEFB $FF                       ; Terminator.
+
+; Messaging: "The Fomorian Tribe"
+@label=Messaging_FomorianTribe
+t$B1A2 DEFM "The Fomorian tribe.",$0D,"They are trying to surround you." ; "#STR$B1A2,$08($b==$FF)".
+ $B1D6 DEFB $FF                                                          ; Terminator.
+
+; Messaging: "Many Fomorian Bodies"
+@label=Messaging_ManyFomorianBodies
+t$B1D7 DEFM "Many Fomorian bodies." ; "#STR$B1D7,$08($b==$FF)".
+ $B1EC DEFB $FF                     ; Terminator.
+
+; Messaging: "A Great Fire Burns In The Centre Of The Cavern"
+@label=Messaging_GreatFireBurns
+t$B1ED DEFM "A great fire burns in the centre",$0D,"of the cavern." ; "#STR$B1ED,$08($b==$FF)".
+ $B21C DEFB $FF                                                     ; Terminator.
+
+; Messaging: "The Flickering Flames"
+@label=Messaging_FlickeringFlames
+t$B21D DEFM "The flickering flames cast",$0D,"menacing,distorted shadows of",$0D,"the Fomo" ; {"#STR$B21D,$08($b==$FF)".
+ $B25E DEFM "rian warriors,on the",$0D,"cavern walls."                                      ; }
+ $B280 DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "A Hare,caught By The Leg"
+@label=Messaging_HareCaughtByTheLeg
+t$B281 DEFM "A hare,caught by the leg,in a",$0D,"trap.It struggles pitifully." ; "#STR$B281,$08($b==$FF)".
+ $B2BB DEFB $FF                                                                ; Terminator.
+
+; Messaging: "A Deep Pool Of Water"
+@label=Messaging_DeepPoolOfWater
+t$B2BC DEFM "A deep pool of water." ; "#STR$B2BC,$08($b==$FF)".
+ $B2D1 DEFB $FF                     ; Terminator.
+
+; Messaging: "Some Salt"
+@label=Messaging_SomeSalt
+t$B2D2 DEFM "Some salt." ; "#STR$B2D2,$08($b==$FF)".
+ $B2DC DEFB $FF          ; Terminator.
+
+; Messaging: "A Clay Pot"
+@label=Messaging_ClayPot
+t$B2DD DEFM "A clay pot." ; "#STR$B2DD,$08($b==$FF)".
+ $B2E8 DEFB $FF           ; Terminator.
+
+; Messaging: "Some Acorns"
+@label=Messaging_SomeAcorns
+t$B2E9 DEFM "Some acorns." ; "#STR$B2E9,$08($b==$FF)".
+ $B2F5 DEFB $FF            ; Terminator.
+
+; Messaging: "An Urn"
+@label=Messaging_AnUrn
+t$B2F6 DEFM "An urn." ; "#STR$B2F6,$08($b==$FF)".
+ $B2FD DEFB $FF       ; Terminator.
+
+; Messaging: "A Raven"
+@label=Messaging_RavenOnRoof
+t$B2FE DEFM "A raven,perched on the root of",$0D,"a large tree." ; "#STR$B2FE,$08($b==$FF)".
+ $B32A DEFB $FF                                                  ; Terminator.
+
+; Messaging: "A Bronze Helmet"
+@label=Messaging_BronzeHelmet
+t$B32B DEFM "A bronze helmet." ; "#STR$B32B,$08($b==$FF)".
+ $B33B DEFB $FF                ; Terminator.
+
+; Messaging: "A Bronze Helmet,Which You Are Wearing"
+@label=Messaging_BronzeHelmetWorn
+t$B33C DEFM "A bronze helmet,which you are",$0D,"wearing." ; "#STR$B33C,$08($b==$FF)".
+ $B362 DEFB $FF                                            ; Terminator.
+
+; Messaging: "A Fine Chariot"
+@label=Messaging_FineChariot
+t$B363 DEFM "A fine chariot,belonging to the",$0D,"deceased.",$0D,"The body is not present" ; {"#STR$B363,$08($b==$FF)".
+ $B3A4 DEFM "."                                                                             ; }
+ $B3A5 DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "Some Food"
+@label=Messaging_SomeFood
+t$B3A6 DEFM "Some food." ; "#STR$B3A6,$08($b==$FF)".
+ $B3B0 DEFB $FF          ; Terminator.
+
+; Messaging: "Some Iron"
+@label=Messaging_SomeIron
+t$B3B1 DEFM "Some iron." ; "#STR$B3B1,$08($b==$FF)".
+ $B3BB DEFB $FF          ; Terminator.
+
+; Messaging: "A Mighty Stone Monolith"
+@label=Messaging_MightyStoneMonolith
+t$B3BC DEFM "A mighty stone monolith",$0D,"standing like a lone sentinel." ; "#STR$B3BC,$08($b==$FF)".
+ $B3F2 DEFB $FF                                                            ; Terminator.
+
+; Messaging: "An Armed Warrior.he Bars Your Path"
+@label=Messaging_AnArmedWarriorBarsYourPath
+t$B3F3 DEFM "An armed warrior.",$0D,"He bars your path and says:-",$0D,"\"You may not pass," ; {"#STR$B3F3,$08($b==$FF)".
+ $B434 DEFM "stranger.\""                                                                    ; }
+ $B43E DEFB $FF                                                                              ; Terminator.
+
+; Messaging: "An Armed Warrior.he Sees Lug's Helmet"
+@label=Messaging_AnArmedWarriorSeesLugsHelmet
+t$B43F DEFM "An armed warrior.",$0D,"He sees Lug's helmet and says:-",$0D,"\"Welcome Warlor" ; {"#STR$B43F,$08($b==$FF)".
+ $B480 DEFM "d,pass freely.\"",$0D,"He then leaves."                                         ; }
+ $B49F DEFB $FF                                                                              ; Terminator.
+
+; Messaging: "A Multitude Of Shadow-Like Demons"
+@label=Messaging_MultitudeOfShadowDemons
+t$B4A0 DEFM "A multitude of shadow-like",$0D,"demons produce a whispering",$0D,"cacophony " ; {"#STR$B4A0,$08($b==$FF)".
+ $B4E1 DEFM "so intense,that you",$0D,"cannot go further South."                            ; }
+ $B50D DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "The Vale Is Strangely Silent"
+@label=Messaging_ValeIsStrangelySilent
+t$B50E DEFM "The vale is strangely silent." ; "#STR$B50E,$08($b==$FF)".
+ $B52B DEFB $FF                             ; Terminator.
+
+; Messaging: "A Small Hut,To The South"
+@label=Messaging_SmallHut
+t$B52C DEFM "A small hut,to the South." ; "#STR$B52C,$08($b==$FF)".
+ $B545 DEFB $FF                         ; Terminator.
+
+; Messaging: "A Vase"
+@label=Messaging_Vase
+t$B546 DEFM "A vase." ; "#STR$B546,$08($b==$FF)".
+ $B54D DEFB $FF       ; Terminator.
+
+; Messaging: "A Hut,To The North"
+@label=Messaging_HutNorth
+t$B54E DEFM "A hut,to the North." ; "#STR$B54E,$08($b==$FF)".
+ $B561 DEFB $FF                   ; Terminator.
+
+; Messaging: "A Cavern,To The West"
+@label=Messaging_CavernWest
+t$B562 DEFM "A cavern,to the West." ; "#STR$B562,$08($b==$FF)".
+ $B577 DEFB $FF                     ; Terminator.
+
+; Messaging: "A Cavern,To The East"
+@label=Messaging_CavernEast
+t$B578 DEFM "A cavern,to the East." ; "#STR$B578,$08($b==$FF)".
+ $B58D DEFB $FF                     ; Terminator.
+
+; Messaging: "A Cavern,to The South"
+@label=Messaging_CavernSouth
+t$B58E DEFM "A cavern,to the South." ; "#STR$B58E,$08($b==$FF)".
+ $B5A4 DEFB $FF                      ; Terminator.
+
+; Messaging: "A Sword"
+@label=Messaging_Sword
+t$B5A5 DEFM "A sword." ; "#STR$B5A5,$08($b==$FF)".
+ $B5AD DEFB $FF        ; Terminator.
+
+; Messaging: "Some Meat"
+@label=Messaging_SomeMeat
+t$B5AE DEFM "Some meat." ; "#STR$B5AE,$08($b==$FF)".
+ $B5B8 DEFB $FF          ; Terminator.
+
+; Messaging: "A Human Skull"
+@label=Messaging_HumanSkull
+t$B5B9 DEFM "A human skull." ; "#STR$B5B9,$08($b==$FF)".
+ $B5C7 DEFB $FF              ; Terminator.
+
+; Messaging: "A Trader,Selling Some Meat"
+@label=Messaging_TraderSellingMeat
+t$B5C8 DEFM "A trader,selling some meat." ; "#STR$B5C8,$08($b==$FF)".
+ $B5E3 DEFB $FF                           ; Terminator.
+
+; Messaging: "A Young Woman"
+@label=Messaging_YoungWoman
+t$B5E4 DEFM "A young woman." ; "#STR$B5E4,$08($b==$FF)".
+ $B5F2 DEFB $FF              ; Terminator.
+
+; Messaging: "A Pack Of Wolves"
+@label=Messaging_PackOfWolves
+t$B5F3 DEFM "A pack of wolves.",$0D,"They are ready to attack." ; "#STR$B5F3,$08($b==$FF)".
+ $B61E DEFB $FF                                                 ; Terminator.
+
+; Messaging: "Fire Protects The Western Exit"
+@label=Messaging_FireProtectsTheWesternExit
+t$B61F DEFM "Fire protects the western exit." ; "#STR$B61F,$08($b==$FF)".
+ $B63E DEFB $FF                               ; Terminator.
+
+; Messaging: "A Bear"
+@label=Messaging_Bear
+t$B63F DEFM "A bear." ; "#STR$B63F,$08($b==$FF)".
+ $B646 DEFB $FF       ; Terminator.
+
+; Messaging: "A Dead Bear"
+@label=Messaging_DeadBear
+t$B647 DEFM "A dead bear." ; "#STR$B647,$08($b==$FF)".
+ $B653 DEFB $FF            ; Terminator.
+
+; Messaging: "A Guard At The Entrance"
+@label=Messaging_GuardAtEntrance
+t$B654 DEFM "A guard at the entrance.",$0D,"He denies you access." ; "#STR$B654,$08($b==$FF)".
+ $B682 DEFB $FF                                                    ; Terminator.
+
+; Messaging: "A Druid.He Wears An Amulet"
+@label=Messaging_DruidWearingAmulet
+t$B683 DEFM "A druid.He wears an amulet",$0D,"about his neck." ; "#STR$B683,$08($b==$FF)".
+ $B6AD DEFB $FF                                                ; Terminator.
+
+; Messaging: "An Amulet"
+@label=Messaging_AnAmulet
+t$B6AE DEFM "An amulet." ; "#STR$B6AE,$08($b==$FF)".
+ $B6B8 DEFB $FF          ; Terminator.
+
+; Messaging: "An Amulet,Which You Are Wearing"
+@label=Messaging_AnAmuletWorn
+t$B6B9 DEFM "An amulet,which you are wearing." ; "#STR$B6B9,$08($b==$FF)".
+ $B6D9 DEFB $FF                                ; Terminator.
+
+; Messaging: "A Ring Of Crystals"
+@label=Messaging_RingOfCrystals
+t$B6DA DEFM "A ring of crystals,set into the",$0D,"cavern floor." ; "#STR$B6DA,$08($b==$FF)".
+ $B707 DEFB $FF                                                   ; Terminator.
+
+; Messaging: "A Ring Of Crystals,Set Into The Ground"
+@label=Messaging_RingOfCrystalsInGround
+t$B708 DEFM "A ring of crystals,set into the",$0D,"ground." ; "#STR$B708,$08($b==$FF)".
+ $B72F DEFB $FF                                             ; Terminator.
+
+; Messaging: "A Pig"
+@label=Messaging_Pig
+t$B730 DEFM "A pig." ; "#STR$B730,$08($b==$FF)".
+ $B736 DEFB $FF      ; Terminator.
+
+; Messaging: "A Dead Pig"
+@label=Messaging_DeadPig
+t$B737 DEFM "A dead pig." ; "#STR$B737,$08($b==$FF)".
+ $B742 DEFB $FF           ; Terminator.
+
+; Messaging: "A Piece Of Rope"
+@label=Messaging_PieceOfRope
+t$B743 DEFM "A piece of rope." ; "#STR$B743,$08($b==$FF)".
+ $B753 DEFB $FF                ; Terminator.
+
+; Messaging: "A Wild Ox"
+@label=Messaging_WildOx
+t$B754 DEFM "A wild ox,tethered to the pen by",$0D,"a length of rope." ; "#STR$B754,$08($b==$FF)".
+ $B786 DEFB $FF                                                        ; Terminator.
+
+; Messaging: "A Dead Ox"
+@label=Messaging_TetheredDeadOx
+t$B787 DEFM "A dead ox,tethered by a piece of",$0D,"rope." ; "#STR$B787,$08($b==$FF)".
+ $B7AD DEFB $FF                                            ; Terminator.
+
+; Messaging: "A Dead Ox"
+@label=Messaging_DeadOx
+t$B7AE DEFM "A dead ox." ; "#STR$B7AE,$08($b==$FF)".
+ $B7B8 DEFB $FF          ; Terminator.
+
+; Messaging: "A Cloak,Which You Are Wearing"
+@label=Messaging_CloakWorn
+t$B7B9 DEFM "A cloak,which you are wearing." ; "#STR$B7B9,$08($b==$FF)".
+ $B7D7 DEFB $FF                              ; Terminator.
+
+; Messaging: "A Shield"
+@label=Messaging_Shield
+t$B7D8 DEFM "A shield." ; "#STR$B7D8,$08($b==$FF)".
+ $B7E1 DEFB $FF         ; Terminator.
+
+; Messaging: "Fire Protects The Eastern Exit"
+@label=Messaging_FireProtectsTheEasternExit
+t$B7E2 DEFM "Fire protects the eastern exit." ; "#STR$B7E2,$08($b==$FF)".
+ $B801 DEFB $FF                               ; Terminator.
+
+; Messaging: "A Stone Slab"
+@label=Messaging_StoneSlab
+t$B802 DEFM "A stone slab,the source of a",$0D,"shimmering blue light." ; "#STR$B802,$08($b==$FF)".
+ $B835 DEFB $FF                                                         ; Terminator.
+
+; Messaging: "A Shimmering Stone Slab"
+@label=Messaging_ShimmeringStoneSlab
+t$B836 DEFM "A shimmering stone slab with a",$0D,"sword laying upon it." ; "#STR$B836,$08($b==$FF)".
+ $B86A DEFB $FF                                                          ; Terminator.
+
+; Messaging: "A Ladder"
+@label=Messaging_Ladder
+t$B86B DEFM "A ladder." ; "#STR$B86B,$08($b==$FF)".
+ $B874 DEFB $FF         ; Terminator.
+
+; Messaging: "A Ladder,On The Floor Below"
+@label=Messaging_LadderOnFloor
+t$B875 DEFM "A ladder,on the floor below." ; "#STR$B875,$08($b==$FF)".
+ $B891 DEFB $FF                            ; Terminator.
+
+; Messaging: "A Ladder,Leading Down"
+@label=Messaging_LadderLeadingDown
+t$B892 DEFM "A ladder,leading down." ; "#STR$B892,$08($b==$FF)".
+ $B8A8 DEFB $FF                      ; Terminator.
+
+; Messaging: "The Wooden Platform"
+@label=Messaging_WoodenPlatform
+t$B8A9 DEFM "The wooden platform,above you,",$0D,"at the inner wall entrance." ; "#STR$B8A9,$08($b==$FF)".
+ $B8E3 DEFB $FF                                                                ; Terminator.
+
+; Messaging: "A Ladder,Leading Upward"
+@label=Messaging_LadderLeadingUpward
+t$B8E4 DEFM "A ladder,leading upward." ; "#STR$B8E4,$08($b==$FF)".
+ $B8FC DEFB $FF                        ; Terminator.
+
+; Messaging: "A Pile Of Straw"
+@label=Messaging_PileOfStraw
+t$B8FD DEFM "A pile of straw on the floor,",$0D,"some way below." ; "#STR$B8FD,$08($b==$FF)".
+ $B92A DEFB $FF                                                   ; Terminator.
+
+; Messaging: "Some Straw"
+@label=Messaging_SomeStraw
+t$B92B DEFM "Some straw." ; "#STR$B92B,$08($b==$FF)".
+ $B936 DEFB $FF           ; Terminator.
+
+; Messaging: "A Staff"
+@label=Messaging_Staff
+t$B937 DEFM "A staff." ; "#STR$B937,$08($b==$FF)".
+ $B93F DEFB $FF        ; Terminator.
+
+; Messaging: "The Body Of A Young Man"
+@label=Messaging_BodyOfYoungMan
+t$B940 DEFM "The body of a young man,in a",$0D,"white cloak,trapped by charred,",$0D,"fall" ; {"#STR$B940,$08($b==$FF)".
+ $B981 DEFM "en timbers."                                                                   ; }
+ $B98C DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "The Body Of A Young Man"
+@label=Messaging_BodyOfAYoungMan
+t$B98D DEFM "The body of a young man,trapped",$0D,"by charred,fallen timbers." ; "#STR$B98D,$08($b==$FF)".
+ $B9C7 DEFB $FF                                                                ; Terminator.
+
+; Messaging: "A White Cloak"
+@label=Messaging_WhiteCloak
+t$B9C8 DEFM "A white cloak." ; "#STR$B9C8,$08($b==$FF)".
+ $B9D6 DEFB $FF              ; Terminator.
+
+; Messaging: "Some Silver"
+@label=Messaging_SomeSilver
+t$B9D7 DEFM "Some silver." ; "#STR$B9D7,$08($b==$FF)".
+ $B9E3 DEFB $FF            ; Terminator.
+
+; Messaging: "An Open Pit,Below"
+@label=Messaging_OpenPitBelow
+t$B9E4 DEFM "An open pit,below." ; "#STR$B9E4,$08($b==$FF)".
+ $B9F6 DEFB $FF                  ; Terminator.
+
+; Messaging: "A Torc"
+@label=Messaging_Torc
+t$B9F7 DEFM "A torc." ; "#STR$B9F7,$08($b==$FF)".
+ $B9FE DEFB $FF       ; Terminator.
+
+; Messaging: "A Torc,Which You Are Wearing"
+@label=Messaging_TorcWorn
+t$B9FF DEFM "A torc,which you are wearing." ; "#STR$B9FF,$08($b==$FF)".
+ $BA1C DEFB $FF                             ; Terminator.
+
+; Messaging: "A Dead Hare"
+@label=Messaging_DeadHare
+t$BA1D DEFM "A dead hare,caught in a trap." ; "#STR$BA1D,$08($b==$FF)".
+ $BA3A DEFB $FF                             ; Terminator.
+
+; Messaging: "The Body Of The Roman"
+@label=Messaging_BodyOfRoman
+t$BA3B DEFM "The body of the Roman,",$0D,"tied at the wrists." ; "#STR$BA3B,$08($b==$FF)".
+ $BA65 DEFB $FF                                                ; Terminator.
+
+; Messaging: "The Roman"
+@label=Messaging_Roman
+t$BA66 DEFM "the Roman" ; "#STR$BA66,$08($b==$FF)".
+ $BA6F DEFB $FF         ; Terminator.
+
+; Messaging: "A Fomorian"
+@label=Messaging_Fomorian
+t$BA70 DEFM "a Fomorian" ; "#STR$BA70,$08($b==$FF)".
+ $BA7A DEFB $FF          ; Terminator.
+
+; Messaging: "A Boar"
+@label=Messaging_Boar
+t$BA7B DEFM "a boar" ; "#STR$BA7B,$08($b==$FF)".
+ $BA81 DEFB $FF      ; Terminator.
+
+; Messaging: "Any Rats"
+@label=Messaging_AnyRats
+t$BA82 DEFM "any rats" ; "#STR$BA82,$08($b==$FF)".
+ $BA8A DEFB $FF        ; Terminator.
+
+; Messaging: "A Hare"
+@label=Messaging_Hare
+t$BA8B DEFM "a hare" ; "#STR$BA8B,$08($b==$FF)".
+ $BA91 DEFB $FF      ; Terminator.
+
+; Messaging: "A Trap"
+@label=Messaging_Trap
+t$BA92 DEFM "a trap" ; "#STR$BA92,$08($b==$FF)".
+ $BA98 DEFB $FF      ; Terminator.
+
+; Messaging: "A Pool"
+@label=Messaging_Pool
+t$BA99 DEFM "a pool" ; "#STR$BA99,$08($b==$FF)".
+ $BA9F DEFB $FF      ; Terminator.
+
+; Messaging: "Any Salt"
+@label=Messaging_AnySalt
+t$BAA0 DEFM "any salt" ; "#STR$BAA0,$08($b==$FF)".
+ $BAA8 DEFB $FF        ; Terminator.
+
+; Messaging: "A Pot"
+@label=Messaging_Pot
+t$BAA9 DEFM "a pot"  ; "#STR$BAA9,$08($b==$FF)".
+ $BAAE DEFB $FF      ; Terminator.
+
+; Messaging: "Any Acorns"
+@label=Messaging_AnyAcorns
+t$BAAF DEFM "any acorns" ; "#STR$BAAF,$08($b==$FF)".
+ $BAB9 DEFB $FF          ; Terminator.
+
+; Messaging: "An Urn"
+@label=Messaging_Urn
+t$BABA DEFM "an urn" ; "#STR$BABA,$08($b==$FF)".
+ $BAC0 DEFB $FF      ; Terminator.
+
+; Messaging: "A Torc"
+@label=Messaging_Torc_Duplicate
+t$BAC1 DEFM "a torc" ; "#STR$BAC1,$08($b==$FF)".
+ $BAC7 DEFB $FF      ; Terminator.
+
+; Messaging: "A Raven"
+@label=Messaging_Raven
+t$BAC8 DEFM "a raven" ; "#STR$BAC8,$08($b==$FF)".
+ $BACF DEFB $FF       ; Terminator.
+
+; Messaging: "A Helmet"
+@label=Messaging_Helmet
+t$BAD0 DEFM "a helmet" ; "#STR$BAD0,$08($b==$FF)".
+ $BAD8 DEFB $FF        ; Terminator.
+
+; Messaging: "Any Food"
+@label=Messaging_AnyFood
+t$BAD9 DEFM "any food" ; "#STR$BAD9,$08($b==$FF)".
+ $BAE1 DEFB $FF        ; Terminator.
+
+; Messaging: "Any Iron"
+@label=Messaging_AnyIron
+t$BAE2 DEFM "any iron" ; "#STR$BAE2,$08($b==$FF)".
+ $BAEA DEFB $FF        ; Terminator.
+
+; Messaging: "A Monolith"
+@label=Messaging_Monolith
+t$BAEB DEFM "a monolith" ; "#STR$BAEB,$08($b==$FF)".
+ $BAF5 DEFB $FF          ; Terminator.
+
+; Messaging: "A Fissure"
+@label=Messaging_Fissure
+t$BAF6 DEFM "a fissure" ; "#STR$BAF6,$08($b==$FF)".
+ $BAFF DEFB $FF         ; Terminator.
+
+; Messaging: "A Warrior"
+@label=Messaging_Warrior
+t$BB00 DEFM "a warrior" ; "#STR$BB00,$08($b==$FF)".
+ $BB09 DEFB $FF         ; Terminator.
+
+; Messaging: "Any Demons"
+@label=Messaging_AnyDemons
+t$BB0A DEFM "any demons" ; "#STR$BB0A,$08($b==$FF)".
+ $BB14 DEFB $FF          ; Terminator.
+
+; Messaging: "A Hut"
+@label=Messaging_Hut
+t$BB15 DEFM "a hut"  ; "#STR$BB15,$08($b==$FF)".
+ $BB1A DEFB $FF      ; Terminator.
+
+; Messaging: "A Vase"
+@label=Messaging_Vase_Duplicate
+t$BB1B DEFM "a vase" ; "#STR$BB1B,$08($b==$FF)".
+ $BB21 DEFB $FF      ; Terminator.
+
+; Messaging: "A Cavern"
+@label=Messaging_Cavern
+t$BB22 DEFM "a cavern" ; "#STR$BB22,$08($b==$FF)".
+ $BB2A DEFB $FF        ; Terminator.
+
+; Messaging: "A Sword"
+@label=Messaging_Sword_Duplicate
+t$BB2B DEFM "a sword" ; "#STR$BB2B,$08($b==$FF)".
+ $BB32 DEFB $FF       ; Terminator.
+
+; Messaging: "Any Meat"
+@label=Messaging_AnyMeat
+t$BB33 DEFM "any meat" ; "#STR$BB33,$08($b==$FF)".
+ $BB3B DEFB $FF        ; Terminator.
+
+; Messaging: "A Trader"
+@label=Messaging_Trader
+t$BB3C DEFM "a trader" ; "#STR$BB3C,$08($b==$FF)".
+ $BB44 DEFB $FF        ; Terminator.
+
+; Messaging: "A Woman"
+@label=Messaging_Woman
+t$BB45 DEFM "a woman" ; "#STR$BB45,$08($b==$FF)".
+ $BB4C DEFB $FF       ; Terminator.
+
+; Messaging: "Any Wolves"
+@label=Messaging_AnyWolves
+t$BB4D DEFM "any wolves" ; "#STR$BB4D,$08($b==$FF)".
+ $BB57 DEFB $FF          ; Terminator.
+
+; Messaging: "A Bear"
+@label=Messaging_Bear_Duplicate
+t$BB58 DEFM "a bear" ; "#STR$BB58,$08($b==$FF)".
+ $BB5E DEFB $FF      ; Terminator.
+
+; Messaging: "A Guard"
+@label=Messaging_Guard
+t$BB5F DEFM "a guard" ; "#STR$BB5F,$08($b==$FF)".
+ $BB66 DEFB $FF       ; Terminator.
+
+; Messaging: "A Druid"
+@label=Messaging_Druid
+t$BB67 DEFM "a druid" ; "#STR$BB67,$08($b==$FF)".
+ $BB6E DEFB $FF       ; Terminator.
+
+; Messaging: "An Amulet"
+@label=Messaging_Amulet
+t$BB6F DEFM "an amulet" ; "#STR$BB6F,$08($b==$FF)".
+ $BB78 DEFB $FF         ; Terminator.
+
+; Messaging: "A Ring"
+@label=Messaging_Ring
+t$BB79 DEFM "a ring" ; "#STR$BB79,$08($b==$FF)".
+ $BB7F DEFB $FF      ; Terminator.
+
+; Messaging: "A Pig"
+@label=Messaging_Pig_Duplicate
+t$BB80 DEFM "a pig"  ; "#STR$BB80,$08($b==$FF)".
+ $BB85 DEFB $FF      ; Terminator.
+
+; Messaging: "Any Rope"
+@label=Messaging_AnyRope
+t$BB86 DEFM "any rope" ; "#STR$BB86,$08($b==$FF)".
+ $BB8E DEFB $FF        ; Terminator.
+
+; Messaging: "An Ox"
+@label=Messaging_AnOx
+t$BB8F DEFM "an ox"  ; "#STR$BB8F,$08($b==$FF)".
+ $BB94 DEFB $FF      ; Terminator.
+
+; Messaging: "A Skull"
+@label=Messaging_Skull
+t$BB95 DEFM "a skull" ; "#STR$BB95,$08($b==$FF)".
+ $BB9C DEFB $FF       ; Terminator.
+
+; Messaging: "A Dhield"
+@label=Messaging_Dhield
+t$BB9D DEFM "a dhield" ; "#STR$BB9D,$08($b==$FF)".
+ $BBA5 DEFB $FF        ; Terminator.
+
+; Messaging: "A Fire"
+@label=Messaging_Fire
+t$BBA6 DEFM "a fire" ; "#STR$BBA6,$08($b==$FF)".
+ $BBAC DEFB $FF      ; Terminator.
+
+; Messaging: "A Pit"
+@label=Messaging_Pit
+t$BBAD DEFM "a pit"  ; "#STR$BBAD,$08($b==$FF)".
+ $BBB2 DEFB $FF      ; Terminator.
+
+; Messaging: "A Ladder"
+@label=Messaging_Ladder_Duplicate
+t$BBB3 DEFM "a ladder" ; "#STR$BBB3,$08($b==$FF)".
+ $BBBB DEFB $FF        ; Terminator.
+
+; Messaging: "Any Straw"
+@label=Messaging_AnyStraw
+t$BBBC DEFM "any straw" ; "#STR$BBBC,$08($b==$FF)".
+ $BBC5 DEFB $FF         ; Terminator.
+
+; Messaging: "A Staff"
+@label=Messaging_Staff_Duplicate
+t$BBC6 DEFM "a staff" ; "#STR$BBC6,$08($b==$FF)".
+ $BBCD DEFB $FF       ; Terminator.
+
+; Messaging: "A Body"
+@label=Messaging_Body
+t$BBCE DEFM "a body" ; "#STR$BBCE,$08($b==$FF)".
+ $BBD4 DEFB $FF      ; Terminator.
+
+; Messaging: "A Cloak"
+@label=Messaging_Cloak
+t$BBD5 DEFM "a cloak" ; "#STR$BBD5,$08($b==$FF)".
+ $BBDC DEFB $FF       ; Terminator.
+
+; Messaging: "Any Silver"
+@label=Messaging_AnySilver
+t$BBDD DEFM "any silver" ; "#STR$BBDD,$08($b==$FF)".
+ $BBE7 DEFB $FF          ; Terminator.
+
+; Messaging: "A Platform"
+@label=Messaging_Platform
+t$BBE8 DEFM "a platform" ; "#STR$BBE8,$08($b==$FF)".
+ $BBF2 DEFB $FF          ; Terminator.
+
+; Messaging: "Any Water"
+@label=Messaging_AnyWater
+t$BBF3 DEFM "any water" ; "#STR$BBF3,$08($b==$FF)".
+ $BBFC DEFB $FF         ; Terminator.
+
+; Messaging: "Lug"
+@label=Messaging_Lug
+t$BBFD DEFM "Lug"    ; "#STR$BBFD,$08($b==$FF)".
+ $BC00 DEFB $FF      ; Terminator.
+
+; Messaging: "Danu"
+@label=Messaging_Danu
+t$BC01 DEFM "Danu"   ; "#STR$BC01,$08($b==$FF)".
+ $BC05 DEFB $FF      ; Terminator.
+
+; Messaging: "Minerva"
+@label=Messaging_Minerva
+t$BC06 DEFM "Minerva" ; "#STR$BC06,$08($b==$FF)".
+ $BC0D DEFB $FF       ; Terminator.
+
+; Messaging: "A Chariot"
+@label=Messaging_Chariot
+t$BC0E DEFM "a chariot" ; "#STR$BC0E,$08($b==$FF)".
+ $BC17 DEFB $FF         ; Terminator.
+
+; Messaging: "A Slab"
+@label=Messaging_Slab
+t$BC18 DEFM "a slab" ; "#STR$BC18,$08($b==$FF)".
+ $BC1E DEFB $FF      ; Terminator.
+
+; Messaging: "A Groove"
+@label=Messaging_Groove
+t$BC1F DEFM "a groove" ; "#STR$BC1F,$08($b==$FF)".
+ $BC27 DEFB $FF        ; Terminator.
+
+; Messaging: "The Lake"
+@label=Messaging_Lake
+t$BC28 DEFM "the lake" ; "#STR$BC28,$08($b==$FF)".
+ $BC30 DEFB $FF        ; Terminator.
+
+; Messaging: "A Hillfort"
+@label=Messaging_Hillfort
+t$BC31 DEFM "a hillfort" ; "#STR$BC31,$08($b==$FF)".
+ $BC3B DEFB $FF          ; Terminator.
+
+; Messaging: "A Broch"
+@label=Messaging_Broch
+t$BC3C DEFM "a broch" ; "#STR$BC3C,$08($b==$FF)".
+ $BC43 DEFB $FF       ; Terminator.
+
+; Messaging: "A Wooded Vale"
+@label=Messaging_WoodedVale
+t$BC44 DEFM "A Wooded Vale.",$0D,"At the foot of a mountain." ; "#STR$BC44,$08($b==$FF)".
+ $BC6D DEFB $FF                                               ; Terminator.
+
+; Messaging: "A Wooded Path"
+@label=Messaging_WoodedPath
+t$BC6E DEFM "A Wooded Path." ; "#STR$BC6E,$08($b==$FF)".
+ $BC7C DEFB $FF              ; Terminator.
+
+; Messaging: "The Sea Cavern"
+@label=Messaging_SeaCavern
+t$BC7D DEFM "The Sea Cavern." ; "#STR$BC7D,$08($b==$FF)".
+ $BC8C DEFB $FF               ; Terminator.
+
+; Messaging: "The Rocky Beach"
+@label=Messaging_RockyBeach
+t$BC8D DEFM "The Rocky Beach." ; "#STR$BC8D,$08($b==$FF)".
+ $BC9D DEFB $FF                ; Terminator.
+
+; Messaging: "The Evaporation Pits"
+@label=Messaging_EvaporationPits
+t$BC9E DEFM "The Evaporation Pits.",$0D,"Large channels trap the sea",$0D,"water to be eva" ; {"#STR$BC9E,$08($b==$FF)".
+ $BCDF DEFM "porated by the",$0D,"hot sun."                                                 ; }
+ $BCF6 DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "The Deserted Farm"
+@label=Messaging_DesertedFarm
+t$BCF7 DEFM "The Deserted Farm.",$0D,"Huts lay derelict and abandoned." ; "#STR$BCF7,$08($b==$FF)".
+ $BD2A DEFB $FF                                                         ; Terminator.
+
+; Messaging: "Mount Badon"
+@label=Messaging_MountBadon
+t$BD2B DEFM "Mount Badon.",$0D,"The inaccessible summit looms",$0D,"high above you." ; "#STR$BD2B,$08($b==$FF)".
+ $BD65 DEFB $FF                                                                      ; Terminator.
+
+; Messaging: "A Grassy Slope"
+@label=Messaging_GrassySlope
+t$BD66 DEFM "A grassy Slope." ; "#STR$BD66,$08($b==$FF)".
+ $BD75 DEFB $FF               ; Terminator.
+
+; Messaging: "The Vale Of Kells"
+@label=Messaging_ValeOfKells
+t$BD76 DEFM "The Vale of Kells.",$0D,"Sunlight filters through the",$0D,"leafy canopy made" ; {"#STR$BD76,$08($b==$FF)".
+ $BDB7 DEFM " by ancient,",$0D,"towering oak trees."                                        ; }
+ $BDD7 DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "In A Deep Pool Of Water.Inside The Sea Cavern"
+@label=Messaging_DeepPoolOfWaterInSeaCavern
+t$BDD8 DEFM "In a Deep Pool of Water.",$0D,"Inside the Sea Cavern.",$0D,"You tread water v" ; {"#STR$BDD8,$08($b==$FF)".
+ $BE19 DEFM "igorously to",$0D,"ward off the chill."                                        ; }
+ $BE39 DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "A Narrow Underwater Passage"
+@label=Messaging_NarrowUnderwaterPassage
+t$BE3A DEFM "A Narrow Underwater Passage.",$0D,"You are totally submerged." ; "#STR$BE3A,$08($b==$FF)".
+ $BE71 DEFB $FF                                                             ; Terminator.
+
+; Messaging: "The Cliffs"
+@label=Messaging_Cliffs
+t$BE72 DEFM "The Cliffs.",$0D,"Overlooking the Sea." ; "#STR$BE72,$08($b==$FF)".
+ $BE92 DEFB $FF                                      ; Terminator.
+
+; Messaging: "A Farm Track"
+@label=Messaging_FarmTrack
+t$BE93 DEFM "A Farm Track." ; "#STR$BE93,$08($b==$FF)".
+ $BEA0 DEFB $FF             ; Terminator.
+
+; Messaging: "The Shrine Of The Nemed"
+@label=Messaging_ShrineOfNemeda
+t$BEA1 DEFM "The Shrine of the Nemed.",$0D,"A single shaft of light from",$0D,"above,pierc" ; {"#STR$BEA1,$08($b==$FF)".
+ $BEE2 DEFM "es the inky darkness."                                                         ; }
+ $BEF7 DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "A Mountain Slope"
+@label=Messaging_MountainSlope
+t$BEF8 DEFM "A Mountain Slope." ; "#STR$BEF8,$08($b==$FF)".
+ $BF09 DEFB $FF                 ; Terminator.
+
+; Messaging: "A Woodland Path"
+@label=Messaging_WoodlandPath
+t$BF0A DEFM "A Woodland Path." ; "#STR$BF0A,$08($b==$FF)".
+ $BF1A DEFB $FF                ; Terminator.
+
+; Messaging: "Dense Woodland"
+@label=Messaging_DenseWoodland
+t$BF1B DEFM "Dense Woodland.",$0D,"The undergrowth forms a soft",$0D,"carpet beneath your " ; {"#STR$BF1B,$08($b==$FF)".
+ $BF5C DEFM "feet."                                                                         ; }
+ $BF61 DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "Lug's Cavern"
+@label=Messaging_LugsCavern
+t$BF62 DEFM "Lug's Cavern.",$0D,"The home of the mighty god." ; "#STR$BF62,$08($b==$FF)".
+ $BF8B DEFB $FF                                               ; Terminator.
+
+; Messaging: "In A Deep Pool"
+@label=Messaging_DeepPool
+t$BF8C DEFM "In a Deep Pool.",$0D,"Inside Lug's cavern." ; "#STR$BF8C,$08($b==$FF)".
+ $BFB0 DEFB $FF                                          ; Terminator.
+
+; Messaging: "The Chalk Path"
+@label=Messaging_ChalkPath
+t$BFB1 DEFM "The Chalk Path." ; "#STR$BFB1,$08($b==$FF)".
+ $BFC0 DEFB $FF               ; Terminator.
+
+; Messaging: "The Burial Pit"
+@label=Messaging_BurialPit
+t$BFC1 DEFM "The Burial Pit.",$0D,"The grave of an elder." ; "#STR$BFC1,$08($b==$FF)".
+ $BFE7 DEFB $FF                                            ; Terminator.
+
+; Messaging: "Bleak Moorland"
+@label=Messaging_BleakMoorland
+t$BFE8 DEFM "Bleak Moorland." ; "#STR$BFE8,$08($b==$FF)".
+ $BFF7 DEFB $FF               ; Terminator.
+
+; Messaging: "Inside The Fissure"
+@label=Messaging_InsideFissure
+t$BFF8 DEFM "Inside the Fissure." ; "#STR$BFF8,$08($b==$FF)".
+ $C00B DEFB $FF                   ; Terminator.
+
+; Messaging: "A Mountain Path"
+@label=Messaging_MountainPath
+t$C00C DEFM "A Mountain Path." ; "#STR$C00C,$08($b==$FF)".
+ $C01C DEFB $FF                ; Terminator.
+
+; Messaging: "The Causeway"
+@label=Messaging_Causeway
+t$C01D DEFM "The Causeway.",$0D,"A narrow bridge of rock." ; "#STR$C01D,$08($b==$FF)".
+ $C043 DEFB $FF                                            ; Terminator.
+
+; Messaging: "The Rocky Path"
+@label=Messaging_RockyPath
+t$C044 DEFM "The Rocky Path." ; "#STR$C044,$08($b==$FF)".
+ $C053 DEFB $FF               ; Terminator.
+
+; Messaging: "A Narrow Path"
+@label=Messaging_NarrowPath
+t$C054 DEFM "A Narrow Path." ; "#STR$C054,$08($b==$FF)".
+ $C062 DEFB $FF              ; Terminator.
+
+; Messaging: "The Vale Of Rhia"
+@label=Messaging_ValeOfRhia
+t$C063 DEFM "The Vale of Rhia." ; "#STR$C063,$08($b==$FF)".
+ $C074 DEFB $FF                 ; Terminator.
+
+; Messaging: "The Burial Ground"
+@label=Messaging_BurialGround
+t$C075 DEFM "The Burial Ground." ; "#STR$C075,$08($b==$FF)".
+ $C087 DEFB $FF                  ; Terminator.
+
+; Messaging: "The Vale Of Whispers"
+@label=Messaging_ValeOfWhispers
+t$C088 DEFM "The Vale of Whispers." ; "#STR$C088,$08($b==$FF)".
+ $C09D DEFB $FF                     ; Terminator.
+
+; Messaging: "Cadwell Ridge"
+@label=Messaging_CadwellRidge
+t$C09E DEFM "Cadwell Ridge." ; "#STR$C09E,$08($b==$FF)".
+ $C0AC DEFB $FF              ; Terminator.
+
+; Messaging: "The Bridon Road"
+@label=Messaging_BridonRoad
+t$C0AD DEFM "The Bridon Road." ; "#STR$C0AD,$08($b==$FF)".
+ $C0BD DEFB $FF                ; Terminator.
+
+; Messaging: "The Village Of Bridon"
+@label=Messaging_VillageOfBridon
+t$C0BE DEFM "The Village of Bridon.",$0D,"There are many people here." ; "#STR$C0BE,$08($b==$FF)".
+ $C0F0 DEFB $FF                                                        ; Terminator.
+
+; Messaging: "Inside The Hut"
+@label=Messaging_InsideHut
+t$C0F1 DEFM "Inside the Hut." ; "#STR$C0F1,$08($b==$FF)".
+ $C100 DEFB $FF               ; Terminator.
+
+; Messaging: "The Swamp"
+@label=Messaging_Swamp"
+t$C101 DEFM "The Swamp.",$0D,"Sodden paths lead off in all",$0D,"directions." ; "#STR$C101,$08($b==$FF)".
+ $C134 DEFB $FF                                                               ; Terminator.
+
+; Messaging: "In An Oozing Quagmire"
+@label=Messaging_InAnOozingQuagmire
+t$C135 DEFM "In an Oozing Quagmire.",$0D,"You are sinking into it...." ; "#STR$C135,$08($b==$FF)".
+ $C167 DEFB $FF                                                        ; Terminator.
+
+; Messaging: "The Forest Edge"
+@label=Messaging_ForestEdge
+t$C168 DEFM "The Forest Edge." ; "#STR$C168,$08($b==$FF)".
+ $C178 DEFB $FF                ; Terminator.
+
+; Messaging: "The Cadwell Road"
+@label=Messaging_CadwellRoad
+t$C179 DEFM "The Cadwell Road." ; "#STR$C179,$08($b==$FF)".
+ $C18A DEFB $FF                 ; Terminator.
+
+; Messaging: "The Lake"
+@label=Messaging_LakeGrassyBank
+t$C18B DEFM "The Lake.",$0D,"The grassy bank dips gently",$0D,"into the slowly shifting wa" ; {"#STR$C18B,$08($b==$FF)".
+ $C1CC DEFM "ter."                                                                          ; }
+ $C1D0 DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "A Small Clearing"
+@label=Messaging_SmallClearing
+t$C1D1 DEFM "A small Clearing." ; "#STR$C1D1,$08($b==$FF)".
+ $C1E2 DEFB $FF                 ; Terminator.
+
+; Messaging: "A Forest Path"
+@label=Messaging_ForestPath
+t$C1E3 DEFM "A Forest Path." ; "#STR$C1E3,$08($b==$FF)".
+ $C1F1 DEFB $FF              ; Terminator.
+
+; Messaging: "The Deserted Broch"
+@label=Messaging_DesertedBrocha
+t$C1F2 DEFM "The Deserted Broch.",$0D,"A wide tower surrounded by an",$0D,"outer wall of f" ; {"#STR$C1F2,$08($b==$FF)".
+ $C233 DEFM "used rock.",$0D,"The entrance lays to the East."                               ; }
+ $C25C DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "The Western Approach"
+@label=Messaging_WesternApproach
+t$C25D DEFM "The Western Approach." ; "#STR$C25D,$08($b==$FF)".
+ $C272 DEFB $FF                     ; Terminator.
+
+; Messaging: "The Cadwell Hillfort"
+@label=Messaging_CadwellHillfort
+t$C273 DEFM "The Cadwell Hillfort.",$0D,"The entrance lays to the North." ; "#STR$C273,$08($b==$FF)".
+ $C2A8 DEFB $FF                                                           ; Terminator.
+
+; Messaging: "The Eastern Approach"
+@label=Messaging_EasternApproach
+t$C2A9 DEFM "The Eastern Approach." ; "#STR$C2A9,$08($b==$FF)".
+ $C2BE DEFB $FF                     ; Terminator.
+
+; Messaging: "A Grassy Plain"
+@label=Messaging_GrassyPlain
+t$C2BF DEFM "A Grassy Plain.",$0D,"To the South lays a forest." ; "#STR$C2BF,$08($b==$FF)".
+ $C2EA DEFB $FF                                                 ; Terminator.
+
+; Messaging: "The Circle Of Stones"
+@label=Messaging_CircleOfStones
+t$C2EB DEFM "The Circle of Stones.",$0D,"A ring of towering granite",$0D,"columns encircle" ; {"#STR$C2EB,$08($b==$FF)".
+ $C32C DEFM "s you."                                                                        ; }
+ $C332 DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "A Narrow Gorge"
+@label=Messaging_NarrowGorge
+t$C333 DEFM "A Narrow Gorge." ; "#STR$C333,$08($b==$FF)".
+ $C342 DEFB $FF               ; Terminator.
+
+; Messaging: "Inside A Rock Cavern"
+@label=Messaging_InsideRockCavern
+t$C343 DEFM "Inside a Rock Cavern." ; "#STR$C343,$08($b==$FF)".
+ $C358 DEFB $FF                     ; Terminator.
+
+; Messaging: "The Crystal Cavern"
+@label=Messaging_CrystalCavern
+t$C359 DEFM "The Crystal Cavern." ; "#STR$C359,$08($b==$FF)".
+ $C36C DEFB $FF                   ; Terminator.
+
+; Messaging: "The Chieftain's Chamber"
+@label=Messaging_ChieftainsChamber
+t$C36D DEFM "The Chieftain's Chamber." ; "#STR$C36D,$08($b==$FF)".
+ $C385 DEFB $FF                        ; Terminator.
+
+; Messaging: "The Storage Chamber"
+@label=Messaging_StorageChamber
+t$C386 DEFM "The Storage Chamber." ; "#STR$C386,$08($b==$FF)".
+ $C39A DEFB $FF                    ; Terminator.
+
+; Messaging: "The Inner Courtyard"
+@label=Messaging_InnerCourtyard
+t$C39B DEFM "The Inner Courtyard." ; "#STR$C39B,$08($b==$FF)".
+ $C3AF DEFB $FF                    ; Terminator.
+
+; Messaging: "The Druid's Chamber"
+@label=Messaging_DruidsChamber
+t$C3B0 DEFM "The Druid's Chamber." ; "#STR$C3B0,$08($b==$FF)".
+ $C3C4 DEFB $FF                    ; Terminator.
+
+; Messaging: "An Animal Pen"
+@label=Messaging_AnimalPen
+t$C3C5 DEFM "An Animal Pen." ; "#STR$C3C5,$08($b==$FF)".
+ $C3D3 DEFB $FF              ; Terminator.
+
+; Messaging: "The Main Courtyard"
+@label=Messaging_MainCourtyard
+t$C3D4 DEFM "The Main Courtyard." ; "#STR$C3D4,$08($b==$FF)".
+ $C3E7 DEFB $FF                   ; Terminator.
+
+; Messaging: "The Vale Of Shadows"
+@label=Messaging_ValeOfShadows
+t$C3E8 DEFM "The Vale of Shadows." ; "#STR$C3E8,$08($b==$FF)".
+ $C3FC DEFB $FF                    ; Terminator.
+
+; Messaging: "The Enchanted Hills"
+@label=Messaging_EnchantedHills
+t$C3FD DEFM "The Enchanted Hills." ; "#STR$C3FD,$08($b==$FF)".
+ $C411 DEFB $FF                    ; Terminator.
+
+; Messaging: "The Ruins Of Mag Gerin"
+@label=Messaging_RuinsOfMagGerin
+t$C412 DEFM "The Ruins of Mag Gerin.",$0D,"This once thriving settlement",$0D,"now lays de" ; {"#STR$C412,$08($b==$FF)".
+ $C453 DEFM "serted."                                                                       ; }
+ $C45A DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "The Fomorians' Cavern"
+@label=Messaging_FomoriansCavern
+t$C45B DEFM "The Fomorians' Cavern." ; "#STR$C45B,$08($b==$FF)".
+ $C471 DEFB $FF                      ; Terminator.
+
+; Messaging: "The Mag Gerin Road"
+@label=Messaging_MagGerinRoad
+t$C472 DEFM "The Mag Gerin Road." ; "#STR$C472,$08($b==$FF)".
+ $C485 DEFB $FF                   ; Terminator.
+
+; Messaging: "The Danaan Settlement"
+@label=Messaging_DanaanSettlement
+t$C486 DEFM "The Danaan Settlement.",$0D,"Home of the people of the",$0D,"goddess,Danu." ; "#STR$C486,$08($b==$FF)".
+ $C4C4 DEFB $FF                                                                          ; Terminator.
+
+; Messaging: "The Danaan Valley"
+@label=Messaging_DanaanValley
+t$C4C5 DEFM "The Danaan Valley." ; "#STR$C4C5,$08($b==$FF)".
+ $C4D7 DEFB $FF                  ; Terminator.
+
+; Messaging: "The Twisted Forest"
+@label=Messaging_TwistedForest
+t$C4D8 DEFM "The Twisted Forest.",$0D,"The trees are hideously deformed",$0D,"by an evil,m" ; {"#STR$C4D8,$08($b==$FF)".
+ $C519 DEFM "alignant presence."                                                            ; }
+ $C52B DEFB $FF                                                                             ; Terminator.
+
+; Messaging: "Congratulations!!"
+@label=Messaging_Congratulations
+t$C52C DEFM "Congratulations!!",$0D,"You have completed your quest",$0D,"and safely return"       ; {"#STR$C52C,$08($b==$FF)".
+ $C56D DEFM "ed to the real",$0D,"world.",$0D,"The Roman gods reluctantly agree",$0D,"that the l" ;
+ $C5AE DEFM "egions will advance",$0D,"no further North and that a wall",$0D,"would be bui"       ;
+ $C5EF DEFM "lt to mark the limit",$0D,"of their territory."                                      ; }
+ $C617 DEFB $FF                                                                                   ; Terminator.
+
+; Messaging: "The Vale Of Cuchulainn"
+@label=Messaging_ValeOfCuchulainn
+t$C618 DEFM "The Vale of Cuchulainn." ; "#STR$C618,$08($b==$FF)".
+ $C62F DEFB $FF                       ; Terminator.
+
+; Messaging: "A Guard Chamber"
+@label=Messaging_GuardChamber
+t$C630 DEFM "A Guard Chamber." ; "#STR$C630,$08($b==$FF)".
+ $C640 DEFB $FF                ; Terminator.
+
+; Messaging: "The Entrance Passage"
+@label=Messaging_EntrancePassage
+t$C641 DEFM "The Entrance Passage." ; "#STR$C641,$08($b==$FF)".
+ $C656 DEFB $FF                     ; Terminator.
+
+; Messaging: "The Outer Courtyard"
+@label=Messaging_OuterCourtyard
+t$C657 DEFM "The Outer Courtyard." ; "#STR$C657,$08($b==$FF)".
+ $C66B DEFB $FF                    ; Terminator.
+
+; Messaging: "A Muddy Passage"
+@label=Messaging_MuddyPassage
+t$C66C DEFM "A Muddy Passage." ; "#STR$C66C,$08($b==$FF)".
+ $C67C DEFB $FF                ; Terminator.
+
+; Messaging: "The Entrance To The Inner Wall"
+@label=Messaging_EntranceToInnerWall
+t$C67D DEFM "The Entrance to the Inner Wall." ; "#STR$C67D,$08($b==$FF)".
+ $C69C DEFB $FF                               ; Terminator.
+
+; Messaging: "Inside The Inner Wall Entrance"
+@label=Messaging_InsideInnerWallEntrance
+t$C69D DEFM "Inside the Inner Wall Entrance." ; "#STR$C69D,$08($b==$FF)".
+ $C6BC DEFB $FF                               ; Terminator.
+
+; Messaging: "The Northern Chamber"
+@label=Messaging_NorthernChamber
+t$C6BD DEFM "The Northern Chamber." ; "#STR$C6BD,$08($b==$FF)".
+ $C6D2 DEFB $FF                     ; Terminator.
+
+; Messaging: "The Western Chamber"
+@label=Messaging_WesternChamber
+t$C6D3 DEFM "The Western Chamber." ; "#STR$C6D3,$08($b==$FF)".
+ $C6E7 DEFB $FF                    ; Terminator.
+
+; Messaging: "The Eastern Chamber.Almost Totally Gutted By Fire"
+@label=Messaging_EasternChamberGuttedByFire
+t$C6E8 DEFM "The Eastern Chamber.",$0D,"Almost totally gutted by fire." ; "#STR$C6E8,$08($b==$FF)".
+ $C71B DEFB $FF                                                         ; Terminator.
+
+; Messaging: "The Southern Chamber"
+@label=Messaging_SouthernChamber
+t$C71C DEFM "The Southern Chamber." ; "#STR$C71C,$08($b==$FF)".
+ $C731 DEFB $FF                     ; Terminator.
 
 ; Table: Item Descriptions
 @label=Table_ItemDescriptions
@@ -5414,884 +6569,131 @@ g$C732 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
  $C95E DEFB $18,$C6,$30,$C6,$41,$C6,$30,$C6
  $C966 DEFB $57,$C6,$C5,$C3,$6C,$C6,$C5,$C3
  $C96E DEFB $7D,$C6,$9D,$C6,$BD,$C6,$D3,$C6
- $C976 DEFB $9B,$C3,$E8,$C6,$1C,$C7,$0D,$59
- $C97E DEFB $6F,$75,$20,$68,$61,$76,$65,$20
- $C986 DEFB $74,$68,$65,$20,$66,$65,$65,$6C
- $C98E DEFB $69,$6E,$67,$20,$74,$68,$61,$74
- $C996 DEFB $20,$79,$6F,$75,$0D,$61,$72,$65
- $C99E DEFB $20,$62,$65,$69,$6E,$67,$20,$66
- $C9A6 DEFB $6F,$6C,$6C,$6F,$77,$65,$64,$2E
- $C9AE DEFB $FF,$0D,$54,$68,$65,$20,$52,$6F
- $C9B6 DEFB $6D,$61,$6E,$20,$73,$75,$64,$64
- $C9BE DEFB $65,$6E,$6C,$79,$20,$61,$70,$70
- $C9C6 DEFB $65,$61,$72,$73,$20,$61,$6E,$64
- $C9CE DEFB $0D,$68,$65,$20,$61,$74,$74,$61
- $C9D6 DEFB $63,$6B,$73,$20,$79,$6F,$75,$2E
- $C9DE DEFB $2E,$2E,$FF,$0D,$59,$6F,$75,$20
- $C9E6 DEFB $61,$72,$65,$20,$74,$6F,$6F,$20
- $C9EE DEFB $66,$61,$73,$74,$20,$66,$6F,$72
- $C9F6 DEFB $20,$68,$69,$6D,$20,$61,$6E,$64
- $C9FE DEFB $0D,$79,$6F,$75,$20,$65,$61,$73
- $CA06 DEFB $69,$6C,$79,$20,$61,$76,$6F,$69
- $CA0E DEFB $64,$20,$74,$68,$65,$20,$62,$6C
- $CA16 DEFB $6F,$77,$2E,$FF,$0D,$59,$6F,$75
- $CA1E DEFB $20,$73,$68,$6F,$75,$6C,$64,$6E
- $CA26 DEFB $27,$74,$20,$66,$69,$67,$68,$74
- $CA2E DEFB $20,$6F,$6E,$20,$61,$6E,$20,$65
- $CA36 DEFB $6D,$70,$74,$79,$0D,$73,$74,$6F
- $CA3E DEFB $6D,$61,$63,$68,$2E,$2E,$2E,$FF
- $CA46 DEFB $0D,$59,$6F,$75,$20,$61,$72,$65
- $CA4E DEFB $20,$74,$61,$6B,$65,$6E,$20,$62
- $CA56 DEFB $79,$20,$73,$75,$72,$70,$72,$69
- $CA5E DEFB $73,$65,$2E,$0D,$54,$68,$65,$20
- $CA66 DEFB $62,$6C,$6F,$77,$20,$73,$74,$72
- $CA6E DEFB $69,$6B,$65,$73,$20,$74,$72,$75
- $CA76 DEFB $65,$2E,$FF,$0D,$41,$20,$46,$6F
- $CA7E DEFB $6D,$6F,$72,$69,$61,$6E,$20,$61
- $CA86 DEFB $74,$74,$61,$63,$6B,$73,$20,$79
- $CA8E DEFB $6F,$75,$2E,$2E,$2E,$FF,$0D,$59
- $CA96 DEFB $6F,$75,$20,$6D,$61,$74,$63,$68
- $CA9E DEFB $20,$74,$68,$65,$20,$65,$76,$69
- $CAA6 DEFB $6C,$20,$63,$72,$65,$61,$74,$75
- $CAAE DEFB $72,$65,$27,$73,$0D,$73,$70,$65
- $CAB6 DEFB $65,$64,$20,$61,$6E,$64,$20,$61
- $CABE DEFB $76,$6F,$69,$64,$20,$74,$68,$65
- $CAC6 DEFB $20,$62,$6C,$6F,$77,$2E,$FF,$0D
- $CACE DEFB $41,$20,$77,$69,$6C,$64,$20,$62
- $CAD6 DEFB $6F,$61,$72,$20,$72,$75,$73,$68
- $CADE DEFB $65,$73,$20,$66,$72,$6F,$6D,$20
- $CAE6 DEFB $74,$68,$65,$0D,$75,$6E,$64,$65
- $CAEE DEFB $72,$67,$72,$6F,$77,$74,$68,$2C
- $CAF6 DEFB $73,$71,$75,$65,$61,$6C,$6C,$69
- $CAFE DEFB $6E,$67,$20,$61,$73,$20,$69,$74
- $CB06 DEFB $0D,$63,$61,$72,$65,$65,$72,$73
- $CB0E DEFB $20,$70,$61,$73,$74,$20,$79,$6F
- $CB16 DEFB $75,$2E,$FF,$0D,$59,$6F,$75,$20
- $CB1E DEFB $63,$61,$74,$63,$68,$20,$61,$20
- $CB26 DEFB $67,$6C,$69,$6D,$70,$73,$65,$20
- $CB2E DEFB $6F,$66,$20,$61,$20,$66,$75,$72
- $CB36 DEFB $74,$69,$76,$65,$0D,$66,$69,$67
- $CB3E DEFB $75,$72,$65,$2E,$2E,$2E,$FF,$0D
- $CB46 DEFB $49,$74,$20,$71,$75,$69,$63,$6B
- $CB4E DEFB $6C,$79,$20,$76,$61,$6E,$69,$73
- $CB56 DEFB $68,$65,$73,$20,$69,$6E,$74,$6F
- $CB5E DEFB $20,$74,$68,$65,$0D,$6D,$69,$6C
- $CB66 DEFB $6C,$69,$6E,$67,$20,$74,$68,$72
- $CB6E DEFB $6F,$6E,$67,$2E,$FF,$0D,$41,$20
- $CB76 DEFB $67,$72,$6F,$75,$70,$20,$6F,$66
- $CB7E DEFB $20,$72,$61,$74,$73,$20,$73,$63
- $CB86 DEFB $75,$72,$72,$79,$20,$6F,$66,$66
- $CB8E DEFB $20,$69,$6E,$74,$6F,$0D,$68,$69
- $CB96 DEFB $64,$69,$6E,$67,$2E,$FF,$0D,$46
- $CB9E DEFB $72,$6F,$6D,$20,$74,$68,$65,$20
- $CBA6 DEFB $68,$75,$74,$2C,$79,$6F,$75,$20
- $CBAE DEFB $68,$65,$61,$72,$20,$61,$20,$77
- $CBB6 DEFB $6F,$6D,$61,$6E,$0D,$73,$69,$6E
- $CBBE DEFB $67,$69,$6E,$67,$20,$73,$77,$65
- $CBC6 DEFB $65,$74,$6C,$79,$2E,$FF,$0D,$54
- $CBCE DEFB $68,$65,$20,$77,$6F,$6D,$61,$6E
- $CBD6 DEFB $20,$73,$61,$79,$73,$3A,$2D,$0D
- $CBDE DEFB $22,$57,$61,$72,$6C,$6F,$72,$64
- $CBE6 DEFB $2C,$49,$20,$63,$61,$6E,$20,$67
- $CBEE DEFB $75,$69,$64,$65,$20,$79,$6F,$75
- $CBF6 DEFB $20,$74,$68,$72,$6F,$75,$67,$68
- $CBFE DEFB $0D,$74,$68,$65,$20,$73,$77,$61
- $CC06 DEFB $6D,$70,$2E,$20,$46,$6F,$6C,$6C
- $CC0E DEFB $6F,$77,$20,$6D,$65,$2E,$22,$0D
- $CC16 DEFB $53,$68,$65,$20,$67,$6F,$65,$73
- $CC1E DEFB $20,$4E,$6F,$72,$74,$68,$2E,$FF
- $CC26 DEFB $0D,$54,$68,$65,$20,$77,$6F,$6D
- $CC2E DEFB $61,$6E,$20,$67,$6F,$65,$73,$20
- $CC36 DEFB $45,$61,$73,$74,$2E,$FF,$0D,$54
- $CC3E DEFB $68,$65,$20,$77,$6F,$6D,$61,$6E
- $CC46 DEFB $20,$67,$6F,$65,$73,$20,$53,$6F
- $CC4E DEFB $75,$74,$68,$2E,$FF,$0D,$41,$73
- $CC56 DEFB $20,$79,$6F,$75,$20,$77,$61,$74
- $CC5E DEFB $63,$68,$2C,$74,$68,$65,$20,$64
- $CC66 DEFB $72,$75,$69,$64,$20,$70,$65,$72
- $CC6E DEFB $66,$6F,$72,$6D,$73,$0D,$61,$20
- $CC76 DEFB $73,$61,$63,$72,$69,$66,$69,$63
- $CC7E DEFB $69,$61,$6C,$20,$72,$69,$74,$65
- $CC86 DEFB $2E,$48,$65,$20,$70,$75,$74,$73
- $CC8E DEFB $20,$61,$0D,$73,$6C,$61,$76,$65
- $CC96 DEFB $20,$69,$6E,$74,$6F,$20,$61,$20
- $CC9E DEFB $77,$69,$63,$6B,$65,$72,$20,$63
- $CCA6 DEFB $61,$67,$65,$20,$61,$6E,$64,$0D
- $CCAE DEFB $6C,$69,$67,$68,$74,$73,$20,$61
- $CCB6 DEFB $20,$66,$69,$72,$65,$20,$62,$65
- $CCBE DEFB $6E,$65,$61,$74,$68,$20,$69,$74
- $CCC6 DEFB $2E,$2E,$2E,$FF,$54,$68,$65,$20
- $CCCE DEFB $75,$6E,$66,$6F,$72,$74,$75,$6E
- $CCD6 DEFB $61,$74,$65,$20,$73,$6C,$61,$76
- $CCDE DEFB $65,$20,$70,$65,$72,$69,$73,$68
- $CCE6 DEFB $65,$73,$0D,$61,$6E,$64,$20,$74
- $CCEE DEFB $68,$65,$20,$66,$69,$72,$65,$20
- $CCF6 DEFB $67,$6F,$65,$73,$20,$6F,$75,$74
- $CCFE DEFB $2E,$FF,$0D,$59,$6F,$75,$20,$61
- $CD06 DEFB $72,$65,$20,$61,$73,$73,$61,$69
- $CD0E DEFB $6C,$65,$64,$20,$62,$79,$20,$61
- $CD16 DEFB $20,$66,$65,$65,$6C,$69,$6E,$67
- $CD1E DEFB $0D,$6F,$66,$20,$69,$6D,$6D,$65
- $CD26 DEFB $6E,$73,$65,$20,$66,$61,$74,$69
- $CD2E DEFB $67,$75,$65,$2E,$0D,$54,$68,$65
- $CD36 DEFB $20,$75,$72,$67,$65,$20,$74,$6F
- $CD3E DEFB $20,$73,$75,$63,$63,$75,$6D,$62
- $CD46 DEFB $20,$69,$73,$20,$61,$6C,$6D,$6F
- $CD4E DEFB $73,$74,$0D,$69,$72,$72,$65,$73
- $CD56 DEFB $69,$73,$74,$61,$62,$6C,$65,$2E
- $CD5E DEFB $FF,$0D,$59,$6F,$75,$20,$63,$61
- $CD66 DEFB $6E,$6E,$6F,$74,$20,$68,$6F,$6C
- $CD6E DEFB $64,$20,$79,$6F,$75,$72,$20,$62
- $CD76 DEFB $72,$65,$61,$74,$68,$20,$61,$6E
- $CD7E DEFB $79,$0D,$6C,$6F,$6E,$67,$65,$72
- $CD86 DEFB $2E,$20,$59,$6F,$75,$20,$61,$72
- $CD8E DEFB $65,$20,$64,$72,$6F,$77,$6E,$69
- $CD96 DEFB $6E,$67,$2E,$FF,$0D,$59,$6F,$75
- $CD9E DEFB $20,$66,$69,$67,$68,$74,$20,$62
- $CDA6 DEFB $72,$61,$76,$65,$6C,$79,$2C,$62
- $CDAE DEFB $75,$74,$20,$74,$68,$65,$20,$65
- $CDB6 DEFB $76,$69,$6C,$0D,$63,$72,$65,$61
- $CDBE DEFB $74,$75,$72,$65,$73,$20,$6F,$76
- $CDC6 DEFB $65,$72,$77,$68,$65,$6C,$6D,$20
- $CDCE DEFB $79,$6F,$75,$2E,$FF,$44,$6F,$6E
- $CDD6 DEFB $27,$74,$20,$62,$65,$20,$72,$69
- $CDDE DEFB $64,$69,$63,$75,$6C,$6F,$75,$73
- $CDE6 DEFB $2E,$FF,$59,$6F,$75,$27,$76,$65
- $CDEE DEFB $20,$64,$6F,$6E,$65,$20,$74,$68
- $CDF6 DEFB $61,$74,$20,$61,$6C,$72,$65,$61
- $CDFE DEFB $64,$79,$2E,$FF,$54,$68,$65,$20
- $CE06 DEFB $73,$6C,$61,$62,$20,$6C,$61,$79
- $CE0E DEFB $73,$20,$68,$6F,$72,$69,$7A,$6F
- $CE16 DEFB $6E,$74,$61,$6C,$6C,$79,$2E,$0D
- $CE1E DEFB $41,$20,$67,$72,$6F,$6F,$76,$65
- $CE26 DEFB $20,$72,$75,$6E,$73,$20,$61,$6C
- $CE2E DEFB $6F,$6E,$67,$20,$69,$74,$73,$20
- $CE36 DEFB $6C,$65,$6E,$67,$74,$68,$2E,$FF
- $CE3E DEFB $59,$6F,$75,$27,$72,$65,$20,$6E
- $CE46 DEFB $6F,$74,$20,$74,$69,$72,$65,$64
- $CE4E DEFB $2E,$FF,$59,$6F,$75,$20,$66,$61
- $CE56 DEFB $6C,$6C,$20,$69,$6E,$74,$6F,$20
- $CE5E DEFB $61,$20,$64,$65,$65,$70,$20,$73
- $CE66 DEFB $6C,$65,$65,$70,$2E,$FF,$41,$73
- $CE6E DEFB $20,$79,$6F,$75,$20,$73,$6C,$75
- $CE76 DEFB $6D,$62,$65,$72,$2C,$61,$20,$73
- $CE7E DEFB $68,$69,$6D,$6D,$65,$72,$69,$6E
- $CE86 DEFB $67,$2C,$0D,$77,$68,$69,$74,$65
- $CE8E DEFB $2C,$66,$65,$6D,$61,$6C,$65,$20
- $CE96 DEFB $66,$69,$67,$75,$72,$65,$20,$72
- $CE9E DEFB $69,$73,$65,$73,$20,$66,$72,$6F
- $CEA6 DEFB $6D,$0D,$74,$68,$65,$20,$6C,$61
- $CEAE DEFB $6B,$65,$2E,$53,$68,$65,$20,$64
- $CEB6 DEFB $72,$69,$66,$74,$73,$20,$6F,$76
- $CEBE DEFB $65,$72,$20,$74,$6F,$20,$79,$6F
- $CEC6 DEFB $75,$0D,$61,$6E,$64,$20,$6C,$65
- $CECE DEFB $61,$76,$65,$73,$20,$61,$20,$73
- $CED6 DEFB $77,$6F,$72,$64,$20,$62,$65,$73
- $CEDE DEFB $69,$64,$65,$20,$79,$6F,$75,$2E
- $CEE6 DEFB $0D,$54,$68,$65,$20,$66,$69,$67
- $CEEE DEFB $75,$72,$65,$20,$64,$69,$73,$61
- $CEF6 DEFB $70,$70,$65,$61,$72,$73,$20,$62
- $CEFE DEFB $65,$6E,$65,$61,$74,$68,$0D,$74
- $CF06 DEFB $68,$65,$20,$73,$74,$69,$6C,$6C
- $CF0E DEFB $20,$77,$61,$74,$65,$72,$2E,$20
- $CF16 DEFB $59,$6F,$75,$20,$61,$77,$61,$6B
- $CF1E DEFB $65,$6E,$2E,$FF,$59,$6F,$75,$27
- $CF26 DEFB $72,$65,$20,$6E,$6F,$74,$20,$63
- $CF2E DEFB $61,$72,$72,$79,$69,$6E,$67,$20
- $CF36 DEFB $61,$6E,$79,$74,$68,$69,$6E,$67
- $CF3E DEFB $2E,$FF,$59,$6F,$75,$20,$73,$65
- $CF46 DEFB $65,$20,$6E,$6F,$74,$68,$69,$6E
- $CF4E DEFB $67,$20,$73,$70,$65,$63,$69,$61
- $CF56 DEFB $6C,$2E,$FF,$49,$74,$20,$69,$73
- $CF5E DEFB $20,$6C,$6F,$6F,$6B,$69,$6E,$67
- $CF66 DEFB $20,$71,$75,$69,$74,$65,$20,$62
- $CF6E DEFB $65,$64,$72,$61,$67,$67,$6C,$65
- $CF76 DEFB $64,$2E,$FF,$49,$74,$20,$69,$73
- $CF7E DEFB $20,$73,$65,$61,$6C,$65,$64,$20
- $CF86 DEFB $77,$69,$74,$68,$20,$77,$61,$78
- $CF8E DEFB $2E,$54,$68,$65,$72,$65,$20,$69
- $CF96 DEFB $73,$0D,$61,$6E,$20,$69,$6E,$73
- $CF9E DEFB $63,$72,$69,$70,$74,$69,$6F,$6E
- $CFA6 DEFB $20,$6F,$6E,$20,$74,$68,$65,$20
- $CFAE DEFB $73,$69,$64,$65,$2E,$0D,$54,$68
- $CFB6 DEFB $65,$20,$69,$6E,$73,$63,$72,$69
- $CFBE DEFB $70,$74,$69,$6F,$6E,$20,$72,$65
- $CFC6 DEFB $61,$64,$73,$3A,$2D,$0D,$22,$48
- $CFCE DEFB $65,$72,$65,$69,$6E,$20,$6C,$61
- $CFD6 DEFB $79,$20,$74,$68,$65,$20,$61,$73
- $CFDE DEFB $68,$65,$73,$20,$6F,$66,$20,$74
- $CFE6 DEFB $68,$65,$0D,$6D,$69,$67,$68,$74
- $CFEE DEFB $79,$20,$4E,$65,$6D,$65,$64,$2E
- $CFF6 DEFB $20,$41,$20,$61,$6E,$63,$69,$65
- $CFFE DEFB $6E,$74,$20,$77,$61,$72,$72,$69
- $D006 DEFB $6F,$72,$0D,$74,$72,$69,$62,$65
- $D00E DEFB $2C,$66,$65,$6C,$6C,$65,$64,$20
- $D016 DEFB $62,$79,$20,$73,$6F,$72,$63,$65
- $D01E DEFB $72,$79,$20,$77,$69,$65,$6C,$64
- $D026 DEFB $65,$64,$0D,$62,$79,$20,$74,$68
- $D02E DEFB $65,$20,$45,$76,$69,$6C,$20,$4F
- $D036 DEFB $6E,$65,$73,$2E,$22,$FF,$49,$74
- $D03E DEFB $20,$69,$73,$20,$74,$68,$65,$20
- $D046 DEFB $68,$65,$6C,$6D,$65,$74,$20,$6F
- $D04E DEFB $66,$20,$74,$68,$65,$20,$67,$6F
- $D056 DEFB $64,$2C,$4C,$75,$67,$2E,$FF,$54
- $D05E DEFB $68,$65,$72,$65,$20,$69,$73,$20
- $D066 DEFB $61,$20,$66,$69,$73,$73,$75,$72
- $D06E DEFB $65,$20,$69,$6E,$20,$6F,$6E,$65
- $D076 DEFB $20,$73,$69,$64,$65,$2E,$FF,$49
- $D07E DEFB $74,$27,$73,$20,$70,$65,$72,$66
- $D086 DEFB $65,$63,$74,$6C,$79,$20,$62,$61
- $D08E DEFB $6C,$61,$6E,$63,$65,$64,$20,$66
- $D096 DEFB $6F,$72,$20,$79,$6F,$75,$2E,$0D
- $D09E DEFB $54,$68,$69,$73,$20,$69,$73,$20
- $D0A6 DEFB $61,$20,$73,$77,$6F,$72,$64,$20
- $D0AE DEFB $6F,$66,$20,$6C,$65,$67,$65,$6E
- $D0B6 DEFB $64,$2E,$0D,$4B,$6E,$6F,$77,$6E
- $D0BE DEFB $20,$62,$79,$20,$6D,$61,$6E,$79
- $D0C6 DEFB $20,$6E,$61,$6D,$65,$73,$20,$61
- $D0CE DEFB $6E,$64,$20,$69,$6E,$20,$6D,$61
- $D0D6 DEFB $6E,$79,$0D,$74,$69,$6D,$65,$73
- $D0DE DEFB $2C,$62,$6F,$74,$68,$20,$70,$61
- $D0E6 DEFB $73,$74,$20,$61,$6E,$64,$20,$79
- $D0EE DEFB $65,$74,$20,$74,$6F,$20,$62,$65
- $D0F6 DEFB $2E,$FF,$54,$68,$65,$20,$62,$6C
- $D0FE DEFB $61,$64,$65,$20,$68,$61,$73,$20
- $D106 DEFB $61,$20,$62,$6C,$75,$65,$20,$73
- $D10E DEFB $68,$65,$65,$6E,$2E,$FF,$49,$74
- $D116 DEFB $20,$69,$73,$20,$63,$75,$74,$20
- $D11E DEFB $66,$72,$6F,$6D,$20,$61,$20,$70
- $D126 DEFB $72,$65,$63,$69,$6F,$75,$73,$20
- $D12E DEFB $73,$74,$6F,$6E,$65,$2E,$0D,$49
- $D136 DEFB $6D,$61,$67,$65,$73,$20,$61,$72
- $D13E DEFB $65,$20,$72,$65,$66,$6C,$65,$63
- $D146 DEFB $74,$65,$64,$20,$62,$72,$69,$67
- $D14E DEFB $68,$74,$6C,$79,$0D,$69,$6E,$20
- $D156 DEFB $69,$74,$73,$20,$70,$6F,$6C,$69
- $D15E DEFB $73,$68,$65,$64,$20,$66,$61,$63
- $D166 DEFB $65,$74,$73,$2E,$0D,$49,$74,$20
- $D16E DEFB $69,$73,$20,$73,$6F,$6D,$65,$20
- $D176 DEFB $73,$6F,$72,$74,$20,$6F,$66,$20
- $D17E DEFB $74,$61,$6C,$69,$73,$6D,$61,$6E
- $D186 DEFB $2E,$FF,$49,$74,$20,$69,$73,$20
- $D18E DEFB $63,$61,$72,$76,$65,$64,$20,$66
- $D196 DEFB $72,$6F,$6D,$20,$6F,$61,$6B,$20
- $D19E DEFB $61,$6E,$64,$20,$69,$73,$0D,$73
- $D1A6 DEFB $74,$6F,$75,$74,$6C,$79,$20,$6D
- $D1AE DEFB $61,$64,$65,$2E,$FF,$54,$68,$65
- $D1B6 DEFB $20,$62,$6F,$64,$79,$20,$69,$73
- $D1BE DEFB $20,$76,$65,$72,$79,$20,$65,$6D
- $D1C6 DEFB $61,$63,$69,$61,$74,$65,$64,$2E
- $D1CE DEFB $54,$68,$65,$0D,$66,$61,$63,$65
- $D1D6 DEFB $2C,$74,$68,$6F,$75,$67,$68,$20
- $D1DE DEFB $64,$72,$61,$77,$6E,$2C,$72,$65
- $D1E6 DEFB $66,$6C,$65,$63,$74,$73,$20,$64
- $D1EE DEFB $65,$65,$70,$0D,$74,$72,$61,$6E
- $D1F6 DEFB $71,$75,$69,$6C,$69,$74,$79,$2E
- $D1FE DEFB $FF,$54,$68,$69,$73,$20,$6E,$65
- $D206 DEFB $63,$6B,$20,$72,$69,$6E,$67,$20
- $D20E DEFB $69,$73,$20,$66,$61,$73,$68,$69
- $D216 DEFB $6F,$6E,$65,$64,$20,$66,$72,$6F
- $D21E DEFB $6D,$0D,$67,$6C,$65,$61,$6D,$69
- $D226 DEFB $6E,$67,$20,$62,$72,$6F,$6E,$7A
- $D22E DEFB $65,$2E,$FF,$59,$6F,$75,$20,$63
- $D236 DEFB $61,$6E,$6E,$6F,$74,$20,$6D,$6F
- $D23E DEFB $76,$65,$20,$69,$74,$2E,$FF,$54
- $D246 DEFB $68,$65,$20,$74,$72,$61,$64,$65
- $D24E DEFB $72,$20,$73,$6E,$61,$74,$63,$68
- $D256 DEFB $65,$73,$20,$69,$74,$20,$62,$61
- $D25E DEFB $63,$6B,$2C,$0D,$61,$6E,$67,$72
- $D266 DEFB $69,$6C,$79,$2E,$FF,$54,$68,$65
- $D26E DEFB $20,$64,$72,$75,$69,$64,$20,$69
- $D276 DEFB $73,$20,$64,$65,$63,$65,$70,$74
- $D27E DEFB $69,$76,$65,$6C,$79,$20,$73,$74
- $D286 DEFB $72,$6F,$6E,$67,$2E,$0D,$48,$65
- $D28E DEFB $20,$70,$72,$65,$76,$65,$6E,$74
- $D296 DEFB $73,$20,$79,$6F,$75,$2C,$73,$61
- $D29E DEFB $79,$69,$6E,$67,$3A,$2D,$0D,$22
- $D2A6 DEFB $4E,$6F,$20,$57,$61,$72,$6C,$6F
- $D2AE DEFB $72,$64,$2C,$74,$68,$69,$73,$20
- $D2B6 DEFB $69,$73,$20,$61,$20,$67,$69,$66
- $D2BE DEFB $74,$20,$66,$72,$6F,$6D,$0D,$74
- $D2C6 DEFB $68,$65,$20,$67,$6F,$64,$73,$20
- $D2CE DEFB $61,$6E,$64,$20,$63,$61,$6E,$6E
- $D2D6 DEFB $6F,$74,$20,$62,$65,$20,$67,$69
- $D2DE DEFB $76,$65,$6E,$0D,$61,$77,$61,$79
- $D2E6 DEFB $20,$73,$6F,$20,$6C,$69,$67,$68
- $D2EE DEFB $74,$6C,$79,$2E,$22,$FF,$48,$65
- $D2F6 DEFB $20,$64,$6F,$65,$73,$6E,$27,$74
- $D2FE DEFB $20,$68,$61,$76,$65,$20,$69,$74
- $D306 DEFB $2E,$FF,$54,$68,$65,$20,$62,$6F
- $D30E DEFB $64,$79,$20,$64,$6F,$65,$73,$20
- $D316 DEFB $6E,$6F,$74,$20,$68,$61,$76,$65
- $D31E DEFB $20,$61,$20,$63,$6C,$6F,$61,$6B
- $D326 DEFB $2E,$FF,$54,$68,$65,$20,$62,$65
- $D32E DEFB $61,$72,$20,$64,$65,$76,$6F,$75
- $D336 DEFB $72,$73,$20,$74,$68,$65,$20,$6D
- $D33E DEFB $65,$61,$74,$2C,$62,$75,$74,$0D
- $D346 DEFB $69,$74,$73,$20,$61,$70,$70,$65
- $D34E DEFB $74,$69,$74,$65,$20,$72,$65,$6D
- $D356 DEFB $61,$69,$6E,$73,$2E,$FF,$54,$68
- $D35E DEFB $65,$20,$77,$6F,$6C,$76,$65,$73
- $D366 DEFB $20,$70,$6F,$75,$6E,$63,$65,$20
- $D36E DEFB $67,$72,$65,$65,$64,$69,$6C,$79
- $D376 DEFB $20,$6F,$6E,$74,$6F,$0D,$74,$68
- $D37E DEFB $65,$20,$6D,$65,$61,$74,$20,$61
- $D386 DEFB $6E,$64,$20,$63,$61,$72,$72,$79
- $D38E DEFB $20,$69,$74,$20,$6F,$66,$66,$20
- $D396 DEFB $69,$6E,$74,$6F,$0D,$74,$68,$65
- $D39E DEFB $20,$66,$6F,$72,$65,$73,$74,$2E
- $D3A6 DEFB $FF,$54,$68,$65,$20,$72,$61,$76
- $D3AE DEFB $65,$6E,$20,$74,$61,$6B,$65,$73
- $D3B6 DEFB $20,$74,$68,$65,$20,$61,$63,$6F
- $D3BE DEFB $72,$6E,$73,$2E,$0D,$54,$68,$65
- $D3C6 DEFB $20,$61,$69,$72,$20,$73,$74,$61
- $D3CE DEFB $72,$74,$73,$20,$74,$6F,$20,$73
- $D3D6 DEFB $68,$69,$6D,$6D,$65,$72,$2E,$2E
- $D3DE DEFB $2E,$FF,$54,$68,$65,$20,$67,$6F
- $D3E6 DEFB $64,$64,$65,$73,$73,$20,$44,$61
- $D3EE DEFB $6E,$75,$20,$73,$74,$61,$6E,$64
- $D3F6 DEFB $73,$20,$62,$65,$66,$6F,$72,$65
- $D3FE DEFB $0D,$79,$6F,$75,$2E,$53,$68,$65
- $D406 DEFB $20,$73,$6D,$69,$6C,$65,$73,$20
- $D40E DEFB $61,$6E,$64,$20,$73,$61,$79,$73
- $D416 DEFB $3A,$2D,$0D,$22,$4D,$79,$20,$63
- $D41E DEFB $6C,$65,$61,$76,$65,$72,$20,$57
- $D426 DEFB $61,$72,$6C,$6F,$72,$64,$2C,$68
- $D42E DEFB $65,$72,$6F,$20,$6F,$66,$20,$6F
- $D436 DEFB $75,$72,$0D,$70,$65,$6F,$70,$6C
- $D43E DEFB $65,$2E,$54,$61,$6B,$65,$20,$74
- $D446 DEFB $68,$69,$73,$20,$74,$6F,$72,$63
- $D44E DEFB $20,$73,$6F,$20,$74,$68,$61,$74
- $D456 DEFB $0D,$69,$74,$20,$6D,$61,$79,$20
- $D45E DEFB $61,$69,$64,$20,$79,$6F,$75,$20
- $D466 DEFB $69,$6E,$20,$79,$6F,$75,$72,$20
- $D46E DEFB $71,$75,$65,$73,$74,$2E,$22,$0D
- $D476 DEFB $53,$68,$65,$20,$6C,$65,$61,$76
- $D47E DEFB $65,$73,$20,$74,$68,$65,$20,$74
- $D486 DEFB $6F,$72,$63,$20,$6F,$6E,$20,$74
- $D48E DEFB $68,$65,$0D,$67,$72,$6F,$75,$6E
- $D496 DEFB $64,$2C,$74,$68,$65,$6E,$20,$76
- $D49E DEFB $61,$6E,$69,$73,$68,$65,$73,$2E
- $D4A6 DEFB $2E,$2E,$FF,$46,$72,$6F,$6D,$20
- $D4AE DEFB $61,$62,$6F,$76,$65,$2C,$79,$6F
- $D4B6 DEFB $75,$20,$68,$65,$61,$72,$20,$74
- $D4BE DEFB $68,$65,$20,$62,$65,$61,$74,$69
- $D4C6 DEFB $6E,$67,$0D,$6F,$66,$20,$76,$65
- $D4CE DEFB $6C,$76,$65,$74,$20,$77,$69,$6E
- $D4D6 DEFB $67,$73,$20,$72,$65,$63,$65,$64
- $D4DE DEFB $69,$6E,$67,$20,$69,$6E,$74,$6F
- $D4E6 DEFB $0D,$74,$68,$65,$20,$64,$69,$73
- $D4EE DEFB $74,$61,$6E,$63,$65,$2E,$FF,$48
- $D4F6 DEFB $65,$20,$64,$6F,$65,$73,$6E,$27
- $D4FE DEFB $74,$20,$77,$61,$6E,$74,$20,$69
- $D506 DEFB $74,$2E,$0D,$48,$65,$27,$73,$20
- $D50E DEFB $64,$72,$6F,$70,$70,$65,$64,$20
- $D516 DEFB $69,$74,$2E,$FF,$49,$74,$20,$69
- $D51E DEFB $73,$20,$6E,$6F,$74,$20,$6F,$6E
- $D526 DEFB $20,$74,$68,$65,$20,$73,$6C,$61
- $D52E DEFB $62,$2E,$FF,$54,$68,$65,$20,$67
- $D536 DEFB $75,$61,$72,$64,$20,$61,$63,$63
- $D53E DEFB $65,$70,$74,$73,$20,$74,$68,$65
- $D546 DEFB $20,$73,$61,$6C,$74,$20,$61,$73
- $D54E DEFB $20,$69,$74,$0D,$69,$73,$20,$73
- $D556 DEFB $6F,$72,$65,$6C,$79,$20,$6E,$65
- $D55E DEFB $65,$64,$65,$64,$20,$62,$79,$20
- $D566 DEFB $74,$68,$65,$20,$68,$69,$6C,$6C
- $D56E DEFB $66,$6F,$72,$74,$0D,$74,$72,$69
- $D576 DEFB $62,$65,$2E,$48,$65,$20,$64,$69
- $D57E DEFB $73,$61,$70,$70,$65,$61,$72,$73
- $D586 DEFB $20,$69,$6E,$73,$69,$64,$65,$2E
- $D58E DEFB $FF,$48,$65,$20,$61,$63,$63,$65
- $D596 DEFB $70,$74,$73,$20,$74,$68,$65,$20
- $D59E DEFB $69,$72,$6F,$6E,$20,$61,$73,$20
- $D5A6 DEFB $70,$61,$79,$6D,$65,$6E,$74,$0D
- $D5AE DEFB $61,$6E,$64,$20,$67,$69,$76,$65
- $D5B6 DEFB $73,$20,$79,$6F,$75,$20,$74,$68
- $D5BE DEFB $65,$20,$6D,$65,$61,$74,$20,$62
- $D5C6 DEFB $65,$66,$6F,$72,$65,$0D,$6D,$6F
- $D5CE DEFB $76,$69,$6E,$67,$20,$6F,$66,$66
- $D5D6 DEFB $20,$69,$6E,$74,$6F,$20,$74,$68
- $D5DE DEFB $65,$20,$63,$72,$6F,$77,$64,$2E
- $D5E6 DEFB $FF,$54,$68,$65,$20,$74,$72,$61
- $D5EE DEFB $64,$65,$72,$20,$74,$61,$6B,$65
- $D5F6 DEFB $73,$20,$69,$74,$20,$61,$6E,$64
- $D5FE DEFB $20,$73,$61,$79,$73,$3A,$2D,$0D
- $D606 DEFB $22,$54,$68,$61,$6E,$6B,$20,$79
- $D60E DEFB $6F,$75,$21,$22,$20,$62,$65,$66
- $D616 DEFB $6F,$72,$65,$20,$68,$65,$20,$71
- $D61E DEFB $75,$69,$63,$6B,$6C,$79,$0D,$64
- $D626 DEFB $69,$73,$61,$70,$70,$65,$61,$72
- $D62E DEFB $73,$20,$69,$6E,$74,$6F,$20,$74
- $D636 DEFB $68,$65,$20,$63,$72,$6F,$77,$64
- $D63E DEFB $2E,$FF,$54,$68,$65,$20,$64,$72
- $D646 DEFB $75,$69,$64,$20,$72,$65,$6D,$6F
- $D64E DEFB $76,$65,$73,$20,$74,$68,$65,$20
- $D656 DEFB $61,$6D,$75,$6C,$65,$74,$0D,$61
- $D65E DEFB $6E,$64,$20,$6C,$65,$61,$76,$65
- $D666 DEFB $73,$20,$69,$74,$20,$61,$73,$20
- $D66E DEFB $68,$65,$20,$74,$61,$6B,$65,$73
- $D676 DEFB $20,$74,$68,$65,$0D,$52,$6F,$6D
- $D67E DEFB $61,$6E,$20,$61,$6E,$64,$20,$6C
- $D686 DEFB $65,$61,$64,$73,$20,$68,$69,$6D
- $D68E DEFB $20,$61,$77,$61,$79,$2E,$FF,$59
- $D696 DEFB $6F,$75,$20,$61,$72,$65,$20,$67
- $D69E DEFB $65,$74,$74,$69,$6E,$67,$20,$74
- $D6A6 DEFB $6F,$6F,$20,$63,$6C,$6F,$73,$65
- $D6AE DEFB $21,$FF,$54,$68,$65,$20,$6D,$69
- $D6B6 DEFB $67,$68,$74,$79,$20,$70,$61,$77
- $D6BE DEFB $73,$20,$65,$6E,$63,$69,$72,$63
- $D6C6 DEFB $6C,$65,$20,$79,$6F,$75,$0D,$61
- $D6CE DEFB $6E,$64,$20,$62,$65,$67,$69,$6E
- $D6D6 DEFB $20,$74,$6F,$20,$73,$71,$75,$65
- $D6DE DEFB $65,$7A,$65,$2E,$FF,$54,$68,$65
- $D6E6 DEFB $20,$77,$6F,$6C,$76,$65,$73,$20
- $D6EE DEFB $61,$72,$65,$20,$75,$70,$6F,$6E
- $D6F6 DEFB $20,$79,$6F,$75,$2C,$64,$72,$61
- $D6FE DEFB $67,$67,$69,$6E,$67,$0D,$79,$6F
- $D706 DEFB $75,$20,$74,$6F,$20,$74,$68,$65
- $D70E DEFB $20,$67,$72,$6F,$75,$6E,$64,$2E
- $D716 DEFB $FF,$54,$68,$65,$20,$62,$65,$61
- $D71E DEFB $72,$20,$65,$61,$74,$73,$20,$74
- $D726 DEFB $68,$65,$20,$66,$6F,$6F,$64,$2E
- $D72E DEFB $FF,$54,$68,$65,$20,$77,$6F,$6C
- $D736 DEFB $76,$65,$73,$20,$65,$61,$74,$20
- $D73E DEFB $74,$68,$65,$20,$66,$6F,$6F,$64
- $D746 DEFB $2E,$FF,$59,$6F,$75,$27,$72,$65
- $D74E DEFB $20,$6E,$6F,$74,$20,$69,$6E,$20
- $D756 DEFB $69,$74,$2E,$FF,$49,$74,$20,$69
- $D75E DEFB $73,$6E,$27,$74,$20,$74,$69,$65
- $D766 DEFB $64,$2E,$FF,$48,$65,$20,$69,$73
- $D76E DEFB $6E,$27,$74,$20,$74,$69,$65,$64
- $D776 DEFB $2E,$FF,$4E,$6F,$77,$20,$66,$72
- $D77E DEFB $65,$65,$2C,$74,$68,$65,$20,$6F
- $D786 DEFB $78,$20,$62,$65,$63,$6F,$6D,$65
- $D78E DEFB $73,$20,$65,$6E,$72,$61,$67,$65
- $D796 DEFB $64,$0D,$61,$6E,$64,$20,$69,$6D
- $D79E DEFB $70,$61,$6C,$65,$73,$20,$79,$6F
- $D7A6 DEFB $75,$20,$6F,$6E,$20,$69,$74,$73
- $D7AE DEFB $20,$68,$6F,$72,$6E,$73,$2E,$FF
- $D7B6 DEFB $59,$6F,$75,$20,$72,$65,$6C,$65
- $D7BE DEFB $61,$73,$65,$20,$68,$69,$6D,$2E
- $D7C6 DEFB $0D,$48,$65,$20,$73,$75,$64,$64
- $D7CE DEFB $65,$6E,$6C,$79,$20,$74,$75,$72
- $D7D6 DEFB $6E,$73,$20,$61,$6E,$64,$20,$61
- $D7DE DEFB $74,$74,$61,$63,$6B,$73,$2E,$0D
- $D7E6 DEFB $48,$65,$20,$6F,$76,$65,$72,$70
- $D7EE DEFB $6F,$77,$65,$72,$73,$20,$79,$6F
- $D7F6 DEFB $75,$2E,$FF,$54,$68,$65,$20,$61
- $D7FE DEFB $69,$72,$20,$62,$65,$63,$6F,$6D
- $D806 DEFB $65,$73,$20,$63,$68,$61,$72,$67
- $D80E DEFB $65,$64,$20,$77,$69,$74,$68,$0D
- $D816 DEFB $69,$6D,$6D,$65,$6E,$73,$65,$20
- $D81E DEFB $70,$6F,$77,$65,$72,$2E,$54,$68
- $D826 DEFB $65,$20,$69,$6D,$61,$67,$65,$20
- $D82E DEFB $6F,$66,$20,$74,$68,$65,$0D,$68
- $D836 DEFB $61,$72,$65,$20,$77,$61,$76,$65
- $D83E DEFB $72,$73,$20,$61,$6E,$64,$20,$69
- $D846 DEFB $73,$20,$74,$72,$61,$6E,$73,$66
- $D84E DEFB $6F,$72,$6D,$65,$64,$2E,$0D,$54
- $D856 DEFB $68,$65,$20,$6D,$69,$67,$68,$74
- $D85E DEFB $79,$20,$67,$6F,$64,$20,$4C,$75
- $D866 DEFB $67,$20,$73,$74,$61,$6E,$64,$73
- $D86E DEFB $20,$62,$65,$66,$6F,$72,$65,$0D
- $D876 DEFB $79,$6F,$75,$20,$61,$6E,$64,$20
- $D87E DEFB $73,$61,$79,$73,$3A,$2D,$0D,$22
- $D886 DEFB $4E,$65,$61,$72,$20,$6C,$61,$79
- $D88E DEFB $73,$20,$6D,$79,$20,$68,$6F,$6D
- $D896 DEFB $65,$2E,$4A,$6F,$75,$72,$6E,$65
- $D89E DEFB $79,$20,$74,$68,$65,$72,$65,$0D
- $D8A6 DEFB $61,$6E,$64,$20,$73,$65,$65,$6B
- $D8AE DEFB $20,$74,$68,$65,$20,$63,$72,$6F
- $D8B6 DEFB $77,$6E,$20,$74,$68,$61,$74,$20
- $D8BE DEFB $61,$6C,$6C,$20,$6D,$75,$73,$74
- $D8C6 DEFB $0D,$61,$63,$6B,$6E,$6F,$77,$6C
- $D8CE DEFB $65,$64,$67,$65,$2E,$22,$FF,$48
- $D8D6 DEFB $65,$20,$74,$68,$65,$6E,$20,$76
- $D8DE DEFB $61,$6E,$69,$73,$68,$65,$73,$2E
- $D8E6 DEFB $FF,$59,$6F,$75,$20,$64,$72,$69
- $D8EE DEFB $6E,$6B,$20,$73,$6F,$6D,$65,$20
- $D8F6 DEFB $77,$61,$74,$65,$72,$2E,$FF,$59
- $D8FE DEFB $6F,$75,$20,$63,$61,$6E,$27,$74
- $D906 DEFB $2E,$20,$49,$74,$27,$73,$20,$73
- $D90E DEFB $61,$6C,$74,$20,$77,$61,$74,$65
- $D916 DEFB $72,$2E,$FF,$59,$6F,$75,$20,$70
- $D91E DEFB $6C,$75,$6E,$67,$65,$20,$69,$6E
- $D926 DEFB $74,$6F,$20,$74,$68,$65,$20,$6C
- $D92E DEFB $61,$6B,$65,$2E,$0D,$54,$68,$65
- $D936 DEFB $20,$64,$61,$72,$6B,$20,$77,$61
- $D93E DEFB $74,$65,$72,$73,$20,$63,$6C,$6F
- $D946 DEFB $73,$65,$20,$6F,$76,$65,$72,$20
- $D94E DEFB $79,$6F,$75,$72,$0D,$68,$65,$61
- $D956 DEFB $64,$2E,$59,$6F,$75,$20,$61,$72
- $D95E DEFB $65,$20,$74,$6F,$6F,$20,$74,$69
- $D966 DEFB $72,$65,$64,$20,$74,$6F,$20,$73
- $D96E DEFB $77,$69,$6D,$2E,$FF,$59,$6F,$75
- $D976 DEFB $20,$74,$61,$6B,$65,$20,$61,$20
- $D97E DEFB $72,$65,$66,$72,$65,$73,$68,$69
- $D986 DEFB $6E,$67,$20,$64,$69,$70,$20,$74
- $D98E DEFB $68,$65,$6E,$0D,$63,$6C,$69,$6D
- $D996 DEFB $62,$20,$6F,$75,$74,$20,$61,$67
- $D99E DEFB $61,$69,$6E,$2E,$FF,$59,$6F,$75
- $D9A6 DEFB $27,$72,$65,$20,$69,$6E,$20,$6E
- $D9AE DEFB $6F,$74,$68,$69,$6E,$67,$20,$79
- $D9B6 DEFB $6F,$75,$20,$6E,$65,$65,$64,$20
- $D9BE DEFB $74,$6F,$0D,$63,$6C,$69,$6D,$62
- $D9C6 DEFB $20,$6F,$75,$74,$20,$6F,$66,$2E
- $D9CE DEFB $FF,$54,$68,$65,$20,$72,$69,$6E
- $D9D6 DEFB $67,$20,$69,$73,$20,$66,$6F,$72
- $D9DE DEFB $6D,$65,$64,$20,$66,$72,$6F,$6D
- $D9E6 DEFB $20,$63,$6C,$6F,$73,$65,$0D,$73
- $D9EE DEFB $65,$74,$20,$63,$72,$79,$73,$74
- $D9F6 DEFB $61,$6C,$73,$20,$61,$6E,$64,$20
- $D9FE DEFB $61,$73,$20,$73,$75,$63,$68,$20
- $DA06 DEFB $74,$68,$65,$72,$65,$0D,$69,$73
- $DA0E DEFB $20,$6E,$6F,$20,$64,$65,$66,$69
- $DA16 DEFB $6E,$65,$64,$20,$65,$6E,$74,$72
- $DA1E DEFB $61,$6E,$63,$65,$2E,$FF,$54,$72
- $DA26 DEFB $79,$20,$61,$20,$6D,$6F,$72,$65
- $DA2E DEFB $20,$6D,$65,$61,$73,$75,$72,$65
- $DA36 DEFB $64,$20,$61,$70,$70,$72,$6F,$61
- $DA3E DEFB $63,$68,$2E,$FF,$59,$6F,$75,$20
- $DA46 DEFB $70,$6C,$75,$6D,$6D,$65,$74,$20
- $DA4E DEFB $6F,$6E,$74,$6F,$20,$74,$68,$65
- $DA56 DEFB $20,$72,$6F,$63,$6B,$20,$66,$6C
- $DA5E DEFB $6F,$6F,$72,$0D,$62,$65,$6C,$6F
- $DA66 DEFB $77,$20,$61,$6E,$64,$20,$61,$72
- $DA6E DEFB $65,$20,$6D,$6F,$72,$74,$61,$6C
- $DA76 DEFB $6C,$79,$20,$69,$6E,$6A,$75,$72
- $DA7E DEFB $65,$64,$2E,$FF,$59,$6F,$75,$20
- $DA86 DEFB $61,$72,$65,$20,$61,$6C,$72,$65
- $DA8E DEFB $61,$64,$79,$20,$77,$65,$61,$72
- $DA96 DEFB $69,$6E,$67,$20,$69,$74,$2E,$FF
- $DA9E DEFB $54,$68,$65,$20,$75,$72,$6E,$20
- $DAA6 DEFB $6C,$61,$6E,$64,$73,$20,$69,$6E
- $DAAE DEFB $20,$74,$68,$65,$20,$66,$69,$72
- $DAB6 DEFB $65,$2E,$0D,$53,$6C,$6F,$77,$6C
- $DABE DEFB $79,$2C,$74,$68,$65,$20,$77,$61
- $DAC6 DEFB $78,$20,$6D,$65,$6C,$74,$73,$2E
- $DACE DEFB $41,$73,$20,$74,$68,$65,$0D,$61
- $DAD6 DEFB $73,$68,$65,$73,$20,$73,$70,$69
- $DADE DEFB $6C,$6C,$20,$69,$6E,$74,$6F,$20
- $DAE6 DEFB $74,$68,$65,$20,$66,$6C,$61,$6D
- $DAEE DEFB $65,$73,$20,$61,$6E,$0D,$65,$65
- $DAF6 DEFB $72,$69,$65,$20,$77,$69,$6E,$64
- $DAFE DEFB $20,$73,$74,$61,$72,$74,$73,$20
- $DB06 DEFB $74,$6F,$20,$62,$6C,$6F,$77,$2E
- $DB0E DEFB $2E,$2E,$FF,$46,$72,$6F,$6D,$20
- $DB16 DEFB $74,$68,$65,$20,$66,$6C,$61,$6D
- $DB1E DEFB $65,$73,$20,$6D,$61,$72,$63,$68
- $DB26 DEFB $20,$74,$68,$65,$0D,$73,$68,$61
- $DB2E DEFB $64,$6F,$77,$79,$20,$66,$6F,$72
- $DB36 DEFB $6D,$73,$20,$6F,$66,$20,$74,$68
- $DB3E DEFB $65,$20,$4E,$65,$6D,$65,$64,$69
- $DB46 DEFB $61,$6E,$0D,$68,$6F,$73,$74,$2E
- $DB4E DEFB $54,$68,$65,$79,$20,$73,$69,$6C
- $DB56 DEFB $65,$6E,$74,$6C,$79,$20,$66,$61
- $DB5E DEFB $6C,$6C,$20,$75,$70,$6F,$6E,$20
- $DB66 DEFB $74,$68,$65,$0D,$46,$6F,$6D,$6F
- $DB6E DEFB $72,$69,$61,$6E,$20,$77,$61,$72
- $DB76 DEFB $69,$6F,$72,$73,$20,$61,$6E,$64
- $DB7E DEFB $20,$64,$65,$73,$74,$72,$6F,$79
- $DB86 DEFB $0D,$74,$68,$65,$6D,$20,$75,$74
- $DB8E DEFB $74,$65,$72,$6C,$79,$2E,$0D,$54
- $DB96 DEFB $68,$65,$20,$4E,$65,$6D,$65,$64
- $DB9E DEFB $69,$61,$6E,$73,$20,$6D,$65,$6C
- $DBA6 DEFB $74,$20,$62,$61,$63,$6B,$20,$69
- $DBAE DEFB $6E,$74,$6F,$0D,$74,$68,$65,$20
- $DBB6 DEFB $66,$6C,$61,$6D,$65,$73,$2E,$FF
- $DBBE DEFB $59,$6F,$75,$20,$61,$6C,$72,$65
- $DBC6 DEFB $61,$64,$79,$20,$63,$61,$72,$72
- $DBCE DEFB $79,$20,$74,$68,$65,$20,$73,$68
- $DBD6 DEFB $69,$65,$6C,$64,$20,$69,$6E,$0D
- $DBDE DEFB $61,$20,$64,$65,$66,$65,$6E,$73
- $DBE6 DEFB $69,$76,$65,$20,$70,$6F,$73,$69
- $DBEE DEFB $74,$69,$6F,$6E,$2E,$FF,$44,$6F
- $DBF6 DEFB $6E,$27,$74,$20,$62,$65,$20,$64
- $DBFE DEFB $69,$73,$67,$75,$73,$74,$69,$6E
- $DC06 DEFB $67,$2E,$FF,$59,$6F,$75,$20,$6D
- $DC0E DEFB $75,$73,$74,$20,$62,$65,$20,$6A
- $DC16 DEFB $6F,$6B,$69,$6E,$67,$2E,$FF,$59
- $DC1E DEFB $6F,$75,$20,$61,$72,$65,$20,$66
- $DC26 DEFB $69,$6C,$6C,$65,$64,$20,$77,$69
- $DC2E DEFB $74,$68,$20,$72,$65,$6E,$65,$77
- $DC36 DEFB $65,$64,$0D,$65,$6E,$65,$72,$67
- $DC3E DEFB $79,$2E,$FF,$49,$74,$20,$77,$61
- $DC46 DEFB $73,$20,$61,$20,$6C,$69,$74,$74
- $DC4E DEFB $6C,$65,$20,$74,$6F,$75,$67,$68
- $DC56 DEFB $2E,$FF,$59,$6F,$75,$20,$63,$61
- $DC5E DEFB $70,$74,$75,$72,$65,$20,$74,$68
- $DC66 DEFB $65,$20,$75,$6E,$73,$75,$73,$70
- $DC6E DEFB $65,$63,$74,$69,$6E,$67,$0D,$52
- $DC76 DEFB $6F,$6D,$61,$6E,$2C,$73,$65,$63
- $DC7E DEFB $75,$72,$69,$6E,$67,$20,$68,$69
- $DC86 DEFB $73,$20,$68,$61,$6E,$64,$73,$20
- $DC8E DEFB $77,$69,$74,$68,$0D,$74,$68,$65
- $DC96 DEFB $20,$72,$6F,$70,$65,$2E,$FF,$57
- $DC9E DEFB $68,$61,$74,$20,$77,$69,$74,$68
- $DCA6 DEFB $3F,$FF,$48,$65,$27,$73,$20,$6E
- $DCAE DEFB $6F,$74,$20,$69,$6E,$74,$65,$72
- $DCB6 DEFB $65,$73,$74,$65,$64,$2E,$FF,$59
- $DCBE DEFB $6F,$75,$20,$66,$65,$65,$6C,$20
- $DCC6 DEFB $61,$20,$73,$65,$6E,$73,$65,$20
- $DCCE DEFB $6F,$66,$20,$72,$75,$73,$68,$69
- $DCD6 DEFB $6E,$67,$0D,$6D,$6F,$76,$65,$6D
- $DCDE DEFB $65,$6E,$74,$2E,$2E,$2E,$FF,$59
- $DCE6 DEFB $6F,$75,$20,$64,$6F,$6E,$27,$74
- $DCEE DEFB $20,$68,$61,$76,$65,$20,$61,$20
- $DCF6 DEFB $77,$65,$6F,$70,$6F,$6E,$2E,$FF
- $DCFE DEFB $54,$68,$65,$20,$52,$6F,$6D,$61
- $DD06 DEFB $6E,$20,$69,$73,$20,$75,$6E,$6E
- $DD0E DEFB $65,$72,$76,$65,$64,$20,$62,$79
- $DD16 DEFB $20,$74,$68,$65,$0D,$66,$65,$72
- $DD1E DEFB $6F,$63,$69,$74,$79,$20,$6F,$66
- $DD26 DEFB $20,$79,$6F,$75,$72,$20,$61,$74
- $DD2E DEFB $74,$61,$63,$6B,$2E,$0D,$48,$65
- $DD36 DEFB $20,$72,$75,$6E,$73,$20,$6F,$66
- $DD3E DEFB $66,$2C,$69,$6E,$20,$70,$61,$6E
- $DD46 DEFB $69,$63,$2E,$FF,$59,$6F,$75,$72
- $DD4E DEFB $20,$62,$6C,$6F,$77,$20,$73,$74
- $DD56 DEFB $72,$69,$6B,$65,$73,$20,$74,$72
- $DD5E DEFB $75,$65,$2E,$0D,$48,$65,$20,$69
- $DD66 DEFB $73,$20,$64,$65,$61,$64,$2E,$FF
- $DD6E DEFB $54,$68,$61,$74,$20,$77,$61,$73
- $DD76 DEFB $20,$76,$65,$72,$79,$20,$63,$6F
- $DD7E DEFB $77,$61,$72,$64,$6C,$79,$2E,$FF
- $DD86 DEFB $59,$6F,$75,$20,$61,$74,$74,$61
- $DD8E DEFB $63,$6B,$20,$69,$6E,$20,$76,$61
- $DD96 DEFB $69,$6E,$2E,$54,$68,$65,$79,$20
- $DD9E DEFB $71,$75,$69,$63,$6B,$6C,$79,$0D
- $DDA6 DEFB $6F,$76,$65,$72,$77,$68,$65,$6C
- $DDAE DEFB $6D,$20,$79,$6F,$75,$2E,$FF,$54
- $DDB6 DEFB $68,$65,$20,$46,$6F,$6D,$6F,$72
- $DDBE DEFB $69,$61,$6E,$20,$69,$73,$20,$75
- $DDC6 DEFB $6E,$61,$66,$66,$65,$63,$74,$65
- $DDCE DEFB $64,$20,$62,$79,$0D,$79,$6F,$75
- $DDD6 DEFB $72,$20,$62,$6C,$6F,$77,$73,$2E
- $DDDE DEFB $FF,$4F,$2E,$4B,$2E,$20,$49,$74
- $DDE6 DEFB $20,$6E,$6F,$20,$6C,$6F,$6E,$67
- $DDEE DEFB $65,$72,$20,$73,$75,$66,$66,$65
- $DDF6 DEFB $72,$73,$2E,$FF,$59,$6F,$75,$20
- $DDFE DEFB $61,$72,$65,$20,$6D,$6F,$62,$62
- $DE06 DEFB $65,$64,$20,$62,$79,$20,$74,$68
- $DE0E DEFB $65,$20,$61,$6E,$67,$72,$79,$0D
- $DE16 DEFB $76,$69,$6C,$6C,$61,$67,$65,$72
- $DE1E DEFB $73,$2E,$54,$68,$65,$79,$20,$61
- $DE26 DEFB $74,$74,$61,$63,$6B,$20,$79,$6F
- $DE2E DEFB $75,$2E,$FF,$59,$6F,$75,$20,$63
- $DE36 DEFB $61,$6E,$27,$74,$2E,$54,$68,$65
- $DE3E DEFB $72,$65,$20,$61,$72,$65,$20,$74
- $DE46 DEFB $6F,$6F,$20,$6D,$61,$6E,$79,$0D
- $DE4E DEFB $6F,$66,$20,$74,$68,$65,$6D,$2E
- $DE56 DEFB $FF,$59,$6F,$75,$20,$61,$74,$74
- $DE5E DEFB $61,$63,$6B,$20,$62,$6F,$6C,$64
- $DE66 DEFB $6C,$79,$2C,$62,$75,$74,$20,$61
- $DE6E DEFB $20,$6D,$69,$67,$68,$74,$79,$0D
- $DE76 DEFB $63,$6C,$61,$77,$65,$64,$20,$70
- $DE7E DEFB $61,$77,$20,$72,$61,$6B,$65,$73
- $DE86 DEFB $20,$79,$6F,$75,$72,$0D,$75,$6E
- $DE8E DEFB $70,$72,$6F,$74,$65,$63,$74,$65
- $DE96 DEFB $64,$20,$73,$69,$64,$65,$2E,$FF
- $DE9E DEFB $59,$6F,$75,$72,$20,$62,$6C,$6F
- $DEA6 DEFB $77,$20,$73,$74,$72,$69,$6B,$65
- $DEAE DEFB $73,$20,$74,$72,$75,$65,$2E,$0D
- $DEB6 DEFB $49,$74,$20,$69,$73,$20,$64,$65
- $DEBE DEFB $61,$64,$2E,$FF,$41,$20,$67,$75
- $DEC6 DEFB $61,$72,$64,$2C,$6F,$6E,$20,$74
- $DECE DEFB $68,$65,$20,$72,$61,$6D,$70,$61
- $DED6 DEFB $72,$74,$20,$61,$62,$6F,$76,$65
- $DEDE DEFB $2C,$0D,$66,$6C,$69,$6E,$67,$73
- $DEE6 DEFB $20,$61,$20,$73,$70,$65,$61,$72
- $DEEE DEFB $2E,$FF,$54,$68,$65,$20,$64,$72
- $DEF6 DEFB $75,$69,$64,$20,$61,$76,$6F,$69
- $DEFE DEFB $64,$73,$20,$79,$6F,$75,$72,$20
- $DF06 DEFB $62,$6C,$6F,$77,$20,$61,$6E,$64
- $DF0E DEFB $0D,$73,$74,$61,$62,$73,$20,$79
- $DF16 DEFB $6F,$75,$20,$77,$69,$74,$68,$20
- $DF1E DEFB $61,$20,$73,$61,$63,$72,$69,$66
- $DF26 DEFB $69,$63,$69,$61,$6C,$0D,$6B,$6E
- $DF2E DEFB $69,$66,$65,$2E,$FF,$59,$6F,$75
- $DF36 DEFB $27,$72,$65,$20,$6E,$6F,$74,$20
- $DF3E DEFB $69,$6E,$20,$77,$61,$74,$65,$72
- $DF46 DEFB $2E,$FF,$41,$73,$20,$79,$6F,$75
- $DF4E DEFB $20,$6D,$6F,$76,$65,$20,$74,$68
- $DF56 DEFB $72,$6F,$75,$67,$68,$20,$74,$68
- $DF5E DEFB $65,$20,$66,$69,$72,$65,$0D,$63
- $DF66 DEFB $75,$72,$74,$61,$69,$6E,$2C,$79
- $DF6E DEFB $6F,$75,$20,$61,$72,$65,$20,$69
- $DF76 DEFB $6E,$63,$69,$6E,$65,$72,$61,$74
- $DF7E DEFB $65,$64,$2E,$FF,$0D,$54,$68,$65
- $DF86 DEFB $20,$77,$6F,$6D,$61,$6E,$20,$69
- $DF8E DEFB $73,$20,$74,$72,$61,$6E,$73,$66
- $DF96 DEFB $6F,$72,$6D,$65,$64,$2E,$2E,$2E
- $DF9E DEFB $0D,$54,$68,$65,$20,$52,$6F,$6D
- $DFA6 DEFB $61,$6E,$20,$67,$6F,$64,$64,$65
- $DFAE DEFB $73,$73,$20,$4D,$69,$6E,$65,$72
- $DFB6 DEFB $76,$61,$20,$73,$74,$61,$6E,$64
- $DFBE DEFB $73,$0D,$62,$65,$66,$6F,$72,$65
- $DFC6 DEFB $20,$79,$6F,$75,$20,$61,$6E,$64
- $DFCE DEFB $20,$63,$68,$75,$63,$6B,$6C,$65
- $DFD6 DEFB $73,$20,$77,$69,$74,$68,$0D,$67
- $DFDE DEFB $6C,$65,$65,$20,$61,$74,$20,$79
- $DFE6 DEFB $6F,$75,$72,$20,$64,$6F,$6F,$6D
- $DFEE DEFB $2E,$0D,$FF,$54,$68,$65,$20,$74
- $DFF6 DEFB $6F,$72,$63,$20,$77,$61,$72,$6D
- $DFFE DEFB $73,$20,$75,$70,$20,$61,$73,$20
- $E006 DEFB $79,$6F,$75,$20,$6C,$6F,$6F,$6B
- $E00E DEFB $FF,$74,$6F,$77,$61,$72,$64,$20
- $E016 DEFB $74,$68,$65,$20,$68,$75,$74,$2E
- $E01E DEFB $FF,$4E,$6F,$72,$74,$68,$2E,$FF
- $E026 DEFB $4E,$6F,$72,$74,$68,$2C,$45,$61
- $E02E DEFB $73,$74,$20,$26,$20,$57,$65,$73
- $E036 DEFB $74,$2E,$FF,$53,$6F,$75,$74,$68
- $E03E DEFB $20,$26,$20,$45,$61,$73,$74,$2E
- $E046 DEFB $FF,$57,$65,$73,$74,$2E,$FF,$53
- $E04E DEFB $6F,$75,$74,$68,$2C,$45,$61,$73
- $E056 DEFB $74,$20,$26,$20,$57,$65,$73,$74
- $E05E DEFB $2E,$FF,$0D,$54,$68,$65,$20,$73
- $E066 DEFB $61,$6C,$74,$20,$68,$61,$73,$20
- $E06E DEFB $64,$69,$73,$73,$6F,$6C,$76,$65
- $E076 DEFB $64,$2E,$FF,$54,$68,$65,$20,$67
- $E07E DEFB $75,$61,$72,$64,$20,$70,$72,$65
- $E086 DEFB $76,$65,$6E,$74,$73,$20,$79,$6F
- $E08E DEFB $75,$2E,$FF,$59,$6F,$75,$27,$76
- $E096 DEFB $65,$20,$6E,$6F,$74,$68,$69,$6E
- $E09E DEFB $67,$20,$74,$6F,$20,$74,$69,$65
- $E0A6 DEFB $20,$68,$69,$6D,$20,$77,$69,$74
- $E0AE DEFB $68,$2E,$FF,$78,$78,$78,$78,$49
- $E0B6 DEFB $20,$20,$20,$2C,$49,$4E,$56,$45
- $E0BE DEFB $4C,$20,$20,$20,$2C,$4C,$4F,$4F
- $E0C6 DEFB $4B,$53,$43,$4F,$52,$45,$58,$41
- $E0CE DEFB $4D,$4C,$4F,$41,$44,$53,$41,$56
- $E0D6 DEFB $45,$51,$55,$49,$54,$4E,$20,$20
- $E0DE DEFB $20,$2C,$4E,$4F,$52,$54,$53,$20
- $E0E6 DEFB $20,$20,$2C,$53,$4F,$55,$54,$45
- $E0EE DEFB $20,$20,$20,$2C,$45,$41,$53,$54
- $E0F6 DEFB $57,$20,$20,$20,$2C,$57,$45,$53
- $E0FE DEFB $54,$55,$20,$20,$20,$2C,$55,$50
- $E106 DEFB $20,$20,$44,$20,$20,$20,$2C,$44
- $E10E DEFB $4F,$57,$4E,$54,$41,$4B,$45,$2C
- $E116 DEFB $47,$45,$54,$20,$44,$52,$4F,$50
- $E11E DEFB $54,$48,$52,$4F,$4B,$49,$4C,$4C
- $E126 DEFB $2C,$41,$54,$54,$41,$2C,$48,$49
- $E12E DEFB $54,$20,$2C,$53,$54,$52,$49,$46
- $E136 DEFB $52,$45,$45,$2C,$52,$45,$4C,$45
- $E13E DEFB $2C,$55,$4E,$54,$49,$47,$49,$56
- $E146 DEFB $45,$4A,$55,$4D,$50,$43,$4C,$49
- $E14E DEFB $4D,$45,$4E,$54,$45,$57,$45,$41
- $E156 DEFB $52,$53,$57,$49,$4D,$46,$55,$43
- $E15E DEFB $4B,$2C,$53,$43,$52,$45,$2C,$52
- $E166 DEFB $41,$50,$45,$2C,$53,$54,$55,$46
- $E16E DEFB $47,$4F,$20,$20,$43,$41,$50,$54
- $E176 DEFB $50,$4C,$41,$43,$2C,$4C,$45,$41
- $E17E DEFB $4E,$2C,$4C,$41,$59,$20,$42,$55
- $E186 DEFB $59,$20,$2C,$50,$55,$52,$43,$53
- $E18E DEFB $54,$45,$50,$78,$78,$78,$78,$44
- $E196 DEFB $52,$49,$4E,$45,$41,$54,$20,$53
- $E19E DEFB $4C,$45,$45,$2C,$52,$45,$53,$54
- $E1A6 DEFB $78,$78,$78,$78,$78,$78,$78,$78
- $E1AE DEFB $52,$4F,$4D,$41,$46,$4F,$4D,$4F
- $E1B6 DEFB $42,$4F,$41,$52,$52,$41,$54,$53
- $E1BE DEFB $48,$41,$52,$45,$54,$52,$41,$50
- $E1C6 DEFB $50,$4F,$4F,$4C,$53,$41,$4C,$54
- $E1CE DEFB $50,$4F,$54,$20,$41,$43,$4F,$52
- $E1D6 DEFB $55,$52,$4E,$20,$53,$4C,$41,$42
- $E1DE DEFB $52,$41,$56,$45,$48,$45,$4C,$4D
- $E1E6 DEFB $46,$4F,$4F,$44,$49,$52,$4F,$4E
- $E1EE DEFB $4D,$4F,$4E,$4F,$46,$49,$53,$53
- $E1F6 DEFB $57,$41,$52,$52,$44,$45,$4D,$4F
- $E1FE DEFB $48,$55,$54,$20,$56,$41,$53,$45
- $E206 DEFB $43,$41,$56,$45,$53,$57,$4F,$52
- $E20E DEFB $4D,$45,$41,$54,$54,$52,$41,$44
- $E216 DEFB $57,$4F,$4D,$41,$57,$4F,$4C,$56
- $E21E DEFB $42,$45,$41,$52,$47,$55,$41,$52
- $E226 DEFB $44,$52,$55,$49,$41,$4D,$55,$4C
- $E22E DEFB $2C,$54,$41,$4C,$49,$52,$49,$4E
- $E236 DEFB $47,$50,$49,$47,$20,$52,$4F,$50
- $E23E DEFB $45,$4F,$58,$20,$20,$47,$52,$4F
- $E246 DEFB $4F,$53,$48,$49,$45,$46,$49,$52
- $E24E DEFB $45,$2C,$46,$4C,$41,$4D,$4C,$41
- $E256 DEFB $4B,$45,$4C,$41,$44,$44,$53,$54
- $E25E DEFB $52,$41,$53,$54,$41,$46,$42,$4F
- $E266 DEFB $44,$59,$43,$4C,$4F,$41,$53,$49
- $E26E DEFB $4C,$56,$50,$4C,$41,$54,$57,$41
- $E276 DEFB $54,$45,$4C,$55,$47,$20,$44,$41
- $E27E DEFB $4E,$55,$4D,$49,$4E,$45,$43,$48
- $E286 DEFB $41,$52,$50,$49,$54,$20,$54,$4F
- $E28E DEFB $52,$43,$53,$4B,$55,$4C,$48,$49
- $E296 DEFB $4C,$4C,$42,$52,$4F,$43,$78,$78
- $E29E DEFB $78,$78,$78,$78,$78,$78,$41,$54
- $E2A6 DEFB $20,$20,$46,$52,$4F,$4D,$41,$47
- $E2AE DEFB $41,$49,$57,$49,$4C,$44,$42,$52
- $E2B6 DEFB $4F,$4E,$43,$4C,$41,$59,$43,$52
- $E2BE DEFB $59,$53,$50,$49,$4C,$45,$4F,$46
- $E2C6 DEFB $20,$20,$53,$54,$4F,$4E,$59,$4F
- $E2CE DEFB $55,$4E,$57,$48,$49,$54,$57,$49
- $E2D6 DEFB $54,$48,$2C,$55,$53,$49,$4E,$54
- $E2DE DEFB $4F,$20,$20,$4F,$4E,$20,$20,$2C
- $E2E6 DEFB $4F,$4E,$54,$4F,$49,$4E,$20,$20
- $E2EE DEFB $2C,$49,$4E,$54,$4F,$48,$55,$4D
- $E2F6 DEFB $41,$4F,$41,$4B,$20,$41,$52,$4D
- $E2FE DEFB $45,$44,$45,$45,$50,$4F,$55,$54
- $E306 DEFB $20,$FF,$25,$26,$27,$28,$29,$2A
- $E30E DEFB $2B,$2C,$2D,$2E,$2F,$5A,$31,$32
- $E316 DEFB $33,$34,$35,$36,$37,$38,$39,$3A
- $E31E DEFB $3B,$3C,$3D,$3E,$3F,$40,$41,$42
- $E326 DEFB $43,$44,$45,$46,$47,$48,$5B,$4A
- $E32E DEFB $4B,$59,$4D,$4E,$4F,$50,$51,$52
- $E336 DEFB $53,$54,$55,$56,$57,$58,$30,$49
- $E33E DEFB $4C,$5C,$5D,$02,$03,$0A,$0B,$0C
- $E346 DEFB $55,$FF,$04,$05,$0D,$0E,$0F,$10
- $E34E DEFB $FF,$06,$FF,$09,$FF,$13,$26,$FF
- $E356 DEFB $13,$26,$FF,$15,$16,$17,$18,$FF
- $E35E DEFB $19,$FF,$1A,$FF,$1B,$FF,$1C,$FF
- $E366 DEFB $69,$6A,$FF,$1D,$FF,$1F,$20,$FF
- $E36E DEFB $22,$FF,$23,$FF,$24,$FF,$24,$25
- $E376 DEFB $FF,$27,$0F,$10,$04,$05,$0D,$0E
- $E37E DEFB $FF,$29,$FF,$2B,$2C,$2F,$30,$FF
- $E386 DEFB $2E,$FF,$31,$15,$16,$33,$34,$35
- $E38E DEFB $FF,$36,$11,$FF,$38,$39,$59,$FF
- $E396 DEFB $3A,$3C,$FF,$3C,$FF,$3D,$FF,$42
- $E39E DEFB $FF,$44,$45,$FF,$46,$FF,$49,$FF
- $E3A6 DEFB $49,$4B,$4C,$FF,$4D,$4E,$FF,$4F
- $E3AE DEFB $50,$FF,$55,$51,$52,$53,$0B,$FF
- $E3B6 DEFB $52,$53,$54,$FF,$3B,$FF,$56,$FF
- $E3BE DEFB $11,$57,$6E,$FF,$68,$21,$FF,$5A
- $E3C6 DEFB $5B,$5C,$5E,$FF,$5F,$60,$FF,$61
- $E3CE DEFB $FF,$0C,$0D,$0E,$10,$53,$54,$55
- $E3D6 DEFB $26,$43,$45,$50,$62,$63,$FF,$62
- $E3DE DEFB $64,$6D,$FF,$65,$FF,$5D,$5E,$66
- $E3E6 DEFB $FF,$15,$16,$17,$18,$32,$6C,$FF
- $E3EE DEFB $14,$FF,$1E,$FF,$67,$FF,$21,$FF
- $E3F6 DEFB $58,$59,$FF,$58,$59,$FF,$6C,$FF
- $E3FE DEFB $6F,$70,$71,$72,$73,$74,$75,$76
- $E406 DEFB $FF,$77,$78,$79,$7A,$7B,$7C,$7D
- $E40E DEFB $7E,$7F,$80,$81,$82,$83,$84,$85
- $E416 DEFB $FF,$41,$E3,$48,$E3,$4F,$E3,$51
- $E41E DEFB $E3,$53,$E3,$56,$E3,$59,$E3,$5E
- $E426 DEFB $E3,$60,$E3,$62,$E3,$64,$E3,$66
- $E42E DEFB $E3,$69,$E3,$6B,$E3,$6E,$E3,$70
- $E436 DEFB $E3,$72,$E3,$74,$E3,$77,$E3,$7F
- $E43E DEFB $E3,$81,$E3,$86,$E3,$88,$E3,$92
- $E446 DEFB $E3,$96,$E3,$99,$E3,$9B,$E3,$9D
- $E44E DEFB $E3,$9F,$E3,$A2,$E3,$A4,$E3,$A6
- $E456 DEFB $E3,$AA,$E3,$AD,$E3,$B0,$E3,$B6
- $E45E DEFB $E3,$BA,$E3,$BC,$E3,$BE,$E3,$C2
- $E466 DEFB $E3,$C5,$E3,$CA,$E3,$CD,$E3,$CF
- $E46E DEFB $E3,$DD,$E3,$E1,$E3,$E3,$E3,$E7
- $E476 DEFB $E3,$EE,$E3,$F0,$E3,$F2,$E3,$F4
- $E47E DEFB $E3,$F6,$E3,$F9,$E3,$FC,$E3,$FE
- $E486 DEFB $E3,$07,$E4,$22,$01,$02,$03,$04
- $E48E DEFB $05,$06,$07,$08,$09,$0A,$0B,$0C
- $E496 DEFB $0D,$0E,$0F,$13,$10,$12,$20,$14
- $E49E DEFB $15,$16,$17,$1A,$19,$21,$1B,$1C
- $E4A6 DEFB $1D,$1E,$11,$18,$03,$04,$09,$0A
- $E4AE DEFB $0B,$11,$1C,$1D,$16,$0E,$FF,$21
- $E4B6 DEFB $22,$29,$31,$39,$3B,$3C,$FF,$4D
- $E4BE DEFB $51,$55,$FF,$4C,$50,$54,$FF,$3F
- $E4C6 DEFB $37,$30,$28,$FF,$02,$12,$1E,$32
- $E4CE DEFB $FF,$23,$2B,$33,$FF,$5B,$5C,$5D
- $E4D6 DEFB $5E,$FF,$2C,$FF,$24,$FF,$2C,$FF
- $E4DE DEFB $2D,$FF,$25,$FF,$40,$FF,$2A,$FF
+ $C976 DEFB $9B,$C3,$E8,$C6,$1C,$C7
+
+; Message at C97C
+t$C97C DEFM $0D,"You have the feeling that you",$0D,"are being followed.",$FF
+
+; Message at C9AF
+t$C9AF DEFM $0D,"The Roman suddenly appears and",$0D,"he attacks you...",$FF
+
+; Message at C9E1
+t$C9E1 DEFM $0D,"You are too fast for him and",$0D,"you easily avoid the blow.",$FF
+
+; Message at CA1A
+t$CA1A DEFM $0D,"You shouldn't fight on an empty",$0D,"stomach...",$FF
+
+; Message at CA46
+t$CA46 DEFM $0D,"You are taken by surprise.",$0D,"The blow strikes true.",$FF,$0D,"A Fomorian at"
+ $CA87 DEFM "tacks you...",$FF,$0D,"You match the evil creature's",$0D,"speed and avoid the b"
+ $CAC8 DEFM "low.",$FF,$0D,"A wild boar rushes from the",$0D,"undergrowth,squealling as it",$0D,"ca"
+ $CB09 DEFM "reers past you.",$FF,$0D,"You catch a glimpse of a furtive",$0D,"figure...",$FF,$0D,"It q"
+ $CB4A DEFM "uickly vanishes into the",$0D,"milling throng.",$FF,$0D,"A group of rats scurry "
+ $CB8B DEFM "off into",$0D,"hiding.",$FF,$0D,"From the hut,you hear a woman",$0D,"singing sweetly.",$FF
+ $CBCC DEFM $0D,"The woman says:-",$0D,"\"Warlord,I can guide you through",$0D,"the swamp. Fol"
+ $CC0D DEFM "low me.\"",$0D,"She goes North.",$FF,$0D,"The woman goes East.",$FF,$0D,"The woman goes So"
+ $CC4E DEFM "uth.",$FF,$0D,"As you watch,the druid performs",$0D,"a sacrificial rite.He puts "
+ $CC8F DEFM "a",$0D,"slave into a wicker cage and",$0D,"lights a fire beneath it...",$FF,"The un"
+ $CCD0 DEFM "fortunate slave perishes",$0D,"and the fire goes out.",$FF,$0D,"You are assailed"
+ $CD11 DEFM " by a feeling",$0D,"of immense fatigue.",$0D,"The urge to succumb is almost",$0D,"i"
+ $CD52 DEFM "rresistable.",$FF
+
+; Message at CD5F
+t$CD5F DEFM $0D,"You cannot hold your breath any",$0D,"longer. You are drowning.",$FF
+
+; Message at CD9A
+t$CD9A DEFM $0D,"You fight bravely,but the evil",$0D,"creatures overwhelm you.",$FF,"Don't be"
+ $CDDB DEFM " ridiculous.",$FF,"You've done that already.",$FF,"The slab lays horizontally"
+ $CE1C DEFM ".",$0D,"A groove runs along its length.",$FF,"You're not tired.",$FF,"You fall into"
+ $CE5D DEFM " a deep sleep.",$FF,"As you slumber,a shimmering,",$0D,"white,female figure r"
+ $CE9E DEFM "ises from",$0D,"the lake.She drifts over to you",$0D,"and leaves a sword besi"
+ $CEDF DEFM "de you.",$0D,"The figure disappears beneath",$0D,"the still water. You awaken"
+ $CF20 DEFM ".",$FF,"You're not carrying anything.",$FF,"You see nothing special.",$FF,"It is lo"
+ $CF61 DEFM "oking quite bedraggled.",$FF,"It is sealed with wax.There is",$0D,"an inscrip"
+ $CFA2 DEFM "tion on the side.",$0D,"The inscription reads:-",$0D,"\"Herein lay the ashes o"
+ $CFE3 DEFM "f the",$0D,"mighty Nemed. A ancient warrior",$0D,"tribe,felled by sorcery wie"
+ $D024 DEFM "lded",$0D,"by the Evil Ones.\"",$FF,"It is the helmet of the god,Lug.",$FF,"There is"
+ $D065 DEFM " a fissure in one side.",$FF,"It's perfectly balanced for you.",$0D,"This is "
+ $D0A6 DEFM "a sword of legend.",$0D,"Known by many names and in many",$0D,"times,both pas"
+ $D0E7 DEFM "t and yet to be.",$FF,"The blade has a blue sheen.",$FF,"It is cut from a pre"
+ $D128 DEFM "cious stone.",$0D,"Images are reflected brightly",$0D,"in its polished facets"
+ $D169 DEFM ".",$0D,"It is some sort of talisman.",$FF,"It is carved from oak and is",$0D,"stout"
+ $D1AA DEFM "ly made.",$FF,"The body is very emaciated.The",$0D,"face,though drawn,reflect"
+ $D1EB DEFM "s deep",$0D,"tranquility.",$FF,"This neck ring is fashioned from",$0D,"gleaming bro"
+ $D22C DEFM "nze.",$FF,"You cannot move it.",$FF,"The trader snatches it back,",$0D,"angrily.",$FF,"Th"
+ $D26D DEFM "e druid is deceptively strong.",$0D,"He prevents you,saying:-",$0D,"\"No Warlo"
+ $D2AE DEFM "rd,this is a gift from",$0D,"the gods and cannot be given",$0D,"away so light"
+ $D2EF DEFM "ly.\"",$FF,"He doesn't have it.",$FF,"The body does not have a cloak.",$FF,"The bear"
+ $D330 DEFM " devours the meat,but",$0D,"its appetite remains.",$FF,"The wolves pounce gre"
+ $D371 DEFM "edily onto",$0D,"the meat and carry it off into",$0D,"the forest.",$FF,"The raven t"
+ $D3B2 DEFM "akes the acorns.",$0D,"The air starts to shimmer...",$FF,"The goddess Danu st"
+ $D3F3 DEFM "ands before",$0D,"you.She smiles and says:-",$0D,"\"My cleaver Warlord,hero of"
+ $D434 DEFM " our",$0D,"people.Take this torc so that",$0D,"it may aid you in your quest.\""
+ $D475 DEFM $0D,"She leaves the torc on the",$0D,"ground,then vanishes...",$FF,"From above,yo"
+ $D4B6 DEFM "u hear the beating",$0D,"of velvet wings receding into",$0D,"the distance.",$FF,"He"
+ $D4F7 DEFM " doesn't want it.",$0D,"He's dropped it.",$FF,"It is not on the slab.",$FF,"The gua"
+ $D538 DEFM "rd accepts the salt as it",$0D,"is sorely needed by the hillfort",$0D,"tribe."
+ $D579 DEFM "He disappears inside.",$FF,"He accepts the iron as payment",$0D,"and gives yo"
+ $D5BA DEFM "u the meat before",$0D,"moving off into the crowd.",$FF,"The trader takes it "
+ $D5FB DEFM "and says:-",$0D,"\"Thank you!\" before he quickly",$0D,"disappears into the cro"
+ $D63C DEFM "wd.",$FF,"The druid removes the amulet",$0D,"and leaves it as he takes the",$0D,"Ro"
+ $D67D DEFM "man and leads him away.",$FF,"You are getting too close!",$FF,"The mighty paw"
+ $D6BE DEFM "s encircle you",$0D,"and begin to squeeze.",$FF,"The wolves are upon you,drag"
+ $D6FF DEFM "ging",$0D,"you to the ground.",$FF,"The bear eats the food.",$FF,"The wolves eat th"
+ $D740 DEFM "e food.",$FF,"You're not in it.",$FF,"It isn't tied.",$FF,"He isn't tied.",$FF,"Now free,"
+ $D781 DEFM "the ox becomes enraged",$0D,"and impales you on its horns.",$FF,"You release "
+ $D7C2 DEFM "him.",$0D,"He suddenly turns and attacks.",$0D,"He overpowers you.",$FF,"The air be"
+ $D803 DEFM "comes charged with",$0D,"immense power.The image of the",$0D,"hare wavers and"
+ $D844 DEFM " is transformed.",$0D,"The mighty god Lug stands before",$0D,"you and says:-",$0D
+ $D885 DEFM "\"Near lays my home.Journey there",$0D,"and seek the crown that all must"
+ $D8C6 DEFM $0D,"acknowledge.\"",$FF,"He then vanishes.",$FF,"You drink some water.",$FF,"You can't."
+ $D907 DEFM " It's salt water.",$FF,"You plunge into the lake.",$0D,"The dark waters close"
+ $D948 DEFM " over your",$0D,"head.You are too tired to swim.",$FF,"You take a refreshing "
+ $D989 DEFM "dip then",$0D,"climb out again.",$FF,"You're in nothing you need to",$0D,"climb out"
+ $D9CA DEFM " of.",$FF,"The ring is formed from close",$0D,"set crystals and as such there"
+ $DA0B DEFM $0D,"is no defined entrance.",$FF,"Try a more measured approach.",$FF,"You plumme"
+ $DA4C DEFM "t onto the rock floor",$0D,"below and are mortally injured.",$FF,"You are alr"
+ $DA8D DEFM "eady wearing it.",$FF,"The urn lands in the fire.",$0D,"Slowly,the wax melts."
+ $DACE DEFM "As the",$0D,"ashes spill into the flames an",$0D,"eerie wind starts to blow.."
+ $DB0F DEFM ".",$FF,"From the flames march the",$0D,"shadowy forms of the Nemedian",$0D,"host.Th"
+ $DB50 DEFM "ey silently fall upon the",$0D,"Fomorian wariors and destroy",$0D,"them utter"
+ $DB91 DEFM "ly.",$0D,"The Nemedians melt back into",$0D,"the flames.",$FF,"You already carry th"
+ $DBD2 DEFM "e shield in",$0D,"a defensive position.",$FF,"Don't be disgusting.",$FF,"You must b"
+ $DC13 DEFM "e joking.",$FF,"You are filled with renewed",$0D,"energy.",$FF,"It was a little tou"
+ $DC54 DEFM "gh.",$FF,"You capture the unsuspecting",$0D,"Roman,securing his hands with",$0D,"th"
+ $DC95 DEFM "e rope.",$FF,"What with?",$FF,"He's not interested.",$FF,"You feel a sense of rushi"
+ $DCD6 DEFM "ng",$0D,"movement...",$FF,"You don't have a weopon.",$FF,"The Roman is unnerved by "
+ $DD17 DEFM "the",$0D,"ferocity of your attack.",$0D,"He runs off,in panic.",$FF,"Your blow stri"
+ $DD58 DEFM "kes true.",$0D,"He is dead.",$FF,"That was very cowardly.",$FF,"You attack in vain."
+ $DD99 DEFM "They quickly",$0D,"overwhelm you.",$FF,"The Fomorian is unaffected by",$0D,"your bl"
+ $DDDA DEFM "ows.",$FF,"O.K. It no longer suffers.",$FF,"You are mobbed by the angry",$0D,"villa"
+ $DE1B DEFM "gers.They attack you.",$FF,"You can't.There are too many",$0D,"of them.",$FF,"You a"
+ $DE5C DEFM "ttack boldly,but a mighty",$0D,"clawed paw rakes your",$0D,"unprotected side."
+ $DE9D DEFM $FF,"Your blow strikes true.",$0D,"It is dead.",$FF,"A guard,on the rampart above"
+ $DEDE DEFM ",",$0D,"flings a spear.",$FF,"The druid avoids your blow and",$0D,"stabs you with a"
+ $DF1F DEFM " sacrificial",$0D,"knife.",$FF,"You're not in water.",$FF,"As you move through the "
+ $DF60 DEFM "fire",$0D,"curtain,you are incinerated.",$FF,$0D,"The woman is transformed...",$0D,"Th"
+ $DFA1 DEFM "e Roman goddess Minerva stands",$0D,"before you and chuckles with",$0D,"glee "
+ $DFE2 DEFM "at your doom.",$0D,$FF,"The torc warms up as you look",$FF,"toward the hut.",$FF,"Nort"
+ $E023 DEFM "h.",$FF,"North,East & West.",$FF,"South & East.",$FF,"West.",$FF,"South,East & West.",$FF,$0D,"The"
+ $E064 DEFM " salt has dissolved.",$FF,"The guard prevents you.",$FF,"You've nothing to ti"
+ $E0A5 DEFM "e him with.",$FF,"xxxxI   ,INVEL   ,LOOKSCOREXAMLOADSAVEQUITN   ,NORTS "
+ $E0E6 DEFM "  ,SOUTE   ,EASTW   ,WESTU   ,UP  D   ,DOWNTAKE,GET DROPTHROKILL,"
+ $E127 DEFM "ATTA,HIT ,STRIFREE,RELE,UNTIGIVEJUMPCLIMENTEWEARSWIMFUCK,SCRE,RAP"
+ $E168 DEFM "E,STUFGO  CAPTPLAC,LEAN,LAY BUY ,PURCSTEPxxxxDRINEAT SLEE,RESTxxx"
+ $E1A9 DEFM "xxxxxROMAFOMOBOARRATSHARETRAPPOOLSALTPOT ACORURN SLABRAVEHELMFOOD"
+ $E1EA DEFM "IRONMONOFISSWARRDEMOHUT VASECAVESWORMEATTRADWOMAWOLVBEARGUARDRUIA"
+ $E22B DEFM "MUL,TALIRINGPIG ROPEOX  GROOSHIEFIRE,FLAMLAKELADDSTRASTAFBODYCLOA"
+ $E26C DEFM "SILVPLATWATELUG DANUMINECHARPIT TORCSKULHILLBROCxxxxxxxxAT  FROMA"
+ $E2AD DEFM "GAIWILDBRONCLAYCRYSPILEOF  STONYOUNWHITWITH,USINTO  ON  ,ONTOIN  "
+ $E2EE DEFM ",INTOHUMAOAK ARMEDEEPOUT ",$FF,"%&'()*+,-./Z123456789:;<=>?@ABCDEFGH[JK"
+ $E32F DEFM "YMNOPQRSTUVWX0IL\\]",$02,$03,$0A,$0B,$0C,"U",$FF,$04,$05,$0D,$0E,$0F,$10,$FF,$06,$FF,$09,$FF,$13,"&",$FF,$13,"&",$FF,$15,$16,$17,$18,$FF,$19,$FF,$1A,$FF,$1B,$FF,$1C,$FF,"ij",$FF,$1D,$FF,$1F," ",$FF,"\"",$FF
+ $E370 DEFM "#",$FF,"$",$FF,"$%",$FF,"'",$0F,$10,$04,$05,$0D,$0E,$FF,")",$FF,"+,/0",$FF,".",$FF,"1",$15,$16,"345",$FF,"6",$11,$FF,"89Y",$FF,":<",$FF,"<",$FF,"=",$FF,"B",$FF,"DE",$FF,"F",$FF,"I",$FF,"IKL",$FF,"MN",$FF,"OP",$FF,"U"
+ $E3B1 DEFM "QRS",$0B,$FF,"RST",$FF,";",$FF,"V",$FF,$11,"Wn",$FF,"h!",$FF,"Z[\\",$5E,$FF,"_",$60,$FF,"a",$FF,$0C,$0D,$0E,$10,"STU&CEPbc",$FF,"bdm",$FF,"e",$FF,"]",$5E,"f",$FF,$15,$16,$17,$18,"2l",$FF,$14,$FF,$1E,$FF
+ $E3F2 DEFM "g",$FF,"!",$FF,"XY",$FF,"XY",$FF,"l",$FF,"opqrstuv",$FF,"wxyz{|}~",$7F,$80,$81,$82,$83,$84,$85,$FF,"A",$E3,"H",$E3,"O",$E3,"Q",$E3,"S",$E3,"V",$E3,"Y",$E3,$5E,$E3,$60,$E3,"b",$E3,"d",$E3,"f",$E3,"i",$E3,"k",$E3
+ $E433 DEFM "n",$E3,"p",$E3,"r",$E3,"t",$E3,"w",$E3,$7F,$E3,$81,$E3,$86,$E3,$88,$E3,$92,$E3,$96,$E3,$99,$E3,$9B,$E3,$9D,$E3,$9F,$E3,$A2,$E3,$A4,$E3,$A6,$E3,$AA,$E3,$AD,$E3,$B0,$E3,$B6,$E3,$BA,$E3,$BC,$E3,$BE,$E3,$C2,$E3,$C5,$E3,$CA,$E3,$CD,$E3,$CF,$E3,$DD,$E3,$E1,$E3,$E3
+ $E474 DEFM $E3,$E7,$E3,$EE,$E3,$F0,$E3,$F2,$E3,$F4,$E3,$F6,$E3,$F9,$E3,$FC,$E3,$FE,$E3,$07,$E4,"\"",$01,$02,$03,$04,$05,$06,$07,$08,$09,$0A,$0B,$0C,$0D,$0E,$0F,$13,$10,$12," ",$14,$15,$16,$17,$1A,$19,"!",$1B,$1C,$1D,$1E,$11,$18,$03,$04,$09,$0A,$0B,$11,$1C,$1D,$16,$0E,$FF
+ $E4B5 DEFM "!\")19;<",$FF,"MQU",$FF,"LPT",$FF,"?70(",$FF,$02,$12,$1E,"2",$FF,"#+3",$FF,"[\\]",$5E,$FF,",",$FF,"$",$FF,",",$FF,"-",$FF,"%",$FF,"@",$FF,"*",$FF
 
 ; Table: Scenic Event Locations
 ;
@@ -6550,14 +6952,23 @@ g$E508 DEFB $00                             ; Event #N(#PC-$E508) in room
  $E969 DEFB $62,$00,$00,$00,$00,$00,$63,$00
  $E971 DEFB $00,$63,$00,$00,$00,$00,$00
 
-; Data block at E978
-b$E978 DEFB $B9,$E7,$D5,$E7,$30,$E8,$4D,$E8
- $E980 DEFB $4E,$E8,$70,$E8,$F4,$E8,$F6,$E8
- $E988 DEFB $F7,$E8,$59,$E9,$6A,$E9
+; Table: Configurable Exits
+@label=Table_ConfigurableExits
+g$E978 DEFW $E7B9
+ $E97A DEFW $E7D5
+ $E97C DEFW $E830
+ $E97E DEFW $E84D
+ $E980 DEFW $E84E
+ $E982 DEFW $E870
+ $E984 DEFW $E8F4
+ $E986 DEFW $E8F6
+ $E988 DEFW $E8F7
+ $E98A DEFW $E959
+ $E98C DEFW $E96A
 
 ; Routine at E98E
 ;
-; Used by the routine at #R$E99F.
+; Used by the routine at #R$E9D0.
 c$E98E PUSH BC       ;
  $E98F CPIR          ;
  $E991 POP HL        ;
@@ -6571,77 +6982,95 @@ c$E98E PUSH BC       ;
  $E99B CALL $AB88    ;
  $E99E JP (HL)       ;
 
-; Routine at E99F
+; Game Loop
 ;
 ; Used by the routine at #R$FCCE.
-c$E99F CALL $AB0A      ;
- $E9A2 CALL $AFEB      ;
- $E9A5 CALL $AD32      ;
- $E9A8 CALL $AFC7      ;
- $E9AB JR C,$E99F      ;
- $E9AD CALL $B05E      ;
- $E9B0 JR $E99F        ;
-*$E9B2 LD HL,$A8EF     ;
- $E9B5 CALL $A592      ;
- $E9B8 CALL $B0A9      ;
- $E9BB LD HL,$A8FD     ;
- $E9BE CALL $A592      ;
-*$E9C1 CALL $A53E      ;
- $E9C4 CP $4E          ;
- $E9C6 JP Z,$0000      ;
- $E9C9 CP $59          ;
- $E9CB JP Z,$A531      ;
- $E9CE JR $E9C1        ;
-*$E9D0 CALL $A592      ;
- $E9D3 POP HL          ;
- $E9D4 POP HL          ;
- $E9D5 JP $E9B2        ;
- $E9D8 LD HL,$A77E     ;
- $E9DB RES 0,(HL)      ;
- $E9DD LD A,($A7C3)    ;
- $E9E0 CP $0D          ;
- $E9E2 RET NZ          ;
- $E9E3 LD HL,$CD5F     ;
- $E9E6 JP $E9D0        ;
- $E9E9 LD HL,$A77E     ;
- $E9EC RES 1,(HL)      ;
- $E9EE LD A,$0F        ;
- $E9F0 CALL $AE6B      ;
- $E9F3 RET NZ          ;
- $E9F4 LD HL,$CD9A     ;
- $E9F7 JP $E9D0        ;
- $E9FA LD HL,$C97C     ;
- $E9FD CALL $A592      ;
- $EA00 LD A,$00        ;
- $EA02 CALL $AEF0      ;
- $EA05 LD A,$01        ;
- $EA07 CALL $AEF0      ;
- $EA0A RET             ;
- $EA0B LD A,$03        ;
- $EA0D CALL $AEE0      ;
- $EA10 LD A,$02        ;
- $EA12 CALL $AEE7      ;
- $EA15 LD HL,$C9AF     ;
- $EA18 CALL $A592      ;
- $EA1B LD B,$14        ;
- $EA1D LD A,$22        ;
- $EA1F CALL $AED1      ;
- $EA22 AND A           ;
- $EA23 JR Z,$EA2D      ;
- $EA25 LD HL,$CA1A     ;
- $EA28 CALL $B081      ;
- $EA2B LD B,$0A        ;
-*$EA2D LD A,B          ;
- $EA2E CALL $B08A      ;
- $EA31 JR Z,$EA38      ;
- $EA33 LD HL,$C9E1     ;
- $EA36 JR $EA40        ;
-*$EA38 POP HL          ;
- $EA39 LD HL,$E9B2     ;
- $EA3C EX (SP),HL      ;
- $EA3D LD HL,$CA46     ;
-*$EA40 CALL $B081      ;
- $EA43 RET             ;
+@label=GameLoop
+c$E99F CALL $AB0A    ; Call #R$AB0A.
+ $E9A2 CALL $AFEB    ; Call #R$AFEB.
+ $E9A5 CALL $AD32    ; Call #R$AD32.
+ $E9A8 CALL $AFC7    ; Call #R$AFC7.
+ $E9AB JR C,$E99F    ; Jump to #R$E99F if the item isn't present.
+ $E9AD CALL $B05E    ; Call #R$B05E.
+ $E9B0 JR $E99F      ; Jump to #R$E99F.
+
+; Game Over
+;
+; Used by the routine at #R$E9D0.
+;
+; .
+;
+; Print "#STR$A8EF,$08($b==$FF)".
+@label=GameOver
+c$E9B2 LD HL,$A8EF   ; #REGhl=#R$A8EF.
+ $E9B5 CALL $A592    ; Call #R$A592.
+ $E9B8 CALL $B0A9    ; Call #R$B0A9.
+; Print "#STR$A8FD,$08($b==$FF)".
+@label=WantAnotherGameInput
+ $E9BB LD HL,$A8FD   ; #REGhl=#R$A8FD.
+ $E9BE CALL $A592    ; Call #R$A592.
+@label=WantAnotherGameInput_Loop
+*$E9C1 CALL $A53E    ; Call #R$A53E.
+; The player is done with the game, so reset back to BASIC.
+ $E9C4 CP $4E        ; {#HTML(Reset back to BASIC if the keypress is
+ $E9C6 JP Z,$0000    ; "<code>#CHR$4E</code>".)}
+; The player wants another go...
+ $E9C9 CP $59        ; {#HTML(Jump to #R$A531 if the keypress is
+ $E9CB JP Z,$A531    ; "<code>#CHR$59</code>".)}
+; Just loop round for any other input.
+ $E9CE JR $E9C1      ; Jump to #R$E9C1.
+
+; Routine at E9D0
+c$E9D0 CALL $A592      ; Call #R$A592.
+ $E9D3 POP HL          ; {Restore #REGhl and #REGhl from the stack.
+ $E9D4 POP HL          ; }
+ $E9D5 JP $E9B2        ; Jump to #R$E9B2.
+ $E9D8 LD HL,$A77E     ; #REGhl=#R$A77E.
+ $E9DB RES 0,(HL)      ; Reset bit 0 of *#REGhl.
+ $E9DD LD A,($A7C3)    ; #REGa=*#R$A7C3.
+ $E9E0 CP $0D          ; Compare #REGa with #N$0D.
+ $E9E2 RET NZ          ; Return if #REGa is not equal to #N$0D.
+ $E9E3 LD HL,$CD5F     ; #REGhl=#R$CD5F.
+ $E9E6 JP $E9D0        ; Jump to #R$E9D0.
+ $E9E9 LD HL,$A77E     ; #REGhl=#R$A77E.
+ $E9EC RES 1,(HL)      ; Reset bit 1 of *#REGhl.
+ $E9EE LD A,$0F        ; #REGa=#N$0F.
+ $E9F0 CALL $AE6B      ; Call #R$AE6B.
+ $E9F3 RET NZ          ; Return if #REGa is not equal to #N$0F.
+ $E9F4 LD HL,$CD9A     ; #REGhl=#R$CD9A.
+ $E9F7 JP $E9D0        ; Jump to #R$E9D0.
+ $E9FA LD HL,$C97C     ; #REGhl=#R$C97C.
+ $E9FD CALL $A592      ; Call #R$A592.
+ $EA00 LD A,$00        ; #REGa=#N$00.
+ $EA02 CALL $AEF0      ; Call #R$AEF0.
+ $EA05 LD A,$01        ; #REGa=#N$01.
+ $EA07 CALL $AEF0      ; Call #R$AEF0.
+ $EA0A RET             ; Return.
+ $EA0B LD A,$03        ; #REGa=#N$03.
+ $EA0D CALL $AEE0      ; Call #R$AEE0.
+ $EA10 LD A,$02        ; #REGa=#N$02.
+ $EA12 CALL $AEE7      ; Call #R$AEE7.
+ $EA15 LD HL,$C9AF     ; #REGhl=#R$C9AF.
+ $EA18 CALL $A592      ; Call #R$A592.
+ $EA1B LD B,$14        ; #REGb=#N$14.
+ $EA1D LD A,$22        ; #REGa=#N$22.
+ $EA1F CALL $AED1      ; Call #R$AED1.
+ $EA22 AND A           ; Set flags.
+ $EA23 JR Z,$EA2D      ; Jump to #R$EA2D if #REGa is equal to #REGa.
+ $EA25 LD HL,$CA1A     ; #REGhl=#R$CA1A.
+ $EA28 CALL $B081      ; Call #R$B081.
+ $EA2B LD B,$0A        ; #REGb=#N$0A.
+*$EA2D LD A,B          ; #REGa=#REGb.
+ $EA2E CALL $B08A      ; Call #R$B08A.
+ $EA31 JR Z,$EA38      ; Jump to #R$EA38 if #REGa is equal to #REGa.
+ $EA33 LD HL,$C9E1     ; #REGhl=#R$C9E1.
+ $EA36 JR $EA40        ; Jump to #R$EA40.
+*$EA38 POP HL          ; Restore #REGhl from the stack.
+ $EA39 LD HL,$E9B2     ; #REGhl=#R$E9B2.
+ $EA3C EX (SP),HL      ; Exchange the *#REGsp with the #REGhl register.
+ $EA3D LD HL,$CA46     ; #REGhl=#R$CA46.
+*$EA40 CALL $B081      ; Call #R$B081.
+ $EA43 RET             ; Return.
  $EA44 LD HL,$CA79     ;
  $EA47 CALL $A592      ;
  $EA4A LD A,$14        ;

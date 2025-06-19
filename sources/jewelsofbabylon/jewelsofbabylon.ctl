@@ -3469,6 +3469,13 @@ L $ED9E,$02,$13
 
 c $EDC4 Game Loop
 @ $EDC4 label=GameLoop
+  $EDC4,$03 Call #R$C17D.
+  $EDC7,$03 Call #R$C4EB.
+  $EDCA,$03 Call #R$C00A.
+  $EDCD,$03 Call #R$C4C7.
+  $EDD0,$02 Jump to #R$EDC4 if the item isn't present.
+  $EDD2,$03 Call #R$C556.
+  $EDD5,$02 Jump to #R$EDC4.
 
 c $EDD7 Game Over
 @ $EDD7 label=GameOver
@@ -3491,6 +3498,11 @@ N $EDF0 Just loop round for any other input.
 c $EDF2 Game Complete
 @ $EDF2 label=GameComplete
 N $EDF8 Print "#STR$D526,$08($b==$FF)".
+  $EDF2,$03 Call #R$BA6D.
+  $EDF5,$03 Call #R$BA89.
+  $EDF8,$03 #REGhl=#R$D526.
+  $EDFB,$03 Call #R$BAB1.
+  $EDFE,$02 Jump to #R$EDDD.
 
 c $EE00 Fatal Events: Crab
 @ $EE00 label=Event_Crab

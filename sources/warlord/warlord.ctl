@@ -394,7 +394,12 @@ D $A77E Holds a single byte, where each bit relates to a turn-based event as
 . When the bit is set, this starts a turn counter (see ...).
 B $A77E,$01
 
+g $A791
+
 g $A7C3
+
+g $A7C6
+W $A7C6,$02
 
 g $A7C8 Pointer: Turn-Based Events Jump Table
 @ $A7C8 label=Pointer_TurnBasedEvents_Jump
@@ -402,6 +407,7 @@ D $A7C8 Pointer to the jump table containing turn-based events.
 W $A7C8,$02
 
 g $A7CA
+W $A7CA,$02
 
 g $A7CC Pointer: Item Description Table
 @ $A7CC label=Pointer_ItemDescriptions
@@ -409,16 +415,35 @@ D $A7CC Pointer to the table containing item descriptions.
 W $A7CC,$02
 
 g $A7CE
+W $A7CE,$02
 
 g $A7D0
+W $A7D0,$02
 
 g $A7D2
+W $A7D2,$02
+
+g $A7D4
+W $A7D4,$02
+
+g $A7D6
+W $A7D6,$02
+
+g $A7D8
+W $A7D8,$02
+
+g $A7DA
+W $A7DA,$02
 
 g $A7DC Pointer: Configurable Exits Table
 @ $A7DC label=Pointer_ConfigurableExits
 W $A7DC,$02
 
 g $A7DE
+W $A7DE,$02
+
+g $A7E0
+W $A7E0,$02
 
 g $A7E2 Pointer: Scenic Event Locations
 @ $A7E2 label=Pointer_ScenicEventLocations
@@ -434,8 +459,13 @@ D $A7E6 The total number of items in the game.
 W $A7E6,$02
 
 g $A7E8
+W $A7E8,$02
+
+g $A7EA
+W $A7EA,$02
 
 g $A7EC
+W $A7EC,$02
 
 g $A7EE Number Of Scenic Events
 @ $A7EE label=Count_ScenicEvents
@@ -453,35 +483,215 @@ g $A82E Line Number
 E $A82E View the equivalent code in #JEWELS$BD70.
 B $A82E,$01
 
-t $A843
+t $A843 Messaging: "> "
+@ $A843 label=Messaging_Prompt
+  $A843,$02 "#STR$A843,$08($b==$FF)".
+B $A845,$01 Terminator.
 
-t $A884
+t $A846 Messaging: "<BS> <BS>"
+@ $A846 label=Messaging_BackspaceSpaceBackspace
+  $A846,$03 "#STR$A846,$08($b==$FF)".
+B $A849,$01 Terminator.
 
-t $A791
+t $A84A Messaging: "The "
+@ $A84A label=Messaging_The
+  $A84A,$04 "#STR$A84A,$08($b==$FF)".
+B $A84E,$01 Terminator.
 
-t $A893
+t $A84F Messaging: "I Don't Understand"
+@ $A84F label=Messaging_IDontUnderstand
+  $A84F,$13 "#STR$A84F,$08($b==$FF)".
+B $A862,$01 Terminator.
 
-t $A897
+t $A863 Messaging: "I Don't Know The Word:-"
+@ $A863 label=Messaging_IDontKnowTheWord
+  $A863,$17 "#STR$A863,$08($b==$FF)".
+B $A87A,$01 Terminator.
 
-t $A8AA
+t $A87B Messaging: "Nothing"
+@ $A87B label=Messaging_Nothing
+  $A87B,$08 "#STR$A87B,$08($b==$FF)".
+B $A883,$01 Terminator.
 
-t $A915
+t $A884 Messaging: "You Can See:-"
+@ $A884 label=Messaging_YouCanSee
+  $A884,$0E "#STR$A884,$08($b==$FF)".
+B $A892,$01 Terminator.
 
-t $A92A
+t $A893 Messaging: "Ampersand"
+@ $A893 label=Messaging_Ampersand
+  $A893,$03 "#STR$A893,$08($b==$FF)".
+B $A896,$01 Terminator.
 
-t $A950
+t $A897 Messaging: "There Are Exits:-"
+@ $A897 label=Messaging_ThereAreExits
+  $A897,$12 "#STR$A897,$08($b==$FF)".
+B $A8A9,$01 Terminator.
 
-t $A986
+t $A8AA Messaging: "There Is An Exit"
+@ $A8AA label=Messaging_ThereIsAnExit
+  $A8AA,$12 "#STR$A8AA,$08($b==$FF)".
+B $A8BC,$01 Terminator.
 
-t $A9BD
+t $A8BD Messaging: "North"
+@ $A8BD label=Messaging_North
+  $A8BD,$05 "#STR$A8BD,$08($b==$FF)".
+B $A8C2,$01 Terminator.
 
-t $A9D6
+t $A8C3 Messaging: "South"
+@ $A8C3 label=Messaging_South
+  $A8C3,$05 "#STR$A8C3,$08($b==$FF)".
+B $A8C8,$01 Terminator.
 
-t $A9EC
+t $A8C9 Messaging: "East"
+@ $A8C9 label=Messaging_East
+  $A8C9,$04 "#STR$A8C9,$08($b==$FF)".
+B $A8CD,$01 Terminator.
 
-t $A9F7
+t $A8CE Messaging: "West"
+@ $A8CE label=Messaging_West
+  $A8CE,$04 "#STR$A8CE,$08($b==$FF)".
+B $A8D2,$01 Terminator.
 
-t $AA15
+t $A8D3 Messaging: "Up"
+@ $A8D3 label=Messaging_Up
+  $A8D3,$02 "#STR$A8D3,$08($b==$FF)".
+B $A8D5,$01 Terminator.
+
+t $A8D6 Messaging: "Down"
+@ $A8D6 label=Messaging_Down
+  $A8D6,$04 "#STR$A8D6,$08($b==$FF)".
+B $A8DA,$01 Terminator.
+
+t $A8DB Messaging: "I Can't See"
+@ $A8DB label=Messaging_ICantSee
+  $A8DB,$0C "#STR$A8DB,$08($b==$FF)".
+B $A8E7,$01 Terminator.
+
+t $A8E8 Messaging: "Here"
+@ $A8E8 label=Messaging_Here
+  $A8E8,$06 "#STR$A8E8,$08($b==$FF)".
+B $A8EE,$01 Terminator.
+
+t $A8EF Messaging: "You Are Dead"
+@ $A8EF label=Messaging_YouAreDead
+  $A8EF,$0D "#STR$A8EF,$08($b==$FF)".
+B $A8FC,$01 Terminator.
+
+t $A8FD Messaging: "Want Another Game? Y/N"
+@ $A8FD label=Messaging_WantAnotherGame
+  $A8FD,$17 "#STR$A8FD,$08($b==$FF)".
+B $A914,$01 Terminator.
+
+t $A915 Messaging: "Loading. Press Play"
+@ $A915 label=Messaging_LoadingPressPlay
+  $A915,$14 "#STR$A915,$08($b==$FF)".
+B $A929,$01 Terminator.
+
+t $A92A Messaging: "Tape Error.press Any Key To Restart"
+@ $A92A label=Messaging_TapeErrorPressAnyKeyToRestart
+  $A92A,$25 "#STR$A92A,$08($b==$FF)".
+B $A94F,$01 Terminator.
+
+t $A950 Messaging: "Saving. Position Tape.Press Rec & Play,Then Any Key"
+@ $A950 label=Messaging_SavingPositionTapePressRecPlaythenAnyKey
+  $A950,$35 "#STR$A950,$08($b==$FF)".
+B $A985,$01 Terminator.
+
+t $A986 Messaging: "Stop Tape.Saving Complete"
+@ $A986 label=Messaging_StopTapeSavingComplete
+  $A986,$1A "#STR$A986,$08($b==$FF)".
+B $A9A0,$01 Terminator.
+
+t $A9A1 Messaging: "Want To Save The Game? Y/N"
+@ $A9A1 label=Messaging_WantToSaveTheGame
+  $A9A1,$1B "#STR$A9A1,$08($b==$FF)".
+B $A9BC,$01 Terminator.
+
+t $A9BD Messaging: "Please Be More Specific"
+@ $A9BD label=Messaging_PleaseBeMoreSpecific
+  $A9BD,$18 "#STR$A9BD,$08($b==$FF)".
+B $A9D5,$01 Terminator.
+
+t $A9D6 Messaging: "Please Rephrase That"
+@ $A9D6 label=Messaging_PleaseRephraseThat
+  $A9D6,$15 "#STR$A9D6,$08($b==$FF)".
+B $A9EB,$01 Terminator.
+
+t $A9EC Messaging: "You Can't"
+@ $A9EC label=Messaging_YouCant
+  $A9EC,$0A "#STR$A9EC,$08($b==$FF)".
+B $A9F6,$01 Terminator.
+
+t $A9F7 Messaging: "O.K"
+@ $A9F7 label=Messaging_OK
+  $A9F7,$04 "#STR$A9F7,$08($b==$FF)".
+B $A9FB,$01 Terminator.
+
+t $A9FC Messaging: "You're Already Carrying"
+@ $A9FC label=Messaging_YoureAlreadyCarrying
+  $A9FC,$18 "#STR$A9FC,$08($b==$FF)".
+B $AA14,$01 Terminator.
+
+t $AA15 Messaging: "."
+@ $AA15 label=Messaging_FullStop
+  $AA15,$01 "#STR$AA15,$08($b==$FF)".
+B $AA16,$01 Terminator.
+
+t $AA17 Messaging: "It"
+@ $AA17 label=Messaging_It
+  $AA17,$03 "#STR$AA17,$08($b==$FF)".
+B $AA1A,$01 Terminator.
+
+t $AA1B Messaging: "Them"
+@ $AA1B label=Messaging_Them
+  $AA1B,$05 "#STR$AA1B,$08($b==$FF)".
+B $AA20,$01 Terminator.
+
+t $AA21 Messaging: "You Can't Carry Any More"
+@ $AA21 label=Messaging_YouCantCarryAnyMore
+  $AA21,$19 "#STR$AA21,$08($b==$FF)".
+B $AA3A,$01 Terminator.
+
+t $AA3B Messaging: "You Are Carrying:-"
+@ $AA3B label=Messaging_YouAreCarrying
+  $AA3B,$12 "#STR$AA3B,$08($b==$FF)".
+B $AA4D,$01 Terminator.
+
+t $AA4E Messaging: "You Can't Go In That Direction"
+@ $AA4E label=Messaging_YouCantGoInThatDirection
+  $AA4E,$1F "#STR$AA4E,$08($b==$FF)".
+B $AA6D,$01 Terminator.
+
+t $AA6E Messaging: "One At A Time,Please!"
+@ $AA6E label=Messaging_OneAtATimeplease
+  $AA6E,$15 "#STR$AA6E,$08($b==$FF)".
+B $AA83,$01 Terminator.
+
+t $AA84 Messaging: "I Don't See The Point"
+@ $AA84 label=Messaging_IDontSeeThePoint
+  $AA84,$16 "#STR$AA84,$08($b==$FF)".
+B $AA9A,$01 Terminator.
+
+t $AA9B Messaging: "You're Not Carrying"
+@ $AA9B label=Messaging_YoureNotCarrying
+  $AA9B,$14 "#STR$AA9B,$08($b==$FF)".
+B $AAAF,$01 Terminator.
+
+t $AAB0 Messaging: "You're Not Carrying Anything"
+@ $AAB0 label=Messaging_YoureNotCarryingAnything
+  $AAB0,$1D "#STR$AAB0,$08($b==$FF)".
+B $AACD,$01 Terminator.
+
+t $AACE Messaging: "You Have Scored"
+@ $AACE label=Messaging_YouHaveScored
+  $AACE,$10 "#STR$AACE,$08($b==$FF)".
+B $AADE,$01 Terminator.
+
+t $AADF Messaging: "%"
+@ $AADF label=Messaging_Percentage
+  $AADF,$02 "#STR$AADF,$08($b==$FF)".
+B $AAE1,$01 Terminator.
 
 t $AAE2
 
@@ -506,7 +716,7 @@ N $AAFC Print "#STR$A9EC,$08($b==$FF)".
   $AAFF,$03 Call #R$A592.
   $AB02,$01 Return.
 
-c $AB03 Response: "O.K."
+c $AB03 Response: "O.K"
 @ $AB03 label=Response_OK
 N $AB03 Print "#STR$A9F7,$08($b==$FF)".
   $AB03,$03 #REGhl=#R$A9F7.
@@ -858,6 +1068,64 @@ c $AEE7 Handler: Update Item/ Event For The Current Room
 c $AEF0 Set Scenic Event As Triggered
 
 c $AEF7 Check Active Scenic Events
+  $AEF7,$02 Jump to #R$AEFA.
+  $AEF9,$01 Increment #REGhl by one.
+  $AEFA,$01 #REGa=*#REGhl.
+  $AEFB,$02 Compare #REGa with #N$FF.
+  $AEFD,$02 Jump to #R$AF06 if #REGa is equal to #N$FF.
+  $AEFF,$03 Call #R$AE6B.
+  $AF02,$02 Jump to #R$AEF9 if #REGa is not equal to #N$FF.
+  $AF04,$01 #REGa=*#REGhl.
+  $AF05,$01 Return.
+  $AF06,$01 Set flags.
+  $AF07,$01 Return.
+  $AF08,$03 #REGhl=#R$A66C.
+  $AF0B,$02 #REGd=#N$00.
+  $AF0D,$01 #REGe=#REGb.
+  $AF0E,$01 #REGhl+=#REGde.
+  $AF0F,$01 Write #REGc to *#REGhl.
+  $AF10,$01 Return.
+  $AF11,$02 #REGb=#N$00.
+  $AF13,$02 Jump to #R$AF17.
+  $AF15,$01 Increment #REGb by one.
+  $AF16,$01 Increment #REGhl by one.
+  $AF17,$03 Call #R$AEF7.
+  $AF1A,$02 Jump to #R$AF15 if #REGhl is equal to #REGa.
+  $AF1C,$01 #REGa=#REGb.
+  $AF1D,$01 Return.
+  $AF1E,$01 #REGa=#REGb.
+  $AF1F,$03 Call #R$AED1.
+  $AF22,$02 Stash #REGbc and #REGaf on the stack.
+  $AF24,$02 #REGc=#N$00.
+  $AF26,$03 Call #R$AF08.
+  $AF29,$02 Restore #REGaf and #REGbc from the stack.
+  $AF2B,$01 #REGb=#REGc.
+  $AF2C,$01 #REGc=#REGa.
+  $AF2D,$03 Call #R$AF08.
+  $AF30,$01 Return.
+  $AF31,$03 Call #R$AED1.
+  $AF34,$04 Compare #REGa with *#R$A7C3.
+  $AF38,$01 Return.
+  $AF39,$03 #REGhl=#R$A66C.
+  $AF3C,$04 #REGbc=*#R$A7E6.
+  $AF40,$02 CPIR.
+  $AF42,$01 Return if #REGa is not equal to *#REGhl.
+  $AF43,$01 Stash #REGhl on the stack.
+  $AF44,$03 Call #R$AF56.
+  $AF47,$01 Restore #REGhl from the stack.
+  $AF48,$02 Jump to #R$AF54 if #REGa is not equal to *#REGhl.
+  $AF4A,$01 #REGe=#REGa.
+  $AF4B,$01 #REGa=#REGb.
+  $AF4C,$01 Set the bits from #REGc.
+  $AF4D,$01 #REGa=#REGe.
+  $AF4E,$02 Jump to #R$AF40 if #REGa is not equal to #REGc.
+  $AF50,$02 #REGa=#N$01.
+  $AF52,$01 Set flags.
+  $AF53,$01 Return.
+  $AF54,$01 #REGa=#N$00.
+  $AF55,$01 Return.
+
+c $AF56
 
 c $AF08
 
@@ -919,13 +1187,1059 @@ c $B14A Game Start Alias
 @ $B14A label=GameStart_Alias
   $B14A,$03 Jump to #R$FCCE.
 
-t $B14D
+t $B14D Messaging: "The Roman"
+@ $B14D label=Messaging_TheRoman
+  $B14D,$11 "#STR$B14D,$08($b==$FF)".
+B $B15E,$01 Terminator.
 
+t $B15F Messaging: "The Captured Roman"
+@ $B15F label=Messaging_TheCapturedRoman
+  $B15F,$13 "#STR$B15F,$08($b==$FF)".
+B $B172,$01 Terminator.
+
+t $B173 Messaging: "The Body Of The Roman"
+@ $B173 label=Messaging_TheBodyOfTheRoman
+  $B173,$16 "#STR$B173,$08($b==$FF)".
+B $B189,$01 Terminator.
+
+t $B18A Messaging: "The Body Of A Fomorian"
+@ $B18A label=Messaging_BodyOfAFomorian
+  $B18A,$17 "#STR$B18A,$08($b==$FF)".
+B $B1A1,$01 Terminator.
+
+t $B1A2 Messaging: "The Fomorian Tribe"
+@ $B1A2 label=Messaging_FomorianTribe
+  $B1A2,$34 "#STR$B1A2,$08($b==$FF)".
+B $B1D6,$01 Terminator.
+
+t $B1D7 Messaging: "Many Fomorian Bodies"
+@ $B1D7 label=Messaging_ManyFomorianBodies
+  $B1D7,$15 "#STR$B1D7,$08($b==$FF)".
+B $B1EC,$01 Terminator.
+
+t $B1ED Messaging: "A Great Fire Burns In The Centre Of The Cavern"
+@ $B1ED label=Messaging_GreatFireBurns
+  $B1ED,$2F "#STR$B1ED,$08($b==$FF)".
+B $B21C,$01 Terminator.
+
+t $B21D Messaging: "The Flickering Flames"
+@ $B21D label=Messaging_FlickeringFlames
+  $B21D,$63 "#STR$B21D,$08($b==$FF)".
+B $B280,$01 Terminator.
+
+t $B281 Messaging: "A Hare,caught By The Leg"
+@ $B281 label=Messaging_HareCaughtByTheLeg
+  $B281,$3A "#STR$B281,$08($b==$FF)".
+B $B2BB,$01 Terminator.
+
+t $B2BC Messaging: "A Deep Pool Of Water"
+@ $B2BC label=Messaging_DeepPoolOfWater
+  $B2BC,$15 "#STR$B2BC,$08($b==$FF)".
+B $B2D1,$01 Terminator.
+
+t $B2D2 Messaging: "Some Salt"
+@ $B2D2 label=Messaging_SomeSalt
+  $B2D2,$0A "#STR$B2D2,$08($b==$FF)".
+B $B2DC,$01 Terminator.
+
+t $B2DD Messaging: "A Clay Pot"
+@ $B2DD label=Messaging_ClayPot
+  $B2DD,$0B "#STR$B2DD,$08($b==$FF)".
+B $B2E8,$01 Terminator.
+
+t $B2E9 Messaging: "Some Acorns"
+@ $B2E9 label=Messaging_SomeAcorns
+  $B2E9,$0C "#STR$B2E9,$08($b==$FF)".
+B $B2F5,$01 Terminator.
+
+t $B2F6 Messaging: "An Urn"
+@ $B2F6 label=Messaging_AnUrn
+  $B2F6,$07 "#STR$B2F6,$08($b==$FF)".
+B $B2FD,$01 Terminator.
+
+t $B2FE Messaging: "A Raven"
+@ $B2FE label=Messaging_RavenOnRoof
+  $B2FE,$2C "#STR$B2FE,$08($b==$FF)".
+B $B32A,$01 Terminator.
+
+t $B32B Messaging: "A Bronze Helmet"
+@ $B32B label=Messaging_BronzeHelmet
+  $B32B,$10 "#STR$B32B,$08($b==$FF)".
+B $B33B,$01 Terminator.
+
+t $B33C Messaging: "A Bronze Helmet,Which You Are Wearing"
+@ $B33C label=Messaging_BronzeHelmetWorn
+  $B33C,$26 "#STR$B33C,$08($b==$FF)".
+B $B362,$01 Terminator.
+
+t $B363 Messaging: "A Fine Chariot"
+@ $B363 label=Messaging_FineChariot
+  $B363,$42 "#STR$B363,$08($b==$FF)".
+B $B3A5,$01 Terminator.
+
+t $B3A6 Messaging: "Some Food"
+@ $B3A6 label=Messaging_SomeFood
+  $B3A6,$0A "#STR$B3A6,$08($b==$FF)".
+B $B3B0,$01 Terminator.
+
+t $B3B1 Messaging: "Some Iron"
+@ $B3B1 label=Messaging_SomeIron
+  $B3B1,$0A "#STR$B3B1,$08($b==$FF)".
+B $B3BB,$01 Terminator.
+
+t $B3BC Messaging: "A Mighty Stone Monolith"
+@ $B3BC label=Messaging_MightyStoneMonolith
+  $B3BC,$36 "#STR$B3BC,$08($b==$FF)".
+B $B3F2,$01 Terminator.
+
+t $B3F3 Messaging: "An Armed Warrior.he Bars Your Path"
+@ $B3F3 label=Messaging_AnArmedWarriorBarsYourPath
+  $B3F3,$4B "#STR$B3F3,$08($b==$FF)".
+B $B43E,$01 Terminator.
+
+t $B43F Messaging: "An Armed Warrior.he Sees Lug's Helmet"
+@ $B43F label=Messaging_AnArmedWarriorSeesLugsHelmet
+  $B43F,$60 "#STR$B43F,$08($b==$FF)".
+B $B49F,$01 Terminator.
+
+t $B4A0 Messaging: "A Multitude Of Shadow-Like Demons"
+@ $B4A0 label=Messaging_MultitudeOfShadowDemons
+  $B4A0,$6D "#STR$B4A0,$08($b==$FF)".
+B $B50D,$01 Terminator.
+
+t $B50E Messaging: "The Vale Is Strangely Silent"
+@ $B50E label=Messaging_ValeIsStrangelySilent
+  $B50E,$1D "#STR$B50E,$08($b==$FF)".
+B $B52B,$01 Terminator.
+
+t $B52C Messaging: "A Small Hut,To The South"
+@ $B52C label=Messaging_SmallHut
+  $B52C,$19 "#STR$B52C,$08($b==$FF)".
+B $B545,$01 Terminator.
+
+t $B546 Messaging: "A Vase"
+@ $B546 label=Messaging_Vase
+  $B546,$07 "#STR$B546,$08($b==$FF)".
+B $B54D,$01 Terminator.
+
+t $B54E Messaging: "A Hut,To The North"
+@ $B54E label=Messaging_HutNorth
+  $B54E,$13 "#STR$B54E,$08($b==$FF)".
+B $B561,$01 Terminator.
+
+t $B562 Messaging: "A Cavern,To The West"
+@ $B562 label=Messaging_CavernWest
+  $B562,$15 "#STR$B562,$08($b==$FF)".
+B $B577,$01 Terminator.
+
+t $B578 Messaging: "A Cavern,To The East"
+@ $B578 label=Messaging_CavernEast
+  $B578,$15 "#STR$B578,$08($b==$FF)".
+B $B58D,$01 Terminator.
+
+t $B58E Messaging: "A Cavern,to The South"
+@ $B58E label=Messaging_CavernSouth
+  $B58E,$16 "#STR$B58E,$08($b==$FF)".
+B $B5A4,$01 Terminator.
+
+t $B5A5 Messaging: "A Sword"
+@ $B5A5 label=Messaging_Sword
+  $B5A5,$08 "#STR$B5A5,$08($b==$FF)".
+B $B5AD,$01 Terminator.
+
+t $B5AE Messaging: "Some Meat"
+@ $B5AE label=Messaging_SomeMeat
+  $B5AE,$0A "#STR$B5AE,$08($b==$FF)".
+B $B5B8,$01 Terminator.
+
+t $B5B9 Messaging: "A Human Skull"
+@ $B5B9 label=Messaging_HumanSkull
+  $B5B9,$0E "#STR$B5B9,$08($b==$FF)".
+B $B5C7,$01 Terminator.
+
+t $B5C8 Messaging: "A Trader,Selling Some Meat"
+@ $B5C8 label=Messaging_TraderSellingMeat
+  $B5C8,$1B "#STR$B5C8,$08($b==$FF)".
+B $B5E3,$01 Terminator.
+
+t $B5E4 Messaging: "A Young Woman"
+@ $B5E4 label=Messaging_YoungWoman
+  $B5E4,$0E "#STR$B5E4,$08($b==$FF)".
+B $B5F2,$01 Terminator.
+
+t $B5F3 Messaging: "A Pack Of Wolves"
+@ $B5F3 label=Messaging_PackOfWolves
+  $B5F3,$2B "#STR$B5F3,$08($b==$FF)".
+B $B61E,$01 Terminator.
+
+t $B61F Messaging: "Fire Protects The Western Exit"
+@ $B61F label=Messaging_FireProtectsTheWesternExit
+  $B61F,$1F "#STR$B61F,$08($b==$FF)".
+B $B63E,$01 Terminator.
+
+t $B63F Messaging: "A Bear"
+@ $B63F label=Messaging_Bear
+  $B63F,$07 "#STR$B63F,$08($b==$FF)".
+B $B646,$01 Terminator.
+
+t $B647 Messaging: "A Dead Bear"
+@ $B647 label=Messaging_DeadBear
+  $B647,$0C "#STR$B647,$08($b==$FF)".
+B $B653,$01 Terminator.
+
+t $B654 Messaging: "A Guard At The Entrance"
+@ $B654 label=Messaging_GuardAtEntrance
+  $B654,$2E "#STR$B654,$08($b==$FF)".
+B $B682,$01 Terminator.
+
+t $B683 Messaging: "A Druid.He Wears An Amulet"
+@ $B683 label=Messaging_DruidWearingAmulet
+  $B683,$2A "#STR$B683,$08($b==$FF)".
+B $B6AD,$01 Terminator.
+
+t $B6AE Messaging: "An Amulet"
+@ $B6AE label=Messaging_AnAmulet
+  $B6AE,$0A "#STR$B6AE,$08($b==$FF)".
+B $B6B8,$01 Terminator.
+
+t $B6B9 Messaging: "An Amulet,Which You Are Wearing"
+@ $B6B9 label=Messaging_AnAmuletWorn
+  $B6B9,$20 "#STR$B6B9,$08($b==$FF)".
+B $B6D9,$01 Terminator.
+
+t $B6DA Messaging: "A Ring Of Crystals"
+@ $B6DA label=Messaging_RingOfCrystals
+  $B6DA,$2D "#STR$B6DA,$08($b==$FF)".
+B $B707,$01 Terminator.
+
+t $B708 Messaging: "A Ring Of Crystals,Set Into The Ground"
+@ $B708 label=Messaging_RingOfCrystalsInGround
+  $B708,$27 "#STR$B708,$08($b==$FF)".
+B $B72F,$01 Terminator.
+
+t $B730 Messaging: "A Pig"
+@ $B730 label=Messaging_Pig
+  $B730,$06 "#STR$B730,$08($b==$FF)".
+B $B736,$01 Terminator.
+
+t $B737 Messaging: "A Dead Pig"
+@ $B737 label=Messaging_DeadPig
+  $B737,$0B "#STR$B737,$08($b==$FF)".
+B $B742,$01 Terminator.
+
+t $B743 Messaging: "A Piece Of Rope"
+@ $B743 label=Messaging_PieceOfRope
+  $B743,$10 "#STR$B743,$08($b==$FF)".
+B $B753,$01 Terminator.
+
+t $B754 Messaging: "A Wild Ox"
+@ $B754 label=Messaging_WildOx
+  $B754,$32 "#STR$B754,$08($b==$FF)".
+B $B786,$01 Terminator.
+
+t $B787 Messaging: "A Dead Ox"
+@ $B787 label=Messaging_TetheredDeadOx
+  $B787,$26 "#STR$B787,$08($b==$FF)".
+B $B7AD,$01 Terminator.
+
+t $B7AE Messaging: "A Dead Ox"
+@ $B7AE label=Messaging_DeadOx
+  $B7AE,$0A "#STR$B7AE,$08($b==$FF)".
+B $B7B8,$01 Terminator.
+
+t $B7B9 Messaging: "A Cloak,Which You Are Wearing"
+@ $B7B9 label=Messaging_CloakWorn
+  $B7B9,$1E "#STR$B7B9,$08($b==$FF)".
+B $B7D7,$01 Terminator.
+
+t $B7D8 Messaging: "A Shield"
+@ $B7D8 label=Messaging_Shield
+  $B7D8,$09 "#STR$B7D8,$08($b==$FF)".
+B $B7E1,$01 Terminator.
+
+t $B7E2 Messaging: "Fire Protects The Eastern Exit"
+@ $B7E2 label=Messaging_FireProtectsTheEasternExit
+  $B7E2,$1F "#STR$B7E2,$08($b==$FF)".
+B $B801,$01 Terminator.
+
+t $B802 Messaging: "A Stone Slab"
+@ $B802 label=Messaging_StoneSlab
+  $B802,$33 "#STR$B802,$08($b==$FF)".
+B $B835,$01 Terminator.
+
+t $B836 Messaging: "A Shimmering Stone Slab"
+@ $B836 label=Messaging_ShimmeringStoneSlab
+  $B836,$34 "#STR$B836,$08($b==$FF)".
+B $B86A,$01 Terminator.
+
+t $B86B Messaging: "A Ladder"
+@ $B86B label=Messaging_Ladder
+  $B86B,$09 "#STR$B86B,$08($b==$FF)".
+B $B874,$01 Terminator.
+
+t $B875 Messaging: "A Ladder,On The Floor Below"
+@ $B875 label=Messaging_LadderOnFloor
+  $B875,$1C "#STR$B875,$08($b==$FF)".
+B $B891,$01 Terminator.
+
+t $B892 Messaging: "A Ladder,Leading Down"
+@ $B892 label=Messaging_LadderLeadingDown
+  $B892,$16 "#STR$B892,$08($b==$FF)".
+B $B8A8,$01 Terminator.
+
+t $B8A9 Messaging: "The Wooden Platform"
+@ $B8A9 label=Messaging_WoodenPlatform
+  $B8A9,$3A "#STR$B8A9,$08($b==$FF)".
+B $B8E3,$01 Terminator.
+
+t $B8E4 Messaging: "A Ladder,Leading Upward"
+@ $B8E4 label=Messaging_LadderLeadingUpward
+  $B8E4,$18 "#STR$B8E4,$08($b==$FF)".
+B $B8FC,$01 Terminator.
+
+t $B8FD Messaging: "A Pile Of Straw"
+@ $B8FD label=Messaging_PileOfStraw
+  $B8FD,$2D "#STR$B8FD,$08($b==$FF)".
+B $B92A,$01 Terminator.
+
+t $B92B Messaging: "Some Straw"
+@ $B92B label=Messaging_SomeStraw
+  $B92B,$0B "#STR$B92B,$08($b==$FF)".
+B $B936,$01 Terminator.
+
+t $B937 Messaging: "A Staff"
+@ $B937 label=Messaging_Staff
+  $B937,$08 "#STR$B937,$08($b==$FF)".
+B $B93F,$01 Terminator.
+
+t $B940 Messaging: "The Body Of A Young Man"
+@ $B940 label=Messaging_BodyOfYoungMan
+  $B940,$4C "#STR$B940,$08($b==$FF)".
+B $B98C,$01 Terminator.
+
+t $B98D Messaging: "The Body Of A Young Man"
+@ $B98D label=Messaging_BodyOfAYoungMan
+  $B98D,$3A "#STR$B98D,$08($b==$FF)".
+B $B9C7,$01 Terminator.
+
+t $B9C8 Messaging: "A White Cloak"
+@ $B9C8 label=Messaging_WhiteCloak
+  $B9C8,$0E "#STR$B9C8,$08($b==$FF)".
+B $B9D6,$01 Terminator.
+
+t $B9D7 Messaging: "Some Silver"
+@ $B9D7 label=Messaging_SomeSilver
+  $B9D7,$0C "#STR$B9D7,$08($b==$FF)".
+B $B9E3,$01 Terminator.
+
+t $B9E4 Messaging: "An Open Pit,Below"
+@ $B9E4 label=Messaging_OpenPitBelow
+  $B9E4,$12 "#STR$B9E4,$08($b==$FF)".
+B $B9F6,$01 Terminator.
+
+t $B9F7 Messaging: "A Torc"
+@ $B9F7 label=Messaging_Torc
+  $B9F7,$07 "#STR$B9F7,$08($b==$FF)".
+B $B9FE,$01 Terminator.
+
+t $B9FF Messaging: "A Torc,Which You Are Wearing"
+@ $B9FF label=Messaging_TorcWorn
+  $B9FF,$1D "#STR$B9FF,$08($b==$FF)".
+B $BA1C,$01 Terminator.
+
+t $BA1D Messaging: "A Dead Hare"
+@ $BA1D label=Messaging_DeadHare
+  $BA1D,$1D "#STR$BA1D,$08($b==$FF)".
+B $BA3A,$01 Terminator.
+
+t $BA3B Messaging: "The Body Of The Roman"
+@ $BA3B label=Messaging_BodyOfRoman
+  $BA3B,$2A "#STR$BA3B,$08($b==$FF)".
+B $BA65,$01 Terminator.
+
+t $BA66 Messaging: "The Roman"
+@ $BA66 label=Messaging_Roman
+  $BA66,$09 "#STR$BA66,$08($b==$FF)".
+B $BA6F,$01 Terminator.
+
+t $BA70 Messaging: "A Fomorian"
+@ $BA70 label=Messaging_Fomorian
+  $BA70,$0A "#STR$BA70,$08($b==$FF)".
+B $BA7A,$01 Terminator.
+
+t $BA7B Messaging: "A Boar"
+@ $BA7B label=Messaging_Boar
+  $BA7B,$06 "#STR$BA7B,$08($b==$FF)".
+B $BA81,$01 Terminator.
+
+t $BA82 Messaging: "Any Rats"
+@ $BA82 label=Messaging_AnyRats
+  $BA82,$08 "#STR$BA82,$08($b==$FF)".
+B $BA8A,$01 Terminator.
+
+t $BA8B Messaging: "A Hare"
+@ $BA8B label=Messaging_Hare
+  $BA8B,$06 "#STR$BA8B,$08($b==$FF)".
+B $BA91,$01 Terminator.
+
+t $BA92 Messaging: "A Trap"
+@ $BA92 label=Messaging_Trap
+  $BA92,$06 "#STR$BA92,$08($b==$FF)".
+B $BA98,$01 Terminator.
+
+t $BA99 Messaging: "A Pool"
+@ $BA99 label=Messaging_Pool
+  $BA99,$06 "#STR$BA99,$08($b==$FF)".
+B $BA9F,$01 Terminator.
+
+t $BAA0 Messaging: "Any Salt"
+@ $BAA0 label=Messaging_AnySalt
+  $BAA0,$08 "#STR$BAA0,$08($b==$FF)".
+B $BAA8,$01 Terminator.
+
+t $BAA9 Messaging: "A Pot"
+@ $BAA9 label=Messaging_Pot
+  $BAA9,$05 "#STR$BAA9,$08($b==$FF)".
+B $BAAE,$01 Terminator.
+
+t $BAAF Messaging: "Any Acorns"
+@ $BAAF label=Messaging_AnyAcorns
+  $BAAF,$0A "#STR$BAAF,$08($b==$FF)".
+B $BAB9,$01 Terminator.
+
+t $BABA Messaging: "An Urn"
+@ $BABA label=Messaging_Urn
+  $BABA,$06 "#STR$BABA,$08($b==$FF)".
+B $BAC0,$01 Terminator.
+
+t $BAC1 Messaging: "A Torc"
+@ $BAC1 label=Messaging_Torc_Duplicate
+  $BAC1,$06 "#STR$BAC1,$08($b==$FF)".
+B $BAC7,$01 Terminator.
+
+t $BAC8 Messaging: "A Raven"
+@ $BAC8 label=Messaging_Raven
+  $BAC8,$07 "#STR$BAC8,$08($b==$FF)".
+B $BACF,$01 Terminator.
+
+t $BAD0 Messaging: "A Helmet"
+@ $BAD0 label=Messaging_Helmet
+  $BAD0,$08 "#STR$BAD0,$08($b==$FF)".
+B $BAD8,$01 Terminator.
+
+t $BAD9 Messaging: "Any Food"
+@ $BAD9 label=Messaging_AnyFood
+  $BAD9,$08 "#STR$BAD9,$08($b==$FF)".
+B $BAE1,$01 Terminator.
+
+t $BAE2 Messaging: "Any Iron"
+@ $BAE2 label=Messaging_AnyIron
+  $BAE2,$08 "#STR$BAE2,$08($b==$FF)".
+B $BAEA,$01 Terminator.
+
+t $BAEB Messaging: "A Monolith"
+@ $BAEB label=Messaging_Monolith
+  $BAEB,$0A "#STR$BAEB,$08($b==$FF)".
+B $BAF5,$01 Terminator.
+
+t $BAF6 Messaging: "A Fissure"
+@ $BAF6 label=Messaging_Fissure
+  $BAF6,$09 "#STR$BAF6,$08($b==$FF)".
+B $BAFF,$01 Terminator.
+
+t $BB00 Messaging: "A Warrior"
+@ $BB00 label=Messaging_Warrior
+  $BB00,$09 "#STR$BB00,$08($b==$FF)".
+B $BB09,$01 Terminator.
+
+t $BB0A Messaging: "Any Demons"
+@ $BB0A label=Messaging_AnyDemons
+  $BB0A,$0A "#STR$BB0A,$08($b==$FF)".
+B $BB14,$01 Terminator.
+
+t $BB15 Messaging: "A Hut"
+@ $BB15 label=Messaging_Hut
+  $BB15,$05 "#STR$BB15,$08($b==$FF)".
+B $BB1A,$01 Terminator.
+
+t $BB1B Messaging: "A Vase"
+@ $BB1B label=Messaging_Vase_Duplicate
+  $BB1B,$06 "#STR$BB1B,$08($b==$FF)".
+B $BB21,$01 Terminator.
+
+t $BB22 Messaging: "A Cavern"
+@ $BB22 label=Messaging_Cavern
+  $BB22,$08 "#STR$BB22,$08($b==$FF)".
+B $BB2A,$01 Terminator.
+
+t $BB2B Messaging: "A Sword"
+@ $BB2B label=Messaging_Sword_Duplicate
+  $BB2B,$07 "#STR$BB2B,$08($b==$FF)".
+B $BB32,$01 Terminator.
+
+t $BB33 Messaging: "Any Meat"
+@ $BB33 label=Messaging_AnyMeat
+  $BB33,$08 "#STR$BB33,$08($b==$FF)".
+B $BB3B,$01 Terminator.
+
+t $BB3C Messaging: "A Trader"
+@ $BB3C label=Messaging_Trader
+  $BB3C,$08 "#STR$BB3C,$08($b==$FF)".
+B $BB44,$01 Terminator.
+
+t $BB45 Messaging: "A Woman"
+@ $BB45 label=Messaging_Woman
+  $BB45,$07 "#STR$BB45,$08($b==$FF)".
+B $BB4C,$01 Terminator.
+
+t $BB4D Messaging: "Any Wolves"
+@ $BB4D label=Messaging_AnyWolves
+  $BB4D,$0A "#STR$BB4D,$08($b==$FF)".
+B $BB57,$01 Terminator.
+
+t $BB58 Messaging: "A Bear"
+@ $BB58 label=Messaging_Bear_Duplicate
+  $BB58,$06 "#STR$BB58,$08($b==$FF)".
+B $BB5E,$01 Terminator.
+
+t $BB5F Messaging: "A Guard"
+@ $BB5F label=Messaging_Guard
+  $BB5F,$07 "#STR$BB5F,$08($b==$FF)".
+B $BB66,$01 Terminator.
+
+t $BB67 Messaging: "A Druid"
+@ $BB67 label=Messaging_Druid
+  $BB67,$07 "#STR$BB67,$08($b==$FF)".
+B $BB6E,$01 Terminator.
+
+t $BB6F Messaging: "An Amulet"
+@ $BB6F label=Messaging_Amulet
+  $BB6F,$09 "#STR$BB6F,$08($b==$FF)".
+B $BB78,$01 Terminator.
+
+t $BB79 Messaging: "A Ring"
+@ $BB79 label=Messaging_Ring
+  $BB79,$06 "#STR$BB79,$08($b==$FF)".
+B $BB7F,$01 Terminator.
+
+t $BB80 Messaging: "A Pig"
+@ $BB80 label=Messaging_Pig_Duplicate
+  $BB80,$05 "#STR$BB80,$08($b==$FF)".
+B $BB85,$01 Terminator.
+
+t $BB86 Messaging: "Any Rope"
+@ $BB86 label=Messaging_AnyRope
+  $BB86,$08 "#STR$BB86,$08($b==$FF)".
+B $BB8E,$01 Terminator.
+
+t $BB8F Messaging: "An Ox"
+@ $BB8F label=Messaging_AnOx
+  $BB8F,$05 "#STR$BB8F,$08($b==$FF)".
+B $BB94,$01 Terminator.
+
+t $BB95 Messaging: "A Skull"
+@ $BB95 label=Messaging_Skull
+  $BB95,$07 "#STR$BB95,$08($b==$FF)".
+B $BB9C,$01 Terminator.
+
+t $BB9D Messaging: "A Dhield"
+@ $BB9D label=Messaging_Dhield
+  $BB9D,$08 "#STR$BB9D,$08($b==$FF)".
+B $BBA5,$01 Terminator.
+
+t $BBA6 Messaging: "A Fire"
+@ $BBA6 label=Messaging_Fire
+  $BBA6,$06 "#STR$BBA6,$08($b==$FF)".
+B $BBAC,$01 Terminator.
+
+t $BBAD Messaging: "A Pit"
+@ $BBAD label=Messaging_Pit
+  $BBAD,$05 "#STR$BBAD,$08($b==$FF)".
+B $BBB2,$01 Terminator.
+
+t $BBB3 Messaging: "A Ladder"
+@ $BBB3 label=Messaging_Ladder_Duplicate
+  $BBB3,$08 "#STR$BBB3,$08($b==$FF)".
+B $BBBB,$01 Terminator.
+
+t $BBBC Messaging: "Any Straw"
+@ $BBBC label=Messaging_AnyStraw
+  $BBBC,$09 "#STR$BBBC,$08($b==$FF)".
+B $BBC5,$01 Terminator.
+
+t $BBC6 Messaging: "A Staff"
+@ $BBC6 label=Messaging_Staff_Duplicate
+  $BBC6,$07 "#STR$BBC6,$08($b==$FF)".
+B $BBCD,$01 Terminator.
+
+t $BBCE Messaging: "A Body"
+@ $BBCE label=Messaging_Body
+  $BBCE,$06 "#STR$BBCE,$08($b==$FF)".
+B $BBD4,$01 Terminator.
+
+t $BBD5 Messaging: "A Cloak"
+@ $BBD5 label=Messaging_Cloak
+  $BBD5,$07 "#STR$BBD5,$08($b==$FF)".
+B $BBDC,$01 Terminator.
+
+t $BBDD Messaging: "Any Silver"
+@ $BBDD label=Messaging_AnySilver
+  $BBDD,$0A "#STR$BBDD,$08($b==$FF)".
+B $BBE7,$01 Terminator.
+
+t $BBE8 Messaging: "A Platform"
+@ $BBE8 label=Messaging_Platform
+  $BBE8,$0A "#STR$BBE8,$08($b==$FF)".
+B $BBF2,$01 Terminator.
+
+t $BBF3 Messaging: "Any Water"
+@ $BBF3 label=Messaging_AnyWater
+  $BBF3,$09 "#STR$BBF3,$08($b==$FF)".
+B $BBFC,$01 Terminator.
+
+t $BBFD Messaging: "Lug"
+@ $BBFD label=Messaging_Lug
+  $BBFD,$03 "#STR$BBFD,$08($b==$FF)".
+B $BC00,$01 Terminator.
+
+t $BC01 Messaging: "Danu"
+@ $BC01 label=Messaging_Danu
+  $BC01,$04 "#STR$BC01,$08($b==$FF)".
+B $BC05,$01 Terminator.
+
+t $BC06 Messaging: "Minerva"
+@ $BC06 label=Messaging_Minerva
+  $BC06,$07 "#STR$BC06,$08($b==$FF)".
+B $BC0D,$01 Terminator.
+
+t $BC0E Messaging: "A Chariot"
+@ $BC0E label=Messaging_Chariot
+  $BC0E,$09 "#STR$BC0E,$08($b==$FF)".
+B $BC17,$01 Terminator.
+
+t $BC18 Messaging: "A Slab"
+@ $BC18 label=Messaging_Slab
+  $BC18,$06 "#STR$BC18,$08($b==$FF)".
+B $BC1E,$01 Terminator.
+
+t $BC1F Messaging: "A Groove"
+@ $BC1F label=Messaging_Groove
+  $BC1F,$08 "#STR$BC1F,$08($b==$FF)".
+B $BC27,$01 Terminator.
+
+t $BC28 Messaging: "The Lake"
+@ $BC28 label=Messaging_Lake
+  $BC28,$08 "#STR$BC28,$08($b==$FF)".
+B $BC30,$01 Terminator.
+
+t $BC31 Messaging: "A Hillfort"
+@ $BC31 label=Messaging_Hillfort
+  $BC31,$0A "#STR$BC31,$08($b==$FF)".
+B $BC3B,$01 Terminator.
+
+t $BC3C Messaging: "A Broch"
+@ $BC3C label=Messaging_Broch
+  $BC3C,$07 "#STR$BC3C,$08($b==$FF)".
+B $BC43,$01 Terminator.
+
+t $BC44 Messaging: "A Wooded Vale"
+@ $BC44 label=Messaging_WoodedVale
+  $BC44,$29 "#STR$BC44,$08($b==$FF)".
+B $BC6D,$01 Terminator.
+
+t $BC6E Messaging: "A Wooded Path"
+@ $BC6E label=Messaging_WoodedPath
+  $BC6E,$0E "#STR$BC6E,$08($b==$FF)".
+B $BC7C,$01 Terminator.
+
+t $BC7D Messaging: "The Sea Cavern"
+@ $BC7D label=Messaging_SeaCavern
+  $BC7D,$0F "#STR$BC7D,$08($b==$FF)".
+B $BC8C,$01 Terminator.
+
+t $BC8D Messaging: "The Rocky Beach"
+@ $BC8D label=Messaging_RockyBeach
+  $BC8D,$10 "#STR$BC8D,$08($b==$FF)".
+B $BC9D,$01 Terminator.
+
+t $BC9E Messaging: "The Evaporation Pits"
+@ $BC9E label=Messaging_EvaporationPits
+  $BC9E,$58 "#STR$BC9E,$08($b==$FF)".
+B $BCF6,$01 Terminator.
+
+t $BCF7 Messaging: "The Deserted Farm"
+@ $BCF7 label=Messaging_DesertedFarm
+  $BCF7,$33 "#STR$BCF7,$08($b==$FF)".
+B $BD2A,$01 Terminator.
+
+t $BD2B Messaging: "Mount Badon"
+@ $BD2B label=Messaging_MountBadon
+  $BD2B,$3A "#STR$BD2B,$08($b==$FF)".
+B $BD65,$01 Terminator.
+
+t $BD66 Messaging: "A Grassy Slope"
+@ $BD66 label=Messaging_GrassySlope
+  $BD66,$0F "#STR$BD66,$08($b==$FF)".
+B $BD75,$01 Terminator.
+
+t $BD76 Messaging: "The Vale Of Kells"
+@ $BD76 label=Messaging_ValeOfKells
+  $BD76,$61 "#STR$BD76,$08($b==$FF)".
+B $BDD7,$01 Terminator.
+
+t $BDD8 Messaging: "In A Deep Pool Of Water.Inside The Sea Cavern"
+@ $BDD8 label=Messaging_DeepPoolOfWaterInSeaCavern
+  $BDD8,$61 "#STR$BDD8,$08($b==$FF)".
+B $BE39,$01 Terminator.
+
+t $BE3A Messaging: "A Narrow Underwater Passage"
+@ $BE3A label=Messaging_NarrowUnderwaterPassage
+  $BE3A,$37 "#STR$BE3A,$08($b==$FF)".
+B $BE71,$01 Terminator.
+
+t $BE72 Messaging: "The Cliffs"
+@ $BE72 label=Messaging_Cliffs
+  $BE72,$20 "#STR$BE72,$08($b==$FF)".
+B $BE92,$01 Terminator.
+
+t $BE93 Messaging: "A Farm Track"
+@ $BE93 label=Messaging_FarmTrack
+  $BE93,$0D "#STR$BE93,$08($b==$FF)".
+B $BEA0,$01 Terminator.
+
+t $BEA1 Messaging: "The Shrine Of The Nemed"
+@ $BEA1 label=Messaging_ShrineOfNemeda
+  $BEA1,$56 "#STR$BEA1,$08($b==$FF)".
+B $BEF7,$01 Terminator.
+
+t $BEF8 Messaging: "A Mountain Slope"
+@ $BEF8 label=Messaging_MountainSlope
+  $BEF8,$11 "#STR$BEF8,$08($b==$FF)".
+B $BF09,$01 Terminator.
+
+t $BF0A Messaging: "A Woodland Path"
+@ $BF0A label=Messaging_WoodlandPath
+  $BF0A,$10 "#STR$BF0A,$08($b==$FF)".
+B $BF1A,$01 Terminator.
+
+t $BF1B Messaging: "Dense Woodland"
+@ $BF1B label=Messaging_DenseWoodland
+  $BF1B,$46 "#STR$BF1B,$08($b==$FF)".
+B $BF61,$01 Terminator.
+
+t $BF62 Messaging: "Lug's Cavern"
+@ $BF62 label=Messaging_LugsCavern
+  $BF62,$29 "#STR$BF62,$08($b==$FF)".
+B $BF8B,$01 Terminator.
+
+t $BF8C Messaging: "In A Deep Pool"
+@ $BF8C label=Messaging_DeepPool
+  $BF8C,$24 "#STR$BF8C,$08($b==$FF)".
+B $BFB0,$01 Terminator.
+
+t $BFB1 Messaging: "The Chalk Path"
+@ $BFB1 label=Messaging_ChalkPath
+  $BFB1,$0F "#STR$BFB1,$08($b==$FF)".
+B $BFC0,$01 Terminator.
+
+t $BFC1 Messaging: "The Burial Pit"
+@ $BFC1 label=Messaging_BurialPit
+  $BFC1,$26 "#STR$BFC1,$08($b==$FF)".
+B $BFE7,$01 Terminator.
+
+t $BFE8 Messaging: "Bleak Moorland"
+@ $BFE8 label=Messaging_BleakMoorland
+  $BFE8,$0F "#STR$BFE8,$08($b==$FF)".
+B $BFF7,$01 Terminator.
+
+t $BFF8 Messaging: "Inside The Fissure"
+@ $BFF8 label=Messaging_InsideFissure
+  $BFF8,$13 "#STR$BFF8,$08($b==$FF)".
+B $C00B,$01 Terminator.
+
+t $C00C Messaging: "A Mountain Path"
+@ $C00C label=Messaging_MountainPath
+  $C00C,$10 "#STR$C00C,$08($b==$FF)".
+B $C01C,$01 Terminator.
+
+t $C01D Messaging: "The Causeway"
+@ $C01D label=Messaging_Causeway
+  $C01D,$26 "#STR$C01D,$08($b==$FF)".
+B $C043,$01 Terminator.
+
+t $C044 Messaging: "The Rocky Path"
+@ $C044 label=Messaging_RockyPath
+  $C044,$0F "#STR$C044,$08($b==$FF)".
+B $C053,$01 Terminator.
+
+t $C054 Messaging: "A Narrow Path"
+@ $C054 label=Messaging_NarrowPath
+  $C054,$0E "#STR$C054,$08($b==$FF)".
+B $C062,$01 Terminator.
+
+t $C063 Messaging: "The Vale Of Rhia"
+@ $C063 label=Messaging_ValeOfRhia
+  $C063,$11 "#STR$C063,$08($b==$FF)".
+B $C074,$01 Terminator.
+
+t $C075 Messaging: "The Burial Ground"
+@ $C075 label=Messaging_BurialGround
+  $C075,$12 "#STR$C075,$08($b==$FF)".
+B $C087,$01 Terminator.
+
+t $C088 Messaging: "The Vale Of Whispers"
+@ $C088 label=Messaging_ValeOfWhispers
+  $C088,$15 "#STR$C088,$08($b==$FF)".
+B $C09D,$01 Terminator.
+
+t $C09E Messaging: "Cadwell Ridge"
+@ $C09E label=Messaging_CadwellRidge
+  $C09E,$0E "#STR$C09E,$08($b==$FF)".
+B $C0AC,$01 Terminator.
+
+t $C0AD Messaging: "The Bridon Road"
+@ $C0AD label=Messaging_BridonRoad
+  $C0AD,$10 "#STR$C0AD,$08($b==$FF)".
+B $C0BD,$01 Terminator.
+
+t $C0BE Messaging: "The Village Of Bridon"
+@ $C0BE label=Messaging_VillageOfBridon
+  $C0BE,$32 "#STR$C0BE,$08($b==$FF)".
+B $C0F0,$01 Terminator.
+
+t $C0F1 Messaging: "Inside The Hut"
+@ $C0F1 label=Messaging_InsideHut
+  $C0F1,$0F "#STR$C0F1,$08($b==$FF)".
+B $C100,$01 Terminator.
+
+t $C101 Messaging: "The Swamp"
+@ $C101 label=Messaging_Swamp"
+  $C101,$33 "#STR$C101,$08($b==$FF)".
+B $C134,$01 Terminator.
+
+t $C135 Messaging: "In An Oozing Quagmire"
+@ $C135 label=Messaging_InAnOozingQuagmire
+  $C135,$32 "#STR$C135,$08($b==$FF)".
+B $C167,$01 Terminator.
+
+t $C168 Messaging: "The Forest Edge"
+@ $C168 label=Messaging_ForestEdge
+  $C168,$10 "#STR$C168,$08($b==$FF)".
+B $C178,$01 Terminator.
+
+t $C179 Messaging: "The Cadwell Road"
+@ $C179 label=Messaging_CadwellRoad
+  $C179,$11 "#STR$C179,$08($b==$FF)".
+B $C18A,$01 Terminator.
+
+t $C18B Messaging: "The Lake"
+@ $C18B label=Messaging_LakeGrassyBank
+  $C18B,$45 "#STR$C18B,$08($b==$FF)".
+B $C1D0,$01 Terminator.
+
+t $C1D1 Messaging: "A Small Clearing"
+@ $C1D1 label=Messaging_SmallClearing
+  $C1D1,$11 "#STR$C1D1,$08($b==$FF)".
+B $C1E2,$01 Terminator.
+
+t $C1E3 Messaging: "A Forest Path"
+@ $C1E3 label=Messaging_ForestPath
+  $C1E3,$0E "#STR$C1E3,$08($b==$FF)".
+B $C1F1,$01 Terminator.
+
+t $C1F2 Messaging: "The Deserted Broch"
+@ $C1F2 label=Messaging_DesertedBrocha
+  $C1F2,$6A "#STR$C1F2,$08($b==$FF)".
+B $C25C,$01 Terminator.
+
+t $C25D Messaging: "The Western Approach"
+@ $C25D label=Messaging_WesternApproach
+  $C25D,$15 "#STR$C25D,$08($b==$FF)".
+B $C272,$01 Terminator.
+
+t $C273 Messaging: "The Cadwell Hillfort"
+@ $C273 label=Messaging_CadwellHillfort
+  $C273,$35 "#STR$C273,$08($b==$FF)".
+B $C2A8,$01 Terminator.
+
+t $C2A9 Messaging: "The Eastern Approach"
+@ $C2A9 label=Messaging_EasternApproach
+  $C2A9,$15 "#STR$C2A9,$08($b==$FF)".
+B $C2BE,$01 Terminator.
+
+t $C2BF Messaging: "A Grassy Plain"
+@ $C2BF label=Messaging_GrassyPlain
+  $C2BF,$2B "#STR$C2BF,$08($b==$FF)".
+B $C2EA,$01 Terminator.
+
+t $C2EB Messaging: "The Circle Of Stones"
+@ $C2EB label=Messaging_CircleOfStones
+  $C2EB,$47 "#STR$C2EB,$08($b==$FF)".
+B $C332,$01 Terminator.
+
+t $C333 Messaging: "A Narrow Gorge"
+@ $C333 label=Messaging_NarrowGorge
+  $C333,$0F "#STR$C333,$08($b==$FF)".
+B $C342,$01 Terminator.
+
+t $C343 Messaging: "Inside A Rock Cavern"
+@ $C343 label=Messaging_InsideRockCavern
+  $C343,$15 "#STR$C343,$08($b==$FF)".
+B $C358,$01 Terminator.
+
+t $C359 Messaging: "The Crystal Cavern"
+@ $C359 label=Messaging_CrystalCavern
+  $C359,$13 "#STR$C359,$08($b==$FF)".
+B $C36C,$01 Terminator.
+
+t $C36D Messaging: "The Chieftain's Chamber"
+@ $C36D label=Messaging_ChieftainsChamber
+  $C36D,$18 "#STR$C36D,$08($b==$FF)".
+B $C385,$01 Terminator.
+
+t $C386 Messaging: "The Storage Chamber"
+@ $C386 label=Messaging_StorageChamber
+  $C386,$14 "#STR$C386,$08($b==$FF)".
+B $C39A,$01 Terminator.
+
+t $C39B Messaging: "The Inner Courtyard"
+@ $C39B label=Messaging_InnerCourtyard
+  $C39B,$14 "#STR$C39B,$08($b==$FF)".
+B $C3AF,$01 Terminator.
+
+t $C3B0 Messaging: "The Druid's Chamber"
+@ $C3B0 label=Messaging_DruidsChamber
+  $C3B0,$14 "#STR$C3B0,$08($b==$FF)".
+B $C3C4,$01 Terminator.
+
+t $C3C5 Messaging: "An Animal Pen"
+@ $C3C5 label=Messaging_AnimalPen
+  $C3C5,$0E "#STR$C3C5,$08($b==$FF)".
+B $C3D3,$01 Terminator.
+
+t $C3D4 Messaging: "The Main Courtyard"
+@ $C3D4 label=Messaging_MainCourtyard
+  $C3D4,$13 "#STR$C3D4,$08($b==$FF)".
+B $C3E7,$01 Terminator.
+
+t $C3E8 Messaging: "The Vale Of Shadows"
+@ $C3E8 label=Messaging_ValeOfShadows
+  $C3E8,$14 "#STR$C3E8,$08($b==$FF)".
+B $C3FC,$01 Terminator.
+
+t $C3FD Messaging: "The Enchanted Hills"
+@ $C3FD label=Messaging_EnchantedHills
+  $C3FD,$14 "#STR$C3FD,$08($b==$FF)".
+B $C411,$01 Terminator.
+
+t $C412 Messaging: "The Ruins Of Mag Gerin"
+@ $C412 label=Messaging_RuinsOfMagGerin
+  $C412,$48 "#STR$C412,$08($b==$FF)".
+B $C45A,$01 Terminator.
+
+t $C45B Messaging: "The Fomorians' Cavern"
+@ $C45B label=Messaging_FomoriansCavern
+  $C45B,$16 "#STR$C45B,$08($b==$FF)".
+B $C471,$01 Terminator.
+
+t $C472 Messaging: "The Mag Gerin Road"
+@ $C472 label=Messaging_MagGerinRoad
+  $C472,$13 "#STR$C472,$08($b==$FF)".
+B $C485,$01 Terminator.
+
+t $C486 Messaging: "The Danaan Settlement"
+@ $C486 label=Messaging_DanaanSettlement
+  $C486,$3E "#STR$C486,$08($b==$FF)".
+B $C4C4,$01 Terminator.
+
+t $C4C5 Messaging: "The Danaan Valley"
+@ $C4C5 label=Messaging_DanaanValley
+  $C4C5,$12 "#STR$C4C5,$08($b==$FF)".
+B $C4D7,$01 Terminator.
+
+t $C4D8 Messaging: "The Twisted Forest"
+@ $C4D8 label=Messaging_TwistedForest
+  $C4D8,$53 "#STR$C4D8,$08($b==$FF)".
+B $C52B,$01 Terminator.
+
+t $C52C Messaging: "Congratulations!!"
+@ $C52C label=Messaging_Congratulations
+  $C52C,$EB "#STR$C52C,$08($b==$FF)".
+B $C617,$01 Terminator.
+
+t $C618 Messaging: "The Vale Of Cuchulainn"
+@ $C618 label=Messaging_ValeOfCuchulainn
+  $C618,$17 "#STR$C618,$08($b==$FF)".
+B $C62F,$01 Terminator.
+
+t $C630 Messaging: "A Guard Chamber"
+@ $C630 label=Messaging_GuardChamber
+  $C630,$10 "#STR$C630,$08($b==$FF)".
+B $C640,$01 Terminator.
+
+t $C641 Messaging: "The Entrance Passage"
+@ $C641 label=Messaging_EntrancePassage
+  $C641,$15 "#STR$C641,$08($b==$FF)".
+B $C656,$01 Terminator.
+
+t $C657 Messaging: "The Outer Courtyard"
+@ $C657 label=Messaging_OuterCourtyard
+  $C657,$14 "#STR$C657,$08($b==$FF)".
+B $C66B,$01 Terminator.
+
+t $C66C Messaging: "A Muddy Passage"
+@ $C66C label=Messaging_MuddyPassage
+  $C66C,$10 "#STR$C66C,$08($b==$FF)".
+B $C67C,$01 Terminator.
+
+t $C67D Messaging: "The Entrance To The Inner Wall"
+@ $C67D label=Messaging_EntranceToInnerWall
+  $C67D,$1F "#STR$C67D,$08($b==$FF)".
+B $C69C,$01 Terminator.
+
+t $C69D Messaging: "Inside The Inner Wall Entrance"
+@ $C69D label=Messaging_InsideInnerWallEntrance
+  $C69D,$1F "#STR$C69D,$08($b==$FF)".
+B $C6BC,$01 Terminator.
+
+t $C6BD Messaging: "The Northern Chamber"
+@ $C6BD label=Messaging_NorthernChamber
+  $C6BD,$15 "#STR$C6BD,$08($b==$FF)".
+B $C6D2,$01 Terminator.
+
+t $C6D3 Messaging: "The Western Chamber"
+@ $C6D3 label=Messaging_WesternChamber
+  $C6D3,$14 "#STR$C6D3,$08($b==$FF)".
+B $C6E7,$01 Terminator.
+
+t $C6E8 Messaging: "The Eastern Chamber.Almost Totally Gutted By Fire"
+@ $C6E8 label=Messaging_EasternChamberGuttedByFire
+  $C6E8,$33 "#STR$C6E8,$08($b==$FF)".
+B $C71B,$01 Terminator.
+
+t $C71C Messaging: "The Southern Chamber"
+@ $C71C label=Messaging_SouthernChamber
+  $C71C,$15 "#STR$C71C,$08($b==$FF)".
+B $C731,$01 Terminator.
 
 g $C732 Table: Item Descriptions
 @ $C732 label=Table_ItemDescriptions
 W $C732,$02 Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
 L $C732,$02,$86
+
+t $C97C
+
+t $C9AF
+
+t $C9E1
+
+t $CA1A
+
+t $CA46
+
+t $CD5F
+
+t $CD9A
 
 g $E4E6 Table: Scenic Event Locations
 @ $E4E6 label=Table_ScenicEventLocations
@@ -941,12 +2255,92 @@ D $E508 A table where the index is the event ID, and the value is the room it
 B $E508,$01 Event #N(#PC-$E508) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $E508,$01,$11
 
-
-b $E978
+g $E978 Table: Configurable Exits
+@ $E978 label=Table_ConfigurableExits
+W $E978,$02
+L $E978,$02,$0B
 
 c $E98E
 
-c $E99F
+c $E99F Game Loop
+@ $E99F label=GameLoop
+  $E99F,$03 Call #R$AB0A.
+  $E9A2,$03 Call #R$AFEB.
+  $E9A5,$03 Call #R$AD32.
+  $E9A8,$03 Call #R$AFC7.
+  $E9AB,$02 Jump to #R$E99F if the item isn't present.
+  $E9AD,$03 Call #R$B05E.
+  $E9B0,$02 Jump to #R$E99F.
+
+c $E9B2 Game Over
+@ $E9B2 label=GameOver
+N $E9B2 Print "#STR$A8EF,$08($b==$FF)".
+  $E9B2,$03 #REGhl=#R$A8EF.
+  $E9B5,$03 Call #R$A592.
+  $E9B8,$03 Call #R$B0A9.
+@ $E9BB label=WantAnotherGameInput
+N $E9BB Print "#STR$A8FD,$08($b==$FF)".
+  $E9BB,$03 #REGhl=#R$A8FD.
+  $E9BE,$03 Call #R$A592.
+@ $E9C1 label=WantAnotherGameInput_Loop
+  $E9C1,$03 Call #R$A53E.
+N $E9C4 The player is done with the game, so reset back to BASIC.
+  $E9C4,$05 #HTML(Reset back to BASIC if the keypress is "<code>#CHR$4E</code>".)
+N $E9C9 The player wants another go...
+  $E9C9,$05 #HTML(Jump to #R$A531 if the keypress is "<code>#CHR$59</code>".)
+N $E9CE Just loop round for any other input.
+  $E9CE,$02 Jump to #R$E9C1.
+
+c $E9D0
+  $E9D0,$03 Call #R$A592.
+  $E9D3,$02 Restore #REGhl and #REGhl from the stack.
+  $E9D5,$03 Jump to #R$E9B2.
+  $E9D8,$03 #REGhl=#R$A77E.
+  $E9DB,$02 Reset bit 0 of *#REGhl.
+  $E9DD,$03 #REGa=*#R$A7C3.
+  $E9E0,$02 Compare #REGa with #N$0D.
+  $E9E2,$01 Return if #REGa is not equal to #N$0D.
+  $E9E3,$03 #REGhl=#R$CD5F.
+  $E9E6,$03 Jump to #R$E9D0.
+  $E9E9,$03 #REGhl=#R$A77E.
+  $E9EC,$02 Reset bit 1 of *#REGhl.
+  $E9EE,$02 #REGa=#N$0F.
+  $E9F0,$03 Call #R$AE6B.
+  $E9F3,$01 Return if #REGa is not equal to #N$0F.
+  $E9F4,$03 #REGhl=#R$CD9A.
+  $E9F7,$03 Jump to #R$E9D0.
+  $E9FA,$03 #REGhl=#R$C97C.
+  $E9FD,$03 Call #R$A592.
+  $EA00,$02 #REGa=#N$00.
+  $EA02,$03 Call #R$AEF0.
+  $EA05,$02 #REGa=#N$01.
+  $EA07,$03 Call #R$AEF0.
+  $EA0A,$01 Return.
+  $EA0B,$02 #REGa=#N$03.
+  $EA0D,$03 Call #R$AEE0.
+  $EA10,$02 #REGa=#N$02.
+  $EA12,$03 Call #R$AEE7.
+  $EA15,$03 #REGhl=#R$C9AF.
+  $EA18,$03 Call #R$A592.
+  $EA1B,$02 #REGb=#N$14.
+  $EA1D,$02 #REGa=#N$22.
+  $EA1F,$03 Call #R$AED1.
+  $EA22,$01 Set flags.
+  $EA23,$02 Jump to #R$EA2D if #REGa is equal to #REGa.
+  $EA25,$03 #REGhl=#R$CA1A.
+  $EA28,$03 Call #R$B081.
+  $EA2B,$02 #REGb=#N$0A.
+  $EA2D,$01 #REGa=#REGb.
+  $EA2E,$03 Call #R$B08A.
+  $EA31,$02 Jump to #R$EA38 if #REGa is equal to #REGa.
+  $EA33,$03 #REGhl=#R$C9E1.
+  $EA36,$02 Jump to #R$EA40.
+  $EA38,$01 Restore #REGhl from the stack.
+  $EA39,$03 #REGhl=#R$E9B2.
+  $EA3C,$01 Exchange the *#REGsp with the #REGhl register.
+  $EA3D,$03 #REGhl=#R$CA46.
+  $EA40,$03 Call #R$B081.
+  $EA43,$01 Return.
 
 c $FCCE Game Start
 @ $FCCE label=GameStart
