@@ -339,7 +339,8 @@ N $A61A Print "#STR$A92A,$08($b==$FF)".
   $A63E,$02 Decrease counter by one and loop back to #R$A631 until counter is zero.
   $A640,$02 #REGe=#N$00.
   $A642,$03 Call #R$ABB6.
-  $A645,$01 Return.
+  $A645,$01 Set flags.
+  $A646,$01 Return.
 
 c $A647 Print Input Prompt
 @ $A647 label=PrintInputPrompt
@@ -397,6 +398,10 @@ B $A77E,$01
 g $A791
 
 g $A7C3
+
+g $A7C4 Score
+@ $A7C4 label=Score
+W $A7C4,$02
 
 g $A7C6
 W $A7C6,$02
@@ -549,7 +554,7 @@ t $A8C9 Messaging: "East"
 B $A8CD,$01 Terminator.
 
 t $A8CE Messaging: "West"
-@ $A8CE label=Messaging_West
+@ $A8CE label=Messaging_West_Duplicate
   $A8CE,$04 "#STR$A8CE,$08($b==$FF)".
 B $A8D2,$01 Terminator.
 
@@ -589,12 +594,12 @@ t $A915 Messaging: "Loading. Press Play"
 B $A929,$01 Terminator.
 
 t $A92A Messaging: "Tape Error.press Any Key To Restart"
-@ $A92A label=Messaging_TapeErrorPressAnyKeyToRestart
+@ $A92A label=Messaging_TapeError
   $A92A,$25 "#STR$A92A,$08($b==$FF)".
 B $A94F,$01 Terminator.
 
 t $A950 Messaging: "Saving. Position Tape.Press Rec & Play,Then Any Key"
-@ $A950 label=Messaging_SavingPositionTapePressRecPlaythenAnyKey
+@ $A950 label=Messaging_Saving
   $A950,$35 "#STR$A950,$08($b==$FF)".
 B $A985,$01 Terminator.
 
@@ -818,6 +823,7 @@ N $AB76 Use the random number to select a room from the group - this loops
   $AB7A,$02 Decrease the random counter by one and loop back to #R$AB76 until
 . the counter is zero.
 
+  $AB80,$03 Call #R$AF08.
   $AB83,$02 Restore the event counter and scenic event location pointer from the stack.
 @ $AB85 label=GameScenicEventChecker_Next
   $AB85,$02 Decrease the scenic event counter by one and loop back to #R$AB49
@@ -1177,7 +1183,47 @@ c $B08A Generate Random Number
 
 c $B09A
 
-c $B0A9
+c $B0A9 Print Scoring
+@ $B0A9 label=Print_Scoring
+D $B0A9 Prints the players score as a percentage.
+N $B0A9 Print "#STR$AACE,$08($b==$FF)".
+  $B0A9,$03 #REGhl=#R$AACE.
+  $B0AC,$03 Call #R$A585.
+  $B0AF,$03 #REGhl=*#R$A7C4.
+N $B0B2 Evaluate the first byte to see if it needs printing at all.
+N $B0B2 So don't show "058%" - instead show "58%".
+N $B0B2 This particular check is for the first character "1" to see if the
+. score is printing "100%".
+  $B0B2,$01 Take the first scoring byte and store it in #REGa.
+M $B0B3,$04 Keep only bits 0-3 and jump to #R$B0BC if the result of this is
+. zero.
+  $B0B3,$02,b$01 Keep only bits 0-3.
+  $B0B5,$02 Jump to #R$B0BC if the result is equal to #N$00.
+  $B0B7,$05 Convert the number to ASCII by adding #N$30 and call #R$A5A4.
+@ $B0BC label=Scoring_SecondDigit
+  $B0BC,$01 Load the second scoring byte into #REGa.
+M $B0BD,$04 Keep only bits 4-7 and jump to #R$B0C6 if the result is non-zero.
+  $B0BD,$02,b$01 Keep only bits 4-7.
+  $B0BF,$02 Jump to #R$B0C6 if the result is not equal to #N$00.
+N $B0C1 The "tens" digit is zero, so check the "hundreds" digit again to avoid
+. printing "05%" - instead show only "5%".
+  $B0C1,$01 Load the first scoring byte into #REGa again.
+  $B0C2,$03 Jump to #R$B0CF if no "hundreds" digit was printed.
+N $B0C5 A "hundreds" digit was printed, so force a "0" to be printed.
+  $B0C5,$01 Load #N$00 into #REGa for printing.
+@ $B0C6 label=Scoring_PrintTens
+  $B0C6,$04 Shift the bits four positions right. This moves the tens digit into
+. the lower part of the byte for printing.
+  $B0CA,$05 Convert the number to ASCII by adding #N$30 and call #R$A5A4..
+N $B0CF Lastly, always print the "units".
+@ $B0CF label=Scoring_ThirdDigit
+  $B0CF,$01 Load the second scoring byte into #REGa.
+  $B0D0,$02,b$01 Keep only bits 0-3.
+  $B0D2,$05 Convert the number to ASCII by adding #N$30 and call #R$A5A4.
+N $B0D7 Print "#STR$AADF,$08($b==$FF)".
+  $B0D7,$03 #REGhl=#R$AADF.
+  $B0DA,$03 Call #R$A592.
+  $B0DD,$01 Return.
 
 c $B0DE
 
@@ -1398,12 +1444,12 @@ t $B683 Messaging: "A Druid.He Wears An Amulet"
 B $B6AD,$01 Terminator.
 
 t $B6AE Messaging: "An Amulet"
-@ $B6AE label=Messaging_AnAmulet
+@ $B6AE label=Messaging_Amulet
   $B6AE,$0A "#STR$B6AE,$08($b==$FF)".
 B $B6B8,$01 Terminator.
 
 t $B6B9 Messaging: "An Amulet,Which You Are Wearing"
-@ $B6B9 label=Messaging_AnAmuletWorn
+@ $B6B9 label=Messaging_AmuletWorn
   $B6B9,$20 "#STR$B6B9,$08($b==$FF)".
 B $B6D9,$01 Terminator.
 
@@ -1437,7 +1483,7 @@ t $B754 Messaging: "A Wild Ox"
   $B754,$32 "#STR$B754,$08($b==$FF)".
 B $B786,$01 Terminator.
 
-t $B787 Messaging: "A Dead Ox"
+t $B787 Messaging: "A Dead Ox.Tethered By A Piece Of Rope"
 @ $B787 label=Messaging_TetheredDeadOx
   $B787,$26 "#STR$B787,$08($b==$FF)".
 B $B7AD,$01 Terminator.
@@ -1713,7 +1759,7 @@ t $BB67 Messaging: "A Druid"
 B $BB6E,$01 Terminator.
 
 t $BB6F Messaging: "An Amulet"
-@ $BB6F label=Messaging_Amulet
+@ $BB6F label=Messaging_Amulet_Duplicate
   $BB6F,$09 "#STR$BB6F,$08($b==$FF)".
 B $BB78,$01 Terminator.
 
@@ -2227,19 +2273,567 @@ g $C732 Table: Item Descriptions
 W $C732,$02 Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
 L $C732,$02,$86
 
-t $C97C
+t $C97C Messaging: "You Have The Feeling That YouAre Being Followed"
+@ $C97C label=Messaging_HaveFeeling
+  $C97C,$32 "#STR$C97C,$08($b==$FF)".
+B $C9AE,$01 Terminator.
 
-t $C9AF
+t $C9AF Messaging: "The Roman Suddenly Appears AndHe Attacks You..."
+@ $C9AF label=Messaging_RomanSuddenlyAppears
+  $C9AF,$31 "#STR$C9AF,$08($b==$FF)".
+B $C9E0,$01 Terminator.
 
-t $C9E1
+t $C9E1 Messaging: "You Are Too Fast For Him AndYou Easily Avoid The Blow"
+@ $C9E1 label=Messaging_YouAreTooFastForHim
+  $C9E1,$38 "#STR$C9E1,$08($b==$FF)".
+B $CA19,$01 Terminator.
 
-t $CA1A
+t $CA1A Messaging: "You Shouldn't Fight On An EmptyStomach..."
+@ $CA1A label=Messaging_ShouldntFightOnEmptyStomach
+  $CA1A,$2B "#STR$CA1A,$08($b==$FF)".
+B $CA45,$01 Terminator.
 
-t $CA46
+t $CA46 Messaging: "You Are Taken By Surprise.The Blow Strikes True"
+@ $CA46 label=Messaging_YouAreTakenBySurpriseBlowStrikesTrue
+  $CA46,$32 "#STR$CA46,$08($b==$FF)".
+B $CA78,$01 Terminator.
 
-t $CD5F
+t $CA79 Messaging: "A Fomorian Attacks You..."
+@ $CA79 label=Messaging_FomorianAttacksYou
+  $CA79,$1A "#STR$CA79,$08($b==$FF)".
+B $CA93,$01 Terminator.
 
-t $CD9A
+t $CA94 Messaging: "You Match The Evil Creature'sSpeed And Avoid The Blow"
+@ $CA94 label=Messaging_MatchEvilCreaturesSpeed
+  $CA94,$38 "#STR$CA94,$08($b==$FF)".
+B $CACC,$01 Terminator.
+
+t $CACD Messaging: "A Wild Boar Rushes From TheUndergrowth,Squealling"
+@ $CACD label=Messaging_WildBoarRushesFromUndergrowth
+  $CACD,$4B "#STR$CACD,$08($b==$FF)".
+B $CB18,$01 Terminator.
+
+t $CB19 Messaging: "You Catch A Glimpse Of A FurtiveFigure..."
+@ $CB19 label=Messaging_YouCatchGlimpseOfAFurtiveFigure
+  $CB19,$2B "#STR$CB19,$08($b==$FF)".
+B $CB44,$01 Terminator.
+
+t $CB45 Messaging: "It Quickly Vanishes Into TheMilling Throng"
+@ $CB45 label=Messaging_QuicklyVanishes
+  $CB45,$2D "#STR$CB45,$08($b==$FF)".
+B $CB72,$01 Terminator.
+
+t $CB73 Messaging: "A Group Of Rats Scurry Off IntoHiding"
+@ $CB73 label=Messaging_GroupOfRatsScurryOff
+  $CB73,$28 "#STR$CB73,$08($b==$FF)".
+B $CB9B,$01 Terminator.
+
+t $CB9C Messaging: "From The Hut,You Hear A WomanSinging Sweetly"
+@ $CB9C label=Messaging_FromTheHutYouHearWomanSinging
+  $CB9C,$2F "#STR$CB9C,$08($b==$FF)".
+B $CBCB,$01 Terminator.
+
+t $CBCC Messaging: "The Woman Says:-"Warlord,I Can Guide You ThroughThe Swamp"
+@ $CBCC label=Messaging_WomanSaysWarlordGuideSwamp
+  $CBCC,$59 "#STR$CBCC,$08($b==$FF)".
+B $CC25,$01 Terminator.
+
+t $CC26 Messaging: "The Woman Goes East"
+@ $CC26 label=Messaging_WomanGoesEast
+  $CC26,$15 "#STR$CC26,$08($b==$FF)".
+B $CC3B,$01 Terminator.
+
+t $CC3C Messaging: "The Woman Goes South"
+@ $CC3C label=Messaging_WomanGoesSouth
+  $CC3C,$16 "#STR$CC3C,$08($b==$FF)".
+B $CC52,$01 Terminator.
+
+t $CC53 Messaging: "As You Watch,The Druid PerformsA Sacrificial Rite"
+@ $CC53 label=Messaging_WatchDruidPerformsSacrificialRite
+  $CC53,$76 "#STR$CC53,$08($b==$FF)".
+B $CCC9,$01 Terminator.
+
+t $CCCA Messaging: "The Unfortunate Slave PerishesAnd The Fire Goes Out"
+@ $CCCA label=Messaging_SlavePerishes
+  $CCCA,$35 "#STR$CCCA,$08($b==$FF)".
+B $CCFF,$01 Terminator.
+
+t $CD00 Messaging: "You Are Assailed By A FeelingOf Immense Fatigue"
+@ $CD00 label=Messaging_FeelingImmenseFatigue
+  $CD00,$5E "#STR$CD00,$08($b==$FF)".
+B $CD5E,$01 Terminator.
+
+t $CD5F Messaging: "You Cannot Hold Your Breath AnyLonger. You Are Drowning"
+@ $CD5F label=Messaging_YouAreDrowning
+  $CD5F,$3A "#STR$CD5F,$08($b==$FF)".
+B $CD99,$01 Terminator.
+
+t $CD9A Messaging: "You Fight Bravely,But The EvilCreatures Overwhelm You"
+@ $CD9A label=Messaging_FightBravely
+  $CD9A,$38 "#STR$CD9A,$08($b==$FF)".
+B $CDD2,$01 Terminator.
+
+t $CDD3 Messaging: "Don't Be Ridiculous"
+@ $CDD3 label=Messaging_DontBeRidiculous
+  $CDD3,$14 "#STR$CDD3,$08($b==$FF)".
+B $CDE7,$01 Terminator.
+
+t $CDE8 Messaging: "You've Done That Already"
+@ $CDE8 label=Messaging_YouveDoneThatAlready
+  $CDE8,$19 "#STR$CDE8,$08($b==$FF)".
+B $CE01,$01 Terminator.
+
+t $CE02 Messaging: "The Slab Lays Horizontally.A Groove Runs Along Its Length"
+@ $CE02 label=Messaging_SlabLaysHorizontally
+  $CE02,$3B "#STR$CE02,$08($b==$FF)".
+B $CE3D,$01 Terminator.
+
+t $CE3E Messaging: "You're Not Tired"
+@ $CE3E label=Messaging_YoureNotTired
+  $CE3E,$11 "#STR$CE3E,$08($b==$FF)".
+B $CE4F,$01 Terminator.
+
+t $CE50 Messaging: "You Fall Into A Deep Sleep"
+@ $CE50 label=Messaging_YouFallIntoADeepSleep
+  $CE50,$1B "#STR$CE50,$08($b==$FF)".
+B $CE6B,$01 Terminator.
+
+t $CE6C Messaging: "As You Slumber,A Shimmering,White,Female Figure"
+@ $CE6C label=Messaging_AsYouSlumber
+  $CE6C,$B5 "#STR$CE6C,$08($b==$FF)".
+B $CF21,$01 Terminator.
+
+t $CF22 Messaging: "You're Not Carrying Anything"
+@ $CF22 label=Messaging_YoureNotCarryingAnything_Duplicate
+  $CF22,$1D "#STR$CF22,$08($b==$FF)".
+B $CF3F,$01 Terminator.
+
+t $CF40 Messaging: "You See Nothing Special"
+@ $CF40 label=Messaging_YouSeeNothingSpecial
+  $CF40,$18 "#STR$CF40,$08($b==$FF)".
+B $CF58,$01 Terminator.
+
+t $CF59 Messaging: "It Is Looking Quite Bedraggled"
+@ $CF59 label=Messaging_LookingQuiteBedraggled
+  $CF59,$1F "#STR$CF59,$08($b==$FF)".
+B $CF78,$01 Terminator.
+
+t $CF79 Messaging: "It Is Sealed With Wax"
+@ $CF79 label=Messaging_SealedWithWax
+  $CF79,$C2 "#STR$CF79,$08($b==$FF)".
+B $D03B,$01 Terminator.
+
+t $D03C Messaging: "It Is The Helmet Of The God,Lug"
+@ $D03C label=Messaging_HelmetOfGodlug
+  $D03C,$20 "#STR$D03C,$08($b==$FF)".
+B $D05C,$01 Terminator.
+
+t $D05D Messaging: "There Is A Fissure In One Side"
+@ $D05D label=Messaging_FissureInOneSide
+  $D05D,$1F "#STR$D05D,$08($b==$FF)".
+B $D07C,$01 Terminator.
+
+t $D07D Messaging: "It's Perfectly Balanced For You"
+@ $D07D label=Messaging_PerfectlyBalanced
+  $D07D,$7A "#STR$D07D,$08($b==$FF)".
+B $D0F7,$01 Terminator.
+
+t $D0F8 Messaging: "The Blade Has A Blue Sheen"
+@ $D0F8 label=Messaging_BladeWithBlueSheen
+  $D0F8,$1B "#STR$D0F8,$08($b==$FF)".
+B $D113,$01 Terminator.
+
+t $D114 Messaging: "It Is Cut From A Precious Stone"
+@ $D114 label=Messaging_CutFromPreciousStone
+  $D114,$73 "#STR$D114,$08($b==$FF)".
+B $D187,$01 Terminator.
+
+t $D188 Messaging: "It Is Carved From Oak And IsStoutly Made"
+@ $D188 label=Messaging_CarvedFromOak
+  $D188,$2A "#STR$D188,$08($b==$FF)".
+B $D1B2,$01 Terminator.
+
+t $D1B3 Messaging: "The Body Is Very Emaciated"
+@ $D1B3 label=Messaging_BodyVeryEmaciated
+  $D1B3,$4B "#STR$D1B3,$08($b==$FF)".
+B $D1FE,$01 Terminator.
+
+t $D1FF Messaging: "This Neck Ring Is Fashioned FromGleaming Bronze"
+@ $D1FF label=Messaging_NeckRingBronze
+  $D1FF,$31 "#STR$D1FF,$08($b==$FF)".
+B $D230,$01 Terminator.
+
+t $D231 Messaging: "You Cannot Move It"
+@ $D231 label=Messaging_YouCannotMoveIt
+  $D231,$13 "#STR$D231,$08($b==$FF)".
+B $D244,$01 Terminator.
+
+t $D245 Messaging: "The Trader Snatches It Back,Angrily"
+@ $D245 label=Messaging_TraderSnatchesItBack
+  $D245,$25 "#STR$D245,$08($b==$FF)".
+B $D26A,$01 Terminator.
+
+t $D26B Messaging: "The Druid Is Deceptively Strong"
+@ $D26B label=Messaging_DruidDeceptivelyStrong
+  $D26B,$88 "#STR$D26B,$08($b==$FF)".
+B $D2F3,$01 Terminator.
+
+t $D2F4 Messaging: "He Doesn't Have It"
+@ $D2F4 label=Messaging_HeDoesntHaveIt
+  $D2F4,$13 "#STR$D2F4,$08($b==$FF)".
+B $D307,$01 Terminator.
+
+t $D308 Messaging: "The Body Does Not Have A Cloak"
+@ $D308 label=Messaging_BodyDoesNotHaveCloak
+  $D308,$1F "#STR$D308,$08($b==$FF)".
+B $D327,$01 Terminator.
+
+t $D328 Messaging: "The Bear Devours The Meat,ButIts Appetite Remains"
+@ $D328 label=Messaging_BearDevoursMeat
+  $D328,$33 "#STR$D328,$08($b==$FF)".
+B $D35B,$01 Terminator.
+
+t $D35C Messaging: "The Wolves Pounce Greedily OntoThe Meat"
+@ $D35C label=Messaging_WolvesPounceGreedily
+  $D35C,$4A "#STR$D35C,$08($b==$FF)".
+B $D3A6,$01 Terminator.
+
+t $D3A7 Messaging: "The Raven Takes The Acorns"
+@ $D3A7 label=Messaging_RavenTakesAcorns
+  $D3A7,$38 "#STR$D3A7,$08($b==$FF)".
+B $D3DF,$01 Terminator.
+
+t $D3E0 Messaging: "The Goddess Danu Stands BeforeYou"
+@ $D3E0 label=Messaging_GoddessDanuStandsBeforeYou
+  $D3E0,$C8 "#STR$D3E0,$08($b==$FF)".
+B $D4A8,$01 Terminator.
+
+t $D4A9 Messaging: "From Above,You Hear The BeatingOf Velvet Wings"
+@ $D4A9 label=Messaging_FromAboveYouHear
+  $D4A9,$4B "#STR$D4A9,$08($b==$FF)".
+B $D4F4,$01 Terminator.
+
+t $D4F5 Messaging: "He Doesn't Want It.He's Dropped It"
+@ $D4F5 label=Messaging_HeDoesntWantIt
+  $D4F5,$24 "#STR$D4F5,$08($b==$FF)".
+B $D519,$01 Terminator.
+
+t $D51A Messaging: "It Is Not On The Slab"
+@ $D51A label=Messaging_ItIsNotOnTheSlab
+  $D51A,$16 "#STR$D51A,$08($b==$FF)".
+B $D530,$01 Terminator.
+
+t $D531 Messaging: "The Guard Accepts The Salt"
+@ $D531 label=Messaging_GuardAcceptsSalt
+  $D531,$5D "#STR$D531,$08($b==$FF)".
+B $D58E,$01 Terminator.
+
+t $D58F Messaging: "He Accepts The Iron As Payment"
+@ $D58F label=Messaging_AcceptsIronAsPayment
+  $D58F,$57 "#STR$D58F,$08($b==$FF)".
+B $D5E6,$01 Terminator.
+
+t $D5E7 Messaging: "The Trader Takes It And Says:-Thank You!"
+@ $D5E7 label=Messaging_TraderTakesItSaysThankYou
+  $D5E7,$58 "#STR$D5E7,$08($b==$FF)".
+B $D63F,$01 Terminator.
+
+t $D640 Messaging: "The Druid Removes The Amulet"
+@ $D640 label=Messaging_DruidRemovesTheAmulet
+  $D640,$54 "#STR$D640,$08($b==$FF)".
+B $D694,$01 Terminator.
+
+t $D695 Messaging: "You Are Getting Too Close!"
+@ $D695 label=Messaging_GettingTooClose
+  $D695,$1A "#STR$D695,$08($b==$FF)".
+B $D6AF,$01 Terminator.
+
+t $D6B0 Messaging: "The Mighty Paws Encircle You"
+@ $D6B0 label=Messaging_MightyPaws
+  $D6B0,$32 "#STR$D6B0,$08($b==$FF)".
+B $D6E2,$01 Terminator.
+
+t $D6E3 Messaging: "The Wolves Are Upon You"
+@ $D6E3 label=Messaging_WolvesUponYou
+  $D6E3,$33 "#STR$D6E3,$08($b==$FF)".
+B $D716,$01 Terminator.
+
+t $D717 Messaging: "The Bear Eats The Food"
+@ $D717 label=Messaging_BearEatsFood
+  $D717,$17 "#STR$D717,$08($b==$FF)".
+B $D72E,$01 Terminator.
+
+t $D72F Messaging: "The Wolves Eat The Food"
+@ $D72F label=Messaging_WolvesEatTheFood
+  $D72F,$18 "#STR$D72F,$08($b==$FF)".
+B $D747,$01 Terminator.
+
+t $D748 Messaging: "You're Not In It"
+@ $D748 label=Messaging_YoureNotInIt
+  $D748,$11 "#STR$D748,$08($b==$FF)".
+B $D759,$01 Terminator.
+
+t $D75A Messaging: "It Isn't Tied"
+@ $D75A label=Messaging_ItIsntTied
+  $D75A,$0E "#STR$D75A,$08($b==$FF)".
+B $D768,$01 Terminator.
+
+t $D769 Messaging: "He Isn't Tied"
+@ $D769 label=Messaging_HeIsntTied
+  $D769,$0E "#STR$D769,$08($b==$FF)".
+B $D777,$01 Terminator.
+
+t $D778 Messaging: "Now Free,The Ox Becomes Enraged"
+@ $D778 label=Messaging_OxBecomesEnraged
+  $D778,$3D "#STR$D778,$08($b==$FF)".
+B $D7B5,$01 Terminator.
+
+t $D7B6 Messaging: "You Release Him"
+@ $D7B6 label=Messaging_YouReleaseHim
+  $D7B6,$42 "#STR$D7B6,$08($b==$FF)".
+B $D7F8,$01 Terminator.
+
+t $D7F9 Messaging: "The Air Becomes Charged WithImmense Power"
+@ $D7F9 label=Messaging_AirChargedWithImmensePower
+  $D7F9,$DB "#STR$D7F9,$08($b==$FF)".
+B $D8D4,$01 Terminator.
+
+t $D8D5 Messaging: "He Then Vanishes"
+@ $D8D5 label=Messaging_ThenVanishes
+  $D8D5,$11 "#STR$D8D5,$08($b==$FF)".
+B $D8E6,$01 Terminator.
+
+t $D8E7 Messaging: "You Drink Some Water"
+@ $D8E7 label=Messaging_DrinkSomeWater
+  $D8E7,$15 "#STR$D8E7,$08($b==$FF)".
+B $D8FC,$01 Terminator.
+
+t $D8FD Messaging: "You Can't. It's Salt Water"
+@ $D8FD label=Messaging_CantSaltWater
+  $D8FD,$1B "#STR$D8FD,$08($b==$FF)".
+B $D918,$01 Terminator.
+
+t $D919 Messaging: "You Plunge Into The Lake"
+@ $D919 label=Messaging_PlungeIntoLake
+  $D919,$59 "#STR$D919,$08($b==$FF)".
+B $D972,$01 Terminator.
+
+t $D973 Messaging: "You Take A Refreshing Dip"
+@ $D973 label=Messaging_TakeARefreshingDip
+  $D973,$2F "#STR$D973,$08($b==$FF)".
+B $D9A2,$01 Terminator.
+
+t $D9A3 Messaging: "You're In Nothing You Need ToClimb Out Of"
+@ $D9A3 label=Messaging_YoureInNothingYouNeedToClimbOutOf
+  $D9A3,$2B "#STR$D9A3,$08($b==$FF)".
+B $D9CE,$01 Terminator.
+
+t $D9CF Messaging: "The Ring Is Formed From Closeset Crystals"
+@ $D9CF label=Messaging_RingIsFormedFromClosesetCrystals
+  $D9CF,$54 "#STR$D9CF,$08($b==$FF)".
+B $DA23,$01 Terminator.
+
+t $DA24 Messaging: "Try A More Measured Approach"
+@ $DA24 label=Messaging_TryMoreMeasuredApproach
+  $DA24,$1D "#STR$DA24,$08($b==$FF)".
+B $DA41,$01 Terminator.
+
+t $DA42 Messaging: "You Plummet Onto The Rock Floor"
+@ $DA42 label=Messaging_PlummetOntoTheRockFloor
+  $DA42,$3F "#STR$DA42,$08($b==$FF)".
+B $DA81,$01 Terminator.
+
+t $DA82 Messaging: "You Are Already Wearing It"
+@ $DA82 label=Messaging_AlreadyWearingIt
+  $DA82,$1B "#STR$DA82,$08($b==$FF)".
+B $DA9D,$01 Terminator.
+
+t $DA9E Messaging: "The Urn Lands In The Fire"
+@ $DA9E label=Messaging_UrnLandsInTheFire
+  $DA9E,$72 "#STR$DA9E,$08($b==$FF)".
+B $DB10,$01 Terminator.
+
+t $DB11 Messaging: "From The Flames March TheShadowy Forms Of The Nemedianhost"
+@ $DB11 label=Messaging_FromTheFlames
+  $DB11,$AC "#STR$DB11,$08($b==$FF)".
+B $DBBD,$01 Terminator.
+
+t $DBBE Messaging: "You Already Carry The Shield InA Defensive Position"
+@ $DBBE label=Messaging_AlreadyCarryShield
+  $DBBE,$35 "#STR$DBBE,$08($b==$FF)".
+B $DBF3,$01 Terminator.
+
+t $DBF4 Messaging: "Don't Be Disgusting"
+@ $DBF4 label=Messaging_DontBeDisgusting
+  $DBF4,$14 "#STR$DBF4,$08($b==$FF)".
+B $DC08,$01 Terminator.
+
+t $DC09 Messaging: "You Must Be Joking"
+@ $DC09 label=Messaging_MustBeJoking
+  $DC09,$13 "#STR$DC09,$08($b==$FF)".
+B $DC1C,$01 Terminator.
+
+t $DC1D Messaging: "You Are Filled With RenewedEnergy"
+@ $DC1D label=Messaging_FilledWithRenewedEnergy
+  $DC1D,$23 "#STR$DC1D,$08($b==$FF)".
+B $DC40,$01 Terminator.
+
+t $DC41 Messaging: "It Was A Little Tough"
+@ $DC41 label=Messaging_WasLittleTough
+  $DC41,$16 "#STR$DC41,$08($b==$FF)".
+B $DC57,$01 Terminator.
+
+t $DC58 Messaging: "You Capture The UnsuspectingRoman"
+@ $DC58 label=Messaging_CaptureTheUnsuspectingRoman
+  $DC58,$44 "#STR$DC58,$08($b==$FF)".
+B $DC9C,$01 Terminator.
+
+t $DC9D Messaging: "What With?"
+@ $DC9D label=Messaging_WhatWith
+  $DC9D,$0A "#STR$DC9D,$08($b==$FF)".
+B $DCA7,$01 Terminator.
+
+t $DCA8 Messaging: "He's Not Interested"
+@ $DCA8 label=Messaging_HesNotInterested
+  $DCA8,$14 "#STR$DCA8,$08($b==$FF)".
+B $DCBC,$01 Terminator.
+
+t $DCBD Messaging: "You Feel A Sense Of RushingMovement..."
+@ $DCBD label=Messaging_SenseOfRushingMovement
+  $DCBD,$27 "#STR$DCBD,$08($b==$FF)".
+B $DCE4,$01 Terminator.
+
+t $DCE5 Messaging: "You Don't Have A Weopon"
+@ $DCE5 label=Messaging_DontHaveAWeopon
+  $DCE5,$18 "#STR$DCE5,$08($b==$FF)".
+B $DCFD,$01 Terminator.
+
+t $DCFE Messaging: "The Roman Is Unnerved By TheFerocity Of Your Attack"
+@ $DCFE label=Messaging_RomanIsUnnerved
+  $DCFE,$4B "#STR$DCFE,$08($b==$FF)".
+B $DD49,$01 Terminator.
+
+t $DD4A Messaging: "Your Blow Strikes True.He Is Dead"
+@ $DD4A label=Messaging_BlowStrikesTrue
+  $DD4A,$23 "#STR$DD4A,$08($b==$FF)".
+B $DD6D,$01 Terminator.
+
+t $DD6E Messaging: "That Was Very Cowardly"
+@ $DD6E label=Messaging_VeryCowardly
+  $DD6E,$17 "#STR$DD6E,$08($b==$FF)".
+B $DD85,$01 Terminator.
+
+t $DD86 Messaging: "You Attack In Vain"
+@ $DD86 label=Messaging_AttackInVain
+  $DD86,$2E "#STR$DD86,$08($b==$FF)".
+B $DDB4,$01 Terminator.
+
+t $DDB5 Messaging: "The Fomorian Is Unaffected ByYour Blows"
+@ $DDB5 label=Messaging_FomorianUnaffected
+  $DDB5,$29 "#STR$DDB5,$08($b==$FF)".
+B $DDDE,$01 Terminator.
+
+t $DDDF Messaging: "O.K. It No Longer Suffers"
+@ $DDDF label=Messaging_NoLongerSuffers
+  $DDDF,$1A "#STR$DDDF,$08($b==$FF)".
+B $DDF9,$01 Terminator.
+
+t $DDFA Messaging: "You Are Mobbed By The AngryVillagers"
+@ $DDFA label=Messaging_MobbedByAngryVillagers
+  $DDFA,$36 "#STR$DDFA,$08($b==$FF)".
+B $DE30,$01 Terminator.
+
+t $DE31 Messaging: "You Can't.There Are Too ManyOf Them"
+@ $DE31 label=Messaging_YouCantTooManyOfThem
+  $DE31,$25 "#STR$DE31,$08($b==$FF)".
+B $DE56,$01 Terminator.
+
+t $DE57 Messaging: "You Attack Boldly"
+@ $DE57 label=Messaging_AttackBoldly
+  $DE57,$46 "#STR$DE57,$08($b==$FF)".
+B $DE9D,$01 Terminator.
+
+t $DE9E Messaging: "Your Blow Strikes True.It Is Dead"
+@ $DE9E label=Messaging_YourBlowStrikesTrue
+  $DE9E,$23 "#STR$DE9E,$08($b==$FF)".
+B $DEC1,$01 Terminator.
+
+t $DEC2 Messaging: "A Guard,On The Rampart Above,Flings A Spear"
+@ $DEC2 label=Messaging_GuardOnTheRampartAbove
+  $DEC2,$2D "#STR$DEC2,$08($b==$FF)".
+B $DEEF,$01 Terminator.
+
+t $DEF0 Messaging: "The Druid Avoids Your Blow"
+@ $DEF0 label=Messaging_DruidAvoidsBlow
+  $DEF0,$42 "#STR$DEF0,$08($b==$FF)".
+B $DF32,$01 Terminator.
+
+t $DF33 Messaging: "You're Not In Water"
+@ $DF33 label=Messaging_YoureNotInWater
+  $DF33,$14 "#STR$DF33,$08($b==$FF)".
+B $DF47,$01 Terminator.
+
+t $DF48 Messaging: "As You Move Through The Firecurtain"
+@ $DF48 label=Messaging_MoveThroughFirecurtain
+  $DF48,$39 "#STR$DF48,$08($b==$FF)".
+B $DF81,$01 Terminator.
+
+t $DF82 Messaging: "The Woman Is Transformed..."
+@ $DF82 label=Messaging_TheWomanTransformed
+  $DF82,$6E "#STR$DF82,$08($b==$FF)".
+B $DFF0,$01 Terminator.
+
+t $DFF1 Messaging: "The Torc Warms Up As You Look"
+@ $DFF1 label=Messaging_TorcWarmsUp
+  $DFF1,$1D "#STR$DFF1,$08($b==$FF)".
+B $E00E,$01 Terminator.
+
+t $E00F Messaging: "Toward The Hut"
+@ $E00F label=Messaging_TowardHut
+  $E00F,$0F "#STR$E00F,$08($b==$FF)".
+B $E01E,$01 Terminator.
+
+t $E01F Messaging: "North"
+@ $E01F label=Messaging_North_Duplicate
+  $E01F,$06 "#STR$E01F,$08($b==$FF)".
+B $E025,$01 Terminator.
+
+t $E026 Messaging: "North,East & West"
+@ $E026 label=Messaging_NorthEastWest
+  $E026,$12 "#STR$E026,$08($b==$FF)".
+B $E038,$01 Terminator.
+
+t $E039 Messaging: "South & East"
+@ $E039 label=Messaging_SouthEast
+  $E039,$0D "#STR$E039,$08($b==$FF)".
+B $E046,$01 Terminator.
+
+t $E047 Messaging: "West"
+@ $E047 label=Messaging_West
+  $E047,$05 "#STR$E047,$08($b==$FF)".
+B $E04C,$01 Terminator.
+
+t $E04D Messaging: "South,East & West"
+@ $E04D label=Messaging_SouthEastWest
+  $E04D,$12 "#STR$E04D,$08($b==$FF)".
+B $E05F,$01 Terminator.
+
+t $E060 Messaging: "The Salt Has Dissolved"
+@ $E060 label=Messaging_SaltHasDissolved
+  $E060,$18 "#STR$E060,$08($b==$FF)".
+B $E078,$01 Terminator.
+
+t $E079 Messaging: "The Guard Prevents You"
+@ $E079 label=Messaging_GuardPreventsYou
+  $E079,$17 "#STR$E079,$08($b==$FF)".
+B $E090,$01 Terminator.
+
+t $E091 Messaging: "You've Nothing To Tie Him With"
+@ $E091 label=Messaging_YouveNothingToTieHimWith
+  $E091,$1F "#STR$E091,$08($b==$FF)".
+B $E0B0,$01 Terminator.
+
+t $E0B1
 
 g $E4E6 Table: Scenic Event Locations
 @ $E4E6 label=Table_ScenicEventLocations
@@ -2277,6 +2871,7 @@ c $E9B2 Game Over
 N $E9B2 Print "#STR$A8EF,$08($b==$FF)".
   $E9B2,$03 #REGhl=#R$A8EF.
   $E9B5,$03 Call #R$A592.
+N $E9B8 Print the percentage of the game the player achieved.
   $E9B8,$03 Call #R$B0A9.
 @ $E9BB label=WantAnotherGameInput
 N $E9BB Print "#STR$A8FD,$08($b==$FF)".
@@ -2295,13 +2890,17 @@ c $E9D0
   $E9D0,$03 Call #R$A592.
   $E9D3,$02 Restore #REGhl and #REGhl from the stack.
   $E9D5,$03 Jump to #R$E9B2.
-  $E9D8,$03 #REGhl=#R$A77E.
-  $E9DB,$02 Reset bit 0 of *#REGhl.
-  $E9DD,$03 #REGa=*#R$A7C3.
-  $E9E0,$02 Compare #REGa with #N$0D.
-  $E9E2,$01 Return if #REGa is not equal to #N$0D.
+
+c $E9D8 Fatal Events: Drowning
+@ $E9D8 label=Event_Drowning
+N $E9D8 Make the "drowning" inactive.
+  $E9D8,$05 Reset bit 0 of *#R$A77E which relates to the player drowning.
+  $E9DD,$06 Return if *#R$A7C3 is not equal to #N$0D.
+N $E9E3 Print "#STR$CD5F,$08($b==$FF)".
   $E9E3,$03 #REGhl=#R$CD5F.
   $E9E6,$03 Jump to #R$E9D0.
+
+c $E9E9
   $E9E9,$03 #REGhl=#R$A77E.
   $E9EC,$02 Reset bit 1 of *#REGhl.
   $E9EE,$02 #REGa=#N$0F.
@@ -2309,6 +2908,8 @@ c $E9D0
   $E9F3,$01 Return if #REGa is not equal to #N$0F.
   $E9F4,$03 #REGhl=#R$CD9A.
   $E9F7,$03 Jump to #R$E9D0.
+
+c $E9FA
   $E9FA,$03 #REGhl=#R$C97C.
   $E9FD,$03 Call #R$A592.
   $EA00,$02 #REGa=#N$00.
@@ -2316,6 +2917,8 @@ c $E9D0
   $EA05,$02 #REGa=#N$01.
   $EA07,$03 Call #R$AEF0.
   $EA0A,$01 Return.
+
+c $EA0B
   $EA0B,$02 #REGa=#N$03.
   $EA0D,$03 Call #R$AEE0.
   $EA10,$02 #REGa=#N$02.
@@ -2341,6 +2944,8 @@ c $E9D0
   $EA3D,$03 #REGhl=#R$CA46.
   $EA40,$03 Call #R$B081.
   $EA43,$01 Return.
+
+c $EA44
 
 c $FCCE Game Start
 @ $FCCE label=GameStart

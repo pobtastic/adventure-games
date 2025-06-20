@@ -81,7 +81,7 @@ class JewelsOfBabylon(AdventureGame):
 
 class Warlord(AdventureGame):
     def get_text(self):
-        lines = super().get_text(0xB14D, 0xC731)
+        lines = super().get_text(0xC97C, 0xE0B0)
         return '\n'.join(lines)
 
 
