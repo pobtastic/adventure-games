@@ -457,10 +457,12 @@ g $A7D2 Pointer: Room Description Table
 D $A7D2 Pointer to the table containing room descriptions.
 W $A7D2,$02
 
-g $A7D4
+g $A7D4 Pointer: Item Grouping Table
+@ $A7D4 label=Pointer_ItemGroupingTable
 W $A7D4,$02
 
-g $A7D6
+g $A7D6 Pointer: Object Noun Phrases
+@ $A7D6 label=Pointer_ObjectNounPhrases
 W $A7D6,$02
 
 g $A7D8 Pointer: Object List Table
@@ -1101,7 +1103,7 @@ R $ACAD A Line number to begin printing
   $ACBE,$03 Call #R$A592.
   $ACC1,$01 Return.
 
-c $ACC2
+t $ACC2
 
 t $ACCC
 
@@ -1118,14 +1120,138 @@ c $ACD8
 c $AD32 Handler: User Input
 
 c $AE36 Action: Examine Item
+@ $AE36 label=Action_ExamineItem
+R $AE36 C Item ID
+R $AE36 O:F Carry flag set when the item isn't present
+  $AE36,$01 Increment #REGbc by one.
+  $AE37,$05 #REGe=*#R$A7E8-#REGc.
+  $AE3C,$01 Stash #REGde on the stack.
+  $AE3D,$04 #REGix=*#R$A7D4.
+  $AE41,$03 Call #R$AB88.
+  $AE44,$01 Restore #REGde from the stack.
+  $AE45,$02 Jump to #R$AE48.
+@ $AE47 label=ExamineItem_Loop
+  $AE47,$01 Increment #REGhl by one.
+@ $AE48 label=ExamineItem
+  $AE48,$05 Jump to #R$AE53 if *#REGhl is equal to #N$FF.
+  $AE4D,$03 Call #R$AE6B.
+  $AE50,$02 Jump to #R$AE47 if the item wasn't found.
+  $AE52,$01 Return.
+N $AE53 The item being examined isn't in the room or in the players inventory.
+@ $AE53 label=Response_ItemNotHere
+N $AE53 Print "#STR$A8DB,$08($b==$FF)".
+  $AE53,$03 #REGhl=#R$A8DB.
+  $AE56,$03 Call #R$A585.
+N $AE59 Print the object name.
+  $AE59,$04 #REGix=*#R$A7D6.
+  $AE5D,$03 Call #R$AB88.
+  $AE60,$03 Call #R$A585.
+N $AE63 Print "#STR$A8E8,$08($b==$FF)".
+  $AE63,$03 #REGhl=#R$A8E8.
+  $AE66,$03 Call #R$A592.
+  $AE69,$01 Set the carry flag.
+  $AE6A,$01 Return.
 
 c $AE6B Validate If Item Is Present
+@ $AE6B label=ValidateItemPresent
+R $AE6B A Object ID
+R $AE6B F Z flag set if the object is available
+  $AE6B,$02 Stash #REGhl and #REGde on the stack.
+  $AE6D,$03 Store the object ID in #REGde.
+  $AE70,$03 #REGhl=#R$A66C.
+  $AE73,$01 Add the object ID to the object/ event locations table.
+  $AE74,$06 Jump to #R$AE7D if the object/ event table states that it's located
+. in *#R$A7C3. Note also sets/ unsets the Z flag accordingly.
+N $AE7A Check the players inventory, as an object can still be used if it's being held.
+  $AE7A,$03 Lastly, set the Z flag if the item is in the players inventory.
+@ $AE7D label=Handler_Objects_Return
+N $AE7D Housekeeping; restore #REGde and #REGhl to their previous values.
+  $AE7D,$02 Restore #REGde and #REGhl from the stack.
+  $AE7F,$01 Return.
 
 c $AE80 Match Phrase Tokens
+@ $AE80 label=MatchPhraseTokens
+D $AE80 Matches phrase patterns with multiple variations against user input
+. tokens.
+R $AE80 HL A pointer to phrase token data
+R $AE80 O:F The Z flag is set if the input matches any pattern
+  $AE80,$01 Switch the phrase token pointer to #REGde.
+  $AE81,$02 Jump to #R$AE84.
+N $AE83 Skip the separator.
+@ $AE83 label=MatchPhraseTokens_Loop
+  $AE83,$01 Increment the phrase token pointer by one.
+N $AE84 Fetch the second user input token (not the first, as the first token
+. is the verb and the second token onwards gives the context).
+N $AE84 For example; "GET" (verb) "KEG OF GUNPOWDER" (direct object).
+@ $AE84 label=MatchPhraseTokens_Start
+  $AE84,$03 #REGhl=#R$A825.
+  $AE87,$02 Jump to #R$AE8B.
+N $AE89 The tokens matched so advance both pointers.
+@ $AE89 label=MatchTokens_Loop
+  $AE89,$01 Increment the input token pointer by one.
+  $AE8A,$01 Increment the pattern token pointer by one.
+N $AE8B Keep looping if the tokens match.
+@ $AE8B label=CompareTokens
+  $AE8B,$04 Jump to #R$AE89 if the pattern token and the input token are the
+. same.
+N $AE8F The tokens are different, but is it just that we are at the end of the
+. pattern?
+  $AE8F,$04 Jump to #R$AE97 unless this is the terminator character (#N$FE).
+N $AE93 Yes! The input tokens all matched against the phrase pattern tokens.
+  $AE93,$04 Return with Z flag result.
+N $AE97 The tokens are different, but is this a separator character?
+@ $AE97 label=CheckSeparator
+  $AE97,$04 Jump to #R$AEA1 if this is not the separator (#N$FD).
+  $AE9B,$05 Jump to #R$AE83 if the input tokens are not complete.
+  $AEA0,$01 Return.
+N $AEA1 The current variant doesn't match, so skip to the next one.
+@ $AEA1 label=MatchPhraseTokens_Next
+  $AEA1,$01 Increment the phrase token pointer by one.
+  $AEA2,$05 Jump to #R$AEAD if the terminator has been reached (#N$FE).
+  $AEA7,$04 Jump to #R$AEA1 if this is not the separator (#N$FD).
+  $AEAB,$02 Jump to #R$AE83.
+N $AEAD The input doesn't match any patterns.
+@ $AEAD label=MatchPhraseTokens_Return
+  $AEAD,$01 Clear the Z flag.
+  $AEAE,$01 Return.
 
 c $AEAF Parser: Count Item References
+@ $AEAF label=Parser_CountItems
+D $AEAF Count how many tokens in the user input refer to game items.
+R $AEAF O:A The number of references to items in the user input tokens
+R $AEAF O:E As #REGa
+R $AEAF O:F The Z flag is set when there are no items present in the input
+  $AEAF,$03 Set a pointer to #R$A824 in #REGhl.
+  $AEB2,$02 Set a token count in #REGb of #N$0A which is the total length of
+. the user input tokens.
+  $AEB4,$02 Initialise the item counter held in #REGe to #N$00.
+@ $AEB6 label=Parser_CountItems_Loop
+  $AEB6,$01 Fetch a user input token.
+  $AEB7,$04 Jump to #R$AECE if the terminator character (#N$FF) has been
+. reached.
+  $AEBB,$02 Stash the token pointer and token counter on the stack.
+  $AEBD,$03 #REGhl=*#R$A7D8.
+  $AEC0,$04 Fetch the count of the number of items in the table from *#R$A7E8.
+  $AEC4,$02 Search to see if the item room ID is in the table.
+  $AEC6,$02 Restore the token counter and token pointer from the stack.
+  $AEC8,$02 Jump to #R$AECB if this token doesn't refer to a game item.
+N $AECA This token does point to a game item, so increase the item counter.
+  $AECA,$01 Increment item counter by one.
+@ $AECB label=Parser_CountItems_Skip
+  $AECB,$01 Move to the next token.
+  $AECC,$02 Decrease the token counter by one and loop back to #R$AEB6 until
+. all the tokens have been evaluated.
+@ $AECE label=Parser_CountItems_Process
+  $AECE,$02 Transfer the item count into #REGa and set flags accordingly.
+  $AED0,$01 Return.
 
-c $AED1 Object/ Event Locator
+c $AED1
+  $AED1,$01 #REGe=#REGa.
+  $AED2,$02 #REGd=#N$00.
+  $AED4,$03 #REGhl=#R$A66C.
+  $AED7,$01 #REGhl+=#REGde.
+  $AED8,$01 #REGa=*#REGhl.
+  $AED9,$01 Return.
 
 c $AEDA Is Object In Inventory?
 @ $AEDA label=CheckObjectInInventory
@@ -2415,6 +2541,11 @@ g $C732 Table: Item Descriptions
 W $C732,$02 Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
 L $C732,$02,$86
 
+g $C83E Table: Object Noun Phrases
+@ $C83E label=Table_ObjectNounPhrases
+W $C83E,$02 Object #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)): #OBJECT((#PC-$C83E)/$02).
+L $C83E,$02,$39
+
 g $C8B0 Table: Room Descriptions
 @ $C8B0 label=Table_RoomDescriptions
 W $C8B0,$02 N/A.
@@ -2988,6 +3119,55 @@ g $E308 Table: Object List?
 @ $E308 label=Table_ObjectList
 B $E308,$01 Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
 L $E308,$01,$39
+
+g $E341 Data: Item Groups
+D $E341 See #R$E417 for usage.
+@ $E341 label=Data_ItemGroup_Roman
+@ $E348 label=Data_ItemGroup_Fomorian
+@ $E353 label=Data_ItemGroup_Hare
+@ $E359 label=Data_ItemGroup_DeepPoolOfWater_1
+@ $E35E label=Data_ItemGroup_Salt
+@ $E360 label=Data_ItemGroup_ClayPot
+@ $E362 label=Data_ItemGroup_Acorns
+@ $E364 label=Data_ItemGroup_Urn
+@ $E366 label=Data_ItemGroup_Torc
+@ $E369 label=Data_ItemGroup_Raven
+@ $E36B label=Data_ItemGroup_Helmet
+@ $E36E label=Data_ItemGroup_Food
+@ $E370 label=Data_ItemGroup_Iron
+@ $E372 label=Data_ItemGroup_StoneMonolith_1
+@ $E374 label=Data_ItemGroup_StoneMonolith_2
+@ $E377 label=Data_ItemGroup_
+@ $E37F label=Data_ItemGroup_ShadowLikeDemons
+@ $E381 label=Data_ItemGroup_Hut
+@ $E386 label=Data_ItemGroup_Vase
+@ $E3E7 label=Data_ItemGroup_DeepPoolOfWater_2
+@ $E3F4 label=Data_ItemGroup_Chariot
+@ $E3F6 label=Data_ItemGroup_StoneSlab_1
+@ $E3F9 label=Data_ItemGroup_StoneSlab_2
+B $E341,$01 #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC))).
+L $E341,$01,$D6
+
+g $E417 Table: Item Grouping
+@ $E417 label=Table_ItemGrouping
+D $E417 Items may have several item IDs which relate to a single item, this
+. table groups the items together to assist the parser with knowing that tokens
+. refer to the same thing.
+.
+. Some examples are:
+. #TABLE(default,centre,centre,centre)
+. { =h Item ID | =h Item Name | =h Relates To: }
+. { #R$E353(#N$13) | #ITEM$13 | =r2 The Hare }
+. { #R$E354(#N$26) | #ITEM$26 }
+. { =h Item ID | =h Item Name | =h Relates To: }
+. { #R$E36B(#N$1F) | #ITEM$1F | =r2 The Bronze Helmet }
+. { #R$E36C(#N$20) | #ITEM$20 }
+. { =h Item ID | =h Item Name | =h Relates To: }
+. { #R$E3AD(#N$4F) | #ITEM$4F | =r2 The Pig }
+. { #R$E3AE(#N$50) | #ITEM$50 }
+. TABLE#
+W $E417,$02 Item Group: #N((#PC-$E417)/$02): #OBJECT((#PC-$E417)/$02).
+L $E417,$02,$30
 
 g $E4E6 Table: Scenic Event Locations
 @ $E4E6 label=Table_ScenicEventLocations

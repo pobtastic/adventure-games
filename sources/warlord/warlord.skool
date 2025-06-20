@@ -496,7 +496,7 @@ u$5B4F DEFB $1A,$00,$00,$00,$00,$00,$00,$00
 ; Graphics: The Wooded Vale
 ;
 ; #SIM(start=$5B46,stop=$5B4E)#SIM(start=$A54E,stop=$A554) #PUSHS #UDGTABLE
-; { =h Wooded Vale }
+; { =h The Wooded Vale }
 ; { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(wooded-vale) }
 ; UDGTABLE# #POPS
 @label=Image_WoodedVale
@@ -2836,6 +2836,9 @@ c$A577 PUSH HL       ; {Stash #REGhl, #REGde, #REGbc and #REGaf on the stack.
 
 ; Print String
 ;
+; Used by the routines at #R$A592, #R$A647, #R$AC02, #R$ACCF, #R$ACD8, #R$AD32,
+; #R$AE36, #R$B0A9 and #R$EB10.
+; .
 ; Standard printing loop, which prints the fetched character byte and
 ; loops until the termination byte is reached (#N$FF).
 ;
@@ -2855,6 +2858,10 @@ c$A585 CALL $A577    ; Call #R$A577.
 
 ; Print String And A Newline
 ;
+; Used by the routines at #R$A5CA, #R$A605, #R$AAEE, #R$AAF5, #R$AAFC, #R$AB03,
+; #R$AB97, #R$AC02, #R$ACAD, #R$AD32, #R$AE36, #R$B05E, #R$B081, #R$B0A9,
+; #R$E9B2, #R$E9D0, #R$E9FA, #R$EA0B, #R$EA44 and #R$EB10.
+; .
 ; Shortcut print routine which prints a newline after it's done.
 @label=PrintStringAndNewline
 c$A592 CALL $A585    ; Call #R$A585.
@@ -2866,6 +2873,8 @@ c$A592 CALL $A585    ; Call #R$A585.
 
 ; Scroll Screen
 ;
+; Used by the routine at #R$A5A4.
+; .
 ; Scrolls the screen up and then resets the print position.
 @label=ScrollScreen
 c$A59B EXX           ; Switch to the shadow registers.
@@ -2914,6 +2923,8 @@ c$A5A4 PUSH AF       ; Stash the character to print on the stack.
 
 ; Pause Loop
 ;
+; Used by the routines at #R$B081 and #R$EB10.
+; .
 ; Pauses a given number of HALT loops.
 ;
 ; B Number of HALT commands to use
@@ -3714,10 +3725,12 @@ g$A7D0 DEFW $FEFC
 @label=Pointer_RoomDescriptions
 g$A7D2 DEFW $C8B0
 
-; Game status buffer entry at A7D4
+; Pointer: Item Grouping Table
+@label=Pointer_ItemGroupingTable
 g$A7D4 DEFW $E417
 
-; Game status buffer entry at A7D6
+; Pointer: Object Noun Phrases
+@label=Pointer_ObjectNounPhrases
 g$A7D6 DEFW $C83E
 
 ; Pointer: Object List Table
@@ -4077,6 +4090,8 @@ c$AB03 LD HL,$A9F7   ; #REGhl=#R$A9F7.
 
 ; Process Game Events
 ;
+; Used by the routine at #R$E99F.
+; .
 ; This routine manages two types of in-game events:
 ; #HTML(<dl><dt>1. Turn-Based Events</dt>
 ; <dd>These are timer-based hazards that count down with each game turn. When a
@@ -4215,6 +4230,9 @@ c$AB0A LD A,($A77E)  ; Load *#R$A77E into #REGa.
 
 ; Get Table Entry
 ;
+; Used by the routines at #R$AB0A, #R$ABB6, #R$ACAD, #R$AE36, #R$AF56, #R$AFEB,
+; #R$B05E and #R$E98E.
+; .
 ; Retrieves an address from a table using a given index.
 ;
 ;   E Index of item
@@ -4261,6 +4279,8 @@ c$AB97 LD HL,$A66C   ; #REGhl=#R$A66C.
 
 ; Handler: Display Room Image
 ;
+; Used by the routines at #R$A605 and #R$EB10.
+; .
 ; Determines if the current room has an image relating to it, and if it
 ; does - it jumps to the routine to display it.
 ;
@@ -4344,6 +4364,8 @@ c$ABB6 LD A,($A7EC)  ; {Jump to #R$AC02 if *#R$A7EC is set to zero.
 
 ; Handler: Display Room Exits
 ;
+; Used by the routine at #R$ABB6.
+; .
 ; Handles displaying the exits available for the current room.
 @label=Handler_RoomExits
 c$AC02 CALL $A54E    ; Call #R$A54E.
@@ -4496,15 +4518,8 @@ c$ACAD LD ($A82E),A  ; Write #REGa to *#R$A82E.
  $ACBE CALL $A592    ; Call #R$A592.
  $ACC1 RET           ; Return.
 
-; Routine at ACC2
-c$ACC2 NOP           ;
- $ACC3 NOP           ;
- $ACC4 NOP           ;
- $ACC5 NOP           ;
- $ACC6 JR NZ,$ACD0   ;
- $ACC8 EX AF,AF'     ;
- $ACC9 JR NZ,$ACD3   ;
- $ACCB RST $38       ;
+; Message at ACC2
+t$ACC2 DEFM $00,$00,$00,$00," ",$08,$08," ",$08,$FF
 
 ; Message at ACCC
 t$ACCC DEFM "_",$08,$FF
@@ -4514,9 +4529,8 @@ t$ACCC DEFM "_",$08,$FF
 ; Used by the routine at #R$AD32.
 c$ACCF PUSH HL       ; Stash #REGhl on the stack.
 ; Print "#STR$ACCC,$08($b==$FF)".
-*$ACD0 LD HL,$ACCC   ; #REGhl=#R$ACCC.
-; This entry point is used by the routine at #R$ACC2.
-*$ACD3 CALL $A585    ; Call #R$A585.
+ $ACD0 LD HL,$ACCC   ; #REGhl=#R$ACCC.
+ $ACD3 CALL $A585    ; Call #R$A585.
  $ACD6 POP HL        ; Restore #REGhl from the stack.
  $ACD7 RET           ; Return.
 
@@ -4716,119 +4730,181 @@ c$AD32 CALL $A560    ;
 ; Action: Examine Item
 ;
 ; Used by the routine at #R$AFC7.
-c$AE36 INC BC        ;
- $AE37 LD A,($A7E8)  ;
+;
+;   C Item ID
+; O:F Carry flag set when the item isn't present
+@label=Action_ExamineItem
+c$AE36 INC BC        ; Increment #REGbc by one.
+ $AE37 LD A,($A7E8)  ; {#REGe=*#R$A7E8-#REGc.
  $AE3A SUB C         ;
- $AE3B LD E,A        ;
- $AE3C PUSH DE       ;
- $AE3D LD IX,($A7D4) ;
- $AE41 CALL $AB88    ;
- $AE44 POP DE        ;
- $AE45 JR $AE48      ;
-*$AE47 INC HL        ;
-*$AE48 LD A,(HL)     ;
+ $AE3B LD E,A        ; }
+ $AE3C PUSH DE       ; Stash #REGde on the stack.
+ $AE3D LD IX,($A7D4) ; #REGix=*#R$A7D4.
+ $AE41 CALL $AB88    ; Call #R$AB88.
+ $AE44 POP DE        ; Restore #REGde from the stack.
+ $AE45 JR $AE48      ; Jump to #R$AE48.
+@label=ExamineItem_Loop
+*$AE47 INC HL        ; Increment #REGhl by one.
+@label=ExamineItem
+*$AE48 LD A,(HL)     ; {Jump to #R$AE53 if *#REGhl is equal to #N$FF.
  $AE49 CP $FF        ;
- $AE4B JR Z,$AE53    ;
- $AE4D CALL $AE6B    ;
- $AE50 JR NZ,$AE47   ;
- $AE52 RET           ;
-*$AE53 LD HL,$A8DB   ;
- $AE56 CALL $A585    ;
- $AE59 LD IX,($A7D6) ;
- $AE5D CALL $AB88    ;
- $AE60 CALL $A585    ;
- $AE63 LD HL,$A8E8   ;
- $AE66 CALL $A592    ;
- $AE69 SCF           ;
- $AE6A RET           ;
+ $AE4B JR Z,$AE53    ; }
+ $AE4D CALL $AE6B    ; Call #R$AE6B.
+ $AE50 JR NZ,$AE47   ; Jump to #R$AE47 if the item wasn't found.
+ $AE52 RET           ; Return.
+; The item being examined isn't in the room or in the players inventory.
+; .
+; Print "#STR$A8DB,$08($b==$FF)".
+@label=Response_ItemNotHere
+*$AE53 LD HL,$A8DB   ; #REGhl=#R$A8DB.
+ $AE56 CALL $A585    ; Call #R$A585.
+; Print the object name.
+ $AE59 LD IX,($A7D6) ; #REGix=*#R$A7D6.
+ $AE5D CALL $AB88    ; Call #R$AB88.
+ $AE60 CALL $A585    ; Call #R$A585.
+; Print "#STR$A8E8,$08($b==$FF)".
+ $AE63 LD HL,$A8E8   ; #REGhl=#R$A8E8.
+ $AE66 CALL $A592    ; Call #R$A592.
+ $AE69 SCF           ; Set the carry flag.
+ $AE6A RET           ; Return.
 
 ; Validate If Item Is Present
 ;
 ; Used by the routines at #R$AE36, #R$AEF7, #R$AFEB, #R$B01F, #R$E9E9 and
 ; #R$EB10.
-c$AE6B PUSH HL       ;
- $AE6C PUSH DE       ;
- $AE6D LD E,A        ;
- $AE6E LD D,$00      ;
- $AE70 LD HL,$A66C   ;
- $AE73 ADD HL,DE     ;
- $AE74 LD A,($A7C3)  ;
- $AE77 CP (HL)       ;
- $AE78 JR Z,$AE7D    ;
- $AE7A LD A,$01      ;
- $AE7C CP (HL)       ;
-*$AE7D POP DE        ;
- $AE7E POP HL        ;
- $AE7F RET           ;
+;
+; A Object ID
+; F Z flag set if the object is available
+@label=ValidateItemPresent
+c$AE6B PUSH HL       ; {Stash #REGhl and #REGde on the stack.
+ $AE6C PUSH DE       ; }
+ $AE6D LD E,A        ; {Store the object ID in #REGde.
+ $AE6E LD D,$00      ; }
+ $AE70 LD HL,$A66C   ; #REGhl=#R$A66C.
+ $AE73 ADD HL,DE     ; Add the object ID to the object/ event locations table.
+ $AE74 LD A,($A7C3)  ; {Jump to #R$AE7D if the object/ event table states that it's located
+ $AE77 CP (HL)       ; in *#R$A7C3. Note also sets/ unsets the Z flag accordingly.
+ $AE78 JR Z,$AE7D    ; }
+; Check the players inventory, as an object can still be used if it's being
+; held.
+ $AE7A LD A,$01      ; {Lastly, set the Z flag if the item is in the players
+ $AE7C CP (HL)       ; inventory.}
+; Housekeeping; restore #REGde and #REGhl to their previous values.
+@label=Handler_Objects_Return
+*$AE7D POP DE        ; {Restore #REGde and #REGhl from the stack.
+ $AE7E POP HL        ; }
+ $AE7F RET           ; Return.
 
 ; Match Phrase Tokens
 ;
 ; Used by the routine at #R$B0DE.
-c$AE80 EX DE,HL      ;
- $AE81 JR $AE84      ;
-*$AE83 INC DE        ;
-*$AE84 LD HL,$A825   ;
- $AE87 JR $AE8B      ;
-*$AE89 INC HL        ;
- $AE8A INC DE        ;
-*$AE8B LD A,(DE)     ;
- $AE8C CP (HL)       ;
- $AE8D JR Z,$AE89    ;
- $AE8F CP $FE        ;
- $AE91 JR NZ,$AE97   ;
- $AE93 LD A,(HL)     ;
+; .
+; Matches phrase patterns with multiple variations against user input
+; tokens.
+;
+;   HL A pointer to phrase token data
+; O:F The Z flag is set if the input matches any pattern
+@label=MatchPhraseTokens
+c$AE80 EX DE,HL      ; Switch the phrase token pointer to #REGde.
+ $AE81 JR $AE84      ; Jump to #R$AE84.
+; Skip the separator.
+@label=MatchPhraseTokens_Loop
+*$AE83 INC DE        ; Increment the phrase token pointer by one.
+; Fetch the second user input token (not the first, as the first token
+; is the verb and the second token onwards gives the context).
+; .
+; For example; "GET" (verb) "KEG OF GUNPOWDER" (direct object).
+@label=MatchPhraseTokens_Start
+*$AE84 LD HL,$A825   ; #REGhl=#R$A825.
+ $AE87 JR $AE8B      ; Jump to #R$AE8B.
+; The tokens matched so advance both pointers.
+@label=MatchTokens_Loop
+*$AE89 INC HL        ; Increment the input token pointer by one.
+ $AE8A INC DE        ; Increment the pattern token pointer by one.
+; Keep looping if the tokens match.
+@label=CompareTokens
+*$AE8B LD A,(DE)     ; {Jump to #R$AE89 if the pattern token and the input token are the
+ $AE8C CP (HL)       ; same.
+ $AE8D JR Z,$AE89    ; }
+; The tokens are different, but is it just that we are at the end of the
+; pattern?
+ $AE8F CP $FE        ; {Jump to #R$AE97 unless this is the terminator character
+ $AE91 JR NZ,$AE97   ; (#N$FE).}
+; Yes! The input tokens all matched against the phrase pattern tokens.
+ $AE93 LD A,(HL)     ; {Return with Z flag result.
  $AE94 CP $FF        ;
- $AE96 RET           ;
-*$AE97 CP $FD        ;
- $AE99 JR NZ,$AEA1   ;
- $AE9B LD A,(HL)     ;
+ $AE96 RET           ; }
+; The tokens are different, but is this a separator character?
+@label=CheckSeparator
+*$AE97 CP $FD        ; {Jump to #R$AEA1 if this is not the separator (#N$FD).
+ $AE99 JR NZ,$AEA1   ; }
+ $AE9B LD A,(HL)     ; {Jump to #R$AE83 if the input tokens are not complete.
  $AE9C CP $FF        ;
- $AE9E JR NZ,$AE83   ;
- $AEA0 RET           ;
-*$AEA1 INC DE        ;
- $AEA2 LD A,(DE)     ;
- $AEA3 CP $FE        ;
- $AEA5 JR Z,$AEAD    ;
- $AEA7 CP $FD        ;
- $AEA9 JR NZ,$AEA1   ;
- $AEAB JR $AE83      ;
-*$AEAD OR A          ;
- $AEAE RET           ;
+ $AE9E JR NZ,$AE83   ; }
+ $AEA0 RET           ; Return.
+; The current variant doesn't match, so skip to the next one.
+@label=MatchPhraseTokens_Next
+*$AEA1 INC DE        ; Increment the phrase token pointer by one.
+ $AEA2 LD A,(DE)     ; {Jump to #R$AEAD if the terminator has been reached
+ $AEA3 CP $FE        ; (#N$FE).
+ $AEA5 JR Z,$AEAD    ; }
+ $AEA7 CP $FD        ; {Jump to #R$AEA1 if this is not the separator (#N$FD).
+ $AEA9 JR NZ,$AEA1   ; }
+ $AEAB JR $AE83      ; Jump to #R$AE83.
+; The input doesn't match any patterns.
+@label=MatchPhraseTokens_Return
+*$AEAD OR A          ; Clear the Z flag.
+ $AEAE RET           ; Return.
 
 ; Parser: Count Item References
 ;
 ; Used by the routines at #R$AF7B, #R$AF90 and #R$AFB7.
-c$AEAF LD HL,$A824   ;
- $AEB2 LD B,$0A      ;
- $AEB4 LD E,$00      ;
-*$AEB6 LD A,(HL)     ;
- $AEB7 CP $FF        ;
- $AEB9 JR Z,$AECE    ;
- $AEBB PUSH HL       ;
- $AEBC PUSH BC       ;
- $AEBD LD HL,($A7D8) ;
- $AEC0 LD BC,($A7E8) ;
- $AEC4 CPIR          ;
- $AEC6 POP BC        ;
- $AEC7 POP HL        ;
- $AEC8 JR NZ,$AECB   ;
- $AECA INC E         ;
-*$AECB INC HL        ;
- $AECC DJNZ $AEB6    ;
-*$AECE XOR A         ;
- $AECF OR E          ;
- $AED0 RET           ;
+; .
+; Count how many tokens in the user input refer to game items.
+;
+; O:A The number of references to items in the user input tokens
+; O:E As #REGa
+; O:F The Z flag is set when there are no items present in the input
+@label=Parser_CountItems
+c$AEAF LD HL,$A824   ; Set a pointer to #R$A824 in #REGhl.
+ $AEB2 LD B,$0A      ; Set a token count in #REGb of #N$0A which is the total length of
+                     ; the user input tokens.
+ $AEB4 LD E,$00      ; Initialise the item counter held in #REGe to #N$00.
+@label=Parser_CountItems_Loop
+*$AEB6 LD A,(HL)     ; Fetch a user input token.
+ $AEB7 CP $FF        ; {Jump to #R$AECE if the terminator character (#N$FF) has been
+ $AEB9 JR Z,$AECE    ; reached.}
+ $AEBB PUSH HL       ; {Stash the token pointer and token counter on the stack.
+ $AEBC PUSH BC       ; }
+ $AEBD LD HL,($A7D8) ; #REGhl=*#R$A7D8.
+ $AEC0 LD BC,($A7E8) ; Fetch the count of the number of items in the table from
+                     ; *#R$A7E8.
+ $AEC4 CPIR          ; Search to see if the item room ID is in the table.
+ $AEC6 POP BC        ; {Restore the token counter and token pointer from the
+ $AEC7 POP HL        ; stack.}
+ $AEC8 JR NZ,$AECB   ; Jump to #R$AECB if this token doesn't refer to a game
+                     ; item.
+; This token does point to a game item, so increase the item counter.
+ $AECA INC E         ; Increment item counter by one.
+@label=Parser_CountItems_Skip
+*$AECB INC HL        ; Move to the next token.
+ $AECC DJNZ $AEB6    ; Decrease the token counter by one and loop back to #R$AEB6 until
+                     ; all the tokens have been evaluated.
+@label=Parser_CountItems_Process
+*$AECE XOR A         ; {Transfer the item count into #REGa and set flags
+ $AECF OR E          ; accordingly.}
+ $AED0 RET           ; Return.
 
-; Object/ Event Locator
+; Routine at AED1
 ;
 ; Used by the routines at #R$AB0A, #R$AEDA, #R$AF1E, #R$AF31, #R$EA0B and
 ; #R$EB10.
-c$AED1 LD E,A        ;
- $AED2 LD D,$00      ;
- $AED4 LD HL,$A66C   ;
- $AED7 ADD HL,DE     ;
- $AED8 LD A,(HL)     ;
- $AED9 RET           ;
+c$AED1 LD E,A        ; #REGe=#REGa.
+ $AED2 LD D,$00      ; #REGd=#N$00.
+ $AED4 LD HL,$A66C   ; #REGhl=#R$A66C.
+ $AED7 ADD HL,DE     ; #REGhl+=#REGde.
+ $AED8 LD A,(HL)     ; #REGa=*#REGhl.
+ $AED9 RET           ; Return.
 
 ; Is Object In Inventory?
 ;
@@ -4846,6 +4922,8 @@ c$AEDA CALL $AED1    ; Call #R$AED1.
 
 ; Handler: Destroy Item/ Event
 ;
+; Used by the routines at #R$EA0B, #R$EA44 and #R$EB10.
+; .
 ; Updates a given item/ event ID so it's then "inactive" (has a location
 ; ID of #N$00).
 ;
@@ -4859,6 +4937,8 @@ c$AEE0 LD B,A        ; Load the item/ event ID into #REGb.
 
 ; Handler: Update Item/ Event For The Current Room
 ;
+; Used by the routines at #R$B01F, #R$EA0B and #R$EB10.
+; .
 ; Updates a given item/ event ID so it appears in the current room. Used
 ; for example, when an item is dropped (so it changes from being #N$01 - in the
 ; players inventory, to the current room ID).
@@ -5182,6 +5262,8 @@ c$B05E LD HL,($A7E0) ;
 
 ; Pause, Print String And Scroll
 ;
+; Used by the routines at #R$EA0B, #R$EA44 and #R$EB10.
+; .
 ; For dramatic effect! Used when an event occurs.
 @label=PausePrintStringAndScroll
 c$B081 LD B,$19      ; {Call #R$A5C2 using #N$19 HALT loops (for a short
@@ -5228,6 +5310,8 @@ c$B09A PUSH HL       ;
 
 ; Print Scoring
 ;
+; Used by the routines at #R$E9B2 and #R$EB10.
+; .
 ; Prints the players score as a percentage.
 ;
 ; .
@@ -6413,289 +6497,314 @@ t$C71C DEFM "The Southern Chamber." ; "#STR$C71C,$08($b==$FF)".
 
 ; Table: Item Descriptions
 @label=Table_ItemDescriptions
-g$C732 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C734 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C736 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C738 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C73A DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C73C DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C73E DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C740 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C742 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C744 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C746 DEFW $B14D                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C748 DEFW $B15F                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C74A DEFW $B173                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C74C DEFW $B18A                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C74E DEFW $B18A                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C750 DEFW $B1A2                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C752 DEFW $B1D7                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C754 DEFW $B1ED                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C756 DEFW $B21D                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C758 DEFW $B281                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C75A DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C75C DEFW $B2BC                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C75E DEFW $B2BC                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C760 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C762 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C764 DEFW $B2D2                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C766 DEFW $B2DD                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C768 DEFW $B2E9                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C76A DEFW $B2F6                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C76C DEFW $B2FE                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C76E DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C770 DEFW $B32B                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C772 DEFW $B33C                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C774 DEFW $B363                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C776 DEFW $B3A6                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C778 DEFW $B3B1                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C77A DEFW $B3BC                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C77C DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C77E DEFW $BA1D                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C780 DEFW $B3F3                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C782 DEFW $B43F                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C784 DEFW $B4A0                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C786 DEFW $B50E                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C788 DEFW $B52C                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C78A DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C78C DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C78E DEFW $B546                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C790 DEFW $B54E                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C792 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C794 DEFW $B562                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C796 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C798 DEFW $B578                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C79A DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C79C DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C79E DEFW $B58E                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7A0 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7A2 DEFW $B5A5                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7A4 DEFW $B5A5                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7A6 DEFW $B5AE                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7A8 DEFW $B5B9                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7AA DEFW $B5C8                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7AC DEFW $B5E4                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7AE DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7B0 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7B2 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7B4 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7B6 DEFW $B5F3                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7B8 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7BA DEFW $B63F                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7BC DEFW $B647                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7BE DEFW $B654                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7C0 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7C2 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7C4 DEFW $B683                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7C6 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7C8 DEFW $B6AE                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7CA DEFW $B6B9                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7CC DEFW $B6DA                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7CE DEFW $B708                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7D0 DEFW $B730                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7D2 DEFW $B737                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7D4 DEFW $B743                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7D6 DEFW $B754                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7D8 DEFW $B787                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7DA DEFW $B7AE                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7DC DEFW $BA3B                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7DE DEFW $B7D8                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7E0 DEFW $B7E2                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7E2 DEFW $B802                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7E4 DEFW $B836                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7E6 DEFW $B86B                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7E8 DEFW $B875                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7EA DEFW $B892                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7EC DEFW $B8A9                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7EE DEFW $B8E4                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7F0 DEFW $B8FD                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7F2 DEFW $B92B                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7F4 DEFW $B937                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7F6 DEFW $B940                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7F8 DEFW $B98D                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7FA DEFW $B9C8                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7FC DEFW $B9D7                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C7FE DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C800 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C802 DEFW $B9E4                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C804 DEFW $B9F7                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C806 DEFW $B9FF                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C808 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C80A DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C80C DEFW $B7B9                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C80E DEFW $B61F                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C810 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C812 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C814 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C816 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C818 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C81A DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C81C DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C81E DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C820 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C822 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C824 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C826 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C828 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C82A DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C82C DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C82E DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C830 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C832 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C834 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C836 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C838 DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C83A DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C83C DEFW $0000                           ; Item #N((#PC-$C732)/$02):
-                                            ; #ITEM((#PC-$C732)/$02).
- $C83E DEFB $66,$BA,$70,$BA,$7B,$BA,$82,$BA
- $C846 DEFB $8B,$BA,$92,$BA,$99,$BA,$A0,$BA
- $C84E DEFB $A9,$BA,$AF,$BA,$BA,$BA,$C1,$BA
- $C856 DEFB $C8,$BA,$D0,$BA,$D9,$BA,$E2,$BA
- $C85E DEFB $EB,$BA,$F6,$BA,$00,$BB,$0A,$BB
- $C866 DEFB $15,$BB,$1B,$BB,$22,$BB,$2B,$BB
- $C86E DEFB $33,$BB,$3C,$BB,$45,$BB,$4D,$BB
- $C876 DEFB $58,$BB,$5F,$BB,$67,$BB,$6F,$BB
- $C87E DEFB $79,$BB,$80,$BB,$86,$BB,$8F,$BB
- $C886 DEFB $95,$BB,$9D,$BB,$A6,$BB,$AD,$BB
- $C88E DEFB $B3,$BB,$BC,$BB,$C6,$BB,$CE,$BB
- $C896 DEFB $D5,$BB,$DD,$BB,$E8,$BB,$F3,$BB
- $C89E DEFB $FD,$BB,$01,$BC,$06,$BC,$0E,$BC
- $C8A6 DEFB $18,$BC,$1F,$BC,$28,$BC,$31,$BC
- $C8AE DEFB $3C,$BC
+g$C732 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C734 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C736 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C738 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C73A DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C73C DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C73E DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C740 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C742 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C744 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C746 DEFW $B14D    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C748 DEFW $B15F    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C74A DEFW $B173    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C74C DEFW $B18A    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C74E DEFW $B18A    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C750 DEFW $B1A2    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C752 DEFW $B1D7    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C754 DEFW $B1ED    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C756 DEFW $B21D    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C758 DEFW $B281    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C75A DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C75C DEFW $B2BC    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C75E DEFW $B2BC    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C760 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C762 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C764 DEFW $B2D2    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C766 DEFW $B2DD    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C768 DEFW $B2E9    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C76A DEFW $B2F6    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C76C DEFW $B2FE    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C76E DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C770 DEFW $B32B    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C772 DEFW $B33C    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C774 DEFW $B363    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C776 DEFW $B3A6    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C778 DEFW $B3B1    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C77A DEFW $B3BC    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C77C DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C77E DEFW $BA1D    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C780 DEFW $B3F3    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C782 DEFW $B43F    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C784 DEFW $B4A0    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C786 DEFW $B50E    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C788 DEFW $B52C    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C78A DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C78C DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C78E DEFW $B546    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C790 DEFW $B54E    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C792 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C794 DEFW $B562    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C796 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C798 DEFW $B578    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C79A DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C79C DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C79E DEFW $B58E    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7A0 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7A2 DEFW $B5A5    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7A4 DEFW $B5A5    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7A6 DEFW $B5AE    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7A8 DEFW $B5B9    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7AA DEFW $B5C8    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7AC DEFW $B5E4    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7AE DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7B0 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7B2 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7B4 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7B6 DEFW $B5F3    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7B8 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7BA DEFW $B63F    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7BC DEFW $B647    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7BE DEFW $B654    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7C0 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7C2 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7C4 DEFW $B683    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7C6 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7C8 DEFW $B6AE    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7CA DEFW $B6B9    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7CC DEFW $B6DA    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7CE DEFW $B708    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7D0 DEFW $B730    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7D2 DEFW $B737    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7D4 DEFW $B743    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7D6 DEFW $B754    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7D8 DEFW $B787    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7DA DEFW $B7AE    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7DC DEFW $BA3B    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7DE DEFW $B7D8    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7E0 DEFW $B7E2    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7E2 DEFW $B802    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7E4 DEFW $B836    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7E6 DEFW $B86B    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7E8 DEFW $B875    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7EA DEFW $B892    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7EC DEFW $B8A9    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7EE DEFW $B8E4    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7F0 DEFW $B8FD    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7F2 DEFW $B92B    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7F4 DEFW $B937    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7F6 DEFW $B940    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7F8 DEFW $B98D    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7FA DEFW $B9C8    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7FC DEFW $B9D7    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C7FE DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C800 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C802 DEFW $B9E4    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C804 DEFW $B9F7    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C806 DEFW $B9FF    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C808 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C80A DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C80C DEFW $B7B9    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C80E DEFW $B61F    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C810 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C812 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C814 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C816 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C818 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C81A DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C81C DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C81E DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C820 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C822 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C824 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C826 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C828 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C82A DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C82C DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C82E DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C830 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C832 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C834 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C836 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C838 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C83A DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+ $C83C DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
+
+; Table: Object Noun Phrases
+@label=Table_ObjectNounPhrases
+g$C83E DEFW $BA66    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C840 DEFW $BA70    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C842 DEFW $BA7B    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C844 DEFW $BA82    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C846 DEFW $BA8B    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C848 DEFW $BA92    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C84A DEFW $BA99    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C84C DEFW $BAA0    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C84E DEFW $BAA9    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C850 DEFW $BAAF    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C852 DEFW $BABA    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C854 DEFW $BAC1    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C856 DEFW $BAC8    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C858 DEFW $BAD0    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C85A DEFW $BAD9    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C85C DEFW $BAE2    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C85E DEFW $BAEB    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C860 DEFW $BAF6    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C862 DEFW $BB00    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C864 DEFW $BB0A    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C866 DEFW $BB15    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C868 DEFW $BB1B    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C86A DEFW $BB22    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C86C DEFW $BB2B    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C86E DEFW $BB33    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C870 DEFW $BB3C    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C872 DEFW $BB45    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C874 DEFW $BB4D    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C876 DEFW $BB58    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C878 DEFW $BB5F    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C87A DEFW $BB67    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C87C DEFW $BB6F    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C87E DEFW $BB79    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C880 DEFW $BB80    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C882 DEFW $BB86    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C884 DEFW $BB8F    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C886 DEFW $BB95    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C888 DEFW $BB9D    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C88A DEFW $BBA6    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C88C DEFW $BBAD    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C88E DEFW $BBB3    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C890 DEFW $BBBC    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C892 DEFW $BBC6    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C894 DEFW $BBCE    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C896 DEFW $BBD5    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C898 DEFW $BBDD    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C89A DEFW $BBE8    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C89C DEFW $BBF3    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C89E DEFW $BBFD    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C8A0 DEFW $BC01    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C8A2 DEFW $BC06    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C8A4 DEFW $BC0E    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C8A6 DEFW $BC18    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C8A8 DEFW $BC1F    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C8AA DEFW $BC28    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C8AC DEFW $BC31    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
+ $C8AE DEFW $BC3C    ; Object
+                     ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
+                     ; #OBJECT((#PC-$C83E)/$02).
 
 ; Table: Room Descriptions
 @label=Table_RoomDescriptions
@@ -7512,173 +7621,648 @@ t$E0B1 DEFM "xxxxI   ,INVEL   ,LOOKSCOREXAMLOADSAVEQUITN   ,NORTS   ,SOUTE   ,"
 
 ; Table: Object List?
 @label=Table_ObjectList
-g$E308 DEFB $25                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E309 DEFB $26                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E30A DEFB $27                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E30B DEFB $28                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E30C DEFB $29                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E30D DEFB $2A                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E30E DEFB $2B                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E30F DEFB $2C                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E310 DEFB $2D                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E311 DEFB $2E                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E312 DEFB $2F                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E313 DEFB $5A                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E314 DEFB $31                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E315 DEFB $32                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E316 DEFB $33                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E317 DEFB $34                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E318 DEFB $35                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E319 DEFB $36                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E31A DEFB $37                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E31B DEFB $38                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E31C DEFB $39                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E31D DEFB $3A                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E31E DEFB $3B                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E31F DEFB $3C                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E320 DEFB $3D                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E321 DEFB $3E                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E322 DEFB $3F                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E323 DEFB $40                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E324 DEFB $41                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E325 DEFB $42                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E326 DEFB $43                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E327 DEFB $44                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E328 DEFB $45                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E329 DEFB $46                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E32A DEFB $47                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E32B DEFB $48                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E32C DEFB $5B                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E32D DEFB $4A                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E32E DEFB $4B                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E32F DEFB $59                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E330 DEFB $4D                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E331 DEFB $4E                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E332 DEFB $4F                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E333 DEFB $50                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E334 DEFB $51                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E335 DEFB $52                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E336 DEFB $53                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E337 DEFB $54                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E338 DEFB $55                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E339 DEFB $56                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E33A DEFB $57                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E33B DEFB $58                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E33C DEFB $30                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E33D DEFB $49                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E33E DEFB $4C                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E33F DEFB $5C                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E340 DEFB $5D                             ; Object #N(#PEEK(#PC)):
-                                            ; #OBJECT(#PEEK(#PC)).
- $E341 DEFB $02,$03,$0A,$0B,$0C,$55,$FF,$04
- $E349 DEFB $05,$0D,$0E,$0F,$10,$FF,$06,$FF
- $E351 DEFB $09,$FF,$13,$26,$FF,$13,$26,$FF
- $E359 DEFB $15,$16,$17,$18,$FF,$19,$FF,$1A
- $E361 DEFB $FF,$1B,$FF,$1C,$FF,$69,$6A,$FF
- $E369 DEFB $1D,$FF,$1F,$20,$FF,$22,$FF,$23
- $E371 DEFB $FF,$24,$FF,$24,$25,$FF,$27,$0F
- $E379 DEFB $10,$04,$05,$0D,$0E,$FF,$29,$FF
- $E381 DEFB $2B,$2C,$2F,$30,$FF,$2E,$FF,$31
- $E389 DEFB $15,$16,$33,$34,$35,$FF,$36,$11
- $E391 DEFB $FF,$38,$39,$59,$FF,$3A,$3C,$FF
- $E399 DEFB $3C,$FF,$3D,$FF,$42,$FF,$44,$45
- $E3A1 DEFB $FF,$46,$FF,$49,$FF,$49,$4B,$4C
- $E3A9 DEFB $FF,$4D,$4E,$FF,$4F,$50,$FF,$55
- $E3B1 DEFB $51,$52,$53,$0B,$FF,$52,$53,$54
- $E3B9 DEFB $FF,$3B,$FF,$56,$FF,$11,$57,$6E
- $E3C1 DEFB $FF,$68,$21,$FF,$5A,$5B,$5C,$5E
- $E3C9 DEFB $FF,$5F,$60,$FF,$61,$FF,$0C,$0D
- $E3D1 DEFB $0E,$10,$53,$54,$55,$26,$43,$45
- $E3D9 DEFB $50,$62,$63,$FF,$62,$64,$6D,$FF
- $E3E1 DEFB $65,$FF,$5D,$5E,$66,$FF,$15,$16
- $E3E9 DEFB $17,$18,$32,$6C,$FF,$14,$FF,$1E
- $E3F1 DEFB $FF,$67,$FF,$21,$FF,$58,$59,$FF
- $E3F9 DEFB $58,$59,$FF,$6C,$FF,$6F,$70,$71
- $E401 DEFB $72,$73,$74,$75,$76,$FF,$77,$78
- $E409 DEFB $79,$7A,$7B,$7C,$7D,$7E,$7F,$80
- $E411 DEFB $81,$82,$83,$84,$85,$FF,$41,$E3
- $E419 DEFB $48,$E3,$4F,$E3,$51,$E3,$53,$E3
- $E421 DEFB $56,$E3,$59,$E3,$5E,$E3,$60,$E3
- $E429 DEFB $62,$E3,$64,$E3,$66,$E3,$69,$E3
- $E431 DEFB $6B,$E3,$6E,$E3,$70,$E3,$72,$E3
- $E439 DEFB $74,$E3,$77,$E3,$7F,$E3,$81,$E3
- $E441 DEFB $86,$E3,$88,$E3,$92,$E3,$96,$E3
- $E449 DEFB $99,$E3,$9B,$E3,$9D,$E3,$9F,$E3
- $E451 DEFB $A2,$E3,$A4,$E3,$A6,$E3,$AA,$E3
- $E459 DEFB $AD,$E3,$B0,$E3,$B6,$E3,$BA,$E3
- $E461 DEFB $BC,$E3,$BE,$E3,$C2,$E3,$C5,$E3
- $E469 DEFB $CA,$E3,$CD,$E3,$CF,$E3,$DD,$E3
- $E471 DEFB $E1,$E3,$E3,$E3,$E7,$E3,$EE,$E3
- $E479 DEFB $F0,$E3,$F2,$E3,$F4,$E3,$F6,$E3
- $E481 DEFB $F9,$E3,$FC,$E3,$FE,$E3,$07,$E4
- $E489 DEFB $22,$01,$02,$03,$04,$05,$06,$07
- $E491 DEFB $08,$09,$0A,$0B,$0C,$0D,$0E,$0F
- $E499 DEFB $13,$10,$12,$20,$14,$15,$16,$17
- $E4A1 DEFB $1A,$19,$21,$1B,$1C,$1D,$1E,$11
- $E4A9 DEFB $18,$03,$04,$09,$0A,$0B,$11,$1C
- $E4B1 DEFB $1D,$16,$0E,$FF,$21,$22,$29,$31
- $E4B9 DEFB $39,$3B,$3C,$FF,$4D,$51,$55,$FF
- $E4C1 DEFB $4C,$50,$54,$FF,$3F,$37,$30,$28
- $E4C9 DEFB $FF,$02,$12,$1E,$32,$FF,$23,$2B
- $E4D1 DEFB $33,$FF,$5B,$5C,$5D,$5E,$FF,$2C
- $E4D9 DEFB $FF,$24,$FF,$2C,$FF,$2D,$FF,$25
- $E4E1 DEFB $FF,$40,$FF,$2A,$FF
+g$E308 DEFB $25      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E309 DEFB $26      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E30A DEFB $27      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E30B DEFB $28      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E30C DEFB $29      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E30D DEFB $2A      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E30E DEFB $2B      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E30F DEFB $2C      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E310 DEFB $2D      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E311 DEFB $2E      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E312 DEFB $2F      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E313 DEFB $5A      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E314 DEFB $31      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E315 DEFB $32      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E316 DEFB $33      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E317 DEFB $34      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E318 DEFB $35      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E319 DEFB $36      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E31A DEFB $37      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E31B DEFB $38      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E31C DEFB $39      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E31D DEFB $3A      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E31E DEFB $3B      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E31F DEFB $3C      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E320 DEFB $3D      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E321 DEFB $3E      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E322 DEFB $3F      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E323 DEFB $40      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E324 DEFB $41      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E325 DEFB $42      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E326 DEFB $43      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E327 DEFB $44      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E328 DEFB $45      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E329 DEFB $46      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E32A DEFB $47      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E32B DEFB $48      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E32C DEFB $5B      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E32D DEFB $4A      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E32E DEFB $4B      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E32F DEFB $59      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E330 DEFB $4D      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E331 DEFB $4E      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E332 DEFB $4F      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E333 DEFB $50      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E334 DEFB $51      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E335 DEFB $52      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E336 DEFB $53      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E337 DEFB $54      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E338 DEFB $55      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E339 DEFB $56      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E33A DEFB $57      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E33B DEFB $58      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E33C DEFB $30      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E33D DEFB $49      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E33E DEFB $4C      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E33F DEFB $5C      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+ $E340 DEFB $5D      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+
+; Data: Item Groups
+;
+; See #R$E417 for usage.
+@label=Data_ItemGroup_Roman
+g$E341 DEFB $02      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E342 DEFB $03      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E343 DEFB $0A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E344 DEFB $0B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E345 DEFB $0C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E346 DEFB $55      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E347 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Fomorian
+ $E348 DEFB $04      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E349 DEFB $05      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E34A DEFB $0D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E34B DEFB $0E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E34C DEFB $0F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E34D DEFB $10      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E34E DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E34F DEFB $06      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E350 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E351 DEFB $09      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E352 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Hare
+ $E353 DEFB $13      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E354 DEFB $26      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E355 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E356 DEFB $13      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E357 DEFB $26      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E358 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_DeepPoolOfWater_1
+ $E359 DEFB $15      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E35A DEFB $16      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E35B DEFB $17      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E35C DEFB $18      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E35D DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Salt
+ $E35E DEFB $19      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E35F DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_ClayPot
+ $E360 DEFB $1A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E361 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Acorns
+ $E362 DEFB $1B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E363 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Urn
+ $E364 DEFB $1C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E365 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Torc
+ $E366 DEFB $69      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E367 DEFB $6A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E368 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Raven
+ $E369 DEFB $1D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E36A DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Helmet
+ $E36B DEFB $1F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E36C DEFB $20      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E36D DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Food
+ $E36E DEFB $22      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E36F DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Iron
+ $E370 DEFB $23      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E371 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_StoneMonolith_1
+ $E372 DEFB $24      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E373 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_StoneMonolith_2
+ $E374 DEFB $24      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E375 DEFB $25      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E376 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_
+ $E377 DEFB $27      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E378 DEFB $0F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E379 DEFB $10      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E37A DEFB $04      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E37B DEFB $05      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E37C DEFB $0D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E37D DEFB $0E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E37E DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_ShadowLikeDemons
+ $E37F DEFB $29      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E380 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Hut
+ $E381 DEFB $2B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E382 DEFB $2C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E383 DEFB $2F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E384 DEFB $30      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E385 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Vase
+ $E386 DEFB $2E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E387 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E388 DEFB $31      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E389 DEFB $15      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E38A DEFB $16      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E38B DEFB $33      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E38C DEFB $34      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E38D DEFB $35      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E38E DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E38F DEFB $36      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E390 DEFB $11      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E391 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E392 DEFB $38      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E393 DEFB $39      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E394 DEFB $59      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E395 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E396 DEFB $3A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E397 DEFB $3C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E398 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E399 DEFB $3C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E39A DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E39B DEFB $3D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E39C DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E39D DEFB $42      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E39E DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E39F DEFB $44      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3A0 DEFB $45      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3A1 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3A2 DEFB $46      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3A3 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3A4 DEFB $49      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3A5 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3A6 DEFB $49      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3A7 DEFB $4B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3A8 DEFB $4C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3A9 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3AA DEFB $4D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3AB DEFB $4E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3AC DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3AD DEFB $4F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3AE DEFB $50      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3AF DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3B0 DEFB $55      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3B1 DEFB $51      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3B2 DEFB $52      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3B3 DEFB $53      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3B4 DEFB $0B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3B5 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3B6 DEFB $52      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3B7 DEFB $53      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3B8 DEFB $54      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3B9 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3BA DEFB $3B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3BB DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3BC DEFB $56      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3BD DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3BE DEFB $11      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3BF DEFB $57      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3C0 DEFB $6E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3C1 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3C2 DEFB $68      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3C3 DEFB $21      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3C4 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3C5 DEFB $5A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3C6 DEFB $5B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3C7 DEFB $5C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3C8 DEFB $5E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3C9 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3CA DEFB $5F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3CB DEFB $60      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3CC DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3CD DEFB $61      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3CE DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3CF DEFB $0C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3D0 DEFB $0D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3D1 DEFB $0E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3D2 DEFB $10      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3D3 DEFB $53      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3D4 DEFB $54      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3D5 DEFB $55      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3D6 DEFB $26      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3D7 DEFB $43      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3D8 DEFB $45      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3D9 DEFB $50      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3DA DEFB $62      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3DB DEFB $63      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3DC DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3DD DEFB $62      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3DE DEFB $64      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3DF DEFB $6D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3E0 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3E1 DEFB $65      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3E2 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3E3 DEFB $5D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3E4 DEFB $5E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3E5 DEFB $66      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3E6 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_DeepPoolOfWater_2
+ $E3E7 DEFB $15      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3E8 DEFB $16      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3E9 DEFB $17      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3EA DEFB $18      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3EB DEFB $32      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3EC DEFB $6C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3ED DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3EE DEFB $14      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3EF DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3F0 DEFB $1E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3F1 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3F2 DEFB $67      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3F3 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_Chariot
+ $E3F4 DEFB $21      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3F5 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_StoneSlab_1
+ $E3F6 DEFB $58      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3F7 DEFB $59      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3F8 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+@label=Data_ItemGroup_StoneSlab_2
+ $E3F9 DEFB $58      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3FA DEFB $59      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3FB DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3FC DEFB $6C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3FD DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3FE DEFB $6F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E3FF DEFB $70      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E400 DEFB $71      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E401 DEFB $72      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E402 DEFB $73      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E403 DEFB $74      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E404 DEFB $75      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E405 DEFB $76      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E406 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E407 DEFB $77      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E408 DEFB $78      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E409 DEFB $79      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E40A DEFB $7A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E40B DEFB $7B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E40C DEFB $7C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E40D DEFB $7D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E40E DEFB $7E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E40F DEFB $7F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E410 DEFB $80      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E411 DEFB $81      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E412 DEFB $82      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E413 DEFB $83      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E414 DEFB $84      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E415 DEFB $85      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+ $E416 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
+                     ; #ITEM(#PEEK(#PC))).
+
+; Table: Item Grouping
+;
+; Items may have several item IDs which relate to a single item, this
+; table groups the items together to assist the parser with knowing that tokens
+; refer to the same thing.
+; .
+; Some examples are:
+; #TABLE(default,centre,centre,centre)
+; { =h Item ID | =h Item Name | =h Relates To: }
+; { #R$E353(#N$13) | #ITEM$13 | =r2 The Hare }
+; { #R$E354(#N$26) | #ITEM$26 }
+; { =h Item ID | =h Item Name | =h Relates To: }
+; { #R$E36B(#N$1F) | #ITEM$1F | =r2 The Bronze Helmet }
+; { #R$E36C(#N$20) | #ITEM$20 }
+; { =h Item ID | =h Item Name | =h Relates To: }
+; { #R$E3AD(#N$4F) | #ITEM$4F | =r2 The Pig }
+; { #R$E3AE(#N$50) | #ITEM$50 }
+; TABLE#
+@label=Table_ItemGrouping
+g$E417 DEFW $E341                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E419 DEFW $E348                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E41B DEFW $E34F                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E41D DEFW $E351                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E41F DEFW $E353                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E421 DEFW $E356                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E423 DEFW $E359                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E425 DEFW $E35E                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E427 DEFW $E360                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E429 DEFW $E362                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E42B DEFW $E364                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E42D DEFW $E366                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E42F DEFW $E369                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E431 DEFW $E36B                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E433 DEFW $E36E                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E435 DEFW $E370                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E437 DEFW $E372                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E439 DEFW $E374                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E43B DEFW $E377                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E43D DEFW $E37F                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E43F DEFW $E381                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E441 DEFW $E386                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E443 DEFW $E388                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E445 DEFW $E392                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E447 DEFW $E396                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E449 DEFW $E399                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E44B DEFW $E39B                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E44D DEFW $E39D                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E44F DEFW $E39F                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E451 DEFW $E3A2                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E453 DEFW $E3A4                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E455 DEFW $E3A6                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E457 DEFW $E3AA                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E459 DEFW $E3AD                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E45B DEFW $E3B0                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E45D DEFW $E3B6                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E45F DEFW $E3BA                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E461 DEFW $E3BC                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E463 DEFW $E3BE                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E465 DEFW $E3C2                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E467 DEFW $E3C5                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E469 DEFW $E3CA                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E46B DEFW $E3CD                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E46D DEFW $E3CF                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E46F DEFW $E3DD                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E471 DEFW $E3E1                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E473 DEFW $E3E3                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E475 DEFW $E3E7                           ; Item Group: #N((#PC-$E417)/$02):
+                                            ; #OBJECT((#PC-$E417)/$02).
+ $E477 DEFB $EE,$E3,$F0,$E3,$F2,$E3,$F4,$E3
+ $E47F DEFB $F6,$E3,$F9,$E3,$FC,$E3,$FE,$E3
+ $E487 DEFB $07,$E4,$22,$01,$02,$03,$04,$05
+ $E48F DEFB $06,$07,$08,$09,$0A,$0B,$0C,$0D
+ $E497 DEFB $0E,$0F,$13,$10,$12,$20,$14,$15
+ $E49F DEFB $16,$17,$1A,$19,$21,$1B,$1C,$1D
+ $E4A7 DEFB $1E,$11,$18,$03,$04,$09,$0A,$0B
+ $E4AF DEFB $11,$1C,$1D,$16,$0E,$FF,$21,$22
+ $E4B7 DEFB $29,$31,$39,$3B,$3C,$FF,$4D,$51
+ $E4BF DEFB $55,$FF,$4C,$50,$54,$FF,$3F,$37
+ $E4C7 DEFB $30,$28,$FF,$02,$12,$1E,$32,$FF
+ $E4CF DEFB $23,$2B,$33,$FF,$5B,$5C,$5D,$5E
+ $E4D7 DEFB $FF,$2C,$FF,$24,$FF,$2C,$FF,$2D
+ $E4DF DEFB $FF,$25,$FF,$40,$FF,$2A,$FF
 
 ; Table: Scenic Event Locations
 ;
@@ -11528,6 +12112,8 @@ g$FECB DEFW $E9D8                           ; Event #N((#PC-$FECB)/$02).
 
 ; Table: Rooms With Images
 ;
+; Used by the routine at #R$EB10.
+; .
 ; See #R$FEFC.
 @label=Table_RoomsWithImages
 g$FEF1 DEFB $02      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):

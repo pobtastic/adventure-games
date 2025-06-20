@@ -459,7 +459,7 @@ u$5B4F DEFB $1A,$00,$00,$00,$00,$00,$00,$00
 
 ; Graphics: Boat
 ;
-; #SIM(start=$5B46,stop=$5B4E) #PUSHS #UDGTABLE
+; #SIM(start=$5B46,stop=$5B4E) #SIM(start=$BA6D,stop=$BA73) #PUSHS #UDGTABLE
 ; { =h On Your Boat }
 ; { #SIM(start=$BB3B,stop=$BB41,ix=#PC)#SCR$02{$00,$00,$200,$100}(boat) }
 ; UDGTABLE# #POPS
@@ -3504,6 +3504,9 @@ c$BA96 PUSH HL       ; {Stash #REGhl, #REGde, #REGbc and #REGaf on the stack.
 
 ; Print String
 ;
+; Used by the routines at #R$BAB1, #R$BBD4, #R$C041, #R$C26A, #R$C32A, #R$F263
+; and #R$F4D4.
+; .
 ; Standard printing loop, which prints the fetched character byte and
 ; loops until the termination byte is reached (#N$FF).
 ;
@@ -3523,6 +3526,11 @@ c$BAA4 CALL $BA96    ; Call #R$BA96.
 
 ; Print String And A Newline
 ;
+; Used by the routines at #R$BB59, #R$BB94, #R$BFEE, #R$BFF5, #R$BFFC, #R$C003,
+; #R$C058, #R$C1FF, #R$C26A, #R$C315, #R$C32A, #R$C556, #R$C579, #R$EDD7,
+; #R$EDF2, #R$EE74, #R$EE9B, #R$EEA9, #R$EEBB, #R$EECD, #R$EEDF, #R$EEFC,
+; #R$EF32, #R$EF54, #R$F03A, #R$F09C, #R$F12E, #R$F246, #R$F8D9 and #R$FB16.
+; .
 ; Shortcut print routine which prints a newline after it's done.
 @label=PrintStringAndNewline
 c$BAB1 CALL $BAA4    ; Call #R$BAA4.
@@ -3534,6 +3542,8 @@ c$BAB1 CALL $BAA4    ; Call #R$BAA4.
 
 ; Scroll Screen
 ;
+; Used by the routine at #R$BAC3.
+; .
 ; Scrolls the screen up and then resets the print position.
 @label=ScrollScreen
 c$BABA EXX           ; Switch to the shadow registers.
@@ -3686,6 +3696,8 @@ c$BB42 LD BC,$0200   ; Set a counter in #REGbc of #N$0200 bytes.
 
 ; Pause Loop
 ;
+; Used by the routine at #R$C579.
+; .
 ; Pauses a given number of HALT loops.
 ;
 ; B Number of HALT commands to use
@@ -4763,6 +4775,8 @@ c$C00A CALL $BA7F    ; Call #R$BA7F.
  $C018 CALL $BBD4    ; Call #R$BBD4.
 ; Initialise the command buffer.
  $C01B LD HL,$BD34   ; #REGhl=#R$BD34.
+; This entry point is used by the routine at #R$C041.
+; .
 ; Collect the users keypress.
 @label=UserInput_Loop
 *$C01E CALL $BA5D    ; Call #R$BA5D.
@@ -4796,6 +4810,8 @@ c$C00A CALL $BA7F    ; Call #R$BA7F.
 
 ; Handler: User Pressed "DELETE"
 ;
+; Used by the routine at #R$C00A.
+; .
 ; Handles the user pressing delete.
 ;
 ; HL Current position in the command buffer
@@ -4826,6 +4842,8 @@ c$C041 EX DE,HL      ; {Jump back to #R$C01E if the user is already at the begin
 
 ; Handler: User Pressed "ENTER"
 ;
+; Used by the routine at #R$C00A.
+; .
 ; Handles the user pressing "ENTER".
 ;
 ; HL Current position in the command buffer
@@ -5003,6 +5021,8 @@ c$C058 LD (HL),A     ; Write #N$0D to the command buffer pointer for use as a te
 
 ; Process Game Events
 ;
+; Used by the routine at #R$EDC4.
+; .
 ; This routine manages two types of in-game events:
 ; #HTML(<dl><dt>1. Turn-Based Events</dt>
 ; <dd>These are timer-based hazards that count down with each game turn. When a
@@ -5135,6 +5155,9 @@ c$C17D LD A,($BC66)  ; Load *#R$BC66 into #REGa.
 
 ; Get Table Entry
 ;
+; Used by the routines at #R$C17D, #R$C21E, #R$C315, #R$C32A, #R$C456, #R$C4EB
+; and #R$C556.
+; .
 ; Retrieves an address from a table using a given index.
 ;
 ;   E Index of item
@@ -5181,6 +5204,8 @@ c$C1FF LD HL,$BBF0   ; #REGhl=#R$BBF0.
 
 ; Handler: Display Room Image
 ;
+; Used by the routines at #R$BB94, #R$EF54 and #R$F14B.
+; .
 ; Determines if the current room has an image relating to it, and if it
 ; does - it jumps to the routine to display it.
 ;
@@ -5264,6 +5289,8 @@ c$C21E LD A,($BD2E)  ; {Jump to #R$C26A if *#R$BD2E is set to zero.
 
 ; Handler: Display Room Exits
 ;
+; Used by the routine at #R$C21E.
+; .
 ; Handles displaying the exits available for the current room.
 @label=Handler_RoomExits
 c$C26A CALL $BA6D    ; Call #R$BA6D.
@@ -5497,6 +5524,10 @@ c$C35F PUSH HL       ; {Stash #REGhl and #REGde on the stack.
 
 ; Match Phrase Tokens
 ;
+; Used by the routines at #R$F19D, #R$F263, #R$F481, #R$F4D4, #R$F7AB, #R$F7D6,
+; #R$F851, #R$F8D9, #R$F946, #R$F999, #R$F9E4, #R$FA3C, #R$FAA8, #R$FB16,
+; #R$FB71, #R$FBA8, #R$FBD5, #R$FC24, #R$FC61, #R$FC98, #R$FCCD and #R$FD02.
+; .
 ; Matches phrase patterns with multiple variations against user input
 ; tokens.
 ;
@@ -5556,6 +5587,8 @@ c$C37F EX DE,HL      ; Switch the phrase token pointer to #REGde.
 
 ; Parser: Count Item References
 ;
+; Used by the routines at #R$C47B, #R$C490, #R$C4B7 and #R$FB16.
+; .
 ; Count how many tokens in the user input refer to game items.
 ;
 ; O:A The number of references to items in the user input tokens
@@ -5630,6 +5663,9 @@ c$C3E4 CALL $C3D0    ; Call #R$C3D0.
 
 ; Handler: Destroy Item/ Event
 ;
+; Used by the routines at #R$EE74, #R$EEA9, #R$EEBB, #R$EECD, #R$EEFC, #R$EF32,
+; #R$F263, #R$F4D4, #R$F7D6, #R$F851, #R$F999 and #R$FB16.
+; .
 ; Updates a given item/ event ID so it's then "inactive" (has a location
 ; ID of #N$00).
 ;
@@ -5643,6 +5679,8 @@ c$C3EA LD B,A        ; Load the item/ event ID into #REGb.
 
 ; Handler: Update Item/ Event For The Current Room
 ;
+; Used by the routines at #R$C520 and #R$FC98.
+; .
 ; Updates a given item/ event ID so it appears in the current room. Used
 ; for example, when an item is dropped (so it changes from being #N$01 - in the
 ; players inventory, to the current room ID).
@@ -5720,6 +5758,9 @@ c$C412 BIT 7,B       ; {Jump to #R$C41D if this is a normal object/ event.
 
 ; Transform Item
 ;
+; Used by the routines at #R$F19D, #R$F263, #R$F4D4, #R$F7D6, #R$F8D9, #R$F9E4,
+; #R$FA3C, #R$FAA8, #R$FB16, #R$FBA8, #R$FBD5, #R$FC24 and #R$FCCD.
+; .
 ; Rather than use item properties, the game just has separate objects
 ; that don't exist until an action is performed.
 ; .
@@ -5809,6 +5850,9 @@ c$C456 PUSH AF       ; {Stash #REGaf and #REGbc on the stack.
 
 ; Parser: Validate No Direct Object
 ;
+; Used by the routines at #R$F09C, #R$F12E, #R$F14B, #R$F16B, #R$F236, #R$F23E
+; and #R$F246.
+; .
 ; The opposite of #R$C47B, checks that there's no direct object.
 ;
 ; O:F The Z flag is set when there's no direct object present
@@ -5824,6 +5868,10 @@ c$C470 LD A,($BD67)  ; {Return if the second token (*#R$BD67) is the terminator
 
 ; Parser: Validate Direct Object
 ;
+; Used by the routines at #R$C49F, #R$F19D, #R$F263, #R$F481, #R$F4D4, #R$F8D9,
+; #R$F946, #R$F999, #R$F9E4, #R$FA3C, #R$FAA8, #R$FB83, #R$FBA8, #R$FBD5,
+; #R$FC24, #R$FC61, #R$FC98, #R$FCCD and #R$FD6D.
+; .
 ; In most adventure games, the structure for a command is "verb + direct
 ; object". This is usually how the player interacts with the game world.
 ; The verb describes the action, and the direct object is what the action is
@@ -5924,6 +5972,8 @@ c$C4C7 LD HL,$BD66   ; #REGhl=#R$BD66.
 
 ; Handler: Scenic Events
 ;
+; Used by the routine at #R$EDC4.
+; .
 ; Handles checking if a scenic event should occur ... and also, handles
 ; jumping to the correct related scenic event routine to action it.
 @label=Handler_ScenicEvents
@@ -6022,6 +6072,9 @@ c$C556 LD HL,($BD26) ; #REGhl=*#R$BD26.
 
 ; Pause, Print String And Scroll
 ;
+; Used by the routines at #R$EEA9, #R$EEBB, #R$EECD, #R$EEDF, #R$EEFC, #R$EF32,
+; #R$EF54, #R$F03E and #R$F09C.
+; .
 ; For dramatic effect! Used when an event occurs.
 @label=PausePrintStringAndScroll
 c$C579 LD B,$19      ; {Call #R$BB51 using #N$19 HALT loops (for a short
@@ -10540,6 +10593,8 @@ c$EDC4 CALL $C17D    ; Call #R$C17D.
 @label=GameOver
 c$EDD7 LD HL,$BE31   ; #REGhl=#R$BE31.
  $EDDA CALL $BAB1    ; Call #R$BAB1.
+; This entry point is used by the routine at #R$EDF2.
+; .
 ; Print "#STR$BE3F,$08($b==$FF)".
 @label=WantAnotherGameInput
 *$EDDD LD HL,$BE3F   ; #REGhl=#R$BE3F.
@@ -11862,6 +11917,8 @@ c$F481 CALL $C47B    ; Call #R$C47B.
  $F488 CALL $C37F    ; }
  $F48B JR NZ,$F4AC   ; Jump to #R$F4AC if the token isn't for getting into the
                      ; boat.
+; This entry point is used by the routine at #R$F946.
+; .
 ; The player has typed any variation of wanting to get into the boat.
 @label=Validate_GetIntoBoat
 *$F48D LD A,($BCCB)  ; {Jump to #R$F498 if the *#R$BCCB is room #N$04: "#ROOM$04". So the
@@ -13257,38 +13314,74 @@ u$FEF9 DEFB $00
 ; .
 ;
 ; Displays the image for the boat.
+; .
+; #PUSHS #UDGTABLE #POKES$BCCB,$03
+; { #SIM(start=#PC,stop=$FF36)#SCR$01(game-boat) }
+; UDGTABLE# #POPS
 @label=DisplayImage_Boat
 c$FEFA LD IX,$607C   ; #REGix=#R$607C.
  $FEFE JR $FF2E      ; Jump to #R$FF2E.
 ; Displays the image for the sand dunes.
+; .
+; #PUSHS #UDGTABLE #POKES$BCCB,$08
+; { #SIM(start=#PC,stop=$FF36)#SCR$01(game-sand-dunes) }
+; UDGTABLE# #POPS
 @label=DisplayImage_SandDunes
  $FF00 LD IX,$6CA4   ; #REGix=#R$6CA4.
  $FF04 JR $FF2E      ; Jump to #R$FF2E.
 ; Displays the image for the bridge.
+; .
+; #PUSHS #UDGTABLE #POKES$BCCB,$6C
+; { #SIM(start=#PC,stop=$FF36)#SCR$01(game-bridge) }
+; UDGTABLE# #POPS
 @label=DisplayImage_Bridge
  $FF06 LD IX,$7731   ; #REGix=#R$7731.
  $FF0A JR $FF2E      ; Jump to #R$FF2E.
 ; Displays the image for the cave.
+; .
+; #PUSHS #UDGTABLE #POKES$BCCB,$3E
+; { #SIM(start=#PC,stop=$FF36)#SCR$01(game-cave) }
+; UDGTABLE# #POPS
 @label=DisplayImage_Cave
  $FF0C LD IX,$8171   ; #REGix=#R$8171.
  $FF10 JR $FF2E      ; Jump to #R$FF2E.
 ; Displays the image for the door.
+; .
+; #PUSHS #UDGTABLE #POKES$BCCB,$6A
+; { #SIM(start=#PC,stop=$FF36)#SCR$01(game-rock-door) }
+; UDGTABLE# #POPS
 @label=DisplayImage_Door
  $FF12 LD IX,$8BC3   ; #REGix=#R$8BC3.
  $FF16 JR $FF2E      ; Jump to #R$FF2E.
 ; Displays the image for the huts.
+; .
+; #PUSHS #UDGTABLE #POKES$BCCB,$1F
+; { #SIM(start=#PC,stop=$FF36)#SCR$01(game-huts) }
+; UDGTABLE# #POPS
 @label=DisplayImage_Huts
  $FF18 LD IX,$966A   ; #REGix=#R$966A.
  $FF1C JR $FF2E      ; Jump to #R$FF2E.
 ; Displays the image for the cliffs.
+; .
+; #PUSHS #UDGTABLE #POKES$BCCB,$2A
+; { #SIM(start=#PC,stop=$FF36)#SCR$01(game-cliffs) }
+; UDGTABLE# #POPS
 @label=DisplayImage_Cliffs
  $FF1E LD IX,$A042   ; #REGix=#R$A042.
  $FF22 JR $FF2E      ; Jump to #R$FF2E.
 ; Displays the image for the cavern.
+; .
+; #PUSHS #UDGTABLE #POKES$BCCB,$52
+; { #SIM(start=#PC,stop=$FF36)#SCR$01(game-cavern) }
+; UDGTABLE# #POPS
 @label=DisplayImage_Cavern
  $FF24 LD IX,$A958   ; #REGix=#R$A958.
  $FF28 JR $FF2E      ; Jump to #R$FF2E.
 ; Displays the image for the treasure chest.
+; .
+; #PUSHS #UDGTABLE #POKES$BCCB,$62
+; { #SIM(start=#PC,stop=$FF36)#SCR$01(game-treasure) }
+; UDGTABLE# #POPS
 @label=DisplayImage_Treasure
  $FF2A LD IX,$B2A7   ; #REGix=#R$B2A7.
 ; All the image routines use this same routine.

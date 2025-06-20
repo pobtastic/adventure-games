@@ -61,7 +61,7 @@ u $5B4F
 
 b $607C Graphics: Boat
 @ $607C label=Image_Boat
-D $607C #SIM(start=$5B46,stop=$5B4E) #PUSHS #UDGTABLE
+D $607C #SIM(start=$5B46,stop=$5B4E) #SIM(start=$BA6D,stop=$BA73) #PUSHS #UDGTABLE
 . { =h On Your Boat }
 . { #SIM(start=$BB3B,stop=$BB41,ix=#PC)#SCR$02{$00,$00,$200,$100}(boat) }
 . UDGTABLE# #POPS
@@ -5557,40 +5557,67 @@ u $FEF9
 B $FEF9,$01
 
 c $FEFA Handler: Room Images
-N $FEFA Displays the image for the boat.
 @ $FEFA label=DisplayImage_Boat
+N $FEFA Displays the image for the boat.
+N $FEFA #PUSHS #UDGTABLE #POKES$BCCB,$03
+. { #SIM(start=#PC,stop=$FF36)#SCR$01(game-boat) }
+. UDGTABLE# #POPS
   $FEFA,$04 #REGix=#R$607C.
   $FEFE,$02 Jump to #R$FF2E.
-N $FF00 Displays the image for the sand dunes.
 @ $FF00 label=DisplayImage_SandDunes
+N $FF00 Displays the image for the sand dunes.
+N $FF00 #PUSHS #UDGTABLE #POKES$BCCB,$08
+. { #SIM(start=#PC,stop=$FF36)#SCR$01(game-sand-dunes) }
+. UDGTABLE# #POPS
   $FF00,$04 #REGix=#R$6CA4.
   $FF04,$02 Jump to #R$FF2E.
-N $FF06 Displays the image for the bridge.
 @ $FF06 label=DisplayImage_Bridge
+N $FF06 Displays the image for the bridge.
+N $FF06 #PUSHS #UDGTABLE #POKES$BCCB,$6C
+. { #SIM(start=#PC,stop=$FF36)#SCR$01(game-bridge) }
+. UDGTABLE# #POPS
   $FF06,$04 #REGix=#R$7731.
   $FF0A,$02 Jump to #R$FF2E.
-N $FF0C Displays the image for the cave.
 @ $FF0C label=DisplayImage_Cave
+N $FF0C Displays the image for the cave.
+N $FF0C #PUSHS #UDGTABLE #POKES$BCCB,$3E
+. { #SIM(start=#PC,stop=$FF36)#SCR$01(game-cave) }
+. UDGTABLE# #POPS
   $FF0C,$04 #REGix=#R$8171.
   $FF10,$02 Jump to #R$FF2E.
-N $FF12 Displays the image for the door.
 @ $FF12 label=DisplayImage_Door
+N $FF12 Displays the image for the door.
+N $FF12 #PUSHS #UDGTABLE #POKES$BCCB,$6A
+. { #SIM(start=#PC,stop=$FF36)#SCR$01(game-rock-door) }
+. UDGTABLE# #POPS
   $FF12,$04 #REGix=#R$8BC3.
   $FF16,$02 Jump to #R$FF2E.
-N $FF18 Displays the image for the huts.
 @ $FF18 label=DisplayImage_Huts
+N $FF18 Displays the image for the huts.
+N $FF18 #PUSHS #UDGTABLE #POKES$BCCB,$1F
+. { #SIM(start=#PC,stop=$FF36)#SCR$01(game-huts) }
+. UDGTABLE# #POPS
   $FF18,$04 #REGix=#R$966A.
   $FF1C,$02 Jump to #R$FF2E.
-N $FF1E Displays the image for the cliffs.
 @ $FF1E label=DisplayImage_Cliffs
+N $FF1E Displays the image for the cliffs.
+N $FF1E #PUSHS #UDGTABLE #POKES$BCCB,$2A
+. { #SIM(start=#PC,stop=$FF36)#SCR$01(game-cliffs) }
+. UDGTABLE# #POPS
   $FF1E,$04 #REGix=#R$A042.
   $FF22,$02 Jump to #R$FF2E.
-N $FF24 Displays the image for the cavern.
 @ $FF24 label=DisplayImage_Cavern
+N $FF24 Displays the image for the cavern.
+N $FF24 #PUSHS #UDGTABLE #POKES$BCCB,$52
+. { #SIM(start=#PC,stop=$FF36)#SCR$01(game-cavern) }
+. UDGTABLE# #POPS
   $FF24,$04 #REGix=#R$A958.
   $FF28,$02 Jump to #R$FF2E.
-N $FF2A Displays the image for the treasure chest.
 @ $FF2A label=DisplayImage_Treasure
+N $FF2A Displays the image for the treasure chest.
+N $FF2A #PUSHS #UDGTABLE #POKES$BCCB,$62
+. { #SIM(start=#PC,stop=$FF36)#SCR$01(game-treasure) }
+. UDGTABLE# #POPS
   $FF2A,$04 #REGix=#R$B2A7.
 N $FF2E All the image routines use this same routine.
 @ $FF2E label=Handler_Images
