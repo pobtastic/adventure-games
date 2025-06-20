@@ -2753,7 +2753,7 @@ c$A531 LD HL,$5C6A   ; {#HTML(Set CAPS LOCK on, using bit 3 of *<a
 
 ; Get User Input
 ;
-; Used by the routines at #R$A5CA, #R$ACC2, #R$E9B2, #R$EB10 and #R$FF12.
+; Used by the routines at #R$A5CA, #R$AD32, #R$E9B2, #R$EB10 and #R$FF12.
 ;
 ; O:A The keypress value
 @label=GetUserInput
@@ -2793,7 +2793,7 @@ c$A555 CALL $A577    ; Call #R$A577.
 
 ; Set Default Screen Position
 ;
-; Used by the routines at #R$A59B and #R$ACC2.
+; Used by the routines at #R$A59B and #R$AD32.
 @label=SetDefaultScreenPosition
 c$A560 CALL $A577    ; Call #R$A577.
  $A563 LD BC,$0321   ; #REGbc=#N($0321,$04,$04).
@@ -2817,7 +2817,7 @@ c$A56A CALL $A577    ; Call #R$A577.
 ; Switch To Normal Screen Output
 ;
 ; Used by the routines at #R$A54E, #R$A555, #R$A560, #R$A56A, #R$A585 and
-; #R$ACC2.
+; #R$ACD8.
 @label=SwitchNormalScreenOutput
 c$A577 PUSH HL       ; {Stash #REGhl, #REGde, #REGbc and #REGaf on the stack.
  $A578 PUSH DE       ;
@@ -2880,8 +2880,8 @@ c$A59B EXX           ; Switch to the shadow registers.
 
 ; Print Character
 ;
-; Used by the routines at #R$A585, #R$A592, #R$A647, #R$AC02, #R$ACC2 and
-; #R$B0A9.
+; Used by the routines at #R$A585, #R$A592, #R$A647, #R$AC02, #R$ACD8, #R$AD32
+; and #R$B0A9.
 ;
 ; A The character to print
 @label=PrintCharacter
@@ -3021,7 +3021,7 @@ c$A605 LD HL,$A915   ; #REGhl=#R$A915.
 
 ; Print Input Prompt
 ;
-; Used by the routine at #R$ACC2.
+; Used by the routine at #R$AD32.
 @label=PrintInputPrompt
 c$A647 LD HL,$5080   ; #REGhl=#N$5080 (screen buffer location).
  $A64A LD DE,$0100   ; Set the increment in #REGde for the next screen line.
@@ -3720,7 +3720,8 @@ g$A7D4 DEFW $E417
 ; Game status buffer entry at A7D6
 g$A7D6 DEFW $C83E
 
-; Game status buffer entry at A7D8
+; Pointer: Object List Table
+@label=Pointer_ObjectList
 g$A7D8 DEFW $E308
 
 ; Game status buffer entry at A7DA
@@ -3750,7 +3751,10 @@ g$A7E4 DEFW $E4E6
 @label=Count_Items
 g$A7E6 DEFW $0086
 
-; Game status buffer entry at A7E8
+; Number Of Objects
+;
+; The total number of objects in the game.
+@label=Count_Objects
 g$A7E8 DEFW $0039
 
 ; Game status buffer entry at A7EA
@@ -3778,8 +3782,21 @@ g$A7F2 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $A80A DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $A812 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $A81A DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A822 DEFB $00,$00,$FF,$FF,$FF,$FF,$FF,$FF
- $A82A DEFB $FF,$FF,$FF,$FF
+ $A822 DEFB $00,$00
+
+; User Input: Word Tokens
+@label=UserInput_Token_1
+g$A824 DEFB $FF
+@label=UserInput_Token_2
+ $A825 DEFB $FF
+ $A826 DEFB $FF
+ $A827 DEFB $FF
+ $A828 DEFB $FF
+ $A829 DEFB $FF
+ $A82A DEFB $FF
+ $A82B DEFB $FF
+ $A82C DEFB $FF
+ $A82D DEFB $FF
 
 ; Line Number
 @label=LineNumber
@@ -4488,15 +4505,25 @@ c$ACC2 NOP           ;
  $ACC8 EX AF,AF'     ;
  $ACC9 JR NZ,$ACD3   ;
  $ACCB RST $38       ;
- $ACCC LD E,A        ;
- $ACCD EX AF,AF'     ;
- $ACCE RST $38       ;
-*$ACCF PUSH HL       ;
-*$ACD0 LD HL,$ACCC   ;
-*$ACD3 CALL $A585    ;
- $ACD6 POP HL        ;
- $ACD7 RET           ;
-*$ACD8 PUSH HL       ;
+
+; Message at ACCC
+t$ACCC DEFM "_",$08,$FF
+
+; Routine at ACCF
+;
+; Used by the routine at #R$AD32.
+c$ACCF PUSH HL       ; Stash #REGhl on the stack.
+; Print "#STR$ACCC,$08($b==$FF)".
+*$ACD0 LD HL,$ACCC   ; #REGhl=#R$ACCC.
+; This entry point is used by the routine at #R$ACC2.
+*$ACD3 CALL $A585    ; Call #R$A585.
+ $ACD6 POP HL        ; Restore #REGhl from the stack.
+ $ACD7 RET           ; Return.
+
+; Routine at ACD8
+;
+; Used by the routine at #R$AD32.
+c$ACD8 PUSH HL       ;
  $ACD9 PUSH BC       ;
  $ACDA LD HL,$A663   ;
  $ACDD LD C,(HL)     ;
@@ -4506,6 +4533,7 @@ c$ACC2 NOP           ;
  $ACE3 POP BC        ;
  $ACE4 POP HL        ;
  $ACE5 RET           ;
+; This entry point is used by the routine at #R$AD32.
 *$ACE6 PUSH AF       ;
  $ACE7 CP $0D        ;
  $ACE9 JR NZ,$ACF3   ;
@@ -4517,6 +4545,7 @@ c$ACC2 NOP           ;
  $ACF4 CALL $A577    ;
  $ACF7 CALL $A5A4    ;
  $ACFA RET           ;
+; This entry point is used by the routine at #R$AD32.
 *$ACFB PUSH HL       ;
  $ACFC PUSH DE       ;
  $ACFD PUSH BC       ;
@@ -4551,8 +4580,11 @@ c$ACC2 NOP           ;
  $AD2F POP DE        ;
  $AD30 POP HL        ;
  $AD31 RET           ;
-; This entry point is used by the routine at #R$E99F.
-*$AD32 CALL $A560    ;
+
+; Handler: User Input
+;
+; Used by the routine at #R$E99F.
+c$AD32 CALL $A560    ;
  $AD35 CALL $A647    ;
  $AD38 LD HL,$A7F2   ;
  $AD3B LD B,$00      ;
@@ -4712,7 +4744,8 @@ c$AE36 INC BC        ;
 
 ; Validate If Item Is Present
 ;
-; Used by the routines at #R$AE36, #R$AEF7, #R$AFEB, #R$E9E9 and #R$EB10.
+; Used by the routines at #R$AE36, #R$AEF7, #R$AFEB, #R$B01F, #R$E9E9 and
+; #R$EB10.
 c$AE6B PUSH HL       ;
  $AE6C PUSH DE       ;
  $AE6D LD E,A        ;
@@ -4800,34 +4833,55 @@ c$AED1 LD E,A        ;
 ; Is Object In Inventory?
 ;
 ; Used by the routine at #R$EB10.
-c$AEDA CALL $AED1    ;
- $AEDD CP $01        ;
- $AEDF RET           ;
+;
+;   A Object ID
+; O:F Z flag set if object is in the players inventory
+;
+; The #R$AED1 routine returns with #REGa containing the room ID of the
+; requested object.
+@label=CheckObjectInInventory
+c$AEDA CALL $AED1    ; Call #R$AED1.
+ $AEDD CP $01        ; Compare #REGa with #N$01 (inventory).
+ $AEDF RET           ; Return.
 
 ; Handler: Destroy Item/ Event
 ;
-; Used by the routines at #R$EA0B, #R$EA44 and #R$EB10.
-c$AEE0 LD B,A        ;
- $AEE1 LD C,$00      ;
- $AEE3 CALL $AF08    ;
- $AEE6 RET           ;
+; Updates a given item/ event ID so it's then "inactive" (has a location
+; ID of #N$00).
+;
+; A Item/ event ID
+@label=Handler_DestroyItemEvent
+c$AEE0 LD B,A        ; Load the item/ event ID into #REGb.
+ $AEE1 LD C,$00      ; Set the room ID to #N$00 which will deactivate the item/
+                     ; event.
+ $AEE3 CALL $AF08    ; Call #R$AF08.
+ $AEE6 RET           ; Return.
 
 ; Handler: Update Item/ Event For The Current Room
 ;
-; Used by the routines at #R$AFEB, #R$EA0B and #R$EB10.
-c$AEE7 LD B,A        ;
- $AEE8 LD A,($A7C3)  ;
- $AEEB LD C,A        ;
- $AEEC CALL $AF08    ;
- $AEEF RET           ;
+; Updates a given item/ event ID so it appears in the current room. Used
+; for example, when an item is dropped (so it changes from being #N$01 - in the
+; players inventory, to the current room ID).
+;
+; A Item/ event ID
+@label=Handler_UpdateItemEventCurrentRoom
+c$AEE7 LD B,A        ; Load the item/ event ID into #REGb.
+ $AEE8 LD A,($A7C3)  ; {Load #REGc with *#R$A7C3.
+ $AEEB LD C,A        ; }
+ $AEEC CALL $AF08    ; Call #R$AF08.
+ $AEEF RET           ; Return.
 
 ; Set Scenic Event As Triggered
 ;
 ; Used by the routines at #R$E9FA, #R$EA44 and #R$EB10.
-c$AEF0 LD B,A        ;
- $AEF1 LD C,$FF      ;
- $AEF3 CALL $AF08    ;
- $AEF6 RET           ;
+;
+; A Scenic event ID (+#N$80)
+@label=ScenicEventTriggered
+c$AEF0 LD B,A        ; Copy the scenic event ID into #REGb.
+ $AEF1 LD C,$FF      ; Set #REGc to #N$FF which denotes that the event has fired already
+                     ; and shouldn't be repeated.
+ $AEF3 CALL $AF08    ; Call #R$AF08.
+ $AEF6 RET           ; Return.
 
 ; Check Active Scenic Events
 ;
@@ -4846,7 +4900,7 @@ c$AEF7 JR $AEFA      ; Jump to #R$AEFA.
 
 ; Routine at AF08
 ;
-; Used by the routines at #R$AB0A, #R$AEE0, #R$AEE7, #R$AEF0, #R$AF1E, #R$AFEB,
+; Used by the routines at #R$AB0A, #R$AEE0, #R$AEE7, #R$AEF0, #R$AF1E, #R$B01F,
 ; #R$EA44 and #R$EB10.
 c$AF08 LD HL,$A66C   ; #REGhl=#R$A66C.
  $AF0B LD D,$00      ; #REGd=#N$00.
@@ -4888,23 +4942,33 @@ c$AF31 CALL $AED1    ; Call #R$AED1.
 ; Check Room Objects
 ;
 ; Used by the routine at #R$AC02.
+;
+;   A Room number
+; O:A #N$00 or #N$01 if objects are found or not
+@label=CheckRoomObjects
 c$AF39 LD HL,$A66C   ; #REGhl=#R$A66C.
  $AF3C LD BC,($A7E6) ; #REGbc=*#R$A7E6.
-*$AF40 CPIR          ; CPIR.
- $AF42 RET NZ        ; Return if #REGa is not equal to *#REGhl.
- $AF43 PUSH HL       ; Stash #REGhl on the stack.
+@label=CheckRoomObjects_Loop
+*$AF40 CPIR          ; Search for the room number in the table.
+ $AF42 RET NZ        ; Return if no objects are found.
+ $AF43 PUSH HL       ; Stash the object location table pointer on the stack.
  $AF44 CALL $AF56    ; Call #R$AF56.
- $AF47 POP HL        ; Restore #REGhl from the stack.
- $AF48 JR NZ,$AF54   ; Jump to #R$AF54 if #REGa is not equal to *#REGhl.
- $AF4A LD E,A        ; #REGe=#REGa.
- $AF4B LD A,B        ; #REGa=#REGb.
- $AF4C OR C          ; Set the bits from #REGc.
- $AF4D LD A,E        ; #REGa=#REGe.
- $AF4E JR NZ,$AF40   ; Jump to #R$AF40 if #REGa is not equal to #REGc.
- $AF50 LD A,$01      ; #REGa=#N$01.
+ $AF47 POP HL        ; Restore the object location table pointer from the
+                     ; stack.
+ $AF48 JR NZ,$AF54   ; Jump to #R$AF54 if there are no objects found here.
+ $AF4A LD E,A        ; Temporarily store #REGa in #REGe.
+ $AF4B LD A,B        ; {Are there more objects to check?
+ $AF4C OR C          ; }
+ $AF4D LD A,E        ; Restore the #REGa register.
+ $AF4E JR NZ,$AF40   ; Jump to #R$AF40 if there are more objects to check.
+; Set the "successful" output.
+ $AF50 LD A,$01      ; Set #REGa to #N$01 to indicate that objects were found.
  $AF52 AND A         ; Set flags.
  $AF53 RET           ; Return.
-*$AF54 XOR A         ; #REGa=#N$00.
+; Set the "failure" output.
+@label=NoRoomObjectsFound
+*$AF54 XOR A         ; Set #REGa to #N$00 to indicate that no objects were
+                     ; found.
  $AF55 RET           ; Return.
 
 ; Validate Object
@@ -5002,27 +5066,30 @@ c$AFB7 LD A,($A825)  ;
 ; Parser: Process Item
 ;
 ; Used by the routine at #R$E99F.
-c$AFC7 LD HL,$A824   ;
- $AFCA LD B,$0A      ;
-*$AFCC LD A,(HL)     ;
+@label=Parser_ProcessItem
+c$AFC7 LD HL,$A824   ; #REGhl=#R$A824.
+ $AFCA LD B,$0A      ; #REGb=#N$0A.
+*$AFCC LD A,(HL)     ; {Return if *#REGhl is equal to #N$FF.
  $AFCD CP $FF        ;
- $AFCF RET Z         ;
- $AFD0 PUSH HL       ;
- $AFD1 PUSH BC       ;
- $AFD2 LD HL,($A7D8) ;
- $AFD5 LD BC,($A7E8) ;
- $AFD9 CPIR          ;
- $AFDB JR NZ,$AFE5   ;
- $AFDD CALL $AE36    ;
- $AFE0 JR NC,$AFE5   ;
- $AFE2 POP BC        ;
- $AFE3 POP HL        ;
- $AFE4 RET           ;
-*$AFE5 POP BC        ;
- $AFE6 POP HL        ;
- $AFE7 INC HL        ;
- $AFE8 DJNZ $AFCC    ;
- $AFEA RET           ;
+ $AFCF RET Z         ; }
+ $AFD0 PUSH HL       ; {Stash #REGhl and #REGbc on the stack.
+ $AFD1 PUSH BC       ; }
+ $AFD2 LD HL,($A7D8) ; #REGhl=*#R$A7D8.
+ $AFD5 LD BC,($A7E8) ; #REGbc=*#R$A7E8.
+ $AFD9 CPIR          ; CPIR.
+ $AFDB JR NZ,$AFE5   ; Jump to #R$AFE5 if #REGa is not equal to #N$FF.
+ $AFDD CALL $AE36    ; Call #R$AE36.
+ $AFE0 JR NC,$AFE5   ; Jump to #R$AFE5 if #REGa is greater than or equal to
+                     ; #N$FF.
+ $AFE2 POP BC        ; {Restore #REGbc and #REGhl from the stack.
+ $AFE3 POP HL        ; }
+ $AFE4 RET           ; Return.
+*$AFE5 POP BC        ; {Restore #REGbc and #REGhl from the stack.
+ $AFE6 POP HL        ; }
+ $AFE7 INC HL        ; Increment #REGhl by one.
+ $AFE8 DJNZ $AFCC    ; Decrease counter by one and loop back to #R$AFCC until
+                     ; counter is zero.
+ $AFEA RET           ; Return.
 
 ; Routine at AFEB
 ;
@@ -5051,8 +5118,11 @@ c$AFEB LD A,($A7EE)  ;
  $B018 LD BC,($A83D) ;
 *$B01C DJNZ $AFF6    ;
  $B01E RET           ;
-; This entry point is used by the routine at #R$EB10.
-*$B01F LD C,A        ;
+
+; Routine at B01F
+;
+; Used by the routine at #R$EB10.
+c$B01F LD C,A        ;
  $B020 LD A,($A7EE)  ;
  $B023 AND A         ;
  $B024 JR Z,$B03D    ;
@@ -5112,27 +5182,35 @@ c$B05E LD HL,($A7E0) ;
 
 ; Pause, Print String And Scroll
 ;
-; Used by the routines at #R$EA0B, #R$EA44 and #R$EB10.
-c$B081 LD B,$19      ;
- $B083 CALL $A5C2    ;
- $B086 CALL $A592    ;
- $B089 RET           ;
+; For dramatic effect! Used when an event occurs.
+@label=PausePrintStringAndScroll
+c$B081 LD B,$19      ; {Call #R$A5C2 using #N$19 HALT loops (for a short
+ $B083 CALL $A5C2    ; pause).}
+ $B086 CALL $A592    ; Call #R$A592.
+ $B089 RET           ; Return.
 
 ; Generate Random Number
 ;
 ; Used by the routines at #R$EA0B and #R$EA44.
-c$B08A PUSH BC       ;
- $B08B LD C,A        ;
- $B08C CALL $A5C6    ;
- $B08F LD B,A        ;
- $B090 LD A,C        ;
-*$B091 DEC A         ;
- $B092 JR NZ,$B095   ;
- $B094 LD A,C        ;
-*$B095 DJNZ $B091    ;
- $B097 DEC A         ;
- $B098 POP BC        ;
- $B099 RET           ;
+;
+; A Maximum value of generated number
+@label=GenerateRandomNumber
+c$B08A PUSH BC       ; Stash #REGbc on the stack.
+ $B08B LD C,A        ; Store the maximum number in #REGc.
+ $B08C CALL $A5C6    ; Call #R$A5C6.
+ $B08F LD B,A        ; Use the frames number as a loop counter in #REGb.
+ $B090 LD A,C        ; Restore the maximum number value back to #REGa.
+@label=GenerateRandomNumber_Loop
+*$B091 DEC A         ; Decrease the maximum number value by one.
+ $B092 JR NZ,$B095   ; Jump to #R$B095 if the maximum number value is not equal
+                     ; to zero.
+ $B094 LD A,C        ; Restore the maximum number value back to #REGa.
+@label=GenerateRandomNumber_Next
+*$B095 DJNZ $B091    ; Decrease the loop counter by one and loop back to #R$B091 until the
+                     ; loop counter is zero.
+ $B097 DEC A         ; Decrease the maximum number value by one.
+ $B098 POP BC        ; Restore #REGbc from the stack.
+ $B099 RET           ; Return.
 
 ; Routine at B09A
 ;
@@ -7430,14 +7508,177 @@ t$E0B1 DEFM "xxxxI   ,INVEL   ,LOOKSCOREXAMLOADSAVEQUITN   ,NORTS   ,SOUTE   ,"
  $E237 DEFM "PIG ROPEOX  GROOSHIEFIRE,FLAMLAKELADDSTRASTAFBODYCLOASILVPLATWATE"
  $E278 DEFM "LUG DANUMINECHARPIT TORCSKULHILLBROCxxxxxxxxAT  FROMAGAIWILDBRONC"
  $E2B9 DEFM "LAYCRYSPILEOF  STONYOUNWHITWITH,USINTO  ON  ,ONTOIN  ,INTOHUMAOAK"
- $E2FA DEFM " ARMEDEEPOUT ",$FF,"%&'()*+,-./Z123456789:;<=>?@ABCDEFGH[JKYMNOPQRSTUVW"
- $E33B DEFM "X0IL\\]",$02,$03,$0A,$0B,$0C,"U",$FF,$04,$05,$0D,$0E,$0F,$10,$FF,$06,$FF,$09,$FF,$13,"&",$FF,$13,"&",$FF,$15,$16,$17,$18,$FF,$19,$FF,$1A,$FF,$1B,$FF,$1C,$FF,"ij",$FF,$1D,$FF,$1F," ",$FF,"\"",$FF,"#",$FF,"$",$FF,"$%",$FF,"'",$0F,$10,$04,$05
- $E37C DEFM $0D,$0E,$FF,")",$FF,"+,/0",$FF,".",$FF,"1",$15,$16,"345",$FF,"6",$11,$FF,"89Y",$FF,":<",$FF,"<",$FF,"=",$FF,"B",$FF,"DE",$FF,"F",$FF,"I",$FF,"IKL",$FF,"MN",$FF,"OP",$FF,"UQRS",$0B,$FF,"RST",$FF,";",$FF,"V"
- $E3BD DEFM $FF,$11,"Wn",$FF,"h!",$FF,"Z[\\",$5E,$FF,"_",$60,$FF,"a",$FF,$0C,$0D,$0E,$10,"STU&CEPbc",$FF,"bdm",$FF,"e",$FF,"]",$5E,"f",$FF,$15,$16,$17,$18,"2l",$FF,$14,$FF,$1E,$FF,"g",$FF,"!",$FF,"XY",$FF,"XY",$FF,"l",$FF
- $E3FE DEFM "opqrstuv",$FF,"wxyz{|}~",$7F,$80,$81,$82,$83,$84,$85,$FF,"A",$E3,"H",$E3,"O",$E3,"Q",$E3,"S",$E3,"V",$E3,"Y",$E3,$5E,$E3,$60,$E3,"b",$E3,"d",$E3,"f",$E3,"i",$E3,"k",$E3,"n",$E3,"p",$E3,"r",$E3,"t",$E3,"w",$E3,$7F,$E3
- $E43F DEFM $81,$E3,$86,$E3,$88,$E3,$92,$E3,$96,$E3,$99,$E3,$9B,$E3,$9D,$E3,$9F,$E3,$A2,$E3,$A4,$E3,$A6,$E3,$AA,$E3,$AD,$E3,$B0,$E3,$B6,$E3,$BA,$E3,$BC,$E3,$BE,$E3,$C2,$E3,$C5,$E3,$CA,$E3,$CD,$E3,$CF,$E3,$DD,$E3,$E1,$E3,$E3,$E3,$E7,$E3,$EE,$E3,$F0,$E3,$F2,$E3,$F4,$E3,$F6
- $E480 DEFM $E3,$F9,$E3,$FC,$E3,$FE,$E3,$07,$E4,"\"",$01,$02,$03,$04,$05,$06,$07,$08,$09,$0A,$0B,$0C,$0D,$0E,$0F,$13,$10,$12," ",$14,$15,$16,$17,$1A,$19,"!",$1B,$1C,$1D,$1E,$11,$18,$03,$04,$09,$0A,$0B,$11,$1C,$1D,$16,$0E,$FF,"!\")19;<",$FF,"MQU",$FF
- $E4C1 DEFM "LPT",$FF,"?70(",$FF,$02,$12,$1E,"2",$FF,"#+3",$FF,"[\\]",$5E,$FF,",",$FF,"$",$FF,",",$FF,"-",$FF,"%",$FF,"@",$FF,"*",$FF
+ $E2FA DEFM " ARMEDEEPOUT ",$FF
+
+; Table: Object List?
+@label=Table_ObjectList
+g$E308 DEFB $25                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E309 DEFB $26                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E30A DEFB $27                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E30B DEFB $28                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E30C DEFB $29                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E30D DEFB $2A                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E30E DEFB $2B                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E30F DEFB $2C                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E310 DEFB $2D                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E311 DEFB $2E                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E312 DEFB $2F                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E313 DEFB $5A                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E314 DEFB $31                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E315 DEFB $32                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E316 DEFB $33                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E317 DEFB $34                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E318 DEFB $35                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E319 DEFB $36                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E31A DEFB $37                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E31B DEFB $38                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E31C DEFB $39                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E31D DEFB $3A                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E31E DEFB $3B                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E31F DEFB $3C                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E320 DEFB $3D                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E321 DEFB $3E                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E322 DEFB $3F                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E323 DEFB $40                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E324 DEFB $41                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E325 DEFB $42                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E326 DEFB $43                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E327 DEFB $44                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E328 DEFB $45                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E329 DEFB $46                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E32A DEFB $47                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E32B DEFB $48                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E32C DEFB $5B                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E32D DEFB $4A                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E32E DEFB $4B                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E32F DEFB $59                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E330 DEFB $4D                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E331 DEFB $4E                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E332 DEFB $4F                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E333 DEFB $50                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E334 DEFB $51                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E335 DEFB $52                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E336 DEFB $53                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E337 DEFB $54                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E338 DEFB $55                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E339 DEFB $56                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E33A DEFB $57                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E33B DEFB $58                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E33C DEFB $30                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E33D DEFB $49                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E33E DEFB $4C                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E33F DEFB $5C                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E340 DEFB $5D                             ; Object #N(#PEEK(#PC)):
+                                            ; #OBJECT(#PEEK(#PC)).
+ $E341 DEFB $02,$03,$0A,$0B,$0C,$55,$FF,$04
+ $E349 DEFB $05,$0D,$0E,$0F,$10,$FF,$06,$FF
+ $E351 DEFB $09,$FF,$13,$26,$FF,$13,$26,$FF
+ $E359 DEFB $15,$16,$17,$18,$FF,$19,$FF,$1A
+ $E361 DEFB $FF,$1B,$FF,$1C,$FF,$69,$6A,$FF
+ $E369 DEFB $1D,$FF,$1F,$20,$FF,$22,$FF,$23
+ $E371 DEFB $FF,$24,$FF,$24,$25,$FF,$27,$0F
+ $E379 DEFB $10,$04,$05,$0D,$0E,$FF,$29,$FF
+ $E381 DEFB $2B,$2C,$2F,$30,$FF,$2E,$FF,$31
+ $E389 DEFB $15,$16,$33,$34,$35,$FF,$36,$11
+ $E391 DEFB $FF,$38,$39,$59,$FF,$3A,$3C,$FF
+ $E399 DEFB $3C,$FF,$3D,$FF,$42,$FF,$44,$45
+ $E3A1 DEFB $FF,$46,$FF,$49,$FF,$49,$4B,$4C
+ $E3A9 DEFB $FF,$4D,$4E,$FF,$4F,$50,$FF,$55
+ $E3B1 DEFB $51,$52,$53,$0B,$FF,$52,$53,$54
+ $E3B9 DEFB $FF,$3B,$FF,$56,$FF,$11,$57,$6E
+ $E3C1 DEFB $FF,$68,$21,$FF,$5A,$5B,$5C,$5E
+ $E3C9 DEFB $FF,$5F,$60,$FF,$61,$FF,$0C,$0D
+ $E3D1 DEFB $0E,$10,$53,$54,$55,$26,$43,$45
+ $E3D9 DEFB $50,$62,$63,$FF,$62,$64,$6D,$FF
+ $E3E1 DEFB $65,$FF,$5D,$5E,$66,$FF,$15,$16
+ $E3E9 DEFB $17,$18,$32,$6C,$FF,$14,$FF,$1E
+ $E3F1 DEFB $FF,$67,$FF,$21,$FF,$58,$59,$FF
+ $E3F9 DEFB $58,$59,$FF,$6C,$FF,$6F,$70,$71
+ $E401 DEFB $72,$73,$74,$75,$76,$FF,$77,$78
+ $E409 DEFB $79,$7A,$7B,$7C,$7D,$7E,$7F,$80
+ $E411 DEFB $81,$82,$83,$84,$85,$FF,$41,$E3
+ $E419 DEFB $48,$E3,$4F,$E3,$51,$E3,$53,$E3
+ $E421 DEFB $56,$E3,$59,$E3,$5E,$E3,$60,$E3
+ $E429 DEFB $62,$E3,$64,$E3,$66,$E3,$69,$E3
+ $E431 DEFB $6B,$E3,$6E,$E3,$70,$E3,$72,$E3
+ $E439 DEFB $74,$E3,$77,$E3,$7F,$E3,$81,$E3
+ $E441 DEFB $86,$E3,$88,$E3,$92,$E3,$96,$E3
+ $E449 DEFB $99,$E3,$9B,$E3,$9D,$E3,$9F,$E3
+ $E451 DEFB $A2,$E3,$A4,$E3,$A6,$E3,$AA,$E3
+ $E459 DEFB $AD,$E3,$B0,$E3,$B6,$E3,$BA,$E3
+ $E461 DEFB $BC,$E3,$BE,$E3,$C2,$E3,$C5,$E3
+ $E469 DEFB $CA,$E3,$CD,$E3,$CF,$E3,$DD,$E3
+ $E471 DEFB $E1,$E3,$E3,$E3,$E7,$E3,$EE,$E3
+ $E479 DEFB $F0,$E3,$F2,$E3,$F4,$E3,$F6,$E3
+ $E481 DEFB $F9,$E3,$FC,$E3,$FE,$E3,$07,$E4
+ $E489 DEFB $22,$01,$02,$03,$04,$05,$06,$07
+ $E491 DEFB $08,$09,$0A,$0B,$0C,$0D,$0E,$0F
+ $E499 DEFB $13,$10,$12,$20,$14,$15,$16,$17
+ $E4A1 DEFB $1A,$19,$21,$1B,$1C,$1D,$1E,$11
+ $E4A9 DEFB $18,$03,$04,$09,$0A,$0B,$11,$1C
+ $E4B1 DEFB $1D,$16,$0E,$FF,$21,$22,$29,$31
+ $E4B9 DEFB $39,$3B,$3C,$FF,$4D,$51,$55,$FF
+ $E4C1 DEFB $4C,$50,$54,$FF,$3F,$37,$30,$28
+ $E4C9 DEFB $FF,$02,$12,$1E,$32,$FF,$23,$2B
+ $E4D1 DEFB $33,$FF,$5B,$5C,$5D,$5E,$FF,$2C
+ $E4D9 DEFB $FF,$24,$FF,$2C,$FF,$2D,$FF,$25
+ $E4E1 DEFB $FF,$40,$FF,$2A,$FF
 
 ; Table: Scenic Event Locations
 ;
@@ -9049,15 +9290,22 @@ c$E9D8 LD HL,$A77E   ; {Reset bit 0 of *#R$A77E which relates to the player
  $E9E6 JP $E9D0      ; Jump to #R$E9D0.
 
 ; Routine at E9E9
-c$E9E9 LD HL,$A77E   ; #REGhl=#R$A77E.
- $E9EC RES 1,(HL)    ; Reset bit 1 of *#REGhl.
+c$E9E9 LD HL,$A77E   ; {Reset bit 1 of *#R$A77E.
+ $E9EC RES 1,(HL)    ; }
  $E9EE LD A,$0F      ; #REGa=#N$0F.
  $E9F0 CALL $AE6B    ; Call #R$AE6B.
  $E9F3 RET NZ        ; Return if #REGa is not equal to #N$0F.
+; Print "#STR$CD9A,$08($b==$FF)".
  $E9F4 LD HL,$CD9A   ; #REGhl=#R$CD9A.
  $E9F7 JP $E9D0      ; Jump to #R$E9D0.
 
 ; Routine at E9FA
+;
+; .
+;
+; .
+;
+; Print "#STR$C97C,$08($b==$FF)".
 c$E9FA LD HL,$C97C   ; #REGhl=#R$C97C.
  $E9FD CALL $A592    ; Call #R$A592.
  $EA00 LD A,$00      ; #REGa=#N$00.
@@ -11193,12 +11441,14 @@ c$FCCE LD HL,$FD02   ; {Copy #N$0186 bytes from #R$FD02 to #R$A66C.
  $FCED DJNZ $FCE2    ; Decrease the exits counter by one and loop back to #R$FCE2 until
                      ; all the room exits have been cleared.
 ; Ensure three exits are "open" (as they can become blocked in the game).
- $FCEF LD A,$50      ;
- $FCF1 LD ($E8F4),A  ;
- $FCF4 LD ($E8F6),A  ;
- $FCF7 LD ($E8F7),A  ;
- $FCFA LD A,$02      ;
- $FCFC CALL $EB10    ;
+ $FCEF LD A,$50      ; {Enable the exit "north to room #R$E8F4(#N$50) for
+ $FCF1 LD ($E8F4),A  ; #ROOM$50".}
+ $FCF4 LD ($E8F6),A  ; Enable the exit "east to room #R$E8F6(#N$50) for
+                     ; #ROOM$50".
+ $FCF7 LD ($E8F7),A  ; Enable the exit "west to room #R$E8F7(#N$50) for
+                     ; #ROOM$50".
+ $FCFA LD A,$02      ; {Call #R$EB10 to room #N$02: #ROOM$02.
+ $FCFC CALL $EB10    ; }
  $FCFF JP $E99F      ; Jump to #R$E99F.
 
 ; Default Game State
@@ -11224,9 +11474,7 @@ g$FD02 DEFB $00,$00,$00,$00,$FF,$FF,$FF,$00
  $FD92 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $FD9A DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $FDA2 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FDAA DEFB $00,$00,$00
- $FDAD DEFB $00,$00,$00,$00,$00             ; Call #R$EB10 to room #N$02:
-                                            ; #ROOM$02.
+ $FDAA DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $FDB2 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $FDBA DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $FDC2 DEFB $00,$00,$00,$00,$00,$00,$00,$00
@@ -11414,88 +11662,3 @@ c$FF12 LD IX,$61A8   ; #REGix=#R$61A8.
  $FF54 CALL $A53E    ; Call #R$A53E.
  $FF57 RET           ; Return.
 
-; Data block at FF58
-w$FF58 DEFW $0000
- $FF5A DEFW $0000
- $FF5C DEFW $0000
- $FF5E DEFW $0000
- $FF60 DEFW $0000
- $FF62 DEFW $0000
- $FF64 DEFW $0000
- $FF66 DEFW $0000
- $FF68 DEFW $0000
- $FF6A DEFW $0000
- $FF6C DEFW $0000
- $FF6E DEFW $0000
- $FF70 DEFW $0000
- $FF72 DEFW $0000
- $FF74 DEFW $0000
- $FF76 DEFW $0000
- $FF78 DEFW $0000
- $FF7A DEFW $0000
- $FF7C DEFW $0000
- $FF7E DEFW $0000
- $FF80 DEFW $0000
- $FF82 DEFW $0000
- $FF84 DEFW $0000
- $FF86 DEFW $0000
- $FF88 DEFW $0000
- $FF8A DEFW $0000
- $FF8C DEFW $0000
- $FF8E DEFW $0000
- $FF90 DEFW $0000
- $FF92 DEFW $0000
- $FF94 DEFW $0000
- $FF96 DEFW $0000
- $FF98 DEFW $0000
- $FF9A DEFW $0000
- $FF9C DEFW $0000
- $FF9E DEFW $0000
- $FFA0 DEFW $0000
- $FFA2 DEFW $0000
- $FFA4 DEFW $0000
- $FFA6 DEFW $0000
- $FFA8 DEFW $0000
- $FFAA DEFW $0000
- $FFAC DEFW $0000
- $FFAE DEFW $0000
- $FFB0 DEFW $0000
- $FFB2 DEFW $0000
- $FFB4 DEFW $0000
- $FFB6 DEFW $0000
- $FFB8 DEFW $0000
- $FFBA DEFW $0000
- $FFBC DEFW $0000
- $FFBE DEFW $0000
- $FFC0 DEFW $0000
- $FFC2 DEFW $0000
- $FFC4 DEFW $0000
- $FFC6 DEFW $0000
- $FFC8 DEFW $0000
- $FFCA DEFW $0000
- $FFCC DEFW $0000
- $FFCE DEFW $0000
- $FFD0 DEFW $0000
- $FFD2 DEFW $0000
- $FFD4 DEFW $0000
- $FFD6 DEFW $0000
- $FFD8 DEFW $0000
- $FFDA DEFW $0000
- $FFDC DEFW $0000
- $FFDE DEFW $0000
- $FFE0 DEFW $0000
- $FFE2 DEFW $0000
- $FFE4 DEFW $0000
- $FFE6 DEFW $0000
- $FFE8 DEFW $0000
- $FFEA DEFW $0000
- $FFEC DEFW $0000
- $FFEE DEFW $0000
- $FFF0 DEFW $0000
- $FFF2 DEFW $0000
- $FFF4 DEFW $0000
- $FFF6 DEFW $0000
- $FFF8 DEFW $0000
- $FFFA DEFW $0000
- $FFFC DEFW $0000
- $FFFE DEFW $0000

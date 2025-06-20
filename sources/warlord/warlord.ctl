@@ -62,7 +62,7 @@ u $5B4F
 b $61A8 Graphics: The Wooded Vale
 @ $61A8 label=Image_WoodedVale
 D $61A8 #SIM(start=$5B46,stop=$5B4E)#SIM(start=$A54E,stop=$A554) #PUSHS #UDGTABLE
-. { =h Wooded Vale }
+. { =h The Wooded Vale }
 . { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(wooded-vale) }
 . UDGTABLE# #POPS
   $61A8
@@ -463,7 +463,8 @@ W $A7D4,$02
 g $A7D6
 W $A7D6,$02
 
-g $A7D8
+g $A7D8 Pointer: Object List Table
+@ $A7D8 label=Pointer_ObjectList
 W $A7D8,$02
 
 g $A7DA
@@ -492,7 +493,9 @@ g $A7E6 Number Of Items
 D $A7E6 The total number of items in the game.
 W $A7E6,$02
 
-g $A7E8
+g $A7E8 Number Of Objects
+@ $A7E8 label=Count_Objects
+D $A7E8 The total number of objects in the game.
 W $A7E8,$02
 
 g $A7EA
@@ -513,6 +516,12 @@ g $A7F0 Number Of "Configurable Exits"
 W $A7F0,$02
 
 g $A7F2
+
+g $A824 User Input: Word Tokens
+@ $A824 label=UserInput_Token_1
+@ $A825 label=UserInput_Token_2
+B $A824,$01
+L $A824,$01,$0A
 
 g $A82E Line Number
 @ $A82E label=LineNumber
@@ -1094,6 +1103,20 @@ R $ACAD A Line number to begin printing
 
 c $ACC2
 
+t $ACCC
+
+c $ACCF
+  $ACCF,$01 Stash #REGhl on the stack.
+N $ACD0 Print "#STR$ACCC,$08($b==$FF)".
+  $ACD0,$03 #REGhl=#R$ACCC.
+  $ACD3,$03 Call #R$A585.
+  $ACD6,$01 Restore #REGhl from the stack.
+  $ACD7,$01 Return.
+
+c $ACD8
+
+c $AD32 Handler: User Input
+
 c $AE36 Action: Examine Item
 
 c $AE6B Validate If Item Is Present
@@ -1105,12 +1128,44 @@ c $AEAF Parser: Count Item References
 c $AED1 Object/ Event Locator
 
 c $AEDA Is Object In Inventory?
+@ $AEDA label=CheckObjectInInventory
+R $AEDA A Object ID
+R $AEDA O:F Z flag set if object is in the players inventory
+N $AEDA The #R$AED1 routine returns with #REGa containing the room ID of the
+. requested object.
+  $AEDA,$03 Call #R$AED1.
+  $AEDD,$02 Compare #REGa with #N$01 (inventory).
+  $AEDF,$01 Return.
 
 c $AEE0 Handler: Destroy Item/ Event
+@ $AEE0 label=Handler_DestroyItemEvent
+D $AEE0 Updates a given item/ event ID so it's then "inactive" (has a location
+. ID of #N$00).
+R $AEE0 A Item/ event ID
+  $AEE0,$01 Load the item/ event ID into #REGb.
+  $AEE1,$02 Set the room ID to #N$00 which will deactivate the item/ event.
+  $AEE3,$03 Call #R$AF08.
+  $AEE6,$01 Return.
 
 c $AEE7 Handler: Update Item/ Event For The Current Room
+@ $AEE7 label=Handler_UpdateItemEventCurrentRoom
+D $AEE7 Updates a given item/ event ID so it appears in the current room. Used
+. for example, when an item is dropped (so it changes from being #N$01 - in the
+. players inventory, to the current room ID).
+R $AEE7 A Item/ event ID
+  $AEE7,$01 Load the item/ event ID into #REGb.
+  $AEE8,$04 Load #REGc with *#R$A7C3.
+  $AEEC,$03 Call #R$AF08.
+  $AEEF,$01 Return.
 
 c $AEF0 Set Scenic Event As Triggered
+@ $AEF0 label=ScenicEventTriggered
+R $AEF0 A Scenic event ID (+#N$80)
+  $AEF0,$01 Copy the scenic event ID into #REGb.
+  $AEF1,$02 Set #REGc to #N$FF which denotes that the event has fired already
+. and shouldn't be repeated.
+  $AEF3,$03 Call #R$AF08.
+  $AEF6,$01 Return.
 
 c $AEF7 Check Active Scenic Events
   $AEF7,$02 Jump to #R$AEFA.
@@ -1124,6 +1179,8 @@ c $AEF7 Check Active Scenic Events
   $AF05,$01 Return.
   $AF06,$01 Set flags.
   $AF07,$01 Return.
+
+c $AF08
   $AF08,$03 #REGhl=#R$A66C.
   $AF0B,$02 #REGd=#N$00.
   $AF0D,$01 #REGe=#REGb.
@@ -1138,6 +1195,8 @@ c $AEF7 Check Active Scenic Events
   $AF1A,$02 Jump to #R$AF15 if #REGhl is equal to #REGa.
   $AF1C,$01 #REGa=#REGb.
   $AF1D,$01 Return.
+
+c $AF1E Transform Item
   $AF1E,$01 #REGa=#REGb.
   $AF1F,$03 Call #R$AED1.
   $AF22,$02 Stash #REGbc and #REGaf on the stack.
@@ -1151,34 +1210,34 @@ c $AEF7 Check Active Scenic Events
   $AF31,$03 Call #R$AED1.
   $AF34,$04 Compare #REGa with *#R$A7C3.
   $AF38,$01 Return.
-  $AF39,$03 #REGhl=#R$A66C.
-  $AF3C,$04 #REGbc=*#R$A7E6.
-  $AF40,$02 CPIR.
-  $AF42,$01 Return if #REGa is not equal to *#REGhl.
-  $AF43,$01 Stash #REGhl on the stack.
-  $AF44,$03 Call #R$AF56.
-  $AF47,$01 Restore #REGhl from the stack.
-  $AF48,$02 Jump to #R$AF54 if #REGa is not equal to *#REGhl.
-  $AF4A,$01 #REGe=#REGa.
-  $AF4B,$01 #REGa=#REGb.
-  $AF4C,$01 Set the bits from #REGc.
-  $AF4D,$01 #REGa=#REGe.
-  $AF4E,$02 Jump to #R$AF40 if #REGa is not equal to #REGc.
-  $AF50,$02 #REGa=#N$01.
-  $AF52,$01 Set flags.
-  $AF53,$01 Return.
-  $AF54,$01 #REGa=#N$00.
-  $AF55,$01 Return.
-
-c $AF56
-
-c $AF08
-
-c $AF1E Transform Item
 
 c $AF31
 
 c $AF39 Check Room Objects
+@ $AF39 label=CheckRoomObjects
+R $AF39 A Room number
+R $AF39 O:A #N$00 or #N$01 if objects are found or not
+  $AF39,$03 #REGhl=#R$A66C.
+  $AF3C,$04 #REGbc=*#R$A7E6.
+@ $AF40 label=CheckRoomObjects_Loop
+  $AF40,$02 Search for the room number in the table.
+  $AF42,$01 Return if no objects are found.
+  $AF43,$01 Stash the object location table pointer on the stack.
+  $AF44,$03 Call #R$AF56.
+  $AF47,$01 Restore the object location table pointer from the stack.
+  $AF48,$02 Jump to #R$AF54 if there are no objects found here.
+  $AF4A,$01 Temporarily store #REGa in #REGe.
+  $AF4B,$02 Are there more objects to check?
+  $AF4D,$01 Restore the #REGa register.
+  $AF4E,$02 Jump to #R$AF40 if there are more objects to check.
+N $AF50 Set the "successful" output.
+  $AF50,$02 Set #REGa to #N$01 to indicate that objects were found.
+  $AF52,$01 Set flags.
+  $AF53,$01 Return.
+N $AF54 Set the "failure" output.
+@ $AF54 label=NoRoomObjectsFound
+  $AF54,$01 Set #REGa to #N$00 to indicate that no objects were found.
+  $AF55,$01 Return.
 
 c $AF56 Validate Object
 @ $AF56 label=ValidateObject
@@ -1211,14 +1270,56 @@ c $AF9F
 c $AFB7
 
 c $AFC7 Parser: Process Item
+@ $AFC7 label=Parser_ProcessItem
+  $AFC7,$03 #REGhl=#R$A824.
+  $AFCA,$02 #REGb=#N$0A.
+  $AFCC,$04 Return if *#REGhl is equal to #N$FF.
+  $AFD0,$02 Stash #REGhl and #REGbc on the stack.
+  $AFD2,$03 #REGhl=*#R$A7D8.
+  $AFD5,$04 #REGbc=*#R$A7E8.
+  $AFD9,$02 CPIR.
+  $AFDB,$02 Jump to #R$AFE5 if #REGa is not equal to #N$FF.
+  $AFDD,$03 Call #R$AE36.
+  $AFE0,$02 Jump to #R$AFE5 if #REGa is greater than or equal to #N$FF.
+  $AFE2,$02 Restore #REGbc and #REGhl from the stack.
+  $AFE4,$01 Return.
+
+  $AFE5,$02 Restore #REGbc and #REGhl from the stack.
+  $AFE7,$01 Increment #REGhl by one.
+  $AFE8,$02 Decrease counter by one and loop back to #R$AFCC until counter is zero.
+  $AFEA,$01 Return.
 
 c $AFEB
+
+c $B01F
 
 c $B05E
 
 c $B081 Pause, Print String And Scroll
+@ $B081 label=PausePrintStringAndScroll
+D $B081 For dramatic effect! Used when an event occurs.
+  $B081,$05 Call #R$A5C2 using #N$19 HALT loops (for a short pause).
+  $B086,$03 Call #R$A592.
+  $B089,$01 Return.
 
 c $B08A Generate Random Number
+@ $B08A label=GenerateRandomNumber
+R $B08A A Maximum value of generated number
+  $B08A,$01 Stash #REGbc on the stack.
+  $B08B,$01 Store the maximum number in #REGc.
+  $B08C,$03 Call #R$A5C6.
+  $B08F,$01 Use the frames number as a loop counter in #REGb.
+  $B090,$01 Restore the maximum number value back to #REGa.
+@ $B091 label=GenerateRandomNumber_Loop
+  $B091,$01 Decrease the maximum number value by one.
+  $B092,$02 Jump to #R$B095 if the maximum number value is not equal to zero.
+  $B094,$01 Restore the maximum number value back to #REGa.
+@ $B095 label=GenerateRandomNumber_Next
+  $B095,$02 Decrease the loop counter by one and loop back to #R$B091 until the
+. loop counter is zero.
+  $B097,$01 Decrease the maximum number value by one.
+  $B098,$01 Restore #REGbc from the stack.
+  $B099,$01 Return.
 
 c $B09A
 
@@ -2883,6 +2984,11 @@ B $E0B0,$01 Terminator.
 
 t $E0B1
 
+g $E308 Table: Object List?
+@ $E308 label=Table_ObjectList
+B $E308,$01 Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+L $E308,$01,$39
+
 g $E4E6 Table: Scenic Event Locations
 @ $E4E6 label=Table_ScenicEventLocations
 D $E4E6 A table where the index is the event ID, and the value is the room it
@@ -2960,15 +3066,16 @@ N $E9E3 Print "#STR$CD5F,$08($b==$FF)".
   $E9E6,$03 Jump to #R$E9D0.
 
 c $E9E9
-  $E9E9,$03 #REGhl=#R$A77E.
-  $E9EC,$02 Reset bit 1 of *#REGhl.
+  $E9E9,$05 Reset bit 1 of *#R$A77E.
   $E9EE,$02 #REGa=#N$0F.
   $E9F0,$03 Call #R$AE6B.
   $E9F3,$01 Return if #REGa is not equal to #N$0F.
+N $E9F4 Print "#STR$CD9A,$08($b==$FF)".
   $E9F4,$03 #REGhl=#R$CD9A.
   $E9F7,$03 Jump to #R$E9D0.
 
 c $E9FA
+N $E9FA Print "#STR$C97C,$08($b==$FF)".
   $E9FA,$03 #REGhl=#R$C97C.
   $E9FD,$03 Call #R$A592.
   $EA00,$02 #REGa=#N$00.
@@ -3115,8 +3222,10 @@ N $FCD9 Remove a bunch of room exits (as actions in the game will open them
   $FCED,$02 Decrease the exits counter by one and loop back to #R$FCE2 until
 . all the room exits have been cleared.
 N $FCEF Ensure three exits are "open" (as they can become blocked in the game).
-
-  $FDAD,$05 Call #R$EB10 to room #N$02: #ROOM$02.
+  $FCEF,$05 Enable the exit "north to room #R$E8F4(#N$50) for #ROOM$50".
+  $FCF4,$03 Enable the exit "east to room #R$E8F6(#N$50) for #ROOM$50".
+  $FCF7,$03 Enable the exit "west to room #R$E8F7(#N$50) for #ROOM$50".
+  $FCFA,$05 Call #R$EB10 to room #N$02: #ROOM$02.
   $FCFF,$03 Jump to #R$E99F.
 
 g $FD02 Default Game State
@@ -3217,4 +3326,4 @@ D $FEFC See #R$FEF1.
 W $FEFC,$02 Location Slot: #N((#PC-$FEFC)/$02).
 L $FEFC,$02,$0B
 
-w $FF58
+i $FF58
