@@ -33,156 +33,241 @@ Next: <a href="45278.html">45278</a>
 </td>
 </tr>
 </table>
-<div class="description">45225: Routine at B0A9</div>
+<div class="description">45225: Print Scoring</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="59826.html">GameOver</a> and <a href="59856.html">59856</a>.
+Prints the players score as a percentage.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="45225"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You have scored ".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Scoring</td>
 <td class="address-2"><span id="45225"></span>45225</td>
 <td class="instruction">LD HL,43726</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43726.html">Messaging_YouHaveScored</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45228"></span>45228</td>
 <td class="instruction">CALL <a href="42373.html">PrintString</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="42373.html">PrintString</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45231"></span>45231</td>
 <td class="instruction">LD HL,(42948)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="42948.html">Score</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="45234"></span>
+<div class="comments">
+<div class="paragraph">
+Evaluate the first byte to see if it needs printing at all.
+</div>
+<div class="paragraph">
+So don't show "058%" - instead show "58%".
+</div>
+<div class="paragraph">
+This particular check is for the first character "1" to see if the score is printing "100%".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45234"></span>45234</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Take the first scoring byte and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45235"></span>45235</td>
-<td class="instruction">AND 15</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">AND %00001111</td>
+<td class="comment-1" rowspan="2">Keep only bits 0-3 and jump to <a href="45225.html#45244">Scoring_SecondDigit</a> if the result of this is zero.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45237"></span>45237</td>
-<td class="instruction">JR Z,<a href="45225.html#45244">45244</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="45225.html#45244">Scoring_SecondDigit</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45239"></span>45239</td>
 <td class="instruction">ADD A,48</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Convert the number to ASCII by adding 48 and call <a href="42404.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45241"></span>45241</td>
 <td class="instruction">CALL <a href="42404.html">PrintCharacter</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">Scoring_SecondDigit</td>
 <td class="address-2"><span id="45244"></span>45244</td>
 <td class="instruction">LD A,L</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load the second scoring byte into <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45245"></span>45245</td>
-<td class="instruction">AND 240</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">AND %11110000</td>
+<td class="comment-1" rowspan="2">Keep only bits 4-7 and jump to <a href="45225.html#45254">Scoring_PrintTens</a> if the result is non-zero.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45247"></span>45247</td>
-<td class="instruction">JR NZ,<a href="45225.html#45254">45254</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="45225.html#45254">Scoring_PrintTens</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="45249"></span>
+<div class="comments">
+<div class="paragraph">
+The "tens" digit is zero, so check the "hundreds" digit again to avoid printing "05%" - instead show only "5%".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45249"></span>45249</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load the first scoring byte into <span class="register">A</span> again.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45250"></span>45250</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="45225.html#45263">Scoring_ThirdDigit</a> if no "hundreds" digit was printed.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45251"></span>45251</td>
-<td class="instruction">JR Z,<a href="45225.html#45263">45263</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="45225.html#45263">Scoring_ThirdDigit</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="45253"></span>
+<div class="comments">
+<div class="paragraph">
+A "hundreds" digit was printed, so force a "0" to be printed.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45253"></span>45253</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load 0 into <span class="register">A</span> for printing.</td>
 </tr>
 <tr>
+<td class="asm-label">Scoring_PrintTens</td>
 <td class="address-2"><span id="45254"></span>45254</td>
 <td class="instruction">RRCA</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Shift the bits four positions right. This moves the tens digit into the lower part of the byte for printing.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45255"></span>45255</td>
 <td class="instruction">RRCA</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45256"></span>45256</td>
 <td class="instruction">RRCA</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45257"></span>45257</td>
 <td class="instruction">RRCA</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45258"></span>45258</td>
 <td class="instruction">ADD A,48</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Convert the number to ASCII by adding 48 and call <a href="42404.html">PrintCharacter</a>..</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45260"></span>45260</td>
 <td class="instruction">CALL <a href="42404.html">PrintCharacter</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="45263"></span>
+<div class="comments">
+<div class="paragraph">
+Lastly, always print the "units".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Scoring_ThirdDigit</td>
 <td class="address-2"><span id="45263"></span>45263</td>
 <td class="instruction">LD A,L</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load the second scoring byte into <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45264"></span>45264</td>
-<td class="instruction">AND 15</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">AND %00001111</td>
+<td class="comment-1" rowspan="1">Keep only bits 0-3.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45266"></span>45266</td>
 <td class="instruction">ADD A,48</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Convert the number to ASCII by adding 48 and call <a href="42404.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45268"></span>45268</td>
 <td class="instruction">CALL <a href="42404.html">PrintCharacter</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="45271"></span>
+<div class="comments">
+<div class="paragraph">
+Print "%.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45271"></span>45271</td>
 <td class="instruction">LD HL,43743</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43743.html">Messaging_Percentage</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45274"></span>45274</td>
 <td class="instruction">CALL <a href="42386.html">PrintStringAndNewline</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="42386.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45277"></span>45277</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
