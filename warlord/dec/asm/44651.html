@@ -39,80 +39,121 @@ Next: <a href="44672.html">44672</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="44598.html">44598</a>, <a href="44791.html">44791</a>, <a href="45035.html">45035</a>, <a href="45087.html">45087</a>, <a href="59881.html">59881</a> and <a href="60176.html">60176</a>.
+Used by the routines at <a href="44598.html">Action_ExamineItem</a>, <a href="44791.html">44791</a>, <a href="45035.html">45035</a>, <a href="45087.html">45087</a>, <a href="59881.html">59881</a> and <a href="60176.html">60176</a>.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Object ID</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">Z flag set if the object is available</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ValidateItemPresent</td>
+<td class="address-2"><span id="44651"></span>44651</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Stash <span class="register">HL</span> and <span class="register">DE</span> on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44652"></span>44652</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44653"></span>44653</td>
+<td class="instruction">LD E,A</td>
+<td class="comment-1" rowspan="2">Store the object ID in <span class="register">DE</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44654"></span>44654</td>
+<td class="instruction">LD D,0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44656"></span>44656</td>
+<td class="instruction">LD HL,42604</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="42604.html">Table_ItemLocations</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44659"></span>44659</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Add the object ID to the object/ event locations table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44660"></span>44660</td>
+<td class="instruction">LD A,(42947)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="44651.html#44669">Handler_Objects_Return</a> if the object/ event table states that it's located in *<a href="42947.html">CurrentRoom</a>. Note also sets/ unsets the Z flag accordingly.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44663"></span>44663</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44664"></span>44664</td>
+<td class="instruction">JR Z,<a href="44651.html#44669">Handler_Objects_Return</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44666"></span>
+<div class="comments">
+<div class="paragraph">
+Check the players inventory, as an object can still be used if it's being held.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="address-2"><span id="44651"></span>44651</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="44652"></span>44652</td>
-<td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="44653"></span>44653</td>
-<td class="instruction">LD E,A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="44654"></span>44654</td>
-<td class="instruction">LD D,0</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="44656"></span>44656</td>
-<td class="instruction">LD HL,42604</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="44659"></span>44659</td>
-<td class="instruction">ADD HL,DE</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="44660"></span>44660</td>
-<td class="instruction">LD A,(42947)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="44663"></span>44663</td>
-<td class="instruction">CP (HL)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="44664"></span>44664</td>
-<td class="instruction">JR Z,<a href="44651.html#44669">44669</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44666"></span>44666</td>
 <td class="instruction">LD A,1</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Lastly, set the Z flag if the item is in the players inventory.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44668"></span>44668</td>
 <td class="instruction">CP (HL)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="44669"></span>
+<div class="comments">
+<div class="paragraph">
+Housekeeping; restore <span class="register">DE</span> and <span class="register">HL</span> to their previous values.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_Objects_Return</td>
 <td class="address-2"><span id="44669"></span>44669</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44670"></span>44670</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44671"></span>44671</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">

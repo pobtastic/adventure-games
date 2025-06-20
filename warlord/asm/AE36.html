@@ -42,132 +42,204 @@ Next: <a href="AE6B.html">AE6B</a>
 Used by the routine at <a href="AFC7.html">Parser_ProcessItem</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">C</td>
+<td class="register-desc">Item ID</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">Carry flag set when the item isn't present</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Action_ExamineItem</td>
 <td class="address-2"><span id="ae36"></span>AE36</td>
 <td class="instruction">INC BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Increment <span class="register">BC</span> by one.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae37"></span>AE37</td>
 <td class="instruction">LD A,($A7E8)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3"><span class="register">E</span>=*<a href="A7E8.html">Count_Objects</a>-<span class="register">C</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae3a"></span>AE3A</td>
 <td class="instruction">SUB C</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae3b"></span>AE3B</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae3c"></span>AE3C</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae3d"></span>AE3D</td>
 <td class="instruction">LD IX,($A7D4)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="A7D4.html">Pointer_ItemGroupingTable</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae41"></span>AE41</td>
 <td class="instruction">CALL <a href="AB88.html">GetTableEntry</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="AB88.html">GetTableEntry</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae44"></span>AE44</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae45"></span>AE45</td>
-<td class="instruction">JR <a href="AE36.html#ae48">$AE48</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="AE36.html#ae48">ExamineItem</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE36.html#ae48">ExamineItem</a>.</td>
 </tr>
 <tr>
+<td class="asm-label">ExamineItem_Loop</td>
 <td class="address-2"><span id="ae47"></span>AE47</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
+<td class="asm-label">ExamineItem</td>
 <td class="address-2"><span id="ae48"></span>AE48</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="AE36.html#ae53">Response_ItemNotHere</a> if *<span class="register">HL</span> is equal to FF.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae49"></span>AE49</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae4b"></span>AE4B</td>
-<td class="instruction">JR Z,<a href="AE36.html#ae53">$AE53</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="AE36.html#ae53">Response_ItemNotHere</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae4d"></span>AE4D</td>
-<td class="instruction">CALL <a href="AE6B.html">$AE6B</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="AE6B.html">ValidateItemPresent</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AE6B.html">ValidateItemPresent</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae50"></span>AE50</td>
-<td class="instruction">JR NZ,<a href="AE36.html#ae47">$AE47</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="AE36.html#ae47">ExamineItem_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE36.html#ae47">ExamineItem_Loop</a> if the item wasn't found.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae52"></span>AE52</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ae53"></span>
+<div class="comments">
+<div class="paragraph">
+The item being examined isn't in the room or in the players inventory.
+</div>
+<div class="paragraph">
+Print "I can't see ".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Response_ItemNotHere</td>
 <td class="address-2"><span id="ae53"></span>AE53</td>
 <td class="instruction">LD HL,$A8DB</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="A8DB.html">Messaging_ICantSee</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae56"></span>AE56</td>
 <td class="instruction">CALL <a href="A585.html">PrintString</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="A585.html">PrintString</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ae59"></span>
+<div class="comments">
+<div class="paragraph">
+Print the object name.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae59"></span>AE59</td>
 <td class="instruction">LD IX,($A7D6)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="A7D6.html">Pointer_ObjectNounPhrases</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae5d"></span>AE5D</td>
 <td class="instruction">CALL <a href="AB88.html">GetTableEntry</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="AB88.html">GetTableEntry</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae60"></span>AE60</td>
 <td class="instruction">CALL <a href="A585.html">PrintString</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="A585.html">PrintString</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ae63"></span>
+<div class="comments">
+<div class="paragraph">
+Print " here.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae63"></span>AE63</td>
 <td class="instruction">LD HL,$A8E8</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="A8E8.html">Messaging_Here</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae66"></span>AE66</td>
 <td class="instruction">CALL <a href="A592.html">PrintStringAndNewline</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="A592.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae69"></span>AE69</td>
 <td class="instruction">SCF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the carry flag.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae6a"></span>AE6A</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
