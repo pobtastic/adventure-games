@@ -727,33 +727,33 @@ t $BDEC Messaging: "There Is An Exit "
   $BDEC,$12 "#STR$BDEC,$08($b==$FF)".
 B $BDFE,$01 Terminator.
 
-t $BDFF Messaging: "North"
-@ $BDFF label=Messaging_North
+t $BDFF Exits Messaging: "North"
+@ $BDFF label=MessagingExits_North
   $BDFF,$05 "#STR$BDFF,$08($b==$FF)".
 B $BE04,$01 Terminator.
 
-t $BE05 Messaging: "South"
-@ $BE05 label=Messaging_South
+t $BE05 Exits Messaging: "South"
+@ $BE05 label=MessagingExits_South
   $BE05,$05 "#STR$BE05,$08($b==$FF)".
 B $BE0A,$01 Terminator.
 
-t $BE0B Messaging: "East"
-@ $BE0B label=Messaging_East
+t $BE0B Exits Messaging: "East"
+@ $BE0B label=MessagingExits_East
   $BE0B,$04 "#STR$BE0B,$08($b==$FF)".
 B $BE0F,$01 Terminator.
 
-t $BE10 Messaging: "West"
-@ $BE10 label=Messaging_West
+t $BE10 Exits Messaging: "West"
+@ $BE10 label=MessagingExits_West
   $BE10,$04 "#STR$BE10,$08($b==$FF)".
 B $BE14,$01 Terminator.
 
-t $BE15 Messaging: "Up"
-@ $BE15 label=Messaging_Up
+t $BE15 Exits Messaging: "Up"
+@ $BE15 label=MessagingExits_Up
   $BE15,$02 "#STR$BE15,$08($b==$FF)".
 B $BE17,$01 Terminator.
 
-t $BE18 Messaging: "Down"
-@ $BE18 label=Messaging_Down
+t $BE18 Exits Messaging: "Down"
+@ $BE18 label=MessagingExits_Down
   $BE18,$04 "#STR$BE18,$08($b==$FF)".
 B $BE1C,$01 Terminator.
 

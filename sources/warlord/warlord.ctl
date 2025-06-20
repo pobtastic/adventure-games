@@ -59,75 +59,75 @@ N $5B21 Tape loading routine.
 
 u $5B4F
 
-b $61A8 Graphics: Mountains
-@ $61A8 label=Image_Mountains
+b $61A8 Graphics: The Wooded Vale
+@ $61A8 label=Image_WoodedVale
 D $61A8 #SIM(start=$5B46,stop=$5B4E)#SIM(start=$A54E,stop=$A554) #PUSHS #UDGTABLE
-. { =h Mountains }
-. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(mountains) }
+. { =h Wooded Vale }
+. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(wooded-vale) }
 . UDGTABLE# #POPS
   $61A8
 
-b $6A34 Graphics: Beach
-@ $6A34 label=Image_Beach
+b $6A34 Graphics: The Evaporation Pits
+@ $6A34 label=Image_EvaporationPits
 D $6A34 #PUSHS #UDGTABLE
-. { =h Beach }
-. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(beach) }
+. { =h The Evaporation Pits }
+. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(evaporation-pits) }
 . UDGTABLE# #POPS
   $6A34
 
-b $704F Graphics: Altar
-@ $704F label=Image_Altar
+b $704F Graphics: The Shrine Of The Nemed
+@ $704F label=Image_NemedShrine
 D $704F #PUSHS #UDGTABLE
-. { =h Altar }
-. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(altar) }
+. { =h The Shrine Of The Nemed }
+. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(shrine-nemed) }
 . UDGTABLE# #POPS
   $704F
 
-b $75DD Graphics: Cart
-@ $75DD label=Image_Cart
+b $75DD Graphics: The Burial Pit
+@ $75DD label=Image_BurialPit
 D $75DD #PUSHS #UDGTABLE
-. { =h Cart }
-. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(cart) }
+. { =h The Burial Pit }
+. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(burial-pit) }
 . UDGTABLE# #POPS
   $75DD
 
-b $7C8D Graphics: Huts
-@ $7C8D label=Image_Huts
+b $7C8D Graphics: The Main Courtyard
+@ $7C8D label=Image_MainCourtyard
 D $7C8D #PUSHS #UDGTABLE
-. { =h Huts }
-. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(huts) }
+. { =h The Main Courtyard }
+. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(main-courtyard) }
 . UDGTABLE# #POPS
   $7C8D
 
-b $8492 Graphics: Village
-@ $8492 label=Image_Village
+b $8492 Graphics: The Deserted Broch
+@ $8492 label=Image_DesertedBroch
 D $8492 #PUSHS #UDGTABLE
-. { =h Village }
-. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(village) }
+. { =h The Deserted Broch }
+. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(deserted-broch) }
 . UDGTABLE# #POPS
   $8492
 
-b $8AF3 Graphics: Cave
-@ $8AF3 label=Image_Cave
+b $8AF3 Graphics: The Crystal Cavern
+@ $8AF3 label=Image_CrystalCavern
 D $8AF3 #PUSHS #UDGTABLE
-. { =h Cave }
-. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(cave) }
+. { =h The Crystal Cavern }
+. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(crystal-cavern) }
 . UDGTABLE# #POPS
   $8AF3
 
-b $915F Graphics: Henge
-@ $915F label=Image_Henge
+b $915F Graphics: The Circle of Stones
+@ $915F label=Image_StoneCircle
 D $915F #PUSHS #UDGTABLE
-. { =h Henge }
-. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(henge) }
+. { =h The Circle of Stones }
+. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(stone-circle) }
 . UDGTABLE# #POPS
   $915F
 
-b $983F Graphics: Cavern
-@ $983F label=Image_Cavern
+b $983F Graphics: The Fomorians' Cavern
+@ $983F label=Image_FomoriansCavern
 D $983F #PUSHS #UDGTABLE
-. { =h Cavern }
-. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(cavern) }
+. { =h The Fomorians' Cavern }
+. { #SIM(start=$B10B,stop=$B149,ix=#PC)#SCR$02{$00,$00,$200,$100}(fomorians-cavern) }
 . UDGTABLE# #POPS
   $983F
 
@@ -373,7 +373,24 @@ D $A66C When the item is in the players inventory, the room ID changes to
 B $A66C,$01 Item #N(#PC-$A66C) #ITEM(#PC-$A66C) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $A66C,$01,$86
 
-g $A774
+g $A774 Table: Already Seen Room Images
+@ $A774 label=Table_RoomImagesAlreadySeen
+D $A774 Corresponds to whether the player has already seen the image for the following rooms:
+.
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Room ID | =h Room Name }
+. #FOR$FEF1,$FEF8,,1(n,{ #N(n-$FEF1) | #N(#PEEKn) | #ROOM(#PEEKn) })
+. TABLE#
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Room ID | =h Room Name }
+. #FOR$FEF9,$FEFB,,1(n,{ #N(n-$FEF9) | #N(#PEEKn) | #ROOM(#PEEKn) })
+. #FOR$03,$07,,1(n,{ #Nn | N/A | N/A })
+. TABLE#
+D $A774 Used by the routine at #R$ABB6 but uses the bit index from #R$FEF1.
+B $A774,b,$01
+B $A775,b,$01
+
+g $A776
 
 g $A77F
 
@@ -397,7 +414,10 @@ B $A77E,$01
 
 g $A791
 
-g $A7C3
+g $A7C3 Current Room ID
+@ $A7C3 label=CurrentRoom
+D $A7C3 The room the player starts the game in is room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+B $A7C3,$01 Current room ID.
 
 g $A7C4 Score
 @ $A7C4 label=Score
@@ -411,7 +431,9 @@ g $A7C8 Pointer: Turn-Based Events Jump Table
 D $A7C8 Pointer to the jump table containing turn-based events.
 W $A7C8,$02
 
-g $A7CA
+g $A7CA Pointer: Room Map Table
+@ $A7CA label=Pointer_RoomMap
+D $A7CA Pointer to the table containing the relationships between rooms.
 W $A7CA,$02
 
 g $A7CC Pointer: Item Description Table
@@ -419,13 +441,20 @@ g $A7CC Pointer: Item Description Table
 D $A7CC Pointer to the table containing item descriptions.
 W $A7CC,$02
 
-g $A7CE
+g $A7CE Pointer: Rooms With Images Table
+@ $A7CE label=Pointer_RoomsWithImages
+D $A7CE Pointer to the table containing all the rooms which have an image to
+. display.
 W $A7CE,$02
 
-g $A7D0
+g $A7D0 Pointer: Room Image Jump Table
+@ $A7D0 label=Pointer_RoomImage
+D $A7D0 Pointer to the jump table for displaying an image relating to a room.
 W $A7D0,$02
 
-g $A7D2
+g $A7D2 Pointer: Room Description Table
+@ $A7D2 label=Pointer_RoomDescriptions
+D $A7D2 Pointer to the table containing room descriptions.
 W $A7D2,$02
 
 g $A7D4
@@ -469,7 +498,9 @@ W $A7E8,$02
 g $A7EA
 W $A7EA,$02
 
-g $A7EC
+g $A7EC Number Of Rooms With Images
+@ $A7EC label=Count_RoomsWithImages
+D $A7EC The total number of rooms which have related images in the game.
 W $A7EC,$02
 
 g $A7EE Number Of Scenic Events
@@ -538,33 +569,33 @@ t $A8AA Messaging: "There Is An Exit"
   $A8AA,$12 "#STR$A8AA,$08($b==$FF)".
 B $A8BC,$01 Terminator.
 
-t $A8BD Messaging: "North"
-@ $A8BD label=Messaging_North
+t $A8BD Exits Messaging: "North"
+@ $A8BD label=MessagingExits_North
   $A8BD,$05 "#STR$A8BD,$08($b==$FF)".
 B $A8C2,$01 Terminator.
 
-t $A8C3 Messaging: "South"
-@ $A8C3 label=Messaging_South
+t $A8C3 Exits Messaging: "South"
+@ $A8C3 label=MessagingExits_South
   $A8C3,$05 "#STR$A8C3,$08($b==$FF)".
 B $A8C8,$01 Terminator.
 
-t $A8C9 Messaging: "East"
-@ $A8C9 label=Messaging_East
+t $A8C9 Exits Messaging: "East"
+@ $A8C9 label=MessagingExits_East
   $A8C9,$04 "#STR$A8C9,$08($b==$FF)".
 B $A8CD,$01 Terminator.
 
-t $A8CE Messaging: "West"
-@ $A8CE label=Messaging_West_Duplicate
+t $A8CE Exits Messaging: "West"
+@ $A8CE label=MessagingExits_West
   $A8CE,$04 "#STR$A8CE,$08($b==$FF)".
 B $A8D2,$01 Terminator.
 
-t $A8D3 Messaging: "Up"
-@ $A8D3 label=Messaging_Up
+t $A8D3 Exits Messaging: "Up"
+@ $A8D3 label=MessagingExits_Up
   $A8D3,$02 "#STR$A8D3,$08($b==$FF)".
 B $A8D5,$01 Terminator.
 
-t $A8D6 Messaging: "Down"
-@ $A8D6 label=Messaging_Down
+t $A8D6 Exits Messaging: "Down"
+@ $A8D6 label=MessagingExits_Down
   $A8D6,$04 "#STR$A8D6,$08($b==$FF)".
 B $A8DA,$01 Terminator.
 
@@ -698,7 +729,15 @@ t $AADF Messaging: "%"
   $AADF,$02 "#STR$AADF,$08($b==$FF)".
 B $AAE1,$01 Terminator.
 
-t $AAE2
+g $AAE2 Table: Directions
+@ $AAE2 label=Table_Directions
+D $AAE2 Pointer to the table containing direction messaging.
+W $AAE2,$02 "#STR$A8BD,$08($b==$FF)".
+W $AAE4,$02 "#STR$A8C3,$08($b==$FF)".
+W $AAE6,$02 "#STR$A8C9,$08($b==$FF)".
+W $AAE8,$02 "#STR$A8CE,$08($b==$FF)".
+W $AAEA,$02 "#STR$A8D3,$08($b==$FF)".
+W $AAEC,$02 "#STR$A8D6,$08($b==$FF)".
 
 c $AAEE Response: "Please Rephrase That"
 @ $AAEE label=Response_PleaseRephraseThat
@@ -2061,7 +2100,7 @@ t $C0F1 Messaging: "Inside The Hut"
 B $C100,$01 Terminator.
 
 t $C101 Messaging: "The Swamp"
-@ $C101 label=Messaging_Swamp"
+@ $C101 label=Messaging_Swamp
   $C101,$33 "#STR$C101,$08($b==$FF)".
 B $C134,$01 Terminator.
 
@@ -2274,6 +2313,13 @@ g $C732 Table: Item Descriptions
 @ $C732 label=Table_ItemDescriptions
 W $C732,$02 Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
 L $C732,$02,$86
+
+g $C8B0 Table: Room Descriptions
+@ $C8B0 label=Table_RoomDescriptions
+W $C8B0,$02 N/A.
+W $C8B2,$02 N/A.
+W $C8B4,$02 Room #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C8B0)/$02)).
+L $C8B4,$02,$64
 
 t $C97C Messaging: "You Have The Feeling That YouAre Being Followed"
 @ $C97C label=Messaging_HaveFeeling
@@ -2851,6 +2897,17 @@ D $E508 A table where the index is the event ID, and the value is the room it
 B $E508,$01 Event #N(#PC-$E508) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $E508,$01,$11
 
+g $E714 Table: Room Map
+@ $E714 label=Table_RoomMap
+N $E714 Room #N((#PC-$E714)/$06): #ROOM((#PC-$E714)/$06).
+B $E714,$01 #IF(#PEEK(#PC)>$00)(North to room: #R($E714+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E715,$01 #IF(#PEEK(#PC)>$00)(South to room: #R($E714+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E716,$01 #IF(#PEEK(#PC)>$00)(East to room: #R($E714+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E717,$01 #IF(#PEEK(#PC)>$00)(West to room: #R($E714+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E718,$01 #IF(#PEEK(#PC)>$00)(Up to room: #R($E714+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E719,$01 #IF(#PEEK(#PC)>$00)(Down to room: #R($E714+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+L $E714,$06,$66
+
 g $E978 Table: Configurable Exits
 @ $E978 label=Table_ConfigurableExits
 W $E978,$02
@@ -3071,45 +3128,81 @@ g $FECB Jump Table: Turn-Based Events
 W $FECB,$02 Event #N((#PC-$FECB)/$02).
 L $FECB,$02,$08
 
+g $FEF1 Table: Rooms With Images
+@ $FEF1 label=Table_RoomsWithImages
+D $FEF1 See #R$FEFC.
+B $FEF1,$01 Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+L $FEF1,$01,$0B
+
 c $FF12 Handler: Room Images
-@ $FF12 label=DisplayImage_Mountains
-N $FF12 Displays the image for the mountains.
+@ $FF12 label=DisplayImage_WoodedVale
+N $FF12 Displays the image for The Wooded Vale.
+N $FF12 #PUSHS #UDGTABLE #POKES$A7C3,$02
+. { #SIM(start=#PC,stop=$FF54)#SCR$01(game-wooded-vale) }
+. UDGTABLE# #POPS
   $FF12,$04 #REGix=#R$61A8.
   $FF16,$02 Jump to #R$FF4C.
-@ $FF18 label=DisplayImage_Beach
-N $FF18 Displays the image for the beach.
+@ $FF18 label=DisplayImage_EvaporationPits
+N $FF18 Displays the image for The Evaporation Pits.
+N $FF18 #PUSHS #UDGTABLE #POKES$A7C3,$07
+. { #SIM(start=#PC,stop=$FF54)#SCR$01(game-evaporation-pits) }
+. UDGTABLE# #POPS
   $FF18,$04 #REGix=#R$6A34.
   $FF1C,$02 Jump to #R$FF4C.
-@ $FF1E label=DisplayImage_Altar
-N $FF1E Displays the image for the altar.
+@ $FF1E label=DisplayImage_NemedShrine
+N $FF1E Displays the image for The Shrine Of The Nemed.
+N $FF1E #PUSHS #UDGTABLE #POKES$A7C3,$10
+. { #SIM(start=#PC,stop=$FF54)#SCR$01(game-shrine-nemed) }
+. UDGTABLE# #POPS
   $FF1E,$04 #REGix=#R$704F.
   $FF22,$02 Jump to #R$FF4C.
-@ $FF24 label=DisplayImage_Cart
-N $FF24 Displays the image for the cart.
+@ $FF24 label=DisplayImage_BurialPit
+N $FF24 Displays the image for The Burial Pit.
+N $FF24 #PUSHS #UDGTABLE #POKES$A7C3,$17
+. { #SIM(start=#PC,stop=$FF54)#SCR$01(game-burial-pit) }
+. UDGTABLE# #POPS
   $FF24,$04 #REGix=#R$75DD.
   $FF28,$02 Jump to #R$FF4C.
-@ $FF2A label=DisplayImage_Huts
-N $FF2A Displays the image for the huts.
+@ $FF2A label=DisplayImage_MainCourtyard
+N $FF2A Displays the image for The Main Courtyard.
+N $FF2A #PUSHS #UDGTABLE #POKES$A7C3,$49
+. { #SIM(start=#PC,stop=$FF54)#SCR$01(game-courtyard) }
+. UDGTABLE# #POPS
   $FF2A,$04 #REGix=#R$7C8D.
   $FF2E,$02 Jump to #R$FF4C.
-@ $FF30 label=DisplayImage_Village
-N $FF30 Displays the image for the village.
+@ $FF30 label=DisplayImage_DesertedBroch
+N $FF30 Displays the image for The Deserted Broch.
+N $FF30 #PUSHS #UDGTABLE #POKES$A7C3,$38
+. { #SIM(start=#PC,stop=$FF54)#SCR$01(game-deserted-broch) }
+. UDGTABLE# #POPS
   $FF30,$04 #REGix=#R$8492.
   $FF34,$02 Jump to #R$FF4C.
-@ $FF36 label=DisplayImage_Cave
-N $FF36 Displays the image for the cave.
+@ $FF36 label=DisplayImage_CrystalCavern
+N $FF36 Displays the image for The Crystal Cavern.
+N $FF36 #PUSHS #UDGTABLE #POKES$A7C3,$43
+. { #SIM(start=#PC,stop=$FF54)#SCR$01(game-crystal-cavern) }
+. UDGTABLE# #POPS
   $FF36,$04 #REGix=#R$8AF3.
   $FF3A,$02 Jump to #R$FF4C.
-@ $FF3C label=DisplayImage_Henge
-N $FF3C Displays the image for the henge.
+@ $FF3C label=DisplayImage_StoneCircle
+N $FF3C Displays the image for The Circle of Stones.
+N $FF3C #PUSHS #UDGTABLE #POKES$A7C3,$40
+. { #SIM(start=#PC,stop=$FF54)#SCR$01(game-stone-circle) }
+. UDGTABLE# #POPS
   $FF3C,$04 #REGix=#R$915F.
   $FF40,$02 Jump to #R$FF4C.
-@ $FF42 label=DisplayImage_Cavern
-N $FF42 Displays the image for the cavern.
+@ $FF42 label=DisplayImage_FomoriansCavern
+N $FF42 Displays the image for The Fomorians' Cavern.
+N $FF42 #PUSHS #UDGTABLE #POKES$A7C3,$4F
+. { #SIM(start=#PC,stop=$FF54)#SCR$01(game-fomorians-cavern) }
+. UDGTABLE# #POPS
   $FF42,$04 #REGix=#R$983F.
   $FF46,$02 Jump to #R$FF4C.
 @ $FF48 label=DisplayImage_Lake
 N $FF48 Displays the image for the lake.
+N $FF48 #PUSHS #UDGTABLE #POKES$A7C3,$2A
+. { #SIM(start=#PC,stop=$FF54)#SCR$01(game-lake) }
+. UDGTABLE# #POPS
   $FF48,$04 #REGix=#R$A0EB.
 N $FF4C All the image routines use this same routine.
 @ $FF4C label=Handler_Images
@@ -3118,8 +3211,10 @@ N $FF4C All the image routines use this same routine.
   $FF54,$03 Call #R$A53E.
   $FF57,$01 Return.
 
-g $FEFC
-W $FEFC,$02
+g $FEFC Jump Table: Room Images
+@ $FEFC label=JumpTable_RoomImages
+D $FEFC See #R$FEF1.
+W $FEFC,$02 Location Slot: #N((#PC-$FEFC)/$02).
 L $FEFC,$02,$0B
 
 w $FF58
