@@ -1227,7 +1227,9 @@ N $B0D7 Print "#STR$AADF,$08($b==$FF)".
 
 c $B0DE
 
-c $B10B
+c $B10B Print Room Image
+@ $B10B label=Print_RoomImage
+R $B10B IX Pointer to room image data
 
 c $B14A Game Start Alias
 @ $B14A label=GameStart_Alias
@@ -2946,6 +2948,99 @@ c $EA0B
   $EA43,$01 Return.
 
 c $EA44
+  $EA44,$03 #REGhl=#R$CA79.
+  $EA47,$03 Call #R$A592.
+  $EA4A,$02 #REGa=#N$14.
+  $EA4C,$03 Call #R$B08A.
+  $EA4F,$03 #REGhl=#R$CA94.
+  $EA52,$02 Jump to #R$EA5C if ?? is not equal to #N$14.
+  $EA54,$01 Restore #REGhl from the stack.
+  $EA55,$03 #REGhl=#R$E9B2.
+  $EA58,$01 Exchange the *#REGsp with the #REGhl register.
+  $EA59,$03 #REGhl=#R$CA46.
+  $EA5C,$03 Call #R$B081.
+  $EA5F,$01 Return.
+  $EA60,$03 #REGhl=#R$CACD.
+  $EA63,$03 Call #R$A592.
+  $EA66,$02 #REGa=#N$06.
+  $EA68,$03 Call #R$AEE0.
+  $EA6B,$01 Return.
+  $EA6C,$02 #REGa=#N$07.
+  $EA6E,$03 Call #R$AEF0.
+  $EA71,$01 Return.
+  $EA72,$03 #REGhl=#R$CB19.
+  $EA75,$03 Call #R$A592.
+  $EA78,$03 #REGhl=#R$CB45.
+  $EA7B,$03 Call #R$B081.
+  $EA7E,$02 #REGa=#N$08.
+  $EA80,$03 Call #R$AEE0.
+  $EA83,$01 Return.
+  $EA84,$03 #REGhl=#R$CB73.
+  $EA87,$03 Call #R$A592.
+  $EA8A,$02 #REGa=#N$09.
+  $EA8C,$03 Call #R$AEE0.
+  $EA8F,$01 Return.
+  $EA90,$03 #REGhl=#R$CB9C.
+  $EA93,$03 Call #R$A592.
+  $EA96,$02 #REGa=#N$2D.
+  $EA98,$03 Call #R$AEE0.
+  $EA9B,$01 Return.
+  $EA9C,$03 #REGhl=#R$CBCC.
+  $EA9F,$03 Call #R$A592.
+  $EAA2,$02 #REGa=#N$3E.
+  $EAA4,$03 Call #R$AEE0.
+  $EAA7,$02 #REGa=#N$3F.
+  $EAA9,$03 Call #R$AEF0.
+  $EAAC,$02 #REGb=#N$3D.
+  $EAAE,$02 #REGc=#N$2C.
+  $EAB0,$03 Call #R$AF08.
+  $EAB3,$01 Return.
+  $EAB4,$03 #REGhl=#R$CC26.
+  $EAB7,$03 Call #R$A592.
+  $EABA,$02 #REGa=#N$3F.
+  $EABC,$03 Call #R$AEE0.
+  $EABF,$02 #REGa=#N$40.
+  $EAC1,$03 Call #R$AEF0.
+  $EAC4,$02 #REGb=#N$3D.
+  $EAC6,$02 #REGc=#N$2D.
+  $EAC8,$03 Call #R$AF08.
+  $EACB,$01 Return.
+  $EACC,$03 #REGhl=#R$CC3C.
+  $EACF,$03 Call #R$A592.
+  $EAD2,$02 #REGa=#N$40.
+  $EAD4,$03 Call #R$AEE0.
+  $EAD7,$02 #REGa=#N$41.
+  $EAD9,$03 Call #R$AEF0.
+  $EADC,$02 #REGb=#N$3D.
+  $EADE,$02 #REGc=#N$25.
+  $EAE0,$03 Call #R$AF08.
+  $EAE3,$01 Return.
+  $EAE4,$03 #REGhl=#R$CC26.
+  $EAE7,$03 Call #R$A592.
+  $EAEA,$02 #REGa=#N$41.
+  $EAEC,$03 Call #R$AEE0.
+  $EAEF,$02 #REGb=#N$3D.
+  $EAF1,$02 #REGc=#N$27.
+  $EAF3,$03 Call #R$AF08.
+  $EAF6,$01 Return.
+  $EAF7,$03 #REGhl=#R$CC53.
+  $EAFA,$03 Call #R$A592.
+  $EAFD,$03 #REGhl=#R$CCCA.
+  $EB00,$03 Call #R$B081.
+  $EB03,$02 #REGa=#N$4A.
+  $EB05,$03 Call #R$AEE0.
+  $EB08,$01 Return.
+  $EB09,$03 #REGhl=#R$CD00.
+  $EB0C,$03 Call #R$A592.
+  $EB0F,$01 Return.
+
+c $EB10
+B $EB3A,$0B
+W $EB45,$02
+L $EB45,$02,$0B
+B $EB5B,$16
+W $EB71,$02
+L $EB71,$02,$16
 
 c $FCCE Game Start
 @ $FCCE label=GameStart
@@ -2977,25 +3072,44 @@ W $FECB,$02 Event #N((#PC-$FECB)/$02).
 L $FECB,$02,$08
 
 c $FF12 Handler: Room Images
+@ $FF12 label=DisplayImage_Mountains
+N $FF12 Displays the image for the mountains.
   $FF12,$04 #REGix=#R$61A8.
   $FF16,$02 Jump to #R$FF4C.
+@ $FF18 label=DisplayImage_Beach
+N $FF18 Displays the image for the beach.
   $FF18,$04 #REGix=#R$6A34.
   $FF1C,$02 Jump to #R$FF4C.
+@ $FF1E label=DisplayImage_Altar
+N $FF1E Displays the image for the altar.
   $FF1E,$04 #REGix=#R$704F.
   $FF22,$02 Jump to #R$FF4C.
+@ $FF24 label=DisplayImage_Cart
+N $FF24 Displays the image for the cart.
   $FF24,$04 #REGix=#R$75DD.
   $FF28,$02 Jump to #R$FF4C.
+@ $FF2A label=DisplayImage_Huts
+N $FF2A Displays the image for the huts.
   $FF2A,$04 #REGix=#R$7C8D.
   $FF2E,$02 Jump to #R$FF4C.
+@ $FF30 label=DisplayImage_Village
+N $FF30 Displays the image for the village.
   $FF30,$04 #REGix=#R$8492.
   $FF34,$02 Jump to #R$FF4C.
+@ $FF36 label=DisplayImage_Cave
+N $FF36 Displays the image for the cave.
   $FF36,$04 #REGix=#R$8AF3.
   $FF3A,$02 Jump to #R$FF4C.
+@ $FF3C label=DisplayImage_Henge
+N $FF3C Displays the image for the henge.
   $FF3C,$04 #REGix=#R$915F.
   $FF40,$02 Jump to #R$FF4C.
+@ $FF42 label=DisplayImage_Cavern
+N $FF42 Displays the image for the cavern.
   $FF42,$04 #REGix=#R$983F.
   $FF46,$02 Jump to #R$FF4C.
-@ $FF48 label=DisplayImage_Treasure
+@ $FF48 label=DisplayImage_Lake
+N $FF48 Displays the image for the lake.
   $FF48,$04 #REGix=#R$A0EB.
 N $FF4C All the image routines use this same routine.
 @ $FF4C label=Handler_Images
@@ -3003,5 +3117,9 @@ N $FF4C All the image routines use this same routine.
   $FF4F,$05 Call #R$ACAD and use line number #N$08 to start printing.
   $FF54,$03 Call #R$A53E.
   $FF57,$01 Return.
+
+g $FEFC
+W $FEFC,$02
+L $FEFC,$02,$0B
 
 w $FF58
