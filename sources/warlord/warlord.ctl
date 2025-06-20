@@ -373,6 +373,12 @@ D $A66C When the item is in the players inventory, the room ID changes to
 B $A66C,$01 Item #N(#PC-$A66C) #ITEM(#PC-$A66C) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $A66C,$01,$86
 
+g $A76C
+B $A76C,$01
+
+g $A773
+B $A773,$01
+
 g $A774 Table: Already Seen Room Images
 @ $A774 label=Table_RoomImagesAlreadySeen
 D $A774 Corresponds to whether the player has already seen the image for the following rooms:
@@ -392,7 +398,24 @@ B $A775,b,$01
 
 g $A776
 
-g $A77F
+g $A77F Turn-Based Event Counters
+N $A77F
+@ $A77F label=Counter_Crab
+N $A780 Initialised to #N$05 by #R$EC21.
+@ $A780 label=Counter_FomorianTribe
+N $A781
+@ $A781 label=Counter_Drunk
+N $A782
+@ $A782 label=Counter_Lion
+N $A783
+@ $A783 label=Counter_Crocodile 
+N $A784
+@ $A784 label=Counter_Cannibals
+N $A785
+@ $A785 label=Counter_Match
+N $A786
+@ $A786 label=Counter_Wave
+B $A77F,$08,$01
 
 g $A77E Flags: Turn-Based Event States
 @ $A77E label=Flag_TurnBasedEventState
@@ -401,7 +424,7 @@ D $A77E Holds a single byte, where each bit relates to a turn-based event as
 . #TABLE(default,centre,centre)
 . { =h Bit | =h Relating To }
 . { #N$00 |  }
-. { #N$01 |  }
+. { #N$01 | Fomorian Tribe }
 . { #N$02 |  }
 . { #N$03 |  }
 . { #N$04 |  }
@@ -1105,6 +1128,8 @@ R $ACAD A Line number to begin printing
 
 t $ACC2
 
+t $ACC9
+
 t $ACCC
 
 c $ACCF
@@ -1116,6 +1141,58 @@ N $ACD0 Print "#STR$ACCC,$08($b==$FF)".
   $ACD7,$01 Return.
 
 c $ACD8
+  $ACD8,$02 Stash #REGhl and #REGbc on the stack.
+  $ACDA,$03 #REGhl=#R$A663.
+  $ACDD,$01 #REGc=*#REGhl.
+  $ACDE,$02 #REGb=#N$00.
+  $ACE0,$01 Increment #REGhl by one.
+  $ACE1,$02 CPIR.
+  $ACE3,$02 Restore #REGbc and #REGhl from the stack.
+  $ACE5,$01 Return.
+
+c $ACE6
+  $ACE6,$01 Stash #REGaf on the stack.
+  $ACE7,$04 Jump to #R$ACF3 if #REGa is not equal to #N$0D.
+  $ACEB,$01 Stash #REGhl on the stack.
+N $ACEC Print "#STR$ACC9,$08($b==$FF)".
+  $ACEC,$03 #REGhl=#R$ACC9.
+  $ACEF,$03 Call #R$A585.
+  $ACF2,$02 Restore #REGhl and #REGaf from the stack.
+  $ACF4,$03 Call #R$A577.
+  $ACF7,$03 Call #R$A5A4.
+  $ACFA,$01 Return.
+
+c $ACFB
+  $ACFB,$03 Stash #REGhl, #REGde and #REGbc on the stack.
+  $ACFE,$02 Stash #REGix on the stack.
+  $AD00,$03 #REGhl=*#R$A7C6.
+  $AD03,$02 #REGc=#N$00.
+  $AD05,$02 Jump to #R$AD14.
+  $AD07,$01 #REGe=#REGb.
+  $AD08,$02 #REGd=#N$00.
+  $AD0A,$01 #REGhl+=#REGde.
+  $AD0B,$01 #REGa=*#REGhl.
+  $AD0C,$02 Compare #REGa with #N$2C.
+  $AD0E,$02 Jump to #R$AD13 if #REGa is equal to #N$2C.
+  $AD10,$01 Increment #REGc by one.
+  $AD11,$02 Jump to #R$AD14.
+  $AD13,$01 Increment #REGhl by one.
+  $AD14,$01 #REGa=*#REGhl.
+  $AD15,$02 Compare #REGa with #N$FF.
+  $AD17,$02 Jump to #R$AD2C if #REGa is equal to #N$FF.
+  $AD19,$04 #REGix=#R$A82F.
+  $AD1D,$02 #REGb=#N$04.
+  $AD1F,$03 #REGa=*#REGix+#N$00.
+  $AD22,$01 Compare #REGa with *#REGhl.
+  $AD23,$02 Jump to #R$AD07 if #REGa is not equal to *#REGhl.
+  $AD25,$01 Increment #REGhl by one.
+  $AD26,$02 Increment #REGix by one.
+  $AD28,$02 Decrease counter by one and loop back to #R$AD1F until counter is zero.
+  $AD2A,$01 #REGa=#REGc.
+  $AD2B,$01 Set the carry flag.
+  $AD2C,$02 Restore #REGix from the stack.
+  $AD2E,$03 Restore #REGbc, #REGde and #REGhl from the stack.
+  $AD31,$01 Return.
 
 c $AD32 Handler: User Input
 
@@ -1323,6 +1400,20 @@ c $AF08
   $AF1D,$01 Return.
 
 c $AF1E Transform Item
+@ $AF1E label=TransformItem
+R $AF1E B From item ID
+R $AF1E C To item ID
+D $AF1E Rather than use item properties, the game just has separate objects
+. that don't exist until an action is performed.
+.
+. An example is:
+. #TABLE(default,centre,centre)
+. { =h Item ID | =h Item Name }
+. { #N$27 | #ITEM$27 }
+. { #N$28 | #ITEM$28 }
+. TABLE#
+. When the match is lit by the player; item #N$02 is destroyed and replaced
+. with item #N$03.
   $AF1E,$01 #REGa=#REGb.
   $AF1F,$03 Call #R$AED1.
   $AF22,$02 Stash #REGbc and #REGaf on the stack.
@@ -1333,11 +1424,12 @@ c $AF1E Transform Item
   $AF2C,$01 #REGc=#REGa.
   $AF2D,$03 Call #R$AF08.
   $AF30,$01 Return.
-  $AF31,$03 Call #R$AED1.
-  $AF34,$04 Compare #REGa with *#R$A7C3.
-  $AF38,$01 Return.
 
 c $AF31
+  $AF31,$03 Call #R$AED1.
+  $AF34,$03 #REGhl=#R$A7C3.
+  $AF37,$01 Compare #REGa with *#REGhl.
+  $AF38,$01 Return.
 
 c $AF39 Check Room Objects
 @ $AF39 label=CheckRoomObjects
@@ -1447,7 +1539,21 @@ R $B08A A Maximum value of generated number
   $B098,$01 Restore #REGbc from the stack.
   $B099,$01 Return.
 
-c $B09A
+c $B09A Add To Score
+@ $B09A label=AddToScore
+R $B09A A Points to add
+  $B09A,$01 Stash #REGhl on the stack.
+  $B09B,$03 Load *#R$A7C4 into #REGhl.
+  $B09E,$01 Add the points to the low byte.
+  $B09F,$01 Decimal adjust for BCD (Binary Coded Decimal).
+  $B0A0,$01 Store the adjusted result.
+  $B0A1,$02 Jump to #R$B0A4 if there was no carry from the addition.
+N $B0A3 If there was carry, increment the high byte.
+  $B0A3,$01 Increment the high byte by one.
+@ $B0A4 label=SaveScore
+  $B0A4,$03 Write the updated score back to *#R$A7C4.
+  $B0A7,$01 Restore #REGhl from the stack.
+  $B0A8,$01 Return.
 
 c $B0A9 Print Scoring
 @ $B0A9 label=Print_Scoring
@@ -3217,6 +3323,7 @@ N $E9B2 Print "#STR$A8EF,$08($b==$FF)".
   $E9B2,$03 #REGhl=#R$A8EF.
   $E9B5,$03 Call #R$A592.
 N $E9B8 Print the percentage of the game the player achieved.
+@ $E9B8 label=GameOver_Score
   $E9B8,$03 Call #R$B0A9.
 @ $E9BB label=WantAnotherGameInput
 N $E9BB Print "#STR$A8FD,$08($b==$FF)".
@@ -3247,9 +3354,8 @@ N $E9E3 Print "#STR$CD5F,$08($b==$FF)".
 
 c $E9E9
   $E9E9,$05 Reset bit 1 of *#R$A77E.
-  $E9EE,$02 #REGa=#N$0F.
-  $E9F0,$03 Call #R$AE6B.
-  $E9F3,$01 Return if #REGa is not equal to #N$0F.
+  $E9EE,$05 Call #R$AE6B with item #N$0F: #ITEM$0F.
+  $E9F3,$01 Return if #ITEM$0F is not currently in the room.
 N $E9F4 Print "#STR$CD9A,$08($b==$FF)".
   $E9F4,$03 #REGhl=#R$CD9A.
   $E9F7,$03 Jump to #R$E9D0.
@@ -3265,28 +3371,29 @@ N $E9FA Print "#STR$C97C,$08($b==$FF)".
   $EA0A,$01 Return.
 
 c $EA0B
-  $EA0B,$02 #REGa=#N$03.
-  $EA0D,$03 Call #R$AEE0.
-  $EA10,$02 #REGa=#N$02.
-  $EA12,$03 Call #R$AEE7.
+  $EA0B,$05 Call #R$AEE0 with #ITEM$03.
+  $EA10,$05 Call #R$AEE7 with #ITEM$02.
+N $EA15 Print "#STR$C9AF,$08($b==$FF)".
   $EA15,$03 #REGhl=#R$C9AF.
   $EA18,$03 Call #R$A592.
   $EA1B,$02 #REGb=#N$14.
   $EA1D,$02 #REGa=#N$22.
   $EA1F,$03 Call #R$AED1.
-  $EA22,$01 Set flags.
-  $EA23,$02 Jump to #R$EA2D if #REGa is equal to #REGa.
+  $EA22,$03 Jump to #R$EA2D if #REGa is equal to #REGa.
+N $EA25 Print "#STR$CA1A,$08($b==$FF)".
   $EA25,$03 #REGhl=#R$CA1A.
   $EA28,$03 Call #R$B081.
   $EA2B,$02 #REGb=#N$0A.
-  $EA2D,$01 #REGa=#REGb.
-  $EA2E,$03 Call #R$B08A.
-  $EA31,$02 Jump to #R$EA38 if #REGa is equal to #REGa.
+  $EA2D,$04 Call #R$B08A using the maximum value held in #REGb.
+  $EA31,$02 Jump to #R$EA38 if the random number was zero.
+N $EA33 Print "#STR$C9E1,$08($b==$FF)".
   $EA33,$03 #REGhl=#R$C9E1.
   $EA36,$02 Jump to #R$EA40.
   $EA38,$01 Restore #REGhl from the stack.
-  $EA39,$03 #REGhl=#R$E9B2.
-  $EA3C,$01 Exchange the *#REGsp with the #REGhl register.
+N $EA39 Bad luck!
+  $EA39,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
+. over".
+N $EA3D Print "#STR$CA46,$08($b==$FF)".
   $EA3D,$03 #REGhl=#R$CA46.
   $EA40,$03 Call #R$B081.
   $EA43,$01 Return.
@@ -3379,12 +3486,236 @@ c $EA44
   $EB0F,$01 Return.
 
 c $EB10
+  $EB10,$03 Write #REGa to *#R$A773.
+  $EB13,$03 #REGhl=#R$EB3A.
+  $EB16,$03 #REGde=#R$EB45.
+  $EB19,$03 #REGbc=#N($000B,$04,$04).
+  $EB1C,$03 Call #R$E98E.
+  $EB1F,$03 #REGa=*#R$A773.
+  $EB22,$03 Call #R$B01F.
+  $EB25,$02 #REGe=#N$00.
+  $EB27,$03 Call #R$ABB6.
+  $EB2A,$03 #REGa=*#R$A7C3.
+  $EB2D,$03 #REGhl=#R$EB5B.
+  $EB30,$03 #REGde=#R$EB71.
+  $EB33,$03 #REGbc=#N$0016.
+  $EB36,$03 Call #R$E98E.
+  $EB39,$01 Return.
 B $EB3A,$0B
 W $EB45,$02
 L $EB45,$02,$0B
 B $EB5B,$16
 W $EB71,$02
 L $EB71,$02,$16
+
+c $EBA7
+  $EBA7,$06 Return if *#R$A7C3 is not room #N$42: #ROOM$42.
+  $EBAD,$05 Call #R$AEDA with #ITEM$6D.
+  $EBB2,$01 Return if the player has #ITEM$6D in their inventory.
+N $EBB3 Print "#STR$DF48,$08($b==$FF)".
+  $EBB3,$03 #REGhl=#R$DF48.
+  $EBB6,$03 Jump to #R$EB9D.
+
+c $EBB9
+  $EBB9,$06 Call #R$AEF7 with #R$E348.
+  $EBBF,$01 Return if not zero?
+  $EBC0,$03 Call #R$AEF0.
+  $EBC3,$02 Jump to #R$EBB9.
+
+c $EBC5
+  $EBC5,$06 Call #R$AEF7 with #R$E341.
+  $EBCB,$01 Return if not zero?
+  $EBCC,$03 Return if #REGa is greater than #N$04.
+  $EBCF,$05 Call #R$AEF0 with #N$02.
+  $EBD4,$05 Call #R$AEF0 with #N$03.
+  $EBD9,$01 Return.
+
+c $EBDA
+  $EBDA,$05 Test bit 1 of *#R$A76C.
+  $EBDF,$01 Return if ?? is not equal to #N$00.
+  $EBE0,$02 Set bit 1 of *#REGhl.
+  $EBE2,$02 #REGa=#N$00.
+  $EBE4,$03 Call #R$AEE0.
+  $EBE7,$02 #REGa=#N$01.
+  $EBE9,$03 Call #R$AEE0.
+  $EBEC,$02 #REGa=#N$02.
+  $EBEE,$03 Call #R$AEF0.
+  $EBF1,$02 #REGa=#N$03.
+  $EBF3,$03 Call #R$AEF0.
+  $EBF6,$05 Call #R$B09A to add #N$04 points to the score.
+  $EBFB,$01 Return.
+
+c $EBFC
+  $EBFC,$05 Write #N$05 to *#R$A77F.
+  $EC01,$05 Set bit 0 of *#R$A77E.
+  $EC06,$01 Return.
+
+c $EC07
+  $EC07,$05 Call #R$B09A to add #N$04 points to the score.
+  $EC0C,$02 Restore #REGhl and #REGhl from the stack.
+  $EC0E,$04 Switch #R$E9B8 onto the stack so the next return actions printing
+. the score and asking if you want another game?
+  $EC12,$01 Return.
+
+c $EC13
+  $EC13,$05 Call #R$AE6B with item #N$3D: #ITEM$3D.
+  $EC18,$03 Jump to #R$EBA0 if #ITEM$3D is not currently in the room.
+N $EC1B Print "#STR$DF82,$08($b==$FF)".
+  $EC1B,$03 #REGhl=#R$DF82.
+  $EC1E,$03 Jump to #R$EB9D.
+
+c $EC21
+  $EC21,$05 Call #R$AE6B with item #N$0F: #ITEM$0F.
+  $EC26,$01 Return if #ITEM$0F is not currently in the room.
+  $EC27,$05 Write #N$05 to *#R$A780.
+  $EC2C,$05 Set bit 1 of *#R$A77E.
+  $EC31,$01 Return.
+
+c $EC32
+  $EC32,$06 Return if bit 0 of *#R$A76C is set.
+  $EC38,$02 Set bit 0 of *#REGhl.
+  $EC3A,$05 Call #R$B09A to add #N$04 points to the score.
+  $EC3F,$01 Return.
+
+c $EC40
+  $EC40,$06 Return if bit 3 of *#R$A76C is set.
+  $EC46,$02 Set bit 3 of *#REGhl.
+  $EC48,$05 Call #R$B09A to add #N$04 points to the score.
+  $EC4D,$01 Return.
+
+c $EC4E
+  $EC4E,$06 Return if bit 5 of *#R$A76C is set.
+  $EC54,$02 Set bit 5 of *#REGhl.
+  $EC56,$05 Call #R$B09A to add #N$04 points to the score.
+  $EC5B,$01 Return.
+
+c $EC5C
+  $EC5C,$06 Return if bit 7 of *#R$A76C is set.
+  $EC62,$02 Set bit 7 of *#REGhl.
+  $EC64,$05 Call #R$B09A to add #N$04 points to the score.
+  $EC69,$01 Return.
+
+c $EC6A
+  $EC6A,$06 Return if bit 0 of *#R$A76D is set.
+  $EC70,$02 Set bit 0 of *#REGhl.
+  $EC72,$05 Call #R$B09A to add #N$04 points to the score.
+  $EC77,$01 Return.
+
+c $EC78
+  $EC78,$06 Return if bit 1 of *#R$A76D is set.
+  $EC7E,$02 Set bit 1 of *#REGhl.
+  $EC80,$05 Call #R$B09A to add #N$04 points to the score.
+  $EC85,$01 Return.
+
+c $EC86
+  $EC86,$06 Return if bit 2 of *#R$A76D is set.
+  $EC8C,$02 Set bit 2 of *#REGhl.
+  $EC8E,$05 Call #R$B09A to add #N$04 points to the score.
+  $EC93,$01 Return.
+
+c $EC94
+  $EC94,$06 Return if bit 6 of *#R$A76D is set.
+  $EC9A,$02 Set bit 6 of *#REGhl.
+  $EC9C,$05 Call #R$B09A to add #N$04 points to the score.
+  $ECA1,$01 Return.
+
+c $ECA2
+  $ECA2,$05 Call #R$AED1 with item #N$27: #ITEM$27.
+  $ECA7,$03 Return if the armed warrior is not in room #N$1B: #ROOM$1B.
+N $ECAA To pass the armed warrior the player needs #ITEM$1F in their inventory.
+  $ECAA,$05 Call #R$AEDA with item #N$1F: #ITEM$1F.
+  $ECAF,$02 Jump to #R$ECB7 if the player has #ITEM$1F in their inventory.
+N $ECB1 The player doesn't have #ITEM$1F in their inventory, but do they have
+. #ITEM$20 instead?
+  $ECB1,$05 Call #R$AEDA with item #N$20: #ITEM$20.
+  $ECB6,$01 Return if the player doesn't have #ITEM$20 in their inventory.
+  $ECB7,$06 Call #R$AF1E to transform item #N$27 (#ITEM$27) into item #N$28
+. (#ITEM$28).
+  $ECBD,$01 Return.
+
+c $ECBE
+  $ECBE,$05 Call #R$AE6B with item #N$28: #ITEM$28.
+  $ECC3,$01 Return if #REGa is not equal to #N$28.
+  $ECC4,$02 #REGa=#N$00.
+  $ECC6,$03 Call #R$AEF0.
+  $ECC9,$02 #REGa=#N$01.
+  $ECCB,$03 Call #R$AEF0.
+  $ECCE,$02 #REGa=#N$08.
+  $ECD0,$03 Call #R$AEF0.
+  $ECD3,$02 #REGa=#N$07.
+  $ECD5,$03 Call #R$AEF0.
+  $ECD8,$05 Call #R$AEE0 with item #N$28: #ITEM$28.
+  $ECDD,$05 Call #R$B09A to add #N$04 points to the score.
+  $ECE2,$05 Write #N$1A to *#R$E7B9 to open up westbound access to #ROOM$1A
+. from #ROOM$1B.
+  $ECE7,$01 Return.
+
+N $ECE8 Print "#STR$DFF1,$08($b==$FF)".
+  $ECE8,$03 #REGhl=#R$DFF1.
+  $ECEB,$03 Call #R$A592.
+  $ECEE,$01 Return.
+
+c $ECEF
+  $ECEF,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
+  $ECF4,$01 Return if #ITEM$6A is not in the players inventory.
+  $ECF5,$05 Call #R$AED1 with item #N$3D: #ITEM$3D.
+  $ECFA,$03 Return if #ITEM$3D is not in room #N$24: #ROOM$24.
+  $ECFD,$03 Call #R$ECE8.
+N $ED00 Print "#STR$E00F,$08($b==$FF)".
+  $ED00,$03 #REGhl=#R$E00F.
+  $ED03,$03 Call #R$A592.
+  $ED06,$01 Return.
+
+c $ED07
+  $ED07,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
+  $ED0C,$01 Return if #ITEM$6A is not in the players inventory.
+  $ED0D,$03 Call #R$ECE8.
+N $ED10 Print "#STR$E01F,$08($b==$FF)".
+  $ED10,$03 #REGhl=#R$E01F.
+  $ED13,$03 Call #R$A592.
+  $ED16,$01 Return.
+
+c $ED17
+  $ED17,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
+  $ED1C,$01 Return if #ITEM$6A is not in the players inventory.
+  $ED1D,$03 Call #R$ECE8.
+N $ED20 Print "#STR$E04D,$08($b==$FF)".
+  $ED20,$03 #REGhl=#R$E04D.
+  $ED23,$03 Call #R$A592.
+  $ED26,$01 Return.
+
+c $ED27
+  $ED27,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
+  $ED2C,$01 Return if #ITEM$6A is not in the players inventory.
+  $ED2D,$03 Call #R$ECE8.
+N $ED30 Print "#STR$E039,$08($b==$FF)".
+  $ED30,$03 #REGhl=#R$E039.
+  $ED33,$03 Call #R$A592.
+  $ED36,$01 Return.
+
+c $ED37
+  $ED37,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
+  $ED3C,$01 Return if #ITEM$6A is not in the players inventory.
+  $ED3D,$03 Call #R$ECE8.
+N $ED40 Print "#STR$E047,$08($b==$FF)".
+  $ED40,$03 #REGhl=#R$E047.
+  $ED43,$03 Call #R$A592.
+  $ED46,$01 Return.
+
+c $ED47
+  $ED47,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
+  $ED4C,$01 Return if #ITEM$6A is not in the players inventory.
+  $ED4D,$03 Call #R$ECE8.
+N $ED50 Print "#STR$E026,$08($b==$FF)".
+  $ED50,$03 #REGhl=#R$E026.
+  $ED53,$03 Call #R$A592.
+  $ED56,$01 Return.
+
+c $ED57
+  $ED57,$06 Return if *#R$A7C3 is not equal to room #N$43: #ROOM$43.
+  $ED5D,$03 Jump to #R$EBAD.
+
+c $ED60
 
 c $FCCE Game Start
 @ $FCCE label=GameStart
