@@ -363,6 +363,7 @@ N $A65C Print "#STR$A843,$08($b==$FF)".
   $A662,$01 Return.
 
 t $A663
+T $A667
 
 g $A66C Table: Item Locations
 @ $A66C label=Table_ItemLocations
@@ -1127,10 +1128,10 @@ R $ACAD A Line number to begin printing
   $ACC1,$01 Return.
 
 t $ACC2
-
-t $ACC9
-
-t $ACCC
+T $ACC4
+T $ACC6
+T $ACC9
+T $ACCC
 
 c $ACCF
   $ACCF,$01 Stash #REGhl on the stack.
@@ -1195,6 +1196,118 @@ c $ACFB
   $AD31,$01 Return.
 
 c $AD32 Handler: User Input
+@ $AD32 label=Handler_UserInput
+N $AD32 Reset the screen position to defaults.
+  $AD32,$03 Call #R$A560.
+  $AD35,$03 Call #R$A647.
+  $AD38,$03 #REGhl=#R$A7F2.
+  $AD3B,$02 #REGb=#N$00.
+  $AD3D,$02 Jump to #R$AD41.
+  $AD3F,$01 Increment #REGhl by one.
+  $AD40,$01 Increment #REGb by one.
+  $AD41,$03 Call #R$ACCF.
+  $AD44,$03 Call #R$A53E.
+  $AD47,$04 Jump to #R$AD5B if #REGa is not equal to #N$0C.
+  $AD4B,$01 #REGa=#N$00.
+  $AD4C,$03 Jump to #R$AD41 if #REGa is equal to #REGb.
+  $AD4F,$01 Exchange the #REGde and #REGhl registers.
+N $AD50 Print "#STR$ACC6,$08($b==$FF)".
+  $AD50,$03 #REGhl=#R$ACC6.
+  $AD53,$03 Call #R$A585.
+  $AD56,$01 Exchange the #REGde and #REGhl registers.
+  $AD57,$01 Decrease #REGhl by one.
+  $AD58,$01 Decrease #REGb by one.
+  $AD59,$02 Jump to #R$AD41.
+
+  $AD5B,$05 Jump to #R$AD6D if #REGc is equal to #N$0D.
+  $AD60,$04 Jump to #R$AD41 if #REGc is less than #N$20.
+  $AD64,$04 Jump to #R$AD41 if #REGc is greater than or equal to #N$80.
+  $AD68,$05 Jump to #R$AD41 if #REGb is equal to #N$31.
+  $AD6D,$02 Write #REGc to *#REGhl.
+  $AD6F,$03 Call #R$ACE6.
+  $AD72,$05 Jump to #R$AD3F if #REGc is not equal to #N$0D.
+  $AD77,$03 #REGhl=#R$A824.
+  $AD7A,$02 #REGb=#N$0A.
+  $AD7C,$02 Write #N$FF to *#REGhl.
+  $AD7E,$01 Increment #REGhl by one.
+  $AD7F,$02 Decrease counter by one and loop back to #R$AD7C until counter is zero.
+  $AD81,$03 #REGhl=#R$A7F2.
+  $AD84,$04 #REGix=#R$A824.
+  $AD88,$02 #REGc=#N$0A.
+  $AD8A,$02 Jump to #R$ADF6.
+
+N $AD8C Print "#STR$A84F,$08($b==$FF)".
+  $AD8C,$03 #REGhl=#R$A84F.
+  $AD8F,$03 Call #R$A592.
+  $AD92,$03 Jump to #R$AD32.
+  $AD95,$03 Stash #REGhl, #REGde and #REGbc on the stack.
+  $AD98,$03 #REGhl=*#R$ACC2.
+  $AD9B,$03 #REGde=#R$A82F.
+  $AD9E,$03 #REGbc=#N($0004,$04,$04).
+  $ADA1,$06 Jump to #R$ADA8 if *#R$ACC4 is greater than or equal to #REGc.
+  $ADA7,$01 #REGc=#REGa.
+  $ADA8,$02 LDIR.
+  $ADAA,$03 Restore #REGbc, #REGde and #REGhl from the stack.
+  $ADAD,$01 Stash #REGhl on the stack.
+  $ADAE,$03 #REGhl=*#R$A7C6.
+  $ADB1,$01 Stash #REGhl on the stack.
+  $ADB2,$06 Write #R$A667 to *#R$A7C6.
+  $ADB8,$03 Call #R$ACFB.
+  $ADBB,$01 Restore #REGhl from the stack.
+  $ADBC,$03 Write #REGhl to *#R$A7C6.
+  $ADBF,$01 Restore #REGhl from the stack.
+  $ADC0,$02 Jump to #R$ADF6 if #REGa is less than #REGc.
+  $ADC2,$03 Call #R$ACFB.
+  $ADC5,$02 Jump to #R$ADEE if #REGa is less than #REGc.
+N $ADC7 Print "#STR$A863,$08($b==$FF)".
+  $ADC7,$03 #REGhl=#R$A863.
+  $ADCA,$03 Call #R$A592.
+N $ADCD #HTML(Print a double quote character: "<code>#CHR$22</code>".)
+  $ADCD,$05 Call #R$A5A4 with ASCII #N$22.
+  $ADD2,$03 #REGhl=*#R$ACC4.
+  $ADD5,$04 #REGde=*#R$ACC2.
+  $ADD9,$01 #REGhl+=#REGde.
+  $ADDA,$02 Write #N$FF to *#REGhl.
+  $ADDC,$01 Exchange the #REGde and #REGhl registers.
+  $ADDD,$03 Call #R$A585.
+N $ADE0 #HTML(Print a double quote character: "<code>#CHR$22</code>".)
+  $ADE0,$05 Call #R$A5A4 with ASCII #N$22.
+N $ADE5 Print "#STR$AA15,$08($b==$FF)".
+  $ADE5,$03 #REGhl=#R$AA15.
+  $ADE8,$03 Call #R$A592.
+  $ADEB,$03 Jump to #R$AD32.
+
+  $ADEE,$03 Write #REGa to *#REGix+#N$00.
+  $ADF1,$02 Increment #REGix by one.
+  $ADF3,$01 Decrease #REGc by one.
+  $ADF4,$02 Jump to #R$AE2D if #REGc is equal to #REGc.
+  $ADF6,$02 Stash #REGhl and #REGbc on the stack.
+  $ADF8,$03 #REGhl=#R$A82F.
+  $ADFB,$02 #REGb=#N$04.
+  $ADFD,$02 Write #N$20 to *#REGhl.
+  $ADFF,$01 Increment #REGhl by one.
+  $AE00,$02 Decrease counter by one and loop back to #R$ADFD until counter is zero.
+  $AE02,$02 Restore #REGbc and #REGhl from the stack.
+  $AE04,$01 Stash #REGde on the stack.
+  $AE05,$02 Jump to #R$AE08.
+
+  $AE07,$01 Increment #REGhl by one.
+  $AE08,$05 Jump to #R$AE29 if *#REGhl is equal to #N$0D.
+  $AE0D,$03 Call #R$ACD8.
+  $AE10,$02 Jump to #R$AE07 if #REGa is equal to #N$0D.
+  $AE12,$03 Write #REGhl to *#R$ACC2.
+  $AE15,$03 #REGde=#N($0000,$04,$04).
+  $AE18,$01 Increment #REGhl by one.
+  $AE19,$01 Increment #REGde by one.
+  $AE1A,$05 Jump to #R$AE24 if *#REGhl is equal to #N$0D.
+  $AE1F,$03 Call #R$ACD8.
+  $AE22,$02 Jump to #R$AE18 if #REGa is not equal to #N$0D.
+  $AE24,$04 Write #REGde to *#R$ACC4.
+  $AE28,$01 Set the carry flag.
+  $AE29,$01 Restore #REGde from the stack.
+  $AE2A,$03 Jump to #R$AD95 if #REGa is less than #N$0D.
+  $AE2D,$08 Jump to #R$AD8C if *#R$A824 is equal to #N$FF.
+  $AE35,$01 Return.
 
 c $AE36 Action: Examine Item
 @ $AE36 label=Action_ExamineItem
@@ -1598,6 +1711,23 @@ N $B0D7 Print "#STR$AADF,$08($b==$FF)".
   $B0DD,$01 Return.
 
 c $B0DE
+  $B0DE,$03 #REGix=#REGhl (using the stack).
+  $B0E1,$03 #REGl=*#REGix+#N$00.
+  $B0E4,$03 #REGh=*#REGix+#N$01.
+  $B0E7,$04 Stash #REGix, #REGde and #REGbc on the stack.
+  $B0EB,$03 Call #R$AE80.
+  $B0EE,$04 Restore #REGbc, #REGde and #REGix from the stack.
+  $B0F2,$02 Jump to #R$B0FF if ?? is not equal to #N$00.
+  $B0F4,$03 #REGix=#REGde (using the stack).
+  $B0F7,$03 #REGl=*#REGix+#N$00.
+  $B0FA,$03 #REGh=*#REGix+#N$01.
+  $B0FD,$01 Restore #REGde from the stack.
+  $B0FE,$03 Jump to *#REGhl.
+  $B101,$02 Increment #REGix by one.
+  $B103,$02 Increment #REGde by two.
+  $B105,$01 Decrease #REGbc by one.
+  $B106,$04 Jump back to #R$B0E1 until #REGbc is zero.
+  $B10A,$01 Return.
 
 c $B10B Print Room Image
 @ $B10B label=Print_RoomImage
@@ -3289,6 +3419,24 @@ D $E508 A table where the index is the event ID, and the value is the room it
 B $E508,$01 Event #N(#PC-$E508) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $E508,$01,$11
 
+g $E519 Data: Phrase Tokens
+D $E519 The user input is broken down into tokens which represent the words
+. they've entered. These tokens are then compared against these token patterns
+. to determine the outcome the player was trying to communicate.
+N $E519 Matches e.g. "bottle".
+@ $E519 label=PhraseTokens_
+N $E519 Matches e.g. "fish", "herring", "red fish", "red herring", "coloured fish",
+. "coloured herring".
+  $E519
+  $E54B
+  $E5E2
+  $E5E4
+  $E5E6
+  $E5F1
+  $E5F3
+B $E519,$01 #TOKEN(#PEEK(#PC)).
+L $E519,$01,$1FB,$02
+
 g $E714 Table: Room Map
 @ $E714 label=Table_RoomMap
 N $E714 Room #N((#PC-$E714)/$06): #ROOM((#PC-$E714)/$06).
@@ -3717,6 +3865,130 @@ c $ED57
 
 c $ED60
 
+c $EE35
+c $F26C
+c $F293
+c $F2BA
+c $F2D4
+
+c $F7FD
+c $F824
+c $F841
+c $F84B
+c $F853
+W $F86B,$02
+L $F86B,$02,$09
+W $F87D,$02
+L $F87D,$02,$09
+B $F88F,$01
+L $F88F,$01,$03
+c $F892
+c $F8A1
+c $F8A9
+c $F8C9
+c $F8CD
+c $F8D1
+c $F8D5
+c $F8D9
+c $F8DD
+c $F8F2
+W $F90A,$02
+L $F90A,$02,$13
+W $F930,$02
+L $F930,$02,$13
+c $F956
+W $F965,$02
+L $F965,$02,$04
+W $F96D,$02
+L $F96D,$02,$04
+c $F975
+W $F98D,$02
+L $F98D,$02,$13
+c $F9B3
+W $F9D2,$02
+L $F9D2,$02,$04
+W $F9DA,$02
+L $F9DA,$02,$04
+c $F9E2
+W $F9F1,$02
+L $F9F1,$02,$0E
+W $FA0D,$02
+L $FA0D,$02,$0E
+c $FA29
+W $FA46,$02
+L $FA46,$02,$09
+W $FA58,$02
+L $FA58,$02,$09
+c $FA6A
+W $FA7D,$02
+L $FA7D,$02,$05
+W $FA87,$02
+L $FA87,$02,$05
+c $FA91
+W $FAA9,$02
+W $FAAB,$02
+c $FAAD
+W $FAC5,$02
+L $FAC5,$02,$06
+W $FAD1,$02
+L $FAD1,$02,$06
+c $FADD
+W $FAF5,$02
+L $FAF5,$02,$0B
+W $FB0B,$02
+L $FB0B,$02,$0C
+c $FB21
+W $FB39,$02
+L $FB39,$02,$09
+W $FB4B,$02
+L $FB4B,$02,$09
+c $FB5D
+W $FB75,$02
+L $FB75,$02,$05
+W $FB7F,$02
+L $FB7F,$02,$05
+c $FB89
+W $FBA1,$02
+L $FBA1,$02,$06
+W $FBAD,$02
+L $FBAD,$02,$06
+c $FBB9
+c $FBC3
+W $FBD6,$02
+L $FBD6,$02,$02
+W $FBDA,$02
+L $FBDA,$02,$02
+c $FBDE
+W $FBF1,$02
+W $FBF3,$02
+c $FBF5
+W $FC08,$02
+L $FC08,$02,$02
+W $FC0C,$02
+L $FC0C,$02,$02
+c $FC10
+W $FC23,$02
+L $FC23,$02,$03
+W $FC29,$02
+L $FC29,$02,$03
+c $FC2F
+W $FC47,$02
+W $FC49,$02
+c $FC4B
+W $FC5E,$02
+L $FC5E,$02,$0B
+W $FC74,$02
+L $FC74,$02,$0B
+B $FC8A,$01
+L $FC8A,$01,$03
+c $FC8D
+W $FCB3,$02
+L $FCB3,$02,$06
+W $FCBF,$02
+L $FCBF,$02,$06
+B $FCCB,$01
+L $FCCB,$01,$03
+
 c $FCCE Game Start
 @ $FCCE label=GameStart
   $FCCE,$0B Copy #N$0186 bytes from #R$FD02 to #R$A66C.
@@ -3830,6 +4102,9 @@ N $FF4C All the image routines use this same routine.
   $FF4F,$05 Call #R$ACAD and use line number #N$08 to start printing.
   $FF54,$03 Call #R$A53E.
   $FF57,$01 Return.
+
+g $FE89
+W $FE89
 
 g $FEFC Jump Table: Room Images
 @ $FEFC label=JumpTable_RoomImages
