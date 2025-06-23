@@ -2863,7 +2863,7 @@ c$A585 CALL $A577    ; Call #R$A577.
 ; #R$AB97, #R$AC02, #R$ACAD, #R$AD32, #R$AE36, #R$B05E, #R$B081, #R$B0A9,
 ; #R$E9B2, #R$E9D0, #R$E9FA, #R$EA0B, #R$EA44, #R$EB10, #R$ECBE, #R$ECEF,
 ; #R$ED07, #R$ED17, #R$ED27, #R$ED37, #R$ED47, #R$ED60, #R$EE35, #R$F2BA,
-; #R$F2D4, #R$F7FD, #R$F824 and #R$F8A9.
+; #R$F2FF, #R$F3AC, #R$F7FD, #R$F824 and #R$F8A9.
 ; .
 ; Shortcut print routine which prints a newline after it's done.
 @label=PrintStringAndNewline
@@ -2926,7 +2926,7 @@ c$A5A4 PUSH AF       ; Stash the character to print on the stack.
 
 ; Pause Loop
 ;
-; Used by the routines at #R$B081 and #R$F2D4.
+; Used by the routines at #R$B081 and #R$F3AC.
 ; .
 ; Pauses a given number of HALT loops.
 ;
@@ -4835,7 +4835,7 @@ c$AE36 INC BC        ; Increment #REGbc by one.
 ; Validate If Item Is Present
 ;
 ; Used by the routines at #R$AE36, #R$AEF7, #R$AFEB, #R$B01F, #R$E9E9, #R$EC13,
-; #R$EC21, #R$ECBE, #R$ED60, #R$EE35, #R$F2D4 and #R$F7FD.
+; #R$EC21, #R$ECBE, #R$ED60, #R$EE35, #R$F2FF, #R$F3AC and #R$F7FD.
 ;
 ; A Object ID
 ; F Z flag set if the object is available
@@ -4973,7 +4973,7 @@ c$AED1 LD E,A        ; #REGe=#REGa.
 ; Is Object In Inventory?
 ;
 ; Used by the routines at #R$EBA7, #R$ECA2, #R$ECEF, #R$ED07, #R$ED17, #R$ED27,
-; #R$ED37, #R$ED47, #R$ED60 and #R$F2D4.
+; #R$ED37, #R$ED47, #R$ED60 and #R$F3AC.
 ;
 ;   A Object ID
 ; O:F Z flag set if object is in the players inventory
@@ -4988,7 +4988,7 @@ c$AEDA CALL $AED1    ; Call #R$AED1.
 ; Handler: Destroy Item/ Event
 ;
 ; Used by the routines at #R$EA0B, #R$EA44, #R$EBDA, #R$ECBE, #R$EE35, #R$F2BA,
-; #R$F2D4 and #R$F7FD.
+; #R$F3AC and #R$F7FD.
 ; .
 ; Updates a given item/ event ID so it's then "inactive" (has a location
 ; ID of #N$00).
@@ -5003,7 +5003,7 @@ c$AEE0 LD B,A        ; Load the item/ event ID into #REGb.
 
 ; Handler: Update Item/ Event For The Current Room
 ;
-; Used by the routines at #R$B01F, #R$EA0B, #R$EE35, #R$F26C, #R$F293, #R$F2D4
+; Used by the routines at #R$B01F, #R$EA0B, #R$EE35, #R$F26C, #R$F293, #R$F3AC
 ; and #R$F7FD.
 ; .
 ; Updates a given item/ event ID so it appears in the current room. Used
@@ -5034,7 +5034,7 @@ c$AEF0 LD B,A        ; Copy the scenic event ID into #REGb.
 ; Check Active Scenic Events
 ;
 ; Used by the routines at #R$AF08, #R$EBB9, #R$EBC5, #R$EE35, #R$F26C, #R$F293,
-; #R$F2BA and #R$F2D4.
+; #R$F2BA, #R$F2D4, #R$F2FF and #R$F3AC.
 c$AEF7 JR $AEFA      ; Jump to #R$AEFA.
 *$AEF9 INC HL        ; Increment #REGhl by one.
 *$AEFA LD A,(HL)     ; #REGa=*#REGhl.
@@ -5068,7 +5068,7 @@ c$AF08 LD HL,$A66C   ; #REGhl=#R$A66C.
 
 ; Transform Item
 ;
-; Used by the routines at #R$ECA2, #R$EE35, #R$F26C, #R$F293 and #R$F2D4.
+; Used by the routines at #R$ECA2, #R$EE35, #R$F26C, #R$F293 and #R$F3AC.
 ; .
 ; Rather than use item properties, the game just has separate objects
 ; that don't exist until an action is performed.
@@ -5257,14 +5257,36 @@ c$AF9F CALL $AF7B    ;
 ; Routine at AFB7
 ;
 ; Used by the routines at #R$FAAD, #R$FADD, #R$FB89 and #R$FC8D.
-c$AFB7 LD A,($A825)  ;
- $AFBA CP $FF        ;
- $AFBC JR NZ,$AFC3   ;
- $AFBE CALL $AAF5    ;
- $AFC1 SCF           ;
- $AFC2 RET           ;
-*$AFC3 CALL $AEAF    ;
- $AFC6 RET           ;
+; .
+; In most adventure games, the structure for a command is "verb + direct
+; object". This is usually how the player interacts with the game world.
+; The verb describes the action, and the direct object is what the action is
+; performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
+; object "SHOE".
+;
+; O:F The carry flag is set when the command is malformed
+; O:A The number of references to items in the user input tokens
+; O:E As #REGa
+;
+; The first token is the verb, so target the second token for the direct
+; object.
+c$AFB7 LD A,($A825)  ; Fetch the #R$A825(second token from the user input) and store it in
+                     ; #REGa.
+ $AFBA CP $FF        ; {Jump forward to #R$AFC3 if the token is anything other than the
+ $AFBC JR NZ,$AFC3   ; terminator character (#N$FF).}
+; The token was the terminator character (#N$FF), so the sentence is
+; malformed.
+; .
+; E.g. They tried "TAKE" but didn't write anything after it.
+; .
+; Print "#STR$A9BD,$08($b==$FF)".
+ $AFBE CALL $AAF5    ; Call #R$AAF5.
+ $AFC1 SCF           ; Set the carry flag to indicate this call was a failure.
+ $AFC2 RET           ; Return.
+; The user input tokens have a direct object, return how many are in the
+; command buffer.
+*$AFC3 CALL $AEAF    ; Call #R$AEAF.
+ $AFC6 RET           ; Return.
 
 ; Parser: Process Item
 ;
@@ -5366,7 +5388,7 @@ c$B01F LD C,A        ;
 
 ; Routine at B05E
 ;
-; Used by the routines at #R$E99F and #R$F2D4.
+; Used by the routines at #R$E99F and #R$F39B.
 c$B05E LD HL,($A7E0) ; #REGhl=*#R$A7E0.
  $B061 LD BC,($A7EA) ; #REGbc=*#R$A7EA.
  $B065 LD A,($A824)  ; #REGa=*#R$A824.
@@ -5421,7 +5443,7 @@ c$B08A PUSH BC       ; Stash #REGbc on the stack.
 ; Add To Score
 ;
 ; Used by the routines at #R$EBDA, #R$EC07, #R$EC32, #R$EC40, #R$EC4E, #R$EC5C,
-; #R$EC6A, #R$EC78, #R$EC86, #R$EC94, #R$ECBE, #R$EE35, #R$F2D4 and #R$F7FD.
+; #R$EC6A, #R$EC78, #R$EC86, #R$EC94, #R$ECBE, #R$EE35, #R$F3AC and #R$F7FD.
 ;
 ; A Points to add
 @label=AddToScore
@@ -6134,8 +6156,8 @@ t$BB8F DEFM "an ox"  ; "#STR$BB8F,$08($b==$FF)".
 t$BB95 DEFM "a skull" ; "#STR$BB95,$08($b==$FF)".
  $BB9C DEFB $FF       ; Terminator.
 
-; Messaging: "A Dhield"
-@label=Messaging_Dhield
+; Messaging: "A Shield"
+@label=Messaging_Shield_Duplicate
 t$BB9D DEFM "a dhield" ; "#STR$BB9D,$08($b==$FF)".
  $BBA5 DEFB $FF        ; Terminator.
 
@@ -8650,131 +8672,199 @@ g$E508 DEFB $00      ; Event #N(#PC-$E508) in room #N(#PEEK(#PC)):
 ;
 ; .
 ;
-; Matches e.g. "bottle".
-; .
-; Matches e.g. "fish", "herring", "red fish", "red herring", "coloured fish",
-; "coloured herring".
-@label=PhraseTokens_
+; Matches e.g. "urn".
+@label=PhraseTokens_Urn
 g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E51A DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "helmet", "bronze helmet".
+@label=PhraseTokens_Helmet
  $E51B DEFB $32      ; #TOKEN(#PEEK(#PC)).
  $E51C DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E51D DEFB $64      ; #TOKEN(#PEEK(#PC)).
  $E51E DEFB $32      ; #TOKEN(#PEEK(#PC)).
  $E51F DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "monolith", "stone monolith".
+@label=PhraseTokens_Monolith
  $E520 DEFB $35      ; #TOKEN(#PEEK(#PC)).
  $E521 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E522 DEFB $69      ; #TOKEN(#PEEK(#PC)).
  $E523 DEFB $35      ; #TOKEN(#PEEK(#PC)).
  $E524 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "sword".
+@label=PhraseTokens_Sword
  $E525 DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E526 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "amulet", "talisman".
+@label=PhraseTokens_Amulet
  $E527 DEFB $44      ; #TOKEN(#PEEK(#PC)).
  $E528 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "staff", "oak staff".
+@label=PhraseTokens_Staff
  $E529 DEFB $4F      ; #TOKEN(#PEEK(#PC)).
  $E52A DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E52B DEFB $71      ; #TOKEN(#PEEK(#PC)).
  $E52C DEFB $4F      ; #TOKEN(#PEEK(#PC)).
  $E52D DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "body".
+@label=PhraseTokens_Body
  $E52E DEFB $50      ; #TOKEN(#PEEK(#PC)).
  $E52F DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "torc", "bronze torc".
+@label=PhraseTokens_Torc
  $E530 DEFB $5A      ; #TOKEN(#PEEK(#PC)).
  $E531 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E532 DEFB $64      ; #TOKEN(#PEEK(#PC)).
  $E533 DEFB $5A      ; #TOKEN(#PEEK(#PC)).
  $E534 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "salt".
+@label=PhraseTokens_Salt
  $E535 DEFB $2C      ; #TOKEN(#PEEK(#PC)).
  $E536 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "pot", "clay pot".
+@label=PhraseTokens_Pot
  $E537 DEFB $2D      ; #TOKEN(#PEEK(#PC)).
  $E538 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E539 DEFB $65      ; #TOKEN(#PEEK(#PC)).
  $E53A DEFB $2D      ; #TOKEN(#PEEK(#PC)).
  $E53B DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "acorns".
+@label=PhraseTokens_Acorns
  $E53C DEFB $2E      ; #TOKEN(#PEEK(#PC)).
  $E53D DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "food".
+@label=PhraseTokens_Food
  $E53E DEFB $33      ; #TOKEN(#PEEK(#PC)).
  $E53F DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "iron".
+@label=PhraseTokens_Iron
  $E540 DEFB $34      ; #TOKEN(#PEEK(#PC)).
  $E541 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "vase".
+@label=PhraseTokens_Vase
  $E542 DEFB $3A      ; #TOKEN(#PEEK(#PC)).
  $E543 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "meat".
+@label=PhraseTokens_Meat
  $E544 DEFB $3D      ; #TOKEN(#PEEK(#PC)).
  $E545 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "slab", "stone slab".
+@label=PhraseTokens_Slab
  $E546 DEFB $30      ; #TOKEN(#PEEK(#PC)).
  $E547 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E548 DEFB $69      ; #TOKEN(#PEEK(#PC)).
  $E549 DEFB $30      ; #TOKEN(#PEEK(#PC)).
  $E54A DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "rope".
+@label=PhraseTokens_Rope
  $E54B DEFB $47      ; #TOKEN(#PEEK(#PC)).
  $E54C DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "skull", "human skull".
+@label=PhraseTokens_Skull
  $E54D DEFB $5B      ; #TOKEN(#PEEK(#PC)).
  $E54E DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E54F DEFB $70      ; #TOKEN(#PEEK(#PC)).
  $E550 DEFB $5B      ; #TOKEN(#PEEK(#PC)).
  $E551 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "shield".
+@label=PhraseTokens_Shield
  $E552 DEFB $4A      ; #TOKEN(#PEEK(#PC)).
  $E553 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "ladder".
+@label=PhraseTokens_Ladder
  $E554 DEFB $4D      ; #TOKEN(#PEEK(#PC)).
  $E555 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "cloak", "white cloak".
+@label=PhraseTokens_Cloak
  $E556 DEFB $51      ; #TOKEN(#PEEK(#PC)).
  $E557 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E558 DEFB $6B      ; #TOKEN(#PEEK(#PC)).
  $E559 DEFB $51      ; #TOKEN(#PEEK(#PC)).
  $E55A DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "silver".
+@label=PhraseTokens_Silver
  $E55B DEFB $52      ; #TOKEN(#PEEK(#PC)).
  $E55C DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "meat from trader".
+@label=PhraseTokens_MeatFromTrader
  $E55D DEFB $3D      ; #TOKEN(#PEEK(#PC)).
  $E55E DEFB $61      ; #TOKEN(#PEEK(#PC)).
  $E55F DEFB $3E      ; #TOKEN(#PEEK(#PC)).
  $E560 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "amulet from druid", "talisman from druid".
+@label=PhraseTokens_AmuletFromDruid
  $E561 DEFB $44      ; #TOKEN(#PEEK(#PC)).
  $E562 DEFB $61      ; #TOKEN(#PEEK(#PC)).
  $E563 DEFB $43      ; #TOKEN(#PEEK(#PC)).
  $E564 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "cloak from body".
+@label=PhraseTokens_CloakFromBody
  $E565 DEFB $51      ; #TOKEN(#PEEK(#PC)).
  $E566 DEFB $61      ; #TOKEN(#PEEK(#PC)).
  $E567 DEFB $50      ; #TOKEN(#PEEK(#PC)).
  $E568 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "meat to bear".
+@label=PhraseTokens_MeatToBear
  $E569 DEFB $3D      ; #TOKEN(#PEEK(#PC)).
  $E56A DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E56B DEFB $41      ; #TOKEN(#PEEK(#PC)).
  $E56C DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "meat to wolves".
+@label=PhraseTokens_MeatToWolves
  $E56D DEFB $3D      ; #TOKEN(#PEEK(#PC)).
  $E56E DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E56F DEFB $40      ; #TOKEN(#PEEK(#PC)).
  $E570 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "acorns to raven".
+@label=PhraseTokens_AcornsToRaven
  $E571 DEFB $2E      ; #TOKEN(#PEEK(#PC)).
  $E572 DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E573 DEFB $31      ; #TOKEN(#PEEK(#PC)).
  $E574 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "sword to trader".
+@label=PhraseTokens_SwordToTrader
  $E575 DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E576 DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E577 DEFB $3E      ; #TOKEN(#PEEK(#PC)).
  $E578 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "salt to guard".
+@label=PhraseTokens_SaltToGuard
  $E579 DEFB $2C      ; #TOKEN(#PEEK(#PC)).
  $E57A DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E57B DEFB $42      ; #TOKEN(#PEEK(#PC)).
  $E57C DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "iron to trader".
+@label=PhraseTokens_IronToTrader
  $E57D DEFB $34      ; #TOKEN(#PEEK(#PC)).
  $E57E DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E57F DEFB $3E      ; #TOKEN(#PEEK(#PC)).
  $E580 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "roman to druid".
+@label=PhraseTokens_RomanToDruid
  $E581 DEFB $25      ; #TOKEN(#PEEK(#PC)).
  $E582 DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E583 DEFB $43      ; #TOKEN(#PEEK(#PC)).
  $E584 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "food to bear".
+@label=PhraseTokens_FoodToBear
  $E585 DEFB $33      ; #TOKEN(#PEEK(#PC)).
  $E586 DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E587 DEFB $41      ; #TOKEN(#PEEK(#PC)).
  $E588 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "food to wolves".
+@label=PhraseTokens_FoodToWolves
  $E589 DEFB $33      ; #TOKEN(#PEEK(#PC)).
  $E58A DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E58B DEFB $40      ; #TOKEN(#PEEK(#PC)).
  $E58C DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "salt to trader".
+@label=PhraseTokens_SaltToTrader
  $E58D DEFB $2C      ; #TOKEN(#PEEK(#PC)).
  $E58E DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E58F DEFB $3E      ; #TOKEN(#PEEK(#PC)).
  $E590 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "sword from slab", "sword from stone slab", "sword from
+; groove".
+@label=PhraseTokens_SwordFromSlab
  $E591 DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E592 DEFB $61      ; #TOKEN(#PEEK(#PC)).
  $E593 DEFB $30      ; #TOKEN(#PEEK(#PC)).
@@ -8788,6 +8878,8 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E59B DEFB $61      ; #TOKEN(#PEEK(#PC)).
  $E59C DEFB $49      ; #TOKEN(#PEEK(#PC)).
  $E59D DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "salt to warrior", "salt to armed warrior".
+@label=PhraseTokens_SaltToWarrior
  $E59E DEFB $2C      ; #TOKEN(#PEEK(#PC)).
  $E59F DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E5A0 DEFB $37      ; #TOKEN(#PEEK(#PC)).
@@ -8797,6 +8889,8 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E5A4 DEFB $72      ; #TOKEN(#PEEK(#PC)).
  $E5A5 DEFB $37      ; #TOKEN(#PEEK(#PC)).
  $E5A6 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "helmet to trader", "bronze helmet to trader".
+@label=PhraseTokens_HelmetToTrader
  $E5A7 DEFB $32      ; #TOKEN(#PEEK(#PC)).
  $E5A8 DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E5A9 DEFB $3E      ; #TOKEN(#PEEK(#PC)).
@@ -8806,14 +8900,20 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E5AD DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E5AE DEFB $3E      ; #TOKEN(#PEEK(#PC)).
  $E5AF DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "shield to trader".
+@label=PhraseTokens_ShieldToTrader
  $E5B0 DEFB $4A      ; #TOKEN(#PEEK(#PC)).
  $E5B1 DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E5B2 DEFB $3E      ; #TOKEN(#PEEK(#PC)).
  $E5B3 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "iron to guard".
+@label=PhraseTokens_IronToGuard
  $E5B4 DEFB $34      ; #TOKEN(#PEEK(#PC)).
  $E5B5 DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E5B6 DEFB $42      ; #TOKEN(#PEEK(#PC)).
  $E5B7 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "helmet to guard", "bronze helmet to guard".
+@label=PhraseTokens_HelmetToGuard
  $E5B8 DEFB $32      ; #TOKEN(#PEEK(#PC)).
  $E5B9 DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E5BA DEFB $42      ; #TOKEN(#PEEK(#PC)).
@@ -8823,10 +8923,14 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E5BE DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E5BF DEFB $42      ; #TOKEN(#PEEK(#PC)).
  $E5C0 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "silver to druid".
+@label=PhraseTokens_SilverToDruid
  $E5C1 DEFB $52      ; #TOKEN(#PEEK(#PC)).
  $E5C2 DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E5C3 DEFB $43      ; #TOKEN(#PEEK(#PC)).
  $E5C4 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "helmet to druid", "bronze helmet to druid".
+@label=PhraseTokens_HelmetToDruid
  $E5C5 DEFB $32      ; #TOKEN(#PEEK(#PC)).
  $E5C6 DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E5C7 DEFB $43      ; #TOKEN(#PEEK(#PC)).
@@ -8836,45 +8940,71 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E5CB DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E5CC DEFB $43      ; #TOKEN(#PEEK(#PC)).
  $E5CD DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "iron to druid".
+@label=PhraseTokens_IronToDruid
  $E5CE DEFB $34      ; #TOKEN(#PEEK(#PC)).
  $E5CF DEFB $6D      ; #TOKEN(#PEEK(#PC)).
  $E5D0 DEFB $43      ; #TOKEN(#PEEK(#PC)).
  $E5D1 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "meat at bear".
+@label=PhraseTokens_MeatAtBear
  $E5D2 DEFB $3D      ; #TOKEN(#PEEK(#PC)).
  $E5D3 DEFB $60      ; #TOKEN(#PEEK(#PC)).
  $E5D4 DEFB $41      ; #TOKEN(#PEEK(#PC)).
  $E5D5 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "meat at wolves".
+@label=PhraseTokens_MeatAtWolves
  $E5D6 DEFB $3D      ; #TOKEN(#PEEK(#PC)).
  $E5D7 DEFB $60      ; #TOKEN(#PEEK(#PC)).
  $E5D8 DEFB $40      ; #TOKEN(#PEEK(#PC)).
  $E5D9 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "food at bear".
+@label=PhraseTokens_FoodAtBear
  $E5DA DEFB $33      ; #TOKEN(#PEEK(#PC)).
  $E5DB DEFB $60      ; #TOKEN(#PEEK(#PC)).
  $E5DC DEFB $41      ; #TOKEN(#PEEK(#PC)).
  $E5DD DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "food at wolves".
+@label=PhraseTokens_FoodAtWolves
  $E5DE DEFB $33      ; #TOKEN(#PEEK(#PC)).
  $E5DF DEFB $60      ; #TOKEN(#PEEK(#PC)).
  $E5E0 DEFB $40      ; #TOKEN(#PEEK(#PC)).
  $E5E1 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "roman".
+@label=PhraseTokens_Roman
  $E5E2 DEFB $25      ; #TOKEN(#PEEK(#PC)).
  $E5E3 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "hare".
+@label=PhraseTokens_Hare
  $E5E4 DEFB $29      ; #TOKEN(#PEEK(#PC)).
  $E5E5 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "ox", "wild ox".
+@label=PhraseTokens_Ox
  $E5E6 DEFB $48      ; #TOKEN(#PEEK(#PC)).
  $E5E7 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E5E8 DEFB $63      ; #TOKEN(#PEEK(#PC)).
  $E5E9 DEFB $48      ; #TOKEN(#PEEK(#PC)).
  $E5EA DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "trap", "hare from trap".
+@label=PhraseTokens_Trap
  $E5EB DEFB $2A      ; #TOKEN(#PEEK(#PC)).
  $E5EC DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E5ED DEFB $29      ; #TOKEN(#PEEK(#PC)).
  $E5EE DEFB $61      ; #TOKEN(#PEEK(#PC)).
  $E5EF DEFB $2A      ; #TOKEN(#PEEK(#PC)).
  $E5F0 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "pig".
+@label=PhraseTokens_Pig
  $E5F1 DEFB $46      ; #TOKEN(#PEEK(#PC)).
  $E5F2 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "water".
+@label=PhraseTokens_Water
  $E5F3 DEFB $54      ; #TOKEN(#PEEK(#PC)).
  $E5F4 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "in pool", "into pool", "in pool of water", "into pool of
+; water", "in deep pool", "into deep pool", "in deep pool of water", "into deep
+; pool of water".
+@label=PhraseTokens_IntoPool
  $E5F5 DEFB $6F      ; #TOKEN(#PEEK(#PC)).
  $E5F6 DEFB $2B      ; #TOKEN(#PEEK(#PC)).
  $E5F7 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
@@ -8893,12 +9023,19 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E604 DEFB $68      ; #TOKEN(#PEEK(#PC)).
  $E605 DEFB $54      ; #TOKEN(#PEEK(#PC)).
  $E606 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "in lake", "into lake".
+@label=PhraseTokens_IntoLake
  $E607 DEFB $6F      ; #TOKEN(#PEEK(#PC)).
  $E608 DEFB $4C      ; #TOKEN(#PEEK(#PC)).
  $E609 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "in water", "into water".
+@label=PhraseTokens_IntoWater
  $E60A DEFB $6F      ; #TOKEN(#PEEK(#PC)).
  $E60B DEFB $54      ; #TOKEN(#PEEK(#PC)).
  $E60C DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "on straw", "onto straw", "on pile of straw", "onto pile
+; of straw", "on straw pile", "onto straw pile", "from platform".
+@label=PhraseTokens_OntoStraw
  $E60D DEFB $6E      ; #TOKEN(#PEEK(#PC)).
  $E60E DEFB $4E      ; #TOKEN(#PEEK(#PC)).
  $E60F DEFB $FD      ; #TOKEN(#PEEK(#PC)).
@@ -8914,6 +9051,9 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E619 DEFB $61      ; #TOKEN(#PEEK(#PC)).
  $E61A DEFB $53      ; #TOKEN(#PEEK(#PC)).
  $E61B DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "out of pool", "out of pool of water", "out of deep pool",
+; "out of deep pool of water".
+@label=PhraseTokens_OutOfPool
  $E61C DEFB $74      ; #TOKEN(#PEEK(#PC)).
  $E61D DEFB $68      ; #TOKEN(#PEEK(#PC)).
  $E61E DEFB $2B      ; #TOKEN(#PEEK(#PC)).
@@ -8936,34 +9076,58 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E62F DEFB $68      ; #TOKEN(#PEEK(#PC)).
  $E630 DEFB $54      ; #TOKEN(#PEEK(#PC)).
  $E631 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "out of lake".
+@label=PhraseTokens_OutOfLake
  $E632 DEFB $74      ; #TOKEN(#PEEK(#PC)).
  $E633 DEFB $68      ; #TOKEN(#PEEK(#PC)).
  $E634 DEFB $4C      ; #TOKEN(#PEEK(#PC)).
  $E635 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "out of water".
+@label=PhraseTokens_OutOfWater
  $E636 DEFB $74      ; #TOKEN(#PEEK(#PC)).
  $E637 DEFB $68      ; #TOKEN(#PEEK(#PC)).
  $E638 DEFB $54      ; #TOKEN(#PEEK(#PC)).
  $E639 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "out".
+@label=PhraseTokens_Out
  $E63A DEFB $74      ; #TOKEN(#PEEK(#PC)).
  $E63B DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "u ladder", "up ladder".
+@label=PhraseTokens_UpLadder
  $E63C DEFB $0C      ; #TOKEN(#PEEK(#PC)).
  $E63D DEFB $4D      ; #TOKEN(#PEEK(#PC)).
  $E63E DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "d ladder", "down ladder".
+@label=PhraseTokens_DownLadder
  $E63F DEFB $0D      ; #TOKEN(#PEEK(#PC)).
  $E640 DEFB $4D      ; #TOKEN(#PEEK(#PC)).
  $E641 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "n", "north".
+@label=PhraseTokens_North
  $E642 DEFB $08      ; #TOKEN(#PEEK(#PC)).
  $E643 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "s", "south".
+@label=PhraseTokens_South
  $E644 DEFB $09      ; #TOKEN(#PEEK(#PC)).
  $E645 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "e", "east".
+@label=PhraseTokens_East
  $E646 DEFB $0A      ; #TOKEN(#PEEK(#PC)).
  $E647 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "w", "west".
+@label=PhraseTokens_West
  $E648 DEFB $0B      ; #TOKEN(#PEEK(#PC)).
  $E649 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "u", "up".
+@label=PhraseTokens_Up
  $E64A DEFB $0C      ; #TOKEN(#PEEK(#PC)).
  $E64B DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "d", "down".
+@label=PhraseTokens_Down
  $E64C DEFB $0D      ; #TOKEN(#PEEK(#PC)).
  $E64D DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "fissure", "monolith", "stone monolith".
+@label=PhraseTokens_Fissure
  $E64E DEFB $36      ; #TOKEN(#PEEK(#PC)).
  $E64F DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E650 DEFB $35      ; #TOKEN(#PEEK(#PC)).
@@ -8971,10 +9135,17 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E652 DEFB $69      ; #TOKEN(#PEEK(#PC)).
  $E653 DEFB $35      ; #TOKEN(#PEEK(#PC)).
  $E654 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "hut".
+@label=PhraseTokens_Hut
  $E655 DEFB $39      ; #TOKEN(#PEEK(#PC)).
  $E656 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "cavern".
+@label=PhraseTokens_Cavern
  $E657 DEFB $3B      ; #TOKEN(#PEEK(#PC)).
  $E658 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "in ring", "into ring", "in crystal ring", "into crystal
+; ring", "in ring of crystals", "into ring of crystals".
+@label=PhraseTokens_IntoRing
  $E659 DEFB $6F      ; #TOKEN(#PEEK(#PC)).
  $E65A DEFB $45      ; #TOKEN(#PEEK(#PC)).
  $E65B DEFB $FD      ; #TOKEN(#PEEK(#PC)).
@@ -8987,6 +9158,8 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E662 DEFB $68      ; #TOKEN(#PEEK(#PC)).
  $E663 DEFB $66      ; #TOKEN(#PEEK(#PC)).
  $E664 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "ring", "crystal ring", "ring of crystals".
+@label=PhraseTokens_Ring
  $E665 DEFB $45      ; #TOKEN(#PEEK(#PC)).
  $E666 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E667 DEFB $66      ; #TOKEN(#PEEK(#PC)).
@@ -8996,14 +9169,22 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E66B DEFB $68      ; #TOKEN(#PEEK(#PC)).
  $E66C DEFB $66      ; #TOKEN(#PEEK(#PC)).
  $E66D DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "urn in fire", "urn in flames", "urn into fire", "urn into
+; flames".
+@label=PhraseTokens_UrnIntoFire
  $E66E DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E66F DEFB $6F      ; #TOKEN(#PEEK(#PC)).
  $E670 DEFB $4B      ; #TOKEN(#PEEK(#PC)).
  $E671 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "ladder against platform".
+@label=PhraseTokens_LadderAgainstPlatform
  $E672 DEFB $4D      ; #TOKEN(#PEEK(#PC)).
  $E673 DEFB $62      ; #TOKEN(#PEEK(#PC)).
  $E674 DEFB $53      ; #TOKEN(#PEEK(#PC)).
  $E675 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "sword on slab", "sword onto slab", "sword on stone slab",
+; "sword onto stone slab", "sword in groove", "sword into groove".
+@label=PhraseTokens_SwordOnSlab
  $E676 DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E677 DEFB $6E      ; #TOKEN(#PEEK(#PC)).
  $E678 DEFB $30      ; #TOKEN(#PEEK(#PC)).
@@ -9017,12 +9198,17 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E680 DEFB $6F      ; #TOKEN(#PEEK(#PC)).
  $E681 DEFB $49      ; #TOKEN(#PEEK(#PC)).
  $E682 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "meat from trader", "meat".
+@label=PhraseTokens__MeatFromTrader
  $E683 DEFB $3D      ; #TOKEN(#PEEK(#PC)).
  $E684 DEFB $61      ; #TOKEN(#PEEK(#PC)).
  $E685 DEFB $3E      ; #TOKEN(#PEEK(#PC)).
  $E686 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E687 DEFB $3D      ; #TOKEN(#PEEK(#PC)).
  $E688 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "meat with iron", "meat using iron", "meat from trader
+; with iron", "meat from trader using iron".
+@label=PhraseTokens_MeatWithIron
  $E689 DEFB $3D      ; #TOKEN(#PEEK(#PC)).
  $E68A DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E68B DEFB $34      ; #TOKEN(#PEEK(#PC)).
@@ -9033,6 +9219,13 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E690 DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E691 DEFB $34      ; #TOKEN(#PEEK(#PC)).
  $E692 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "meat with salt", "meat using salt", "meat from trader
+; with salt", "meat from trader using salt", "meat with acorns", "meat using
+; acorns", "meat from trader with acorns", "meat from trader using acorns",
+; "meat with helmet", "meat using helmet", "meat from trader with helmet",
+; "meat from trader using helmet", "meat with sword", "meat using sword", "meat
+; from trader with sword", "meat from trader using sword".
+@label=PhraseTokens_MeatWithSalt
  $E693 DEFB $3D      ; #TOKEN(#PEEK(#PC)).
  $E694 DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E695 DEFB $2C      ; #TOKEN(#PEEK(#PC)).
@@ -9073,6 +9266,9 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E6B8 DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E6B9 DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E6BA DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "in ring", "into ring", "in crystal ring", "into crystal
+; ring", "in ring of crystals", "into ring of crystals".
+@label=PhraseTokens_IntoRing_Duplicate
  $E6BB DEFB $6F      ; #TOKEN(#PEEK(#PC)).
  $E6BC DEFB $45      ; #TOKEN(#PEEK(#PC)).
  $E6BD DEFB $FD      ; #TOKEN(#PEEK(#PC)).
@@ -9085,65 +9281,88 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E6C4 DEFB $68      ; #TOKEN(#PEEK(#PC)).
  $E6C5 DEFB $66      ; #TOKEN(#PEEK(#PC)).
  $E6C6 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "roman", "roman with sword", "roman using sword".
+@label=PhraseTokens_RomanWithSword
  $E6C7 DEFB $25      ; #TOKEN(#PEEK(#PC)).
  $E6C8 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E6C9 DEFB $25      ; #TOKEN(#PEEK(#PC)).
  $E6CA DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E6CB DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E6CC DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "fomorian", "fomorian with sword", "fomorian using sword".
+@label=PhraseTokens_Fomorian
  $E6CD DEFB $26      ; #TOKEN(#PEEK(#PC)).
  $E6CE DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E6CF DEFB $26      ; #TOKEN(#PEEK(#PC)).
  $E6D0 DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E6D1 DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E6D2 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "hare", "hare with sword", "hare using sword".
+@label=PhraseTokens_HareWithSword
  $E6D3 DEFB $29      ; #TOKEN(#PEEK(#PC)).
  $E6D4 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E6D5 DEFB $29      ; #TOKEN(#PEEK(#PC)).
  $E6D6 DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E6D7 DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E6D8 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "trader", "trader with sword", "trader using sword".
+@label=PhraseTokens_Trader
  $E6D9 DEFB $3E      ; #TOKEN(#PEEK(#PC)).
  $E6DA DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E6DB DEFB $3E      ; #TOKEN(#PEEK(#PC)).
  $E6DC DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E6DD DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E6DE DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "warrior", "armed warrior".
+@label=PhraseTokens_Warrior
  $E6DF DEFB $37      ; #TOKEN(#PEEK(#PC)).
  $E6E0 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E6E1 DEFB $72      ; #TOKEN(#PEEK(#PC)).
  $E6E2 DEFB $37      ; #TOKEN(#PEEK(#PC)).
  $E6E3 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "wolves", "wolves with sword", "wolves using sword".
+@label=PhraseTokens_Wolves
  $E6E4 DEFB $40      ; #TOKEN(#PEEK(#PC)).
  $E6E5 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E6E6 DEFB $40      ; #TOKEN(#PEEK(#PC)).
  $E6E7 DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E6E8 DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E6E9 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "bear", "bear with sword", "bear using sword".
+@label=PhraseTokens_Bear
  $E6EA DEFB $41      ; #TOKEN(#PEEK(#PC)).
  $E6EB DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E6EC DEFB $41      ; #TOKEN(#PEEK(#PC)).
  $E6ED DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E6EE DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E6EF DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "guard", "guard with sword", "guard using sword".
+@label=PhraseTokens_Guard
  $E6F0 DEFB $42      ; #TOKEN(#PEEK(#PC)).
  $E6F1 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E6F2 DEFB $42      ; #TOKEN(#PEEK(#PC)).
  $E6F3 DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E6F4 DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E6F5 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "druid", "druid with sword", "druid using sword".
+@label=PhraseTokens_Druid
  $E6F6 DEFB $43      ; #TOKEN(#PEEK(#PC)).
  $E6F7 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E6F8 DEFB $43      ; #TOKEN(#PEEK(#PC)).
  $E6F9 DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E6FA DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E6FB DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "pig", "pig with sword", "pig using sword".
+@label=PhraseTokens_PigWithSword
  $E6FC DEFB $46      ; #TOKEN(#PEEK(#PC)).
  $E6FD DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E6FE DEFB $46      ; #TOKEN(#PEEK(#PC)).
  $E6FF DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E700 DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E701 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "ox", "wild ox", "ox with sword", "ox using sword", "wild
+; ox with sword", "wild ox using sword".
+@label=PhraseTokens_OxWithSword
  $E702 DEFB $48      ; #TOKEN(#PEEK(#PC)).
  $E703 DEFB $FD      ; #TOKEN(#PEEK(#PC)).
  $E704 DEFB $63      ; #TOKEN(#PEEK(#PC)).
@@ -9158,8 +9377,12 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
  $E70D DEFB $6C      ; #TOKEN(#PEEK(#PC)).
  $E70E DEFB $3C      ; #TOKEN(#PEEK(#PC)).
  $E70F DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "hill".
+@label=PhraseTokens_Hill
  $E710 DEFB $5C      ; #TOKEN(#PEEK(#PC)).
  $E711 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; Matches e.g. "broch".
+@label=PhraseTokens_Broch
  $E712 DEFB $5D      ; #TOKEN(#PEEK(#PC)).
  $E713 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
 
@@ -10657,8 +10880,9 @@ c$EA44 LD HL,$CA79   ; #REGhl=#R$CA79.
  $EA4F LD HL,$CA94   ; #REGhl=#R$CA94.
  $EA52 JR NZ,$EA5C   ; Jump to #R$EA5C if ?? is not equal to #N$14.
  $EA54 POP HL        ; Restore #REGhl from the stack.
- $EA55 LD HL,$E9B2   ; #REGhl=#R$E9B2.
- $EA58 EX (SP),HL    ; Exchange the *#REGsp with the #REGhl register.
+; Bad luck!
+ $EA55 LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
+ $EA58 EX (SP),HL    ; over".}
  $EA59 LD HL,$CA46   ; #REGhl=#R$CA46.
 *$EA5C CALL $B081    ; Call #R$B081.
  $EA5F RET           ; Return.
@@ -10738,7 +10962,7 @@ c$EA44 LD HL,$CA79   ; #REGhl=#R$CA79.
 
 ; Routine at EB10
 ;
-; Used by the routines at #R$F2D4, #R$F8DD and #R$FCCE.
+; Used by the routines at #R$F2FF, #R$F3AC, #R$F8DD and #R$FCCE.
 c$EB10 LD ($A773),A                         ; Write #REGa to *#R$A773.
  $EB13 LD HL,$EB3A                          ; #REGhl=#R$EB3A.
  $EB16 LD DE,$EB45                          ; #REGde=#R$EB45.
@@ -11081,15 +11305,15 @@ c$ED60 LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
  $ED68 CALL $AEF0    ; }
  $ED6B RET           ; Return.
  $ED6C DEFB $1B      ;
-; This entry point is used by the routines at #R$EE35, #R$F26C, #R$F293,
-; #R$F2D4 and #R$FBB9.
+; This entry point is used by the routines at #R$EDE7, #R$EDED, #R$EE35,
+; #R$F26C, #R$F293, #R$F2EC, #R$F2FF, #R$F3AC and #R$FBB9.
 *$ED6D CALL $A592    ; Call #R$A592.
  $ED70 RET           ; Return.
-; This entry point is used by the routines at #R$EE35, #R$F2BA, #R$F2D4 and
+; This entry point is used by the routines at #R$EE35, #R$F2BA, #R$F3AC and
 ; #R$F7FD.
 *$ED71 CALL $B081    ; Call #R$B081.
  $ED74 RET           ; Return.
-; This entry point is used by the routines at #R$EE35 and #R$F2D4.
+; This entry point is used by the routines at #R$EE35 and #R$F3AC.
 *$ED75 CALL $AEDA    ; Call #R$AEDA.
  $ED78 JR NZ,$ED98   ; Jump to #R$ED98 if #REGde is not equal to #N$37.
  $ED7A POP HL        ; Restore #REGhl from the stack.
@@ -11115,7 +11339,7 @@ c$ED60 LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
 ; Print "#STR$AA21,$08($b==$FF)".
  $EDA0 LD HL,$AA21   ; #REGhl=#R$AA21.
  $EDA3 JP $ED6D      ; Jump to #R$ED6D.
-; This entry point is used by the routines at #R$EE35 and #R$F2D4.
+; This entry point is used by the routines at #R$EE35 and #R$F3AC.
 *$EDA6 LD C,$01      ; #REGc=#N$01.
  $EDA8 CALL $AF08    ; Call #R$AF08.
  $EDAB LD HL,$A790   ; #REGhl=#R$A790.
@@ -11129,7 +11353,7 @@ c$ED60 LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
 ; Print "#STR$AA9B,$08($b==$FF)".
  $EDBB LD HL,$AA9B   ; #REGhl=#R$AA9B.
  $EDBE JP NZ,$ED7E   ; Jump to #R$ED7E if *#REGhl is not equal to #N$01.
-; This entry point is used by the routines at #R$EE35 and #R$F2D4.
+; This entry point is used by the routines at #R$EE35 and #R$F3AC.
 *$EDC1 LD B,E        ; #REGb=#REGe.
  $EDC2 LD A,($A7C3)  ; {#REGc=*#R$A7C3.
  $EDC5 LD C,A        ; }
@@ -11137,14 +11361,14 @@ c$ED60 LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
  $EDC9 LD HL,$A790   ; #REGhl=#R$A790.
  $EDCC DEC (HL)      ; Decrease *#REGhl by one.
  $EDCD JP $EDF3      ; Jump to #R$EDF3.
-; This entry point is used by the routines at #R$EE35 and #R$F2D4.
+; This entry point is used by the routines at #R$EE35 and #R$F3AC.
 *$EDD0 CALL $AEDA    ; Call #R$AEDA.
  $EDD3 RET Z         ; Return if *#REGhl is equal to #N$01.
  $EDD4 POP HL        ; Restore #REGhl from the stack.
 ; Print "#STR$AA9B,$08($b==$FF)".
  $EDD5 LD HL,$AA9B   ; #REGhl=#R$AA9B.
  $EDD8 JP $ED7E      ; Jump to #R$ED7E.
-; This entry point is used by the routine at #R$F2D4.
+; This entry point is used by the routine at #R$F3AC.
 *$EDDB LD HL,$E091   ; #REGhl=#R$E091.
  $EDDE JP $ED6D      ; Jump to #R$ED6D.
 ; This entry point is used by the routine at #R$EE35.
@@ -11152,26 +11376,37 @@ c$ED60 LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
 ; Print "#STR$A9BD,$08($b==$FF)".
 *$EDE1 LD HL,$A9BD   ; #REGhl=#R$A9BD.
  $EDE4 JP $ED6D      ; Jump to #R$ED6D.
-; This entry point is used by the routines at #R$F853, #R$F956, #R$F975,
-; #R$F9B3, #R$FA29, #R$FA91, #R$FAAD, #R$FADD, #R$FB21, #R$FB5D, #R$FB89,
-; #R$FC2F and #R$FC8D.
+
+; Response: "Please Rephrase That"
+;
+; Used by the routines at #R$F853, #R$F956, #R$F975, #R$F9B3, #R$FA29, #R$FA91,
+; #R$FAAD, #R$FADD, #R$FB21, #R$FB5D, #R$FB89, #R$FC2F and #R$FC8D.
+;
 ; .
+;
 ; Print "#STR$A9D6,$08($b==$FF)".
-*$EDE7 LD HL,$A9D6   ; #REGhl=#R$A9D6.
+@label=Response_PleaseRephraseThat_Duplicate
+c$EDE7 LD HL,$A9D6   ; #REGhl=#R$A9D6.
  $EDEA JP $ED6D      ; Jump to #R$ED6D.
-; This entry point is used by the routines at #R$EE35, #R$F2D4, #R$F8F2,
-; #R$F975, #R$FA6A, #R$FA91, #R$FAAD, #R$FADD, #R$FB21, #R$FB89, #R$FBDE,
-; #R$FBF5, #R$FC10, #R$FC2F, #R$FC4B and #R$FC8D.
+
+; Routine at EDED
+;
+; Used by the routines at #R$EE35, #R$F2FF, #R$F3AC, #R$F8F2, #R$F975, #R$FA6A,
+; #R$FA91, #R$FAAD, #R$FADD, #R$FB21, #R$FB89, #R$FBDE, #R$FBF5, #R$FC10,
+; #R$FC2F, #R$FC4B and #R$FC8D.
+;
 ; .
+;
 ; Print "#STR$A9EC,$08($b==$FF)".
-*$EDED LD HL,$A9EC   ; #REGhl=#R$A9EC.
+c$EDED LD HL,$A9EC   ; #REGhl=#R$A9EC.
  $EDF0 JP $ED6D      ; Jump to #R$ED6D.
-; This entry point is used by the routines at #R$F26C, #R$F293 and #R$F2D4.
+; This entry point is used by the routines at #R$ED60, #R$F26C, #R$F293 and
+; #R$F3AC.
 ; .
 ; Print "#STR$A9F7,$08($b==$FF)".
 *$EDF3 LD HL,$A9F7   ; #REGhl=#R$A9F7.
  $EDF6 JP $ED6D      ; Jump to #R$ED6D.
-; This entry point is used by the routines at #R$F2BA, #R$F2D4 and #R$F9E2.
+; This entry point is used by the routines at #R$F2BA, #R$F3AC and #R$F9E2.
 ; .
 ; Print "#STR$AA84,$08($b==$FF)".
 *$EDF9 LD HL,$AA84   ; #REGhl=#R$AA84.
@@ -11184,7 +11419,7 @@ c$ED60 LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
 ; Print "#STR$CDD3,$08($b==$FF)".
 *$EE05 LD HL,$CDD3   ; #REGhl=#R$CDD3.
  $EE08 JP $ED6D      ; Jump to #R$ED6D.
-; This entry point is used by the routine at #R$F2D4.
+; This entry point is used by the routines at #R$F2FF and #R$F3AC.
 ; .
 ; Print "#STR$CDE8,$08($b==$FF)".
 *$EE0B LD HL,$CDE8   ; #REGhl=#R$CDE8.
@@ -11212,7 +11447,7 @@ c$ED60 LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
 ; Print "#STR$D05D,$08($b==$FF)".
  $EE29 LD HL,$D05D   ; #REGhl=#R$D05D.
  $EE2C JP $ED6D      ; Jump to #R$ED6D.
-; This entry point is used by the routine at #R$F2D4.
+; This entry point is used by the routine at #R$F2FF.
 ; .
 ; Print "#STR$D748,$08($b==$FF)".
 *$EE2F LD HL,$D748   ; #REGhl=#R$D748.
@@ -11226,7 +11461,7 @@ c$EE35 LD HL,$D75A   ;
 ; This entry point is used by the routine at #R$F293.
 *$EE3B LD HL,$D769   ;
  $EE3E JP $ED6D      ;
-; This entry point is used by the routine at #R$F2D4.
+; This entry point is used by the routine at #R$F3AC.
 *$EE41 LD HL,$DA82   ;
  $EE44 JP $ED6D      ;
 ; This entry point is used by the routine at #R$FBC3.
@@ -11686,522 +11921,538 @@ c$F2BA LD HL,$E353   ;
  $F2D1 JP $ED71      ;
 
 ; Routine at F2D4
-c$F2D4 LD HL,$E3B0     ;
- $F2D7 CALL $AEF7      ;
- $F2DA CP $51          ;
- $F2DC JP Z,$EE35      ;
- $F2DF CP $0B          ;
- $F2E1 JP Z,$F293      ;
- $F2E4 CP $55          ;
- $F2E6 JP Z,$F293      ;
- $F2E9 JP $F26C        ;
- $F2EC LD A,($A7C3)    ;
- $F2EF CP $2A          ;
- $F2F1 JR NZ,$F2F9     ;
- $F2F3 LD HL,$D8E7     ;
- $F2F6 JP $ED6D        ;
-*$F2F9 LD HL,$D8FD     ;
- $F2FC JP $ED6D        ;
-*$F2FF LD A,($A7C3)    ;
- $F302 CP $0C          ;
- $F304 JP Z,$EE0B      ;
- $F307 CP $15          ;
- $F309 JP Z,$EE0B      ;
- $F30C CP $05          ;
- $F30E JR NZ,$F314     ;
- $F310 LD A,$0C        ;
- $F312 JR $F316        ;
-*$F314 LD A,$15        ;
-*$F316 CALL $EB10      ;
- $F319 CALL $F7AC      ;
- $F31C RET             ;
-*$F31D LD A,$37        ;
- $F31F CALL $AE6B      ;
- $F322 JR NZ,$F32E     ;
- $F324 LD HL,$E9B2     ;
- $F327 EX (SP),HL      ;
- $F328 LD HL,$D919     ;
- $F32B JP $ED6D        ;
-*$F32E LD HL,$D973     ;
- $F331 CALL $A592      ;
- $F334 CALL $F7AC      ;
- $F337 RET             ;
- $F338 LD HL,$E3E7     ;
- $F33B CALL $AEF7      ;
- $F33E CP $6C          ;
- $F340 JP Z,$F31D      ;
- $F343 CP $32          ;
- $F345 JP Z,$EE0B      ;
- $F348 JP $F2FF        ;
- $F34B LD A,($A7C3)    ;
- $F34E CP $63          ;
- $F350 JP Z,$EE0B      ;
- $F353 LD A,$63        ;
- $F355 CALL $EB10      ;
- $F358 RET             ;
-*$F359 LD A,($A7C3)    ;
- $F35C LD B,$05        ;
- $F35E CP $0C          ;
- $F360 JR Z,$F369      ;
- $F362 CP $15          ;
- $F364 JP NZ,$EE2F     ;
- $F367 LD B,$14        ;
-*$F369 LD A,B          ;
- $F36A CALL $EB10      ;
- $F36D RET             ;
- $F36E LD A,($A7C3)    ;
- $F371 CP $0D          ;
- $F373 JP Z,$EDED      ;
- $F376 CP $0C          ;
- $F378 JP Z,$F359      ;
- $F37B CP $15          ;
- $F37D JP Z,$F359      ;
- $F380 JP $EE2F        ;
- $F383 LD A,($A7C3)    ;
- $F386 CP $0D          ;
- $F388 JP Z,$EDED      ;
- $F38B CP $0C          ;
- $F38D JP Z,$F359      ;
- $F390 CP $15          ;
- $F392 JP Z,$F359      ;
- $F395 LD HL,$D9A3     ;
- $F398 JP $ED6D        ;
- $F39B LD IX,$A824     ;
- $F39F LD A,(IX+$01)   ;
- $F3A2 LD (IX+$00),A   ;
- $F3A5 LD (IX+$01),$FF ;
- $F3A9 JP $B05E        ;
- $F3AC LD A,$5E        ;
- $F3AE CALL $AE6B      ;
- $F3B1 JP NZ,$EDED     ;
- $F3B4 LD A,$60        ;
- $F3B6 CALL $EB10      ;
- $F3B9 RET             ;
- $F3BA LD A,$5C        ;
- $F3BC CALL $AE6B      ;
- $F3BF JP NZ,$EDED     ;
- $F3C2 LD A,$63        ;
- $F3C4 CALL $EB10      ;
- $F3C7 RET             ;
- $F3C8 LD A,($A7C3)    ;
- $F3CB CP $18          ;
- $F3CD JP NZ,$EE0B     ;
- $F3D0 LD A,$19        ;
- $F3D2 CALL $EB10      ;
- $F3D5 RET             ;
- $F3D6 LD A,($A7C3)    ;
- $F3D9 CP $2C          ;
- $F3DB JR NZ,$F3E1     ;
- $F3DD LD A,$24        ;
- $F3DF JR $F3E8        ;
-*$F3E1 CP $52          ;
- $F3E3 JP NZ,$EE0B     ;
- $F3E6 LD A,$4E        ;
-*$F3E8 CALL $EB10      ;
- $F3EB RET             ;
- $F3EC LD A,($A7C3)    ;
- $F3EF CP $06          ;
- $F3F1 JR NZ,$F3F7     ;
- $F3F3 LD A,$05        ;
- $F3F5 JR $F406        ;
-*$F3F7 CP $41          ;
- $F3F9 JR NZ,$F3FF     ;
- $F3FB LD A,$42        ;
- $F3FD JR $F406        ;
-*$F3FF CP $4B          ;
- $F401 JP NZ,$EE0B     ;
- $F404 LD A,$4F        ;
-*$F406 CALL $EB10      ;
- $F409 RET             ;
- $F40A LD HL,$D9CF     ;
- $F40D JP $ED6D        ;
- $F410 LD HL,$DA24     ;
- $F413 JP $ED6D        ;
- $F416 LD A,($A7C3)    ;
- $F419 CP $60          ;
- $F41B JP NZ,$EDED     ;
- $F41E LD HL,$E9B2     ;
- $F421 EX (SP),HL      ;
- $F422 LD HL,$DA42     ;
- $F425 JP $ED6D        ;
- $F428 LD HL,$E366     ;
- $F42B CALL $AEF7      ;
- $F42E CALL $EDD0      ;
- $F431 LD A,E          ;
- $F432 CP $69          ;
- $F434 JP NZ,$EE41     ;
- $F437 LD BC,$696A     ;
- $F43A CALL $AF1E      ;
- $F43D JP $EDF3        ;
- $F440 LD HL,$E36B     ;
- $F443 CALL $AEF7      ;
- $F446 CALL $EDD0      ;
- $F449 LD A,E          ;
- $F44A CP $1F          ;
- $F44C JP NZ,$EE41     ;
- $F44F LD BC,$1F20     ;
- $F452 CALL $AF1E      ;
- $F455 JP $EDF3        ;
- $F458 LD HL,$E3A6     ;
- $F45B CALL $AEF7      ;
- $F45E CALL $EDD0      ;
- $F461 LD A,E          ;
- $F462 CP $4B          ;
- $F464 JP NZ,$EE41     ;
- $F467 LD BC,$4B4C     ;
- $F46A CALL $AF1E      ;
- $F46D LD BC,$292A     ;
- $F470 CALL $AF1E      ;
- $F473 LD A,$18        ;
- $F475 LD ($E7D5),A    ;
- $F478 LD A,($A7C3)    ;
- $F47B CP $20          ;
- $F47D JP NZ,$EDF3     ;
- $F480 CALL $EDF3      ;
- $F483 LD HL,$B50E     ;
- $F486 JP $ED6D        ;
- $F489 LD HL,$E3A6     ;
- $F48C CALL $AEF7      ;
- $F48F CALL $EDD0      ;
- $F492 LD A,E          ;
- $F493 CP $4B          ;
- $F495 JP Z,$EDC1      ;
- $F498 LD BC,$4C4B     ;
- $F49B CALL $AF1E      ;
- $F49E LD BC,$2A29     ;
- $F4A1 CALL $AF1E      ;
- $F4A4 XOR A           ;
- $F4A5 LD ($E7D5),A    ;
- $F4A8 LD E,$4B        ;
- $F4AA CALL $EDC1      ;
- $F4AD LD A,($A7C3)    ;
- $F4B0 CP $20          ;
- $F4B2 RET NZ          ;
- $F4B3 LD HL,$B4A0     ;
- $F4B6 JP $ED6D        ;
- $F4B9 LD A,($A7C3)    ;
- $F4BC CP $4F          ;
- $F4BE JP NZ,$EDED     ;
- $F4C1 LD A,$12        ;
- $F4C3 CALL $AEE0      ;
- $F4C6 LD A,$1C        ;
- $F4C8 CALL $AEE0      ;
- $F4CB LD A,$04        ;
- $F4CD CALL $AEE0      ;
- $F4D0 LD A,$05        ;
- $F4D2 CALL $AEE0      ;
- $F4D5 LD BC,$0F10     ;
- $F4D8 CALL $AF1E      ;
- $F4DB LD HL,$A76D     ;
- $F4DE SET 5,(HL)      ;
- $F4E0 LD A,$04        ;
- $F4E2 CALL $B09A      ;
- $F4E5 LD HL,$A790     ;
- $F4E8 DEC (HL)        ;
- $F4E9 LD HL,$DA9E     ;
- $F4EC CALL $A592      ;
- $F4EF LD HL,$DB11     ;
- $F4F2 JP $ED71        ;
- $F4F5 LD A,$56        ;
- $F4F7 CALL $EDD0      ;
- $F4FA LD HL,$DBBE     ;
- $F4FD JP $ED6D        ;
- $F500 LD HL,$E3DD     ;
- $F503 CALL $AEF7      ;
- $F506 CALL $EDD0      ;
- $F509 LD A,E          ;
- $F50A CP $64          ;
- $F50C JP NZ,$EE41     ;
- $F50F LD BC,$646D     ;
- $F512 CALL $AF1E      ;
- $F515 JP $EDF3        ;
- $F518 LD A,$22        ;
- $F51A CALL $EDD0      ;
- $F51D LD A,E          ;
- $F51E CALL $AEE0      ;
- $F521 LD HL,$A790     ;
- $F524 DEC (HL)        ;
- $F525 CALL $EDF3      ;
- $F528 LD HL,$DC1D     ;
- $F52B JP $ED6D        ;
- $F52E LD A,$3A        ;
- $F530 CALL $EDD0      ;
- $F533 LD A,E          ;
- $F534 CALL $AEE0      ;
- $F537 LD HL,$A790     ;
- $F53A DEC (HL)        ;
- $F53B CALL $EDF3      ;
- $F53E LD HL,$DC41     ;
- $F541 JP $ED6D        ;
- $F544 LD HL,$E341     ;
- $F547 CALL $AEF7      ;
- $F54A CP $0B          ;
- $F54C JP Z,$EE0B      ;
- $F54F CP $0A          ;
- $F551 JP NZ,$EDED     ;
- $F554 LD A,$51        ;
- $F556 CALL $AE6B      ;
- $F559 JP NZ,$EDDB     ;
- $F55C LD BC,$0A0B     ;
- $F55F CALL $AF1E      ;
- $F562 LD A,$04        ;
- $F564 CALL $B09A      ;
- $F567 LD A,$51        ;
- $F569 CALL $AEE0      ;
- $F56C LD HL,$A790     ;
- $F56F DEC (HL)        ;
- $F570 LD HL,$A787     ;
- $F573 SET 0,(HL)      ;
- $F575 LD HL,$DC58     ;
- $F578 JP $ED6D        ;
- $F57B LD HL,$E3C5     ;
- $F57E CALL $AEF7      ;
- $F581 CP $5E          ;
- $F583 JP Z,$EE0B      ;
- $F586 CP $5C          ;
- $F588 JP Z,$EE0B      ;
- $F58B CALL $EDD0      ;
- $F58E LD A,$5A        ;
- $F590 CALL $AEE0      ;
- $F593 LD A,$5E        ;
- $F595 CALL $AEE7      ;
- $F598 LD HL,$A790     ;
- $F59B DEC (HL)        ;
- $F59C LD A,$60        ;
- $F59E LD ($E96A),A    ;
- $F5A1 LD A,$63        ;
- $F5A3 LD ($E959),A    ;
- $F5A6 LD HL,$A76C     ;
- $F5A9 BIT 6,(HL)      ;
- $F5AB JP NZ,$EDF3     ;
- $F5AE SET 6,(HL)      ;
- $F5B0 LD A,$04        ;
- $F5B2 CALL $B09A      ;
- $F5B5 JP $EDF3        ;
- $F5B8 LD HL,$E392     ;
- $F5BB CALL $AEF7      ;
- $F5BE CP $59          ;
- $F5C0 JP Z,$EE0B      ;
- $F5C3 CP $39          ;
- $F5C5 JP Z,$EDF9      ;
- $F5C8 CALL $EDD0      ;
- $F5CB LD A,E          ;
- $F5CC CALL $AEE0      ;
- $F5CF LD BC,$5859     ;
- $F5D2 CALL $AF1E      ;
- $F5D5 LD HL,$A790     ;
- $F5D8 DEC (HL)        ;
- $F5D9 LD HL,$A76D     ;
- $F5DC BIT 4,(HL)      ;
- $F5DE JP NZ,$EDF3     ;
- $F5E1 SET 4,(HL)      ;
- $F5E3 LD A,$04        ;
- $F5E5 CALL $B09A      ;
- $F5E8 JP $EDF3        ;
- $F5EB LD A,$3C        ;
- $F5ED CALL $AE6B      ;
- $F5F0 JP NZ,$EDED     ;
- $F5F3 LD HL,$DCA8     ;
- $F5F6 JP $ED6D        ;
- $F5F9 LD A,($A7C3)    ;
- $F5FC CP $43          ;
- $F5FE JR NZ,$F604     ;
- $F600 LD A,$57        ;
- $F602 JR $F60F        ;
-*$F604 LD A,$43        ;
- $F606 LD HL,$A76D     ;
- $F609 BIT 5,(HL)      ;
- $F60B JR Z,$F60F      ;
- $F60D LD A,$56        ;
-*$F60F PUSH AF         ;
- $F610 LD HL,$DCBD     ;
- $F613 CALL $A592      ;
- $F616 LD B,$32        ;
- $F618 CALL $A5C2      ;
- $F61B POP AF          ;
- $F61C CALL $EB10      ;
- $F61F RET             ;
-*$F620 LD HL,$A825     ;
- $F623 LD BC,$0009     ;
- $F626 LD A,$3C        ;
- $F628 CPIR            ;
- $F62A RET             ;
-*$F62B LD HL,$E392     ;
- $F62E CALL $AEF7      ;
- $F631 CALL $AEDA      ;
- $F634 RET Z           ;
- $F635 POP HL          ;
- $F636 CALL $F620      ;
- $F639 LD A,E          ;
- $F63A CALL Z,$EDD0    ;
- $F63D LD HL,$DCE5     ;
- $F640 JP $ED6D        ;
- $F643 LD HL,$E341     ;
- $F646 CALL $AEF7      ;
- $F649 CP $0C          ;
- $F64B JP Z,$EE0B      ;
- $F64E CP $55          ;
- $F650 JP Z,$EE0B      ;
- $F653 LD ($A773),A    ;
- $F656 CALL $F62B      ;
- $F659 LD A,($A773)    ;
- $F65C CP $04          ;
- $F65E JR NC,$F67B     ;
- $F660 LD A,$02        ;
- $F662 CALL $AEE0      ;
- $F665 LD A,$03        ;
- $F667 CALL $AEE0      ;
- $F66A LD A,$08        ;
- $F66C CALL $AEE0      ;
- $F66F LD BC,$070A     ;
- $F672 CALL $AF1E      ;
- $F675 LD HL,$DCFE     ;
- $F678 JP $ED6D        ;
-*$F67B CP $0A          ;
- $F67D JR NZ,$F68B     ;
- $F67F LD BC,$0A0C     ;
- $F682 CALL $AF1E      ;
-*$F685 LD HL,$DD4A     ;
- $F688 JP $ED6D        ;
-*$F68B LD BC,$0B55     ;
- $F68E CALL $AF1E      ;
- $F691 LD HL,$A787     ;
- $F694 RES 0,(HL)      ;
- $F696 CALL $F685      ;
- $F699 LD HL,$DD6E     ;
- $F69C JP $ED6D        ;
-*$F69F LD HL,$E348     ;
- $F6A2 CALL $AEF7      ;
- $F6A5 LD HL,$FC8A     ;
- $F6A8 LD BC,$0003     ;
- $F6AB CPIR            ;
- $F6AD JP Z,$EE0B      ;
- $F6B0 LD ($A773),A    ;
- $F6B3 CALL $F62B      ;
- $F6B6 LD A,($A773)    ;
- $F6B9 CP $0F          ;
- $F6BB JR NZ,$F6C7     ;
- $F6BD LD HL,$E9B2     ;
- $F6C0 EX (SP),HL      ;
- $F6C1 LD HL,$DD86     ;
- $F6C4 JP $ED6D        ;
-*$F6C7 LD A,$39        ;
- $F6C9 CALL $AE6B      ;
- $F6CC JR Z,$F6D4      ;
- $F6CE LD HL,$DDB5     ;
- $F6D1 JP $ED6D        ;
-*$F6D4 LD A,($A773)    ;
- $F6D7 LD B,A          ;
- $F6D8 ADD A,$09       ;
- $F6DA LD C,A          ;
- $F6DB CALL $AF1E      ;
- $F6DE JP $F685        ;
- $F6E1 LD A,$26        ;
- $F6E3 CALL $AE6B      ;
- $F6E6 JP Z,$EE0B      ;
- $F6E9 CALL $F620      ;
- $F6EC JR NZ,$F6F7     ;
- $F6EE LD HL,$E392     ;
- $F6F1 CALL $AEF7      ;
- $F6F4 CALL $EDD0      ;
-*$F6F7 LD BC,$1326     ;
- $F6FA CALL $AF1E      ;
- $F6FD LD HL,$DDDF     ;
- $F700 JP $ED6D        ;
-*$F703 LD ($A772),HL   ;
- $F706 CALL $F62B      ;
- $F709 LD HL,$E9B2     ;
- $F70C EX (SP),HL      ;
- $F70D LD HL,($A772)   ;
- $F710 JP $ED6D        ;
- $F713 CALL $F62B      ;
- $F716 CALL $F685      ;
- $F719 LD HL,$DDFA     ;
- $F71C JP $F703        ;
- $F71F LD HL,$E377     ;
- $F722 CALL $AEF7      ;
- $F725 CP $27          ;
- $F727 JP NZ,$F69F     ;
- $F72A LD HL,$DCE5     ;
- $F72D JP $ED6D        ;
- $F730 CALL $F62B      ;
- $F733 LD HL,$DE31     ;
- $F736 JP $ED6D        ;
- $F739 LD A,$45        ;
- $F73B CALL $AE6B      ;
- $F73E JP Z,$EE0B      ;
- $F741 CALL $F62B      ;
- $F744 LD A,$56        ;
- $F746 CALL $AEDA      ;
- $F749 LD HL,$DE57     ;
- $F74C JP NZ,$F703     ;
- $F74F LD BC,$4445     ;
- $F752 CALL $AF1E      ;
- $F755 LD A,$2C        ;
- $F757 LD ($E84D),A    ;
- $F75A LD A,$35        ;
- $F75C LD ($E84E),A    ;
- $F75F LD A,$04        ;
- $F761 CALL $B09A      ;
-*$F764 LD HL,$DE9E     ;
- $F767 JP $ED6D        ;
- $F76A CALL $F62B      ;
- $F76D CALL $F685      ;
- $F770 LD HL,$DEC2     ;
- $F773 JP $F703        ;
- $F776 CALL $F62B      ;
- $F779 LD HL,$DEF0     ;
- $F77C JP $F703        ;
- $F77F LD A,$50        ;
- $F781 CALL $AE6B      ;
- $F784 JP Z,$EE0B      ;
- $F787 CALL $F62B      ;
- $F78A LD BC,$4F50     ;
- $F78D CALL $AF1E      ;
- $F790 JP $F764        ;
- $F793 LD A,$52        ;
- $F795 CALL $AE6B      ;
- $F798 JP NZ,$EE0B     ;
- $F79B CALL $F62B      ;
- $F79E LD BC,$5253     ;
- $F7A1 CALL $AF1E      ;
- $F7A4 LD A,$04        ;
- $F7A6 CALL $B09A      ;
- $F7A9 JP $F764        ;
-*$F7AC LD A,$19        ;
- $F7AE CALL $AEDA      ;
- $F7B1 RET NZ          ;
- $F7B2 LD A,E          ;
- $F7B3 CALL $AEE0      ;
- $F7B6 LD HL,$A790     ;
- $F7B9 DEC (HL)        ;
- $F7BA LD HL,$E060     ;
- $F7BD JP $ED6D        ;
- $F7C0 LD A,$46        ;
- $F7C2 CALL $AE6B      ;
- $F7C5 JR NZ,$F7CD     ;
- $F7C7 LD HL,$E079     ;
- $F7CA JP $ED6D        ;
-*$F7CD LD A,($A7C3)    ;
- $F7D0 CP $3A          ;
- $F7D2 JP NZ,$EE0B     ;
- $F7D5 LD A,$49        ;
- $F7D7 CALL $EB10      ;
- $F7DA RET             ;
- $F7DB LD A,($A7C3)    ;
- $F7DE CP $38          ;
- $F7E0 JP NZ,$EE0B     ;
- $F7E3 LD A,$59        ;
- $F7E5 CALL $EB10      ;
- $F7E8 RET             ;
- $F7E9 LD A,$61        ;
- $F7EB CALL $ED75      ;
- $F7EE XOR A           ;
- $F7EF LD ($E8F6),A    ;
- $F7F2 LD ($E8F7),A    ;
- $F7F5 LD A,$4C        ;
- $F7F7 LD ($E8F4),A    ;
- $F7FA JP $EDA6        ;
+c$F2D4 LD HL,$E3B0   ; #REGhl=#R$E3B0.
+ $F2D7 CALL $AEF7    ; Call #R$AEF7.
+ $F2DA CP $51        ; {Jump to #R$EE35 if #REGa is equal to #N$51.
+ $F2DC JP Z,$EE35    ; }
+ $F2DF CP $0B        ; {Jump to #R$F293 if #REGa is equal to #N$0B.
+ $F2E1 JP Z,$F293    ; }
+ $F2E4 CP $55        ; {Jump to #R$F293 if #REGa is equal to #N$55.
+ $F2E6 JP Z,$F293    ; }
+ $F2E9 JP $F26C      ; Jump to #R$F26C.
+
+; Action: Drink
+@label=Action_Drink
+c$F2EC LD A,($A7C3)  ; #REGa=*#R$A7C3.
+ $F2EF CP $2A        ; {Jump to #R$F2F9 if #REGa is not equal to room #N$2A:
+ $F2F1 JR NZ,$F2F9   ; #ROOM$2A.}
+; Print "#STR$D8E7,$08($b==$FF)".
+ $F2F3 LD HL,$D8E7   ; #REGhl=#R$D8E7.
+ $F2F6 JP $ED6D      ; Jump to #R$ED6D.
+; Print "#STR$D8FD,$08($b==$FF)".
+*$F2F9 LD HL,$D8FD   ; #REGhl=#R$D8FD.
+ $F2FC JP $ED6D      ; Jump to #R$ED6D.
+
+; Action:
+c$F2FF LD A,($A7C3)  ; #REGa=*#R$A7C3.
+ $F302 CP $0C        ; {Jump to #R$EE0B if #REGa is equal to room #N$0C:
+ $F304 JP Z,$EE0B    ; #ROOM$0C.}
+ $F307 CP $15        ; {Jump to #R$EE0B if #REGa is equal to room #N$15:
+ $F309 JP Z,$EE0B    ; #ROOM$15.}
+ $F30C CP $05        ; {Jump to #R$F314 if #REGa is not equal to room #N$05:
+ $F30E JR NZ,$F314   ; #ROOM$05.}
+ $F310 LD A,$0C      ; Load item #N$0C: #ITEM$0C into #REGa.
+ $F312 JR $F316      ; Jump to #R$F316.
+*$F314 LD A,$15      ; Load item #N$15: #ITEM$15 into #REGa.
+*$F316 CALL $EB10    ; Call #R$EB10.
+ $F319 CALL $F7AC    ; Call #R$F7AC.
+ $F31C RET           ; Return.
+*$F31D LD A,$37      ; Load #N$37: #ITEM$37 into #REGa.
+ $F31F CALL $AE6B    ; Call #R$AE6B.
+ $F322 JR NZ,$F32E   ; Jump to #R$F32E if #REGa is not equal to #N$37.
+; Bad luck!
+ $F324 LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
+ $F327 EX (SP),HL    ; over".}
+; Print "#STR$D919,$08($b==$FF)".
+ $F328 LD HL,$D919   ; #REGhl=#R$D919.
+ $F32B JP $ED6D      ; Jump to #R$ED6D.
+; Print "#STR$D973,$08($b==$FF)".
+*$F32E LD HL,$D973   ; #REGhl=#R$D973.
+ $F331 CALL $A592    ; Call #R$A592.
+ $F334 CALL $F7AC    ; Call #R$F7AC.
+ $F337 RET           ; Return.
+ $F338 LD HL,$E3E7   ; #REGhl=#R$E3E7.
+ $F33B CALL $AEF7    ; Call #R$AEF7.
+ $F33E CP $6C        ; {Jump to #R$F31D if #REGa is equal to #N$6C.
+ $F340 JP Z,$F31D    ; }
+ $F343 CP $32        ; {Jump to #R$EE0B if #REGa is equal to #N$32.
+ $F345 JP Z,$EE0B    ; }
+ $F348 JP $F2FF      ; Jump to #R$F2FF.
+ $F34B LD A,($A7C3)  ; {Jump to #R$EE0B if *#R$A7C3 is equal to room #N$63:
+ $F34E CP $63        ; #ROOM$63.
+ $F350 JP Z,$EE0B    ; }
+ $F353 LD A,$63      ; #REGa=#N$63.
+ $F355 CALL $EB10    ; Call #R$EB10.
+ $F358 RET           ; Return.
+*$F359 LD A,($A7C3)  ; #REGa=*#R$A7C3.
+ $F35C LD B,$05      ; #REGb=#N$05.
+ $F35E CP $0C        ; {Jump to #R$F369 if #REGa is equal to room #N$0C:
+ $F360 JR Z,$F369    ; #ROOM$0C.}
+ $F362 CP $15        ; {Jump to #R$EE2F if #REGa is not equal to room #N$15:
+ $F364 JP NZ,$EE2F   ; #ROOM$15.}
+ $F367 LD B,$14      ; #REGb=#N$14.
+*$F369 LD A,B        ; #REGa=#REGb.
+ $F36A CALL $EB10    ; Call #R$EB10.
+ $F36D RET           ; Return.
+ $F36E LD A,($A7C3)  ; #REGa=*#R$A7C3.
+ $F371 CP $0D        ; {Jump to #R$EDED if #REGa is equal to room #N$0D:
+ $F373 JP Z,$EDED    ; #ROOM$0D.}
+ $F376 CP $0C        ; {Jump to #R$F359 if #REGa is equal to room #N$0C:
+ $F378 JP Z,$F359    ; #ROOM$0C.}
+ $F37B CP $15        ; {Jump to #R$F359 if #REGa is equal to room #N$15:
+ $F37D JP Z,$F359    ; #ROOM$15.}
+ $F380 JP $EE2F      ; Jump to #R$EE2F.
+ $F383 LD A,($A7C3)  ; #REGa=*#R$A7C3.
+ $F386 CP $0D        ; {Jump to #R$EDED if #REGa is equal to room #N$0D:
+ $F388 JP Z,$EDED    ; #ROOM$0D.}
+ $F38B CP $0C        ; {Jump to #R$F359 if #REGa is equal to room #N$0C:
+ $F38D JP Z,$F359    ; #ROOM$0C.}
+ $F390 CP $15        ; {Jump to #R$F359 if #REGa is equal to room #N$15:
+ $F392 JP Z,$F359    ; #ROOM$15.}
+; Print "#STR$D9A3,$08($b==$FF)".
+ $F395 LD HL,$D9A3   ; #REGhl=#R$D9A3.
+ $F398 JP $ED6D      ; Jump to #R$ED6D.
+
+; Routine at F39B
+c$F39B LD IX,$A824     ; #REGix=#R$A824.
+ $F39F LD A,(IX+$01)   ; #REGa=*#REGix+#N$01.
+ $F3A2 LD (IX+$00),A   ; Write #REGa to *#REGix+#N$00.
+ $F3A5 LD (IX+$01),$FF ; Write #N$FF to *#REGix+#N$01.
+ $F3A9 JP $B05E        ; Jump to #R$B05E.
+
+; Routine at F3AC
+c$F3AC LD A,$5E      ;
+ $F3AE CALL $AE6B    ;
+ $F3B1 JP NZ,$EDED   ;
+ $F3B4 LD A,$60      ;
+ $F3B6 CALL $EB10    ;
+ $F3B9 RET           ;
+ $F3BA LD A,$5C      ;
+ $F3BC CALL $AE6B    ;
+ $F3BF JP NZ,$EDED   ;
+ $F3C2 LD A,$63      ;
+ $F3C4 CALL $EB10    ;
+ $F3C7 RET           ;
+ $F3C8 LD A,($A7C3)  ;
+ $F3CB CP $18        ;
+ $F3CD JP NZ,$EE0B   ;
+ $F3D0 LD A,$19      ;
+ $F3D2 CALL $EB10    ;
+ $F3D5 RET           ;
+ $F3D6 LD A,($A7C3)  ;
+ $F3D9 CP $2C        ;
+ $F3DB JR NZ,$F3E1   ;
+ $F3DD LD A,$24      ;
+ $F3DF JR $F3E8      ;
+*$F3E1 CP $52        ;
+ $F3E3 JP NZ,$EE0B   ;
+ $F3E6 LD A,$4E      ;
+*$F3E8 CALL $EB10    ;
+ $F3EB RET           ;
+ $F3EC LD A,($A7C3)  ;
+ $F3EF CP $06        ;
+ $F3F1 JR NZ,$F3F7   ;
+ $F3F3 LD A,$05      ;
+ $F3F5 JR $F406      ;
+*$F3F7 CP $41        ;
+ $F3F9 JR NZ,$F3FF   ;
+ $F3FB LD A,$42      ;
+ $F3FD JR $F406      ;
+*$F3FF CP $4B        ;
+ $F401 JP NZ,$EE0B   ;
+ $F404 LD A,$4F      ;
+*$F406 CALL $EB10    ;
+ $F409 RET           ;
+ $F40A LD HL,$D9CF   ;
+ $F40D JP $ED6D      ;
+ $F410 LD HL,$DA24   ;
+ $F413 JP $ED6D      ;
+ $F416 LD A,($A7C3)  ;
+ $F419 CP $60        ;
+ $F41B JP NZ,$EDED   ;
+ $F41E LD HL,$E9B2   ;
+ $F421 EX (SP),HL    ;
+ $F422 LD HL,$DA42   ;
+ $F425 JP $ED6D      ;
+ $F428 LD HL,$E366   ;
+ $F42B CALL $AEF7    ;
+ $F42E CALL $EDD0    ;
+ $F431 LD A,E        ;
+ $F432 CP $69        ;
+ $F434 JP NZ,$EE41   ;
+ $F437 LD BC,$696A   ;
+ $F43A CALL $AF1E    ;
+ $F43D JP $EDF3      ;
+ $F440 LD HL,$E36B   ;
+ $F443 CALL $AEF7    ;
+ $F446 CALL $EDD0    ;
+ $F449 LD A,E        ;
+ $F44A CP $1F        ;
+ $F44C JP NZ,$EE41   ;
+ $F44F LD BC,$1F20   ;
+ $F452 CALL $AF1E    ;
+ $F455 JP $EDF3      ;
+ $F458 LD HL,$E3A6   ;
+ $F45B CALL $AEF7    ;
+ $F45E CALL $EDD0    ;
+ $F461 LD A,E        ;
+ $F462 CP $4B        ;
+ $F464 JP NZ,$EE41   ;
+ $F467 LD BC,$4B4C   ;
+ $F46A CALL $AF1E    ;
+ $F46D LD BC,$292A   ;
+ $F470 CALL $AF1E    ;
+ $F473 LD A,$18      ;
+ $F475 LD ($E7D5),A  ;
+ $F478 LD A,($A7C3)  ;
+ $F47B CP $20        ;
+ $F47D JP NZ,$EDF3   ;
+ $F480 CALL $EDF3    ;
+ $F483 LD HL,$B50E   ;
+ $F486 JP $ED6D      ;
+ $F489 LD HL,$E3A6   ;
+ $F48C CALL $AEF7    ;
+ $F48F CALL $EDD0    ;
+ $F492 LD A,E        ;
+ $F493 CP $4B        ;
+ $F495 JP Z,$EDC1    ;
+ $F498 LD BC,$4C4B   ;
+ $F49B CALL $AF1E    ;
+ $F49E LD BC,$2A29   ;
+ $F4A1 CALL $AF1E    ;
+ $F4A4 XOR A         ;
+ $F4A5 LD ($E7D5),A  ;
+ $F4A8 LD E,$4B      ;
+ $F4AA CALL $EDC1    ;
+ $F4AD LD A,($A7C3)  ;
+ $F4B0 CP $20        ;
+ $F4B2 RET NZ        ;
+ $F4B3 LD HL,$B4A0   ;
+ $F4B6 JP $ED6D      ;
+ $F4B9 LD A,($A7C3)  ;
+ $F4BC CP $4F        ;
+ $F4BE JP NZ,$EDED   ;
+ $F4C1 LD A,$12      ;
+ $F4C3 CALL $AEE0    ;
+ $F4C6 LD A,$1C      ;
+ $F4C8 CALL $AEE0    ;
+ $F4CB LD A,$04      ;
+ $F4CD CALL $AEE0    ;
+ $F4D0 LD A,$05      ;
+ $F4D2 CALL $AEE0    ;
+ $F4D5 LD BC,$0F10   ;
+ $F4D8 CALL $AF1E    ;
+ $F4DB LD HL,$A76D   ;
+ $F4DE SET 5,(HL)    ;
+ $F4E0 LD A,$04      ;
+ $F4E2 CALL $B09A    ;
+ $F4E5 LD HL,$A790   ;
+ $F4E8 DEC (HL)      ;
+ $F4E9 LD HL,$DA9E   ;
+ $F4EC CALL $A592    ;
+ $F4EF LD HL,$DB11   ;
+ $F4F2 JP $ED71      ;
+ $F4F5 LD A,$56      ;
+ $F4F7 CALL $EDD0    ;
+ $F4FA LD HL,$DBBE   ;
+ $F4FD JP $ED6D      ;
+ $F500 LD HL,$E3DD   ;
+ $F503 CALL $AEF7    ;
+ $F506 CALL $EDD0    ;
+ $F509 LD A,E        ;
+ $F50A CP $64        ;
+ $F50C JP NZ,$EE41   ;
+ $F50F LD BC,$646D   ;
+ $F512 CALL $AF1E    ;
+ $F515 JP $EDF3      ;
+ $F518 LD A,$22      ;
+ $F51A CALL $EDD0    ;
+ $F51D LD A,E        ;
+ $F51E CALL $AEE0    ;
+ $F521 LD HL,$A790   ;
+ $F524 DEC (HL)      ;
+ $F525 CALL $EDF3    ;
+ $F528 LD HL,$DC1D   ;
+ $F52B JP $ED6D      ;
+ $F52E LD A,$3A      ;
+ $F530 CALL $EDD0    ;
+ $F533 LD A,E        ;
+ $F534 CALL $AEE0    ;
+ $F537 LD HL,$A790   ;
+ $F53A DEC (HL)      ;
+ $F53B CALL $EDF3    ;
+ $F53E LD HL,$DC41   ;
+ $F541 JP $ED6D      ;
+ $F544 LD HL,$E341   ;
+ $F547 CALL $AEF7    ;
+ $F54A CP $0B        ;
+ $F54C JP Z,$EE0B    ;
+ $F54F CP $0A        ;
+ $F551 JP NZ,$EDED   ;
+ $F554 LD A,$51      ;
+ $F556 CALL $AE6B    ;
+ $F559 JP NZ,$EDDB   ;
+ $F55C LD BC,$0A0B   ;
+ $F55F CALL $AF1E    ;
+ $F562 LD A,$04      ;
+ $F564 CALL $B09A    ;
+ $F567 LD A,$51      ;
+ $F569 CALL $AEE0    ;
+ $F56C LD HL,$A790   ;
+ $F56F DEC (HL)      ;
+ $F570 LD HL,$A787   ;
+ $F573 SET 0,(HL)    ;
+ $F575 LD HL,$DC58   ;
+ $F578 JP $ED6D      ;
+ $F57B LD HL,$E3C5   ;
+ $F57E CALL $AEF7    ;
+ $F581 CP $5E        ;
+ $F583 JP Z,$EE0B    ;
+ $F586 CP $5C        ;
+ $F588 JP Z,$EE0B    ;
+ $F58B CALL $EDD0    ;
+ $F58E LD A,$5A      ;
+ $F590 CALL $AEE0    ;
+ $F593 LD A,$5E      ;
+ $F595 CALL $AEE7    ;
+ $F598 LD HL,$A790   ;
+ $F59B DEC (HL)      ;
+ $F59C LD A,$60      ;
+ $F59E LD ($E96A),A  ;
+ $F5A1 LD A,$63      ;
+ $F5A3 LD ($E959),A  ;
+ $F5A6 LD HL,$A76C   ;
+ $F5A9 BIT 6,(HL)    ;
+ $F5AB JP NZ,$EDF3   ;
+ $F5AE SET 6,(HL)    ;
+ $F5B0 LD A,$04      ;
+ $F5B2 CALL $B09A    ;
+ $F5B5 JP $EDF3      ;
+ $F5B8 LD HL,$E392   ;
+ $F5BB CALL $AEF7    ;
+ $F5BE CP $59        ;
+ $F5C0 JP Z,$EE0B    ;
+ $F5C3 CP $39        ;
+ $F5C5 JP Z,$EDF9    ;
+ $F5C8 CALL $EDD0    ;
+ $F5CB LD A,E        ;
+ $F5CC CALL $AEE0    ;
+ $F5CF LD BC,$5859   ;
+ $F5D2 CALL $AF1E    ;
+ $F5D5 LD HL,$A790   ;
+ $F5D8 DEC (HL)      ;
+ $F5D9 LD HL,$A76D   ;
+ $F5DC BIT 4,(HL)    ;
+ $F5DE JP NZ,$EDF3   ;
+ $F5E1 SET 4,(HL)    ;
+ $F5E3 LD A,$04      ;
+ $F5E5 CALL $B09A    ;
+ $F5E8 JP $EDF3      ;
+ $F5EB LD A,$3C      ;
+ $F5ED CALL $AE6B    ;
+ $F5F0 JP NZ,$EDED   ;
+ $F5F3 LD HL,$DCA8   ;
+ $F5F6 JP $ED6D      ;
+ $F5F9 LD A,($A7C3)  ;
+ $F5FC CP $43        ;
+ $F5FE JR NZ,$F604   ;
+ $F600 LD A,$57      ;
+ $F602 JR $F60F      ;
+*$F604 LD A,$43      ;
+ $F606 LD HL,$A76D   ;
+ $F609 BIT 5,(HL)    ;
+ $F60B JR Z,$F60F    ;
+ $F60D LD A,$56      ;
+*$F60F PUSH AF       ;
+ $F610 LD HL,$DCBD   ;
+ $F613 CALL $A592    ;
+ $F616 LD B,$32      ;
+ $F618 CALL $A5C2    ;
+ $F61B POP AF        ;
+ $F61C CALL $EB10    ;
+ $F61F RET           ;
+*$F620 LD HL,$A825   ;
+ $F623 LD BC,$0009   ;
+ $F626 LD A,$3C      ;
+ $F628 CPIR          ;
+ $F62A RET           ;
+*$F62B LD HL,$E392   ;
+ $F62E CALL $AEF7    ;
+ $F631 CALL $AEDA    ;
+ $F634 RET Z         ;
+ $F635 POP HL        ;
+ $F636 CALL $F620    ;
+ $F639 LD A,E        ;
+ $F63A CALL Z,$EDD0  ;
+ $F63D LD HL,$DCE5   ;
+ $F640 JP $ED6D      ;
+ $F643 LD HL,$E341   ;
+ $F646 CALL $AEF7    ;
+ $F649 CP $0C        ;
+ $F64B JP Z,$EE0B    ;
+ $F64E CP $55        ;
+ $F650 JP Z,$EE0B    ;
+ $F653 LD ($A773),A  ;
+ $F656 CALL $F62B    ;
+ $F659 LD A,($A773)  ;
+ $F65C CP $04        ;
+ $F65E JR NC,$F67B   ;
+ $F660 LD A,$02      ;
+ $F662 CALL $AEE0    ;
+ $F665 LD A,$03      ;
+ $F667 CALL $AEE0    ;
+ $F66A LD A,$08      ;
+ $F66C CALL $AEE0    ;
+ $F66F LD BC,$070A   ;
+ $F672 CALL $AF1E    ;
+ $F675 LD HL,$DCFE   ;
+ $F678 JP $ED6D      ;
+*$F67B CP $0A        ;
+ $F67D JR NZ,$F68B   ;
+ $F67F LD BC,$0A0C   ;
+ $F682 CALL $AF1E    ;
+*$F685 LD HL,$DD4A   ;
+ $F688 JP $ED6D      ;
+*$F68B LD BC,$0B55   ;
+ $F68E CALL $AF1E    ;
+ $F691 LD HL,$A787   ;
+ $F694 RES 0,(HL)    ;
+ $F696 CALL $F685    ;
+ $F699 LD HL,$DD6E   ;
+ $F69C JP $ED6D      ;
+*$F69F LD HL,$E348   ;
+ $F6A2 CALL $AEF7    ;
+ $F6A5 LD HL,$FC8A   ;
+ $F6A8 LD BC,$0003   ;
+ $F6AB CPIR          ;
+ $F6AD JP Z,$EE0B    ;
+ $F6B0 LD ($A773),A  ;
+ $F6B3 CALL $F62B    ;
+ $F6B6 LD A,($A773)  ;
+ $F6B9 CP $0F        ;
+ $F6BB JR NZ,$F6C7   ;
+ $F6BD LD HL,$E9B2   ;
+ $F6C0 EX (SP),HL    ;
+ $F6C1 LD HL,$DD86   ;
+ $F6C4 JP $ED6D      ;
+*$F6C7 LD A,$39      ;
+ $F6C9 CALL $AE6B    ;
+ $F6CC JR Z,$F6D4    ;
+ $F6CE LD HL,$DDB5   ;
+ $F6D1 JP $ED6D      ;
+*$F6D4 LD A,($A773)  ;
+ $F6D7 LD B,A        ;
+ $F6D8 ADD A,$09     ;
+ $F6DA LD C,A        ;
+ $F6DB CALL $AF1E    ;
+ $F6DE JP $F685      ;
+ $F6E1 LD A,$26      ;
+ $F6E3 CALL $AE6B    ;
+ $F6E6 JP Z,$EE0B    ;
+ $F6E9 CALL $F620    ;
+ $F6EC JR NZ,$F6F7   ;
+ $F6EE LD HL,$E392   ;
+ $F6F1 CALL $AEF7    ;
+ $F6F4 CALL $EDD0    ;
+*$F6F7 LD BC,$1326   ;
+ $F6FA CALL $AF1E    ;
+ $F6FD LD HL,$DDDF   ;
+ $F700 JP $ED6D      ;
+*$F703 LD ($A772),HL ;
+ $F706 CALL $F62B    ;
+ $F709 LD HL,$E9B2   ;
+ $F70C EX (SP),HL    ;
+ $F70D LD HL,($A772) ;
+ $F710 JP $ED6D      ;
+ $F713 CALL $F62B    ;
+ $F716 CALL $F685    ;
+ $F719 LD HL,$DDFA   ;
+ $F71C JP $F703      ;
+ $F71F LD HL,$E377   ;
+ $F722 CALL $AEF7    ;
+ $F725 CP $27        ;
+ $F727 JP NZ,$F69F   ;
+ $F72A LD HL,$DCE5   ;
+ $F72D JP $ED6D      ;
+ $F730 CALL $F62B    ;
+ $F733 LD HL,$DE31   ;
+ $F736 JP $ED6D      ;
+ $F739 LD A,$45      ;
+ $F73B CALL $AE6B    ;
+ $F73E JP Z,$EE0B    ;
+ $F741 CALL $F62B    ;
+ $F744 LD A,$56      ;
+ $F746 CALL $AEDA    ;
+ $F749 LD HL,$DE57   ;
+ $F74C JP NZ,$F703   ;
+ $F74F LD BC,$4445   ;
+ $F752 CALL $AF1E    ;
+ $F755 LD A,$2C      ;
+ $F757 LD ($E84D),A  ;
+ $F75A LD A,$35      ;
+ $F75C LD ($E84E),A  ;
+ $F75F LD A,$04      ;
+ $F761 CALL $B09A    ;
+*$F764 LD HL,$DE9E   ;
+ $F767 JP $ED6D      ;
+ $F76A CALL $F62B    ;
+ $F76D CALL $F685    ;
+ $F770 LD HL,$DEC2   ;
+ $F773 JP $F703      ;
+ $F776 CALL $F62B    ;
+ $F779 LD HL,$DEF0   ;
+ $F77C JP $F703      ;
+ $F77F LD A,$50      ;
+ $F781 CALL $AE6B    ;
+ $F784 JP Z,$EE0B    ;
+ $F787 CALL $F62B    ;
+ $F78A LD BC,$4F50   ;
+ $F78D CALL $AF1E    ;
+ $F790 JP $F764      ;
+ $F793 LD A,$52      ;
+ $F795 CALL $AE6B    ;
+ $F798 JP NZ,$EE0B   ;
+ $F79B CALL $F62B    ;
+ $F79E LD BC,$5253   ;
+ $F7A1 CALL $AF1E    ;
+ $F7A4 LD A,$04      ;
+ $F7A6 CALL $B09A    ;
+ $F7A9 JP $F764      ;
+; This entry point is used by the routine at #R$F2FF.
+*$F7AC LD A,$19      ;
+ $F7AE CALL $AEDA    ;
+ $F7B1 RET NZ        ;
+ $F7B2 LD A,E        ;
+ $F7B3 CALL $AEE0    ;
+ $F7B6 LD HL,$A790   ;
+ $F7B9 DEC (HL)      ;
+ $F7BA LD HL,$E060   ;
+ $F7BD JP $ED6D      ;
+ $F7C0 LD A,$46      ;
+ $F7C2 CALL $AE6B    ;
+ $F7C5 JR NZ,$F7CD   ;
+ $F7C7 LD HL,$E079   ;
+ $F7CA JP $ED6D      ;
+*$F7CD LD A,($A7C3)  ;
+ $F7D0 CP $3A        ;
+ $F7D2 JP NZ,$EE0B   ;
+ $F7D5 LD A,$49      ;
+ $F7D7 CALL $EB10    ;
+ $F7DA RET           ;
+ $F7DB LD A,($A7C3)  ;
+ $F7DE CP $38        ;
+ $F7E0 JP NZ,$EE0B   ;
+ $F7E3 LD A,$59      ;
+ $F7E5 CALL $EB10    ;
+ $F7E8 RET           ;
+ $F7E9 LD A,$61      ;
+ $F7EB CALL $ED75    ;
+ $F7EE XOR A         ;
+ $F7EF LD ($E8F6),A  ;
+ $F7F2 LD ($E8F7),A  ;
+ $F7F5 LD A,$4C      ;
+ $F7F7 LD ($E8F4),A  ;
+ $F7FA JP $EDA6      ;
 
 ; Routine at F7FD
 c$F7FD CALL $AF70    ; Call #R$AF70.
@@ -12290,81 +12541,94 @@ c$F853 CALL $AF7B    ;
  $F891 DEFB $FF      ;
 
 ; Routine at F892
-c$F892 CALL $AF70    ;
- $F895 RET C         ;
- $F896 CALL $A605    ;
- $F899 RET NC        ;
- $F89A CALL $A53E    ;
- $F89D POP HL        ;
- $F89E JP $A531      ;
+c$F892 CALL $AF70    ; Call #R$AF70.
+; The "LOAD" command can only be called on its own.
+ $F895 RET C         ; Return if there's any token set in #R$A825.
+ $F896 CALL $A605    ; Call #R$A605.
+ $F899 RET NC        ; Return if there was a tape loading error.
+ $F89A CALL $A53E    ; Call #R$A53E.
+ $F89D POP HL        ; Restore #REGhl from the stack.
+ $F89E JP $A531      ; Jump to #R$A531.
 
 ; Routine at F8A1
-c$F8A1 CALL $AF70    ;
- $F8A4 RET C         ;
- $F8A5 CALL $A5CA    ;
- $F8A8 RET           ;
+c$F8A1 CALL $AF70    ; Call #R$AF70.
+; The "SAVE" command can only be called on its own.
+ $F8A4 RET C         ; Return if there's any token set in #R$A825.
+ $F8A5 CALL $A5CA    ; Call #R$A5CA.
+ $F8A8 RET           ; Return.
 
-; Routine at F8A9
-c$F8A9 CALL $AF70    ;
- $F8AC RET C         ;
- $F8AD CALL $B0A9    ;
- $F8B0 LD HL,$A9A1   ;
- $F8B3 CALL $A592    ;
-*$F8B6 CALL $A53E    ;
- $F8B9 CP $4E        ;
- $F8BB JR Z,$F8C4    ;
- $F8BD CP $59        ;
- $F8BF JR NZ,$F8B6   ;
- $F8C1 CALL $A5CA    ;
-*$F8C4 LD HL,$E9BB   ;
- $F8C7 EX (SP),HL    ;
- $F8C8 RET           ;
+; Action: Quit
+@label=Action_Quit
+c$F8A9 CALL $AF70    ; Call #R$AF70.
+; The "QUIT" command can only be called on its own.
+ $F8AC RET C         ; Return if there's any token set in #R$A825.
+; Inform the player of their score.
+ $F8AD CALL $B0A9    ; Call #R$B0A9.
+; Print "#STR$A9A1,$08($b==$FF)".
+ $F8B0 LD HL,$A9A1   ; #REGhl=#R$A9A1.
+ $F8B3 CALL $A592    ; Call #R$A592.
+@label=WantToSave_Loop
+*$F8B6 CALL $A53E    ; Call #R$A53E.
+; The player just wants to quit.
+ $F8B9 CP $4E        ; {#HTML(Jump to #R$F8C4 if the keypress is
+ $F8BB JR Z,$F8C4    ; "<code>#CHR$4E</code>".)}
+ $F8BD CP $59        ; {#HTML(Jump back to #R$F8B6 if the keypress is anything other than
+ $F8BF JR NZ,$F8B6   ; "<code>#CHR$59</code>".)}
+; The player does want to save before quitting...
+ $F8C1 CALL $A5CA    ; Call #R$A5CA.
+; Jump to asking if the player "wants another game?"
+@label=QuitGame
+*$F8C4 LD HL,$E9BB   ; {Switch #R$E9BB onto the stack so the next return action is asking
+ $F8C7 EX (SP),HL    ; if the player would "Want another game? Y/N.".}
+ $F8C8 RET           ; Return.
 
 ; Routine at F8C9
-c$F8C9 LD C,$00      ;
- $F8CB JR $F8DF      ;
+c$F8C9 LD C,$00      ; #REGc=#N$00.
+ $F8CB JR $F8DF      ; Jump to #R$F8DF.
 
 ; Routine at F8CD
-c$F8CD LD C,$01      ;
- $F8CF JR $F8DF      ;
+c$F8CD LD C,$01      ; #REGc=#N$01.
+ $F8CF JR $F8DF      ; Jump to #R$F8DF.
 
 ; Routine at F8D1
-c$F8D1 LD C,$02      ;
- $F8D3 JR $F8DF      ;
+c$F8D1 LD C,$02      ; #REGc=#N$02.
+ $F8D3 JR $F8DF      ; Jump to #R$F8DF.
 
 ; Routine at F8D5
-c$F8D5 LD C,$03      ;
- $F8D7 JR $F8DF      ;
+c$F8D5 LD C,$03      ; #REGc=#N$03.
+ $F8D7 JR $F8DF      ; Jump to #R$F8DF.
 
 ; Routine at F8D9
-c$F8D9 LD C,$04      ;
- $F8DB JR $F8DF      ;
+c$F8D9 LD C,$04      ; #REGc=#N$04.
+ $F8DB JR $F8DF      ; Jump to #R$F8DF.
 
 ; Routine at F8DD
-c$F8DD LD C,$05      ;
+c$F8DD LD C,$05      ; #REGc=#N$05.
 ; This entry point is used by the routines at #R$F8C9, #R$F8CD, #R$F8D1,
 ; #R$F8D5 and #R$F8D9.
-*$F8DF CALL $AF70    ;
- $F8E2 RET C         ;
- $F8E3 LD B,$00      ;
- $F8E5 CALL $AC9A    ;
- $F8E8 ADD HL,BC     ;
- $F8E9 LD A,(HL)     ;
- $F8EA OR A          ;
- $F8EB JP Z,$EE1D    ;
- $F8EE CALL $EB10    ;
- $F8F1 RET           ;
+*$F8DF CALL $AF70    ; Call #R$AF70.
+ $F8E2 RET C         ; Return if there's any token set in #R$A825.
+ $F8E3 LD B,$00      ; #REGb=#N$00.
+ $F8E5 CALL $AC9A    ; Call #R$AC9A.
+ $F8E8 ADD HL,BC     ; #REGhl+=#REGbc.
+ $F8E9 LD A,(HL)     ; #REGa=*#REGhl.
+ $F8EA OR A          ; {Jump to #R$EE1D if #REGa is zero.
+ $F8EB JP Z,$EE1D    ; }
+ $F8EE CALL $EB10    ; Call #R$EB10.
+ $F8F1 RET           ; Return.
 
 ; Routine at F8F2
-c$F8F2 CALL $AF7B    ;
- $F8F5 RET C         ;
- $F8F6 CP $02        ;
- $F8F8 JP NC,$F956   ;
- $F8FB LD HL,$F90A   ;
- $F8FE LD DE,$F930   ;
- $F901 LD BC,$0013   ;
- $F904 CALL $B0DE    ;
- $F907 JP $EDED      ;
+c$F8F2 CALL $AF7B    ; Call #R$AF7B.
+ $F8F5 RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+ $F8F6 CP $02        ; {Jump to #R$F956 if there were more than #N$02 direct objects
+ $F8F8 JP NC,$F956   ; referenced in the user input (so the command is malformed).
+                     ; }
+ $F8FB LD HL,$F90A   ; #REGhl=#R$F90A.
+ $F8FE LD DE,$F930   ; #REGde=#R$F930.
+ $F901 LD BC,$0013   ; #REGbc=#N($0013,$04,$04).
+ $F904 CALL $B0DE    ; Call #R$B0DE.
+ $F907 JP $EDED      ; Jump to #R$EDED.
  $F90A DEFW $E535    ;
  $F90C DEFW $E537    ;
  $F90E DEFW $E53C    ;
@@ -12454,18 +12718,19 @@ c$F975 CALL $AF7B    ;
  $F9B1 DEFW $F0A7    ;
 
 ; Routine at F9B3
-c$F9B3 CALL $AF9F    ;
- $F9B6 RET C         ;
- $F9B7 LD HL,$A825   ;
- $F9BA LD BC,$0009   ;
- $F9BD LD A,$6D      ;
- $F9BF CPIR          ;
- $F9C1 JP NZ,$EDE7   ;
- $F9C4 LD HL,$F9D2   ;
- $F9C7 LD DE,$F9DA   ;
- $F9CA LD BC,$0004   ;
- $F9CD CALL $B0DE    ;
- $F9D0 JR $F9E2      ;
+c$F9B3 CALL $AF9F    ; Call #R$AF9F.
+ $F9B6 RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+ $F9B7 LD HL,$A825   ; #REGhl=#R$A825.
+ $F9BA LD BC,$0009   ; #REGbc=#N($0009,$04,$04).
+ $F9BD LD A,$6D      ; Load token #N$6D #TOKEN$6D into #REGa.
+ $F9BF CPIR          ; Search for the matching token.
+ $F9C1 JP NZ,$EDE7   ; Jump to #R$EDE7 if .
+ $F9C4 LD HL,$F9D2   ; #REGhl=#R$F9D2.
+ $F9C7 LD DE,$F9DA   ; #REGde=#R$F9DA.
+ $F9CA LD BC,$0004   ; #REGbc=#N($0004,$04,$04).
+ $F9CD CALL $B0DE    ; Call #R$B0DE.
+ $F9D0 JR $F9E2      ; Jump to #R$F9E2.
  $F9D2 DEFW $E569    ;
  $F9D4 DEFW $E56D    ;
  $F9D6 DEFW $E585    ;
@@ -12478,11 +12743,11 @@ c$F9B3 CALL $AF9F    ;
 ; Routine at F9E2
 ;
 ; Used by the routines at #R$F9B3 and #R$FA29.
-c$F9E2 LD HL,$F9F1   ;
- $F9E5 LD DE,$FA0D   ;
- $F9E8 LD BC,$000E   ;
- $F9EB CALL $B0DE    ;
- $F9EE JP $EDF9      ;
+c$F9E2 LD HL,$F9F1   ; #REGhl=#R$F9F1.
+ $F9E5 LD DE,$FA0D   ; #REGde=#R$FA0D.
+ $F9E8 LD BC,$000E   ; #REGbc=#N($000E,$04,$04).
+ $F9EB CALL $B0DE    ; Call #R$B0DE.
+ $F9EE JP $EDF9      ; Jump to #R$EDF9.
  $F9F1 DEFW $E571    ;
  $F9F3 DEFW $E59E    ;
  $F9F5 DEFW $E579    ;
@@ -12513,17 +12778,20 @@ c$F9E2 LD HL,$F9F1   ;
  $FA27 DEFW $F21E    ;
 
 ; Routine at FA29
-c$FA29 CALL $AF7B    ;
- $FA2C RET C         ;
- $FA2D CP $02        ;
- $FA2F JP C,$F975    ;
- $FA32 CP $03        ;
- $FA34 JP NC,$EDE7   ;
- $FA37 LD HL,$FA46   ;
- $FA3A LD DE,$FA58   ;
- $FA3D LD BC,$0009   ;
- $FA40 CALL $B0DE    ;
- $FA43 JP $F9E2      ;
+c$FA29 CALL $AF7B    ; Call #R$AF7B.
+ $FA2C RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+ $FA2D CP $02        ; {Jump to #R$F975 if there were less than #N$02 direct objects
+ $FA2F JP C,$F975    ; referenced in the user input.}
+; Print "#STR$A9D6,$08($b==$FF)".
+ $FA32 CP $03        ; {Jump to #R$EDE7 if there were more than #N$03 direct objects
+ $FA34 JP NC,$EDE7   ; referenced in the user input (so the command is malformed).
+                     ; }
+ $FA37 LD HL,$FA46   ; #REGhl=#R$FA46.
+ $FA3A LD DE,$FA58   ; #REGde=#R$FA58.
+ $FA3D LD BC,$0009   ; #REGbc=#N($0009,$04,$04).
+ $FA40 CALL $B0DE    ; Call #R$B0DE.
+ $FA43 JP $F9E2      ; Jump to #R$F9E2.
  $FA46 DEFW $E569    ;
  $FA48 DEFW $E56D    ;
  $FA4A DEFW $E585    ;
@@ -12562,29 +12830,38 @@ c$FA6A CALL $AF7B    ;
  $FA8D DEFW $EE35    ;
  $FA8F DEFW $F2D4    ;
 
-; Routine at FA91
-c$FA91 CALL $AF7B    ;
- $FA94 RET C         ;
- $FA95 CP $02        ;
- $FA97 JP NC,$EDE7   ;
- $FA9A LD HL,$FAA9   ;
- $FA9D LD DE,$FAAB   ;
- $FAA0 LD BC,$0001   ;
- $FAA3 CALL $B0DE    ;
- $FAA6 JP $EDED      ;
+; Parse Verb: Drink
+@label=ParseVerb_Drink
+c$FA91 CALL $AF7B    ; Call #R$AF7B.
+ $FA94 RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+; Print "#STR$A9D6,$08($b==$FF)".
+ $FA95 CP $02        ; {Jump to #R$EDE7 if there were more than #N$02 direct objects
+ $FA97 JP NC,$EDE7   ; referenced in the user input (so the command is malformed).
+                     ; }
+ $FA9A LD HL,$FAA9   ; #REGhl=#R$FAA9.
+ $FA9D LD DE,$FAAB   ; #REGde=#R$FAAB.
+ $FAA0 LD BC,$0001   ; #REGbc=#N($0001,$04,$04).
+ $FAA3 CALL $B0DE    ; Call #R$B0DE.
+; Print "#STR$A9EC,$08($b==$FF)".
+ $FAA6 JP $EDED      ; Jump to #R$EDED.
+@label=Table_Actions_TokenGroup
  $FAA9 DEFW $E5F3    ;
+@label=Table_Actions_Drink
  $FAAB DEFW $F2EC    ;
 
 ; Routine at FAAD
-c$FAAD CALL $AFB7    ;
- $FAB0 RET C         ;
- $FAB1 CP $03        ;
- $FAB3 JP NC,$EDE7   ;
- $FAB6 LD HL,$FAC5   ;
- $FAB9 LD DE,$FAD1   ;
- $FABC LD BC,$0006   ;
- $FABF CALL $B0DE    ;
- $FAC2 JP $EDED      ;
+c$FAAD CALL $AFB7    ; Call #R$AFB7.
+ $FAB0 RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+ $FAB1 CP $03        ; {Jump to #R$EDE7 if there were more than #N$03 direct objects
+ $FAB3 JP NC,$EDE7   ; referenced in the user input (so the command is malformed).
+                     ; }
+ $FAB6 LD HL,$FAC5   ; #REGhl=#R$FAC5.
+ $FAB9 LD DE,$FAD1   ; #REGde=#R$FAD1.
+ $FABC LD BC,$0006   ; #REGbc=#N($0006,$04,$04).
+ $FABF CALL $B0DE    ; Call #R$B0DE.
+ $FAC2 JP $EDED      ; Jump to #R$EDED.
  $FAC5 DEFW $E5F5    ;
  $FAC7 DEFW $E607    ;
  $FAC9 DEFW $E60A    ;
@@ -12599,15 +12876,17 @@ c$FAAD CALL $AFB7    ;
  $FADB DEFW $F416    ;
 
 ; Routine at FADD
-c$FADD CALL $AFB7    ;
- $FAE0 RET C         ;
- $FAE1 CP $03        ;
- $FAE3 JP NC,$EDE7   ;
- $FAE6 LD HL,$FAF5   ;
- $FAE9 LD DE,$FB0B   ;
- $FAEC LD BC,$000B   ;
- $FAEF CALL $B0DE    ;
- $FAF2 JP $EDED      ;
+c$FADD CALL $AFB7    ; Call #R$AFB7.
+ $FAE0 RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+ $FAE1 CP $03        ; {Jump to #R$EDE7 if there was more than #N$03 direct objects
+ $FAE3 JP NC,$EDE7   ; referenced in the user input (so the command is malformed).
+                     ; }
+ $FAE6 LD HL,$FAF5   ; #REGhl=#R$FAF5.
+ $FAE9 LD DE,$FB0B   ; #REGde=#R$FB0B.
+ $FAEC LD BC,$000B   ; #REGbc=#N($000B,$04,$04).
+ $FAEF CALL $B0DE    ; Call #R$B0DE.
+ $FAF2 JP $EDED      ; Jump to #R$EDED.
  $FAF5 DEFW $E61C    ;
  $FAF7 DEFW $E632    ;
  $FAF9 DEFW $E636    ;
@@ -12683,15 +12962,17 @@ c$FB5D CALL $AF7B    ;
  $FB87 DEFW $F500    ;
 
 ; Routine at FB89
-c$FB89 CALL $AFB7    ;
- $FB8C RET C         ;
- $FB8D CP $01        ;
- $FB8F JP NC,$EDE7   ;
- $FB92 LD HL,$FBA1   ;
- $FB95 LD DE,$FBAD   ;
- $FB98 LD BC,$0006   ;
- $FB9B CALL $B0DE    ;
- $FB9E JP $EDED      ;
+c$FB89 CALL $AFB7    ; Call #R$AFB7.
+ $FB8C RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+ $FB8D CP $01        ; {Jump to #R$EDE7 if there was more than #N$01 direct object
+ $FB8F JP NC,$EDE7   ; referenced in the user input (so the command is malformed).
+                     ; }
+ $FB92 LD HL,$FBA1   ; #REGhl=#R$FBA1.
+ $FB95 LD DE,$FBAD   ; #REGde=#R$FBAD.
+ $FB98 LD BC,$0006   ; #REGbc=#N($0006,$04,$04).
+ $FB9B CALL $B0DE    ; Call #R$B0DE.
+ $FB9E JP $EDED      ; Jump to #R$EDED.
  $FBA1 DEFW $E642    ;
  $FBA3 DEFW $E644    ;
  $FBA5 DEFW $E646    ;
@@ -12811,20 +13092,22 @@ c$FC4B CALL $AF7B    ;
  $FC8C DEFB $10      ;
 
 ; Routine at FC8D
-c$FC8D CALL $AFB7    ;
- $FC90 RET C         ;
- $FC91 CP $01        ;
- $FC93 JP NC,$EDE7   ;
- $FC96 LD A,($A7C3)  ;
- $FC99 LD HL,$FCCB   ;
- $FC9C LD BC,$0003   ;
- $FC9F CPIR          ;
- $FCA1 JP NZ,$EE4D   ;
- $FCA4 LD HL,$FCB3   ;
- $FCA7 LD DE,$FCBF   ;
- $FCAA LD BC,$0006   ;
- $FCAD CALL $B0DE    ;
- $FCB0 JP $EDED      ;
+c$FC8D CALL $AFB7    ; Call #R$AFB7.
+ $FC90 RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+ $FC91 CP $01        ; {Jump to #R$EDE7 if there was more than #N$01 direct object
+ $FC93 JP NC,$EDE7   ; referenced in the user input (so the command is malformed).
+                     ; }
+ $FC96 LD A,($A7C3)  ; #REGa=*#R$A7C3.
+ $FC99 LD HL,$FCCB   ; #REGhl=#R$FCCB.
+ $FC9C LD BC,$0003   ; #REGbc=#N($0003,$04,$04).
+ $FC9F CPIR          ; CPIR.
+ $FCA1 JP NZ,$EE4D   ; Jump to #R$EE4D if #REGa is not equal to #N$01.
+ $FCA4 LD HL,$FCB3   ; #REGhl=#R$FCB3.
+ $FCA7 LD DE,$FCBF   ; #REGde=#R$FCBF.
+ $FCAA LD BC,$0006   ; #REGbc=#N($0006,$04,$04).
+ $FCAD CALL $B0DE    ; Call #R$B0DE.
+ $FCB0 JP $EDED      ; Jump to #R$EDED.
  $FCB3 DEFW $E642    ;
  $FCB5 DEFW $E644    ;
  $FCB7 DEFW $E646    ;
@@ -12837,9 +13120,9 @@ c$FC8D CALL $AFB7    ;
  $FCC5 DEFW $F39B    ;
  $FCC7 DEFW $F39B    ;
  $FCC9 DEFW $F39B    ;
- $FCCB DEFB $0C      ;
- $FCCC DEFB $0D      ;
- $FCCD DEFB $15      ;
+ $FCCB DEFB $0C      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $FCCC DEFB $0D      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $FCCD DEFB $15      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 
 ; Game Start
 ;
@@ -12929,72 +13212,72 @@ g$FD02 DEFB $00,$00,$00,$00,$FF,$FF,$FF,$00
 
 ; Jump Table: Verbs
 @label=JumpTable_Verbs
-g$FE89 DEFW $F7FD    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FE8B DEFW $F824    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FE8D DEFW $F841    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FE8F DEFW $F84B    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FE91 DEFW $F853    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FE93 DEFW $F892    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FE95 DEFW $F8A1    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FE97 DEFW $F8A9    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FE99 DEFW $F8C9    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FE9B DEFW $F8CD    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FE9D DEFW $F8D1    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FE9F DEFW $F8D5    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEA1 DEFW $F8D9    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEA3 DEFW $F8DD    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEA5 DEFW $F8F2    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEA7 DEFW $F975    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEA9 DEFW $F9B3    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEAB DEFW $FA29    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEAD DEFW $FA6A    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEAF DEFW $FA91    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEB1 DEFW $FAAD    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEB3 DEFW $FADD    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEB5 DEFW $FB21    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEB7 DEFW $FB5D    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEB9 DEFW $FB89    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEBB DEFW $FBB9    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEBD DEFW $FBC3    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEBF DEFW $FBDE    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEC1 DEFW $FBF5    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEC3 DEFW $FC10    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEC5 DEFW $FC2F    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEC7 DEFW $FC4B    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
- $FEC9 DEFW $FC8D    ; Verb word token #N($2E+(#PC-$FE89)/$02):
-                     ; #TOKEN($2E+(#PC-$FE89)/$02).
+g$FE89 DEFW $F7FD    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FE8B DEFW $F824    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FE8D DEFW $F841    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FE8F DEFW $F84B    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FE91 DEFW $F853    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FE93 DEFW $F892    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FE95 DEFW $F8A1    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FE97 DEFW $F8A9    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FE99 DEFW $F8C9    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FE9B DEFW $F8CD    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FE9D DEFW $F8D1    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FE9F DEFW $F8D5    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEA1 DEFW $F8D9    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEA3 DEFW $F8DD    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEA5 DEFW $F8F2    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEA7 DEFW $F975    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEA9 DEFW $F9B3    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEAB DEFW $FA29    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEAD DEFW $FA6A    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEAF DEFW $FA91    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEB1 DEFW $FAAD    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEB3 DEFW $FADD    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEB5 DEFW $FB21    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEB7 DEFW $FB5D    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEB9 DEFW $FB89    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEBB DEFW $FBB9    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEBD DEFW $FBC3    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEBF DEFW $FBDE    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEC1 DEFW $FBF5    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEC3 DEFW $FC10    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEC5 DEFW $FC2F    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEC7 DEFW $FC4B    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
+ $FEC9 DEFW $FC8D    ; Verb word token #N((#PC-$FE89)/$02):
+                     ; #TOKEN((#PC-$FE89)/$02).
 
 ; Jump Table: Turn-Based Events
 @label=JumpTable_TurnBasedEvents

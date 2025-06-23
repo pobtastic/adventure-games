@@ -1656,6 +1656,31 @@ N $AF9A Print "#STR$A9D6,$08($b==$FF)".
 c $AF9F
 
 c $AFB7
+D $AFB7 In most adventure games, the structure for a command is "verb + direct
+. object". This is usually how the player interacts with the game world.
+. The verb describes the action, and the direct object is what the action is
+. performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
+. object "SHOE".
+R $AFB7 O:F The carry flag is set when the command is malformed
+R $AFB7 O:A The number of references to items in the user input tokens
+R $AFB7 O:E As #REGa
+N $AFB7 The first token is the verb, so target the second token for the direct
+. object.
+  $AFB7,$03 Fetch the #R$A825(second token from the user input) and store it in
+. #REGa.
+  $AFBA,$04 Jump forward to #R$AFC3 if the token is anything other than the
+. terminator character (#N$FF).
+N $AFBE The token was the terminator character (#N$FF), so the sentence is
+. malformed.
+N $AFBE E.g. They tried "TAKE" but didn't write anything after it.
+N $AFBE Print "#STR$A9BD,$08($b==$FF)".
+  $AFBE,$03 Call #R$AAF5.
+  $AFC1,$01 Set the carry flag to indicate this call was a failure.
+  $AFC2,$01 Return.
+N $AFC3 The user input tokens have a direct object, return how many are in the
+. command buffer.
+  $AFC3,$03 Call #R$AEAF.
+  $AFC6,$01 Return.
 
 c $AFC7 Parser: Process Item
 @ $AFC7 label=Parser_ProcessItem
@@ -2365,8 +2390,8 @@ t $BB95 Messaging: "A Skull"
   $BB95,$07 "#STR$BB95,$08($b==$FF)".
 B $BB9C,$01 Terminator.
 
-t $BB9D Messaging: "A Dhield"
-@ $BB9D label=Messaging_Dhield
+t $BB9D Messaging: "A Shield"
+@ $BB9D label=Messaging_Shield_Duplicate
   $BB9D,$08 "#STR$BB9D,$08($b==$FF)".
 B $BBA5,$01 Terminator.
 
@@ -3561,17 +3586,212 @@ g $E519 Data: Phrase Tokens
 D $E519 The user input is broken down into tokens which represent the words
 . they've entered. These tokens are then compared against these token patterns
 . to determine the outcome the player was trying to communicate.
-N $E519 Matches e.g. "bottle".
-@ $E519 label=PhraseTokens_
-N $E519 Matches e.g. "fish", "herring", "red fish", "red herring", "coloured fish",
-. "coloured herring".
-  $E519
-  $E54B
-  $E5E2
-  $E5E4
-  $E5E6
-  $E5F1
-  $E5F3
+N $E519 Matches e.g. "urn".
+@ $E519 label=PhraseTokens_Urn
+N $E51B Matches e.g. "helmet", "bronze helmet".
+@ $E51B label=PhraseTokens_Helmet
+N $E520 Matches e.g. "monolith", "stone monolith".
+@ $E520 label=PhraseTokens_Monolith
+N $E525 Matches e.g. "sword".
+@ $E525 label=PhraseTokens_Sword
+N $E527 Matches e.g. "amulet", "talisman".
+@ $E527 label=PhraseTokens_Amulet
+N $E529 Matches e.g. "staff", "oak staff".
+@ $E529 label=PhraseTokens_Staff
+N $E52E Matches e.g. "body".
+@ $E52E label=PhraseTokens_Body
+N $E530 Matches e.g. "torc", "bronze torc".
+@ $E530 label=PhraseTokens_Torc
+N $E535 Matches e.g. "salt".
+@ $E535 label=PhraseTokens_Salt
+N $E537 Matches e.g. "pot", "clay pot".
+@ $E537 label=PhraseTokens_Pot
+N $E53C Matches e.g. "acorns".
+@ $E53C label=PhraseTokens_Acorns
+N $E53E Matches e.g. "food".
+@ $E53E label=PhraseTokens_Food
+N $E540 Matches e.g. "iron".
+@ $E540 label=PhraseTokens_Iron
+N $E542 Matches e.g. "vase".
+@ $E542 label=PhraseTokens_Vase
+N $E544 Matches e.g. "meat".
+@ $E544 label=PhraseTokens_Meat
+N $E546 Matches e.g. "slab", "stone slab".
+@ $E546 label=PhraseTokens_Slab
+N $E54B Matches e.g. "rope".
+@ $E54B label=PhraseTokens_Rope
+N $E54D Matches e.g. "skull", "human skull".
+@ $E54D label=PhraseTokens_Skull
+N $E552 Matches e.g. "shield".
+@ $E552 label=PhraseTokens_Shield
+N $E554 Matches e.g. "ladder".
+@ $E554 label=PhraseTokens_Ladder
+N $E556 Matches e.g. "cloak", "white cloak".
+@ $E556 label=PhraseTokens_Cloak
+N $E55B Matches e.g. "silver".
+@ $E55B label=PhraseTokens_Silver
+N $E55D Matches e.g. "meat from trader".
+@ $E55D label=PhraseTokens_MeatFromTrader
+N $E561 Matches e.g. "amulet from druid", "talisman from druid".
+@ $E561 label=PhraseTokens_AmuletFromDruid
+N $E565 Matches e.g. "cloak from body".
+@ $E565 label=PhraseTokens_CloakFromBody
+N $E569 Matches e.g. "meat to bear".
+@ $E569 label=PhraseTokens_MeatToBear
+N $E56D Matches e.g. "meat to wolves".
+@ $E56D label=PhraseTokens_MeatToWolves
+N $E571 Matches e.g. "acorns to raven".
+@ $E571 label=PhraseTokens_AcornsToRaven
+N $E575 Matches e.g. "sword to trader".
+@ $E575 label=PhraseTokens_SwordToTrader
+N $E579 Matches e.g. "salt to guard".
+@ $E579 label=PhraseTokens_SaltToGuard
+N $E57D Matches e.g. "iron to trader".
+@ $E57D label=PhraseTokens_IronToTrader
+N $E581 Matches e.g. "roman to druid".
+@ $E581 label=PhraseTokens_RomanToDruid
+N $E585 Matches e.g. "food to bear".
+@ $E585 label=PhraseTokens_FoodToBear
+N $E589 Matches e.g. "food to wolves".
+@ $E589 label=PhraseTokens_FoodToWolves
+N $E58D Matches e.g. "salt to trader".
+@ $E58D label=PhraseTokens_SaltToTrader
+N $E591 Matches e.g. "sword from slab", "sword from stone slab", "sword from
+. groove".
+@ $E591 label=PhraseTokens_SwordFromSlab
+N $E59E Matches e.g. "salt to warrior", "salt to armed warrior".
+@ $E59E label=PhraseTokens_SaltToWarrior
+N $E5A7 Matches e.g. "helmet to trader", "bronze helmet to trader".
+@ $E5A7 label=PhraseTokens_HelmetToTrader
+N $E5B0 Matches e.g. "shield to trader".
+@ $E5B0 label=PhraseTokens_ShieldToTrader
+N $E5B4 Matches e.g. "iron to guard".
+@ $E5B4 label=PhraseTokens_IronToGuard
+N $E5B8 Matches e.g. "helmet to guard", "bronze helmet to guard".
+@ $E5B8 label=PhraseTokens_HelmetToGuard
+N $E5C1 Matches e.g. "silver to druid".
+@ $E5C1 label=PhraseTokens_SilverToDruid
+N $E5C5 Matches e.g. "helmet to druid", "bronze helmet to druid".
+@ $E5C5 label=PhraseTokens_HelmetToDruid
+N $E5CE Matches e.g. "iron to druid".
+@ $E5CE label=PhraseTokens_IronToDruid
+N $E5D2 Matches e.g. "meat at bear".
+@ $E5D2 label=PhraseTokens_MeatAtBear
+N $E5D6 Matches e.g. "meat at wolves".
+@ $E5D6 label=PhraseTokens_MeatAtWolves
+N $E5DA Matches e.g. "food at bear".
+@ $E5DA label=PhraseTokens_FoodAtBear
+N $E5DE Matches e.g. "food at wolves".
+@ $E5DE label=PhraseTokens_FoodAtWolves
+N $E5E2 Matches e.g. "roman".
+@ $E5E2 label=PhraseTokens_Roman
+N $E5E4 Matches e.g. "hare".
+@ $E5E4 label=PhraseTokens_Hare
+N $E5E6 Matches e.g. "ox", "wild ox".
+@ $E5E6 label=PhraseTokens_Ox
+N $E5EB Matches e.g. "trap", "hare from trap".
+@ $E5EB label=PhraseTokens_Trap
+N $E5F1 Matches e.g. "pig".
+@ $E5F1 label=PhraseTokens_Pig
+N $E5F3 Matches e.g. "water".
+@ $E5F3 label=PhraseTokens_Water
+N $E5F5 Matches e.g. "in pool", "into pool", "in pool of water", "into pool of
+. water", "in deep pool", "into deep pool", "in deep pool of water", "into deep
+. pool of water".
+@ $E5F5 label=PhraseTokens_IntoPool
+N $E607 Matches e.g. "in lake", "into lake".
+@ $E607 label=PhraseTokens_IntoLake
+N $E60A Matches e.g. "in water", "into water".
+@ $E60A label=PhraseTokens_IntoWater
+N $E60D Matches e.g. "on straw", "onto straw", "on pile of straw", "onto pile
+. of straw", "on straw pile", "onto straw pile", "from platform".
+@ $E60D label=PhraseTokens_OntoStraw
+N $E61C Matches e.g. "out of pool", "out of pool of water", "out of deep pool",
+. "out of deep pool of water".
+@ $E61C label=PhraseTokens_OutOfPool
+N $E632 Matches e.g. "out of lake".
+@ $E632 label=PhraseTokens_OutOfLake
+N $E636 Matches e.g. "out of water".
+@ $E636 label=PhraseTokens_OutOfWater
+N $E63A Matches e.g. "out".
+@ $E63A label=PhraseTokens_Out
+N $E63C Matches e.g. "u ladder", "up ladder".
+@ $E63C label=PhraseTokens_UpLadder
+N $E63F Matches e.g. "d ladder", "down ladder".
+@ $E63F label=PhraseTokens_DownLadder
+N $E642 Matches e.g. "n", "north".
+@ $E642 label=PhraseTokens_North
+N $E644 Matches e.g. "s", "south".
+@ $E644 label=PhraseTokens_South
+N $E646 Matches e.g. "e", "east".
+@ $E646 label=PhraseTokens_East
+N $E648 Matches e.g. "w", "west".
+@ $E648 label=PhraseTokens_West
+N $E64A Matches e.g. "u", "up".
+@ $E64A label=PhraseTokens_Up
+N $E64C Matches e.g. "d", "down".
+@ $E64C label=PhraseTokens_Down
+N $E64E Matches e.g. "fissure", "monolith", "stone monolith".
+@ $E64E label=PhraseTokens_Fissure
+N $E655 Matches e.g. "hut".
+@ $E655 label=PhraseTokens_Hut
+N $E657 Matches e.g. "cavern".
+@ $E657 label=PhraseTokens_Cavern
+N $E659 Matches e.g. "in ring", "into ring", "in crystal ring", "into crystal
+. ring", "in ring of crystals", "into ring of crystals".
+@ $E659 label=PhraseTokens_IntoRing
+N $E665 Matches e.g. "ring", "crystal ring", "ring of crystals".
+@ $E665 label=PhraseTokens_Ring
+N $E66E Matches e.g. "urn in fire", "urn in flames", "urn into fire", "urn into
+. flames".
+@ $E66E label=PhraseTokens_UrnIntoFire
+N $E672 Matches e.g. "ladder against platform".
+@ $E672 label=PhraseTokens_LadderAgainstPlatform
+N $E676 Matches e.g. "sword on slab", "sword onto slab", "sword on stone slab",
+. "sword onto stone slab", "sword in groove", "sword into groove".
+@ $E676 label=PhraseTokens_SwordOnSlab
+N $E683 Matches e.g. "meat from trader", "meat".
+@ $E683 label=PhraseTokens__MeatFromTrader
+N $E689 Matches e.g. "meat with iron", "meat using iron", "meat from trader
+. with iron", "meat from trader using iron".
+@ $E689 label=PhraseTokens_MeatWithIron
+N $E693 Matches e.g. "meat with salt", "meat using salt", "meat from trader
+. with salt", "meat from trader using salt", "meat with acorns", "meat using
+. acorns", "meat from trader with acorns", "meat from trader using acorns",
+. "meat with helmet", "meat using helmet", "meat from trader with helmet",
+. "meat from trader using helmet", "meat with sword", "meat using sword", "meat
+. from trader with sword", "meat from trader using sword".
+@ $E693 label=PhraseTokens_MeatWithSalt
+N $E6BB Matches e.g. "in ring", "into ring", "in crystal ring", "into crystal
+. ring", "in ring of crystals", "into ring of crystals".
+@ $E6BB label=PhraseTokens_IntoRing_Duplicate
+N $E6C7 Matches e.g. "roman", "roman with sword", "roman using sword".
+@ $E6C7 label=PhraseTokens_RomanWithSword
+N $E6CD Matches e.g. "fomorian", "fomorian with sword", "fomorian using sword".
+@ $E6CD label=PhraseTokens_Fomorian
+N $E6D3 Matches e.g. "hare", "hare with sword", "hare using sword".
+@ $E6D3 label=PhraseTokens_HareWithSword
+N $E6D9 Matches e.g. "trader", "trader with sword", "trader using sword".
+@ $E6D9 label=PhraseTokens_Trader
+N $E6DF Matches e.g. "warrior", "armed warrior".
+@ $E6DF label=PhraseTokens_Warrior
+N $E6E4 Matches e.g. "wolves", "wolves with sword", "wolves using sword".
+@ $E6E4 label=PhraseTokens_Wolves
+N $E6EA Matches e.g. "bear", "bear with sword", "bear using sword".
+@ $E6EA label=PhraseTokens_Bear
+N $E6F0 Matches e.g. "guard", "guard with sword", "guard using sword".
+@ $E6F0 label=PhraseTokens_Guard
+N $E6F6 Matches e.g. "druid", "druid with sword", "druid using sword".
+@ $E6F6 label=PhraseTokens_Druid
+N $E6FC Matches e.g. "pig", "pig with sword", "pig using sword".
+@ $E6FC label=PhraseTokens_PigWithSword
+N $E702 Matches e.g. "ox", "wild ox", "ox with sword", "ox using sword", "wild
+. ox with sword", "wild ox using sword".
+@ $E702 label=PhraseTokens_OxWithSword
+N $E710 Matches e.g. "hill".
+@ $E710 label=PhraseTokens_Hill
+N $E712 Matches e.g. "broch".
+@ $E712 label=PhraseTokens_Broch
 B $E519,$01 #TOKEN(#PEEK(#PC)).
 L $E519,$01,$1FB,$02
 
@@ -3702,8 +3922,9 @@ c $EA44
   $EA4F,$03 #REGhl=#R$CA94.
   $EA52,$02 Jump to #R$EA5C if ?? is not equal to #N$14.
   $EA54,$01 Restore #REGhl from the stack.
-  $EA55,$03 #REGhl=#R$E9B2.
-  $EA58,$01 Exchange the *#REGsp with the #REGhl register.
+N $EA55 Bad luck!
+  $EA55,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
+. over".
   $EA59,$03 #REGhl=#R$CA46.
   $EA5C,$03 Call #R$B081.
   $EA5F,$01 Return.
@@ -4086,10 +4307,13 @@ N $EDE1 Print "#STR$A9BD,$08($b==$FF)".
   $EDE1,$03 #REGhl=#R$A9BD.
   $EDE4,$03 Jump to #R$ED6D.
 
+c $EDE7 Response: "Please Rephrase That"
+@ $EDE7 label=Response_PleaseRephraseThat_Duplicate
 N $EDE7 Print "#STR$A9D6,$08($b==$FF)".
   $EDE7,$03 #REGhl=#R$A9D6.
   $EDEA,$03 Jump to #R$ED6D.
 
+c $EDED
 N $EDED Print "#STR$A9EC,$08($b==$FF)".
   $EDED,$03 #REGhl=#R$A9EC.
   $EDF0,$03 Jump to #R$ED6D.
@@ -4142,7 +4366,97 @@ c $EE35
 c $F26C
 c $F293
 c $F2BA
+
 c $F2D4
+  $F2D4,$03 #REGhl=#R$E3B0.
+  $F2D7,$03 Call #R$AEF7.
+  $F2DA,$05 Jump to #R$EE35 if #REGa is equal to #N$51.
+  $F2DF,$05 Jump to #R$F293 if #REGa is equal to #N$0B.
+  $F2E4,$05 Jump to #R$F293 if #REGa is equal to #N$55.
+  $F2E9,$03 Jump to #R$F26C.
+
+c $F2EC Action: Drink
+@ $F2EC label=Action_Drink
+  $F2EC,$03 #REGa=*#R$A7C3.
+  $F2EF,$04 Jump to #R$F2F9 if #REGa is not equal to room #N$2A: #ROOM$2A.
+N $F2F3 Print "#STR$D8E7,$08($b==$FF)".
+  $F2F3,$03 #REGhl=#R$D8E7.
+  $F2F6,$03 Jump to #R$ED6D.
+
+N $F2F9 Print "#STR$D8FD,$08($b==$FF)".
+  $F2F9,$03 #REGhl=#R$D8FD.
+  $F2FC,$03 Jump to #R$ED6D.
+
+c $F2FF Action:
+  $F2FF,$03 #REGa=*#R$A7C3.
+  $F302,$05 Jump to #R$EE0B if #REGa is equal to room #N$0C: #ROOM$0C.
+  $F307,$05 Jump to #R$EE0B if #REGa is equal to room #N$15: #ROOM$15.
+  $F30C,$04 Jump to #R$F314 if #REGa is not equal to room #N$05: #ROOM$05.
+  $F310,$02 Load item #N$0C: #ITEM$0C into #REGa.
+  $F312,$02 Jump to #R$F316.
+
+  $F314,$02 Load item #N$15: #ITEM$15 into #REGa.
+  $F316,$03 Call #R$EB10.
+  $F319,$03 Call #R$F7AC.
+  $F31C,$01 Return.
+
+  $F31D,$02 Load #N$37: #ITEM$37 into #REGa.
+  $F31F,$03 Call #R$AE6B.
+  $F322,$02 Jump to #R$F32E if #REGa is not equal to #N$37.
+N $F324 Bad luck!
+  $F324,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
+. over".
+N $F328 Print "#STR$D919,$08($b==$FF)".
+  $F328,$03 #REGhl=#R$D919.
+  $F32B,$03 Jump to #R$ED6D.
+N $F32E Print "#STR$D973,$08($b==$FF)".
+  $F32E,$03 #REGhl=#R$D973.
+  $F331,$03 Call #R$A592.
+  $F334,$03 Call #R$F7AC.
+  $F337,$01 Return.
+
+  $F338,$03 #REGhl=#R$E3E7.
+  $F33B,$03 Call #R$AEF7.
+  $F33E,$05 Jump to #R$F31D if #REGa is equal to #N$6C.
+  $F343,$05 Jump to #R$EE0B if #REGa is equal to #N$32.
+  $F348,$03 Jump to #R$F2FF.
+
+  $F34B,$08 Jump to #R$EE0B if *#R$A7C3 is equal to room #N$63: #ROOM$63.
+  $F353,$02 #REGa=#N$63.
+  $F355,$03 Call #R$EB10.
+  $F358,$01 Return.
+
+  $F359,$03 #REGa=*#R$A7C3.
+  $F35C,$02 #REGb=#N$05.
+  $F35E,$04 Jump to #R$F369 if #REGa is equal to room #N$0C: #ROOM$0C.
+  $F362,$05 Jump to #R$EE2F if #REGa is not equal to room #N$15: #ROOM$15.
+  $F367,$02 #REGb=#N$14.
+  $F369,$01 #REGa=#REGb.
+  $F36A,$03 Call #R$EB10.
+  $F36D,$01 Return.
+
+  $F36E,$03 #REGa=*#R$A7C3.
+  $F371,$05 Jump to #R$EDED if #REGa is equal to room #N$0D: #ROOM$0D.
+  $F376,$05 Jump to #R$F359 if #REGa is equal to room #N$0C: #ROOM$0C.
+  $F37B,$05 Jump to #R$F359 if #REGa is equal to room #N$15: #ROOM$15.
+  $F380,$03 Jump to #R$EE2F.
+
+  $F383,$03 #REGa=*#R$A7C3.
+  $F386,$05 Jump to #R$EDED if #REGa is equal to room #N$0D: #ROOM$0D.
+  $F38B,$05 Jump to #R$F359 if #REGa is equal to room #N$0C: #ROOM$0C.
+  $F390,$05 Jump to #R$F359 if #REGa is equal to room #N$15: #ROOM$15.
+N $F395 Print "#STR$D9A3,$08($b==$FF)".
+  $F395,$03 #REGhl=#R$D9A3.
+  $F398,$03 Jump to #R$ED6D.
+
+c $F39B
+  $F39B,$04 #REGix=#R$A824.
+  $F39F,$03 #REGa=*#REGix+#N$01.
+  $F3A2,$03 Write #REGa to *#REGix+#N$00.
+  $F3A5,$04 Write #N$FF to *#REGix+#N$01.
+  $F3A9,$03 Jump to #R$B05E.
+
+c $F3AC
 
 c $F7FD
   $F7FD,$03 Call #R$AF70.
@@ -4200,20 +4514,96 @@ W $F87D,$02
 L $F87D,$02,$09
 B $F88F,$01
 L $F88F,$01,$03
+
 c $F892
+  $F892,$03 Call #R$AF70.
+N $F895 The "LOAD" command can only be called on its own.
+  $F895,$01 Return if there's any token set in #R$A825.
+  $F896,$03 Call #R$A605.
+  $F899,$01 Return if there was a tape loading error.
+  $F89A,$03 Call #R$A53E.
+  $F89D,$01 Restore #REGhl from the stack.
+  $F89E,$03 Jump to #R$A531.
+
 c $F8A1
-c $F8A9
+  $F8A1,$03 Call #R$AF70.
+N $F8A4 The "SAVE" command can only be called on its own.
+  $F8A4,$01 Return if there's any token set in #R$A825.
+  $F8A5,$03 Call #R$A5CA.
+  $F8A8,$01 Return.
+
+c $F8A9 Action: Quit
+@ $F8A9 label=Action_Quit
+  $F8A9,$03 Call #R$AF70.
+N $F8AC The "QUIT" command can only be called on its own.
+  $F8AC,$01 Return if there's any token set in #R$A825.
+N $F8AD Inform the player of their score.
+  $F8AD,$03 Call #R$B0A9.
+N $F8B0 Print "#STR$A9A1,$08($b==$FF)".
+  $F8B0,$03 #REGhl=#R$A9A1.
+  $F8B3,$03 Call #R$A592.
+@ $F8B6 label=WantToSave_Loop
+  $F8B6,$03 Call #R$A53E.
+N $F8B9 The player just wants to quit.
+  $F8B9,$04 #HTML(Jump to #R$F8C4 if the keypress is "<code>#CHR$4E</code>".)
+  $F8BD,$04 #HTML(Jump back to #R$F8B6 if the keypress is anything other than
+. "<code>#CHR$59</code>".)
+N $F8C1 The player does want to save before quitting...
+  $F8C1,$03 Call #R$A5CA.
+N $F8C4 Jump to asking if the player "wants another game?"
+@ $F8C4 label=QuitGame
+  $F8C4,$04 Switch #R$E9BB onto the stack so the next return action is asking
+. if the player would "Want another game? Y/N.".
+  $F8C8,$01 Return.
+
 c $F8C9
+  $F8C9,$02 #REGc=#N$00.
+  $F8CB,$02 Jump to #R$F8DF.
+
 c $F8CD
+  $F8CD,$02 #REGc=#N$01.
+  $F8CF,$02 Jump to #R$F8DF.
+
 c $F8D1
+  $F8D1,$02 #REGc=#N$02.
+  $F8D3,$02 Jump to #R$F8DF.
+
 c $F8D5
+  $F8D5,$02 #REGc=#N$03.
+  $F8D7,$02 Jump to #R$F8DF.
+
 c $F8D9
+  $F8D9,$02 #REGc=#N$04.
+  $F8DB,$02 Jump to #R$F8DF.
+
 c $F8DD
+  $F8DD,$02 #REGc=#N$05.
+  $F8DF,$03 Call #R$AF70.
+  $F8E2,$01 Return if there's any token set in #R$A825.
+  $F8E3,$02 #REGb=#N$00.
+  $F8E5,$03 Call #R$AC9A.
+  $F8E8,$01 #REGhl+=#REGbc.
+  $F8E9,$01 #REGa=*#REGhl.
+  $F8EA,$04 Jump to #R$EE1D if #REGa is zero.
+  $F8EE,$03 Call #R$EB10.
+  $F8F1,$01 Return.
+
 c $F8F2
+  $F8F2,$03 Call #R$AF7B.
+  $F8F5,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $F8F6,$05 Jump to #R$F956 if there were more than #N$02 direct objects
+. referenced in the user input (so the command is malformed).
+  $F8FB,$03 #REGhl=#R$F90A.
+  $F8FE,$03 #REGde=#R$F930.
+  $F901,$03 #REGbc=#N($0013,$04,$04).
+  $F904,$03 Call #R$B0DE.
+  $F907,$03 Jump to #R$EDED.
 W $F90A,$02
 L $F90A,$02,$13
 W $F930,$02
 L $F930,$02,$13
+
 c $F956
 W $F965,$02
 L $F965,$02,$04
@@ -4222,17 +4612,51 @@ L $F96D,$02,$04
 c $F975
 W $F98D,$02
 L $F98D,$02,$13
+
 c $F9B3
+  $F9B3,$03 Call #R$AF9F.
+  $F9B6,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $F9B7,$03 #REGhl=#R$A825.
+  $F9BA,$03 #REGbc=#N($0009,$04,$04).
+  $F9BD,$02 Load token #N$6D #TOKEN$6D into #REGa.
+  $F9BF,$02 Search for the matching token.
+  $F9C1,$03 Jump to #R$EDE7 if .
+  $F9C4,$03 #REGhl=#R$F9D2.
+  $F9C7,$03 #REGde=#R$F9DA.
+  $F9CA,$03 #REGbc=#N($0004,$04,$04).
+  $F9CD,$03 Call #R$B0DE.
+  $F9D0,$02 Jump to #R$F9E2.
 W $F9D2,$02
 L $F9D2,$02,$04
 W $F9DA,$02
 L $F9DA,$02,$04
+
 c $F9E2
+  $F9E2,$03 #REGhl=#R$F9F1.
+  $F9E5,$03 #REGde=#R$FA0D.
+  $F9E8,$03 #REGbc=#N($000E,$04,$04).
+  $F9EB,$03 Call #R$B0DE.
+  $F9EE,$03 Jump to #R$EDF9.
 W $F9F1,$02
 L $F9F1,$02,$0E
 W $FA0D,$02
 L $FA0D,$02,$0E
+
 c $FA29
+  $FA29,$03 Call #R$AF7B.
+  $FA2C,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $FA2D,$05 Jump to #R$F975 if there were less than #N$02 direct objects
+. referenced in the user input.
+N $FA32 Print "#STR$A9D6,$08($b==$FF)".
+  $FA32,$05 Jump to #R$EDE7 if there were more than #N$03 direct objects
+. referenced in the user input (so the command is malformed).
+  $FA37,$03 #REGhl=#R$FA46.
+  $FA3A,$03 #REGde=#R$FA58.
+  $FA3D,$03 #REGbc=#N($0009,$04,$04).
+  $FA40,$03 Call #R$B0DE.
+  $FA43,$03 Jump to #R$F9E2.
 W $FA46,$02
 L $FA46,$02,$09
 W $FA58,$02
@@ -4242,19 +4666,58 @@ W $FA7D,$02
 L $FA7D,$02,$05
 W $FA87,$02
 L $FA87,$02,$05
-c $FA91
+
+c $FA91 Parse Verb: Drink
+@ $FA91 label=ParseVerb_Drink
+  $FA91,$03 Call #R$AF7B.
+  $FA94,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+N $FA95 Print "#STR$A9D6,$08($b==$FF)".
+  $FA95,$05 Jump to #R$EDE7 if there were more than #N$02 direct objects
+. referenced in the user input (so the command is malformed).
+  $FA9A,$03 #REGhl=#R$FAA9.
+  $FA9D,$03 #REGde=#R$FAAB.
+  $FAA0,$03 #REGbc=#N($0001,$04,$04).
+  $FAA3,$03 Call #R$B0DE.
+N $FAA6 Print "#STR$A9EC,$08($b==$FF)".
+  $FAA6,$03 Jump to #R$EDED.
+@ $FAA9 label=Table_Actions_TokenGroup
 W $FAA9,$02
+@ $FAAB label=Table_Actions_Drink
 W $FAAB,$02
+
 c $FAAD
+  $FAAD,$03 Call #R$AFB7.
+  $FAB0,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $FAB1,$05 Jump to #R$EDE7 if there were more than #N$03 direct objects
+. referenced in the user input (so the command is malformed).
+  $FAB6,$03 #REGhl=#R$FAC5.
+  $FAB9,$03 #REGde=#R$FAD1.
+  $FABC,$03 #REGbc=#N($0006,$04,$04).
+  $FABF,$03 Call #R$B0DE.
+  $FAC2,$03 Jump to #R$EDED.
 W $FAC5,$02
 L $FAC5,$02,$06
 W $FAD1,$02
 L $FAD1,$02,$06
+
 c $FADD
+  $FADD,$03 Call #R$AFB7.
+  $FAE0,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $FAE1,$05 Jump to #R$EDE7 if there was more than #N$03 direct objects
+. referenced in the user input (so the command is malformed).
+  $FAE6,$03 #REGhl=#R$FAF5.
+  $FAE9,$03 #REGde=#R$FB0B.
+  $FAEC,$03 #REGbc=#N($000B,$04,$04).
+  $FAEF,$03 Call #R$B0DE.
+  $FAF2,$03 Jump to #R$EDED.
 W $FAF5,$02
 L $FAF5,$02,$0B
 W $FB0B,$02
 L $FB0B,$02,$0C
+
 c $FB21
 W $FB39,$02
 L $FB39,$02,$09
@@ -4265,11 +4728,23 @@ W $FB75,$02
 L $FB75,$02,$05
 W $FB7F,$02
 L $FB7F,$02,$05
+
 c $FB89
+  $FB89,$03 Call #R$AFB7.
+  $FB8C,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $FB8D,$05 Jump to #R$EDE7 if there was more than #N$01 direct object
+. referenced in the user input (so the command is malformed).
+  $FB92,$03 #REGhl=#R$FBA1.
+  $FB95,$03 #REGde=#R$FBAD.
+  $FB98,$03 #REGbc=#N($0006,$04,$04).
+  $FB9B,$03 Call #R$B0DE.
+  $FB9E,$03 Jump to #R$EDED.
 W $FBA1,$02
 L $FBA1,$02,$06
 W $FBAD,$02
 L $FBAD,$02,$06
+
 c $FBB9
 c $FBC3
 W $FBD6,$02
@@ -4299,12 +4774,28 @@ W $FC74,$02
 L $FC74,$02,$0B
 B $FC8A,$01
 L $FC8A,$01,$03
+
 c $FC8D
+  $FC8D,$03 Call #R$AFB7.
+  $FC90,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $FC91,$05 Jump to #R$EDE7 if there was more than #N$01 direct object
+. referenced in the user input (so the command is malformed).
+  $FC96,$03 #REGa=*#R$A7C3.
+  $FC99,$03 #REGhl=#R$FCCB.
+  $FC9C,$03 #REGbc=#N($0003,$04,$04).
+  $FC9F,$02 CPIR.
+  $FCA1,$03 Jump to #R$EE4D if #REGa is not equal to #N$01.
+  $FCA4,$03 #REGhl=#R$FCB3.
+  $FCA7,$03 #REGde=#R$FCBF.
+  $FCAA,$03 #REGbc=#N($0006,$04,$04).
+  $FCAD,$03 Call #R$B0DE.
+  $FCB0,$03 Jump to #R$EDED.
 W $FCB3,$02
 L $FCB3,$02,$06
 W $FCBF,$02
 L $FCBF,$02,$06
-B $FCCB,$01
+B $FCCB,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $FCCB,$01,$03
 
 c $FCCE Game Start
@@ -4423,7 +4914,7 @@ N $FF4C All the image routines use this same routine.
 
 g $FE89 Jump Table: Verbs
 @ $FE89 label=JumpTable_Verbs
-W $FE89,$02 Verb word token #N($2E+(#PC-$FE89)/$02): #TOKEN($2E+(#PC-$FE89)/$02).
+W $FE89,$02 Verb word token #N((#PC-$FE89)/$02): #TOKEN((#PC-$FE89)/$02).
 L $FE89,$02,$21
 
 g $FEFC Jump Table: Room Images
