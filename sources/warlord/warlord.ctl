@@ -436,6 +436,11 @@ D $A77E Holds a single byte, where each bit relates to a turn-based event as
 . When the bit is set, this starts a turn counter (see ...).
 B $A77E,$01
 
+g $A790 Number Of Items In The Players Inventory
+@ $A790 label=Count_InventoryItems
+D $A790 The number of items the player is currently holding.
+B $A790,$01
+
 g $A791
 
 g $A7C3 Current Room ID
@@ -493,7 +498,8 @@ g $A7D8 Pointer: Object List Table
 @ $A7D8 label=Pointer_ObjectList
 W $A7D8,$02
 
-g $A7DA
+g $A7DA Pointer: Verbs Jump Table
+@ $A7DA label=Pointer_JumpTable_Verbs
 W $A7DA,$02
 
 g $A7DC Pointer: Configurable Exits Table
@@ -503,7 +509,8 @@ W $A7DC,$02
 g $A7DE
 W $A7DE,$02
 
-g $A7E0
+g $A7E0 Pointer: Verb Word Tokens Table
+@ $A7E0 label=Pointer_VerbWordTokens
 W $A7E0,$02
 
 g $A7E2 Pointer: Scenic Event Locations
@@ -524,7 +531,9 @@ g $A7E8 Number Of Objects
 D $A7E8 The total number of objects in the game.
 W $A7E8,$02
 
-g $A7EA
+g $A7EA Number Of Verb Tokens
+@ $A7EA label=Count_VerbTokens
+D $A7EA The total number of verb word tokens the game has. See #R$E489.
 W $A7EA,$02
 
 g $A7EC Number Of Rooms With Images
@@ -1591,10 +1600,58 @@ R $AF56 O:F Z is unset if the object is valid, unset when invalid
   $AF6F,$01 Return.
 
 c $AF70 Parser: Validate No Direct Object
+@ $AF70 label=Parser_ValidateNoDirectObject
+D $AF70 The opposite of #R$AF7B, checks that there's no direct object.
+R $AF70 O:F The Z flag is set when there's no direct object present
+R $AF70 O:F The carry flag is set when there's a second token set
+  $AF70,$06 Return if the second token (*#R$A825) is the terminator
+. character (#N$FF).
+N $AF76 Print "#STR$A9D6,$08($b==$FF)".
+  $AF76,$03 Call #R$AAEE.
+  $AF79,$01 Set the carry flag to indicate the command is malformed.
+  $AF7A,$01 Return.
 
 c $AF7B Parser: Validate Direct Object
+@ $AF7B label=Parser_ValidateDirectObject
+D $AF7B In most adventure games, the structure for a command is "verb + direct
+. object". This is usually how the player interacts with the game world.
+. The verb describes the action, and the direct object is what the action is
+. performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
+. object "SHOE".
+R $AF7B O:F The carry flag is set when the command is malformed
+N $AF7B The first token is the verb, so target the second token for the direct
+. object.
+  $AF7B,$03 Fetch the #R$A825(second token from the user input) and store it in
+. #REGa.
+  $AF7E,$04 Jump forward to #R$AF87 if the token is anything other than the
+. terminator character (#N$FF).
+N $AF82 The token was the terminator character (#N$FF), so the sentence is
+. malformed.
+N $AF82 E.g. They tried "TAKE" but didn't write anything after it.
+  $AF82,$03 Call #R$AAF5.
+  $AF85,$01 Set the carry flag to indicate this call was a failure.
+  $AF86,$01 Return.
+N $AF87 Process the direct object.
+@ $AF87 label=DirectObject_Process
+  $AF87,$03 Call #R$AEAF.
+  $AF8A,$01 Return if #REGa is not equal to #N$FF.
+  $AF8B,$03 Call #R$AAEE.
+  $AF8E,$01 Set the carry flag to indicate the command is malformed.
+  $AF8F,$01 Return.
 
 c $AF90
+N $AF90 The first token is the verb, so target the second token for the direct
+. object.
+  $AF90,$03 Fetch the #R$A825(second token from the user input) and store it in
+. #REGa.
+  $AF93,$03 Return if there is no second token.
+  $AF96,$03 Call #R$AEAF.
+  $AF99,$01 Return if there is at least one item mentioned in the user input
+. tokens.
+N $AF9A Print "#STR$A9D6,$08($b==$FF)".
+  $AF9A,$03 Call #R$AAEE.
+  $AF9D,$01 Set the carry flag.
+  $AF9E,$01 Return.
 
 c $AF9F
 
@@ -1625,6 +1682,22 @@ c $AFEB
 c $B01F
 
 c $B05E
+  $B05E,$03 #REGhl=*#R$A7E0.
+  $B061,$04 #REGbc=*#R$A7EA.
+  $B065,$03 #REGa=*#R$A824.
+  $B068,$02 Search for matching objects.
+  $B06A,$02 Jump to #R$B073 if ?? is equal to #N$00.
+N $B06C Print "#STR$A84F,$08($b==$FF)".
+  $B06C,$03 #REGhl=#R$A84F.
+  $B06F,$03 Call #R$A592.
+  $B072,$01 Return.
+  $B073,$03 #REGa=*#R$A7EA.
+  $B076,$01 #REGa-=#REGc.
+  $B077,$01 Decrease #REGa by one.
+  $B078,$01 #REGe=#REGa.
+  $B079,$04 #REGix=*#R$A7DA.
+  $B07D,$03 Call #R$AB88.
+  $B080,$01 Jump to *#REGhl.
 
 c $B081 Pause, Print String And Scroll
 @ $B081 label=PausePrintStringAndScroll
@@ -3349,7 +3422,64 @@ t $E091 Messaging: "You've Nothing To Tie Him With"
   $E091,$1F "#STR$E091,$08($b==$FF)".
 B $E0B0,$01 Terminator.
 
-t $E0B1
+t $E0B1 Table: Vocabulary
+@ $E0B1 label=Table_Vocabulary
+  $E0B1,$04 Command #N$00.
+  $E0B5,$09 Command #N$01.
+  $E0BE,$09 Command #N$02.
+  $E0C7,$04 Command #N$03.
+  $E0CB,$04 Command #N$04.
+  $E0CF,$04 Command #N$05.
+  $E0D3,$04 Command #N$06.
+  $E0D7,$04 Command #N$07.
+  $E0DB,$09 Command #N$08.
+  $E0E4,$09 Command #N$09.
+  $E0ED,$09 Command #N$0A.
+  $E0F6,$09 Command #N$0B.
+  $E0FF,$09 Command #N$0C.
+  $E108,$09 Command #N$0D.
+  $E111,$09 Command #N$0E.
+  $E11A,$04 Command #N$0F.
+  $E11E,$04 Command #N$10.
+  $E122,$13 Command #N$11.
+  $E135,$0E Command #N$12.
+  $E143,$04 Command #N$13.
+  $E147,$04 Command #N$14.
+  $E14B,$04 Command #N$15.
+  $E14F,$04 Command #N$16.
+  $E153,$04 Command #N$17.
+  $E157,$04 Command #N$18.
+  $E15B,$13 Command #N$19.
+  $E16E,$04 Command #N$1A.
+  $E172,$04 Command #N$1B.
+  $E176,$0E Command #N$1C.
+  $E184,$09 Command #N$1D.
+  $E18D,$04 Command #N$1E.
+  $E191,$04 Command #N$1F.
+  $E195,$04 Command #N$20.
+  $E199,$04 Command #N$21.
+  $E19D,$09 Command #N$22.
+  $E1A6,$04 Command #N$23.
+  $E1AA,$04 Command #N$24.
+  $E1AE,$04 Command #N((#PC-$E11A)/$04).
+L $E1AE,$04,$1F
+  $E22A,$09 Command #N$44.
+  $E233,$04 Command #N$45.
+  $E237,$04 Command #N$46.
+  $E23B,$04 Command #N$47.
+  $E23F,$04 Command #N$48.
+  $E243,$04 Command #N$49.
+  $E247,$04 Command #N$4A.
+  $E24B,$09 Command #N$4B.
+  $E254,$04 Command #N((#PC-$E11A)/$04).
+L $E254,$04,$20
+  $E2D4,$09 Command #N$6E.
+  $E2DD,$04 Command #N$6F.
+  $E2E1,$09 Command #N$70.
+  $E2EA,$09 Command #N$71.
+  $E2F3,$04 Command #N((#PC-$E12F)/$04).
+L $E2F3,$04,$05
+B $E307,$01 Terminator.
 
 g $E308 Table: Object List?
 @ $E308 label=Table_ObjectList
@@ -3405,6 +3535,14 @@ D $E417 Items may have several item IDs which relate to a single item, this
 W $E417,$02 Item Group: #N((#PC-$E417)/$02): #OBJECT((#PC-$E417)/$02).
 L $E417,$02,$30
 
+g $E489 Table: Verb Word Tokens
+@ $E489 label=Table_VerbWordTokens
+D $E489 A list of all available verb tokens in the game. See #R$A7EA.
+B $E489,$01 Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+L $E489,$01,$21
+
+g $E4AA
+
 g $E4E6 Table: Scenic Event Locations
 @ $E4E6 label=Table_ScenicEventLocations
 D $E4E6 A table where the index is the event ID, and the value is the room it
@@ -3454,6 +3592,16 @@ W $E978,$02
 L $E978,$02,$0B
 
 c $E98E
+  $E98E,$01 Stash #REGbc on the stack.
+  $E98F,$02 CPIR.
+  $E991,$01 Restore #REGhl from the stack.
+  $E992,$01 Return if the item wasn't found.
+  $E993,$03 #REGix=#REGde (using the stack).
+  $E996,$01 Increment #REGbc by one.
+  $E997,$03 #REGhl-=#REGbc.
+  $E99A,$01 #REGe=#REGl.
+  $E99B,$03 Call #R$AB88.
+  $E99E,$01 Jump to *#REGhl.
 
 c $E99F Game Loop
 @ $E99F label=GameLoop
@@ -3864,6 +4012,131 @@ c $ED57
   $ED5D,$03 Jump to #R$EBAD.
 
 c $ED60
+  $ED60,$05 Call #R$AE6B with item #N$37: #ITEM$37.
+  $ED65,$01 Return if ?? is not equal to #N$37.
+  $ED66,$05 Call #R$AEF0 with item #N$37: #ITEM$37.
+  $ED6B,$01 Return.
+
+B $ED6C,$01
+
+  $ED6D,$03 Call #R$A592.
+  $ED70,$01 Return.
+
+  $ED71,$03 Call #R$B081.
+  $ED74,$01 Return.
+
+  $ED75,$03 Call #R$AEDA.
+  $ED78,$02 Jump to #R$ED98 if #REGde is not equal to #N$37.
+  $ED7A,$01 Restore #REGhl from the stack.
+N $ED7B Print "#STR$A9FC,$08($b==$FF)".
+  $ED7B,$03 #REGhl=#R$A9FC.
+  $ED7E,$03 Call #R$A585.
+  $ED81,$03 #REGhl=#R$ED6C.
+  $ED84,$01 #REGa=#REGe.
+  $ED85,$03 #REGbc=#N($0001,$04,$04).
+  $ED88,$02 CPIR.
+  $ED8A,$02 Jump to #R$ED92 if #REGde is equal to #N$37.
+N $ED8C Print "#STR$AA17,$08($b==$FF)".
+  $ED8C,$03 #REGhl=#R$AA17.
+  $ED8F,$03 Jump to #R$ED6D.
+
+N $ED92 Print "#STR$AA1B,$08($b==$FF)".
+  $ED92,$03 #REGhl=#R$AA1B.
+  $ED95,$03 Jump to #R$ED6D.
+
+  $ED98,$05 Compare *#R$A790 with #N$05.
+  $ED9D,$01 #REGb=#REGe.
+  $ED9E,$01 Return if *#R$A790 was not equal to #N$05.
+  $ED9F,$01 Restore #REGhl from the stack.
+N $EDA0 Print "#STR$AA21,$08($b==$FF)".
+  $EDA0,$03 #REGhl=#R$AA21.
+  $EDA3,$03 Jump to #R$ED6D.
+
+  $EDA6,$02 #REGc=#N$01.
+  $EDA8,$03 Call #R$AF08.
+
+  $EDAB,$03 #REGhl=#R$A790.
+  $EDAE,$01 Increment *#REGhl by one.
+  $EDAF,$03 Jump to #R$EDF3.
+
+  $EDB2,$03 Call #R$ED75.
+  $EDB5,$03 Jump to #R$EDA6.
+  $EDB8,$03 Call #R$AEDA.
+N $EDBB Print "#STR$AA9B,$08($b==$FF)".
+  $EDBB,$03 #REGhl=#R$AA9B.
+  $EDBE,$03 Jump to #R$ED7E if *#REGhl is not equal to #N$01.
+  $EDC1,$01 #REGb=#REGe.
+  $EDC2,$04 #REGc=*#R$A7C3.
+  $EDC6,$03 Call #R$AF08.
+  $EDC9,$03 #REGhl=#R$A790.
+  $EDCC,$01 Decrease *#REGhl by one.
+  $EDCD,$03 Jump to #R$EDF3.
+
+  $EDD0,$03 Call #R$AEDA.
+  $EDD3,$01 Return if *#REGhl is equal to #N$01.
+  $EDD4,$01 Restore #REGhl from the stack.
+N $EDD5 Print "#STR$AA9B,$08($b==$FF)".
+  $EDD5,$03 #REGhl=#R$AA9B.
+  $EDD8,$03 Jump to #R$ED7E.
+
+  $EDDB,$03 #REGhl=#R$E091.
+  $EDDE,$03 Jump to #R$ED6D.
+
+N $EDE1 Print "#STR$A9BD,$08($b==$FF)".
+  $EDE1,$03 #REGhl=#R$A9BD.
+  $EDE4,$03 Jump to #R$ED6D.
+
+N $EDE7 Print "#STR$A9D6,$08($b==$FF)".
+  $EDE7,$03 #REGhl=#R$A9D6.
+  $EDEA,$03 Jump to #R$ED6D.
+
+N $EDED Print "#STR$A9EC,$08($b==$FF)".
+  $EDED,$03 #REGhl=#R$A9EC.
+  $EDF0,$03 Jump to #R$ED6D.
+
+N $EDF3 Print "#STR$A9F7,$08($b==$FF)".
+  $EDF3,$03 #REGhl=#R$A9F7.
+  $EDF6,$03 Jump to #R$ED6D.
+
+N $EDF9 Print "#STR$AA84,$08($b==$FF)".
+  $EDF9,$03 #REGhl=#R$AA84.
+  $EDFC,$03 Jump to #R$ED6D.
+
+N $EDFF Print "#STR$AA21,$08($b==$FF)".
+  $EDFF,$03 #REGhl=#R$AA21.
+  $EE02,$03 Jump to #R$ED6D.
+
+N $EE05 Print "#STR$CDD3,$08($b==$FF)".
+  $EE05,$03 #REGhl=#R$CDD3.
+  $EE08,$03 Jump to #R$ED6D.
+
+N $EE0B Print "#STR$CDE8,$08($b==$FF)".
+  $EE0B,$03 #REGhl=#R$CDE8.
+  $EE0E,$03 Jump to #R$ED6D.
+
+N $EE11 Print "#STR$CE3E,$08($b==$FF)".
+  $EE11,$03 #REGhl=#R$CE3E.
+  $EE14,$03 Jump to #R$ED6D.
+
+N $EE17 Print "#STR$CF22,$08($b==$FF)".
+  $EE17,$03 #REGhl=#R$CF22.
+  $EE1A,$03 Jump to #R$ED6D.
+
+N $EE1D Print "#STR$AA4E,$08($b==$FF)".
+  $EE1D,$03 #REGhl=#R$AA4E.
+  $EE20,$03 Jump to #R$ED6D.
+
+N $EE23 Print "#STR$D231,$08($b==$FF)".
+  $EE23,$03 #REGhl=#R$D231.
+  $EE26,$03 Jump to #R$ED6D.
+
+N $EE29 Print "#STR$D05D,$08($b==$FF)".
+  $EE29,$03 #REGhl=#R$D05D.
+  $EE2C,$03 Jump to #R$ED6D.
+
+N $EE2F Print "#STR$D748,$08($b==$FF)".
+  $EE2F,$03 #REGhl=#R$D748.
+  $EE32,$03 Jump to #R$ED6D.
 
 c $EE35
 c $F26C
@@ -3872,9 +4145,54 @@ c $F2BA
 c $F2D4
 
 c $F7FD
-c $F824
-c $F841
-c $F84B
+  $F7FD,$03 Call #R$AF70.
+  $F800,$01 Return if the carry flag is set.
+  $F801,$05 Call #R$AE6B with item #N$37: #ITEM$37.
+  $F806,$03 Jump to #R$EE11 if.
+  $F809,$05 Call #R$AEE0 with item #N$37: #ITEM$37.
+  $F80E,$05 Call #R$B09A to add #N$04 points to the score.
+  $F813,$05 Call #R$AEE7 with item #N$38: #ITEM$38.
+N $F818 Print "#STR$CE50,$08($b==$FF)".
+  $F818,$03 #REGhl=#R$CE50.
+  $F81B,$03 Call #R$A592.
+N $F81E Print "#STR$CE6C,$08($b==$FF)".
+  $F81E,$03 #REGhl=#R$CE6C.
+  $F821,$03 Jump to #R$ED71.
+
+c $F824 Action: Inventory
+@ $F824 label=Action_Inventory
+  $F824,$03 Call #R$AF70.
+N $F827 The "INVENTORY" command can only be called on its own.
+  $F827,$01 Return if there's any token set in #R$A825.
+  $F828,$07 Jump to #R$EE17 if *#R$A790 is zero (the player isn't holding any
+. items).
+N $F82F Clear the screen and display the players inventory.
+  $F82F,$03 Call #R$A54E.
+  $F832,$03 Call #R$A56A.
+N $F835 Print "#STR$AA3B,$08($b==$FF)".
+  $F835,$03 #REGhl=#R$AA3B.
+  $F838,$03 Call #R$A592.
+  $F83B,$05 Call #R$AB97 with a room ID of #N$01 which is the players
+. inventory.
+  $F840,$01 Return.
+
+c $F841 Action: Look
+@ $F841 label=Action_Look
+  $F841,$03 Call #R$AF70.
+N $F844 The "LOOK" command can only be called on its own.
+  $F844,$01 Return if there's any token set in #R$A825.
+  $F845,$05 Call #R$ABB6 with #REGe set to #N$01 (which will force any room
+. images to be re-displayed).
+  $F84A,$01 Return.
+
+c $F84B Action: Score
+@ $F84B label=Action_Score
+  $F84B,$03 Call #R$AF70.
+N $F84E The "SCORE" command can only be called on its own.
+  $F84E,$01 Return if there's any token set in #R$A825.
+  $F84F,$03 Call #R$B0A9.
+  $F852,$01 Return.
+
 c $F853
 W $F86B,$02
 L $F86B,$02,$09
@@ -4103,8 +4421,10 @@ N $FF4C All the image routines use this same routine.
   $FF54,$03 Call #R$A53E.
   $FF57,$01 Return.
 
-g $FE89
-W $FE89
+g $FE89 Jump Table: Verbs
+@ $FE89 label=JumpTable_Verbs
+W $FE89,$02 Verb word token #N($2E+(#PC-$FE89)/$02): #TOKEN($2E+(#PC-$FE89)/$02).
+L $FE89,$02,$21
 
 g $FEFC Jump Table: Room Images
 @ $FEFC label=JumpTable_RoomImages

@@ -602,8 +602,8 @@ g $BD1E Pointer: Object List Table
 @ $BD1E label=Pointer_ObjectList
 W $BD1E,$02
 
-g $BD20 Pointer: Jump Table
-@ $BD20 label=Pointer_JumpTable
+g $BD20 Pointer: Verbs Jump Table
+@ $BD20 label=Pointer_JumpTable_Verbs
 W $BD20,$02
 
 g $BD22 Pointer: Configurable Exits Table
