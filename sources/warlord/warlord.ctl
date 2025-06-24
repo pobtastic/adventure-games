@@ -1493,16 +1493,26 @@ R $AEF0 A Scenic event ID (+#N$80)
   $AEF3,$03 Call #R$AF08.
   $AEF6,$01 Return.
 
-c $AEF7 Check Active Scenic Events
+c $AEF7 Check Item From Item Group Present
+@ $AEF7 label=CheckItemGroupPresent
+R $AEF7 HL Pointer to item group data
+R $AEF7 O:A The related item ID from the item group data which is present
+R $AEF7 O:F Z flag is set when no items from the group are present
   $AEF7,$02 Jump to #R$AEFA.
+@ $AEF9 label=CheckItemGroupPresent_Loop
   $AEF9,$01 Increment #REGhl by one.
-  $AEFA,$01 #REGa=*#REGhl.
-  $AEFB,$02 Compare #REGa with #N$FF.
-  $AEFD,$02 Jump to #R$AF06 if #REGa is equal to #N$FF.
+@ $AEFA label=CheckItemGroupPresent_Process
+  $AEFA,$01 Fetch an item ID from the item group data in *#REGhl.
+  $AEFB,$04 Jump to #R$AF06 if this is the terminator byte (#N$FF).
   $AEFF,$03 Call #R$AE6B.
-  $AF02,$02 Jump to #R$AEF9 if #REGa is not equal to #N$FF.
+  $AF02,$02 Jump back to #R$AEF9 if the item is not present either in the room or
+. in the players inventory, to evaluate the next item ID.
+N $AF04 The current item ID is either in the current room or in the players
+. inventory, so restore the value and return with it in #REGa.
   $AF04,$01 #REGa=*#REGhl.
   $AF05,$01 Return.
+N $AF06 Got to the end and didn't locate the item anywhere.
+@ $AF06 label=CheckItemGroupPresent_Return
   $AF06,$01 Set flags.
   $AF07,$01 Return.
 
@@ -3533,6 +3543,8 @@ D $E341 See #R$E417 for usage.
 @ $E37F label=Data_ItemGroup_ShadowLikeDemons
 @ $E381 label=Data_ItemGroup_Hut
 @ $E386 label=Data_ItemGroup_Vase
+@ $E3A6 label=Data_ItemGroup_Amulet
+@ $E3DD label=Data_ItemGroup_Cloak
 @ $E3E7 label=Data_ItemGroup_DeepPoolOfWater_2
 @ $E3F4 label=Data_ItemGroup_Chariot
 @ $E3F6 label=Data_ItemGroup_StoneSlab_1
@@ -4300,8 +4312,10 @@ N $EDBB Print "#STR$AA9B,$08($b==$FF)".
 N $EDCD Print "#STR$A9F7,$08($b==$FF)".
   $EDCD,$03 Jump to #R$EDF3.
 
-c $EDD0
-R $EDD0 F Z flag set if the item is in the players inventory
+c $EDD0 Is Player Carrying Item?
+@ $EDD0 label=IsPlayerCarryingItem
+R $EDD0 A Item ID
+R $EDD0 O:F Z flag set if the item is in the players inventory
   $EDD0,$03 Call #R$AEDA.
   $EDD3,$01 Return if the item is in the players inventory.
   $EDD4,$01 Restore #REGhl from the stack.
@@ -4432,6 +4446,7 @@ c $EE53 Response: "You See Nothing Special"
 c $EE59
   $EE59,$02 #REGa=#N$1C.
   $EE5B,$03 Call #R$EDD0.
+N $EE5E Print "#STR$CF79,$08($b==$FF)".
   $EE5E,$03 #REGhl=#R$CF79.
   $EE61,$03 Jump to #R$ED6D.
 
@@ -4439,6 +4454,7 @@ c $EE64
   $EE64,$03 #REGhl=#R$E36B.
   $EE67,$03 Call #R$AEF7.
   $EE6A,$03 Call #R$EDD0.
+N $EE6D Print "#STR$D03C,$08($b==$FF)".
   $EE6D,$03 #REGhl=#R$D03C.
   $EE70,$03 Jump to #R$ED6D.
 
@@ -4447,10 +4463,12 @@ c $EE73
   $EE76,$03 Call #R$AEF7.
   $EE79,$03 Call #R$EDD0.
   $EE7C,$05 Jump to #R$EE87 if #REGe is not equal to #N$38.
+N $EE81 Print "#STR$D07D,$08($b==$FF)".
   $EE81,$03 #REGhl=#R$D07D.
   $EE84,$03 Jump to #R$ED6D.
 
 c $EE87
+N $EE87 Print "#STR$D0F8,$08($b==$FF)"
   $EE87,$03 #REGhl=#R$D0F8.
   $EE8A,$03 Jump to #R$ED6D.
 
@@ -4458,6 +4476,7 @@ c $EE8D
   $EE8D,$03 #REGhl=#R$E3A6.
   $EE90,$03 Call #R$AEF7.
   $EE93,$03 Call #R$EDD0.
+N $EE96 Print "#STR$D114,$08($b==$FF)"
   $EE96,$03 #REGhl=#R$D114.
   $EE99,$03 Jump to #R$ED6D.
 
@@ -4512,8 +4531,7 @@ c $EEE9
   $EEF9,$02 Test bit 4 of *#REGhl.
   $EEFB,$02 Jump to #R$EF04 if #REGa is not equal to #N$20.
   $EEFD,$02 Set bit 4 of *#REGhl.
-  $EEFF,$02 #REGa=#N$04.
-  $EF01,$03 Call #R$B09A.
+  $EEFF,$05 Call #R$B09A to add #N$04 points to the score.
   $EF04,$02 #REGb=#N$1C.
   $EF06,$03 Jump to #R$EDA6.
   $EF09,$03 #REGhl=#R$E366.
@@ -4553,8 +4571,7 @@ c $EEE9
   $EF6B,$02 Test bit 2 of *#REGhl.
   $EF6D,$03 Jump to #R$EDA6 if #REGa is not equal to #N$51.
   $EF70,$02 Set bit 2 of *#REGhl.
-  $EF72,$02 #REGa=#N$04.
-  $EF74,$03 Call #R$B09A.
+  $EF72,$05 Call #R$B09A to add #N$04 points to the score.
   $EF77,$02 #REGb=#N$51.
   $EF79,$03 Jump to #R$EDA6.
   $EF7C,$02 #REGa=#N$3B.
@@ -4575,6 +4592,7 @@ c $EEE9
   $EFA7,$02 #REGb=#N$5A.
   $EFA9,$03 Jump to #R$EDA6.
   $EFAC,$01 Return.
+
   $EFAD,$03 #REGhl=#R$E3DD.
   $EFB0,$03 Call #R$AEF7.
   $EFB3,$02 Compare #REGa with #N$64.
@@ -4582,8 +4600,7 @@ c $EEE9
   $EFB8,$03 Call #R$ED75.
   $EFBB,$03 #REGbc=#N$6263.
   $EFBE,$03 Call #R$AF1E.
-  $EFC1,$02 #REGa=#N$04.
-  $EFC3,$03 Call #R$B09A.
+  $EFC1,$05 Call #R$B09A to add #N$04 points to the score.
   $EFC6,$02 #REGb=#N$64.
   $EFC8,$03 Jump to #R$EDA6.
   $EFCB,$02 #REGa=#N$65.
@@ -4659,6 +4676,7 @@ c $EEE9
   $F089,$03 Write #REGa to *#R$E8F7.
   $F08C,$02 #REGa=#N$61.
   $F08E,$03 Jump to #R$EDB8.
+
   $F091,$03 #REGhl=#R$E3DD.
   $F094,$03 Call #R$AEF7.
   $F097,$02 Compare #REGa with #N$6D.
@@ -4698,8 +4716,7 @@ c $EEE9
   $F0EA,$03 Write #REGa to *#R$E830.
   $F0ED,$02 #REGa=#N$42.
   $F0EF,$03 Call #R$AEE0.
-  $F0F2,$02 #REGa=#N$04.
-  $F0F4,$03 Call #R$B09A.
+  $F0F2,$05 Call #R$B09A to add #N$04 points to the score.
   $F0F7,$03 #REGhl=#R$D35C.
   $F0FA,$03 Jump to #R$ED6D.
   $F0FD,$02 #REGa=#N$1B.
@@ -4731,8 +4748,7 @@ c $EEE9
   $F140,$01 Decrease *#REGhl by one.
   $F141,$02 #REGa=#N$46.
   $F143,$03 Call #R$AEE0.
-  $F146,$02 #REGa=#N$04.
-  $F148,$03 Call #R$B09A.
+  $F146,$05 Call #R$B09A to add #N$04 points to the score.
   $F14B,$02 #REGa=#N$49.
   $F14D,$03 Write #REGa to *#R$E870.
   $F150,$03 #REGhl=#R$D531.
@@ -4744,8 +4760,7 @@ c $EEE9
   $F160,$03 Call #R$EDD0.
   $F163,$03 #REGbc=#N($233A,$04,$04).
   $F166,$03 Call #R$AF1E.
-  $F169,$02 #REGa=#N$04.
-  $F16B,$03 Call #R$B09A.
+  $F169,$05 Call #R$B09A to add #N$04 points to the score.
   $F16E,$02 #REGa=#N$3C.
   $F170,$03 Call #R$AEE0.
   $F173,$03 #REGhl=#R$D58F.
@@ -4766,8 +4781,7 @@ c $EEE9
   $F199,$02 Reset bit 0 of *#REGhl.
   $F19B,$03 #REGbc=#N$494B (screen buffer location).
   $F19E,$03 Call #R$AF1E.
-  $F1A1,$02 #REGa=#N$04.
-  $F1A3,$03 Call #R$B09A.
+  $F1A1,$05 Call #R$B09A to add #N$04 points to the score.
   $F1A6,$03 #REGhl=#R$D640.
   $F1A9,$03 Jump to #R$ED6D.
   $F1AC,$02 #REGa=#N$45.
@@ -4992,13 +5006,19 @@ c $F3AC
   $F422,$03 #REGhl=#R$DA42.
   $F425,$03 Jump to #R$ED6D.
 
-c $F428
-  $F428,$03 #REGhl=#R$E366.
-  $F42B,$03 Call #R$AEF7.
+c $F428 Process: Wear Torc
+@ $F428 label=Process_WearTorc
+R $F428 E The item ID currently being acted on
+N $F428 The player was trying to wear the torc, but is it either in the room or
+. in the players inventory?
+  $F428,$06 Call #R$AEF7 with #R$E366.
+N $F42E The torc is present but is the player already wearing it?
   $F42E,$03 Call #R$EDD0.
   $F431,$06 Jump to #R$EE41 if #REGe is not equal to item #N$69: #ITEM$69.
-  $F437,$03 #REGbc=#N$696A.
-  $F43A,$03 Call #R$AF1E.
+N $F437 Change the torc state!
+  $F437,$06 Call #R$AF1E to transform item #N$69 (#ITEM$69) into item #N$6A
+. (#ITEM$6A).
+N $F43D Print "#STR$A9F7,$08($b==$FF)".
   $F43D,$03 Jump to #R$EDF3.
 
 c $F440 Process: Wear Helmet
@@ -5006,8 +5026,8 @@ c $F440 Process: Wear Helmet
 R $F440 E The item ID currently being acted on
 N $F440 The player was trying to wear the helmet, but is it either in the
 . room or in the players inventory?
-  $F440,$03 #REGhl=#R$E36B.
-  $F443,$03 Call #R$AEF7.
+  $F440,$06 Call #R$AEF7 with #R$E36B.
+N $F446 The helmet is present but is the player already wearing it?
   $F446,$03 Call #R$EDD0.
   $F449,$06 Jump to #R$EE41 if #REGe is not equal to item #N$1F: #ITEM$1F.
 N $F44F Change the helmet state!
@@ -5016,75 +5036,87 @@ N $F44F Change the helmet state!
 N $F455 Print "#STR$A9F7,$08($b==$FF)".
   $F455,$03 Jump to #R$EDF3.
 
-c $F458
-  $F458,$03 #REGhl=#R$E3A6.
-  $F45B,$03 Call #R$AEF7.
+c $F458 Process: Wear Amulet
+@ $F458 label=Process_WearAmulet
+R $F458 E The item ID currently being acted on
+N $F458 The player was trying to wear the amulet, but is it either in the room
+. or in the players inventory?
+  $F458,$06 Call #R$AEF7 with #R$E3A6.
+N $F45E The amulet is present but is the player already wearing it?
   $F45E,$03 Call #R$EDD0.
-  $F461,$06 Jump to #R$EE41 if #REGe is not equal to #N$4B.
-  $F467,$03 #REGbc=#N$4B4C.
-  $F46A,$03 Call #R$AF1E.
-  $F46D,$03 #REGbc=#N$292A.
-  $F470,$03 Call #R$AF1E.
-  $F473,$05 Write #N$18 to *#R$E7D5.
-  $F478,$08 Jump to #R$EDF3 if *#R$A7C3 is not equal to #N$20.
+  $F461,$06 Jump to #R$EE41 if #REGe is not equal to item #N$4B: #ITEM$4B.
+N $F467 Change the amulet state!
+  $F467,$06 Call #R$AF1E to transform item #N$4B (#ITEM$4B) into item #N$4C
+. (#ITEM$4C).
+  $F46D,$06 Call #R$AF1E to transform item #N$29 (#ITEM$29) into item #N$2A
+. (#ITEM$2A).
+N $F473 Uncover an exit from #ROOM$20.
+  $F473,$05 Write #N$18 to *#R$E7D5 to open up southbound access to #ROOM$18
+. from #ROOM$20.
+N $F478 Is the player in room #N$20: #ROOM$20?
+  $F478,$08 Jump to #R$EDF3 if *#R$A7C3 is not equal to room #N$20: #ROOM$20.
+N $F480 The player is in room #N$20: #ROOM$20.
+N $F480 Print "#STR$A9F7,$08($b==$FF)".
   $F480,$03 Call #R$EDF3.
+N $F483 Print "#STR$B50E,$08($b==$FF)".
   $F483,$03 #REGhl=#R$B50E.
   $F486,$03 Jump to #R$ED6D.
 
-  $F489,$03 #REGhl=#R$E3A6.
-  $F48C,$03 Call #R$AEF7.
+c $F489
+  $F489,$06 Call #R$AEF7 with #R$E3A6.
   $F48F,$03 Call #R$EDD0.
-  $F492,$06 Jump to #R$EDC1 if #REGe is equal to #N$4B.
-  $F498,$03 #REGbc=#N$4C4B.
-  $F49B,$03 Call #R$AF1E.
-  $F49E,$03 #REGbc=#N$2A29.
-  $F4A1,$03 Call #R$AF1E.
+  $F492,$06 Jump to #R$EDC1 if #REGe is equal to item #N$4B: #ITEM$4B.
+  $F498,$06 Call #R$AF1E to transform item #N$4C (#ITEM$4C) into item #N$4B
+. (#ITEM$4B).
+  $F49E,$06 Call #R$AF1E to transform item #N$2A (#ITEM$2A) into item #N$29
+. (#ITEM$29).
   $F4A4,$04 Write #N$00 to *#R$E7D5.
-  $F4A8,$02 #REGe=#N$4B.
-  $F4AA,$03 Call #R$EDC1.
-  $F4AD,$03 #REGa=*#R$A7C3.
-  $F4B0,$02 Compare #REGa with #N$20.
-  $F4B2,$01 Return if #REGa is not equal to #N$20.
+  $F4A8,$05 Call #R$EDC1 with item #N$4B: #ITEM$4B.
+  $F4AD,$06 Return if *#R$A7C3 is not equal to room #N$20: #ROOM$20.
+N $F4B3 Print "#STR$B4A0,$08($b==$FF)".
   $F4B3,$03 #REGhl=#R$B4A0.
   $F4B6,$03 Jump to #R$ED6D.
-  $F4B9,$03 #REGa=*#R$A7C3.
-  $F4BC,$05 Jump to #R$EDED if #REGa is not equal to #N$4F.
-  $F4C1,$02 #REGa=#N$12.
-  $F4C3,$03 Call #R$AEE0.
-  $F4C6,$02 #REGa=#N$1C.
-  $F4C8,$03 Call #R$AEE0.
-  $F4CB,$02 #REGa=#N$04.
-  $F4CD,$03 Call #R$AEE0.
-  $F4D0,$02 #REGa=#N$05.
-  $F4D2,$03 Call #R$AEE0.
-  $F4D5,$03 #REGbc=#N($0F10,$04,$04).
-  $F4D8,$03 Call #R$AF1E.
-  $F4DB,$03 #REGhl=#R$A76D.
-  $F4DE,$02 Set bit 5 of *#REGhl.
-  $F4E0,$02 #REGa=#N$04.
-  $F4E2,$03 Call #R$B09A.
-  $F4E5,$03 #REGhl=#R$A790.
-  $F4E8,$01 Decrease *#REGhl by one.
+
+  $F4B9,$08 Jump to #R$EDED if *#R$A7C3 is not equal to room #N$4F: #ROOM$4F.
+  $F4C1,$05 Call #R$AEE0 with item #N$12: #ITEM$12.
+  $F4C6,$05 Call #R$AEE0 with item #N$1C: #ITEM$1C.
+  $F4CB,$05 Call #R$AEE0 with item #N$04: #ITEM$04.
+  $F4D0,$05 Call #R$AEE0 with item #N$05: #ITEM$05.
+  $F4D5,$06 Call #R$AF1E to transform item #N$0F (#ITEM$0F) into item #N$10
+. (#ITEM$10).
+  $F4DB,$05 Set bit 5 of *#R$A76D.
+  $F4E0,$05 Call #R$B09A to add #N$04 points to the score.
+  $F4E5,$04 Decrease *#R$A790 by one.
+N $F4E9 Print "#STR$DA9E,$08($b==$FF)".
   $F4E9,$03 #REGhl=#R$DA9E.
   $F4EC,$03 Call #R$A592.
+N $F4EF Print "#STR$DB11,$08($b==$FF)".
   $F4EF,$03 #REGhl=#R$DB11.
   $F4F2,$03 Jump to #R$ED71.
 
-c $F4F5
-  $F4F5,$02 #REGa=#N$56.
-  $F4F7,$03 Call #R$EDD0.
+c $F4F5 Process: Wear Shield
+@ $F4F5 label=Process_WearShield
+R $F4F5 E The item ID currently being acted on
+N $F4F5 The player was trying to wear the shield, but are they carrying it? As
+. carrying it at all counts as wearing it.
+  $F4F5,$05 Call #R$EDD0 with item #N$56: #ITEM$56.
+N $F4FA  Print "#STR$DBBE,$08($b==$FF)".
   $F4FA,$03 #REGhl=#R$DBBE.
   $F4FD,$03 Jump to #R$ED6D.
 
-c $F500
-  $F500,$03 #REGhl=#R$E3DD.
-  $F503,$03 Call #R$AEF7.
+c $F500 Process: Wear Cloak
+@ $F500 label=Process_WearCloak
+R $F500 E The item ID currently being acted on
+N $F500 The player was trying to wear the cloak, but is it either in the room
+. or in the players inventory?
+  $F500,$06 Call #R$AEF7 with #R$E3DD.
+N $F506 The cloak is present but is the player already wearing it?
   $F506,$03 Call #R$EDD0.
-  $F509,$01 #REGa=#REGe.
-  $F50A,$02 Compare #REGa with #N$64.
-  $F50C,$03 Jump to #R$EE41 if #REGa is not equal to #N$64.
-  $F50F,$03 #REGbc=#N$646D.
-  $F512,$03 Call #R$AF1E.
+  $F509,$06 Jump to #R$EE41 if #REGe is not equal to item #N$64: #ITEM$64.
+N $F50F Change the cloak state!
+  $F50F,$06 Call #R$AF1E to transform item #N$64 (#ITEM$64) into item #N$6D
+. (#ITEM$6D).
+N $F515 Print "#STR$A9F7,$08($b==$FF)".
   $F515,$03 Jump to #R$EDF3.
 
 c $F518
@@ -5115,8 +5147,7 @@ c $F518
   $F559,$03 Jump to #R$EDDB if #REGa is not equal to #N$51.
   $F55C,$03 #REGbc=#N$0A0B.
   $F55F,$03 Call #R$AF1E.
-  $F562,$02 #REGa=#N$04.
-  $F564,$03 Call #R$B09A.
+  $F562,$05 Call #R$B09A to add #N$04 points to the score.
   $F567,$02 #REGa=#N$51.
   $F569,$03 Call #R$AEE0.
   $F56C,$03 #REGhl=#R$A790.
@@ -5144,8 +5175,7 @@ c $F518
   $F5A9,$02 Test bit 6 of *#REGhl.
   $F5AB,$03 Jump to #R$EDF3 if *#REGhl is not equal to #N$63.
   $F5AE,$02 Set bit 6 of *#REGhl.
-  $F5B0,$02 #REGa=#N$04.
-  $F5B2,$03 Call #R$B09A.
+  $F5B0,$05 Call #R$B09A to add #N$04 points to the score.
   $F5B5,$03 Jump to #R$EDF3.
   $F5B8,$03 #REGhl=#R$E392.
   $F5BB,$03 Call #R$AEF7.
@@ -5164,8 +5194,7 @@ c $F518
   $F5DC,$02 Test bit 4 of *#REGhl.
   $F5DE,$03 Jump to #R$EDF3 if *#REGhl is not equal to #N$39.
   $F5E1,$02 Set bit 4 of *#REGhl.
-  $F5E3,$02 #REGa=#N$04.
-  $F5E5,$03 Call #R$B09A.
+  $F5E3,$05 Call #R$B09A to add #N$04 points to the score.
   $F5E8,$03 Jump to #R$EDF3.
 
   $F5EB,$02 #REGa=#N$3C.
@@ -5314,8 +5343,7 @@ c $F518
   $F752,$03 Call #R$AF1E.
   $F755,$05 Write #N$2C to *#R$E84D.
   $F75A,$05 Write #N$35 to *#R$E84E.
-  $F75F,$02 #REGa=#N$04.
-  $F761,$03 Call #R$B09A.
+  $F75F,$05 Call #R$B09A to add #N$04 points to the score.
   $F764,$03 #REGhl=#R$DE9E.
   $F767,$03 Jump to #R$ED6D.
 
@@ -5342,8 +5370,7 @@ c $F518
   $F79B,$03 Call #R$F62B.
   $F79E,$03 #REGbc=#N$5253.
   $F7A1,$03 Call #R$AF1E.
-  $F7A4,$02 #REGa=#N$04.
-  $F7A6,$03 Call #R$B09A.
+  $F7A4,$05 Call #R$B09A to add #N$04 points to the score.
   $F7A9,$03 Jump to #R$F764.
 
   $F7AC,$02 #REGa=#N$19.
