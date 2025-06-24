@@ -33,68 +33,120 @@ Next: <a href="AF08.html">AF08</a>
 </td>
 </tr>
 </table>
-<div class="description">AEF7: Check Active Scenic Events</div>
+<div class="description">AEF7: Check Item From Item Group Present</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="AF08.html">AF08</a>, <a href="EBB9.html">EBB9</a>, <a href="EBC5.html">EBC5</a>, <a href="EE64.html">EE64</a>, <a href="EE73.html">EE73</a>, <a href="EE8D.html">EE8D</a>, <a href="EEA7.html">EEA7</a>, <a href="EEB6.html">EEB6</a>, <a href="EEE9.html">EEE9</a>, <a href="F26C.html">F26C</a>, <a href="F293.html">F293</a>, <a href="F2BA.html">F2BA</a>, <a href="F2D4.html">F2D4</a>, <a href="F2FF.html">F2FF</a>, <a href="F428.html">F428</a>, <a href="F440.html">Process_WearHelmet</a>, <a href="F458.html">F458</a>, <a href="F500.html">F500</a> and <a href="F518.html">F518</a>.
+Used by the routines at <a href="AF08.html">AF08</a>, <a href="EBB9.html">EBB9</a>, <a href="EBC5.html">EBC5</a>, <a href="EE64.html">EE64</a>, <a href="EE73.html">EE73</a>, <a href="EE8D.html">EE8D</a>, <a href="EEA7.html">EEA7</a>, <a href="EEB6.html">EEB6</a>, <a href="EEE9.html">EEE9</a>, <a href="F26C.html">F26C</a>, <a href="F293.html">F293</a>, <a href="F2BA.html">F2BA</a>, <a href="F2D4.html">F2D4</a>, <a href="F2FF.html">F2FF</a>, <a href="F428.html">Process_WearTorc</a>, <a href="F440.html">Process_WearHelmet</a>, <a href="F458.html">Process_WearAmulet</a>, <a href="F489.html">F489</a>, <a href="F500.html">Process_WearCloak</a> and <a href="F518.html">F518</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">HL</td>
+<td class="register-desc">Pointer to item group data</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">The related item ID from the item group data which is present</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">Z flag is set when no items from the group are present</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">CheckItemGroupPresent</td>
 <td class="address-2"><span id="aef7"></span>AEF7</td>
-<td class="instruction">JR <a href="AEF7.html#aefa">$AEFA</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AEF7.html#aefa">AEFA</a>.</td>
+<td class="instruction">JR <a href="AEF7.html#aefa">CheckItemGroupPresent_Process</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AEF7.html#aefa">CheckItemGroupPresent_Process</a>.</td>
 </tr>
 <tr>
+<td class="asm-label">CheckItemGroupPresent_Loop</td>
 <td class="address-2"><span id="aef9"></span>AEF9</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
+<td class="asm-label">CheckItemGroupPresent_Process</td>
 <td class="address-2"><span id="aefa"></span>AEFA</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Fetch an item ID from the item group data in *<span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aefb"></span>AEFB</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with FF.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="AEF7.html#af06">CheckItemGroupPresent_Return</a> if this is the terminator byte (FF).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aefd"></span>AEFD</td>
-<td class="instruction">JR Z,<a href="AEF7.html#af06">$AF06</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AEF7.html#af06">AF06</a> if <span class="register">A</span> is equal to FF.</td>
+<td class="instruction">JR Z,<a href="AEF7.html#af06">CheckItemGroupPresent_Return</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aeff"></span>AEFF</td>
 <td class="instruction">CALL <a href="AE6B.html">ValidateItemPresent</a></td>
 <td class="comment-1" rowspan="1">Call <a href="AE6B.html">ValidateItemPresent</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="af02"></span>AF02</td>
-<td class="instruction">JR NZ,<a href="AEF7.html#aef9">$AEF9</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AEF7.html#aef9">AEF9</a> if <span class="register">A</span> is not equal to FF.</td>
+<td class="instruction">JR NZ,<a href="AEF7.html#aef9">CheckItemGroupPresent_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="AEF7.html#aef9">CheckItemGroupPresent_Loop</a> if the item is not present either in the room or in the players inventory, to evaluate the next item ID.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="af04"></span>
+<div class="comments">
+<div class="paragraph">
+The current item ID is either in the current room or in the players inventory, so restore the value and return with it in <span class="register">A</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="af04"></span>AF04</td>
 <td class="instruction">LD A,(HL)</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="af05"></span>AF05</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="af06"></span>
+<div class="comments">
+<div class="paragraph">
+Got to the end and didn't locate the item anywhere.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckItemGroupPresent_Return</td>
 <td class="address-2"><span id="af06"></span>AF06</td>
 <td class="instruction">AND A</td>
 <td class="comment-1" rowspan="1">Set flags.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="af07"></span>AF07</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
