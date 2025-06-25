@@ -33,86 +33,166 @@ Next: <a href="AFB7.html">AFB7</a>
 </td>
 </tr>
 </table>
-<div class="description">AF9F: Routine at AF9F</div>
+<div class="description">AF9F: Parser: Validate Two Direct Objects</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="F9B3.html">Action_Throw</a> and <a href="FBF5.html">FBF5</a>.
+Used by the routines at <a href="F9B3.html">Action_Throw</a> and <a href="FBF5.html">Action_Place</a>.
+</div>
+</div>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the command has two valid direct objects</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The carry flag is set when the command is malformed</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_ValidateTwoDirectObjects</td>
+<td class="address-2"><span id="af9f"></span>AF9F</td>
+<td class="instruction">CALL <a href="AF7B.html">Parser_ValidateDirectObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AF7B.html">Parser_ValidateDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="afa2"></span>AFA2</td>
+<td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if there is no direct object in the user input (so the command is malformed).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="afa3"></span>
+<div class="comments">
+<div class="paragraph">
+<span class="register">A</span> now contains the count of the number of valid direct objects.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="address-2"><span id="af9f"></span>AF9F</td>
-<td class="instruction">CALL <a href="AF7B.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="afa2"></span>AFA2</td>
-<td class="instruction">RET C</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afa3"></span>AFA3</td>
 <td class="instruction">CP $01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="AF9F.html#afac">ValidateTwoDirectObjects</a> if the number of valid direct objects in the user input is not 01.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afa5"></span>AFA5</td>
-<td class="instruction">JR NZ,<a href="AF9F.html#afac">$AFAC</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="AF9F.html#afac">ValidateTwoDirectObjects</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="afa7"></span>
+<div class="comments">
+<div class="paragraph">
+There is only one valid direct objects in the user input and the command needs two...
+</div>
+<div class="paragraph">
+Print "Please be more specific.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afa7"></span>AFA7</td>
 <td class="instruction">CALL <a href="AAF5.html">Response_PleaseBeMoreSpecific</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="AAF5.html">Response_PleaseBeMoreSpecific</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afaa"></span>AFAA</td>
 <td class="instruction">SCF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the carry flag.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afab"></span>AFAB</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="afac"></span>
+<div class="comments">
+<div class="paragraph">
+There are two or more valid direct objects in the user input.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ValidateTwoDirectObjects</td>
 <td class="address-2"><span id="afac"></span>AFAC</td>
 <td class="instruction">CP $03</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="AF9F.html#afb2">ValidateTwoDirectObjects_TooMany</a> if the number of valid direct objects in the user input is greater than or equal to 03.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afae"></span>AFAE</td>
-<td class="instruction">JR NC,<a href="AF9F.html#afb2">$AFB2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="AF9F.html#afb2">ValidateTwoDirectObjects_TooMany</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afb0"></span>AFB0</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set zero flag.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afb1"></span>AFB1</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="afb2"></span>
+<div class="comments">
+<div class="paragraph">
+There are more than two valid direct objects in the user input.
+</div>
+<div class="paragraph">
+Print "Please rephrase that.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ValidateTwoDirectObjects_TooMany</td>
 <td class="address-2"><span id="afb2"></span>AFB2</td>
 <td class="instruction">CALL <a href="AAEE.html">Response_PleaseRephraseThat</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="AAEE.html">Response_PleaseRephraseThat</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afb5"></span>AFB5</td>
 <td class="instruction">SCF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the carry flag.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afb6"></span>AFB6</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in <a href="/adventure-games/jewelsofbabylon/asm/C49F.html">The Jewels Of Babylon</a>.
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">

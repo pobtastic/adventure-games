@@ -33,7 +33,7 @@ Next: <a href="AE6B.html">AE6B</a>
 </td>
 </tr>
 </table>
-<div class="description">AE36: Action: Examine Item</div>
+<div class="description">AE36: Parser: Validate Item</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -47,8 +47,8 @@ Used by the routine at <a href="AFC7.html">Parser_ProcessItem</a>.
 <th colspan="2">Input</th>
 </tr>
 <tr>
-<td class="register">C</td>
-<td class="register-desc">Item ID</td>
+<td class="register">BC</td>
+<td class="register-desc">The position in the user input token of the object</td>
 </tr>
 </table>
 <table class="output">
@@ -57,22 +57,22 @@ Used by the routine at <a href="AFC7.html">Parser_ProcessItem</a>.
 </tr>
 <tr>
 <td class="register">F</td>
-<td class="register-desc">Carry flag set when the item isn't present</td>
+<td class="register-desc">The carry flag is set when the item isn't present</td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Action_ExamineItem</td>
+<td class="asm-label">Parser_ValidateItem</td>
 <td class="address-2"><span id="ae36"></span>AE36</td>
 <td class="instruction">INC BC</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">BC</span> by one.</td>
+<td class="comment-1" rowspan="1">Adjust the counter for the sum.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae37"></span>AE37</td>
 <td class="instruction">LD A,($A7E8)</td>
-<td class="comment-1" rowspan="3"><span class="register">E</span>=*<a href="A7E8.html">Count_Objects</a>-<span class="register">C</span>.</td>
+<td class="comment-1" rowspan="3">Calculate the index (*<a href="A7E8.html">Count_Objects</a>-<span class="register">C</span>) and store the result in <span class="register">E</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -94,13 +94,12 @@ Used by the routine at <a href="AFC7.html">Parser_ProcessItem</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae3d"></span>AE3D</td>
 <td class="instruction">LD IX,($A7D4)</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="A7D4.html">Pointer_ItemGroupingTable</a>.</td>
+<td class="comment-1" rowspan="2">Call <a href="AB88.html">GetTableEntry</a> with *<a href="A7D4.html">Pointer_ItemGroupingTable</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae41"></span>AE41</td>
 <td class="instruction">CALL <a href="AB88.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="AB88.html">GetTableEntry</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -111,17 +110,17 @@ Used by the routine at <a href="AFC7.html">Parser_ProcessItem</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae45"></span>AE45</td>
-<td class="instruction">JR <a href="AE36.html#ae48">ExamineItem</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AE36.html#ae48">ExamineItem</a>.</td>
+<td class="instruction">JR <a href="AE36.html#ae48">ValidateItem</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE36.html#ae48">ValidateItem</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">ExamineItem_Loop</td>
+<td class="asm-label">ValidateItem_Loop</td>
 <td class="address-2"><span id="ae47"></span>AE47</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
-<td class="asm-label">ExamineItem</td>
+<td class="asm-label">ValidateItem</td>
 <td class="address-2"><span id="ae48"></span>AE48</td>
 <td class="instruction">LD A,(HL)</td>
 <td class="comment-1" rowspan="3">Jump to <a href="AE36.html#ae53">Response_ItemNotHere</a> if *<span class="register">HL</span> is equal to FF.</td>
@@ -145,8 +144,8 @@ Used by the routine at <a href="AFC7.html">Parser_ProcessItem</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae50"></span>AE50</td>
-<td class="instruction">JR NZ,<a href="AE36.html#ae47">ExamineItem_Loop</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AE36.html#ae47">ExamineItem_Loop</a> if the item wasn't found.</td>
+<td class="instruction">JR NZ,<a href="AE36.html#ae47">ValidateItem_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE36.html#ae47">ValidateItem_Loop</a> if the item wasn't found.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -159,7 +158,7 @@ Used by the routine at <a href="AFC7.html">Parser_ProcessItem</a>.
 <span id="ae53"></span>
 <div class="comments">
 <div class="paragraph">
-The item being examined isn't in the room or in the players inventory.
+The item being referenced isn't in the room or in the players inventory.
 </div>
 <div class="paragraph">
 Print "I can't see ".
@@ -193,13 +192,12 @@ Print the object name.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae59"></span>AE59</td>
 <td class="instruction">LD IX,($A7D6)</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="A7D6.html">Pointer_ObjectNounPhrases</a>.</td>
+<td class="comment-1" rowspan="2">Call <a href="AB88.html">GetTableEntry</a> with *<a href="A7D6.html">Pointer_ObjectNounPhrases</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae5d"></span>AE5D</td>
 <td class="instruction">CALL <a href="AB88.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="AB88.html">GetTableEntry</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -240,6 +238,15 @@ Print " here.".
 <td class="address-1"><span id="ae6a"></span>AE6A</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in <a href="/adventure-games/jewelsofbabylon/asm/C32A.html">The Jewels Of Babylon</a>.
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">

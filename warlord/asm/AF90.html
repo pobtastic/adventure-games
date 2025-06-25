@@ -33,12 +33,33 @@ Next: <a href="AF9F.html">AF9F</a>
 </td>
 </tr>
 </table>
-<div class="description">AF90: Routine at AF90</div>
+<div class="description">AF90: Parser: Validate Input Tokens</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 </div>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">The number of references to items in the user input tokens</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when there is only a verb present</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is unset when there is at least one valid direct object</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The carry flag is set when the command is malformed</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -52,33 +73,51 @@ The first token is the verb, so target the second token for the direct object.
 </td>
 </tr>
 <tr>
+<td class="asm-label">Parser_ValidateInputTokens</td>
 <td class="address-2"><span id="af90"></span>AF90</td>
 <td class="instruction">LD A,($A825)</td>
 <td class="comment-1" rowspan="1">Fetch the <a href="A824.html#a825">second token from the user input</a> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="af93"></span>AF93</td>
 <td class="instruction">CP $FF</td>
 <td class="comment-1" rowspan="2">Return if there is no second token.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="af95"></span>AF95</td>
 <td class="instruction">RET Z</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="af96"></span>
+<div class="comments">
+<div class="paragraph">
+There is a second token; so validate all direct objects after this point.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="af96"></span>AF96</td>
 <td class="instruction">CALL <a href="AEAF.html">Parser_CountItems</a></td>
 <td class="comment-1" rowspan="1">Call <a href="AEAF.html">Parser_CountItems</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="af99"></span>AF99</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-1" rowspan="1">Return if there is at least one item mentioned in the user input tokens.</td>
+<td class="comment-1" rowspan="1">Return if there is at least one valid item mentioned in the user input tokens.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="af9a"></span>
 <div class="comments">
+<div class="paragraph">
+Any references are invalid.
+</div>
 <div class="paragraph">
 Print "Please rephrase that.".
 </div>
@@ -86,19 +125,31 @@ Print "Please rephrase that.".
 </td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="af9a"></span>AF9A</td>
 <td class="instruction">CALL <a href="AAEE.html">Response_PleaseRephraseThat</a></td>
 <td class="comment-1" rowspan="1">Call <a href="AAEE.html">Response_PleaseRephraseThat</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="af9d"></span>AF9D</td>
 <td class="instruction">SCF</td>
 <td class="comment-1" rowspan="1">Set the carry flag.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="af9e"></span>AF9E</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in <a href="/adventure-games/jewelsofbabylon/asm/C490.html">The Jewels Of Babylon</a>.
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">

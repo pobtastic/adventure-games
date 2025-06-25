@@ -57,217 +57,229 @@ Used by the routine at <a href="FF12.html">DisplayImage_WoodedVale</a>.
 <td class="asm-label">Print_RoomImage</td>
 <td class="address-2"><span id="b10b"></span>B10B</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2"><span class="register">HL</span>=<span class="register">IX</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b10d"></span>B10D</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b10e"></span>B10E</td>
 <td class="instruction">LD DE,$0200</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Add 0200 to the image data to skip the header.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b111"></span>B111</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b112"></span>B112</td>
 <td class="instruction">LD DE,$4000</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Initialise the screen buffer pointer in <span class="register">DE</span> to 4000 (the beginning of the screen buffer).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b115"></span>B115</td>
 <td class="instruction">LD BC,$0200</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">BC</span> for 0200 bytes to process.</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_0</td>
+<td class="asm-label">DecompressPixelData_Loop</td>
 <td class="address-2"><span id="b118"></span>B118</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the byte counter on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b119"></span>B119</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">B</span>=08.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b11b"></span>B11B</td>
 <td class="instruction">LD C,(IX+$00)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">C</span>=*<span class="register">IX</span>+00.</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_1</td>
+<td class="asm-label">Print_RoomImage_0</td>
 <td class="address-2"><span id="b11e"></span>B11E</td>
 <td class="instruction">SLA C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Shift <span class="register">C</span> left (with carry).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b120"></span>B120</td>
-<td class="instruction">JR NC,<a href="B10B.html#b125">Print_RoomImage_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="B10B.html#b125">Print_RoomImage_1</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B10B.html#b125">Print_RoomImage_1</a> if ?? is greater than or equal to 08.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b122"></span>B122</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b123"></span>B123</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b124"></span>B124</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_2</td>
+<td class="asm-label">Print_RoomImage_1</td>
 <td class="address-2"><span id="b125"></span>B125</td>
 <td class="instruction">INC DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Increment <span class="register">DE</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b126"></span>B126</td>
-<td class="instruction">DJNZ <a href="B10B.html#b11e">Print_RoomImage_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="B10B.html#b11e">Print_RoomImage_0</a></td>
+<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="B10B.html#b11e">Print_RoomImage_0</a> until counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b128"></span>B128</td>
 <td class="instruction">INC IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b12a"></span>B12A</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the byte counter from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b12b"></span>B12B</td>
 <td class="instruction">DEC BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Decrease the byte counter by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b12c"></span>B12C</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="B10B.html#b118">DecompressPixelData_Loop</a> until all bytes have been processed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b12d"></span>B12D</td>
 <td class="instruction">OR C</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b12e"></span>B12E</td>
-<td class="instruction">JR NZ,<a href="B10B.html#b118">Print_RoomImage_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="B10B.html#b118">DecompressPixelData_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b130"></span>
+<div class="comments">
+<div class="paragraph">
+Decompress the attribute data.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b130"></span>B130</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">HL</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b131"></span>B131</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b133"></span>B133</td>
 <td class="instruction">LD HL,$5800</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Initialise the attribute buffer pointer in <span class="register">HL</span> to 5800 (the beginning of the attribute buffer).</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_3</td>
+<td class="asm-label">DecompressAttributeData_Loop</td>
 <td class="address-2"><span id="b136"></span>B136</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the attribute byte from *<span class="register">IX</span>+00 and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b139"></span>B139</td>
 <td class="instruction">LD B,(IX+$01)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the repeat count from *<span class="register">IX</span>+01 and store this in <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b13c"></span>B13C</td>
 <td class="instruction">INC IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Increment <span class="register">IX</span> by two.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b13e"></span>B13E</td>
 <td class="instruction">INC IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_4</td>
+<td class="asm-label">RepeatAttribute_Loop</td>
 <td class="address-2"><span id="b140"></span>B140</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Write the attribute byte to the attribute buffer pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b141"></span>B141</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Increment the attribute buffer pointer by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b142"></span>B142</td>
-<td class="instruction">DJNZ <a href="B10B.html#b140">Print_RoomImage_4</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="B10B.html#b140">RepeatAttribute_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the repeat counter by one and loop back to <a href="B10B.html#b140">RepeatAttribute_Loop</a> until the counter is zero.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b144"></span>
+<div class="comments">
+<div class="paragraph">
+Keep looping back until the end of the attribute buffer is reached.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b144"></span>B144</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="B10B.html#b136">DecompressAttributeData_Loop</a> until <span class="register">H</span> is equal to 5A.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b145"></span>B145</td>
 <td class="instruction">CP $5A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b147"></span>B147</td>
-<td class="instruction">JR NZ,<a href="B10B.html#b136">Print_RoomImage_3</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="B10B.html#b136">DecompressAttributeData_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b149"></span>B149</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">

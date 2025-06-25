@@ -33,13 +33,13 @@ Next: <a href="44999.html">44999</a>
 </td>
 </tr>
 </table>
-<div class="description">44983: Routine at AFB7</div>
+<div class="description">44983: Parser: Validate Any Direct Object</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="64173.html">64173</a>, <a href="64221.html">64221</a>, <a href="64393.html">Action_Go</a> and <a href="64653.html">Action_Swim</a>.
+Used by the routines at <a href="64173.html">Action_Jump</a>, <a href="64221.html">Action_Climb</a>, <a href="64393.html">Action_Go</a> and <a href="64653.html">Action_Swim</a>.
 </div>
 <div class="paragraph">
 In most adventure games, the structure for a command is "verb + direct object". This is usually how the player interacts with the game world. The verb describes the action, and the direct object is what the action is performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct object "SHOE".
@@ -50,16 +50,16 @@ In most adventure games, the structure for a command is "verb + direct object". 
 <th colspan="2">Output</th>
 </tr>
 <tr>
+<td class="register">A</td>
+<td class="register-desc">The number of valid direct objects in the user input tokens</td>
+</tr>
+<tr>
 <td class="register">F</td>
 <td class="register-desc">The carry flag is set when the command is malformed</td>
 </tr>
 <tr>
-<td class="register">A</td>
-<td class="register-desc">The number of references to items in the user input tokens</td>
-</tr>
-<tr>
-<td class="register">E</td>
-<td class="register-desc">As <span class="register">A</span></td>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when there are no valid direct objects present in the input tokens</td>
 </tr>
 </table>
 </td>
@@ -75,18 +75,21 @@ The first token is the verb, so target the second token for the direct object.
 </td>
 </tr>
 <tr>
+<td class="asm-label">Parser_ValidateAnyDirectObject</td>
 <td class="address-2"><span id="44983"></span>44983</td>
 <td class="instruction">LD A,(43045)</td>
 <td class="comment-1" rowspan="1">Fetch the <a href="43044.html#43045">second token from the user input</a> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44986"></span>44986</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Jump forward to <a href="44983.html#44995">44995</a> if the token is anything other than the terminator character (255).</td>
+<td class="comment-1" rowspan="2">Jump forward to <a href="44983.html#44995">ValidateAnyDirectObject</a> if the token is anything other than the terminator character (255).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44988"></span>44988</td>
-<td class="instruction">JR NZ,<a href="44983.html#44995">44995</a></td>
+<td class="instruction">JR NZ,<a href="44983.html#44995">ValidateAnyDirectObject</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -105,16 +108,19 @@ Print "Please be more specific.".
 </td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44990"></span>44990</td>
 <td class="instruction">CALL <a href="43765.html">Response_PleaseBeMoreSpecific</a></td>
 <td class="comment-1" rowspan="1">Call <a href="43765.html">Response_PleaseBeMoreSpecific</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44993"></span>44993</td>
 <td class="instruction">SCF</td>
 <td class="comment-1" rowspan="1">Set the carry flag to indicate this call was a failure.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44994"></span>44994</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
@@ -130,14 +136,25 @@ The user input tokens have a direct object, return how many are in the command b
 </td>
 </tr>
 <tr>
+<td class="asm-label">ValidateAnyDirectObject</td>
 <td class="address-2"><span id="44995"></span>44995</td>
 <td class="instruction">CALL <a href="44719.html">Parser_CountItems</a></td>
 <td class="comment-1" rowspan="1">Call <a href="44719.html">Parser_CountItems</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44998"></span>44998</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in <a href="/adventure-games/jewelsofbabylon/dec/asm/50359.html">The Jewels Of Babylon</a>.
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">

@@ -33,7 +33,7 @@ Next: <a href="B01F.html">B01F</a>
 </td>
 </tr>
 </table>
-<div class="description">AFEB: Routine at AFEB</div>
+<div class="description">AFEB: Handler: Scenic Events</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -41,128 +41,193 @@ Next: <a href="B01F.html">B01F</a>
 <div class="paragraph">
 Used by the routine at <a href="E99F.html">GameLoop</a>.
 </div>
+<div class="paragraph">
+Handles checking if a scenic event should occur ... and also, handles jumping to the correct related scenic event routine to action it.
+</div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_ScenicEvents</td>
 <td class="address-2"><span id="afeb"></span>AFEB</td>
 <td class="instruction">LD A,($A7EE)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A7EE.html">Count_ScenicEvents</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afee"></span>AFEE</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return if *<a href="A7EE.html">Count_ScenicEvents</a> is zero.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="afef"></span>AFEF</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aff0"></span>AFF0</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aff1"></span>AFF1</td>
 <td class="instruction">LD HL,($A7E2)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="A7E2.html">Pointer_ScenicEventLocations</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aff4"></span>AFF4</td>
-<td class="instruction">JR <a href="AFEB.html#aff7">$AFF7</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="AFEB.html#aff7">ScenicEvents_Process</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AFEB.html#aff7">ScenicEvents_Process</a>.</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_ScenicEvents_Loop</td>
 <td class="address-2"><span id="aff6"></span>AFF6</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
+<td class="asm-label">ScenicEvents_Process</td>
 <td class="address-2"><span id="aff7"></span>AFF7</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aff8"></span>AFF8</td>
 <td class="instruction">CALL <a href="AE6B.html">ValidateItemPresent</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="AE6B.html">ValidateItemPresent</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="affb"></span>AFFB</td>
-<td class="instruction">JR NZ,<a href="AFEB.html#b01c">$B01C</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="AFEB.html#b01c">ScenicEvents_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AFEB.html#b01c">ScenicEvents_Next</a> if <span class="register">HL</span> is not equal to <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="affd"></span>
+<div class="comments">
+<div class="paragraph">
+An event was found to be processed!
+</div>
+<div class="paragraph">
+First though, stash away the current pointer and index in the search, so this can be resumed later.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="affd"></span>AFFD</td>
 <td class="instruction">LD ($A83B),HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to *<a href="A83B.html">TempStore_TablePointer</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b000"></span>B000</td>
 <td class="instruction">LD ($A83D),BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Write <span class="register">BC</span> to *<a href="A83D.html">TempStore_TableIndex</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="b004"></span>
+<div class="comments">
+<div class="paragraph">
+Calculate the event index and get the event handler.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b004"></span>B004</td>
 <td class="instruction">LD A,($A7EE)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3"><span class="register">E</span>=*<a href="A7EE.html">Count_ScenicEvents</a>-<span class="register">B</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b007"></span>B007</td>
 <td class="instruction">SUB B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b008"></span>B008</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b009"></span>B009</td>
 <td class="instruction">LD IX,($A7DE)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load <span class="register">IX</span> with *<a href="A7DE.html">Pointer_JumpTable_ScenicEvents</a> which contains a pointer to the scenic event rountines jump table.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b00d"></span>B00D</td>
 <td class="instruction">CALL <a href="AB88.html">GetTableEntry</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="AB88.html">GetTableEntry</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b010"></span>B010</td>
 <td class="instruction">LD DE,$B015</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Push <a href="AFEB.html#b015">ScenicEvents_PostProcessing</a> onto the stack (as the return address).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b013"></span>B013</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b014"></span>B014</td>
 <td class="instruction">JP (HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Jump to the event handler held by <span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="b015"></span>
+<div class="comments">
+<div class="paragraph">
+This is the return point after the handler has finished executing.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScenicEvents_PostProcessing</td>
 <td class="address-1"><span id="b015"></span>B015</td>
 <td class="instruction">LD HL,($A83B)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore *<a href="A83B.html">TempStore_TablePointer</a> to <span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b018"></span>B018</td>
 <td class="instruction">LD BC,($A83D)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore *<a href="A83D.html">TempStore_TableIndex</a> to <span class="register">BC</span>.</td>
 </tr>
 <tr>
+<td class="asm-label">ScenicEvents_Next</td>
 <td class="address-2"><span id="b01c"></span>B01C</td>
-<td class="instruction">DJNZ <a href="AFEB.html#aff6">$AFF6</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="AFEB.html#aff6">Handler_ScenicEvents_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the event counter by one and loop back to <a href="AFEB.html#aff6">Handler_ScenicEvents_Loop</a> until all events have been processed.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b01e"></span>B01E</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in <a href="/adventure-games/jewelsofbabylon/asm/C4EB.html">The Jewels Of Babylon</a>.
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
