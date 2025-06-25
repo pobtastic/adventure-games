@@ -33,7 +33,7 @@ Next: <a href="FCCE.html">FCCE</a>
 </td>
 </tr>
 </table>
-<div class="description">FC8D: Routine at FC8D</div>
+<div class="description">FC8D: Action: Swim</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -42,65 +42,88 @@ Next: <a href="FCCE.html">FCCE</a>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Action_Swim</td>
 <td class="address-2"><span id="fc8d"></span>FC8D</td>
 <td class="instruction">CALL <a href="AFB7.html">$AFB7</a></td>
 <td class="comment-1" rowspan="1">Call <a href="AFB7.html">AFB7</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fc90"></span>FC90</td>
 <td class="instruction">RET C</td>
 <td class="comment-1" rowspan="1">Return if there is no direct object in the user input (so the command is malformed).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fc91"></span>FC91</td>
 <td class="instruction">CP $01</td>
 <td class="comment-1" rowspan="2">Jump to <a href="EDE7.html">Response_PleaseRephraseThat_Duplicate</a> if there was more than 01 direct object referenced in the user input (so the command is malformed).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fc93"></span>FC93</td>
 <td class="instruction">JP NC,<a href="EDE7.html">Response_PleaseRephraseThat_Duplicate</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fc96"></span>FC96</td>
 <td class="instruction">LD A,($A7C3)</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A7C3.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fc99"></span>FC99</td>
 <td class="instruction">LD HL,$FCCB</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="FC8D.html#fccb">FCCB</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="FC8D.html#fccb">Table_ActionSwim_Rooms</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fc9c"></span>FC9C</td>
 <td class="instruction">LD BC,$0003</td>
 <td class="comment-1" rowspan="1"><span class="register">BC</span>=0003.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fc9f"></span>FC9F</td>
 <td class="instruction">CPIR</td>
-<td class="comment-1" rowspan="1">CPIR.</td>
+<td class="comment-1" rowspan="1">Search for the current room in the table.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fca1"></span>FCA1</td>
 <td class="instruction">JP NZ,<a href="EE4D.html">Response_YoureNotInWater</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="EE4D.html">Response_YoureNotInWater</a> if <span class="register">A</span> is not equal to 01.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="EE4D.html">Response_YoureNotInWater</a> if none of the rooms in the table match the current room ID.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="fca4"></span>
+<div class="comments">
+<div class="paragraph">
+The player is in one of the rooms, so process the action.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fca4"></span>FCA4</td>
 <td class="instruction">LD HL,$FCB3</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="FC8D.html#fcb3">FCB3</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="FC8D.html#fcb3">Table_ActionSwim_TokenGroup</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fca7"></span>FCA7</td>
 <td class="instruction">LD DE,$FCBF</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="FC8D.html#fcbf">FCBF</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="FC8D.html#fcbf">Table_ActionSwim</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcaa"></span>FCAA</td>
 <td class="instruction">LD BC,$0006</td>
 <td class="comment-1" rowspan="1"><span class="register">BC</span>=0006.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcad"></span>FCAD</td>
 <td class="instruction">CALL <a href="B0DE.html">$B0DE</a></td>
 <td class="comment-1" rowspan="1">Call <a href="B0DE.html">B0DE</a>.</td>
@@ -116,71 +139,115 @@ Print "You can't.".
 </td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcb0"></span>FCB0</td>
 <td class="instruction">JP <a href="EDED.html">Response_YouCant_Duplicate</a></td>
 <td class="comment-1" rowspan="1">Jump to <a href="EDED.html">Response_YouCant_Duplicate</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="fcb3"></span>
+<div class="comments">
+<div class="paragraph">
+The token table for the action "swim":
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Table_ActionSwim_TokenGroup</td>
 <td class="address-1"><span id="fcb3"></span>FCB3</td>
 <td class="instruction">DEFW <a href="E519.html#e642">PhraseTokens_North</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Token group 01.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcb5"></span>FCB5</td>
 <td class="instruction">DEFW <a href="E519.html#e644">PhraseTokens_South</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Token group 02.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcb7"></span>FCB7</td>
 <td class="instruction">DEFW <a href="E519.html#e646">PhraseTokens_East</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Token group 03.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcb9"></span>FCB9</td>
 <td class="instruction">DEFW <a href="E519.html#e648">PhraseTokens_West</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Token group 04.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcbb"></span>FCBB</td>
 <td class="instruction">DEFW <a href="E519.html#e64a">PhraseTokens_Up</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Token group 05.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcbd"></span>FCBD</td>
 <td class="instruction">DEFW <a href="E519.html#e64c">PhraseTokens_Down</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Token group 06.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="fcbf"></span>
+<div class="comments">
+<div class="paragraph">
+The actions table for "swim":
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Table_ActionSwim</td>
 <td class="address-1"><span id="fcbf"></span>FCBF</td>
-<td class="instruction">DEFW <a href="F39B.html">$F39B</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DEFW <a href="F39B.html">RemoveUserInput_Token_1</a></td>
+<td class="comment-1" rowspan="1">Action routine 01.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcc1"></span>FCC1</td>
-<td class="instruction">DEFW <a href="F39B.html">$F39B</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DEFW <a href="F39B.html">RemoveUserInput_Token_1</a></td>
+<td class="comment-1" rowspan="1">Action routine 02.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcc3"></span>FCC3</td>
-<td class="instruction">DEFW <a href="F39B.html">$F39B</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DEFW <a href="F39B.html">RemoveUserInput_Token_1</a></td>
+<td class="comment-1" rowspan="1">Action routine 03.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcc5"></span>FCC5</td>
-<td class="instruction">DEFW <a href="F39B.html">$F39B</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DEFW <a href="F39B.html">RemoveUserInput_Token_1</a></td>
+<td class="comment-1" rowspan="1">Action routine 04.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcc7"></span>FCC7</td>
-<td class="instruction">DEFW <a href="F39B.html">$F39B</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DEFW <a href="F39B.html">RemoveUserInput_Token_1</a></td>
+<td class="comment-1" rowspan="1">Action routine 05.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fcc9"></span>FCC9</td>
-<td class="instruction">DEFW <a href="F39B.html">$F39B</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DEFW <a href="F39B.html">RemoveUserInput_Token_1</a></td>
+<td class="comment-1" rowspan="1">Action routine 06.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="fccb"></span>
+<div class="comments">
+<div class="paragraph">
+Table containing rooms where this action can be done.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Table_ActionSwim_Rooms</td>
 <td class="address-1"><span id="fccb"></span>FCCB</td>
 <td class="instruction">DEFB $0C</td>
 <td class="comment-1" rowspan="1">Room 0C: 
@@ -188,6 +255,7 @@ Print "You can't.".
 <a href="BDD8.html">In A Deep Pool Of Water. Inside The Sea Cavern</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fccc"></span>FCCC</td>
 <td class="instruction">DEFB $0D</td>
 <td class="comment-1" rowspan="1">Room 0D: 
@@ -195,6 +263,7 @@ Print "You can't.".
 <a href="BE3A.html">A Narrow Underwater Passage</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="fccd"></span>FCCD</td>
 <td class="instruction">DEFB $15</td>
 <td class="comment-1" rowspan="1">Room 15: 

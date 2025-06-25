@@ -41,7 +41,48 @@ Next: <a href="63730.html">63730</a>
 <div class="paragraph">
 Used by the routines at <a href="63689.html">Action_North</a>, <a href="63693.html">Action_South</a>, <a href="63697.html">Action_East</a>, <a href="63701.html">Action_West</a> and <a href="63705.html">Action_Up</a>.
 </div>
+<div class="paragraph">
+The data in <a href="59156.html">Table_RoomMap</a> is stored in a particular order for each room: <table class="default">
+<tr>
+<th colspan="1" rowspan="1">Offset</th>
+<th colspan="1" rowspan="1">Exit To Room</th>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">0</td>
+<td class="centre" colspan="1" rowspan="1">North</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">1</td>
+<td class="centre" colspan="1" rowspan="1">South</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">2</td>
+<td class="centre" colspan="1" rowspan="1">East</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">3</td>
+<td class="centre" colspan="1" rowspan="1">West</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">4</td>
+<td class="centre" colspan="1" rowspan="1">Up</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">5</td>
+<td class="centre" colspan="1" rowspan="1">Down</td>
+</tr>
+</table> This is how the movement works; taking the current room from the map - we add a "movement value" (e.g. "East" which is 2) - this then points to data in the table which correlates to either a room number for the exit, or 0 to indicate there is no exit in that direction.
 </div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">C</td>
+<td class="register-desc">A movement "value" from the action</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -49,6 +90,19 @@ Used by the routines at <a href="63689.html">Action_North</a>, <a href="63693.ht
 <td class="address-2"><span id="63711"></span>63711</td>
 <td class="instruction">CALL <a href="44912.html">Parser_ValidateNoDirectObject</a></td>
 <td class="comment-1" rowspan="1">Call <a href="44912.html">Parser_ValidateNoDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="63714"></span>
+<div class="comments">
+<div class="paragraph">
+Directional commands can only be called on their own.
+</div>
+<div class="paragraph">
+Other commands like <a href="64393.html">"GO"</a> and <a href="64653.html">"SWIM"</a> are just treated like aliases, where the second token (the direction) is shunted down to being the first token, and the second token is then just erased: <a href="62363.html">RemoveUserInput_Token_1</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -60,7 +114,7 @@ Used by the routines at <a href="63689.html">Action_North</a>, <a href="63693.ht
 <td class="asm-label"></td>
 <td class="address-1"><span id="63715"></span>63715</td>
 <td class="instruction">LD B,0</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=0.</td>
+<td class="comment-1" rowspan="1">Initialise <span class="register">B</span> with 0 so the movement value is now in <span class="register">BC</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -69,22 +123,32 @@ Used by the routines at <a href="63689.html">Action_North</a>, <a href="63693.ht
 <td class="comment-1" rowspan="1">Call <a href="44186.html">GetRoomPointer</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="63720"></span>
+<div class="comments">
+<div class="paragraph">
+<span class="register">HL</span> now holds a pointer to the room data for the current room at <a href="59156.html">Table_RoomMap</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63720"></span>63720</td>
 <td class="instruction">ADD HL,BC</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">BC</span>.</td>
+<td class="comment-1" rowspan="1">Add the movement value to <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63721"></span>63721</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Fetch the entry from *<span class="register">HL</span> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63722"></span>63722</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="60957.html">Response_YouCantGoInThatDirection</a> if <span class="register">A</span> is zero.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="60957.html">Response_YouCantGoInThatDirection</a> if there is no exit at the requested memory location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
