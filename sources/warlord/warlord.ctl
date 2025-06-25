@@ -437,6 +437,10 @@ D $A77E Holds a single byte, where each bit relates to a turn-based event as
 . When the bit is set, this starts a turn counter (see ...).
 B $A77E,$01
 
+g $A788
+B $A788,$01
+L $A788,$01,$08
+
 g $A790 Number Of Items In The Players Inventory
 @ $A790 label=Count_InventoryItems
 D $A790 The number of items the player is currently holding.
@@ -507,7 +511,8 @@ g $A7DC Pointer: Configurable Exits Table
 @ $A7DC label=Pointer_ConfigurableExits
 W $A7DC,$02
 
-g $A7DE
+g $A7DE Pointer: Scenic Events Jump Table
+@ $A7DE label=Pointer_JumpTable_ScenicEvents
 W $A7DE,$02
 
 g $A7E0 Pointer: Verb Word Tokens Table
@@ -563,6 +568,14 @@ g $A82E Line Number
 @ $A82E label=LineNumber
 E $A82E View the equivalent code in #JEWELS$BD70.
 B $A82E,$01
+
+g $A83B Temporary Storage Table Pointer
+@ $A83B label=TempStore_TablePointer
+W $A83B,$02
+
+g $A83D Temporary Storage Table Index
+@ $A83D label=TempStore_TableIndex
+W $A83D,$02
 
 t $A843 Messaging: "> "
 @ $A843 label=Messaging_Prompt
@@ -786,6 +799,7 @@ W $AAEC,$02 "#STR$A8D6,$08($b==$FF)".
 
 c $AAEE Response: "Please Rephrase That"
 @ $AAEE label=Response_PleaseRephraseThat
+E $AAEE View the equivalent code in #JEWELS$BFEE.
 N $AAEE Print "#STR$A9D6,$08($b==$FF)".
   $AAEE,$03 #REGhl=#R$A9D6.
   $AAF1,$03 Call #R$A592.
@@ -793,6 +807,7 @@ N $AAEE Print "#STR$A9D6,$08($b==$FF)".
 
 c $AAF5 Response: "Please Be More Specific"
 @ $AAF5 label=Response_PleaseBeMoreSpecific
+E $AAF5 View the equivalent code in #JEWELS$BFF5.
 N $AAF5 Print "#STR$A9BD,$08($b==$FF)".
   $AAF5,$03 #REGhl=#R$A9BD.
   $AAF8,$03 Call #R$A592.
@@ -800,6 +815,7 @@ N $AAF5 Print "#STR$A9BD,$08($b==$FF)".
 
 c $AAFC Response: "You Can't"
 @ $AAFC label=Response_YouCant
+E $AAFC View the equivalent code in #JEWELS$BFFC.
 N $AAFC Print "#STR$A9EC,$08($b==$FF)".
   $AAFC,$03 #REGhl=#R$A9EC.
   $AAFF,$03 Call #R$A592.
@@ -807,6 +823,7 @@ N $AAFC Print "#STR$A9EC,$08($b==$FF)".
 
 c $AB03 Response: "O.K"
 @ $AB03 label=Response_OK
+E $AB03 View the equivalent code in #JEWELS$C003.
 N $AB03 Print "#STR$A9F7,$08($b==$FF)".
   $AB03,$03 #REGhl=#R$A9F7.
   $AB06,$03 Call #R$A592.
@@ -833,6 +850,7 @@ D $AB0A This routine manages two types of in-game events:
 . { Scenic events don't repeatedly trigger in the same room }
 . { The game world feels dynamic with events occurring in different locations }
 . LIST#
+E $AB0A View the equivalent code in #JEWELS$C17D.
 N $AB0A First process the turn-based events (if any are active).
   $AB0A,$03 Load *#R$A77E into #REGa.
   $AB0D,$03 Jump to #R$AB3C if no turn-based events are currently active.
@@ -919,6 +937,7 @@ N $AB87 All done, now return.
 c $AB88 Get Table Entry
 @ $AB88 label=GetTableEntry
 D $AB88 Retrieves an address from a table using a given index.
+E $AB88 View the equivalent code in #JEWELS$C1F0.
 R $AB88 E Index of item
 R $AB88 IX Base table address
 R $AB88 O:HL Address from the relevant table entry
@@ -930,6 +949,7 @@ R $AB88 O:IX Address of the table entry
 
 c $AB97 Print Objects
 @ $AB97 label=PrintObjects
+E $AB97 View the equivalent code in #JEWELS$C1FF.
 R $AB97 A #N$01 for inventory items, or room number for room objects
   $AB97,$03 #REGhl=#R$A66C.
   $AB9A,$04 #REGbc=*#R$A7E6.
@@ -952,9 +972,10 @@ R $AB97 A #N$01 for inventory items, or room number for room objects
 
 c $ABB6 Handler: Display Room Image
 @ $ABB6 label=Handler_DisplayRoomImage
-R $ABB6 E #N$01 If the image should be displayed, #N$00 if it should be skipped
 D $ABB6 Determines if the current room has an image relating to it, and if it
 . does - it jumps to the routine to display it.
+E $ABB6 View the equivalent code in #JEWELS$C21E.
+R $ABB6 E #N$01 If the image should be displayed, #N$00 if it should be skipped
 N $ABB6 The game can also load without any graphics at all, so bail if there's
 . nothing needed to do here.
   $ABB6,$06 Jump to #R$AC02 if *#R$A7EC is set to zero.
@@ -1022,6 +1043,7 @@ N $ABF0 Finally! Display the room image.
 c $AC02 Handler: Display Room Exits
 @ $AC02 label=Handler_RoomExits
 D $AC02 Handles displaying the exits available for the current room.
+E $AC02 View the equivalent code in #JEWELS$C26A.
   $AC02,$03 Call #R$A54E.
   $AC05,$05 Set up the printing position.
   $AC0A,$03 Call #R$AC9A which loads #REGhl with the room data pointer.
@@ -1116,6 +1138,7 @@ N $AC93 Print the objects at this location.
 
 c $AC9A Get Room Pointer
 @ $AC9A label=GetRoomPointer
+E $AC9A View the equivalent code in #JEWELS$C302.
 R $AC9A O:HL Pointer to the room data
 M $AC9A,$06 Load the *#R$A7C3 into #REGde.
   $AC9A,$04 #REGe=*#R$A7C3.
@@ -1127,6 +1150,7 @@ M $AC9A,$06 Load the *#R$A7C3 into #REGde.
 
 c $ACAD Print Room Description
 @ $ACAD label=Print_RoomDescription
+E $ACAD View the equivalent code in #JEWELS$C315.
 R $ACAD A Line number to begin printing
   $ACAD,$03 Write #REGa to *#R$A82E.
   $ACB0,$03 Call #R$A56A.
@@ -1207,6 +1231,7 @@ c $ACFB
 
 c $AD32 Handler: User Input
 @ $AD32 label=Handler_UserInput
+E $AD32 View the equivalent code in #JEWELS$C00A.
 N $AD32 Reset the screen position to defaults.
   $AD32,$03 Call #R$A560.
   $AD35,$03 Call #R$A647.
@@ -1319,32 +1344,31 @@ N $ADE5 Print "#STR$AA15,$08($b==$FF)".
   $AE2D,$08 Jump to #R$AD8C if *#R$A824 is equal to #N$FF.
   $AE35,$01 Return.
 
-c $AE36 Action: Examine Item
-@ $AE36 label=Action_ExamineItem
-R $AE36 C Item ID
-R $AE36 O:F Carry flag set when the item isn't present
-  $AE36,$01 Increment #REGbc by one.
-  $AE37,$05 #REGe=*#R$A7E8-#REGc.
+c $AE36 Parser: Validate Item
+@ $AE36 label=Parser_ValidateItem
+E $AE36 View the equivalent code in #JEWELS$C32A.
+R $AE36 BC The position in the user input token of the object
+R $AE36 O:F The carry flag is set when the item isn't present
+  $AE36,$01 Adjust the counter for the sum.
+  $AE37,$05 Calculate the index (*#R$A7E8-#REGc) and store the result in #REGe.
   $AE3C,$01 Stash #REGde on the stack.
-  $AE3D,$04 #REGix=*#R$A7D4.
-  $AE41,$03 Call #R$AB88.
+  $AE3D,$07 Call #R$AB88 with *#R$A7D4.
   $AE44,$01 Restore #REGde from the stack.
   $AE45,$02 Jump to #R$AE48.
-@ $AE47 label=ExamineItem_Loop
+@ $AE47 label=ValidateItem_Loop
   $AE47,$01 Increment #REGhl by one.
-@ $AE48 label=ExamineItem
+@ $AE48 label=ValidateItem
   $AE48,$05 Jump to #R$AE53 if *#REGhl is equal to #N$FF.
   $AE4D,$03 Call #R$AE6B.
   $AE50,$02 Jump to #R$AE47 if the item wasn't found.
   $AE52,$01 Return.
-N $AE53 The item being examined isn't in the room or in the players inventory.
+N $AE53 The item being referenced isn't in the room or in the players inventory.
 @ $AE53 label=Response_ItemNotHere
 N $AE53 Print "#STR$A8DB,$08($b==$FF)".
   $AE53,$03 #REGhl=#R$A8DB.
   $AE56,$03 Call #R$A585.
 N $AE59 Print the object name.
-  $AE59,$04 #REGix=*#R$A7D6.
-  $AE5D,$03 Call #R$AB88.
+  $AE59,$07 Call #R$AB88 with *#R$A7D6.
   $AE60,$03 Call #R$A585.
 N $AE63 Print "#STR$A8E8,$08($b==$FF)".
   $AE63,$03 #REGhl=#R$A8E8.
@@ -1354,6 +1378,7 @@ N $AE63 Print "#STR$A8E8,$08($b==$FF)".
 
 c $AE6B Validate If Item Is Present
 @ $AE6B label=ValidateItemPresent
+E $AE6B View the equivalent code in #JEWELS$C35F.
 R $AE6B A Object ID
 R $AE6B F Z flag set if the object is available
   $AE6B,$02 Stash #REGhl and #REGde on the stack.
@@ -1373,6 +1398,7 @@ c $AE80 Match Phrase Tokens
 @ $AE80 label=MatchPhraseTokens
 D $AE80 Matches phrase patterns with multiple variations against user input
 . tokens.
+E $AE80 View the equivalent code in #JEWELS$C37F.
 R $AE80 HL A pointer to phrase token data
 R $AE80 O:F The Z flag is set if the input matches any pattern
   $AE80,$01 Switch the phrase token pointer to #REGde.
@@ -1418,8 +1444,8 @@ N $AEAD The input doesn't match any patterns.
 c $AEAF Parser: Count Item References
 @ $AEAF label=Parser_CountItems
 D $AEAF Count how many tokens in the user input refer to game items.
+E $AEAF View the equivalent code in #JEWELS$C3AE.
 R $AEAF O:A The number of references to items in the user input tokens
-R $AEAF O:E As #REGa
 R $AEAF O:F The Z flag is set when there are no items present in the input
   $AEAF,$03 Set a pointer to #R$A824 in #REGhl.
   $AEB2,$02 Set a token count in #REGb of #N$0A which is the total length of
@@ -1445,16 +1471,19 @@ N $AECA This token does point to a game item, so increase the item counter.
   $AECE,$02 Transfer the item count into #REGa and set flags accordingly.
   $AED0,$01 Return.
 
-c $AED1
-  $AED1,$01 #REGe=#REGa.
-  $AED2,$02 #REGd=#N$00.
-  $AED4,$03 #REGhl=#R$A66C.
-  $AED7,$01 #REGhl+=#REGde.
-  $AED8,$01 #REGa=*#REGhl.
+c $AED1 Item Locator
+@ $AED1 label=ItemLocator
+E $AED1 View the equivalent code in #JEWELS$C3D0.
+R $AED1 A Item ID
+R $AED1 O:A Either a room ID, #N$01 for the players inventory, or #N$00 for when the item is disabled
+  $AED1,$03 Load the item ID into #REGde.
+  $AED4,$04 #REGhl=#R$A66C+#REGde.
+  $AED8,$01 Fetch the item location and store it in #REGa.
   $AED9,$01 Return.
 
 c $AEDA Is Object In Inventory?
 @ $AEDA label=CheckObjectInInventory
+E $AEDA View the equivalent code in #JEWELS$C3E4.
 R $AEDA A Object ID
 R $AEDA O:F Z flag set if the item is in the players inventory
 N $AEDA The #R$AED1 routine returns with #REGa containing the room ID of the
@@ -1467,6 +1496,7 @@ c $AEE0 Handler: Destroy Item/ Event
 @ $AEE0 label=Handler_DestroyItemEvent
 D $AEE0 Updates a given item/ event ID so it's then "inactive" (has a location
 . ID of #N$00).
+E $AEE0 View the equivalent code in #JEWELS$C3EA.
 R $AEE0 A Item/ event ID
   $AEE0,$01 Load the item/ event ID into #REGb.
   $AEE1,$02 Set the room ID to #N$00 which will deactivate the item/ event.
@@ -1478,6 +1508,7 @@ c $AEE7 Handler: Update Item/ Event For The Current Room
 D $AEE7 Updates a given item/ event ID so it appears in the current room. Used
 . for example, when an item is dropped (so it changes from being #N$01 - in the
 . players inventory, to the current room ID).
+E $AEE7 View the equivalent code in #JEWELS$C3F1.
 R $AEE7 A Item/ event ID
   $AEE7,$01 Load the item/ event ID into #REGb.
   $AEE8,$04 Load #REGc with *#R$A7C3.
@@ -1486,6 +1517,7 @@ R $AEE7 A Item/ event ID
 
 c $AEF0 Set Scenic Event As Triggered
 @ $AEF0 label=ScenicEventTriggered
+E $AEF0 View the equivalent code in #JEWELS$C3FA.
 R $AEF0 A Scenic event ID (+#N$80)
   $AEF0,$01 Copy the scenic event ID into #REGb.
   $AEF1,$02 Set #REGc to #N$FF which denotes that the event has fired already
@@ -1547,6 +1579,7 @@ D $AF1E Rather than use item properties, the game just has separate objects
 . TABLE#
 . When the match is lit by the player; item #N$02 is destroyed and replaced
 . with item #N$03.
+E $AF1E View the equivalent code in #JEWELS$C426.
   $AF1E,$01 #REGa=#REGb.
   $AF1F,$03 Call #R$AED1.
   $AF22,$02 Stash #REGbc and #REGaf on the stack.
@@ -1558,14 +1591,18 @@ D $AF1E Rather than use item properties, the game just has separate objects
   $AF2D,$03 Call #R$AF08.
   $AF30,$01 Return.
 
-c $AF31
+c $AF31 Check Item In Current Room
+@ $AF31 label=CheckItemInCurrentRoom
+R $AF31 A Item ID
+R $AF31 O:F Z flag is set if the item is in the current room
+N $AF31 Fetch the room ID of the requested item using the table at #R$A66C.
   $AF31,$03 Call #R$AED1.
-  $AF34,$03 #REGhl=#R$A7C3.
-  $AF37,$01 Compare #REGa with *#REGhl.
+  $AF34,$04 Compare the room ID with *#R$A7C3.
   $AF38,$01 Return.
 
 c $AF39 Check Room Objects
 @ $AF39 label=CheckRoomObjects
+E $AF39 View the equivalent code in #JEWELS$C439.
 R $AF39 A Room number
 R $AF39 O:A #N$00 or #N$01 if objects are found or not
   $AF39,$03 #REGhl=#R$A66C.
@@ -1592,6 +1629,7 @@ N $AF54 Set the "failure" output.
 
 c $AF56 Validate Object
 @ $AF56 label=ValidateObject
+E $AF56 View the equivalent code in #JEWELS$C456.
 R $AF56 BC Object counter
 R $AF56 O:F Z is unset if the object is valid, unset when invalid
   $AF56,$02 Stash #REGaf and #REGbc on the stack.
@@ -1613,6 +1651,7 @@ R $AF56 O:F Z is unset if the object is valid, unset when invalid
 c $AF70 Parser: Validate No Direct Object
 @ $AF70 label=Parser_ValidateNoDirectObject
 D $AF70 The opposite of #R$AF7B, checks that there's no direct object.
+E $AF70 View the equivalent code in #JEWELS$C470.
 R $AF70 O:F The Z flag is set when there's no direct object present
 R $AF70 O:F The carry flag is set when there's a second token set
   $AF70,$06 Return if the second token (*#R$A825) is the terminator
@@ -1629,6 +1668,8 @@ D $AF7B In most adventure games, the structure for a command is "verb + direct
 . The verb describes the action, and the direct object is what the action is
 . performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
 . object "SHOE".
+E $AF7B View the equivalent code in #JEWELS$C47B.
+R $AF7B O:A The number of references to items in the user input tokens
 R $AF7B O:F The carry flag is set when the command is malformed
 N $AF7B The first token is the verb, so target the second token for the direct
 . object.
@@ -1645,36 +1686,78 @@ N $AF82 E.g. They tried "TAKE" but didn't write anything after it.
 N $AF87 Process the direct object.
 @ $AF87 label=DirectObject_Process
   $AF87,$03 Call #R$AEAF.
-  $AF8A,$01 Return if #REGa is not equal to #N$FF.
+  $AF8A,$01 Return if there is at least one valid item mentioned in the user
+. input tokens.
+N $AF8B Any references are invalid.
+N $AF8B Print "#STR$A9D6,$08($b==$FF)".
   $AF8B,$03 Call #R$AAEE.
   $AF8E,$01 Set the carry flag to indicate the command is malformed.
   $AF8F,$01 Return.
 
-c $AF90
+c $AF90 Parser: Validate Input Tokens
+@ $AF90 label=Parser_ValidateInputTokens
+E $AF90 View the equivalent code in #JEWELS$C490.
+R $AF90 O:A The number of references to items in the user input tokens
+R $AF90 O:F The zero flag is set when there is only a verb present
+R $AF90 O:F The zero flag is unset when there is at least one valid direct object
+R $AF90 O:F The carry flag is set when the command is malformed
 N $AF90 The first token is the verb, so target the second token for the direct
 . object.
   $AF90,$03 Fetch the #R$A825(second token from the user input) and store it in
 . #REGa.
   $AF93,$03 Return if there is no second token.
+N $AF96 There is a second token; so validate all direct objects after this
+. point.
   $AF96,$03 Call #R$AEAF.
-  $AF99,$01 Return if there is at least one item mentioned in the user input
-. tokens.
+  $AF99,$01 Return if there is at least one valid item mentioned in the user
+. input tokens.
+N $AF9A Any references are invalid.
 N $AF9A Print "#STR$A9D6,$08($b==$FF)".
   $AF9A,$03 Call #R$AAEE.
   $AF9D,$01 Set the carry flag.
   $AF9E,$01 Return.
 
-c $AF9F
+c $AF9F Parser: Validate Two Direct Objects
+@ $AF9F label=Parser_ValidateTwoDirectObjects
+E $AF9F View the equivalent code in #JEWELS$C49F.
+R $AF9F O:F The zero flag is set when the command has two valid direct objects
+R $AF9F O:F The carry flag is set when the command is malformed
+  $AF9F,$03 Call #R$AF7B.
+  $AFA2,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+N $AFA3 #REGa now contains the count of the number of valid direct objects.
+  $AFA3,$04 Jump to #R$AFAC if the number of valid direct objects in the user
+. input is not #N$01.
+N $AFA7 There is only one valid direct objects in the user input and the
+. command needs two...
+N $AFA7 Print "#STR$A9BD,$08($b==$FF)".
+  $AFA7,$03 Call #R$AAF5.
+  $AFAA,$01 Set the carry flag.
+  $AFAB,$01 Return.
+N $AFAC There are two or more valid direct objects in the user input.
+@ $AFAC label=ValidateTwoDirectObjects
+  $AFAC,$04 Jump to #R$AFB2 if the number of valid direct objects in the user
+. input is greater than or equal to #N$03.
+  $AFB0,$01 Set zero flag.
+  $AFB1,$01 Return.
+N $AFB2 There are more than two valid direct objects in the user input.
+@ $AFB2 label=ValidateTwoDirectObjects_TooMany
+N $AFB2 Print "#STR$A9D6,$08($b==$FF)".
+  $AFB2,$03 Call #R$AAEE.
+  $AFB5,$01 Set the carry flag.
+  $AFB6,$01 Return.
 
-c $AFB7
+c $AFB7 Parser: Validate Any Direct Object
+@ $AFB7 label=Parser_ValidateAnyDirectObject
 D $AFB7 In most adventure games, the structure for a command is "verb + direct
 . object". This is usually how the player interacts with the game world.
 . The verb describes the action, and the direct object is what the action is
 . performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
 . object "SHOE".
+E $AFB7 View the equivalent code in #JEWELS$C4B7.
+R $AFB7 O:A The number of valid direct objects in the user input tokens
 R $AFB7 O:F The carry flag is set when the command is malformed
-R $AFB7 O:A The number of references to items in the user input tokens
-R $AFB7 O:E As #REGa
+R $AFB7 O:F The zero flag is set when there are no valid direct objects present in the input tokens
 N $AFB7 The first token is the verb, so target the second token for the direct
 . object.
   $AFB7,$03 Fetch the #R$A825(second token from the user input) and store it in
@@ -1690,34 +1773,108 @@ N $AFBE Print "#STR$A9BD,$08($b==$FF)".
   $AFC2,$01 Return.
 N $AFC3 The user input tokens have a direct object, return how many are in the
 . command buffer.
+@ $AFC3 label=ValidateAnyDirectObject
   $AFC3,$03 Call #R$AEAF.
   $AFC6,$01 Return.
 
 c $AFC7 Parser: Process Item
 @ $AFC7 label=Parser_ProcessItem
+E $AFC7 View the equivalent code in #JEWELS$C4C7.
   $AFC7,$03 #REGhl=#R$A824.
-  $AFCA,$02 #REGb=#N$0A.
-  $AFCC,$04 Return if *#REGhl is equal to #N$FF.
-  $AFD0,$02 Stash #REGhl and #REGbc on the stack.
-  $AFD2,$03 #REGhl=*#R$A7D8.
-  $AFD5,$04 #REGbc=*#R$A7E8.
-  $AFD9,$02 CPIR.
-  $AFDB,$02 Jump to #R$AFE5 if #REGa is not equal to #N$FF.
+  $AFCA,$02 Set a counter of #N$0A in #REGb of the maximum number of tokens
+. available in the user input.
+@ $AFCC label=ProcessItem_Loop
+  $AFCC,$01 Fetch a token byte from the user input pointer.
+  $AFCD,$03 Return if the terminator has been reached (#N$FF).
+  $AFD0,$02 Stash the user input token pointer and max count on the stack.
+  $AFD2,$03 Load *#R$A7D8 into #REGhl.
+  $AFD5,$04 Load *#R$A7E8 into #REGbc.
+  $AFD9,$02 Search for matching objects.
+  $AFDB,$02 Jump to #R$AFE5 the current token wasn't found in the table.
   $AFDD,$03 Call #R$AE36.
-  $AFE0,$02 Jump to #R$AFE5 if #REGa is greater than or equal to #N$FF.
-  $AFE2,$02 Restore #REGbc and #REGhl from the stack.
+  $AFE0,$02 Jump to #R$AFE5 if the carry flag is not set.
+  $AFE2,$02 Restore the max count and user input token pointer from the stack.
   $AFE4,$01 Return.
-
-  $AFE5,$02 Restore #REGbc and #REGhl from the stack.
-  $AFE7,$01 Increment #REGhl by one.
-  $AFE8,$02 Decrease counter by one and loop back to #R$AFCC until counter is zero.
+@ $AFE5 label=ProcessItem_Next
+  $AFE5,$02 Restore the max count and user input token pointer from the stack.
+  $AFE7,$01 Increment the user input token pointer by one.
+  $AFE8,$02 Decrease the max count by one and loop back to #R$AFCC until all of
+. the user input tokens have been evaluated.
   $AFEA,$01 Return.
 
-c $AFEB
+c $AFEB Handler: Scenic Events
+@ $AFEB label=Handler_ScenicEvents
+D $AFEB Handles checking if a scenic event should occur ... and also, handles
+. jumping to the correct related scenic event routine to action it.
+E $AFEB View the equivalent code in #JEWELS$C4EB.
+  $AFEB,$03 #REGa=*#R$A7EE.
+  $AFEE,$02 Return if *#R$A7EE is zero.
+  $AFF0,$01 #REGb=#REGa.
+  $AFF1,$03 #REGhl=*#R$A7E2.
+  $AFF4,$02 Jump to #R$AFF7.
+@ $AFF6 label=Handler_ScenicEvents_Loop
+  $AFF6,$01 Increment #REGhl by one.
+@ $AFF7 label=ScenicEvents_Process
+  $AFF7,$01 #REGa=*#REGhl.
+  $AFF8,$03 Call #R$AE6B.
+  $AFFB,$02 Jump to #R$B01C if #REGhl is not equal to #REGa.
+N $AFFD An event was found to be processed!
+N $AFFD First though, stash away the current pointer and index in the search,
+. so this can be resumed later.
+  $AFFD,$03 Write #REGhl to *#R$A83B.
+  $B000,$04 Write #REGbc to *#R$A83D.
+N $B004 Calculate the event index and get the event handler.
+  $B004,$05 #REGe=*#R$A7EE-#REGb.
+  $B009,$04 Load #REGix with *#R$A7DE which contains a pointer to the scenic
+. event rountines jump table.
+  $B00D,$03 Call #R$AB88.
+  $B010,$04 Push #R$B015 onto the stack (as the return address).
+  $B014,$01 Jump to the event handler held by #REGhl.
+N $B015 This is the return point after the handler has finished executing.
+@ $B015 label=ScenicEvents_PostProcessing
+  $B015,$03 Restore *#R$A83B to #REGhl.
+  $B018,$04 Restore *#R$A83D to #REGbc.
+@ $B01C label=ScenicEvents_Next
+  $B01C,$02 Decrease the event counter by one and loop back to #R$AFF6 until
+. all events have been processed.
+  $B01E,$01 Return.
 
 c $B01F
+E $B01F View the equivalent code in #JEWELS$C520.
+  $B01F,$01 #REGc=#REGa.
+  $B020,$03 #REGa=*#R$A7EE.
+  $B023,$03 Jump to #R$B03D if *#R$A7EE is zero.
+  $B026,$01 #REGb=#REGa.
+  $B027,$03 #REGhl=*#R$A7E2.
+  $B02A,$02 Jump to #R$B02D.
+  $B02C,$01 Increment #REGhl by one.
+  $B02D,$01 #REGa=*#REGhl.
+  $B02E,$03 Call #R$AE6B.
+  $B031,$02 Jump to #R$B03B if #REGhl is not equal to #REGa.
+  $B033,$02 Stash #REGhl and #REGbc on the stack.
+  $B035,$01 #REGb=*#REGhl.
+  $B036,$03 Call #R$AF08.
+  $B039,$02 Restore #REGbc and #REGhl from the stack.
+  $B03B,$02 Decrease counter by one and loop back to #R$B02C until counter is zero.
+  $B03D,$04 Write #REGc to *#R$A7C3.
+  $B041,$03 #REGa=*#R$A787.
+  $B044,$02 Return if *#R$A787 is zero.
+  $B046,$02 #REGb=#N$08.
+  $B048,$03 #REGhl=#R$A788.
+  $B04B,$01 #REGc=#REGa.
+  $B04C,$02 Jump to #R$B04F.
+  $B04E,$01 Increment #REGhl by one.
+  $B04F,$02 Shift #REGc right.
+  $B051,$02 Jump to #R$B05B if #REGhl is greater than or equal to #REGa.
+  $B053,$01 #REGa=*#REGhl.
+  $B054,$02 Stash #REGhl and #REGbc on the stack.
+  $B056,$03 Call #R$AEE7.
+  $B059,$02 Restore #REGbc and #REGhl from the stack.
+  $B05B,$02 Decrease counter by one and loop back to #R$B04E until counter is zero.
+  $B05D,$01 Return.
 
 c $B05E
+E $B05E View the equivalent code in #JEWELS$C556.
   $B05E,$03 #REGhl=*#R$A7E0.
   $B061,$04 #REGbc=*#R$A7EA.
   $B065,$03 #REGa=*#R$A824.
@@ -1738,12 +1895,14 @@ N $B06C Print "#STR$A84F,$08($b==$FF)".
 c $B081 Pause, Print String And Scroll
 @ $B081 label=PausePrintStringAndScroll
 D $B081 For dramatic effect! Used when an event occurs.
+E $B081 View the equivalent code in #JEWELS$C579.
   $B081,$05 Call #R$A5C2 using #N$19 HALT loops (for a short pause).
   $B086,$03 Call #R$A592.
   $B089,$01 Return.
 
 c $B08A Generate Random Number
 @ $B08A label=GenerateRandomNumber
+E $B08A View the equivalent code in #JEWELS$C582.
 R $B08A A Maximum value of generated number
   $B08A,$01 Stash #REGbc on the stack.
   $B08B,$01 Store the maximum number in #REGc.
@@ -1844,9 +2003,46 @@ R $B0DE BC Count of the number of table items to process
 c $B10B Print Room Image
 @ $B10B label=Print_RoomImage
 R $B10B IX Pointer to room image data
+  $B10B,$03 #REGhl=#REGix (using the stack).
+  $B10E,$04 Add #N$0200 to the image data to skip the header.
+  $B112,$03 Initialise the screen buffer pointer in #REGde to #N$4000 (the
+. beginning of the screen buffer).
+  $B115,$03 Set a counter in #REGbc for #N$0200 bytes to process.
+@ $B118 label=DecompressPixelData_Loop
+  $B118,$01 Stash the byte counter on the stack.
+  $B119,$02 #REGb=#N$08.
+  $B11B,$03 #REGc=*#REGix+#N$00.
+  $B11E,$02 Shift #REGc left (with carry).
+  $B120,$02 Jump to #R$B125 if ?? is greater than or equal to #N$08.
+  $B122,$01 #REGa=*#REGhl.
+  $B123,$01 Write #REGa to *#REGde.
+  $B124,$01 Increment #REGhl by one.
+  $B125,$01 Increment #REGde by one.
+  $B126,$02 Decrease counter by one and loop back to #R$B11E until counter is zero.
+  $B128,$02 Increment #REGix by one.
+  $B12A,$01 Restore the byte counter from the stack.
+  $B12B,$01 Decrease the byte counter by one.
+  $B12C,$04 Jump back to #R$B118 until all bytes have been processed.
+N $B130 Decompress the attribute data.
+  $B130,$03 #REGix=#REGhl (using the stack).
+  $B133,$03 Initialise the attribute buffer pointer in #REGhl to #N$5800 (the
+. beginning of the attribute buffer).
+@ $B136 label=DecompressAttributeData_Loop
+  $B136,$03 Fetch the attribute byte from *#REGix+#N$00 and store it in #REGa.
+  $B139,$03 Fetch the repeat count from *#REGix+#N$01 and store this in #REGb.
+  $B13C,$04 Increment #REGix by two.
+@ $B140 label=RepeatAttribute_Loop
+  $B140,$01 Write the attribute byte to the attribute buffer pointer.
+  $B141,$01 Increment the attribute buffer pointer by one.
+  $B142,$02 Decrease the repeat counter by one and loop back to #R$B140 until
+. the counter is zero.
+N $B144 Keep looping back until the end of the attribute buffer is reached.
+  $B144,$05 Jump back to #R$B136 until #REGh is equal to #N$5A.
+  $B149,$01 Return.
 
 c $B14A Game Start Alias
 @ $B14A label=GameStart_Alias
+E $B14A View the equivalent code in #JEWELS$C592.
   $B14A,$03 Jump to #R$FCCE.
 
 t $B14D Messaging: "The Roman"
@@ -3529,8 +3725,11 @@ g $E341 Data: Item Groups
 D $E341 See #R$E417 for usage.
 @ $E341 label=Data_ItemGroup_Roman
 @ $E348 label=Data_ItemGroup_Fomorian
+@ $E34F label=Data_ItemGroup_Boar
+@ $E351 label=Data_ItemGroup_Rats
 @ $E353 label=Data_ItemGroup_Hare
-@ $E359 label=Data_ItemGroup_DeepPoolOfWater_1
+@ $E356 label=Data_ItemGroup_Trap
+@ $E359 label=Data_ItemGroup_Pool
 @ $E35E label=Data_ItemGroup_Salt
 @ $E360 label=Data_ItemGroup_ClayPot
 @ $E362 label=Data_ItemGroup_Acorns
@@ -3540,21 +3739,47 @@ D $E341 See #R$E417 for usage.
 @ $E36B label=Data_ItemGroup_Helmet
 @ $E36E label=Data_ItemGroup_Food
 @ $E370 label=Data_ItemGroup_Iron
-@ $E372 label=Data_ItemGroup_StoneMonolith_1
-@ $E374 label=Data_ItemGroup_StoneMonolith_2
-@ $E377 label=Data_ItemGroup_
+@ $E372 label=Data_ItemGroup_StoneMonolith
+@ $E374 label=Data_ItemGroup_Fissure
+@ $E377 label=Data_ItemGroup_Warrior
 @ $E37F label=Data_ItemGroup_ShadowLikeDemons
 @ $E381 label=Data_ItemGroup_Hut
 @ $E386 label=Data_ItemGroup_Vase
+@ $E388 label=Data_ItemGroup_Cavern
 @ $E392 label=Data_ItemGroup_Sword
+@ $E396 label=Data_ItemGroup_Meat
+@ $E399 label=Data_ItemGroup_Trader
+@ $E39B label=Data_ItemGroup_Woman
+@ $E39D label=Data_ItemGroup_Wolves
+@ $E39F label=Data_ItemGroup_Bear
+@ $E3A2 label=Data_ItemGroup_Guard
+@ $E3A4 label=Data_ItemGroup_Druid
 @ $E3A6 label=Data_ItemGroup_Amulet
+@ $E3AA label=Data_ItemGroup_Ring
+@ $E3AD label=Data_ItemGroup_Pig
 @ $E3B0 label=Data_ItemGroup_Rope
+@ $E3B6 label=Data_ItemGroup_Ox
+@ $E3BA label=Data_ItemGroup_Skull
+@ $E3BC label=Data_ItemGroup_Shield
+@ $E3BE label=Data_ItemGroup_Fire
+@ $E3C2 label=Data_ItemGroup_Pit
 @ $E3C5 label=Data_ItemGroup_Ladder
+@ $E3CA label=Data_ItemGroup_Straw
+@ $E3CD label=Data_ItemGroup_Staff
+@ $E3CF label=Data_ItemGroup_Body
 @ $E3DD label=Data_ItemGroup_Cloak
-@ $E3E7 label=Data_ItemGroup_DeepPoolOfWater_2
+@ $E3E1 label=Data_ItemGroup_Silver
+@ $E3E3 label=Data_ItemGroup_Platform
+@ $E3E7 label=Data_ItemGroup_Water
+@ $E3EE label=Data_ItemGroup_Lug
+@ $E3F0 label=Data_ItemGroup_Danu
+@ $E3F2 label=Data_ItemGroup_Minerva
 @ $E3F4 label=Data_ItemGroup_Chariot
-@ $E3F6 label=Data_ItemGroup_StoneSlab_1
-@ $E3F9 label=Data_ItemGroup_StoneSlab_2
+@ $E3F6 label=Data_ItemGroup_Slab
+@ $E3F9 label=Data_ItemGroup_Groove
+@ $E3FC label=Data_ItemGroup_Lake
+@ $E3FE label=Data_ItemGroup_Hillfort
+@ $E407 label=Data_ItemGroup_Broch
 B $E341,$01 #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC))).
 L $E341,$01,$D6
 
@@ -3577,7 +3802,7 @@ D $E417 Items may have several item IDs which relate to a single item, this
 . { #R$E3AE(#N$50) | #ITEM$50 }
 . TABLE#
 W $E417,$02 Item Group: #N((#PC-$E417)/$02): #OBJECT((#PC-$E417)/$02).
-L $E417,$02,$30
+L $E417,$02,$39
 
 g $E489 Table: Verb Word Tokens
 @ $E489 label=Table_VerbWordTokens
@@ -3586,6 +3811,8 @@ B $E489,$01 Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
 L $E489,$01,$21
 
 g $E4AA
+B $E4AA,$01 #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC))).
+L $E4AA,$01,$3C
 
 g $E4E6 Table: Scenic Event Locations
 @ $E4E6 label=Table_ScenicEventLocations
@@ -3593,6 +3820,10 @@ D $E4E6 A table where the index is the event ID, and the value is the room it
 . resides in (#N$00 for "currently inactive"). See #R$A7EE for the count.
 B $E4E6,$01 Event #N(#PC-$E4E6) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $E4E6,$01,$11
+
+g $E4F8
+W $E4F8,$02
+L $E4F8,$02,$08
 
 g $E508 Table: Scenic Event Locations 2
 @ $E508 label=Table_ScenicEventLocations2
@@ -3887,7 +4118,9 @@ N $E9E3 Print "#STR$CD5F,$08($b==$FF)".
   $E9E3,$03 #REGhl=#R$CD5F.
   $E9E6,$03 Jump to #R$E9D0.
 
-c $E9E9
+c $E9E9 Fatal Events: Fomorian Tribe
+@ $E9E9 label=Event_FomorianTribe
+N $E9E9 Make the "Fomorian tribe" inactive.
   $E9E9,$05 Reset bit 1 of *#R$A77E.
   $E9EE,$05 Call #R$AE6B with item #N$0F: #ITEM$0F.
   $E9F3,$01 Return if #ITEM$0F is not currently in the room.
@@ -3905,15 +4138,15 @@ N $E9FA Print "#STR$C97C,$08($b==$FF)".
   $EA07,$03 Call #R$AEF0.
   $EA0A,$01 Return.
 
-c $EA0B
+c $EA0B Fatal Events: Roman
+@ $EA0B label=Event_Roman
   $EA0B,$05 Call #R$AEE0 with #ITEM$03.
   $EA10,$05 Call #R$AEE7 with #ITEM$02.
 N $EA15 Print "#STR$C9AF,$08($b==$FF)".
   $EA15,$03 #REGhl=#R$C9AF.
   $EA18,$03 Call #R$A592.
   $EA1B,$02 #REGb=#N$14.
-  $EA1D,$02 #REGa=#N$22.
-  $EA1F,$03 Call #R$AED1.
+  $EA1D,$05 Call #R$AED1 with item #N$22: #ITEM$22.
   $EA22,$03 Jump to #R$EA2D if #REGa is equal to #REGa.
 N $EA25 Print "#STR$CA1A,$08($b==$FF)".
   $EA25,$03 #REGhl=#R$CA1A.
@@ -3933,90 +4166,127 @@ N $EA3D Print "#STR$CA46,$08($b==$FF)".
   $EA40,$03 Call #R$B081.
   $EA43,$01 Return.
 
-c $EA44
+c $EA44 Fatal Events: Fomorian
+@ $EA44 label=Event_Fomorian
+N $EA44 Print "#STR$CA79,$08($b==$FF)".
   $EA44,$03 #REGhl=#R$CA79.
   $EA47,$03 Call #R$A592.
-  $EA4A,$02 #REGa=#N$14.
-  $EA4C,$03 Call #R$B08A.
+  $EA4A,$05 Call #R$B08A using #N$14 as a maximum value.
+N $EA4F Print "#STR$CA94,$08($b==$FF)".
   $EA4F,$03 #REGhl=#R$CA94.
-  $EA52,$02 Jump to #R$EA5C if ?? is not equal to #N$14.
-  $EA54,$01 Restore #REGhl from the stack.
+  $EA52,$02 Jump to #R$EA5C if the generated number was non-zero.
+  $EA54,$01 Discard the return address on the stack.
 N $EA55 Bad luck!
   $EA55,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
 . over".
+N $EA59 Print "#STR$CA46,$08($b==$FF)".
   $EA59,$03 #REGhl=#R$CA46.
+@ $EA5C label=Fomorian_Return
   $EA5C,$03 Call #R$B081.
   $EA5F,$01 Return.
+
+c $EA60 Fatal Events: Boar
+@ $EA60 label=Event_Boar
+N $EA60 Print "#STR$CACD,$08($b==$FF)".
   $EA60,$03 #REGhl=#R$CACD.
   $EA63,$03 Call #R$A592.
-  $EA66,$02 #REGa=#N$06.
-  $EA68,$03 Call #R$AEE0.
+  $EA66,$05 Call #R$AEE0 with item #N$06: #ITEM$06.
   $EA6B,$01 Return.
+
+c $EA6C Fatal Events:
+@ $EA6C label=Event_
   $EA6C,$02 #REGa=#N$07.
   $EA6E,$03 Call #R$AEF0.
   $EA71,$01 Return.
+
+c $EA72 Fatal Events: Furtive Figure
+@ $EA72 label=Event_FurtiveFigure
+N $EA72 Print "#STR$CB19,$08($b==$FF)".
   $EA72,$03 #REGhl=#R$CB19.
   $EA75,$03 Call #R$A592.
+N $EA78 Print "#STR$CB45,$08($b==$FF)".
   $EA78,$03 #REGhl=#R$CB45.
   $EA7B,$03 Call #R$B081.
-  $EA7E,$02 #REGa=#N$08.
-  $EA80,$03 Call #R$AEE0.
+  $EA7E,$05 Call #R$AEE0 with item #N$08: #ITEM$08.
   $EA83,$01 Return.
+
+c $EA84 Fatal Events: Rats
+@ $EA84 label=Event_Rats
+N $EA84 Print "#STR$CB73,$08($b==$FF)".
   $EA84,$03 #REGhl=#R$CB73.
   $EA87,$03 Call #R$A592.
-  $EA8A,$02 #REGa=#N$09.
-  $EA8C,$03 Call #R$AEE0.
+  $EA8A,$05 Call #R$AEE0 with item #N$09: #ITEM$09.
   $EA8F,$01 Return.
+
+c $EA90 Fatal Events: Woman
+@ $EA90 label=Event_Woman
+N $EA90 Print "#STR$CB9C,$08($b==$FF)".
   $EA90,$03 #REGhl=#R$CB9C.
   $EA93,$03 Call #R$A592.
-  $EA96,$02 #REGa=#N$2D.
-  $EA98,$03 Call #R$AEE0.
+  $EA96,$05 Call #R$AEE0 with item #N$2D: #ITEM$2D.
   $EA9B,$01 Return.
+
+c $EA9C Fatal Events: Woman Guides Through Swamp - North
+@ $EA9C label=Event_WomanGuidesThroughSwamp_North
+N $EA9C Print "#STR$CBCC,$08($b==$FF)".
   $EA9C,$03 #REGhl=#R$CBCC.
   $EA9F,$03 Call #R$A592.
-  $EAA2,$02 #REGa=#N$3E.
-  $EAA4,$03 Call #R$AEE0.
-  $EAA7,$02 #REGa=#N$3F.
-  $EAA9,$03 Call #R$AEF0.
+  $EAA2,$05 Call #R$AEE0 with item #N$3E: #ITEM$3E.
+  $EAA7,$05 Call #R$AEF0 with item #N$3F: #ITEM$3F.
   $EAAC,$02 #REGb=#N$3D.
   $EAAE,$02 #REGc=#N$2C.
   $EAB0,$03 Call #R$AF08.
   $EAB3,$01 Return.
+
+c $EAB4 Fatal Events: Woman Guides Through Swamp - East
+@ $EAB4 label=Event_WomanGuidesThroughSwamp_East
+N $EAB4 Print "#STR$CC26,$08($b==$FF)".
   $EAB4,$03 #REGhl=#R$CC26.
   $EAB7,$03 Call #R$A592.
-  $EABA,$02 #REGa=#N$3F.
-  $EABC,$03 Call #R$AEE0.
-  $EABF,$02 #REGa=#N$40.
-  $EAC1,$03 Call #R$AEF0.
+  $EABA,$05 Call #R$AEE0 with item #N$3F: #ITEM$3F.
+  $EABF,$05 Call #R$AEF0 with item #N$40: #ITEM$40.
   $EAC4,$02 #REGb=#N$3D.
   $EAC6,$02 #REGc=#N$2D.
   $EAC8,$03 Call #R$AF08.
   $EACB,$01 Return.
+
+c $EACC Fatal Events: Woman Guides Through Swamp - South
+@ $EACC label=Event_WomanGuidesThroughSwamp_South
+N $EACC Print "#STR$CC3C,$08($b==$FF)".
   $EACC,$03 #REGhl=#R$CC3C.
   $EACF,$03 Call #R$A592.
-  $EAD2,$02 #REGa=#N$40.
-  $EAD4,$03 Call #R$AEE0.
-  $EAD7,$02 #REGa=#N$41.
-  $EAD9,$03 Call #R$AEF0.
+  $EAD2,$05 Call #R$AEE0 with item #N$40: #ITEM$40.
+  $EAD7,$05 Call #R$AEF0 with item #N$41: #ITEM$41.
   $EADC,$02 #REGb=#N$3D.
   $EADE,$02 #REGc=#N$25.
   $EAE0,$03 Call #R$AF08.
   $EAE3,$01 Return.
+
+c $EAE4 Fatal Events: Woman Guides Through Swamp - East #2
+@ $EAE4 label=Event_WomanGuidesThroughSwamp_East_2
+N $EAE4 Print "#STR$CC26,$08($b==$FF)".
   $EAE4,$03 #REGhl=#R$CC26.
   $EAE7,$03 Call #R$A592.
-  $EAEA,$02 #REGa=#N$41.
-  $EAEC,$03 Call #R$AEE0.
+  $EAEA,$05 Call #R$AEE0 with item #N$41: #ITEM$41.
   $EAEF,$02 #REGb=#N$3D.
   $EAF1,$02 #REGc=#N$27.
   $EAF3,$03 Call #R$AF08.
   $EAF6,$01 Return.
+
+c $EAF7 Fatal Events: Druid
+@ $EAF7 label=Event_Druid
+N $EAF7 Print "#STR$CC53,$08($b==$FF)".
   $EAF7,$03 #REGhl=#R$CC53.
   $EAFA,$03 Call #R$A592.
+N $EAFD Print "#STR$CCCA,$08($b==$FF)".
   $EAFD,$03 #REGhl=#R$CCCA.
   $EB00,$03 Call #R$B081.
-  $EB03,$02 #REGa=#N$4A.
-  $EB05,$03 Call #R$AEE0.
+  $EB03,$05 Call #R$AEE0 with item #N$4A: #ITEM$4A.
   $EB08,$01 Return.
+
+c $EB09 Fatal Events: Feeling Immense Fatigue
+@ $EB09 label=Event_FeelingImmenseFatigue
+N $EB09 Print "#STR$CD00,$08($b==$FF)".
   $EB09,$03 #REGhl=#R$CD00.
   $EB0C,$03 Call #R$A592.
   $EB0F,$01 Return.
@@ -4554,17 +4824,13 @@ c $EECF Process: Get Acorns
 
 c $EEE9 Process: Get Urn
 @ $EEE9 label=Process_GetUrn
-  $EEE9,$02 #REGa=#N$1C.
-  $EEEB,$03 Call #R$ED75.
-  $EEEE,$02 #REGa=#N$20.
-  $EEF0,$03 Call #R$AE6B.
+  $EEE9,$05 Call #R$ED75 with item #N$1C: #ITEM$1C.
+  $EEEE,$05 Call #R$AE6B with item #N$20: #ITEM$20.
   $EEF3,$03 Jump to #R$EE23 if #REGa is not equal to #N$20.
-  $EEF6,$03 #REGhl=#R$A76C.
-  $EEF9,$02 Test bit 4 of *#REGhl.
-  $EEFB,$02 Jump to #R$EF04 if #REGa is not equal to #N$20.
+  $EEF6,$07 Jump to #R$EF04 if bit 4 of *#R$A76C is set.
   $EEFD,$02 Set bit 4 of *#REGhl.
   $EEFF,$05 Call #R$B09A to add #N$04 points to the score.
-  $EF04,$02 #REGb=#N$1C.
+  $EF04,$02 #REGb=item #N$1C: #ITEM$1C.
   $EF06,$03 Jump to #R$EDA6.
 
 c $EF09 Process: Get Torc
@@ -4599,6 +4865,7 @@ c $EF38 Process: Get Meat
 @ $EF38 label=Process_GetMeat
   $EF38,$06 Call #R$AEF7 with #R$E396.
   $EF3E,$05 Jump to #R$EDB2 if #REGa is not equal to #N$3C.
+N $EF43 Print "#STR$D245,$08($b==$FF)".
   $EF43,$03 #REGhl=#R$D245.
   $EF46,$03 Jump to #R$ED6D.
 
@@ -4606,6 +4873,7 @@ c $EF49 Process: Get Amulet
 @ $EF49 label=Process_GetAmulet
   $EF49,$06 Call #R$AEF7 with #R$E3A6.
   $EF4F,$05 Jump to #R$EDB2 if #REGa is not equal to #N$49.
+N $EF54 Print "#STR$D26B,$08($b==$FF)".
   $EF54,$03 #REGhl=#R$D26B.
   $EF57,$03 Jump to #R$ED6D.
 
@@ -4614,22 +4882,19 @@ c $EF5A Process: Get Rope
   $EF5A,$06 Call #R$AEF7 with #R$E3B0.
   $EF60,$05 Jump to #R$EDED if #REGa is not equal to #N$51.
   $EF65,$03 Call #R$ED75.
-  $EF68,$05 Test bit 2 of *#R$A76C.
-  $EF6D,$03 Jump to #R$EDA6 if #REGa is not equal to #N$51.
-  $EF70,$02 Set bit 2 of *#REGhl.
+  $EF68,$08 Jump to #R$EDA6 if bit 2 of *#R$A76C is set.
+  $EF70,$02 Set bit 2 of *#R$A76C.
   $EF72,$05 Call #R$B09A to add #N$04 points to the score.
   $EF77,$02 #REGb=#N$51.
   $EF79,$03 Jump to #R$EDA6.
 
 c $EF7C Process: Get Skull
 @ $EF7C label=Process_GetSkull
-  $EF7C,$02 #REGa=#N$3B.
-  $EF7E,$03 Jump to #R$EDB2.
+  $EF7C,$05 Jump to #R$EDB2 with item #N$3B: #ITEM$3B.
 
 c $EF81 Process: Get Shield
 @ $EF81 label=Process_GetShield
-  $EF81,$02 #REGa=#N$56.
-  $EF83,$03 Jump to #R$EDB2.
+  $EF81,$05 Jump to #R$EDB2 with item #N$56: #ITEM$56.
 
 c $EF86 Process: Get Ladder
 @ $EF86 label=Process_GetLadder
@@ -4660,20 +4925,19 @@ c $EFAD Process: Get Cloak
 
 c $EFCB Process: Get Silver
 @ $EFCB label=Process_GetSilver
-  $EFCB,$02 #REGa=#N$65.
-  $EFCD,$03 Jump to #R$EDB2.
+  $EFCB,$05 Jump to #R$EDB2 with item #N$65: #ITEM$65.
 
 c $EFD0
-  $EFD0,$03 #REGhl=#R$E3A6.
-  $EFD3,$03 Call #R$AEF7.
-  $EFD6,$02 Compare #REGa with #N$49.
-  $EFD8,$03 Jump to #R$EF54 if #REGa is equal to #N$49.
+  $EFD0,$06 Call #R$AEF7 with #R$E3A6.
+  $EFD6,$05 Jump to #R$EF54 if #REGa is equal to #N$49.
   $EFDB,$03 Call #R$ED75.
+N $EFDE Print "#STR$D2F4,$08($b==$FF)".
   $EFDE,$03 #REGhl=#R$D2F4.
   $EFE1,$03 Jump to #R$ED6D.
-  $EFE4,$02 #REGa=#N$62.
-  $EFE6,$03 Call #R$AE6B.
+
+  $EFE4,$05 Call #R$AE6B with item #N$62: #ITEM$62.
   $EFE9,$03 Jump to #R$EFAD if #REGa is equal to #N$62.
+N $EFEC Print "#STR$D308,$08($b==$FF)".
   $EFEC,$03 #REGhl=#R$D308.
   $EFEF,$03 Jump to #R$ED6D.
 
@@ -4697,8 +4961,8 @@ c $F006 Process: Drop Torc
 @ $F006 label=Process_DropTorc
   $F006,$06 Call #R$AEF7 with #R$E366.
   $F00C,$05 Jump to #R$EDB8 if #REGa is not equal to #N$6A.
-  $F011,$03 #REGbc=#N$6A69.
-  $F014,$03 Call #R$AF1E.
+  $F011,$06 Call #R$AF1E to transform item #N$6A (#ITEM$6A) into item #N$69
+. (#ITEM$69).
   $F017,$02 #REGa=#N$69.
   $F019,$03 Jump to #R$EDB8.
 
@@ -4706,8 +4970,8 @@ c $F01C Process: Drop Helmet
 @ $F01C label=Process_DropHelmet
   $F01C,$06 Call #R$AEF7 with #R$E36B.
   $F022,$05 Jump to #R$EDB8 if #REGa is not equal to #N$20.
-  $F027,$03 #REGbc=#N$201F.
-  $F02A,$03 Call #R$AF1E.
+  $F027,$06 Call #R$AF1E to transform item #N$20 (#ITEM$20) into item #N$1F
+. (#ITEM$1F).
   $F02D,$02 #REGa=#N$1F.
   $F02F,$03 Jump to #R$EDB8.
 
@@ -4776,8 +5040,8 @@ c $F091 Process: Drop Cloak
 @ $F091 label=Process_DropCloak
   $F091,$06 Call #R$AEF7 with #R$E3DD.
   $F097,$05 Jump to #R$EDB8 if #REGa is not equal to #N$6D.
-  $F09C,$03 #REGbc=#R$6D64.
-  $F09F,$03 Call #R$AF1E.
+  $F09C,$06 Call #R$AF1E to transform item #N$6D (#ITEM$6D) into item #N$64
+. (#ITEM$64).
   $F0A2,$02 #REGa=#N$64.
   $F0A4,$03 Jump to #R$EDB8.
 
@@ -4887,8 +5151,8 @@ c $F179
   $F193,$03 Call #R$AEE0.
   $F196,$03 #REGhl=#R$A787.
   $F199,$02 Reset bit 0 of *#REGhl.
-  $F19B,$03 #REGbc=#N$494B.
-  $F19E,$03 Call #R$AF1E.
+  $F19B,$06 Call #R$AF1E to transform item #N$49 (#ITEM$49) into item #N$4B
+. (#ITEM$4B).
   $F1A1,$05 Call #R$B09A to add #N$04 points to the score.
   $F1A6,$03 #REGhl=#R$D640.
   $F1A9,$03 Jump to #R$ED6D.
@@ -4923,22 +5187,26 @@ c $F1DF
   $F1E8,$01 #REGa=#REGb.
   $F1E9,$02 Compare #REGa with #N$59.
   $F1EB,$02 Jump to #R$F1F8 if #REGa is not equal to #N$59.
-  $F1ED,$03 #REGbc=#N$5958.
-  $F1F0,$03 Call #R$AF1E.
+  $F1ED,$06 Call #R$AF1E to transform item #N$59 (#ITEM$59) into item #N$58
+. (#ITEM$58).
   $F1F3,$02 #REGb=#N$39.
   $F1F5,$03 Jump to #R$EDA6.
+
   $F1F8,$03 #REGhl=#R$D51A.
   $F1FB,$03 Jump to #R$ED6D.
+
   $F1FE,$03 #REGhl=#R$E36B.
   $F201,$03 Call #R$AEF7.
   $F204,$02 Compare #REGa with #N$20.
   $F206,$03 Jump to #R$F17B if #REGa is not equal to #N$20.
-  $F209,$03 #REGbc=#N$201F.
-  $F20C,$03 Call #R$AF1E.
+  $F209,$06 Call #R$AF1E to transform item #N$20 (#ITEM$20) into item #N$1F
+. (#ITEM$1F).
   $F20F,$02 #REGa=#N$1F.
   $F211,$03 Jump to #R$F17B.
+
   $F214,$02 #REGa=#N$38.
   $F216,$03 Jump to #R$F17B.
+
   $F219,$02 #REGa=#N$56.
   $F21B,$03 Jump to #R$F17B.
   $F21E,$02 #REGa=#N$23.
@@ -4947,12 +5215,14 @@ c $F1DF
   $F226,$03 Call #R$AEF7.
   $F229,$02 Compare #REGa with #N$20.
   $F22B,$03 Jump to #R$F128 if #REGa is not equal to #N$20.
-  $F22E,$03 #REGbc=#N$201F.
-  $F231,$03 Call #R$AF1E.
+  $F22E,$06 Call #R$AF1E to transform item #N$20 (#ITEM$20) into item #N$1F
+. (#ITEM$1F).
   $F234,$02 #REGa=#N$1F.
   $F236,$03 Jump to #R$F128.
+
   $F239,$02 #REGa=#N$65.
   $F23B,$03 Jump to #R$F128.
+
   $F23E,$02 #REGa=#N$45.
   $F240,$03 Call #R$AE6B.
   $F243,$03 Jump to #R$EE05 if #REGa is equal to #N$45.
@@ -4974,8 +5244,43 @@ c $F1DF
   $F269,$03 Jump to #R$ED6D.
 
 c $F26C
+  $F26C,$06 Call #R$AEF7 with #R$E3B6.
+  $F272,$05 Jump to #R$EE35 if #REGa is equal to #N$54.
+  $F277,$04 Jump to #R$F285 if #REGa is not equal to #N$52.
+  $F27B,$03 #REGhl=#R$E9B2.
+  $F27E,$01 Exchange the *#REGsp with the #REGhl register.
+  $F27F,$03 #REGhl=#R$D778.
+  $F282,$03 Jump to #R$ED6D.
+
+  $F285,$03 #REGbc=#N$5354.
+  $F288,$03 Call #R$AF1E.
+  $F28B,$02 #REGa=#N$51.
+  $F28D,$03 Call #R$AEE7.
+  $F290,$03 Jump to #R$EDF3.
+
 c $F293
+  $F293,$06 Call #R$AEF7 with #R$E341.
+  $F299,$04 Jump to #R$F2B0 if #REGa is equal to #N$0B.
+  $F29D,$05 Jump to #R$EE3B if #REGa is not equal to #N$55.
+  $F2A2,$03 #REGbc=#N$550C.
+  $F2A5,$03 Call #R$AF1E.
+  $F2A8,$02 #REGa=#N$51.
+  $F2AA,$03 Call #R$AEE7.
+  $F2AD,$03 Jump to #R$EDF3.
+
+  $F2B0,$03 #REGhl=#R$E9B2.
+  $F2B3,$01 Exchange the *#REGsp with the #REGhl register.
+  $F2B4,$03 #REGhl=#R$D7B6.
+  $F2B7,$03 Jump to #R$ED6D.
+
 c $F2BA
+  $F2BA,$06 Call #R$AEF7 with #R$E353.
+  $F2C0,$05 Jump to #R$EDF9 if #REGa is equal to #N$26.
+  $F2C5,$03 Call #R$AEE0.
+  $F2C8,$03 #REGhl=#R$D7F9.
+  $F2CB,$03 Call #R$A592.
+  $F2CE,$03 #REGhl=#R$D8D5.
+  $F2D1,$03 Jump to #R$ED71.
 
 c $F2D4
   $F2D4,$03 #REGhl=#R$E3B0.
@@ -4985,19 +5290,20 @@ c $F2D4
   $F2E4,$05 Jump to #R$F293 if #REGa is equal to #N$55.
   $F2E9,$03 Jump to #R$F26C.
 
-c $F2EC Action: Drink
-@ $F2EC label=Action_Drink
-  $F2EC,$03 #REGa=*#R$A7C3.
-  $F2EF,$04 Jump to #R$F2F9 if #REGa is not equal to room #N$2A: #ROOM$2A.
+c $F2EC Process: Drink
+@ $F2EC label=Process_Drink
+  $F2EC,$03 Load *#R$A7C3 into #REGa.
+  $F2EF,$04 Jump to #R$F2F9 if the current room is not room #N$2A: #ROOM$2A.
 N $F2F3 Print "#STR$D8E7,$08($b==$FF)".
   $F2F3,$03 #REGhl=#R$D8E7.
   $F2F6,$03 Jump to #R$ED6D.
 
 N $F2F9 Print "#STR$D8FD,$08($b==$FF)".
+@ $F2F9 label=Drink_SaltWater
   $F2F9,$03 #REGhl=#R$D8FD.
   $F2FC,$03 Jump to #R$ED6D.
 
-c $F2FF Action:
+c $F2FF Process:
   $F2FF,$03 Load *#R$A7C3 into #REGa.
   $F302,$05 Jump to #R$EE0B if the player is in room #N$0C: #ROOM$0C.
   $F307,$05 Jump to #R$EE0B if the player is in room #N$15: #ROOM$15.
@@ -5292,8 +5598,8 @@ c $F544
   $F554,$02 #REGa=#N$51.
   $F556,$03 Call #R$AE6B.
   $F559,$03 Jump to #R$EDDB if #REGa is not equal to #N$51.
-  $F55C,$03 #REGbc=#N$0A0B.
-  $F55F,$03 Call #R$AF1E.
+  $F55C,$06 Call #R$AF1E to transform item #N$0A (#ITEM$0A) into item #N$0B
+. (#ITEM$0B).
   $F562,$05 Call #R$B09A to add #N$04 points to the score.
   $F567,$02 #REGa=#N$51.
   $F569,$03 Call #R$AEE0.
@@ -5333,8 +5639,8 @@ c $F544
   $F5C8,$03 Call #R$EDD0.
   $F5CB,$01 #REGa=#REGe.
   $F5CC,$03 Call #R$AEE0.
-  $F5CF,$03 #REGbc=#N$5859.
-  $F5D2,$03 Call #R$AF1E.
+  $F5CF,$06 Call #R$AF1E to transform item #N$58 (#ITEM$58) into item #N$59
+. (#ITEM$59).
   $F5D5,$03 #REGhl=#R$A790.
   $F5D8,$01 Decrease *#REGhl by one.
   $F5D9,$03 #REGhl=#R$A76D.
@@ -5402,19 +5708,19 @@ c $F620
   $F667,$03 Call #R$AEE0.
   $F66A,$02 #REGa=#N$08.
   $F66C,$03 Call #R$AEE0.
-  $F66F,$03 #REGbc=#N$070A.
-  $F672,$03 Call #R$AF1E.
+  $F66F,$06 Call #R$AF1E to transform item #N$07 (#ITEM$07) into item #N$0A
+. (#ITEM$0A).
   $F675,$03 #REGhl=#R$DCFE.
   $F678,$03 Jump to #R$ED6D.
 
   $F67B,$04 Jump to #R$F68B if #REGa is not equal to #N$0A.
-  $F67F,$03 #REGbc=#N$0A0C.
-  $F682,$03 Call #R$AF1E.
+  $F67F,$06 Call #R$AF1E to transform item #N$0A (#ITEM$0A) into item #N$0C
+. (#ITEM$0C).
   $F685,$03 #REGhl=#R$DD4A.
   $F688,$03 Jump to #R$ED6D.
 
-  $F68B,$03 #REGbc=#N$0B55.
-  $F68E,$03 Call #R$AF1E.
+  $F68B,$06 Call #R$AF1E to transform item #N$0B (#ITEM$0B) into item #N$55
+. (#ITEM$55).
   $F691,$03 #REGhl=#R$A787.
   $F694,$02 Reset bit 0 of *#REGhl.
   $F696,$03 Call #R$F685.
@@ -5456,8 +5762,8 @@ c $F620
   $F6EE,$03 #REGhl=#R$E392.
   $F6F1,$03 Call #R$AEF7.
   $F6F4,$03 Call #R$EDD0.
-  $F6F7,$03 #REGbc=#N$1326.
-  $F6FA,$03 Call #R$AF1E.
+  $F6F7,$06 Call #R$AF1E to transform item #N$13 (#ITEM$13) into item #N$26
+. (#ITEM$26).
   $F6FD,$03 #REGhl=#R$DDDF.
   $F700,$03 Jump to #R$ED6D.
 
@@ -5491,8 +5797,8 @@ c $F620
   $F746,$03 Call #R$AEDA.
   $F749,$03 #REGhl=#R$DE57.
   $F74C,$03 Jump to #R$F703 if #REGa is not equal to #N$56.
-  $F74F,$03 #REGbc=#N$4445.
-  $F752,$03 Call #R$AF1E.
+  $F74F,$06 Call #R$AF1E to transform item #N$44 (#ITEM$44) into item #N$45
+. (#ITEM$45).
   $F755,$05 Write #N$2C to *#R$E84D.
   $F75A,$05 Write #N$35 to *#R$E84E.
   $F75F,$05 Call #R$B09A to add #N$04 points to the score.
@@ -5512,16 +5818,16 @@ c $F620
   $F781,$03 Call #R$AE6B.
   $F784,$03 Jump to #R$EE0B if #REGa is equal to #N$50.
   $F787,$03 Call #R$F62B.
-  $F78A,$03 #REGbc=#N$4F50.
-  $F78D,$03 Call #R$AF1E.
+  $F78A,$06 Call #R$AF1E to transform item #N$4F (#ITEM$4F) into item #N$50
+. (#ITEM$50).
   $F790,$03 Jump to #R$F764.
 
   $F793,$02 #REGa=#N$52.
   $F795,$03 Call #R$AE6B.
   $F798,$03 Jump to #R$EE0B if #REGa is not equal to #N$52.
   $F79B,$03 Call #R$F62B.
-  $F79E,$03 #REGbc=#N$5253.
-  $F7A1,$03 Call #R$AF1E.
+  $F79E,$06 Call #R$AF1E to transform item #N$52 (#ITEM$52) into item #N$53
+. (#ITEM$53).
   $F7A4,$05 Call #R$B09A to add #N$04 points to the score.
   $F7A9,$03 Jump to #R$F764.
 
@@ -5635,7 +5941,7 @@ W $F87D,$02 Action routine #N($01+(#PC-$F87D)/$02).
 L $F87D,$02,$09,$02
 
 g $F88F Data: Item Group "Body"
-@ $F88F label=Data_ItemGroup_Body
+@ $F88F label=Data_ItemGroup_Body_Duplicate
 B $F88F,$01 #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC))).
 L $F88F,$01,$03,$02
 
@@ -5823,7 +6129,8 @@ L $F9F1,$02,$0E
 W $FA0D,$02
 L $FA0D,$02,$0E
 
-c $FA29
+c $FA29 Action: Kill/ Attack/ Hit/ Strike
+@ $FA29 label=Action_Kill
   $FA29,$03 Call #R$AF7B.
   $FA2C,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -5841,14 +6148,20 @@ W $FA46,$02
 L $FA46,$02,$09
 W $FA58,$02
 L $FA58,$02,$09
-c $FA6A
-W $FA7D,$02
-L $FA7D,$02,$05
-W $FA87,$02
-L $FA87,$02,$05
 
-c $FA91 Parse Verb: Drink
-@ $FA91 label=ParseVerb_Drink
+c $FA6A Action: Free
+@ $FA6A label=Action_Free
+N $FA7D The token table for the action "free":
+@ $FA7D label=Table_ActionFree_TokenGroup
+W $FA7D,$02 Token group #N($01+(#PC-$FA7D)/$02).
+L $FA7D,$02,$05,$02
+N $FA87 The actions table for "free":
+@ $FA87 label=Table_ActionsFree
+W $FA87,$02 Action routine #N($01+(#PC-$FA87)/$02).
+L $FA87,$02,$05,$02
+
+c $FA91 Action: Drink
+@ $FA91 label=Action_Drink
   $FA91,$03 Call #R$AF7B.
   $FA94,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -5861,12 +6174,15 @@ N $FA95 Print "#STR$A9D6,$08($b==$FF)".
   $FAA3,$03 Call #R$B0DE.
 N $FAA6 Print "#STR$A9EC,$08($b==$FF)".
   $FAA6,$03 Jump to #R$EDED.
+N $FAA9 The token table for the action "drink":
 @ $FAA9 label=Table_ActionDrink_TokenGroup
-W $FAA9,$02
+W $FAA9,$02 Token group #N($01+(#PC-$FAA9)/$02).
+N $FAAB The actions table for "drink":
 @ $FAAB label=Table_ActionsDrink
-W $FAAB,$02
+W $FAAB,$02 Action routine #N($01+(#PC-$FAAB)/$02).
 
-c $FAAD
+c $FAAD Action: Jump
+@ $FAAD label=Action_Jump
   $FAAD,$03 Call #R$AFB7.
   $FAB0,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -5883,7 +6199,8 @@ L $FAC5,$02,$06
 W $FAD1,$02
 L $FAD1,$02,$06
 
-c $FADD
+c $FADD Action: Climb
+@ $FADD label=Action_Climb
   $FADD,$03 Call #R$AFB7.
   $FAE0,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -5987,11 +6304,13 @@ N $FBDA The actions table for "eat":
 W $FBDA,$02 Action routine #N($01+(#PC-$FBDA)/$02).
 L $FBDA,$02,$02,$02
 
-c $FBDE
+c $FBDE Action: Capture
+@ $FBDE label=Action_Capture
 W $FBF1,$02
 W $FBF3,$02
 
-c $FBF5
+c $FBF5 Action: Place/ Lean/ Lay
+@ $FBF5 label=Action_Place
 W $FC08,$02
 L $FC08,$02,$02
 W $FC0C,$02
@@ -6102,16 +6421,31 @@ g $FD02 Default Game State
 @ $FD02 label=DefaultGameState
 B $FD02,$0186
 
-g $FECB Jump Table: Turn-Based Events
-@ $FECB label=JumpTable_TurnBasedEvents
-W $FECB,$02 Event #N((#PC-$FECB)/$02).
-L $FECB,$02,$08
+g $FE89 Jump Table: Verbs
+@ $FE89 label=JumpTable_Verbs
+W $FE89,$02 Verb word token #N((#PC-$FE89)/$02): #TOKEN((#PC-$FE89)/$02).
+L $FE89,$02,$21
+
+g $FECB
+W $FECB,$02
+L $FECB,$02,$02
+
+g $FECF Jump Table: Scenic Events
+@ $FECF label=JumpTable_ScenicEvents
+W $FECF,$02 Event #N((#PC-$FECF)/$02).
+L $FECF,$02,$11
 
 g $FEF1 Table: Rooms With Images
 @ $FEF1 label=Table_RoomsWithImages
 D $FEF1 See #R$FEFC.
 B $FEF1,$01 Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $FEF1,$01,$0B
+
+g $FEFC Jump Table: Room Images
+@ $FEFC label=JumpTable_RoomImages
+D $FEFC See #R$FEF1.
+W $FEFC,$02 Location Slot: #N((#PC-$FEFC)/$02).
+L $FEFC,$02,$0B
 
 c $FF12 Handler: Room Images
 @ $FF12 label=DisplayImage_WoodedVale
@@ -6189,16 +6523,5 @@ N $FF4C All the image routines use this same routine.
   $FF4F,$05 Call #R$ACAD and use line number #N$08 to start printing.
   $FF54,$03 Call #R$A53E.
   $FF57,$01 Return.
-
-g $FE89 Jump Table: Verbs
-@ $FE89 label=JumpTable_Verbs
-W $FE89,$02 Verb word token #N((#PC-$FE89)/$02): #TOKEN((#PC-$FE89)/$02).
-L $FE89,$02,$21
-
-g $FEFC Jump Table: Room Images
-@ $FEFC label=JumpTable_RoomImages
-D $FEFC See #R$FEF1.
-W $FEFC,$02 Location Slot: #N((#PC-$FEFC)/$02).
-L $FEFC,$02,$0B
 
 i $FF58
