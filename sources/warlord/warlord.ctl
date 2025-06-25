@@ -1820,6 +1820,9 @@ N $B0D7 Print "#STR$AADF,$08($b==$FF)".
   $B0DD,$01 Return.
 
 c $B0DE
+R $B0DE HL Table of pointers which reference item groups
+R $B0DE DE Jump table of pointers which action each reference in #REGhl
+R $B0DE BC Count of the number of table items to process
   $B0DE,$03 #REGix=#REGhl (using the stack).
   $B0E1,$03 #REGl=*#REGix+#N$00.
   $B0E4,$03 #REGh=*#REGix+#N$01.
@@ -3543,7 +3546,10 @@ D $E341 See #R$E417 for usage.
 @ $E37F label=Data_ItemGroup_ShadowLikeDemons
 @ $E381 label=Data_ItemGroup_Hut
 @ $E386 label=Data_ItemGroup_Vase
+@ $E392 label=Data_ItemGroup_Sword
 @ $E3A6 label=Data_ItemGroup_Amulet
+@ $E3B0 label=Data_ItemGroup_Rope
+@ $E3C5 label=Data_ItemGroup_Ladder
 @ $E3DD label=Data_ItemGroup_Cloak
 @ $E3E7 label=Data_ItemGroup_DeepPoolOfWater_2
 @ $E3F4 label=Data_ItemGroup_Chariot
@@ -4159,6 +4165,7 @@ N $ECB1 The player doesn't have #ITEM$1F in their inventory, but do they have
 . #ITEM$20 instead?
   $ECB1,$05 Call #R$AEDA with item #N$20: #ITEM$20.
   $ECB6,$01 Return if the player doesn't have #ITEM$20 in their inventory.
+N $ECB7 Change the warrior state!
   $ECB7,$06 Call #R$AF1E to transform item #N$27 (#ITEM$27) into item #N$28
 . (#ITEM$28).
   $ECBD,$01 Return.
@@ -4290,6 +4297,7 @@ N $EDA0 Print "#STR$AA21,$08($b==$FF)".
   $EDA0,$03 #REGhl=#R$AA21.
   $EDA3,$03 Jump to #R$ED6D.
 
+c $EDA6
   $EDA6,$02 #REGc=#N$01.
   $EDA8,$03 Call #R$AF08.
 
@@ -4297,10 +4305,11 @@ N $EDA0 Print "#STR$AA21,$08($b==$FF)".
 N $EDAF Print "#STR$A9F7,$08($b==$FF)".
   $EDAF,$03 Jump to #R$EDF3.
 
+c $EDB2
   $EDB2,$03 Call #R$ED75.
   $EDB5,$03 Jump to #R$EDA6.
 
-
+c $EDB8
   $EDB8,$03 Call #R$AEDA.
 N $EDBB Print "#STR$AA9B,$08($b==$FF)".
   $EDBB,$03 #REGhl=#R$AA9B.
@@ -4401,8 +4410,8 @@ N $EE23 Print "#STR$D231,$08($b==$FF)".
   $EE23,$03 #REGhl=#R$D231.
   $EE26,$03 Jump to #R$ED6D.
 
-c $EE29 Response: "There Is A Fissure In One Side"
-@ $EE29 label=Response_ThereIsAFissureInOneSide
+c $EE29 Process: Examine Monolith
+@ $EE29 label=Process_ExamineMonolith
 N $EE29 Print "#STR$D05D,$08($b==$FF)".
   $EE29,$03 #REGhl=#R$D05D.
   $EE2C,$03 Jump to #R$ED6D.
@@ -4443,85 +4452,108 @@ c $EE53 Response: "You See Nothing Special"
   $EE53,$03 #REGhl=#R$CF40.
   $EE56,$03 Jump to #R$ED6D.
 
-c $EE59
-  $EE59,$02 #REGa=#N$1C.
-  $EE5B,$03 Call #R$EDD0.
+c $EE59 Process: Examine Urn
+@ $EE59 label=Process_ExamineUrn
+N $EE59 The player wants to examine the urn but is it in their inventory?
+  $EE59,$05 Call #R$EDD0 with item #N$1C: #ITEM$1C.
 N $EE5E Print "#STR$CF79,$08($b==$FF)".
   $EE5E,$03 #REGhl=#R$CF79.
   $EE61,$03 Jump to #R$ED6D.
 
-c $EE64
-  $EE64,$03 #REGhl=#R$E36B.
-  $EE67,$03 Call #R$AEF7.
+c $EE64 Process: Examine Helmet
+@ $EE64 label=Process_ExamineHelmet
+N $EE64 Are any of the variations of the helmet in the current room/ players
+. inventory?
+  $EE64,$06 Call #R$AEF7 with #R$E36B.
+N $EE6A The player wants to examine the helmet but is it in their inventory?
   $EE6A,$03 Call #R$EDD0.
 N $EE6D Print "#STR$D03C,$08($b==$FF)".
   $EE6D,$03 #REGhl=#R$D03C.
   $EE70,$03 Jump to #R$ED6D.
 
-c $EE73
-  $EE73,$03 #REGhl=#R$E392.
-  $EE76,$03 Call #R$AEF7.
+c $EE73 Process: Examine Sword
+@ $EE73 label=Process_ExamineSword
+N $EE73 Are any of the variations of the sword in the current room/ players
+. inventory?
+  $EE73,$06 Call #R$AEF7 with #R$E392.
+N $EE79 The player wants to examine the sword but is it in their inventory?
   $EE79,$03 Call #R$EDD0.
-  $EE7C,$05 Jump to #R$EE87 if #REGe is not equal to #N$38.
+N $EE7C Restore the original item ID to check which item was found in the item
+. group.
+  $EE7C,$05 Jump to #R$EE87 if the original requested item ID is not equal to
+. item #N$38: #ITEM$38.
 N $EE81 Print "#STR$D07D,$08($b==$FF)".
   $EE81,$03 #REGhl=#R$D07D.
   $EE84,$03 Jump to #R$ED6D.
-
-c $EE87
+@ $EE87 label=ExamineSword_NotHeld
 N $EE87 Print "#STR$D0F8,$08($b==$FF)"
   $EE87,$03 #REGhl=#R$D0F8.
   $EE8A,$03 Jump to #R$ED6D.
 
-c $EE8D
-  $EE8D,$03 #REGhl=#R$E3A6.
-  $EE90,$03 Call #R$AEF7.
+c $EE8D Process: Examine Amulet
+@ $EE8D label=Process_ExamineAmulet
+N $EE8D Are any of the variations of the amulet in the current room/ players
+. inventory?
+  $EE8D,$06 Call #R$AEF7 with #R$E3A6.
+N $EE93 The player wants to examine the amulet but is it in their inventory?
   $EE93,$03 Call #R$EDD0.
 N $EE96 Print "#STR$D114,$08($b==$FF)"
   $EE96,$03 #REGhl=#R$D114.
   $EE99,$03 Jump to #R$ED6D.
 
-c $EE9C
-  $EE9C,$02 #REGa=#N$61.
-  $EE9E,$03 Call #R$EDD0.
+c $EE9C Process: Examine Staff
+@ $EE9C label=Process_ExamineStaff
+  $EE9C,$05 Call #R$EDD0 with item #N$61: #ITEM$61.
+N $EEA1 Print "#STR$D188,$08($b==$FF)"
   $EEA1,$03 #REGhl=#R$D188.
   $EEA4,$03 Jump to #R$ED6D.
 
-c $EEA7
-  $EEA7,$03 #REGhl=#R$F88F.
-  $EEAA,$03 Call #R$AEF7.
-  $EEAD,$03 Jump to #R$EE53 if #REGa is not equal to #N$61.
+c $EEA7 Process: Examine Body
+@ $EEA7 label=Process_ExamineBody
+N $EEA7 Are any of the variations of the body in the current room/ players
+. inventory?
+  $EEA7,$06 Call #R$AEF7 with #R$F88F.
+
+N $EEAD Print "#STR$CF40,$08($b==$FF)" if the body is not present in the
+. current room.
+  $EEAD,$03 Jump to #R$EE53 if the body is not present in the current room.
+N $EEB0 Print "#STR$D1B3,$08($b==$FF)"
   $EEB0,$03 #REGhl=#R$D1B3.
   $EEB3,$03 Jump to #R$ED6D.
 
-c $EEB6
-  $EEB6,$03 #REGhl=#R$E366.
-  $EEB9,$03 Call #R$AEF7.
+c $EEB6 Process: Examine Torc
+@ $EEB6 label=Process_ExamineTorc
+N $EEB6 Are any of the variations of the torc in the current room/ players
+. inventory?
+  $EEB6,$06 Call #R$AEF7 with #R$E366.
+N $EEBC The player wants to examine the torc but is it in their inventory?
   $EEBC,$03 Call #R$EDD0.
+N $EEBF Print "#STR$D1FF,$08($b==$FF)"
   $EEBF,$03 #REGhl=#R$D1FF.
   $EEC2,$03 Jump to #R$ED6D.
 
-c $EEC5
-  $EEC5,$02 #REGa=#N$19.
-  $EEC7,$03 Jump to #R$EDB2.
+c $EEC5 Process: Get Salt
+@ $EEC5 label=Process_GetSalt
+  $EEC5,$05 Jump to #R$EDB2 with item #N$19: #ITEM$19.
 
-c $EECA
-  $EECA,$02 #REGa=#N$1A.
-  $EECC,$03 Jump to #R$EDB2.
+c $EECA Process: Get Pot
+@ $EECA label=Process_GetPot
+  $EECA,$05 Jump to #R$EDB2 with item #N$1A: #ITEM$1A.
 
-c $EECF
-  $EECF,$02 #REGa=#N$1B.
+c $EECF Process: Get Acorns
+@ $EECF label=Process_GetAcorns
+  $EECF,$02 #REGa=item #N$1B: #ITEM$1B.
   $EED1,$03 Call #R$ED75.
-  $EED4,$03 #REGhl=#R$A76D.
-  $EED7,$02 Test bit 3 of *#REGhl.
-  $EED9,$02 Jump to #R$EEE4 if #REGa is not equal to #N$1B.
-  $EEDB,$02 Set bit 3 of *#REGhl.
-  $EEDD,$02 #REGb=#N$1D.
-  $EEDF,$02 #REGc=#N$13.
+  $EED4,$07 Jump to #R$EEE4 if bit 3 of *#R$A76D is set.
+  $EEDB,$02 Set bit 3 of *#R$A76D.
+  $EEDD,$02 #REGb=item #N$1D: #ITEM$1D.
+  $EEDF,$02 #REGc=item #N$13: #ITEM$13.
   $EEE1,$03 Call #R$AF08.
-  $EEE4,$02 #REGb=#N$1B.
+  $EEE4,$02 #REGb=item #N$1B: #ITEM$1B.
   $EEE6,$03 Jump to #R$EDA6.
 
-c $EEE9
+c $EEE9 Process: Get Urn
+@ $EEE9 label=Process_GetUrn
   $EEE9,$02 #REGa=#N$1C.
   $EEEB,$03 Call #R$ED75.
   $EEEE,$02 #REGa=#N$20.
@@ -4534,52 +4566,74 @@ c $EEE9
   $EEFF,$05 Call #R$B09A to add #N$04 points to the score.
   $EF04,$02 #REGb=#N$1C.
   $EF06,$03 Jump to #R$EDA6.
-  $EF09,$03 #REGhl=#R$E366.
-  $EF0C,$03 Call #R$AEF7.
+
+c $EF09 Process: Get Torc
+@ $EF09 label=Process_GetTorc
+  $EF09,$06 Call #R$AEF7 with #R$E366.
   $EF0F,$03 Jump to #R$EDB2.
-  $EF12,$03 #REGhl=#R$E36B.
-  $EF15,$03 Call #R$AEF7.
+
+c $EF12 Process: Get Helmet
+@ $EF12 label=Process_GetHelmet
+  $EF12,$06 Call #R$AEF7 with #R$E36B.
   $EF18,$03 Jump to #R$EDB2.
-  $EF1B,$02 #REGa=#N$22.
-  $EF1D,$03 Jump to #R$EDB2.
-  $EF20,$02 #REGa=#N$23.
-  $EF22,$03 Jump to #R$EDB2.
-  $EF25,$02 #REGa=#N$2E.
-  $EF27,$03 Jump to #R$EDB2.
-  $EF2A,$03 #REGhl=#R$E392.
-  $EF2D,$03 Call #R$AEF7.
-  $EF30,$02 Compare #REGa with #N$59.
-  $EF32,$03 Jump to #R$F1E5 if #REGa is equal to #N$59.
+
+c $EF1B Process: Get Food
+@ $EF1B label=Process_GetFood
+  $EF1B,$05 Jump to #R$EDB2 with item #N$22: #ITEM$22.
+
+c $EF20 Process: Get Iron
+@ $EF20 label=Process_GetIron
+  $EF20,$05 Jump to #R$EDB2 with item #N$23: #ITEM$23.
+
+c $EF25 Process: Get Vase
+@ $EF25 label=Process_GetVase
+  $EF25,$05 Jump to #R$EDB2 with item #N$2E: #ITEM$2E.
+
+c $EF2A Process: Get Sword
+@ $EF2A label=Process_GetSword
+  $EF2A,$06 Call #R$AEF7 with #R$E392.
+  $EF30,$05 Jump to #R$F1E5 if #REGa is equal to #N$59.
   $EF35,$03 Jump to #R$EDB2.
-  $EF38,$03 #REGhl=#R$E396.
-  $EF3B,$03 Call #R$AEF7.
-  $EF3E,$02 Compare #REGa with #N$3C.
-  $EF40,$03 Jump to #R$EDB2 if #REGa is not equal to #N$3C.
+
+c $EF38 Process: Get Meat
+@ $EF38 label=Process_GetMeat
+  $EF38,$06 Call #R$AEF7 with #R$E396.
+  $EF3E,$05 Jump to #R$EDB2 if #REGa is not equal to #N$3C.
   $EF43,$03 #REGhl=#R$D245.
   $EF46,$03 Jump to #R$ED6D.
-  $EF49,$03 #REGhl=#R$E3A6.
-  $EF4C,$03 Call #R$AEF7.
-  $EF4F,$02 Compare #REGa with #N$49.
-  $EF51,$03 Jump to #R$EDB2 if #REGa is not equal to #N$49.
+
+c $EF49 Process: Get Amulet
+@ $EF49 label=Process_GetAmulet
+  $EF49,$06 Call #R$AEF7 with #R$E3A6.
+  $EF4F,$05 Jump to #R$EDB2 if #REGa is not equal to #N$49.
   $EF54,$03 #REGhl=#R$D26B.
   $EF57,$03 Jump to #R$ED6D.
-  $EF5A,$03 #REGhl=#R$E3B0.
-  $EF5D,$03 Call #R$AEF7.
+
+c $EF5A Process: Get Rope
+@ $EF5A label=Process_GetRope
+  $EF5A,$06 Call #R$AEF7 with #R$E3B0.
   $EF60,$05 Jump to #R$EDED if #REGa is not equal to #N$51.
   $EF65,$03 Call #R$ED75.
-  $EF68,$03 #REGhl=#R$A76C.
-  $EF6B,$02 Test bit 2 of *#REGhl.
+  $EF68,$05 Test bit 2 of *#R$A76C.
   $EF6D,$03 Jump to #R$EDA6 if #REGa is not equal to #N$51.
   $EF70,$02 Set bit 2 of *#REGhl.
   $EF72,$05 Call #R$B09A to add #N$04 points to the score.
   $EF77,$02 #REGb=#N$51.
   $EF79,$03 Jump to #R$EDA6.
+
+c $EF7C Process: Get Skull
+@ $EF7C label=Process_GetSkull
   $EF7C,$02 #REGa=#N$3B.
   $EF7E,$03 Jump to #R$EDB2.
+
+c $EF81 Process: Get Shield
+@ $EF81 label=Process_GetShield
   $EF81,$02 #REGa=#N$56.
   $EF83,$03 Jump to #R$EDB2.
-  $EF86,$03 #REGhl=#R$E3C5.
-  $EF89,$03 Call #R$AEF7.
+
+c $EF86 Process: Get Ladder
+@ $EF86 label=Process_GetLadder
+  $EF86,$06 Call #R$AEF7 with #R$E3C5.
   $EF8C,$05 Jump to #R$EDB2 if #REGa is equal to #N$5A.
   $EF91,$05 Jump to #R$EDED if #REGa is not equal to #N$5E.
   $EF96,$02 #REGa=#N$5A.
@@ -4593,18 +4647,23 @@ c $EEE9
   $EFA9,$03 Jump to #R$EDA6.
   $EFAC,$01 Return.
 
-  $EFAD,$03 #REGhl=#R$E3DD.
-  $EFB0,$03 Call #R$AEF7.
-  $EFB3,$02 Compare #REGa with #N$64.
-  $EFB5,$03 Jump to #R$EDB2 if #REGa is equal to #N$64.
+c $EFAD Process: Get Cloak
+@ $EFAD label=Process_GetCloak
+  $EFAD,$06 Call #R$AEF7 with #R$E3DD.
+  $EFB3,$05 Jump to #R$EDB2 if #REGa is equal to #N$64.
   $EFB8,$03 Call #R$ED75.
-  $EFBB,$03 #REGbc=#N$6263.
-  $EFBE,$03 Call #R$AF1E.
+  $EFBB,$06 Call #R$AF1E to transform item #N$62 (#ITEM$62) into item #N$63
+. (#ITEM$63).
   $EFC1,$05 Call #R$B09A to add #N$04 points to the score.
   $EFC6,$02 #REGb=#N$64.
   $EFC8,$03 Jump to #R$EDA6.
+
+c $EFCB Process: Get Silver
+@ $EFCB label=Process_GetSilver
   $EFCB,$02 #REGa=#N$65.
   $EFCD,$03 Jump to #R$EDB2.
+
+c $EFD0
   $EFD0,$03 #REGhl=#R$E3A6.
   $EFD3,$03 Call #R$AEF7.
   $EFD6,$02 Compare #REGa with #N$49.
@@ -4617,59 +4676,95 @@ c $EEE9
   $EFE9,$03 Jump to #R$EFAD if #REGa is equal to #N$62.
   $EFEC,$03 #REGhl=#R$D308.
   $EFEF,$03 Jump to #R$ED6D.
-  $EFF2,$02 #REGa=#N$19.
-  $EFF4,$03 Jump to #R$EDB8.
-  $EFF7,$02 #REGa=#N$1A.
-  $EFF9,$03 Jump to #R$EDB8.
-  $EFFC,$02 #REGa=#N$1B.
-  $EFFE,$03 Jump to #R$EDB8.
-  $F001,$02 #REGa=#N$1C.
-  $F003,$03 Jump to #R$EDB8.
-  $F006,$03 #REGhl=#R$E366.
-  $F009,$03 Call #R$AEF7.
-  $F00C,$02 Compare #REGa with #N$6A.
-  $F00E,$03 Jump to #R$EDB8 if #REGa is not equal to #N$6A.
+
+c $EFF2 Process: Drop Salt
+@ $EFF2 label=Process_DropSalt
+  $EFF2,$05 Jump to #R$EDB8 with item #N$19: #ITEM$19.
+
+c $EFF7 Process: Drop Pot
+@ $EFF7 label=Process_DropPot
+  $EFF7,$05 Jump to #R$EDB8 with item #N$1A: #ITEM$1A.
+
+c $EFFC Process: Drop Acorns
+@ $EFFC label=Process_DropAcorns
+  $EFFC,$05 Jump to #R$EDB8 with item #N$1B: #ITEM$1B.
+
+c $F001 Process: Drop Urn
+@ $F001 label=Process_DropUrn
+  $F001,$05 Jump to #R$EDB8 with item #N$1C: #ITEM$1C.
+
+c $F006 Process: Drop Torc
+@ $F006 label=Process_DropTorc
+  $F006,$06 Call #R$AEF7 with #R$E366.
+  $F00C,$05 Jump to #R$EDB8 if #REGa is not equal to #N$6A.
   $F011,$03 #REGbc=#N$6A69.
   $F014,$03 Call #R$AF1E.
   $F017,$02 #REGa=#N$69.
   $F019,$03 Jump to #R$EDB8.
-  $F01C,$03 #REGhl=#R$E36B.
-  $F01F,$03 Call #R$AEF7.
-  $F022,$02 Compare #REGa with #N$20.
-  $F024,$03 Jump to #R$EDB8 if #REGa is not equal to #N$20.
-  $F027,$03 #REGbc=#N($201F,$04,$04).
+
+c $F01C Process: Drop Helmet
+@ $F01C label=Process_DropHelmet
+  $F01C,$06 Call #R$AEF7 with #R$E36B.
+  $F022,$05 Jump to #R$EDB8 if #REGa is not equal to #N$20.
+  $F027,$03 #REGbc=#N$201F.
   $F02A,$03 Call #R$AF1E.
   $F02D,$02 #REGa=#N$1F.
   $F02F,$03 Jump to #R$EDB8.
-  $F032,$02 #REGa=#N$22.
-  $F034,$03 Jump to #R$EDB8.
-  $F037,$02 #REGa=#N$23.
-  $F039,$03 Jump to #R$EDB8.
-  $F03C,$02 #REGa=#N$2E.
-  $F03E,$03 Jump to #R$EDB8.
-  $F041,$03 #REGhl=#R$E392.
-  $F044,$03 Call #R$AEF7.
+
+c $F032 Process: Drop Food
+@ $F032 label=Process_DropFood
+  $F032,$05 Jump to #R$EDB8 with item #N$22: #ITEM$22.
+
+c $F037 Process: Drop Iron
+@ $F037 label=Process_DropIron
+  $F037,$05 Jump to #R$EDB8 with item #N$23: #ITEM$23.
+
+c $F03C Process: Drop Vase
+@ $F03C label=Process_DropVase
+  $F03C,$05 Jump to #R$EDB8 with item #N$2E: #ITEM$2E.
+
+c $F041 Process: Drop Sword
+@ $F041 label=Process_DropSword
+  $F041,$06 Call #R$AEF7 with #R$E392.
   $F047,$03 Jump to #R$EDB8.
-  $F04A,$02 #REGa=#N$3A.
-  $F04C,$03 Jump to #R$EDB8.
-  $F04F,$02 #REGa=#N$3C.
-  $F051,$03 Call #R$AE6B.
-  $F054,$03 Jump to #R$EDED if #REGa is not equal to #N$3C.
+
+c $F04A Process: Drop Meat
+@ $F04A label=Process_DropMeat
+  $F04A,$05 Jump to #R$EDB8 with item #N$3A: #ITEM$3A.
+
+c $F04F Process: Buy Meat From Trader
+@ $F04F label=Process_BuyMeatFromTrader
+  $F04F,$05 Call #R$AE6B with item #N$3C: #ITEM$3C.
+N $F054 Print "#STR$A9EC,$08($b==$FF)" if #ITEM$3C is not present in the
+. current room.
+  $F054,$03 Jump to #R$EDED if #ITEM$3C is not present in the current room.
+N $F057 Print "#STR$DC9D,$08($b==$FF)".
   $F057,$03 #REGhl=#R$DC9D.
   $F05A,$03 Call #R$A592.
+N $F05D Print "#STR$A9BD,$08($b==$FF)".
   $F05D,$03 Jump to #R$EDE1.
-  $F060,$03 #REGhl=#R$E3B0.
-  $F063,$03 Call #R$AEF7.
+
+c $F060 Process: Drop Rope
+@ $F060 label=Process_DropRope
+  $F060,$06 Call #R$AEF7 with #R$E3B0.
   $F066,$03 Jump to #R$EDB8.
-  $F069,$02 #REGa=#N$3B.
-  $F06B,$03 Jump to #R$EDB8.
-  $F06E,$02 #REGa=#N$56.
-  $F070,$03 Jump to #R$EDB8.
-  $F073,$03 #REGhl=#R$E3C5.
-  $F076,$03 Call #R$AEF7.
+
+c $F069 Process: Drop Skull
+@ $F069 label=Process_DropSkull
+  $F069,$05 Jump to #R$EDB8 with item #N$3B: #ITEM$3B.
+
+c $F06E Process: Drop Shield
+@ $F06E label=Process_DropShield
+  $F06E,$05 Jump to #R$EDB8 with item #N$56: #ITEM$56.
+
+c $F073 Process: Drop Ladder
+@ $F073 label=Process_DropLadder
+  $F073,$06 Call #R$AEF7 with #R$E3C5.
   $F079,$03 Jump to #R$EDB8.
-  $F07C,$02 #REGa=#N$61.
-  $F07E,$03 Call #R$EDD0.
+
+c $F07C Process: Drop Staff
+@ $F07C label=Process_DropStaff
+  $F07C,$05 Call #R$EDD0 with item #N$61: #ITEM$61.
   $F081,$02 #REGa=#N$50.
   $F083,$03 Write #REGa to *#R$E8F4.
   $F086,$03 Write #REGa to *#R$E8F6.
@@ -4677,16 +4772,20 @@ c $EEE9
   $F08C,$02 #REGa=#N$61.
   $F08E,$03 Jump to #R$EDB8.
 
-  $F091,$03 #REGhl=#R$E3DD.
-  $F094,$03 Call #R$AEF7.
-  $F097,$02 Compare #REGa with #N$6D.
-  $F099,$03 Jump to #R$EDB8 if #REGa is not equal to #N$6D.
+c $F091 Process: Drop Cloak
+@ $F091 label=Process_DropCloak
+  $F091,$06 Call #R$AEF7 with #R$E3DD.
+  $F097,$05 Jump to #R$EDB8 if #REGa is not equal to #N$6D.
   $F09C,$03 #REGbc=#R$6D64.
   $F09F,$03 Call #R$AF1E.
   $F0A2,$02 #REGa=#N$64.
   $F0A4,$03 Jump to #R$EDB8.
-  $F0A7,$02 #REGa=#N$65.
-  $F0A9,$03 Jump to #R$EDB8.
+
+c $F0A7 Process: Drop Silver
+@ $F0A7 label=Process_DropSilver
+  $F0A7,$05 Jump to #R$EDB8 with item #N$65: #ITEM$65.
+
+c $F0AC
   $F0AC,$02 #REGa=#N$61.
   $F0AE,$03 Call #R$ED75.
   $F0B1,$02 #REGa=#N$4C.
@@ -4753,18 +4852,27 @@ c $EEE9
   $F14D,$03 Write #REGa to *#R$E870.
   $F150,$03 #REGhl=#R$D531.
   $F153,$03 Jump to #R$ED6D.
-  $F156,$02 #REGa=#N$3C.
-  $F158,$03 Call #R$AE6B.
-  $F15B,$03 Jump to #R$EDED if *#REGhl is not equal to #N$3C.
-  $F15E,$02 #REGa=#N$23.
-  $F160,$03 Call #R$EDD0.
-  $F163,$03 #REGbc=#N($233A,$04,$04).
-  $F166,$03 Call #R$AF1E.
+
+c $F156 Process: Buy Meat From Trader With Iron
+@ $F156 label=Process_BuyMeatFromTraderWithIron
+  $F156,$05 Call #R$AE6B with item #N$3C: #ITEM$3C.
+N $F15B If #ITEM$3C is not present in the current room then print
+. "#STR$A9EC,$08($b==$FF)".
+  $F15B,$03 Jump to #R$EDED if #ITEM$3C is not present in the current room.
+N $F15E The trader is in the room, but is the player holding the iron?
+  $F15E,$05 Call #R$EDD0 with item #N$23: #ITEM$23.
+N $F163 The player is holding the iron and the trader is present.
+N $F163 Change the iron/ meat state!
+  $F163,$06 Call #R$AF1E to transform item #N$23 (#ITEM$23) into item #N$3A
+. (#ITEM$3A).
   $F169,$05 Call #R$B09A to add #N$04 points to the score.
-  $F16E,$02 #REGa=#N$3C.
-  $F170,$03 Call #R$AEE0.
+N $F16E The trader is no longer needed.
+  $F16E,$05 Call #R$AEE0 with item #N$3C: #ITEM$3C.
+N $F173 Print "#STR$D58F,$08($b==$FF)".
   $F173,$03 #REGhl=#R$D58F.
   $F176,$03 Jump to #R$ED6D.
+
+c $F179
   $F179,$02 #REGa=#N$23.
   $F17B,$03 Call #R$EDD0.
   $F17E,$01 #REGa=#REGe.
@@ -4779,7 +4887,7 @@ c $EEE9
   $F193,$03 Call #R$AEE0.
   $F196,$03 #REGhl=#R$A787.
   $F199,$02 Reset bit 0 of *#REGhl.
-  $F19B,$03 #REGbc=#N$494B (screen buffer location).
+  $F19B,$03 #REGbc=#N$494B.
   $F19E,$03 Call #R$AF1E.
   $F1A1,$05 Call #R$B09A to add #N$04 points to the score.
   $F1A6,$03 #REGhl=#R$D640.
@@ -4801,15 +4909,21 @@ c $EEE9
   $F1D1,$03 Jump to #R$ED71.
   $F1D4,$02 #REGa=#N$19.
   $F1D6,$03 Jump to #R$F17B.
+
+c $F1D9 Process: Examine Slab
+@ $F1D9 label=Process_ExamineSlab
+N $F1D9 Print "#STR$CE02,$08($b==$FF)".
   $F1D9,$03 #REGhl=#R$CE02.
   $F1DC,$03 Jump to #R$ED6D.
+
+c $F1DF
   $F1DF,$03 #REGhl=#R$E392.
   $F1E2,$03 Call #R$AEF7.
   $F1E5,$03 Call #R$ED75.
   $F1E8,$01 #REGa=#REGb.
   $F1E9,$02 Compare #REGa with #N$59.
   $F1EB,$02 Jump to #R$F1F8 if #REGa is not equal to #N$59.
-  $F1ED,$03 #REGbc=#N$5958 (attribute buffer location).
+  $F1ED,$03 #REGbc=#N$5958.
   $F1F0,$03 Call #R$AF1E.
   $F1F3,$02 #REGb=#N$39.
   $F1F5,$03 Jump to #R$EDA6.
@@ -4819,7 +4933,7 @@ c $EEE9
   $F201,$03 Call #R$AEF7.
   $F204,$02 Compare #REGa with #N$20.
   $F206,$03 Jump to #R$F17B if #REGa is not equal to #N$20.
-  $F209,$03 #REGbc=#N($201F,$04,$04).
+  $F209,$03 #REGbc=#N$201F.
   $F20C,$03 Call #R$AF1E.
   $F20F,$02 #REGa=#N$1F.
   $F211,$03 Jump to #R$F17B.
@@ -4833,7 +4947,7 @@ c $EEE9
   $F226,$03 Call #R$AEF7.
   $F229,$02 Compare #REGa with #N$20.
   $F22B,$03 Jump to #R$F128 if #REGa is not equal to #N$20.
-  $F22E,$03 #REGbc=#N($201F,$04,$04).
+  $F22E,$03 #REGbc=#N$201F.
   $F231,$03 Call #R$AF1E.
   $F234,$02 #REGa=#N$1F.
   $F236,$03 Jump to #R$F128.
@@ -4884,10 +4998,10 @@ N $F2F9 Print "#STR$D8FD,$08($b==$FF)".
   $F2FC,$03 Jump to #R$ED6D.
 
 c $F2FF Action:
-  $F2FF,$03 #REGa=*#R$A7C3.
-  $F302,$05 Jump to #R$EE0B if #REGa is equal to room #N$0C: #ROOM$0C.
-  $F307,$05 Jump to #R$EE0B if #REGa is equal to room #N$15: #ROOM$15.
-  $F30C,$04 Jump to #R$F314 if #REGa is not equal to room #N$05: #ROOM$05.
+  $F2FF,$03 Load *#R$A7C3 into #REGa.
+  $F302,$05 Jump to #R$EE0B if the player is in room #N$0C: #ROOM$0C.
+  $F307,$05 Jump to #R$EE0B if the player is in room #N$15: #ROOM$15.
+  $F30C,$04 Jump to #R$F314 if the player is not in room #N$05: #ROOM$05.
   $F310,$02 Load item #N$0C: #ITEM$0C into #REGa.
   $F312,$02 Jump to #R$F316.
 
@@ -4896,6 +5010,7 @@ c $F2FF Action:
   $F319,$03 Call #R$F7AC.
   $F31C,$01 Return.
 
+c $F31D
   $F31D,$02 Load #N$37: #ITEM$37 into #REGa.
   $F31F,$03 Call #R$AE6B.
   $F322,$02 Jump to #R$F32E if #REGa is not equal to #N$37.
@@ -4911,6 +5026,7 @@ N $F32E Print "#STR$D973,$08($b==$FF)".
   $F334,$03 Call #R$F7AC.
   $F337,$01 Return.
 
+c $F338
   $F338,$03 #REGhl=#R$E3E7.
   $F33B,$03 Call #R$AEF7.
   $F33E,$05 Jump to #R$F31D if #REGa is equal to #N$6C.
@@ -4922,21 +5038,24 @@ N $F32E Print "#STR$D973,$08($b==$FF)".
   $F355,$03 Call #R$EB10.
   $F358,$01 Return.
 
-  $F359,$03 #REGa=*#R$A7C3.
+c $F359
+  $F359,$03 Load *#R$A7C3 into #REGa.
   $F35C,$02 #REGb=#N$05.
-  $F35E,$04 Jump to #R$F369 if #REGa is equal to room #N$0C: #ROOM$0C.
-  $F362,$05 Jump to #R$EE2F if #REGa is not equal to room #N$15: #ROOM$15.
+  $F35E,$04 Jump to #R$F369 if the player is in room #N$0C: #ROOM$0C.
+  $F362,$05 Jump to #R$EE2F if the player is not in room #N$15: #ROOM$15.
   $F367,$02 #REGb=#N$14.
   $F369,$01 #REGa=#REGb.
   $F36A,$03 Call #R$EB10.
   $F36D,$01 Return.
 
-  $F36E,$03 #REGa=*#R$A7C3.
-  $F371,$05 Jump to #R$EDED if #REGa is equal to room #N$0D: #ROOM$0D.
-  $F376,$05 Jump to #R$F359 if #REGa is equal to room #N$0C: #ROOM$0C.
-  $F37B,$05 Jump to #R$F359 if #REGa is equal to room #N$15: #ROOM$15.
+c $F36E
+  $F36E,$03 Load *#R$A7C3 into #REGa.
+  $F371,$05 Jump to #R$EDED if the player is in room #N$0D: #ROOM$0D.
+  $F376,$05 Jump to #R$F359 if the player is in room #N$0C: #ROOM$0C.
+  $F37B,$05 Jump to #R$F359 if the player is in room #N$15: #ROOM$15.
   $F380,$03 Jump to #R$EE2F.
 
+c $F383
   $F383,$03 #REGa=*#R$A7C3.
   $F386,$05 Jump to #R$EDED if #REGa is equal to room #N$0D: #ROOM$0D.
   $F38B,$05 Jump to #R$F359 if #REGa is equal to room #N$0C: #ROOM$0C.
@@ -4945,21 +5064,25 @@ N $F395 Print "#STR$D9A3,$08($b==$FF)".
   $F395,$03 #REGhl=#R$D9A3.
   $F398,$03 Jump to #R$ED6D.
 
-c $F39B
-  $F39B,$04 #REGix=#R$A824.
-  $F39F,$03 #REGa=*#REGix+#N$01.
-  $F3A2,$03 Write #REGa to *#REGix+#N$00.
-  $F3A5,$04 Write #N$FF to *#REGix+#N$01.
+c $F39B Remove User Input Token 1
+@ $F39B label=RemoveUserInput_Token_1
+D $F39B Some commands like #R$FB89("GO") and #R$FC8D("SWIM") are just treated
+. like aliases, where the second token (the direction) is shunted down to being
+. the first token, and the second token is then just erased.
+. Hence, using "GO NORTH" is just the same as typing "NORTH".
+  $F39B,$04 Load #R$A824 into #REGix.
+  $F39F,$06 Fetch *#REGix+#N$01 (#R$A825) and write it to #R$A824.
+  $F3A5,$04 Write a termination character (#N$FF) to #R$A825.
   $F3A9,$03 Jump to #R$B05E.
 
 c $F3AC
-  $F3AC,$02 #REGa=#N$5E.
-  $F3AE,$03 Call #R$AE6B.
-  $F3B1,$03 Jump to #R$EDED if ?? is not equal to #N$5E.
-  $F3B4,$02 #REGa=#N$60.
-  $F3B6,$03 Call #R$EB10.
+  $F3AC,$05 Call #R$AE6B with item #N$5E: #ITEM$5E.
+  $F3B1,$03 Jump to #R$EDED if the item is not either in the current room or in
+. the players inventory.
+  $F3B4,$05 Call #R$EB10 with #N$60.
   $F3B9,$01 Return.
 
+c $F3BA
   $F3BA,$02 #REGa=#N$5C.
   $F3BC,$03 Call #R$AE6B.
   $F3BF,$03 Jump to #R$EDED if ?? is not equal to #N$5C.
@@ -4967,11 +5090,13 @@ c $F3AC
   $F3C4,$03 Call #R$EB10.
   $F3C7,$01 Return.
 
+c $F3C8
   $F3C8,$08 Jump to #R$EE0B if *#R$A7C3 is not equal to #N$18.
   $F3D0,$02 #REGa=#N$19.
   $F3D2,$03 Call #R$EB10.
   $F3D5,$01 Return.
 
+c $F3D6
   $F3D6,$07 Jump to #R$F3E1 if *#R$A7C3 is not equal to #N$2C.
   $F3DD,$02 #REGa=#N$24.
   $F3DF,$02 Jump to #R$F3E8.
@@ -4981,6 +5106,7 @@ c $F3AC
   $F3E8,$03 Call #R$EB10.
   $F3EB,$01 Return.
 
+c $F3EC
   $F3EC,$07 Jump to #R$F3F7 if *#R$A7C3 is not equal to #N$06.
   $F3F3,$02 #REGa=#N$05.
   $F3F5,$02 Jump to #R$F406.
@@ -4994,6 +5120,7 @@ c $F3AC
   $F406,$03 Call #R$EB10.
   $F409,$01 Return.
 
+c $F40A
   $F40A,$03 #REGhl=#R$D9CF.
   $F40D,$03 Jump to #R$ED6D.
 
@@ -5014,7 +5141,11 @@ N $F428 The player was trying to wear the torc, but is it either in the room or
   $F428,$06 Call #R$AEF7 with #R$E366.
 N $F42E The torc is present but is the player already wearing it?
   $F42E,$03 Call #R$EDD0.
-  $F431,$06 Jump to #R$EE41 if #REGe is not equal to item #N$69: #ITEM$69.
+N $F431 The torc is in the players inventory.
+N $F431 Restore the original item ID to check which item was found in the item
+. group.
+  $F431,$06 Jump to #R$EE41 if the original requested item ID is not equal to
+. item #N$69: #ITEM$69 (so the found item is #N$6A: #ITEM$6A).
 N $F437 Change the torc state!
   $F437,$06 Call #R$AF1E to transform item #N$69 (#ITEM$69) into item #N$6A
 . (#ITEM$6A).
@@ -5029,7 +5160,8 @@ N $F440 The player was trying to wear the helmet, but is it either in the
   $F440,$06 Call #R$AEF7 with #R$E36B.
 N $F446 The helmet is present but is the player already wearing it?
   $F446,$03 Call #R$EDD0.
-  $F449,$06 Jump to #R$EE41 if #REGe is not equal to item #N$1F: #ITEM$1F.
+  $F449,$06 Jump to #R$EE41 if the item found in the group is not equal to item
+. #N$1F: #ITEM$1F (so the found item is #N$20: #ITEM$20).
 N $F44F Change the helmet state!
   $F44F,$06 Call #R$AF1E to transform item #N$1F (#ITEM$1F) into item #N$20
 . (#ITEM$20).
@@ -5044,7 +5176,8 @@ N $F458 The player was trying to wear the amulet, but is it either in the room
   $F458,$06 Call #R$AEF7 with #R$E3A6.
 N $F45E The amulet is present but is the player already wearing it?
   $F45E,$03 Call #R$EDD0.
-  $F461,$06 Jump to #R$EE41 if #REGe is not equal to item #N$4B: #ITEM$4B.
+  $F461,$06 Jump to #R$EE41 if the item found in the group is not equal to item
+. #N$4B: #ITEM$4B (so the found item is #N$4C: #ITEM$4C).
 N $F467 Change the amulet state!
   $F467,$06 Call #R$AF1E to transform item #N$4B (#ITEM$4B) into item #N$4C
 . (#ITEM$4C).
@@ -5062,12 +5195,15 @@ N $F483 Print "#STR$B50E,$08($b==$FF)".
   $F483,$03 #REGhl=#R$B50E.
   $F486,$03 Jump to #R$ED6D.
 
-c $F489
+c $F489 Process: Drop Amulet
+@ $F489 label=Process_DropAmulet
   $F489,$06 Call #R$AEF7 with #R$E3A6.
   $F48F,$03 Call #R$EDD0.
   $F492,$06 Jump to #R$EDC1 if #REGe is equal to item #N$4B: #ITEM$4B.
+N $F498 Change the amulet state!
   $F498,$06 Call #R$AF1E to transform item #N$4C (#ITEM$4C) into item #N$4B
 . (#ITEM$4B).
+N $F49E Change the vale state!
   $F49E,$06 Call #R$AF1E to transform item #N$2A (#ITEM$2A) into item #N$29
 . (#ITEM$29).
   $F4A4,$04 Write #N$00 to *#R$E7D5.
@@ -5077,11 +5213,13 @@ N $F4B3 Print "#STR$B4A0,$08($b==$FF)".
   $F4B3,$03 #REGhl=#R$B4A0.
   $F4B6,$03 Jump to #R$ED6D.
 
+c $F4B9
   $F4B9,$08 Jump to #R$EDED if *#R$A7C3 is not equal to room #N$4F: #ROOM$4F.
   $F4C1,$05 Call #R$AEE0 with item #N$12: #ITEM$12.
   $F4C6,$05 Call #R$AEE0 with item #N$1C: #ITEM$1C.
   $F4CB,$05 Call #R$AEE0 with item #N$04: #ITEM$04.
   $F4D0,$05 Call #R$AEE0 with item #N$05: #ITEM$05.
+N $F4D5 Change the Fomorian tribe state!
   $F4D5,$06 Call #R$AF1E to transform item #N$0F (#ITEM$0F) into item #N$10
 . (#ITEM$10).
   $F4DB,$05 Set bit 5 of *#R$A76D.
@@ -5112,32 +5250,41 @@ N $F500 The player was trying to wear the cloak, but is it either in the room
   $F500,$06 Call #R$AEF7 with #R$E3DD.
 N $F506 The cloak is present but is the player already wearing it?
   $F506,$03 Call #R$EDD0.
-  $F509,$06 Jump to #R$EE41 if #REGe is not equal to item #N$64: #ITEM$64.
+  $F509,$06 Jump to #R$EE41 if the item found in the group is not equal to item
+. #N$64: #ITEM$64 (so the found item is #N$6D: #ITEM$6D).
 N $F50F Change the cloak state!
   $F50F,$06 Call #R$AF1E to transform item #N$64 (#ITEM$64) into item #N$6D
 . (#ITEM$6D).
 N $F515 Print "#STR$A9F7,$08($b==$FF)".
   $F515,$03 Jump to #R$EDF3.
 
-c $F518
-  $F518,$02 #REGa=#N$22.
-  $F51A,$03 Call #R$EDD0.
-  $F51D,$01 #REGa=#REGe.
-  $F51E,$03 Call #R$AEE0.
-  $F521,$03 #REGhl=#R$A790.
-  $F524,$01 Decrease *#REGhl by one.
+c $F518 Process: Eat Food
+@ $F518 label=Process_EatFood
+R $F518 E The item ID currently being acted on
+  $F518,$05 Call #R$EDD0 with item #N$22: #ITEM$22.
+N $F51D The player has the food in their inventory, so eat it!
+  $F51D,$04 Call #R$AEE0 with the item ID of the originally requsted item.
+  $F521,$04 Decrease *#R$A790 by one.
+N $F525 Print "#STR$A9F7,$08($b==$FF)".
   $F525,$03 Call #R$EDF3.
+N $F528 Print "#STR$DC1D,$08($b==$FF)".
   $F528,$03 #REGhl=#R$DC1D.
   $F52B,$03 Jump to #R$ED6D.
-  $F52E,$02 #REGa=#N$3A.
-  $F530,$03 Call #R$EDD0.
-  $F533,$01 #REGa=#REGe.
-  $F534,$03 Call #R$AEE0.
-  $F537,$03 #REGhl=#R$A790.
-  $F53A,$01 Decrease *#REGhl by one.
+
+c $F52E Process: Eat Meat
+@ $F52E label=Process_EatMeat
+R $F52E E The item ID currently being acted on
+  $F52E,$05 Call #R$EDD0 with item #N$3A: #ITEM$3A.
+N $F533 The player has the meat in their inventory, so eat it!
+  $F533,$04 Call #R$AEE0 with the item ID of the originally requsted item.
+  $F537,$04 Decrease *#R$A790 by one.
+N $F53B Print "#STR$A9F7,$08($b==$FF)".
   $F53B,$03 Call #R$EDF3.
+N $F53E Print "#STR$DC41,$08($b==$FF)".
   $F53E,$03 #REGhl=#R$DC41.
   $F541,$03 Jump to #R$ED6D.
+
+c $F544
   $F544,$03 #REGhl=#R$E341.
   $F547,$03 Call #R$AEF7.
   $F54A,$05 Jump to #R$EE0B if #REGa is equal to #N$0B.
@@ -5197,21 +5344,25 @@ c $F518
   $F5E3,$05 Call #R$B09A to add #N$04 points to the score.
   $F5E8,$03 Jump to #R$EDF3.
 
-  $F5EB,$02 #REGa=#N$3C.
-  $F5ED,$03 Call #R$AE6B.
-  $F5F0,$03 Jump to #R$EDED if *#REGhl is not equal to #N$3C.
+c $F5EB Process: Buy Meat From Trader With Salt
+@ $F5EB label=Process_BuyMeatFromTraderWithSalt
+  $F5EB,$05 Call #R$AE6B with item #N$3C: #ITEM$3C.
+N $F5F0 If #ITEM$3C is not present in the current room then print
+. "#STR$A9EC,$08($b==$FF)".
+  $F5F0,$03 Jump to #R$EDED if #ITEM$3C is not present in the current room.
+N $F5F3 Print "#STR$DCA8,$08($b==$FF)".
   $F5F3,$03 #REGhl=#R$DCA8.
   $F5F6,$03 Jump to #R$ED6D.
 
-  $F5F9,$07 Jump to #R$F604 if *#R$A7C3 is not equal to #N$43.
+c $F5F9
+  $F5F9,$07 Jump to #R$F604 if *#R$A7C3 is not equal to room #N$43: #ROOM$43.
   $F600,$02 #REGa=#N$57.
   $F602,$02 Jump to #R$F60F.
   $F604,$02 #REGa=#N$43.
-  $F606,$03 #REGhl=#R$A76D.
-  $F609,$02 Test bit 5 of *#REGhl.
-  $F60B,$02 Jump to #R$F60F if #REGa is equal to #N$43.
+  $F606,$07 Jump to #R$F60F if bit 5 of *#R$A76D is not set.
   $F60D,$02 #REGa=#N$56.
   $F60F,$01 Stash #REGaf on the stack.
+N $F610 Print "#STR$DCBD,$08($b==$FF)".
   $F610,$03 #REGhl=#R$DCBD.
   $F613,$03 Call #R$A592.
   $F616,$02 #REGb=#N$32.
@@ -5220,6 +5371,7 @@ c $F518
   $F61C,$03 Call #R$EB10.
   $F61F,$01 Return.
 
+c $F620
   $F620,$03 #REGhl=#R$A825.
   $F623,$03 #REGbc=#N($0009,$04,$04).
   $F626,$02 #REGa=#N$3C.
@@ -5382,6 +5534,7 @@ c $F518
   $F7BA,$03 #REGhl=#R$E060.
   $F7BD,$03 Jump to #R$ED6D.
 
+c $F7C0
   $F7C0,$02 #REGa=#N$46.
   $F7C2,$03 Call #R$AE6B.
   $F7C5,$02 Jump to #R$F7CD if *#REGhl is not equal to #N$46.
@@ -5393,11 +5546,14 @@ c $F518
   $F7D7,$03 Call #R$EB10.
   $F7DA,$01 Return.
 
+c $F7DB
   $F7DB,$08 Jump to #R$EE0B if *#R$A7C3 is not equal to #N$38.
   $F7E3,$02 #REGa=#N$59.
   $F7E5,$03 Call #R$EB10.
   $F7E8,$01 Return.
 
+c $F7E9 Process: Get Staff
+@ $F7E9 label=Process_GetStaff
   $F7E9,$02 #REGa=#N$61.
   $F7EB,$03 Call #R$ED75.
   $F7EE,$01 #REGa=#N$00.
@@ -5408,6 +5564,7 @@ c $F518
 
 c $F7FD
   $F7FD,$03 Call #R$AF70.
+N $F800 The "" command can only be called on its own.
   $F800,$01 Return if the carry flag is set.
   $F801,$05 Call #R$AE6B with item #N$37: #ITEM$37.
   $F806,$03 Jump to #R$EE11 if.
@@ -5457,12 +5614,30 @@ N $F84E The "SCORE" command can only be called on its own.
 
 c $F853 Action: Examine
 @ $F853 label=Action_Examine
-W $F86B,$02
-L $F86B,$02,$09
-W $F87D,$02
-L $F87D,$02,$09
-B $F88F,$01
-L $F88F,$01,$03
+  $F853,$03 Call #R$AF7B.
+  $F856,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $F857,$05 Jump to #R$EDE7 if there were more than #N$02 direct objects
+. referenced in the user input (so the command is malformed).
+  $F85C,$03 #REGhl=#R$F86B.
+  $F85F,$03 #REGde=#R$F87D.
+  $F862,$03 #REGbc=#N($0009,$04,$04).
+  $F865,$03 Call #R$B0DE.
+N $F868 Print "#STR$CF40,$08($b==$FF)".
+  $F868,$03 Jump to #R$EE53.
+N $F86B The token table for the action "examine":
+@ $F86B label=Table_ActionExamine_TokenGroup
+W $F86B,$02 Token group #N($01+(#PC-$F86B)/$02).
+L $F86B,$02,$09,$02
+N $F87D The actions table for "examine":
+@ $F87D label=Table_ActionsExamine
+W $F87D,$02 Action routine #N($01+(#PC-$F87D)/$02).
+L $F87D,$02,$09,$02
+
+g $F88F Data: Item Group "Body"
+@ $F88F label=Data_ItemGroup_Body
+B $F88F,$01 #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC))).
+L $F88F,$01,$03,$02
 
 c $F892 Action: Load
 @ $F892 label=Action_Load
@@ -5539,17 +5714,40 @@ E $F8DD Continue on to #R$F8DF.
 
 c $F8DF Move Player
 @ $F8DF label=MovePlayer
+D $F8DF The data in #R$E714 is stored in a particular order for each room:
+. #TABLE(default,centre,centre)
+. { =h Offset | =h Exit To Room }
+. { #N$00 | North }
+. { #N$01 | South }
+. { #N$02 | East }
+. { #N$03 | West }
+. { #N$04 | Up }
+. { #N$05 | Down }
+. TABLE#
+. This is how the movement works; taking the current room from the map - we add
+. a "movement value" (e.g. "East" which is #N$02) - this then points to data in
+. the table which correlates to either a room number for the exit, or #N$00 to
+. indicate there is no exit in that direction.
+R $F8DF C A movement "value" from the action
   $F8DF,$03 Call #R$AF70.
+N $F8E2 Directional commands can only be called on their own.
+N $F8E2 Other commands like #R$FB89("GO") and #R$FC8D("SWIM") are just treated
+. like aliases, where the second token (the direction) is shunted down to being
+. the first token, and the second token is then just erased: #R$F39B.
   $F8E2,$01 Return if there's any token set in #R$A825.
-  $F8E3,$02 #REGb=#N$00.
+  $F8E3,$02 Initialise #REGb with #N$00 so the movement value is now in #REGbc.
   $F8E5,$03 Call #R$AC9A.
-  $F8E8,$01 #REGhl+=#REGbc.
-  $F8E9,$01 #REGa=*#REGhl.
-  $F8EA,$04 Jump to #R$EE1D if #REGa is zero.
+N $F8E8 #REGhl now holds a pointer to the room data for the current room at
+. #R$E714.
+  $F8E8,$01 Add the movement value to #REGhl.
+  $F8E9,$01 Fetch the entry from *#REGhl and store it in #REGa.
+  $F8EA,$04 Jump to #R$EE1D if there is no exit at the requested memory
+. location.
   $F8EE,$03 Call #R$EB10.
   $F8F1,$01 Return.
 
-c $F8F2
+c $F8F2 Action: Take/ Get
+@ $F8F2 label=Action_Get
   $F8F2,$03 Call #R$AF7B.
   $F8F5,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -5561,10 +5759,14 @@ c $F8F2
   $F904,$03 Call #R$B0DE.
 N $F907 Print "#STR$A9EC,$08($b==$FF)".
   $F907,$03 Jump to #R$EDED.
-W $F90A,$02
-L $F90A,$02,$13
-W $F930,$02
-L $F930,$02,$13
+N $F90A The token table for the action "get":
+@ $F90A label=Table_ActionGet_TokenGroup
+W $F90A,$02 Token group #N($01+(#PC-$F90A)/$02).
+L $F90A,$02,$13,$02
+N $F930 The actions table for "get":
+@ $F930 label=Table_ActionsGet
+W $F930,$02 Action routine #N($01+(#PC-$F930)/$02).
+L $F930,$02,$13,$02
 
 c $F956
 W $F965,$02
@@ -5574,8 +5776,21 @@ L $F96D,$02,$04
 
 c $F975 Action: Drop
 @ $F975 label=Action_Drop
-W $F98D,$02
-L $F98D,$02,$13
+  $F975,$03 Call #R$AF7B.
+  $F978,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $F979,$05 Jump to #R$EDE7 if there were more than #N$02 direct objects
+. referenced in the user input (so the command is malformed).
+  $F97E,$03 #REGhl=#R$F90A.
+  $F981,$03 #REGde=#R$F98D.
+  $F984,$03 #REGbc=#N($0013,$04,$04).
+  $F987,$03 Call #R$B0DE.
+N $F98A Print "#STR$A9EC,$08($b==$FF)".
+  $F98A,$03 Jump to #R$EDED.
+N $F98D The actions table for "drop":
+@ $F98D label=Table_ActionsDrop
+W $F98D,$02 Action routine #N($01+(#PC-$F98D)/$02).
+L $F98D,$02,$13,$02
 
 c $F9B3 Action: Throw
 @ $F9B3 label=Action_Throw
@@ -5725,8 +5940,8 @@ N $FB7F The actions table for "wear":
 W $FB7F,$02 Action routine #N($01+(#PC-$FB7F)/$02).
 L $FB7F,$02,$05,$02
 
-c $FB89 Action: Swim
-@ $FB89 label=Action_Swim
+c $FB89 Action: Go
+@ $FB89 label=Action_Go
   $FB89,$03 Call #R$AFB7.
   $FB8C,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -5743,28 +5958,83 @@ L $FBA1,$02,$06
 W $FBAD,$02
 L $FBAD,$02,$06
 
-c $FBB9
-c $FBC3
-W $FBD6,$02
-L $FBD6,$02,$02
-W $FBDA,$02
-L $FBDA,$02,$02
+c $FBB9 Action: Swearing
+@ $FBB9 label=Action_Swearing
+  $FBB9,$03 Call #R$AF7B.
+  $FBBC,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+N $FBBD Print "#STR$DBF4,$08($b==$FF)".
+  $FBBD,$03 #REGhl=#R$DBF4.
+  $FBC0,$03 Jump to #R$ED6D.
+
+c $FBC3 Action: Eat
+@ $FBC3 label=Action_Eat
+  $FBC3,$03 Call #R$AF7B.
+  $FBC6,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $FBC7,$03 #REGhl=#R$FBD6.
+  $FBCA,$03 #REGde=#R$FBDA.
+  $FBCD,$03 #REGbc=#N($0002,$04,$04).
+  $FBD0,$03 Call #R$B0DE.
+N $FBD3 Print "#STR$DC09,$08($b==$FF)".
+  $FBD3,$03 Jump to #R$EE47.
+N $FBD6 The token table for the action "eat":
+@ $FBD6 label=Table_ActionEat_TokenGroup
+W $FBD6,$02 Token group #N($01+(#PC-$FBD6)/$02).
+L $FBD6,$02,$02,$02
+N $FBDA The actions table for "eat":
+@ $FBDA label=Table_ActionEat
+W $FBDA,$02 Action routine #N($01+(#PC-$FBDA)/$02).
+L $FBDA,$02,$02,$02
+
 c $FBDE
 W $FBF1,$02
 W $FBF3,$02
+
 c $FBF5
 W $FC08,$02
 L $FC08,$02,$02
 W $FC0C,$02
 L $FC0C,$02,$02
-c $FC10
-W $FC23,$02
-L $FC23,$02,$03
-W $FC29,$02
-L $FC29,$02,$03
-c $FC2F
-W $FC47,$02
-W $FC49,$02
+
+c $FC10 Action: Buy/ Purchase
+@ $FC10 label=Action_Buy
+  $FC10,$03 Call #R$AF7B.
+  $FC13,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $FC14,$03 #REGhl=#R$FC23.
+  $FC17,$03 #REGde=#R$FC29.
+  $FC1A,$03 #REGbc=#N($0004,$04,$04).
+  $FC1D,$03 Call #R$B0DE.
+  $FC20,$03 Jump to #R$EDED.
+N $FC23 The token table for the action "buy"/"purchase":
+@ $FC23 label=Table_ActionBuy_TokenGroup
+W $FC23,$02 Token group #N($01+(#PC-$FC23)/$02).
+L $FC23,$02,$03,$02
+N $FC29 The actions table for "buy"/"purchase":
+@ $FC29 label=Table_ActionBuy
+W $FC29,$02 Action routine #N($01+(#PC-$FC29)/$02).
+L $FC29,$02,$03,$02
+
+c $FC2F Action: Step
+@ $FC2F label=Action_Step
+  $FC2F,$03 Call #R$AF7B.
+  $FC32,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $FC33,$05 Jump to #R$EDE7 if there were more than #N$02 direct objects
+. referenced in the user input (so the command is malformed).
+  $FC38,$03 #REGhl=#R$FC47.
+  $FC3B,$03 #REGde=#R$FC49.
+  $FC3E,$03 #REGbc=#N($0001,$04,$04).
+  $FC41,$03 Call #R$B0DE.
+  $FC44,$03 Jump to #R$EDED.
+N $FC47 The token table for the action "step":
+@ $FC47 label=Table_ActionStep_TokenGroup
+W $FC47,$02 Token group #N($01+(#PC-$FC47)/$02).
+N $FC49 The actions table for "step":
+@ $FC49 label=Table_ActionStep
+W $FC49,$02 Action routine #N($01+(#PC-$FC49)/$02).
+
 c $FC4B
 W $FC5E,$02
 L $FC5E,$02,$0B
@@ -5773,7 +6043,8 @@ L $FC74,$02,$0B
 B $FC8A,$01
 L $FC8A,$01,$03
 
-c $FC8D
+c $FC8D Action: Swim
+@ $FC8D label=Action_Swim
   $FC8D,$03 Call #R$AFB7.
   $FC90,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -5782,20 +6053,28 @@ c $FC8D
   $FC96,$03 #REGa=*#R$A7C3.
   $FC99,$03 #REGhl=#R$FCCB.
   $FC9C,$03 #REGbc=#N($0003,$04,$04).
-  $FC9F,$02 CPIR.
-  $FCA1,$03 Jump to #R$EE4D if #REGa is not equal to #N$01.
+  $FC9F,$02 Search for the current room in the table.
+  $FCA1,$03 Jump to #R$EE4D if none of the rooms in the table match the current
+. room ID.
+N $FCA4 The player is in one of the rooms, so process the action.
   $FCA4,$03 #REGhl=#R$FCB3.
   $FCA7,$03 #REGde=#R$FCBF.
   $FCAA,$03 #REGbc=#N($0006,$04,$04).
   $FCAD,$03 Call #R$B0DE.
 N $FCB0 Print "#STR$A9EC,$08($b==$FF)".
   $FCB0,$03 Jump to #R$EDED.
-W $FCB3,$02
-L $FCB3,$02,$06
-W $FCBF,$02
-L $FCBF,$02,$06
+N $FCB3 The token table for the action "swim":
+@ $FCB3 label=Table_ActionSwim_TokenGroup
+W $FCB3,$02 Token group #N($01+(#PC-$FCB3)/$02).
+L $FCB3,$02,$06,$02
+N $FCBF The actions table for "swim":
+@ $FCBF label=Table_ActionSwim
+W $FCBF,$02 Action routine #N($01+(#PC-$FCBF)/$02).
+L $FCBF,$02,$06,$02
+N $FCCB Table containing rooms where this action can be done.
+@ $FCCB label=Table_ActionSwim_Rooms
 B $FCCB,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
-L $FCCB,$01,$03
+L $FCCB,$01,$03,$02
 
 c $FCCE Game Start
 @ $FCCE label=GameStart
