@@ -41,6 +41,9 @@ Next: <a href="44598.html">44598</a>
 <div class="paragraph">
 Used by the routine at <a href="59807.html">GameLoop</a>.
 </div>
+<div class="paragraph">
+Handles keyboard input, tokenises commands and validates the vocabulary.
+</div>
 </div>
 </td>
 </tr>
@@ -67,40 +70,60 @@ Reset the screen position to defaults.
 <td class="comment-1" rowspan="1">Call <a href="42567.html">PrintInputPrompt</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="44344"></span>
+<div class="comments">
+<div class="paragraph">
+Initialise the command buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44344"></span>44344</td>
 <td class="instruction">LD HL,42994</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="42994.html">42994</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="42994.html">CommandBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44347"></span>44347</td>
 <td class="instruction">LD B,0</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=0.</td>
+<td class="comment-1" rowspan="1">Initialise a letter counter in <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44349"></span>44349</td>
-<td class="instruction">JR <a href="44338.html#44353">Handler_UserInput_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44353">Handler_UserInput_1</a>.</td>
+<td class="instruction">JR <a href="44338.html#44353">UserInput_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44353">UserInput_Next</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_0</td>
+<td class="routine-comment" colspan="5">
+<span id="44351"></span>
+<div class="comments">
+<div class="paragraph">
+Main input loop - process each keypress.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">UserInput_Loop</td>
 <td class="address-2"><span id="44351"></span>44351</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next byte of the command buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44352"></span>44352</td>
 <td class="instruction">INC B</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">B</span> by one.</td>
+<td class="comment-1" rowspan="1">Increment the letter counter by one.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_1</td>
+<td class="asm-label">UserInput_Next</td>
 <td class="address-2"><span id="44353"></span>44353</td>
-<td class="instruction">CALL <a href="44239.html">44239</a></td>
-<td class="comment-1" rowspan="1">Call <a href="44239.html">44239</a>.</td>
+<td class="instruction">CALL <a href="44239.html">Print_Cursor</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44239.html">Print_Cursor</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -112,42 +135,61 @@ Reset the screen position to defaults.
 <td class="asm-label"></td>
 <td class="address-1"><span id="44359"></span>44359</td>
 <td class="instruction">CP 12</td>
-<td class="comment-1" rowspan="2">Jump to <a href="44338.html#44379">Handler_UserInput_2</a> if <span class="register">A</span> is not equal to 12.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="44338.html#44379">ValidateUserInput</a> if "DELETE" was not pressed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44361"></span>44361</td>
-<td class="instruction">JR NZ,<a href="44338.html#44379">Handler_UserInput_2</a></td>
+<td class="instruction">JR NZ,<a href="44338.html#44379">ValidateUserInput</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44363"></span>
+<div class="comments">
+<div class="paragraph">
+The user pressed "DELETE".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44363"></span>44363</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=0.</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="44338.html#44353">UserInput_Next</a> if there hasn't been any input yet (nothing to delete).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44364"></span>44364</td>
 <td class="instruction">OR B</td>
-<td class="comment-1" rowspan="2">Jump to <a href="44338.html#44353">Handler_UserInput_1</a> if <span class="register">A</span> is equal to <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44365"></span>44365</td>
-<td class="instruction">JR Z,<a href="44338.html#44353">Handler_UserInput_1</a></td>
+<td class="instruction">JR Z,<a href="44338.html#44353">UserInput_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44367"></span>
+<div class="comments">
+<div class="paragraph">
+There is input which can be deleted, so action a delete!
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44367"></span>44367</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="1">Exchange the <span class="register">DE</span> and <span class="register">HL</span> registers.</td>
+<td class="comment-1" rowspan="1">Temporarily stash the command buffer pointer in <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="44368"></span>
 <div class="comments">
 <div class="paragraph">
-Print "  ".
+Print "SPACE BACKSPACE BACKSPACE SPACE BACKSPACE" to move the current print position on the screen to the previous character, and to delete the character present using a space.
 </div>
 </div>
 </td>
@@ -156,7 +198,7 @@ Print "  ".
 <td class="asm-label"></td>
 <td class="address-1"><span id="44368"></span>44368</td>
 <td class="instruction">LD HL,44230</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="44226.html#44230">44230</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="44230.html">Messaging_SpaceBackspaceBackspaceSpaceBackspace</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -165,34 +207,54 @@ Print "  ".
 <td class="comment-1" rowspan="1">Call <a href="42373.html">PrintString</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="44374"></span>
+<div class="comments">
+<div class="paragraph">
+Adjust the command buffer position and letter counter.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44374"></span>44374</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="1">Exchange the <span class="register">DE</span> and <span class="register">HL</span> registers.</td>
+<td class="comment-1" rowspan="1">Restore the command buffer pointer from <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44375"></span>44375</td>
 <td class="instruction">DEC HL</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Decrease the command buffer pointer by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44376"></span>44376</td>
 <td class="instruction">DEC B</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">B</span> by one.</td>
+<td class="comment-1" rowspan="1">Decrease the letter counter by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44377"></span>44377</td>
-<td class="instruction">JR <a href="44338.html#44353">Handler_UserInput_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44353">Handler_UserInput_1</a>.</td>
+<td class="instruction">JR <a href="44338.html#44353">UserInput_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44353">UserInput_Next</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_2</td>
+<td class="routine-comment" colspan="5">
+<span id="44379"></span>
+<div class="comments">
+<div class="paragraph">
+Check which key the user pressed:
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ValidateUserInput</td>
 <td class="address-2"><span id="44379"></span>44379</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44397">Handler_UserInput_3</a> if <span class="register">C</span> is equal to 13.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44397">UserInput_WriteKeypress</a> if "ENTER" was pressed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -202,35 +264,45 @@ Print "  ".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44382"></span>44382</td>
-<td class="instruction">JR Z,<a href="44338.html#44397">Handler_UserInput_3</a></td>
+<td class="instruction">JR Z,<a href="44338.html#44397">UserInput_WriteKeypress</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44384"></span>44384</td>
 <td class="instruction">CP 32</td>
-<td class="comment-1" rowspan="2">Jump to <a href="44338.html#44353">Handler_UserInput_1</a> if <span class="register">C</span> is less than 32.</td>
+<td class="comment-1" rowspan="2">If the keypress was any other control key (the value being under 32 ASCII "SPACE"), it's not valid input so jump back to <a href="44338.html#44353">UserInput_Next</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44386"></span>44386</td>
-<td class="instruction">JR C,<a href="44338.html#44353">Handler_UserInput_1</a></td>
+<td class="instruction">JR C,<a href="44338.html#44353">UserInput_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44388"></span>44388</td>
 <td class="instruction">CP 128</td>
-<td class="comment-1" rowspan="2">Jump to <a href="44338.html#44353">Handler_UserInput_1</a> if <span class="register">C</span> is greater than or equal to 128.</td>
+<td class="comment-1" rowspan="2">If the keypress was higher than 128 it's also not valid input so jump back to <a href="44338.html#44353">UserInput_Next</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44390"></span>44390</td>
-<td class="instruction">JR NC,<a href="44338.html#44353">Handler_UserInput_1</a></td>
+<td class="instruction">JR NC,<a href="44338.html#44353">UserInput_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44392"></span>
+<div class="comments">
+<div class="paragraph">
+Is the command buffer full?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44392"></span>44392</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44353">Handler_UserInput_1</a> if <span class="register">B</span> is equal to 49.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44353">UserInput_Next</a> if the letter counter is 49.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -240,13 +312,23 @@ Print "  ".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44395"></span>44395</td>
-<td class="instruction">JR Z,<a href="44338.html#44353">Handler_UserInput_1</a></td>
+<td class="instruction">JR Z,<a href="44338.html#44353">UserInput_Next</a></td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_3</td>
+<td class="routine-comment" colspan="5">
+<span id="44397"></span>
+<div class="comments">
+<div class="paragraph">
+Writes the keypress into the command buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">UserInput_WriteKeypress</td>
 <td class="address-2"><span id="44397"></span>44397</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="2">Write <span class="register">C</span> to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="2">Write the user input key to *<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -256,14 +338,24 @@ Print "  ".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44399"></span>44399</td>
-<td class="instruction">CALL <a href="44262.html">44262</a></td>
-<td class="comment-1" rowspan="1">Call <a href="44262.html">44262</a>.</td>
+<td class="instruction">CALL <a href="44262.html">Print_UserInputToScreen</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44262.html">Print_UserInputToScreen</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44402"></span>
+<div class="comments">
+<div class="paragraph">
+Did the user press "ENTER"?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44402"></span>44402</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44351">Handler_UserInput_0</a> if <span class="register">C</span> is not equal to 13.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44351">UserInput_Loop</a> if "DELETE" was not pressed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -273,7 +365,20 @@ Print "  ".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44405"></span>44405</td>
-<td class="instruction">JR NZ,<a href="44338.html#44351">Handler_UserInput_0</a></td>
+<td class="instruction">JR NZ,<a href="44338.html#44351">UserInput_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44407"></span>
+<div class="comments">
+<div class="paragraph">
+The player pressed "ENTER" so begin to process the user input.
+</div>
+<div class="paragraph">
+Clear down the user input tokens.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -285,13 +390,13 @@ Print "  ".
 <td class="asm-label"></td>
 <td class="address-1"><span id="44410"></span>44410</td>
 <td class="instruction">LD B,10</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=10.</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for all 10 user input tokens.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_4</td>
+<td class="asm-label">EmptyUserInputTokens_Loop</td>
 <td class="address-2"><span id="44412"></span>44412</td>
 <td class="instruction">LD (HL),255</td>
-<td class="comment-1" rowspan="1">Write 255 to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Write a termination byte (255) to *<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -302,14 +407,14 @@ Print "  ".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44415"></span>44415</td>
-<td class="instruction">DJNZ <a href="44338.html#44412">Handler_UserInput_4</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="44338.html#44412">Handler_UserInput_4</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="44338.html#44412">EmptyUserInputTokens_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the user input tokens counter by one and loop back to <a href="44338.html#44412">EmptyUserInputTokens_Loop</a> until all the tokens have been set to termination bytes (255).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44417"></span>44417</td>
 <td class="instruction">LD HL,42994</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="42994.html">42994</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="42994.html">CommandBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -321,18 +426,21 @@ Print "  ".
 <td class="asm-label"></td>
 <td class="address-1"><span id="44424"></span>44424</td>
 <td class="instruction">LD C,10</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=10.</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">C</span> for the 10 user input tokens.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44426"></span>44426</td>
-<td class="instruction">JR <a href="44338.html#44534">Handler_UserInput_9</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44534">Handler_UserInput_9</a>.</td>
+<td class="instruction">JR <a href="44338.html#44534">EmptyFourLetterBuffer</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44534">EmptyFourLetterBuffer</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="44428"></span>
 <div class="comments">
+<div class="paragraph">
+What's been entered isn't parsable.
+</div>
 <div class="paragraph">
 Print "I don't understand.".
 </div>
@@ -340,7 +448,7 @@ Print "I don't understand.".
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_5</td>
+<td class="asm-label">UserInput_NotUnderstood</td>
 <td class="address-2"><span id="44428"></span>44428</td>
 <td class="instruction">LD HL,43087</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43087.html">Messaging_IDontUnderstand</a>.</td>
@@ -358,7 +466,17 @@ Print "I don't understand.".
 <td class="comment-1" rowspan="1">Jump to <a href="44338.html">Handler_UserInput</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_6</td>
+<td class="routine-comment" colspan="5">
+<span id="44437"></span>
+<div class="comments">
+<div class="paragraph">
+Process found word into user input token.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessFoundWord</td>
 <td class="address-2"><span id="44437"></span>44437</td>
 <td class="instruction">PUSH HL</td>
 <td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
@@ -377,13 +495,13 @@ Print "I don't understand.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="44440"></span>44440</td>
 <td class="instruction">LD HL,(44226)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="44226.html">44226</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="44226.html">TempStore_CommandBufferPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44443"></span>44443</td>
 <td class="instruction">LD DE,43055</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="43054.html#43055">43055</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="43055.html">FourLetterBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -395,7 +513,7 @@ Print "I don't understand.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="44449"></span>44449</td>
 <td class="instruction">LD A,(44228)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44456">Handler_UserInput_7</a> if *<a href="44226.html#44228">44228</a> is greater than or equal to <span class="register">C</span>.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44456">CopyWordToBuffer</a> if *<a href="44228.html">TempStore_CommandBufferCount</a> is greater than or equal to <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -405,7 +523,7 @@ Print "I don't understand.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44453"></span>44453</td>
-<td class="instruction">JR NC,<a href="44338.html#44456">Handler_UserInput_7</a></td>
+<td class="instruction">JR NC,<a href="44338.html#44456">CopyWordToBuffer</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -414,10 +532,20 @@ Print "I don't understand.".
 <td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_7</td>
+<td class="routine-comment" colspan="5">
+<span id="44456"></span>
+<div class="comments">
+<div class="paragraph">
+Copy the word (up to 4 characters into the four letter buffer).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CopyWordToBuffer</td>
 <td class="address-2"><span id="44456"></span>44456</td>
 <td class="instruction">LDIR</td>
-<td class="comment-1" rowspan="1">LDIR.</td>
+<td class="comment-1" rowspan="1">Copy 4 letters of the command buffer to the four letter buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -445,19 +573,18 @@ Print "I don't understand.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="44462"></span>44462</td>
 <td class="instruction">LD HL,(42950)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="42950.html">42950</a>.</td>
+<td class="comment-1" rowspan="2">Stash *<a href="42950.html">Pointer_Vocabulary</a> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44465"></span>44465</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44466"></span>44466</td>
 <td class="instruction">LD HL,42599</td>
-<td class="comment-1" rowspan="2">Write <a href="42595.html#42599">42599</a> to *<a href="42950.html">42950</a>.</td>
+<td class="comment-1" rowspan="2">Write <a href="42599.html">Table_Vocabulary_The</a> to *<a href="42950.html">Pointer_Vocabulary</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -474,13 +601,12 @@ Print "I don't understand.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="44475"></span>44475</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore *<a href="42950.html">Pointer_Vocabulary</a> from the stack and write it back to *<a href="42950.html">Pointer_Vocabulary</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44476"></span>44476</td>
 <td class="instruction">LD (42950),HL</td>
-<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to *<a href="42950.html">42950</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -491,8 +617,8 @@ Print "I don't understand.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44480"></span>44480</td>
-<td class="instruction">JR C,<a href="44338.html#44534">Handler_UserInput_9</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44534">Handler_UserInput_9</a> if <span class="register">A</span> is less than <span class="register">C</span>.</td>
+<td class="instruction">JR C,<a href="44338.html#44534">EmptyFourLetterBuffer</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44534">EmptyFourLetterBuffer</a> if <span class="register">A</span> is less than <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -503,8 +629,8 @@ Print "I don't understand.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44485"></span>44485</td>
-<td class="instruction">JR C,<a href="44338.html#44526">Handler_UserInput_8</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44526">Handler_UserInput_8</a> if <span class="register">A</span> is less than <span class="register">C</span>.</td>
+<td class="instruction">JR C,<a href="44338.html#44526">Handler_UserInput_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44526">Handler_UserInput_0</a> if <span class="register">A</span> is less than <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -553,13 +679,13 @@ Print a double quote character: "<code>&#34;</code>".
 <td class="asm-label"></td>
 <td class="address-1"><span id="44498"></span>44498</td>
 <td class="instruction">LD HL,(44228)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="44226.html#44228">44228</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="44228.html">TempStore_CommandBufferCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44501"></span>44501</td>
 <td class="instruction">LD DE,(44226)</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=*<a href="44226.html">44226</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=*<a href="44226.html">TempStore_CommandBufferPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -635,7 +761,7 @@ Print ".".
 <td class="comment-1" rowspan="1">Jump to <a href="44338.html">Handler_UserInput</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_8</td>
+<td class="asm-label">Handler_UserInput_0</td>
 <td class="address-2"><span id="44526"></span>44526</td>
 <td class="instruction">LD (IX+0),A</td>
 <td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">IX</span>+0.</td>
@@ -655,11 +781,21 @@ Print ".".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44532"></span>44532</td>
-<td class="instruction">JR Z,<a href="44338.html#44589">Handler_UserInput_16</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44589">Handler_UserInput_16</a> if <span class="register">C</span> is equal to <span class="register">C</span>.</td>
+<td class="instruction">JR Z,<a href="44338.html#44589">Handler_UserInput_6</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44589">Handler_UserInput_6</a> if <span class="register">C</span> is equal to <span class="register">C</span>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_9</td>
+<td class="routine-comment" colspan="5">
+<span id="44534"></span>
+<div class="comments">
+<div class="paragraph">
+Token matching only uses four letters of every word so a buffer is used for processing. Start by clearing the buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">EmptyFourLetterBuffer</td>
 <td class="address-2"><span id="44534"></span>44534</td>
 <td class="instruction">PUSH HL</td>
 <td class="comment-1" rowspan="2">Stash <span class="register">HL</span> and <span class="register">BC</span> on the stack.</td>
@@ -673,19 +809,19 @@ Print ".".
 <td class="asm-label"></td>
 <td class="address-1"><span id="44536"></span>44536</td>
 <td class="instruction">LD HL,43055</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43054.html#43055">43055</a>.</td>
+<td class="comment-1" rowspan="1">Load <a href="43055.html">FourLetterBuffer</a> into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44539"></span>44539</td>
 <td class="instruction">LD B,4</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=4.</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the 4 letters in the buffer.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_10</td>
+<td class="asm-label">EmptyFourLetterBuffer_Loop</td>
 <td class="address-2"><span id="44541"></span>44541</td>
 <td class="instruction">LD (HL),32</td>
-<td class="comment-1" rowspan="1">Write 32 to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Write ASCII "SPACE" (32) to *<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -696,8 +832,8 @@ Print ".".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44544"></span>44544</td>
-<td class="instruction">DJNZ <a href="44338.html#44541">Handler_UserInput_10</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="44338.html#44541">Handler_UserInput_10</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="44338.html#44541">EmptyFourLetterBuffer_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the letter buffer counter by one and loop back to <a href="44338.html#44541">EmptyFourLetterBuffer_Loop</a> until all four letters have been cleared.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -719,48 +855,49 @@ Print ".".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44549"></span>44549</td>
-<td class="instruction">JR <a href="44338.html#44552">Handler_UserInput_12</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44552">Handler_UserInput_12</a>.</td>
+<td class="instruction">JR <a href="44338.html#44552">Handler_UserInput_2</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44552">Handler_UserInput_2</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_11</td>
+<td class="asm-label">Handler_UserInput_1</td>
 <td class="address-2"><span id="44551"></span>44551</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_12</td>
+<td class="asm-label">Handler_UserInput_2</td>
 <td class="address-2"><span id="44552"></span>44552</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44585">Handler_UserInput_15</a> if *<span class="register">HL</span> is equal to 13.</td>
+<td class="comment-1" rowspan="1">Fetch a character from the command buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44553"></span>44553</td>
 <td class="instruction">CP 13</td>
+<td class="comment-1" rowspan="2">Jump to <a href="44338.html#44585">Handler_UserInput_5</a> if the character is "ENTER" (ASCII 13).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44555"></span>44555</td>
-<td class="instruction">JR Z,<a href="44338.html#44585">Handler_UserInput_15</a></td>
+<td class="instruction">JR Z,<a href="44338.html#44585">Handler_UserInput_5</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44557"></span>44557</td>
-<td class="instruction">CALL <a href="44248.html">44248</a></td>
-<td class="comment-1" rowspan="1">Call <a href="44248.html">44248</a>.</td>
+<td class="instruction">CALL <a href="44248.html">IsDelimiter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44248.html">IsDelimiter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44560"></span>44560</td>
-<td class="instruction">JR Z,<a href="44338.html#44551">Handler_UserInput_11</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44551">Handler_UserInput_11</a> if <span class="register">A</span> is equal to 13.</td>
+<td class="instruction">JR Z,<a href="44338.html#44551">Handler_UserInput_1</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44551">Handler_UserInput_1</a> if the character is a delimiter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44562"></span>44562</td>
 <td class="instruction">LD (44226),HL</td>
-<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to *<a href="44226.html">44226</a>.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to *<a href="44226.html">TempStore_CommandBufferPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -769,7 +906,7 @@ Print ".".
 <td class="comment-1" rowspan="1"><span class="register">DE</span>=0000.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_13</td>
+<td class="asm-label">Handler_UserInput_3</td>
 <td class="address-2"><span id="44568"></span>44568</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
@@ -784,35 +921,36 @@ Print ".".
 <td class="asm-label"></td>
 <td class="address-1"><span id="44570"></span>44570</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44580">Handler_UserInput_14</a> if *<span class="register">HL</span> is equal to 13.</td>
+<td class="comment-1" rowspan="1">Fetch a character from the command buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44571"></span>44571</td>
 <td class="instruction">CP 13</td>
+<td class="comment-1" rowspan="2">Jump to <a href="44338.html#44580">Handler_UserInput_4</a> if the character is "ENTER" (ASCII 13).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44573"></span>44573</td>
-<td class="instruction">JR Z,<a href="44338.html#44580">Handler_UserInput_14</a></td>
+<td class="instruction">JR Z,<a href="44338.html#44580">Handler_UserInput_4</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44575"></span>44575</td>
-<td class="instruction">CALL <a href="44248.html">44248</a></td>
-<td class="comment-1" rowspan="1">Call <a href="44248.html">44248</a>.</td>
+<td class="instruction">CALL <a href="44248.html">IsDelimiter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44248.html">IsDelimiter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44578"></span>44578</td>
-<td class="instruction">JR NZ,<a href="44338.html#44568">Handler_UserInput_13</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44568">Handler_UserInput_13</a> if <span class="register">A</span> is not equal to 13.</td>
+<td class="instruction">JR NZ,<a href="44338.html#44568">Handler_UserInput_3</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44568">Handler_UserInput_3</a> if the character was not a delimiter.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_14</td>
+<td class="asm-label">Handler_UserInput_4</td>
 <td class="address-2"><span id="44580"></span>44580</td>
 <td class="instruction">LD (44228),DE</td>
-<td class="comment-1" rowspan="1">Write <span class="register">DE</span> to *<a href="44226.html#44228">44228</a>.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">DE</span> to *<a href="44228.html">TempStore_CommandBufferCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -821,7 +959,7 @@ Print ".".
 <td class="comment-1" rowspan="1">Set the carry flag.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_15</td>
+<td class="asm-label">Handler_UserInput_5</td>
 <td class="address-2"><span id="44585"></span>44585</td>
 <td class="instruction">POP DE</td>
 <td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
@@ -829,14 +967,14 @@ Print ".".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44586"></span>44586</td>
-<td class="instruction">JP C,<a href="44338.html#44437">Handler_UserInput_6</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44437">Handler_UserInput_6</a> if <span class="register">A</span> is less than 13.</td>
+<td class="instruction">JP C,<a href="44338.html#44437">ProcessFoundWord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44338.html#44437">ProcessFoundWord</a> if the carry flag is set.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_16</td>
+<td class="asm-label">Handler_UserInput_6</td>
 <td class="address-2"><span id="44589"></span>44589</td>
 <td class="instruction">LD A,(43044)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44428">Handler_UserInput_5</a> if *<a href="43044.html">UserInput_Token_1</a> is equal to 255.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44428">UserInput_NotUnderstood</a> if *<a href="43044.html">UserInput_Token_1</a> is equal to 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -846,7 +984,7 @@ Print ".".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44594"></span>44594</td>
-<td class="instruction">JP Z,<a href="44338.html#44428">Handler_UserInput_5</a></td>
+<td class="instruction">JP Z,<a href="44338.html#44428">UserInput_NotUnderstood</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>

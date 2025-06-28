@@ -25,7 +25,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="44808.html">44808</a>
+Prev: <a href="44817.html">44817</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#44830">Map</a></td>
 <td class="next">
@@ -39,7 +39,7 @@ Next: <a href="44849.html">44849</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="60578.html">60578</a>, <a href="61357.html">Process_GetCloak</a>, <a href="61446.html">Process_DropTorc</a>, <a href="61468.html">Process_DropHelmet</a>, <a href="61585.html">Process_DropCloak</a>, <a href="61782.html">Process_BuyMeatFromTraderWithIron</a>, <a href="61817.html">61817</a>, <a href="61919.html">61919</a>, <a href="62060.html">62060</a>, <a href="62099.html">62099</a>, <a href="62504.html">Process_WearTorc</a>, <a href="62528.html">Process_WearHelmet</a>, <a href="62552.html">Process_WearAmulet</a>, <a href="62601.html">Process_DropAmulet</a>, <a href="62649.html">62649</a>, <a href="62720.html">Process_WearCloak</a>, <a href="62788.html">62788</a> and <a href="63008.html">63008</a>.
+Used by the routines at <a href="60578.html">60578</a>, <a href="61357.html">Process_GetCloak</a>, <a href="61446.html">Process_DropTorc</a>, <a href="61468.html">Process_DropHelmet</a>, <a href="61585.html">Process_DropCloak</a>, <a href="61782.html">Process_BuyMeatFromTraderWithIron</a>, <a href="61817.html">61817</a>, <a href="61919.html">61919</a>, <a href="62060.html">62060</a>, <a href="62099.html">62099</a>, <a href="62504.html">Process_WearTorc</a>, <a href="62528.html">Process_WearHelmet</a>, <a href="62552.html">Process_WearAmulet</a>, <a href="62601.html">Process_DropAmulet</a>, <a href="62649.html">62649</a>, <a href="62720.html">Process_WearCloak</a>, <a href="62788.html">Process_CaptureRoman</a>, <a href="62843.html">62843</a> and <a href="63008.html">63008</a>.
 </div>
 <div class="paragraph">
 Rather than use item properties, the game just has separate objects that don't exist until an action is performed.
@@ -80,19 +80,28 @@ An example is: <table class="default">
 <td class="asm-label">TransformItem</td>
 <td class="address-2"><span id="44830"></span>44830</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">B</span>.</td>
+<td class="comment-1" rowspan="2">Call <a href="44753.html">ItemLocator</a> with the source item ID.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44831"></span>44831</td>
 <td class="instruction">CALL <a href="44753.html">ItemLocator</a></td>
-<td class="comment-1" rowspan="1">Call <a href="44753.html">ItemLocator</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44834"></span>
+<div class="comments">
+<div class="paragraph">
+<span class="register">A</span> now contains the location of the source ID.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44834"></span>44834</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">BC</span> and <span class="register">AF</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Stash the item IDs and source item room ID on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -103,19 +112,18 @@ An example is: <table class="default">
 <td class="asm-label"></td>
 <td class="address-1"><span id="44836"></span>44836</td>
 <td class="instruction">LD C,0</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=0.</td>
+<td class="comment-1" rowspan="2">Call <a href="44808.html">Handler_UpdateItemLocation</a> and disable the source item.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44838"></span>44838</td>
-<td class="instruction">CALL <a href="44808.html">44808</a></td>
-<td class="comment-1" rowspan="1">Call <a href="44808.html">44808</a>.</td>
+<td class="instruction">CALL <a href="44808.html">Handler_UpdateItemLocation</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44841"></span>44841</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">AF</span> and <span class="register">BC</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the source item room ID and item IDs from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -123,22 +131,32 @@ An example is: <table class="default">
 <td class="instruction">POP BC</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="44843"></span>
+<div class="comments">
+<div class="paragraph">
+Activate the destination item in the same room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44843"></span>44843</td>
 <td class="instruction">LD B,C</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">C</span>.</td>
+<td class="comment-1" rowspan="1">Load the destination item ID into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44844"></span>44844</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Load the source room ID into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44845"></span>44845</td>
-<td class="instruction">CALL <a href="44808.html">44808</a></td>
-<td class="comment-1" rowspan="1">Call <a href="44808.html">44808</a>.</td>
+<td class="instruction">CALL <a href="44808.html">Handler_UpdateItemLocation</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44808.html">Handler_UpdateItemLocation</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -159,7 +177,7 @@ View the equivalent code in <a href="/adventure-games/jewelsofbabylon/dec/asm/50
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="44808.html">44808</a>
+Prev: <a href="44817.html">44817</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#44830">Map</a></td>
 <td class="next">

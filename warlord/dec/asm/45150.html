@@ -33,7 +33,7 @@ Next: <a href="45185.html">45185</a>
 </td>
 </tr>
 </table>
-<div class="description">45150: Routine at B05E</div>
+<div class="description">45150: Handler: Match Verb</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -45,34 +45,41 @@ Used by the routines at <a href="59807.html">GameLoop</a> and <a href="62363.htm
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_MatchVerb</td>
 <td class="address-2"><span id="45150"></span>45150</td>
 <td class="instruction">LD HL,(42976)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="42976.html">Pointer_VerbWordTokens</a>.</td>
+<td class="comment-1" rowspan="1">Load <span class="register">HL</span> with *<a href="42976.html">Pointer_VerbWordTokens</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45153"></span>45153</td>
 <td class="instruction">LD BC,(42986)</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=*<a href="42986.html">Count_VerbTokens</a>.</td>
+<td class="comment-1" rowspan="1">Set the length of the table from *<a href="42986.html">Count_VerbTokens</a> into <span class="register">BC</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45157"></span>45157</td>
 <td class="instruction">LD A,(43044)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="43044.html">UserInput_Token_1</a>.</td>
+<td class="comment-1" rowspan="2">Search *<a href="42976.html">Pointer_VerbWordTokens</a> for *<a href="43044.html">UserInput_Token_1</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45160"></span>45160</td>
 <td class="instruction">CPIR</td>
-<td class="comment-1" rowspan="1">Search for matching objects.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45162"></span>45162</td>
-<td class="instruction">JR Z,<a href="45150.html#45171">45171</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="45150.html#45171">45171</a> if ?? is equal to 0.</td>
+<td class="instruction">JR Z,<a href="45150.html#45171">Handler_Verb</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="45150.html#45171">Handler_Verb</a> if *<a href="43044.html">UserInput_Token_1</a> was found in the table.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="45164"></span>
 <div class="comments">
+<div class="paragraph">
+The verb wasn't found.
+</div>
 <div class="paragraph">
 Print "I don't understand.".
 </div>
@@ -80,54 +87,71 @@ Print "I don't understand.".
 </td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45164"></span>45164</td>
 <td class="instruction">LD HL,43087</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43087.html">Messaging_IDontUnderstand</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45167"></span>45167</td>
 <td class="instruction">CALL <a href="42386.html">PrintStringAndNewline</a></td>
 <td class="comment-1" rowspan="1">Call <a href="42386.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45170"></span>45170</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="45171"></span>
+<div class="comments">
+<div class="paragraph">
+The verb token was found in the table, so jump to the appropriate routine.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_Verb</td>
 <td class="address-2"><span id="45171"></span>45171</td>
 <td class="instruction">LD A,(42986)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="42986.html">Count_VerbTokens</a>.</td>
+<td class="comment-1" rowspan="4">Calculate the index using *<a href="42986.html">Count_VerbTokens</a>-<span class="register">C</span>-1 and store the result in <span class="register">E</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45174"></span>45174</td>
 <td class="instruction">SUB C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>-=<span class="register">C</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45175"></span>45175</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">A</span> by one.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45176"></span>45176</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=<span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45177"></span>45177</td>
 <td class="instruction">LD IX,(42970)</td>
 <td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="42970.html">Pointer_JumpTable_Verbs</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45181"></span>45181</td>
 <td class="instruction">CALL <a href="43912.html">GetTableEntry</a></td>
 <td class="comment-1" rowspan="1">Call <a href="43912.html">GetTableEntry</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45184"></span>45184</td>
 <td class="instruction">JP (HL)</td>
-<td class="comment-1" rowspan="1">Jump to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Jump to the verb handler held by <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">

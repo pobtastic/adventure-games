@@ -33,13 +33,13 @@ Next: <a href="45323.html">45323</a>
 </td>
 </tr>
 </table>
-<div class="description">45278: Routine at B0DE</div>
+<div class="description">45278: Action Routing</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="63571.html">Action_Examine</a>, <a href="63730.html">Action_Get</a>, <a href="63830.html">63830</a>, <a href="63861.html">Action_Drop</a>, <a href="63923.html">Action_Throw</a>, <a href="63970.html">63970</a>, <a href="64041.html">Action_Kill</a>, <a href="64106.html">Action_Free</a>, <a href="64145.html">Action_Drink</a>, <a href="64173.html">Action_Jump</a>, <a href="64221.html">Action_Climb</a>, <a href="64289.html">Action_Enter</a>, <a href="64349.html">Action_Wear</a>, <a href="64393.html">Action_Go</a>, <a href="64451.html">Action_Eat</a>, <a href="64478.html">Action_Capture</a>, <a href="64501.html">Action_Place</a>, <a href="64528.html">Action_Buy</a>, <a href="64559.html">Action_Step</a>, <a href="64587.html">64587</a> and <a href="64653.html">Action_Swim</a>.
+Used by the routines at <a href="63571.html">Action_Examine</a>, <a href="63730.html">Action_Get</a>, <a href="63830.html">63830</a>, <a href="63861.html">Action_Drop</a>, <a href="63923.html">Action_Throw</a>, <a href="63970.html">63970</a>, <a href="64041.html">Action_Give</a>, <a href="64106.html">Action_Free</a>, <a href="64145.html">Action_Drink</a>, <a href="64173.html">Action_Jump</a>, <a href="64221.html">Action_Climb</a>, <a href="64289.html">Action_Enter</a>, <a href="64349.html">Action_Wear</a>, <a href="64393.html">Action_Go</a>, <a href="64451.html">Action_Eat</a>, <a href="64478.html">Action_Capture</a>, <a href="64501.html">Action_Place</a>, <a href="64528.html">Action_Buy</a>, <a href="64559.html">Action_Step</a>, <a href="64587.html">Action_Kill</a> and <a href="64653.html">Action_Swim</a>.
 </div>
 </div>
 <table class="input">
@@ -62,126 +62,191 @@ Used by the routines at <a href="63571.html">Action_Examine</a>, <a href="63730.
 </td>
 </tr>
 <tr>
+<td class="asm-label">ActionRouting</td>
 <td class="address-2"><span id="45278"></span>45278</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">HL</span> (using the stack).</td>
+<td class="comment-1" rowspan="2">Load the item group table into <span class="register">IX</span> (using the stack).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45279"></span>45279</td>
 <td class="instruction">POP IX</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="45281"></span>
+<div class="comments">
+<div class="paragraph">
+Keep looping until a match is found.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ActionRouting_Loop</td>
 <td class="address-2"><span id="45281"></span>45281</td>
 <td class="instruction">LD L,(IX+0)</td>
-<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>+0.</td>
+<td class="comment-1" rowspan="2">Fetch the phrase tokens from the item group and store the pointer in <span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45284"></span>45284</td>
 <td class="instruction">LD H,(IX+1)</td>
-<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>+1.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45287"></span>45287</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="3">Stash <span class="register">IX</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Stash the item group table, the pointer to the jump table and the table items counter on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45289"></span>45289</td>
 <td class="instruction">PUSH DE</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45290"></span>45290</td>
 <td class="instruction">PUSH BC</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45291"></span>45291</td>
 <td class="instruction">CALL <a href="44672.html">MatchPhraseTokens</a></td>
 <td class="comment-1" rowspan="1">Call <a href="44672.html">MatchPhraseTokens</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45294"></span>45294</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">IX</span> from the stack.</td>
+<td class="comment-1" rowspan="3">Restore the table items counter, the pointer to the jump table and the item group table from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45295"></span>45295</td>
 <td class="instruction">POP DE</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45296"></span>45296</td>
 <td class="instruction">POP IX</td>
 </tr>
 <tr>
-<td class="address-1"><span id="45298"></span>45298</td>
-<td class="instruction">JR NZ,<a href="45278.html#45311">45311</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="45278.html#45311">45311</a> if ?? is not equal to 0.</td>
+<td class="routine-comment" colspan="5">
+<span id="45298"></span>
+<div class="comments">
+<div class="paragraph">
+Skip to the next set of phrase tokens if nothing matched...
+</div>
+</div>
+</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45298"></span>45298</td>
+<td class="instruction">JR NZ,<a href="45278.html#45311">ActionRouting_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="45278.html#45311">ActionRouting_Next</a> if none of the input matches this set of phrase tokens.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="45300"></span>
+<div class="comments">
+<div class="paragraph">
+The phrase tokens matched! Handle jumping to the action routine.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45300"></span>45300</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">DE</span> (using the stack).</td>
+<td class="comment-1" rowspan="2">Load the action table into <span class="register">IX</span> (using the stack).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45301"></span>45301</td>
 <td class="instruction">POP IX</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45303"></span>45303</td>
 <td class="instruction">LD L,(IX+0)</td>
-<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>+0.</td>
+<td class="comment-1" rowspan="2">Fetch the action routine from the table and store it in <span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45306"></span>45306</td>
 <td class="instruction">LD H,(IX+1)</td>
-<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>+1.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45309"></span>45309</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Discard the return address on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45310"></span>45310</td>
 <td class="instruction">JP (HL)</td>
-<td class="comment-1" rowspan="2">Jump to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Jump to the action routine pointed to by *<span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="45311"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing matched, so move to the next set of pointers.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ActionRouting_Next</td>
 <td class="address-2"><span id="45311"></span>45311</td>
 <td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="2">Move to the next pointer in the item group table.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45313"></span>45313</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45315"></span>45315</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="2">Increment <span class="register">DE</span> by two.</td>
+<td class="comment-1" rowspan="2">Move to the next pointer in the action pointers table.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45316"></span>45316</td>
 <td class="instruction">INC DE</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45317"></span>45317</td>
 <td class="instruction">DEC BC</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">BC</span> by one.</td>
+<td class="comment-1" rowspan="1">Decrease the table items counter by one.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45318"></span>45318</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="3">Jump back to <a href="45278.html#45281">45281</a> until <span class="register">BC</span> is zero.</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="45278.html#45281">ActionRouting_Loop</a> until all the item groups have been processed.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45319"></span>45319</td>
 <td class="instruction">OR C</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45320"></span>45320</td>
-<td class="instruction">JR NZ,<a href="45278.html#45281">45281</a></td>
+<td class="instruction">JR NZ,<a href="45278.html#45281">ActionRouting_Loop</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="45322"></span>45322</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
