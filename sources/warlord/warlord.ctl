@@ -1,4 +1,4 @@
-; Copyright Adventuresoft UK Ltd 1985, 2025 ArcadeGeek LTD.
+; Copyright Interceptor Software UK 1985, 2025 ArcadeGeek LTD.
 ; NOTE: Disassembly is Work-In-Progress.
 ; Label naming is loosely based on Action_ActionName_SubAction e.g. Print_HighScore_Loop.
 
@@ -362,8 +362,20 @@ N $A65C Print "#STR$A843,$08($b==$FF)".
   $A65F,$03 Call #R$A585.
   $A662,$01 Return.
 
-t $A663
-T $A667
+g $A663 Table: Delimiters
+@ $A663 label=Table_Delimiters_Count
+B $A663,$01 Number of delimiters in the table: #PEEK(#PC).
+@ $A664 label=Table_Delimiters
+T $A664,$01 "SPACE".
+T $A665,$01 "COMMA".
+T $A666,$01 "DOUBLE QUOTE".
+
+g $A667 Table: Vocabulary For "THE"
+@ $A667 label=Table_Vocabulary_The
+D $A667 "Vocabulary Table" used for matching and removing "THE" from user
+. input.
+T $A667,$04 "#STR$A667,$08($b==$FF)".
+B $A66B,$01 Terminator.
 
 g $A66C Table: Item Locations
 @ $A66C label=Table_ItemLocations
@@ -400,25 +412,6 @@ B $A775,b,$01
 
 g $A776
 
-g $A77F Turn-Based Event Counters
-N $A77F
-@ $A77F label=Counter_Crab
-N $A780 Initialised to #N$05 by #R$EC21.
-@ $A780 label=Counter_FomorianTribe
-N $A781
-@ $A781 label=Counter_Drunk
-N $A782
-@ $A782 label=Counter_Lion
-N $A783
-@ $A783 label=Counter_Crocodile 
-N $A784
-@ $A784 label=Counter_Cannibals
-N $A785
-@ $A785 label=Counter_Match
-N $A786
-@ $A786 label=Counter_Wave
-B $A77F,$08,$01
-
 g $A77E Flags: Turn-Based Event States
 @ $A77E label=Flag_TurnBasedEventState
 D $A77E Holds a single byte, where each bit relates to a turn-based event as
@@ -436,6 +429,41 @@ D $A77E Holds a single byte, where each bit relates to a turn-based event as
 . TABLE#
 . When the bit is set, this starts a turn counter (see ...).
 B $A77E,$01
+
+g $A77F Turn-Based Event Counters
+N $A77F Initialised to #N$05 by #R$EBFC.
+@ $A77F label=Counter_Crab
+N $A780 Initialised to #N$05 by #R$EC21.
+@ $A780 label=Counter_FomorianTribe
+N $A781
+@ $A781 label=Counter_Drunk
+N $A782
+@ $A782 label=Counter_Lion
+N $A783
+@ $A783 label=Counter_Crocodile 
+N $A784
+@ $A784 label=Counter_Cannibals
+N $A785
+@ $A785 label=Counter_Match
+N $A786
+@ $A786 label=Counter_Wave
+B $A77F,$08,$01
+
+g $A787 Flags: Event States
+@ $A787 label=Flag_EventStates
+D $A787 Holds a single byte, where each bit relates to an event as follows:
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Relating To }
+. { #N$00 | The Roman Being Captured }
+. { #N$01 |  }
+. { #N$02 |  }
+. { #N$03 |  }
+. { #N$04 |  }
+. { #N$05 |  }
+. { #N$06 |  }
+. { #N$07 |  }
+. TABLE#
+B $A787,$01
 
 g $A788
 B $A788,$01
@@ -457,7 +485,9 @@ g $A7C4 Score
 @ $A7C4 label=Score
 W $A7C4,$02
 
-g $A7C6
+g $A7C6 Pointer: Vocabulary Table
+@ $A7C6 label=Pointer_Vocabulary
+D $A7C6 Pointer to the table containing the game vocabulary.
 W $A7C6,$02
 
 g $A7C8 Pointer: Turn-Based Events Jump Table
@@ -556,7 +586,9 @@ g $A7F0 Number Of "Configurable Exits"
 @ $A7F0 label=Count_ConfigurableExits
 W $A7F0,$02
 
-g $A7F2
+g $A7F2 Command Buffer
+@ $A7F2 label=CommandBuffer
+B $A7F2,$32
 
 g $A824 User Input: Word Tokens
 @ $A824 label=UserInput_Token_1
@@ -568,6 +600,10 @@ g $A82E Line Number
 @ $A82E label=LineNumber
 E $A82E View the equivalent code in #JEWELS$BD70.
 B $A82E,$01
+
+g $A82F Four Letter Buffer
+@ $A82F label=FourLetterBuffer
+B $A82F,$04
 
 g $A83B Temporary Storage Table Pointer
 @ $A83B label=TempStore_TablePointer
@@ -1161,13 +1197,32 @@ R $ACAD A Line number to begin printing
   $ACBE,$03 Call #R$A592.
   $ACC1,$01 Return.
 
-t $ACC2
-T $ACC4
-T $ACC6
-T $ACC9
-T $ACCC
+g $ACC2 Temporary Storage Command Buffer Pointer
+@ $ACC2 label=TempStore_CommandBufferPointer
+W $ACC2,$02
 
-c $ACCF
+g $ACC4 Temporary Storage Command Buffer Count
+@ $ACC4 label=TempStore_CommandBufferCount
+W $ACC4,$02
+
+t $ACC6 Messaging: " <BS><BS> <BS>"
+@ $ACC6 label=Messaging_SpaceBackspaceBackspaceSpaceBackspace
+D $ACC6 Used by the routine at #R$AD32.
+  $ACC6,$03 "#STR$ACC6,$08($b==$FF)".
+N $ACC9 Messaging: " <BS>"
+@ $ACC9 label=Messaging_SpaceBackspace
+D $ACC9 Used by the routine at #R$AD32.
+  $ACC9,$02 "#STR$ACC9,$08($b==$FF)".
+B $ACCB,$01 Terminator.
+
+t $ACCC Messaging: "_<BS>"
+@ $ACCC label=Messaging_UnderscoreBackspace
+D $ACCC Used by the routine at #R$AD32.
+  $ACCC,$02 "#STR$ACCC,$08($b==$FF)".
+B $ACCE,$01 Terminator.
+
+c $ACCF Print Cursor
+@ $ACCF label=Print_Cursor
   $ACCF,$01 Stash #REGhl on the stack.
 N $ACD0 Print "#STR$ACCC,$08($b==$FF)".
   $ACD0,$03 #REGhl=#R$ACCC.
@@ -1175,25 +1230,32 @@ N $ACD0 Print "#STR$ACCC,$08($b==$FF)".
   $ACD6,$01 Restore #REGhl from the stack.
   $ACD7,$01 Return.
 
-c $ACD8
+c $ACD8 Is Character A Delimiter
+@ $ACD8 label=IsDelimiter
+R $ACD8 O:F The zero flag is set if a delimiter is found
   $ACD8,$02 Stash #REGhl and #REGbc on the stack.
   $ACDA,$03 #REGhl=#R$A663.
-  $ACDD,$01 #REGc=*#REGhl.
-  $ACDE,$02 #REGb=#N$00.
-  $ACE0,$01 Increment #REGhl by one.
-  $ACE1,$02 CPIR.
+  $ACDD,$03 Fetch the delimiter count and store it in #REGbc.
+  $ACE0,$01 Move #REGhl to point to the delimiter table.
+  $ACE1,$02 Search for matching delimiters.
   $ACE3,$02 Restore #REGbc and #REGhl from the stack.
   $ACE5,$01 Return.
 
-c $ACE6
-  $ACE6,$01 Stash #REGaf on the stack.
-  $ACE7,$04 Jump to #R$ACF3 if #REGa is not equal to #N$0D.
-  $ACEB,$01 Stash #REGhl on the stack.
-N $ACEC Print "#STR$ACC9,$08($b==$FF)".
+c $ACE6 Print User Input To Screen
+@ $ACE6 label=Print_UserInputToScreen
+R $ACE6 A User input keypress
+R $ACE6 HL Pointer to the command buffer
+  $ACE6,$01 Stash the user input keypress on the stack.
+  $ACE7,$04 Jump to #R$ACF3 if "DELETE" was not pressed.
+  $ACEB,$01 Stash the pointer to the command buffer on the stack.
+N $ACEC Print "SPACE<BS>" to delete the letter from the screen.
   $ACEC,$03 #REGhl=#R$ACC9.
   $ACEF,$03 Call #R$A585.
-  $ACF2,$02 Restore #REGhl and #REGaf from the stack.
+  $ACF2,$01 Restore the pointer to the command buffer from the stack.
+@ $ACF3 label=UserInputToScreen
+  $ACF3,$01 Restore the user input keypress from the stack.
   $ACF4,$03 Call #R$A577.
+N $ACF7 Print the user input keypress to the screen.
   $ACF7,$03 Call #R$A5A4.
   $ACFA,$01 Return.
 
@@ -1231,65 +1293,90 @@ c $ACFB
 
 c $AD32 Handler: User Input
 @ $AD32 label=Handler_UserInput
+D $AD32 Handles keyboard input, tokenises commands and validates the
+. vocabulary.
 E $AD32 View the equivalent code in #JEWELS$C00A.
 N $AD32 Reset the screen position to defaults.
   $AD32,$03 Call #R$A560.
   $AD35,$03 Call #R$A647.
+N $AD38 Initialise the command buffer.
   $AD38,$03 #REGhl=#R$A7F2.
-  $AD3B,$02 #REGb=#N$00.
+  $AD3B,$02 Initialise a letter counter in #REGb.
   $AD3D,$02 Jump to #R$AD41.
-  $AD3F,$01 Increment #REGhl by one.
-  $AD40,$01 Increment #REGb by one.
+N $AD3F Main input loop - process each keypress.
+@ $AD3F label=UserInput_Loop
+  $AD3F,$01 Move to the next byte of the command buffer.
+  $AD40,$01 Increment the letter counter by one.
+@ $AD41 label=UserInput_Next
   $AD41,$03 Call #R$ACCF.
   $AD44,$03 Call #R$A53E.
-  $AD47,$04 Jump to #R$AD5B if #REGa is not equal to #N$0C.
-  $AD4B,$01 #REGa=#N$00.
-  $AD4C,$03 Jump to #R$AD41 if #REGa is equal to #REGb.
-  $AD4F,$01 Exchange the #REGde and #REGhl registers.
-N $AD50 Print "#STR$ACC6,$08($b==$FF)".
+  $AD47,$04 Jump to #R$AD5B if "DELETE" was not pressed.
+N $AD4B The user pressed "DELETE".
+  $AD4B,$04 Jump back to #R$AD41 if there hasn't been any input yet (nothing to
+. delete).
+N $AD4F There is input which can be deleted, so action a delete!
+  $AD4F,$01 Temporarily stash the command buffer pointer in #REGde.
+N $AD50 Print "SPACE BACKSPACE BACKSPACE SPACE BACKSPACE" to move the current
+. print position on the screen to the previous character, and to delete the
+. character present using a space.
   $AD50,$03 #REGhl=#R$ACC6.
   $AD53,$03 Call #R$A585.
-  $AD56,$01 Exchange the #REGde and #REGhl registers.
-  $AD57,$01 Decrease #REGhl by one.
-  $AD58,$01 Decrease #REGb by one.
+N $AD56 Adjust the command buffer position and letter counter.
+  $AD56,$01 Restore the command buffer pointer from #REGde.
+  $AD57,$01 Decrease the command buffer pointer by one.
+  $AD58,$01 Decrease the letter counter by one.
   $AD59,$02 Jump to #R$AD41.
-
-  $AD5B,$05 Jump to #R$AD6D if #REGc is equal to #N$0D.
-  $AD60,$04 Jump to #R$AD41 if #REGc is less than #N$20.
-  $AD64,$04 Jump to #R$AD41 if #REGc is greater than or equal to #N$80.
-  $AD68,$05 Jump to #R$AD41 if #REGb is equal to #N$31.
-  $AD6D,$02 Write #REGc to *#REGhl.
+N $AD5B Check which key the user pressed:
+@ $AD5B label=ValidateUserInput
+  $AD5B,$05 Jump to #R$AD6D if "ENTER" was pressed.
+  $AD60,$04 If the keypress was any other control key (the value being under
+. #N$20 ASCII "SPACE"), it's not valid input so jump back to #R$AD41.
+  $AD64,$04 If the keypress was higher than #N$80, it's also not valid input so
+. jump back to #R$AD41.
+N $AD68 Is the command buffer full?
+  $AD68,$05 Jump to #R$AD41 if the letter counter is #N$31.
+N $AD6D Writes the keypress into the command buffer.
+@ $AD6D label=UserInput_WriteKeypress
+  $AD6D,$02 Write the user input key to *#REGhl.
   $AD6F,$03 Call #R$ACE6.
-  $AD72,$05 Jump to #R$AD3F if #REGc is not equal to #N$0D.
+N $AD72 Did the user press "ENTER"?
+  $AD72,$05 Jump to #R$AD3F if "DELETE" was not pressed.
+N $AD77 The player pressed "ENTER" so begin to process the user input.
+N $AD77 Clear down the user input tokens.
   $AD77,$03 #REGhl=#R$A824.
-  $AD7A,$02 #REGb=#N$0A.
-  $AD7C,$02 Write #N$FF to *#REGhl.
+  $AD7A,$02 Set a counter in #REGb for all #N$0A user input tokens.
+@ $AD7C label=EmptyUserInputTokens_Loop
+  $AD7C,$02 Write a termination byte (#N$FF) to *#REGhl.
   $AD7E,$01 Increment #REGhl by one.
-  $AD7F,$02 Decrease counter by one and loop back to #R$AD7C until counter is zero.
+  $AD7F,$02 Decrease the user input tokens counter by one and loop back to
+. #R$AD7C until all the tokens have been set to termination bytes (#N$FF).
   $AD81,$03 #REGhl=#R$A7F2.
   $AD84,$04 #REGix=#R$A824.
-  $AD88,$02 #REGc=#N$0A.
+  $AD88,$02 Set a counter in #REGc for the #N$0A user input tokens.
   $AD8A,$02 Jump to #R$ADF6.
-
+N $AD8C What's been entered isn't parsable.
 N $AD8C Print "#STR$A84F,$08($b==$FF)".
+@ $AD8C label=UserInput_NotUnderstood
   $AD8C,$03 #REGhl=#R$A84F.
   $AD8F,$03 Call #R$A592.
   $AD92,$03 Jump to #R$AD32.
+N $AD95 Process found word into user input token.
+@ $AD95 label=ProcessFoundWord
   $AD95,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $AD98,$03 #REGhl=*#R$ACC2.
   $AD9B,$03 #REGde=#R$A82F.
   $AD9E,$03 #REGbc=#N($0004,$04,$04).
   $ADA1,$06 Jump to #R$ADA8 if *#R$ACC4 is greater than or equal to #REGc.
   $ADA7,$01 #REGc=#REGa.
-  $ADA8,$02 LDIR.
+N $ADA8 Copy the word (up to 4 characters into the four letter buffer).
+@ $ADA8 label=CopyWordToBuffer
+  $ADA8,$02 Copy 4 letters of the command buffer to the four letter buffer.
   $ADAA,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $ADAD,$01 Stash #REGhl on the stack.
-  $ADAE,$03 #REGhl=*#R$A7C6.
-  $ADB1,$01 Stash #REGhl on the stack.
+  $ADAE,$04 Stash *#R$A7C6 on the stack.
   $ADB2,$06 Write #R$A667 to *#R$A7C6.
   $ADB8,$03 Call #R$ACFB.
-  $ADBB,$01 Restore #REGhl from the stack.
-  $ADBC,$03 Write #REGhl to *#R$A7C6.
+  $ADBB,$04 Restore *#R$A7C6 from the stack and write it back to *#R$A7C6.
   $ADBF,$01 Restore #REGhl from the stack.
   $ADC0,$02 Jump to #R$ADF6 if #REGa is less than #REGc.
   $ADC2,$03 Call #R$ACFB.
@@ -1316,31 +1403,38 @@ N $ADE5 Print "#STR$AA15,$08($b==$FF)".
   $ADF1,$02 Increment #REGix by one.
   $ADF3,$01 Decrease #REGc by one.
   $ADF4,$02 Jump to #R$AE2D if #REGc is equal to #REGc.
+N $ADF6 Token matching only uses four letters of every word so a buffer is used
+. for processing. Start by clearing the buffer.
+@ $ADF6 label=EmptyFourLetterBuffer
   $ADF6,$02 Stash #REGhl and #REGbc on the stack.
-  $ADF8,$03 #REGhl=#R$A82F.
-  $ADFB,$02 #REGb=#N$04.
-  $ADFD,$02 Write #N$20 to *#REGhl.
+  $ADF8,$03 Load #R$A82F into #REGhl.
+  $ADFB,$02 Set a counter in #REGb for the #N$04 letters in the buffer.
+@ $ADFD label=EmptyFourLetterBuffer_Loop
+  $ADFD,$02 Write ASCII "SPACE" (#N$20) to *#REGhl.
   $ADFF,$01 Increment #REGhl by one.
-  $AE00,$02 Decrease counter by one and loop back to #R$ADFD until counter is zero.
+  $AE00,$02 Decrease the letter buffer counter by one and loop back to #R$ADFD
+. until all four letters have been cleared.
   $AE02,$02 Restore #REGbc and #REGhl from the stack.
   $AE04,$01 Stash #REGde on the stack.
   $AE05,$02 Jump to #R$AE08.
 
   $AE07,$01 Increment #REGhl by one.
-  $AE08,$05 Jump to #R$AE29 if *#REGhl is equal to #N$0D.
+  $AE08,$01 Fetch a character from the command buffer.
+  $AE09,$04 Jump to #R$AE29 if the character is "ENTER" (ASCII #N$0D).
   $AE0D,$03 Call #R$ACD8.
-  $AE10,$02 Jump to #R$AE07 if #REGa is equal to #N$0D.
+  $AE10,$02 Jump to #R$AE07 if the character is a delimiter.
   $AE12,$03 Write #REGhl to *#R$ACC2.
   $AE15,$03 #REGde=#N($0000,$04,$04).
   $AE18,$01 Increment #REGhl by one.
   $AE19,$01 Increment #REGde by one.
-  $AE1A,$05 Jump to #R$AE24 if *#REGhl is equal to #N$0D.
+  $AE1A,$01 Fetch a character from the command buffer.
+  $AE1B,$04 Jump to #R$AE24 if the character is "ENTER" (ASCII #N$0D).
   $AE1F,$03 Call #R$ACD8.
-  $AE22,$02 Jump to #R$AE18 if #REGa is not equal to #N$0D.
+  $AE22,$02 Jump to #R$AE18 if the character was not a delimiter.
   $AE24,$04 Write #REGde to *#R$ACC4.
   $AE28,$01 Set the carry flag.
   $AE29,$01 Restore #REGde from the stack.
-  $AE2A,$03 Jump to #R$AD95 if #REGa is less than #N$0D.
+  $AE2A,$03 Jump to #R$AD95 if the carry flag is set.
   $AE2D,$08 Jump to #R$AD8C if *#R$A824 is equal to #N$FF.
   $AE35,$01 Return.
 
@@ -1548,20 +1642,28 @@ N $AF06 Got to the end and didn't locate the item anywhere.
   $AF06,$01 Set flags.
   $AF07,$01 Return.
 
-c $AF08
+c $AF08 Handler: Update Item Location
+@ $AF08 label=Handler_UpdateItemLocation
+R $AF08 B Item ID
+R $AF08 C Room ID
   $AF08,$03 #REGhl=#R$A66C.
-  $AF0B,$02 #REGd=#N$00.
-  $AF0D,$01 #REGe=#REGb.
-  $AF0E,$01 #REGhl+=#REGde.
-  $AF0F,$01 Write #REGc to *#REGhl.
+  $AF0B,$03 Load the item ID into #REGde.
+  $AF0E,$01 Add the item ID to #R$A66C.
+  $AF0F,$01 Update the table with the new room ID in #REGc.
   $AF10,$01 Return.
-  $AF11,$02 #REGb=#N$00.
+
+c $AF11
+R $AF11 HL Pointer to item group data
+R $AF11 O:A The found index
+  $AF11,$02 Initialise an index counter in #REGb to #N$00.
   $AF13,$02 Jump to #R$AF17.
-  $AF15,$01 Increment #REGb by one.
+N $AF15 Move past the termination byte in the item group.
+  $AF15,$01 Increment the index counter in #REGb by one.
   $AF16,$01 Increment #REGhl by one.
   $AF17,$03 Call #R$AEF7.
-  $AF1A,$02 Jump to #R$AF15 if #REGhl is equal to #REGa.
-  $AF1C,$01 #REGa=#REGb.
+  $AF1A,$02 Jump back to #R$AF15 until an item from the item group is matched.
+N $AF1C An index was found.
+  $AF1C,$01 Store the index from #REGb into #REGa.
   $AF1D,$01 Return.
 
 c $AF1E Transform Item
@@ -1580,14 +1682,14 @@ D $AF1E Rather than use item properties, the game just has separate objects
 . When the match is lit by the player; item #N$02 is destroyed and replaced
 . with item #N$03.
 E $AF1E View the equivalent code in #JEWELS$C426.
-  $AF1E,$01 #REGa=#REGb.
-  $AF1F,$03 Call #R$AED1.
-  $AF22,$02 Stash #REGbc and #REGaf on the stack.
-  $AF24,$02 #REGc=#N$00.
-  $AF26,$03 Call #R$AF08.
-  $AF29,$02 Restore #REGaf and #REGbc from the stack.
-  $AF2B,$01 #REGb=#REGc.
-  $AF2C,$01 #REGc=#REGa.
+  $AF1E,$04 Call #R$AED1 with the source item ID.
+N $AF22 #REGa now contains the location of the source ID.
+  $AF22,$02 Stash the item IDs and source item room ID on the stack.
+  $AF24,$05 Call #R$AF08 and disable the source item.
+  $AF29,$02 Restore the source item room ID and item IDs from the stack.
+N $AF2B Activate the destination item in the same room.
+  $AF2B,$01 Load the destination item ID into #REGb.
+  $AF2C,$01 Load the source room ID into #REGc.
   $AF2D,$03 Call #R$AF08.
   $AF30,$01 Return.
 
@@ -1720,7 +1822,6 @@ N $AF9A Print "#STR$A9D6,$08($b==$FF)".
 c $AF9F Parser: Validate Two Direct Objects
 @ $AF9F label=Parser_ValidateTwoDirectObjects
 E $AF9F View the equivalent code in #JEWELS$C49F.
-R $AF9F O:F The zero flag is set when the command has two valid direct objects
 R $AF9F O:F The carry flag is set when the command is malformed
   $AF9F,$03 Call #R$AF7B.
   $AFA2,$01 Return if there is no direct object in the user input (so the
@@ -1857,8 +1958,7 @@ E $B01F View the equivalent code in #JEWELS$C520.
   $B039,$02 Restore #REGbc and #REGhl from the stack.
   $B03B,$02 Decrease counter by one and loop back to #R$B02C until counter is zero.
   $B03D,$04 Write #REGc to *#R$A7C3.
-  $B041,$03 #REGa=*#R$A787.
-  $B044,$02 Return if *#R$A787 is zero.
+  $B041,$05 Return if *#R$A787 is zero.
   $B046,$02 #REGb=#N$08.
   $B048,$03 #REGhl=#R$A788.
   $B04B,$01 #REGc=#REGa.
@@ -1873,24 +1973,30 @@ E $B01F View the equivalent code in #JEWELS$C520.
   $B05B,$02 Decrease counter by one and loop back to #R$B04E until counter is zero.
   $B05D,$01 Return.
 
-c $B05E
+c $B05E Handler: Match Verb
+@ $B05E label=Handler_MatchVerb
 E $B05E View the equivalent code in #JEWELS$C556.
-  $B05E,$03 #REGhl=*#R$A7E0.
-  $B061,$04 #REGbc=*#R$A7EA.
-  $B065,$03 #REGa=*#R$A824.
-  $B068,$02 Search for matching objects.
-  $B06A,$02 Jump to #R$B073 if ?? is equal to #N$00.
+  $B05E,$03 Load #REGhl with *#R$A7E0.
+  $B061,$04 Set the length of the table from *#R$A7EA into #REGbc.
+  $B065,$05 Search *#R$A7E0 for *#R$A824.
+  $B06A,$02 Jump to #R$B073 if *#R$A824 was found in the table.
+N $B06C The verb wasn't found.
 N $B06C Print "#STR$A84F,$08($b==$FF)".
   $B06C,$03 #REGhl=#R$A84F.
   $B06F,$03 Call #R$A592.
   $B072,$01 Return.
+N $B073 The verb token was found in the table, so jump to the appropriate
+. routine.
+@ $B073 label=Handler_Verb
+M $B073,$06 Calculate the index using *#R$A7EA-#REGc-#N$01, and store the
+. result in #REGe.
   $B073,$03 #REGa=*#R$A7EA.
   $B076,$01 #REGa-=#REGc.
   $B077,$01 Decrease #REGa by one.
   $B078,$01 #REGe=#REGa.
   $B079,$04 #REGix=*#R$A7DA.
   $B07D,$03 Call #R$AB88.
-  $B080,$01 Jump to *#REGhl.
+  $B080,$01 Jump to the verb handler held by #REGhl.
 
 c $B081 Pause, Print String And Scroll
 @ $B081 label=PausePrintStringAndScroll
@@ -1978,26 +2084,35 @@ N $B0D7 Print "#STR$AADF,$08($b==$FF)".
   $B0DA,$03 Call #R$A592.
   $B0DD,$01 Return.
 
-c $B0DE
+c $B0DE Action Routing
+@ $B0DE label=ActionRouting
 R $B0DE HL Table of pointers which reference item groups
 R $B0DE DE Jump table of pointers which action each reference in #REGhl
 R $B0DE BC Count of the number of table items to process
-  $B0DE,$03 #REGix=#REGhl (using the stack).
-  $B0E1,$03 #REGl=*#REGix+#N$00.
-  $B0E4,$03 #REGh=*#REGix+#N$01.
-  $B0E7,$04 Stash #REGix, #REGde and #REGbc on the stack.
+  $B0DE,$03 Load the item group table into #REGix (using the stack).
+N $B0E1 Keep looping until a match is found.
+@ $B0E1 label=ActionRouting_Loop
+  $B0E1,$06 Fetch the phrase tokens from the item group and store the pointer
+. in #REGhl.
+  $B0E7,$04 Stash the item group table, the pointer to the jump table and the
+. table items counter on the stack.
   $B0EB,$03 Call #R$AE80.
-  $B0EE,$04 Restore #REGbc, #REGde and #REGix from the stack.
-  $B0F2,$02 Jump to #R$B0FF if ?? is not equal to #N$00.
-  $B0F4,$03 #REGix=#REGde (using the stack).
-  $B0F7,$03 #REGl=*#REGix+#N$00.
-  $B0FA,$03 #REGh=*#REGix+#N$01.
-  $B0FD,$01 Restore #REGde from the stack.
-  $B0FE,$03 Jump to *#REGhl.
-  $B101,$02 Increment #REGix by one.
-  $B103,$02 Increment #REGde by two.
-  $B105,$01 Decrease #REGbc by one.
-  $B106,$04 Jump back to #R$B0E1 until #REGbc is zero.
+  $B0EE,$04 Restore the table items counter, the pointer to the jump table and
+. the item group table from the stack.
+N $B0F2 Skip to the next set of phrase tokens if nothing matched...
+  $B0F2,$02 Jump to #R$B0FF if none of the input matches this set of phrase
+. tokens.
+N $B0F4 The phrase tokens matched! Handle jumping to the action routine.
+  $B0F4,$03 Load the action table into #REGix (using the stack).
+  $B0F7,$06 Fetch the action routine from the table and store it in #REGhl.
+  $B0FD,$01 Discard the return address on the stack.
+  $B0FE,$01 Jump to the action routine pointed to by *#REGhl.
+N $B0FF Nothing matched, so move to the next set of pointers.
+@ $B0FF label=ActionRouting_Next
+  $B0FF,$04 Move to the next pointer in the item group table.
+  $B103,$02 Move to the next pointer in the action pointers table.
+  $B105,$01 Decrease the table items counter by one.
+  $B106,$04 Jump back to #R$B0E1 until all the item groups have been processed.
   $B10A,$01 Return.
 
 c $B10B Print Room Image
@@ -2602,6 +2717,7 @@ B $BB9C,$01 Terminator.
 
 t $BB9D Messaging: "A Shield"
 @ $BB9D label=Messaging_Shield_Duplicate
+N $BB9D See #POKE#correct-typo(Correct Typo).
   $BB9D,$08 "#STR$BB9D,$08($b==$FF)".
 B $BBA5,$01 Terminator.
 
@@ -4061,7 +4177,11 @@ g $E978 Table: Configurable Exits
 W $E978,$02
 L $E978,$02,$0B
 
-c $E98E
+c $E98E Event Routing
+@ $E98E label=EventRouting
+R $E98E DE
+R $E98E HL
+R $E98E A
   $E98E,$01 Stash #REGbc on the stack.
   $E98F,$02 CPIR.
   $E991,$01 Restore #REGhl from the stack.
@@ -4307,12 +4427,22 @@ c $EB10
   $EB33,$03 #REGbc=#N$0016.
   $EB36,$03 Call #R$E98E.
   $EB39,$01 Return.
-B $EB3A,$0B
+B $EB3A,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+L $EB3A,$01,$0B
 W $EB45,$02
 L $EB45,$02,$0B
-B $EB5B,$16
+B $EB5B,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+L $EB5B,$01,$16
 W $EB71,$02
 L $EB71,$02,$16
+
+c $EB9D
+  $EB9D,$03 Call #R$A592.
+  $EBA0,$02 Restore #REGhl and #REGhl from the stack.
+N $EBA2 Bad luck!
+  $EBA2,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
+. over".
+  $EBA6,$01 Return.
 
 c $EBA7
   $EBA7,$06 Return if *#R$A7C3 is not room #N$42: #ROOM$42.
@@ -4337,17 +4467,12 @@ c $EBC5
   $EBD9,$01 Return.
 
 c $EBDA
-  $EBDA,$05 Test bit 1 of *#R$A76C.
-  $EBDF,$01 Return if ?? is not equal to #N$00.
-  $EBE0,$02 Set bit 1 of *#REGhl.
-  $EBE2,$02 #REGa=#N$00.
-  $EBE4,$03 Call #R$AEE0.
-  $EBE7,$02 #REGa=#N$01.
-  $EBE9,$03 Call #R$AEE0.
-  $EBEC,$02 #REGa=#N$02.
-  $EBEE,$03 Call #R$AEF0.
-  $EBF1,$02 #REGa=#N$03.
-  $EBF3,$03 Call #R$AEF0.
+  $EBDA,$06 Return if bit 1 of *#R$A76C is set.
+  $EBE0,$02 Set bit 1 of *#R$A76C.
+  $EBE2,$05 Call #R$AEE0 with item #N$00: #ITEM$00.
+  $EBE7,$05 Call #R$AEE0 with item #N$01: #ITEM$01.
+  $EBEC,$05 Call #R$AEF0 with event #N$02: #ITEM$02.
+  $EBF1,$05 Call #R$AEF0 with event #N$03: #ITEM$03.
   $EBF6,$05 Call #R$B09A to add #N$04 points to the score.
   $EBFB,$01 Return.
 
@@ -4442,21 +4567,20 @@ N $ECB7 Change the warrior state!
 
 c $ECBE
   $ECBE,$05 Call #R$AE6B with item #N$28: #ITEM$28.
-  $ECC3,$01 Return if #REGa is not equal to #N$28.
-  $ECC4,$02 #REGa=#N$00.
-  $ECC6,$03 Call #R$AEF0.
-  $ECC9,$02 #REGa=#N$01.
-  $ECCB,$03 Call #R$AEF0.
-  $ECCE,$02 #REGa=#N$08.
-  $ECD0,$03 Call #R$AEF0.
-  $ECD3,$02 #REGa=#N$07.
-  $ECD5,$03 Call #R$AEF0.
+  $ECC3,$01 Return if item #N$28: #ITEM$28 is not in the current room or the
+. players inventory.
+  $ECC4,$05 Call #R$AEF0 with event #N$00: #ITEM$00.
+  $ECC9,$05 Call #R$AEF0 with event #N$01: #ITEM$01.
+  $ECCE,$05 Call #R$AEF0 with event #N$08: #ITEM$08.
+  $ECD3,$05 Call #R$AEF0 with event #N$07: #ITEM$07.
   $ECD8,$05 Call #R$AEE0 with item #N$28: #ITEM$28.
   $ECDD,$05 Call #R$B09A to add #N$04 points to the score.
   $ECE2,$05 Write #N$1A to *#R$E7B9 to open up westbound access to #ROOM$1A
 . from #ROOM$1B.
   $ECE7,$01 Return.
 
+c $ECE8 Response: "The Torc Warms Up As You Look"
+@ $ECE8 label=Response_TorcWarmsUpAsYouLook
 N $ECE8 Print "#STR$DFF1,$08($b==$FF)".
   $ECE8,$03 #REGhl=#R$DFF1.
   $ECEB,$03 Call #R$A592.
@@ -4579,12 +4703,18 @@ c $EDB2
   $EDB2,$03 Call #R$ED75.
   $EDB5,$03 Jump to #R$EDA6.
 
-c $EDB8
+c $EDB8 Handler: Drop Item
+@ $EDB8 label=Handler_DropItem
+R $EDB8 A Item ID
   $EDB8,$03 Call #R$AEDA.
 N $EDBB Print "#STR$AA9B,$08($b==$FF)".
   $EDBB,$03 #REGhl=#R$AA9B.
-  $EDBE,$03 Jump to #R$ED7E if *#REGhl is not equal to #N$01.
-  $EDC1,$01 #REGb=#REGe.
+  $EDBE,$03 Jump to #R$ED7E if the player is not carrying the item in their
+. inventory.
+N $EDC1 The item is in the players inventory, so move its location to the
+. current room.
+@ $EDC1 label=DropItem
+  $EDC1,$01 Copy the item ID into #REGb.
   $EDC2,$04 #REGc=*#R$A7C3.
   $EDC6,$03 Call #R$AF08.
   $EDC9,$04 Decrease *#R$A790 by one.
@@ -4960,20 +5090,26 @@ c $F001 Process: Drop Urn
 c $F006 Process: Drop Torc
 @ $F006 label=Process_DropTorc
   $F006,$06 Call #R$AEF7 with #R$E366.
-  $F00C,$05 Jump to #R$EDB8 if #REGa is not equal to #N$6A.
+N $F00C The player wants to drop the torc but are they wearing it?
+  $F00C,$05 Jump to #R$EDB8 if the item is not item #N$6A: #ITEM$6A.
+N $F011 Else the player is wearing the torc, so "un-wear" it first before
+. dropping it.
+N $F011 Change the torc state!
   $F011,$06 Call #R$AF1E to transform item #N$6A (#ITEM$6A) into item #N$69
 . (#ITEM$69).
-  $F017,$02 #REGa=#N$69.
-  $F019,$03 Jump to #R$EDB8.
+  $F017,$05 Jump to #R$EDB8 with item #N$69: #ITEM$69.
 
 c $F01C Process: Drop Helmet
 @ $F01C label=Process_DropHelmet
   $F01C,$06 Call #R$AEF7 with #R$E36B.
-  $F022,$05 Jump to #R$EDB8 if #REGa is not equal to #N$20.
+N $F022 The player wants to drop the helmet but are they wearing it?
+  $F022,$05 Jump to #R$EDB8 if the item is not item #N$20: #ITEM$20.
+N $F027 Else the player is wearing the helmet, so "un-wear" it first before
+. dropping it.
+N $F027 Change the helmet state!
   $F027,$06 Call #R$AF1E to transform item #N$20 (#ITEM$20) into item #N$1F
 . (#ITEM$1F).
-  $F02D,$02 #REGa=#N$1F.
-  $F02F,$03 Jump to #R$EDB8.
+  $F02D,$05 Jump to #R$EDB8 with item #N$1F: #ITEM$1F.
 
 c $F032 Process: Drop Food
 @ $F032 label=Process_DropFood
@@ -5039,11 +5175,14 @@ c $F07C Process: Drop Staff
 c $F091 Process: Drop Cloak
 @ $F091 label=Process_DropCloak
   $F091,$06 Call #R$AEF7 with #R$E3DD.
-  $F097,$05 Jump to #R$EDB8 if #REGa is not equal to #N$6D.
+N $F097 The player wants to drop the cloak but are they wearing it?
+  $F097,$05 Jump to #R$EDB8 if the item is not item #N$6D: #ITEM$6D.
+N $F09C Else the player is wearing the cloak, so "un-wear" it first before
+. dropping it.
+N $F09C Change the cloak state!
   $F09C,$06 Call #R$AF1E to transform item #N$6D (#ITEM$6D) into item #N$64
 . (#ITEM$64).
-  $F0A2,$02 #REGa=#N$64.
-  $F0A4,$03 Jump to #R$EDB8.
+  $F0A2,$05 Jump to #R$EDB8 with item #N$64: #ITEM$64.
 
 c $F0A7 Process: Drop Silver
 @ $F0A7 label=Process_DropSilver
@@ -5149,8 +5288,7 @@ c $F179
   $F18E,$03 Jump to #R$ED6D.
   $F191,$02 #REGa=#N$0B.
   $F193,$03 Call #R$AEE0.
-  $F196,$03 #REGhl=#R$A787.
-  $F199,$02 Reset bit 0 of *#REGhl.
+  $F196,$05 Reset bit 0 of *#R$A787.
   $F19B,$06 Call #R$AF1E to transform item #N$49 (#ITEM$49) into item #N$4B
 . (#ITEM$4B).
   $F1A1,$05 Call #R$B09A to add #N$04 points to the score.
@@ -5161,16 +5299,20 @@ c $F179
   $F1B1,$03 Jump to #R$EE05 if *#REGhl is equal to #N$45.
   $F1B4,$03 #REGhl=#R$D695.
   $F1B7,$03 Call #R$A592.
-  $F1BA,$03 #REGhl=#R$E9B2.
-  $F1BD,$01 Exchange the *#REGsp with the #REGhl register.
+N $F1BA Bad luck!
+  $F1BA,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
+. over".
   $F1BE,$03 #REGhl=#R$D6B0.
   $F1C1,$03 Jump to #R$ED71.
+
   $F1C4,$03 #REGhl=#R$D695.
   $F1C7,$03 Call #R$A592.
-  $F1CA,$03 #REGhl=#R$E9B2.
-  $F1CD,$01 Exchange the *#REGsp with the #REGhl register.
+N $F1CA Bad luck!
+  $F1CA,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
+. over".
   $F1CE,$03 #REGhl=#R$D6E3.
   $F1D1,$03 Jump to #R$ED71.
+
   $F1D4,$02 #REGa=#N$19.
   $F1D6,$03 Jump to #R$F17B.
 
@@ -5247,8 +5389,9 @@ c $F26C
   $F26C,$06 Call #R$AEF7 with #R$E3B6.
   $F272,$05 Jump to #R$EE35 if #REGa is equal to #N$54.
   $F277,$04 Jump to #R$F285 if #REGa is not equal to #N$52.
-  $F27B,$03 #REGhl=#R$E9B2.
-  $F27E,$01 Exchange the *#REGsp with the #REGhl register.
+N $F27B Bad luck!
+  $F27B,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
+. over".
   $F27F,$03 #REGhl=#R$D778.
   $F282,$03 Jump to #R$ED6D.
 
@@ -5268,8 +5411,9 @@ c $F293
   $F2AA,$03 Call #R$AEE7.
   $F2AD,$03 Jump to #R$EDF3.
 
-  $F2B0,$03 #REGhl=#R$E9B2.
-  $F2B3,$01 Exchange the *#REGsp with the #REGhl register.
+N $F2B0 Bad luck!
+  $F2B0,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
+. over".
   $F2B4,$03 #REGhl=#R$D7B6.
   $F2B7,$03 Jump to #R$ED6D.
 
@@ -5434,8 +5578,9 @@ c $F40A
   $F413,$03 Jump to #R$ED6D.
 
   $F416,$08 Jump to #R$EDED if *#R$A7C3 is not equal to #N$60.
-  $F41E,$03 #REGhl=#R$E9B2.
-  $F421,$01 Exchange the *#REGsp with the #REGhl register.
+N $F41E Bad luck!
+  $F41E,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
+. over".
   $F422,$03 #REGhl=#R$DA42.
   $F425,$03 Jump to #R$ED6D.
 
@@ -5590,25 +5735,34 @@ N $F53E Print "#STR$DC41,$08($b==$FF)".
   $F53E,$03 #REGhl=#R$DC41.
   $F541,$03 Jump to #R$ED6D.
 
-c $F544
-  $F544,$03 #REGhl=#R$E341.
-  $F547,$03 Call #R$AEF7.
-  $F54A,$05 Jump to #R$EE0B if #REGa is equal to #N$0B.
-  $F54F,$05 Jump to #R$EDED if #REGa is not equal to #N$0A.
-  $F554,$02 #REGa=#N$51.
-  $F556,$03 Call #R$AE6B.
-  $F559,$03 Jump to #R$EDDB if #REGa is not equal to #N$51.
+c $F544 Process: Capture Roman
+@ $F544 label=Process_CaptureRoman
+  $F544,$06 Call #R$AEF7 with #R$E341.
+N $F54A The player wants to capture the Roman but is he already captured?
+N $F54A Print "#STR$CDE8,$08($b==$FF)" if the Roman is already captured.
+  $F54A,$05 Jump to #R$EE0B if item #N$0B: #ITEM$0B is in the current room.
+N $F54F The player wants to capture the Roman but is he even here?
+N $F54F Print "#STR$A9EC,$08($b==$FF)" if the Roman isn't present in the room.
+  $F54F,$05 Jump to #R$EDED if item #N$0A: #ITEM$0A isn't in the current room.
+N $F554 Can the player even capture the Roman? Do they have the rope?
+  $F554,$05 Call #R$AE6B with item #N$51: #ITEM$51.
+  $F559,$03 Jump to #R$EDDB if item #N$51: #ITEM$51 isn't present in the
+. current room or the players inventory.
+N $F55C The Roman is here, and the player has the rope! Let's capture a Roman:
+N $F55C Change the romans state!
   $F55C,$06 Call #R$AF1E to transform item #N$0A (#ITEM$0A) into item #N$0B
 . (#ITEM$0B).
   $F562,$05 Call #R$B09A to add #N$04 points to the score.
-  $F567,$02 #REGa=#N$51.
-  $F569,$03 Call #R$AEE0.
-  $F56C,$03 #REGhl=#R$A790.
-  $F56F,$01 Decrease *#REGhl by one.
-  $F570,$03 #REGhl=#R$A787.
-  $F573,$02 Set bit 0 of *#REGhl.
+N $F567 The rope as a separate item is no longer needed.
+  $F567,$05 Call #R$AEE0 with item #N$51: #ITEM$51.
+  $F56C,$04 Decrease *#R$A790 by one.
+N $F570 Flag to the game that this has occurred.
+  $F570,$05 Set bit 0 of *#R$A787 which relates to the roman being captured.
+N $F575 Print "#STR$DC58,$08($b==$FF)".
   $F575,$03 #REGhl=#R$DC58.
   $F578,$03 Jump to #R$ED6D.
+
+c $F57B
   $F57B,$03 #REGhl=#R$E3C5.
   $F57E,$03 Call #R$AEF7.
   $F581,$02 Compare #REGa with #N$5E.
@@ -5721,8 +5875,7 @@ c $F620
 
   $F68B,$06 Call #R$AF1E to transform item #N$0B (#ITEM$0B) into item #N$55
 . (#ITEM$55).
-  $F691,$03 #REGhl=#R$A787.
-  $F694,$02 Reset bit 0 of *#REGhl.
+  $F691,$05 Reset bit 0 of *#R$A787.
   $F696,$03 Call #R$F685.
   $F699,$03 #REGhl=#R$DD6E.
   $F69C,$03 Jump to #R$ED6D.
@@ -5736,8 +5889,9 @@ c $F620
   $F6B0,$03 Write #REGa to *#R$A773.
   $F6B3,$03 Call #R$F62B.
   $F6B6,$07 Jump to #R$F6C7 if *#R$A773 is not equal to #N$0F.
-  $F6BD,$03 #REGhl=#R$E9B2.
-  $F6C0,$01 Exchange the *#REGsp with the #REGhl register.
+N $F6BD Bad luck!
+  $F6BD,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
+. over".
   $F6C1,$03 #REGhl=#R$DD86.
   $F6C4,$03 Jump to #R$ED6D.
 
@@ -5769,8 +5923,9 @@ c $F620
 
   $F703,$03 Write #REGhl to *#R$A772.
   $F706,$03 Call #R$F62B.
-  $F709,$03 #REGhl=#R$E9B2.
-  $F70C,$01 Exchange the *#REGsp with the #REGhl register.
+N $F709 Bad luck!
+  $F709,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
+. over".
   $F70D,$03 #REGhl=*#R$A772.
   $F710,$03 Jump to #R$ED6D.
 
@@ -5929,6 +6084,7 @@ c $F853 Action: Examine
   $F85F,$03 #REGde=#R$F87D.
   $F862,$03 #REGbc=#N($0009,$04,$04).
   $F865,$03 Call #R$B0DE.
+N $F868 No phrase tokens matched the user input tokens.
 N $F868 Print "#STR$CF40,$08($b==$FF)".
   $F868,$03 Jump to #R$EE53.
 N $F86B The token table for the action "examine":
@@ -6063,6 +6219,7 @@ c $F8F2 Action: Take/ Get
   $F8FE,$03 #REGde=#R$F930.
   $F901,$03 #REGbc=#N($0013,$04,$04).
   $F904,$03 Call #R$B0DE.
+N $F907 No phrase tokens matched the user input tokens.
 N $F907 Print "#STR$A9EC,$08($b==$FF)".
   $F907,$03 Jump to #R$EDED.
 N $F90A The token table for the action "get":
@@ -6091,6 +6248,7 @@ c $F975 Action: Drop
   $F981,$03 #REGde=#R$F98D.
   $F984,$03 #REGbc=#N($0013,$04,$04).
   $F987,$03 Call #R$B0DE.
+N $F98A No phrase tokens matched the user input tokens.
 N $F98A Print "#STR$A9EC,$08($b==$FF)".
   $F98A,$03 Jump to #R$EDED.
 N $F98D The actions table for "drop":
@@ -6101,8 +6259,8 @@ L $F98D,$02,$13,$02
 c $F9B3 Action: Throw
 @ $F9B3 label=Action_Throw
   $F9B3,$03 Call #R$AF9F.
-  $F9B6,$01 Return if there is no direct object in the user input (so the
-. command is malformed).
+  $F9B6,$01 Return if there are not two direct objects in the user input (so 
+. the command is malformed).
   $F9B7,$03 #REGhl=#R$A825.
   $F9BA,$03 #REGbc=#N($0009,$04,$04).
   $F9BD,$02 Load token #N$6D #TOKEN$6D into #REGa.
@@ -6112,25 +6270,37 @@ c $F9B3 Action: Throw
   $F9C7,$03 #REGde=#R$F9DA.
   $F9CA,$03 #REGbc=#N($0004,$04,$04).
   $F9CD,$03 Call #R$B0DE.
+N $F9D0 No phrase tokens matched the user input tokens.
   $F9D0,$02 Jump to #R$F9E2.
-W $F9D2,$02
-L $F9D2,$02,$04
-W $F9DA,$02
-L $F9DA,$02,$04
+N $F9D2 The token table for the action "throw":
+@ $F9D2 label=Table_ActionThrow_TokenGroup
+W $F9D2,$02 Token group #N($01+(#PC-$F9D2)/$02).
+L $F9D2,$02,$04,$02
+N $F9DA The actions table for "throw":
+@ $F9DA label=Table_ActionThrow
+W $F9DA,$02 Action routine #N($01+(#PC-$F9DA)/$02).
+L $F9DA,$02,$04,$02
+
 
 c $F9E2
   $F9E2,$03 #REGhl=#R$F9F1.
   $F9E5,$03 #REGde=#R$FA0D.
   $F9E8,$03 #REGbc=#N($000E,$04,$04).
   $F9EB,$03 Call #R$B0DE.
+N $F9EE No phrase tokens matched the user input tokens.
+N $F9EE Print "#STR$AA84,$08($b==$FF)".
   $F9EE,$03 Jump to #R$EDF9.
-W $F9F1,$02
-L $F9F1,$02,$0E
-W $FA0D,$02
-L $FA0D,$02,$0E
+N $F9F1 The token table for the action "kill"/"throw":
+@ $F9F1 label=Table_ActionKillThrow_TokenGroup
+W $F9F1,$02 Token group #N($01+(#PC-$F9F1)/$02).
+L $F9F1,$02,$0E,$02
+N $FA0D The actions table for "kill"/"throw":
+@ $FA0D label=Table_ActionsKillThrow
+W $FA0D,$02 Action routine #N($01+(#PC-$FA0D)/$02).
+L $FA0D,$02,$0E,$02
 
-c $FA29 Action: Kill/ Attack/ Hit/ Strike
-@ $FA29 label=Action_Kill
+c $FA29 Action: Give?
+@ $FA29 label=Action_Give
   $FA29,$03 Call #R$AF7B.
   $FA2C,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -6143,14 +6313,29 @@ N $FA32 Print "#STR$A9D6,$08($b==$FF)".
   $FA3A,$03 #REGde=#R$FA58.
   $FA3D,$03 #REGbc=#N($0009,$04,$04).
   $FA40,$03 Call #R$B0DE.
+N $FA43 No phrase tokens matched the user input tokens.
   $FA43,$03 Jump to #R$F9E2.
-W $FA46,$02
-L $FA46,$02,$09
-W $FA58,$02
-L $FA58,$02,$09
+N $FA46 The token table for the action "give":
+@ $FA46 label=Table_ActionGive_TokenGroup
+W $FA46,$02 Token group #N($01+(#PC-$FA46)/$02).
+L $FA46,$02,$09,$02
+N $FA58 The actions table for "give":
+@ $FA58 label=Table_ActionsGive
+W $FA58,$02 Action routine #N($01+(#PC-$FA58)/$02).
+L $FA58,$02,$09,$02
 
 c $FA6A Action: Free
 @ $FA6A label=Action_Free
+  $FA6A,$03 Call #R$AF7B.
+  $FA6D,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $FA6E,$03 #REGhl=#R$FA7D.
+  $FA71,$03 #REGde=#R$FA87.
+  $FA74,$03 #REGbc=#N($0005,$04,$04).
+  $FA77,$03 Call #R$B0DE.
+N $FA7A No phrase tokens matched the user input tokens.
+N $FA7A Print "#STR$A9EC,$08($b==$FF)".
+  $FA7A,$03 Jump to #R$EDED.
 N $FA7D The token table for the action "free":
 @ $FA7D label=Table_ActionFree_TokenGroup
 W $FA7D,$02 Token group #N($01+(#PC-$FA7D)/$02).
@@ -6172,6 +6357,7 @@ N $FA95 Print "#STR$A9D6,$08($b==$FF)".
   $FA9D,$03 #REGde=#R$FAAB.
   $FAA0,$03 #REGbc=#N($0001,$04,$04).
   $FAA3,$03 Call #R$B0DE.
+N $FAA6 No phrase tokens matched the user input tokens.
 N $FAA6 Print "#STR$A9EC,$08($b==$FF)".
   $FAA6,$03 Jump to #R$EDED.
 N $FAA9 The token table for the action "drink":
@@ -6192,12 +6378,17 @@ c $FAAD Action: Jump
   $FAB9,$03 #REGde=#R$FAD1.
   $FABC,$03 #REGbc=#N($0006,$04,$04).
   $FABF,$03 Call #R$B0DE.
+N $FAC2 No phrase tokens matched the user input tokens.
 N $FAC2 Print "#STR$A9EC,$08($b==$FF)".
   $FAC2,$03 Jump to #R$EDED.
-W $FAC5,$02
-L $FAC5,$02,$06
-W $FAD1,$02
-L $FAD1,$02,$06
+N $FAC5 The token table for the action "jump":
+@ $FAC5 label=Table_ActionJump_TokenGroup
+W $FAC5,$02 Token group #N($01+(#PC-$FAC5)/$02).
+L $FAC5,$02,$06,$02
+N $FAD1 The actions table for "jump":
+@ $FAD1 label=Table_ActionsJump
+W $FAD1,$02 Action routine #N($01+(#PC-$FAD1)/$02).
+L $FAD1,$02,$06,$02
 
 c $FADD Action: Climb
 @ $FADD label=Action_Climb
@@ -6210,14 +6401,20 @@ c $FADD Action: Climb
   $FAE9,$03 #REGde=#R$FB0B.
   $FAEC,$03 #REGbc=#N($000B,$04,$04).
   $FAEF,$03 Call #R$B0DE.
+N $FAF2 No phrase tokens matched the user input tokens.
 N $FAF2 Print "#STR$A9EC,$08($b==$FF)".
   $FAF2,$03 Jump to #R$EDED.
-W $FAF5,$02
-L $FAF5,$02,$0B
-W $FB0B,$02
-L $FB0B,$02,$0B
+N $FAF5 The token table for the action "climb":
+@ $FAF5 label=Table_ActionClimb_TokenGroup
+W $FAF5,$02 Token group #N($01+(#PC-$FAF5)/$02).
+L $FAF5,$02,$0B,$02
+N $FB0B The actions table for "climb":
+@ $FB0B label=Table_ActionsClimb
+W $FB0B,$02 Action routine #N($01+(#PC-$FB0B)/$02).
+L $FB0B,$02,$0B,$02
 
 c $FB21 Action: Enter
+@ $FB21 label=Action_Enter
   $FB21,$03 Call #R$AF7B.
   $FB24,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -6227,13 +6424,17 @@ c $FB21 Action: Enter
   $FB2D,$03 #REGde=#R$FB4B.
   $FB30,$03 #REGbc=#N($0009,$04,$04).
   $FB33,$03 Call #R$B0DE.
+N $FB36 No phrase tokens matched the user input tokens.
 N $FB36 Print "#STR$A9EC,$08($b==$FF)".
   $FB36,$03 Jump to #R$EDED.
-@ $FB21 label=Action_Enter
-W $FB39,$02
-L $FB39,$02,$09
-W $FB4B,$02
-L $FB4B,$02,$09
+N $FB39 The token table for the action "enter":
+@ $FB39 label=Table_ActionEnter_TokenGroup
+W $FB39,$02 Token group #N($01+(#PC-$FB39)/$02).
+L $FB39,$02,$09,$02
+N $FB4B The actions table for "enter":
+@ $FB4B label=Table_ActionsEnter
+W $FB4B,$02 Action routine #N($01+(#PC-$FB4B)/$02).
+L $FB4B,$02,$09,$02
 
 c $FB5D Action: Wear
 @ $FB5D label=Action_Wear
@@ -6246,6 +6447,7 @@ c $FB5D Action: Wear
   $FB69,$03 #REGde=#R$FB7F.
   $FB6C,$03 #REGbc=#N($0005,$04,$04).
   $FB6F,$03 Call #R$B0DE.
+N $FB72 No phrase tokens matched the user input tokens.
 N $FB72 Print "#STR$CDD3,$08($b==$FF)".
   $FB72,$03 Jump to #R$EE05.
 N $FB75 The token table for the action "wear":
@@ -6268,12 +6470,17 @@ c $FB89 Action: Go
   $FB95,$03 #REGde=#R$FBAD.
   $FB98,$03 #REGbc=#N($0006,$04,$04).
   $FB9B,$03 Call #R$B0DE.
+N $FB9E No phrase tokens matched the user input tokens.
 N $FB9E Print "#STR$A9EC,$08($b==$FF)".
   $FB9E,$03 Jump to #R$EDED.
-W $FBA1,$02
-L $FBA1,$02,$06
-W $FBAD,$02
-L $FBAD,$02,$06
+N $FBA1 The token table for the action "go":
+@ $FBA1 label=Table_ActionGo_TokenGroup
+W $FBA1,$02 Token group #N($01+(#PC-$FBA1)/$02).
+L $FBA1,$02,$06,$02
+N $FBAD The actions table for "go":
+@ $FBAD label=Table_ActionsGo
+W $FBAD,$02 Action routine #N($01+(#PC-$FBAD)/$02).
+L $FBAD,$02,$06,$02
 
 c $FBB9 Action: Swearing
 @ $FBB9 label=Action_Swearing
@@ -6293,6 +6500,7 @@ c $FBC3 Action: Eat
   $FBCA,$03 #REGde=#R$FBDA.
   $FBCD,$03 #REGbc=#N($0002,$04,$04).
   $FBD0,$03 Call #R$B0DE.
+N $FBD3 No phrase tokens matched the user input tokens.
 N $FBD3 Print "#STR$DC09,$08($b==$FF)".
   $FBD3,$03 Jump to #R$EE47.
 N $FBD6 The token table for the action "eat":
@@ -6306,15 +6514,43 @@ L $FBDA,$02,$02,$02
 
 c $FBDE Action: Capture
 @ $FBDE label=Action_Capture
-W $FBF1,$02
-W $FBF3,$02
+  $FBDE,$03 Call #R$AF7B.
+  $FBE1,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $FBE2,$03 #REGhl=#R$FBF1.
+  $FBE5,$03 #REGde=#R$FBF3.
+  $FBE8,$03 #REGbc=#N($0001,$04,$04).
+  $FBEB,$03 Call #R$B0DE.
+N $FBEE No phrase tokens matched the user input tokens.
+N $FBEE Print "#STR$A9EC,$08($b==$FF)".
+  $FBEE,$03 Jump to #R$EDED.
+N $FBF1 The token table for the action "capture":
+@ $FBF1 label=Table_ActionCapture_TokenGroup
+W $FBF1,$02 Token group #N($01+(#PC-$FBF1)/$02).
+N $FBF3 The actions table for "capture":
+@ $FBF3 label=Table_ActionCapture
+W $FBF3,$02 Action routine #N($01+(#PC-$FBF3)/$02).
 
 c $FBF5 Action: Place/ Lean/ Lay
 @ $FBF5 label=Action_Place
-W $FC08,$02
-L $FC08,$02,$02
-W $FC0C,$02
-L $FC0C,$02,$02
+  $FBF5,$03 Call #R$AF9F.
+  $FBF8,$01 Return if there are not two direct objects in the user input (so
+. the command is malformed).
+  $FBF9,$03 #REGhl=#R$FC08.
+  $FBFC,$03 #REGde=#R$FC0C.
+  $FBFF,$03 #REGbc=#N($0002,$04,$04).
+  $FC02,$03 Call #R$B0DE.
+N $FC05 No phrase tokens matched the user input tokens.
+N $FC05 Print "#STR$A9EC,$08($b==$FF)".
+  $FC05,$03 Jump to #R$EDED.
+N $FC08 The token table for the action "place":
+@ $FC08 label=Table_ActionPlace_TokenGroup
+W $FC08,$02 Token group #N($01+(#PC-$FC08)/$02).
+L $FC08,$02,$02,$02
+N $FC0C The actions table for "place":
+@ $FC0C label=Table_ActionPlace
+W $FC0C,$02 Action routine #N($01+(#PC-$FC0C)/$02).
+L $FC0C,$02,$02,$02
 
 c $FC10 Action: Buy/ Purchase
 @ $FC10 label=Action_Buy
@@ -6325,6 +6561,8 @@ c $FC10 Action: Buy/ Purchase
   $FC17,$03 #REGde=#R$FC29.
   $FC1A,$03 #REGbc=#N($0004,$04,$04).
   $FC1D,$03 Call #R$B0DE.
+N $FC20 No phrase tokens matched the user input tokens.
+N $FC20 Print "#STR$A9EC,$08($b==$FF)".
   $FC20,$03 Jump to #R$EDED.
 N $FC23 The token table for the action "buy"/"purchase":
 @ $FC23 label=Table_ActionBuy_TokenGroup
@@ -6346,6 +6584,8 @@ c $FC2F Action: Step
   $FC3B,$03 #REGde=#R$FC49.
   $FC3E,$03 #REGbc=#N($0001,$04,$04).
   $FC41,$03 Call #R$B0DE.
+N $FC44 No phrase tokens matched the user input tokens.
+N $FC44 Print "#STR$A9EC,$08($b==$FF)".
   $FC44,$03 Jump to #R$EDED.
 N $FC47 The token table for the action "step":
 @ $FC47 label=Table_ActionStep_TokenGroup
@@ -6354,12 +6594,29 @@ N $FC49 The actions table for "step":
 @ $FC49 label=Table_ActionStep
 W $FC49,$02 Action routine #N($01+(#PC-$FC49)/$02).
 
-c $FC4B
-W $FC5E,$02
-L $FC5E,$02,$0B
-W $FC74,$02
-L $FC74,$02,$0B
-B $FC8A,$01
+c $FC4B Action: Kill/ Attack/ Hit/ Strike
+@ $FC4B label=Action_Kill
+  $FC4B,$03 Call #R$AF7B.
+  $FC4E,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+  $FC4F,$03 #REGhl=#R$FC5E.
+  $FC52,$03 #REGde=#R$FC74.
+  $FC55,$03 #REGbc=#N($000B,$04,$04).
+  $FC58,$03 Call #R$B0DE.
+N $FC5B No phrase tokens matched the user input tokens.
+N $FC5B Print "#STR$A9EC,$08($b==$FF)".
+  $FC5B,$03 Jump to #R$EDED.
+N $FC5E The token table for the action "kill":
+@ $FC5E label=Table_ActionKill_TokenGroup
+W $FC5E,$02 Token group #N($01+(#PC-$FC5E)/$02).
+L $FC5E,$02,$0B,$02
+N $FC74 The actions table for "kill":
+@ $FC74 label=Table_ActionKill
+W $FC74,$02 Action routine #N($01+(#PC-$FC74)/$02).
+L $FC74,$02,$0B,$02
+
+u $FC8A
+B $FC8A,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $FC8A,$01,$03
 
 c $FC8D Action: Swim
@@ -6380,6 +6637,7 @@ N $FCA4 The player is in one of the rooms, so process the action.
   $FCA7,$03 #REGde=#R$FCBF.
   $FCAA,$03 #REGbc=#N($0006,$04,$04).
   $FCAD,$03 Call #R$B0DE.
+N $FCB0 No phrase tokens matched the user input tokens.
 N $FCB0 Print "#STR$A9EC,$08($b==$FF)".
   $FCB0,$03 Jump to #R$EDED.
 N $FCB3 The token table for the action "swim":
@@ -6423,6 +6681,7 @@ B $FD02,$0186
 
 g $FE89 Jump Table: Verbs
 @ $FE89 label=JumpTable_Verbs
+D $FE89 Used by the routine at #R$B05E.
 W $FE89,$02 Verb word token #N((#PC-$FE89)/$02): #TOKEN((#PC-$FE89)/$02).
 L $FE89,$02,$21
 

@@ -2862,8 +2862,8 @@ c$A585 CALL $A577    ; Call #R$A577.
 ; Used by the routines at #R$A5CA, #R$A605, #R$AAEE, #R$AAF5, #R$AAFC, #R$AB03,
 ; #R$AB97, #R$AC02, #R$ACAD, #R$AD32, #R$AE36, #R$B05E, #R$B081, #R$B0A9,
 ; #R$E9B2, #R$E9D0, #R$E9FA, #R$EA0B, #R$EA44, #R$EA60, #R$EA72, #R$EA84,
-; #R$EA90, #R$EA9C, #R$EAB4, #R$EACC, #R$EAE4, #R$EAF7, #R$EB09, #R$EB10,
-; #R$ECBE, #R$ECEF, #R$ED07, #R$ED17, #R$ED27, #R$ED37, #R$ED47, #R$ED6D,
+; #R$EA90, #R$EA9C, #R$EAB4, #R$EACC, #R$EAE4, #R$EAF7, #R$EB09, #R$EB9D,
+; #R$ECE8, #R$ECEF, #R$ED07, #R$ED17, #R$ED27, #R$ED37, #R$ED47, #R$ED6D,
 ; #R$F04F, #R$F0AC, #R$F179, #R$F2BA, #R$F31D, #R$F4B9, #R$F5F9, #R$F7FD,
 ; #R$F824 and #R$F8A9.
 ; .
@@ -3059,9 +3059,21 @@ c$A647 LD HL,$5080   ; #REGhl=#N$5080 (screen buffer location).
  $A662 RET           ; Return.
 ; View the equivalent code in #JEWELS$BBD4.
 
-; Message at A663
-t$A663 DEFM $03," ,\""
- $A667 DEFM "THE ",$FF
+; Table: Delimiters
+@label=Table_Delimiters_Count
+g$A663 DEFB $03      ; Number of delimiters in the table: #PEEK(#PC).
+@label=Table_Delimiters
+ $A664 DEFM " "      ; "SPACE".
+ $A665 DEFM ","      ; "COMMA".
+ $A666 DEFM "\""     ; "DOUBLE QUOTE".
+
+; Table: Vocabulary For "THE"
+;
+; "Vocabulary Table" used for matching and removing "THE" from user
+; input.
+@label=Table_Vocabulary_The
+g$A667 DEFM "THE "   ; "#STR$A667,$08($b==$FF)".
+ $A66B DEFB $FF      ; Terminator.
 
 ; Table: Item Locations
 ;
@@ -3679,6 +3691,7 @@ g$A77E DEFB $00
 ;
 ; .
 ;
+; Initialised to #N$05 by #R$EBFC.
 @label=Counter_Crab
 g$A77F DEFB $00
 ; Initialised to #N$05 by #R$EC21.
@@ -3696,7 +3709,23 @@ g$A77F DEFB $00
  $A785 DEFB $00
 @label=Counter_Wave
  $A786 DEFB $00
- $A787 DEFB $00
+
+; Flags: Event States
+;
+; Holds a single byte, where each bit relates to an event as follows:
+; #TABLE(default,centre,centre)
+; { =h Bit | =h Relating To }
+; { #N$00 | The Roman Being Captured }
+; { #N$01 |  }
+; { #N$02 |  }
+; { #N$03 |  }
+; { #N$04 |  }
+; { #N$05 |  }
+; { #N$06 |  }
+; { #N$07 |  }
+; TABLE#
+@label=Flag_EventStates
+g$A787 DEFB $00
 
 ; Game status buffer entry at A788
 g$A788 DEFB $0B
@@ -3734,7 +3763,10 @@ g$A7C3 DEFB $02      ; Current room ID.
 @label=Score
 g$A7C4 DEFW $0000
 
-; Game status buffer entry at A7C6
+; Pointer: Vocabulary Table
+;
+; Pointer to the table containing the game vocabulary.
+@label=Pointer_Vocabulary
 g$A7C6 DEFW $E0B1
 
 ; Pointer: Turn-Based Events Jump Table
@@ -3843,7 +3875,8 @@ g$A7EE DEFW $0011
 @label=Count_ConfigurableExits
 g$A7F0 DEFW $000B
 
-; Game status buffer entry at A7F2
+; Command Buffer
+@label=CommandBuffer
 g$A7F2 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $A7FA DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $A802 DEFB $00,$00,$00,$00,$00,$00,$00,$00
@@ -3869,9 +3902,12 @@ g$A824 DEFB $FF
 ; Line Number
 @label=LineNumber
 g$A82E DEFB $00
- $A82F DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A837 DEFB $00,$00,$00,$00
 ; View the equivalent code in #JEWELS$BD70.
+
+; Four Letter Buffer
+@label=FourLetterBuffer
+g$A82F DEFB $00,$00,$00,$00
+ $A833 DEFB $00,$00,$00,$00,$00,$00,$00,$00
 
 ; Temporary Storage Table Pointer
 @label=TempStore_TablePointer
@@ -4592,16 +4628,35 @@ c$ACAD LD ($A82E),A  ; Write #REGa to *#R$A82E.
  $ACC1 RET           ; Return.
 ; View the equivalent code in #JEWELS$C315.
 
-; Message at ACC2
-t$ACC2 DEFM $00,$00
- $ACC4 DEFM $00,$00
- $ACC6 DEFM " ",$08,$08
- $ACC9 DEFM " ",$08,$FF
- $ACCC DEFM "_",$08,$FF
+; Temporary Storage Command Buffer Pointer
+@label=TempStore_CommandBufferPointer
+g$ACC2 DEFW $0000
 
-; Routine at ACCF
+; Temporary Storage Command Buffer Count
+@label=TempStore_CommandBufferCount
+g$ACC4 DEFW $0000
+
+; Messaging: " <BS><BS> <BS>"
 ;
 ; Used by the routine at #R$AD32.
+@label=Messaging_SpaceBackspaceBackspaceSpaceBackspace
+t$ACC6 DEFM " ",$08,$08 ; "#STR$ACC6,$08($b==$FF)".
+; Messaging: " <BS>"
+@label=Messaging_SpaceBackspace
+ $ACC9 DEFM " ",$08     ; "#STR$ACC9,$08($b==$FF)".
+ $ACCB DEFB $FF         ; Terminator.
+
+; Messaging: "_<BS>"
+;
+; Used by the routine at #R$AD32.
+@label=Messaging_UnderscoreBackspace
+t$ACCC DEFM "_",$08  ; "#STR$ACCC,$08($b==$FF)".
+ $ACCE DEFB $FF      ; Terminator.
+
+; Print Cursor
+;
+; Used by the routine at #R$AD32.
+@label=Print_Cursor
 c$ACCF PUSH HL       ; Stash #REGhl on the stack.
 ; Print "#STR$ACCC,$08($b==$FF)".
  $ACD0 LD HL,$ACCC   ; #REGhl=#R$ACCC.
@@ -4609,33 +4664,43 @@ c$ACCF PUSH HL       ; Stash #REGhl on the stack.
  $ACD6 POP HL        ; Restore #REGhl from the stack.
  $ACD7 RET           ; Return.
 
-; Routine at ACD8
+; Is Character A Delimiter
 ;
 ; Used by the routine at #R$AD32.
+;
+; O:F The zero flag is set if a delimiter is found
+@label=IsDelimiter
 c$ACD8 PUSH HL       ; {Stash #REGhl and #REGbc on the stack.
  $ACD9 PUSH BC       ; }
  $ACDA LD HL,$A663   ; #REGhl=#R$A663.
- $ACDD LD C,(HL)     ; #REGc=*#REGhl.
- $ACDE LD B,$00      ; #REGb=#N$00.
- $ACE0 INC HL        ; Increment #REGhl by one.
- $ACE1 CPIR          ; CPIR.
+ $ACDD LD C,(HL)     ; {Fetch the delimiter count and store it in #REGbc.
+ $ACDE LD B,$00      ; }
+ $ACE0 INC HL        ; Move #REGhl to point to the delimiter table.
+ $ACE1 CPIR          ; Search for matching delimiters.
  $ACE3 POP BC        ; {Restore #REGbc and #REGhl from the stack.
  $ACE4 POP HL        ; }
  $ACE5 RET           ; Return.
 
-; Routine at ACE6
+; Print User Input To Screen
 ;
 ; Used by the routine at #R$AD32.
-c$ACE6 PUSH AF       ; Stash #REGaf on the stack.
- $ACE7 CP $0D        ; {Jump to #R$ACF3 if #REGa is not equal to #N$0D.
+;
+; A User input keypress
+; HL Pointer to the command buffer
+@label=Print_UserInputToScreen
+c$ACE6 PUSH AF       ; Stash the user input keypress on the stack.
+ $ACE7 CP $0D        ; {Jump to #R$ACF3 if "DELETE" was not pressed.
  $ACE9 JR NZ,$ACF3   ; }
- $ACEB PUSH HL       ; Stash #REGhl on the stack.
-; Print "#STR$ACC9,$08($b==$FF)".
+ $ACEB PUSH HL       ; Stash the pointer to the command buffer on the stack.
+; Print "SPACE<BS>" to delete the letter from the screen.
  $ACEC LD HL,$ACC9   ; #REGhl=#R$ACC9.
  $ACEF CALL $A585    ; Call #R$A585.
- $ACF2 POP HL        ; {Restore #REGhl and #REGaf from the stack.
-*$ACF3 POP AF        ; }
+ $ACF2 POP HL        ; Restore the pointer to the command buffer from the
+                     ; stack.
+@label=UserInputToScreen
+*$ACF3 POP AF        ; Restore the user input keypress from the stack.
  $ACF4 CALL $A577    ; Call #R$A577.
+; Print the user input keypress to the screen.
  $ACF7 CALL $A5A4    ; Call #R$A5A4.
  $ACFA RET           ; Return.
 
@@ -4681,6 +4746,9 @@ c$ACFB PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
 ; Handler: User Input
 ;
 ; Used by the routine at #R$E99F.
+; .
+; Handles keyboard input, tokenises commands and validates the
+; vocabulary.
 ;
 ; .
 ;
@@ -4688,56 +4756,81 @@ c$ACFB PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
 @label=Handler_UserInput
 c$AD32 CALL $A560    ; Call #R$A560.
  $AD35 CALL $A647    ; Call #R$A647.
+; Initialise the command buffer.
  $AD38 LD HL,$A7F2   ; #REGhl=#R$A7F2.
- $AD3B LD B,$00      ; #REGb=#N$00.
+ $AD3B LD B,$00      ; Initialise a letter counter in #REGb.
  $AD3D JR $AD41      ; Jump to #R$AD41.
-*$AD3F INC HL        ; Increment #REGhl by one.
- $AD40 INC B         ; Increment #REGb by one.
+; Main input loop - process each keypress.
+@label=UserInput_Loop
+*$AD3F INC HL        ; Move to the next byte of the command buffer.
+ $AD40 INC B         ; Increment the letter counter by one.
+@label=UserInput_Next
 *$AD41 CALL $ACCF    ; Call #R$ACCF.
  $AD44 CALL $A53E    ; Call #R$A53E.
- $AD47 CP $0C        ; {Jump to #R$AD5B if #REGa is not equal to #N$0C.
+ $AD47 CP $0C        ; {Jump to #R$AD5B if "DELETE" was not pressed.
  $AD49 JR NZ,$AD5B   ; }
- $AD4B XOR A         ; #REGa=#N$00.
- $AD4C OR B          ; {Jump to #R$AD41 if #REGa is equal to #REGb.
+; The user pressed "DELETE".
+ $AD4B XOR A         ; {Jump back to #R$AD41 if there hasn't been any input yet (nothing to
+ $AD4C OR B          ; delete).
  $AD4D JR Z,$AD41    ; }
- $AD4F EX DE,HL      ; Exchange the #REGde and #REGhl registers.
-; Print "#STR$ACC6,$08($b==$FF)".
+; There is input which can be deleted, so action a delete!
+ $AD4F EX DE,HL      ; Temporarily stash the command buffer pointer in #REGde.
+; Print "SPACE BACKSPACE BACKSPACE SPACE BACKSPACE" to move the current
+; print position on the screen to the previous character, and to delete the
+; character present using a space.
  $AD50 LD HL,$ACC6   ; #REGhl=#R$ACC6.
  $AD53 CALL $A585    ; Call #R$A585.
- $AD56 EX DE,HL      ; Exchange the #REGde and #REGhl registers.
- $AD57 DEC HL        ; Decrease #REGhl by one.
- $AD58 DEC B         ; Decrease #REGb by one.
+; Adjust the command buffer position and letter counter.
+ $AD56 EX DE,HL      ; Restore the command buffer pointer from #REGde.
+ $AD57 DEC HL        ; Decrease the command buffer pointer by one.
+ $AD58 DEC B         ; Decrease the letter counter by one.
  $AD59 JR $AD41      ; Jump to #R$AD41.
-*$AD5B LD C,A        ; {Jump to #R$AD6D if #REGc is equal to #N$0D.
+; Check which key the user pressed:
+@label=ValidateUserInput
+*$AD5B LD C,A        ; {Jump to #R$AD6D if "ENTER" was pressed.
  $AD5C CP $0D        ;
  $AD5E JR Z,$AD6D    ; }
- $AD60 CP $20        ; {Jump to #R$AD41 if #REGc is less than #N$20.
- $AD62 JR C,$AD41    ; }
- $AD64 CP $80        ; {Jump to #R$AD41 if #REGc is greater than or equal to
- $AD66 JR NC,$AD41   ; #N$80.}
- $AD68 LD A,B        ; {Jump to #R$AD41 if #REGb is equal to #N$31.
+ $AD60 CP $20        ; {If the keypress was any other control key (the value being under
+ $AD62 JR C,$AD41    ; #N$20 ASCII "SPACE"), it's not valid input so jump back to #R$AD41.
+                     ; }
+ $AD64 CP $80        ; {If the keypress was higher than #N$80, it's also not valid input so
+ $AD66 JR NC,$AD41   ; jump back to #R$AD41.}
+; Is the command buffer full?
+ $AD68 LD A,B        ; {Jump to #R$AD41 if the letter counter is #N$31.
  $AD69 CP $31        ;
  $AD6B JR Z,$AD41    ; }
-*$AD6D LD A,C        ; {Write #REGc to *#REGhl.
+; Writes the keypress into the command buffer.
+@label=UserInput_WriteKeypress
+*$AD6D LD A,C        ; {Write the user input key to *#REGhl.
  $AD6E LD (HL),A     ; }
  $AD6F CALL $ACE6    ; Call #R$ACE6.
- $AD72 LD A,C        ; {Jump to #R$AD3F if #REGc is not equal to #N$0D.
+; Did the user press "ENTER"?
+ $AD72 LD A,C        ; {Jump to #R$AD3F if "DELETE" was not pressed.
  $AD73 CP $0D        ;
  $AD75 JR NZ,$AD3F   ; }
+; The player pressed "ENTER" so begin to process the user input.
+; .
+; Clear down the user input tokens.
  $AD77 LD HL,$A824   ; #REGhl=#R$A824.
- $AD7A LD B,$0A      ; #REGb=#N$0A.
-*$AD7C LD (HL),$FF   ; Write #N$FF to *#REGhl.
+ $AD7A LD B,$0A      ; Set a counter in #REGb for all #N$0A user input tokens.
+@label=EmptyUserInputTokens_Loop
+*$AD7C LD (HL),$FF   ; Write a termination byte (#N$FF) to *#REGhl.
  $AD7E INC HL        ; Increment #REGhl by one.
- $AD7F DJNZ $AD7C    ; Decrease counter by one and loop back to #R$AD7C until
-                     ; counter is zero.
+ $AD7F DJNZ $AD7C    ; Decrease the user input tokens counter by one and loop back to
+                     ; #R$AD7C until all the tokens have been set to termination bytes (#N$FF).
  $AD81 LD HL,$A7F2   ; #REGhl=#R$A7F2.
  $AD84 LD IX,$A824   ; #REGix=#R$A824.
- $AD88 LD C,$0A      ; #REGc=#N$0A.
+ $AD88 LD C,$0A      ; Set a counter in #REGc for the #N$0A user input tokens.
  $AD8A JR $ADF6      ; Jump to #R$ADF6.
+; What's been entered isn't parsable.
+; .
 ; Print "#STR$A84F,$08($b==$FF)".
+@label=UserInput_NotUnderstood
 *$AD8C LD HL,$A84F   ; #REGhl=#R$A84F.
  $AD8F CALL $A592    ; Call #R$A592.
  $AD92 JP $AD32      ; Jump to #R$AD32.
+; Process found word into user input token.
+@label=ProcessFoundWord
 *$AD95 PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
  $AD96 PUSH DE       ;
  $AD97 PUSH BC       ; }
@@ -4748,18 +4841,21 @@ c$AD32 CALL $A560    ; Call #R$A560.
  $ADA4 CP C          ; #REGc.
  $ADA5 JR NC,$ADA8   ; }
  $ADA7 LD C,A        ; #REGc=#REGa.
-*$ADA8 LDIR          ; LDIR.
+; Copy the word (up to 4 characters into the four letter buffer).
+@label=CopyWordToBuffer
+*$ADA8 LDIR          ; Copy 4 letters of the command buffer to the four letter
+                     ; buffer.
  $ADAA POP BC        ; {Restore #REGbc, #REGde and #REGhl from the stack.
  $ADAB POP DE        ;
  $ADAC POP HL        ; }
  $ADAD PUSH HL       ; Stash #REGhl on the stack.
- $ADAE LD HL,($A7C6) ; #REGhl=*#R$A7C6.
- $ADB1 PUSH HL       ; Stash #REGhl on the stack.
+ $ADAE LD HL,($A7C6) ; {Stash *#R$A7C6 on the stack.
+ $ADB1 PUSH HL       ; }
  $ADB2 LD HL,$A667   ; {Write #R$A667 to *#R$A7C6.
  $ADB5 LD ($A7C6),HL ; }
  $ADB8 CALL $ACFB    ; Call #R$ACFB.
- $ADBB POP HL        ; Restore #REGhl from the stack.
- $ADBC LD ($A7C6),HL ; Write #REGhl to *#R$A7C6.
+ $ADBB POP HL        ; {Restore *#R$A7C6 from the stack and write it back to
+ $ADBC LD ($A7C6),HL ; *#R$A7C6.}
  $ADBF POP HL        ; Restore #REGhl from the stack.
  $ADC0 JR C,$ADF6    ; Jump to #R$ADF6 if #REGa is less than #REGc.
  $ADC2 CALL $ACFB    ; Call #R$ACFB.
@@ -4787,37 +4883,42 @@ c$AD32 CALL $A560    ; Call #R$A560.
  $ADF1 INC IX        ; Increment #REGix by one.
  $ADF3 DEC C         ; Decrease #REGc by one.
  $ADF4 JR Z,$AE2D    ; Jump to #R$AE2D if #REGc is equal to #REGc.
+; Token matching only uses four letters of every word so a buffer is used
+; for processing. Start by clearing the buffer.
+@label=EmptyFourLetterBuffer
 *$ADF6 PUSH HL       ; {Stash #REGhl and #REGbc on the stack.
  $ADF7 PUSH BC       ; }
- $ADF8 LD HL,$A82F   ; #REGhl=#R$A82F.
- $ADFB LD B,$04      ; #REGb=#N$04.
-*$ADFD LD (HL),$20   ; Write #N$20 to *#REGhl.
+ $ADF8 LD HL,$A82F   ; Load #R$A82F into #REGhl.
+ $ADFB LD B,$04      ; Set a counter in #REGb for the #N$04 letters in the
+                     ; buffer.
+@label=EmptyFourLetterBuffer_Loop
+*$ADFD LD (HL),$20   ; Write ASCII "SPACE" (#N$20) to *#REGhl.
  $ADFF INC HL        ; Increment #REGhl by one.
- $AE00 DJNZ $ADFD    ; Decrease counter by one and loop back to #R$ADFD until
-                     ; counter is zero.
+ $AE00 DJNZ $ADFD    ; Decrease the letter buffer counter by one and loop back to #R$ADFD
+                     ; until all four letters have been cleared.
  $AE02 POP BC        ; {Restore #REGbc and #REGhl from the stack.
  $AE03 POP HL        ; }
  $AE04 PUSH DE       ; Stash #REGde on the stack.
  $AE05 JR $AE08      ; Jump to #R$AE08.
 *$AE07 INC HL        ; Increment #REGhl by one.
-*$AE08 LD A,(HL)     ; {Jump to #R$AE29 if *#REGhl is equal to #N$0D.
- $AE09 CP $0D        ;
- $AE0B JR Z,$AE29    ; }
+*$AE08 LD A,(HL)     ; Fetch a character from the command buffer.
+ $AE09 CP $0D        ; {Jump to #R$AE29 if the character is "ENTER" (ASCII
+ $AE0B JR Z,$AE29    ; #N$0D).}
  $AE0D CALL $ACD8    ; Call #R$ACD8.
- $AE10 JR Z,$AE07    ; Jump to #R$AE07 if #REGa is equal to #N$0D.
+ $AE10 JR Z,$AE07    ; Jump to #R$AE07 if the character is a delimiter.
  $AE12 LD ($ACC2),HL ; Write #REGhl to *#R$ACC2.
  $AE15 LD DE,$0000   ; #REGde=#N($0000,$04,$04).
 *$AE18 INC HL        ; Increment #REGhl by one.
  $AE19 INC DE        ; Increment #REGde by one.
- $AE1A LD A,(HL)     ; {Jump to #R$AE24 if *#REGhl is equal to #N$0D.
- $AE1B CP $0D        ;
- $AE1D JR Z,$AE24    ; }
+ $AE1A LD A,(HL)     ; Fetch a character from the command buffer.
+ $AE1B CP $0D        ; {Jump to #R$AE24 if the character is "ENTER" (ASCII
+ $AE1D JR Z,$AE24    ; #N$0D).}
  $AE1F CALL $ACD8    ; Call #R$ACD8.
- $AE22 JR NZ,$AE18   ; Jump to #R$AE18 if #REGa is not equal to #N$0D.
+ $AE22 JR NZ,$AE18   ; Jump to #R$AE18 if the character was not a delimiter.
 *$AE24 LD ($ACC4),DE ; Write #REGde to *#R$ACC4.
  $AE28 SCF           ; Set the carry flag.
 *$AE29 POP DE        ; Restore #REGde from the stack.
- $AE2A JP C,$AD95    ; Jump to #R$AD95 if #REGa is less than #N$0D.
+ $AE2A JP C,$AD95    ; Jump to #R$AD95 if the carry flag is set.
 *$AE2D LD A,($A824)  ; {Jump to #R$AD8C if *#R$A824 is equal to #N$FF.
  $AE30 CP $FF        ;
  $AE32 JP Z,$AD8C    ; }
@@ -5035,7 +5136,7 @@ c$AEDA CALL $AED1    ; Call #R$AED1.
 ; Used by the routines at #R$EA0B, #R$EA60, #R$EA72, #R$EA84, #R$EA90, #R$EA9C,
 ; #R$EAB4, #R$EACC, #R$EAE4, #R$EAF7, #R$EBDA, #R$ECBE, #R$EF86, #R$F0AC,
 ; #R$F156, #R$F179, #R$F1DF, #R$F2BA, #R$F4B9, #R$F518, #R$F52E, #R$F544,
-; #R$F620 and #R$F7FD.
+; #R$F57B, #R$F620 and #R$F7FD.
 ; .
 ; Updates a given item/ event ID so it's then "inactive" (has a location
 ; ID of #N$00).
@@ -5051,7 +5152,7 @@ c$AEE0 LD B,A        ; Load the item/ event ID into #REGb.
 
 ; Handler: Update Item/ Event For The Current Room
 ;
-; Used by the routines at #R$B01F, #R$EA0B, #R$F0AC, #R$F26C, #R$F293, #R$F544
+; Used by the routines at #R$B01F, #R$EA0B, #R$F0AC, #R$F26C, #R$F293, #R$F57B
 ; and #R$F7FD.
 ; .
 ; Updates a given item/ event ID so it appears in the current room. Used
@@ -5083,11 +5184,11 @@ c$AEF0 LD B,A        ; Copy the scenic event ID into #REGb.
 
 ; Check Item From Item Group Present
 ;
-; Used by the routines at #R$AF08, #R$EBB9, #R$EBC5, #R$EE64, #R$EE73, #R$EE8D,
+; Used by the routines at #R$AF11, #R$EBB9, #R$EBC5, #R$EE64, #R$EE73, #R$EE8D,
 ; #R$EEA7, #R$EEB6, #R$EF09, #R$EF12, #R$EF2A, #R$EF38, #R$EF49, #R$EF5A,
 ; #R$EF86, #R$EFAD, #R$EFD0, #R$F006, #R$F01C, #R$F041, #R$F060, #R$F073,
 ; #R$F091, #R$F1DF, #R$F26C, #R$F293, #R$F2BA, #R$F2D4, #R$F338, #R$F428,
-; #R$F440, #R$F458, #R$F489, #R$F500, #R$F544 and #R$F620.
+; #R$F440, #R$F458, #R$F489, #R$F500, #R$F544, #R$F57B and #R$F620.
 ;
 ;   HL Pointer to item group data
 ; O:A The related item ID from the item group data which is present
@@ -5112,30 +5213,44 @@ c$AEF7 JR $AEFA      ; Jump to #R$AEFA.
 *$AF06 AND A         ; Set flags.
  $AF07 RET           ; Return.
 
-; Routine at AF08
+; Handler: Update Item Location
 ;
 ; Used by the routines at #R$AB0A, #R$AEE0, #R$AEE7, #R$AEF0, #R$AF1E, #R$B01F,
 ; #R$EA9C, #R$EAB4, #R$EACC, #R$EAE4, #R$EDA6, #R$EDB8 and #R$EECF.
+;
+; B Item ID
+; C Room ID
+@label=Handler_UpdateItemLocation
 c$AF08 LD HL,$A66C   ; #REGhl=#R$A66C.
- $AF0B LD D,$00      ; #REGd=#N$00.
- $AF0D LD E,B        ; #REGe=#REGb.
- $AF0E ADD HL,DE     ; #REGhl+=#REGde.
- $AF0F LD (HL),C     ; Write #REGc to *#REGhl.
+ $AF0B LD D,$00      ; {Load the item ID into #REGde.
+ $AF0D LD E,B        ; }
+ $AF0E ADD HL,DE     ; Add the item ID to #R$A66C.
+ $AF0F LD (HL),C     ; Update the table with the new room ID in #REGc.
  $AF10 RET           ; Return.
- $AF11 LD B,$00      ; #REGb=#N$00.
+
+; Routine at AF11
+;
+; .
+;
+;   HL Pointer to item group data
+; O:A The found index
+c$AF11 LD B,$00      ; Initialise an index counter in #REGb to #N$00.
  $AF13 JR $AF17      ; Jump to #R$AF17.
-*$AF15 INC B         ; Increment #REGb by one.
+; Move past the termination byte in the item group.
+*$AF15 INC B         ; Increment the index counter in #REGb by one.
  $AF16 INC HL        ; Increment #REGhl by one.
 *$AF17 CALL $AEF7    ; Call #R$AEF7.
- $AF1A JR Z,$AF15    ; Jump to #R$AF15 if #REGhl is equal to #REGa.
- $AF1C LD A,B        ; #REGa=#REGb.
+ $AF1A JR Z,$AF15    ; Jump back to #R$AF15 until an item from the item group
+                     ; is matched.
+; An index was found.
+ $AF1C LD A,B        ; Store the index from #REGb into #REGa.
  $AF1D RET           ; Return.
 
 ; Transform Item
 ;
 ; Used by the routines at #R$ECA2, #R$EFAD, #R$F006, #R$F01C, #R$F091, #R$F156,
 ; #R$F179, #R$F1DF, #R$F26C, #R$F293, #R$F428, #R$F440, #R$F458, #R$F489,
-; #R$F4B9, #R$F500, #R$F544 and #R$F620.
+; #R$F4B9, #R$F500, #R$F544, #R$F57B and #R$F620.
 ; .
 ; Rather than use item properties, the game just has separate objects
 ; that don't exist until an action is performed.
@@ -5152,16 +5267,18 @@ c$AF08 LD HL,$A66C   ; #REGhl=#R$A66C.
 ; B From item ID
 ; C To item ID
 @label=TransformItem
-c$AF1E LD A,B        ; #REGa=#REGb.
- $AF1F CALL $AED1    ; Call #R$AED1.
- $AF22 PUSH BC       ; {Stash #REGbc and #REGaf on the stack.
- $AF23 PUSH AF       ; }
- $AF24 LD C,$00      ; #REGc=#N$00.
- $AF26 CALL $AF08    ; Call #R$AF08.
- $AF29 POP AF        ; {Restore #REGaf and #REGbc from the stack.
- $AF2A POP BC        ; }
- $AF2B LD B,C        ; #REGb=#REGc.
- $AF2C LD C,A        ; #REGc=#REGa.
+c$AF1E LD A,B        ; {Call #R$AED1 with the source item ID.
+ $AF1F CALL $AED1    ; }
+; #REGa now contains the location of the source ID.
+ $AF22 PUSH BC       ; {Stash the item IDs and source item room ID on the
+ $AF23 PUSH AF       ; stack.}
+ $AF24 LD C,$00      ; {Call #R$AF08 and disable the source item.
+ $AF26 CALL $AF08    ; }
+ $AF29 POP AF        ; {Restore the source item room ID and item IDs from the
+ $AF2A POP BC        ; stack.}
+; Activate the destination item in the same room.
+ $AF2B LD B,C        ; Load the destination item ID into #REGb.
+ $AF2C LD C,A        ; Load the source room ID into #REGc.
  $AF2D CALL $AF08    ; Call #R$AF08.
  $AF30 RET           ; Return.
 ; View the equivalent code in #JEWELS$C426.
@@ -5335,7 +5452,6 @@ c$AF90 LD A,($A825)  ; Fetch the #R$A825(second token from the user input) and s
 ;
 ; Used by the routines at #R$F9B3 and #R$FBF5.
 ;
-; O:F The zero flag is set when the command has two valid direct objects
 ; O:F The carry flag is set when the command is malformed
 @label=Parser_ValidateTwoDirectObjects
 c$AF9F CALL $AF7B    ; Call #R$AF7B.
@@ -5505,8 +5621,8 @@ c$B01F LD C,A        ; #REGc=#REGa.
                      ; counter is zero.
 *$B03D LD A,C        ; {Write #REGc to *#R$A7C3.
  $B03E LD ($A7C3),A  ; }
- $B041 LD A,($A787)  ; #REGa=*#R$A787.
- $B044 AND A         ; {Return if *#R$A787 is zero.
+ $B041 LD A,($A787)  ; {Return if *#R$A787 is zero.
+ $B044 AND A         ;
  $B045 RET Z         ; }
  $B046 LD B,$08      ; #REGb=#N$08.
  $B048 LD HL,$A788   ; #REGhl=#R$A788.
@@ -5527,25 +5643,31 @@ c$B01F LD C,A        ; #REGc=#REGa.
  $B05D RET           ; Return.
 ; View the equivalent code in #JEWELS$C520.
 
-; Routine at B05E
+; Handler: Match Verb
 ;
 ; Used by the routines at #R$E99F and #R$F39B.
-c$B05E LD HL,($A7E0) ; #REGhl=*#R$A7E0.
- $B061 LD BC,($A7EA) ; #REGbc=*#R$A7EA.
- $B065 LD A,($A824)  ; #REGa=*#R$A824.
- $B068 CPIR          ; Search for matching objects.
- $B06A JR Z,$B073    ; Jump to #R$B073 if ?? is equal to #N$00.
+@label=Handler_MatchVerb
+c$B05E LD HL,($A7E0) ; Load #REGhl with *#R$A7E0.
+ $B061 LD BC,($A7EA) ; Set the length of the table from *#R$A7EA into #REGbc.
+ $B065 LD A,($A824)  ; {Search *#R$A7E0 for *#R$A824.
+ $B068 CPIR          ; }
+ $B06A JR Z,$B073    ; Jump to #R$B073 if *#R$A824 was found in the table.
+; The verb wasn't found.
+; .
 ; Print "#STR$A84F,$08($b==$FF)".
  $B06C LD HL,$A84F   ; #REGhl=#R$A84F.
  $B06F CALL $A592    ; Call #R$A592.
  $B072 RET           ; Return.
-*$B073 LD A,($A7EA)  ; #REGa=*#R$A7EA.
- $B076 SUB C         ; #REGa-=#REGc.
- $B077 DEC A         ; Decrease #REGa by one.
- $B078 LD E,A        ; #REGe=#REGa.
+; The verb token was found in the table, so jump to the appropriate
+; routine.
+@label=Handler_Verb
+*$B073 LD A,($A7EA)  ; {Calculate the index using *#R$A7EA-#REGc-#N$01, and store the
+ $B076 SUB C         ; result in #REGe.
+ $B077 DEC A         ;
+ $B078 LD E,A        ; }
  $B079 LD IX,($A7DA) ; #REGix=*#R$A7DA.
  $B07D CALL $AB88    ; Call #R$AB88.
- $B080 JP (HL)       ; Jump to *#REGhl.
+ $B080 JP (HL)       ; Jump to the verb handler held by #REGhl.
 ; View the equivalent code in #JEWELS$C556.
 
 ; Pause, Print String And Scroll
@@ -5589,7 +5711,7 @@ c$B08A PUSH BC       ; Stash #REGbc on the stack.
 ;
 ; Used by the routines at #R$EBDA, #R$EC07, #R$EC32, #R$EC40, #R$EC4E, #R$EC5C,
 ; #R$EC6A, #R$EC78, #R$EC86, #R$EC94, #R$ECBE, #R$EEE9, #R$EF5A, #R$EFAD,
-; #R$F0AC, #R$F156, #R$F179, #R$F4B9, #R$F544, #R$F620 and #R$F7FD.
+; #R$F0AC, #R$F156, #R$F179, #R$F4B9, #R$F544, #R$F57B, #R$F620 and #R$F7FD.
 ;
 ; A Points to add
 @label=AddToScore
@@ -5659,7 +5781,7 @@ c$B0A9 LD HL,$AACE   ; #REGhl=#R$AACE.
  $B0DA CALL $A592    ; Call #R$A592.
  $B0DD RET           ; Return.
 
-; Routine at B0DE
+; Action Routing
 ;
 ; Used by the routines at #R$F853, #R$F8F2, #R$F956, #R$F975, #R$F9B3, #R$F9E2,
 ; #R$FA29, #R$FA6A, #R$FA91, #R$FAAD, #R$FADD, #R$FB21, #R$FB5D, #R$FB89,
@@ -5668,31 +5790,39 @@ c$B0A9 LD HL,$AACE   ; #REGhl=#R$AACE.
 ; HL Table of pointers which reference item groups
 ; DE Jump table of pointers which action each reference in #REGhl
 ; BC Count of the number of table items to process
-c$B0DE PUSH HL       ; {#REGix=#REGhl (using the stack).
- $B0DF POP IX        ; }
-*$B0E1 LD L,(IX+$00) ; #REGl=*#REGix+#N$00.
- $B0E4 LD H,(IX+$01) ; #REGh=*#REGix+#N$01.
- $B0E7 PUSH IX       ; {Stash #REGix, #REGde and #REGbc on the stack.
- $B0E9 PUSH DE       ;
+@label=ActionRouting
+c$B0DE PUSH HL       ; {Load the item group table into #REGix (using the
+ $B0DF POP IX        ; stack).}
+; Keep looping until a match is found.
+@label=ActionRouting_Loop
+*$B0E1 LD L,(IX+$00) ; {Fetch the phrase tokens from the item group and store the pointer
+ $B0E4 LD H,(IX+$01) ; in #REGhl.}
+ $B0E7 PUSH IX       ; {Stash the item group table, the pointer to the jump table and the
+ $B0E9 PUSH DE       ; table items counter on the stack.
  $B0EA PUSH BC       ; }
  $B0EB CALL $AE80    ; Call #R$AE80.
- $B0EE POP BC        ; {Restore #REGbc, #REGde and #REGix from the stack.
- $B0EF POP DE        ;
+ $B0EE POP BC        ; {Restore the table items counter, the pointer to the jump table and
+ $B0EF POP DE        ; the item group table from the stack.
  $B0F0 POP IX        ; }
- $B0F2 JR NZ,$B0FF   ; Jump to #R$B0FF if ?? is not equal to #N$00.
- $B0F4 PUSH DE       ; {#REGix=#REGde (using the stack).
+; Skip to the next set of phrase tokens if nothing matched...
+ $B0F2 JR NZ,$B0FF   ; Jump to #R$B0FF if none of the input matches this set of phrase
+                     ; tokens.
+; The phrase tokens matched! Handle jumping to the action routine.
+ $B0F4 PUSH DE       ; {Load the action table into #REGix (using the stack).
  $B0F5 POP IX        ; }
- $B0F7 LD L,(IX+$00) ; #REGl=*#REGix+#N$00.
- $B0FA LD H,(IX+$01) ; #REGh=*#REGix+#N$01.
- $B0FD POP DE        ; Restore #REGde from the stack.
- $B0FE JP (HL)       ; {Jump to *#REGhl.
-*$B0FF INC IX        ; }
- $B101 INC IX        ; Increment #REGix by one.
- $B103 INC DE        ; {Increment #REGde by two.
+ $B0F7 LD L,(IX+$00) ; {Fetch the action routine from the table and store it in
+ $B0FA LD H,(IX+$01) ; #REGhl.}
+ $B0FD POP DE        ; Discard the return address on the stack.
+ $B0FE JP (HL)       ; Jump to the action routine pointed to by *#REGhl.
+; Nothing matched, so move to the next set of pointers.
+@label=ActionRouting_Next
+*$B0FF INC IX        ; {Move to the next pointer in the item group table.
+ $B101 INC IX        ; }
+ $B103 INC DE        ; {Move to the next pointer in the action pointers table.
  $B104 INC DE        ; }
- $B105 DEC BC        ; Decrease #REGbc by one.
- $B106 LD A,B        ; {Jump back to #R$B0E1 until #REGbc is zero.
- $B107 OR C          ;
+ $B105 DEC BC        ; Decrease the table items counter by one.
+ $B106 LD A,B        ; {Jump back to #R$B0E1 until all the item groups have
+ $B107 OR C          ; been processed.
  $B108 JR NZ,$B0E1   ; }
  $B10A RET           ; Return.
 
@@ -6320,6 +6450,12 @@ t$BB95 DEFM "a skull" ; "#STR$BB95,$08($b==$FF)".
  $BB9C DEFB $FF       ; Terminator.
 
 ; Messaging: "A Shield"
+;
+; .
+;
+; .
+;
+; See #POKE#correct-typo(Correct Typo).
 @label=Messaging_Shield_Duplicate
 t$BB9D DEFM "a dhield" ; "#STR$BB9D,$08($b==$FF)".
  $BBA5 DEFB $FF        ; Terminator.
@@ -11049,9 +11185,14 @@ g$E978 DEFW $E7B9
  $E98A DEFW $E959
  $E98C DEFW $E96A
 
-; Routine at E98E
+; Event Routing
 ;
 ; Used by the routine at #R$EB10.
+;
+; DE
+; HL
+; A
+@label=EventRouting
 c$E98E PUSH BC       ; Stash #REGbc on the stack.
  $E98F CPIR          ; CPIR.
  $E991 POP HL        ; Restore #REGhl from the stack.
@@ -11392,67 +11533,99 @@ c$EB09 LD HL,$CD00   ; #REGhl=#R$CD00.
 ;
 ; Used by the routines at #R$F2FF, #R$F338, #R$F359, #R$F3AC, #R$F3BA, #R$F3C8,
 ; #R$F3D6, #R$F3EC, #R$F5F9, #R$F7C0, #R$F7DB, #R$F8DF and #R$FCCE.
-c$EB10 LD ($A773),A                         ; Write #REGa to *#R$A773.
- $EB13 LD HL,$EB3A                          ; #REGhl=#R$EB3A.
- $EB16 LD DE,$EB45                          ; #REGde=#R$EB45.
- $EB19 LD BC,$000B                          ; #REGbc=#N($000B,$04,$04).
- $EB1C CALL $E98E                           ; Call #R$E98E.
- $EB1F LD A,($A773)                         ; #REGa=*#R$A773.
- $EB22 CALL $B01F                           ; Call #R$B01F.
- $EB25 LD E,$00                             ; #REGe=#N$00.
- $EB27 CALL $ABB6                           ; Call #R$ABB6.
- $EB2A LD A,($A7C3)                         ; #REGa=*#R$A7C3.
- $EB2D LD HL,$EB5B                          ; #REGhl=#R$EB5B.
- $EB30 LD DE,$EB71                          ; #REGde=#R$EB71.
- $EB33 LD BC,$0016                          ; #REGbc=#N$0016.
- $EB36 CALL $E98E                           ; Call #R$E98E.
- $EB39 RET                                  ; Return.
- $EB3A DEFB $43,$4F,$52,$2B,$05,$3A,$1A,$41 ;
- $EB42 DEFB $1B,$42,$22                     ;
- $EB45 DEFW $EBA7                           ;
- $EB47 DEFW $EBB9                           ;
- $EB49 DEFW $EBB9                           ;
- $EB4B DEFW $EBC5                           ;
- $EB4D DEFW $EBC5                           ;
- $EB4F DEFW $EBC5                           ;
- $EB51 DEFW $EBC5                           ;
- $EB53 DEFW $EBC5                           ;
- $EB55 DEFW $ECA2                           ;
- $EB57 DEFW $ED57                           ;
- $EB59 DEFW $ED60                           ;
- $EB5B DEFB $37,$0D,$56,$27,$4F,$14,$57,$63 ;
- $EB63 DEFB $4C,$0C,$18,$43,$1E,$1B,$2C,$25 ;
- $EB6B DEFB $26,$2D,$35,$36,$3D,$3E         ;
- $EB71 DEFW $EBDA                           ;
- $EB73 DEFW $EBFC                           ;
- $EB75 DEFW $EC07                           ;
- $EB77 DEFW $EC13                           ;
- $EB79 DEFW $EC21                           ;
- $EB7B DEFW $EC32                           ;
- $EB7D DEFW $EC40                           ;
- $EB7F DEFW $EC4E                           ;
- $EB81 DEFW $EC5C                           ;
- $EB83 DEFW $EC6A                           ;
- $EB85 DEFW $EC78                           ;
- $EB87 DEFW $EC86                           ;
- $EB89 DEFW $EC94                           ;
- $EB8B DEFW $ECBE                           ;
- $EB8D DEFW $ECEF                           ;
- $EB8F DEFW $ED17                           ;
- $EB91 DEFW $ED17                           ;
- $EB93 DEFW $ED07                           ;
- $EB95 DEFW $ED27                           ;
- $EB97 DEFW $ED37                           ;
- $EB99 DEFW $ED47                           ;
- $EB9B DEFW $ED47                           ;
-; This entry point is used by the routines at #R$EBA7 and #R$EC13.
-*$EB9D CALL $A592                           ;
+c$EB10 LD ($A773),A  ; Write #REGa to *#R$A773.
+ $EB13 LD HL,$EB3A   ; #REGhl=#R$EB3A.
+ $EB16 LD DE,$EB45   ; #REGde=#R$EB45.
+ $EB19 LD BC,$000B   ; #REGbc=#N($000B,$04,$04).
+ $EB1C CALL $E98E    ; Call #R$E98E.
+ $EB1F LD A,($A773)  ; #REGa=*#R$A773.
+ $EB22 CALL $B01F    ; Call #R$B01F.
+ $EB25 LD E,$00      ; #REGe=#N$00.
+ $EB27 CALL $ABB6    ; Call #R$ABB6.
+ $EB2A LD A,($A7C3)  ; #REGa=*#R$A7C3.
+ $EB2D LD HL,$EB5B   ; #REGhl=#R$EB5B.
+ $EB30 LD DE,$EB71   ; #REGde=#R$EB71.
+ $EB33 LD BC,$0016   ; #REGbc=#N$0016.
+ $EB36 CALL $E98E    ; Call #R$E98E.
+ $EB39 RET           ; Return.
+ $EB3A DEFB $43      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB3B DEFB $4F      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB3C DEFB $52      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB3D DEFB $2B      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB3E DEFB $05      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB3F DEFB $3A      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB40 DEFB $1A      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB41 DEFB $41      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB42 DEFB $1B      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB43 DEFB $42      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB44 DEFB $22      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB45 DEFW $EBA7    ;
+ $EB47 DEFW $EBB9    ;
+ $EB49 DEFW $EBB9    ;
+ $EB4B DEFW $EBC5    ;
+ $EB4D DEFW $EBC5    ;
+ $EB4F DEFW $EBC5    ;
+ $EB51 DEFW $EBC5    ;
+ $EB53 DEFW $EBC5    ;
+ $EB55 DEFW $ECA2    ;
+ $EB57 DEFW $ED57    ;
+ $EB59 DEFW $ED60    ;
+ $EB5B DEFB $37      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB5C DEFB $0D      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB5D DEFB $56      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB5E DEFB $27      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB5F DEFB $4F      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB60 DEFB $14      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB61 DEFB $57      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB62 DEFB $63      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB63 DEFB $4C      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB64 DEFB $0C      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB65 DEFB $18      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB66 DEFB $43      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB67 DEFB $1E      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB68 DEFB $1B      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB69 DEFB $2C      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB6A DEFB $25      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB6B DEFB $26      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB6C DEFB $2D      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB6D DEFB $35      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB6E DEFB $36      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB6F DEFB $3D      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB70 DEFB $3E      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $EB71 DEFW $EBDA    ;
+ $EB73 DEFW $EBFC    ;
+ $EB75 DEFW $EC07    ;
+ $EB77 DEFW $EC13    ;
+ $EB79 DEFW $EC21    ;
+ $EB7B DEFW $EC32    ;
+ $EB7D DEFW $EC40    ;
+ $EB7F DEFW $EC4E    ;
+ $EB81 DEFW $EC5C    ;
+ $EB83 DEFW $EC6A    ;
+ $EB85 DEFW $EC78    ;
+ $EB87 DEFW $EC86    ;
+ $EB89 DEFW $EC94    ;
+ $EB8B DEFW $ECBE    ;
+ $EB8D DEFW $ECEF    ;
+ $EB8F DEFW $ED17    ;
+ $EB91 DEFW $ED17    ;
+ $EB93 DEFW $ED07    ;
+ $EB95 DEFW $ED27    ;
+ $EB97 DEFW $ED37    ;
+ $EB99 DEFW $ED47    ;
+ $EB9B DEFW $ED47    ;
+
+; Routine at EB9D
+;
+; Used by the routines at #R$EBA7 and #R$EC13.
+c$EB9D CALL $A592    ; Call #R$A592.
 ; This entry point is used by the routine at #R$EC13.
-*$EBA0 POP HL                               ;
- $EBA1 POP HL                               ;
- $EBA2 LD HL,$E9B2                          ;
- $EBA5 EX (SP),HL                           ;
- $EBA6 RET                                  ;
+*$EBA0 POP HL        ; {Restore #REGhl and #REGhl from the stack.
+ $EBA1 POP HL        ; }
+; Bad luck!
+ $EBA2 LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
+ $EBA5 EX (SP),HL    ; over".}
+ $EBA6 RET           ; Return.
 
 ; Routine at EBA7
 c$EBA7 LD A,($A7C3)  ; {Return if *#R$A7C3 is not room #N$42: #ROOM$42.
@@ -11486,18 +11659,18 @@ c$EBC5 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
  $EBD9 RET           ; Return.
 
 ; Routine at EBDA
-c$EBDA LD HL,$A76C   ; {Test bit 1 of *#R$A76C.
- $EBDD BIT 1,(HL)    ; }
- $EBDF RET NZ        ; Return if ?? is not equal to #N$00.
- $EBE0 SET 1,(HL)    ; Set bit 1 of *#REGhl.
- $EBE2 LD A,$00      ; #REGa=#N$00.
- $EBE4 CALL $AEE0    ; Call #R$AEE0.
- $EBE7 LD A,$01      ; #REGa=#N$01.
- $EBE9 CALL $AEE0    ; Call #R$AEE0.
- $EBEC LD A,$02      ; #REGa=#N$02.
- $EBEE CALL $AEF0    ; Call #R$AEF0.
- $EBF1 LD A,$03      ; #REGa=#N$03.
- $EBF3 CALL $AEF0    ; Call #R$AEF0.
+c$EBDA LD HL,$A76C   ; {Return if bit 1 of *#R$A76C is set.
+ $EBDD BIT 1,(HL)    ;
+ $EBDF RET NZ        ; }
+ $EBE0 SET 1,(HL)    ; Set bit 1 of *#R$A76C.
+ $EBE2 LD A,$00      ; {Call #R$AEE0 with item #N$00: #ITEM$00.
+ $EBE4 CALL $AEE0    ; }
+ $EBE7 LD A,$01      ; {Call #R$AEE0 with item #N$01: #ITEM$01.
+ $EBE9 CALL $AEE0    ; }
+ $EBEC LD A,$02      ; {Call #R$AEF0 with event #N$02: #ITEM$02.
+ $EBEE CALL $AEF0    ; }
+ $EBF1 LD A,$03      ; {Call #R$AEF0 with event #N$03: #ITEM$03.
+ $EBF3 CALL $AEF0    ; }
  $EBF6 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $EBF8 CALL $B09A    ; }
  $EBFB RET           ; Return.
@@ -11633,15 +11806,16 @@ c$ECA2 LD A,$27      ; {Call #R$AED1 with item #N$27: #ITEM$27.
 ; Routine at ECBE
 c$ECBE LD A,$28      ; {Call #R$AE6B with item #N$28: #ITEM$28.
  $ECC0 CALL $AE6B    ; }
- $ECC3 RET NZ        ; Return if #REGa is not equal to #N$28.
- $ECC4 LD A,$00      ; #REGa=#N$00.
- $ECC6 CALL $AEF0    ; Call #R$AEF0.
- $ECC9 LD A,$01      ; #REGa=#N$01.
- $ECCB CALL $AEF0    ; Call #R$AEF0.
- $ECCE LD A,$08      ; #REGa=#N$08.
- $ECD0 CALL $AEF0    ; Call #R$AEF0.
- $ECD3 LD A,$07      ; #REGa=#N$07.
- $ECD5 CALL $AEF0    ; Call #R$AEF0.
+ $ECC3 RET NZ        ; Return if item #N$28: #ITEM$28 is not in the current room or the
+                     ; players inventory.
+ $ECC4 LD A,$00      ; {Call #R$AEF0 with event #N$00: #ITEM$00.
+ $ECC6 CALL $AEF0    ; }
+ $ECC9 LD A,$01      ; {Call #R$AEF0 with event #N$01: #ITEM$01.
+ $ECCB CALL $AEF0    ; }
+ $ECCE LD A,$08      ; {Call #R$AEF0 with event #N$08: #ITEM$08.
+ $ECD0 CALL $AEF0    ; }
+ $ECD3 LD A,$07      ; {Call #R$AEF0 with event #N$07: #ITEM$07.
+ $ECD5 CALL $AEF0    ; }
  $ECD8 LD A,$28      ; {Call #R$AEE0 with item #N$28: #ITEM$28.
  $ECDA CALL $AEE0    ; }
  $ECDD LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
@@ -11649,11 +11823,17 @@ c$ECBE LD A,$28      ; {Call #R$AE6B with item #N$28: #ITEM$28.
  $ECE2 LD A,$1A      ; {Write #N$1A to *#R$E7B9 to open up westbound access to #ROOM$1A
  $ECE4 LD ($E7B9),A  ; from #ROOM$1B.}
  $ECE7 RET           ; Return.
-; This entry point is used by the routines at #R$ECEF, #R$ED07, #R$ED17,
-; #R$ED27, #R$ED37 and #R$ED47.
+
+; Response: "The Torc Warms Up As You Look"
+;
+; Used by the routines at #R$ECEF, #R$ED07, #R$ED17, #R$ED27, #R$ED37 and
+; #R$ED47.
+;
 ; .
+;
 ; Print "#STR$DFF1,$08($b==$FF)".
-*$ECE8 LD HL,$DFF1   ; #REGhl=#R$DFF1.
+@label=Response_TorcWarmsUpAsYouLook
+c$ECE8 LD HL,$DFF1   ; #REGhl=#R$DFF1.
  $ECEB CALL $A592    ; Call #R$A592.
  $ECEE RET           ; Return.
 
@@ -11805,17 +11985,25 @@ c$EDA6 LD C,$01      ; #REGc=#N$01.
 c$EDB2 CALL $ED75    ; Call #R$ED75.
  $EDB5 JP $EDA6      ; Jump to #R$EDA6.
 
-; Routine at EDB8
+; Handler: Drop Item
 ;
 ; Used by the routines at #R$EFF2, #R$EFF7, #R$EFFC, #R$F001, #R$F006, #R$F01C,
 ; #R$F032, #R$F037, #R$F03C, #R$F041, #R$F04A, #R$F060, #R$F069, #R$F06E,
 ; #R$F073, #R$F07C, #R$F091 and #R$F0A7.
+;
+; A Item ID
+@label=Handler_DropItem
 c$EDB8 CALL $AEDA    ; Call #R$AEDA.
 ; Print "#STR$AA9B,$08($b==$FF)".
  $EDBB LD HL,$AA9B   ; #REGhl=#R$AA9B.
- $EDBE JP NZ,$ED7E   ; Jump to #R$ED7E if *#REGhl is not equal to #N$01.
+ $EDBE JP NZ,$ED7E   ; Jump to #R$ED7E if the player is not carrying the item in their
+                     ; inventory.
 ; This entry point is used by the routines at #R$F0AC and #R$F489.
-*$EDC1 LD B,E        ; #REGb=#REGe.
+; .
+; The item is in the players inventory, so move its location to the
+; current room.
+@label=DropItem
+*$EDC1 LD B,E        ; Copy the item ID into #REGb.
  $EDC2 LD A,($A7C3)  ; {#REGc=*#R$A7C3.
  $EDC5 LD C,A        ; }
  $EDC6 CALL $AF08    ; Call #R$AF08.
@@ -11828,7 +12016,7 @@ c$EDB8 CALL $AEDA    ; Call #R$AEDA.
 ;
 ; Used by the routines at #R$EE59, #R$EE64, #R$EE73, #R$EE8D, #R$EE9C, #R$EEB6,
 ; #R$F07C, #R$F0AC, #R$F156, #R$F179, #R$F1DF, #R$F428, #R$F440, #R$F458,
-; #R$F489, #R$F4F5, #R$F500, #R$F518, #R$F52E, #R$F544 and #R$F620.
+; #R$F489, #R$F4F5, #R$F500, #R$F518, #R$F52E, #R$F57B and #R$F620.
 ;
 ;   A Item ID
 ; O:F Z flag set if the item is in the players inventory
@@ -11891,7 +12079,7 @@ c$EDED LD HL,$A9EC   ; #REGhl=#R$A9EC.
 ; Response: "O.K."
 ;
 ; Used by the routines at #R$EDA6, #R$EDB8, #R$F26C, #R$F293, #R$F428, #R$F440,
-; #R$F458, #R$F500, #R$F518, #R$F52E and #R$F544.
+; #R$F458, #R$F500, #R$F518, #R$F52E and #R$F57B.
 ;
 ; .
 ;
@@ -11902,7 +12090,7 @@ c$EDF3 LD HL,$A9F7   ; #REGhl=#R$A9F7.
 
 ; Response: "I Don't See The Point"
 ;
-; Used by the routines at #R$F2BA, #R$F544 and #R$F9E2.
+; Used by the routines at #R$F2BA, #R$F57B and #R$F9E2.
 ;
 ; .
 ;
@@ -11936,7 +12124,7 @@ c$EE05 LD HL,$CDD3   ; #REGhl=#R$CDD3.
 ; Response: "You've Done That Already"
 ;
 ; Used by the routines at #R$F2FF, #R$F338, #R$F3C8, #R$F3D6, #R$F3EC, #R$F544,
-; #R$F620, #R$F7C0 and #R$F7DB.
+; #R$F57B, #R$F620, #R$F7C0 and #R$F7DB.
 ;
 ; .
 ;
@@ -12374,23 +12562,33 @@ c$F001 LD A,$1C      ; {Jump to #R$EDB8 with item #N$1C: #ITEM$1C.
 @label=Process_DropTorc
 c$F006 LD HL,$E366   ; {Call #R$AEF7 with #R$E366.
  $F009 CALL $AEF7    ; }
- $F00C CP $6A        ; {Jump to #R$EDB8 if #REGa is not equal to #N$6A.
- $F00E JP NZ,$EDB8   ; }
+; The player wants to drop the torc but are they wearing it?
+ $F00C CP $6A        ; {Jump to #R$EDB8 if the item is not item #N$6A:
+ $F00E JP NZ,$EDB8   ; #ITEM$6A.}
+; Else the player is wearing the torc, so "un-wear" it first before
+; dropping it.
+; .
+; Change the torc state!
  $F011 LD BC,$6A69   ; {Call #R$AF1E to transform item #N$6A (#ITEM$6A) into item #N$69
  $F014 CALL $AF1E    ; (#ITEM$69).}
- $F017 LD A,$69      ; #REGa=#N$69.
- $F019 JP $EDB8      ; Jump to #R$EDB8.
+ $F017 LD A,$69      ; {Jump to #R$EDB8 with item #N$69: #ITEM$69.
+ $F019 JP $EDB8      ; }
 
 ; Process: Drop Helmet
 @label=Process_DropHelmet
 c$F01C LD HL,$E36B   ; {Call #R$AEF7 with #R$E36B.
  $F01F CALL $AEF7    ; }
- $F022 CP $20        ; {Jump to #R$EDB8 if #REGa is not equal to #N$20.
- $F024 JP NZ,$EDB8   ; }
+; The player wants to drop the helmet but are they wearing it?
+ $F022 CP $20        ; {Jump to #R$EDB8 if the item is not item #N$20:
+ $F024 JP NZ,$EDB8   ; #ITEM$20.}
+; Else the player is wearing the helmet, so "un-wear" it first before
+; dropping it.
+; .
+; Change the helmet state!
  $F027 LD BC,$201F   ; {Call #R$AF1E to transform item #N$20 (#ITEM$20) into item #N$1F
  $F02A CALL $AF1E    ; (#ITEM$1F).}
- $F02D LD A,$1F      ; #REGa=#N$1F.
- $F02F JP $EDB8      ; Jump to #R$EDB8.
+ $F02D LD A,$1F      ; {Jump to #R$EDB8 with item #N$1F: #ITEM$1F.
+ $F02F JP $EDB8      ; }
 
 ; Process: Drop Food
 @label=Process_DropFood
@@ -12469,12 +12667,17 @@ c$F07C LD A,$61      ; {Call #R$EDD0 with item #N$61: #ITEM$61.
 @label=Process_DropCloak
 c$F091 LD HL,$E3DD   ; {Call #R$AEF7 with #R$E3DD.
  $F094 CALL $AEF7    ; }
- $F097 CP $6D        ; {Jump to #R$EDB8 if #REGa is not equal to #N$6D.
- $F099 JP NZ,$EDB8   ; }
+; The player wants to drop the cloak but are they wearing it?
+ $F097 CP $6D        ; {Jump to #R$EDB8 if the item is not item #N$6D:
+ $F099 JP NZ,$EDB8   ; #ITEM$6D.}
+; Else the player is wearing the cloak, so "un-wear" it first before
+; dropping it.
+; .
+; Change the cloak state!
  $F09C LD BC,$6D64   ; {Call #R$AF1E to transform item #N$6D (#ITEM$6D) into item #N$64
  $F09F CALL $AF1E    ; (#ITEM$64).}
- $F0A2 LD A,$64      ; #REGa=#N$64.
- $F0A4 JP $EDB8      ; Jump to #R$EDB8.
+ $F0A2 LD A,$64      ; {Jump to #R$EDB8 with item #N$64: #ITEM$64.
+ $F0A4 JP $EDB8      ; }
 
 ; Process: Drop Silver
 @label=Process_DropSilver
@@ -12591,8 +12794,8 @@ c$F179 LD A,$23      ; #REGa=#N$23.
  $F18E JP $ED6D      ; Jump to #R$ED6D.
  $F191 LD A,$0B      ; #REGa=#N$0B.
  $F193 CALL $AEE0    ; Call #R$AEE0.
- $F196 LD HL,$A787   ; #REGhl=#R$A787.
- $F199 RES 0,(HL)    ; Reset bit 0 of *#REGhl.
+ $F196 LD HL,$A787   ; {Reset bit 0 of *#R$A787.
+ $F199 RES 0,(HL)    ; }
  $F19B LD BC,$494B   ; {Call #R$AF1E to transform item #N$49 (#ITEM$49) into item #N$4B
  $F19E CALL $AF1E    ; (#ITEM$4B).}
  $F1A1 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
@@ -12604,14 +12807,16 @@ c$F179 LD A,$23      ; #REGa=#N$23.
  $F1B1 JP Z,$EE05    ; Jump to #R$EE05 if *#REGhl is equal to #N$45.
  $F1B4 LD HL,$D695   ; #REGhl=#R$D695.
  $F1B7 CALL $A592    ; Call #R$A592.
- $F1BA LD HL,$E9B2   ; #REGhl=#R$E9B2.
- $F1BD EX (SP),HL    ; Exchange the *#REGsp with the #REGhl register.
+; Bad luck!
+ $F1BA LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
+ $F1BD EX (SP),HL    ; over".}
  $F1BE LD HL,$D6B0   ; #REGhl=#R$D6B0.
  $F1C1 JP $ED71      ; Jump to #R$ED71.
  $F1C4 LD HL,$D695   ; #REGhl=#R$D695.
  $F1C7 CALL $A592    ; Call #R$A592.
- $F1CA LD HL,$E9B2   ; #REGhl=#R$E9B2.
- $F1CD EX (SP),HL    ; Exchange the *#REGsp with the #REGhl register.
+; Bad luck!
+ $F1CA LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
+ $F1CD EX (SP),HL    ; over".}
  $F1CE LD HL,$D6E3   ; #REGhl=#R$D6E3.
  $F1D1 JP $ED71      ; Jump to #R$ED71.
  $F1D4 LD A,$19      ; #REGa=#N$19.
@@ -12695,8 +12900,9 @@ c$F26C LD HL,$E3B6   ; {Call #R$AEF7 with #R$E3B6.
  $F274 JP Z,$EE35    ; }
  $F277 CP $52        ; {Jump to #R$F285 if #REGa is not equal to #N$52.
  $F279 JR NZ,$F285   ; }
- $F27B LD HL,$E9B2   ; #REGhl=#R$E9B2.
- $F27E EX (SP),HL    ; Exchange the *#REGsp with the #REGhl register.
+; Bad luck!
+ $F27B LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
+ $F27E EX (SP),HL    ; over".}
  $F27F LD HL,$D778   ; #REGhl=#R$D778.
  $F282 JP $ED6D      ; Jump to #R$ED6D.
 *$F285 LD BC,$5354   ; #REGbc=#N$5354.
@@ -12719,8 +12925,9 @@ c$F293 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
  $F2A8 LD A,$51      ; #REGa=#N$51.
  $F2AA CALL $AEE7    ; Call #R$AEE7.
  $F2AD JP $EDF3      ; Jump to #R$EDF3.
-*$F2B0 LD HL,$E9B2   ; #REGhl=#R$E9B2.
- $F2B3 EX (SP),HL    ; Exchange the *#REGsp with the #REGhl register.
+; Bad luck!
+*$F2B0 LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
+ $F2B3 EX (SP),HL    ; over".}
  $F2B4 LD HL,$D7B6   ; #REGhl=#R$D7B6.
  $F2B7 JP $ED6D      ; Jump to #R$ED6D.
 
@@ -12919,8 +13126,9 @@ c$F40A LD HL,$D9CF   ; #REGhl=#R$D9CF.
  $F416 LD A,($A7C3)  ; {Jump to #R$EDED if *#R$A7C3 is not equal to #N$60.
  $F419 CP $60        ;
  $F41B JP NZ,$EDED   ; }
- $F41E LD HL,$E9B2   ; #REGhl=#R$E9B2.
- $F421 EX (SP),HL    ; Exchange the *#REGsp with the #REGhl register.
+; Bad luck!
+ $F41E LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
+ $F421 EX (SP),HL    ; over".}
  $F422 LD HL,$DA42   ; #REGhl=#R$DA42.
  $F425 JP $ED6D      ; Jump to #R$ED6D.
 
@@ -13136,29 +13344,46 @@ c$F52E LD A,$3A      ; {Call #R$EDD0 with item #N$3A: #ITEM$3A.
  $F53E LD HL,$DC41   ; #REGhl=#R$DC41.
  $F541 JP $ED6D      ; Jump to #R$ED6D.
 
-; Routine at F544
-c$F544 LD HL,$E341   ; #REGhl=#R$E341.
- $F547 CALL $AEF7    ; Call #R$AEF7.
- $F54A CP $0B        ; {Jump to #R$EE0B if #REGa is equal to #N$0B.
- $F54C JP Z,$EE0B    ; }
- $F54F CP $0A        ; {Jump to #R$EDED if #REGa is not equal to #N$0A.
- $F551 JP NZ,$EDED   ; }
- $F554 LD A,$51      ; #REGa=#N$51.
- $F556 CALL $AE6B    ; Call #R$AE6B.
- $F559 JP NZ,$EDDB   ; Jump to #R$EDDB if #REGa is not equal to #N$51.
+; Process: Capture Roman
+@label=Process_CaptureRoman
+c$F544 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
+ $F547 CALL $AEF7    ; }
+; The player wants to capture the Roman but is he already captured?
+; .
+; Print "#STR$CDE8,$08($b==$FF)" if the Roman is already captured.
+ $F54A CP $0B        ; {Jump to #R$EE0B if item #N$0B: #ITEM$0B is in the
+ $F54C JP Z,$EE0B    ; current room.}
+; The player wants to capture the Roman but is he even here?
+; .
+; Print "#STR$A9EC,$08($b==$FF)" if the Roman isn't present in the room.
+ $F54F CP $0A        ; {Jump to #R$EDED if item #N$0A: #ITEM$0A isn't in the
+ $F551 JP NZ,$EDED   ; current room.}
+; Can the player even capture the Roman? Do they have the rope?
+ $F554 LD A,$51      ; {Call #R$AE6B with item #N$51: #ITEM$51.
+ $F556 CALL $AE6B    ; }
+ $F559 JP NZ,$EDDB   ; Jump to #R$EDDB if item #N$51: #ITEM$51 isn't present in the
+                     ; current room or the players inventory.
+; The Roman is here, and the player has the rope! Let's capture a Roman:
+; .
+; Change the romans state!
  $F55C LD BC,$0A0B   ; {Call #R$AF1E to transform item #N$0A (#ITEM$0A) into item #N$0B
  $F55F CALL $AF1E    ; (#ITEM$0B).}
  $F562 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $F564 CALL $B09A    ; }
- $F567 LD A,$51      ; #REGa=#N$51.
- $F569 CALL $AEE0    ; Call #R$AEE0.
- $F56C LD HL,$A790   ; #REGhl=#R$A790.
- $F56F DEC (HL)      ; Decrease *#REGhl by one.
- $F570 LD HL,$A787   ; #REGhl=#R$A787.
- $F573 SET 0,(HL)    ; Set bit 0 of *#REGhl.
+; The rope as a separate item is no longer needed.
+ $F567 LD A,$51      ; {Call #R$AEE0 with item #N$51: #ITEM$51.
+ $F569 CALL $AEE0    ; }
+ $F56C LD HL,$A790   ; {Decrease *#R$A790 by one.
+ $F56F DEC (HL)      ; }
+; Flag to the game that this has occurred.
+ $F570 LD HL,$A787   ; {Set bit 0 of *#R$A787 which relates to the roman being
+ $F573 SET 0,(HL)    ; captured.}
+; Print "#STR$DC58,$08($b==$FF)".
  $F575 LD HL,$DC58   ; #REGhl=#R$DC58.
  $F578 JP $ED6D      ; Jump to #R$ED6D.
- $F57B LD HL,$E3C5   ; #REGhl=#R$E3C5.
+
+; Routine at F57B
+c$F57B LD HL,$E3C5   ; #REGhl=#R$E3C5.
  $F57E CALL $AEF7    ; Call #R$AEF7.
  $F581 CP $5E        ; Compare #REGa with #N$5E.
  $F583 JP Z,$EE0B    ; Jump to #R$EE0B if #REGa is equal to #N$5E.
@@ -13281,8 +13506,8 @@ c$F620 LD HL,$A825   ; #REGhl=#R$A825.
  $F688 JP $ED6D      ; Jump to #R$ED6D.
 *$F68B LD BC,$0B55   ; {Call #R$AF1E to transform item #N$0B (#ITEM$0B) into item #N$55
  $F68E CALL $AF1E    ; (#ITEM$55).}
- $F691 LD HL,$A787   ; #REGhl=#R$A787.
- $F694 RES 0,(HL)    ; Reset bit 0 of *#REGhl.
+ $F691 LD HL,$A787   ; {Reset bit 0 of *#R$A787.
+ $F694 RES 0,(HL)    ; }
  $F696 CALL $F685    ; Call #R$F685.
  $F699 LD HL,$DD6E   ; #REGhl=#R$DD6E.
  $F69C JP $ED6D      ; Jump to #R$ED6D.
@@ -13297,8 +13522,9 @@ c$F620 LD HL,$A825   ; #REGhl=#R$A825.
  $F6B6 LD A,($A773)  ; {Jump to #R$F6C7 if *#R$A773 is not equal to #N$0F.
  $F6B9 CP $0F        ;
  $F6BB JR NZ,$F6C7   ; }
- $F6BD LD HL,$E9B2   ; #REGhl=#R$E9B2.
- $F6C0 EX (SP),HL    ; Exchange the *#REGsp with the #REGhl register.
+; Bad luck!
+ $F6BD LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
+ $F6C0 EX (SP),HL    ; over".}
  $F6C1 LD HL,$DD86   ; #REGhl=#R$DD86.
  $F6C4 JP $ED6D      ; Jump to #R$ED6D.
 *$F6C7 LD A,$39      ; #REGa=#N$39.
@@ -13326,8 +13552,9 @@ c$F620 LD HL,$A825   ; #REGhl=#R$A825.
  $F700 JP $ED6D      ; Jump to #R$ED6D.
 *$F703 LD ($A772),HL ; Write #REGhl to *#R$A772.
  $F706 CALL $F62B    ; Call #R$F62B.
- $F709 LD HL,$E9B2   ; #REGhl=#R$E9B2.
- $F70C EX (SP),HL    ; Exchange the *#REGsp with the #REGhl register.
+; Bad luck!
+ $F709 LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
+ $F70C EX (SP),HL    ; over".}
  $F70D LD HL,($A772) ; #REGhl=*#R$A772.
  $F710 JP $ED6D      ; Jump to #R$ED6D.
  $F713 CALL $F62B    ; Call #R$F62B.
@@ -13494,6 +13721,8 @@ c$F853 CALL $AF7B    ; Call #R$AF7B.
  $F85F LD DE,$F87D   ; #REGde=#R$F87D.
  $F862 LD BC,$0009   ; #REGbc=#N($0009,$04,$04).
  $F865 CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
 ; Print "#STR$CF40,$08($b==$FF)".
  $F868 JP $EE53      ; Jump to #R$EE53.
 ; The token table for the action "examine":
@@ -13654,6 +13883,8 @@ c$F8F2 CALL $AF7B    ; Call #R$AF7B.
  $F8FE LD DE,$F930   ; #REGde=#R$F930.
  $F901 LD BC,$0013   ; #REGbc=#N($0013,$04,$04).
  $F904 CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
 ; Print "#STR$A9EC,$08($b==$FF)".
  $F907 JP $EDED      ; Jump to #R$EDED.
 ; The token table for the action "get":
@@ -13730,6 +13961,8 @@ c$F975 CALL $AF7B    ; Call #R$AF7B.
  $F981 LD DE,$F98D   ; #REGde=#R$F98D.
  $F984 LD BC,$0013   ; #REGbc=#N($0013,$04,$04).
  $F987 CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
 ; Print "#STR$A9EC,$08($b==$FF)".
  $F98A JP $EDED      ; Jump to #R$EDED.
 ; The actions table for "drop":
@@ -13757,8 +13990,8 @@ c$F975 CALL $AF7B    ; Call #R$AF7B.
 ; Action: Throw
 @label=Action_Throw
 c$F9B3 CALL $AF9F    ; Call #R$AF9F.
- $F9B6 RET C         ; Return if there is no direct object in the user input (so the
-                     ; command is malformed).
+ $F9B6 RET C         ; Return if there are not two direct objects in the user input (so
+                     ; the command is malformed).
  $F9B7 LD HL,$A825   ; #REGhl=#R$A825.
  $F9BA LD BC,$0009   ; #REGbc=#N($0009,$04,$04).
  $F9BD LD A,$6D      ; Load token #N$6D #TOKEN$6D into #REGa.
@@ -13768,15 +14001,20 @@ c$F9B3 CALL $AF9F    ; Call #R$AF9F.
  $F9C7 LD DE,$F9DA   ; #REGde=#R$F9DA.
  $F9CA LD BC,$0004   ; #REGbc=#N($0004,$04,$04).
  $F9CD CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
  $F9D0 JR $F9E2      ; Jump to #R$F9E2.
- $F9D2 DEFW $E569    ;
- $F9D4 DEFW $E56D    ;
- $F9D6 DEFW $E585    ;
- $F9D8 DEFW $E589    ;
- $F9DA DEFW $F1AC    ;
- $F9DC DEFW $F1C4    ;
- $F9DE DEFW $F1AC    ;
- $F9E0 DEFW $F1C4    ;
+; The token table for the action "throw":
+@label=Table_ActionThrow_TokenGroup
+ $F9D2 DEFW $E569    ; Token group #N($01+(#PC-$F9D2)/$02).
+ $F9D4 DEFW $E56D    ; Token group #N($01+(#PC-$F9D2)/$02).
+ $F9D6 DEFW $E585    ; Token group #N($01+(#PC-$F9D2)/$02).
+ $F9D8 DEFW $E589    ; Token group #N($01+(#PC-$F9D2)/$02).
+; The actions table for "throw":
+@label=Table_ActionThrow
+ $F9DA DEFW $F1AC    ; Action routine #N($01+(#PC-$F9DA)/$02).
+ $F9DC DEFW $F1C4    ; Action routine #N($01+(#PC-$F9DA)/$02).
+ $F9DE DEFW $F1AC    ; Action routine #N($01+(#PC-$F9DA)/$02).
+ $F9E0 DEFW $F1C4    ; Action routine #N($01+(#PC-$F9DA)/$02).
 
 ; Routine at F9E2
 ;
@@ -13785,38 +14023,45 @@ c$F9E2 LD HL,$F9F1   ; #REGhl=#R$F9F1.
  $F9E5 LD DE,$FA0D   ; #REGde=#R$FA0D.
  $F9E8 LD BC,$000E   ; #REGbc=#N($000E,$04,$04).
  $F9EB CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
+; Print "#STR$AA84,$08($b==$FF)".
  $F9EE JP $EDF9      ; Jump to #R$EDF9.
- $F9F1 DEFW $E571    ;
- $F9F3 DEFW $E59E    ;
- $F9F5 DEFW $E579    ;
- $F9F7 DEFW $E57D    ;
- $F9F9 DEFW $E581    ;
- $F9FB DEFW $E58D    ;
- $F9FD DEFW $E5A7    ;
- $F9FF DEFW $E575    ;
- $FA01 DEFW $E5B0    ;
- $FA03 DEFW $E5B4    ;
- $FA05 DEFW $E5B8    ;
- $FA07 DEFW $E5C1    ;
- $FA09 DEFW $E5C5    ;
- $FA0B DEFW $E5CE    ;
- $FA0D DEFW $F0FD    ;
- $FA0F DEFW $F126    ;
- $FA11 DEFW $F134    ;
- $FA13 DEFW $F179    ;
- $FA15 DEFW $F191    ;
- $FA17 DEFW $F1D4    ;
- $FA19 DEFW $F1FE    ;
- $FA1B DEFW $F214    ;
- $FA1D DEFW $F219    ;
- $FA1F DEFW $F21E    ;
- $FA21 DEFW $F223    ;
- $FA23 DEFW $F239    ;
- $FA25 DEFW $F223    ;
- $FA27 DEFW $F21E    ;
+; The token table for the action "kill"/"throw":
+@label=Table_ActionKillThrow_TokenGroup
+ $F9F1 DEFW $E571    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $F9F3 DEFW $E59E    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $F9F5 DEFW $E579    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $F9F7 DEFW $E57D    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $F9F9 DEFW $E581    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $F9FB DEFW $E58D    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $F9FD DEFW $E5A7    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $F9FF DEFW $E575    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $FA01 DEFW $E5B0    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $FA03 DEFW $E5B4    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $FA05 DEFW $E5B8    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $FA07 DEFW $E5C1    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $FA09 DEFW $E5C5    ; Token group #N($01+(#PC-$F9F1)/$02).
+ $FA0B DEFW $E5CE    ; Token group #N($01+(#PC-$F9F1)/$02).
+; The actions table for "kill"/"throw":
+@label=Table_ActionsKillThrow
+ $FA0D DEFW $F0FD    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA0F DEFW $F126    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA11 DEFW $F134    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA13 DEFW $F179    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA15 DEFW $F191    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA17 DEFW $F1D4    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA19 DEFW $F1FE    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA1B DEFW $F214    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA1D DEFW $F219    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA1F DEFW $F21E    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA21 DEFW $F223    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA23 DEFW $F239    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA25 DEFW $F223    ; Action routine #N($01+(#PC-$FA0D)/$02).
+ $FA27 DEFW $F21E    ; Action routine #N($01+(#PC-$FA0D)/$02).
 
-; Action: Kill/ Attack/ Hit/ Strike
-@label=Action_Kill
+; Action: Give?
+@label=Action_Give
 c$FA29 CALL $AF7B    ; Call #R$AF7B.
  $FA2C RET C         ; Return if there is no direct object in the user input (so the
                      ; command is malformed).
@@ -13830,35 +14075,44 @@ c$FA29 CALL $AF7B    ; Call #R$AF7B.
  $FA3A LD DE,$FA58   ; #REGde=#R$FA58.
  $FA3D LD BC,$0009   ; #REGbc=#N($0009,$04,$04).
  $FA40 CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
  $FA43 JP $F9E2      ; Jump to #R$F9E2.
- $FA46 DEFW $E569    ;
- $FA48 DEFW $E56D    ;
- $FA4A DEFW $E585    ;
- $FA4C DEFW $E589    ;
- $FA4E DEFW $E5D2    ;
- $FA50 DEFW $E5D6    ;
- $FA52 DEFW $E5DA    ;
- $FA54 DEFW $E5DE    ;
- $FA56 DEFW $E66E    ;
- $FA58 DEFW $F0C0    ;
- $FA5A DEFW $F0DB    ;
- $FA5C DEFW $F23E    ;
- $FA5E DEFW $F259    ;
- $FA60 DEFW $F0C0    ;
- $FA62 DEFW $F0DB    ;
- $FA64 DEFW $F23E    ;
- $FA66 DEFW $F259    ;
- $FA68 DEFW $F4B9    ;
+; The token table for the action "give":
+@label=Table_ActionGive_TokenGroup
+ $FA46 DEFW $E569    ; Token group #N($01+(#PC-$FA46)/$02).
+ $FA48 DEFW $E56D    ; Token group #N($01+(#PC-$FA46)/$02).
+ $FA4A DEFW $E585    ; Token group #N($01+(#PC-$FA46)/$02).
+ $FA4C DEFW $E589    ; Token group #N($01+(#PC-$FA46)/$02).
+ $FA4E DEFW $E5D2    ; Token group #N($01+(#PC-$FA46)/$02).
+ $FA50 DEFW $E5D6    ; Token group #N($01+(#PC-$FA46)/$02).
+ $FA52 DEFW $E5DA    ; Token group #N($01+(#PC-$FA46)/$02).
+ $FA54 DEFW $E5DE    ; Token group #N($01+(#PC-$FA46)/$02).
+ $FA56 DEFW $E66E    ; Token group #N($01+(#PC-$FA46)/$02).
+; The actions table for "give":
+@label=Table_ActionsGive
+ $FA58 DEFW $F0C0    ; Action routine #N($01+(#PC-$FA58)/$02).
+ $FA5A DEFW $F0DB    ; Action routine #N($01+(#PC-$FA58)/$02).
+ $FA5C DEFW $F23E    ; Action routine #N($01+(#PC-$FA58)/$02).
+ $FA5E DEFW $F259    ; Action routine #N($01+(#PC-$FA58)/$02).
+ $FA60 DEFW $F0C0    ; Action routine #N($01+(#PC-$FA58)/$02).
+ $FA62 DEFW $F0DB    ; Action routine #N($01+(#PC-$FA58)/$02).
+ $FA64 DEFW $F23E    ; Action routine #N($01+(#PC-$FA58)/$02).
+ $FA66 DEFW $F259    ; Action routine #N($01+(#PC-$FA58)/$02).
+ $FA68 DEFW $F4B9    ; Action routine #N($01+(#PC-$FA58)/$02).
 
 ; Action: Free
 @label=Action_Free
-c$FA6A CALL $AF7B    ;
- $FA6D RET C         ;
- $FA6E LD HL,$FA7D   ;
- $FA71 LD DE,$FA87   ;
- $FA74 LD BC,$0005   ;
- $FA77 CALL $B0DE    ;
- $FA7A JP $EDED      ;
+c$FA6A CALL $AF7B    ; Call #R$AF7B.
+ $FA6D RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+ $FA6E LD HL,$FA7D   ; #REGhl=#R$FA7D.
+ $FA71 LD DE,$FA87   ; #REGde=#R$FA87.
+ $FA74 LD BC,$0005   ; #REGbc=#N($0005,$04,$04).
+ $FA77 CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
+; Print "#STR$A9EC,$08($b==$FF)".
+ $FA7A JP $EDED      ; Jump to #R$EDED.
 ; The token table for the action "free":
 @label=Table_ActionFree_TokenGroup
  $FA7D DEFW $E5E6    ; Token group #N($01+(#PC-$FA7D)/$02).
@@ -13887,6 +14141,8 @@ c$FA91 CALL $AF7B    ; Call #R$AF7B.
  $FA9D LD DE,$FAAB   ; #REGde=#R$FAAB.
  $FAA0 LD BC,$0001   ; #REGbc=#N($0001,$04,$04).
  $FAA3 CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
 ; Print "#STR$A9EC,$08($b==$FF)".
  $FAA6 JP $EDED      ; Jump to #R$EDED.
 ; The token table for the action "drink":
@@ -13908,20 +14164,26 @@ c$FAAD CALL $AFB7    ; Call #R$AFB7.
  $FAB9 LD DE,$FAD1   ; #REGde=#R$FAD1.
  $FABC LD BC,$0006   ; #REGbc=#N($0006,$04,$04).
  $FABF CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
 ; Print "#STR$A9EC,$08($b==$FF)".
  $FAC2 JP $EDED      ; Jump to #R$EDED.
- $FAC5 DEFW $E5F5    ;
- $FAC7 DEFW $E607    ;
- $FAC9 DEFW $E60A    ;
- $FACB DEFW $E60D    ;
- $FACD DEFW $E659    ;
- $FACF DEFW $E64C    ;
- $FAD1 DEFW $F2FF    ;
- $FAD3 DEFW $F31D    ;
- $FAD5 DEFW $F338    ;
- $FAD7 DEFW $F34B    ;
- $FAD9 DEFW $F410    ;
- $FADB DEFW $F416    ;
+; The token table for the action "jump":
+@label=Table_ActionJump_TokenGroup
+ $FAC5 DEFW $E5F5    ; Token group #N($01+(#PC-$FAC5)/$02).
+ $FAC7 DEFW $E607    ; Token group #N($01+(#PC-$FAC5)/$02).
+ $FAC9 DEFW $E60A    ; Token group #N($01+(#PC-$FAC5)/$02).
+ $FACB DEFW $E60D    ; Token group #N($01+(#PC-$FAC5)/$02).
+ $FACD DEFW $E659    ; Token group #N($01+(#PC-$FAC5)/$02).
+ $FACF DEFW $E64C    ; Token group #N($01+(#PC-$FAC5)/$02).
+; The actions table for "jump":
+@label=Table_ActionsJump
+ $FAD1 DEFW $F2FF    ; Action routine #N($01+(#PC-$FAD1)/$02).
+ $FAD3 DEFW $F31D    ; Action routine #N($01+(#PC-$FAD1)/$02).
+ $FAD5 DEFW $F338    ; Action routine #N($01+(#PC-$FAD1)/$02).
+ $FAD7 DEFW $F34B    ; Action routine #N($01+(#PC-$FAD1)/$02).
+ $FAD9 DEFW $F410    ; Action routine #N($01+(#PC-$FAD1)/$02).
+ $FADB DEFW $F416    ; Action routine #N($01+(#PC-$FAD1)/$02).
 
 ; Action: Climb
 @label=Action_Climb
@@ -13935,30 +14197,36 @@ c$FADD CALL $AFB7    ; Call #R$AFB7.
  $FAE9 LD DE,$FB0B   ; #REGde=#R$FB0B.
  $FAEC LD BC,$000B   ; #REGbc=#N($000B,$04,$04).
  $FAEF CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
 ; Print "#STR$A9EC,$08($b==$FF)".
  $FAF2 JP $EDED      ; Jump to #R$EDED.
- $FAF5 DEFW $E61C    ;
- $FAF7 DEFW $E632    ;
- $FAF9 DEFW $E636    ;
- $FAFB DEFW $E63A    ;
- $FAFD DEFW $E64A    ;
- $FAFF DEFW $E64C    ;
- $FB01 DEFW $E63C    ;
- $FB03 DEFW $E63F    ;
- $FB05 DEFW $E5F5    ;
- $FB07 DEFW $E607    ;
- $FB09 DEFW $E60A    ;
- $FB0B DEFW $F359    ;
- $FB0D DEFW $EE2F    ;
- $FB0F DEFW $F36E    ;
- $FB11 DEFW $F383    ;
- $FB13 DEFW $F39B    ;
- $FB15 DEFW $F39B    ;
- $FB17 DEFW $F3AC    ;
- $FB19 DEFW $F3BA    ;
- $FB1B DEFW $F2FF    ;
- $FB1D DEFW $F31D    ;
- $FB1F DEFW $F338    ;
+; The token table for the action "climb":
+@label=Table_ActionClimb_TokenGroup
+ $FAF5 DEFW $E61C    ; Token group #N($01+(#PC-$FAF5)/$02).
+ $FAF7 DEFW $E632    ; Token group #N($01+(#PC-$FAF5)/$02).
+ $FAF9 DEFW $E636    ; Token group #N($01+(#PC-$FAF5)/$02).
+ $FAFB DEFW $E63A    ; Token group #N($01+(#PC-$FAF5)/$02).
+ $FAFD DEFW $E64A    ; Token group #N($01+(#PC-$FAF5)/$02).
+ $FAFF DEFW $E64C    ; Token group #N($01+(#PC-$FAF5)/$02).
+ $FB01 DEFW $E63C    ; Token group #N($01+(#PC-$FAF5)/$02).
+ $FB03 DEFW $E63F    ; Token group #N($01+(#PC-$FAF5)/$02).
+ $FB05 DEFW $E5F5    ; Token group #N($01+(#PC-$FAF5)/$02).
+ $FB07 DEFW $E607    ; Token group #N($01+(#PC-$FAF5)/$02).
+ $FB09 DEFW $E60A    ; Token group #N($01+(#PC-$FAF5)/$02).
+; The actions table for "climb":
+@label=Table_ActionsClimb
+ $FB0B DEFW $F359    ; Action routine #N($01+(#PC-$FB0B)/$02).
+ $FB0D DEFW $EE2F    ; Action routine #N($01+(#PC-$FB0B)/$02).
+ $FB0F DEFW $F36E    ; Action routine #N($01+(#PC-$FB0B)/$02).
+ $FB11 DEFW $F383    ; Action routine #N($01+(#PC-$FB0B)/$02).
+ $FB13 DEFW $F39B    ; Action routine #N($01+(#PC-$FB0B)/$02).
+ $FB15 DEFW $F39B    ; Action routine #N($01+(#PC-$FB0B)/$02).
+ $FB17 DEFW $F3AC    ; Action routine #N($01+(#PC-$FB0B)/$02).
+ $FB19 DEFW $F3BA    ; Action routine #N($01+(#PC-$FB0B)/$02).
+ $FB1B DEFW $F2FF    ; Action routine #N($01+(#PC-$FB0B)/$02).
+ $FB1D DEFW $F31D    ; Action routine #N($01+(#PC-$FB0B)/$02).
+ $FB1F DEFW $F338    ; Action routine #N($01+(#PC-$FB0B)/$02).
 
 ; Action: Enter
 @label=Action_Enter
@@ -13972,26 +14240,32 @@ c$FB21 CALL $AF7B    ; Call #R$AF7B.
  $FB2D LD DE,$FB4B   ; #REGde=#R$FB4B.
  $FB30 LD BC,$0009   ; #REGbc=#N($0009,$04,$04).
  $FB33 CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
 ; Print "#STR$A9EC,$08($b==$FF)".
  $FB36 JP $EDED      ; Jump to #R$EDED.
- $FB39 DEFW $E64E    ;
- $FB3B DEFW $E5F5    ;
- $FB3D DEFW $E607    ;
- $FB3F DEFW $E60A    ;
- $FB41 DEFW $E655    ;
- $FB43 DEFW $E657    ;
- $FB45 DEFW $E665    ;
- $FB47 DEFW $E710    ;
- $FB49 DEFW $E712    ;
- $FB4B DEFW $F3C8    ;
- $FB4D DEFW $F2FF    ;
- $FB4F DEFW $F31D    ;
- $FB51 DEFW $F338    ;
- $FB53 DEFW $F3D6    ;
- $FB55 DEFW $F3EC    ;
- $FB57 DEFW $F40A    ;
- $FB59 DEFW $F7C0    ;
- $FB5B DEFW $F7DB    ;
+; The token table for the action "enter":
+@label=Table_ActionEnter_TokenGroup
+ $FB39 DEFW $E64E    ; Token group #N($01+(#PC-$FB39)/$02).
+ $FB3B DEFW $E5F5    ; Token group #N($01+(#PC-$FB39)/$02).
+ $FB3D DEFW $E607    ; Token group #N($01+(#PC-$FB39)/$02).
+ $FB3F DEFW $E60A    ; Token group #N($01+(#PC-$FB39)/$02).
+ $FB41 DEFW $E655    ; Token group #N($01+(#PC-$FB39)/$02).
+ $FB43 DEFW $E657    ; Token group #N($01+(#PC-$FB39)/$02).
+ $FB45 DEFW $E665    ; Token group #N($01+(#PC-$FB39)/$02).
+ $FB47 DEFW $E710    ; Token group #N($01+(#PC-$FB39)/$02).
+ $FB49 DEFW $E712    ; Token group #N($01+(#PC-$FB39)/$02).
+; The actions table for "enter":
+@label=Table_ActionsEnter
+ $FB4B DEFW $F3C8    ; Action routine #N($01+(#PC-$FB4B)/$02).
+ $FB4D DEFW $F2FF    ; Action routine #N($01+(#PC-$FB4B)/$02).
+ $FB4F DEFW $F31D    ; Action routine #N($01+(#PC-$FB4B)/$02).
+ $FB51 DEFW $F338    ; Action routine #N($01+(#PC-$FB4B)/$02).
+ $FB53 DEFW $F3D6    ; Action routine #N($01+(#PC-$FB4B)/$02).
+ $FB55 DEFW $F3EC    ; Action routine #N($01+(#PC-$FB4B)/$02).
+ $FB57 DEFW $F40A    ; Action routine #N($01+(#PC-$FB4B)/$02).
+ $FB59 DEFW $F7C0    ; Action routine #N($01+(#PC-$FB4B)/$02).
+ $FB5B DEFW $F7DB    ; Action routine #N($01+(#PC-$FB4B)/$02).
 
 ; Action: Wear
 @label=Action_Wear
@@ -14005,6 +14279,8 @@ c$FB5D CALL $AF7B    ; Call #R$AF7B.
  $FB69 LD DE,$FB7F   ; #REGde=#R$FB7F.
  $FB6C LD BC,$0005   ; #REGbc=#N($0005,$04,$04).
  $FB6F CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
 ; Print "#STR$CDD3,$08($b==$FF)".
  $FB72 JP $EE05      ; Jump to #R$EE05.
 ; The token table for the action "wear":
@@ -14034,20 +14310,26 @@ c$FB89 CALL $AFB7    ; Call #R$AFB7.
  $FB95 LD DE,$FBAD   ; #REGde=#R$FBAD.
  $FB98 LD BC,$0006   ; #REGbc=#N($0006,$04,$04).
  $FB9B CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
 ; Print "#STR$A9EC,$08($b==$FF)".
  $FB9E JP $EDED      ; Jump to #R$EDED.
- $FBA1 DEFW $E642    ;
- $FBA3 DEFW $E644    ;
- $FBA5 DEFW $E646    ;
- $FBA7 DEFW $E648    ;
- $FBA9 DEFW $E64A    ;
- $FBAB DEFW $E64C    ;
- $FBAD DEFW $F39B    ;
- $FBAF DEFW $F39B    ;
- $FBB1 DEFW $F39B    ;
- $FBB3 DEFW $F39B    ;
- $FBB5 DEFW $F39B    ;
- $FBB7 DEFW $F39B    ;
+; The token table for the action "go":
+@label=Table_ActionGo_TokenGroup
+ $FBA1 DEFW $E642    ; Token group #N($01+(#PC-$FBA1)/$02).
+ $FBA3 DEFW $E644    ; Token group #N($01+(#PC-$FBA1)/$02).
+ $FBA5 DEFW $E646    ; Token group #N($01+(#PC-$FBA1)/$02).
+ $FBA7 DEFW $E648    ; Token group #N($01+(#PC-$FBA1)/$02).
+ $FBA9 DEFW $E64A    ; Token group #N($01+(#PC-$FBA1)/$02).
+ $FBAB DEFW $E64C    ; Token group #N($01+(#PC-$FBA1)/$02).
+; The actions table for "go":
+@label=Table_ActionsGo
+ $FBAD DEFW $F39B    ; Action routine #N($01+(#PC-$FBAD)/$02).
+ $FBAF DEFW $F39B    ; Action routine #N($01+(#PC-$FBAD)/$02).
+ $FBB1 DEFW $F39B    ; Action routine #N($01+(#PC-$FBAD)/$02).
+ $FBB3 DEFW $F39B    ; Action routine #N($01+(#PC-$FBAD)/$02).
+ $FBB5 DEFW $F39B    ; Action routine #N($01+(#PC-$FBAD)/$02).
+ $FBB7 DEFW $F39B    ; Action routine #N($01+(#PC-$FBAD)/$02).
 
 ; Action: Swearing
 @label=Action_Swearing
@@ -14067,6 +14349,8 @@ c$FBC3 CALL $AF7B    ; Call #R$AF7B.
  $FBCA LD DE,$FBDA   ; #REGde=#R$FBDA.
  $FBCD LD BC,$0002   ; #REGbc=#N($0002,$04,$04).
  $FBD0 CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
 ; Print "#STR$DC09,$08($b==$FF)".
  $FBD3 JP $EE47      ; Jump to #R$EE47.
 ; The token table for the action "eat":
@@ -14080,29 +14364,45 @@ c$FBC3 CALL $AF7B    ; Call #R$AF7B.
 
 ; Action: Capture
 @label=Action_Capture
-c$FBDE CALL $AF7B    ;
- $FBE1 RET C         ;
- $FBE2 LD HL,$FBF1   ;
- $FBE5 LD DE,$FBF3   ;
- $FBE8 LD BC,$0001   ;
- $FBEB CALL $B0DE    ;
- $FBEE JP $EDED      ;
- $FBF1 DEFW $E5E2    ;
- $FBF3 DEFW $F544    ;
+c$FBDE CALL $AF7B    ; Call #R$AF7B.
+ $FBE1 RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+ $FBE2 LD HL,$FBF1   ; #REGhl=#R$FBF1.
+ $FBE5 LD DE,$FBF3   ; #REGde=#R$FBF3.
+ $FBE8 LD BC,$0001   ; #REGbc=#N($0001,$04,$04).
+ $FBEB CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
+; Print "#STR$A9EC,$08($b==$FF)".
+ $FBEE JP $EDED      ; Jump to #R$EDED.
+; The token table for the action "capture":
+@label=Table_ActionCapture_TokenGroup
+ $FBF1 DEFW $E5E2    ; Token group #N($01+(#PC-$FBF1)/$02).
+; The actions table for "capture":
+@label=Table_ActionCapture
+ $FBF3 DEFW $F544    ; Action routine #N($01+(#PC-$FBF3)/$02).
 
 ; Action: Place/ Lean/ Lay
 @label=Action_Place
-c$FBF5 CALL $AF9F    ;
- $FBF8 RET C         ;
- $FBF9 LD HL,$FC08   ;
- $FBFC LD DE,$FC0C   ;
- $FBFF LD BC,$0002   ;
- $FC02 CALL $B0DE    ;
- $FC05 JP $EDED      ;
- $FC08 DEFW $E672    ;
- $FC0A DEFW $E676    ;
- $FC0C DEFW $F57B    ;
- $FC0E DEFW $F5B8    ;
+c$FBF5 CALL $AF9F    ; Call #R$AF9F.
+ $FBF8 RET C         ; Return if there are not two direct objects in the user input (so
+                     ; the command is malformed).
+ $FBF9 LD HL,$FC08   ; #REGhl=#R$FC08.
+ $FBFC LD DE,$FC0C   ; #REGde=#R$FC0C.
+ $FBFF LD BC,$0002   ; #REGbc=#N($0002,$04,$04).
+ $FC02 CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
+; Print "#STR$A9EC,$08($b==$FF)".
+ $FC05 JP $EDED      ; Jump to #R$EDED.
+; The token table for the action "place":
+@label=Table_ActionPlace_TokenGroup
+ $FC08 DEFW $E672    ; Token group #N($01+(#PC-$FC08)/$02).
+ $FC0A DEFW $E676    ; Token group #N($01+(#PC-$FC08)/$02).
+; The actions table for "place":
+@label=Table_ActionPlace
+ $FC0C DEFW $F57B    ; Action routine #N($01+(#PC-$FC0C)/$02).
+ $FC0E DEFW $F5B8    ; Action routine #N($01+(#PC-$FC0C)/$02).
 
 ; Action: Buy/ Purchase
 @label=Action_Buy
@@ -14113,6 +14413,9 @@ c$FC10 CALL $AF7B    ; Call #R$AF7B.
  $FC17 LD DE,$FC29   ; #REGde=#R$FC29.
  $FC1A LD BC,$0003   ; #REGbc=#N($0004,$04,$04).
  $FC1D CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
+; Print "#STR$A9EC,$08($b==$FF)".
  $FC20 JP $EDED      ; Jump to #R$EDED.
 ; The token table for the action "buy"/"purchase":
 @label=Table_ActionBuy_TokenGroup
@@ -14137,6 +14440,9 @@ c$FC2F CALL $AF7B    ; Call #R$AF7B.
  $FC3B LD DE,$FC49   ; #REGde=#R$FC49.
  $FC3E LD BC,$0001   ; #REGbc=#N($0001,$04,$04).
  $FC41 CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
+; Print "#STR$A9EC,$08($b==$FF)".
  $FC44 JP $EDED      ; Jump to #R$EDED.
 ; The token table for the action "step":
 @label=Table_ActionStep_TokenGroup
@@ -14145,39 +14451,50 @@ c$FC2F CALL $AF7B    ; Call #R$AF7B.
 @label=Table_ActionStep
  $FC49 DEFW $F5F9    ; Action routine #N($01+(#PC-$FC49)/$02).
 
-; Routine at FC4B
-c$FC4B CALL $AF7B    ;
- $FC4E RET C         ;
- $FC4F LD HL,$FC5E   ;
- $FC52 LD DE,$FC74   ;
- $FC55 LD BC,$000B   ;
- $FC58 CALL $B0DE    ;
- $FC5B JP $EDED      ;
- $FC5E DEFW $E6C7    ;
- $FC60 DEFW $E6CD    ;
- $FC62 DEFW $E6D3    ;
- $FC64 DEFW $E6D9    ;
- $FC66 DEFW $E6DF    ;
- $FC68 DEFW $E6E4    ;
- $FC6A DEFW $E6EA    ;
- $FC6C DEFW $E6F0    ;
- $FC6E DEFW $E6F6    ;
- $FC70 DEFW $E6FC    ;
- $FC72 DEFW $E702    ;
- $FC74 DEFW $F643    ;
- $FC76 DEFW $F69F    ;
- $FC78 DEFW $F6E1    ;
- $FC7A DEFW $F713    ;
- $FC7C DEFW $F71F    ;
- $FC7E DEFW $F730    ;
- $FC80 DEFW $F739    ;
- $FC82 DEFW $F76A    ;
- $FC84 DEFW $F776    ;
- $FC86 DEFW $F77F    ;
- $FC88 DEFW $F793    ;
- $FC8A DEFB $0D      ;
- $FC8B DEFB $0E      ;
- $FC8C DEFB $10      ;
+; Action: Kill/ Attack/ Hit/ Strike
+@label=Action_Kill
+c$FC4B CALL $AF7B    ; Call #R$AF7B.
+ $FC4E RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+ $FC4F LD HL,$FC5E   ; #REGhl=#R$FC5E.
+ $FC52 LD DE,$FC74   ; #REGde=#R$FC74.
+ $FC55 LD BC,$000B   ; #REGbc=#N($000B,$04,$04).
+ $FC58 CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
+; Print "#STR$A9EC,$08($b==$FF)".
+ $FC5B JP $EDED      ; Jump to #R$EDED.
+; The token table for the action "kill":
+@label=Table_ActionKill_TokenGroup
+ $FC5E DEFW $E6C7    ; Token group #N($01+(#PC-$FC5E)/$02).
+ $FC60 DEFW $E6CD    ; Token group #N($01+(#PC-$FC5E)/$02).
+ $FC62 DEFW $E6D3    ; Token group #N($01+(#PC-$FC5E)/$02).
+ $FC64 DEFW $E6D9    ; Token group #N($01+(#PC-$FC5E)/$02).
+ $FC66 DEFW $E6DF    ; Token group #N($01+(#PC-$FC5E)/$02).
+ $FC68 DEFW $E6E4    ; Token group #N($01+(#PC-$FC5E)/$02).
+ $FC6A DEFW $E6EA    ; Token group #N($01+(#PC-$FC5E)/$02).
+ $FC6C DEFW $E6F0    ; Token group #N($01+(#PC-$FC5E)/$02).
+ $FC6E DEFW $E6F6    ; Token group #N($01+(#PC-$FC5E)/$02).
+ $FC70 DEFW $E6FC    ; Token group #N($01+(#PC-$FC5E)/$02).
+ $FC72 DEFW $E702    ; Token group #N($01+(#PC-$FC5E)/$02).
+; The actions table for "kill":
+@label=Table_ActionKill
+ $FC74 DEFW $F643    ; Action routine #N($01+(#PC-$FC74)/$02).
+ $FC76 DEFW $F69F    ; Action routine #N($01+(#PC-$FC74)/$02).
+ $FC78 DEFW $F6E1    ; Action routine #N($01+(#PC-$FC74)/$02).
+ $FC7A DEFW $F713    ; Action routine #N($01+(#PC-$FC74)/$02).
+ $FC7C DEFW $F71F    ; Action routine #N($01+(#PC-$FC74)/$02).
+ $FC7E DEFW $F730    ; Action routine #N($01+(#PC-$FC74)/$02).
+ $FC80 DEFW $F739    ; Action routine #N($01+(#PC-$FC74)/$02).
+ $FC82 DEFW $F76A    ; Action routine #N($01+(#PC-$FC74)/$02).
+ $FC84 DEFW $F776    ; Action routine #N($01+(#PC-$FC74)/$02).
+ $FC86 DEFW $F77F    ; Action routine #N($01+(#PC-$FC74)/$02).
+ $FC88 DEFW $F793    ; Action routine #N($01+(#PC-$FC74)/$02).
+
+; Unused
+u$FC8A DEFB $0D      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $FC8B DEFB $0E      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $FC8C DEFB $10      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 
 ; Action: Swim
 @label=Action_Swim
@@ -14198,6 +14515,8 @@ c$FC8D CALL $AFB7    ; Call #R$AFB7.
  $FCA7 LD DE,$FCBF   ; #REGde=#R$FCBF.
  $FCAA LD BC,$0006   ; #REGbc=#N($0006,$04,$04).
  $FCAD CALL $B0DE    ; Call #R$B0DE.
+; No phrase tokens matched the user input tokens.
+; .
 ; Print "#STR$A9EC,$08($b==$FF)".
  $FCB0 JP $EDED      ; Jump to #R$EDED.
 ; The token table for the action "swim":
@@ -14309,6 +14628,8 @@ g$FD02 DEFB $00,$00,$00,$00,$FF,$FF,$FF,$00
  $FE88 DEFB $00
 
 ; Jump Table: Verbs
+;
+; Used by the routine at #R$B05E.
 @label=JumpTable_Verbs
 g$FE89 DEFW $F7FD    ; Verb word token #N((#PC-$FE89)/$02):
                      ; #TOKEN((#PC-$FE89)/$02).
