@@ -411,6 +411,16 @@ Clear down the user input tokens.
 <td class="comment-1" rowspan="1">Decrease the user input tokens counter by one and loop back to <a href="AD32.html#ad7c">EmptyUserInputTokens_Loop</a> until all the tokens have been set to termination bytes (FF).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ad81"></span>
+<div class="comments">
+<div class="paragraph">
+Set up pointers for the command buffer, the user input tokens and the count of the number of user input tokens.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad81"></span>AD81</td>
 <td class="instruction">LD HL,$A7F2</td>
@@ -570,6 +580,16 @@ Copy the word (up to 4 characters into the four letter buffer).
 <td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="adae"></span>
+<div class="comments">
+<div class="paragraph">
+Stash the vocabulary pointer for a separate check...
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adae"></span>ADAE</td>
 <td class="instruction">LD HL,($A7C6)</td>
@@ -579,6 +599,16 @@ Copy the word (up to 4 characters into the four letter buffer).
 <td class="asm-label"></td>
 <td class="address-1"><span id="adb1"></span>ADB1</td>
 <td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="adb2"></span>
+<div class="comments">
+<div class="paragraph">
+Ignore any usage of "THE" - this is a very good idea! If the player enters: "EXAMINE THE SKULL", this ensures it's evaluated in the exact same way as "EXAMINE SKULL" (or really, "EXAM SKUL").
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -596,6 +626,16 @@ Copy the word (up to 4 characters into the four letter buffer).
 <td class="address-1"><span id="adb8"></span>ADB8</td>
 <td class="instruction">CALL <a href="ACFB.html">$ACFB</a></td>
 <td class="comment-1" rowspan="1">Call <a href="ACFB.html">ACFB</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="adbb"></span>
+<div class="comments">
+<div class="paragraph">
+Do nothing with with this match - just restore the vocabulary pointer from the stack.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -637,6 +677,9 @@ Copy the word (up to 4 characters into the four letter buffer).
 <span id="adc7"></span>
 <div class="comments">
 <div class="paragraph">
+Nothing matched ... Inform the player.
+</div>
+<div class="paragraph">
 Print "I don't know the word:-".
 </div>
 </div>
@@ -668,7 +711,7 @@ Print a double quote character: "<code>&#34;</code>".
 <td class="asm-label"></td>
 <td class="address-1"><span id="adcd"></span>ADCD</td>
 <td class="instruction">LD A,$22</td>
-<td class="comment-1" rowspan="2">Call <a href="A5A4.html">PrintCharacter</a> with ASCII 22.</td>
+<td class="comment-1" rowspan="2">Call <a href="A5A4.html">PrintCharacter</a> to print a double quote character (ASCII 22).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -685,13 +728,12 @@ Print a double quote character: "<code>&#34;</code>".
 <td class="asm-label"></td>
 <td class="address-1"><span id="add5"></span>ADD5</td>
 <td class="instruction">LD DE,($ACC2)</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=*<a href="ACC2.html">TempStore_CommandBufferPointer</a>.</td>
+<td class="comment-1" rowspan="2"><span class="register">HL</span>+=*<a href="ACC2.html">TempStore_CommandBufferPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="add9"></span>ADD9</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -725,7 +767,7 @@ Print a double quote character: "<code>&#34;</code>".
 <td class="asm-label"></td>
 <td class="address-1"><span id="ade0"></span>ADE0</td>
 <td class="instruction">LD A,$22</td>
-<td class="comment-1" rowspan="2">Call <a href="A5A4.html">PrintCharacter</a> with ASCII 22.</td>
+<td class="comment-1" rowspan="2">Call <a href="A5A4.html">PrintCharacter</a> to print another double quote character (ASCII 22).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -789,7 +831,10 @@ Print ".".
 <span id="adf6"></span>
 <div class="comments">
 <div class="paragraph">
-Token matching only uses four letters of every word so a buffer is used for processing. Start by clearing the buffer.
+Token matching only uses four letters of every word so a buffer is used for processing.
+</div>
+<div class="paragraph">
+Start by clearing the buffer.
 </div>
 </div>
 </td>
@@ -798,7 +843,7 @@ Token matching only uses four letters of every word so a buffer is used for proc
 <td class="asm-label">EmptyFourLetterBuffer</td>
 <td class="address-2"><span id="adf6"></span>ADF6</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">HL</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Stash the command buffer pointer and user input tokens counter on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -839,7 +884,7 @@ Token matching only uses four letters of every word so a buffer is used for proc
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae02"></span>AE02</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the user input tokens counter and command buffer pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
