@@ -3043,6 +3043,7 @@ c$A647 LD HL,$5080   ; #REGhl=#N$5080 (screen buffer location).
  $A64A LD DE,$0100   ; Set the increment in #REGde for the next screen line.
  $A64D LD B,$08      ; #REGb=#N$08.
  $A64F XOR A         ; #REGa=#N$00.
+@label=PrintInputPrompt_Loop
 *$A650 OR (HL)       ; Set the bits from *#REGhl.
  $A651 ADD HL,DE     ; Move down one line.
  $A652 DJNZ $A650    ; Decrease counter by one and loop back to #R$A650 until
@@ -3075,51 +3076,51 @@ g$A663 DEFB $03      ; Number of delimiters in the table: #PEEK(#PC).
 g$A667 DEFM "THE "   ; "#STR$A667,$08($b==$FF)".
  $A66B DEFB $FF      ; Terminator.
 
-; Table: Item Locations
+; Table: Item/ Event Locations
 ;
-; A table where the index is the item ID, and the value is the room it
-; resides in (#N$00 for "currently inactive").
+; A table where the index is the item/ event ID, and the value is the
+; room it resides in (#N$00 for "currently inactive").
 ; .
 ; When the item is in the players inventory, the room ID changes to
 ; #N$01.
-@label=Table_ItemLocations
-g$A66C DEFB $00                             ; Item #N(#PC-$A66C)
+@label=Table_ItemEventLocations
+g$A66C DEFB $00                             ; Event #N(#PC-$A66C)
                                             ; #ITEM(#PC-$A66C) in room
                                             ; #N(#PEEK(#PC)):
                                             ; #ROOM(#PEEK(#PC)).
- $A66D DEFB $00                             ; Item #N(#PC-$A66C)
+ $A66D DEFB $00                             ; Event #N(#PC-$A66C)
                                             ; #ITEM(#PC-$A66C) in room
                                             ; #N(#PEEK(#PC)):
                                             ; #ROOM(#PEEK(#PC)).
- $A66E DEFB $00                             ; Item #N(#PC-$A66C)
+ $A66E DEFB $00                             ; Event #N(#PC-$A66C)
                                             ; #ITEM(#PC-$A66C) in room
                                             ; #N(#PEEK(#PC)):
                                             ; #ROOM(#PEEK(#PC)).
- $A66F DEFB $00                             ; Item #N(#PC-$A66C)
+ $A66F DEFB $00                             ; Event #N(#PC-$A66C)
                                             ; #ITEM(#PC-$A66C) in room
                                             ; #N(#PEEK(#PC)):
                                             ; #ROOM(#PEEK(#PC)).
- $A670 DEFB $FF                             ; Item #N(#PC-$A66C)
+ $A670 DEFB $FF                             ; Event #N(#PC-$A66C)
                                             ; #ITEM(#PC-$A66C) in room
                                             ; #N(#PEEK(#PC)):
                                             ; #ROOM(#PEEK(#PC)).
- $A671 DEFB $FF                             ; Item #N(#PC-$A66C)
+ $A671 DEFB $FF                             ; Event #N(#PC-$A66C)
                                             ; #ITEM(#PC-$A66C) in room
                                             ; #N(#PEEK(#PC)):
                                             ; #ROOM(#PEEK(#PC)).
- $A672 DEFB $FF                             ; Item #N(#PC-$A66C)
+ $A672 DEFB $FF                             ; Event #N(#PC-$A66C)
                                             ; #ITEM(#PC-$A66C) in room
                                             ; #N(#PEEK(#PC)):
                                             ; #ROOM(#PEEK(#PC)).
- $A673 DEFB $00                             ; Item #N(#PC-$A66C)
+ $A673 DEFB $00                             ; Event #N(#PC-$A66C)
                                             ; #ITEM(#PC-$A66C) in room
                                             ; #N(#PEEK(#PC)):
                                             ; #ROOM(#PEEK(#PC)).
- $A674 DEFB $00                             ; Item #N(#PC-$A66C)
+ $A674 DEFB $00                             ; Event #N(#PC-$A66C)
                                             ; #ITEM(#PC-$A66C) in room
                                             ; #N(#PEEK(#PC)):
                                             ; #ROOM(#PEEK(#PC)).
- $A675 DEFB $FF                             ; Item #N(#PC-$A66C)
+ $A675 DEFB $FF                             ; Event #N(#PC-$A66C)
                                             ; #ITEM(#PC-$A66C) in room
                                             ; #N(#PEEK(#PC)):
                                             ; #ROOM(#PEEK(#PC)).
@@ -3619,22 +3620,26 @@ g$A66C DEFB $00                             ; Item #N(#PC-$A66C)
                                             ; #ITEM(#PC-$A66C) in room
                                             ; #N(#PEEK(#PC)):
                                             ; #ROOM(#PEEK(#PC)).
- $A6F2 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A6FA DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A702 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A70A DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A712 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A71A DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A722 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A72A DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A732 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A73A DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A742 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A74A DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A752 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A75A DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A762 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A76A DEFB $00,$00
+ $A6F2 DEFB $00                             ; Item #N(#PC-$A66C)
+                                            ; #ITEM(#PC-$A66C) in room
+                                            ; #N(#PEEK(#PC)):
+                                            ; #ROOM(#PEEK(#PC)).
+ $A6F3 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A6FB DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A703 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A70B DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A713 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A71B DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A723 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A72B DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A733 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A73B DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A743 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A74B DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A753 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A75B DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A763 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $A76B DEFB $00
 
 ; Game status buffer entry at A76C
 g$A76C DEFB $00
@@ -3692,22 +3697,22 @@ g$A77E DEFB $00
 ; .
 ;
 ; Initialised to #N$05 by #R$EBFC.
-@label=Counter_Crab
+@label=Counter_01
 g$A77F DEFB $00
 ; Initialised to #N$05 by #R$EC21.
 @label=Counter_FomorianTribe
  $A780 DEFB $00
-@label=Counter_Drunk
+@label=Counter_03
  $A781 DEFB $00
-@label=Counter_Lion
+@label=Counter_04
  $A782 DEFB $00
-@label=Counter_Crocodile
+@label=Counter_05
  $A783 DEFB $00
-@label=Counter_Cannibals
+@label=Counter_06
  $A784 DEFB $00
-@label=Counter_Match
+@label=Counter_07
  $A785 DEFB $00
-@label=Counter_Wave
+@label=Counter_08
  $A786 DEFB $00
 
 ; Flags: Event States
@@ -4636,12 +4641,12 @@ g$ACC2 DEFW $0000
 @label=TempStore_CommandBufferCount
 g$ACC4 DEFW $0000
 
-; Messaging: " <BS><BS> <BS>"
+; Messaging: "SPACE<BS><BS>SPACE<BS>"
 ;
 ; Used by the routine at #R$AD32.
 @label=Messaging_SpaceBackspaceBackspaceSpaceBackspace
 t$ACC6 DEFM " ",$08,$08 ; "#STR$ACC6,$08($b==$FF)".
-; Messaging: " <BS>"
+; Messaging: "SPACE<BS>"
 @label=Messaging_SpaceBackspace
  $ACC9 DEFM " ",$08     ; "#STR$ACC9,$08($b==$FF)".
  $ACCB DEFB $FF         ; Terminator.
@@ -4707,10 +4712,10 @@ c$ACE6 PUSH AF       ; Stash the user input keypress on the stack.
 ; Routine at ACFB
 ;
 ; Used by the routine at #R$AD32.
-c$ACFB PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
+c$ACFB PUSH HL       ; {Stash #REGhl, #REGde, #REGbc and #REGix on the stack.
  $ACFC PUSH DE       ;
- $ACFD PUSH BC       ; }
- $ACFE PUSH IX       ; Stash #REGix on the stack.
+ $ACFD PUSH BC       ;
+ $ACFE PUSH IX       ; }
  $AD00 LD HL,($A7C6) ; #REGhl=*#R$A7C6.
  $AD03 LD C,$00      ; #REGc=#N$00.
  $AD05 JR $AD14      ; Jump to #R$AD14.
@@ -4723,22 +4728,22 @@ c$ACFB PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
  $AD10 INC C         ; Increment #REGc by one.
  $AD11 JR $AD14      ; Jump to #R$AD14.
 *$AD13 INC HL        ; Increment #REGhl by one.
-*$AD14 LD A,(HL)     ; #REGa=*#REGhl.
- $AD15 CP $FF        ; Compare #REGa with #N$FF.
- $AD17 JR Z,$AD2C    ; Jump to #R$AD2C if #REGa is equal to #N$FF.
+*$AD14 LD A,(HL)     ; {Jump to #R$AD2C if *#REGhl is equal to #N$FF.
+ $AD15 CP $FF        ;
+ $AD17 JR Z,$AD2C    ; }
  $AD19 LD IX,$A82F   ; #REGix=#R$A82F.
  $AD1D LD B,$04      ; #REGb=#N$04.
-*$AD1F LD A,(IX+$00) ; #REGa=*#REGix+#N$00.
- $AD22 CP (HL)       ; Compare #REGa with *#REGhl.
- $AD23 JR NZ,$AD07   ; Jump to #R$AD07 if #REGa is not equal to *#REGhl.
+*$AD1F LD A,(IX+$00) ; {Jump to #R$AD07 if *#REGix+#N$00 is not equal to
+ $AD22 CP (HL)       ; *#REGhl.
+ $AD23 JR NZ,$AD07   ; }
  $AD25 INC HL        ; Increment #REGhl by one.
  $AD26 INC IX        ; Increment #REGix by one.
  $AD28 DJNZ $AD1F    ; Decrease counter by one and loop back to #R$AD1F until
                      ; counter is zero.
  $AD2A LD A,C        ; #REGa=#REGc.
  $AD2B SCF           ; Set the carry flag.
-*$AD2C POP IX        ; Restore #REGix from the stack.
- $AD2E POP BC        ; {Restore #REGbc, #REGde and #REGhl from the stack.
+*$AD2C POP IX        ; {Restore #REGix, #REGbc, #REGde and #REGhl from the
+ $AD2E POP BC        ; stack.
  $AD2F POP DE        ;
  $AD30 POP HL        ; }
  $AD31 RET           ; Return.
@@ -4818,6 +4823,8 @@ c$AD32 CALL $A560    ; Call #R$A560.
  $AD7E INC HL        ; Increment #REGhl by one.
  $AD7F DJNZ $AD7C    ; Decrease the user input tokens counter by one and loop back to
                      ; #R$AD7C until all the tokens have been set to termination bytes (#N$FF).
+; Set up pointers for the command buffer, the user input tokens and the
+; count of the number of user input tokens.
  $AD81 LD HL,$A7F2   ; #REGhl=#R$A7F2.
  $AD84 LD IX,$A824   ; #REGix=#R$A824.
  $AD88 LD C,$0A      ; Set a counter in #REGc for the #N$0A user input tokens.
@@ -4849,32 +4856,40 @@ c$AD32 CALL $A560    ; Call #R$A560.
  $ADAB POP DE        ;
  $ADAC POP HL        ; }
  $ADAD PUSH HL       ; Stash #REGhl on the stack.
+; Stash the vocabulary pointer for a separate check...
  $ADAE LD HL,($A7C6) ; {Stash *#R$A7C6 on the stack.
  $ADB1 PUSH HL       ; }
+; Ignore any usage of "THE" - this is a very good idea! If the player
+; enters: "EXAMINE THE SKULL", this ensures it's evaluated in the exact same
+; way as "EXAMINE SKULL" (or really, "EXAM SKUL").
  $ADB2 LD HL,$A667   ; {Write #R$A667 to *#R$A7C6.
  $ADB5 LD ($A7C6),HL ; }
  $ADB8 CALL $ACFB    ; Call #R$ACFB.
+; Do nothing with with this match - just restore the vocabulary pointer
+; from the stack.
  $ADBB POP HL        ; {Restore *#R$A7C6 from the stack and write it back to
  $ADBC LD ($A7C6),HL ; *#R$A7C6.}
  $ADBF POP HL        ; Restore #REGhl from the stack.
  $ADC0 JR C,$ADF6    ; Jump to #R$ADF6 if #REGa is less than #REGc.
  $ADC2 CALL $ACFB    ; Call #R$ACFB.
  $ADC5 JR C,$ADEE    ; Jump to #R$ADEE if #REGa is less than #REGc.
+; Nothing matched ... Inform the player.
+; .
 ; Print "#STR$A863,$08($b==$FF)".
  $ADC7 LD HL,$A863   ; #REGhl=#R$A863.
  $ADCA CALL $A592    ; Call #R$A592.
 ; #HTML(Print a double quote character: "<code>#CHR$22</code>".)
- $ADCD LD A,$22      ; {Call #R$A5A4 with ASCII #N$22.
- $ADCF CALL $A5A4    ; }
+ $ADCD LD A,$22      ; {Call #R$A5A4 to print a double quote character (ASCII
+ $ADCF CALL $A5A4    ; #N$22).}
  $ADD2 LD HL,($ACC4) ; #REGhl=*#R$ACC4.
- $ADD5 LD DE,($ACC2) ; #REGde=*#R$ACC2.
- $ADD9 ADD HL,DE     ; #REGhl+=#REGde.
+ $ADD5 LD DE,($ACC2) ; {#REGhl+=*#R$ACC2.
+ $ADD9 ADD HL,DE     ; }
  $ADDA LD (HL),$FF   ; Write #N$FF to *#REGhl.
  $ADDC EX DE,HL      ; Exchange the #REGde and #REGhl registers.
  $ADDD CALL $A585    ; Call #R$A585.
 ; #HTML(Print a double quote character: "<code>#CHR$22</code>".)
- $ADE0 LD A,$22      ; {Call #R$A5A4 with ASCII #N$22.
- $ADE2 CALL $A5A4    ; }
+ $ADE0 LD A,$22      ; {Call #R$A5A4 to print another double quote character
+ $ADE2 CALL $A5A4    ; (ASCII #N$22).}
 ; Print "#STR$AA15,$08($b==$FF)".
  $ADE5 LD HL,$AA15   ; #REGhl=#R$AA15.
  $ADE8 CALL $A592    ; Call #R$A592.
@@ -4884,10 +4899,12 @@ c$AD32 CALL $A560    ; Call #R$A560.
  $ADF3 DEC C         ; Decrease #REGc by one.
  $ADF4 JR Z,$AE2D    ; Jump to #R$AE2D if #REGc is equal to #REGc.
 ; Token matching only uses four letters of every word so a buffer is used
-; for processing. Start by clearing the buffer.
+; for processing.
+; .
+; Start by clearing the buffer.
 @label=EmptyFourLetterBuffer
-*$ADF6 PUSH HL       ; {Stash #REGhl and #REGbc on the stack.
- $ADF7 PUSH BC       ; }
+*$ADF6 PUSH HL       ; {Stash the command buffer pointer and user input tokens counter on
+ $ADF7 PUSH BC       ; the stack.}
  $ADF8 LD HL,$A82F   ; Load #R$A82F into #REGhl.
  $ADFB LD B,$04      ; Set a counter in #REGb for the #N$04 letters in the
                      ; buffer.
@@ -4896,8 +4913,8 @@ c$AD32 CALL $A560    ; Call #R$A560.
  $ADFF INC HL        ; Increment #REGhl by one.
  $AE00 DJNZ $ADFD    ; Decrease the letter buffer counter by one and loop back to #R$ADFD
                      ; until all four letters have been cleared.
- $AE02 POP BC        ; {Restore #REGbc and #REGhl from the stack.
- $AE03 POP HL        ; }
+ $AE02 POP BC        ; {Restore the user input tokens counter and command buffer pointer
+ $AE03 POP HL        ; from the stack.}
  $AE04 PUSH DE       ; Stash #REGde on the stack.
  $AE05 JR $AE08      ; Jump to #R$AE08.
 *$AE07 INC HL        ; Increment #REGhl by one.

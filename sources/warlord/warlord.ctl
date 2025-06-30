@@ -349,6 +349,7 @@ E $A647 View the equivalent code in #JEWELS$BBD4.
   $A64A,$03 Set the increment in #REGde for the next screen line.
   $A64D,$02 #REGb=#N$08.
   $A64F,$01 #REGa=#N$00.
+@ $A650 label=PrintInputPrompt_Loop
   $A650,$01 Set the bits from *#REGhl.
   $A651,$01 Move down one line.
   $A652,$02 Decrease counter by one and loop back to #R$A650 until counter is zero.
@@ -377,14 +378,16 @@ D $A667 "Vocabulary Table" used for matching and removing "THE" from user
 T $A667,$04 "#STR$A667,$08($b==$FF)".
 B $A66B,$01 Terminator.
 
-g $A66C Table: Item Locations
-@ $A66C label=Table_ItemLocations
-D $A66C A table where the index is the item ID, and the value is the room it
-. resides in (#N$00 for "currently inactive").
+g $A66C Table: Item/ Event Locations
+@ $A66C label=Table_ItemEventLocations
+D $A66C A table where the index is the item/ event ID, and the value is the
+. room it resides in (#N$00 for "currently inactive").
 D $A66C When the item is in the players inventory, the room ID changes to
 . #N$01.
-B $A66C,$01 Item #N(#PC-$A66C) #ITEM(#PC-$A66C) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
-L $A66C,$01,$86
+B $A66C,$01 Event #N(#PC-$A66C) #ITEM(#PC-$A66C) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+L $A66C,$01,$0A
+B $A676,$01 Item #N(#PC-$A66C) #ITEM(#PC-$A66C) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+L $A676,$01,$7D
 
 g $A76C
 B $A76C,$01
@@ -432,21 +435,21 @@ B $A77E,$01
 
 g $A77F Turn-Based Event Counters
 N $A77F Initialised to #N$05 by #R$EBFC.
-@ $A77F label=Counter_Crab
+@ $A77F label=Counter_01
 N $A780 Initialised to #N$05 by #R$EC21.
 @ $A780 label=Counter_FomorianTribe
 N $A781
-@ $A781 label=Counter_Drunk
+@ $A781 label=Counter_03
 N $A782
-@ $A782 label=Counter_Lion
+@ $A782 label=Counter_04
 N $A783
-@ $A783 label=Counter_Crocodile 
+@ $A783 label=Counter_05
 N $A784
-@ $A784 label=Counter_Cannibals
+@ $A784 label=Counter_06
 N $A785
-@ $A785 label=Counter_Match
+@ $A785 label=Counter_07
 N $A786
-@ $A786 label=Counter_Wave
+@ $A786 label=Counter_08
 B $A77F,$08,$01
 
 g $A787 Flags: Event States
@@ -1205,11 +1208,11 @@ g $ACC4 Temporary Storage Command Buffer Count
 @ $ACC4 label=TempStore_CommandBufferCount
 W $ACC4,$02
 
-t $ACC6 Messaging: " <BS><BS> <BS>"
+t $ACC6 Messaging: "SPACE<BS><BS>SPACE<BS>"
 @ $ACC6 label=Messaging_SpaceBackspaceBackspaceSpaceBackspace
 D $ACC6 Used by the routine at #R$AD32.
   $ACC6,$03 "#STR$ACC6,$08($b==$FF)".
-N $ACC9 Messaging: " <BS>"
+N $ACC9 Messaging: "SPACE<BS>"
 @ $ACC9 label=Messaging_SpaceBackspace
 D $ACC9 Used by the routine at #R$AD32.
   $ACC9,$02 "#STR$ACC9,$08($b==$FF)".
@@ -1260,8 +1263,7 @@ N $ACF7 Print the user input keypress to the screen.
   $ACFA,$01 Return.
 
 c $ACFB
-  $ACFB,$03 Stash #REGhl, #REGde and #REGbc on the stack.
-  $ACFE,$02 Stash #REGix on the stack.
+  $ACFB,$05 Stash #REGhl, #REGde, #REGbc and #REGix on the stack.
   $AD00,$03 #REGhl=*#R$A7C6.
   $AD03,$02 #REGc=#N$00.
   $AD05,$02 Jump to #R$AD14.
@@ -1274,21 +1276,16 @@ c $ACFB
   $AD10,$01 Increment #REGc by one.
   $AD11,$02 Jump to #R$AD14.
   $AD13,$01 Increment #REGhl by one.
-  $AD14,$01 #REGa=*#REGhl.
-  $AD15,$02 Compare #REGa with #N$FF.
-  $AD17,$02 Jump to #R$AD2C if #REGa is equal to #N$FF.
+  $AD14,$05 Jump to #R$AD2C if *#REGhl is equal to #N$FF.
   $AD19,$04 #REGix=#R$A82F.
   $AD1D,$02 #REGb=#N$04.
-  $AD1F,$03 #REGa=*#REGix+#N$00.
-  $AD22,$01 Compare #REGa with *#REGhl.
-  $AD23,$02 Jump to #R$AD07 if #REGa is not equal to *#REGhl.
+  $AD1F,$06 Jump to #R$AD07 if *#REGix+#N$00 is not equal to *#REGhl.
   $AD25,$01 Increment #REGhl by one.
   $AD26,$02 Increment #REGix by one.
   $AD28,$02 Decrease counter by one and loop back to #R$AD1F until counter is zero.
   $AD2A,$01 #REGa=#REGc.
   $AD2B,$01 Set the carry flag.
-  $AD2C,$02 Restore #REGix from the stack.
-  $AD2E,$03 Restore #REGbc, #REGde and #REGhl from the stack.
+  $AD2C,$05 Restore #REGix, #REGbc, #REGde and #REGhl from the stack.
   $AD31,$01 Return.
 
 c $AD32 Handler: User Input
@@ -1350,6 +1347,8 @@ N $AD77 Clear down the user input tokens.
   $AD7E,$01 Increment #REGhl by one.
   $AD7F,$02 Decrease the user input tokens counter by one and loop back to
 . #R$AD7C until all the tokens have been set to termination bytes (#N$FF).
+N $AD81 Set up pointers for the command buffer, the user input tokens and the
+. count of the number of user input tokens.
   $AD81,$03 #REGhl=#R$A7F2.
   $AD84,$04 #REGix=#R$A824.
   $AD88,$02 Set a counter in #REGc for the #N$0A user input tokens.
@@ -1373,27 +1372,33 @@ N $ADA8 Copy the word (up to 4 characters into the four letter buffer).
   $ADA8,$02 Copy 4 letters of the command buffer to the four letter buffer.
   $ADAA,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $ADAD,$01 Stash #REGhl on the stack.
+N $ADAE Stash the vocabulary pointer for a separate check...
   $ADAE,$04 Stash *#R$A7C6 on the stack.
+N $ADB2 Ignore any usage of "THE" - this is a very good idea! If the player
+. enters: "EXAMINE THE SKULL", this ensures it's evaluated in the exact same
+. way as "EXAMINE SKULL" (or really, "EXAM SKUL").
   $ADB2,$06 Write #R$A667 to *#R$A7C6.
   $ADB8,$03 Call #R$ACFB.
+N $ADBB Do nothing with with this match - just restore the vocabulary pointer
+. from the stack.
   $ADBB,$04 Restore *#R$A7C6 from the stack and write it back to *#R$A7C6.
   $ADBF,$01 Restore #REGhl from the stack.
   $ADC0,$02 Jump to #R$ADF6 if #REGa is less than #REGc.
   $ADC2,$03 Call #R$ACFB.
   $ADC5,$02 Jump to #R$ADEE if #REGa is less than #REGc.
+N $ADC7 Nothing matched ... Inform the player.
 N $ADC7 Print "#STR$A863,$08($b==$FF)".
   $ADC7,$03 #REGhl=#R$A863.
   $ADCA,$03 Call #R$A592.
 N $ADCD #HTML(Print a double quote character: "<code>#CHR$22</code>".)
-  $ADCD,$05 Call #R$A5A4 with ASCII #N$22.
+  $ADCD,$05 Call #R$A5A4 to print a double quote character (ASCII #N$22).
   $ADD2,$03 #REGhl=*#R$ACC4.
-  $ADD5,$04 #REGde=*#R$ACC2.
-  $ADD9,$01 #REGhl+=#REGde.
+  $ADD5,$05 #REGhl+=*#R$ACC2.
   $ADDA,$02 Write #N$FF to *#REGhl.
   $ADDC,$01 Exchange the #REGde and #REGhl registers.
   $ADDD,$03 Call #R$A585.
 N $ADE0 #HTML(Print a double quote character: "<code>#CHR$22</code>".)
-  $ADE0,$05 Call #R$A5A4 with ASCII #N$22.
+  $ADE0,$05 Call #R$A5A4 to print another double quote character (ASCII #N$22).
 N $ADE5 Print "#STR$AA15,$08($b==$FF)".
   $ADE5,$03 #REGhl=#R$AA15.
   $ADE8,$03 Call #R$A592.
@@ -1404,9 +1409,11 @@ N $ADE5 Print "#STR$AA15,$08($b==$FF)".
   $ADF3,$01 Decrease #REGc by one.
   $ADF4,$02 Jump to #R$AE2D if #REGc is equal to #REGc.
 N $ADF6 Token matching only uses four letters of every word so a buffer is used
-. for processing. Start by clearing the buffer.
+. for processing.
+N $ADF6 Start by clearing the buffer.
 @ $ADF6 label=EmptyFourLetterBuffer
-  $ADF6,$02 Stash #REGhl and #REGbc on the stack.
+  $ADF6,$02 Stash the command buffer pointer and user input tokens counter on
+. the stack.
   $ADF8,$03 Load #R$A82F into #REGhl.
   $ADFB,$02 Set a counter in #REGb for the #N$04 letters in the buffer.
 @ $ADFD label=EmptyFourLetterBuffer_Loop
@@ -1414,7 +1421,8 @@ N $ADF6 Token matching only uses four letters of every word so a buffer is used
   $ADFF,$01 Increment #REGhl by one.
   $AE00,$02 Decrease the letter buffer counter by one and loop back to #R$ADFD
 . until all four letters have been cleared.
-  $AE02,$02 Restore #REGbc and #REGhl from the stack.
+  $AE02,$02 Restore the user input tokens counter and command buffer pointer
+. from the stack.
   $AE04,$01 Stash #REGde on the stack.
   $AE05,$02 Jump to #R$AE08.
 
