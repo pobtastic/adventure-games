@@ -2864,8 +2864,8 @@ c$A585 CALL $A577    ; Call #R$A577.
 ; #R$E9B2, #R$E9D0, #R$E9FA, #R$EA0B, #R$EA44, #R$EA60, #R$EA72, #R$EA84,
 ; #R$EA90, #R$EA9C, #R$EAB4, #R$EACC, #R$EAE4, #R$EAF7, #R$EB09, #R$EB9D,
 ; #R$ECE8, #R$ECEF, #R$ED07, #R$ED17, #R$ED27, #R$ED37, #R$ED47, #R$ED6D,
-; #R$F04F, #R$F0AC, #R$F179, #R$F2BA, #R$F31D, #R$F4B9, #R$F5F9, #R$F7FD,
-; #R$F824 and #R$F8A9.
+; #R$F04F, #R$F0FD, #R$F1AC, #R$F1C4, #R$F2BA, #R$F31D, #R$F4B9, #R$F5F9,
+; #R$F7FD, #R$F824 and #R$F8A9.
 ; .
 ; Shortcut print routine which prints a newline after it's done.
 @label=PrintStringAndNewline
@@ -3061,6 +3061,9 @@ c$A647 LD HL,$5080   ; #REGhl=#N$5080 (screen buffer location).
 ; View the equivalent code in #JEWELS$BBD4.
 
 ; Table: Delimiters
+;
+; A table of delimiter characters used for matching user input in
+; #R$ACD8.
 @label=Table_Delimiters_Count
 g$A663 DEFB $03      ; Number of delimiters in the table: #PEEK(#PC).
 @label=Table_Delimiters
@@ -3641,9 +3644,42 @@ g$A66C DEFB $00                             ; Event #N(#PC-$A66C)
  $A763 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $A76B DEFB $00
 
-; Game status buffer entry at A76C
+; Flags: Item States #1
+;
+; Holds a single byte, where each bit relates to an item state as
+; follows:
+; #TABLE(default,centre,centre)
+; { =h Bit | =h Relating To }
+; { #N$00 |  }
+; { #N$01 |  }
+; { #N$02 |  }
+; { #N$03 |  }
+; { #N$04 |  }
+; { #N$05 |  }
+; { #N$06 | The ladder being placed }
+; { #N$07 |  }
+; TABLE#
+@label=Flag_ItemStates_01
 g$A76C DEFB $00
- $A76D DEFB $00,$00,$00,$00,$00
+
+; Flags: Item States #2
+;
+; Holds a single byte, where each bit relates to an item state as
+; follows:
+; #TABLE(default,centre,centre)
+; { =h Bit | =h Relating To }
+; { #N$00 |  }
+; { #N$01 |  }
+; { #N$02 |  }
+; { #N$03 |  }
+; { #N$04 | The sword }
+; { #N$05 |  }
+; { #N$06 |  }
+; { #N$07 |  }
+; TABLE#
+@label=Flag_ItemStates_02
+g$A76D DEFB $00
+ $A76E DEFB $00,$00,$00,$00
 
 ; Game status buffer entry at A772
 g$A772 DEFB $00
@@ -4801,16 +4837,16 @@ c$AD32 CALL $A560    ; Call #R$A560.
  $AD64 CP $80        ; {If the keypress was higher than #N$80, it's also not valid input so
  $AD66 JR NC,$AD41   ; jump back to #R$AD41.}
 ; Is the command buffer full?
- $AD68 LD A,B        ; {Jump to #R$AD41 if the letter counter is #N$31.
- $AD69 CP $31        ;
+ $AD68 LD A,B        ; {Jump to #R$AD41 if the letter counter is #N$31 (so the buffer is
+ $AD69 CP $31        ; full).
  $AD6B JR Z,$AD41    ; }
-; Writes the keypress into the command buffer.
+; Writes the keypress into the command buffer and print it to the screen.
 @label=UserInput_WriteKeypress
 *$AD6D LD A,C        ; {Write the user input key to *#REGhl.
  $AD6E LD (HL),A     ; }
  $AD6F CALL $ACE6    ; Call #R$ACE6.
 ; Did the user press "ENTER"?
- $AD72 LD A,C        ; {Jump to #R$AD3F if "DELETE" was not pressed.
+ $AD72 LD A,C        ; {Jump to #R$AD3F if "ENTER" was not pressed.
  $AD73 CP $0D        ;
  $AD75 JR NZ,$AD3F   ; }
 ; The player pressed "ENTER" so begin to process the user input.
@@ -4832,30 +4868,33 @@ c$AD32 CALL $A560    ; Call #R$A560.
 ; What's been entered isn't parsable.
 ; .
 ; Print "#STR$A84F,$08($b==$FF)".
-@label=UserInput_NotUnderstood
+@label=Response_NotUnderstood
 *$AD8C LD HL,$A84F   ; #REGhl=#R$A84F.
  $AD8F CALL $A592    ; Call #R$A592.
  $AD92 JP $AD32      ; Jump to #R$AD32.
 ; Process found word into user input token.
 @label=ProcessFoundWord
-*$AD95 PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
- $AD96 PUSH DE       ;
+*$AD95 PUSH HL       ; {Stash the command buffer pointer, #REGde and user input tokens
+ $AD96 PUSH DE       ; counter on the stack.
  $AD97 PUSH BC       ; }
  $AD98 LD HL,($ACC2) ; #REGhl=*#R$ACC2.
  $AD9B LD DE,$A82F   ; #REGde=#R$A82F.
+; Ensure that the length is not more than #N$04.
  $AD9E LD BC,$0004   ; #REGbc=#N($0004,$04,$04).
  $ADA1 LD A,($ACC4)  ; {Jump to #R$ADA8 if *#R$ACC4 is greater than or equal to
- $ADA4 CP C          ; #REGc.
+ $ADA4 CP C          ; #N$04.
  $ADA5 JR NC,$ADA8   ; }
- $ADA7 LD C,A        ; #REGc=#REGa.
-; Copy the word (up to 4 characters into the four letter buffer).
+; The length is less than #N$04, so no need to copy #N$04 bytes.
+ $ADA7 LD C,A        ; Copy the actual length of the word into #REGc.
+; Copy the word (up to #N$04 characters in length) into the four letter
+; buffer.
 @label=CopyWordToBuffer
-*$ADA8 LDIR          ; Copy 4 letters of the command buffer to the four letter
-                     ; buffer.
- $ADAA POP BC        ; {Restore #REGbc, #REGde and #REGhl from the stack.
- $ADAB POP DE        ;
+*$ADA8 LDIR          ; Copy the "up-to-#N$04" letters from the command buffer into the
+                     ; four-letter buffer.
+ $ADAA POP BC        ; {Restore the user input token counter, #REGde and command buffer
+ $ADAB POP DE        ; pointer from the stack.
  $ADAC POP HL        ; }
- $ADAD PUSH HL       ; Stash #REGhl on the stack.
+ $ADAD PUSH HL       ; Stash the command buffer pointer back on the stack.
 ; Stash the vocabulary pointer for a separate check...
  $ADAE LD HL,($A7C6) ; {Stash *#R$A7C6 on the stack.
  $ADB1 PUSH HL       ; }
@@ -4894,10 +4933,14 @@ c$AD32 CALL $A560    ; Call #R$A560.
  $ADE5 LD HL,$AA15   ; #REGhl=#R$AA15.
  $ADE8 CALL $A592    ; Call #R$A592.
  $ADEB JP $AD32      ; Jump to #R$AD32.
-*$ADEE LD (IX+$00),A ; Write #REGa to *#REGix+#N$00.
- $ADF1 INC IX        ; Increment #REGix by one.
- $ADF3 DEC C         ; Decrease #REGc by one.
- $ADF4 JR Z,$AE2D    ; Jump to #R$AE2D if #REGc is equal to #REGc.
+; The word in the four-letter buffer was matched!
+; .
+; Store the found token and check if we can continue parsing.
+@label=StoreTokenAndContinue
+*$ADEE LD (IX+$00),A ; Write the token to the current token slot.
+ $ADF1 INC IX        ; Move to the next token slot.
+ $ADF3 DEC C         ; Decrease the token counter by one.
+ $ADF4 JR Z,$AE2D    ; Jump to #R$AE2D if all token slots are filled.
 ; Token matching only uses four letters of every word so a buffer is used
 ; for processing.
 ; .
@@ -4917,27 +4960,42 @@ c$AD32 CALL $A560    ; Call #R$A560.
  $AE03 POP HL        ; from the stack.}
  $AE04 PUSH DE       ; Stash #REGde on the stack.
  $AE05 JR $AE08      ; Jump to #R$AE08.
-*$AE07 INC HL        ; Increment #REGhl by one.
+; Skip delimiter characters to find the next word.
+@label=SkipDelimiters
+*$AE07 INC HL        ; Move to the next byte of the command buffer.
+@label=FindWordStart
 *$AE08 LD A,(HL)     ; Fetch a character from the command buffer.
  $AE09 CP $0D        ; {Jump to #R$AE29 if the character is "ENTER" (ASCII
  $AE0B JR Z,$AE29    ; #N$0D).}
  $AE0D CALL $ACD8    ; Call #R$ACD8.
  $AE10 JR Z,$AE07    ; Jump to #R$AE07 if the character is a delimiter.
- $AE12 LD ($ACC2),HL ; Write #REGhl to *#R$ACC2.
- $AE15 LD DE,$0000   ; #REGde=#N($0000,$04,$04).
-*$AE18 INC HL        ; Increment #REGhl by one.
- $AE19 INC DE        ; Increment #REGde by one.
+; The character is not a delimiter.
+ $AE12 LD ($ACC2),HL ; Store the starting address of this new word in *#R$ACC2.
+ $AE15 LD DE,$0000   ; Initialise #REGde to #N($0000,$04,$04) to count the number of
+                     ; letters in the word.
+; Just keep looping and moving across the command buffer until we hit a
+; delimiter or an "ENTER" character.
+@label=CountWordLength
+*$AE18 INC HL        ; Move to the next byte of the command buffer.
+ $AE19 INC DE        ; Increment the letter counter by one.
  $AE1A LD A,(HL)     ; Fetch a character from the command buffer.
  $AE1B CP $0D        ; {Jump to #R$AE24 if the character is "ENTER" (ASCII
  $AE1D JR Z,$AE24    ; #N$0D).}
  $AE1F CALL $ACD8    ; Call #R$ACD8.
  $AE22 JR NZ,$AE18   ; Jump to #R$AE18 if the character was not a delimiter.
-*$AE24 LD ($ACC4),DE ; Write #REGde to *#R$ACC4.
- $AE28 SCF           ; Set the carry flag.
+; This is the end of the word, so store the word length.
+@label=StoreWordLength
+*$AE24 LD ($ACC4),DE ; Write the letter counter to *#R$ACC4.
+ $AE28 SCF           ; Set the carry flag to indicate that a word was
+                     ; successfully found.
+@label=EndWordParsing
 *$AE29 POP DE        ; Restore #REGde from the stack.
- $AE2A JP C,$AD95    ; Jump to #R$AD95 if the carry flag is set.
-*$AE2D LD A,($A824)  ; {Jump to #R$AD8C if *#R$A824 is equal to #N$FF.
- $AE30 CP $FF        ;
+ $AE2A JP C,$AD95    ; Jump to #R$AD95 if a word was found.
+; Check to see if any of the user input tokens have been populated, and
+; if not, print "#STR$A84F,$08($b==$FF)".
+@label=CheckVerbToken
+*$AE2D LD A,($A824)  ; {Jump to #R$AD8C if *#R$A824 hold the terminator byte
+ $AE30 CP $FF        ; (#N$FF).
  $AE32 JP Z,$AD8C    ; }
  $AE35 RET           ; Return.
 ; View the equivalent code in #JEWELS$C00A.
@@ -4987,9 +5045,9 @@ c$AE36 INC BC        ; Adjust the counter for the sum.
 ; Validate If Item Is Present
 ;
 ; Used by the routines at #R$AE36, #R$AEF7, #R$AFEB, #R$B01F, #R$E9E9, #R$EC13,
-; #R$EC21, #R$ECBE, #R$ED60, #R$EEE9, #R$EFD0, #R$F04F, #R$F0AC, #R$F156,
-; #R$F179, #R$F1DF, #R$F31D, #R$F3AC, #R$F3BA, #R$F544, #R$F5EB, #R$F620,
-; #R$F7C0 and #R$F7FD.
+; #R$EC21, #R$ECBE, #R$ED60, #R$EEE9, #R$EFD0, #R$F04F, #R$F0C0, #R$F156,
+; #R$F1AC, #R$F23E, #R$F31D, #R$F3AC, #R$F3BA, #R$F544, #R$F5EB, #R$F620,
+; #R$F77F, #R$F793, #R$F7C0 and #R$F7FD.
 ;
 ; A Object ID
 ; F Z flag set if the object is available
@@ -5135,7 +5193,7 @@ c$AED1 LD E,A        ; {Load the item ID into #REGde.
 ; Is Object In Inventory?
 ;
 ; Used by the routines at #R$EBA7, #R$ECA2, #R$ECEF, #R$ED07, #R$ED17, #R$ED27,
-; #R$ED37, #R$ED47, #R$ED75, #R$EDB8, #R$EDD0 and #R$F620.
+; #R$ED37, #R$ED47, #R$ED75, #R$EDB8, #R$EDD0, #R$F620 and #R$F7AC.
 ;
 ;   A Object ID
 ; O:F Z flag set if the item is in the players inventory
@@ -5151,9 +5209,9 @@ c$AEDA CALL $AED1    ; Call #R$AED1.
 ; Handler: Destroy Item/ Event
 ;
 ; Used by the routines at #R$EA0B, #R$EA60, #R$EA72, #R$EA84, #R$EA90, #R$EA9C,
-; #R$EAB4, #R$EACC, #R$EAE4, #R$EAF7, #R$EBDA, #R$ECBE, #R$EF86, #R$F0AC,
-; #R$F156, #R$F179, #R$F1DF, #R$F2BA, #R$F4B9, #R$F518, #R$F52E, #R$F544,
-; #R$F57B, #R$F620 and #R$F7FD.
+; #R$EAB4, #R$EACC, #R$EAE4, #R$EAF7, #R$EBDA, #R$ECBE, #R$EF86, #R$F0C0,
+; #R$F0FD, #R$F134, #R$F156, #R$F179, #R$F191, #R$F23E, #R$F2BA, #R$F4B9,
+; #R$F518, #R$F52E, #R$F544, #R$F57B, #R$F5B8, #R$F620, #R$F7AC and #R$F7FD.
 ; .
 ; Updates a given item/ event ID so it's then "inactive" (has a location
 ; ID of #N$00).
@@ -5169,7 +5227,7 @@ c$AEE0 LD B,A        ; Load the item/ event ID into #REGb.
 
 ; Handler: Update Item/ Event For The Current Room
 ;
-; Used by the routines at #R$B01F, #R$EA0B, #R$F0AC, #R$F26C, #R$F293, #R$F57B
+; Used by the routines at #R$B01F, #R$EA0B, #R$F0FD, #R$F26C, #R$F293, #R$F57B
 ; and #R$F7FD.
 ; .
 ; Updates a given item/ event ID so it appears in the current room. Used
@@ -5204,8 +5262,9 @@ c$AEF0 LD B,A        ; Copy the scenic event ID into #REGb.
 ; Used by the routines at #R$AF11, #R$EBB9, #R$EBC5, #R$EE64, #R$EE73, #R$EE8D,
 ; #R$EEA7, #R$EEB6, #R$EF09, #R$EF12, #R$EF2A, #R$EF38, #R$EF49, #R$EF5A,
 ; #R$EF86, #R$EFAD, #R$EFD0, #R$F006, #R$F01C, #R$F041, #R$F060, #R$F073,
-; #R$F091, #R$F1DF, #R$F26C, #R$F293, #R$F2BA, #R$F2D4, #R$F338, #R$F428,
-; #R$F440, #R$F458, #R$F489, #R$F500, #R$F544, #R$F57B and #R$F620.
+; #R$F091, #R$F1DF, #R$F1FE, #R$F223, #R$F26C, #R$F293, #R$F2BA, #R$F2D4,
+; #R$F338, #R$F428, #R$F440, #R$F458, #R$F489, #R$F500, #R$F544, #R$F57B,
+; #R$F5B8 and #R$F620.
 ;
 ;   HL Pointer to item group data
 ; O:A The related item ID from the item group data which is present
@@ -5266,8 +5325,9 @@ c$AF11 LD B,$00      ; Initialise an index counter in #REGb to #N$00.
 ; Transform Item
 ;
 ; Used by the routines at #R$ECA2, #R$EFAD, #R$F006, #R$F01C, #R$F091, #R$F156,
-; #R$F179, #R$F1DF, #R$F26C, #R$F293, #R$F428, #R$F440, #R$F458, #R$F489,
-; #R$F4B9, #R$F500, #R$F544, #R$F57B and #R$F620.
+; #R$F191, #R$F1DF, #R$F1FE, #R$F223, #R$F26C, #R$F293, #R$F428, #R$F440,
+; #R$F458, #R$F489, #R$F4B9, #R$F500, #R$F544, #R$F5B8, #R$F620, #R$F77F and
+; #R$F793.
 ; .
 ; Rather than use item properties, the game just has separate objects
 ; that don't exist until an action is performed.
@@ -5690,7 +5750,7 @@ c$B05E LD HL,($A7E0) ; Load #REGhl with *#R$A7E0.
 ; Pause, Print String And Scroll
 ;
 ; Used by the routines at #R$EA0B, #R$EA44, #R$EA72, #R$EAF7, #R$ED71 and
-; #R$F0AC.
+; #R$F0FD.
 ; .
 ; For dramatic effect! Used when an event occurs.
 @label=PausePrintStringAndScroll
@@ -5728,7 +5788,8 @@ c$B08A PUSH BC       ; Stash #REGbc on the stack.
 ;
 ; Used by the routines at #R$EBDA, #R$EC07, #R$EC32, #R$EC40, #R$EC4E, #R$EC5C,
 ; #R$EC6A, #R$EC78, #R$EC86, #R$EC94, #R$ECBE, #R$EEE9, #R$EF5A, #R$EFAD,
-; #R$F0AC, #R$F156, #R$F179, #R$F4B9, #R$F544, #R$F57B, #R$F620 and #R$F7FD.
+; #R$F0C0, #R$F134, #R$F156, #R$F191, #R$F4B9, #R$F544, #R$F57B, #R$F5B8,
+; #R$F620, #R$F793 and #R$F7FD.
 ;
 ; A Points to add
 @label=AddToScore
@@ -11939,15 +12000,17 @@ c$ED60 LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
 ; #R$EDF9, #R$EDFF, #R$EE05, #R$EE0B, #R$EE11, #R$EE17, #R$EE1D, #R$EE23,
 ; #R$EE29, #R$EE2F, #R$EE35, #R$EE3B, #R$EE41, #R$EE47, #R$EE4D, #R$EE53,
 ; #R$EE59, #R$EE64, #R$EE73, #R$EE8D, #R$EE9C, #R$EEA7, #R$EEB6, #R$EF38,
-; #R$EF49, #R$EFD0, #R$F0AC, #R$F156, #R$F179, #R$F1D9, #R$F1DF, #R$F26C,
-; #R$F293, #R$F2EC, #R$F31D, #R$F383, #R$F40A, #R$F458, #R$F489, #R$F4F5,
-; #R$F518, #R$F52E, #R$F544, #R$F5EB, #R$F620, #R$F7C0 and #R$FBB9.
+; #R$EF49, #R$EFD0, #R$F0C0, #R$F126, #R$F134, #R$F156, #R$F179, #R$F191,
+; #R$F1D9, #R$F1DF, #R$F23E, #R$F26C, #R$F293, #R$F2EC, #R$F31D, #R$F383,
+; #R$F40A, #R$F458, #R$F489, #R$F4F5, #R$F518, #R$F52E, #R$F544, #R$F5EB,
+; #R$F620, #R$F7AC, #R$F7C0 and #R$FBB9.
 c$ED6D CALL $A592    ; Call #R$A592.
  $ED70 RET           ; Return.
 
 ; Routine at ED71
 ;
-; Used by the routines at #R$F0AC, #R$F179, #R$F2BA, #R$F4B9 and #R$F7FD.
+; Used by the routines at #R$F0FD, #R$F1AC, #R$F1C4, #R$F2BA, #R$F4B9 and
+; #R$F7FD.
 c$ED71 CALL $B081    ; Call #R$B081.
  $ED74 RET           ; Return.
 
@@ -12015,7 +12078,7 @@ c$EDB8 CALL $AEDA    ; Call #R$AEDA.
  $EDBB LD HL,$AA9B   ; #REGhl=#R$AA9B.
  $EDBE JP NZ,$ED7E   ; Jump to #R$ED7E if the player is not carrying the item in their
                      ; inventory.
-; This entry point is used by the routines at #R$F0AC and #R$F489.
+; This entry point is used by the routines at #R$F126 and #R$F489.
 ; .
 ; The item is in the players inventory, so move its location to the
 ; current room.
@@ -12032,8 +12095,9 @@ c$EDB8 CALL $AEDA    ; Call #R$AEDA.
 ; Is Player Carrying Item?
 ;
 ; Used by the routines at #R$EE59, #R$EE64, #R$EE73, #R$EE8D, #R$EE9C, #R$EEB6,
-; #R$F07C, #R$F0AC, #R$F156, #R$F179, #R$F1DF, #R$F428, #R$F440, #R$F458,
-; #R$F489, #R$F4F5, #R$F500, #R$F518, #R$F52E, #R$F57B and #R$F620.
+; #R$F07C, #R$F0C0, #R$F0FD, #R$F126, #R$F134, #R$F156, #R$F179, #R$F23E,
+; #R$F428, #R$F440, #R$F458, #R$F489, #R$F4F5, #R$F500, #R$F518, #R$F52E,
+; #R$F57B, #R$F5B8 and #R$F620.
 ;
 ;   A Item ID
 ; O:F Z flag set if the item is in the players inventory
@@ -12096,7 +12160,7 @@ c$EDED LD HL,$A9EC   ; #REGhl=#R$A9EC.
 ; Response: "O.K."
 ;
 ; Used by the routines at #R$EDA6, #R$EDB8, #R$F26C, #R$F293, #R$F428, #R$F440,
-; #R$F458, #R$F500, #R$F518, #R$F52E and #R$F57B.
+; #R$F458, #R$F500, #R$F518, #R$F52E, #R$F57B and #R$F5B8.
 ;
 ; .
 ;
@@ -12107,7 +12171,7 @@ c$EDF3 LD HL,$A9F7   ; #REGhl=#R$A9F7.
 
 ; Response: "I Don't See The Point"
 ;
-; Used by the routines at #R$F2BA, #R$F57B and #R$F9E2.
+; Used by the routines at #R$F2BA, #R$F5B8 and #R$F9E2.
 ;
 ; .
 ;
@@ -12129,7 +12193,7 @@ c$EDFF LD HL,$AA21   ; #REGhl=#R$AA21.
 
 ; Response: "Don't Be Ridiculous"
 ;
-; Used by the routines at #R$F0AC, #R$F179, #R$F1DF and #R$FB5D.
+; Used by the routines at #R$F0C0, #R$F1AC, #R$F23E and #R$FB5D.
 ;
 ; .
 ;
@@ -12141,7 +12205,7 @@ c$EE05 LD HL,$CDD3   ; #REGhl=#R$CDD3.
 ; Response: "You've Done That Already"
 ;
 ; Used by the routines at #R$F2FF, #R$F338, #R$F3C8, #R$F3D6, #R$F3EC, #R$F544,
-; #R$F57B, #R$F620, #R$F7C0 and #R$F7DB.
+; #R$F57B, #R$F5B8, #R$F620, #R$F77F, #R$F793, #R$F7C0 and #R$F7DB.
 ;
 ; .
 ;
@@ -12702,73 +12766,90 @@ c$F0A7 LD A,$65      ; {Jump to #R$EDB8 with item #N$65: #ITEM$65.
  $F0A9 JP $EDB8      ; }
 
 ; Routine at F0AC
-c$F0AC LD A,$61      ; #REGa=#N$61.
- $F0AE CALL $ED75    ; Call #R$ED75.
- $F0B1 LD A,$4C      ; #REGa=#N$4C.
- $F0B3 LD ($E8F4),A  ; Write #REGa to *#R$E8F4.
+c$F0AC LD A,$61      ; {Call #R$ED75 with item #N$61: #ITEM$61.
+ $F0AE CALL $ED75    ; }
+ $F0B1 LD A,$4C      ; {Write #N$4C to *#R$E8F4.
+ $F0B3 LD ($E8F4),A  ; }
  $F0B6 XOR A         ; #REGa=#N$00.
  $F0B7 LD ($E8F6),A  ; Write #REGa to *#R$E8F6.
  $F0BA LD ($E8F7),A  ; Write #REGa to *#R$E8F7.
  $F0BD JP $EDA6      ; Jump to #R$EDA6.
- $F0C0 LD A,$45      ; #REGa=#N$45.
- $F0C2 CALL $AE6B    ; Call #R$AE6B.
+
+; Routine at F0C0
+c$F0C0 LD A,$45      ; {Call #R$AE6B with item #N$45: #ITEM$45.
+ $F0C2 CALL $AE6B    ; }
  $F0C5 JP Z,$EE05    ; Jump to #R$EE05 if #REGa is equal to #N$45.
- $F0C8 LD A,$3A      ; #REGa=#N$3A.
- $F0CA CALL $EDD0    ; Call #R$EDD0.
+ $F0C8 LD A,$3A      ; {Call #R$EDD0 with item #N$3A: #ITEM$3A.
+ $F0CA CALL $EDD0    ; }
  $F0CD LD A,E        ; #REGa=#REGe.
  $F0CE CALL $AEE0    ; Call #R$AEE0.
- $F0D1 LD HL,$A790   ; #REGhl=#R$A790.
- $F0D4 DEC (HL)      ; Decrease *#REGhl by one.
+ $F0D1 LD HL,$A790   ; {Decrease *#R$A790 by one.
+ $F0D4 DEC (HL)      ; }
  $F0D5 LD HL,$D328   ; #REGhl=#R$D328.
  $F0D8 JP $ED6D      ; Jump to #R$ED6D.
- $F0DB LD A,$3A      ; #REGa=#N$3A.
- $F0DD CALL $EDD0    ; Call #R$EDD0.
+ $F0DB LD A,$3A      ; {Call #R$EDD0 with item #N$3A: #ITEM$3A.
+ $F0DD CALL $EDD0    ; }
  $F0E0 LD A,E        ; #REGa=#REGe.
  $F0E1 CALL $AEE0    ; Call #R$AEE0.
- $F0E4 LD HL,$A790   ; #REGhl=#R$A790.
- $F0E7 DEC (HL)      ; Decrease *#REGhl by one.
- $F0E8 LD A,$30      ; #REGa=#N$30.
- $F0EA LD ($E830),A  ; Write #REGa to *#R$E830.
- $F0ED LD A,$42      ; #REGa=#N$42.
- $F0EF CALL $AEE0    ; Call #R$AEE0.
+ $F0E4 LD HL,$A790   ; {Decrease *#R$A790 by one.
+ $F0E7 DEC (HL)      ; }
+ $F0E8 LD A,$30      ; {Write #N$30 to *#R$E830.
+ $F0EA LD ($E830),A  ; }
+ $F0ED LD A,$42      ; {Call #R$AEE0 with item #N$42: #ITEM$42.
+ $F0EF CALL $AEE0    ; }
  $F0F2 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $F0F4 CALL $B09A    ; }
  $F0F7 LD HL,$D35C   ; #REGhl=#R$D35C.
  $F0FA JP $ED6D      ; Jump to #R$ED6D.
- $F0FD LD A,$1B      ; #REGa=#N$1B.
- $F0FF CALL $EDD0    ; Call #R$EDD0.
+
+; Process: Giving Acorns To The Raven
+@label=Process_GiveAcornsToRaven
+c$F0FD LD A,$1B      ; {Call #R$EDD0 with item #N$1B: #ITEM$1B.
+ $F0FF CALL $EDD0    ; }
  $F102 LD A,E        ; #REGa=#REGe.
  $F103 CALL $AEE0    ; Call #R$AEE0.
- $F106 LD HL,$A790   ; #REGhl=#R$A790.
- $F109 DEC (HL)      ; Decrease *#REGhl by one.
- $F10A LD A,$1D      ; #REGa=#N$1D.
- $F10C CALL $AEE0    ; Call #R$AEE0.
- $F10F LD A,$69      ; #REGa=#N$69.
- $F111 CALL $AEE7    ; Call #R$AEE7.
+ $F106 LD HL,$A790   ; {Decrease *#R$A790 by one.
+ $F109 DEC (HL)      ; }
+ $F10A LD A,$1D      ; {Call #R$AEE0 with item #N$1D: #ITEM$1D.
+ $F10C CALL $AEE0    ; }
+ $F10F LD A,$69      ; {Call #R$AEE7 with item #N$69: #ITEM$69.
+ $F111 CALL $AEE7    ; }
+; Print "#STR$D3A7,$08($b==$FF)".
  $F114 LD HL,$D3A7   ; #REGhl=#R$D3A7.
  $F117 CALL $A592    ; Call #R$A592.
+; Print "#STR$D3E0,$08($b==$FF)".
  $F11A LD HL,$D3E0   ; #REGhl=#R$D3E0.
  $F11D CALL $B081    ; Call #R$B081.
+; Print "#STR$D4A9,$08($b==$FF)".
  $F120 LD HL,$D4A9   ; #REGhl=#R$D4A9.
  $F123 JP $ED71      ; Jump to #R$ED71.
- $F126 LD A,$19      ; #REGa=#N$19.
-; This entry point is used by the routine at #R$F1DF.
-*$F128 CALL $EDD0    ; Call #R$EDD0.
+
+; Process: Giving Salt To The Warrior
+@label=Process_GiveSaltToWarrior
+c$F126 LD A,$19      ; Load item #N$19: #ITEM$19 into #REGa.
+; This entry point is used by the routines at #R$F21E, #R$F223 and #R$F239.
+@label=Response_HeDoesntWantIt
+*$F128 CALL $EDD0    ; Call #R$EDD0 with the item passed in #REGa.
  $F12B CALL $EDC1    ; Call #R$EDC1.
+; Print "#STR$D4F5,$08($b==$FF)".
  $F12E LD HL,$D4F5   ; #REGhl=#R$D4F5.
  $F131 JP $ED6D      ; Jump to #R$ED6D.
- $F134 LD A,$19      ; #REGa=#N$19.
- $F136 CALL $EDD0    ; Call #R$EDD0.
+
+; Process: Giving Salt To The Guard
+@label=Process_GiveSaltToGuard
+c$F134 LD A,$19      ; {Call #R$EDD0 with item #N$19: #ITEM$19.
+ $F136 CALL $EDD0    ; }
  $F139 LD A,E        ; #REGa=#REGe.
  $F13A CALL $AEE0    ; Call #R$AEE0.
- $F13D LD HL,$A790   ; #REGhl=#R$A790.
- $F140 DEC (HL)      ; Decrease *#REGhl by one.
- $F141 LD A,$46      ; #REGa=#N$46.
- $F143 CALL $AEE0    ; Call #R$AEE0.
+ $F13D LD HL,$A790   ; {Decrease *#R$A790 by one.
+ $F140 DEC (HL)      ; }
+ $F141 LD A,$46      ; {Call #R$AEE0 with item #N$46: #ITEM$46.
+ $F143 CALL $AEE0    ; }
  $F146 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $F148 CALL $B09A    ; }
- $F14B LD A,$49      ; #REGa=#N$49.
- $F14D LD ($E870),A  ; Write #REGa to *#R$E870.
+ $F14B LD A,$49      ; {Write #N$49 to *#R$E870 to open up northbound access to #ROOM$49
+ $F14D LD ($E870),A  ; from #ROOM$3A.}
+; Print "#STR$D531,$08($b==$FF)".
  $F150 LD HL,$D531   ; #REGhl=#R$D531.
  $F153 JP $ED6D      ; Jump to #R$ED6D.
 
@@ -12797,47 +12878,81 @@ c$F156 LD A,$3C      ; {Call #R$AE6B with item #N$3C: #ITEM$3C.
  $F173 LD HL,$D58F   ; #REGhl=#R$D58F.
  $F176 JP $ED6D      ; Jump to #R$ED6D.
 
-; Routine at F179
-c$F179 LD A,$23      ; #REGa=#N$23.
-; This entry point is used by the routine at #R$F1DF.
-*$F17B CALL $EDD0    ; Call #R$EDD0.
+; Process: Giving The Iron To The Trader
+@label=Process_GiveIronToTrader
+c$F179 LD A,$23      ; Load item #N$23: #ITEM$23 into #REGa.
+; This entry point is used by the routines at #R$F1D4, #R$F1FE, #R$F214 and
+; #R$F219.
+*$F17B CALL $EDD0    ; Call #R$EDD0 with the item passed in #REGa.
  $F17E LD A,E        ; #REGa=#REGe.
  $F17F CALL $AEE0    ; Call #R$AEE0.
- $F182 LD A,$3C      ; #REGa=#N$3C.
- $F184 CALL $AEE0    ; Call #R$AEE0.
- $F187 LD HL,$A790   ; #REGhl=#R$A790.
- $F18A DEC (HL)      ; Decrease *#REGhl by one.
+ $F182 LD A,$3C      ; {Call #R$AEE0 with item #N$3C: #ITEM$3C.
+ $F184 CALL $AEE0    ; }
+ $F187 LD HL,$A790   ; {Decrease *#R$A790 by one.
+ $F18A DEC (HL)      ; }
+; Print "#STR$D5E7,$08($b==$FF)".
  $F18B LD HL,$D5E7   ; #REGhl=#R$D5E7.
  $F18E JP $ED6D      ; Jump to #R$ED6D.
- $F191 LD A,$0B      ; #REGa=#N$0B.
- $F193 CALL $AEE0    ; Call #R$AEE0.
+
+; Process: Giving The Roman To The Druid
+@label=Process_GiveRomanToDruid
+c$F191 LD A,$0B      ; {Call #R$AEE0 with item #N$0B: #ITEM$0B.
+ $F193 CALL $AEE0    ; }
  $F196 LD HL,$A787   ; {Reset bit 0 of *#R$A787.
  $F199 RES 0,(HL)    ; }
  $F19B LD BC,$494B   ; {Call #R$AF1E to transform item #N$49 (#ITEM$49) into item #N$4B
  $F19E CALL $AF1E    ; (#ITEM$4B).}
  $F1A1 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $F1A3 CALL $B09A    ; }
+; Print "#STR$D640,$08($b==$FF)".
  $F1A6 LD HL,$D640   ; #REGhl=#R$D640.
  $F1A9 JP $ED6D      ; Jump to #R$ED6D.
- $F1AC LD A,$45      ; #REGa=#N$45.
- $F1AE CALL $AE6B    ; Call #R$AE6B.
- $F1B1 JP Z,$EE05    ; Jump to #R$EE05 if *#REGhl is equal to #N$45.
+
+; Process: Throw Food/ Meat To The Bear
+;
+; .
+;
+; .
+;
+; The player wants to feed the bear, but is it still alive?
+@label=Process_ThrowFoodToBear
+c$F1AC LD A,$45      ; {Call #R$AE6B with item #N$45: #ITEM$45.
+ $F1AE CALL $AE6B    ; }
+; Jump to print "#STR$CDD3,$08($b==$FF)" if the bear is dead.
+ $F1B1 JP Z,$EE05    ; Jump to #R$EE05 if #ITEM$45 is in the current room.
+; The bear is alive! But ... this isn't a good idea.
+; .
+; Print "#STR$D695,$08($b==$FF)".
  $F1B4 LD HL,$D695   ; #REGhl=#R$D695.
  $F1B7 CALL $A592    ; Call #R$A592.
 ; Bad luck!
  $F1BA LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
  $F1BD EX (SP),HL    ; over".}
+; Print "#STR$D6B0,$08($b==$FF)".
  $F1BE LD HL,$D6B0   ; #REGhl=#R$D6B0.
  $F1C1 JP $ED71      ; Jump to #R$ED71.
- $F1C4 LD HL,$D695   ; #REGhl=#R$D695.
+
+; Process: Throw Food/ Meat To The Wolves
+;
+; .
+;
+; .
+;
+; Print "#STR$D695,$08($b==$FF)".
+@label=Process_ThrowFoodToWolves
+c$F1C4 LD HL,$D695   ; #REGhl=#R$D695.
  $F1C7 CALL $A592    ; Call #R$A592.
 ; Bad luck!
  $F1CA LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
  $F1CD EX (SP),HL    ; over".}
+; Print "#STR$D6E3,$08($b==$FF)".
  $F1CE LD HL,$D6E3   ; #REGhl=#R$D6E3.
  $F1D1 JP $ED71      ; Jump to #R$ED71.
- $F1D4 LD A,$19      ; #REGa=#N$19.
- $F1D6 JP $F17B      ; Jump to #R$F17B.
+
+; Process: Giving Salt To The Trader
+@label=Process_GiveSaltToTrader
+c$F1D4 LD A,$19      ; {Jump to #R$F17B with item #N$19: #ITEM$19.
+ $F1D6 JP $F17B      ; }
 
 ; Process: Examine Slab
 ;
@@ -12851,8 +12966,8 @@ c$F1D9 LD HL,$CE02   ; #REGhl=#R$CE02.
  $F1DC JP $ED6D      ; Jump to #R$ED6D.
 
 ; Routine at F1DF
-c$F1DF LD HL,$E392   ; #REGhl=#R$E392.
- $F1E2 CALL $AEF7    ; Call #R$AEF7.
+c$F1DF LD HL,$E392   ; {Call #R$AEF7 with #R$E392.
+ $F1E2 CALL $AEF7    ; }
 ; This entry point is used by the routine at #R$EF2A.
 *$F1E5 CALL $ED75    ; Call #R$ED75.
  $F1E8 LD A,B        ; #REGa=#REGb.
@@ -12864,32 +12979,77 @@ c$F1DF LD HL,$E392   ; #REGhl=#R$E392.
  $F1F5 JP $EDA6      ; Jump to #R$EDA6.
 *$F1F8 LD HL,$D51A   ; #REGhl=#R$D51A.
  $F1FB JP $ED6D      ; Jump to #R$ED6D.
- $F1FE LD HL,$E36B   ; #REGhl=#R$E36B.
- $F201 CALL $AEF7    ; Call #R$AEF7.
- $F204 CP $20        ; Compare #REGa with #N$20.
- $F206 JP NZ,$F17B   ; Jump to #R$F17B if #REGa is not equal to #N$20.
+
+; Process: Giving The Helmet To The Trader
+@label=Process_GiveHelmetToTrader
+c$F1FE LD HL,$E36B   ; {Call #R$AEF7 with #R$E36B.
+ $F201 CALL $AEF7    ; }
+ $F204 CP $20        ; {Jump to #R$F17B if #REGa is not equal to #N$20.
+ $F206 JP NZ,$F17B   ; }
  $F209 LD BC,$201F   ; {Call #R$AF1E to transform item #N$20 (#ITEM$20) into item #N$1F
  $F20C CALL $AF1E    ; (#ITEM$1F).}
- $F20F LD A,$1F      ; #REGa=#N$1F.
- $F211 JP $F17B      ; Jump to #R$F17B.
- $F214 LD A,$38      ; #REGa=#N$38.
- $F216 JP $F17B      ; Jump to #R$F17B.
- $F219 LD A,$56      ; #REGa=#N$56.
- $F21B JP $F17B      ; Jump to #R$F17B.
- $F21E LD A,$23      ; #REGa=#N$23.
- $F220 JP $F128      ; Jump to #R$F128.
- $F223 LD HL,$E36B   ; #REGhl=#R$E36B.
- $F226 CALL $AEF7    ; Call #R$AEF7.
- $F229 CP $20        ; Compare #REGa with #N$20.
- $F22B JP NZ,$F128   ; Jump to #R$F128 if #REGa is not equal to #N$20.
+ $F20F LD A,$1F      ; {Jump to #R$F17B with item #N$1F: #ITEM$1F.
+ $F211 JP $F17B      ; }
+
+; Process: Giving The Sword To The Trader
+@label=Process_GiveSwordToTrader
+c$F214 LD A,$38      ; {Jump to #R$F17B with item #N$38: #ITEM$38.
+ $F216 JP $F17B      ; }
+
+; Process: Giving The Shield To The Trader
+@label=Process_GiveShieldToTrader
+c$F219 LD A,$56      ; {Jump to #R$F17B with item #N$56: #ITEM$56.
+ $F21B JP $F17B      ; }
+
+; Process: Giving The Iron To The Guard/ Druid
+;
+; .
+;
+; .
+;
+; Print "#STR$D4F5,$08($b==$FF)".
+@label=Process_GiveIronToGuardOrDruid
+c$F21E LD A,$23      ; {Jump to #R$F128 with item #N$23: #ITEM$23.
+ $F220 JP $F128      ; }
+
+; Process: Giving The Helmet To The Guard/ Druid
+;
+; .
+;
+; .
+;
+; The player wants to give the helmet to either the guard or the druid.
+@label=Process_GiveHelmetToGuardOrDruid
+c$F223 LD HL,$E36B   ; {Call #R$AEF7 with #R$E36B.
+ $F226 CALL $AEF7    ; }
+; If #ITEM$1F is present either in the current room or in the players
+; inventory, print "#STR$D4F5,$08($b==$FF)".
+ $F229 CP $20        ; {Jump to #R$F128 if the item is not #ITEM$20 (so is
+ $F22B JP NZ,$F128   ; #ITEM$1F).}
+; Else it's #ITEM$20, so first have the player remove the helmet in order
+; to give it to someone.
+; .
+; Change the helmet state!
  $F22E LD BC,$201F   ; {Call #R$AF1E to transform item #N$20 (#ITEM$20) into item #N$1F
  $F231 CALL $AF1E    ; (#ITEM$1F).}
- $F234 LD A,$1F      ; #REGa=#N$1F.
- $F236 JP $F128      ; Jump to #R$F128.
- $F239 LD A,$65      ; #REGa=#N$65.
- $F23B JP $F128      ; Jump to #R$F128.
- $F23E LD A,$45      ; #REGa=#N$45.
- $F240 CALL $AE6B    ; Call #R$AE6B.
+; Print "#STR$D4F5,$08($b==$FF)".
+ $F234 LD A,$1F      ; {Jump to #R$F128 with item #N$1F: #ITEM$1F.
+ $F236 JP $F128      ; }
+
+; Process: Giving The Silver To The Druid
+;
+; .
+;
+; .
+;
+; Print "#STR$D4F5,$08($b==$FF)".
+@label=Process_GiveSilverToDruid
+c$F239 LD A,$65      ; {Jump to #R$F128 with item #N$65: #ITEM$65.
+ $F23B JP $F128      ; }
+
+; Routine at F23E
+c$F23E LD A,$45      ; {Call #R$AE6B with item #N$45: #ITEM$45.
+ $F240 CALL $AE6B    ; }
  $F243 JP Z,$EE05    ; Jump to #R$EE05 if #REGa is equal to #N$45.
  $F246 LD A,$22      ; #REGa=#N$22.
  $F248 CALL $EDD0    ; Call #R$EDD0.
@@ -12908,39 +13068,44 @@ c$F1DF LD HL,$E392   ; #REGhl=#R$E392.
  $F266 LD HL,$D72F   ; #REGhl=#R$D72F.
  $F269 JP $ED6D      ; Jump to #R$ED6D.
 
-; Routine at F26C
+; Process: Free Ox
 ;
 ; Used by the routine at #R$F2D4.
+@label=Process_FreeOx
 c$F26C LD HL,$E3B6   ; {Call #R$AEF7 with #R$E3B6.
  $F26F CALL $AEF7    ; }
- $F272 CP $54        ; {Jump to #R$EE35 if #REGa is equal to #N$54.
+ $F272 CP $54        ; {Jump to #R$EE35 if the item present is #ITEM$54.
  $F274 JP Z,$EE35    ; }
- $F277 CP $52        ; {Jump to #R$F285 if #REGa is not equal to #N$52.
+ $F277 CP $52        ; {Jump to #R$F285 if the item present is not #ITEM$52.
  $F279 JR NZ,$F285   ; }
 ; Bad luck!
  $F27B LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
  $F27E EX (SP),HL    ; over".}
+; Print "#STR$D778,$08($b==$FF)".
  $F27F LD HL,$D778   ; #REGhl=#R$D778.
  $F282 JP $ED6D      ; Jump to #R$ED6D.
-*$F285 LD BC,$5354   ; #REGbc=#N$5354.
- $F288 CALL $AF1E    ; Call #R$AF1E.
- $F28B LD A,$51      ; #REGa=#N$51.
- $F28D CALL $AEE7    ; Call #R$AEE7.
+; Change the dead ox state!
+@label=FreeDeadOx
+*$F285 LD BC,$5354   ; {Call #R$AF1E to transform item #N$53 (#ITEM$53) into item #N$54
+ $F288 CALL $AF1E    ; (#ITEM$54).}
+ $F28B LD A,$51      ; {Call #R$AEE7 with item #N$51: #ITEM$51.
+ $F28D CALL $AEE7    ; }
  $F290 JP $EDF3      ; Jump to #R$EDF3.
 
-; Routine at F293
+; Process: Free Roman
 ;
 ; Used by the routine at #R$F2D4.
+@label=Process_FreeRoman
 c$F293 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
  $F296 CALL $AEF7    ; }
  $F299 CP $0B        ; {Jump to #R$F2B0 if #REGa is equal to #N$0B.
  $F29B JR Z,$F2B0    ; }
  $F29D CP $55        ; {Jump to #R$EE3B if #REGa is not equal to #N$55.
  $F29F JP NZ,$EE3B   ; }
- $F2A2 LD BC,$550C   ; #REGbc=#N$550C.
- $F2A5 CALL $AF1E    ; Call #R$AF1E.
- $F2A8 LD A,$51      ; #REGa=#N$51.
- $F2AA CALL $AEE7    ; Call #R$AEE7.
+ $F2A2 LD BC,$550C   ; {Call #R$AF1E to transform item #N$55 (#ITEM$55) into item #N$0C
+ $F2A5 CALL $AF1E    ; (#ITEM$0C).}
+ $F2A8 LD A,$51      ; {Call #R$AEE7 with item #N$51: #ITEM$51.
+ $F2AA CALL $AEE7    ; }
  $F2AD JP $EDF3      ; Jump to #R$EDF3.
 ; Bad luck!
 *$F2B0 LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
@@ -12948,7 +13113,8 @@ c$F293 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
  $F2B4 LD HL,$D7B6   ; #REGhl=#R$D7B6.
  $F2B7 JP $ED6D      ; Jump to #R$ED6D.
 
-; Routine at F2BA
+; Process: Free Hare
+@label=Process_FreeHare
 c$F2BA LD HL,$E353   ; {Call #R$AEF7 with #R$E353.
  $F2BD CALL $AEF7    ; }
  $F2C0 CP $26        ; {Jump to #R$EDF9 if #REGa is equal to #N$26.
@@ -12959,9 +13125,10 @@ c$F2BA LD HL,$E353   ; {Call #R$AEF7 with #R$E353.
  $F2CE LD HL,$D8D5   ; #REGhl=#R$D8D5.
  $F2D1 JP $ED71      ; Jump to #R$ED71.
 
-; Routine at F2D4
-c$F2D4 LD HL,$E3B0   ; #REGhl=#R$E3B0.
- $F2D7 CALL $AEF7    ; Call #R$AEF7.
+; Process: Free Rope
+@label=Process_FreeRope
+c$F2D4 LD HL,$E3B0   ; {Call #R$AEF7 with #R$E3B0.
+ $F2D7 CALL $AEF7    ; }
  $F2DA CP $51        ; {Jump to #R$EE35 if #REGa is equal to #N$51.
  $F2DC JP Z,$EE35    ; }
  $F2DF CP $0B        ; {Jump to #R$F293 if #REGa is equal to #N$0B.
@@ -13003,8 +13170,8 @@ c$F2FF LD A,($A7C3)  ; Load *#R$A7C3 into #REGa.
 ; Routine at F31D
 ;
 ; Used by the routine at #R$F338.
-c$F31D LD A,$37      ; Load #N$37: #ITEM$37 into #REGa.
- $F31F CALL $AE6B    ; Call #R$AE6B.
+c$F31D LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
+ $F31F CALL $AE6B    ; }
  $F322 JR NZ,$F32E   ; Jump to #R$F32E if #REGa is not equal to #N$37.
 ; Bad luck!
  $F324 LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
@@ -13019,8 +13186,8 @@ c$F31D LD A,$37      ; Load #N$37: #ITEM$37 into #REGa.
  $F337 RET           ; Return.
 
 ; Routine at F338
-c$F338 LD HL,$E3E7   ; #REGhl=#R$E3E7.
- $F33B CALL $AEF7    ; Call #R$AEF7.
+c$F338 LD HL,$E3E7   ; {Call #R$AEF7 with #R$E3E7.
+ $F33B CALL $AEF7    ; }
  $F33E CP $6C        ; {Jump to #R$F31D if #REGa is equal to #N$6C.
  $F340 JP Z,$F31D    ; }
  $F343 CP $32        ; {Jump to #R$EE0B if #REGa is equal to #N$32.
@@ -13029,8 +13196,8 @@ c$F338 LD HL,$E3E7   ; #REGhl=#R$E3E7.
  $F34B LD A,($A7C3)  ; {Jump to #R$EE0B if *#R$A7C3 is equal to room #N$63:
  $F34E CP $63        ; #ROOM$63.
  $F350 JP Z,$EE0B    ; }
- $F353 LD A,$63      ; #REGa=#N$63.
- $F355 CALL $EB10    ; Call #R$EB10.
+ $F353 LD A,$63      ; {Call #R$EB10 with room #N$63: #ROOM$63.
+ $F355 CALL $EB10    ; }
  $F358 RET           ; Return.
 
 ; Routine at F359
@@ -13087,24 +13254,24 @@ c$F3AC LD A,$5E      ; {Call #R$AE6B with item #N$5E: #ITEM$5E.
  $F3AE CALL $AE6B    ; }
  $F3B1 JP NZ,$EDED   ; Jump to #R$EDED if the item is not either in the current room or in
                      ; the players inventory.
- $F3B4 LD A,$60      ; {Call #R$EB10 with #N$60.
+ $F3B4 LD A,$60      ; {Call #R$EB10 with room #N$60: #ROOM$60.
  $F3B6 CALL $EB10    ; }
  $F3B9 RET           ; Return.
 
 ; Routine at F3BA
-c$F3BA LD A,$5C      ; #REGa=#N$5C.
- $F3BC CALL $AE6B    ; Call #R$AE6B.
+c$F3BA LD A,$5C      ; {Call #R$AE6B with item #N$5C: #ITEM$5C.
+ $F3BC CALL $AE6B    ; }
  $F3BF JP NZ,$EDED   ; Jump to #R$EDED if ?? is not equal to #N$5C.
- $F3C2 LD A,$63      ; #REGa=#N$63.
- $F3C4 CALL $EB10    ; Call #R$EB10.
+ $F3C2 LD A,$63      ; {Call #R$EB10 with room #N$63: #ROOM$63.
+ $F3C4 CALL $EB10    ; }
  $F3C7 RET           ; Return.
 
 ; Routine at F3C8
 c$F3C8 LD A,($A7C3)  ; {Jump to #R$EE0B if *#R$A7C3 is not equal to #N$18.
  $F3CB CP $18        ;
  $F3CD JP NZ,$EE0B   ; }
- $F3D0 LD A,$19      ; #REGa=#N$19.
- $F3D2 CALL $EB10    ; Call #R$EB10.
+ $F3D0 LD A,$19      ; {Call #R$EB10 with room #N$19: #ROOM$19.
+ $F3D2 CALL $EB10    ; }
  $F3D5 RET           ; Return.
 
 ; Routine at F3D6
@@ -13115,8 +13282,8 @@ c$F3D6 LD A,($A7C3)  ; {Jump to #R$F3E1 if *#R$A7C3 is not equal to #N$2C.
  $F3DF JR $F3E8      ; Jump to #R$F3E8.
 *$F3E1 CP $52        ; {Jump to #R$EE0B if #REGa is not equal to #N$52.
  $F3E3 JP NZ,$EE0B   ; }
- $F3E6 LD A,$4E      ; #REGa=#N$4E.
-*$F3E8 CALL $EB10    ; Call #R$EB10.
+ $F3E6 LD A,$4E      ; {Call #R$EB10 with room #N$4E: #ROOM$4E.
+*$F3E8 CALL $EB10    ; }
  $F3EB RET           ; Return.
 
 ; Routine at F3EC
@@ -13131,8 +13298,8 @@ c$F3EC LD A,($A7C3)  ; {Jump to #R$F3F7 if *#R$A7C3 is not equal to #N$06.
  $F3FD JR $F406      ; Jump to #R$F406.
 *$F3FF CP $4B        ; {Jump to #R$EE0B if #REGa is not equal to #N$4B.
  $F401 JP NZ,$EE0B   ; }
- $F404 LD A,$4F      ; #REGa=#N$4F.
-*$F406 CALL $EB10    ; Call #R$EB10.
+ $F404 LD A,$4F      ; {Call #R$EB10 with room #N$4F: #ROOM$4F.
+*$F406 CALL $EB10    ; }
  $F409 RET           ; Return.
 
 ; Routine at F40A
@@ -13399,47 +13566,54 @@ c$F544 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
  $F575 LD HL,$DC58   ; #REGhl=#R$DC58.
  $F578 JP $ED6D      ; Jump to #R$ED6D.
 
-; Routine at F57B
-c$F57B LD HL,$E3C5   ; #REGhl=#R$E3C5.
- $F57E CALL $AEF7    ; Call #R$AEF7.
- $F581 CP $5E        ; Compare #REGa with #N$5E.
- $F583 JP Z,$EE0B    ; Jump to #R$EE0B if #REGa is equal to #N$5E.
- $F586 CP $5C        ; Compare #REGa with #N$5C.
- $F588 JP Z,$EE0B    ; Jump to #R$EE0B if #REGa is equal to #N$5C.
+; Process: Ladder
+@label=Process_Ladder
+c$F57B LD HL,$E3C5   ; {Call #R$AEF7 with #R$E3C5.
+ $F57E CALL $AEF7    ; }
+; If the version of the ladder which exists in the room is one where it's
+; already been used, print "#STR$CDE8,$08($b==$FF)".
+ $F581 CP $5E        ; {Jump to #R$EE0B if either of #ITEM$5E or #ITEM$5C are in the
+ $F583 JP Z,$EE0B    ; current room.
+ $F586 CP $5C        ;
+ $F588 JP Z,$EE0B    ; }
+; This doesn't need to happen...
  $F58B CALL $EDD0    ; Call #R$EDD0.
- $F58E LD A,$5A      ; #REGa=#N$5A.
- $F590 CALL $AEE0    ; Call #R$AEE0.
- $F593 LD A,$5E      ; #REGa=#N$5E.
- $F595 CALL $AEE7    ; Call #R$AEE7.
- $F598 LD HL,$A790   ; #REGhl=#R$A790.
- $F59B DEC (HL)      ; Decrease *#REGhl by one.
+ $F58E LD A,$5A      ; {Call #R$AEE0 with item #N$5A: #ITEM$5A.
+ $F590 CALL $AEE0    ; }
+ $F593 LD A,$5E      ; {Call #R$AEE7 with item #N$5E: #ITEM$5E.
+ $F595 CALL $AEE7    ; }
+ $F598 LD HL,$A790   ; {Decrease *#R$A790 by one.
+ $F59B DEC (HL)      ; }
  $F59C LD A,$60      ; {Write #N$60 to *#R$E96A.
  $F59E LD ($E96A),A  ; }
  $F5A1 LD A,$63      ; {Write #N$63 to *#R$E959.
  $F5A3 LD ($E959),A  ; }
- $F5A6 LD HL,$A76C   ; #REGhl=#R$A76C.
- $F5A9 BIT 6,(HL)    ; Test bit 6 of *#REGhl.
- $F5AB JP NZ,$EDF3   ; Jump to #R$EDF3 if *#REGhl is not equal to #N$63.
- $F5AE SET 6,(HL)    ; Set bit 6 of *#REGhl.
+ $F5A6 LD HL,$A76C   ; {Jump to #R$EDF3 if bit 6 of *#R$A76C is set.
+ $F5A9 BIT 6,(HL)    ;
+ $F5AB JP NZ,$EDF3   ; }
+ $F5AE SET 6,(HL)    ; Set bit 6 of *#REGhl which relates to placing the
+                     ; ladder.
  $F5B0 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $F5B2 CALL $B09A    ; }
  $F5B5 JP $EDF3      ; Jump to #R$EDF3.
- $F5B8 LD HL,$E392   ; #REGhl=#R$E392.
- $F5BB CALL $AEF7    ; Call #R$AEF7.
- $F5BE CP $59        ; Compare #REGa with #N$59.
- $F5C0 JP Z,$EE0B    ; Jump to #R$EE0B if #REGa is equal to #N$59.
- $F5C3 CP $39        ; Compare #REGa with #N$39.
- $F5C5 JP Z,$EDF9    ; Jump to #R$EDF9 if #REGa is equal to #N$39.
+
+; Routine at F5B8
+c$F5B8 LD HL,$E392   ; {Call #R$AEF7 with #R$E392.
+ $F5BB CALL $AEF7    ; }
+ $F5BE CP $59        ; {Jump to #R$EE0B if #REGa is equal to #N$59.
+ $F5C0 JP Z,$EE0B    ; }
+ $F5C3 CP $39        ; {Jump to #R$EDF9 if #REGa is equal to #N$39.
+ $F5C5 JP Z,$EDF9    ; }
  $F5C8 CALL $EDD0    ; Call #R$EDD0.
  $F5CB LD A,E        ; #REGa=#REGe.
  $F5CC CALL $AEE0    ; Call #R$AEE0.
  $F5CF LD BC,$5859   ; {Call #R$AF1E to transform item #N$58 (#ITEM$58) into item #N$59
  $F5D2 CALL $AF1E    ; (#ITEM$59).}
- $F5D5 LD HL,$A790   ; #REGhl=#R$A790.
- $F5D8 DEC (HL)      ; Decrease *#REGhl by one.
- $F5D9 LD HL,$A76D   ; #REGhl=#R$A76D.
- $F5DC BIT 4,(HL)    ; Test bit 4 of *#REGhl.
- $F5DE JP NZ,$EDF3   ; Jump to #R$EDF3 if *#REGhl is not equal to #N$39.
+ $F5D5 LD HL,$A790   ; {Decrease *#R$A790 by one.
+ $F5D8 DEC (HL)      ; }
+ $F5D9 LD HL,$A76D   ; {Jump to #R$EDF3 if bit 4 of *#R$A76D is set.
+ $F5DC BIT 4,(HL)    ;
+ $F5DE JP NZ,$EDF3   ; }
  $F5E1 SET 4,(HL)    ; Set bit 4 of *#REGhl.
  $F5E3 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $F5E5 CALL $B09A    ; }
@@ -13484,18 +13658,20 @@ c$F620 LD HL,$A825   ; #REGhl=#R$A825.
  $F626 LD A,$3C      ; #REGa=#N$3C.
  $F628 CPIR          ; CPIR.
  $F62A RET           ; Return.
-*$F62B LD HL,$E392   ; #REGhl=#R$E392.
- $F62E CALL $AEF7    ; Call #R$AEF7.
+; This entry point is used by the routines at #R$F77F and #R$F793.
+*$F62B LD HL,$E392   ; {Call #R$AEF7 with #R$E392.
+ $F62E CALL $AEF7    ; }
  $F631 CALL $AEDA    ; Call #R$AEDA.
  $F634 RET Z         ; Return if #REGa is equal to #N$3C.
  $F635 POP HL        ; Restore #REGhl from the stack.
  $F636 CALL $F620    ; Call #R$F620.
  $F639 LD A,E        ; #REGa=#REGe.
  $F63A CALL Z,$EDD0  ; Call #R$EDD0 if ?? is equal to #N$3C.
+; Print "#STR$DCE5,$08($b==$FF)".
  $F63D LD HL,$DCE5   ; #REGhl=#R$DCE5.
  $F640 JP $ED6D      ; Jump to #R$ED6D.
- $F643 LD HL,$E341   ; #REGhl=#R$E341.
- $F646 CALL $AEF7    ; Call #R$AEF7.
+ $F643 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
+ $F646 CALL $AEF7    ; }
  $F649 CP $0C        ; {Jump to #R$EE0B if #REGa is equal to #N$0C.
  $F64B JP Z,$EE0B    ; }
  $F64E CP $55        ; {Jump to #R$EE0B if #REGa is equal to #N$55.
@@ -13505,20 +13681,22 @@ c$F620 LD HL,$A825   ; #REGhl=#R$A825.
  $F659 LD A,($A773)  ; {Jump to #R$F67B if *#R$A773 is greater than or equal to
  $F65C CP $04        ; #N$04.
  $F65E JR NC,$F67B   ; }
- $F660 LD A,$02      ; #REGa=#N$02.
- $F662 CALL $AEE0    ; Call #R$AEE0.
- $F665 LD A,$03      ; #REGa=#N$03.
- $F667 CALL $AEE0    ; Call #R$AEE0.
- $F66A LD A,$08      ; #REGa=#N$08.
- $F66C CALL $AEE0    ; Call #R$AEE0.
+ $F660 LD A,$02      ; {Call #R$AEE0 with item #N$02: #ITEM$02.
+ $F662 CALL $AEE0    ; }
+ $F665 LD A,$03      ; {Call #R$AEE0 with item #N$03: #ITEM$03.
+ $F667 CALL $AEE0    ; }
+ $F66A LD A,$08      ; {Call #R$AEE0 with item #N$08: #ITEM$08.
+ $F66C CALL $AEE0    ; }
  $F66F LD BC,$070A   ; {Call #R$AF1E to transform item #N$07 (#ITEM$07) into item #N$0A
  $F672 CALL $AF1E    ; (#ITEM$0A).}
+; Print "#STR$DCFE,$08($b==$FF)".
  $F675 LD HL,$DCFE   ; #REGhl=#R$DCFE.
  $F678 JP $ED6D      ; Jump to #R$ED6D.
 *$F67B CP $0A        ; {Jump to #R$F68B if #REGa is not equal to #N$0A.
  $F67D JR NZ,$F68B   ; }
  $F67F LD BC,$0A0C   ; {Call #R$AF1E to transform item #N$0A (#ITEM$0A) into item #N$0C
  $F682 CALL $AF1E    ; (#ITEM$0C).}
+; Print "#STR$DD4A,$08($b==$FF)".
 *$F685 LD HL,$DD4A   ; #REGhl=#R$DD4A.
  $F688 JP $ED6D      ; Jump to #R$ED6D.
 *$F68B LD BC,$0B55   ; {Call #R$AF1E to transform item #N$0B (#ITEM$0B) into item #N$55
@@ -13526,10 +13704,11 @@ c$F620 LD HL,$A825   ; #REGhl=#R$A825.
  $F691 LD HL,$A787   ; {Reset bit 0 of *#R$A787.
  $F694 RES 0,(HL)    ; }
  $F696 CALL $F685    ; Call #R$F685.
+; Print "#STR$DD6E,$08($b==$FF)".
  $F699 LD HL,$DD6E   ; #REGhl=#R$DD6E.
  $F69C JP $ED6D      ; Jump to #R$ED6D.
-*$F69F LD HL,$E348   ; #REGhl=#R$E348.
- $F6A2 CALL $AEF7    ; Call #R$AEF7.
+*$F69F LD HL,$E348   ; {Call #R$AEF7 with #R$E348.
+ $F6A2 CALL $AEF7    ; }
  $F6A5 LD HL,$FC8A   ; #REGhl=#R$FC8A.
  $F6A8 LD BC,$0003   ; #REGbc=#N($0003,$04,$04).
  $F6AB CPIR          ; CPIR.
@@ -13542,11 +13721,14 @@ c$F620 LD HL,$A825   ; #REGhl=#R$A825.
 ; Bad luck!
  $F6BD LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
  $F6C0 EX (SP),HL    ; over".}
+; Print "#STR$DD86,$08($b==$FF)".
  $F6C1 LD HL,$DD86   ; #REGhl=#R$DD86.
  $F6C4 JP $ED6D      ; Jump to #R$ED6D.
-*$F6C7 LD A,$39      ; #REGa=#N$39.
- $F6C9 CALL $AE6B    ; Call #R$AE6B.
- $F6CC JR Z,$F6D4    ; Jump to #R$F6D4 if #REGa is equal to #N$39.
+*$F6C7 LD A,$39      ; {Call #R$AE6B with item #N$39: #ITEM$39.
+ $F6C9 CALL $AE6B    ; }
+ $F6CC JR Z,$F6D4    ; Jump to #R$F6D4 if #ITEM$39 is either in the current room or in the
+                     ; players inventory.
+; Print "#STR$DDB5,$08($b==$FF)".
  $F6CE LD HL,$DDB5   ; #REGhl=#R$DDB5.
  $F6D1 JP $ED6D      ; Jump to #R$ED6D.
 *$F6D4 LD A,($A773)  ; #REGa=*#R$A773.
@@ -13555,16 +13737,17 @@ c$F620 LD HL,$A825   ; #REGhl=#R$A825.
  $F6DA LD C,A        ; #REGc=#REGa.
  $F6DB CALL $AF1E    ; Call #R$AF1E.
  $F6DE JP $F685      ; Jump to #R$F685.
- $F6E1 LD A,$26      ; #REGa=#N$26.
- $F6E3 CALL $AE6B    ; Call #R$AE6B.
+ $F6E1 LD A,$26      ; {Call #R$AE6B with item #N$26: #ITEM$26.
+ $F6E3 CALL $AE6B    ; }
  $F6E6 JP Z,$EE0B    ; Jump to #R$EE0B if #REGa is equal to #N$26.
  $F6E9 CALL $F620    ; Call #R$F620.
  $F6EC JR NZ,$F6F7   ; Jump to #R$F6F7 if #REGa is not equal to #N$26.
- $F6EE LD HL,$E392   ; #REGhl=#R$E392.
- $F6F1 CALL $AEF7    ; Call #R$AEF7.
+ $F6EE LD HL,$E392   ; {Call #R$AEF7 with #R$E392.
+ $F6F1 CALL $AEF7    ; }
  $F6F4 CALL $EDD0    ; Call #R$EDD0.
 *$F6F7 LD BC,$1326   ; {Call #R$AF1E to transform item #N$13 (#ITEM$13) into item #N$26
  $F6FA CALL $AF1E    ; (#ITEM$26).}
+; Print "#STR$DDDF,$08($b==$FF)".
  $F6FD LD HL,$DDDF   ; #REGhl=#R$DDDF.
  $F700 JP $ED6D      ; Jump to #R$ED6D.
 *$F703 LD ($A772),HL ; Write #REGhl to *#R$A772.
@@ -13576,25 +13759,30 @@ c$F620 LD HL,$A825   ; #REGhl=#R$A825.
  $F710 JP $ED6D      ; Jump to #R$ED6D.
  $F713 CALL $F62B    ; Call #R$F62B.
  $F716 CALL $F685    ; Call #R$F685.
+; Print "#STR$DDFA,$08($b==$FF)".
  $F719 LD HL,$DDFA   ; #REGhl=#R$DDFA.
  $F71C JP $F703      ; Jump to #R$F703.
- $F71F LD HL,$E377   ; #REGhl=#R$E377.
- $F722 CALL $AEF7    ; Call #R$AEF7.
+ $F71F LD HL,$E377   ; {Call #R$AEF7 with #R$E377.
+ $F722 CALL $AEF7    ; }
  $F725 CP $27        ; {Jump to #R$F69F if #REGa is not equal to #N$27.
  $F727 JP NZ,$F69F   ; }
+; Print "#STR$DCE5,$08($b==$FF)".
  $F72A LD HL,$DCE5   ; #REGhl=#R$DCE5.
  $F72D JP $ED6D      ; Jump to #R$ED6D.
  $F730 CALL $F62B    ; Call #R$F62B.
+; Print "#STR$DE31,$08($b==$FF)".
  $F733 LD HL,$DE31   ; #REGhl=#R$DE31.
  $F736 JP $ED6D      ; Jump to #R$ED6D.
- $F739 LD A,$45      ; #REGa=#N$45.
- $F73B CALL $AE6B    ; Call #R$AE6B.
- $F73E JP Z,$EE0B    ; Jump to #R$EE0B if #REGa is equal to #N$45.
+ $F739 LD A,$45      ; {Call #R$AE6B with item #N$45: #ITEM$45.
+ $F73B CALL $AE6B    ; }
+ $F73E JP Z,$EE0B    ; Jump to #R$EE0B if #ITEM$45 is in the current room.
  $F741 CALL $F62B    ; Call #R$F62B.
- $F744 LD A,$56      ; #REGa=#N$56.
- $F746 CALL $AEDA    ; Call #R$AEDA.
+ $F744 LD A,$56      ; {Call #R$AEDA with item #N$56: #ITEM$56.
+ $F746 CALL $AEDA    ; }
+; Print "#STR$DE57,$08($b==$FF)".
  $F749 LD HL,$DE57   ; #REGhl=#R$DE57.
- $F74C JP NZ,$F703   ; Jump to #R$F703 if #REGa is not equal to #N$56.
+ $F74C JP NZ,$F703   ; Jump to #R$F703 if #ITEM$56 is not in the players
+                     ; inventory.
  $F74F LD BC,$4445   ; {Call #R$AF1E to transform item #N$44 (#ITEM$44) into item #N$45
  $F752 CALL $AF1E    ; (#ITEM$45).}
  $F755 LD A,$2C      ; {Write #N$2C to *#R$E84D.
@@ -13603,24 +13791,33 @@ c$F620 LD HL,$A825   ; #REGhl=#R$A825.
  $F75C LD ($E84E),A  ; }
  $F75F LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $F761 CALL $B09A    ; }
+; This entry point is used by the routines at #R$F77F and #R$F793.
+; .
+; Print "#STR$DE9E,$08($b==$FF)".
 *$F764 LD HL,$DE9E   ; #REGhl=#R$DE9E.
  $F767 JP $ED6D      ; Jump to #R$ED6D.
  $F76A CALL $F62B    ; Call #R$F62B.
  $F76D CALL $F685    ; Call #R$F685.
+; Print "#STR$DEC2,$08($b==$FF)".
  $F770 LD HL,$DEC2   ; #REGhl=#R$DEC2.
  $F773 JP $F703      ; Jump to #R$F703.
  $F776 CALL $F62B    ; Call #R$F62B.
+; Print "#STR$DEF0,$08($b==$FF)".
  $F779 LD HL,$DEF0   ; #REGhl=#R$DEF0.
  $F77C JP $F703      ; Jump to #R$F703.
- $F77F LD A,$50      ; #REGa=#N$50.
- $F781 CALL $AE6B    ; Call #R$AE6B.
+
+; Routine at F77F
+c$F77F LD A,$50      ; {Call #R$AE6B with item #N$50: #ITEM$50.
+ $F781 CALL $AE6B    ; }
  $F784 JP Z,$EE0B    ; Jump to #R$EE0B if #REGa is equal to #N$50.
  $F787 CALL $F62B    ; Call #R$F62B.
  $F78A LD BC,$4F50   ; {Call #R$AF1E to transform item #N$4F (#ITEM$4F) into item #N$50
  $F78D CALL $AF1E    ; (#ITEM$50).}
  $F790 JP $F764      ; Jump to #R$F764.
- $F793 LD A,$52      ; #REGa=#N$52.
- $F795 CALL $AE6B    ; Call #R$AE6B.
+
+; Routine at F793
+c$F793 LD A,$52      ; {Call #R$AE6B with item #N$52: #ITEM$52.
+ $F795 CALL $AE6B    ; }
  $F798 JP NZ,$EE0B   ; Jump to #R$EE0B if #REGa is not equal to #N$52.
  $F79B CALL $F62B    ; Call #R$F62B.
  $F79E LD BC,$5253   ; {Call #R$AF1E to transform item #N$52 (#ITEM$52) into item #N$53
@@ -13628,42 +13825,58 @@ c$F620 LD HL,$A825   ; #REGhl=#R$A825.
  $F7A4 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $F7A6 CALL $B09A    ; }
  $F7A9 JP $F764      ; Jump to #R$F764.
-; This entry point is used by the routines at #R$F2FF and #R$F31D.
-*$F7AC LD A,$19      ; #REGa=#N$19.
- $F7AE CALL $AEDA    ; Call #R$AEDA.
- $F7B1 RET NZ        ; Return if #REGa is not equal to #N$19.
- $F7B2 LD A,E        ; #REGa=#REGe.
- $F7B3 CALL $AEE0    ; Call #R$AEE0.
+
+; Process: Lose Salt
+;
+; Used by the routines at #R$F2FF and #R$F31D.
+; .
+; Did the player do something to lose the salt (e.g. enter some water).
+;
+; .
+;
+; Is the player carrying any salt?
+@label=Process_LoseSalt
+c$F7AC LD A,$19      ; {Call #R$AEDA with item #N$19: #ITEM$19.
+ $F7AE CALL $AEDA    ; }
+ $F7B1 RET NZ        ; Return if #ITEM$19 is not in the players inventory.
+; The player is carrying the salt!
+ $F7B2 LD A,E        ; {Call #R$AEE0 with item #N$19: #ITEM$19.
+ $F7B3 CALL $AEE0    ; }
  $F7B6 LD HL,$A790   ; {Decrease *#R$A790 by one.
  $F7B9 DEC (HL)      ; }
+; Print "#STR$E060,$08($b==$FF)".
  $F7BA LD HL,$E060   ; #REGhl=#R$E060.
  $F7BD JP $ED6D      ; Jump to #R$ED6D.
 
-; Routine at F7C0
-c$F7C0 LD A,$46      ; #REGa=#N$46.
- $F7C2 CALL $AE6B    ; Call #R$AE6B.
- $F7C5 JR NZ,$F7CD   ; Jump to #R$F7CD if *#REGhl is not equal to #N$46.
+; Process: Guard
+@label=Process_Guard
+c$F7C0 LD A,$46      ; {Call #R$AE6B with item #N$46: #ITEM$46.
+ $F7C2 CALL $AE6B    ; }
+ $F7C5 JR NZ,$F7CD   ; Jump to #R$F7CD if #ITEM$46 is not in the current room.
+; Print "#STR$E079,$08($b==$FF)".
  $F7C7 LD HL,$E079   ; #REGhl=#R$E079.
  $F7CA JP $ED6D      ; Jump to #R$ED6D.
-*$F7CD LD A,($A7C3)  ; {Jump to #R$EE0B if *#R$A7C3 is not equal to #N$3A.
- $F7D0 CP $3A        ;
+; Jump to print "#STR$CDE8,$08($b==$FF)" if this room is not #ROOM$3A.
+@label=Guard_AlreadyDealtWith
+*$F7CD LD A,($A7C3)  ; {Jump to #R$EE0B if *#R$A7C3 is not room #N$3A:
+ $F7D0 CP $3A        ; #ROOM$3A.
  $F7D2 JP NZ,$EE0B   ; }
- $F7D5 LD A,$49      ; #REGa=#N$49.
- $F7D7 CALL $EB10    ; Call #R$EB10.
+ $F7D5 LD A,$49      ; {Call #R$EB10 with room #N$49: #ROOM$49.
+ $F7D7 CALL $EB10    ; }
  $F7DA RET           ; Return.
 
 ; Routine at F7DB
-c$F7DB LD A,($A7C3)  ; {Jump to #R$EE0B if *#R$A7C3 is not equal to #N$38.
- $F7DE CP $38        ;
+c$F7DB LD A,($A7C3)  ; {Jump to #R$EE0B if *#R$A7C3 is not room #N$38:
+ $F7DE CP $38        ; #ROOM$38.
  $F7E0 JP NZ,$EE0B   ; }
- $F7E3 LD A,$59      ; #REGa=#N$59.
- $F7E5 CALL $EB10    ; Call #R$EB10.
+ $F7E3 LD A,$59      ; {Call #R$EB10 with room #N$59: #ROOM$59.
+ $F7E5 CALL $EB10    ; }
  $F7E8 RET           ; Return.
 
 ; Process: Get Staff
 @label=Process_GetStaff
-c$F7E9 LD A,$61      ; #REGa=#N$61.
- $F7EB CALL $ED75    ; Call #R$ED75.
+c$F7E9 LD A,$61      ; {Call #R$ED75 with item #N$61: #ITEM$61.
+ $F7EB CALL $ED75    ; }
  $F7EE XOR A         ; #REGa=#N$00.
  $F7EF LD ($E8F6),A  ; Write #REGa to *#R$E8F6.
  $F7F2 LD ($E8F7),A  ; Write #REGa to *#R$E8F7.
