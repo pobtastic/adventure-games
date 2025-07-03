@@ -11736,7 +11736,8 @@ c$EBC5 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
  $EBD6 CALL $AEF0    ; }
  $EBD9 RET           ; Return.
 
-; Routine at EBDA
+; Process: Forest Path
+@label=Process_ForestPath
 c$EBDA LD HL,$A76C   ; {Return if bit 1 of *#R$A76C is set.
  $EBDD BIT 1,(HL)    ;
  $EBDF RET NZ        ; }
@@ -11753,23 +11754,27 @@ c$EBDA LD HL,$A76C   ; {Return if bit 1 of *#R$A76C is set.
  $EBF8 CALL $B09A    ; }
  $EBFB RET           ; Return.
 
-; Routine at EBFC
+; Process: Narrow Underwater Passage
+@label=Process_NarrowUnderwaterPassage
 c$EBFC LD A,$05      ; {Write #N$05 to *#R$A77F.
  $EBFE LD ($A77F),A  ; }
  $EC01 LD HL,$A77E   ; {Set bit 0 of *#R$A77E.
  $EC04 SET 0,(HL)    ; }
  $EC06 RET           ; Return.
 
-; Routine at EC07
+; Process: Congratulations (Game Over)
+@label=Process_CongratulationsGameOver
 c$EC07 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $EC09 CALL $B09A    ; }
- $EC0C POP HL        ; {Restore #REGhl and #REGhl from the stack.
- $EC0D POP HL        ; }
+; Housekeeping; tidy up the stack.
+ $EC0C POP HL        ; Restore #REGhl from the stack.
+ $EC0D POP HL        ; Discard the return address on the stack.
  $EC0E LD HL,$E9B8   ; {Switch #R$E9B8 onto the stack so the next return actions printing
  $EC11 EX (SP),HL    ; the score and asking if you want another game?}
  $EC12 RET           ; Return.
 
-; Routine at EC13
+; Process: Oozing Quagmire
+@label=Process_OozingQuagmire
 c$EC13 LD A,$3D      ; {Call #R$AE6B with item #N$3D: #ITEM$3D.
  $EC15 CALL $AE6B    ; }
  $EC18 JP NZ,$EBA0   ; Jump to #R$EBA0 if #ITEM$3D is not currently in the
@@ -11778,7 +11783,8 @@ c$EC13 LD A,$3D      ; {Call #R$AE6B with item #N$3D: #ITEM$3D.
  $EC1B LD HL,$DF82   ; #REGhl=#R$DF82.
  $EC1E JP $EB9D      ; Jump to #R$EB9D.
 
-; Routine at EC21
+; Process: Fomorians' Cavern
+@label=Process_FomoriansCavern
 c$EC21 LD A,$0F      ; {Call #R$AE6B with item #N$0F: #ITEM$0F.
  $EC23 CALL $AE6B    ; }
  $EC26 RET NZ        ; Return if #ITEM$0F is not currently in the room.
@@ -11788,7 +11794,8 @@ c$EC21 LD A,$0F      ; {Call #R$AE6B with item #N$0F: #ITEM$0F.
  $EC2F SET 1,(HL)    ; }
  $EC31 RET           ; Return.
 
-; Routine at EC32
+; Process: Lug's Cavern
+@label=Process_LugsCavern
 c$EC32 LD HL,$A76C   ; {Return if bit 0 of *#R$A76C is set.
  $EC35 BIT 0,(HL)    ;
  $EC37 RET NZ        ; }
@@ -11797,7 +11804,8 @@ c$EC32 LD HL,$A76C   ; {Return if bit 0 of *#R$A76C is set.
  $EC3C CALL $B09A    ; }
  $EC3F RET           ; Return.
 
-; Routine at EC40
+; Process: Vale Of Cuchulainn
+@label=Process_ValeOfCuchulainn
 c$EC40 LD HL,$A76C   ; {Return if bit 3 of *#R$A76C is set.
  $EC43 BIT 3,(HL)    ;
  $EC45 RET NZ        ; }
@@ -11806,7 +11814,8 @@ c$EC40 LD HL,$A76C   ; {Return if bit 3 of *#R$A76C is set.
  $EC4A CALL $B09A    ; }
  $EC4D RET           ; Return.
 
-; Routine at EC4E
+; Process: Inner Courtyard
+@label=Process_InnerCourtyard
 c$EC4E LD HL,$A76C   ; {Return if bit 5 of *#R$A76C is set.
  $EC51 BIT 5,(HL)    ;
  $EC53 RET NZ        ; }
@@ -11815,7 +11824,8 @@ c$EC4E LD HL,$A76C   ; {Return if bit 5 of *#R$A76C is set.
  $EC58 CALL $B09A    ; }
  $EC5B RET           ; Return.
 
-; Routine at EC5C
+; Process: Enchanted Hills
+@label=Process_EnchantedHills
 c$EC5C LD HL,$A76C   ; {Return if bit 7 of *#R$A76C is set.
  $EC5F BIT 7,(HL)    ;
  $EC61 RET NZ        ; }
@@ -11824,7 +11834,8 @@ c$EC5C LD HL,$A76C   ; {Return if bit 7 of *#R$A76C is set.
  $EC66 CALL $B09A    ; }
  $EC69 RET           ; Return.
 
-; Routine at EC6A
+; Process: Deep Pool Of Water
+@label=Process_DeepPoolOfWater
 c$EC6A LD HL,$A76D   ; {Return if bit 0 of *#R$A76D is set.
  $EC6D BIT 0,(HL)    ;
  $EC6F RET NZ        ; }
@@ -11833,7 +11844,8 @@ c$EC6A LD HL,$A76D   ; {Return if bit 0 of *#R$A76D is set.
  $EC74 CALL $B09A    ; }
  $EC77 RET           ; Return.
 
-; Routine at EC78
+; Process: Bleak Moorland
+@label=Process_BleakMoorland
 c$EC78 LD HL,$A76D   ; {Return if bit 1 of *#R$A76D is set.
  $EC7B BIT 1,(HL)    ;
  $EC7D RET NZ        ; }
@@ -11842,7 +11854,8 @@ c$EC78 LD HL,$A76D   ; {Return if bit 1 of *#R$A76D is set.
  $EC82 CALL $B09A    ; }
  $EC85 RET           ; Return.
 
-; Routine at EC86
+; Process: Crystal Cavern
+@label=Process_CrystalCavern
 c$EC86 LD HL,$A76D   ; {Return if bit 2 of *#R$A76D is set.
  $EC89 BIT 2,(HL)    ;
  $EC8B RET NZ        ; }
@@ -11851,7 +11864,8 @@ c$EC86 LD HL,$A76D   ; {Return if bit 2 of *#R$A76D is set.
  $EC90 CALL $B09A    ; }
  $EC93 RET           ; Return.
 
-; Routine at EC94
+; Process: Vale Of Rhia
+@label=Process_ValeOfRhia
 c$EC94 LD HL,$A76D   ; {Return if bit 6 of *#R$A76D is set.
  $EC97 BIT 6,(HL)    ;
  $EC99 RET NZ        ; }
@@ -11881,7 +11895,8 @@ c$ECA2 LD A,$27      ; {Call #R$AED1 with item #N$27: #ITEM$27.
  $ECBA CALL $AF1E    ; (#ITEM$28).}
  $ECBD RET           ; Return.
 
-; Routine at ECBE
+; Process: Causeway
+@label=Process_Causeway
 c$ECBE LD A,$28      ; {Call #R$AE6B with item #N$28: #ITEM$28.
  $ECC0 CALL $AE6B    ; }
  $ECC3 RET NZ        ; Return if item #N$28: #ITEM$28 is not in the current room or the
@@ -11915,7 +11930,8 @@ c$ECE8 LD HL,$DFF1   ; #REGhl=#R$DFF1.
  $ECEB CALL $A592    ; Call #R$A592.
  $ECEE RET           ; Return.
 
-; Routine at ECEF
+; Process: Small Clearing
+@label=Process_SmallClearing
 c$ECEF LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ECF1 CALL $AEDA    ; }
  $ECF4 RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -11929,7 +11945,8 @@ c$ECEF LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED03 CALL $A592    ; Call #R$A592.
  $ED06 RET           ; Return.
 
-; Routine at ED07
+; Process: Swamp #02
+@label=Process_Swamp_02
 c$ED07 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED09 CALL $AEDA    ; }
  $ED0C RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -11939,7 +11956,8 @@ c$ED07 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED13 CALL $A592    ; Call #R$A592.
  $ED16 RET           ; Return.
 
-; Routine at ED17
+; Process: Swamp #01
+@label=Process_Swamp_01
 c$ED17 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED19 CALL $AEDA    ; }
  $ED1C RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -11949,7 +11967,8 @@ c$ED17 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED23 CALL $A592    ; Call #R$A592.
  $ED26 RET           ; Return.
 
-; Routine at ED27
+; Process: Swamp #03
+@label=Process_Swamp_03
 c$ED27 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED29 CALL $AEDA    ; }
  $ED2C RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -11959,7 +11978,8 @@ c$ED27 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED33 CALL $A592    ; Call #R$A592.
  $ED36 RET           ; Return.
 
-; Routine at ED37
+; Process: Swamp #04
+@label=Process_Swamp_04
 c$ED37 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED39 CALL $AEDA    ; }
  $ED3C RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -11969,7 +11989,8 @@ c$ED37 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED43 CALL $A592    ; Call #R$A592.
  $ED46 RET           ; Return.
 
-; Routine at ED47
+; Process: Swamp #05
+@label=Process_Swamp_05
 c$ED47 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED49 CALL $AEDA    ; }
  $ED4C RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -13082,6 +13103,8 @@ c$F26C LD HL,$E3B6   ; {Call #R$AEF7 with #R$E3B6.
  $F27B LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
  $F27E EX (SP),HL    ; over".}
 ; Print "#STR$D778,$08($b==$FF)".
+; .
+; Print "#STR$A9F7,$08($b==$FF)".
  $F27F LD HL,$D778   ; #REGhl=#R$D778.
  $F282 JP $ED6D      ; Jump to #R$ED6D.
 ; Change the dead ox state!
@@ -13095,19 +13118,32 @@ c$F26C LD HL,$E3B6   ; {Call #R$AEF7 with #R$E3B6.
 ; Process: Free Roman
 ;
 ; Used by the routine at #R$F2D4.
+;
+; .
+;
+; The player wants to free the captive Roman.
 @label=Process_FreeRoman
 c$F293 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
  $F296 CALL $AEF7    ; }
- $F299 CP $0B        ; {Jump to #R$F2B0 if #REGa is equal to #N$0B.
+; Check if he's alive...
+ $F299 CP $0B        ; {Jump to #R$F2B0 if the item present is #ITEM$0B.
  $F29B JR Z,$F2B0    ; }
- $F29D CP $55        ; {Jump to #R$EE3B if #REGa is not equal to #N$55.
+; If he's dead and untied, print "#STR$D769,$08($b==$FF)".
+ $F29D CP $55        ; {Jump to #R$EE3B if the item present is not #ITEM$55.
  $F29F JP NZ,$EE3B   ; }
+; He's dead and tied, so allow him to be untied.
+; .
+; Change the dead Roman state!
  $F2A2 LD BC,$550C   ; {Call #R$AF1E to transform item #N$55 (#ITEM$55) into item #N$0C
  $F2A5 CALL $AF1E    ; (#ITEM$0C).}
  $F2A8 LD A,$51      ; {Call #R$AEE7 with item #N$51: #ITEM$51.
  $F2AA CALL $AEE7    ; }
  $F2AD JP $EDF3      ; Jump to #R$EDF3.
+; Untie the very much alive Roman who is understandably a bit annoyed
+; about being captured in the first place.
+; .
 ; Bad luck!
+@label=FreeRoman
 *$F2B0 LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
  $F2B3 EX (SP),HL    ; over".}
  $F2B4 LD HL,$D7B6   ; #REGhl=#R$D7B6.

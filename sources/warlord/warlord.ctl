@@ -4529,7 +4529,8 @@ c $EBC5
   $EBD4,$05 Call #R$AEF0 with #N$03.
   $EBD9,$01 Return.
 
-c $EBDA
+c $EBDA Process: Forest Path
+@ $EBDA label=Process_ForestPath
   $EBDA,$06 Return if bit 1 of *#R$A76C is set.
   $EBE0,$02 Set bit 1 of *#R$A76C.
   $EBE2,$05 Call #R$AEE0 with item #N$00: #ITEM$00.
@@ -4539,75 +4540,89 @@ c $EBDA
   $EBF6,$05 Call #R$B09A to add #N$04 points to the score.
   $EBFB,$01 Return.
 
-c $EBFC
+c $EBFC Process: Narrow Underwater Passage
+@ $EBFC label=Process_NarrowUnderwaterPassage
   $EBFC,$05 Write #N$05 to *#R$A77F.
   $EC01,$05 Set bit 0 of *#R$A77E.
   $EC06,$01 Return.
 
-c $EC07
+c $EC07 Process: Congratulations (Game Over)
+@ $EC07 label=Process_CongratulationsGameOver
   $EC07,$05 Call #R$B09A to add #N$04 points to the score.
-  $EC0C,$02 Restore #REGhl and #REGhl from the stack.
+N $EC0C Housekeeping; tidy up the stack.
+  $EC0C,$01 Restore #REGhl from the stack.
+  $EC0D,$01 Discard the return address on the stack.
   $EC0E,$04 Switch #R$E9B8 onto the stack so the next return actions printing
 . the score and asking if you want another game?
   $EC12,$01 Return.
 
-c $EC13
+c $EC13 Process: Oozing Quagmire
+@ $EC13 label=Process_OozingQuagmire
   $EC13,$05 Call #R$AE6B with item #N$3D: #ITEM$3D.
   $EC18,$03 Jump to #R$EBA0 if #ITEM$3D is not currently in the room.
 N $EC1B Print "#STR$DF82,$08($b==$FF)".
   $EC1B,$03 #REGhl=#R$DF82.
   $EC1E,$03 Jump to #R$EB9D.
 
-c $EC21
+c $EC21 Process: Fomorians' Cavern
+@ $EC21 label=Process_FomoriansCavern
   $EC21,$05 Call #R$AE6B with item #N$0F: #ITEM$0F.
   $EC26,$01 Return if #ITEM$0F is not currently in the room.
   $EC27,$05 Write #N$05 to *#R$A780.
   $EC2C,$05 Set bit 1 of *#R$A77E.
   $EC31,$01 Return.
 
-c $EC32
+c $EC32 Process: Lug's Cavern
+@ $EC32 label=Process_LugsCavern
   $EC32,$06 Return if bit 0 of *#R$A76C is set.
   $EC38,$02 Set bit 0 of *#REGhl.
   $EC3A,$05 Call #R$B09A to add #N$04 points to the score.
   $EC3F,$01 Return.
 
-c $EC40
+c $EC40 Process: Vale Of Cuchulainn
+@ $EC40 label=Process_ValeOfCuchulainn
   $EC40,$06 Return if bit 3 of *#R$A76C is set.
   $EC46,$02 Set bit 3 of *#REGhl.
   $EC48,$05 Call #R$B09A to add #N$04 points to the score.
   $EC4D,$01 Return.
 
-c $EC4E
+c $EC4E Process: Inner Courtyard
+@ $EC4E label=Process_InnerCourtyard
   $EC4E,$06 Return if bit 5 of *#R$A76C is set.
   $EC54,$02 Set bit 5 of *#REGhl.
   $EC56,$05 Call #R$B09A to add #N$04 points to the score.
   $EC5B,$01 Return.
 
-c $EC5C
+c $EC5C Process: Enchanted Hills
+@ $EC5C label=Process_EnchantedHills
   $EC5C,$06 Return if bit 7 of *#R$A76C is set.
   $EC62,$02 Set bit 7 of *#REGhl.
   $EC64,$05 Call #R$B09A to add #N$04 points to the score.
   $EC69,$01 Return.
 
-c $EC6A
+c $EC6A Process: Deep Pool Of Water
+@ $EC6A label=Process_DeepPoolOfWater
   $EC6A,$06 Return if bit 0 of *#R$A76D is set.
   $EC70,$02 Set bit 0 of *#REGhl.
   $EC72,$05 Call #R$B09A to add #N$04 points to the score.
   $EC77,$01 Return.
 
-c $EC78
+c $EC78 Process: Bleak Moorland
+@ $EC78 label=Process_BleakMoorland
   $EC78,$06 Return if bit 1 of *#R$A76D is set.
   $EC7E,$02 Set bit 1 of *#REGhl.
   $EC80,$05 Call #R$B09A to add #N$04 points to the score.
   $EC85,$01 Return.
 
-c $EC86
+c $EC86 Process: Crystal Cavern
+@ $EC86 label=Process_CrystalCavern
   $EC86,$06 Return if bit 2 of *#R$A76D is set.
   $EC8C,$02 Set bit 2 of *#REGhl.
   $EC8E,$05 Call #R$B09A to add #N$04 points to the score.
   $EC93,$01 Return.
 
-c $EC94
+c $EC94 Process: Vale Of Rhia
+@ $EC94 label=Process_ValeOfRhia
   $EC94,$06 Return if bit 6 of *#R$A76D is set.
   $EC9A,$02 Set bit 6 of *#REGhl.
   $EC9C,$05 Call #R$B09A to add #N$04 points to the score.
@@ -4628,7 +4643,8 @@ N $ECB7 Change the warrior state!
 . (#ITEM$28).
   $ECBD,$01 Return.
 
-c $ECBE
+c $ECBE Process: Causeway
+@ $ECBE label=Process_Causeway
   $ECBE,$05 Call #R$AE6B with item #N$28: #ITEM$28.
   $ECC3,$01 Return if item #N$28: #ITEM$28 is not in the current room or the
 . players inventory.
@@ -4649,7 +4665,8 @@ N $ECE8 Print "#STR$DFF1,$08($b==$FF)".
   $ECEB,$03 Call #R$A592.
   $ECEE,$01 Return.
 
-c $ECEF
+c $ECEF Process: Small Clearing
+@ $ECEF label=Process_SmallClearing
   $ECEF,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
   $ECF4,$01 Return if #ITEM$6A is not in the players inventory.
   $ECF5,$05 Call #R$AED1 with item #N$3D: #ITEM$3D.
@@ -4660,7 +4677,8 @@ N $ED00 Print "#STR$E00F,$08($b==$FF)".
   $ED03,$03 Call #R$A592.
   $ED06,$01 Return.
 
-c $ED07
+c $ED07 Process: Swamp #02
+@ $ED07 label=Process_Swamp_02
   $ED07,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
   $ED0C,$01 Return if #ITEM$6A is not in the players inventory.
   $ED0D,$03 Call #R$ECE8.
@@ -4669,7 +4687,8 @@ N $ED10 Print "#STR$E01F,$08($b==$FF)".
   $ED13,$03 Call #R$A592.
   $ED16,$01 Return.
 
-c $ED17
+c $ED17 Process: Swamp #01
+@ $ED17 label=Process_Swamp_01
   $ED17,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
   $ED1C,$01 Return if #ITEM$6A is not in the players inventory.
   $ED1D,$03 Call #R$ECE8.
@@ -4678,7 +4697,8 @@ N $ED20 Print "#STR$E04D,$08($b==$FF)".
   $ED23,$03 Call #R$A592.
   $ED26,$01 Return.
 
-c $ED27
+c $ED27 Process: Swamp #03
+@ $ED27 label=Process_Swamp_03
   $ED27,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
   $ED2C,$01 Return if #ITEM$6A is not in the players inventory.
   $ED2D,$03 Call #R$ECE8.
@@ -4687,7 +4707,8 @@ N $ED30 Print "#STR$E039,$08($b==$FF)".
   $ED33,$03 Call #R$A592.
   $ED36,$01 Return.
 
-c $ED37
+c $ED37 Process: Swamp #04
+@ $ED37 label=Process_Swamp_04
   $ED37,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
   $ED3C,$01 Return if #ITEM$6A is not in the players inventory.
   $ED3D,$03 Call #R$ECE8.
@@ -4696,7 +4717,8 @@ N $ED40 Print "#STR$E047,$08($b==$FF)".
   $ED43,$03 Call #R$A592.
   $ED46,$01 Return.
 
-c $ED47
+c $ED47 Process: Swamp #05
+@ $ED47 label=Process_Swamp_05
   $ED47,$05 Call #R$AEDA with item #N$6A: #ITEM$6A.
   $ED4C,$01 Return if #ITEM$6A is not in the players inventory.
   $ED4D,$03 Call #R$ECE8.
@@ -5497,14 +5519,22 @@ N $F285 Change the dead ox state!
 
 c $F293 Process: Free Roman
 @ $F293 label=Process_FreeRoman
+N $F293 The player wants to free the captive Roman.
   $F293,$06 Call #R$AEF7 with #R$E341.
-  $F299,$04 Jump to #R$F2B0 if #REGa is equal to #N$0B.
-  $F29D,$05 Jump to #R$EE3B if #REGa is not equal to #N$55.
+N $F299 Check if he's alive...
+  $F299,$04 Jump to #R$F2B0 if the item present is #ITEM$0B.
+N $F29D If he's dead and untied, print "#STR$D769,$08($b==$FF)".
+  $F29D,$05 Jump to #R$EE3B if the item present is not #ITEM$55.
+N $F2A2 He's dead and tied, so allow him to be untied.
+N $F2A2 Change the dead Roman state!
   $F2A2,$06 Call #R$AF1E to transform item #N$55 (#ITEM$55) into item #N$0C
 . (#ITEM$0C).
   $F2A8,$05 Call #R$AEE7 with item #N$51: #ITEM$51.
+N $F27F Print "#STR$A9F7,$08($b==$FF)".
   $F2AD,$03 Jump to #R$EDF3.
-
+@ $F2B0 label=FreeRoman
+N $F2B0 Untie the very much alive Roman who is understandably a bit annoyed
+. about being captured in the first place.
 N $F2B0 Bad luck!
   $F2B0,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
 . over".
