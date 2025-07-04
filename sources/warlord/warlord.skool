@@ -3683,7 +3683,10 @@ g$A76D DEFB $00
 
 ; Game status buffer entry at A772
 g$A772 DEFB $00
- $A773 DEFB $00
+
+; Destination Room ID
+@label=Destination_RoomID
+g$A773 DEFB $00
 
 ; Table: Already Seen Room Images
 ;
@@ -5674,28 +5677,38 @@ c$AFEB LD A,($A7EE)  ; #REGa=*#R$A7EE.
  $B01E RET           ; Return.
 ; View the equivalent code in #JEWELS$C4EB.
 
-; Routine at B01F
+; Move Player To Room
 ;
 ; Used by the routine at #R$EB10.
-c$B01F LD C,A        ; #REGc=#REGa.
- $B020 LD A,($A7EE)  ; #REGa=*#R$A7EE.
- $B023 AND A         ; {Jump to #R$B03D if *#R$A7EE is zero.
+;
+; A Destination room ID
+@label=MovePlayerToRoom
+c$B01F LD C,A        ; Load the destination room ID into #REGc.
+ $B020 LD A,($A7EE)  ; {Jump to #R$B03D if *#R$A7EE is zero.
+ $B023 AND A         ;
  $B024 JR Z,$B03D    ; }
- $B026 LD B,A        ; #REGb=#REGa.
+ $B026 LD B,A        ; #REGb=#R$A7EE.
  $B027 LD HL,($A7E2) ; #REGhl=*#R$A7E2.
  $B02A JR $B02D      ; Jump to #R$B02D.
-*$B02C INC HL        ; Increment #REGhl by one.
-*$B02D LD A,(HL)     ; #REGa=*#REGhl.
+@label=FindScenicEvents_Loop
+*$B02C INC HL        ; Increment the scenic event location pointer by one.
+@label=FindScenicEvents
+*$B02D LD A,(HL)     ; Load the next scenic event location into #REGa.
  $B02E CALL $AE6B    ; Call #R$AE6B.
- $B031 JR NZ,$B03B   ; Jump to #R$B03B if #REGhl is not equal to #REGa.
- $B033 PUSH HL       ; {Stash #REGhl and #REGbc on the stack.
- $B034 PUSH BC       ; }
- $B035 LD B,(HL)     ; #REGb=*#REGhl.
+ $B031 JR NZ,$B03B   ; Jump to #R$B03B if the scenic event is not at this
+                     ; location.
+; A scenic event matched this location!
+ $B033 PUSH HL       ; {Stash the scenic event location pointer and scenic events counter
+ $B034 PUSH BC       ; on the stack.}
+ $B035 LD B,(HL)     ; Load the current scenic event location into #REGb.
  $B036 CALL $AF08    ; Call #R$AF08.
- $B039 POP BC        ; {Restore #REGbc and #REGhl from the stack.
- $B03A POP HL        ; }
+ $B039 POP BC        ; {Restore the scenic events counter and scenic event location pointer
+ $B03A POP HL        ; from the stack.}
+@label=FindScenicEvents_Next
 *$B03B DJNZ $B02C    ; Decrease counter by one and loop back to #R$B02C until
                      ; counter is zero.
+; Sets the destination room ID as the new current room ID.
+@label=SetNewCurrentRoomID
 *$B03D LD A,C        ; {Write #REGc to *#R$A7C3.
  $B03E LD ($A7C3),A  ; }
  $B041 LD A,($A787)  ; {Return if *#R$A787 is zero.
@@ -11267,22 +11280,27 @@ g$E978 DEFW $E7B9
 ;
 ; Used by the routine at #R$EB10.
 ;
-; DE
-; HL
-; A
+; DE Pointer to a list of action routines
+; HL Pointer to a list of room IDs
+; BC The number of items in the lists (they match)
+; A Room ID for searching
 @label=EventRouting
-c$E98E PUSH BC       ; Stash #REGbc on the stack.
- $E98F CPIR          ; CPIR.
- $E991 POP HL        ; Restore #REGhl from the stack.
- $E992 RET NZ        ; Return if the item wasn't found.
- $E993 PUSH DE       ; {#REGix=#REGde (using the stack).
+c$E98E PUSH BC       ; Stash the item count on the stack.
+ $E98F CPIR          ; Search for the room ID in the table.
+; At this point, if the room ID is found, #REGbc contains the index in
+; the table of where it is location.
+ $E991 POP HL        ; Restore the item count into #REGhl from the stack.
+ $E992 RET NZ        ; Return if the room ID wasn't found in the table.
+; The room ID was found in the table, so jump to the appropriate action.
+ $E993 PUSH DE       ; {Load the actions table into #REGix (using the stack).
  $E994 POP IX        ; }
- $E996 INC BC        ; Increment #REGbc by one.
- $E997 AND A         ; {#REGhl-=#REGbc.
+ $E996 INC BC        ; Adjust the room index for the sum.
+ $E997 AND A         ; {Subtract the room index from the item count.
  $E998 SBC HL,BC     ; }
- $E99A LD E,L        ; #REGe=#REGl.
+ $E99A LD E,L        ; Load the index into #REGe to find the appropriate action
+                     ; routine.
  $E99B CALL $AB88    ; Call #R$AB88.
- $E99E JP (HL)       ; Jump to *#REGhl.
+ $E99E JP (HL)       ; Jump to the action routine held in *#REGhl.
 
 ; Game Loop
 ;
@@ -11324,12 +11342,14 @@ c$E9B2 LD HL,$A8EF   ; #REGhl=#R$A8EF.
 ; Just loop round for any other input.
  $E9CE JR $E9C1      ; Jump to #R$E9C1.
 
-; Routine at E9D0
+; Print And Game Over
 ;
 ; Used by the routines at #R$E9D8 and #R$E9E9.
+@label=PrintAndGameOver
 c$E9D0 CALL $A592    ; Call #R$A592.
- $E9D3 POP HL        ; {Restore #REGhl and #REGhl from the stack.
- $E9D4 POP HL        ; }
+; Housekeeping; tidy up the stack.
+ $E9D3 POP HL        ; Restore #REGhl from the stack.
+ $E9D4 POP HL        ; Discard the return address on the stack.
  $E9D5 JP $E9B2      ; Jump to #R$E9B2.
 
 ; Fatal Events: Drowning
@@ -11375,10 +11395,10 @@ c$E9E9 LD HL,$A77E   ; {Reset bit 1 of *#R$A77E.
 ; Print "#STR$C97C,$08($b==$FF)".
 c$E9FA LD HL,$C97C   ; #REGhl=#R$C97C.
  $E9FD CALL $A592    ; Call #R$A592.
- $EA00 LD A,$00      ; #REGa=#N$00.
- $EA02 CALL $AEF0    ; Call #R$AEF0.
- $EA05 LD A,$01      ; #REGa=#N$01.
- $EA07 CALL $AEF0    ; Call #R$AEF0.
+ $EA00 LD A,$00      ; {Call #R$AEF0 with item #N$00: #ITEM$00.
+ $EA02 CALL $AEF0    ; }
+ $EA05 LD A,$01      ; {Call #R$AEF0 with item #N$01: #ITEM$01.
+ $EA07 CALL $AEF0    ; }
  $EA0A RET           ; Return.
 
 ; Fatal Events: Roman
@@ -11607,99 +11627,117 @@ c$EB09 LD HL,$CD00   ; #REGhl=#R$CD00.
  $EB0C CALL $A592    ; Call #R$A592.
  $EB0F RET           ; Return.
 
-; Routine at EB10
+; Change Room
 ;
 ; Used by the routines at #R$F2FF, #R$F338, #R$F359, #R$F3AC, #R$F3BA, #R$F3C8,
 ; #R$F3D6, #R$F3EC, #R$F5F9, #R$F7C0, #R$F7DB, #R$F8DF and #R$FCCE.
-c$EB10 LD ($A773),A  ; Write #REGa to *#R$A773.
+;
+; A Destination room ID
+@label=ChangeRoom
+c$EB10 LD ($A773),A  ; Store the room ID in *#R$A773.
+; Look up the destination room in the list of room IDs at #R$EB3A.
  $EB13 LD HL,$EB3A   ; #REGhl=#R$EB3A.
  $EB16 LD DE,$EB45   ; #REGde=#R$EB45.
  $EB19 LD BC,$000B   ; #REGbc=#N($000B,$04,$04).
  $EB1C CALL $E98E    ; Call #R$E98E.
- $EB1F LD A,($A773)  ; #REGa=*#R$A773.
+; Set the destination room ID as the current room.
+ $EB1F LD A,($A773)  ; Restore the destination room ID from *#R$A773.
  $EB22 CALL $B01F    ; Call #R$B01F.
- $EB25 LD E,$00      ; #REGe=#N$00.
- $EB27 CALL $ABB6    ; Call #R$ABB6.
+ $EB25 LD E,$00      ; {Call #R$ABB6 with #REGe set to #N$00 (which does not display room
+ $EB27 CALL $ABB6    ; images).}
+; Now look up the current room in the list of room IDs at #R$EB5B.
  $EB2A LD A,($A7C3)  ; #REGa=*#R$A7C3.
  $EB2D LD HL,$EB5B   ; #REGhl=#R$EB5B.
  $EB30 LD DE,$EB71   ; #REGde=#R$EB71.
  $EB33 LD BC,$0016   ; #REGbc=#N$0016.
  $EB36 CALL $E98E    ; Call #R$E98E.
  $EB39 RET           ; Return.
- $EB3A DEFB $43      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB3B DEFB $4F      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB3C DEFB $52      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB3D DEFB $2B      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB3E DEFB $05      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB3F DEFB $3A      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB40 DEFB $1A      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB41 DEFB $41      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB42 DEFB $1B      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB43 DEFB $42      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB44 DEFB $22      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB45 DEFW $EBA7    ;
- $EB47 DEFW $EBB9    ;
- $EB49 DEFW $EBB9    ;
- $EB4B DEFW $EBC5    ;
- $EB4D DEFW $EBC5    ;
- $EB4F DEFW $EBC5    ;
- $EB51 DEFW $EBC5    ;
- $EB53 DEFW $EBC5    ;
- $EB55 DEFW $ECA2    ;
- $EB57 DEFW $ED57    ;
- $EB59 DEFW $ED60    ;
- $EB5B DEFB $37      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB5C DEFB $0D      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB5D DEFB $56      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB5E DEFB $27      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB5F DEFB $4F      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB60 DEFB $14      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB61 DEFB $57      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB62 DEFB $63      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB63 DEFB $4C      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB64 DEFB $0C      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB65 DEFB $18      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB66 DEFB $43      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB67 DEFB $1E      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB68 DEFB $1B      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB69 DEFB $2C      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB6A DEFB $25      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB6B DEFB $26      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB6C DEFB $2D      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB6D DEFB $35      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB6E DEFB $36      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB6F DEFB $3D      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB70 DEFB $3E      ; Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
- $EB71 DEFW $EBDA    ;
- $EB73 DEFW $EBFC    ;
- $EB75 DEFW $EC07    ;
- $EB77 DEFW $EC13    ;
- $EB79 DEFW $EC21    ;
- $EB7B DEFW $EC32    ;
- $EB7D DEFW $EC40    ;
- $EB7F DEFW $EC4E    ;
- $EB81 DEFW $EC5C    ;
- $EB83 DEFW $EC6A    ;
- $EB85 DEFW $EC78    ;
- $EB87 DEFW $EC86    ;
- $EB89 DEFW $EC94    ;
- $EB8B DEFW $ECBE    ;
- $EB8D DEFW $ECEF    ;
- $EB8F DEFW $ED17    ;
- $EB91 DEFW $ED17    ;
- $EB93 DEFW $ED07    ;
- $EB95 DEFW $ED27    ;
- $EB97 DEFW $ED37    ;
- $EB99 DEFW $ED47    ;
- $EB9B DEFW $ED47    ;
+; The room ID table to identify which rooms are applicable:
+@label=Table_ActionPreEnterRoomIDs
+ $EB3A DEFB $43      ; Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+ $EB3B DEFB $4F      ; Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+ $EB3C DEFB $52      ; Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+ $EB3D DEFB $2B      ; Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+ $EB3E DEFB $05      ; Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+ $EB3F DEFB $3A      ; Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+ $EB40 DEFB $1A      ; Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+ $EB41 DEFB $41      ; Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+ $EB42 DEFB $1B      ; Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+ $EB43 DEFB $42      ; Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+ $EB44 DEFB $22      ; Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+; The actions table for before the player enters a room:
+@label=Table_ActionPreEnterRoom
+ $EB45 DEFW $EBA7    ; Action #N($01+(#PC-$EB45)/$02).
+ $EB47 DEFW $EBB9    ; Action #N($01+(#PC-$EB45)/$02).
+ $EB49 DEFW $EBB9    ; Action #N($01+(#PC-$EB45)/$02).
+ $EB4B DEFW $EBC5    ; Action #N($01+(#PC-$EB45)/$02).
+ $EB4D DEFW $EBC5    ; Action #N($01+(#PC-$EB45)/$02).
+ $EB4F DEFW $EBC5    ; Action #N($01+(#PC-$EB45)/$02).
+ $EB51 DEFW $EBC5    ; Action #N($01+(#PC-$EB45)/$02).
+ $EB53 DEFW $EBC5    ; Action #N($01+(#PC-$EB45)/$02).
+ $EB55 DEFW $ECA2    ; Action #N($01+(#PC-$EB45)/$02).
+ $EB57 DEFW $ED57    ; Action #N($01+(#PC-$EB45)/$02).
+ $EB59 DEFW $ED60    ; Action #N($01+(#PC-$EB45)/$02).
+; The room ID table to identify which rooms are applicable:
+@label=Table_ActionEnteredRoomIDs
+ $EB5B DEFB $37      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB5C DEFB $0D      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB5D DEFB $56      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB5E DEFB $27      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB5F DEFB $4F      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB60 DEFB $14      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB61 DEFB $57      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB62 DEFB $63      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB63 DEFB $4C      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB64 DEFB $0C      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB65 DEFB $18      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB66 DEFB $43      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB67 DEFB $1E      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB68 DEFB $1B      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB69 DEFB $2C      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB6A DEFB $25      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB6B DEFB $26      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB6C DEFB $2D      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB6D DEFB $35      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB6E DEFB $36      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB6F DEFB $3D      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+ $EB70 DEFB $3E      ; Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+; The actions table for when a player enters a room:
+@label=Table_ActionEnteredRoom
+ $EB71 DEFW $EBDA    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB73 DEFW $EBFC    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB75 DEFW $EC07    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB77 DEFW $EC13    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB79 DEFW $EC21    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB7B DEFW $EC32    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB7D DEFW $EC40    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB7F DEFW $EC4E    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB81 DEFW $EC5C    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB83 DEFW $EC6A    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB85 DEFW $EC78    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB87 DEFW $EC86    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB89 DEFW $EC94    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB8B DEFW $ECBE    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB8D DEFW $ECEF    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB8F DEFW $ED17    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB91 DEFW $ED17    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB93 DEFW $ED07    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB95 DEFW $ED27    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB97 DEFW $ED37    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB99 DEFW $ED47    ; Action #N($01+(#PC-$EB71)/$02).
+ $EB9B DEFW $ED47    ; Action #N($01+(#PC-$EB71)/$02).
 
-; Routine at EB9D
+; Print And Game Over
 ;
 ; Used by the routines at #R$EBA7 and #R$EC13.
+@label=PrintAndGameOver_Duplicate
 c$EB9D CALL $A592    ; Call #R$A592.
 ; This entry point is used by the routine at #R$EC13.
-*$EBA0 POP HL        ; {Restore #REGhl and #REGhl from the stack.
- $EBA1 POP HL        ; }
+; .
+; Housekeeping; tidy up the stack.
+@label=GameOverWithHouseKeeping
+*$EBA0 POP HL        ; Restore #REGhl from the stack.
+ $EBA1 POP HL        ; Discard the return address on the stack.
 ; Bad luck!
  $EBA2 LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
  $EBA5 EX (SP),HL    ; over".}
@@ -12758,9 +12796,10 @@ c$F073 LD HL,$E3C5   ; {Call #R$AEF7 with #R$E3C5.
 @label=Process_DropStaff
 c$F07C LD A,$61      ; {Call #R$EDD0 with item #N$61: #ITEM$61.
  $F07E CALL $EDD0    ; }
- $F081 LD A,$50      ; #REGa=#N$50.
- $F083 LD ($E8F4),A  ; Write #REGa to *#R$E8F4.
- $F086 LD ($E8F6),A  ; Write #REGa to *#R$E8F6.
+ $F081 LD A,$50      ; {Write #N$50 to *#R$E8F4 to open up northbound access to #ROOM$50
+ $F083 LD ($E8F4),A  ; from #ROOM$50.}
+ $F086 LD ($E8F6),A  ; Write #N$50 to *#R$E8F6 to open up eastbound access to #ROOM$50
+                     ; from #ROOM$50.
  $F089 LD ($E8F7),A  ; Write #REGa to *#R$E8F7.
  $F08C LD A,$61      ; #REGa=#N$61.
  $F08E JP $EDB8      ; Jump to #R$EDB8.
@@ -12789,11 +12828,12 @@ c$F0A7 LD A,$65      ; {Jump to #R$EDB8 with item #N$65: #ITEM$65.
 ; Routine at F0AC
 c$F0AC LD A,$61      ; {Call #R$ED75 with item #N$61: #ITEM$61.
  $F0AE CALL $ED75    ; }
- $F0B1 LD A,$4C      ; {Write #N$4C to *#R$E8F4.
- $F0B3 LD ($E8F4),A  ; }
- $F0B6 XOR A         ; #REGa=#N$00.
- $F0B7 LD ($E8F6),A  ; Write #REGa to *#R$E8F6.
- $F0BA LD ($E8F7),A  ; Write #REGa to *#R$E8F7.
+ $F0B1 LD A,$4C      ; {Write #N$4C to *#R$E8F4 to open up northbound access to #ROOM$4C
+ $F0B3 LD ($E8F4),A  ; from #ROOM$50.}
+ $F0B6 XOR A         ; {Write #N$00 to *#R$E8F6 to close eastbound access in
+ $F0B7 LD ($E8F6),A  ; #ROOM$50.}
+ $F0BA LD ($E8F7),A  ; Write #N$00 to *#R$E8F7 to close westbound access in
+                     ; #ROOM$50.
  $F0BD JP $EDA6      ; Jump to #R$EDA6.
 
 ; Routine at F0C0
@@ -12991,13 +13031,14 @@ c$F1DF LD HL,$E392   ; {Call #R$AEF7 with #R$E392.
  $F1E2 CALL $AEF7    ; }
 ; This entry point is used by the routine at #R$EF2A.
 *$F1E5 CALL $ED75    ; Call #R$ED75.
- $F1E8 LD A,B        ; #REGa=#REGb.
- $F1E9 CP $59        ; Compare #REGa with #N$59.
- $F1EB JR NZ,$F1F8   ; Jump to #R$F1F8 if #REGa is not equal to #N$59.
+ $F1E8 LD A,B        ; {Jump to #R$F1F8 if #REGb is not equal to #N$59.
+ $F1E9 CP $59        ;
+ $F1EB JR NZ,$F1F8   ; }
  $F1ED LD BC,$5958   ; {Call #R$AF1E to transform item #N$59 (#ITEM$59) into item #N$58
  $F1F0 CALL $AF1E    ; (#ITEM$58).}
- $F1F3 LD B,$39      ; #REGb=#N$39.
+ $F1F3 LD B,$39      ; #REGb=#ITEM$39.
  $F1F5 JP $EDA6      ; Jump to #R$EDA6.
+; Print "#STR$D51A,$08($b==$FF)".
 *$F1F8 LD HL,$D51A   ; #REGhl=#R$D51A.
  $F1FB JP $ED6D      ; Jump to #R$ED6D.
 
@@ -13913,11 +13954,12 @@ c$F7DB LD A,($A7C3)  ; {Jump to #R$EE0B if *#R$A7C3 is not room #N$38:
 @label=Process_GetStaff
 c$F7E9 LD A,$61      ; {Call #R$ED75 with item #N$61: #ITEM$61.
  $F7EB CALL $ED75    ; }
- $F7EE XOR A         ; #REGa=#N$00.
- $F7EF LD ($E8F6),A  ; Write #REGa to *#R$E8F6.
- $F7F2 LD ($E8F7),A  ; Write #REGa to *#R$E8F7.
- $F7F5 LD A,$4C      ; {Write #N$4C to *#R$E8F4.
- $F7F7 LD ($E8F4),A  ; }
+ $F7EE XOR A         ; {Write #N$00 to *#R$E8F6 to close eastbound access in
+ $F7EF LD ($E8F6),A  ; #ROOM$50.}
+ $F7F2 LD ($E8F7),A  ; Write #N$00 to *#R$E8F7 to close westbound access in
+                     ; #ROOM$50.
+ $F7F5 LD A,$4C      ; {Write #N$4C to *#R$E8F4 to open up northbound access to #ROOM$4C
+ $F7F7 LD ($E8F4),A  ; from #ROOM$50.}
  $F7FA JP $EDA6      ; Jump to #R$EDA6.
 
 ; Routine at F7FD
@@ -14829,13 +14871,14 @@ c$FCCE LD HL,$FD02   ; {Copy #N$0186 bytes from #R$FD02 to #R$A66C.
  $FCEB INC IX        ; }
  $FCED DJNZ $FCE2    ; Decrease the exits counter by one and loop back to #R$FCE2 until
                      ; all the room exits have been cleared.
-; Ensure three exits are "open" (as they can become blocked in the game).
- $FCEF LD A,$50      ; {Enable the exit "north to room #R$E8F4(#N$50) for
- $FCF1 LD ($E8F4),A  ; #ROOM$50".}
- $FCF4 LD ($E8F6),A  ; Enable the exit "east to room #R$E8F6(#N$50) for
-                     ; #ROOM$50".
- $FCF7 LD ($E8F7),A  ; Enable the exit "west to room #R$E8F7(#N$50) for
-                     ; #ROOM$50".
+; Ensure three exits are "open" even though they point to the room you're
+; in (they become real exits after picking up the staff in the game).
+ $FCEF LD A,$50      ; {Write #N$50 to *#R$E8F4 to open up northbound access to #ROOM$50
+ $FCF1 LD ($E8F4),A  ; from #ROOM$50.}
+ $FCF4 LD ($E8F6),A  ; Write #N$50 to *#R$E8F6 to open up eastbound access to #ROOM$50
+                     ; from #ROOM$50.
+ $FCF7 LD ($E8F7),A  ; Write #N$50 to *#R$E8F7 to open up westbound access to #ROOM$50
+                     ; from #ROOM$50.
  $FCFA LD A,$02      ; {Call #R$EB10 to room #N$02: #ROOM$02.
  $FCFC CALL $EB10    ; }
  $FCFF JP $E99F      ; Jump to #R$E99F.

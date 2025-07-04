@@ -427,6 +427,9 @@ B $A76D,$01
 
 g $A772
 B $A772,$01
+
+g $A773 Destination Room ID
+@ $A773 label=Destination_RoomID
 B $A773,$01
 
 g $A774 Table: Already Seen Room Images
@@ -2003,23 +2006,33 @@ N $B015 This is the return point after the handler has finished executing.
 . all events have been processed.
   $B01E,$01 Return.
 
-c $B01F
+c $B01F Move Player To Room
+@ $B01F label=MovePlayerToRoom
+R $B01F A Destination room ID
 E $B01F View the equivalent code in #JEWELS$C520.
-  $B01F,$01 #REGc=#REGa.
-  $B020,$03 #REGa=*#R$A7EE.
-  $B023,$03 Jump to #R$B03D if *#R$A7EE is zero.
-  $B026,$01 #REGb=#REGa.
+  $B01F,$01 Load the destination room ID into #REGc.
+  $B020,$06 Jump to #R$B03D if *#R$A7EE is zero.
+  $B026,$01 #REGb=#R$A7EE.
   $B027,$03 #REGhl=*#R$A7E2.
   $B02A,$02 Jump to #R$B02D.
-  $B02C,$01 Increment #REGhl by one.
-  $B02D,$01 #REGa=*#REGhl.
+N $B02C
+@ $B02C label=FindScenicEvents_Loop
+  $B02C,$01 Increment the scenic event location pointer by one.
+@ $B02D label=FindScenicEvents
+  $B02D,$01 Load the next scenic event location into #REGa.
   $B02E,$03 Call #R$AE6B.
-  $B031,$02 Jump to #R$B03B if #REGhl is not equal to #REGa.
-  $B033,$02 Stash #REGhl and #REGbc on the stack.
-  $B035,$01 #REGb=*#REGhl.
+  $B031,$02 Jump to #R$B03B if the scenic event is not at this location.
+N $B033 A scenic event matched this location!
+  $B033,$02 Stash the scenic event location pointer and scenic events counter
+. on the stack.
+  $B035,$01 Load the current scenic event location into #REGb.
   $B036,$03 Call #R$AF08.
-  $B039,$02 Restore #REGbc and #REGhl from the stack.
+  $B039,$02 Restore the scenic events counter and scenic event location pointer
+. from the stack.
+@ $B03B label=FindScenicEvents_Next
   $B03B,$02 Decrease counter by one and loop back to #R$B02C until counter is zero.
+N $B03D Sets the destination room ID as the new current room ID.
+@ $B03D label=SetNewCurrentRoomID
   $B03D,$04 Write #REGc to *#R$A7C3.
   $B041,$05 Return if *#R$A787 is zero.
   $B046,$02 #REGb=#N$08.
@@ -4242,19 +4255,23 @@ L $E978,$02,$0B
 
 c $E98E Event Routing
 @ $E98E label=EventRouting
-R $E98E DE
-R $E98E HL
-R $E98E A
-  $E98E,$01 Stash #REGbc on the stack.
-  $E98F,$02 CPIR.
-  $E991,$01 Restore #REGhl from the stack.
-  $E992,$01 Return if the item wasn't found.
-  $E993,$03 #REGix=#REGde (using the stack).
-  $E996,$01 Increment #REGbc by one.
-  $E997,$03 #REGhl-=#REGbc.
-  $E99A,$01 #REGe=#REGl.
+R $E98E DE Pointer to a list of action routines
+R $E98E HL Pointer to a list of room IDs
+R $E98E BC The number of items in the lists (they match)
+R $E98E A Room ID for searching
+  $E98E,$01 Stash the item count on the stack.
+  $E98F,$02 Search for the room ID in the table.
+N $E991 At this point, if the room ID is found, #REGbc contains the index in
+. the table of where it is location.
+  $E991,$01 Restore the item count into #REGhl from the stack.
+  $E992,$01 Return if the room ID wasn't found in the table.
+N $E993 The room ID was found in the table, so jump to the appropriate action.
+  $E993,$03 Load the actions table into #REGix (using the stack).
+  $E996,$01 Adjust the room index for the sum.
+  $E997,$03 Subtract the room index from the item count.
+  $E99A,$01 Load the index into #REGe to find the appropriate action routine.
   $E99B,$03 Call #R$AB88.
-  $E99E,$01 Jump to *#REGhl.
+  $E99E,$01 Jump to the action routine held in *#REGhl.
 
 c $E99F Game Loop
 @ $E99F label=GameLoop
@@ -4287,9 +4304,12 @@ N $E9C9 The player wants another go...
 N $E9CE Just loop round for any other input.
   $E9CE,$02 Jump to #R$E9C1.
 
-c $E9D0
+c $E9D0 Print And Game Over
+@ $E9D0 label=PrintAndGameOver
   $E9D0,$03 Call #R$A592.
-  $E9D3,$02 Restore #REGhl and #REGhl from the stack.
+N $E9D3 Housekeeping; tidy up the stack.
+  $E9D3,$01 Restore #REGhl from the stack.
+  $E9D4,$01 Discard the return address on the stack.
   $E9D5,$03 Jump to #R$E9B2.
 
 c $E9D8 Fatal Events: Drowning
@@ -4315,10 +4335,8 @@ c $E9FA
 N $E9FA Print "#STR$C97C,$08($b==$FF)".
   $E9FA,$03 #REGhl=#R$C97C.
   $E9FD,$03 Call #R$A592.
-  $EA00,$02 #REGa=#N$00.
-  $EA02,$03 Call #R$AEF0.
-  $EA05,$02 #REGa=#N$01.
-  $EA07,$03 Call #R$AEF0.
+  $EA00,$05 Call #R$AEF0 with item #N$00: #ITEM$00.
+  $EA05,$05 Call #R$AEF0 with item #N$01: #ITEM$01.
   $EA0A,$01 Return.
 
 c $EA0B Fatal Events: Roman
@@ -4474,34 +4492,51 @@ N $EB09 Print "#STR$CD00,$08($b==$FF)".
   $EB0C,$03 Call #R$A592.
   $EB0F,$01 Return.
 
-c $EB10
-  $EB10,$03 Write #REGa to *#R$A773.
+c $EB10 Change Room
+@ $EB10 label=ChangeRoom
+R $EB10 A Destination room ID
+  $EB10,$03 Store the room ID in *#R$A773.
+N $EB13 Look up the destination room in the list of room IDs at #R$EB3A.
   $EB13,$03 #REGhl=#R$EB3A.
   $EB16,$03 #REGde=#R$EB45.
   $EB19,$03 #REGbc=#N($000B,$04,$04).
   $EB1C,$03 Call #R$E98E.
-  $EB1F,$03 #REGa=*#R$A773.
+N $EB1F Set the destination room ID as the current room.
+  $EB1F,$03 Restore the destination room ID from *#R$A773.
   $EB22,$03 Call #R$B01F.
-  $EB25,$02 #REGe=#N$00.
-  $EB27,$03 Call #R$ABB6.
+  $EB25,$05 Call #R$ABB6 with #REGe set to #N$00 (which does not display room
+. images).
+N $EB2A Now look up the current room in the list of room IDs at #R$EB5B.
   $EB2A,$03 #REGa=*#R$A7C3.
   $EB2D,$03 #REGhl=#R$EB5B.
   $EB30,$03 #REGde=#R$EB71.
   $EB33,$03 #REGbc=#N$0016.
   $EB36,$03 Call #R$E98E.
   $EB39,$01 Return.
-B $EB3A,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
-L $EB3A,$01,$0B
-W $EB45,$02
-L $EB45,$02,$0B
-B $EB5B,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
-L $EB5B,$01,$16
-W $EB71,$02
-L $EB71,$02,$16
+N $EB3A The room ID table to identify which rooms are applicable:
+@ $EB3A label=Table_ActionPreEnterRoomIDs
+B $EB3A,$01 Room #N($01+(#PC-$EB3A)): #ROOM(#PEEK(#PC)).
+L $EB3A,$01,$0B,$02
+N $EB45 The actions table for before the player enters a room:
+@ $EB45 label=Table_ActionPreEnterRoom
+W $EB45,$02 Action #N($01+(#PC-$EB45)/$02).
+L $EB45,$02,$0B,$02
+N $EB5B The room ID table to identify which rooms are applicable:
+@ $EB5B label=Table_ActionEnteredRoomIDs
+B $EB5B,$01 Room #N($01+(#PC-$EB5B)): #ROOM(#PEEK(#PC)).
+L $EB5B,$01,$16,$02
+N $EB71 The actions table for when a player enters a room:
+@ $EB71 label=Table_ActionEnteredRoom
+W $EB71,$02 Action #N($01+(#PC-$EB71)/$02).
+L $EB71,$02,$16,$02
 
-c $EB9D
+c $EB9D Print And Game Over
+@ $EB9D label=PrintAndGameOver_Duplicate
   $EB9D,$03 Call #R$A592.
-  $EBA0,$02 Restore #REGhl and #REGhl from the stack.
+N $EBA0 Housekeeping; tidy up the stack.
+@ $EBA0 label=GameOverWithHouseKeeping
+  $EBA0,$01 Restore #REGhl from the stack.
+  $EBA1,$01 Discard the return address on the stack.
 N $EBA2 Bad luck!
   $EBA2,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
 . over".
@@ -5250,9 +5285,10 @@ c $F073 Process: Drop Ladder
 c $F07C Process: Drop Staff
 @ $F07C label=Process_DropStaff
   $F07C,$05 Call #R$EDD0 with item #N$61: #ITEM$61.
-  $F081,$02 #REGa=#N$50.
-  $F083,$03 Write #REGa to *#R$E8F4.
-  $F086,$03 Write #REGa to *#R$E8F6.
+  $F081,$05 Write #N$50 to *#R$E8F4 to open up northbound access to #ROOM$50
+. from #ROOM$50.
+  $F086,$03 Write #N$50 to *#R$E8F6 to open up eastbound access to #ROOM$50
+. from #ROOM$50.
   $F089,$03 Write #REGa to *#R$E8F7.
   $F08C,$02 #REGa=#N$61.
   $F08E,$03 Jump to #R$EDB8.
@@ -5275,10 +5311,10 @@ c $F0A7 Process: Drop Silver
 
 c $F0AC
   $F0AC,$05 Call #R$ED75 with item #N$61: #ITEM$61.
-  $F0B1,$05 Write #N$4C to *#R$E8F4.
-  $F0B6,$01 #REGa=#N$00.
-  $F0B7,$03 Write #REGa to *#R$E8F6.
-  $F0BA,$03 Write #REGa to *#R$E8F7.
+  $F0B1,$05 Write #N$4C to *#R$E8F4 to open up northbound access to #ROOM$4C
+. from #ROOM$50.
+  $F0B6,$04 Write #N$00 to *#R$E8F6 to close eastbound access in #ROOM$50.
+  $F0BA,$03 Write #N$00 to *#R$E8F7 to close westbound access in #ROOM$50.
   $F0BD,$03 Jump to #R$EDA6.
 
 c $F0C0
@@ -5427,14 +5463,12 @@ N $F1D9 Print "#STR$CE02,$08($b==$FF)".
 c $F1DF
   $F1DF,$06 Call #R$AEF7 with #R$E392.
   $F1E5,$03 Call #R$ED75.
-  $F1E8,$01 #REGa=#REGb.
-  $F1E9,$02 Compare #REGa with #N$59.
-  $F1EB,$02 Jump to #R$F1F8 if #REGa is not equal to #N$59.
+  $F1E8,$05 Jump to #R$F1F8 if #REGb is not equal to #N$59.
   $F1ED,$06 Call #R$AF1E to transform item #N$59 (#ITEM$59) into item #N$58
 . (#ITEM$58).
-  $F1F3,$02 #REGb=#N$39.
+  $F1F3,$02 #REGb=#ITEM$39.
   $F1F5,$03 Jump to #R$EDA6.
-
+N $F1F8 Print "#STR$D51A,$08($b==$FF)".
   $F1F8,$03 #REGhl=#R$D51A.
   $F1FB,$03 Jump to #R$ED6D.
 
@@ -6132,10 +6166,10 @@ c $F7DB
 c $F7E9 Process: Get Staff
 @ $F7E9 label=Process_GetStaff
   $F7E9,$05 Call #R$ED75 with item #N$61: #ITEM$61.
-  $F7EE,$01 #REGa=#N$00.
-  $F7EF,$03 Write #REGa to *#R$E8F6.
-  $F7F2,$03 Write #REGa to *#R$E8F7.
-  $F7F5,$05 Write #N$4C to *#R$E8F4.
+  $F7EE,$04 Write #N$00 to *#R$E8F6 to close eastbound access in #ROOM$50.
+  $F7F2,$03 Write #N$00 to *#R$E8F7 to close westbound access in #ROOM$50.
+  $F7F5,$05 Write #N$4C to *#R$E8F4 to open up northbound access to #ROOM$4C
+. from #ROOM$50.
   $F7FA,$03 Jump to #R$EDA6.
 
 c $F7FD
@@ -6783,10 +6817,14 @@ N $FCD9 Remove a bunch of room exits (as actions in the game will open them
   $FCE9,$04 Move to the next address in the table.
   $FCED,$02 Decrease the exits counter by one and loop back to #R$FCE2 until
 . all the room exits have been cleared.
-N $FCEF Ensure three exits are "open" (as they can become blocked in the game).
-  $FCEF,$05 Enable the exit "north to room #R$E8F4(#N$50) for #ROOM$50".
-  $FCF4,$03 Enable the exit "east to room #R$E8F6(#N$50) for #ROOM$50".
-  $FCF7,$03 Enable the exit "west to room #R$E8F7(#N$50) for #ROOM$50".
+N $FCEF Ensure three exits are "open" even though they point to the room you're
+. in (they become real exits after picking up the staff in the game).
+  $FCEF,$05 Write #N$50 to *#R$E8F4 to open up northbound access to #ROOM$50
+. from #ROOM$50.
+  $FCF4,$03 Write #N$50 to *#R$E8F6 to open up eastbound access to #ROOM$50
+. from #ROOM$50.
+  $FCF7,$03 Write #N$50 to *#R$E8F7 to open up westbound access to #ROOM$50
+. from #ROOM$50.
   $FCFA,$05 Call #R$EB10 to room #N$02: #ROOM$02.
   $FCFF,$03 Jump to #R$E99F.
 
