@@ -33,7 +33,7 @@ Next: <a href="EB9D.html">EB9D</a>
 </td>
 </tr>
 </table>
-<div class="description">EB10: Routine at EB10</div>
+<div class="description">EB10: Change Room</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -42,112 +42,180 @@ Next: <a href="EB9D.html">EB9D</a>
 Used by the routines at <a href="F2FF.html">F2FF</a>, <a href="F338.html">F338</a>, <a href="F359.html">F359</a>, <a href="F3AC.html">F3AC</a>, <a href="F3BA.html">F3BA</a>, <a href="F3C8.html">F3C8</a>, <a href="F3D6.html">F3D6</a>, <a href="F3EC.html">F3EC</a>, <a href="F5F9.html">F5F9</a>, <a href="F7C0.html">Process_Guard</a>, <a href="F7DB.html">F7DB</a>, <a href="F8DF.html">MovePlayer</a> and <a href="FCCE.html">GameStart</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Destination room ID</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">ChangeRoom</td>
 <td class="address-2"><span id="eb10"></span>EB10</td>
 <td class="instruction">LD ($A773),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="A772.html#a773">A773</a>.</td>
+<td class="comment-1" rowspan="1">Store the room ID in *<a href="A773.html">Destination_RoomID</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="eb13"></span>
+<div class="comments">
+<div class="paragraph">
+Look up the destination room in the list of room IDs at <a href="EB10.html#eb3a">Table_ActionPreEnterRoomIDs</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb13"></span>EB13</td>
 <td class="instruction">LD HL,$EB3A</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="EB10.html#eb3a">EB3A</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="EB10.html#eb3a">Table_ActionPreEnterRoomIDs</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb16"></span>EB16</td>
 <td class="instruction">LD DE,$EB45</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="EB10.html#eb45">EB45</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="EB10.html#eb45">Table_ActionPreEnterRoom</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb19"></span>EB19</td>
 <td class="instruction">LD BC,$000B</td>
 <td class="comment-1" rowspan="1"><span class="register">BC</span>=000B.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb1c"></span>EB1C</td>
 <td class="instruction">CALL <a href="E98E.html">EventRouting</a></td>
 <td class="comment-1" rowspan="1">Call <a href="E98E.html">EventRouting</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="eb1f"></span>
+<div class="comments">
+<div class="paragraph">
+Set the destination room ID as the current room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb1f"></span>EB1F</td>
 <td class="instruction">LD A,($A773)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A772.html#a773">A773</a>.</td>
+<td class="comment-1" rowspan="1">Restore the destination room ID from *<a href="A773.html">Destination_RoomID</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb22"></span>EB22</td>
-<td class="instruction">CALL <a href="B01F.html">$B01F</a></td>
-<td class="comment-1" rowspan="1">Call <a href="B01F.html">B01F</a>.</td>
+<td class="instruction">CALL <a href="B01F.html">MovePlayerToRoom</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B01F.html">MovePlayerToRoom</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb25"></span>EB25</td>
 <td class="instruction">LD E,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=00.</td>
+<td class="comment-1" rowspan="2">Call <a href="ABB6.html">Handler_DisplayRoomImage</a> with <span class="register">E</span> set to 00 (which does not display room images).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb27"></span>EB27</td>
 <td class="instruction">CALL <a href="ABB6.html">Handler_DisplayRoomImage</a></td>
-<td class="comment-1" rowspan="1">Call <a href="ABB6.html">Handler_DisplayRoomImage</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="eb2a"></span>
+<div class="comments">
+<div class="paragraph">
+Now look up the current room in the list of room IDs at <a href="EB10.html#eb5b">Table_ActionEnteredRoomIDs</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb2a"></span>EB2A</td>
 <td class="instruction">LD A,($A7C3)</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A7C3.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb2d"></span>EB2D</td>
 <td class="instruction">LD HL,$EB5B</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="EB10.html#eb5b">EB5B</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="EB10.html#eb5b">Table_ActionEnteredRoomIDs</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb30"></span>EB30</td>
 <td class="instruction">LD DE,$EB71</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="EB10.html#eb71">EB71</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="EB10.html#eb71">Table_ActionEnteredRoom</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb33"></span>EB33</td>
 <td class="instruction">LD BC,$0016</td>
 <td class="comment-1" rowspan="1"><span class="register">BC</span>=16.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb36"></span>EB36</td>
 <td class="instruction">CALL <a href="E98E.html">EventRouting</a></td>
 <td class="comment-1" rowspan="1">Call <a href="E98E.html">EventRouting</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb39"></span>EB39</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="eb3a"></span>
+<div class="comments">
+<div class="paragraph">
+The room ID table to identify which rooms are applicable:
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Table_ActionPreEnterRoomIDs</td>
 <td class="address-1"><span id="eb3a"></span>EB3A</td>
 <td class="instruction">DEFB $43</td>
-<td class="comment-1" rowspan="1">Room 43: 
+<td class="comment-1" rowspan="1">Room 01: 
 
 <a href="C359.html">The Crystal Cavern</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb3b"></span>EB3B</td>
 <td class="instruction">DEFB $4F</td>
-<td class="comment-1" rowspan="1">Room 4F: 
+<td class="comment-1" rowspan="1">Room 02: 
 
 <a href="C45B.html">The Fomorians' Cavern</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb3c"></span>EB3C</td>
 <td class="instruction">DEFB $52</td>
-<td class="comment-1" rowspan="1">Room 52: 
+<td class="comment-1" rowspan="1">Room 03: 
 
 <a href="C486.html">The Danaan Settlement</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb3d"></span>EB3D</td>
 <td class="instruction">DEFB $2B</td>
-<td class="comment-1" rowspan="1">Room 2B: 
+<td class="comment-1" rowspan="1">Room 04: 
 
 <a href="C0BE.html">The Village Of Bridon</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb3e"></span>EB3E</td>
 <td class="instruction">DEFB $05</td>
 <td class="comment-1" rowspan="1">Room 05: 
@@ -155,365 +223,456 @@ Used by the routines at <a href="F2FF.html">F2FF</a>, <a href="F338.html">F338</
 <a href="BC7D.html">The Sea Cavern</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb3f"></span>EB3F</td>
 <td class="instruction">DEFB $3A</td>
-<td class="comment-1" rowspan="1">Room 3A: 
+<td class="comment-1" rowspan="1">Room 06: 
 
 <a href="C273.html">The Cadwell Hillfort</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb40"></span>EB40</td>
 <td class="instruction">DEFB $1A</td>
-<td class="comment-1" rowspan="1">Room 1A: 
+<td class="comment-1" rowspan="1">Room 07: 
 
 <a href="C00C.html">A Mountain Path</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb41"></span>EB41</td>
 <td class="instruction">DEFB $41</td>
-<td class="comment-1" rowspan="1">Room 41: 
+<td class="comment-1" rowspan="1">Room 08: 
 
 <a href="C333.html">A Narrow Gorge</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb42"></span>EB42</td>
 <td class="instruction">DEFB $1B</td>
-<td class="comment-1" rowspan="1">Room 1B: 
+<td class="comment-1" rowspan="1">Room 09: 
 
 <a href="C01D.html">The Causeway</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb43"></span>EB43</td>
 <td class="instruction">DEFB $42</td>
-<td class="comment-1" rowspan="1">Room 42: 
+<td class="comment-1" rowspan="1">Room 0A: 
 
 <a href="C343.html">Inside A Rock Cavern</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb44"></span>EB44</td>
 <td class="instruction">DEFB $22</td>
-<td class="comment-1" rowspan="1">Room 22: 
+<td class="comment-1" rowspan="1">Room 0B: 
 
 <a href="C0AD.html">The Bridon Road</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="eb45"></span>
+<div class="comments">
+<div class="paragraph">
+The actions table for before the player enters a room:
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Table_ActionPreEnterRoom</td>
 <td class="address-1"><span id="eb45"></span>EB45</td>
 <td class="instruction">DEFW <a href="EBA7.html">$EBA7</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 01.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb47"></span>EB47</td>
 <td class="instruction">DEFW <a href="EBB9.html">$EBB9</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 02.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb49"></span>EB49</td>
 <td class="instruction">DEFW <a href="EBB9.html">$EBB9</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 03.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb4b"></span>EB4B</td>
 <td class="instruction">DEFW <a href="EBC5.html">$EBC5</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 04.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb4d"></span>EB4D</td>
 <td class="instruction">DEFW <a href="EBC5.html">$EBC5</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 05.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb4f"></span>EB4F</td>
 <td class="instruction">DEFW <a href="EBC5.html">$EBC5</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 06.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb51"></span>EB51</td>
 <td class="instruction">DEFW <a href="EBC5.html">$EBC5</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 07.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb53"></span>EB53</td>
 <td class="instruction">DEFW <a href="EBC5.html">$EBC5</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 08.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb55"></span>EB55</td>
 <td class="instruction">DEFW <a href="ECA2.html">$ECA2</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 09.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb57"></span>EB57</td>
 <td class="instruction">DEFW <a href="ED57.html">$ED57</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 0A.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb59"></span>EB59</td>
 <td class="instruction">DEFW <a href="ED60.html">$ED60</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 0B.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="eb5b"></span>
+<div class="comments">
+<div class="paragraph">
+The room ID table to identify which rooms are applicable:
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Table_ActionEnteredRoomIDs</td>
 <td class="address-1"><span id="eb5b"></span>EB5B</td>
 <td class="instruction">DEFB $37</td>
-<td class="comment-1" rowspan="1">Room 37: 
+<td class="comment-1" rowspan="1">Room 01: 
 
 <a href="C1E3.html">A Forest Path</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb5c"></span>EB5C</td>
 <td class="instruction">DEFB $0D</td>
-<td class="comment-1" rowspan="1">Room 0D: 
+<td class="comment-1" rowspan="1">Room 02: 
 
 <a href="BE3A.html">A Narrow Underwater Passage</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb5d"></span>EB5D</td>
 <td class="instruction">DEFB $56</td>
-<td class="comment-1" rowspan="1">Room 56: 
+<td class="comment-1" rowspan="1">Room 03: 
 
 <a href="C52C.html">Congratulations!!</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb5e"></span>EB5E</td>
 <td class="instruction">DEFB $27</td>
-<td class="comment-1" rowspan="1">Room 27: 
+<td class="comment-1" rowspan="1">Room 04: 
 
 <a href="C135.html">In An Oozing Quagmire</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb5f"></span>EB5F</td>
 <td class="instruction">DEFB $4F</td>
-<td class="comment-1" rowspan="1">Room 4F: 
+<td class="comment-1" rowspan="1">Room 05: 
 
 <a href="C45B.html">The Fomorians' Cavern</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb60"></span>EB60</td>
 <td class="instruction">DEFB $14</td>
-<td class="comment-1" rowspan="1">Room 14: 
+<td class="comment-1" rowspan="1">Room 06: 
 
 <a href="BF62.html">Lug's Cavern</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb61"></span>EB61</td>
 <td class="instruction">DEFB $57</td>
-<td class="comment-1" rowspan="1">Room 57: 
+<td class="comment-1" rowspan="1">Room 07: 
 
 <a href="C618.html">The Vale Of Cuchulainn</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb62"></span>EB62</td>
 <td class="instruction">DEFB $63</td>
-<td class="comment-1" rowspan="1">Room 63: 
+<td class="comment-1" rowspan="1">Room 08: 
 
 <a href="C39B.html">The Inner Courtyard</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb63"></span>EB63</td>
 <td class="instruction">DEFB $4C</td>
-<td class="comment-1" rowspan="1">Room 4C: 
+<td class="comment-1" rowspan="1">Room 09: 
 
 <a href="C3FD.html">The Enchanted Hills</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb64"></span>EB64</td>
 <td class="instruction">DEFB $0C</td>
-<td class="comment-1" rowspan="1">Room 0C: 
+<td class="comment-1" rowspan="1">Room 0A: 
 
 <a href="BDD8.html">In A Deep Pool Of Water. Inside The Sea Cavern</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb65"></span>EB65</td>
 <td class="instruction">DEFB $18</td>
-<td class="comment-1" rowspan="1">Room 18: 
+<td class="comment-1" rowspan="1">Room 0B: 
 
 <a href="BFE8.html">Bleak Moorland</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb66"></span>EB66</td>
 <td class="instruction">DEFB $43</td>
-<td class="comment-1" rowspan="1">Room 43: 
+<td class="comment-1" rowspan="1">Room 0C: 
 
 <a href="C359.html">The Crystal Cavern</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb67"></span>EB67</td>
 <td class="instruction">DEFB $1E</td>
-<td class="comment-1" rowspan="1">Room 1E: 
+<td class="comment-1" rowspan="1">Room 0D: 
 
 <a href="C063.html">The Vale Of Rhia</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb68"></span>EB68</td>
 <td class="instruction">DEFB $1B</td>
-<td class="comment-1" rowspan="1">Room 1B: 
+<td class="comment-1" rowspan="1">Room 0E: 
 
 <a href="C01D.html">The Causeway</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb69"></span>EB69</td>
 <td class="instruction">DEFB $2C</td>
-<td class="comment-1" rowspan="1">Room 2C: 
+<td class="comment-1" rowspan="1">Room 0F: 
 
 <a href="C1D1.html">A Small Clearing</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb6a"></span>EB6A</td>
 <td class="instruction">DEFB $25</td>
-<td class="comment-1" rowspan="1">Room 25: 
+<td class="comment-1" rowspan="1">Room 10: 
 
 <a href="C101.html">The Swamp</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb6b"></span>EB6B</td>
 <td class="instruction">DEFB $26</td>
-<td class="comment-1" rowspan="1">Room 26: 
+<td class="comment-1" rowspan="1">Room 11: 
 
 <a href="C101.html">The Swamp</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb6c"></span>EB6C</td>
 <td class="instruction">DEFB $2D</td>
-<td class="comment-1" rowspan="1">Room 2D: 
+<td class="comment-1" rowspan="1">Room 12: 
 
 <a href="C101.html">The Swamp</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb6d"></span>EB6D</td>
 <td class="instruction">DEFB $35</td>
-<td class="comment-1" rowspan="1">Room 35: 
+<td class="comment-1" rowspan="1">Room 13: 
 
 <a href="C101.html">The Swamp</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb6e"></span>EB6E</td>
 <td class="instruction">DEFB $36</td>
-<td class="comment-1" rowspan="1">Room 36: 
+<td class="comment-1" rowspan="1">Room 14: 
 
 <a href="C101.html">The Swamp</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb6f"></span>EB6F</td>
 <td class="instruction">DEFB $3D</td>
-<td class="comment-1" rowspan="1">Room 3D: 
+<td class="comment-1" rowspan="1">Room 15: 
 
 <a href="C101.html">The Swamp</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb70"></span>EB70</td>
 <td class="instruction">DEFB $3E</td>
-<td class="comment-1" rowspan="1">Room 3E: 
+<td class="comment-1" rowspan="1">Room 16: 
 
 <a href="C101.html">The Swamp</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="eb71"></span>
+<div class="comments">
+<div class="paragraph">
+The actions table for when a player enters a room:
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Table_ActionEnteredRoom</td>
 <td class="address-1"><span id="eb71"></span>EB71</td>
 <td class="instruction">DEFW <a href="EBDA.html">Process_ForestPath</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 01.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb73"></span>EB73</td>
 <td class="instruction">DEFW <a href="EBFC.html">Process_NarrowUnderwaterPassage</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 02.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb75"></span>EB75</td>
 <td class="instruction">DEFW <a href="EC07.html">Process_CongratulationsGameOver</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 03.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb77"></span>EB77</td>
 <td class="instruction">DEFW <a href="EC13.html">Process_OozingQuagmire</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 04.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb79"></span>EB79</td>
 <td class="instruction">DEFW <a href="EC21.html">Process_FomoriansCavern</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 05.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb7b"></span>EB7B</td>
 <td class="instruction">DEFW <a href="EC32.html">Process_LugsCavern</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 06.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb7d"></span>EB7D</td>
 <td class="instruction">DEFW <a href="EC40.html">Process_ValeOfCuchulainn</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 07.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb7f"></span>EB7F</td>
 <td class="instruction">DEFW <a href="EC4E.html">Process_InnerCourtyard</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 08.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb81"></span>EB81</td>
 <td class="instruction">DEFW <a href="EC5C.html">Process_EnchantedHills</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 09.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb83"></span>EB83</td>
 <td class="instruction">DEFW <a href="EC6A.html">Process_DeepPoolOfWater</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 0A.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb85"></span>EB85</td>
 <td class="instruction">DEFW <a href="EC78.html">Process_BleakMoorland</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 0B.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb87"></span>EB87</td>
 <td class="instruction">DEFW <a href="EC86.html">Process_CrystalCavern</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 0C.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb89"></span>EB89</td>
 <td class="instruction">DEFW <a href="EC94.html">Process_ValeOfRhia</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 0D.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb8b"></span>EB8B</td>
 <td class="instruction">DEFW <a href="ECBE.html">Process_Causeway</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 0E.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb8d"></span>EB8D</td>
 <td class="instruction">DEFW <a href="ECEF.html">Process_SmallClearing</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 0F.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb8f"></span>EB8F</td>
 <td class="instruction">DEFW <a href="ED17.html">Process_Swamp_01</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 10.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb91"></span>EB91</td>
 <td class="instruction">DEFW <a href="ED17.html">Process_Swamp_01</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 11.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb93"></span>EB93</td>
 <td class="instruction">DEFW <a href="ED07.html">Process_Swamp_02</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 12.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb95"></span>EB95</td>
 <td class="instruction">DEFW <a href="ED27.html">Process_Swamp_03</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 13.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb97"></span>EB97</td>
 <td class="instruction">DEFW <a href="ED37.html">Process_Swamp_04</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 14.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb99"></span>EB99</td>
 <td class="instruction">DEFW <a href="ED47.html">Process_Swamp_05</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 15.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="eb9b"></span>EB9B</td>
 <td class="instruction">DEFW <a href="ED47.html">Process_Swamp_05</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Action 16.</td>
 </tr>
 </table>
 <table class="asm-navigation">

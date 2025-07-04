@@ -39,7 +39,7 @@ Next: <a href="E99F.html">E99F</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="EB10.html">EB10</a>.
+Used by the routine at <a href="EB10.html">ChangeRoom</a>.
 </div>
 </div>
 <table class="input">
@@ -48,15 +48,19 @@ Used by the routine at <a href="EB10.html">EB10</a>.
 </tr>
 <tr>
 <td class="register">DE</td>
-<td class="register-desc"></td>
+<td class="register-desc">Pointer to a list of action routines</td>
 </tr>
 <tr>
 <td class="register">HL</td>
-<td class="register-desc"></td>
+<td class="register-desc">Pointer to a list of room IDs</td>
+</tr>
+<tr>
+<td class="register">BC</td>
+<td class="register-desc">The number of items in the lists (they match)</td>
 </tr>
 <tr>
 <td class="register">A</td>
-<td class="register-desc"></td>
+<td class="register-desc">Room ID for searching</td>
 </tr>
 </table>
 </td>
@@ -65,31 +69,51 @@ Used by the routine at <a href="EB10.html">EB10</a>.
 <td class="asm-label">EventRouting</td>
 <td class="address-2"><span id="e98e"></span>E98E</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="1">Stash the item count on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e98f"></span>E98F</td>
 <td class="instruction">CPIR</td>
-<td class="comment-1" rowspan="1">CPIR.</td>
+<td class="comment-1" rowspan="1">Search for the room ID in the table.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e991"></span>
+<div class="comments">
+<div class="paragraph">
+At this point, if the room ID is found, <span class="register">BC</span> contains the index in the table of where it is location.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e991"></span>E991</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the item count into <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e992"></span>E992</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-1" rowspan="1">Return if the item wasn't found.</td>
+<td class="comment-1" rowspan="1">Return if the room ID wasn't found in the table.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e993"></span>
+<div class="comments">
+<div class="paragraph">
+The room ID was found in the table, so jump to the appropriate action.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e993"></span>E993</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">DE</span> (using the stack).</td>
+<td class="comment-1" rowspan="2">Load the actions table into <span class="register">IX</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -100,13 +124,13 @@ Used by the routine at <a href="EB10.html">EB10</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="e996"></span>E996</td>
 <td class="instruction">INC BC</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">BC</span> by one.</td>
+<td class="comment-1" rowspan="1">Adjust the room index for the sum.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e997"></span>E997</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>-=<span class="register">BC</span>.</td>
+<td class="comment-1" rowspan="2">Subtract the room index from the item count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -117,7 +141,7 @@ Used by the routine at <a href="EB10.html">EB10</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="e99a"></span>E99A</td>
 <td class="instruction">LD E,L</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=<span class="register">L</span>.</td>
+<td class="comment-1" rowspan="1">Load the index into <span class="register">E</span> to find the appropriate action routine.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -129,7 +153,7 @@ Used by the routine at <a href="EB10.html">EB10</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="e99e"></span>E99E</td>
 <td class="instruction">JP (HL)</td>
-<td class="comment-1" rowspan="1">Jump to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Jump to the action routine held in *<span class="register">HL</span>.</td>
 </tr>
 </table>
 <table class="asm-navigation">
