@@ -399,9 +399,9 @@ D $A76C Holds a single byte, where each bit relates to an item state as
 . { =h Bit | =h Relating To }
 . { #N$00 |  }
 . { #N$01 |  }
-. { #N$02 |  }
+. { #N$02 | The rope }
 . { #N$03 |  }
-. { #N$04 |  }
+. { #N$04 | The urn }
 . { #N$05 |  }
 . { #N$06 | The ladder being placed }
 . { #N$07 |  }
@@ -417,7 +417,7 @@ D $A76D Holds a single byte, where each bit relates to an item state as
 . { #N$00 |  }
 . { #N$01 |  }
 . { #N$02 |  }
-. { #N$03 |  }
+. { #N$03 | The acorns }
 . { #N$04 | The sword }
 . { #N$05 |  }
 . { #N$06 |  }
@@ -425,16 +425,23 @@ D $A76D Holds a single byte, where each bit relates to an item state as
 . TABLE#
 B $A76D,$01
 
-g $A772
-B $A772,$01
-
-g $A773 Destination Room ID
-@ $A773 label=Destination_RoomID
+g $A772 Temporary Mixed Storage
+@ $A772 label=TemporaryStorage_Messaging
+D $A772 Some temporary storage, sometimes an address, sometimes a single byte
+. (note the overlap).
+N $A772 Used by the routine at #R$F703 to store a pointer to messaging.
+@ $A772 nowarn=$A772,$A773
+W $A772,$02
+@ $A773 label=TemporaryStorage_SingleByte
+N $A773 Used in a few routines for holding a single byte value representing
+. either a room or item ID (while other routines are called which would
+. corrupt the value if it was left in a register).
 B $A773,$01
 
 g $A774 Table: Already Seen Room Images
 @ $A774 label=Table_RoomImagesAlreadySeen
-D $A774 Corresponds to whether the player has already seen the image for the following rooms:
+D $A774 Corresponds to whether the player has already seen the image for the
+. following rooms:
 .
 . #TABLE(default,centre,centre)
 . { =h Bit | =h Room ID | =h Room Name }
@@ -2793,8 +2800,12 @@ B $BB9C,$01 Terminator.
 
 t $BB9D Messaging: "A Shield"
 @ $BB9D label=Messaging_Shield_Duplicate
-N $BB9D See #POKE#correct-typo(Correct Typo).
+@ $BB9D bfix-begin
   $BB9D,$08 "#STR$BB9D,$08($b==$FF)".
+@ $BB9D bfix+else
+N $BB9D See #POKE#correct-typo-shield(Correct Typo).
+  $BB9D,$08 "#STR$BB9D,$08($b==$FF)".
+@ $BB9D bfix+end
 B $BBA5,$01 Terminator.
 
 t $BBA6 Messaging: "A Fire"
@@ -3721,6 +3732,7 @@ B $DCE4,$01 Terminator.
 
 t $DCE5 Messaging: "You Don't Have A Weopon"
 @ $DCE5 label=Messaging_DontHaveAWeopon
+N $DCE5 See #POKE#correct-typo-weapon(Correct Typo).
   $DCE5,$18 "#STR$DCE5,$08($b==$FF)".
 B $DCFD,$01 Terminator.
 
@@ -4331,7 +4343,8 @@ N $E9F4 Print "#STR$CD9A,$08($b==$FF)".
   $E9F4,$03 #REGhl=#R$CD9A.
   $E9F7,$03 Jump to #R$E9D0.
 
-c $E9FA
+c $E9FA Fatal Event: Have A Feeling You Are Being Followed
+@ $E9FA label=Event_HaveFeelingBeingFollowed
 N $E9FA Print "#STR$C97C,$08($b==$FF)".
   $E9FA,$03 #REGhl=#R$C97C.
   $E9FD,$03 Call #R$A592.
@@ -4396,8 +4409,7 @@ N $EA60 Print "#STR$CACD,$08($b==$FF)".
 
 c $EA6C Fatal Events:
 @ $EA6C label=Event_
-  $EA6C,$02 #REGa=#N$07.
-  $EA6E,$03 Call #R$AEF0.
+  $EA6C,$05 Call #R$AEF0 with item #N$07: #ITEM$07.
   $EA71,$01 Return.
 
 c $EA72 Fatal Events: Furtive Figure
@@ -4434,9 +4446,7 @@ N $EA9C Print "#STR$CBCC,$08($b==$FF)".
   $EA9F,$03 Call #R$A592.
   $EAA2,$05 Call #R$AEE0 with item #N$3E: #ITEM$3E.
   $EAA7,$05 Call #R$AEF0 with item #N$3F: #ITEM$3F.
-  $EAAC,$02 #REGb=#N$3D.
-  $EAAE,$02 #REGc=#N$2C.
-  $EAB0,$03 Call #R$AF08.
+  $EAAC,$07 Call #R$AF08 to move #ITEM$3D to #ROOM$2C.
   $EAB3,$01 Return.
 
 c $EAB4 Fatal Events: Woman Guides Through Swamp - East
@@ -4446,9 +4456,7 @@ N $EAB4 Print "#STR$CC26,$08($b==$FF)".
   $EAB7,$03 Call #R$A592.
   $EABA,$05 Call #R$AEE0 with item #N$3F: #ITEM$3F.
   $EABF,$05 Call #R$AEF0 with item #N$40: #ITEM$40.
-  $EAC4,$02 #REGb=#N$3D.
-  $EAC6,$02 #REGc=#N$2D.
-  $EAC8,$03 Call #R$AF08.
+  $EAC4,$07 Call #R$AF08 to move #ITEM$3D to #ROOM$2D.
   $EACB,$01 Return.
 
 c $EACC Fatal Events: Woman Guides Through Swamp - South
@@ -4458,9 +4466,7 @@ N $EACC Print "#STR$CC3C,$08($b==$FF)".
   $EACF,$03 Call #R$A592.
   $EAD2,$05 Call #R$AEE0 with item #N$40: #ITEM$40.
   $EAD7,$05 Call #R$AEF0 with item #N$41: #ITEM$41.
-  $EADC,$02 #REGb=#N$3D.
-  $EADE,$02 #REGc=#N$25.
-  $EAE0,$03 Call #R$AF08.
+  $EADC,$07 Call #R$AF08 to move #ITEM$3D to #ROOM$25.
   $EAE3,$01 Return.
 
 c $EAE4 Fatal Events: Woman Guides Through Swamp - East #2
@@ -4469,9 +4475,7 @@ N $EAE4 Print "#STR$CC26,$08($b==$FF)".
   $EAE4,$03 #REGhl=#R$CC26.
   $EAE7,$03 Call #R$A592.
   $EAEA,$05 Call #R$AEE0 with item #N$41: #ITEM$41.
-  $EAEF,$02 #REGb=#N$3D.
-  $EAF1,$02 #REGc=#N$27.
-  $EAF3,$03 Call #R$AF08.
+  $EAEF,$07 Call #R$AF08 to move #ITEM$3D to #ROOM$27.
   $EAF6,$01 Return.
 
 c $EAF7 Fatal Events: Druid
@@ -4772,54 +4776,77 @@ c $ED60
   $ED66,$05 Call #R$AEF0 with item #N$37: #ITEM$37.
   $ED6B,$01 Return.
 
-B $ED6C,$01
+g $ED6C Table: Plural Items
+@ $ED6C label=Table_PluralItems
+D $ED6C A list of item IDs which are plurals (contains only the acorns). Used
+. when referring to the item as a "them" rather than the default of "it".
+B $ED6C,$01 Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
 
-c $ED6D
+c $ED6D Print String And A Newline
+@ $ED6D label=PrintStringAndNewline_Duplicate
   $ED6D,$03 Call #R$A592.
   $ED70,$01 Return.
 
-
-c $ED71
+c $ED71 Pause, Print String And Scroll
+@ $ED71 label=PausePrintStringAndScroll_Duplicate
   $ED71,$03 Call #R$B081.
   $ED74,$01 Return.
 
-c $ED75
+c $ED75 Check Player Inventory
+@ $ED75 label=Check_PlayerInventory
+R $ED75 A Item ID
+N $ED75 Is the passed item ID already in the players inventory?
   $ED75,$03 Call #R$AEDA.
   $ED78,$02 Jump to #R$ED98 if the item isn't already in the players inventory.
-  $ED7A,$01 Restore #REGhl from the stack.
+N $ED7A The player is already carrying the item.
+  $ED7A,$01 Discard the return address on the stack.
 N $ED7B Print "#STR$A9FC,$08($b==$FF)".
   $ED7B,$03 #REGhl=#R$A9FC.
+@ $ED7E label=PrintStringAndItThemHandler
   $ED7E,$03 Call #R$A585.
-  $ED81,$03 #REGhl=#R$ED6C.
-  $ED84,$01 #REGa=#REGe.
-  $ED85,$03 #REGbc=#N($0001,$04,$04).
-  $ED88,$02 CPIR.
-  $ED8A,$02 Jump to #R$ED92 if #REGde is equal to #N$37.
+N $ED81 Check if the item is referring to as an "it" or a "them".
+  $ED81,$03 Load #R$ED6C into #REGhl.
+  $ED84,$01 Load the item ID into #REGa.
+  $ED85,$03 Set the count of the number of items in the table
+. (#N($0001,$04,$04)).
+  $ED88,$02 Search for the item ID in the table.
+  $ED8A,$02 Jump to #R$ED92 if the item ID is in the plurals table.
+N $ED8C The item is singular.
 N $ED8C Print "#STR$AA17,$08($b==$FF)".
   $ED8C,$03 #REGhl=#R$AA17.
   $ED8F,$03 Jump to #R$ED6D.
-
+@ $ED92 label=ItemIsPlural
+N $ED92 The item is a plural.
 N $ED92 Print "#STR$AA1B,$08($b==$FF)".
   $ED92,$03 #REGhl=#R$AA1B.
   $ED95,$03 Jump to #R$ED6D.
-
-  $ED98,$05 Compare *#R$A790 with #N$05.
-  $ED9D,$01 #REGb=#REGe.
-  $ED9E,$01 Return if *#R$A790 was not equal to #N$05.
-  $ED9F,$01 Restore #REGhl from the stack.
+N $ED98 The item is not already in the players inventory, but does the player
+. have a full inventory? Do they have room to pick up another item?
+@ $ED98 label=PlayerCanPickUpItem
+  $ED98,$05 Is *#R$A790 at the maximum of #N$05 items?
+  $ED9D,$01 Load the item ID into #REGb.
+  $ED9E,$01 Return if the players inventory is not yet full.
+N $ED9F The player can't pick up any more items.
+  $ED9F,$01 Discard the return address on the stack.
 N $EDA0 Print "#STR$AA21,$08($b==$FF)".
   $EDA0,$03 #REGhl=#R$AA21.
   $EDA3,$03 Jump to #R$ED6D.
 
-c $EDA6
-  $EDA6,$02 #REGc=#N$01.
-  $EDA8,$03 Call #R$AF08.
-
+c $EDA6 Handler: Pick Up Item
+@ $EDA6 label=Handler_PickUpItem
+R $EDA6 B Item ID
+  $EDA6,$05 Call #R$AF08 using the item ID passed in #REGb, to change the
+. location to #N$01 (to the players inventory).
+N $EDAB Player has picked up an item so handle the inventory count.
   $EDAB,$04 Increment *#R$A790 by one.
 N $EDAF Print "#STR$A9F7,$08($b==$FF)".
   $EDAF,$03 Jump to #R$EDF3.
 
-c $EDB2
+c $EDB2 Handler: Check Player Inventory And Pick Up Item
+@ $EDB2 label=Handler_CheckPlayerInventory_PickUpItem
+D $EDB2 Helper routine to check if the conditions are good for picking up an
+. item and then jumping to the pick up item handler.
+R $EDB2 A Item ID
   $EDB2,$03 Call #R$ED75.
   $EDB5,$03 Jump to #R$EDA6.
 
@@ -4837,6 +4864,7 @@ N $EDC1 The item is in the players inventory, so move its location to the
   $EDC1,$01 Copy the item ID into #REGb.
   $EDC2,$04 #REGc=*#R$A7C3.
   $EDC6,$03 Call #R$AF08.
+N $EDC9 Player has dropped an item so handle the inventory count.
   $EDC9,$04 Decrease *#R$A790 by one.
 N $EDCD Print "#STR$A9F7,$08($b==$FF)".
   $EDCD,$03 Jump to #R$EDF3.
@@ -4847,7 +4875,7 @@ R $EDD0 A Item ID
 R $EDD0 O:F Z flag set if the item is in the players inventory
   $EDD0,$03 Call #R$AEDA.
   $EDD3,$01 Return if the item is in the players inventory.
-  $EDD4,$01 Restore #REGhl from the stack.
+  $EDD4,$01 Discard the return address on the stack.
 N $EDD5 Print "#STR$AA9B,$08($b==$FF)".
   $EDD5,$03 #REGhl=#R$AA9B.
   $EDD8,$03 Jump to #R$ED7E.
@@ -5062,34 +5090,52 @@ c $EECA Process: Get Pot
 
 c $EECF Process: Get Acorns
 @ $EECF label=Process_GetAcorns
-  $EECF,$02 #REGa=item #N$1B: #ITEM$1B.
-  $EED1,$03 Call #R$ED75.
-  $EED4,$07 Jump to #R$EEE4 if bit 3 of *#R$A76D is set.
-  $EEDB,$02 Set bit 3 of *#R$A76D.
-  $EEDD,$02 #REGb=item #N$1D: #ITEM$1D.
-  $EEDF,$02 #REGc=item #N$13: #ITEM$13.
-  $EEE1,$03 Call #R$AF08.
-  $EEE4,$02 #REGb=item #N$1B: #ITEM$1B.
-  $EEE6,$03 Jump to #R$EDA6.
+N $EECF The player wants to pick up the acorns, check if there are any issues
+. with allowing this (if the inventory is full, or the player is already
+. carrying them).
+  $EECF,$05 Call #R$ED75 with item #N$1B: #ITEM$1B.
+N $EED4 All is good, but is this the first time the player has picked up the
+. acorns?
+  $EED4,$07 Jump to #R$EEE4 if bit 3 of *#R$A76D is set, which relates to
+. carrying the acorns.
+  $EEDB,$02 Set bit 3 of *#R$A76D to signify that the acorns have been picked
+. up. This is to prevent the raven from being spawned more than once.
+  $EEDD,$07 Call #R$AF08 to update item #N$1D: #ITEM$1D to be in room #ROOM$13.
+@ $EEE4 label=GetAcorns
+  $EEE4,$05 Jump to #R$EDA6 with item #N$1B: #ITEM$1B.
 
 c $EEE9 Process: Get Urn
 @ $EEE9 label=Process_GetUrn
+N $EEE9 The player wants to pick up the urn, check if there are any issues with
+. allowing this (if the inventory is full, or the player is already carrying
+. it).
   $EEE9,$05 Call #R$ED75 with item #N$1C: #ITEM$1C.
+N $EEEE All is good, but check if #ITEM$20 is present.
   $EEEE,$05 Call #R$AE6B with item #N$20: #ITEM$20.
-  $EEF3,$03 Jump to #R$EE23 if #REGa is not equal to #N$20.
-  $EEF6,$07 Jump to #R$EF04 if bit 4 of *#R$A76C is set.
-  $EEFD,$02 Set bit 4 of *#REGhl.
+N $EEF3 Print "#STR$D231,$08($b==$FF)" if the player isn't wearing the helmet.
+  $EEF3,$03 Jump to #R$EE23 if #ITEM$20 isn't present in the room or in the
+. players inventory (note, it can only be in the "worn" state in the players
+. inventory).
+N $EEF6 Is this the first time the player has picked up the urn?
+  $EEF6,$07 Jump to #R$EF04 if bit 4 of *#R$A76C is set, which relates to
+. carrying the urn.
+  $EEFD,$02 Set bit 4 of *#REGhl to signify that the urn has been picked up.
+. This is to prevent the points from being awarded more than one time.
   $EEFF,$05 Call #R$B09A to add #N$04 points to the score.
-  $EF04,$02 #REGb=item #N$1C: #ITEM$1C.
-  $EF06,$03 Jump to #R$EDA6.
+@ $EF04 label=GetUrn
+  $EF04,$05 Jump to #R$EDA6 with item #N$1C: #ITEM$1C.
 
 c $EF09 Process: Get Torc
 @ $EF09 label=Process_GetTorc
+N $EF09 The player wants to pick up the torc, check which version of it is in
+. the current room.
   $EF09,$06 Call #R$AEF7 with #R$E366.
   $EF0F,$03 Jump to #R$EDB2.
 
 c $EF12 Process: Get Helmet
 @ $EF12 label=Process_GetHelmet
+N $EF12 The player wants to pick up the helmet, check which version of it is in
+. the current room.
   $EF12,$06 Call #R$AEF7 with #R$E36B.
   $EF18,$03 Jump to #R$EDB2.
 
@@ -5107,36 +5153,54 @@ c $EF25 Process: Get Vase
 
 c $EF2A Process: Get Sword
 @ $EF2A label=Process_GetSword
+N $EF2A The player wants to pick up the sword, check which version of it is in
+. the current room.
   $EF2A,$06 Call #R$AEF7 with #R$E392.
-  $EF30,$05 Jump to #R$F1E5 if #REGa is equal to #N$59.
+  $EF30,$05 Jump to #R$F1E5 if the sword state in the current room is #ITEM$59.
   $EF35,$03 Jump to #R$EDB2.
 
 c $EF38 Process: Get Meat
 @ $EF38 label=Process_GetMeat
+N $EF38 The player wants to pick up the meat, check which version of it is in
+. the current room.
   $EF38,$06 Call #R$AEF7 with #R$E396.
-  $EF3E,$05 Jump to #R$EDB2 if #REGa is not equal to #N$3C.
+  $EF3E,$05 Jump to #R$EDB2 if the meat state in the current room is not
+. #ITEM$3C.
 N $EF43 Print "#STR$D245,$08($b==$FF)".
   $EF43,$03 #REGhl=#R$D245.
   $EF46,$03 Jump to #R$ED6D.
 
 c $EF49 Process: Get Amulet
 @ $EF49 label=Process_GetAmulet
+N $EF49 The player wants to pick up the amulet, check which version of it is in
+. the current room.
   $EF49,$06 Call #R$AEF7 with #R$E3A6.
-  $EF4F,$05 Jump to #R$EDB2 if #REGa is not equal to #N$49.
+  $EF4F,$05 Jump to #R$EDB2 if the amulet state in the current room is not
+. #ITEM$49.
 N $EF54 Print "#STR$D26B,$08($b==$FF)".
   $EF54,$03 #REGhl=#R$D26B.
   $EF57,$03 Jump to #R$ED6D.
 
 c $EF5A Process: Get Rope
 @ $EF5A label=Process_GetRope
+N $EF5A The player wants to pick up the rope, check which version of it is in
+. the current room.
   $EF5A,$06 Call #R$AEF7 with #R$E3B0.
-  $EF60,$05 Jump to #R$EDED if #REGa is not equal to #N$51.
+N $EF60 Print "#STR$A9EC,$08($b==$FF)" if the player is trying to pick up a
+. version of the rope where the rope is "in-use" (e.g. #ITEM$52).
+  $EF60,$05 Jump to #R$EDED if the rope state in the current room is not
+. #ITEM$51.
+N $EF65 The player wants to pick up the rope, check if there are any issues with
+. allowing this (if the inventory is full, or the player is already carrying
+. it).
   $EF65,$03 Call #R$ED75.
-  $EF68,$08 Jump to #R$EDA6 if bit 2 of *#R$A76C is set.
-  $EF70,$02 Set bit 2 of *#R$A76C.
+N $EF68 Is this the first time the player has picked up the rope?
+  $EF68,$08 Jump to #R$EDA6 if bit 2 of *#R$A76C is set, which relates to
+. carrying the rope.
+  $EF70,$02 Set bit 2 of *#R$A76C to signify that the rope has been picked up.
+. This is to prevent the points from being awarded more than one time.
   $EF72,$05 Call #R$B09A to add #N$04 points to the score.
-  $EF77,$02 #REGb=#N$51.
-  $EF79,$03 Jump to #R$EDA6.
+  $EF77,$05 Jump to #R$EDA6 with item #N$51: #ITEM$51.
 
 c $EF7C Process: Get Skull
 @ $EF7C label=Process_GetSkull
@@ -5148,30 +5212,40 @@ c $EF81 Process: Get Shield
 
 c $EF86 Process: Get Ladder
 @ $EF86 label=Process_GetLadder
+N $EF86 The player wants to pick up the ladder, check which version of it is in
+. the current room.
   $EF86,$06 Call #R$AEF7 with #R$E3C5.
-  $EF8C,$05 Jump to #R$EDB2 if #REGa is equal to #N$5A.
-  $EF91,$05 Jump to #R$EDED if #REGa is not equal to #N$5E.
-  $EF96,$02 #REGa=#N$5A.
-  $EF98,$03 Call #R$ED75.
-  $EF9B,$02 #REGa=#N$5E.
-  $EF9D,$03 Call #R$AEE0.
-  $EFA0,$01 #REGa=#N$00.
-  $EFA1,$03 Write #REGa to *#R$E959.
-  $EFA4,$03 Write #REGa to *#R$E96A.
-  $EFA7,$02 #REGb=#N$5A.
-  $EFA9,$03 Jump to #R$EDA6.
+N $EF8C Just pick up the item if it's #ITEM$5A.
+  $EF8C,$05 Jump to #R$EDB2 if the ladder state in the current room is
+. #ITEM$5A.
+N $EF91 Print "#STR$A9EC,$08($b==$FF)" if #ITEM$5E is not present in the
+. current room.
+  $EF91,$05 Jump to #R$EDED if the ladder state in the current room is not
+. #ITEM$5E.
+N $EF96 The player wants to pick up the ladder, check if there are any issues
+. with allowing this (if the inventory is full, or the player is already
+. carrying it).
+  $EF96,$05 Call #R$ED75 with item #N$5A: #ITEM$5A.
+  $EF9B,$05 Call #R$AEE0 with item #N$5E: #ITEM$5E.
+N $EFA0 No ladder no access ... so update the room exits.
+  $EFA0,$04 Write #N$00 to *#R$E959 to close downward access in #ROOM$60.
+  $EFA4,$03 Write #N$00 to *#R$E96A to close upward access in #ROOM$63.
+  $EFA7,$05 Jump to #R$EDA6 with item #N$5A: #ITEM$5A.
+
+u $EFAC
   $EFAC,$01 Return.
 
 c $EFAD Process: Get Cloak
 @ $EFAD label=Process_GetCloak
+N $EFAD The player wants to pick up the cloak, check which version of it is in
+. the current room.
   $EFAD,$06 Call #R$AEF7 with #R$E3DD.
   $EFB3,$05 Jump to #R$EDB2 if #REGa is equal to #N$64.
   $EFB8,$03 Call #R$ED75.
   $EFBB,$06 Call #R$AF1E to transform item #N$62 (#ITEM$62) into item #N$63
 . (#ITEM$63).
   $EFC1,$05 Call #R$B09A to add #N$04 points to the score.
-  $EFC6,$02 #REGb=#N$64.
-  $EFC8,$03 Jump to #R$EDA6.
+  $EFC6,$05 Jump to #R$EDA6 with item #N$64: #ITEM$64.
 
 c $EFCB Process: Get Silver
 @ $EFCB label=Process_GetSilver
@@ -5209,9 +5283,12 @@ c $F001 Process: Drop Urn
 
 c $F006 Process: Drop Torc
 @ $F006 label=Process_DropTorc
+N $F006 The player wants to drop the torc, check which version of it is in the
+. players inventory/ current room.
   $F006,$06 Call #R$AEF7 with #R$E366.
 N $F00C The player wants to drop the torc but are they wearing it?
-  $F00C,$05 Jump to #R$EDB8 if the item is not item #N$6A: #ITEM$6A.
+  $F00C,$05 Just jump straight to #R$EDB8 if the player is not wearing the torc
+. (so the current item is not #ITEM$6A).
 N $F011 Else the player is wearing the torc, so "un-wear" it first before
 . dropping it.
 N $F011 Change the torc state!
@@ -5221,9 +5298,12 @@ N $F011 Change the torc state!
 
 c $F01C Process: Drop Helmet
 @ $F01C label=Process_DropHelmet
+N $F01C The player wants to drop the helmet, check which version of it is in
+. the players inventory/ current room.
   $F01C,$06 Call #R$AEF7 with #R$E36B.
 N $F022 The player wants to drop the helmet but are they wearing it?
-  $F022,$05 Jump to #R$EDB8 if the item is not item #N$20: #ITEM$20.
+  $F022,$05 Just jump straight to #R$EDB8 if the player is not wearing the
+. helmet (so the current item is not #ITEM$20).
 N $F027 Else the player is wearing the helmet, so "un-wear" it first before
 . dropping it.
 N $F027 Change the helmet state!
@@ -5245,6 +5325,8 @@ c $F03C Process: Drop Vase
 
 c $F041 Process: Drop Sword
 @ $F041 label=Process_DropSword
+N $F041 The player wants to drop the sword, check which version of it is in the
+. players inventory/ current room.
   $F041,$06 Call #R$AEF7 with #R$E392.
   $F047,$03 Jump to #R$EDB8.
 
@@ -5266,6 +5348,8 @@ N $F05D Print "#STR$A9BD,$08($b==$FF)".
 
 c $F060 Process: Drop Rope
 @ $F060 label=Process_DropRope
+N $F060 The player wants to drop the rope, check which version of it is in the
+. players inventory/ current room.
   $F060,$06 Call #R$AEF7 with #R$E3B0.
   $F066,$03 Jump to #R$EDB8.
 
@@ -5279,6 +5363,8 @@ c $F06E Process: Drop Shield
 
 c $F073 Process: Drop Ladder
 @ $F073 label=Process_DropLadder
+N $F073 The player wants to drop the ladder, check which version of it is in
+. the players inventory/ current room.
   $F073,$06 Call #R$AEF7 with #R$E3C5.
   $F079,$03 Jump to #R$EDB8.
 
@@ -5295,6 +5381,8 @@ c $F07C Process: Drop Staff
 
 c $F091 Process: Drop Cloak
 @ $F091 label=Process_DropCloak
+N $F091 The player wants to drop the cloak, check which version of it is in the
+. players inventory/ current room.
   $F091,$06 Call #R$AEF7 with #R$E3DD.
 N $F097 The player wants to drop the cloak but are they wearing it?
   $F097,$05 Jump to #R$EDB8 if the item is not item #N$6D: #ITEM$6D.
@@ -5466,8 +5554,8 @@ c $F1DF
   $F1E8,$05 Jump to #R$F1F8 if #REGb is not equal to #N$59.
   $F1ED,$06 Call #R$AF1E to transform item #N$59 (#ITEM$59) into item #N$58
 . (#ITEM$58).
-  $F1F3,$02 #REGb=#ITEM$39.
-  $F1F5,$03 Jump to #R$EDA6.
+  $F1F3,$05 Jump to #R$EDA6 with item #N$39: #ITEM$39.
+
 N $F1F8 Print "#STR$D51A,$08($b==$FF)".
   $F1F8,$03 #REGhl=#R$D51A.
   $F1FB,$03 Jump to #R$ED6D.
@@ -5535,6 +5623,8 @@ c $F23E
 
 c $F26C Process: Free Ox
 @ $F26C label=Process_FreeOx
+N $F26C The player wants to free the ox, check which version of the ox is in
+. the current room.
   $F26C,$06 Call #R$AEF7 with #R$E3B6.
   $F272,$05 Jump to #R$EE35 if the item present is #ITEM$54.
   $F277,$04 Jump to #R$F285 if the item present is not #ITEM$52.
@@ -5553,7 +5643,8 @@ N $F285 Change the dead ox state!
 
 c $F293 Process: Free Roman
 @ $F293 label=Process_FreeRoman
-N $F293 The player wants to free the captive Roman.
+N $F293 The player wants to free the captive Roman, check which version of the
+. Roman is in the current room.
   $F293,$06 Call #R$AEF7 with #R$E341.
 N $F299 Check if he's alive...
   $F299,$04 Jump to #R$F2B0 if the item present is #ITEM$0B.
@@ -5577,6 +5668,8 @@ N $F2B0 Bad luck!
 
 c $F2BA Process: Free Hare
 @ $F2BA label=Process_FreeHare
+N $F2BA The player wants to free the hare, check which version of the hare is
+. is in the current room.
   $F2BA,$06 Call #R$AEF7 with #R$E353.
   $F2C0,$05 Jump to #R$EDF9 if #REGa is equal to #N$26.
   $F2C5,$03 Call #R$AEE0.
@@ -5587,6 +5680,8 @@ c $F2BA Process: Free Hare
 
 c $F2D4 Process: Free Rope
 @ $F2D4 label=Process_FreeRope
+N $F2D4 The player wants to free the rope, check which version of the rope is
+. is in the current room.
   $F2D4,$06 Call #R$AEF7 with #R$E3B0.
   $F2DA,$05 Jump to #R$EE35 if #REGa is equal to #N$51.
   $F2DF,$05 Jump to #R$F293 if #REGa is equal to #N$0B.
@@ -5606,7 +5701,8 @@ N $F2F9 Print "#STR$D8FD,$08($b==$FF)".
   $F2F9,$03 #REGhl=#R$D8FD.
   $F2FC,$03 Jump to #R$ED6D.
 
-c $F2FF Process:
+c $F2FF Process: Enter Into Pool
+@ $F2FF label=Process_EnterIntoPool
   $F2FF,$03 Load *#R$A7C3 into #REGa.
   $F302,$05 Jump to #R$EE0B if the player is in room #N$0C: #ROOM$0C.
   $F307,$05 Jump to #R$EE0B if the player is in room #N$15: #ROOM$15.
@@ -5619,7 +5715,8 @@ c $F2FF Process:
   $F319,$03 Call #R$F7AC.
   $F31C,$01 Return.
 
-c $F31D
+c $F31D Process: Enter Into Lake
+@ $F31D label=Process_EnterIntoLake
   $F31D,$05 Call #R$AE6B with item #N$37: #ITEM$37.
   $F322,$02 Jump to #R$F32E if #REGa is not equal to #N$37.
 N $F324 Bad luck!
@@ -5634,17 +5731,21 @@ N $F32E Print "#STR$D973,$08($b==$FF)".
   $F334,$03 Call #R$F7AC.
   $F337,$01 Return.
 
-c $F338
+c $F338 Process: Enter Into Water
+@ $F338 label=Process_EnterIntoWater
   $F338,$06 Call #R$AEF7 with #R$E3E7.
   $F33E,$05 Jump to #R$F31D if #REGa is equal to #N$6C.
   $F343,$05 Jump to #R$EE0B if #REGa is equal to #N$32.
   $F348,$03 Jump to #R$F2FF.
 
+c $F34B Process: Jump Onto Straw
+@ $F34B label=Process_JumpOntoStraw
   $F34B,$08 Jump to #R$EE0B if *#R$A7C3 is equal to room #N$63: #ROOM$63.
   $F353,$05 Call #R$EB10 with room #N$63: #ROOM$63.
   $F358,$01 Return.
 
-c $F359
+c $F359 Process: Climb Out Of Pool
+@ $F359 label=Process_ClimbOutOfPool
   $F359,$03 Load *#R$A7C3 into #REGa.
   $F35C,$02 #REGb=#N$05.
   $F35E,$04 Jump to #R$F369 if the player is in room #N$0C: #ROOM$0C.
@@ -5654,14 +5755,16 @@ c $F359
   $F36A,$03 Call #R$EB10.
   $F36D,$01 Return.
 
-c $F36E
+c $F36E Process: Climb Out Of Water
+@ $F36E label=Process_ClimbOutOfWater
   $F36E,$03 Load *#R$A7C3 into #REGa.
   $F371,$05 Jump to #R$EDED if the player is in room #N$0D: #ROOM$0D.
   $F376,$05 Jump to #R$F359 if the player is in room #N$0C: #ROOM$0C.
   $F37B,$05 Jump to #R$F359 if the player is in room #N$15: #ROOM$15.
   $F380,$03 Jump to #R$EE2F.
 
-c $F383
+c $F383 Process: Climb Out
+@ $F383 label=Process_ClimbOut
   $F383,$03 #REGa=*#R$A7C3.
   $F386,$05 Jump to #R$EDED if #REGa is equal to room #N$0D: #ROOM$0D.
   $F38B,$05 Jump to #R$F359 if #REGa is equal to room #N$0C: #ROOM$0C.
@@ -5681,25 +5784,29 @@ D $F39B Some commands like #R$FB89("GO") and #R$FC8D("SWIM") are just treated
   $F3A5,$04 Write a termination character (#N$FF) to #R$A825.
   $F3A9,$03 Jump to #R$B05E.
 
-c $F3AC
+c $F3AC Process: Climb Up Ladder
+@ $F3AC label=Process_ClimbUpLadder
   $F3AC,$05 Call #R$AE6B with item #N$5E: #ITEM$5E.
   $F3B1,$03 Jump to #R$EDED if the item is not either in the current room or in
 . the players inventory.
   $F3B4,$05 Call #R$EB10 with room #N$60: #ROOM$60.
   $F3B9,$01 Return.
 
-c $F3BA
+c $F3BA Process: Climb Down Ladder
+@ $F3BA label=Process_ClimbDownLadder
   $F3BA,$05 Call #R$AE6B with item #N$5C: #ITEM$5C.
   $F3BF,$03 Jump to #R$EDED if ?? is not equal to #N$5C.
   $F3C2,$05 Call #R$EB10 with room #N$63: #ROOM$63.
   $F3C7,$01 Return.
 
-c $F3C8
+c $F3C8 Process: Enter Fissure
+@ $F3C8 label=Process_EnterFissure
   $F3C8,$08 Jump to #R$EE0B if *#R$A7C3 is not equal to #N$18.
   $F3D0,$05 Call #R$EB10 with room #N$19: #ROOM$19.
   $F3D5,$01 Return.
 
-c $F3D6
+c $F3D6 Process: Enter Hut
+@ $F3D6 label=Process_EnterHut
   $F3D6,$07 Jump to #R$F3E1 if *#R$A7C3 is not equal to #N$2C.
   $F3DD,$02 #REGa=#N$24.
   $F3DF,$02 Jump to #R$F3E8.
@@ -5708,7 +5815,8 @@ c $F3D6
   $F3E6,$05 Call #R$EB10 with room #N$4E: #ROOM$4E.
   $F3EB,$01 Return.
 
-c $F3EC
+c $F3EC Process: Enter Cavern
+@ $F3EC label=Process_EnterCavern
   $F3EC,$07 Jump to #R$F3F7 if *#R$A7C3 is not equal to #N$06.
   $F3F3,$02 #REGa=#N$05.
   $F3F5,$02 Jump to #R$F406.
@@ -5721,17 +5829,25 @@ c $F3EC
   $F404,$05 Call #R$EB10 with room #N$4F: #ROOM$4F.
   $F409,$01 Return.
 
-c $F40A
+c $F40A Process: Enter Ring
+@ $F40A label=Process_EnterRing
+N $F40A Print "#STR$D9CF,$08($b==$FF)".
   $F40A,$03 #REGhl=#R$D9CF.
   $F40D,$03 Jump to #R$ED6D.
 
+c $F410 Process: Jump Into Ring
+@ $F410 label=Process_JumpIntoRing
+N $F410 Print "#STR$DA24,$08($b==$FF)".
   $F410,$03 #REGhl=#R$DA24.
   $F413,$03 Jump to #R$ED6D.
 
+c $F416 Process: Jump Down
+@ $F416 label=Process_JumpDown
   $F416,$08 Jump to #R$EDED if *#R$A7C3 is not equal to #N$60.
 N $F41E Bad luck!
   $F41E,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
 . over".
+N $F422 Print "#STR$DA42,$08($b==$FF)".
   $F422,$03 #REGhl=#R$DA42.
   $F425,$03 Jump to #R$ED6D.
 
@@ -5799,6 +5915,8 @@ N $F483 Print "#STR$B50E,$08($b==$FF)".
 
 c $F489 Process: Drop Amulet
 @ $F489 label=Process_DropAmulet
+N $F489 The player wants to drop the amulet, check which version of it is in
+. the players inventory/ current room.
   $F489,$06 Call #R$AEF7 with #R$E3A6.
   $F48F,$03 Call #R$EDD0.
   $F492,$06 Jump to #R$EDC1 if #REGe is equal to item #N$4B: #ITEM$4B.
@@ -5888,6 +6006,8 @@ N $F53E Print "#STR$DC41,$08($b==$FF)".
 
 c $F544 Process: Capture Roman
 @ $F544 label=Process_CaptureRoman
+N $F544 The player is trying to capture the Roman, check which version of the
+. Roman is in the current room.
   $F544,$06 Call #R$AEF7 with #R$E341.
 N $F54A The player wants to capture the Roman but is he already captured?
 N $F54A Print "#STR$CDE8,$08($b==$FF)" if the Roman is already captured.
@@ -5900,7 +6020,7 @@ N $F554 Can the player even capture the Roman? Do they have the rope?
   $F559,$03 Jump to #R$EDDB if item #N$51: #ITEM$51 isn't present in the
 . current room or the players inventory.
 N $F55C The Roman is here, and the player has the rope! Let's capture a Roman:
-N $F55C Change the romans state!
+N $F55C Change the Roman state!
   $F55C,$06 Call #R$AF1E to transform item #N$0A (#ITEM$0A) into item #N$0B
 . (#ITEM$0B).
   $F562,$05 Call #R$B09A to add #N$04 points to the score.
@@ -5913,8 +6033,8 @@ N $F575 Print "#STR$DC58,$08($b==$FF)".
   $F575,$03 #REGhl=#R$DC58.
   $F578,$03 Jump to #R$ED6D.
 
-c $F57B Process: Ladder
-@ $F57B label=Process_Ladder
+c $F57B Process: Place Ladder Against Platform
+@ $F57B label=Process_PlaceLadderAgainstPlatform
   $F57B,$06 Call #R$AEF7 with #R$E3C5.
 N $F581 If the version of the ladder which exists in the room is one where it's
 . already been used, print "#STR$CDE8,$08($b==$FF)".
@@ -5932,7 +6052,8 @@ N $F58B This doesn't need to happen...
   $F5B0,$05 Call #R$B09A to add #N$04 points to the score.
   $F5B5,$03 Jump to #R$EDF3.
 
-c $F5B8
+c $F5B8 Process: Place Sword On Slab
+@ $F5B8 label=Process_PlaceSwordOnSlab
   $F5B8,$06 Call #R$AEF7 with #R$E392.
   $F5BE,$05 Jump to #R$EE0B if #REGa is equal to #N$59.
   $F5C3,$05 Jump to #R$EDF9 if #REGa is equal to #N$39.
@@ -5957,100 +6078,155 @@ N $F5F3 Print "#STR$DCA8,$08($b==$FF)".
   $F5F3,$03 #REGhl=#R$DCA8.
   $F5F6,$03 Jump to #R$ED6D.
 
-c $F5F9
+c $F5F9 Process: Step Into Ring
+@ $F5F9 label=Process_StepIntoRing
   $F5F9,$07 Jump to #R$F604 if *#R$A7C3 is not equal to room #N$43: #ROOM$43.
-  $F600,$02 #REGa=#N$57.
+  $F600,$02 Set the teleportation destination room to #ROOM$57.
   $F602,$02 Jump to #R$F60F.
-  $F604,$02 #REGa=#N$43.
+@ $F604 label=StepIntoRing
+N $F604 Send the player to either the Crystal Cavern, or the end of the game.
+  $F604,$02 Set the teleportation destination room to #ROOM$43.
   $F606,$07 Jump to #R$F60F if bit 5 of *#R$A76D is not set.
-  $F60D,$02 #REGa=#N$56.
-  $F60F,$01 Stash #REGaf on the stack.
+  $F60D,$02 Set the teleportation destination room to #ROOM$56 (the game is
+. complete - this messaging appears as a room description).
+@ $F60F label=Handler_Teleporting
+N $F60F Handle sending the player to a new room through the magic of rings.
+  $F60F,$01 Stash the room ID on the stack.
 N $F610 Print "#STR$DCBD,$08($b==$FF)".
   $F610,$03 #REGhl=#R$DCBD.
   $F613,$03 Call #R$A592.
-  $F616,$02 #REGb=#N$32.
-  $F618,$03 Call #R$A5C2.
-  $F61B,$01 Restore #REGaf from the stack.
+  $F616,$05 Call #R$A5C2 using #N$32 HALT loops (for a short pause).
+N $F61B Move the player to the new room.
+  $F61B,$01 Restore the room ID from the stack.
   $F61C,$03 Call #R$EB10.
   $F61F,$01 Return.
 
-c $F620
-  $F620,$03 #REGhl=#R$A825.
-  $F623,$03 #REGbc=#N($0009,$04,$04).
-  $F626,$02 #REGa=#N$3C.
-  $F628,$02 CPIR.
+c $F620 Did User Input Mention "SWORD"?
+@ $F620 label=CheckUserInput_Sword
+R $F620 F The zero flag is set if the word was found
+  $F620,$03 Set a pointer in #REGhl to #R$A825 (the second token in the user
+. input tokens table).
+  $F623,$03 Set a counter in #REGbc for the length of the rest of the user
+. input tokens table (#N($0009,$04,$04) bytes).
+  $F626,$02 #REGa=#TOKEN$3C.
+  $F628,$02 Search for the word "SWORD" in the table.
   $F62A,$01 Return.
 
+c $F62B Is The Player Carrying The Sword?
+@ $F62B label=IsPlayerCarryingSword
+N $F62B The player wants to use the sword, check which version of it is in the
+. current room/ players inventory.
   $F62B,$06 Call #R$AEF7 with #R$E392.
+N $F631 Check if the player is actually holding whichever version of the sword
+. was passed back.
   $F631,$03 Call #R$AEDA.
-  $F634,$01 Return if #REGa is equal to #N$3C.
-  $F635,$01 Restore #REGhl from the stack.
+  $F634,$01 Return if the player is holding any version of the sword.
+N $F635 The player isn't carrying any version of the sword in their inventory.
+  $F635,$01 Discard the return address on the stack.
   $F636,$03 Call #R$F620.
-  $F639,$01 #REGa=#REGe.
-  $F63A,$03 Call #R$EDD0 if ?? is equal to #N$3C.
+  $F639,$01 Copy the originally requested item ID into #REGa.
+  $F63A,$03 Call #R$EDD0 if the player mentioned "sword" at all anywhere in
+. their input.
+N $F63D See #POKE#correct-typo-weapon(Correct Typo).
 N $F63D Print "#STR$DCE5,$08($b==$FF)".
   $F63D,$03 #REGhl=#R$DCE5.
   $F640,$03 Jump to #R$ED6D.
 
+c $F643 Process: Kill Roman With Sword
+@ $F643 label=Process_KillRomanWithSword
+N $F643 The player wants to kill the Roman, check which version of the Roman is
+. is in the current room.
   $F643,$06 Call #R$AEF7 with #R$E341.
-  $F649,$05 Jump to #R$EE0B if #REGa is equal to #N$0C.
-  $F64E,$05 Jump to #R$EE0B if #REGa is equal to #N$55.
-  $F653,$03 Write #REGa to *#R$A773.
+N $F649 Print "#STR$CDE8,$08($b==$FF)" if the Roman is already dead...
+  $F649,$0A Jump to #R$EE0B if the version of the Roman in the current room is
+. either #ITEM$0C or #ITEM$55.
+  $F653,$03 Temporarily stash the version of the Roman in *#R$A773.
+N $F656 Make sure the player is even carrying a sword.
   $F656,$03 Call #R$F62B.
-  $F659,$07 Jump to #R$F67B if *#R$A773 is greater than or equal to #N$04.
+  $F659,$03 Restore the version of the Roman from *#R$A773.
+  $F65C,$04 Jump to #R$F67B if the version of the Roman is greater than or
+. equal to item #N$04: #ITEM$04.
   $F660,$05 Call #R$AEE0 with item #N$02: #ITEM$02.
   $F665,$05 Call #R$AEE0 with item #N$03: #ITEM$03.
   $F66A,$05 Call #R$AEE0 with item #N$08: #ITEM$08.
+N $F66F Change the Roman state!
   $F66F,$06 Call #R$AF1E to transform item #N$07 (#ITEM$07) into item #N$0A
 . (#ITEM$0A).
 N $F675 Print "#STR$DCFE,$08($b==$FF)".
   $F675,$03 #REGhl=#R$DCFE.
   $F678,$03 Jump to #R$ED6D.
-
-  $F67B,$04 Jump to #R$F68B if #REGa is not equal to #N$0A.
+@ $F67B label=IsRomanCamping
+N $F67B If the Roman is camped, you can surprise attack him and can kill him.
+  $F67B,$04 Jump to #R$F68B if the version of the Roman is not #ITEM$0A.
+N $F67F Poor guy is just camping and now he's dead, I hope you're happy with
+. yourself.
+N $F67F Change the Roman state!
   $F67F,$06 Call #R$AF1E to transform item #N$0A (#ITEM$0A) into item #N$0C
 . (#ITEM$0C).
+@ $F685 label=Response_KilledRoman
 N $F685 Print "#STR$DD4A,$08($b==$FF)".
   $F685,$03 #REGhl=#R$DD4A.
   $F688,$03 Jump to #R$ED6D.
-
+@ $F68B label=KillRomanWithSword
+N $F68B The player has killed the Roman ... process this event.
+N $F68B Change the Roman state!
   $F68B,$06 Call #R$AF1E to transform item #N$0B (#ITEM$0B) into item #N$55
 . (#ITEM$55).
-  $F691,$05 Reset bit 0 of *#R$A787.
+N $F691 The Roman is no longer captured, so unset the game flag.
+  $F691,$05 Reset bit 0 of *#R$A787 which relates to having captured the Roman.
   $F696,$03 Call #R$F685.
 N $F699 Print "#STR$DD6E,$08($b==$FF)".
   $F699,$03 #REGhl=#R$DD6E.
   $F69C,$03 Jump to #R$ED6D.
 
+c $F69F Process: Kill Fomorian
+@ $F69F label=Process_KillFomorian
+N $F69F The player wants to kill the Fomorian, check which version of the
+. Fomorian is is in the current room.
   $F69F,$06 Call #R$AEF7 with #R$E348.
+N $F6A5 Is the Fomorian already dead?
   $F6A5,$03 #REGhl=#R$FC8A.
-  $F6A8,$03 #REGbc=#N($0003,$04,$04).
-  $F6AB,$02 CPIR.
-  $F6AD,$03 Jump to #R$EE0B if #REGa is equal to #N$0A.
-  $F6B0,$03 Write #REGa to *#R$A773.
+  $F6A8,$03 Set a counter in #REGbc of the length of the table #N($0003,$04,$04).
+  $F6AB,$02 Search for the version of the Fomorian found in the table of dead
+. Fomorian item IDs.
+N $F6AD Print "#STR$CDE8,$08($b==$FF)" if the Fomorian is already dead...
+  $F6AD,$03 Jump to #R$EE0B if the Fomorian is dead.
+N $F6B0 The Fomorian is alive (for now).
+  $F6B0,$03 Temporarily stash the version of the Fomorian in *#R$A773.
+N $F6B3 Make sure the player is even carrying a sword.
   $F6B3,$03 Call #R$F62B.
-  $F6B6,$07 Jump to #R$F6C7 if *#R$A773 is not equal to #N$0F.
+  $F6B6,$03 Restore the version of the Fomorian from *#R$A773.
+N $F6B9 So uhhhh... is the player trying to kill one Fomorian or an entire
+. tribe?
+  $F6B9,$04 Jump to #R$F6C7 if the version of the Fomorian is not #ITEM$0F.
+N $F6BD The player is overly ambitious, and is attempting to take on an entire
+. tribe of Fomorians.
 N $F6BD Bad luck!
   $F6BD,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
 . over".
 N $F6C1 Print "#STR$DD86,$08($b==$FF)".
   $F6C1,$03 #REGhl=#R$DD86.
   $F6C4,$03 Jump to #R$ED6D.
-
+@ $F6C7 label=KillFomorian
+N $F6C7 There's a single Fomorian present, but does the player have a sword?
   $F6C7,$05 Call #R$AE6B with item #N$39: #ITEM$39.
   $F6CC,$02 Jump to #R$F6D4 if #ITEM$39 is either in the current room or in the
 . players inventory.
 N $F6CE Print "#STR$DDB5,$08($b==$FF)".
   $F6CE,$03 #REGhl=#R$DDB5.
   $F6D1,$03 Jump to #R$ED6D.
-
-  $F6D4,$03 #REGa=*#R$A773.
-  $F6D7,$01 #REGb=#REGa.
-  $F6D8,$02 #REGa+=#N$09.
-  $F6DA,$01 #REGc=#REGa.
-  $F6DB,$03 Call #R$AF1E.
+@ $F6D4 label=KillFomorianWithSword
+N $F6D4 The player is able to kill the Fomorian with a sword.
+  $F6D4,$04 Set the "from" item ID in #REGb, restored from *#R$A773.
+  $F6D8,$03 Set the "destination" item ID in #REGc which is the source
+. ID+#N$09.
+N $F6DB Change the Fomorian state!
+  $F6DB,$03 Call #R$AF1E to transform item ID of the version of the Fomorian to
+. one #N$09 higher (e.g. #ITEM$04 to #ITEM$0D).
   $F6DE,$03 Jump to #R$F685.
 
+c $F6E1 Process: Kill Hare With Sword
+@ $F6E1 label=Process_KillHareWithSword
   $F6E1,$05 Call #R$AE6B with item #N$26: #ITEM$26.
   $F6E6,$03 Jump to #R$EE0B if #REGa is equal to #N$26.
   $F6E9,$03 Call #R$F620.
@@ -6063,33 +6239,51 @@ N $F6FD Print "#STR$DDDF,$08($b==$FF)".
   $F6FD,$03 #REGhl=#R$DDDF.
   $F700,$03 Jump to #R$ED6D.
 
-  $F703,$03 Write #REGhl to *#R$A772.
+c $F703 Response: Game Over If Player Is Carrying Sword
+@ $F703 label=Response_IfSwordThenGameOver
+R $F703 HL Pointer to a messaging string
+  $F703,$03 Temporarily stash the messaging pointer in #REGhl to *#R$A772.
+N $F706 Make sure the player is even carrying a sword.
   $F706,$03 Call #R$F62B.
+N $F709 The player is carrying a sword but that means their doom...
 N $F709 Bad luck!
   $F709,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
 . over".
-  $F70D,$03 #REGhl=*#R$A772.
+N $F70D Print the messaging string.
+  $F70D,$03 Restore the messaging pointer from *#R$A772.
   $F710,$03 Jump to #R$ED6D.
 
+c $F713 Process: Kill Trader
+@ $F713 label=Process_KillTrader
+N $F713 Make sure the player is even carrying a sword.
   $F713,$03 Call #R$F62B.
   $F716,$03 Call #R$F685.
 N $F719 Print "#STR$DDFA,$08($b==$FF)".
   $F719,$03 #REGhl=#R$DDFA.
   $F71C,$03 Jump to #R$F703.
 
+c $F71F Process: Kill Warrior
+@ $F71F label=Process_KillWarrior
   $F71F,$06 Call #R$AEF7 with #R$E377.
   $F725,$05 Jump to #R$F69F if #REGa is not equal to #N$27.
+N $F72A See #POKE#correct-typo-weapon(Correct Typo).
 N $F72A Print "#STR$DCE5,$08($b==$FF)".
   $F72A,$03 #REGhl=#R$DCE5.
   $F72D,$03 Jump to #R$ED6D.
 
+c $F730 Process: Kill Wolves
+@ $F730 label=Process_KillWolves
+N $F730 Make sure the player is even carrying a sword.
   $F730,$03 Call #R$F62B.
 N $F733 Print "#STR$DE31,$08($b==$FF)".
   $F733,$03 #REGhl=#R$DE31.
   $F736,$03 Jump to #R$ED6D.
 
+c $F739 Process: Kill Bear
+@ $F739 label=Process_KillBear
   $F739,$05 Call #R$AE6B with item #N$45: #ITEM$45.
   $F73E,$03 Jump to #R$EE0B if #ITEM$45 is in the current room.
+N $F741 Make sure the player is even carrying a sword.
   $F741,$03 Call #R$F62B.
   $F744,$05 Call #R$AEDA with item #N$56: #ITEM$56.
 N $F749 Print "#STR$DE57,$08($b==$FF)".
@@ -6104,28 +6298,38 @@ N $F764 Print "#STR$DE9E,$08($b==$FF)".
   $F764,$03 #REGhl=#R$DE9E.
   $F767,$03 Jump to #R$ED6D.
 
+c $F76A Process: Kill Guard
+@ $F76A label=Process_KillGuard
+N $F76A Make sure the player is even carrying a sword.
   $F76A,$03 Call #R$F62B.
   $F76D,$03 Call #R$F685.
 N $F770 Print "#STR$DEC2,$08($b==$FF)".
   $F770,$03 #REGhl=#R$DEC2.
   $F773,$03 Jump to #R$F703.
 
+c $F776 Process: Kill Druid
+@ $F776 label=Process_KillDruid
+N $F776 Make sure the player is even carrying a sword.
   $F776,$03 Call #R$F62B.
 N $F779 Print "#STR$DEF0,$08($b==$FF)".
   $F779,$03 #REGhl=#R$DEF0.
   $F77C,$03 Jump to #R$F703.
 
-c $F77F
+c $F77F Process: Kill Pig With Sword
+@ $F77F label=Process_KillPigWithSword
   $F77F,$05 Call #R$AE6B with item #N$50: #ITEM$50.
   $F784,$03 Jump to #R$EE0B if #REGa is equal to #N$50.
+N $F787 Make sure the player is even carrying a sword.
   $F787,$03 Call #R$F62B.
   $F78A,$06 Call #R$AF1E to transform item #N$4F (#ITEM$4F) into item #N$50
 . (#ITEM$50).
   $F790,$03 Jump to #R$F764.
 
-c $F793
+c $F793 Process: Kill Ox With Sword
+@ $F793 label=Process_KillOxWithSword
   $F793,$05 Call #R$AE6B with item #N$52: #ITEM$52.
   $F798,$03 Jump to #R$EE0B if #REGa is not equal to #N$52.
+N $F79B Make sure the player is even carrying a sword.
   $F79B,$03 Call #R$F62B.
   $F79E,$06 Call #R$AF1E to transform item #N$52 (#ITEM$52) into item #N$53
 . (#ITEM$53).
@@ -6158,7 +6362,8 @@ N $F7CD Jump to print "#STR$CDE8,$08($b==$FF)" if this room is not #ROOM$3A.
   $F7D5,$05 Call #R$EB10 with room #N$49: #ROOM$49.
   $F7DA,$01 Return.
 
-c $F7DB
+c $F7DB Process: Enter Broch
+@ $F7DB label=Process_EnterBroch
   $F7DB,$08 Jump to #R$EE0B if *#R$A7C3 is not room #N$38: #ROOM$38.
   $F7E3,$05 Call #R$EB10 with room #N$59: #ROOM$59.
   $F7E8,$01 Return.
@@ -6764,8 +6969,13 @@ N $FC74 The actions table for "kill":
 W $FC74,$02 Action routine #N($01+(#PC-$FC74)/$02).
 L $FC74,$02,$0B,$02
 
-u $FC8A
-B $FC8A,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+g $FC8A Data: Dead Fomorian
+@ $FC8A label=Data_DeadFomorian
+D $FC8A A list of all the item IDs which are versions of the Fomorian being
+. dead.
+.
+. Used by the routine at #R$F69F.
+B $FC8A,$01 Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
 L $FC8A,$01,$03
 
 c $FC8D Action: Swim
