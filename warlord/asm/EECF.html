@@ -42,22 +42,41 @@ Next: <a href="EEE9.html">EEE9</a>
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="eecf"></span>
+<div class="comments">
+<div class="paragraph">
+The player wants to pick up the acorns, check if there are any issues with allowing this (if the inventory is full, or the player is already carrying them).
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Process_GetAcorns</td>
 <td class="address-2"><span id="eecf"></span>EECF</td>
 <td class="instruction">LD A,$1B</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=item 1B: "Some acorns".</td>
+<td class="comment-1" rowspan="2">Call <a href="ED75.html">Check_PlayerInventory</a> with item 1B: "Some acorns".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eed1"></span>EED1</td>
-<td class="instruction">CALL <a href="ED75.html">$ED75</a></td>
-<td class="comment-1" rowspan="1">Call <a href="ED75.html">ED75</a>.</td>
+<td class="instruction">CALL <a href="ED75.html">Check_PlayerInventory</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eed4"></span>
+<div class="comments">
+<div class="paragraph">
+All is good, but is this the first time the player has picked up the acorns?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eed4"></span>EED4</td>
 <td class="instruction">LD HL,$A76D</td>
-<td class="comment-1" rowspan="3">Jump to <a href="EECF.html#eee4">Process_GetAcorns_0</a> if bit 3 of *<a href="A76D.html">Flag_ItemStates_02</a> is set.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EECF.html#eee4">GetAcorns</a> if bit 3 of *<a href="A76D.html">Flag_ItemStates_02</a> is set, which relates to carrying the acorns.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -67,43 +86,42 @@ Next: <a href="EEE9.html">EEE9</a>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eed9"></span>EED9</td>
-<td class="instruction">JR NZ,<a href="EECF.html#eee4">Process_GetAcorns_0</a></td>
+<td class="instruction">JR NZ,<a href="EECF.html#eee4">GetAcorns</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eedb"></span>EEDB</td>
 <td class="instruction">SET 3,(HL)</td>
-<td class="comment-1" rowspan="1">Set bit 3 of *<a href="A76D.html">Flag_ItemStates_02</a>.</td>
+<td class="comment-1" rowspan="1">Set bit 3 of *<a href="A76D.html">Flag_ItemStates_02</a> to signify that the acorns have been picked up. This is to prevent the raven from being spawned more than once.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eedd"></span>EEDD</td>
 <td class="instruction">LD B,$1D</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=item 1D: "A raven,perched on the root of a large tree".</td>
+<td class="comment-1" rowspan="3">Call <a href="AF08.html">Handler_UpdateItemLocation</a> to update item 1D: "A raven,perched on the root of a large tree" to be in room 
+
+<a href="BF1B.html">Dense Woodland</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eedf"></span>EEDF</td>
 <td class="instruction">LD C,$13</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=item 13: "A hare,caught by the leg,in a trap".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eee1"></span>EEE1</td>
 <td class="instruction">CALL <a href="AF08.html">Handler_UpdateItemLocation</a></td>
-<td class="comment-1" rowspan="1">Call <a href="AF08.html">Handler_UpdateItemLocation</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Process_GetAcorns_0</td>
+<td class="asm-label">GetAcorns</td>
 <td class="address-2"><span id="eee4"></span>EEE4</td>
 <td class="instruction">LD B,$1B</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=item 1B: "Some acorns".</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDA6.html">Handler_PickUpItem</a> with item 1B: "Some acorns".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eee6"></span>EEE6</td>
-<td class="instruction">JP <a href="EDA6.html">$EDA6</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="EDA6.html">EDA6</a>.</td>
+<td class="instruction">JP <a href="EDA6.html">Handler_PickUpItem</a></td>
 </tr>
 </table>
 <table class="asm-navigation">

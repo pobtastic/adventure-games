@@ -42,15 +42,35 @@ Next: <a href="EF09.html">EF09</a>
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="eee9"></span>
+<div class="comments">
+<div class="paragraph">
+The player wants to pick up the urn, check if there are any issues with allowing this (if the inventory is full, or the player is already carrying it).
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Process_GetUrn</td>
 <td class="address-2"><span id="eee9"></span>EEE9</td>
 <td class="instruction">LD A,$1C</td>
-<td class="comment-1" rowspan="2">Call <a href="ED75.html">ED75</a> with item 1C: "An urn".</td>
+<td class="comment-1" rowspan="2">Call <a href="ED75.html">Check_PlayerInventory</a> with item 1C: "An urn".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eeeb"></span>EEEB</td>
-<td class="instruction">CALL <a href="ED75.html">$ED75</a></td>
+<td class="instruction">CALL <a href="ED75.html">Check_PlayerInventory</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eeee"></span>
+<div class="comments">
+<div class="paragraph">
+All is good, but check if "A bronze helmet (worn)" is present.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -64,16 +84,36 @@ Next: <a href="EF09.html">EF09</a>
 <td class="instruction">CALL <a href="AE6B.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="eef3"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You cannot move it." if the player isn't wearing the helmet.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eef3"></span>EEF3</td>
 <td class="instruction">JP NZ,<a href="EE23.html">Response_YouCannotMoveIt</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="EE23.html">Response_YouCannotMoveIt</a> if <span class="register">A</span> is not equal to 20.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="EE23.html">Response_YouCannotMoveIt</a> if "A bronze helmet (worn)" isn't present in the room or in the players inventory (note, it can only be in the "worn" state in the players inventory).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eef6"></span>
+<div class="comments">
+<div class="paragraph">
+Is this the first time the player has picked up the urn?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eef6"></span>EEF6</td>
 <td class="instruction">LD HL,$A76C</td>
-<td class="comment-1" rowspan="3">Jump to <a href="EEE9.html#ef04">Process_GetUrn_0</a> if bit 4 of *<a href="A76C.html">Flag_ItemStates_01</a> is set.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEE9.html#ef04">GetUrn</a> if bit 4 of *<a href="A76C.html">Flag_ItemStates_01</a> is set, which relates to carrying the urn.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -83,13 +123,13 @@ Next: <a href="EF09.html">EF09</a>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eefb"></span>EEFB</td>
-<td class="instruction">JR NZ,<a href="EEE9.html#ef04">Process_GetUrn_0</a></td>
+<td class="instruction">JR NZ,<a href="EEE9.html#ef04">GetUrn</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eefd"></span>EEFD</td>
 <td class="instruction">SET 4,(HL)</td>
-<td class="comment-1" rowspan="1">Set bit 4 of *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Set bit 4 of *<span class="register">HL</span> to signify that the urn has been picked up. This is to prevent the points from being awarded more than one time.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -103,16 +143,15 @@ Next: <a href="EF09.html">EF09</a>
 <td class="instruction">CALL <a href="B09A.html">AddToScore</a></td>
 </tr>
 <tr>
-<td class="asm-label">Process_GetUrn_0</td>
+<td class="asm-label">GetUrn</td>
 <td class="address-2"><span id="ef04"></span>EF04</td>
 <td class="instruction">LD B,$1C</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=item 1C: "An urn".</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDA6.html">Handler_PickUpItem</a> with item 1C: "An urn".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef06"></span>EF06</td>
-<td class="instruction">JP <a href="EDA6.html">$EDA6</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="EDA6.html">EDA6</a>.</td>
+<td class="instruction">JP <a href="EDA6.html">Handler_PickUpItem</a></td>
 </tr>
 </table>
 <table class="asm-navigation">

@@ -29,7 +29,7 @@ Prev: <a href="EF81.html">EF81</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#ef86">Map</a></td>
 <td class="next">
-Next: <a href="EFAD.html">EFAD</a>
+Next: <a href="EFAC.html">EFAC</a>
 </td>
 </tr>
 </table>
@@ -38,6 +38,16 @@ Next: <a href="EFAD.html">EFAD</a>
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ef86"></span>
+<div class="comments">
+<div class="paragraph">
+The player wants to pick up the ladder, check which version of it is in the current room.
+</div>
 </div>
 </td>
 </tr>
@@ -53,21 +63,41 @@ Next: <a href="EFAD.html">EFAD</a>
 <td class="instruction">CALL <a href="AEF7.html">CheckItemGroupPresent</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ef8c"></span>
+<div class="comments">
+<div class="paragraph">
+Just pick up the item if it's "A ladder".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef8c"></span>EF8C</td>
 <td class="instruction">CP $5A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="EDB2.html">EDB2</a> if <span class="register">A</span> is equal to 5A.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDB2.html">Handler_CheckPlayerInventory_PickUpItem</a> if the ladder state in the current room is "A ladder".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef8e"></span>EF8E</td>
-<td class="instruction">JP Z,<a href="EDB2.html">$EDB2</a></td>
+<td class="instruction">JP Z,<a href="EDB2.html">Handler_CheckPlayerInventory_PickUpItem</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ef91"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You can't." if "A ladder,leading upward" is not present in the current room.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef91"></span>EF91</td>
 <td class="instruction">CP $5E</td>
-<td class="comment-1" rowspan="2">Jump to <a href="EDED.html">Response_YouCant_Duplicate</a> if <span class="register">A</span> is not equal to 5E.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDED.html">Response_YouCant_Duplicate</a> if the ladder state in the current room is not "A ladder,leading upward".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -75,64 +105,78 @@ Next: <a href="EFAD.html">EFAD</a>
 <td class="instruction">JP NZ,<a href="EDED.html">Response_YouCant_Duplicate</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ef96"></span>
+<div class="comments">
+<div class="paragraph">
+The player wants to pick up the ladder, check if there are any issues with allowing this (if the inventory is full, or the player is already carrying it).
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef96"></span>EF96</td>
 <td class="instruction">LD A,$5A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=5A.</td>
+<td class="comment-1" rowspan="2">Call <a href="ED75.html">Check_PlayerInventory</a> with item 5A: "A ladder".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef98"></span>EF98</td>
-<td class="instruction">CALL <a href="ED75.html">$ED75</a></td>
-<td class="comment-1" rowspan="1">Call <a href="ED75.html">ED75</a>.</td>
+<td class="instruction">CALL <a href="ED75.html">Check_PlayerInventory</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef9b"></span>EF9B</td>
 <td class="instruction">LD A,$5E</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=5E.</td>
+<td class="comment-1" rowspan="2">Call <a href="AEE0.html">Handler_DestroyItemEvent</a> with item 5E: "A ladder,leading upward".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef9d"></span>EF9D</td>
 <td class="instruction">CALL <a href="AEE0.html">Handler_DestroyItemEvent</a></td>
-<td class="comment-1" rowspan="1">Call <a href="AEE0.html">Handler_DestroyItemEvent</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="efa0"></span>
+<div class="comments">
+<div class="paragraph">
+No ladder no access ... so update the room exits.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="efa0"></span>EFA0</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="2">Write 00 to *<a href="E714.html#e959">E959</a> to close downward access in 
+
+<a href="C69D.html">Inside The Inner Wall Entrance</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="efa1"></span>EFA1</td>
 <td class="instruction">LD ($E959),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="E714.html#e959">E959</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="efa4"></span>EFA4</td>
 <td class="instruction">LD ($E96A),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="E714.html#e96a">E96A</a>.</td>
+<td class="comment-1" rowspan="1">Write 00 to *<a href="E714.html#e96a">E96A</a> to close upward access in 
+
+<a href="C39B.html">The Inner Courtyard</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="efa7"></span>EFA7</td>
 <td class="instruction">LD B,$5A</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=5A.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDA6.html">Handler_PickUpItem</a> with item 5A: "A ladder".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="efa9"></span>EFA9</td>
-<td class="instruction">JP <a href="EDA6.html">$EDA6</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="EDA6.html">EDA6</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="efac"></span>EFAC</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
+<td class="instruction">JP <a href="EDA6.html">Handler_PickUpItem</a></td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -142,7 +186,7 @@ Prev: <a href="EF81.html">EF81</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#ef86">Map</a></td>
 <td class="next">
-Next: <a href="EFAD.html">EFAD</a>
+Next: <a href="EFAC.html">EFAC</a>
 </td>
 </tr>
 </table>

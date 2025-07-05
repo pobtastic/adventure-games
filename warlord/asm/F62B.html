@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Warlord: Routine at F62B</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F620.html">F620</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f62b">Map</a></td>
+<td class="next">
+Next: <a href="F643.html">F643</a>
+</td>
+</tr>
+</table>
+<div class="description">F62B: Is The Player Carrying The Sword?</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="F643.html">Process_KillRomanWithSword</a>, <a href="F69F.html">Process_KillFomorian</a>, <a href="F703.html">Response_IfSwordThenGameOver</a>, <a href="F713.html">Process_KillTrader</a>, <a href="F730.html">Process_KillWolves</a>, <a href="F739.html">Process_KillBear</a>, <a href="F76A.html">Process_KillGuard</a>, <a href="F776.html">Process_KillDruid</a>, <a href="F77F.html">Process_KillPigWithSword</a> and <a href="F793.html">Process_KillOxWithSword</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f62b"></span>
+<div class="comments">
+<div class="paragraph">
+The player wants to use the sword, check which version of it is in the current room/ players inventory.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">IsPlayerCarryingSword</td>
+<td class="address-2"><span id="f62b"></span>F62B</td>
+<td class="instruction">LD HL,$E392</td>
+<td class="comment-1" rowspan="2">Call <a href="AEF7.html">CheckItemGroupPresent</a> with <a href="E341.html#e392">Data_ItemGroup_Sword</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f62e"></span>F62E</td>
+<td class="instruction">CALL <a href="AEF7.html">CheckItemGroupPresent</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f631"></span>
+<div class="comments">
+<div class="paragraph">
+Check if the player is actually holding whichever version of the sword was passed back.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f631"></span>F631</td>
+<td class="instruction">CALL <a href="AEDA.html">CheckObjectInInventory</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AEDA.html">CheckObjectInInventory</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f634"></span>F634</td>
+<td class="instruction">RET Z</td>
+<td class="comment-1" rowspan="1">Return if the player is holding any version of the sword.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f635"></span>
+<div class="comments">
+<div class="paragraph">
+The player isn't carrying any version of the sword in their inventory.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f635"></span>F635</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Discard the return address on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f636"></span>F636</td>
+<td class="instruction">CALL <a href="F620.html">CheckUserInput_Sword</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F620.html">CheckUserInput_Sword</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f639"></span>F639</td>
+<td class="instruction">LD A,E</td>
+<td class="comment-1" rowspan="1">Copy the originally requested item ID into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f63a"></span>F63A</td>
+<td class="instruction">CALL Z,<a href="EDD0.html">IsPlayerCarryingItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="EDD0.html">IsPlayerCarryingItem</a> if the player mentioned "sword" at all anywhere in their input.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f63d"></span>
+<div class="comments">
+<div class="paragraph">
+See <a href="../reference/pokes.html#correct-typo-weapon">Correct Typo</a>.
+</div>
+<div class="paragraph">
+Print "You don't have a weopon.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f63d"></span>F63D</td>
+<td class="instruction">LD HL,$DCE5</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DCE5.html">Messaging_DontHaveAWeopon</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f640"></span>F640</td>
+<td class="instruction">JP <a href="ED6D.html">PrintStringAndNewline_Duplicate</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6D.html">PrintStringAndNewline_Duplicate</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F620.html">F620</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f62b">Map</a></td>
+<td class="next">
+Next: <a href="F643.html">F643</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/warlord/">Source code</a>.</div>
+<div><a href="../dec/asm/63019.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

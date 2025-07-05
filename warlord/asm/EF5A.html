@@ -42,6 +42,16 @@ Next: <a href="EF7C.html">EF7C</a>
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ef5a"></span>
+<div class="comments">
+<div class="paragraph">
+The player wants to pick up the rope, check which version of it is in the current room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Process_GetRope</td>
 <td class="address-2"><span id="ef5a"></span>EF5A</td>
 <td class="instruction">LD HL,$E3B0</td>
@@ -53,10 +63,20 @@ Next: <a href="EF7C.html">EF7C</a>
 <td class="instruction">CALL <a href="AEF7.html">CheckItemGroupPresent</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ef60"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You can't." if the player is trying to pick up a version of the rope where the rope is "in-use" (e.g. "A wild ox,tethered to the pen by a length of rope").
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef60"></span>EF60</td>
 <td class="instruction">CP $51</td>
-<td class="comment-1" rowspan="2">Jump to <a href="EDED.html">Response_YouCant_Duplicate</a> if <span class="register">A</span> is not equal to 51.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDED.html">Response_YouCant_Duplicate</a> if the rope state in the current room is not "A piece of rope".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -64,16 +84,36 @@ Next: <a href="EF7C.html">EF7C</a>
 <td class="instruction">JP NZ,<a href="EDED.html">Response_YouCant_Duplicate</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ef65"></span>
+<div class="comments">
+<div class="paragraph">
+The player wants to pick up the rope, check if there are any issues with allowing this (if the inventory is full, or the player is already carrying it).
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef65"></span>EF65</td>
-<td class="instruction">CALL <a href="ED75.html">$ED75</a></td>
-<td class="comment-1" rowspan="1">Call <a href="ED75.html">ED75</a>.</td>
+<td class="instruction">CALL <a href="ED75.html">Check_PlayerInventory</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ED75.html">Check_PlayerInventory</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ef68"></span>
+<div class="comments">
+<div class="paragraph">
+Is this the first time the player has picked up the rope?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef68"></span>EF68</td>
 <td class="instruction">LD HL,$A76C</td>
-<td class="comment-1" rowspan="3">Jump to <a href="EDA6.html">EDA6</a> if bit 2 of *<a href="A76C.html">Flag_ItemStates_01</a> is set.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EDA6.html">Handler_PickUpItem</a> if bit 2 of *<a href="A76C.html">Flag_ItemStates_01</a> is set, which relates to carrying the rope.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -83,13 +123,13 @@ Next: <a href="EF7C.html">EF7C</a>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef6d"></span>EF6D</td>
-<td class="instruction">JP NZ,<a href="EDA6.html">$EDA6</a></td>
+<td class="instruction">JP NZ,<a href="EDA6.html">Handler_PickUpItem</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef70"></span>EF70</td>
 <td class="instruction">SET 2,(HL)</td>
-<td class="comment-1" rowspan="1">Set bit 2 of *<a href="A76C.html">Flag_ItemStates_01</a>.</td>
+<td class="comment-1" rowspan="1">Set bit 2 of *<a href="A76C.html">Flag_ItemStates_01</a> to signify that the rope has been picked up. This is to prevent the points from being awarded more than one time.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -106,13 +146,12 @@ Next: <a href="EF7C.html">EF7C</a>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef77"></span>EF77</td>
 <td class="instruction">LD B,$51</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=51.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDA6.html">Handler_PickUpItem</a> with item 51: "A piece of rope".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ef79"></span>EF79</td>
-<td class="instruction">JP <a href="EDA6.html">$EDA6</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="EDA6.html">EDA6</a>.</td>
+<td class="instruction">JP <a href="EDA6.html">Handler_PickUpItem</a></td>
 </tr>
 </table>
 <table class="asm-navigation">

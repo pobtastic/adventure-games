@@ -33,7 +33,7 @@ Next: <a href="F620.html">F620</a>
 </td>
 </tr>
 </table>
-<div class="description">F5F9: Routine at F5F9</div>
+<div class="description">F5F9: Process: Step Into Ring</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -42,57 +42,94 @@ Next: <a href="F620.html">F620</a>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Process_StepIntoRing</td>
 <td class="address-2"><span id="f5f9"></span>F5F9</td>
 <td class="instruction">LD A,($A7C3)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F5F9.html#f604">F604</a> if *<a href="A7C3.html">CurrentRoom</a> is not equal to room 43: 
+<td class="comment-1" rowspan="3">Jump to <a href="F5F9.html#f604">StepIntoRing</a> if *<a href="A7C3.html">CurrentRoom</a> is not equal to room 43: 
 
 <a href="C359.html">The Crystal Cavern</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f5fc"></span>F5FC</td>
 <td class="instruction">CP $43</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f5fe"></span>F5FE</td>
-<td class="instruction">JR NZ,<a href="F5F9.html#f604">$F604</a></td>
+<td class="instruction">JR NZ,<a href="F5F9.html#f604">StepIntoRing</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f600"></span>F600</td>
 <td class="instruction">LD A,$57</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=57.</td>
+<td class="comment-1" rowspan="1">Set the teleportation destination room to 
+
+<a href="C618.html">The Vale Of Cuchulainn</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f602"></span>F602</td>
-<td class="instruction">JR <a href="F5F9.html#f60f">$F60F</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="F5F9.html#f60f">F60F</a>.</td>
+<td class="instruction">JR <a href="F5F9.html#f60f">Handler_Teleporting</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F5F9.html#f60f">Handler_Teleporting</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="f604"></span>
+<div class="comments">
+<div class="paragraph">
+Send the player to either the Crystal Cavern, or the end of the game.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">StepIntoRing</td>
 <td class="address-2"><span id="f604"></span>F604</td>
 <td class="instruction">LD A,$43</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=43.</td>
+<td class="comment-1" rowspan="1">Set the teleportation destination room to 
+
+<a href="C359.html">The Crystal Cavern</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f606"></span>F606</td>
 <td class="instruction">LD HL,$A76D</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F5F9.html#f60f">F60F</a> if bit 5 of *<a href="A76D.html">Flag_ItemStates_02</a> is not set.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F5F9.html#f60f">Handler_Teleporting</a> if bit 5 of *<a href="A76D.html">Flag_ItemStates_02</a> is not set.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f609"></span>F609</td>
 <td class="instruction">BIT 5,(HL)</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f60b"></span>F60B</td>
-<td class="instruction">JR Z,<a href="F5F9.html#f60f">$F60F</a></td>
+<td class="instruction">JR Z,<a href="F5F9.html#f60f">Handler_Teleporting</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f60d"></span>F60D</td>
 <td class="instruction">LD A,$56</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=56.</td>
+<td class="comment-1" rowspan="1">Set the teleportation destination room to 
+
+<a href="C52C.html">Congratulations!!</a> (the game is complete - this messaging appears as a room description).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="f60f"></span>
+<div class="comments">
+<div class="paragraph">
+Handle sending the player to a new room through the magic of rings.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_Teleporting</td>
 <td class="address-2"><span id="f60f"></span>F60F</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">AF</span> on the stack.</td>
+<td class="comment-1" rowspan="1">Stash the room ID on the stack.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -105,36 +142,52 @@ Print "You feel a sense of rushingmovement...".
 </td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f610"></span>F610</td>
 <td class="instruction">LD HL,$DCBD</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DCBD.html">Messaging_SenseOfRushingMovement</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f613"></span>F613</td>
 <td class="instruction">CALL <a href="A592.html">PrintStringAndNewline</a></td>
 <td class="comment-1" rowspan="1">Call <a href="A592.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f616"></span>F616</td>
 <td class="instruction">LD B,$32</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=32.</td>
+<td class="comment-1" rowspan="2">Call <a href="A5C2.html">Pause_Loop</a> using 32 HALT loops (for a short pause).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f618"></span>F618</td>
 <td class="instruction">CALL <a href="A5C2.html">Pause_Loop</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A5C2.html">Pause_Loop</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="f61b"></span>
+<div class="comments">
+<div class="paragraph">
+Move the player to the new room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f61b"></span>F61B</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the room ID from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f61c"></span>F61C</td>
 <td class="instruction">CALL <a href="EB10.html">ChangeRoom</a></td>
 <td class="comment-1" rowspan="1">Call <a href="EB10.html">ChangeRoom</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f61f"></span>F61F</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
