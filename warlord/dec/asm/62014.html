@@ -29,11 +29,11 @@ Prev: <a href="62009.html">62009</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#62014">Map</a></td>
 <td class="next">
-Next: <a href="62060.html">62060</a>
+Next: <a href="62041.html">62041</a>
 </td>
 </tr>
 </table>
-<div class="description">62014: Routine at F23E</div>
+<div class="description">62014: Process: Give Food To Bear</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -42,96 +42,124 @@ Next: <a href="62060.html">62060</a>
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62014"></span>
+<div class="comments">
+<div class="paragraph">
+The player wants to give the food to the bear, check which version of the bear is in the current room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Process_GiveFoodToBear</td>
 <td class="address-2"><span id="62014"></span>62014</td>
 <td class="instruction">LD A,69</td>
 <td class="comment-1" rowspan="2">Call <a href="44651.html">ValidateItemPresent</a> with item 69: "A dead bear".</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62016"></span>62016</td>
 <td class="instruction">CALL <a href="44651.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62019"></span>
+<div class="comments">
+<div class="paragraph">
+Just to cover all angles, print "Don't be ridiculous." if the player is trying to give the food to the dead bear...
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62019"></span>62019</td>
 <td class="instruction">JP Z,<a href="60933.html">Response_DontBeRidiculous</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="60933.html">Response_DontBeRidiculous</a> if <span class="register">A</span> is equal to 69.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="60933.html">Response_DontBeRidiculous</a> if the version of the bear is "A dead bear".</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62022"></span>
+<div class="comments">
+<div class="paragraph">
+The bear is alive, but is the player even carrying the food?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62022"></span>62022</td>
 <td class="instruction">LD A,34</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=34.</td>
+<td class="comment-1" rowspan="2">Call <a href="60880.html">IsPlayerCarryingItem</a> with item 34: "Some food".</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62024"></span>62024</td>
 <td class="instruction">CALL <a href="60880.html">IsPlayerCarryingItem</a></td>
-<td class="comment-1" rowspan="1">Call <a href="60880.html">IsPlayerCarryingItem</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62027"></span>
+<div class="comments">
+<div class="paragraph">
+The player is carrying the food, so destroy the item.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62027"></span>62027</td>
 <td class="instruction">LD A,E</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">E</span>.</td>
+<td class="comment-1" rowspan="2">Call <a href="44768.html">Handler_DestroyItemEvent</a> with the item ID originally passed to the routine.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62028"></span>62028</td>
 <td class="instruction">CALL <a href="44768.html">Handler_DestroyItemEvent</a></td>
-<td class="comment-1" rowspan="1">Call <a href="44768.html">Handler_DestroyItemEvent</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62031"></span>
+<div class="comments">
+<div class="paragraph">
+The bear has eaten an item so handle the inventory count.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62031"></span>62031</td>
 <td class="instruction">LD HL,42896</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="42896.html">Count_InventoryItems</a>.</td>
+<td class="comment-1" rowspan="2">Decrease *<a href="42896.html">Count_InventoryItems</a> by one.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62034"></span>62034</td>
 <td class="instruction">DEC (HL)</td>
-<td class="comment-1" rowspan="1">Decrease *<span class="register">HL</span> by one.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62035"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The bear eats the food.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62035"></span>62035</td>
 <td class="instruction">LD HL,55063</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="55063.html">Messaging_BearEatsFood</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62038"></span>62038</td>
-<td class="instruction">JP <a href="60781.html">PrintStringAndNewline_Duplicate</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="60781.html">PrintStringAndNewline_Duplicate</a>.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="62041"></span>62041</td>
-<td class="instruction">LD A,34</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=34.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="62043"></span>62043</td>
-<td class="instruction">CALL <a href="60880.html">IsPlayerCarryingItem</a></td>
-<td class="comment-1" rowspan="1">Call <a href="60880.html">IsPlayerCarryingItem</a>.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="62046"></span>62046</td>
-<td class="instruction">LD A,E</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">E</span>.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="62047"></span>62047</td>
-<td class="instruction">CALL <a href="44768.html">Handler_DestroyItemEvent</a></td>
-<td class="comment-1" rowspan="1">Call <a href="44768.html">Handler_DestroyItemEvent</a>.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="62050"></span>62050</td>
-<td class="instruction">LD HL,42896</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="42896.html">Count_InventoryItems</a>.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="62053"></span>62053</td>
-<td class="instruction">DEC (HL)</td>
-<td class="comment-1" rowspan="1">Decrease *<span class="register">HL</span> by one.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="62054"></span>62054</td>
-<td class="instruction">LD HL,55087</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="55087.html">Messaging_WolvesEatTheFood</a>.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="62057"></span>62057</td>
 <td class="instruction">JP <a href="60781.html">PrintStringAndNewline_Duplicate</a></td>
 <td class="comment-1" rowspan="1">Jump to <a href="60781.html">PrintStringAndNewline_Duplicate</a>.</td>
 </tr>
@@ -143,7 +171,7 @@ Prev: <a href="62009.html">62009</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#62014">Map</a></td>
 <td class="next">
-Next: <a href="62060.html">62060</a>
+Next: <a href="62041.html">62041</a>
 </td>
 </tr>
 </table>
