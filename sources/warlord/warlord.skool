@@ -3650,14 +3650,14 @@ g$A66C DEFB $00                             ; Event #N(#PC-$A66C)
 ; follows:
 ; #TABLE(default,centre,centre)
 ; { =h Bit | =h Relating To }
-; { #N$00 |  }
-; { #N$01 |  }
+; { #N$00 | Lug's cavern }
+; { #N$01 | Forest path }
 ; { #N$02 | The rope }
-; { #N$03 |  }
+; { #N$03 | Vale of Cuchulainn }
 ; { #N$04 | The urn }
-; { #N$05 |  }
+; { #N$05 | Inner courtyard }
 ; { #N$06 | The ladder being placed }
-; { #N$07 |  }
+; { #N$07 | Enchanted hills }
 ; TABLE#
 @label=Flag_ItemStates_01
 g$A76C DEFB $00
@@ -3668,13 +3668,13 @@ g$A76C DEFB $00
 ; follows:
 ; #TABLE(default,centre,centre)
 ; { =h Bit | =h Relating To }
-; { #N$00 |  }
-; { #N$01 |  }
-; { #N$02 |  }
+; { #N$00 | Deep pool of water }
+; { #N$01 | Bleak moorland }
+; { #N$02 | Crystal cavern }
 ; { #N$03 | The acorns }
 ; { #N$04 | The sword }
 ; { #N$05 | Fomorian tribe }
-; { #N$06 |  }
+; { #N$06 | Vale of Rhia }
 ; { #N$07 |  }
 ; TABLE#
 @label=Flag_ItemStates_02
@@ -3729,8 +3729,8 @@ g$A776 DEFB $00,$00,$00,$00,$00,$00,$00,$00
 ; follows:
 ; #TABLE(default,centre,centre)
 ; { =h Bit | =h Relating To }
-; { #N$00 |  }
-; { #N$01 | Fomorian Tribe }
+; { #N$00 | Narrow underwater passage }
+; { #N$01 | Fomorian tribe }
 ; { #N$02 |  }
 ; { #N$03 |  }
 ; { #N$04 |  }
@@ -3871,8 +3871,11 @@ g$A7D4 DEFW $E417
 @label=Pointer_ObjectNounPhrases
 g$A7D6 DEFW $C83E
 
-; Pointer: Object List Table
-@label=Pointer_ObjectList
+; Pointer: Token Item List Table
+;
+; Pointer to the table containing a list of token IDs which relate to
+; items.
+@label=Pointer_TokenItemList
 g$A7D8 DEFW $E308
 
 ; Pointer: Verbs Jump Table
@@ -3899,16 +3902,16 @@ g$A7E2 DEFW $E508
 @label=Pointer_ScenicEventRooms
 g$A7E4 DEFW $E4E6
 
+; Number Of Object
+;
+; The total number of objects in the game.
+@label=Count_Objects
+g$A7E6 DEFW $0086
+
 ; Number Of Items
 ;
 ; The total number of items in the game.
 @label=Count_Items
-g$A7E6 DEFW $0086
-
-; Number Of Objects
-;
-; The total number of objects in the game.
-@label=Count_Objects
 g$A7E8 DEFW $0039
 
 ; Number Of Verb Tokens
@@ -5061,7 +5064,7 @@ c$AE36 INC BC        ; Adjust the counter for the sum.
 ; Validate If Item Is Present
 ;
 ; Used by the routines at #R$AE36, #R$AEF7, #R$AFEB, #R$B01F, #R$E9E9, #R$EC13,
-; #R$EC21, #R$ECBE, #R$ED60, #R$EEE9, #R$EFD0, #R$F04F, #R$F0C0, #R$F156,
+; #R$EC21, #R$ECBE, #R$ED60, #R$EEE9, #R$EFE4, #R$F04F, #R$F0C0, #R$F156,
 ; #R$F1AC, #R$F23E, #R$F31D, #R$F3AC, #R$F3BA, #R$F544, #R$F5EB, #R$F69F,
 ; #R$F6E1, #R$F739, #R$F77F, #R$F793, #R$F7C0 and #R$F7FD.
 ;
@@ -5172,7 +5175,7 @@ c$AEAF LD HL,$A824   ; Set a pointer to #R$A824 in #REGhl.
  $AEBD LD HL,($A7D8) ; #REGhl=*#R$A7D8.
  $AEC0 LD BC,($A7E8) ; Fetch the count of the number of items in the table from
                      ; *#R$A7E8.
- $AEC4 CPIR          ; Search to see if the item room ID is in the table.
+ $AEC4 CPIR          ; Search to see if the item ID is in the table.
  $AEC6 POP BC        ; {Restore the token counter and token pointer from the
  $AEC7 POP HL        ; stack.}
  $AEC8 JR NZ,$AECB   ; Jump to #R$AECB if this token doesn't refer to a game
@@ -8295,65 +8298,67 @@ t$E0B1 DEFM "xxxx"                ; Command #N$00.
  $E303 DEFM "OUT "                ; Command #N((#PC-$E12F)/$04).
  $E307 DEFB $FF                   ; Terminator.
 
-; Table: Object List?
-@label=Table_ObjectList
-g$E308 DEFB $25      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E309 DEFB $26      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E30A DEFB $27      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E30B DEFB $28      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E30C DEFB $29      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E30D DEFB $2A      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E30E DEFB $2B      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E30F DEFB $2C      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E310 DEFB $2D      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E311 DEFB $2E      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E312 DEFB $2F      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E313 DEFB $5A      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E314 DEFB $31      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E315 DEFB $32      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E316 DEFB $33      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E317 DEFB $34      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E318 DEFB $35      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E319 DEFB $36      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E31A DEFB $37      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E31B DEFB $38      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E31C DEFB $39      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E31D DEFB $3A      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E31E DEFB $3B      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E31F DEFB $3C      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E320 DEFB $3D      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E321 DEFB $3E      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E322 DEFB $3F      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E323 DEFB $40      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E324 DEFB $41      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E325 DEFB $42      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E326 DEFB $43      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E327 DEFB $44      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E328 DEFB $45      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E329 DEFB $46      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E32A DEFB $47      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E32B DEFB $48      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E32C DEFB $5B      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E32D DEFB $4A      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E32E DEFB $4B      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E32F DEFB $59      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E330 DEFB $4D      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E331 DEFB $4E      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E332 DEFB $4F      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E333 DEFB $50      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E334 DEFB $51      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E335 DEFB $52      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E336 DEFB $53      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E337 DEFB $54      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E338 DEFB $55      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E339 DEFB $56      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E33A DEFB $57      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E33B DEFB $58      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E33C DEFB $30      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E33D DEFB $49      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E33E DEFB $4C      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E33F DEFB $5C      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E340 DEFB $5D      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+; Table: Token Item List
+;
+; A list of all tokens which relate to items.
+@label=Table_TokenItemList
+g$E308 DEFB $25      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E309 DEFB $26      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E30A DEFB $27      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E30B DEFB $28      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E30C DEFB $29      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E30D DEFB $2A      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E30E DEFB $2B      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E30F DEFB $2C      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E310 DEFB $2D      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E311 DEFB $2E      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E312 DEFB $2F      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E313 DEFB $5A      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E314 DEFB $31      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E315 DEFB $32      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E316 DEFB $33      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E317 DEFB $34      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E318 DEFB $35      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E319 DEFB $36      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E31A DEFB $37      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E31B DEFB $38      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E31C DEFB $39      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E31D DEFB $3A      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E31E DEFB $3B      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E31F DEFB $3C      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E320 DEFB $3D      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E321 DEFB $3E      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E322 DEFB $3F      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E323 DEFB $40      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E324 DEFB $41      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E325 DEFB $42      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E326 DEFB $43      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E327 DEFB $44      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E328 DEFB $45      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E329 DEFB $46      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E32A DEFB $47      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E32B DEFB $48      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E32C DEFB $5B      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E32D DEFB $4A      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E32E DEFB $4B      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E32F DEFB $59      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E330 DEFB $4D      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E331 DEFB $4E      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E332 DEFB $4F      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E333 DEFB $50      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E334 DEFB $51      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E335 DEFB $52      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E336 DEFB $53      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E337 DEFB $54      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E338 DEFB $55      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E339 DEFB $56      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E33A DEFB $57      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E33B DEFB $58      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E33C DEFB $30      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E33D DEFB $49      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E33E DEFB $4C      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E33F DEFB $5C      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E340 DEFB $5D      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
 
 ; Data: Item Groups
 ;
@@ -11767,7 +11772,8 @@ c$EB9D CALL $A592    ; Call #R$A592.
  $EBA5 EX (SP),HL    ; over".}
  $EBA6 RET           ; Return.
 
-; Routine at EBA7
+; Process: Pre-Enter Crystal Cavern
+@label=Process_PreEnterCrystalCavern
 c$EBA7 LD A,($A7C3)  ; {Return if *#R$A7C3 is not room #N$42: #ROOM$42.
  $EBAA CP $42        ;
  $EBAC RET NZ        ; }
@@ -11779,14 +11785,16 @@ c$EBA7 LD A,($A7C3)  ; {Return if *#R$A7C3 is not room #N$42: #ROOM$42.
  $EBB3 LD HL,$DF48   ; #REGhl=#R$DF48.
  $EBB6 JP $EB9D      ; Jump to #R$EB9D.
 
-; Routine at EBB9
+; Process: Pre-Enter Fomorians' Cavern
+@label=Process_PreEnterFomoriansCavern
 c$EBB9 LD HL,$E348   ; {Call #R$AEF7 with #R$E348.
  $EBBC CALL $AEF7    ; }
  $EBBF RET NZ        ; Return if not zero?
  $EBC0 CALL $AEF0    ; Call #R$AEF0.
  $EBC3 JR $EBB9      ; Jump to #R$EBB9.
 
-; Routine at EBC5
+; Process: Pre-Enter Various
+@label=Process_PreEnterVarious
 c$EBC5 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
  $EBC8 CALL $AEF7    ; }
  $EBCB RET NZ        ; Return if not zero?
@@ -11798,8 +11806,8 @@ c$EBC5 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
  $EBD6 CALL $AEF0    ; }
  $EBD9 RET           ; Return.
 
-; Process: Forest Path
-@label=Process_ForestPath
+; Process: Enter Forest Path
+@label=Process_EnterForestPath
 c$EBDA LD HL,$A76C   ; {Return if bit 1 of *#R$A76C is set.
  $EBDD BIT 1,(HL)    ;
  $EBDF RET NZ        ; }
@@ -11816,8 +11824,8 @@ c$EBDA LD HL,$A76C   ; {Return if bit 1 of *#R$A76C is set.
  $EBF8 CALL $B09A    ; }
  $EBFB RET           ; Return.
 
-; Process: Narrow Underwater Passage
-@label=Process_NarrowUnderwaterPassage
+; Process: Enter Narrow Underwater Passage
+@label=Process_EnterNarrowUnderwaterPassage
 c$EBFC LD A,$05      ; {Write #N$05 to *#R$A77F.
  $EBFE LD ($A77F),A  ; }
  $EC01 LD HL,$A77E   ; {Set bit 0 of *#R$A77E.
@@ -11835,8 +11843,8 @@ c$EC07 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $EC11 EX (SP),HL    ; the score and asking if you want another game?}
  $EC12 RET           ; Return.
 
-; Process: Oozing Quagmire
-@label=Process_OozingQuagmire
+; Process: Enter Oozing Quagmire
+@label=Process_EnterOozingQuagmire
 c$EC13 LD A,$3D      ; {Call #R$AE6B with item #N$3D: #ITEM$3D.
  $EC15 CALL $AE6B    ; }
  $EC18 JP NZ,$EBA0   ; Jump to #R$EBA0 if #ITEM$3D is not currently in the
@@ -11845,8 +11853,8 @@ c$EC13 LD A,$3D      ; {Call #R$AE6B with item #N$3D: #ITEM$3D.
  $EC1B LD HL,$DF82   ; #REGhl=#R$DF82.
  $EC1E JP $EB9D      ; Jump to #R$EB9D.
 
-; Process: Fomorians' Cavern
-@label=Process_FomoriansCavern
+; Process: Enter Fomorians' Cavern
+@label=Process_EnterFomoriansCavern
 c$EC21 LD A,$0F      ; {Call #R$AE6B with item #N$0F: #ITEM$0F.
  $EC23 CALL $AE6B    ; }
  $EC26 RET NZ        ; Return if #ITEM$0F is not currently in the room.
@@ -11856,8 +11864,8 @@ c$EC21 LD A,$0F      ; {Call #R$AE6B with item #N$0F: #ITEM$0F.
  $EC2F SET 1,(HL)    ; }
  $EC31 RET           ; Return.
 
-; Process: Lug's Cavern
-@label=Process_LugsCavern
+; Process: Enter Lug's Cavern
+@label=Process_EnterLugsCavern
 c$EC32 LD HL,$A76C   ; {Return if bit 0 of *#R$A76C is set.
  $EC35 BIT 0,(HL)    ;
  $EC37 RET NZ        ; }
@@ -11866,8 +11874,8 @@ c$EC32 LD HL,$A76C   ; {Return if bit 0 of *#R$A76C is set.
  $EC3C CALL $B09A    ; }
  $EC3F RET           ; Return.
 
-; Process: Vale Of Cuchulainn
-@label=Process_ValeOfCuchulainn
+; Process: Enter Vale Of Cuchulainn
+@label=Process_EnterValeOfCuchulainn
 c$EC40 LD HL,$A76C   ; {Return if bit 3 of *#R$A76C is set.
  $EC43 BIT 3,(HL)    ;
  $EC45 RET NZ        ; }
@@ -11876,8 +11884,8 @@ c$EC40 LD HL,$A76C   ; {Return if bit 3 of *#R$A76C is set.
  $EC4A CALL $B09A    ; }
  $EC4D RET           ; Return.
 
-; Process: Inner Courtyard
-@label=Process_InnerCourtyard
+; Process: Enter Inner Courtyard
+@label=Process_EnterInnerCourtyard
 c$EC4E LD HL,$A76C   ; {Return if bit 5 of *#R$A76C is set.
  $EC51 BIT 5,(HL)    ;
  $EC53 RET NZ        ; }
@@ -11886,8 +11894,8 @@ c$EC4E LD HL,$A76C   ; {Return if bit 5 of *#R$A76C is set.
  $EC58 CALL $B09A    ; }
  $EC5B RET           ; Return.
 
-; Process: Enchanted Hills
-@label=Process_EnchantedHills
+; Process: Enter Enchanted Hills
+@label=Process_EnterEnchantedHills
 c$EC5C LD HL,$A76C   ; {Return if bit 7 of *#R$A76C is set.
  $EC5F BIT 7,(HL)    ;
  $EC61 RET NZ        ; }
@@ -11896,8 +11904,8 @@ c$EC5C LD HL,$A76C   ; {Return if bit 7 of *#R$A76C is set.
  $EC66 CALL $B09A    ; }
  $EC69 RET           ; Return.
 
-; Process: Deep Pool Of Water
-@label=Process_DeepPoolOfWater
+; Process: Enter Deep Pool Of Water
+@label=Process_EnterDeepPoolOfWater
 c$EC6A LD HL,$A76D   ; {Return if bit 0 of *#R$A76D is set.
  $EC6D BIT 0,(HL)    ;
  $EC6F RET NZ        ; }
@@ -11906,8 +11914,8 @@ c$EC6A LD HL,$A76D   ; {Return if bit 0 of *#R$A76D is set.
  $EC74 CALL $B09A    ; }
  $EC77 RET           ; Return.
 
-; Process: Bleak Moorland
-@label=Process_BleakMoorland
+; Process: Enter Bleak Moorland
+@label=Process_EnterBleakMoorland
 c$EC78 LD HL,$A76D   ; {Return if bit 1 of *#R$A76D is set.
  $EC7B BIT 1,(HL)    ;
  $EC7D RET NZ        ; }
@@ -11916,8 +11924,8 @@ c$EC78 LD HL,$A76D   ; {Return if bit 1 of *#R$A76D is set.
  $EC82 CALL $B09A    ; }
  $EC85 RET           ; Return.
 
-; Process: Crystal Cavern
-@label=Process_CrystalCavern
+; Process: Enter Crystal Cavern
+@label=Process_EnterCrystalCavern
 c$EC86 LD HL,$A76D   ; {Return if bit 2 of *#R$A76D is set.
  $EC89 BIT 2,(HL)    ;
  $EC8B RET NZ        ; }
@@ -11926,8 +11934,8 @@ c$EC86 LD HL,$A76D   ; {Return if bit 2 of *#R$A76D is set.
  $EC90 CALL $B09A    ; }
  $EC93 RET           ; Return.
 
-; Process: Vale Of Rhia
-@label=Process_ValeOfRhia
+; Process: Enter Vale Of Rhia
+@label=Process_EnterValeOfRhia
 c$EC94 LD HL,$A76D   ; {Return if bit 6 of *#R$A76D is set.
  $EC97 BIT 6,(HL)    ;
  $EC99 RET NZ        ; }
@@ -11936,7 +11944,8 @@ c$EC94 LD HL,$A76D   ; {Return if bit 6 of *#R$A76D is set.
  $EC9E CALL $B09A    ; }
  $ECA1 RET           ; Return.
 
-; Routine at ECA2
+; Process: Pre-Enter Causeway
+@label=Process_PreEnterCauseway
 c$ECA2 LD A,$27      ; {Call #R$AED1 with item #N$27: #ITEM$27.
  $ECA4 CALL $AED1    ; }
  $ECA7 CP $1B        ; {Return if the armed warrior is not in room #N$1B:
@@ -11957,8 +11966,8 @@ c$ECA2 LD A,$27      ; {Call #R$AED1 with item #N$27: #ITEM$27.
  $ECBA CALL $AF1E    ; (#ITEM$28).}
  $ECBD RET           ; Return.
 
-; Process: Causeway
-@label=Process_Causeway
+; Process: Enter Causeway
+@label=Process_EnterCauseway
 c$ECBE LD A,$28      ; {Call #R$AE6B with item #N$28: #ITEM$28.
  $ECC0 CALL $AE6B    ; }
  $ECC3 RET NZ        ; Return if item #N$28: #ITEM$28 is not in the current room or the
@@ -11992,8 +12001,8 @@ c$ECE8 LD HL,$DFF1   ; #REGhl=#R$DFF1.
  $ECEB CALL $A592    ; Call #R$A592.
  $ECEE RET           ; Return.
 
-; Process: Small Clearing
-@label=Process_SmallClearing
+; Process: Enter Small Clearing
+@label=Process_EnterSmallClearing
 c$ECEF LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ECF1 CALL $AEDA    ; }
  $ECF4 RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -12007,8 +12016,8 @@ c$ECEF LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED03 CALL $A592    ; Call #R$A592.
  $ED06 RET           ; Return.
 
-; Process: Swamp #02
-@label=Process_Swamp_02
+; Process: Enter Swamp #02
+@label=Process_EnterSwamp_02
 c$ED07 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED09 CALL $AEDA    ; }
  $ED0C RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -12018,8 +12027,8 @@ c$ED07 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED13 CALL $A592    ; Call #R$A592.
  $ED16 RET           ; Return.
 
-; Process: Swamp #01
-@label=Process_Swamp_01
+; Process: Enter Swamp #01
+@label=Process_EnterSwamp_01
 c$ED17 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED19 CALL $AEDA    ; }
  $ED1C RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -12029,8 +12038,8 @@ c$ED17 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED23 CALL $A592    ; Call #R$A592.
  $ED26 RET           ; Return.
 
-; Process: Swamp #03
-@label=Process_Swamp_03
+; Process: Enter Swamp #03
+@label=Process_EnterSwamp_03
 c$ED27 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED29 CALL $AEDA    ; }
  $ED2C RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -12040,8 +12049,8 @@ c$ED27 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED33 CALL $A592    ; Call #R$A592.
  $ED36 RET           ; Return.
 
-; Process: Swamp #04
-@label=Process_Swamp_04
+; Process: Enter Swamp #04
+@label=Process_EnterSwamp_04
 c$ED37 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED39 CALL $AEDA    ; }
  $ED3C RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -12051,8 +12060,8 @@ c$ED37 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED43 CALL $A592    ; Call #R$A592.
  $ED46 RET           ; Return.
 
-; Process: Swamp #05
-@label=Process_Swamp_05
+; Process: Enter Swamp #05
+@label=Process_EnterSwamp_05
 c$ED47 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED49 CALL $AEDA    ; }
  $ED4C RET NZ        ; Return if #ITEM$6A is not in the players inventory.
@@ -12062,13 +12071,15 @@ c$ED47 LD A,$6A      ; {Call #R$AEDA with item #N$6A: #ITEM$6A.
  $ED53 CALL $A592    ; Call #R$A592.
  $ED56 RET           ; Return.
 
-; Routine at ED57
+; Process: Pre-Enter Inside Rock Cavern
+@label=Process_PreEnterInsideRockCavern
 c$ED57 LD A,($A7C3)  ; {Return if *#R$A7C3 is not equal to room #N$43:
  $ED5A CP $43        ; #ROOM$43.
  $ED5C RET NZ        ; }
  $ED5D JP $EBAD      ; Jump to #R$EBAD.
 
-; Routine at ED60
+; Process: Pre-Enter Bridon Road
+@label=Process_PreEnterBridonRoad
 c$ED60 LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
  $ED62 CALL $AE6B    ; }
  $ED65 RET NZ        ; Return if ?? is not equal to #N$37.
@@ -12089,11 +12100,11 @@ g$ED6C DEFB $1B      ; Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
 ; #R$EDF9, #R$EDFF, #R$EE05, #R$EE0B, #R$EE11, #R$EE17, #R$EE1D, #R$EE23,
 ; #R$EE29, #R$EE2F, #R$EE35, #R$EE3B, #R$EE41, #R$EE47, #R$EE4D, #R$EE53,
 ; #R$EE59, #R$EE64, #R$EE73, #R$EE8D, #R$EE9C, #R$EEA7, #R$EEB6, #R$EF38,
-; #R$EF49, #R$EFD0, #R$F0C0, #R$F0DB, #R$F126, #R$F134, #R$F156, #R$F179,
-; #R$F191, #R$F1D9, #R$F1DF, #R$F23E, #R$F259, #R$F26C, #R$F293, #R$F2EC,
-; #R$F31D, #R$F383, #R$F40A, #R$F410, #R$F416, #R$F458, #R$F489, #R$F4F5,
-; #R$F518, #R$F52E, #R$F544, #R$F5EB, #R$F62B, #R$F643, #R$F69F, #R$F6E1,
-; #R$F703, #R$F71F, #R$F730, #R$F739, #R$F7AC, #R$F7C0 and #R$FBB9.
+; #R$EF49, #R$EFD0, #R$EFE4, #R$F0C0, #R$F0DB, #R$F126, #R$F134, #R$F156,
+; #R$F179, #R$F191, #R$F1D9, #R$F1DF, #R$F23E, #R$F259, #R$F26C, #R$F293,
+; #R$F2EC, #R$F31D, #R$F383, #R$F40A, #R$F410, #R$F416, #R$F458, #R$F489,
+; #R$F4F5, #R$F518, #R$F52E, #R$F544, #R$F5EB, #R$F62B, #R$F643, #R$F69F,
+; #R$F6E1, #R$F703, #R$F71F, #R$F730, #R$F739, #R$F7AC, #R$F7C0 and #R$FBB9.
 @label=PrintStringAndNewline_Duplicate
 c$ED6D CALL $A592    ; Call #R$A592.
  $ED70 RET           ; Return.
@@ -12699,6 +12710,7 @@ c$EF38 LD HL,$E396   ; {Call #R$AEF7 with #R$E396.
  $EF3E CP $3C        ; {Jump to #R$EDB2 if the meat state in the current room is not
  $EF40 JP NZ,$EDB2   ; #ITEM$3C.}
 ; Print "#STR$D245,$08($b==$FF)".
+@label=Process_TakeMeatFromTrader
  $EF43 LD HL,$D245   ; #REGhl=#R$D245.
  $EF46 JP $ED6D      ; Jump to #R$ED6D.
 
@@ -12718,6 +12730,7 @@ c$EF49 LD HL,$E3A6   ; {Call #R$AEF7 with #R$E3A6.
 ; This entry point is used by the routine at #R$EFD0.
 ; .
 ; Print "#STR$D26B,$08($b==$FF)".
+@label=TakeAmuletFromDruid
 *$EF54 LD HL,$D26B   ; #REGhl=#R$D26B.
  $EF57 JP $ED6D      ; Jump to #R$ED6D.
 
@@ -12799,7 +12812,7 @@ u$EFAC DEFB $C9      ; Return.
 
 ; Process: Get Cloak
 ;
-; Used by the routine at #R$EFD0.
+; Used by the routine at #R$EFE4.
 ;
 ; .
 ;
@@ -12811,6 +12824,7 @@ c$EFAD LD HL,$E3DD   ; {Call #R$AEF7 with #R$E3DD.
  $EFB3 CP $64        ; {Jump to #R$EDB2 if #REGa is equal to #N$64.
  $EFB5 JP Z,$EDB2    ; }
  $EFB8 CALL $ED75    ; Call #R$ED75.
+; Change the cloak state!
  $EFBB LD BC,$6263   ; {Call #R$AF1E to transform item #N$62 (#ITEM$62) into item #N$63
  $EFBE CALL $AF1E    ; (#ITEM$63).}
  $EFC1 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
@@ -12823,18 +12837,43 @@ c$EFAD LD HL,$E3DD   ; {Call #R$AEF7 with #R$E3DD.
 c$EFCB LD A,$65      ; {Jump to #R$EDB2 with item #N$65: #ITEM$65.
  $EFCD JP $EDB2      ; }
 
-; Routine at EFD0
+; Process: Take Amulet From Druid
+;
+; .
+;
+; .
+;
+; The player wants to take the amulet from the druid, check which version
+; of the amulet is in the current room.
+@label=Process_TakeAmuletFromDruid
 c$EFD0 LD HL,$E3A6   ; {Call #R$AEF7 with #R$E3A6.
  $EFD3 CALL $AEF7    ; }
- $EFD6 CP $49        ; {Jump to #R$EF54 if #REGa is equal to #N$49.
- $EFD8 JP Z,$EF54    ; }
+ $EFD6 CP $49        ; {Jump to #R$EF54 if the version of the amulet in the current room is
+ $EFD8 JP Z,$EF54    ; #ITEM$49.}
+; Handle responding if the player is already carrying the amulet.
  $EFDB CALL $ED75    ; Call #R$ED75.
+; Handle responding if the druid doesn't have the amulet.
+; .
 ; Print "#STR$D2F4,$08($b==$FF)".
  $EFDE LD HL,$D2F4   ; #REGhl=#R$D2F4.
  $EFE1 JP $ED6D      ; Jump to #R$ED6D.
- $EFE4 LD A,$62      ; {Call #R$AE6B with item #N$62: #ITEM$62.
+
+; Process: Take Cloak From Body
+;
+; .
+;
+; .
+;
+; The player wants to take the cloak from the dead body, which is a bit
+; creepy. Check which version of the cloak is in the current room.
+@label=Process_TakeCloakFromBody
+c$EFE4 LD A,$62      ; {Call #R$AE6B with item #N$62: #ITEM$62.
  $EFE6 CALL $AE6B    ; }
- $EFE9 JP Z,$EFAD    ; Jump to #R$EFAD if #REGa is equal to #N$62.
+; Allow the player to take the cloak from the dead man who can't really
+; complain about it.
+ $EFE9 JP Z,$EFAD    ; Jump to #R$EFAD if the version of the cloak is #ITEM$62.
+; Else respond that there is no cloak on the body.
+; .
 ; Print "#STR$D308,$08($b==$FF)".
  $EFEC LD HL,$D308   ; #REGhl=#R$D308.
  $EFEF JP $ED6D      ; Jump to #R$ED6D.
@@ -13205,6 +13244,7 @@ c$F191 LD A,$0B      ; {Call #R$AEE0 with item #N$0B: #ITEM$0B.
  $F193 CALL $AEE0    ; }
  $F196 LD HL,$A787   ; {Reset bit 0 of *#R$A787.
  $F199 RES 0,(HL)    ; }
+; Change the Roman state!
  $F19B LD BC,$494B   ; {Call #R$AF1E to transform item #N$49 (#ITEM$49) into item #N$4B
  $F19E CALL $AF1E    ; (#ITEM$4B).}
  $F1A1 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
@@ -13270,19 +13310,38 @@ c$F1D4 LD A,$19      ; {Jump to #R$F17B with item #N$19: #ITEM$19.
 c$F1D9 LD HL,$CE02   ; #REGhl=#R$CE02.
  $F1DC JP $ED6D      ; Jump to #R$ED6D.
 
-; Routine at F1DF
+; Process: Take Sword From Slab
+;
+; .
+;
+; .
+;
+; The player wants to take the sword from the stone slab, check which
+; version of the sword is in the current room.
+@label=Process_TakeSwordFromSlab
 c$F1DF LD HL,$E392   ; {Call #R$AEF7 with #R$E392.
  $F1E2 CALL $AEF7    ; }
 ; This entry point is used by the routine at #R$EF2A.
+; .
+; Handle checking if the player is already carrying the sword.
+@label=GetSword
 *$F1E5 CALL $ED75    ; Call #R$ED75.
- $F1E8 LD A,B        ; {Jump to #R$F1F8 if #REGb is not equal to #N$59.
- $F1E9 CP $59        ;
+; Check if the sword item in the room is the one where the sword is
+; laying on the stone slab.
+ $F1E8 LD A,B        ; {Jump to #R$F1F8 if the version of the sword is not
+ $F1E9 CP $59        ; #ITEM$59.
  $F1EB JR NZ,$F1F8   ; }
+; Let the player pick up the sword.
+; .
+; Change the sword state!
  $F1ED LD BC,$5958   ; {Call #R$AF1E to transform item #N$59 (#ITEM$59) into item #N$58
  $F1F0 CALL $AF1E    ; (#ITEM$58).}
  $F1F3 LD B,$39      ; {Jump to #R$EDA6 with item #N$39: #ITEM$39.
  $F1F5 JP $EDA6      ; }
+; The sword isn't on the slab! Respond with this.
+; .
 ; Print "#STR$D51A,$08($b==$FF)".
+@label=NoSwordOnSlab
 *$F1F8 LD HL,$D51A   ; #REGhl=#R$D51A.
  $F1FB JP $ED6D      ; Jump to #R$ED6D.
 
@@ -13292,6 +13351,7 @@ c$F1FE LD HL,$E36B   ; {Call #R$AEF7 with #R$E36B.
  $F201 CALL $AEF7    ; }
  $F204 CP $20        ; {Jump to #R$F17B if #REGa is not equal to #N$20.
  $F206 JP NZ,$F17B   ; }
+; Change the helmet state!
  $F209 LD BC,$201F   ; {Call #R$AF1E to transform item #N$20 (#ITEM$20) into item #N$1F
  $F20C CALL $AF1E    ; (#ITEM$1F).}
  $F20F LD A,$1F      ; {Jump to #R$F17B with item #N$1F: #ITEM$1F.
@@ -13506,13 +13566,23 @@ c$F2D4 LD HL,$E3B0   ; {Call #R$AEF7 with #R$E3B0.
  $F2E9 JP $F26C      ; Jump to #R$F26C.
 
 ; Process: Drink
+;
+; .
+;
+; .
+;
+; The player is asking to drink some water but which type of water is it?
 @label=Process_Drink
-c$F2EC LD A,($A7C3)  ; Load *#R$A7C3 into #REGa.
- $F2EF CP $2A        ; {Jump to #R$F2F9 if the current room is not room #N$2A:
- $F2F1 JR NZ,$F2F9   ; #ROOM$2A.}
+c$F2EC LD A,($A7C3)  ; {Jump to #R$F2F9 if *#R$A7C3 is not room #N$2A:
+ $F2EF CP $2A        ; #ROOM$2A.
+ $F2F1 JR NZ,$F2F9   ; }
+; The water in this room is safe to drink.
+; .
 ; Print "#STR$D8E7,$08($b==$FF)".
  $F2F3 LD HL,$D8E7   ; #REGhl=#R$D8E7.
  $F2F6 JP $ED6D      ; Jump to #R$ED6D.
+; The water in #ROOM$2A is not safe to drink.
+; .
 ; Print "#STR$D8FD,$08($b==$FF)".
 @label=Drink_SaltWater
 *$F2F9 LD HL,$D8FD   ; #REGhl=#R$D8FD.
@@ -13566,10 +13636,18 @@ c$F338 LD HL,$E3E7   ; {Call #R$AEF7 with #R$E3E7.
  $F348 JP $F2FF      ; Jump to #R$F2FF.
 
 ; Process: Jump Onto Straw
+;
+; .
+;
+; .
+;
+; The player is asking to jump onto the straw, print
+; "#STR$CDE8,$08($b==$FF)" if the current room is #ROOM$63.
 @label=Process_JumpOntoStraw
 c$F34B LD A,($A7C3)  ; {Jump to #R$EE0B if *#R$A7C3 is equal to room #N$63:
  $F34E CP $63        ; #ROOM$63.
  $F350 JP Z,$EE0B    ; }
+; The player isn't in #ROOM$63, so send them there.
  $F353 LD A,$63      ; {Call #R$EB10 with room #N$63: #ROOM$63.
  $F355 CALL $EB10    ; }
  $F358 RET           ; Return.
@@ -13701,16 +13779,29 @@ c$F40A LD HL,$D9CF   ; #REGhl=#R$D9CF.
 ;
 ; .
 ;
+; The player is asking to jump into the ring, mock them subtly for their
+; poor choice of language (instead of just indicating that "step" is the
+; correct verb).
+; .
 ; Print "#STR$DA24,$08($b==$FF)".
 @label=Process_JumpIntoRing
 c$F410 LD HL,$DA24   ; #REGhl=#R$DA24.
  $F413 JP $ED6D      ; Jump to #R$ED6D.
 
 ; Process: Jump Down
+;
+; .
+;
+; .
+;
+; The player is asking to jump "down" - print "#STR$A9EC,$08($b==$FF)" if
+; they're in any room other than #ROOM$60.
 @label=Process_JumpDown
-c$F416 LD A,($A7C3)  ; {Jump to #R$EDED if *#R$A7C3 is not equal to #N$60.
- $F419 CP $60        ;
+c$F416 LD A,($A7C3)  ; {Jump to #R$EDED if *#R$A7C3 is not equal to room #N$60:
+ $F419 CP $60        ; #ROOM$60.
  $F41B JP NZ,$EDED   ; }
+; #ROOM$60 has a bit of a large jump down ... too large in fact.
+; .
 ; Bad luck!
  $F41E LD HL,$E9B2   ; {Switch #R$E9B2 onto the stack so the next return actions a "game
  $F421 EX (SP),HL    ; over".}
@@ -13835,10 +13926,18 @@ c$F489 LD HL,$E3A6   ; {Call #R$AEF7 with #R$E3A6.
  $F4B6 JP $ED6D      ; Jump to #R$ED6D.
 
 ; Process: Give Urn Into Fire
+;
+; .
+;
+; .
+;
+; The players wants to "give" the urn into the fire, but are they in the
+; room which has the fire?
 @label=Process_GiveUrnIntoFire
 c$F4B9 LD A,($A7C3)  ; {Jump to #R$EDED if *#R$A7C3 is not equal to room #N$4F:
  $F4BC CP $4F        ; #ROOM$4F.
  $F4BE JP NZ,$EDED   ; }
+; The player is in the correct room, so start destroying items...
  $F4C1 LD A,$12      ; {Call #R$AEE0 with item #N$12: #ITEM$12.
  $F4C3 CALL $AEE0    ; }
  $F4C6 LD A,$1C      ; {Call #R$AEE0 with item #N$1C: #ITEM$1C.
@@ -14030,6 +14129,7 @@ c$F5B8 LD HL,$E392   ; {Call #R$AEF7 with #R$E392.
  $F5C8 CALL $EDD0    ; Call #R$EDD0.
  $F5CB LD A,E        ; #REGa=#REGe.
  $F5CC CALL $AEE0    ; Call #R$AEE0.
+; Change the sword state!
  $F5CF LD BC,$5859   ; {Call #R$AF1E to transform item #N$58 (#ITEM$58) into item #N$59
  $F5D2 CALL $AF1E    ; (#ITEM$59).}
 ; The sword has been used so handle the inventory count.
@@ -14258,6 +14358,7 @@ c$F6E1 LD A,$26      ; {Call #R$AE6B with item #N$26: #ITEM$26.
  $F6EE LD HL,$E392   ; {Call #R$AEF7 with #R$E392.
  $F6F1 CALL $AEF7    ; }
  $F6F4 CALL $EDD0    ; Call #R$EDD0.
+; Change the hare state!
 *$F6F7 LD BC,$1326   ; {Call #R$AF1E to transform item #N$13 (#ITEM$13) into item #N$26
  $F6FA CALL $AF1E    ; (#ITEM$26).}
 ; Print "#STR$DDDF,$08($b==$FF)".
@@ -14335,6 +14436,7 @@ c$F739 LD A,$45      ; {Call #R$AE6B with item #N$45: #ITEM$45.
  $F749 LD HL,$DE57   ; #REGhl=#R$DE57.
  $F74C JP NZ,$F703   ; Jump to #R$F703 if #ITEM$56 is not in the players
                      ; inventory.
+; Change the bear state!
  $F74F LD BC,$4445   ; {Call #R$AF1E to transform item #N$44 (#ITEM$44) into item #N$45
  $F752 CALL $AF1E    ; (#ITEM$45).}
  $F755 LD A,$2C      ; {Write #N$2C to *#R$E84D.
@@ -14383,6 +14485,7 @@ c$F77F LD A,$50      ; {Call #R$AE6B with item #N$50: #ITEM$50.
  $F784 JP Z,$EE0B    ; Jump to #R$EE0B if #REGa is equal to #N$50.
 ; Make sure the player is even carrying a sword.
  $F787 CALL $F62B    ; Call #R$F62B.
+; Change the pig state!
  $F78A LD BC,$4F50   ; {Call #R$AF1E to transform item #N$4F (#ITEM$4F) into item #N$50
  $F78D CALL $AF1E    ; (#ITEM$50).}
  $F790 JP $F764      ; Jump to #R$F764.
@@ -14394,6 +14497,7 @@ c$F793 LD A,$52      ; {Call #R$AE6B with item #N$52: #ITEM$52.
  $F798 JP NZ,$EE0B   ; Jump to #R$EE0B if #REGa is not equal to #N$52.
 ; Make sure the player is even carrying a sword.
  $F79B CALL $F62B    ; Call #R$F62B.
+; Change the ox state!
  $F79E LD BC,$5253   ; {Call #R$AF1E to transform item #N$52 (#ITEM$52) into item #N$53
  $F7A1 CALL $AF1E    ; (#ITEM$53).}
  $F7A4 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
@@ -14678,7 +14782,7 @@ c$F8DF CALL $AF70    ; Call #R$AF70.
  $F8EE CALL $EB10    ; Call #R$EB10.
  $F8F1 RET           ; Return.
 
-; Action: Take/ Get
+; Action: Get
 @label=Action_Get
 c$F8F2 CALL $AF7B    ; Call #R$AF7B.
  $F8F5 RET C         ; Return if there is no direct object in the user input (so the
@@ -14737,22 +14841,28 @@ c$F8F2 CALL $AF7B    ; Call #R$AF7B.
  $F952 DEFW $EFAD    ; Action routine #N($01+(#PC-$F930)/$02).
  $F954 DEFW $EFCB    ; Action routine #N($01+(#PC-$F930)/$02).
 
-; Routine at F956
+; Action: Take
 ;
 ; Used by the routine at #R$F8F2.
-c$F956 LD HL,$F965   ;
- $F959 LD DE,$F96D   ;
- $F95C LD BC,$0004   ;
- $F95F CALL $B0DE    ;
- $F962 JP $EDE7      ;
- $F965 DEFW $E55D    ;
- $F967 DEFW $E561    ;
- $F969 DEFW $E565    ;
- $F96B DEFW $E591    ;
- $F96D DEFW $EF43    ;
- $F96F DEFW $EFD0    ;
- $F971 DEFW $EFE4    ;
- $F973 DEFW $F1DF    ;
+@label=Action_Take
+c$F956 LD HL,$F965   ; #REGhl=#R$F965.
+ $F959 LD DE,$F96D   ; #REGde=#R$F96D.
+ $F95C LD BC,$0004   ; #REGbc=#N($0004,$04,$04).
+ $F95F CALL $B0DE    ; Call #R$B0DE.
+; Print "#STR$A9D6,$08($b==$FF)".
+ $F962 JP $EDE7      ; Jump to #R$EDE7.
+; The token table for the action "take":
+@label=Table_ActionTake_TokenGroup
+ $F965 DEFW $E55D    ; Token group #N($01+(#PC-$F965)/$02).
+ $F967 DEFW $E561    ; Token group #N($01+(#PC-$F965)/$02).
+ $F969 DEFW $E565    ; Token group #N($01+(#PC-$F965)/$02).
+ $F96B DEFW $E591    ; Token group #N($01+(#PC-$F965)/$02).
+; The actions table for "take":
+@label=Table_ActionsTake
+ $F96D DEFW $EF43    ; Action routine #N($01+(#PC-$F96D)/$02).
+ $F96F DEFW $EFD0    ; Action routine #N($01+(#PC-$F96D)/$02).
+ $F971 DEFW $EFE4    ; Action routine #N($01+(#PC-$F96D)/$02).
+ $F973 DEFW $F1DF    ; Action routine #N($01+(#PC-$F96D)/$02).
 
 ; Action: Drop
 ;
