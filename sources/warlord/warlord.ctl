@@ -1309,7 +1309,9 @@ N $ACF7 Print the user input keypress to the screen.
   $ACF7,$03 Call #R$A5A4.
   $ACFA,$01 Return.
 
-c $ACFB
+c $ACFB Handler: Match Item
+@ $ACFB label=Handler_MatchItem
+R $ACFB O:F The carry flag is set to indicate that an item was found
   $ACFB,$05 Stash #REGhl, #REGde, #REGbc and #REGix on the stack.
   $AD00,$03 #REGhl=*#R$A7C6.
   $AD03,$02 #REGc=#N$00.
@@ -1331,7 +1333,8 @@ c $ACFB
   $AD26,$02 Increment #REGix by one.
   $AD28,$02 Decrease counter by one and loop back to #R$AD1F until counter is zero.
   $AD2A,$01 #REGa=#REGc.
-  $AD2B,$01 Set the carry flag.
+  $AD2B,$01 Set the carry flag to indicate that an item was successfully found.
+@ $AD2C label=MatchItem_Return
   $AD2C,$05 Restore #REGix, #REGbc, #REGde and #REGhl from the stack.
   $AD31,$01 Return.
 
@@ -1437,9 +1440,9 @@ N $ADBB Do nothing with with this match - just restore the vocabulary pointer
 . from the stack.
   $ADBB,$04 Restore *#R$A7C6 from the stack and write it back to *#R$A7C6.
   $ADBF,$01 Restore #REGhl from the stack.
-  $ADC0,$02 Jump to #R$ADF6 if #REGa is less than #REGc.
+  $ADC0,$02 Jump to #R$ADF6 if "THE" was successfully found.
   $ADC2,$03 Call #R$ACFB.
-  $ADC5,$02 Jump to #R$ADEE if #REGa is less than #REGc.
+  $ADC5,$02 Jump to #R$ADEE if an item was successfully found.
 N $ADC7 Nothing matched ... Inform the player.
 N $ADC7 Print "#STR$A863,$08($b==$FF)".
   $ADC7,$03 #REGhl=#R$A863.
@@ -1729,19 +1732,22 @@ R $AF08 C Room ID
   $AF0F,$01 Update the table with the new room ID in #REGc.
   $AF10,$01 Return.
 
-c $AF11
+u $AF11 Find Index Of Item From Item Group Present
+@ $AF11 label=FindIndexOfItemFromItemGroupPresent
 R $AF11 HL Pointer to item group data
 R $AF11 O:A The found index
-  $AF11,$02 Initialise an index counter in #REGb to #N$00.
-  $AF13,$02 Jump to #R$AF17.
+C $AF11,$02 Initialise an index counter in #REGb to #N$00.
+C $AF13,$02 Jump to #R$AF17.
+@ $AF15 label=FindIndexOfItemFromItemGroupPresent_Loop
 N $AF15 Move past the termination byte in the item group.
-  $AF15,$01 Increment the index counter in #REGb by one.
-  $AF16,$01 Increment #REGhl by one.
-  $AF17,$03 Call #R$AEF7.
-  $AF1A,$02 Jump back to #R$AF15 until an item from the item group is matched.
+C $AF15,$01 Increment the index counter in #REGb by one.
+C $AF16,$01 Increment #REGhl by one.
+@ $AF17 label=Call_CheckItemGroupPresent
+C $AF17,$03 Call #R$AEF7.
+C $AF1A,$02 Jump back to #R$AF15 until an item from the item group is matched.
 N $AF1C An index was found.
-  $AF1C,$01 Store the index from #REGb into #REGa.
-  $AF1D,$01 Return.
+C $AF1C,$01 Store the index from #REGb into #REGa.
+C $AF1D,$01 Return.
 
 c $AF1E Transform Item
 @ $AF1E label=TransformItem
@@ -4554,24 +4560,33 @@ N $EBA2 Bad luck!
 c $EBA7 Process: Pre-Enter Crystal Cavern
 @ $EBA7 label=Process_PreEnterCrystalCavern
   $EBA7,$06 Return if *#R$A7C3 is not room #N$42: #ROOM$42.
+N $EBAD Check if the player is wearing the cloak?
+@ $EBAD label=IsPlayerWearingCloak
   $EBAD,$05 Call #R$AEDA with #ITEM$6D.
   $EBB2,$01 Return if the player has #ITEM$6D in their inventory.
+N $EBB3 Uh oh ... the player isn't wearing the cloak ...
 N $EBB3 Print "#STR$DF48,$08($b==$FF)".
   $EBB3,$03 #REGhl=#R$DF48.
   $EBB6,$03 Jump to #R$EB9D.
 
 c $EBB9 Process: Pre-Enter Fomorians' Cavern
 @ $EBB9 label=Process_PreEnterFomoriansCavern
+N $EBB9 Check if any versions of the Fomorians are present in this room.
   $EBB9,$06 Call #R$AEF7 with #R$E348.
-  $EBBF,$01 Return if not zero?
+  $EBBF,$01 Just return if no versions of the Fomorians are in the current
+. room.
+N $EBC0 There are Fomorians in this room, trigger the scene.
   $EBC0,$03 Call #R$AEF0.
   $EBC3,$02 Jump to #R$EBB9.
 
-c $EBC5 Process: Pre-Enter Various
+c $EBC5 Process: Pre-Enter Various (For Roman)
 @ $EBC5 label=Process_PreEnterVarious
+N $EBC5 Check if any version of the Roman is in the current room.
   $EBC5,$06 Call #R$AEF7 with #R$E341.
-  $EBCB,$01 Return if not zero?
-  $EBCC,$03 Return if #REGa is greater than #N$04.
+  $EBCB,$01 Return if no version of the Roman is in the current room.
+  $EBCC,$03 Return if any version of the Roman is in the current room which has
+. an item ID greater than #N$04 - #ITEM$04.
+N $EBCF Else, trigger the scene.
   $EBCF,$05 Call #R$AEF0 with #N$02.
   $EBD4,$05 Call #R$AEF0 with #N$03.
   $EBD9,$01 Return.
@@ -5424,21 +5439,23 @@ c $F0A7 Process: Drop Silver
 @ $F0A7 label=Process_DropSilver
   $F0A7,$05 Jump to #R$EDB8 with item #N$65: #ITEM$65.
 
-c $F0AC
-  $F0AC,$05 Call #R$ED75 with item #N$61: #ITEM$61.
-  $F0B1,$05 Write #N$4C to *#R$E8F4 to open up northbound access to #ROOM$4C
+u $F0AC Process: Get Staff (Duplicate)
+@ $F0AC label=Process_GetStaff_Duplicate
+D $F0AC Complete copy of #R$F7E9 - this routine is completely unused.
+C $F0AC,$05 Call #R$ED75 with item #N$61: #ITEM$61.
+C $F0B1,$05 Write #N$4C to *#R$E8F4 to open up northbound access to #ROOM$4C
 . from #ROOM$50.
-  $F0B6,$04 Write #N$00 to *#R$E8F6 to close eastbound access in #ROOM$50.
-  $F0BA,$03 Write #N$00 to *#R$E8F7 to close westbound access in #ROOM$50.
-  $F0BD,$03 Jump to #R$EDA6.
+C $F0B6,$04 Write #N$00 to *#R$E8F6 to close eastbound access in #ROOM$50.
+C $F0BA,$03 Write #N$00 to *#R$E8F7 to close westbound access in #ROOM$50.
+C $F0BD,$03 Jump to #R$EDA6.
 
-c $F0C0 Process: Give Meat To Bear
-@ $F0C0 label=Process_GiveMeatToBear
-N $F0C0 The player wants to give the meat to the bear, check which version of
+c $F0C0 Process: Throw Meat To Bear
+@ $F0C0 label=Process_ThrowMeatToBear
+N $F0C0 The player wants to throw the meat to the bear, check which version of
 . the bear is in the current room.
   $F0C0,$05 Call #R$AE6B with item #N$45: #ITEM$45.
 N $F0C5 Just to cover all angles, print "#STR$CDD3,$08($b==$FF)" if the player
-. is trying to give the meat to the dead bear...
+. is trying to throw the meat to the dead bear...
   $F0C5,$03 Jump to #R$EE05 if the version of the bear is #ITEM$45.
 N $F0C8 The bear is alive, but is the player even carrying the meat?
   $F0C8,$05 Call #R$EDD0 with item #N$3A: #ITEM$3A.
@@ -5450,10 +5467,10 @@ N $F0D5 Print "#STR$D328,$08($b==$FF)".
   $F0D5,$03 #REGhl=#R$D328.
   $F0D8,$03 Jump to #R$ED6D.
 
-c $F0DB Process: Give Meat To Wolves
-@ $F0DB label=Process_GiveMeatToWolves
-N $F0DB The player wants to give the meat to the wolves, check if the player is
-. carrying the meat.
+c $F0DB Process: Throw Meat To Wolves
+@ $F0DB label=Process_ThrowMeatToWolves
+N $F0DB The player wants to throw the meat to the wolves, check if the player
+. is carrying the meat.
   $F0DB,$05 Call #R$EDD0 with item #N$3A: #ITEM$3A.
 N $F0E0 The player is carrying the meat, so destroy the item.
   $F0E0,$04 Call #R$AEE0 with the item ID originally passed to the routine.
@@ -5469,7 +5486,7 @@ N $F0F7 Print "#STR$D35C,$08($b==$FF)".
   $F0F7,$03 #REGhl=#R$D35C.
   $F0FA,$03 Jump to #R$ED6D.
 
-c $F0FD Process: Giving Acorns To The Raven
+c $F0FD Process: Give Acorns To The Raven
 @ $F0FD label=Process_GiveAcornsToRaven
 N $F0FD The player wants to give the acorns to the raven, check if the player
 . is carrying the acorns.
@@ -5491,7 +5508,7 @@ N $F120 Print "#STR$D4A9,$08($b==$FF)".
   $F120,$03 #REGhl=#R$D4A9.
   $F123,$03 Jump to #R$ED71.
 
-c $F126 Process: Giving Salt To The Warrior
+c $F126 Process: Give Salt To The Warrior
 @ $F126 label=Process_GiveSaltToWarrior
   $F126,$02 Load item #N$19: #ITEM$19 into #REGa.
 @ $F128 label=Response_HeDoesntWantIt
@@ -5501,7 +5518,7 @@ N $F12E Print "#STR$D4F5,$08($b==$FF)".
   $F12E,$03 #REGhl=#R$D4F5.
   $F131,$03 Jump to #R$ED6D.
 
-c $F134 Process: Giving Salt To The Guard
+c $F134 Process: Give Salt To The Guard
 @ $F134 label=Process_GiveSaltToGuard
   $F134,$05 Call #R$EDD0 with item #N$19: #ITEM$19.
   $F139,$01 #REGa=#REGe.
@@ -5535,7 +5552,7 @@ N $F173 Print "#STR$D58F,$08($b==$FF)".
   $F173,$03 #REGhl=#R$D58F.
   $F176,$03 Jump to #R$ED6D.
 
-c $F179 Process: Giving The Iron To The Trader
+c $F179 Process: Give The Iron To The Trader
 @ $F179 label=Process_GiveIronToTrader
   $F179,$02 Load item #N$23: #ITEM$23 into #REGa.
   $F17B,$03 Call #R$EDD0 with the item passed in #REGa.
@@ -5548,7 +5565,7 @@ N $F18B Print "#STR$D5E7,$08($b==$FF)".
   $F18B,$03 #REGhl=#R$D5E7.
   $F18E,$03 Jump to #R$ED6D.
 
-c $F191 Process: Giving The Roman To The Druid
+c $F191 Process: Give The Roman To The Druid
 @ $F191 label=Process_GiveRomanToDruid
   $F191,$05 Call #R$AEE0 with item #N$0B: #ITEM$0B.
   $F196,$05 Reset bit 0 of *#R$A787.
@@ -5560,8 +5577,8 @@ N $F1A6 Print "#STR$D640,$08($b==$FF)".
   $F1A6,$03 #REGhl=#R$D640.
   $F1A9,$03 Jump to #R$ED6D.
 
-c $F1AC Process: Throw Food/ Meat To The Bear
-@ $F1AC label=Process_ThrowFoodToBear
+c $F1AC Process: Give Food/ Meat To The Bear
+@ $F1AC label=Process_GiveFoodToBear
 N $F1AC The player wants to feed the bear, but is it still alive?
   $F1AC,$05 Call #R$AE6B with item #N$45: #ITEM$45.
 N $F1B1 Jump to print "#STR$CDD3,$08($b==$FF)" if the bear is dead.
@@ -5577,8 +5594,8 @@ N $F1BE Print "#STR$D6B0,$08($b==$FF)".
   $F1BE,$03 #REGhl=#R$D6B0.
   $F1C1,$03 Jump to #R$ED71.
 
-c $F1C4 Process: Throw Food/ Meat To The Wolves
-@ $F1C4 label=Process_ThrowFoodToWolves
+c $F1C4 Process: Give Food/ Meat To The Wolves
+@ $F1C4 label=Process_GiveFoodToWolves
 N $F1C4 Print "#STR$D695,$08($b==$FF)".
   $F1C4,$03 #REGhl=#R$D695.
   $F1C7,$03 Call #R$A592.
@@ -5589,7 +5606,7 @@ N $F1CE Print "#STR$D6E3,$08($b==$FF)".
   $F1CE,$03 #REGhl=#R$D6E3.
   $F1D1,$03 Jump to #R$ED71.
 
-c $F1D4 Process: Giving Salt To The Trader
+c $F1D4 Process: Give Salt To The Trader
 @ $F1D4 label=Process_GiveSaltToTrader
   $F1D4,$05 Jump to #R$F17B with item #N$19: #ITEM$19.
 
@@ -5621,7 +5638,7 @@ N $F1F8 Print "#STR$D51A,$08($b==$FF)".
   $F1F8,$03 #REGhl=#R$D51A.
   $F1FB,$03 Jump to #R$ED6D.
 
-c $F1FE Process: Giving The Helmet To The Trader
+c $F1FE Process: Give The Helmet To The Trader
 @ $F1FE label=Process_GiveHelmetToTrader
   $F1FE,$06 Call #R$AEF7 with #R$E36B.
   $F204,$05 Jump to #R$F17B if #REGa is not equal to #N$20.
@@ -5630,20 +5647,20 @@ N $F209 Change the helmet state!
 . (#ITEM$1F).
   $F20F,$05 Jump to #R$F17B with item #N$1F: #ITEM$1F.
 
-c $F214 Process: Giving The Sword To The Trader
+c $F214 Process: Give The Sword To The Trader
 @ $F214 label=Process_GiveSwordToTrader
   $F214,$05 Jump to #R$F17B with item #N$38: #ITEM$38.
 
-c $F219 Process: Giving The Shield To The Trader
+c $F219 Process: Give The Shield To The Trader
 @ $F219 label=Process_GiveShieldToTrader
   $F219,$05 Jump to #R$F17B with item #N$56: #ITEM$56.
 
-c $F21E Process: Giving The Iron To The Guard/ Druid
+c $F21E Process: Give The Iron To The Guard/ Druid
 @ $F21E label=Process_GiveIronToGuardOrDruid
 N $F21E Print "#STR$D4F5,$08($b==$FF)".
   $F21E,$05 Jump to #R$F128 with item #N$23: #ITEM$23.
 
-c $F223 Process: Giving The Helmet To The Guard/ Druid
+c $F223 Process: Give The Helmet To The Guard/ Druid
 @ $F223 label=Process_GiveHelmetToGuardOrDruid
 N $F223 The player wants to give the helmet to either the guard or the druid.
   $F223,$06 Call #R$AEF7 with #R$E36B.
@@ -5658,18 +5675,18 @@ N $F22E Change the helmet state!
 N $F234 Print "#STR$D4F5,$08($b==$FF)".
   $F234,$05 Jump to #R$F128 with item #N$1F: #ITEM$1F.
 
-c $F239 Process: Giving The Silver To The Druid
+c $F239 Process: Give The Silver To The Druid
 @ $F239 label=Process_GiveSilverToDruid
 N $F239 Print "#STR$D4F5,$08($b==$FF)".
   $F239,$05 Jump to #R$F128 with item #N$65: #ITEM$65.
 
-c $F23E Process: Give Food To Bear
-@ $F23E label=Process_GiveFoodToBear
-N $F23E The player wants to give the food to the bear, check which version of
+c $F23E Process: Throw Food To Bear
+@ $F23E label=Process_ThrowFoodToBear
+N $F23E The player wants to throw the food to the bear, check which version of
 . the bear is in the current room.
   $F23E,$05 Call #R$AE6B with item #N$45: #ITEM$45.
 N $F243 Just to cover all angles, print "#STR$CDD3,$08($b==$FF)" if the player
-. is trying to give the food to the dead bear...
+. is trying to throw the food to the dead bear...
   $F243,$03 Jump to #R$EE05 if the version of the bear is #ITEM$45.
 N $F246 The bear is alive, but is the player even carrying the food?
   $F246,$05 Call #R$EDD0 with item #N$22: #ITEM$22.
@@ -5681,10 +5698,10 @@ N $F253 Print "#STR$D717,$08($b==$FF)".
   $F253,$03 #REGhl=#R$D717.
   $F256,$03 Jump to #R$ED6D.
 
-c $F259 Process: Give Food To Wolves
-@ $F259 label=Process_GiveFoodToWolves
-N $F259 The player wants to give the food to the wolves, check if the player is
-. carrying the meat.
+c $F259 Process: Throw Food To Wolves
+@ $F259 label=Process_ThrowFoodToWolves
+N $F259 The player wants to throw the food to the wolves, check if the player
+. is carrying the meat.
   $F259,$05 Call #R$EDD0 with item #N$22: #ITEM$22.
 N $F25E The player is carrying the food, so destroy the item.
   $F25E,$04 Call #R$AEE0 with the item ID originally passed to the routine.
@@ -6016,9 +6033,9 @@ N $F4B3 Print "#STR$B4A0,$08($b==$FF)".
   $F4B3,$03 #REGhl=#R$B4A0.
   $F4B6,$03 Jump to #R$ED6D.
 
-c $F4B9 Process: Give Urn Into Fire
-@ $F4B9 label=Process_GiveUrnIntoFire
-N $F4B9 The players wants to "give" the urn into the fire, but are they in the
+c $F4B9 Process: Throw Urn Into Fire
+@ $F4B9 label=Process_ThrowUrnIntoFire
+N $F4B9 The players wants to throw the urn into the fire, but are they in the
 . room which has the fire?
   $F4B9,$08 Jump to #R$EDED if *#R$A7C3 is not equal to room #N$4F: #ROOM$4F.
 N $F4C1 The player is in the correct room, so start destroying items...
@@ -6476,12 +6493,15 @@ c $F7E9 Process: Get Staff
 . from #ROOM$50.
   $F7FA,$03 Jump to #R$EDA6.
 
-c $F7FD
+c $F7FD Action: Sleep
+@ $F7FD label=Action_Sleep
   $F7FD,$03 Call #R$AF70.
-N $F800 The "" command can only be called on its own.
-  $F800,$01 Return if the carry flag is set.
+N $F800 The "SLEEP" command can only be called on its own.
+  $F800,$01 Return if there's any token set in #R$A825.
   $F801,$05 Call #R$AE6B with item #N$37: #ITEM$37.
-  $F806,$03 Jump to #R$EE11 if.
+N $F806 Print "#STR$CE3E,$08($b==$FF)" if #ITEM$37 is present in the current
+. room.
+  $F806,$03 Jump to #R$EE11 if #ITEM$37 is present in the current room.
   $F809,$05 Call #R$AEE0 with item #N$37: #ITEM$37.
   $F80E,$05 Call #R$B09A to add #N$04 points to the score.
   $F813,$05 Call #R$AEE7 with item #N$38: #ITEM$38.
@@ -6720,8 +6740,8 @@ N $F98D The actions table for "drop":
 W $F98D,$02 Action routine #N($01+(#PC-$F98D)/$02).
 L $F98D,$02,$13,$02
 
-c $F9B3 Action: Throw
-@ $F9B3 label=Action_Throw
+c $F9B3 Action: Give
+@ $F9B3 label=Action_Give
   $F9B3,$03 Call #R$AF9F.
   $F9B6,$01 Return if there are not two direct objects in the user input (so 
 . the command is malformed).
@@ -6736,17 +6756,20 @@ c $F9B3 Action: Throw
   $F9CD,$03 Call #R$B0DE.
 N $F9D0 No phrase tokens matched the user input tokens.
   $F9D0,$02 Jump to #R$F9E2.
-N $F9D2 The token table for the action "throw":
-@ $F9D2 label=Table_ActionThrow_TokenGroup
+N $F9D2 The token table for the action "give":
+@ $F9D2 label=Table_ActionGive_TokenGroup
 W $F9D2,$02 Token group #N($01+(#PC-$F9D2)/$02).
 L $F9D2,$02,$04,$02
-N $F9DA The actions table for "throw":
-@ $F9DA label=Table_ActionThrow
+N $F9DA The actions table for "give":
+@ $F9DA label=Table_ActionGive
 W $F9DA,$02 Action routine #N($01+(#PC-$F9DA)/$02).
 L $F9DA,$02,$04,$02
 
 
-c $F9E2
+c $F9E2 Joint Action: Give/ Throw
+@ $F9E2 label=ActionJoint_GiveThrow
+D $F9E2 This action applies to both "GIVE" and "THROW" (just some extra
+. routines which apply to either verb).
   $F9E2,$03 #REGhl=#R$F9F1.
   $F9E5,$03 #REGde=#R$FA0D.
   $F9E8,$03 #REGbc=#N($000E,$04,$04).
@@ -6754,17 +6777,17 @@ c $F9E2
 N $F9EE No phrase tokens matched the user input tokens.
 N $F9EE Print "#STR$AA84,$08($b==$FF)".
   $F9EE,$03 Jump to #R$EDF9.
-N $F9F1 The token table for the action "kill"/"throw":
-@ $F9F1 label=Table_ActionKillThrow_TokenGroup
+N $F9F1 The token table for the action "give"/"throw":
+@ $F9F1 label=Table_ActionGiveThrow_TokenGroup
 W $F9F1,$02 Token group #N($01+(#PC-$F9F1)/$02).
 L $F9F1,$02,$0E,$02
-N $FA0D The actions table for "kill"/"throw":
-@ $FA0D label=Table_ActionsKillThrow
+N $FA0D The actions table for "give"/"throw":
+@ $FA0D label=Table_ActionsGiveThrow
 W $FA0D,$02 Action routine #N($01+(#PC-$FA0D)/$02).
 L $FA0D,$02,$0E,$02
 
-c $FA29 Action: Give?
-@ $FA29 label=Action_Give
+c $FA29 Action: Throw
+@ $FA29 label=Action_Throw
   $FA29,$03 Call #R$AF7B.
   $FA2C,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -6779,12 +6802,12 @@ N $FA32 Print "#STR$A9D6,$08($b==$FF)".
   $FA40,$03 Call #R$B0DE.
 N $FA43 No phrase tokens matched the user input tokens.
   $FA43,$03 Jump to #R$F9E2.
-N $FA46 The token table for the action "give":
-@ $FA46 label=Table_ActionGive_TokenGroup
+N $FA46 The token table for the action "throw":
+@ $FA46 label=Table_ActionThrow_TokenGroup
 W $FA46,$02 Token group #N($01+(#PC-$FA46)/$02).
 L $FA46,$02,$09,$02
-N $FA58 The actions table for "give":
-@ $FA58 label=Table_ActionsGive
+N $FA58 The actions table for "throw":
+@ $FA58 label=Table_ActionsThrow
 W $FA58,$02 Action routine #N($01+(#PC-$FA58)/$02).
 L $FA58,$02,$09,$02
 
@@ -7155,7 +7178,7 @@ B $FD02,$0186
 g $FE89 Jump Table: Verbs
 @ $FE89 label=JumpTable_Verbs
 D $FE89 Used by the routine at #R$B05E.
-W $FE89,$02 Verb word token #N((#PC-$FE89)/$02): #TOKEN((#PC-$FE89)/$02).
+W $FE89,$02 Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)): #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
 L $FE89,$02,$21
 
 g $FECB

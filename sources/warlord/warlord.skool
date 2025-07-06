@@ -4764,9 +4764,12 @@ c$ACE6 PUSH AF       ; Stash the user input keypress on the stack.
  $ACF7 CALL $A5A4    ; Call #R$A5A4.
  $ACFA RET           ; Return.
 
-; Routine at ACFB
+; Handler: Match Item
 ;
 ; Used by the routine at #R$AD32.
+;
+; O:F The carry flag is set to indicate that an item was found
+@label=Handler_MatchItem
 c$ACFB PUSH HL       ; {Stash #REGhl, #REGde, #REGbc and #REGix on the stack.
  $ACFC PUSH DE       ;
  $ACFD PUSH BC       ;
@@ -4796,7 +4799,9 @@ c$ACFB PUSH HL       ; {Stash #REGhl, #REGde, #REGbc and #REGix on the stack.
  $AD28 DJNZ $AD1F    ; Decrease counter by one and loop back to #R$AD1F until
                      ; counter is zero.
  $AD2A LD A,C        ; #REGa=#REGc.
- $AD2B SCF           ; Set the carry flag.
+ $AD2B SCF           ; Set the carry flag to indicate that an item was
+                     ; successfully found.
+@label=MatchItem_Return
 *$AD2C POP IX        ; {Restore #REGix, #REGbc, #REGde and #REGhl from the
  $AD2E POP BC        ; stack.
  $AD2F POP DE        ;
@@ -4928,9 +4933,9 @@ c$AD32 CALL $A560    ; Call #R$A560.
  $ADBB POP HL        ; {Restore *#R$A7C6 from the stack and write it back to
  $ADBC LD ($A7C6),HL ; *#R$A7C6.}
  $ADBF POP HL        ; Restore #REGhl from the stack.
- $ADC0 JR C,$ADF6    ; Jump to #R$ADF6 if #REGa is less than #REGc.
+ $ADC0 JR C,$ADF6    ; Jump to #R$ADF6 if "THE" was successfully found.
  $ADC2 CALL $ACFB    ; Call #R$ACFB.
- $ADC5 JR C,$ADEE    ; Jump to #R$ADEE if #REGa is less than #REGc.
+ $ADC5 JR C,$ADEE    ; Jump to #R$ADEE if an item was successfully found.
 ; Nothing matched ... Inform the player.
 ; .
 ; Print "#STR$A863,$08($b==$FF)".
@@ -5279,12 +5284,12 @@ c$AEF0 LD B,A        ; Copy the scenic event ID into #REGb.
 
 ; Check Item From Item Group Present
 ;
-; Used by the routines at #R$AF11, #R$EBB9, #R$EBC5, #R$EE64, #R$EE73, #R$EE8D,
-; #R$EEA7, #R$EEB6, #R$EF09, #R$EF12, #R$EF2A, #R$EF38, #R$EF49, #R$EF5A,
-; #R$EF86, #R$EFAD, #R$EFD0, #R$F006, #R$F01C, #R$F041, #R$F060, #R$F073,
-; #R$F091, #R$F1DF, #R$F1FE, #R$F223, #R$F26C, #R$F293, #R$F2BA, #R$F2D4,
-; #R$F338, #R$F428, #R$F440, #R$F458, #R$F489, #R$F500, #R$F544, #R$F57B,
-; #R$F5B8, #R$F62B, #R$F643, #R$F69F, #R$F6E1 and #R$F71F.
+; Used by the routines at #R$EBB9, #R$EBC5, #R$EE64, #R$EE73, #R$EE8D, #R$EEA7,
+; #R$EEB6, #R$EF09, #R$EF12, #R$EF2A, #R$EF38, #R$EF49, #R$EF5A, #R$EF86,
+; #R$EFAD, #R$EFD0, #R$F006, #R$F01C, #R$F041, #R$F060, #R$F073, #R$F091,
+; #R$F1DF, #R$F1FE, #R$F223, #R$F26C, #R$F293, #R$F2BA, #R$F2D4, #R$F338,
+; #R$F428, #R$F440, #R$F458, #R$F489, #R$F500, #R$F544, #R$F57B, #R$F5B8,
+; #R$F62B, #R$F643, #R$F69F, #R$F6E1 and #R$F71F.
 ;
 ;   HL Pointer to item group data
 ; O:A The related item ID from the item group data which is present
@@ -5324,17 +5329,20 @@ c$AF08 LD HL,$A66C   ; #REGhl=#R$A66C.
  $AF0F LD (HL),C     ; Update the table with the new room ID in #REGc.
  $AF10 RET           ; Return.
 
-; Routine at AF11
+; Find Index Of Item From Item Group Present
 ;
 ; .
 ;
 ;   HL Pointer to item group data
 ; O:A The found index
-c$AF11 LD B,$00      ; Initialise an index counter in #REGb to #N$00.
+@label=FindIndexOfItemFromItemGroupPresent
+u$AF11 LD B,$00      ; Initialise an index counter in #REGb to #N$00.
  $AF13 JR $AF17      ; Jump to #R$AF17.
 ; Move past the termination byte in the item group.
+@label=FindIndexOfItemFromItemGroupPresent_Loop
 *$AF15 INC B         ; Increment the index counter in #REGb by one.
  $AF16 INC HL        ; Increment #REGhl by one.
+@label=Call_CheckItemGroupPresent
 *$AF17 CALL $AEF7    ; Call #R$AEF7.
  $AF1A JR Z,$AF15    ; Jump back to #R$AF15 until an item from the item group
                      ; is matched.
@@ -11778,28 +11786,49 @@ c$EBA7 LD A,($A7C3)  ; {Return if *#R$A7C3 is not room #N$42: #ROOM$42.
  $EBAA CP $42        ;
  $EBAC RET NZ        ; }
 ; This entry point is used by the routine at #R$ED57.
+; .
+; Check if the player is wearing the cloak?
+@label=IsPlayerWearingCloak
 *$EBAD LD A,$6D      ; {Call #R$AEDA with #ITEM$6D.
  $EBAF CALL $AEDA    ; }
  $EBB2 RET Z         ; Return if the player has #ITEM$6D in their inventory.
+; Uh oh ... the player isn't wearing the cloak ...
+; .
 ; Print "#STR$DF48,$08($b==$FF)".
  $EBB3 LD HL,$DF48   ; #REGhl=#R$DF48.
  $EBB6 JP $EB9D      ; Jump to #R$EB9D.
 
 ; Process: Pre-Enter Fomorians' Cavern
+;
+; .
+;
+; .
+;
+; Check if any versions of the Fomorians are present in this room.
 @label=Process_PreEnterFomoriansCavern
 c$EBB9 LD HL,$E348   ; {Call #R$AEF7 with #R$E348.
  $EBBC CALL $AEF7    ; }
- $EBBF RET NZ        ; Return if not zero?
+ $EBBF RET NZ        ; Just return if no versions of the Fomorians are in the current
+                     ; room.
+; There are Fomorians in this room, trigger the scene.
  $EBC0 CALL $AEF0    ; Call #R$AEF0.
  $EBC3 JR $EBB9      ; Jump to #R$EBB9.
 
-; Process: Pre-Enter Various
+; Process: Pre-Enter Various (For Roman)
+;
+; .
+;
+; .
+;
+; Check if any version of the Roman is in the current room.
 @label=Process_PreEnterVarious
 c$EBC5 LD HL,$E341   ; {Call #R$AEF7 with #R$E341.
  $EBC8 CALL $AEF7    ; }
- $EBCB RET NZ        ; Return if not zero?
- $EBCC CP $04        ; {Return if #REGa is greater than #N$04.
- $EBCE RET NC        ; }
+ $EBCB RET NZ        ; Return if no version of the Roman is in the current
+                     ; room.
+ $EBCC CP $04        ; {Return if any version of the Roman is in the current room which has
+ $EBCE RET NC        ; an item ID greater than #N$04 - #ITEM$04.}
+; Else, trigger the scene.
  $EBCF LD A,$02      ; {Call #R$AEF0 with #N$02.
  $EBD1 CALL $AEF0    ; }
  $EBD4 LD A,$03      ; {Call #R$AEF0 with #N$03.
@@ -12120,7 +12149,7 @@ c$ED71 CALL $B081    ; Call #R$B081.
 ; Check Player Inventory
 ;
 ; Used by the routines at #R$EDB2, #R$EECF, #R$EEE9, #R$EF5A, #R$EF86, #R$EFAD,
-; #R$EFD0, #R$F0AC, #R$F1DF and #R$F7E9.
+; #R$EFD0, #R$F1DF and #R$F7E9.
 ;
 ; A Item ID
 ;
@@ -12170,7 +12199,7 @@ c$ED75 CALL $AEDA    ; Call #R$AEDA.
 ; Handler: Pick Up Item
 ;
 ; Used by the routines at #R$EDB2, #R$EECF, #R$EEE9, #R$EF5A, #R$EF86, #R$EFAD,
-; #R$F0AC, #R$F1DF and #R$F7E9.
+; #R$F1DF and #R$F7E9.
 ;
 ; B Item ID
 @label=Handler_PickUpItem
@@ -13067,8 +13096,11 @@ c$F091 LD HL,$E3DD   ; {Call #R$AEF7 with #R$E3DD.
 c$F0A7 LD A,$65      ; {Jump to #R$EDB8 with item #N$65: #ITEM$65.
  $F0A9 JP $EDB8      ; }
 
-; Routine at F0AC
-c$F0AC LD A,$61      ; {Call #R$ED75 with item #N$61: #ITEM$61.
+; Process: Get Staff (Duplicate)
+;
+; Complete copy of #R$F7E9 - this routine is completely unused.
+@label=Process_GetStaff_Duplicate
+u$F0AC LD A,$61      ; {Call #R$ED75 with item #N$61: #ITEM$61.
  $F0AE CALL $ED75    ; }
  $F0B1 LD A,$4C      ; {Write #N$4C to *#R$E8F4 to open up northbound access to #ROOM$4C
  $F0B3 LD ($E8F4),A  ; from #ROOM$50.}
@@ -13078,19 +13110,19 @@ c$F0AC LD A,$61      ; {Call #R$ED75 with item #N$61: #ITEM$61.
                      ; #ROOM$50.
  $F0BD JP $EDA6      ; Jump to #R$EDA6.
 
-; Process: Give Meat To Bear
+; Process: Throw Meat To Bear
 ;
 ; .
 ;
 ; .
 ;
-; The player wants to give the meat to the bear, check which version of
+; The player wants to throw the meat to the bear, check which version of
 ; the bear is in the current room.
-@label=Process_GiveMeatToBear
+@label=Process_ThrowMeatToBear
 c$F0C0 LD A,$45      ; {Call #R$AE6B with item #N$45: #ITEM$45.
  $F0C2 CALL $AE6B    ; }
 ; Just to cover all angles, print "#STR$CDD3,$08($b==$FF)" if the player
-; is trying to give the meat to the dead bear...
+; is trying to throw the meat to the dead bear...
  $F0C5 JP Z,$EE05    ; Jump to #R$EE05 if the version of the bear is #ITEM$45.
 ; The bear is alive, but is the player even carrying the meat?
  $F0C8 LD A,$3A      ; {Call #R$EDD0 with item #N$3A: #ITEM$3A.
@@ -13105,15 +13137,15 @@ c$F0C0 LD A,$45      ; {Call #R$AE6B with item #N$45: #ITEM$45.
  $F0D5 LD HL,$D328   ; #REGhl=#R$D328.
  $F0D8 JP $ED6D      ; Jump to #R$ED6D.
 
-; Process: Give Meat To Wolves
+; Process: Throw Meat To Wolves
 ;
 ; .
 ;
 ; .
 ;
-; The player wants to give the meat to the wolves, check if the player is
-; carrying the meat.
-@label=Process_GiveMeatToWolves
+; The player wants to throw the meat to the wolves, check if the player
+; is carrying the meat.
+@label=Process_ThrowMeatToWolves
 c$F0DB LD A,$3A      ; {Call #R$EDD0 with item #N$3A: #ITEM$3A.
  $F0DD CALL $EDD0    ; }
 ; The player is carrying the meat, so destroy the item.
@@ -13134,7 +13166,7 @@ c$F0DB LD A,$3A      ; {Call #R$EDD0 with item #N$3A: #ITEM$3A.
  $F0F7 LD HL,$D35C   ; #REGhl=#R$D35C.
  $F0FA JP $ED6D      ; Jump to #R$ED6D.
 
-; Process: Giving Acorns To The Raven
+; Process: Give Acorns To The Raven
 ;
 ; .
 ;
@@ -13166,7 +13198,7 @@ c$F0FD LD A,$1B      ; {Call #R$EDD0 with item #N$1B: #ITEM$1B.
  $F120 LD HL,$D4A9   ; #REGhl=#R$D4A9.
  $F123 JP $ED71      ; Jump to #R$ED71.
 
-; Process: Giving Salt To The Warrior
+; Process: Give Salt To The Warrior
 @label=Process_GiveSaltToWarrior
 c$F126 LD A,$19      ; Load item #N$19: #ITEM$19 into #REGa.
 ; This entry point is used by the routines at #R$F21E, #R$F223 and #R$F239.
@@ -13177,7 +13209,7 @@ c$F126 LD A,$19      ; Load item #N$19: #ITEM$19 into #REGa.
  $F12E LD HL,$D4F5   ; #REGhl=#R$D4F5.
  $F131 JP $ED6D      ; Jump to #R$ED6D.
 
-; Process: Giving Salt To The Guard
+; Process: Give Salt To The Guard
 @label=Process_GiveSaltToGuard
 c$F134 LD A,$19      ; {Call #R$EDD0 with item #N$19: #ITEM$19.
  $F136 CALL $EDD0    ; }
@@ -13221,7 +13253,7 @@ c$F156 LD A,$3C      ; {Call #R$AE6B with item #N$3C: #ITEM$3C.
  $F173 LD HL,$D58F   ; #REGhl=#R$D58F.
  $F176 JP $ED6D      ; Jump to #R$ED6D.
 
-; Process: Giving The Iron To The Trader
+; Process: Give The Iron To The Trader
 @label=Process_GiveIronToTrader
 c$F179 LD A,$23      ; Load item #N$23: #ITEM$23 into #REGa.
 ; This entry point is used by the routines at #R$F1D4, #R$F1FE, #R$F214 and
@@ -13238,7 +13270,7 @@ c$F179 LD A,$23      ; Load item #N$23: #ITEM$23 into #REGa.
  $F18B LD HL,$D5E7   ; #REGhl=#R$D5E7.
  $F18E JP $ED6D      ; Jump to #R$ED6D.
 
-; Process: Giving The Roman To The Druid
+; Process: Give The Roman To The Druid
 @label=Process_GiveRomanToDruid
 c$F191 LD A,$0B      ; {Call #R$AEE0 with item #N$0B: #ITEM$0B.
  $F193 CALL $AEE0    ; }
@@ -13253,14 +13285,14 @@ c$F191 LD A,$0B      ; {Call #R$AEE0 with item #N$0B: #ITEM$0B.
  $F1A6 LD HL,$D640   ; #REGhl=#R$D640.
  $F1A9 JP $ED6D      ; Jump to #R$ED6D.
 
-; Process: Throw Food/ Meat To The Bear
+; Process: Give Food/ Meat To The Bear
 ;
 ; .
 ;
 ; .
 ;
 ; The player wants to feed the bear, but is it still alive?
-@label=Process_ThrowFoodToBear
+@label=Process_GiveFoodToBear
 c$F1AC LD A,$45      ; {Call #R$AE6B with item #N$45: #ITEM$45.
  $F1AE CALL $AE6B    ; }
 ; Jump to print "#STR$CDD3,$08($b==$FF)" if the bear is dead.
@@ -13277,14 +13309,14 @@ c$F1AC LD A,$45      ; {Call #R$AE6B with item #N$45: #ITEM$45.
  $F1BE LD HL,$D6B0   ; #REGhl=#R$D6B0.
  $F1C1 JP $ED71      ; Jump to #R$ED71.
 
-; Process: Throw Food/ Meat To The Wolves
+; Process: Give Food/ Meat To The Wolves
 ;
 ; .
 ;
 ; .
 ;
 ; Print "#STR$D695,$08($b==$FF)".
-@label=Process_ThrowFoodToWolves
+@label=Process_GiveFoodToWolves
 c$F1C4 LD HL,$D695   ; #REGhl=#R$D695.
  $F1C7 CALL $A592    ; Call #R$A592.
 ; Bad luck!
@@ -13294,7 +13326,7 @@ c$F1C4 LD HL,$D695   ; #REGhl=#R$D695.
  $F1CE LD HL,$D6E3   ; #REGhl=#R$D6E3.
  $F1D1 JP $ED71      ; Jump to #R$ED71.
 
-; Process: Giving Salt To The Trader
+; Process: Give Salt To The Trader
 @label=Process_GiveSaltToTrader
 c$F1D4 LD A,$19      ; {Jump to #R$F17B with item #N$19: #ITEM$19.
  $F1D6 JP $F17B      ; }
@@ -13345,7 +13377,7 @@ c$F1DF LD HL,$E392   ; {Call #R$AEF7 with #R$E392.
 *$F1F8 LD HL,$D51A   ; #REGhl=#R$D51A.
  $F1FB JP $ED6D      ; Jump to #R$ED6D.
 
-; Process: Giving The Helmet To The Trader
+; Process: Give The Helmet To The Trader
 @label=Process_GiveHelmetToTrader
 c$F1FE LD HL,$E36B   ; {Call #R$AEF7 with #R$E36B.
  $F201 CALL $AEF7    ; }
@@ -13357,17 +13389,17 @@ c$F1FE LD HL,$E36B   ; {Call #R$AEF7 with #R$E36B.
  $F20F LD A,$1F      ; {Jump to #R$F17B with item #N$1F: #ITEM$1F.
  $F211 JP $F17B      ; }
 
-; Process: Giving The Sword To The Trader
+; Process: Give The Sword To The Trader
 @label=Process_GiveSwordToTrader
 c$F214 LD A,$38      ; {Jump to #R$F17B with item #N$38: #ITEM$38.
  $F216 JP $F17B      ; }
 
-; Process: Giving The Shield To The Trader
+; Process: Give The Shield To The Trader
 @label=Process_GiveShieldToTrader
 c$F219 LD A,$56      ; {Jump to #R$F17B with item #N$56: #ITEM$56.
  $F21B JP $F17B      ; }
 
-; Process: Giving The Iron To The Guard/ Druid
+; Process: Give The Iron To The Guard/ Druid
 ;
 ; .
 ;
@@ -13378,7 +13410,7 @@ c$F219 LD A,$56      ; {Jump to #R$F17B with item #N$56: #ITEM$56.
 c$F21E LD A,$23      ; {Jump to #R$F128 with item #N$23: #ITEM$23.
  $F220 JP $F128      ; }
 
-; Process: Giving The Helmet To The Guard/ Druid
+; Process: Give The Helmet To The Guard/ Druid
 ;
 ; .
 ;
@@ -13402,7 +13434,7 @@ c$F223 LD HL,$E36B   ; {Call #R$AEF7 with #R$E36B.
  $F234 LD A,$1F      ; {Jump to #R$F128 with item #N$1F: #ITEM$1F.
  $F236 JP $F128      ; }
 
-; Process: Giving The Silver To The Druid
+; Process: Give The Silver To The Druid
 ;
 ; .
 ;
@@ -13413,19 +13445,19 @@ c$F223 LD HL,$E36B   ; {Call #R$AEF7 with #R$E36B.
 c$F239 LD A,$65      ; {Jump to #R$F128 with item #N$65: #ITEM$65.
  $F23B JP $F128      ; }
 
-; Process: Give Food To Bear
+; Process: Throw Food To Bear
 ;
 ; .
 ;
 ; .
 ;
-; The player wants to give the food to the bear, check which version of
+; The player wants to throw the food to the bear, check which version of
 ; the bear is in the current room.
-@label=Process_GiveFoodToBear
+@label=Process_ThrowFoodToBear
 c$F23E LD A,$45      ; {Call #R$AE6B with item #N$45: #ITEM$45.
  $F240 CALL $AE6B    ; }
 ; Just to cover all angles, print "#STR$CDD3,$08($b==$FF)" if the player
-; is trying to give the food to the dead bear...
+; is trying to throw the food to the dead bear...
  $F243 JP Z,$EE05    ; Jump to #R$EE05 if the version of the bear is #ITEM$45.
 ; The bear is alive, but is the player even carrying the food?
  $F246 LD A,$22      ; {Call #R$EDD0 with item #N$22: #ITEM$22.
@@ -13440,15 +13472,15 @@ c$F23E LD A,$45      ; {Call #R$AE6B with item #N$45: #ITEM$45.
  $F253 LD HL,$D717   ; #REGhl=#R$D717.
  $F256 JP $ED6D      ; Jump to #R$ED6D.
 
-; Process: Give Food To Wolves
+; Process: Throw Food To Wolves
 ;
 ; .
 ;
 ; .
 ;
-; The player wants to give the food to the wolves, check if the player is
-; carrying the meat.
-@label=Process_GiveFoodToWolves
+; The player wants to throw the food to the wolves, check if the player
+; is carrying the meat.
+@label=Process_ThrowFoodToWolves
 c$F259 LD A,$22      ; {Call #R$EDD0 with item #N$22: #ITEM$22.
  $F25B CALL $EDD0    ; }
 ; The player is carrying the food, so destroy the item.
@@ -13925,15 +13957,15 @@ c$F489 LD HL,$E3A6   ; {Call #R$AEF7 with #R$E3A6.
  $F4B3 LD HL,$B4A0   ; #REGhl=#R$B4A0.
  $F4B6 JP $ED6D      ; Jump to #R$ED6D.
 
-; Process: Give Urn Into Fire
+; Process: Throw Urn Into Fire
 ;
 ; .
 ;
 ; .
 ;
-; The players wants to "give" the urn into the fire, but are they in the
+; The players wants to throw the urn into the fire, but are they in the
 ; room which has the fire?
-@label=Process_GiveUrnIntoFire
+@label=Process_ThrowUrnIntoFire
 c$F4B9 LD A,($A7C3)  ; {Jump to #R$EDED if *#R$A7C3 is not equal to room #N$4F:
  $F4BC CP $4F        ; #ROOM$4F.
  $F4BE JP NZ,$EDED   ; }
@@ -14565,13 +14597,17 @@ c$F7E9 LD A,$61      ; {Call #R$ED75 with item #N$61: #ITEM$61.
  $F7F7 LD ($E8F4),A  ; from #ROOM$50.}
  $F7FA JP $EDA6      ; Jump to #R$EDA6.
 
-; Routine at F7FD
+; Action: Sleep
+@label=Action_Sleep
 c$F7FD CALL $AF70    ; Call #R$AF70.
-; The "" command can only be called on its own.
- $F800 RET C         ; Return if the carry flag is set.
+; The "SLEEP" command can only be called on its own.
+ $F800 RET C         ; Return if there's any token set in #R$A825.
  $F801 LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
  $F803 CALL $AE6B    ; }
- $F806 JP NZ,$EE11   ; Jump to #R$EE11 if.
+; Print "#STR$CE3E,$08($b==$FF)" if #ITEM$37 is present in the current
+; room.
+ $F806 JP NZ,$EE11   ; Jump to #R$EE11 if #ITEM$37 is present in the current
+                     ; room.
  $F809 LD A,$37      ; {Call #R$AEE0 with item #N$37: #ITEM$37.
  $F80B CALL $AEE0    ; }
  $F80E LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
@@ -14904,8 +14940,8 @@ c$F975 CALL $AF7B    ; Call #R$AF7B.
  $F9AF DEFW $F091    ; Action routine #N($01+(#PC-$F98D)/$02).
  $F9B1 DEFW $F0A7    ; Action routine #N($01+(#PC-$F98D)/$02).
 
-; Action: Throw
-@label=Action_Throw
+; Action: Give
+@label=Action_Give
 c$F9B3 CALL $AF9F    ; Call #R$AF9F.
  $F9B6 RET C         ; Return if there are not two direct objects in the user input (so
                      ; the command is malformed).
@@ -14920,22 +14956,26 @@ c$F9B3 CALL $AF9F    ; Call #R$AF9F.
  $F9CD CALL $B0DE    ; Call #R$B0DE.
 ; No phrase tokens matched the user input tokens.
  $F9D0 JR $F9E2      ; Jump to #R$F9E2.
-; The token table for the action "throw":
-@label=Table_ActionThrow_TokenGroup
+; The token table for the action "give":
+@label=Table_ActionGive_TokenGroup
  $F9D2 DEFW $E569    ; Token group #N($01+(#PC-$F9D2)/$02).
  $F9D4 DEFW $E56D    ; Token group #N($01+(#PC-$F9D2)/$02).
  $F9D6 DEFW $E585    ; Token group #N($01+(#PC-$F9D2)/$02).
  $F9D8 DEFW $E589    ; Token group #N($01+(#PC-$F9D2)/$02).
-; The actions table for "throw":
-@label=Table_ActionThrow
+; The actions table for "give":
+@label=Table_ActionGive
  $F9DA DEFW $F1AC    ; Action routine #N($01+(#PC-$F9DA)/$02).
  $F9DC DEFW $F1C4    ; Action routine #N($01+(#PC-$F9DA)/$02).
  $F9DE DEFW $F1AC    ; Action routine #N($01+(#PC-$F9DA)/$02).
  $F9E0 DEFW $F1C4    ; Action routine #N($01+(#PC-$F9DA)/$02).
 
-; Routine at F9E2
+; Joint Action: Give/ Throw
 ;
 ; Used by the routines at #R$F9B3 and #R$FA29.
+; .
+; This action applies to both "GIVE" and "THROW" (just some extra
+; routines which apply to either verb).
+@label=ActionJoint_GiveThrow
 c$F9E2 LD HL,$F9F1   ; #REGhl=#R$F9F1.
  $F9E5 LD DE,$FA0D   ; #REGde=#R$FA0D.
  $F9E8 LD BC,$000E   ; #REGbc=#N($000E,$04,$04).
@@ -14944,8 +14984,8 @@ c$F9E2 LD HL,$F9F1   ; #REGhl=#R$F9F1.
 ; .
 ; Print "#STR$AA84,$08($b==$FF)".
  $F9EE JP $EDF9      ; Jump to #R$EDF9.
-; The token table for the action "kill"/"throw":
-@label=Table_ActionKillThrow_TokenGroup
+; The token table for the action "give"/"throw":
+@label=Table_ActionGiveThrow_TokenGroup
  $F9F1 DEFW $E571    ; Token group #N($01+(#PC-$F9F1)/$02).
  $F9F3 DEFW $E59E    ; Token group #N($01+(#PC-$F9F1)/$02).
  $F9F5 DEFW $E579    ; Token group #N($01+(#PC-$F9F1)/$02).
@@ -14960,8 +15000,8 @@ c$F9E2 LD HL,$F9F1   ; #REGhl=#R$F9F1.
  $FA07 DEFW $E5C1    ; Token group #N($01+(#PC-$F9F1)/$02).
  $FA09 DEFW $E5C5    ; Token group #N($01+(#PC-$F9F1)/$02).
  $FA0B DEFW $E5CE    ; Token group #N($01+(#PC-$F9F1)/$02).
-; The actions table for "kill"/"throw":
-@label=Table_ActionsKillThrow
+; The actions table for "give"/"throw":
+@label=Table_ActionsGiveThrow
  $FA0D DEFW $F0FD    ; Action routine #N($01+(#PC-$FA0D)/$02).
  $FA0F DEFW $F126    ; Action routine #N($01+(#PC-$FA0D)/$02).
  $FA11 DEFW $F134    ; Action routine #N($01+(#PC-$FA0D)/$02).
@@ -14977,8 +15017,8 @@ c$F9E2 LD HL,$F9F1   ; #REGhl=#R$F9F1.
  $FA25 DEFW $F223    ; Action routine #N($01+(#PC-$FA0D)/$02).
  $FA27 DEFW $F21E    ; Action routine #N($01+(#PC-$FA0D)/$02).
 
-; Action: Give?
-@label=Action_Give
+; Action: Throw
+@label=Action_Throw
 c$FA29 CALL $AF7B    ; Call #R$AF7B.
  $FA2C RET C         ; Return if there is no direct object in the user input (so the
                      ; command is malformed).
@@ -14994,8 +15034,8 @@ c$FA29 CALL $AF7B    ; Call #R$AF7B.
  $FA40 CALL $B0DE    ; Call #R$B0DE.
 ; No phrase tokens matched the user input tokens.
  $FA43 JP $F9E2      ; Jump to #R$F9E2.
-; The token table for the action "give":
-@label=Table_ActionGive_TokenGroup
+; The token table for the action "throw":
+@label=Table_ActionThrow_TokenGroup
  $FA46 DEFW $E569    ; Token group #N($01+(#PC-$FA46)/$02).
  $FA48 DEFW $E56D    ; Token group #N($01+(#PC-$FA46)/$02).
  $FA4A DEFW $E585    ; Token group #N($01+(#PC-$FA46)/$02).
@@ -15005,8 +15045,8 @@ c$FA29 CALL $AF7B    ; Call #R$AF7B.
  $FA52 DEFW $E5DA    ; Token group #N($01+(#PC-$FA46)/$02).
  $FA54 DEFW $E5DE    ; Token group #N($01+(#PC-$FA46)/$02).
  $FA56 DEFW $E66E    ; Token group #N($01+(#PC-$FA46)/$02).
-; The actions table for "give":
-@label=Table_ActionsGive
+; The actions table for "throw":
+@label=Table_ActionsThrow
  $FA58 DEFW $F0C0    ; Action routine #N($01+(#PC-$FA58)/$02).
  $FA5A DEFW $F0DB    ; Action routine #N($01+(#PC-$FA58)/$02).
  $FA5C DEFW $F23E    ; Action routine #N($01+(#PC-$FA58)/$02).
@@ -15555,72 +15595,72 @@ g$FD02 DEFB $00,$00,$00,$00,$FF,$FF,$FF,$00
 ;
 ; Used by the routine at #R$B05E.
 @label=JumpTable_Verbs
-g$FE89 DEFW $F7FD    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FE8B DEFW $F824    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FE8D DEFW $F841    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FE8F DEFW $F84B    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FE91 DEFW $F853    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FE93 DEFW $F892    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FE95 DEFW $F8A1    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FE97 DEFW $F8A9    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FE99 DEFW $F8C9    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FE9B DEFW $F8CD    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FE9D DEFW $F8D1    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FE9F DEFW $F8D5    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEA1 DEFW $F8D9    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEA3 DEFW $F8DD    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEA5 DEFW $F8F2    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEA7 DEFW $F975    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEA9 DEFW $F9B3    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEAB DEFW $FA29    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEAD DEFW $FA6A    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEAF DEFW $FA91    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEB1 DEFW $FAAD    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEB3 DEFW $FADD    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEB5 DEFW $FB21    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEB7 DEFW $FB5D    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEB9 DEFW $FB89    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEBB DEFW $FBB9    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEBD DEFW $FBC3    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEBF DEFW $FBDE    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEC1 DEFW $FBF5    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEC3 DEFW $FC10    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEC5 DEFW $FC2F    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEC7 DEFW $FC4B    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
- $FEC9 DEFW $FC8D    ; Verb word token #N((#PC-$FE89)/$02):
-                     ; #TOKEN((#PC-$FE89)/$02).
+g$FE89 DEFW $F7FD    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FE8B DEFW $F824    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FE8D DEFW $F841    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FE8F DEFW $F84B    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FE91 DEFW $F853    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FE93 DEFW $F892    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FE95 DEFW $F8A1    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FE97 DEFW $F8A9    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FE99 DEFW $F8C9    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FE9B DEFW $F8CD    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FE9D DEFW $F8D1    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FE9F DEFW $F8D5    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEA1 DEFW $F8D9    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEA3 DEFW $F8DD    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEA5 DEFW $F8F2    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEA7 DEFW $F975    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEA9 DEFW $F9B3    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEAB DEFW $FA29    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEAD DEFW $FA6A    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEAF DEFW $FA91    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEB1 DEFW $FAAD    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEB3 DEFW $FADD    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEB5 DEFW $FB21    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEB7 DEFW $FB5D    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEB9 DEFW $FB89    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEBB DEFW $FBB9    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEBD DEFW $FBC3    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEBF DEFW $FBDE    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEC1 DEFW $FBF5    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEC3 DEFW $FC10    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEC5 DEFW $FC2F    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEC7 DEFW $FC4B    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
+ $FEC9 DEFW $FC8D    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
+                     ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
 
 ; Game status buffer entry at FECB
 g$FECB DEFW $E9D8
