@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Warlord: Routine at EF38</title>
+<title>Warlord: Routine at EFE4</title>
 <meta charset="utf-8" />
 <link rel="stylesheet" type="text/css" href="../skoolkit.css" />
 <link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
@@ -25,15 +25,15 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="EF2A.html">EF2A</a>
+Prev: <a href="EFD0.html">EFD0</a>
 </td>
-<td class="up">Up: <a href="../maps/all.html#ef38">Map</a></td>
+<td class="up">Up: <a href="../maps/all.html#efe4">Map</a></td>
 <td class="next">
-Next: <a href="EF49.html">EF49</a>
+Next: <a href="EFF2.html">EFF2</a>
 </td>
 </tr>
 </table>
-<div class="description">EF38: Process: Get Meat</div>
+<div class="description">EFE4: Process: Take Cloak From Body</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -43,55 +43,63 @@ Next: <a href="EF49.html">EF49</a>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
-<span id="ef38"></span>
+<span id="efe4"></span>
 <div class="comments">
 <div class="paragraph">
-The player wants to pick up the meat, check which version of it is in the current room.
+The player wants to take the cloak from the dead body, which is a bit creepy. Check which version of the cloak is in the current room.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Process_GetMeat</td>
-<td class="address-2"><span id="ef38"></span>EF38</td>
-<td class="instruction">LD HL,$E396</td>
-<td class="comment-1" rowspan="2">Call <a href="AEF7.html">CheckItemGroupPresent</a> with <a href="E341.html#e396">Data_ItemGroup_Meat</a>.</td>
+<td class="asm-label">Process_TakeCloakFromBody</td>
+<td class="address-2"><span id="efe4"></span>EFE4</td>
+<td class="instruction">LD A,$62</td>
+<td class="comment-1" rowspan="2">Call <a href="AE6B.html">ValidateItemPresent</a> with item 62: "The body of a young man,in a white cloak,trapped by charred fallen timbers".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="ef3b"></span>EF3B</td>
-<td class="instruction">CALL <a href="AEF7.html">CheckItemGroupPresent</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ef3e"></span>EF3E</td>
-<td class="instruction">CP $3C</td>
-<td class="comment-1" rowspan="2">Jump to <a href="EDB2.html">Handler_CheckPlayerInventory_PickUpItem</a> if the meat state in the current room is not "A trader,selling some meat".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ef40"></span>EF40</td>
-<td class="instruction">JP NZ,<a href="EDB2.html">Handler_CheckPlayerInventory_PickUpItem</a></td>
+<td class="address-1"><span id="efe6"></span>EFE6</td>
+<td class="instruction">CALL <a href="AE6B.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
-<span id="ef43"></span>
+<span id="efe9"></span>
 <div class="comments">
 <div class="paragraph">
-Print "The trader snatches it back,angrily.".
+Allow the player to take the cloak from the dead man who can't really complain about it.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Process_TakeMeatFromTrader</td>
-<td class="address-1"><span id="ef43"></span>EF43</td>
-<td class="instruction">LD HL,$D245</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="D245.html">Messaging_TraderSnatchesItBack</a>.</td>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efe9"></span>EFE9</td>
+<td class="instruction">JP Z,<a href="EFAD.html">Process_GetCloak</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EFAD.html">Process_GetCloak</a> if the version of the cloak is "The body of a young man,in a white cloak,trapped by charred fallen timbers".</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="efec"></span>
+<div class="comments">
+<div class="paragraph">
+Else respond that there is no cloak on the body.
+</div>
+<div class="paragraph">
+Print "The body does not have a cloak.".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="ef46"></span>EF46</td>
+<td class="address-1"><span id="efec"></span>EFEC</td>
+<td class="instruction">LD HL,$D308</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="D308.html">Messaging_BodyDoesNotHaveCloak</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efef"></span>EFEF</td>
 <td class="instruction">JP <a href="ED6D.html">PrintStringAndNewline_Duplicate</a></td>
 <td class="comment-1" rowspan="1">Jump to <a href="ED6D.html">PrintStringAndNewline_Duplicate</a>.</td>
 </tr>
@@ -99,11 +107,11 @@ Print "The trader snatches it back,angrily.".
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="EF2A.html">EF2A</a>
+Prev: <a href="EFD0.html">EFD0</a>
 </td>
-<td class="up">Up: <a href="../maps/all.html#ef38">Map</a></td>
+<td class="up">Up: <a href="../maps/all.html#efe4">Map</a></td>
 <td class="next">
-Next: <a href="EF49.html">EF49</a>
+Next: <a href="EFF2.html">EFF2</a>
 </td>
 </tr>
 </table>
@@ -112,7 +120,7 @@ Next: <a href="EF49.html">EF49</a>
 <div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
 <div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/warlord/">Source code</a>.</div>
-<div><a href="../dec/asm/61240.html">Switch to decimal</a>.</div>
+<div><a href="../dec/asm/61412.html">Switch to decimal</a>.</div>
 </footer>
 </body>
 </html>

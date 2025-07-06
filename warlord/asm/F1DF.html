@@ -33,7 +33,7 @@ Next: <a href="F1FE.html">F1FE</a>
 </td>
 </tr>
 </table>
-<div class="description">F1DF: Routine at F1DF</div>
+<div class="description">F1DF: Process: Take Sword From Slab</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -42,11 +42,23 @@ Next: <a href="F1FE.html">F1FE</a>
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="f1df"></span>
+<div class="comments">
+<div class="paragraph">
+The player wants to take the sword from the stone slab, check which version of the sword is in the current room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Process_TakeSwordFromSlab</td>
 <td class="address-2"><span id="f1df"></span>F1DF</td>
 <td class="instruction">LD HL,$E392</td>
 <td class="comment-1" rowspan="2">Call <a href="AEF7.html">CheckItemGroupPresent</a> with <a href="E341.html#e392">Data_ItemGroup_Sword</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f1e2"></span>F1E2</td>
 <td class="instruction">CALL <a href="AEF7.html">CheckItemGroupPresent</a></td>
 </tr>
@@ -57,42 +69,76 @@ Next: <a href="F1FE.html">F1FE</a>
 <div class="paragraph">
 This entry point is used by the routine at <a href="EF2A.html">Process_GetSword</a>.
 </div>
+<div class="paragraph">
+Handle checking if the player is already carrying the sword.
+</div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">GetSword</td>
 <td class="address-2"><span id="f1e5"></span>F1E5</td>
 <td class="instruction">CALL <a href="ED75.html">Check_PlayerInventory</a></td>
 <td class="comment-1" rowspan="1">Call <a href="ED75.html">Check_PlayerInventory</a>.</td>
 </tr>
 <tr>
-<td class="address-1"><span id="f1e8"></span>F1E8</td>
-<td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F1DF.html#f1f8">F1F8</a> if <span class="register">B</span> is not equal to 59.</td>
+<td class="routine-comment" colspan="5">
+<span id="f1e8"></span>
+<div class="comments">
+<div class="paragraph">
+Check if the sword item in the room is the one where the sword is laying on the stone slab.
+</div>
+</div>
+</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f1e8"></span>F1E8</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F1DF.html#f1f8">NoSwordOnSlab</a> if the version of the sword is not "A shimmering stone slab with a sword laying upon it".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f1e9"></span>F1E9</td>
 <td class="instruction">CP $59</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f1eb"></span>F1EB</td>
-<td class="instruction">JR NZ,<a href="F1DF.html#f1f8">$F1F8</a></td>
+<td class="instruction">JR NZ,<a href="F1DF.html#f1f8">NoSwordOnSlab</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="f1ed"></span>
+<div class="comments">
+<div class="paragraph">
+Let the player pick up the sword.
+</div>
+<div class="paragraph">
+Change the sword state!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f1ed"></span>F1ED</td>
 <td class="instruction">LD BC,$5958</td>
 <td class="comment-1" rowspan="2">Call <a href="AF1E.html">TransformItem</a> to transform item 59 ("A shimmering stone slab with a sword laying upon it") into item 58 ("A stone slab").</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f1f0"></span>F1F0</td>
 <td class="instruction">CALL <a href="AF1E.html">TransformItem</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f1f3"></span>F1F3</td>
 <td class="instruction">LD B,$39</td>
 <td class="comment-1" rowspan="2">Jump to <a href="EDA6.html">Handler_PickUpItem</a> with item 39: "A sword".</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f1f5"></span>F1F5</td>
 <td class="instruction">JP <a href="EDA6.html">Handler_PickUpItem</a></td>
 </tr>
@@ -101,17 +147,22 @@ This entry point is used by the routine at <a href="EF2A.html">Process_GetSword<
 <span id="f1f8"></span>
 <div class="comments">
 <div class="paragraph">
+The sword isn't on the slab! Respond with this.
+</div>
+<div class="paragraph">
 Print "It is not on the slab.".
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">NoSwordOnSlab</td>
 <td class="address-2"><span id="f1f8"></span>F1F8</td>
 <td class="instruction">LD HL,$D51A</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="D51A.html">Messaging_ItIsNotOnTheSlab</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="f1fb"></span>F1FB</td>
 <td class="instruction">JP <a href="ED6D.html">PrintStringAndNewline_Duplicate</a></td>
 <td class="comment-1" rowspan="1">Jump to <a href="ED6D.html">PrintStringAndNewline_Duplicate</a>.</td>
