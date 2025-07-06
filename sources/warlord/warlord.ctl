@@ -419,11 +419,13 @@ D $A76D Holds a single byte, where each bit relates to an item state as
 . { #N$02 |  }
 . { #N$03 | The acorns }
 . { #N$04 | The sword }
-. { #N$05 |  }
+. { #N$05 | Fomorian tribe }
 . { #N$06 |  }
 . { #N$07 |  }
 . TABLE#
 B $A76D,$01
+
+u $A76E
 
 g $A772 Temporary Mixed Storage
 @ $A772 label=TemporaryStorage_Messaging
@@ -5405,32 +5407,53 @@ c $F0AC
   $F0BA,$03 Write #N$00 to *#R$E8F7 to close westbound access in #ROOM$50.
   $F0BD,$03 Jump to #R$EDA6.
 
-c $F0C0
+c $F0C0 Process: Give Meat To Bear
+@ $F0C0 label=Process_GiveMeatToBear
+N $F0C0 The player wants to give the meat to the bear, check which version of
+. the bear is in the current room.
   $F0C0,$05 Call #R$AE6B with item #N$45: #ITEM$45.
-  $F0C5,$03 Jump to #R$EE05 if #REGa is equal to #N$45.
+N $F0C5 Just to cover all angles, print "#STR$CDD3,$08($b==$FF)" if the player
+. is trying to give the meat to the dead bear...
+  $F0C5,$03 Jump to #R$EE05 if the version of the bear is #ITEM$45.
+N $F0C8 The bear is alive, but is the player even carrying the meat?
   $F0C8,$05 Call #R$EDD0 with item #N$3A: #ITEM$3A.
-  $F0CD,$01 #REGa=#REGe.
-  $F0CE,$03 Call #R$AEE0.
+N $F0CD The player is carrying the meat, so destroy the item.
+  $F0CD,$04 Call #R$AEE0 with the item ID originally passed to the routine.
+N $F0D1 The bear has eaten an item so handle the inventory count.
   $F0D1,$04 Decrease *#R$A790 by one.
+N $F0D5 Print "#STR$D328,$08($b==$FF)".
   $F0D5,$03 #REGhl=#R$D328.
   $F0D8,$03 Jump to #R$ED6D.
 
+c $F0DB Process: Give Meat To Wolves
+@ $F0DB label=Process_GiveMeatToWolves
+N $F0DB The player wants to give the meat to the wolves, check if the player is
+. carrying the meat.
   $F0DB,$05 Call #R$EDD0 with item #N$3A: #ITEM$3A.
-  $F0E0,$01 #REGa=#REGe.
-  $F0E1,$03 Call #R$AEE0.
+N $F0E0 The player is carrying the meat, so destroy the item.
+  $F0E0,$04 Call #R$AEE0 with the item ID originally passed to the routine.
+N $F0E4 The wolves have eaten an item so handle the inventory count.
   $F0E4,$04 Decrease *#R$A790 by one.
-  $F0E8,$05 Write #N$30 to *#R$E830.
+N $F0E8 The wolves are appeased, the player can now pass them.
+  $F0E8,$05 Write #N$30 to *#R$E830 to open up eastbound access to #ROOM$30
+. from #ROOM$2F.
+N $F0ED The wolves are now fed and so uhhh go home? Destroy the item.
   $F0ED,$05 Call #R$AEE0 with item #N$42: #ITEM$42.
   $F0F2,$05 Call #R$B09A to add #N$04 points to the score.
+N $F0F7 Print "#STR$D35C,$08($b==$FF)".
   $F0F7,$03 #REGhl=#R$D35C.
   $F0FA,$03 Jump to #R$ED6D.
 
 c $F0FD Process: Giving Acorns To The Raven
 @ $F0FD label=Process_GiveAcornsToRaven
+N $F0FD The player wants to give the acorns to the raven, check if the player
+. is carrying the acorns.
   $F0FD,$05 Call #R$EDD0 with item #N$1B: #ITEM$1B.
-  $F102,$01 #REGa=#REGe.
-  $F103,$03 Call #R$AEE0.
+N $F102 The player is carrying the acorns, so destroy the item.
+  $F102,$04 Call #R$AEE0 with the item ID originally passed to the routine.
+N $F106 The raven has eaten an item so handle the inventory count.
   $F106,$04 Decrease *#R$A790 by one.
+N $F10A Handle destroying the raven, and spawning the torc at this location.
   $F10A,$05 Call #R$AEE0 with item #N$1D: #ITEM$1D.
   $F10F,$05 Call #R$AEE7 with item #N$69: #ITEM$69.
 N $F114 Print "#STR$D3A7,$08($b==$FF)".
@@ -5458,6 +5481,7 @@ c $F134 Process: Giving Salt To The Guard
   $F134,$05 Call #R$EDD0 with item #N$19: #ITEM$19.
   $F139,$01 #REGa=#REGe.
   $F13A,$03 Call #R$AEE0.
+N $F13D The guard has been given an item so handle the inventory count.
   $F13D,$04 Decrease *#R$A790 by one.
   $F141,$05 Call #R$AEE0 with item #N$46: #ITEM$46.
   $F146,$05 Call #R$B09A to add #N$04 points to the score.
@@ -5493,6 +5517,7 @@ c $F179 Process: Giving The Iron To The Trader
   $F17E,$01 #REGa=#REGe.
   $F17F,$03 Call #R$AEE0.
   $F182,$05 Call #R$AEE0 with item #N$3C: #ITEM$3C.
+N $F187 The trader has been given an item so handle the inventory count.
   $F187,$04 Decrease *#R$A790 by one.
 N $F18B Print "#STR$D5E7,$08($b==$FF)".
   $F18B,$03 #REGhl=#R$D5E7.
@@ -5601,23 +5626,34 @@ c $F239 Process: Giving The Silver To The Druid
 N $F239 Print "#STR$D4F5,$08($b==$FF)".
   $F239,$05 Jump to #R$F128 with item #N$65: #ITEM$65.
 
-c $F23E
+c $F23E Process: Give Food To Bear
+@ $F23E label=Process_GiveFoodToBear
+N $F23E The player wants to give the food to the bear, check which version of
+. the bear is in the current room.
   $F23E,$05 Call #R$AE6B with item #N$45: #ITEM$45.
-  $F243,$03 Jump to #R$EE05 if #REGa is equal to #N$45.
-  $F246,$02 #REGa=#N$22.
-  $F248,$03 Call #R$EDD0.
-  $F24B,$01 #REGa=#REGe.
-  $F24C,$03 Call #R$AEE0.
-  $F24F,$03 #REGhl=#R$A790.
-  $F252,$01 Decrease *#REGhl by one.
+N $F243 Just to cover all angles, print "#STR$CDD3,$08($b==$FF)" if the player
+. is trying to give the food to the dead bear...
+  $F243,$03 Jump to #R$EE05 if the version of the bear is #ITEM$45.
+N $F246 The bear is alive, but is the player even carrying the food?
+  $F246,$05 Call #R$EDD0 with item #N$22: #ITEM$22.
+N $F24B The player is carrying the food, so destroy the item.
+  $F24B,$04 Call #R$AEE0 with the item ID originally passed to the routine.
+N $F24F The bear has eaten an item so handle the inventory count.
+  $F24F,$04 Decrease *#R$A790 by one.
+N $F253 Print "#STR$D717,$08($b==$FF)".
   $F253,$03 #REGhl=#R$D717.
   $F256,$03 Jump to #R$ED6D.
-  $F259,$02 #REGa=#N$22.
-  $F25B,$03 Call #R$EDD0.
-  $F25E,$01 #REGa=#REGe.
-  $F25F,$03 Call #R$AEE0.
-  $F262,$03 #REGhl=#R$A790.
-  $F265,$01 Decrease *#REGhl by one.
+
+c $F259 Process: Give Food To Wolves
+@ $F259 label=Process_GiveFoodToWolves
+N $F259 The player wants to give the food to the wolves, check if the player is
+. carrying the meat.
+  $F259,$05 Call #R$EDD0 with item #N$22: #ITEM$22.
+N $F25E The player is carrying the food, so destroy the item.
+  $F25E,$04 Call #R$AEE0 with the item ID originally passed to the routine.
+N $F262 The wolves have eaten an item so handle the inventory count.
+  $F262,$04 Decrease *#R$A790 by one.
+N $F266 Print "#STR$D72F,$08($b==$FF)".
   $F266,$03 #REGhl=#R$D72F.
   $F269,$03 Jump to #R$ED6D.
 
@@ -5933,7 +5969,8 @@ N $F4B3 Print "#STR$B4A0,$08($b==$FF)".
   $F4B3,$03 #REGhl=#R$B4A0.
   $F4B6,$03 Jump to #R$ED6D.
 
-c $F4B9
+c $F4B9 Process: Give Urn Into Fire
+@ $F4B9 label=Process_GiveUrnIntoFire
   $F4B9,$08 Jump to #R$EDED if *#R$A7C3 is not equal to room #N$4F: #ROOM$4F.
   $F4C1,$05 Call #R$AEE0 with item #N$12: #ITEM$12.
   $F4C6,$05 Call #R$AEE0 with item #N$1C: #ITEM$1C.
@@ -5942,8 +5979,9 @@ c $F4B9
 N $F4D5 Change the Fomorian tribe state!
   $F4D5,$06 Call #R$AF1E to transform item #N$0F (#ITEM$0F) into item #N$10
 . (#ITEM$10).
-  $F4DB,$05 Set bit 5 of *#R$A76D.
+  $F4DB,$05 Set bit 5 of *#R$A76D which relates to the Fomorian tribe.
   $F4E0,$05 Call #R$B09A to add #N$04 points to the score.
+N $F4E5 The urn has been burnt and is gone, so handle the inventory count.
   $F4E5,$04 Decrease *#R$A790 by one.
 N $F4E9 Print "#STR$DA9E,$08($b==$FF)".
   $F4E9,$03 #REGhl=#R$DA9E.
@@ -5984,6 +6022,7 @@ R $F518 E The item ID currently being acted on
   $F518,$05 Call #R$EDD0 with item #N$22: #ITEM$22.
 N $F51D The player has the food in their inventory, so eat it!
   $F51D,$04 Call #R$AEE0 with the item ID of the originally requsted item.
+N $F521 The food has been consumed so handle the inventory count.
   $F521,$04 Decrease *#R$A790 by one.
 N $F525 Print "#STR$A9F7,$08($b==$FF)".
   $F525,$03 Call #R$EDF3.
@@ -5997,6 +6036,7 @@ R $F52E E The item ID currently being acted on
   $F52E,$05 Call #R$EDD0 with item #N$3A: #ITEM$3A.
 N $F533 The player has the meat in their inventory, so eat it!
   $F533,$04 Call #R$AEE0 with the item ID of the originally requsted item.
+N $F537 The meat has been consumed so handle the inventory count.
   $F537,$04 Decrease *#R$A790 by one.
 N $F53B Print "#STR$A9F7,$08($b==$FF)".
   $F53B,$03 Call #R$EDF3.
@@ -6026,6 +6066,7 @@ N $F55C Change the Roman state!
   $F562,$05 Call #R$B09A to add #N$04 points to the score.
 N $F567 The rope as a separate item is no longer needed.
   $F567,$05 Call #R$AEE0 with item #N$51: #ITEM$51.
+N $F56C The rope has been used so handle the inventory count.
   $F56C,$04 Decrease *#R$A790 by one.
 N $F570 Flag to the game that this has occurred.
   $F570,$05 Set bit 0 of *#R$A787 which relates to the roman being captured.
@@ -6044,6 +6085,7 @@ N $F58B This doesn't need to happen...
   $F58B,$03 Call #R$EDD0.
   $F58E,$05 Call #R$AEE0 with item #N$5A: #ITEM$5A.
   $F593,$05 Call #R$AEE7 with item #N$5E: #ITEM$5E.
+N $F598 The ladder has been used so handle the inventory count.
   $F598,$04 Decrease *#R$A790 by one.
   $F59C,$05 Write #N$60 to *#R$E96A.
   $F5A1,$05 Write #N$63 to *#R$E959.
@@ -6062,6 +6104,7 @@ c $F5B8 Process: Place Sword On Slab
   $F5CC,$03 Call #R$AEE0.
   $F5CF,$06 Call #R$AF1E to transform item #N$58 (#ITEM$58) into item #N$59
 . (#ITEM$59).
+N $F5D5 The sword has been used so handle the inventory count.
   $F5D5,$04 Decrease *#R$A790 by one.
   $F5D9,$08 Jump to #R$EDF3 if bit 4 of *#R$A76D is set.
   $F5E1,$02 Set bit 4 of *#REGhl.
@@ -6344,6 +6387,7 @@ N $F7AC Is the player carrying any salt?
   $F7B1,$01 Return if #ITEM$19 is not in the players inventory.
 N $F7B2 The player is carrying the salt!
   $F7B2,$04 Call #R$AEE0 with item #N$19: #ITEM$19.
+N $F7B6 The salt has been dissolved so handle the inventory count.
   $F7B6,$04 Decrease *#R$A790 by one.
 N $F7BA Print "#STR$E060,$08($b==$FF)".
   $F7BA,$03 #REGhl=#R$E060.
