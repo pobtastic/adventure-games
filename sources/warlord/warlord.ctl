@@ -391,38 +391,44 @@ L $A66C,$01,$0A
 B $A676,$01 Item #N(#PC-$A66C) #ITEM(#PC-$A66C) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $A676,$01,$7D
 
-g $A76C Flags: Item States #1
-@ $A76C label=Flag_ItemStates_01
-D $A76C Holds a single byte, where each bit relates to an item state as
+g $A76C Flags: Game States #1
+@ $A76C label=Flag_GameStates_01
+D $A76C Holds a single byte, where each bit relates to an item or room state as
 . follows:
-. #TABLE(default,centre,centre)
+. #TABLE(default,centre)
 . { =h Bit | =h Relating To }
-. { #N$00 | Lug's cavern }
-. { #N$01 | Forest path }
-. { #N$02 | The rope }
-. { #N$03 | Vale of Cuchulainn }
-. { #N$04 | The urn }
-. { #N$05 | Inner courtyard }
-. { #N$06 | The ladder being placed }
-. { #N$07 | Enchanted hills }
+. { #N$00 | #R$EC32(Entering Lug's cavern) }
+. { #N$01 | #R$EBDA(Entering the forest path) }
+. { #N$02 | #R$EF5A(Picking up the rope) }
+. { #N$03 | #R$EC40(Entering the Vale of Cuchulainn) }
+. { #N$04 | #R$EEE9(Picking up the urn) }
+. { #N$05 | #R$EC4E(Entering the Inner courtyard) }
+. { #N$06 | #R$F57B(The ladder being placed against the platform) }
+. { #N$07 | #R$EC5C(Entering the enchanted hills) }
 . TABLE#
+.
+. Used mainly as a flag to ensure that points for game milestones aren't
+. awarded more than once.
 B $A76C,$01
 
-g $A76D Flags: Item States #2
-@ $A76D label=Flag_ItemStates_02
-D $A76D Holds a single byte, where each bit relates to an item state as
+g $A76D Flags: Game States #2
+@ $A76D label=Flag_GameStates_02
+D $A76D Holds a single byte, where each bit relates to an item or room state as
 . follows:
-. #TABLE(default,centre,centre)
+. #TABLE(default,centre)
 . { =h Bit | =h Relating To }
-. { #N$00 | Deep pool of water }
-. { #N$01 | Bleak moorland }
-. { #N$02 | Crystal cavern }
-. { #N$03 | The acorns }
-. { #N$04 | The sword }
-. { #N$05 | Fomorian tribe }
-. { #N$06 | Vale of Rhia }
-. { #N$07 |  }
+. { #N$00 | #R$EC6A(Entering the deep pool of water) }
+. { #N$01 | #R$EC78(Entering the bleak moorland) }
+. { #N$02 | #R$EC86(Entering the crystal cavern) }
+. { #N$03 | #R$EECF(Picking up the acorns) }
+. { #N$04 | #R$F5B8(Placing the sword on the stone slab) }
+. { #N$05 | #R$F4B9(Killing the Fomorian tribe) }
+. { #N$06 | #R$EC94(Entering the Vale of Rhia) }
+. { #N$07 | N/A }
 . TABLE#
+.
+. Used mainly as a flag to ensure that points for game milestones aren't
+. awarded more than once.
 B $A76D,$01
 
 u $A76E
@@ -502,7 +508,7 @@ g $A787 Flags: Event States
 D $A787 Holds a single byte, where each bit relates to an event as follows:
 . #TABLE(default,centre,centre)
 . { =h Bit | =h Relating To }
-. { #N$00 | The Roman Being Captured }
+. { #N$00 | #R$F544(The Roman being captured with the rope) }
 . { #N$01 |  }
 . { #N$02 |  }
 . { #N$03 |  }
@@ -6163,35 +6169,55 @@ N $F598 The ladder has been used so handle the inventory count.
 
 c $F5B8 Process: Place Sword On Slab
 @ $F5B8 label=Process_PlaceSwordOnSlab
+N $F5B8 The players wants to place the sword on the stone slab, check which
+. version of the sword is in the current room or the players inventory.
   $F5B8,$06 Call #R$AEF7 with #R$E392.
-  $F5BE,$05 Jump to #R$EE0B if #REGa is equal to #N$59.
-  $F5C3,$05 Jump to #R$EDF9 if #REGa is equal to #N$39.
-  $F5C8,$03 Call #R$EDD0.
-  $F5CB,$01 #REGa=#REGe.
+N $F5BE Print "#STR$CDE8,$08($b==$FF)" if the version of the sword in the
+. current room is the one where it's on the stone slab.
+  $F5BE,$05 Jump to #R$EE0B if the version of the sword in the current room is
+. #ITEM$59.
+N $F5C3 Print "#STR$AA84,$08($b==$FF)" if the version of the sword in the
+. current room is item #N$39 instead of item #N$38.
+  $F5C3,$05 Jump to #R$EDF9 if the version of the sword in the current room is
+. #ITEM$39.
+N $F5C8 Ensure the player is carrying the sword.
+  $F5C8,$04 Call #R$EDD0 with the item ID of the originally requsted item.
+N $F5CC The sword item itself is destroyed, it's the stone slab item which
+. changes to the version where it has a sword laying on it.
   $F5CC,$03 Call #R$AEE0.
-N $F5CF Change the sword state!
+N $F5CF Change the stone slab state!
   $F5CF,$06 Call #R$AF1E to transform item #N$58 (#ITEM$58) into item #N$59
 . (#ITEM$59).
 N $F5D5 The sword has been used so handle the inventory count.
   $F5D5,$04 Decrease *#R$A790 by one.
-  $F5D9,$08 Jump to #R$EDF3 if bit 4 of *#R$A76D is set.
-  $F5E1,$02 Set bit 4 of *#REGhl.
+N $F5D9 Is this the first time the player has placed the sword on the stone
+. slab?
+  $F5D9,$08 Jump to #R$EDF3 if bit 4 of *#R$A76D is set, which relates to
+. placing the sword on the stone slab.
+  $F5E1,$02 Set bit 4 of *#R$A76D to signify that the sword has been placed on
+. the stone slab. This is to prevent the points from being awarded more than
+. one time.
   $F5E3,$05 Call #R$B09A to add #N$04 points to the score.
   $F5E8,$03 Jump to #R$EDF3.
 
 c $F5EB Process: Buy Meat From Trader With Salt
 @ $F5EB label=Process_BuyMeatFromTraderWithSalt
+N $F5EB The player wants to buy meat from the trader using the salt, check if
+. the version of the trader in the current room is the one selling meat.
   $F5EB,$05 Call #R$AE6B with item #N$3C: #ITEM$3C.
 N $F5F0 If #ITEM$3C is not present in the current room then print
 . "#STR$A9EC,$08($b==$FF)".
   $F5F0,$03 Jump to #R$EDED if #ITEM$3C is not present in the current room.
-N $F5F3 Print "#STR$DCA8,$08($b==$FF)".
+N $F5F3 The trader selling meat is here, but print "#STR$DCA8,$08($b==$FF)".
   $F5F3,$03 #REGhl=#R$DCA8.
   $F5F6,$03 Jump to #R$ED6D.
 
 c $F5F9 Process: Step Into Ring
 @ $F5F9 label=Process_StepIntoRing
+N $F5F9 The player is asking to step into the ring, check which room they're in
+. to see which ring they're referring to.
   $F5F9,$07 Jump to #R$F604 if *#R$A7C3 is not equal to room #N$43: #ROOM$43.
+N $F600 The player must be in the Crystal Cavern so send them to #ROOM$57.
   $F600,$02 Set the teleportation destination room to #ROOM$57.
   $F602,$02 Jump to #R$F60F.
 @ $F604 label=StepIntoRing
@@ -7177,7 +7203,9 @@ B $FD02,$0186
 
 g $FE89 Jump Table: Verbs
 @ $FE89 label=JumpTable_Verbs
-D $FE89 Used by the routine at #R$B05E.
+D $FE89 A jump table of verb routines, the ordering here is from #R$E489.
+.
+. Used by the routine at #R$B05E.
 W $FE89,$02 Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)): #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
 L $FE89,$02,$21
 

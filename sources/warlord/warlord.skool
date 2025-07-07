@@ -3644,40 +3644,46 @@ g$A66C DEFB $00                             ; Event #N(#PC-$A66C)
  $A763 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $A76B DEFB $00
 
-; Flags: Item States #1
+; Flags: Game States #1
 ;
-; Holds a single byte, where each bit relates to an item state as
+; Holds a single byte, where each bit relates to an item or room state as
 ; follows:
-; #TABLE(default,centre,centre)
+; #TABLE(default,centre)
 ; { =h Bit | =h Relating To }
-; { #N$00 | Lug's cavern }
-; { #N$01 | Forest path }
-; { #N$02 | The rope }
-; { #N$03 | Vale of Cuchulainn }
-; { #N$04 | The urn }
-; { #N$05 | Inner courtyard }
-; { #N$06 | The ladder being placed }
-; { #N$07 | Enchanted hills }
+; { #N$00 | #R$EC32(Entering Lug's cavern) }
+; { #N$01 | #R$EBDA(Entering the forest path) }
+; { #N$02 | #R$EF5A(Picking up the rope) }
+; { #N$03 | #R$EC40(Entering the Vale of Cuchulainn) }
+; { #N$04 | #R$EEE9(Picking up the urn) }
+; { #N$05 | #R$EC4E(Entering the Inner courtyard) }
+; { #N$06 | #R$F57B(The ladder being placed against the platform) }
+; { #N$07 | #R$EC5C(Entering the enchanted hills) }
 ; TABLE#
-@label=Flag_ItemStates_01
+; .
+; Used mainly as a flag to ensure that points for game milestones aren't
+; awarded more than once.
+@label=Flag_GameStates_01
 g$A76C DEFB $00
 
-; Flags: Item States #2
+; Flags: Game States #2
 ;
-; Holds a single byte, where each bit relates to an item state as
+; Holds a single byte, where each bit relates to an item or room state as
 ; follows:
-; #TABLE(default,centre,centre)
+; #TABLE(default,centre)
 ; { =h Bit | =h Relating To }
-; { #N$00 | Deep pool of water }
-; { #N$01 | Bleak moorland }
-; { #N$02 | Crystal cavern }
-; { #N$03 | The acorns }
-; { #N$04 | The sword }
-; { #N$05 | Fomorian tribe }
-; { #N$06 | Vale of Rhia }
-; { #N$07 |  }
+; { #N$00 | #R$EC6A(Entering the deep pool of water) }
+; { #N$01 | #R$EC78(Entering the bleak moorland) }
+; { #N$02 | #R$EC86(Entering the crystal cavern) }
+; { #N$03 | #R$EECF(Picking up the acorns) }
+; { #N$04 | #R$F5B8(Placing the sword on the stone slab) }
+; { #N$05 | #R$F4B9(Killing the Fomorian tribe) }
+; { #N$06 | #R$EC94(Entering the Vale of Rhia) }
+; { #N$07 | N/A }
 ; TABLE#
-@label=Flag_ItemStates_02
+; .
+; Used mainly as a flag to ensure that points for game milestones aren't
+; awarded more than once.
+@label=Flag_GameStates_02
 g$A76D DEFB $00
 
 ; Unused
@@ -3772,7 +3778,7 @@ g$A77F DEFB $00
 ; Holds a single byte, where each bit relates to an event as follows:
 ; #TABLE(default,centre,centre)
 ; { =h Bit | =h Relating To }
-; { #N$00 | The Roman Being Captured }
+; { #N$00 | #R$F544(The Roman being captured with the rope) }
 ; { #N$01 |  }
 ; { #N$02 |  }
 ; { #N$03 |  }
@@ -14151,31 +14157,56 @@ c$F57B LD HL,$E3C5   ; {Call #R$AEF7 with #R$E3C5.
  $F5B5 JP $EDF3      ; Jump to #R$EDF3.
 
 ; Process: Place Sword On Slab
+;
+; .
+;
+; .
+;
+; The players wants to place the sword on the stone slab, check which
+; version of the sword is in the current room or the players inventory.
 @label=Process_PlaceSwordOnSlab
 c$F5B8 LD HL,$E392   ; {Call #R$AEF7 with #R$E392.
  $F5BB CALL $AEF7    ; }
- $F5BE CP $59        ; {Jump to #R$EE0B if #REGa is equal to #N$59.
- $F5C0 JP Z,$EE0B    ; }
- $F5C3 CP $39        ; {Jump to #R$EDF9 if #REGa is equal to #N$39.
- $F5C5 JP Z,$EDF9    ; }
- $F5C8 CALL $EDD0    ; Call #R$EDD0.
- $F5CB LD A,E        ; #REGa=#REGe.
+; Print "#STR$CDE8,$08($b==$FF)" if the version of the sword in the
+; current room is the one where it's on the stone slab.
+ $F5BE CP $59        ; {Jump to #R$EE0B if the version of the sword in the current room is
+ $F5C0 JP Z,$EE0B    ; #ITEM$59.}
+; Print "#STR$AA84,$08($b==$FF)" if the version of the sword in the
+; current room is item #N$39 instead of item #N$38.
+ $F5C3 CP $39        ; {Jump to #R$EDF9 if the version of the sword in the current room is
+ $F5C5 JP Z,$EDF9    ; #ITEM$39.}
+; Ensure the player is carrying the sword.
+ $F5C8 CALL $EDD0    ; {Call #R$EDD0 with the item ID of the originally
+ $F5CB LD A,E        ; requsted item.}
+; The sword item itself is destroyed, it's the stone slab item which
+; changes to the version where it has a sword laying on it.
  $F5CC CALL $AEE0    ; Call #R$AEE0.
-; Change the sword state!
+; Change the stone slab state!
  $F5CF LD BC,$5859   ; {Call #R$AF1E to transform item #N$58 (#ITEM$58) into item #N$59
  $F5D2 CALL $AF1E    ; (#ITEM$59).}
 ; The sword has been used so handle the inventory count.
  $F5D5 LD HL,$A790   ; {Decrease *#R$A790 by one.
  $F5D8 DEC (HL)      ; }
- $F5D9 LD HL,$A76D   ; {Jump to #R$EDF3 if bit 4 of *#R$A76D is set.
- $F5DC BIT 4,(HL)    ;
+; Is this the first time the player has placed the sword on the stone
+; slab?
+ $F5D9 LD HL,$A76D   ; {Jump to #R$EDF3 if bit 4 of *#R$A76D is set, which relates to
+ $F5DC BIT 4,(HL)    ; placing the sword on the stone slab.
  $F5DE JP NZ,$EDF3   ; }
- $F5E1 SET 4,(HL)    ; Set bit 4 of *#REGhl.
+ $F5E1 SET 4,(HL)    ; Set bit 4 of *#R$A76D to signify that the sword has been placed on
+                     ; the stone slab. This is to prevent the points from being awarded more than
+                     ; one time.
  $F5E3 LD A,$04      ; {Call #R$B09A to add #N$04 points to the score.
  $F5E5 CALL $B09A    ; }
  $F5E8 JP $EDF3      ; Jump to #R$EDF3.
 
 ; Process: Buy Meat From Trader With Salt
+;
+; .
+;
+; .
+;
+; The player wants to buy meat from the trader using the salt, check if
+; the version of the trader in the current room is the one selling meat.
 @label=Process_BuyMeatFromTraderWithSalt
 c$F5EB LD A,$3C      ; {Call #R$AE6B with item #N$3C: #ITEM$3C.
  $F5ED CALL $AE6B    ; }
@@ -14183,15 +14214,23 @@ c$F5EB LD A,$3C      ; {Call #R$AE6B with item #N$3C: #ITEM$3C.
 ; "#STR$A9EC,$08($b==$FF)".
  $F5F0 JP NZ,$EDED   ; Jump to #R$EDED if #ITEM$3C is not present in the
                      ; current room.
-; Print "#STR$DCA8,$08($b==$FF)".
+; The trader selling meat is here, but print "#STR$DCA8,$08($b==$FF)".
  $F5F3 LD HL,$DCA8   ; #REGhl=#R$DCA8.
  $F5F6 JP $ED6D      ; Jump to #R$ED6D.
 
 ; Process: Step Into Ring
+;
+; .
+;
+; .
+;
+; The player is asking to step into the ring, check which room they're in
+; to see which ring they're referring to.
 @label=Process_StepIntoRing
 c$F5F9 LD A,($A7C3)  ; {Jump to #R$F604 if *#R$A7C3 is not equal to room #N$43:
  $F5FC CP $43        ; #ROOM$43.
  $F5FE JR NZ,$F604   ; }
+; The player must be in the Crystal Cavern so send them to #ROOM$57.
  $F600 LD A,$57      ; Set the teleportation destination room to #ROOM$57.
  $F602 JR $F60F      ; Jump to #R$F60F.
 ; Send the player to either the Crystal Cavern, or the end of the game.
@@ -15593,6 +15632,8 @@ g$FD02 DEFB $00,$00,$00,$00,$FF,$FF,$FF,$00
 
 ; Jump Table: Verbs
 ;
+; A jump table of verb routines, the ordering here is from #R$E489.
+; .
 ; Used by the routine at #R$B05E.
 @label=JumpTable_Verbs
 g$FE89 DEFW $F7FD    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
