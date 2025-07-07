@@ -42,6 +42,16 @@ Next: <a href="62955.html">62955</a>
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62904"></span>
+<div class="comments">
+<div class="paragraph">
+The players wants to place the sword on the stone slab, check which version of the sword is in the current room or the players inventory.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Process_PlaceSwordOnSlab</td>
 <td class="address-2"><span id="62904"></span>62904</td>
 <td class="instruction">LD HL,58258</td>
@@ -53,10 +63,20 @@ Next: <a href="62955.html">62955</a>
 <td class="instruction">CALL <a href="44791.html">CheckItemGroupPresent</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62910"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You've done that already." if the version of the sword in the current room is the one where it's on the stone slab.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62910"></span>62910</td>
 <td class="instruction">CP 89</td>
-<td class="comment-1" rowspan="2">Jump to <a href="60939.html">Response_YouveDoneThatAlready</a> if <span class="register">A</span> is equal to 89.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="60939.html">Response_YouveDoneThatAlready</a> if the version of the sword in the current room is "A shimmering stone slab with a sword laying upon it".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -64,10 +84,20 @@ Next: <a href="62955.html">62955</a>
 <td class="instruction">JP Z,<a href="60939.html">Response_YouveDoneThatAlready</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62915"></span>
+<div class="comments">
+<div class="paragraph">
+Print "I don't see the point." if the version of the sword in the current room is item 57 instead of item 56.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62915"></span>62915</td>
 <td class="instruction">CP 57</td>
-<td class="comment-1" rowspan="2">Jump to <a href="60921.html">Response_IDontSeeThePoint</a> if <span class="register">A</span> is equal to 57.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="60921.html">Response_IDontSeeThePoint</a> if the version of the sword in the current room is "A sword".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -75,16 +105,35 @@ Next: <a href="62955.html">62955</a>
 <td class="instruction">JP Z,<a href="60921.html">Response_IDontSeeThePoint</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62920"></span>
+<div class="comments">
+<div class="paragraph">
+Ensure the player is carrying the sword.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62920"></span>62920</td>
 <td class="instruction">CALL <a href="60880.html">IsPlayerCarryingItem</a></td>
-<td class="comment-1" rowspan="1">Call <a href="60880.html">IsPlayerCarryingItem</a>.</td>
+<td class="comment-1" rowspan="2">Call <a href="60880.html">IsPlayerCarryingItem</a> with the item ID of the originally requsted item.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62923"></span>62923</td>
 <td class="instruction">LD A,E</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">E</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62924"></span>
+<div class="comments">
+<div class="paragraph">
+The sword item itself is destroyed, it's the stone slab item which changes to the version where it has a sword laying on it.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -97,7 +146,7 @@ Next: <a href="62955.html">62955</a>
 <span id="62927"></span>
 <div class="comments">
 <div class="paragraph">
-Change the sword state!
+Change the stone slab state!
 </div>
 </div>
 </td>
@@ -135,10 +184,20 @@ The sword has been used so handle the inventory count.
 <td class="instruction">DEC (HL)</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62937"></span>
+<div class="comments">
+<div class="paragraph">
+Is this the first time the player has placed the sword on the stone slab?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62937"></span>62937</td>
 <td class="instruction">LD HL,42861</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60915.html">Response_OK_Duplicate</a> if bit 4 of *<a href="42861.html">Flag_ItemStates_02</a> is set.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60915.html">Response_OK_Duplicate</a> if bit 4 of *<a href="42861.html">Flag_GameStates_02</a> is set, which relates to placing the sword on the stone slab.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -154,7 +213,7 @@ The sword has been used so handle the inventory count.
 <td class="asm-label"></td>
 <td class="address-1"><span id="62945"></span>62945</td>
 <td class="instruction">SET 4,(HL)</td>
-<td class="comment-1" rowspan="1">Set bit 4 of *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Set bit 4 of *<a href="42861.html">Flag_GameStates_02</a> to signify that the sword has been placed on the stone slab. This is to prevent the points from being awarded more than one time.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
