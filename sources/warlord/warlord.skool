@@ -3687,7 +3687,7 @@ g$A76C DEFB $00
 g$A76D DEFB $00
 
 ; Unused
-u$A76E DEFB $00,$00,$00,$00
+u$A76E DEFS $04
 
 ; Temporary Mixed Storage
 ;
@@ -3726,8 +3726,8 @@ g$A772 DEFW $0000
 g$A774 DEFB %00000000
  $A775 DEFB %00000000
 
-; Game status buffer entry at A776
-g$A776 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+; Unused
+u$A776 DEFS $08
 
 ; Flags: Turn-Based Event States
 ;
@@ -5207,14 +5207,20 @@ c$AEAF LD HL,$A824   ; Set a pointer to #R$A824 in #REGhl.
 ;
 ; Used by the routines at #R$AB0A, #R$AEDA, #R$AF1E, #R$AF31, #R$EA0B, #R$ECA2
 ; and #R$ECEF.
+; .
+; Given an item ID, this routine returns the byte stored for its location
+; (#N$00 for when an item/ event is disabled, #N$01 for when an item is in the
+; players inventory, or pass back the room ID).
 ;
 ;   A Item ID
 ; O:A Either a room ID, #N$01 for the players inventory, or #N$00 for when the
 ; .   item is disabled
+;
+; Create an offset in #REGde.
 @label=ItemLocator
 c$AED1 LD E,A        ; {Load the item ID into #REGde.
  $AED2 LD D,$00      ; }
- $AED4 LD HL,$A66C   ; {#REGhl=#R$A66C+#REGde.
+ $AED4 LD HL,$A66C   ; {Add the item ID offset to #R$A66C.
  $AED7 ADD HL,DE     ; }
  $AED8 LD A,(HL)     ; Fetch the item location and store it in #REGa.
  $AED9 RET           ; Return.
@@ -5224,12 +5230,15 @@ c$AED1 LD E,A        ; {Load the item ID into #REGde.
 ;
 ; Used by the routines at #R$EBA7, #R$ECA2, #R$ECEF, #R$ED07, #R$ED17, #R$ED27,
 ; #R$ED37, #R$ED47, #R$ED75, #R$EDB8, #R$EDD0, #R$F62B, #R$F739 and #R$F7AC.
+; .
+; Checks if a given item is in the players inventory or not.
 ;
 ;   A Object ID
-; O:F Z flag set if the item is in the players inventory
+; O:F The zero flag is set if the item is in the players inventory
 ;
 ; The #R$AED1 routine returns with #REGa containing the room ID of the
-; requested object.
+; requested object, #N$00 for when the item is disabled or #N$01 for the
+; players inventory.
 @label=CheckObjectInInventory
 c$AEDA CALL $AED1    ; Call #R$AED1.
  $AEDD CP $01        ; Compare #REGa with #N$01 (inventory).
@@ -5248,6 +5257,8 @@ c$AEDA CALL $AED1    ; Call #R$AED1.
 ; ID of #N$00).
 ;
 ; A Item/ event ID
+;
+; Set the item ID and location (which will be #N$00 to deactivate it).
 @label=Handler_DestroyItemEvent
 c$AEE0 LD B,A        ; Load the item/ event ID into #REGb.
  $AEE1 LD C,$00      ; Set the room ID to #N$00 which will deactivate the item/
@@ -5369,11 +5380,11 @@ u$AF11 LD B,$00      ; Initialise an index counter in #REGb to #N$00.
 ; An example is:
 ; #TABLE(default,centre,centre)
 ; { =h Item ID | =h Item Name }
-; { #N$27 | #ITEM$27 }
-; { #N$28 | #ITEM$28 }
+; { #N$1F | #ITEM$1F }
+; { #N$20 | #ITEM$20 }
 ; TABLE#
-; When the match is lit by the player; item #N$02 is destroyed and replaced
-; with item #N$03.
+; When the helmet is worn by the player; item #N$1F is destroyed and replaced
+; with item #N$20.
 ;
 ; B From item ID
 ; C To item ID
@@ -12843,7 +12854,7 @@ c$EF86 LD HL,$E3C5   ; {Call #R$AEF7 with #R$E3C5.
  $EFA9 JP $EDA6      ; }
 
 ; Unused
-u$EFAC DEFB $C9      ; Return.
+u$EFAC RET           ; Return.
 
 ; Process: Get Cloak
 ;
@@ -15558,9 +15569,9 @@ c$FCCE LD HL,$FD02   ; {Copy #N$0186 bytes from #R$FD02 to #R$A66C.
  $FCE0 LD B,A        ; }
  $FCE1 XOR A         ; Set #REGa to #N$00 which "removes" the exit.
 @label=GameStart_Loop
-*$FCE2 LD L,(IX+$00) ; #REGl=*#REGix+#N$00.
- $FCE5 LD H,(IX+$01) ; #REGh=*#REGix+#N$01.
- $FCE8 LD (HL),A     ; Write #REGa to *#REGhl.
+*$FCE2 LD L,(IX+$00) ; {Fetch a room exit pointer from *#REGix.
+ $FCE5 LD H,(IX+$01) ; }
+ $FCE8 LD (HL),A     ; Write #N$00 to the exit to remove it.
  $FCE9 INC IX        ; {Move to the next address in the table.
  $FCEB INC IX        ; }
  $FCED DJNZ $FCE2    ; Decrease the exits counter by one and loop back to #R$FCE2 until
@@ -15573,6 +15584,7 @@ c$FCCE LD HL,$FD02   ; {Copy #N$0186 bytes from #R$FD02 to #R$A66C.
                      ; from #ROOM$50.
  $FCF7 LD ($E8F7),A  ; Write #N$50 to *#R$E8F7 to open up westbound access to #ROOM$50
                      ; from #ROOM$50.
+; Set the starting room.
  $FCFA LD A,$02      ; {Call #R$EB10 to room #N$02: #ROOM$02.
  $FCFC CALL $EB10    ; }
  $FCFF JP $E99F      ; Jump to #R$E99F.
@@ -15703,8 +15715,8 @@ g$FE89 DEFW $F7FD    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
  $FEC9 DEFW $FC8D    ; Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)):
                      ; #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
 
-; Game status buffer entry at FECB
-g$FECB DEFW $E9D8
+; Unused
+u$FECB DEFW $E9D8
  $FECD DEFW $E9E9
 
 ; Jump Table: Scenic Events

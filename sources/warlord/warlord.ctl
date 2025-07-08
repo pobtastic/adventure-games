@@ -432,6 +432,7 @@ D $A76D Holds a single byte, where each bit relates to an item or room state as
 B $A76D,$01
 
 u $A76E
+S $A76E,$04
 
 g $A772 Temporary Mixed Storage
 @ $A772 label=TemporaryStorage_Messaging
@@ -464,7 +465,8 @@ D $A774 Used by the routine at #R$ABB6 but uses the bit index from #R$FEF1.
 B $A774,b,$01
 B $A775,b,$01
 
-g $A776
+u $A776
+S $A776,$08
 
 g $A77E Flags: Turn-Based Event States
 @ $A77E label=Flag_TurnBasedEventState
@@ -1653,21 +1655,27 @@ N $AECA This token does point to a game item, so increase the item counter.
 
 c $AED1 Item Locator
 @ $AED1 label=ItemLocator
+D $AED1 Given an item ID, this routine returns the byte stored for its location
+. (#N$00 for when an item/ event is disabled, #N$01 for when an item is in the
+. players inventory, or pass back the room ID).
 E $AED1 View the equivalent code in #JEWELS$C3D0.
 R $AED1 A Item ID
 R $AED1 O:A Either a room ID, #N$01 for the players inventory, or #N$00 for when the item is disabled
+N $AED1 Create an offset in #REGde.
   $AED1,$03 Load the item ID into #REGde.
-  $AED4,$04 #REGhl=#R$A66C+#REGde.
+  $AED4,$04 Add the item ID offset to #R$A66C.
   $AED8,$01 Fetch the item location and store it in #REGa.
   $AED9,$01 Return.
 
 c $AEDA Is Object In Inventory?
 @ $AEDA label=CheckObjectInInventory
+D $AEDA Checks if a given item is in the players inventory or not.
 E $AEDA View the equivalent code in #JEWELS$C3E4.
 R $AEDA A Object ID
-R $AEDA O:F Z flag set if the item is in the players inventory
+R $AEDA O:F The zero flag is set if the item is in the players inventory
 N $AEDA The #R$AED1 routine returns with #REGa containing the room ID of the
-. requested object.
+. requested object, #N$00 for when the item is disabled or #N$01 for the
+. players inventory.
   $AEDA,$03 Call #R$AED1.
   $AEDD,$02 Compare #REGa with #N$01 (inventory).
   $AEDF,$01 Return.
@@ -1678,6 +1686,7 @@ D $AEE0 Updates a given item/ event ID so it's then "inactive" (has a location
 . ID of #N$00).
 E $AEE0 View the equivalent code in #JEWELS$C3EA.
 R $AEE0 A Item/ event ID
+N $AEE0 Set the item ID and location (which will be #N$00 to deactivate it).
   $AEE0,$01 Load the item/ event ID into #REGb.
   $AEE1,$02 Set the room ID to #N$00 which will deactivate the item/ event.
   $AEE3,$03 Call #R$AF08.
@@ -1765,11 +1774,11 @@ D $AF1E Rather than use item properties, the game just has separate objects
 . An example is:
 . #TABLE(default,centre,centre)
 . { =h Item ID | =h Item Name }
-. { #N$27 | #ITEM$27 }
-. { #N$28 | #ITEM$28 }
+. { #N$1F | #ITEM$1F }
+. { #N$20 | #ITEM$20 }
 . TABLE#
-. When the match is lit by the player; item #N$02 is destroyed and replaced
-. with item #N$03.
+. When the helmet is worn by the player; item #N$1F is destroyed and replaced
+. with item #N$20.
 E $AF1E View the equivalent code in #JEWELS$C426.
   $AF1E,$04 Call #R$AED1 with the source item ID.
 N $AF22 #REGa now contains the location of the source ID.
@@ -3939,6 +3948,7 @@ B $E307,$01 Terminator.
 g $E308 Table: Token Item List
 @ $E308 label=Table_TokenItemList
 D $E308 A list of all tokens which relate to items.
+E $E308 View the equivalent code in #JEWELS$E83E.
 B $E308,$01 Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
 L $E308,$01,$39
 
@@ -5267,7 +5277,7 @@ N $EFA0 No ladder no access ... so update the room exits.
   $EFA7,$05 Jump to #R$EDA6 with item #N$5A: #ITEM$5A.
 
 u $EFAC
-  $EFAC,$01 Return.
+C $EFAC,$01 Return.
 
 c $EFAD Process: Get Cloak
 @ $EFAD label=Process_GetCloak
@@ -7180,9 +7190,8 @@ N $FCD9 Remove a bunch of room exits (as actions in the game will open them
   $FCDD,$04 #REGb=*#R$A7F0.
   $FCE1,$01 Set #REGa to #N$00 which "removes" the exit.
 @ $FCE2 label=GameStart_Loop
-  $FCE2,$03 #REGl=*#REGix+#N$00.
-  $FCE5,$03 #REGh=*#REGix+#N$01.
-  $FCE8,$01 Write #REGa to *#REGhl.
+  $FCE2,$06 Fetch a room exit pointer from *#REGix.
+  $FCE8,$01 Write #N$00 to the exit to remove it.
   $FCE9,$04 Move to the next address in the table.
   $FCED,$02 Decrease the exits counter by one and loop back to #R$FCE2 until
 . all the room exits have been cleared.
@@ -7194,6 +7203,7 @@ N $FCEF Ensure three exits are "open" even though they point to the room you're
 . from #ROOM$50.
   $FCF7,$03 Write #N$50 to *#R$E8F7 to open up westbound access to #ROOM$50
 . from #ROOM$50.
+N $FCFA Set the starting room.
   $FCFA,$05 Call #R$EB10 to room #N$02: #ROOM$02.
   $FCFF,$03 Jump to #R$E99F.
 
@@ -7209,7 +7219,7 @@ D $FE89 A jump table of verb routines, the ordering here is from #R$E489.
 W $FE89,$02 Verb word token #N(#PEEK($E489+(#PC-$FE89)/$02)): #TOKEN(#PEEK($E489+(#PC-$FE89)/$02)).
 L $FE89,$02,$21
 
-g $FECB
+u $FECB
 W $FECB,$02
 L $FECB,$02,$02
 

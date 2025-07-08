@@ -5525,8 +5525,9 @@ c$C35F PUSH HL       ; {Stash #REGhl and #REGde on the stack.
 ; Match Phrase Tokens
 ;
 ; Used by the routines at #R$F19D, #R$F263, #R$F481, #R$F4D4, #R$F7AB, #R$F7D6,
-; #R$F851, #R$F8D9, #R$F946, #R$F999, #R$F9E4, #R$FA3C, #R$FAA8, #R$FB16,
-; #R$FB71, #R$FBA8, #R$FBD5, #R$FC24, #R$FC61, #R$FC98, #R$FCCD and #R$FD02.
+; #R$F851, #R$F8D9, #R$F91B, #R$F946, #R$F999, #R$F9E4, #R$FA3C, #R$FAA8,
+; #R$FB16, #R$FB71, #R$FBA8, #R$FBD5, #R$FC24, #R$FC61, #R$FC98, #R$FCCD and
+; #R$FD02.
 ; .
 ; Matches phrase patterns with multiple variations against user input
 ; tokens.
@@ -5648,7 +5649,7 @@ c$C3D0 LD E,A        ; {Load the event ID into #REGde.
 
 ; Is Object In Inventory?
 ;
-; Used by the routines at #R$EE74, #R$F263, #R$F4D4, #R$F851, #R$F8D9, #R$F999,
+; Used by the routines at #R$EE74, #R$F263, #R$F4D4, #R$F851, #R$F91B, #R$F999,
 ; #R$F9E4, #R$FBD5, #R$FC24 and #R$FCCD.
 ;
 ;   A Object ID
@@ -5868,7 +5869,7 @@ c$C470 LD A,($BD67)  ; {Return if the second token (*#R$BD67) is the terminator
 
 ; Parser: Validate Direct Object
 ;
-; Used by the routines at #R$C49F, #R$F19D, #R$F263, #R$F481, #R$F4D4, #R$F8D9,
+; Used by the routines at #R$C49F, #R$F19D, #R$F263, #R$F481, #R$F4D4, #R$F91B,
 ; #R$F946, #R$F999, #R$F9E4, #R$FA3C, #R$FAA8, #R$FB83, #R$FBA8, #R$FBD5,
 ; #R$FC24, #R$FC61, #R$FC98, #R$FCCD and #R$FD6D.
 ; .
@@ -6050,9 +6051,10 @@ c$C520 LD C,A        ; #REGc=#REGa.
                      ; counter is zero.
 *$C555 RET           ; Return.
 
-; Routine at C556
+; Handler: Match Verb
 ;
 ; Used by the routine at #R$EDC4.
+@label=Handler_MatchVerb
 c$C556 LD HL,($BD26) ; #REGhl=*#R$BD26.
  $C559 LD BC,($BD2C) ; #REGbc=*#R$BD2C.
  $C55D LD A,($BD66)  ; #REGa=*#R$BD66.
@@ -7936,56 +7938,59 @@ t$E61D DEFM "MATC"           ; Command #N((#PC-$E61D)/$04):
  $E839 DEFM "LOUD"           ; Command #N((#PC-$E695)/$04).
  $E83D DEFB $FF              ; Terminator.
 
-; Table: Object List?
-@label=Table_ObjectList
-g$E83E DEFB $00      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E83F DEFB $01      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E840 DEFB $02      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E841 DEFB $03      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E842 DEFB $04      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E843 DEFB $05      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E844 DEFB $06      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E845 DEFB $07      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E846 DEFB $08      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E847 DEFB $09      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E848 DEFB $0A      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E849 DEFB $0B      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E84A DEFB $0C      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E84B DEFB $0D      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E84C DEFB $0E      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E84D DEFB $0F      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E84E DEFB $10      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E84F DEFB $11      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E850 DEFB $12      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E851 DEFB $13      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E852 DEFB $14      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E853 DEFB $15      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E854 DEFB $16      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E855 DEFB $17      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E856 DEFB $18      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E857 DEFB $19      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E858 DEFB $1A      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E859 DEFB $1B      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E85A DEFB $1C      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E85B DEFB $1D      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E85C DEFB $1E      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E85D DEFB $1F      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E85E DEFB $20      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E85F DEFB $21      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E860 DEFB $22      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E861 DEFB $23      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E862 DEFB $24      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E863 DEFB $25      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E864 DEFB $26      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E865 DEFB $27      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E866 DEFB $28      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E867 DEFB $29      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E868 DEFB $60      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E869 DEFB $2B      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E86A DEFB $2C      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E86B DEFB $2D      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E86C DEFB $5F      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
- $E86D DEFB $66      ; Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+; Table: Token Item List
+;
+; A list of all tokens which relate to items.
+@label=Table_TokenItemList
+g$E83E DEFB $00      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E83F DEFB $01      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E840 DEFB $02      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E841 DEFB $03      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E842 DEFB $04      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E843 DEFB $05      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E844 DEFB $06      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E845 DEFB $07      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E846 DEFB $08      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E847 DEFB $09      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E848 DEFB $0A      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E849 DEFB $0B      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E84A DEFB $0C      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E84B DEFB $0D      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E84C DEFB $0E      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E84D DEFB $0F      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E84E DEFB $10      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E84F DEFB $11      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E850 DEFB $12      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E851 DEFB $13      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E852 DEFB $14      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E853 DEFB $15      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E854 DEFB $16      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E855 DEFB $17      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E856 DEFB $18      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E857 DEFB $19      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E858 DEFB $1A      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E859 DEFB $1B      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E85A DEFB $1C      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E85B DEFB $1D      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E85C DEFB $1E      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E85D DEFB $1F      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E85E DEFB $20      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E85F DEFB $21      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E860 DEFB $22      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E861 DEFB $23      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E862 DEFB $24      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E863 DEFB $25      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E864 DEFB $26      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E865 DEFB $27      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E866 DEFB $28      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E867 DEFB $29      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E868 DEFB $60      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E869 DEFB $2B      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E86A DEFB $2C      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E86B DEFB $2D      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E86C DEFB $5F      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+ $E86D DEFB $66      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+; View the equivalent code in #WARLORD$E308.
 
 ; Data: Item Groups
 ;
@@ -11071,9 +11076,9 @@ c$EF54 LD HL,$BC6F   ; #REGhl=#R$BC6F.
 ; Used by the routines at #R$F042, #R$F047, #R$F04C, #R$F051, #R$F056, #R$F05B,
 ; #R$F060, #R$F065, #R$F06A, #R$F06F, #R$F074, #R$F079, #R$F07E, #R$F083,
 ; #R$F088, #R$F08D, #R$F092, #R$F097, #R$F09C, #R$F19D, #R$F263, #R$F481,
-; #R$F4D4, #R$F7D6, #R$F851, #R$F8D9, #R$F946, #R$F999, #R$F9E4, #R$FA3C,
-; #R$FAA8, #R$FB83, #R$FBA8, #R$FBD5, #R$FC24, #R$FC98, #R$FCCD, #R$FD02 and
-; #R$FD6D.
+; #R$F4D4, #R$F7D6, #R$F851, #R$F8D9, #R$F91B, #R$F946, #R$F999, #R$F9E4,
+; #R$FA3C, #R$FAA8, #R$FB83, #R$FBA8, #R$FBD5, #R$FC24, #R$FC98, #R$FCCD,
+; #R$FD02, #R$FD6D and #R$FD7C.
 @label=PrintStringAndNewline_Alias
 c$F03A CALL $BAB1    ; Call #R$BAB1.
  $F03D RET           ; Return.
@@ -11278,7 +11283,7 @@ c$F092 LD HL,$E4BC   ; #REGhl=#R$E4BC.
 
 ; Response: "It Has No Apparent Effect"
 ;
-; Used by the routine at #R$F8D9.
+; Used by the routine at #R$F91B.
 ;
 ; .
 ;
@@ -12335,8 +12340,8 @@ c$F4D4 CALL $C47B    ; Call #R$C47B.
  $F7A5 JP $F06A      ; Jump to #R$F06A.
 *$F7A8 JP $F065      ; Jump to #R$F065.
 
-; Action: Lay/ Place/ Put
-@label=Action_LayPlacePut
+; Action: Give
+@label=Action_Give
 c$F7AB CALL $C49F    ; Call #R$C49F.
  $F7AE RET C         ; Return if the direct object is malformed.
 ; Was the player trying to lay/ place/ put fruit at the lion?
@@ -12362,8 +12367,8 @@ c$F7AB CALL $C49F    ; Call #R$C49F.
 ; Nothing else is valid.
  $F7D3 JP $F065      ; Jump to #R$F065.
 
-; Action: ???
-@label=Action_???
+; Action: Place
+@label=Action_Place
 c$F7D6 CALL $C49F    ; Call #R$C49F.
  $F7D9 RET C         ; Return if the direct object is malformed.
  $F7DA LD HL,$EA26   ; {Call #R$C37F with #R$EA26.
@@ -12467,7 +12472,7 @@ c$F851 CALL $C49F    ; Call #R$C49F.
  $F8C0 LD A,$0F      ; {Call #R$C3E4 with item #N$0F: #ITEM$0F.
  $F8C2 CALL $C3E4    ; }
  $F8C5 JP NZ,$F07E   ; Jump to #R$F07E if ?? is not equal to #N$0F.
-; This entry point is used by the routine at #R$F8D9.
+; This entry point is used by the routine at #R$F91B.
 *$F8C8 LD HL,$E8B2   ; {Call #R$C401 with #R$E8B2.
  $F8CB CALL $C401    ; }
  $F8CE LD B,A        ; #REGb=#REGa.
@@ -12516,29 +12521,31 @@ c$F8D9 PUSH BC                      ; Stash #REGbc on the stack.
  $F912 LD HL,$E14B                  ; #REGhl=#R$E14B.
  $F915 JP $F03A                     ; Jump to #R$F03A.
 *$F918 JP $F06F                     ; Jump to #R$F06F.
- $F91B CALL $C47B                   ; Call #R$C47B.
- $F91E RET C                        ; Return if the direct object is malformed.
- $F91F LD A,$0F                     ; {Call #R$C3E4 with item: #ITEM$0F.
- $F921 CALL $C3E4                   ; }
- $F924 JR Z,$F92C                   ; Jump to #R$F92C if the player has the gun
-                                    ; in their inventory.
+
+; Action: Shoot
+@label=Action_Shoot
+c$F91B CALL $C47B    ; Call #R$C47B.
+ $F91E RET C         ; Return if the direct object is malformed.
+ $F91F LD A,$0F      ; {Call #R$C3E4 with item: #ITEM$0F.
+ $F921 CALL $C3E4    ; }
+ $F924 JR Z,$F92C    ; Jump to #R$F92C if the player has the gun in their
+                     ; inventory.
 ; Print "#STR$E15E,$08($b==$FF)".
- $F926 LD HL,$E15E                  ; #REGhl=#R$E15E.
- $F929 JP $F03A                     ; Jump to #R$F03A.
+ $F926 LD HL,$E15E   ; #REGhl=#R$E15E.
+ $F929 JP $F03A      ; Jump to #R$F03A.
 @label=PlayerHasGun
-*$F92C LD HL,$EAA6                  ; {Call #R$C37F with #R$EAA6.
- $F92F CALL $C37F                   ; }
- $F932 JP Z,$F8C8                   ; Jump to #R$F8C8 if the token is for the .
- $F935 LD HL,$EAAC                  ; {Call #R$C37F with #R$EAAC.
- $F938 CALL $C37F                   ; }
- $F93B JR NZ,$F943                  ; Jump to #R$F943 if the token isn't for
-                                    ; the .
+*$F92C LD HL,$EAA6   ; {Call #R$C37F with #R$EAA6.
+ $F92F CALL $C37F    ; }
+ $F932 JP Z,$F8C8    ; Jump to #R$F8C8 if the token is for the .
+ $F935 LD HL,$EAAC   ; {Call #R$C37F with #R$EAAC.
+ $F938 CALL $C37F    ; }
+ $F93B JR NZ,$F943   ; Jump to #R$F943 if the token isn't for the .
 ; Print "#STR$E14B,$08($b==$FF)".
- $F93D LD HL,$E14B                  ; #REGhl=#R$E14B.
- $F940 JP $F03A                     ; Jump to #R$F03A.
+ $F93D LD HL,$E14B   ; #REGhl=#R$E14B.
+ $F940 JP $F03A      ; Jump to #R$F03A.
 ; Nothing else is valid.
 @label=Shooting_Invalid
-*$F943 JP $F097                     ; Jump to #R$F097.
+*$F943 JP $F097      ; Jump to #R$F097.
 
 ; Action: Climb
 @label=Action_Climb
@@ -13216,8 +13223,8 @@ c$FD02 CALL $C4B7    ; Call #R$C4B7.
  $FD69 CALL $EF54    ; }
  $FD6C RET           ; Return.
 
-; Action: Swim
-@label=Action_Swim
+; Action: Kick
+@label=Action_Kick
 c$FD6D CALL $C47B    ; Call #R$C47B.
  $FD70 RET C         ; Return if the direct object is malformed.
  $FD71 CP $02        ; {Jump to #R$F074 if #REGa is equal to #N$02.
@@ -13225,8 +13232,16 @@ c$FD6D CALL $C47B    ; Call #R$C47B.
 ; Print "#STR$DB5F,$08($b==$FF)".
  $FD76 LD HL,$DB5F   ; #REGhl=#R$DB5F.
  $FD79 JP $F03A      ; Jump to #R$F03A.
+
+; Action: Swim
+;
+; .
+;
+; .
+;
 ; Print "#STR$E5A4,$08($b==$FF)".
- $FD7C LD HL,$E5A4   ; #REGhl=#R$E5A4.
+@label=Action_Swim
+c$FD7C LD HL,$E5A4   ; #REGhl=#R$E5A4.
  $FD7F JP $F03A      ; Jump to #R$F03A.
 
 ; Game Start
@@ -13393,83 +13408,88 @@ c$FEFA LD IX,$607C   ; #REGix=#R$607C.
  $FF39 RET           ; Return.
 
 ; Jump Table: Verbs
+;
+; A jump table of verb routines, the ordering here is from #R$E90D.
+; .
+; Used by the routine at #R$C556.
 @label=JumpTable_Verbs
-g$FF3A DEFW $F09C    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF3C DEFW $F12E    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF3E DEFW $F14B    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF40 DEFW $F155    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF42 DEFW $F159    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF44 DEFW $F15D    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF46 DEFW $F161    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF48 DEFW $F165    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF4A DEFW $F169    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF4C DEFW $F19D    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF4E DEFW $F236    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF50 DEFW $F23E    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF52 DEFW $F246    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF54 DEFW $F263    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF56 DEFW $F481    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF58 DEFW $F4D4    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF5A DEFW $F4D4    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF5C DEFW $F7AB    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF5E DEFW $F7D6    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF60 DEFW $F851    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF62 DEFW $F91B    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF64 DEFW $F946    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF66 DEFW $F999    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF68 DEFW $F9E4    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF6A DEFW $FA3C    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF6C DEFW $FAA8    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF6E DEFW $FB16    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF70 DEFW $FB71    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF72 DEFW $FB83    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF74 DEFW $FBA8    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF76 DEFW $FBD5    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF78 DEFW $FC24    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF7A DEFW $FC61    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF7C DEFW $FC98    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF7E DEFW $FCCD    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF80 DEFW $FD02    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF82 DEFW $FD6D    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
- $FF84 DEFW $FD7C    ; Verb word token #N($2E+(#PC-$FF3A)/$02):
-                     ; #TOKEN($2E+(#PC-$FF3A)/$02).
+g$FF3A DEFW $F09C    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF3C DEFW $F12E    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF3E DEFW $F14B    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF40 DEFW $F155    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF42 DEFW $F159    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF44 DEFW $F15D    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF46 DEFW $F161    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF48 DEFW $F165    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF4A DEFW $F169    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF4C DEFW $F19D    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF4E DEFW $F236    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF50 DEFW $F23E    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF52 DEFW $F246    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF54 DEFW $F263    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF56 DEFW $F481    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF58 DEFW $F4D4    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF5A DEFW $F4D4    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF5C DEFW $F7AB    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF5E DEFW $F7D6    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF60 DEFW $F851    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF62 DEFW $F91B    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF64 DEFW $F946    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF66 DEFW $F999    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF68 DEFW $F9E4    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF6A DEFW $FA3C    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF6C DEFW $FAA8    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF6E DEFW $FB16    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF70 DEFW $FB71    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF72 DEFW $FB83    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF74 DEFW $FBA8    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF76 DEFW $FBD5    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF78 DEFW $FC24    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF7A DEFW $FC61    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF7C DEFW $FC98    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF7E DEFW $FCCD    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF80 DEFW $FD02    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF82 DEFW $FD6D    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+ $FF84 DEFW $FD7C    ; Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+                     ; #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+; View the equivalent code in #WARLORD$FE89.
 
 ; Jump Table: Turn-Based Events
 @label=JumpTable_TurnBasedEvents

@@ -4,7 +4,11 @@ Adventure Game disassemblies
 A disassembly of the [Spectrum](https://en.wikipedia.org/wiki/ZX_Spectrum) games;
 
 ### [Interceptor Software UK](https://en.wikipedia.org/wiki/Interceptor_Micros):
+* [After Shock](https://en.wikipedia.org/wiki/After_Shock_(video_game)) 1986
+* [Forest at World's End](https://en.wikipedia.org/wiki/Forest_at_the_World%27s_End) 1984
+* [Heroes of Karn](https://en.wikipedia.org/wiki/The_Heroes_of_Karn) 1984
 * [Jewels of Babylon](https://en.wikipedia.org/wiki/Jewels_of_Babylon) 1985
+* [Message from Andromeda](https://en.wikipedia.org/wiki/Message_from_Andromeda) 1984
 * [Warlord](https://en.wikipedia.org/wiki/ZX_Spectrum_software) 1985
 
 ### [Adventuresoft UK Ltd](https://en.wikipedia.org/wiki/Adventure_Soft):
@@ -15,6 +19,9 @@ Created using [SkoolKit](https://skoolkit.ca).
 Browse the latest release:
 
 * [Adventure Game disassemblies](https://pobtastic.github.io/adventure-games/)
+
+* [After Shock disassembly](https://pobtastic.github.io/adventure-games/aftershock/) (hexadecimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/aftershock/))
+* [After Shock disassembly](https://pobtastic.github.io/adventure-games/aftershock/dec/) (decimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/aftershock/dec/))
 
 * [Blizzard Pass disassembly](https://pobtastic.github.io/adventure-games/blizzardpass/) (hexadecimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/blizzardpass/))
 * [Blizzard Pass disassembly](https://pobtastic.github.io/adventure-games/blizzardpass/dec/) (decimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/blizzardpass/dec/))

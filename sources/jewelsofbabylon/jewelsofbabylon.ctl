@@ -1905,7 +1905,8 @@ c $C520
   $C553,$02 Decrease counter by one and loop back to #R$C546 until counter is zero.
   $C555,$01 Return.
 
-c $C556
+c $C556 Handler: Match Verb
+@ $C556 label=Handler_MatchVerb
   $C556,$03 #REGhl=*#R$BD26.
   $C559,$04 #REGbc=*#R$BD2C.
   $C55D,$03 #REGa=*#R$BD66.
@@ -3193,9 +3194,11 @@ L $E824,$04,$02
 L $E835,$04,$02
 B $E83D,$01 Terminator.
 
-g $E83E Table: Object List?
-@ $E83E label=Table_ObjectList
-B $E83E,$01 Object #N(#PEEK(#PC)): #OBJECT(#PEEK(#PC)).
+g $E83E Table: Token Item List
+@ $E83E label=Table_TokenItemList
+D $E83E A list of all tokens which relate to items.
+E $E83E View the equivalent code in #WARLORD$E308.
+B $E83E,$01 Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
 L $E83E,$01,$30
 
 g $E86E Data: Item Groups
@@ -4789,8 +4792,8 @@ N $F787 Print "#STR$DF8E,$08($b==$FF)".
   $F7A5,$03 Jump to #R$F06A.
   $F7A8,$03 Jump to #R$F065.
 
-c $F7AB Action: Lay/ Place/ Put
-@ $F7AB label=Action_LayPlacePut
+c $F7AB Action: Give
+@ $F7AB label=Action_Give
   $F7AB,$03 Call #R$C49F.
   $F7AE,$01 Return if the direct object is malformed.
 N $F7AF Was the player trying to lay/ place/ put fruit at the lion?
@@ -4808,8 +4811,8 @@ N $F7CA Was the player trying to lay/ place/ put the watch at the cannibals.
 N $F7D3 Nothing else is valid.
   $F7D3,$03 Jump to #R$F065.
 
-c $F7D6 Action: ???
-@ $F7D6 label=Action_???
+c $F7D6 Action: Place
+@ $F7D6 label=Action_Place
   $F7D6,$03 Call #R$C49F.
   $F7D9,$01 Return if the direct object is malformed.
   $F7DA,$06 Call #R$C37F with #R$EA26.
@@ -4937,6 +4940,8 @@ N $F912 Print "#STR$E14B,$08($b==$FF)".
   $F915,$03 Jump to #R$F03A.
   $F918,$03 Jump to #R$F06F.
 
+c $F91B Action: Shoot
+@ $F91B label=Action_Shoot
   $F91B,$03 Call #R$C47B.
   $F91E,$01 Return if the direct object is malformed.
   $F91F,$05 Call #R$C3E4 with item: #ITEM$0F.
@@ -5516,14 +5521,17 @@ N $FD67 Player is now lost...
   $FD67,$05 Call #R$EF54 to room #N$02: #ROOM$02.
   $FD6C,$01 Return.
 
-c $FD6D Action: Swim
-@ $FD6D label=Action_Swim
+c $FD6D Action: Kick
+@ $FD6D label=Action_Kick
   $FD6D,$03 Call #R$C47B.
   $FD70,$01 Return if the direct object is malformed.
   $FD71,$05 Jump to #R$F074 if #REGa is equal to #N$02.
 N $FD76 Print "#STR$DB5F,$08($b==$FF)".
   $FD76,$03 #REGhl=#R$DB5F.
   $FD79,$03 Jump to #R$F03A.
+
+c $FD7C Action: Swim
+@ $FD7C label=Action_Swim
 N $FD7C Print "#STR$E5A4,$08($b==$FF)".
   $FD7C,$03 #REGhl=#R$E5A4.
   $FD7F,$03 Jump to #R$F03A.
@@ -5628,7 +5636,11 @@ N $FF2E All the image routines use this same routine.
 
 g $FF3A Jump Table: Verbs
 @ $FF3A label=JumpTable_Verbs
-W $FF3A,$02 Verb word token #N($2E+(#PC-$FF3A)/$02): #TOKEN($2E+(#PC-$FF3A)/$02).
+D $FF3A A jump table of verb routines, the ordering here is from #R$E90D.
+.
+. Used by the routine at #R$C556.
+E $FF3A  View the equivalent code in #WARLORD$FE89.
+W $FF3A,$02 Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)): #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
 L $FF3A,$02,$26
 
 g $FF86 Jump Table: Turn-Based Events

@@ -69,14 +69,34 @@ class AdventureGame:
         return ''.join(chars), address
 
 
+class AfterShock(AdventureGame):
+    def get_text(self):
+        return "# AfterShock text data\n"
+
+
 class BlizzardPass(AdventureGame):
     def get_text(self):
         return "# BlizzardPass text data\n"
 
 
+class ForestAtWorldsEnd(AdventureGame):
+    def get_text(self):
+        return "# ForestAtWorldsEnd text data\n"
+
+
+class HeroesOfKarn(AdventureGame):
+    def get_text(self):
+        return "# HeroesOfKarn text data\n"
+
+
 class JewelsOfBabylon(AdventureGame):
     def get_text(self):
-        return "# BlizzardPass text data\n"
+        return "# JewelsOfBabylon text data\n"
+
+
+class MessageFromAndromeda(AdventureGame):
+    def get_text(self):
+        return "# MessageFromAndromeda text data\n"
 
 
 class Warlord(AdventureGame):
@@ -86,17 +106,41 @@ class Warlord(AdventureGame):
 
 
 GAMES = OrderedDict((
+    ('aftershock', {
+        'class': AfterShock,
+        'z80': '{}/AfterShock.z80'.format(ADVENTUREGAMES_HOME),
+        't2s': '{}/aftershock.t2s'.format(ADVENTUREGAMES_HOME),
+        'name': 'After Shock'
+    }),
     ('blizzardpass', {
         'class': BlizzardPass,
         'z80': '{}/BlizzardPass.z80'.format(ADVENTUREGAMES_HOME),
         't2s': '{}/blizzardpass.t2s'.format(ADVENTUREGAMES_HOME),
         'name': 'Blizzard Pass'
     }),
+    ('forestatworldsend', {
+        'class': ForestAtWorldsEnd,
+        'z80': '{}/ForestAtWorldsEnd.z80'.format(ADVENTUREGAMES_HOME),
+        't2s': '{}/forestatworldsend.t2s'.format(ADVENTUREGAMES_HOME),
+        'name': "Forest at World's End"
+    }),
+    ('heroesofkarn', {
+        'class': HeroesOfKarn,
+        'z80': '{}/HeroesOfKarn.z80'.format(ADVENTUREGAMES_HOME),
+        't2s': '{}/heroesofkarn.t2s'.format(ADVENTUREGAMES_HOME),
+        'name': 'Heroes Of Karn'
+    }),
     ('jewelsofbabylon', {
         'class': JewelsOfBabylon,
         'z80': '{}/JewelsofBabylon.z80'.format(ADVENTUREGAMES_HOME),
         't2s': '{}/jewelsofbabylon.t2s'.format(ADVENTUREGAMES_HOME),
         'name': 'Jewels of Babylon'
+    }),
+    ('messagefromandromeda', {
+        'class': MessageFromAndromeda,
+        'z80': '{}/MessageFromAndromeda.z80'.format(ADVENTUREGAMES_HOME),
+        't2s': '{}/messagefromandromeda.t2s'.format(ADVENTUREGAMES_HOME),
+        'name': 'Message From Andromeda'
     }),
     ('warlord', {
         'class': Warlord,
