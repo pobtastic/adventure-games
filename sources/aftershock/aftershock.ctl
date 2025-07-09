@@ -94,6 +94,8 @@ c $9EDB
 
 c $9F27
 
+c $9F67
+
 g $9F88 Table: Item Locations
 @ $9F88 label=Table_ItemLocations
 D $9F88 A table where the index is the item ID, and the value is the room it
@@ -675,3 +677,10 @@ B $BBD3,$01
 
 g $BBD7
 B $BBD7,$01
+
+g $CA2B
+W $CA2B,$02
+L $CA2B,$02,$25
+
+g $C8E9
+T $C8E9
