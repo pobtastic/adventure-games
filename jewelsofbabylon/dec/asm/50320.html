@@ -33,52 +33,123 @@ Next: <a href="50335.html">50335</a>
 </td>
 </tr>
 </table>
-<div class="description">50320: Routine at C490</div>
+<div class="description">50320: Parser: Validate Input Tokens</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 </div>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">The number of references to items in the user input tokens</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when there is only a verb present</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is unset when there is at least one valid direct object</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The carry flag is set when the command is malformed</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="50320"></span>
+<div class="comments">
+<div class="paragraph">
+The first token is the verb, so target the second token for the direct object.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_ValidateInputTokens</td>
 <td class="address-2"><span id="50320"></span>50320</td>
 <td class="instruction">LD A,(48487)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="48486.html#48487">UserInput_Token_2</a>.</td>
+<td class="comment-1" rowspan="1">Fetch the <a href="48486.html#48487">second token from the user input</a> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="50323"></span>50323</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is equal to 255.</td>
+<td class="comment-1" rowspan="2">Return if there is no second token.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="50325"></span>50325</td>
 <td class="instruction">RET Z</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="50326"></span>
+<div class="comments">
+<div class="paragraph">
+There is a second token; so validate all direct objects after this point.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="50326"></span>50326</td>
 <td class="instruction">CALL <a href="50094.html">Parser_CountItems</a></td>
 <td class="comment-1" rowspan="1">Call <a href="50094.html">Parser_CountItems</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="50329"></span>50329</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-1" rowspan="1">Return if <span class="register">A</span> is not equal to 255.</td>
+<td class="comment-1" rowspan="1">Return if there is at least one valid item mentioned in the user input tokens.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="50330"></span>
+<div class="comments">
+<div class="paragraph">
+Any references are invalid.
+</div>
+<div class="paragraph">
+Print "Please rephrase that.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="50330"></span>50330</td>
 <td class="instruction">CALL <a href="49134.html">Response_PleaseRephraseThat</a></td>
 <td class="comment-1" rowspan="1">Call <a href="49134.html">Response_PleaseRephraseThat</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="50333"></span>50333</td>
 <td class="instruction">SCF</td>
 <td class="comment-1" rowspan="1">Set the carry flag.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="50334"></span>50334</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in <a href="/adventure-games/warlord/dec/asm/44944.html">Warlord</a>.
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">

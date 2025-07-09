@@ -33,7 +33,7 @@ Next: <a href="C4C7.html">C4C7</a>
 </td>
 </tr>
 </table>
-<div class="description">C4B7: Routine at C4B7</div>
+<div class="description">C4B7: Parser: Validate Any Direct Object</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -41,47 +41,120 @@ Next: <a href="C4C7.html">C4C7</a>
 <div class="paragraph">
 Used by the routine at <a href="FD02.html">Action_Row</a>.
 </div>
+<div class="paragraph">
+In most adventure games, the structure for a command is "verb + direct object". This is usually how the player interacts with the game world. The verb describes the action, and the direct object is what the action is performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct object "SHOE".
+</div>
+</div>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">The number of valid direct objects in the user input tokens</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The carry flag is set when the command is malformed</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when there are no valid direct objects present in the input tokens</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c4b7"></span>
+<div class="comments">
+<div class="paragraph">
+The first token is the verb, so target the second token for the direct object.
+</div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Parser_ValidateAnyDirectObject</td>
 <td class="address-2"><span id="c4b7"></span>C4B7</td>
 <td class="instruction">LD A,($BD67)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="BD66.html#bd67">UserInput_Token_2</a>.</td>
+<td class="comment-1" rowspan="1">Fetch the <a href="BD66.html#bd67">second token from the user input</a> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c4ba"></span>C4BA</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C4B7.html#c4c3">C4C3</a> if <span class="register">A</span> is not equal to FF.</td>
+<td class="comment-1" rowspan="2">Jump forward to <a href="C4B7.html#c4c3">ValidateAnyDirectObject</a> if the token is anything other than the terminator character (FF).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c4bc"></span>C4BC</td>
-<td class="instruction">JR NZ,<a href="C4B7.html#c4c3">$C4C3</a></td>
+<td class="instruction">JR NZ,<a href="C4B7.html#c4c3">ValidateAnyDirectObject</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c4be"></span>
+<div class="comments">
+<div class="paragraph">
+The token was the terminator character (FF), so the sentence is malformed.
+</div>
+<div class="paragraph">
+E.g. They tried "TAKE" but didn't write anything after it.
+</div>
+<div class="paragraph">
+Print "Please be more specific.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c4be"></span>C4BE</td>
 <td class="instruction">CALL <a href="BFF5.html">Response_PleaseBeMoreSpecific</a></td>
 <td class="comment-1" rowspan="1">Call <a href="BFF5.html">Response_PleaseBeMoreSpecific</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c4c1"></span>C4C1</td>
 <td class="instruction">SCF</td>
-<td class="comment-1" rowspan="1">Set the carry flag.</td>
+<td class="comment-1" rowspan="1">Set the carry flag to indicate this call was a failure.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c4c2"></span>C4C2</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c4c3"></span>
+<div class="comments">
+<div class="paragraph">
+The user input tokens have a direct object, return how many are in the command buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ValidateAnyDirectObject</td>
 <td class="address-2"><span id="c4c3"></span>C4C3</td>
 <td class="instruction">CALL <a href="C3AE.html">Parser_CountItems</a></td>
 <td class="comment-1" rowspan="1">Call <a href="C3AE.html">Parser_CountItems</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c4c6"></span>C4C6</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in <a href="/adventure-games/warlord/asm/AFB7.html">Warlord</a>.
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">

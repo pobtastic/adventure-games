@@ -33,52 +33,123 @@ Next: <a href="C49F.html">C49F</a>
 </td>
 </tr>
 </table>
-<div class="description">C490: Routine at C490</div>
+<div class="description">C490: Parser: Validate Input Tokens</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 </div>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">The number of references to items in the user input tokens</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when there is only a verb present</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is unset when there is at least one valid direct object</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The carry flag is set when the command is malformed</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c490"></span>
+<div class="comments">
+<div class="paragraph">
+The first token is the verb, so target the second token for the direct object.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_ValidateInputTokens</td>
 <td class="address-2"><span id="c490"></span>C490</td>
 <td class="instruction">LD A,($BD67)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="BD66.html#bd67">UserInput_Token_2</a>.</td>
+<td class="comment-1" rowspan="1">Fetch the <a href="BD66.html#bd67">second token from the user input</a> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c493"></span>C493</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is equal to FF.</td>
+<td class="comment-1" rowspan="2">Return if there is no second token.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c495"></span>C495</td>
 <td class="instruction">RET Z</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c496"></span>
+<div class="comments">
+<div class="paragraph">
+There is a second token; so validate all direct objects after this point.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c496"></span>C496</td>
 <td class="instruction">CALL <a href="C3AE.html">Parser_CountItems</a></td>
 <td class="comment-1" rowspan="1">Call <a href="C3AE.html">Parser_CountItems</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c499"></span>C499</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-1" rowspan="1">Return if <span class="register">A</span> is not equal to FF.</td>
+<td class="comment-1" rowspan="1">Return if there is at least one valid item mentioned in the user input tokens.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c49a"></span>
+<div class="comments">
+<div class="paragraph">
+Any references are invalid.
+</div>
+<div class="paragraph">
+Print "Please rephrase that.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c49a"></span>C49A</td>
 <td class="instruction">CALL <a href="BFEE.html">Response_PleaseRephraseThat</a></td>
 <td class="comment-1" rowspan="1">Call <a href="BFEE.html">Response_PleaseRephraseThat</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c49d"></span>C49D</td>
 <td class="instruction">SCF</td>
 <td class="comment-1" rowspan="1">Set the carry flag.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="c49e"></span>C49E</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in <a href="/adventure-games/warlord/asm/AF90.html">Warlord</a>.
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
