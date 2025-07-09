@@ -413,6 +413,7 @@ E $BBD4 View the equivalent code in #WARLORD$A647.
   $BBD7,$03 Set the increment in #REGde for the next screen line.
   $BBDA,$02 #REGb=#N$08.
   $BBDC,$01 #REGa=#N$00.
+@ $BBDD label=PrintInputPrompt_Loop
   $BBDD,$01 Set the bits from *#REGhl.
   $BBDE,$01 Move down one line.
   $BBDF,$02 Decrease counter by one and loop back to #R$BBDD until counter is zero.
@@ -1646,7 +1647,7 @@ R $C3FA A Scenic event ID (+#N$80)
 c $C401 Check Active Scenic Events
 @ $C401 label=CheckActiveScenicEvents
 R $C401 HL Pointer to scenic data
-R $C401 A 
+R $C401 O:A
 R $C401 O:F The Z flag is set then there are no matching scenic events
   $C401,$02 Jump to #R$C404.
 @ $C403 label=ActiveScenicEvents_Loop
@@ -1792,35 +1793,85 @@ N $C487 Process the direct object.
   $C48E,$01 Set the carry flag to indicate the command is malformed.
   $C48F,$01 Return.
 
-c $C490
-  $C490,$03 #REGa=*#R$BD67.
-  $C493,$03 Return if #REGa is equal to #N$FF.
+c $C490 Parser: Validate Input Tokens
+@ $C490 label=Parser_ValidateInputTokens
+E $C490 View the equivalent code in #WARLORD$AF90.
+R $C490 O:A The number of references to items in the user input tokens
+R $C490 O:F The zero flag is set when there is only a verb present
+R $C490 O:F The zero flag is unset when there is at least one valid direct object
+R $C490 O:F The carry flag is set when the command is malformed
+N $C490 The first token is the verb, so target the second token for the direct
+. object.
+  $C490,$03 Fetch the #R$BD67(second token from the user input) and store it in
+. #REGa.
+  $C493,$03 Return if there is no second token.
+N $C496 There is a second token; so validate all direct objects after this
+. point.
   $C496,$03 Call #R$C3AE.
-  $C499,$01 Return if #REGa is not equal to #N$FF.
+  $C499,$01 Return if there is at least one valid item mentioned in the user
+. input tokens.
+N $C49A Any references are invalid.
+N $C49A Print "#STR$BEEA,$08($b==$FF)".
   $C49A,$03 Call #R$BFEE.
   $C49D,$01 Set the carry flag.
   $C49E,$01 Return.
 
-c $C49F
+c $C49F Parser: Validate Two Direct Objects
+@ $C49F label=Parser_ValidateTwoDirectObjects
+E $C49F View the equivalent code in #WARLORD$AF9F.
+R $C49F O:F The carry flag is set when the command is malformed
   $C49F,$03 Call #R$C47B.
-  $C4A2,$01 Return if the direct object is malformed.
-  $C4A3,$04 Jump to #R$C4AC if #REGa is not equal to #N$01.
+  $C4A2,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+N $C4A3 #REGa now contains the count of the number of valid direct objects.
+  $C4A3,$04 Jump to #R$C4AC if the number of valid direct objects in the user
+. input is not #N$01.
+N $C4A7 There is only one valid direct objects in the user input and the
+. command needs two...
+N $C4A7 Print "#STR$BED1,$08($b==$FF)".
   $C4A7,$03 Call #R$BFF5.
   $C4AA,$01 Set the carry flag.
   $C4AB,$01 Return.
-  $C4AC,$04 Jump to #R$C4B2 if #REGa is greater than or equal to #N$03.
-  $C4B0,$01 Set flags.
+N $C4AC There are two or more valid direct objects in the user input.
+@ $C4AC label=ValidateTwoDirectObjects
+  $C4AC,$04 Jump to #R$C4B2 if the number of valid direct objects in the user
+. input is greater than or equal to #N$03.
+  $C4B0,$01 Set zero flag.
   $C4B1,$01 Return.
+N $C4B2 There are more than two valid direct objects in the user input.
+@ $C4B2 label=ValidateTwoDirectObjects_TooMany
+N $C4B2 Print "#STR$BEEA,$08($b==$FF)".
   $C4B2,$03 Call #R$BFEE.
   $C4B5,$01 Set the carry flag.
   $C4B6,$01 Return.
 
-c $C4B7
-  $C4B7,$03 #REGa=*#R$BD67.
-  $C4BA,$04 Jump to #R$C4C3 if #REGa is not equal to #N$FF.
+c $C4B7 Parser: Validate Any Direct Object
+@ $C4B7 label=Parser_ValidateAnyDirectObject
+D $C4B7 In most adventure games, the structure for a command is "verb + direct
+. object". This is usually how the player interacts with the game world.
+. The verb describes the action, and the direct object is what the action is
+. performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
+. object "SHOE".
+E $C4B7 View the equivalent code in #WARLORD$AFB7.
+R $C4B7 O:A The number of valid direct objects in the user input tokens
+R $C4B7 O:F The carry flag is set when the command is malformed
+R $C4B7 O:F The zero flag is set when there are no valid direct objects present in the input tokens
+N $C4B7 The first token is the verb, so target the second token for the direct
+. object.
+  $C4B7,$03 Fetch the #R$BD67(second token from the user input) and store it in
+. #REGa.
+  $C4BA,$04 Jump forward to #R$C4C3 if the token is anything other than the
+. terminator character (#N$FF).
+N $C4BE The token was the terminator character (#N$FF), so the sentence is
+. malformed.
+N $C4BE E.g. They tried "TAKE" but didn't write anything after it.
+N $C4BE Print "#STR$BED1,$08($b==$FF)".
   $C4BE,$03 Call #R$BFF5.
-  $C4C1,$01 Set the carry flag.
+  $C4C1,$01 Set the carry flag to indicate this call was a failure.
   $C4C2,$01 Return.
+N $C4C3 The user input tokens have a direct object, return how many are in the
+. command buffer.
+@ $C4C3 label=ValidateAnyDirectObject
   $C4C3,$03 Call #R$C3AE.
   $C4C6,$01 Return.
 
@@ -1877,18 +1928,24 @@ N $C514 This is the return point after the handler has finished executing.
 @ $C51F label=ScenicEvents_Return
   $C51F,$01 Return.
 
-c $C520
-  $C520,$01 #REGc=#REGa.
+c $C520 Move Player To Room
+@ $C520 label=MovePlayerToRoom
+R $C520 A Destination room ID
+E $C520 View the equivalent code in #WARLORD$B01F.
+  $C520,$01 Load the destination room ID into #REGc.
   $C521,$04 #REGb=*#R$BD30.
-  $C525,$03 #REGa=*#R$BCCB.
-  $C528,$03 #REGhl=#R$BC78.
+  $C525,$03 #REGa=#R$BCCB.
+  $C528,$03 #REGhl=*#R$BC78.
   $C52B,$02 Jump to #R$C52E.
-  $C52D,$01 Increment #REGhl by one.
+N $C52D
+@ $C52D label=FindScenicEvents_Loop
+  $C52D,$01 Increment the scenic event location pointer by one.
+@ $C52E label=FindScenicEvents
   $C52E,$03 Jump to #R$C532 if #REGa is not equal to *#REGhl.
   $C531,$01 Write #REGc to *#REGhl.
   $C532,$02 Decrease counter by one and loop back to #R$C52D until counter is zero.
-  $C534,$01 #REGa=#REGc.
-  $C535,$03 Write #REGa to *#R$BCCB.
+N $C534 Sets the destination room ID as the new current room ID.
+  $C534,$04 Write #REGc to *#R$BCCB.
   $C538,$03 #REGa=*#R$BC6F.
   $C53B,$03 Jump to #R$C555 if #REGa is zero.
   $C53E,$02 #REGb=#N$08.
@@ -2683,18 +2740,21 @@ B $D34D,$01 Terminator.
 
 g $D34E Table: Item Descriptions
 @ $D34E label=Table_ItemDescriptions
+E $D34E View the equivalent code in #WARLORD$C732.
 W $D34E,$02 Item #N((#PC-$D34E)/$02): #ITEM((#PC-$D34E)/$02).
 L $D34E,$02,$4F
 
 g $D3EC Table: Room Descriptions
 @ $D3EC label=Table_RoomDescriptions
-W $D3EC,$02 N/A.
-W $D3EE,$02 N/A.
+E $D3EC View the equivalent code in #WARLORD$C8B0.
+W $D3EC,$02 Unused (denotes when an item is "inactive").
+W $D3EE,$02 Unused (denotes when an item is in the players inventory).
 W $D3F0,$02 Room #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$D3EC)/$02)).
 L $D3F0,$02,$6B
 
 g $D4C6 Table: Object Noun Phrases
 @ $D4C6 label=Table_ObjectNounPhrases
+E $D4C6 View the equivalent code in #WARLORD$C83E.
 W $D4C6,$02 Object #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$D4C6)/$02)): #OBJECT((#PC-$D4C6)/$02).
 L $D4C6,$02,$30
 
@@ -3739,8 +3799,9 @@ N $EF4D Print "#STR$D8FA,$08($b==$FF)".
   $EF50,$03 Call #R$C579.
   $EF53,$01 Return.
 
-c $EF54
-R $EF54 A Room ID
+c $EF54 Change Room
+@ $EF54 label=ChangeRoom
+R $EF54 A Destination room ID
   $EF54,$03 #REGhl=#R$BC6F.
   $EF57,$04 Jump to #R$EF7B if bit 0 of *#REGhl is unset.
   $EF5B,$05 Initialise #R$BC67 to #N$06.
@@ -5134,11 +5195,11 @@ N $FAA5 Nothing else is valid.
 @ $FAA5 label=Open_Invalid
   $FAA5,$03 Jump to #R$F06F.
 
-c $FAA8 Action: Close/ Shut
-@ $FAA8 label=Action_CloseShut
+c $FAA8 Action: Close
+@ $FAA8 label=Action_Close
   $FAA8,$03 Call #R$C47B.
   $FAAB,$01 Return if the direct object is malformed.
-N $FAAC Was the player trying to close/ shut the door?
+N $FAAC Was the player trying to close the door?
   $FAAC,$06 Call #R$C37F with #R$EABE.
   $FAB2,$02 Jump to #R$FAE5 if the token isn't for closing the door.
 N $FAB4 The player is trying to close the door but which door? Was it the
@@ -5163,7 +5224,7 @@ N $FADB Now the door is shut, this closes off various routes.
   $FADF,$03 Write #N$00 to *#R$ED5C to close off northbound access to #ROOM$61
 . from #ROOM$62.
   $FAE2,$03 Jump to #R$F06A.
-N $FAE5 Was the player trying to close/ shut the rock door?
+N $FAE5 Was the player trying to close the rock door?
 @ $FAE5 label=CloseShut_RockDoor
   $FAE5,$06 Call #R$C37F with #R$EAC0.
   $FAEB,$02 Jump to #R$FB05 if the token isn't for the rock door.
@@ -5178,7 +5239,7 @@ N $FAFC Print "#STR$BF00,$08($b==$FF)".
 N $FAFF Print "#STR$E305,$08($b==$FF)".
   $FAFF,$03 #REGhl=#R$E305.
   $FB02,$03 Jump to #R$F03A.
-N $FB05 Was the player trying to close/ shut the trapdoor?
+N $FB05 Was the player trying to close the trapdoor?
 @ $FB05 label=CloseShut_TrapDoor
   $FB05,$06 Call #R$C37F with #R$EAC5.
   $FB0B,$02 Jump to #R$FB13 if the token isn't for the trapdoor.
@@ -5346,8 +5407,8 @@ N $FC18 Was the player trying to wear ... the jewels?
 N $FC21 Nothing else is valid.
   $FC21,$03 Jump to #R$F092.
 
-c $FC24 Action: Light/ Strike
-@ $FC24 label=Action_LightStrike
+c $FC24 Action: Light
+@ $FC24 label=Action_Light
   $FC24,$03 Call #R$C47B.
   $FC27,$01 Return if the direct object is malformed.
   $FC28,$05 Jump to #R$F074 if #REGa is greater than #N$02.
@@ -5355,8 +5416,8 @@ N $FC2D Was the player trying to light ... the match?
   $FC2D,$06 Call #R$C37F with #R$E9E1.
 N $FC33 The match is the only item which is light/ strikable.
   $FC33,$02 Jump to #R$FC5E if the token isn't for the match.
-N $FC35 The player definitely wants to light/ strike the match ... but is it
-. already lit?
+N $FC35 The player definitely wants to light the match ... but is it already
+. lit?
   $FC35,$05 Call #R$C35F using item: #ITEM$03.
   $FC3A,$03 Jump to #R$F079 if the lit match is already in the players
 . possession.

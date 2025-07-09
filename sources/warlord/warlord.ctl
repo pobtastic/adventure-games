@@ -3310,18 +3310,21 @@ B $C731,$01 Terminator.
 
 g $C732 Table: Item Descriptions
 @ $C732 label=Table_ItemDescriptions
+E $C732 View the equivalent code in #JEWELS$D34E.
 W $C732,$02 Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
 L $C732,$02,$86
 
 g $C83E Table: Object Noun Phrases
 @ $C83E label=Table_ObjectNounPhrases
+E $C83E View the equivalent code in #JEWELS$D4C6.
 W $C83E,$02 Object #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)): #OBJECT((#PC-$C83E)/$02).
 L $C83E,$02,$39
 
 g $C8B0 Table: Room Descriptions
 @ $C8B0 label=Table_RoomDescriptions
-W $C8B0,$02 N/A.
-W $C8B2,$02 N/A.
+E $C8B0 View the equivalent code in #JEWELS$D3EC.
+W $C8B0,$02 Unused (denotes when an item is "inactive").
+W $C8B2,$02 Unused (denotes when an item is in the players inventory).
 W $C8B4,$02 Room #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C8B0)/$02)).
 L $C8B4,$02,$64
 

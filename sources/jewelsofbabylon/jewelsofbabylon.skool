@@ -3809,6 +3809,7 @@ c$BBD4 LD HL,$5080   ; #REGhl=#N$5080 (screen buffer location).
  $BBD7 LD DE,$0100   ; Set the increment in #REGde for the next screen line.
  $BBDA LD B,$08      ; #REGb=#N$08.
  $BBDC XOR A         ; #REGa=#N$00.
+@label=PrintInputPrompt_Loop
 *$BBDD OR (HL)       ; Set the bits from *#REGhl.
  $BBDE ADD HL,DE     ; Move down one line.
  $BBDF DJNZ $BBDD    ; Decrease counter by one and loop back to #R$BBDD until
@@ -5903,45 +5904,106 @@ c$C47B LD A,($BD67)  ; Fetch the #R$BD67(second token from the user input) and s
  $C48E SCF           ; Set the carry flag to indicate the command is malformed.
  $C48F RET           ; Return.
 
-; Routine at C490
-c$C490 LD A,($BD67)  ; #REGa=*#R$BD67.
- $C493 CP $FF        ; {Return if #REGa is equal to #N$FF.
+; Parser: Validate Input Tokens
+;
+; .
+;
+; O:A The number of references to items in the user input tokens
+; O:F The zero flag is set when there is only a verb present
+; O:F The zero flag is unset when there is at least one valid direct object
+; O:F The carry flag is set when the command is malformed
+;
+; The first token is the verb, so target the second token for the direct
+; object.
+@label=Parser_ValidateInputTokens
+c$C490 LD A,($BD67)  ; Fetch the #R$BD67(second token from the user input) and store it in
+                     ; #REGa.
+ $C493 CP $FF        ; {Return if there is no second token.
  $C495 RET Z         ; }
+; There is a second token; so validate all direct objects after this
+; point.
  $C496 CALL $C3AE    ; Call #R$C3AE.
- $C499 RET NZ        ; Return if #REGa is not equal to #N$FF.
+ $C499 RET NZ        ; Return if there is at least one valid item mentioned in the user
+                     ; input tokens.
+; Any references are invalid.
+; .
+; Print "#STR$BEEA,$08($b==$FF)".
  $C49A CALL $BFEE    ; Call #R$BFEE.
  $C49D SCF           ; Set the carry flag.
  $C49E RET           ; Return.
+; View the equivalent code in #WARLORD$AF90.
 
-; Routine at C49F
+; Parser: Validate Two Direct Objects
 ;
 ; Used by the routines at #R$F7AB, #R$F7D6, #R$F851 and #R$FB71.
+;
+; O:F The carry flag is set when the command is malformed
+@label=Parser_ValidateTwoDirectObjects
 c$C49F CALL $C47B    ; Call #R$C47B.
- $C4A2 RET C         ; Return if the direct object is malformed.
- $C4A3 CP $01        ; {Jump to #R$C4AC if #REGa is not equal to #N$01.
- $C4A5 JR NZ,$C4AC   ; }
+ $C4A2 RET C         ; Return if there is no direct object in the user input (so the
+                     ; command is malformed).
+; #REGa now contains the count of the number of valid direct objects.
+ $C4A3 CP $01        ; {Jump to #R$C4AC if the number of valid direct objects in the user
+ $C4A5 JR NZ,$C4AC   ; input is not #N$01.}
+; There is only one valid direct objects in the user input and the
+; command needs two...
+; .
+; Print "#STR$BED1,$08($b==$FF)".
  $C4A7 CALL $BFF5    ; Call #R$BFF5.
  $C4AA SCF           ; Set the carry flag.
  $C4AB RET           ; Return.
-*$C4AC CP $03        ; {Jump to #R$C4B2 if #REGa is greater than or equal to
- $C4AE JR NC,$C4B2   ; #N$03.}
- $C4B0 AND A         ; Set flags.
+; There are two or more valid direct objects in the user input.
+@label=ValidateTwoDirectObjects
+*$C4AC CP $03        ; {Jump to #R$C4B2 if the number of valid direct objects in the user
+ $C4AE JR NC,$C4B2   ; input is greater than or equal to #N$03.}
+ $C4B0 AND A         ; Set zero flag.
  $C4B1 RET           ; Return.
+; There are more than two valid direct objects in the user input.
+; .
+; Print "#STR$BEEA,$08($b==$FF)".
+@label=ValidateTwoDirectObjects_TooMany
 *$C4B2 CALL $BFEE    ; Call #R$BFEE.
  $C4B5 SCF           ; Set the carry flag.
  $C4B6 RET           ; Return.
+; View the equivalent code in #WARLORD$AF9F.
 
-; Routine at C4B7
+; Parser: Validate Any Direct Object
 ;
 ; Used by the routine at #R$FD02.
-c$C4B7 LD A,($BD67)  ; #REGa=*#R$BD67.
- $C4BA CP $FF        ; {Jump to #R$C4C3 if #REGa is not equal to #N$FF.
- $C4BC JR NZ,$C4C3   ; }
+; .
+; In most adventure games, the structure for a command is "verb + direct
+; object". This is usually how the player interacts with the game world.
+; The verb describes the action, and the direct object is what the action is
+; performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
+; object "SHOE".
+;
+; O:A The number of valid direct objects in the user input tokens
+; O:F The carry flag is set when the command is malformed
+; O:F The zero flag is set when there are no valid direct objects present in
+; .   the input tokens
+;
+; The first token is the verb, so target the second token for the direct
+; object.
+@label=Parser_ValidateAnyDirectObject
+c$C4B7 LD A,($BD67)  ; Fetch the #R$BD67(second token from the user input) and store it in
+                     ; #REGa.
+ $C4BA CP $FF        ; {Jump forward to #R$C4C3 if the token is anything other than the
+ $C4BC JR NZ,$C4C3   ; terminator character (#N$FF).}
+; The token was the terminator character (#N$FF), so the sentence is
+; malformed.
+; .
+; E.g. They tried "TAKE" but didn't write anything after it.
+; .
+; Print "#STR$BED1,$08($b==$FF)".
  $C4BE CALL $BFF5    ; Call #R$BFF5.
- $C4C1 SCF           ; Set the carry flag.
+ $C4C1 SCF           ; Set the carry flag to indicate this call was a failure.
  $C4C2 RET           ; Return.
+; The user input tokens have a direct object, return how many are in the
+; command buffer.
+@label=ValidateAnyDirectObject
 *$C4C3 CALL $C3AE    ; Call #R$C3AE.
  $C4C6 RET           ; Return.
+; View the equivalent code in #WARLORD$AFB7.
 
 ; Parser: Process Item
 ;
@@ -6013,23 +6075,29 @@ c$C4EB LD HL,$BC78   ; #REGhl=#R$BC78.
 @label=ScenicEvents_Return
 *$C51F RET           ; Return.
 
-; Routine at C520
+; Move Player To Room
 ;
 ; Used by the routine at #R$EF54.
-c$C520 LD C,A        ; #REGc=#REGa.
+;
+; A Destination room ID
+@label=MovePlayerToRoom
+c$C520 LD C,A        ; Load the destination room ID into #REGc.
  $C521 LD A,($BD30)  ; {#REGb=*#R$BD30.
  $C524 LD B,A        ; }
- $C525 LD A,($BCCB)  ; #REGa=*#R$BCCB.
- $C528 LD HL,$BC78   ; #REGhl=#R$BC78.
+ $C525 LD A,($BCCB)  ; #REGa=#R$BCCB.
+ $C528 LD HL,$BC78   ; #REGhl=*#R$BC78.
  $C52B JR $C52E      ; Jump to #R$C52E.
-*$C52D INC HL        ; Increment #REGhl by one.
+@label=FindScenicEvents_Loop
+*$C52D INC HL        ; Increment the scenic event location pointer by one.
+@label=FindScenicEvents
 *$C52E CP (HL)       ; {Jump to #R$C532 if #REGa is not equal to *#REGhl.
  $C52F JR NZ,$C532   ; }
  $C531 LD (HL),C     ; Write #REGc to *#REGhl.
 *$C532 DJNZ $C52D    ; Decrease counter by one and loop back to #R$C52D until
                      ; counter is zero.
- $C534 LD A,C        ; #REGa=#REGc.
- $C535 LD ($BCCB),A  ; Write #REGa to *#R$BCCB.
+; Sets the destination room ID as the new current room ID.
+ $C534 LD A,C        ; {Write #REGc to *#R$BCCB.
+ $C535 LD ($BCCB),A  ; }
  $C538 LD A,($BC6F)  ; #REGa=*#R$BC6F.
  $C53B AND A         ; {Jump to #R$C555 if #REGa is zero.
  $C53C JR Z,$C555    ; }
@@ -6050,6 +6118,7 @@ c$C520 LD C,A        ; #REGc=#REGa.
 *$C553 DJNZ $C546    ; Decrease counter by one and loop back to #R$C546 until
                      ; counter is zero.
 *$C555 RET           ; Return.
+; View the equivalent code in #WARLORD$B01F.
 
 ; Handler: Match Verb
 ;
@@ -6931,11 +7000,13 @@ g$D34E DEFW $C595    ; Item #N((#PC-$D34E)/$02): #ITEM((#PC-$D34E)/$02).
  $D3E6 DEFW $CADE    ; Item #N((#PC-$D34E)/$02): #ITEM((#PC-$D34E)/$02).
  $D3E8 DEFW $CADE    ; Item #N((#PC-$D34E)/$02): #ITEM((#PC-$D34E)/$02).
  $D3EA DEFW $0000    ; Item #N((#PC-$D34E)/$02): #ITEM((#PC-$D34E)/$02).
+; View the equivalent code in #WARLORD$C732.
 
 ; Table: Room Descriptions
 @label=Table_RoomDescriptions
-g$D3EC DEFW $0000    ; N/A.
- $D3EE DEFW $0000    ; N/A.
+g$D3EC DEFW $0000    ; Unused (denotes when an item is "inactive").
+ $D3EE DEFW $0000    ; Unused (denotes when an item is in the players
+                     ; inventory).
  $D3F0 DEFW $CB06    ; Room
                      ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$D3EC)/$02)).
  $D3F2 DEFW $CB2A    ; Room
@@ -7150,6 +7221,7 @@ g$D3EC DEFW $0000    ; N/A.
                      ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$D3EC)/$02)).
  $D4C4 DEFW $D1A7    ; Room
                      ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$D3EC)/$02)).
+; View the equivalent code in #WARLORD$C8B0.
 
 ; Table: Object Noun Phrases
 @label=Table_ObjectNounPhrases
@@ -7297,6 +7369,7 @@ g$D4C6 DEFW $D1B3    ; Object
  $D524 DEFW $D344    ; Object
                      ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$D4C6)/$02)):
                      ; #OBJECT((#PC-$D4C6)/$02).
+; View the equivalent code in #WARLORD$C83E.
 
 ; Messaging: "Congratulations!!<CR>Your Quest Has Been Successful.<CR>You Weigh
 ; Anchor And Then Sail<CR>Off Into The Sunset With The<CR>Fabulous Jewels Of
@@ -10961,12 +11034,13 @@ c$EF32 LD HL,$D8D8   ; #REGhl=#R$D8D8.
 *$EF50 CALL $C579    ; Call #R$C579.
  $EF53 RET           ; Return.
 
-; Routine at EF54
+; Change Room
 ;
 ; Used by the routines at #R$F16B, #R$F481, #R$F946, #R$FC61, #R$FD02 and
 ; #R$FD82.
 ;
-; A Room ID
+; A Destination room ID
+@label=ChangeRoom
 c$EF54 LD HL,$BC6F   ; #REGhl=#R$BC6F.
  $EF57 BIT 0,(HL)    ; {Jump to #R$EF7B if bit 0 of *#REGhl is unset.
  $EF59 JR Z,$EF7B    ; }
@@ -12758,11 +12832,11 @@ c$FA3C CALL $C47B    ; Call #R$C47B.
 @label=Open_Invalid
 *$FAA5 JP $F06F      ; Jump to #R$F06F.
 
-; Action: Close/ Shut
-@label=Action_CloseShut
+; Action: Close
+@label=Action_Close
 c$FAA8 CALL $C47B    ; Call #R$C47B.
  $FAAB RET C         ; Return if the direct object is malformed.
-; Was the player trying to close/ shut the door?
+; Was the player trying to close the door?
  $FAAC LD HL,$EABE   ; {Call #R$C37F with #R$EABE.
  $FAAF CALL $C37F    ; }
  $FAB2 JR NZ,$FAE5   ; Jump to #R$FAE5 if the token isn't for closing the door.
@@ -12794,7 +12868,7 @@ c$FAA8 CALL $C47B    ; Call #R$C47B.
  $FADF LD ($ED5C),A  ; Write #N$00 to *#R$ED5C to close off northbound access to #ROOM$61
                      ; from #ROOM$62.
  $FAE2 JP $F06A      ; Jump to #R$F06A.
-; Was the player trying to close/ shut the rock door?
+; Was the player trying to close the rock door?
 @label=CloseShut_RockDoor
 *$FAE5 LD HL,$EAC0   ; {Call #R$C37F with #R$EAC0.
  $FAE8 CALL $C37F    ; }
@@ -12814,7 +12888,7 @@ c$FAA8 CALL $C47B    ; Call #R$C47B.
 ; Print "#STR$E305,$08($b==$FF)".
  $FAFF LD HL,$E305   ; #REGhl=#R$E305.
  $FB02 JP $F03A      ; Jump to #R$F03A.
-; Was the player trying to close/ shut the trapdoor?
+; Was the player trying to close the trapdoor?
 @label=CloseShut_TrapDoor
 *$FB05 LD HL,$EAC5   ; {Call #R$C37F with #R$EAC5.
  $FB08 CALL $C37F    ; }
@@ -13001,8 +13075,8 @@ c$FBD5 CALL $C47B    ; Call #R$C47B.
 ; Nothing else is valid.
  $FC21 JP $F092      ; Jump to #R$F092.
 
-; Action: Light/ Strike
-@label=Action_LightStrike
+; Action: Light
+@label=Action_Light
 c$FC24 CALL $C47B    ; Call #R$C47B.
  $FC27 RET C         ; Return if the direct object is malformed.
  $FC28 CP $02        ; {Jump to #R$F074 if #REGa is greater than #N$02.
@@ -13012,8 +13086,8 @@ c$FC24 CALL $C47B    ; Call #R$C47B.
  $FC30 CALL $C37F    ; }
 ; The match is the only item which is light/ strikable.
  $FC33 JR NZ,$FC5E   ; Jump to #R$FC5E if the token isn't for the match.
-; The player definitely wants to light/ strike the match ... but is it
-; already lit?
+; The player definitely wants to light the match ... but is it already
+; lit?
  $FC35 LD A,$03      ; {Call #R$C35F using item: #ITEM$03.
  $FC37 CALL $C35F    ; }
  $FC3A JP Z,$F079    ; Jump to #R$F079 if the lit match is already in the players
