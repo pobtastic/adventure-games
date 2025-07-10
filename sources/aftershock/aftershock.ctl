@@ -16,6 +16,22 @@ D $4000 #UDGTABLE { =h After Shock Loading Screen. } { #SCR$02(loading) } UDGTAB
 c $9DCC Game Entry Point Alias
   $9DCC,$02 Jump to #R$9DD7.
 
+g $9DCE Table: Delimiters
+@ $9DCE label=Table_Delimiters_Count
+D $9DCE A table of delimiter characters used for matching user input in...
+B $9DCE,$01 Number of delimiters in the table: #PEEK(#PC).
+@ $9DCF label=Table_Delimiters
+T $9DCF,$01 "SPACE".
+T $9DD0,$01 "COMMA".
+T $9DD1,$01 "DOUBLE QUOTE".
+
+g $9DD2 Table: Vocabulary For "THE"
+@ $9DD2 label=Table_Vocabulary_The
+D $9DD2 "Vocabulary Table" used for matching and removing "THE" from user
+. input.
+T $9DD2,$04 "#STR$9DD2,$08($b==$FF)".
+B $9DD6,$01 Terminator.
+
 c $9DD7 Game Entry Point
 @ $9DD7 label=GameEntryPoint
 E $9DD7 View the equivalent code in;
@@ -108,6 +124,9 @@ w $9EC5
 
 c $9EDB
 
+N $9EF5 Print "#DECODESTR$CD8F".
+  $9EF5,$03 #REGhl=#OFFSET($0013).
+
 c $9F27
 
 c $9F67
@@ -122,6 +141,9 @@ E $9F88 View the equivalent code in #JEWELS$BBF0.
 B $9F88,$01 Item #N(#PC-$9F88) #ITEM(#PC-$9F88) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $9F88,$01,$88
 
+g $A0D2
+B $A0D2,$01
+
 c $A0D3
 
 g $A106 Current Room ID
@@ -135,13 +157,51 @@ g $A13B User Input: Word Tokens
 B $A13B,$01
 L $A13B,$01,$0A
 
+g $A145
+
+c $A155
+
 c $A16D
 
+c $A1B4
+
 c $A1C8
+  $A1C8,$01 Stash #REGhl on the stack.
+  $A1C9,$03 #REGhl=#R$A088.
+  $A1CC,$03 Call #R$A1B4.
+  $A1CF,$01 Merge the bits from *#REGhl.
+  $A1D0,$01 Restore #REGhl from the stack.
+  $A1D1,$01 Return.
+
+c $A1D2
+  $A1D2,$01 Stash #REGhl on the stack.
+  $A1D3,$03 #REGhl=#R$A088.
+  $A1D6,$03 Call #R$A1B4.
+  $A1D9,$01 Set the bits from *#REGhl.
+  $A1DA,$01 Write #REGa to *#REGhl.
+  $A1DB,$01 Restore #REGhl from the stack.
+  $A1DC,$01 Return.
+
+c $A1DD
+  $A1DD,$01 Stash #REGhl on the stack.
+  $A1DE,$03 #REGhl=#R$A088.
+  $A1E1,$03 Call #R$A1B4.
+  $A1E4,$01 Invert the bits in #REGa.
+  $A1E5,$01 Merge the bits from *#REGhl.
+  $A1E6,$01 Write #REGa to *#REGhl.
+  $A1E7,$01 Restore #REGhl from the stack.
+  $A1E8,$01 Return.
+
+c $A1E9
+B $A1E9,$01
+L $A1E9,$01,$04
+  $A1ED,$03 #REGhl=#R$A1E9.
+  $A1F0,$03 Call #R$A267.
+  $A1F3,$01 Return.
 
 c $A1F4 Print String
 @ $A1F4 label=PrintString
-D $A1F4 Prints a compressed text string using a dictionary lookup. #SIM(start=$A1F4,stop=$A20C,hl=$0024)#N({sim[HL]}).
+D $A1F4 Prints a compressed text string using a dictionary lookup.
 R $A1F4 HL Messaging string ID
   $A1F4,$06 Stash #REGix, #REGhl, #REGde, #REGbc and #REGaf on the stack.
   $A1FA,$01 Double the messaging string ID held in #REGhl.
@@ -165,12 +225,11 @@ R $A1F4 HL Messaging string ID
 
   $A22F,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $A232,$02 #REGa-=#N$60.
-  $A234,$01 #REGl=#REGa.
-  $A235,$02 #REGh=#N$00.
-  $A237,$01 #REGhl+=#REGhl.
-  $A238,$03 #REGde=#R$C8EB.
-  $A23B,$01 #REGhl+=#REGde.
+  $A234,$03 Create an offset in #REGhl using #REGa.
+  $A237,$01 Double the offset held in #REGhl.
+  $A238,$04 #REGhl+=#R$C8EB.
   $A23C,$02 #REGb=#N$02.
+
   $A23E,$02 Jump to #R$A241.
   $A240,$01 Increment #REGhl by one.
   $A241,$01 #REGa=*#REGhl.
@@ -203,6 +262,8 @@ N $A260 Force a newline to be "printed".
 
 c $A267
 
+c $A275
+
 c $A280
 
 c $A305 Get Table Entry
@@ -223,10 +284,51 @@ R $A305 O:IX Address of the table entry
   $A313,$01 Return.
 
 c $A314
+  $A314,$03 Stash #REGhl, #REGde and #REGbc on the stack.
+  $A317,$03 #REGhl=#R$9F88.
+  $A31A,$04 #REGbc=*#R$BBC7.
+  $A31E,$02 CPIR.
+  $A320,$02 Jump to #R$A336 if ?? is not equal to #N$00.
+  $A322,$01 Stash #REGhl on the stack.
+  $A323,$03 Call #R$A6B1.
+  $A326,$02 Jump to #R$A32F if the item is invalid.
+  $A328,$02 Stash #REGaf and #REGbc on the stack.
+  $A32A,$03 Call #R$A25C.
+  $A32D,$02 Restore #REGbc and #REGaf from the stack.
+  $A32F,$01 #REGe=#REGa.
+  $A330,$01 Restore #REGhl from the stack.
+  $A331,$02 Check #REGbc...
+  $A333,$01 #REGa=#REGe.
+  $A334,$02 Jump to #R$A31E until #REGbc is zero.
+  $A336,$03 Restore #REGbc, #REGde and #REGhl from the stack.
+  $A339,$01 Return.
 
 c $A33A
 
+c $A41C
+
+c $A42F
+
+g $A443
+
+c $A450
+
+c $A459
+
+c $A467
+
+c $A479
+
 c $A4B0
+
+c $A507
+  $A507,$03 #REGhl=#N($0001,$04,$04).
+  $A50A,$03 Call #R$A25C.
+  $A50D,$03 Jump to #R$A4B0.
+
+c $A510
+
+c $A549
 
 c $A591 Action: Examine Item
 @ $A591 label=Action_ExamineItem
@@ -595,9 +697,21 @@ R $A6B1 O:F Z is unset if the object is valid, unset when invalid
   $A6CE,$01 Return.
 
 c $A6CF
+  $A6CF,$06 Jump to #R$A6DC if *#R$A0D2 is not #N$00.
+  $A6D5,$03 #REGhl=#N($0020,$04,$04).
+  $A6D8,$03 Call #R$A25C.
+  $A6DB,$01 Return.
+
+c $A6DC
+  $A6DC,$03 #REGhl=#N($0021,$04,$04).
+  $A6DF,$03 Call #R$A25C.
+  $A6E2,$02 #REGa=#N$01.
+  $A6E4,$03 Call #R$A314.
+  $A6E7,$01 Return.
 
 c $A6E8
 
+g $A6FD
 W $A6FD,$02
 
 c $A6FF
@@ -608,7 +722,15 @@ c $A808
 
 c $AC60
 
+g $AC84
+W $AC84,$02
+
+g $AC86
+W $AC86,$02
+
 c $AC88
+
+c $ACBD
 
 c $ACFC
 
@@ -737,15 +859,2560 @@ B $BBD3,$01
 g $BBD7
 B $BBD7,$01
 
-g $CA2B
-W $CA2B,$02
-L $CA2B,$02,$25
+g $CA2B Table: Messaging Offsets
+@ $CA2B label=Table_MessagingOffsets
+W $CA2B,$02 Leads to: #R($C8E9+#PEEK(#PC)+#PEEK(#PC+$01)*$100).
+L $CA2B,$02,$170
 
-g $C8E9
-g $C8EB
+g $C8E9 Data: Strings
+@ $C8E9 label=Data_Strings
+B $C8E9,$01 "#DECODE(#PEEK(#PC))".
+L $C8E9,$01,$90
 
-b $CE65
-  $CE65,$01 #IF(#PEEK(#PC)<$5F)(#CHR(#PEEK(#PC)+$20),#STR($C8EB+((#PEEK(#PC)-$60)*$02),$04,$02))
-L $CE65,$01,$08
+t $CD0B Messaging: "Give Me A Command!"
+@ $CD0B label=Messaging_GiveMeACommand
+N $CD0B Print "#DECODESTR(#PC)".
+B $CD0B,$01 "#DECODE(#PEEK(#PC))".
+L $CD0B,$01,$0A,$02
+B $CD15,$01 Terminator.
+
+t $CD16 Messaging: "Try Another Command"
+@ $CD16 label=Messaging_TryAnotherCommand
+N $CD16 Print "#DECODESTR(#PC)".
+B $CD16,$01 "#DECODE(#PEEK(#PC))".
+L $CD16,$01,$0B,$02
+B $CD21,$01 Terminator.
+
+t $CD22 Messaging: "Nothing"
+@ $CD22 label=Messaging_Nothing
+N $CD22 Print "#DECODESTR(#PC)".
+B $CD22,$01 "#DECODE(#PEEK(#PC))".
+L $CD22,$01,$03,$02
+B $CD25,$01 Terminator.
+
+t $CD26 Messaging: "You Can See:-"
+@ $CD26 label=Messaging_YouCanSee
+N $CD26 Print "#DECODESTR(#PC)".
+B $CD26,$01 "#DECODE(#PEEK(#PC))".
+L $CD26,$01,$08,$02
+B $CD2E,$01 Terminator.
+
+t $CD2F Messaging: "&"
+@ $CD2F label=Messaging_Ampersand
+N $CD2F Print "#DECODESTR(#PC)".
+B $CD2F,$01 "#DECODE(#PEEK(#PC))".
+L $CD2F,$01,$03,$02
+B $CD32,$01 Terminator.
+
+t $CD33 Messaging: "There Are Exits:-"
+@ $CD33 label=Messaging_ThereAreExits
+N $CD33 Print "#DECODESTR(#PC)".
+B $CD33,$01 "#DECODE(#PEEK(#PC))".
+L $CD33,$01,$0A,$02
+B $CD3D,$01 Terminator.
+
+t $CD3E Messaging: "There Is An Exit"
+@ $CD3E label=Messaging_ThereIsAnExit
+N $CD3E Print "#DECODESTR(#PC)".
+B $CD3E,$01 "#DECODE(#PEEK(#PC))".
+L $CD3E,$01,$09,$02
+B $CD47,$01 Terminator.
+
+t $CD48 Messaging: "North"
+@ $CD48 label=Messaging_North
+N $CD48 Print "#DECODESTR(#PC)".
+B $CD48,$01 "#DECODE(#PEEK(#PC))".
+L $CD48,$01,$03,$02
+B $CD4B,$01 Terminator.
+
+t $CD4C Messaging: "South"
+@ $CD4C label=Messaging_South
+N $CD4C Print "#DECODESTR(#PC)".
+B $CD4C,$01 "#DECODE(#PEEK(#PC))".
+L $CD4C,$01,$03,$02
+B $CD4F,$01 Terminator.
+
+t $CD50 Messaging: "East"
+@ $CD50 label=Messaging_East
+N $CD50 Print "#DECODESTR(#PC)".
+B $CD50,$01 "#DECODE(#PEEK(#PC))".
+L $CD50,$01,$02,$02
+B $CD52,$01 Terminator.
+
+t $CD53 Messaging: "West"
+@ $CD53 label=Messaging_West
+N $CD53 Print "#DECODESTR(#PC)".
+B $CD53,$01 "#DECODE(#PEEK(#PC))".
+L $CD53,$01,$02,$02
+B $CD55,$01 Terminator.
+
+t $CD56 Messaging: "Up"
+@ $CD56 label=Messaging_Up
+N $CD56 Print "#DECODESTR(#PC)".
+B $CD56,$01 "#DECODE(#PEEK(#PC))".
+L $CD56,$01,$02,$02
+B $CD58,$01 Terminator.
+
+t $CD59 Messaging: "Down"
+@ $CD59 label=Messaging_Down
+N $CD59 Print "#DECODESTR(#PC)".
+B $CD59,$01 "#DECODE(#PEEK(#PC))".
+L $CD59,$01,$03,$02
+B $CD5C,$01 Terminator.
+
+t $CD5D Messaging: "I Can't See"
+@ $CD5D label=Messaging_ICantSee
+N $CD5D Print "#DECODESTR(#PC)".
+B $CD5D,$01 "#DECODE(#PEEK(#PC))".
+L $CD5D,$01,$08,$02
+B $CD65,$01 Terminator.
+
+t $CD66 Messaging: "Here"
+@ $CD66 label=Messaging_Here
+N $CD66 Print "#DECODESTR(#PC)".
+B $CD66,$01 "#DECODE(#PEEK(#PC))".
+L $CD66,$01,$04,$02
+B $CD6A,$01 Terminator.
+
+t $CD6B Messaging: "You Are Dead"
+@ $CD6B label=Messaging_YouAreDead
+N $CD6B Print "#DECODESTR(#PC)".
+B $CD6B,$01 "#DECODE(#PEEK(#PC))".
+L $CD6B,$01,$06,$02
+B $CD71,$01 Terminator.
+
+t $CD72 Messaging: "Want Another Game? Y/N"
+@ $CD72 label=Messaging_WantAnotherGame
+N $CD72 Print "#DECODESTR(#PC)".
+B $CD72,$01 "#DECODE(#PEEK(#PC))".
+L $CD72,$01,$0F,$02
+B $CD81,$01 Terminator.
+
+t $CD82 Messaging: "Loading Status File"
+@ $CD82 label=Messaging_LoadingStatusFile
+N $CD82 Print "#DECODESTR(#PC)".
+B $CD82,$01 "#DECODE(#PEEK(#PC))".
+L $CD82,$01,$0C,$02
+B $CD8E,$01 Terminator.
+
+t $CD8F Messaging: "Status File Not Found"
+@ $CD8F label=Messaging_StatusFileNotFound
+N $CD8F Print "#DECODESTR(#PC)".
+B $CD8F,$01 "#DECODE(#PEEK(#PC))".
+L $CD8F,$01,$0D,$02
+B $CD9C,$01 Terminator.
+
+t $CD9D Messaging: "Saving Status"
+@ $CD9D label=Messaging_SavingStatus
+N $CD9D Print "#DECODESTR(#PC)".
+B $CD9D,$01 "#DECODE(#PEEK(#PC))".
+L $CD9D,$01,$08,$02
+B $CDA5,$01 Terminator.
+
+t $CDA6 Messaging: "Saving Complete"
+@ $CDA6 label=Messaging_SavingComplete
+N $CDA6 Print "#DECODESTR(#PC)".
+B $CDA6,$01 "#DECODE(#PEEK(#PC))".
+L $CDA6,$01,$09,$02
+B $CDAF,$01 Terminator.
+
+t $CDB0 Messaging: "Want To Save The Game? Y/N"
+@ $CDB0 label=Messaging_WantToSaveTheGame
+N $CDB0 Print "#DECODESTR(#PC)".
+B $CDB0,$01 "#DECODE(#PEEK(#PC))".
+L $CDB0,$01,$10,$02
+B $CDC0,$01 Terminator.
+
+t $CDC1 Messaging: "Please Be More Specific"
+@ $CDC1 label=Messaging_PleaseBeMoreSpecific
+N $CDC1 Print "#DECODESTR(#PC)".
+B $CDC1,$01 "#DECODE(#PEEK(#PC))".
+L $CDC1,$01,$0F,$02
+B $CDD0,$01 Terminator.
+
+t $CDD1 Messaging: "Please Rephrase That"
+@ $CDD1 label=Messaging_PleaseRephraseThat
+N $CDD1 Print "#DECODESTR(#PC)".
+B $CDD1,$01 "#DECODE(#PEEK(#PC))".
+L $CDD1,$01,$0C,$02
+B $CDDD,$01 Terminator.
+
+t $CDDE Messaging: "You Can't"
+@ $CDDE label=Messaging_YouCant
+N $CDDE Print "#DECODESTR(#PC)".
+B $CDDE,$01 "#DECODE(#PEEK(#PC))".
+L $CDDE,$01,$06,$02
+B $CDE4,$01 Terminator.
+
+t $CDE5 Messaging: "O.K"
+@ $CDE5 label=Messaging_OK
+N $CDE5 Print "#DECODESTR(#PC)".
+B $CDE5,$01 "#DECODE(#PEEK(#PC))".
+L $CDE5,$01,$04,$02
+B $CDE9,$01 Terminator.
+
+t $CDEA Messaging: "You're Already Carrying It"
+@ $CDEA label=Messaging_YoureAlreadyCarryingIt
+N $CDEA Print "#DECODESTR(#PC)".
+B $CDEA,$01 "#DECODE(#PEEK(#PC))".
+L $CDEA,$01,$0D,$02
+B $CDF7,$01 Terminator.
+
+t $CDF8 Messaging: "You're Already Carrying Them"
+@ $CDF8 label=Messaging_YoureAlreadyCarryingThem
+N $CDF8 Print "#DECODESTR(#PC)".
+B $CDF8,$01 "#DECODE(#PEEK(#PC))".
+L $CDF8,$01,$0E,$02
+B $CE06,$01 Terminator.
+
+t $CE07 Messaging: "You're Not Carrying It"
+@ $CE07 label=Messaging_YoureNotCarryingIt
+N $CE07 Print "#DECODESTR(#PC)".
+B $CE07,$01 "#DECODE(#PEEK(#PC))".
+L $CE07,$01,$0B,$02
+B $CE12,$01 Terminator.
+
+t $CE13 Messaging: "You're Not Carrying Them"
+@ $CE13 label=Messaging_YoureNotCarryingThem
+N $CE13 Print "#DECODESTR(#PC)".
+B $CE13,$01 "#DECODE(#PEEK(#PC))".
+L $CE13,$01,$0C,$02
+B $CE1F,$01 Terminator.
+
+t $CE20 Messaging: "You Can't Carry Any More"
+@ $CE20 label=Messaging_YouCantCarryAnyMore
+N $CE20 Print "#DECODESTR(#PC)".
+B $CE20,$01 "#DECODE(#PEEK(#PC))".
+L $CE20,$01,$0C,$02
+B $CE2C,$01 Terminator.
+
+t $CE2D Messaging: "You're Not Carrying Anything"
+@ $CE2D label=Messaging_YoureNotCarryingAnything
+N $CE2D Print "#DECODESTR(#PC)".
+B $CE2D,$01 "#DECODE(#PEEK(#PC))".
+L $CE2D,$01,$0D,$02
+B $CE3A,$01 Terminator.
+
+t $CE3B Messaging: "You Are Carrying:-"
+@ $CE3B label=Messaging_YouAreCarrying
+N $CE3B Print "#DECODESTR(#PC)".
+B $CE3B,$01 "#DECODE(#PEEK(#PC))".
+L $CE3B,$01,$08,$02
+B $CE43,$01 Terminator.
+
+t $CE44 Messaging: "You Can't Go In That Direction"
+@ $CE44 label=Messaging_YouCantGoInThatDirection
+N $CE44 Print "#DECODESTR(#PC)".
+B $CE44,$01 "#DECODE(#PEEK(#PC))".
+L $CE44,$01,$11,$02
+B $CE55,$01 Terminator.
+
+t $CE56 Messaging: "I Don't See The Point"
+@ $CE56 label=Messaging_IDontSeeThePoint
+N $CE56 Print "#DECODESTR(#PC)".
+B $CE56,$01 "#DECODE(#PEEK(#PC))".
+L $CE56,$01,$0E,$02
+B $CE64,$01 Terminator.
+
+t $CE65 Messaging: "You Have Scored"
+@ $CE65 label=Messaging_YouHaveScored
+N $CE65 Print "#DECODESTR(#PC)".
+B $CE65,$01 "#DECODE(#PEEK(#PC))".
+L $CE65,$01,$08,$02
 B $CE6D,$01 Terminator.
-b $CE6E
+
+t $CE6E Messaging: "%"
+@ $CE6E label=Messaging_Percentage
+N $CE6E Print "#DECODESTR(#PC)".
+B $CE6E,$01 "#DECODE(#PEEK(#PC))".
+L $CE6E,$01,$02,$02
+B $CE70,$01 Terminator.
+
+t $CE71 Messaging: ""
+N $CE71 Print "#DECODESTR(#PC)".
+B $CE71,$01 "#DECODE(#PEEK(#PC))".
+L $CE71,$01,$01,$02
+B $CE72,$01 Terminator.
+N $CE73 Print "#DECODESTR(#PC)".
+B $CE73,$01 "#DECODE(#PEEK(#PC))".
+L $CE73,$01,$01,$02
+B $CE74,$01 Terminator.
+
+t $CE75 Messaging: "North Street"
+@ $CE75 label=Messaging_NorthStreet
+N $CE75 Print "#DECODESTR(#PC)".
+B $CE75,$01 "#DECODE(#PEEK(#PC))".
+L $CE75,$01,$93,$02
+B $CF08,$01 Terminator.
+
+t $CF09 Messaging: "Columbus Avenue"
+@ $CF09 label=Messaging_ColumbusAvenue
+N $CF09 Print "#DECODESTR(#PC)".
+B $CF09,$01 "#DECODE(#PEEK(#PC))".
+L $CF09,$01,$45,$02
+B $CF4E,$01 Terminator.
+
+t $CF4F Messaging: "Darwin Street"
+@ $CF4F label=Messaging_DarwinStreet
+N $CF4F Print "#DECODESTR(#PC)".
+B $CF4F,$01 "#DECODE(#PEEK(#PC))".
+L $CF4F,$01,$AE,$02
+B $CFFD,$01 Terminator.
+
+t $CFFE Messaging: "The Lion Enclosure"
+@ $CFFE label=Messaging_LionEnclosure
+N $CFFE Print "#DECODESTR(#PC)".
+B $CFFE,$01 "#DECODE(#PEEK(#PC))".
+L $CFFE,$01,$72,$02
+B $D070,$01 Terminator.
+
+t $D071 Messaging: "The Monkey Cage"
+@ $D071 label=Messaging_MonkeyCage
+N $D071 Print "#DECODESTR(#PC)".
+B $D071,$01 "#DECODE(#PEEK(#PC))".
+L $D071,$01,$4B,$02
+B $D0BC,$01 Terminator.
+
+t $D0BD Messaging: "The Elephant House"
+@ $D0BD label=Messaging_ElephantHouse
+N $D0BD Print "#DECODESTR(#PC)".
+B $D0BD,$01 "#DECODE(#PEEK(#PC))".
+L $D0BD,$01,$73,$02
+B $D130,$01 Terminator.
+
+t $D131 Messaging: "Livingstone Square"
+@ $D131 label=Messaging_LivingstoneSquare
+N $D131 Print "#DECODESTR(#PC)".
+B $D131,$01 "#DECODE(#PEEK(#PC))".
+L $D131,$01,$7D,$02
+B $D1AE,$01 Terminator.
+
+t $D1AF Messaging: "Legion Parade"
+@ $D1AF label=Messaging_LegionParade
+N $D1AF Print "#DECODESTR(#PC)".
+B $D1AF,$01 "#DECODE(#PEEK(#PC))".
+L $D1AF,$01,$6E,$02
+B $D21D,$01 Terminator.
+
+t $D21E Messaging: "Parkview Road"
+@ $D21E label=Messaging_ParkviewRoad
+N $D21E Print "#DECODESTR(#PC)".
+B $D21E,$01 "#DECODE(#PEEK(#PC))".
+L $D21E,$01,$78,$02
+B $D296,$01 Terminator.
+
+t $D297 Messaging: "The Zoo Entrance"
+@ $D297 label=Messaging_ZooEntrance
+N $D297 Print "#DECODESTR(#PC)".
+B $D297,$01 "#DECODE(#PEEK(#PC))".
+L $D297,$01,$5B,$02
+B $D2F2,$01 Terminator.
+
+t $D2F3 Messaging: "The Park Area"
+@ $D2F3 label=Messaging_ParkArea
+N $D2F3 Print "#DECODESTR(#PC)".
+B $D2F3,$01 "#DECODE(#PEEK(#PC))".
+L $D2F3,$01,$A5,$02
+B $D398,$01 Terminator.
+
+t $D399 Messaging: "The Insect House"
+@ $D399 label=Messaging_InsectHouse
+N $D399 Print "#DECODESTR(#PC)".
+B $D399,$01 "#DECODE(#PEEK(#PC))".
+L $D399,$01,$56,$02
+B $D3EF,$01 Terminator.
+
+t $D3F0 Messaging: "Jessop Street"
+@ $D3F0 label=Messaging_JessopStreet
+N $D3F0 Print "#DECODESTR(#PC)".
+B $D3F0,$01 "#DECODE(#PEEK(#PC))".
+L $D3F0,$01,$74,$02
+B $D464,$01 Terminator.
+
+t $D465 Messaging: "Clarence Square"
+@ $D465 label=Messaging_ClarenceSquare
+N $D465 Print "#DECODESTR(#PC)".
+B $D465,$01 "#DECODE(#PEEK(#PC))".
+L $D465,$01,$84,$02
+B $D4E9,$01 Terminator.
+
+t $D4EA Messaging: "The Reptile House"
+@ $D4EA label=Messaging_ReptileHouse
+N $D4EA Print "#DECODESTR(#PC)".
+B $D4EA,$01 "#DECODE(#PEEK(#PC))".
+L $D4EA,$01,$7F,$02
+B $D569,$01 Terminator.
+
+t $D56A Messaging: "The Circus Tent"
+@ $D56A label=Messaging_CircusTent
+N $D56A Print "#DECODESTR(#PC)".
+B $D56A,$01 "#DECODE(#PEEK(#PC))".
+L $D56A,$01,$81,$02
+B $D5EB,$01 Terminator.
+
+t $D5EC Messaging: "The Bear Cage"
+@ $D5EC label=Messaging_BearCage
+N $D5EC Print "#DECODESTR(#PC)".
+B $D5EC,$01 "#DECODE(#PEEK(#PC))".
+L $D5EC,$01,$54,$02
+B $D640,$01 Terminator.
+
+t $D641 Messaging: "The Roof Of An Apartment Block"
+@ $D641 label=Messaging_ApartmentBlockRoof
+N $D641 Print "#DECODESTR(#PC)".
+B $D641,$01 "#DECODE(#PEEK(#PC))".
+L $D641,$01,$57,$02
+B $D698,$01 Terminator.
+
+t $D699 Messaging: "The Parapet"
+@ $D699 label=Messaging_Parapet
+N $D699 Print "#DECODESTR(#PC)".
+B $D699,$01 "#DECODE(#PEEK(#PC))".
+L $D699,$01,$61,$02
+B $D6FA,$01 Terminator.
+
+t $D6FB Messaging: "The Roof Of The Old Building"
+@ $D6FB label=Messaging_OldBuildingRoof
+N $D6FB Print "#DECODESTR(#PC)".
+B $D6FB,$01 "#DECODE(#PEEK(#PC))".
+L $D6FB,$01,$8F,$02
+B $D78A,$01 Terminator.
+
+t $D78B Messaging: "Cook Street"
+@ $D78B label=Messaging_CookStreet
+N $D78B Print "#DECODESTR(#PC)".
+B $D78B,$01 "#DECODE(#PEEK(#PC))".
+L $D78B,$01,$C1,$02
+B $D84C,$01 Terminator.
+
+t $D84D Messaging: "Cook Street Underground Station"
+@ $D84D label=Messaging_CookStreetUndergroundStation
+N $D84D Print "#DECODESTR(#PC)".
+B $D84D,$01 "#DECODE(#PEEK(#PC))".
+L $D84D,$01,$92,$02
+B $D8DF,$01 Terminator.
+
+t $D8E0 Messaging: "Byron Square Underground Station"
+@ $D8E0 label=Messaging_ByronSquareUndergroundStation
+N $D8E0 Print "#DECODESTR(#PC)".
+B $D8E0,$01 "#DECODE(#PEEK(#PC))".
+L $D8E0,$01,$71,$02
+B $D951,$01 Terminator.
+
+t $D952 Messaging: "Byron Square"
+@ $D952 label=Messaging_ByronSquare
+N $D952 Print "#DECODESTR(#PC)".
+B $D952,$01 "#DECODE(#PEEK(#PC))".
+L $D952,$01,$6B,$02
+B $D9BD,$01 Terminator.
+
+t $D9BE Messaging: "Virgil Close"
+@ $D9BE label=Messaging_VirgilClose
+N $D9BE Print "#DECODESTR(#PC)".
+B $D9BE,$01 "#DECODE(#PEEK(#PC))".
+L $D9BE,$01,$30,$02
+B $D9EE,$01 Terminator.
+
+t $D9EF Messaging: "A Corridor"
+@ $D9EF label=Messaging_Corridor
+N $D9EF Print "#DECODESTR(#PC)".
+B $D9EF,$01 "#DECODE(#PEEK(#PC))".
+L $D9EF,$01,$41,$02
+B $DA30,$01 Terminator.
+
+t $DA31 Messaging: "The Kitchen"
+@ $DA31 label=Messaging_Kitchen
+N $DA31 Print "#DECODESTR(#PC)".
+B $DA31,$01 "#DECODE(#PEEK(#PC))".
+L $DA31,$01,$76,$02
+B $DAA7,$01 Terminator.
+
+t $DAA8 Messaging: "Scott Street"
+@ $DAA8 label=Messaging_ScottStreet
+N $DAA8 Print "#DECODESTR(#PC)".
+B $DAA8,$01 "#DECODE(#PEEK(#PC))".
+L $DAA8,$01,$9F,$02
+B $DB47,$01 Terminator.
+
+t $DB48 Messaging: "The Storm Drain"
+@ $DB48 label=Messaging_StormDrain
+N $DB48 Print "#DECODESTR(#PC)".
+B $DB48,$01 "#DECODE(#PEEK(#PC))".
+L $DB48,$01,$89,$02
+B $DBD1,$01 Terminator.
+
+t $DBD2 Messaging: "Shakespeare Avenue"
+@ $DBD2 label=Messaging_ShakespeareAvenue
+N $DBD2 Print "#DECODESTR(#PC)".
+B $DBD2,$01 "#DECODE(#PEEK(#PC))".
+L $DBD2,$01,$5F,$02
+B $DC31,$01 Terminator.
+
+t $DC32 Messaging: "Burns Road"
+@ $DC32 label=Messaging_BurnsRoad
+N $DC32 Print "#DECODESTR(#PC)".
+B $DC32,$01 "#DECODE(#PEEK(#PC))".
+L $DC32,$01,$D4,$02
+B $DD06,$01 Terminator.
+
+t $DD07 Messaging: "An Apartment Block"
+@ $DD07 label=Messaging_ApartmentBlock
+N $DD07 Print "#DECODESTR(#PC)".
+B $DD07,$01 "#DECODE(#PEEK(#PC))".
+L $DD07,$01,$39,$02
+B $DD40,$01 Terminator.
+
+t $DD41 Messaging: "The West Wing"
+@ $DD41 label=Messaging_WestWing
+N $DD41 Print "#DECODESTR(#PC)".
+B $DD41,$01 "#DECODE(#PEEK(#PC))".
+L $DD41,$01,$20,$02
+B $DD61,$01 Terminator.
+
+t $DD62 Messaging: "The Western End Of The Dining Room"
+@ $DD62 label=Messaging_DiningRoomWesternEnd
+N $DD62 Print "#DECODESTR(#PC)".
+B $DD62,$01 "#DECODE(#PEEK(#PC))".
+L $DD62,$01,$21,$02
+B $DD83,$01 Terminator.
+
+t $DD84 Messaging: "The Eastern End Of The Dining Room"
+@ $DD84 label=Messaging_DiningRoomEasternEnd
+N $DD84 Print "#DECODESTR(#PC)".
+B $DD84,$01 "#DECODE(#PEEK(#PC))".
+L $DD84,$01,$5A,$02
+B $DDDE,$01 Terminator.
+
+t $DDDF Messaging: "The East Wing"
+@ $DDDF label=Messaging_EastWing
+N $DDDF Print "#DECODESTR(#PC)".
+B $DDDF,$01 "#DECODE(#PEEK(#PC))".
+L $DDDF,$01,$48,$02
+B $DE27,$01 Terminator.
+
+t $DE28 Messaging: "Royal Street"
+@ $DE28 label=Messaging_RoyalStreet
+N $DE28 Print "#DECODESTR(#PC)".
+B $DE28,$01 "#DECODE(#PEEK(#PC))".
+L $DE28,$01,$A6,$02
+B $DECE,$01 Terminator.
+
+t $DECF Messaging: "Manor Drive"
+@ $DECF label=Messaging_ManorDrive
+N $DECF Print "#DECODESTR(#PC)".
+B $DECF,$01 "#DECODE(#PEEK(#PC))".
+L $DECF,$01,$63,$02
+B $DF32,$01 Terminator.
+
+t $DF33 Messaging: "Waste Ground"
+@ $DF33 label=Messaging_WasteGround
+N $DF33 Print "#DECODESTR(#PC)".
+B $DF33,$01 "#DECODE(#PEEK(#PC))".
+L $DF33,$01,$46,$02
+B $DF79,$01 Terminator.
+
+t $DF7A Messaging: "The Filling Station"
+@ $DF7A label=Messaging_FillingStation
+N $DF7A Print "#DECODESTR(#PC)".
+B $DF7A,$01 "#DECODE(#PEEK(#PC))".
+L $DF7A,$01,$83,$02
+B $DFFD,$01 Terminator.
+
+t $DFFE Messaging: "East Street"
+@ $DFFE label=Messaging_EastStreet
+N $DFFE Print "#DECODESTR(#PC)".
+B $DFFE,$01 "#DECODE(#PEEK(#PC))".
+L $DFFE,$01,$6F,$02
+B $E06D,$01 Terminator.
+
+t $E06E Messaging: "Castle Road"
+@ $E06E label=Messaging_CastleRoad
+N $E06E Print "#DECODESTR(#PC)".
+B $E06E,$01 "#DECODE(#PEEK(#PC))".
+L $E06E,$01,$4B,$02
+B $E0B9,$01 Terminator.
+
+t $E0BA Messaging: "The Desert Road"
+@ $E0BA label=Messaging_DesertRoad
+N $E0BA Print "#DECODESTR(#PC)".
+B $E0BA,$01 "#DECODE(#PEEK(#PC))".
+L $E0BA,$01,$95,$02
+B $E14F,$01 Terminator.
+
+t $E150 Messaging: "The Gatehouse"
+@ $E150 label=Messaging_TheGatehouse
+N $E150 Print "#DECODESTR(#PC)".
+B $E150,$01 "#DECODE(#PEEK(#PC))".
+L $E150,$01,$2E,$02
+B $E17E,$01 Terminator.
+
+t $E17F Messaging: "The Hallway Of A Derelict House"
+@ $E17F label=Messaging_DerelictHouseHallway
+N $E17F Print "#DECODESTR(#PC)".
+B $E17F,$01 "#DECODE(#PEEK(#PC))".
+L $E17F,$01,$45,$02
+B $E1C4,$01 Terminator.
+
+t $E1C5 Messaging: "An Overgrown Garden"
+@ $E1C5 label=Messaging_OvergrownGarden
+N $E1C5 Print "#DECODESTR(#PC)".
+B $E1C5,$01 "#DECODE(#PEEK(#PC))".
+L $E1C5,$01,$7A,$02
+B $E23F,$01 Terminator.
+
+t $E240 Messaging: "Kings Close"
+@ $E240 label=Messaging_KingsClose
+N $E240 Print "#DECODESTR(#PC)".
+B $E240,$01 "#DECODE(#PEEK(#PC))".
+L $E240,$01,$B4,$02
+B $E2F4,$01 Terminator.
+
+t $E2F5 Messaging: "South Way"
+@ $E2F5 label=Messaging_SouthWay
+N $E2F5 Print "#DECODESTR(#PC)".
+B $E2F5,$01 "#DECODE(#PEEK(#PC))".
+L $E2F5,$01,$D1,$02
+B $E3C6,$01 Terminator.
+
+t $E3C7 Messaging: "The Western Office"
+@ $E3C7 label=Messaging_WesternOffice
+N $E3C7 Print "#DECODESTR(#PC)".
+B $E3C7,$01 "#DECODE(#PEEK(#PC))".
+L $E3C7,$01,$37,$02
+B $E3FE,$01 Terminator.
+
+t $E3FF Messaging: "A Corridor"
+@ $E3FF label=Messaging__Corridor
+N $E3FF Print "#DECODESTR(#PC)".
+B $E3FF,$01 "#DECODE(#PEEK(#PC))".
+L $E3FF,$01,$13,$02
+B $E412,$01 Terminator.
+
+t $E413 Messaging: "The Reception Area"
+@ $E413 label=Messaging_ReceptionArea
+N $E413 Print "#DECODESTR(#PC)".
+B $E413,$01 "#DECODE(#PEEK(#PC))".
+L $E413,$01,$5F,$02
+B $E472,$01 Terminator.
+
+t $E473 Messaging: "A Corridor"
+@ $E473 label=Messaging_CorridorOfficesAtEasternEnd
+N $E473 Print "#DECODESTR(#PC)".
+B $E473,$01 "#DECODE(#PEEK(#PC))".
+L $E473,$01,$1C,$02
+B $E48F,$01 Terminator.
+
+t $E490 Messaging: "The Eastern Office"
+@ $E490 label=Messaging_EasternOffice
+N $E490 Print "#DECODESTR(#PC)".
+B $E490,$01 "#DECODE(#PEEK(#PC))".
+L $E490,$01,$4C,$02
+B $E4DC,$01 Terminator.
+
+t $E4DD Messaging: "South Way"
+@ $E4DD label=Messaging__SouthWay
+N $E4DD Print "#DECODESTR(#PC)".
+B $E4DD,$01 "#DECODE(#PEEK(#PC))".
+L $E4DD,$01,$7D,$02
+B $E55A,$01 Terminator.
+
+t $E55B Messaging: "The Control Room"
+@ $E55B label=Messaging_ControlRoom
+N $E55B Print "#DECODESTR(#PC)".
+B $E55B,$01 "#DECODE(#PEEK(#PC))".
+L $E55B,$01,$E9,$02
+B $E644,$01 Terminator.
+
+t $E645 Messaging: "The Maintenance Area"
+@ $E645 label=Messaging_MaintenanceArea
+N $E645 Print "#DECODESTR(#PC)".
+B $E645,$01 "#DECODE(#PEEK(#PC))".
+L $E645,$01,$88,$02
+B $E6CD,$01 Terminator.
+
+t $E6CE Messaging: "Cactus Drive"
+@ $E6CE label=Messaging_CactusDrive
+N $E6CE Print "#DECODESTR(#PC)".
+B $E6CE,$01 "#DECODE(#PEEK(#PC))".
+L $E6CE,$01,$2E,$02
+B $E6FC,$01 Terminator.
+
+t $E6FD Messaging: "The Reactor Service Corridor"
+@ $E6FD label=Messaging_ReactorServiceCorridor
+N $E6FD Print "#DECODESTR(#PC)".
+B $E6FD,$01 "#DECODE(#PEEK(#PC))".
+L $E6FD,$01,$65,$02
+B $E762,$01 Terminator.
+
+t $E763 Messaging: "The Reactor Room"
+@ $E763 label=Messaging_ReactorRoom
+N $E763 Print "#DECODESTR(#PC)".
+B $E763,$01 "#DECODE(#PEEK(#PC))".
+L $E763,$01,$B4,$02
+B $E817,$01 Terminator.
+
+t $E818 Messaging: "A Corridor"
+@ $E818 label=Messaging_CorridorMaintenanceAccess
+N $E818 Print "#DECODESTR(#PC)".
+B $E818,$01 "#DECODE(#PEEK(#PC))".
+L $E818,$01,$2F,$02
+B $E847,$01 Terminator.
+
+t $E848 Messaging: "The Storage Yard"
+@ $E848 label=Messaging_StorageYard
+N $E848 Print "#DECODESTR(#PC)".
+B $E848,$01 "#DECODE(#PEEK(#PC))".
+L $E848,$01,$38,$02
+B $E880,$01 Terminator.
+
+t $E881 Messaging: "Congratulations!!!"
+@ $E881 label=Messaging_Congratulations
+N $E881 Print "#DECODESTR(#PC)".
+B $E881,$01 "#DECODE(#PEEK(#PC))".
+L $E881,$01,$BC,$02
+B $E93D,$01 Terminator.
+
+t $E93E Messaging: "The Office Roof"
+@ $E93E label=Messaging_OfficeRoof
+N $E93E Print "#DECODESTR(#PC)".
+B $E93E,$01 "#DECODE(#PEEK(#PC))".
+L $E93E,$01,$7B,$02
+B $E9B9,$01 Terminator.
+
+t $E9BA Messaging: "The Top Of The Lift Shaft"
+@ $E9BA label=Messaging_LiftShaftTop
+N $E9BA Print "#DECODESTR(#PC)".
+B $E9BA,$01 "#DECODE(#PEEK(#PC))".
+L $E9BA,$01,$33,$02
+B $E9ED,$01 Terminator.
+
+t $E9EE Messaging: "The Stairs"
+@ $E9EE label=Messaging_Stairs
+N $E9EE Print "#DECODESTR(#PC)".
+B $E9EE,$01 "#DECODE(#PEEK(#PC))".
+L $E9EE,$01,$2F,$02
+B $EA1D,$01 Terminator.
+
+t $EA1E Messaging: "The Stairwell"
+@ $EA1E label=Messaging_Stairwell
+N $EA1E Print "#DECODESTR(#PC)".
+B $EA1E,$01 "#DECODE(#PEEK(#PC))".
+L $EA1E,$01,$4F,$02
+B $EA6D,$01 Terminator.
+
+t $EA6E Messaging: "On Top Of A Lift"
+@ $EA6E label=Messaging_TopOfLift
+N $EA6E Print "#DECODESTR(#PC)".
+B $EA6E,$01 "#DECODE(#PEEK(#PC))".
+L $EA6E,$01,$66,$02
+B $EAD4,$01 Terminator.
+
+t $EAD5 Messaging: "Your Office"
+@ $EAD5 label=Messaging_YourOffice
+N $EAD5 Print "#DECODESTR(#PC)".
+B $EAD5,$01 "#DECODE(#PEEK(#PC))".
+L $EAD5,$01,$E4,$02
+B $EBB9,$01 Terminator.
+
+t $EBBA Messaging: "The Main Office"
+@ $EBBA label=Messaging_MainOffice
+N $EBBA Print "#DECODESTR(#PC)".
+B $EBBA,$01 "#DECODE(#PEEK(#PC))".
+L $EBBA,$01,$5E,$02
+B $EC18,$01 Terminator.
+
+t $EC19 Messaging: "The Lift"
+@ $EC19 label=Messaging_TheLift
+N $EC19 Print "#DECODESTR(#PC)".
+B $EC19,$01 "#DECODE(#PEEK(#PC))".
+L $EC19,$01,$87,$02
+B $ECA0,$01 Terminator.
+
+t $ECA1 Messaging: "The Bottom Of The Lift Shaft"
+@ $ECA1 label=Messaging_LiftShaftBottom
+N $ECA1 Print "#DECODESTR(#PC)".
+B $ECA1,$01 "#DECODE(#PEEK(#PC))".
+L $ECA1,$01,$3F,$02
+B $ECE0,$01 Terminator.
+
+t $ECE1 Messaging: "An Alley"
+@ $ECE1 label=Messaging_Alley
+N $ECE1 Print "#DECODESTR(#PC)".
+B $ECE1,$01 "#DECODE(#PEEK(#PC))".
+L $ECE1,$01,$32,$02
+B $ED13,$01 Terminator.
+
+t $ED14 Messaging: "The Washroom"
+@ $ED14 label=Messaging_Washroom
+N $ED14 Print "#DECODESTR(#PC)".
+B $ED14,$01 "#DECODE(#PEEK(#PC))".
+L $ED14,$01,$55,$02
+B $ED69,$01 Terminator.
+
+t $ED6A Messaging: "The Utility Room"
+@ $ED6A label=Messaging_UtilityRoom
+N $ED6A Print "#DECODESTR(#PC)".
+B $ED6A,$01 "#DECODE(#PEEK(#PC))".
+L $ED6A,$01,$55,$02
+B $EDBF,$01 Terminator.
+
+t $EDC0 Messaging: "The Basement"
+@ $EDC0 label=Messaging_Basement
+N $EDC0 Print "#DECODESTR(#PC)".
+B $EDC0,$01 "#DECODE(#PEEK(#PC))".
+L $EDC0,$01,$25,$02
+B $EDE5,$01 Terminator.
+
+t $EDE6 Messaging: "The Service Tunnel"
+@ $EDE6 label=Messaging_ServiceTunnel
+N $EDE6 Print "#DECODESTR(#PC)".
+B $EDE6,$01 "#DECODE(#PEEK(#PC))".
+L $EDE6,$01,$56,$02
+B $EE3C,$01 Terminator.
+
+t $EE3D Messaging: "The Service Tunnel"
+@ $EE3D label=Messaging_ServiceTunnelEasternEnd
+N $EE3D Print "#DECODESTR(#PC)".
+B $EE3D,$01 "#DECODE(#PEEK(#PC))".
+L $EE3D,$01,$2E,$02
+B $EE6B,$01 Terminator.
+
+t $EE6C Messaging: "The Sewer"
+@ $EE6C label=Messaging_Sewer
+N $EE6C Print "#DECODESTR(#PC)".
+B $EE6C,$01 "#DECODE(#PEEK(#PC))".
+L $EE6C,$01,$37,$02
+B $EEA3,$01 Terminator.
+
+t $EEA4 Messaging: "Inside The Kiosk"
+@ $EEA4 label=Messaging_InsideKiosk
+N $EEA4 Print "#DECODESTR(#PC)".
+B $EEA4,$01 "#DECODE(#PEEK(#PC))".
+L $EEA4,$01,$55,$02
+B $EEF9,$01 Terminator.
+
+t $EEFA Messaging: ""
+N $EEFA Print "#DECODESTR(#PC)".
+B $EEFA,$01 "#DECODE(#PEEK(#PC))".
+L $EEFA,$01,$01,$02
+B $EEFB,$01 Terminator.
+
+t $EEFC Messaging: ""
+N $EEFC Print "#DECODESTR(#PC)".
+B $EEFC,$01 "#DECODE(#PEEK(#PC))".
+L $EEFC,$01,$01,$02
+B $EEFD,$01 Terminator.
+
+t $EEFE Messaging: ""
+N $EEFE Print "#DECODESTR(#PC)".
+B $EEFE,$01 "#DECODE(#PEEK(#PC))".
+L $EEFE,$01,$01,$02
+B $EEFF,$01 Terminator.
+
+t $EF00 Messaging: ""
+N $EF00 Print "#DECODESTR(#PC)".
+B $EF00,$01 "#DECODE(#PEEK(#PC))".
+L $EF00,$01,$01,$02
+B $EF01,$01 Terminator.
+
+t $EF02 Messaging: ""
+N $EF02 Print "#DECODESTR(#PC)".
+B $EF02,$01 "#DECODE(#PEEK(#PC))".
+L $EF02,$01,$01,$02
+B $EF03,$01 Terminator.
+
+t $EF04 Messaging: ""
+N $EF04 Print "#DECODESTR(#PC)".
+B $EF04,$01 "#DECODE(#PEEK(#PC))".
+L $EF04,$01,$01,$02
+B $EF05,$01 Terminator.
+
+t $EF06 Messaging: "A Plate"
+@ $EF06 label=Messaging_Plate
+N $EF06 Print "#DECODESTR(#PC)".
+B $EF06,$01 "#DECODE(#PEEK(#PC))".
+L $EF06,$01,$05,$02
+B $EF0B,$01 Terminator.
+
+t $EF0C Messaging: "A Diamond"
+@ $EF0C label=Messaging_Diamond
+N $EF0C Print "#DECODESTR(#PC)".
+B $EF0C,$01 "#DECODE(#PEEK(#PC))".
+L $EF0C,$01,$06,$02
+B $EF12,$01 Terminator.
+
+t $EF13 Messaging: "Any Bodies"
+@ $EF13 label=Messaging_AnyBodies
+N $EF13 Print "#DECODESTR(#PC)".
+B $EF13,$01 "#DECODE(#PEEK(#PC))".
+L $EF13,$01,$05,$02
+B $EF18,$01 Terminator.
+
+t $EF19 Messaging: "A Tanker"
+@ $EF19 label=Messaging_Tanker
+N $EF19 Print "#DECODESTR(#PC)".
+B $EF19,$01 "#DECODE(#PEEK(#PC))".
+L $EF19,$01,$05,$02
+B $EF1E,$01 Terminator.
+
+t $EF1F Messaging: "Any Oil"
+@ $EF1F label=Messaging_AnyOil
+N $EF1F Print "#DECODESTR(#PC)".
+B $EF1F,$01 "#DECODE(#PEEK(#PC))".
+L $EF1F,$01,$03,$02
+B $EF22,$01 Terminator.
+
+t $EF23 Messaging: "Any Lions"
+@ $EF23 label=Messaging_AnyLions
+N $EF23 Print "#DECODESTR(#PC)".
+B $EF23,$01 "#DECODE(#PEEK(#PC))".
+L $EF23,$01,$04,$02
+B $EF27,$01 Terminator.
+
+t $EF28 Messaging: "A Cage"
+@ $EF28 label=Messaging_Cage
+N $EF28 Print "#DECODESTR(#PC)".
+B $EF28,$01 "#DECODE(#PEEK(#PC))".
+L $EF28,$01,$04,$02
+B $EF2C,$01 Terminator.
+
+t $EF2D Messaging: "A Monkey"
+@ $EF2D label=Messaging_Monkey
+N $EF2D Print "#DECODESTR(#PC)".
+B $EF2D,$01 "#DECODE(#PEEK(#PC))".
+L $EF2D,$01,$05,$02
+B $EF32,$01 Terminator.
+
+t $EF33 Messaging: "Any Fruit"
+@ $EF33 label=Messaging_AnyFruit
+N $EF33 Print "#DECODESTR(#PC)".
+B $EF33,$01 "#DECODE(#PEEK(#PC))".
+L $EF33,$01,$04,$02
+B $EF37,$01 Terminator.
+
+t $EF38 Messaging: "Any Meat"
+@ $EF38 label=Messaging_AnyMeat
+N $EF38 Print "#DECODESTR(#PC)".
+B $EF38,$01 "#DECODE(#PEEK(#PC))".
+L $EF38,$01,$04,$02
+B $EF3C,$01 Terminator.
+
+t $EF3D Messaging: "A Shop"
+@ $EF3D label=Messaging_Shop
+N $EF3D Print "#DECODESTR(#PC)".
+B $EF3D,$01 "#DECODE(#PEEK(#PC))".
+L $EF3D,$01,$03,$02
+B $EF40,$01 Terminator.
+
+t $EF41 Messaging: "A Television"
+@ $EF41 label=Messaging_Television
+N $EF41 Print "#DECODESTR(#PC)".
+B $EF41,$01 "#DECODE(#PEEK(#PC))".
+L $EF41,$01,$06,$02
+B $EF47,$01 Terminator.
+
+t $EF48 Messaging: "A Gate"
+@ $EF48 label=Messaging_Gate
+N $EF48 Print "#DECODESTR(#PC)".
+B $EF48,$01 "#DECODE(#PEEK(#PC))".
+L $EF48,$01,$04,$02
+B $EF4C,$01 Terminator.
+
+t $EF4D Messaging: "A Bin"
+@ $EF4D label=Messaging_Bin
+N $EF4D Print "#DECODESTR(#PC)".
+B $EF4D,$01 "#DECODE(#PEEK(#PC))".
+L $EF4D,$01,$03,$02
+B $EF50,$01 Terminator.
+
+t $EF51 Messaging: "A Bottle"
+@ $EF51 label=Messaging_Bottle
+N $EF51 Print "#DECODESTR(#PC)".
+B $EF51,$01 "#DECODE(#PEEK(#PC))".
+L $EF51,$01,$05,$02
+B $EF56,$01 Terminator.
+
+t $EF57 Messaging: "Any Insects"
+@ $EF57 label=Messaging_AnyInsects
+N $EF57 Print "#DECODESTR(#PC)".
+B $EF57,$01 "#DECODE(#PEEK(#PC))".
+L $EF57,$01,$05,$02
+B $EF5C,$01 Terminator.
+
+t $EF5D Messaging: "A Car"
+@ $EF5D label=Messaging_Car
+N $EF5D Print "#DECODESTR(#PC)".
+B $EF5D,$01 "#DECODE(#PEEK(#PC))".
+L $EF5D,$01,$02,$02
+B $EF5F,$01 Terminator.
+
+t $EF60 Messaging: "A Stick"
+@ $EF60 label=Messaging_Stick
+N $EF60 Print "#DECODESTR(#PC)".
+B $EF60,$01 "#DECODE(#PEEK(#PC))".
+L $EF60,$01,$04,$02
+B $EF64,$01 Terminator.
+
+t $EF65 Messaging: "A Statue"
+@ $EF65 label=Messaging_Statue
+N $EF65 Print "#DECODESTR(#PC)".
+B $EF65,$01 "#DECODE(#PEEK(#PC))".
+L $EF65,$01,$05,$02
+B $EF6A,$01 Terminator.
+
+t $EF6B Messaging: "An Alligator"
+@ $EF6B label=Messaging_Alligator
+N $EF6B Print "#DECODESTR(#PC)".
+B $EF6B,$01 "#DECODE(#PEEK(#PC))".
+L $EF6B,$01,$06,$02
+B $EF71,$01 Terminator.
+
+t $EF72 Messaging: "A Tent"
+@ $EF72 label=Messaging_Tent
+N $EF72 Print "#DECODESTR(#PC)".
+B $EF72,$01 "#DECODE(#PEEK(#PC))".
+L $EF72,$01,$03,$02
+B $EF75,$01 Terminator.
+
+t $EF76 Messaging: "A Bear"
+@ $EF76 label=Messaging_Bear
+N $EF76 Print "#DECODESTR(#PC)".
+B $EF76,$01 "#DECODE(#PEEK(#PC))".
+L $EF76,$01,$03,$02
+B $EF79,$01 Terminator.
+
+t $EF7A Messaging: "An Elephant"
+@ $EF7A label=Messaging_Elephant
+N $EF7A Print "#DECODESTR(#PC)".
+B $EF7A,$01 "#DECODE(#PEEK(#PC))".
+L $EF7A,$01,$07,$02
+B $EF81,$01 Terminator.
+
+t $EF82 Messaging: "A Ramp"
+@ $EF82 label=Messaging_Ramp
+N $EF82 Print "#DECODESTR(#PC)".
+B $EF82,$01 "#DECODE(#PEEK(#PC))".
+L $EF82,$01,$04,$02
+B $EF86,$01 Terminator.
+
+t $EF87 Messaging: "A Parapet"
+@ $EF87 label=Messaging__Parapet
+N $EF87 Print "#DECODESTR(#PC)".
+B $EF87,$01 "#DECODE(#PEEK(#PC))".
+L $EF87,$01,$04,$02
+B $EF8B,$01 Terminator.
+
+t $EF8C Messaging: "A Roof"
+@ $EF8C label=Messaging_Roof
+N $EF8C Print "#DECODESTR(#PC)".
+B $EF8C,$01 "#DECODE(#PEEK(#PC))".
+L $EF8C,$01,$03,$02
+B $EF8F,$01 Terminator.
+
+t $EF90 Messaging: "Any Stairs"
+@ $EF90 label=Messaging_AnyStairs
+N $EF90 Print "#DECODESTR(#PC)".
+B $EF90,$01 "#DECODE(#PEEK(#PC))".
+L $EF90,$01,$05,$02
+B $EF95,$01 Terminator.
+
+t $EF96 Messaging: "A Nail"
+@ $EF96 label=Messaging_Nail
+N $EF96 Print "#DECODESTR(#PC)".
+B $EF96,$01 "#DECODE(#PEEK(#PC))".
+L $EF96,$01,$04,$02
+B $EF9A,$01 Terminator.
+
+t $EF9B Messaging: "A Cap"
+@ $EF9B label=Messaging_Cap
+N $EF9B Print "#DECODESTR(#PC)".
+B $EF9B,$01 "#DECODE(#PEEK(#PC))".
+L $EF9B,$01,$03,$02
+B $EF9E,$01 Terminator.
+
+t $EF9F Messaging: "A Trumpet"
+@ $EF9F label=Messaging_Trumpet
+N $EF9F Print "#DECODESTR(#PC)".
+B $EF9F,$01 "#DECODE(#PEEK(#PC))".
+L $EF9F,$01,$05,$02
+B $EFA4,$01 Terminator.
+
+t $EFA5 Messaging: "Any Adverts"
+@ $EFA5 label=Messaging_Adverts
+N $EFA5 Print "#DECODESTR(#PC)".
+B $EFA5,$01 "#DECODE(#PEEK(#PC))".
+L $EFA5,$01,$05,$02
+B $EFAA,$01 Terminator.
+
+t $EFAB Messaging: "A Tunnel"
+@ $EFAB label=Messaging_Tunnel
+N $EFAB Print "#DECODESTR(#PC)".
+B $EFAB,$01 "#DECODE(#PEEK(#PC))".
+L $EFAB,$01,$05,$02
+B $EFB0,$01 Terminator.
+
+t $EFB1 Messaging: "Any Water"
+@ $EFB1 label=Messaging_Water
+N $EFB1 Print "#DECODESTR(#PC)".
+B $EFB1,$01 "#DECODE(#PEEK(#PC))".
+L $EFB1,$01,$04,$02
+B $EFB5,$01 Terminator.
+
+t $EFB6 Messaging: "Any Graffiti"
+@ $EFB6 label=Messaging_Graffiti
+N $EFB6 Print "#DECODESTR(#PC)".
+B $EFB6,$01 "#DECODE(#PEEK(#PC))".
+L $EFB6,$01,$07,$02
+B $EFBD,$01 Terminator.
+
+t $EFBE Messaging: "A Ticket"
+@ $EFBE label=Messaging_Ticket
+N $EFBE Print "#DECODESTR(#PC)".
+B $EFBE,$01 "#DECODE(#PEEK(#PC))".
+L $EFBE,$01,$05,$02
+B $EFC3,$01 Terminator.
+
+t $EFC4 Messaging: "A Ladder"
+@ $EFC4 label=Messaging_Ladder
+N $EFC4 Print "#DECODESTR(#PC)".
+B $EFC4,$01 "#DECODE(#PEEK(#PC))".
+L $EFC4,$01,$05,$02
+B $EFC9,$01 Terminator.
+
+t $EFCA Messaging: "A Doll"
+@ $EFCA label=Messaging_Doll
+N $EFCA Print "#DECODESTR(#PC)".
+B $EFCA,$01 "#DECODE(#PEEK(#PC))".
+L $EFCA,$01,$04,$02
+B $EFCE,$01 Terminator.
+
+t $EFCF Messaging: "A Garden"
+@ $EFCF label=Messaging_Garden
+N $EFCF Print "#DECODESTR(#PC)".
+B $EFCF,$01 "#DECODE(#PEEK(#PC))".
+L $EFCF,$01,$04,$02
+B $EFD3,$01 Terminator.
+
+t $EFD4 Messaging: "Any Soldiers"
+@ $EFD4 label=Messaging_Soldiers
+N $EFD4 Print "#DECODESTR(#PC)".
+B $EFD4,$01 "#DECODE(#PEEK(#PC))".
+L $EFD4,$01,$07,$02
+B $EFDB,$01 Terminator.
+
+t $EFDC Messaging: "Any Looters"
+@ $EFDC label=Messaging_Looters
+N $EFDC Print "#DECODESTR(#PC)".
+B $EFDC,$01 "#DECODE(#PEEK(#PC))".
+L $EFDC,$01,$05,$02
+B $EFE1,$01 Terminator.
+
+t $EFE2 Messaging: "Any Rubble"
+@ $EFE2 label=Messaging_Rubble
+N $EFE2 Print "#DECODESTR(#PC)".
+B $EFE2,$01 "#DECODE(#PEEK(#PC))".
+L $EFE2,$01,$05,$02
+B $EFE7,$01 Terminator.
+
+t $EFE8 Messaging: "A Kiosk"
+@ $EFE8 label=Messaging_Kiosk
+N $EFE8 Print "#DECODESTR(#PC)".
+B $EFE8,$01 "#DECODE(#PEEK(#PC))".
+L $EFE8,$01,$06,$02
+B $EFEE,$01 Terminator.
+
+t $EFEF Messaging: "Any Petrol"
+@ $EFEF label=Messaging_Petrol
+N $EFEF Print "#DECODESTR(#PC)".
+B $EFEF,$01 "#DECODE(#PEEK(#PC))".
+L $EFEF,$01,$05,$02
+B $EFF4,$01 Terminator.
+
+t $EFF5 Messaging: "The Desert"
+@ $EFF5 label=Messaging_Desert
+N $EFF5 Print "#DECODESTR(#PC)".
+B $EFF5,$01 "#DECODE(#PEEK(#PC))".
+L $EFF5,$01,$05,$02
+B $EFFA,$01 Terminator.
+
+t $EFFB Messaging: "Any Tumbleweed"
+@ $EFFB label=Messaging_Tumbleweed
+N $EFFB Print "#DECODESTR(#PC)".
+B $EFFB,$01 "#DECODE(#PEEK(#PC))".
+L $EFFB,$01,$09,$02
+B $F004,$01 Terminator.
+
+t $F005 Messaging: "A Horse"
+@ $F005 label=Messaging_Horse
+N $F005 Print "#DECODESTR(#PC)".
+B $F005,$01 "#DECODE(#PEEK(#PC))".
+L $F005,$01,$04,$02
+B $F009,$01 Terminator.
+
+t $F00A Messaging: "A Swing"
+@ $F00A label=Messaging_Swing
+N $F00A Print "#DECODESTR(#PC)".
+B $F00A,$01 "#DECODE(#PEEK(#PC))".
+L $F00A,$01,$04,$02
+B $F00E,$01 Terminator.
+
+t $F00F Messaging: "A Beam"
+@ $F00F label=Messaging_Beam
+N $F00F Print "#DECODESTR(#PC)".
+B $F00F,$01 "#DECODE(#PEEK(#PC))".
+L $F00F,$01,$03,$02
+B $F012,$01 Terminator.
+
+t $F013 Messaging: "A Door"
+@ $F013 label=Messaging_Door
+N $F013 Print "#DECODESTR(#PC)".
+B $F013,$01 "#DECODE(#PEEK(#PC))".
+L $F013,$01,$04,$02
+B $F017,$01 Terminator.
+
+t $F018 Messaging: "Any Trees"
+@ $F018 label=Messaging_Trees
+N $F018 Print "#DECODESTR(#PC)".
+B $F018,$01 "#DECODE(#PEEK(#PC))".
+L $F018,$01,$04,$02
+B $F01C,$01 Terminator.
+
+t $F01D Messaging: "Any Weeds"
+@ $F01D label=Messaging_Weeds
+N $F01D Print "#DECODESTR(#PC)".
+B $F01D,$01 "#DECODE(#PEEK(#PC))".
+L $F01D,$01,$05,$02
+B $F022,$01 Terminator.
+
+t $F023 Messaging: "A Wall"
+@ $F023 label=Messaging_Wall
+N $F023 Print "#DECODESTR(#PC)".
+B $F023,$01 "#DECODE(#PEEK(#PC))".
+L $F023,$01,$03,$02
+B $F026,$01 Terminator.
+
+t $F027 Messaging: "A Chasm"
+@ $F027 label=Messaging_Chasm
+N $F027 Print "#DECODESTR(#PC)".
+B $F027,$01 "#DECODE(#PEEK(#PC))".
+L $F027,$01,$04,$02
+B $F02B,$01 Terminator.
+
+t $F02C Messaging: "A Key"
+@ $F02C label=Messaging_Key
+N $F02C Print "#DECODESTR(#PC)".
+B $F02C,$01 "#DECODE(#PEEK(#PC))".
+L $F02C,$01,$03,$02
+B $F02F,$01 Terminator.
+
+t $F030 Messaging: "A Desk"
+@ $F030 label=Messaging_Desk
+N $F030 Print "#DECODESTR(#PC)".
+B $F030,$01 "#DECODE(#PEEK(#PC))".
+L $F030,$01,$04,$02
+B $F034,$01 Terminator.
+
+t $F035 Messaging: "A Chair"
+@ $F035 label=Messaging_Chair
+N $F035 Print "#DECODESTR(#PC)".
+B $F035,$01 "#DECODE(#PEEK(#PC))".
+L $F035,$01,$04,$02
+B $F039,$01 Terminator.
+
+t $F03A Messaging: "A Display"
+@ $F03A label=Messaging_Display
+N $F03A Print "#DECODESTR(#PC)".
+B $F03A,$01 "#DECODE(#PEEK(#PC))".
+L $F03A,$01,$06,$02
+B $F040,$01 Terminator.
+
+t $F041 Messaging: "A Siren"
+@ $F041 label=Messaging_Siren
+N $F041 Print "#DECODESTR(#PC)".
+B $F041,$01 "#DECODE(#PEEK(#PC))".
+L $F041,$01,$04,$02
+B $F045,$01 Terminator.
+
+t $F046 Messaging: "A Button"
+@ $F046 label=Messaging_Button
+N $F046 Print "#DECODESTR(#PC)".
+B $F046,$01 "#DECODE(#PEEK(#PC))".
+L $F046,$01,$05,$02
+B $F04B,$01 Terminator.
+
+t $F04C Messaging: "A Valve"
+@ $F04C label=Messaging_Valve
+N $F04C Print "#DECODESTR(#PC)".
+B $F04C,$01 "#DECODE(#PEEK(#PC))".
+L $F04C,$01,$04,$02
+B $F050,$01 Terminator.
+
+t $F051 Messaging: "Any Wires"
+@ $F051 label=Messaging_Wires
+N $F051 Print "#DECODESTR(#PC)".
+B $F051,$01 "#DECODE(#PEEK(#PC))".
+L $F051,$01,$04,$02
+B $F055,$01 Terminator.
+
+t $F056 Messaging: "A Pipe"
+@ $F056 label=Messaging_Pipe
+N $F056 Print "#DECODESTR(#PC)".
+B $F056,$01 "#DECODE(#PEEK(#PC))".
+L $F056,$01,$05,$02
+B $F05B,$01 Terminator.
+
+t $F05C Messaging: "A Screwdriver"
+@ $F05C label=Messaging_Screwdriver
+N $F05C Print "#DECODESTR(#PC)".
+B $F05C,$01 "#DECODE(#PEEK(#PC))".
+L $F05C,$01,$08,$02
+B $F064,$01 Terminator.
+
+t $F065 Messaging: "A Fire"
+@ $F065 label=Messaging_Fire
+N $F065 Print "#DECODESTR(#PC)".
+B $F065,$01 "#DECODE(#PEEK(#PC))".
+L $F065,$01,$03,$02
+B $F068,$01 Terminator.
+
+t $F069 Messaging: "A Lift"
+@ $F069 label=Messaging_Lift
+N $F069 Print "#DECODESTR(#PC)".
+B $F069,$01 "#DECODE(#PEEK(#PC))".
+L $F069,$01,$03,$02
+B $F06C,$01 Terminator.
+
+t $F06D Messaging: "A Pen"
+@ $F06D label=Messaging_Pen
+N $F06D Print "#DECODESTR(#PC)".
+B $F06D,$01 "#DECODE(#PEEK(#PC))".
+L $F06D,$01,$03,$02
+B $F070,$01 Terminator.
+
+t $F071 Messaging: "A Radio"
+@ $F071 label=Messaging_Radio
+N $F071 Print "#DECODESTR(#PC)".
+B $F071,$01 "#DECODE(#PEEK(#PC))".
+L $F071,$01,$05,$02
+B $F076,$01 Terminator.
+
+t $F077 Messaging: "A Panel"
+@ $F077 label=Messaging_Panel
+N $F077 Print "#DECODESTR(#PC)".
+B $F077,$01 "#DECODE(#PEEK(#PC))".
+L $F077,$01,$04,$02
+B $F07B,$01 Terminator.
+
+t $F07C Messaging: "The Ceiling"
+@ $F07C label=Messaging_Ceiling
+N $F07C Print "#DECODESTR(#PC)".
+B $F07C,$01 "#DECODE(#PEEK(#PC))".
+L $F07C,$01,$05,$02
+B $F081,$01 Terminator.
+
+t $F082 Messaging: "A Basin"
+@ $F082 label=Messaging_Basin
+N $F082 Print "#DECODESTR(#PC)".
+B $F082,$01 "#DECODE(#PEEK(#PC))".
+L $F082,$01,$04,$02
+B $F086,$01 Terminator.
+
+t $F087 Messaging: "A Mirror"
+@ $F087 label=Messaging_Mirror
+N $F087 Print "#DECODESTR(#PC)".
+B $F087,$01 "#DECODE(#PEEK(#PC))".
+L $F087,$01,$05,$02
+B $F08C,$01 Terminator.
+
+t $F08D Messaging: "A Workbench"
+@ $F08D label=Messaging_Workbench
+N $F08D Print "#DECODESTR(#PC)".
+B $F08D,$01 "#DECODE(#PEEK(#PC))".
+L $F08D,$01,$07,$02
+B $F094,$01 Terminator.
+
+t $F095 Messaging: "A Pickaxe"
+@ $F095 label=Messaging_Pickaxe
+N $F095 Print "#DECODESTR(#PC)".
+B $F095,$01 "#DECODE(#PEEK(#PC))".
+L $F095,$01,$07,$02
+B $F09C,$01 Terminator.
+
+t $F09D Messaging: "A Torch"
+@ $F09D label=Messaging_Torch
+N $F09D Print "#DECODESTR(#PC)".
+B $F09D,$01 "#DECODE(#PEEK(#PC))".
+L $F09D,$01,$04,$02
+B $F0A1,$01 Terminator.
+
+t $F0A2 Messaging: "Any Tissues"
+@ $F0A2 label=Messaging_AnyTissues
+N $F0A2 Print "#DECODESTR(#PC)".
+B $F0A2,$01 "#DECODE(#PEEK(#PC))".
+L $F0A2,$01,$05,$02
+B $F0A7,$01 Terminator.
+
+t $F0A8 Messaging: "An Isolator"
+@ $F0A8 label=Messaging_Isolator
+N $F0A8 Print "#DECODESTR(#PC)".
+B $F0A8,$01 "#DECODE(#PEEK(#PC))".
+L $F0A8,$01,$05,$02
+B $F0AD,$01 Terminator.
+
+t $F0AE Messaging: "Any Cables"
+@ $F0AE label=Messaging_AnyCables
+N $F0AE Print "#DECODESTR(#PC)".
+B $F0AE,$01 "#DECODE(#PEEK(#PC))".
+L $F0AE,$01,$05,$02
+B $F0B3,$01 Terminator.
+
+t $F0B4 Messaging: "A Handle"
+@ $F0B4 label=Messaging_Handle
+N $F0B4 Print "#DECODESTR(#PC)".
+B $F0B4,$01 "#DECODE(#PEEK(#PC))".
+L $F0B4,$01,$04,$02
+B $F0B8,$01 Terminator.
+
+t $F0B9 Messaging: "A Shaft"
+@ $F0B9 label=Messaging_Shaft
+N $F0B9 Print "#DECODESTR(#PC)".
+B $F0B9,$01 "#DECODE(#PEEK(#PC))".
+L $F0B9,$01,$04,$02
+B $F0BD,$01 Terminator.
+
+t $F0BE Messaging: "A Sluice"
+@ $F0BE label=Messaging_Sluice
+N $F0BE Print "#DECODESTR(#PC)".
+B $F0BE,$01 "#DECODE(#PEEK(#PC))".
+L $F0BE,$01,$05,$02
+B $F0C3,$01 Terminator.
+
+t $F0C4 Messaging: "Any Sweets"
+@ $F0C4 label=Messaging_AnySweets
+N $F0C4 Print "#DECODESTR(#PC)".
+B $F0C4,$01 "#DECODE(#PEEK(#PC))".
+L $F0C4,$01,$06,$02
+B $F0CA,$01 Terminator.
+
+t $F0CB Messaging: "An Ambulance"
+@ $F0CB label=Messaging_Ambulance
+N $F0CB Print "#DECODESTR(#PC)".
+B $F0CB,$01 "#DECODE(#PEEK(#PC))".
+L $F0CB,$01,$06,$02
+B $F0D1,$01 Terminator.
+
+t $F0D2 Messaging: "A Truck"
+@ $F0D2 label=Messaging_Truck
+N $F0D2 Print "#DECODESTR(#PC)".
+B $F0D2,$01 "#DECODE(#PEEK(#PC))".
+L $F0D2,$01,$04,$02
+B $F0D6,$01 Terminator.
+
+t $F0D7 Messaging: "Any Geese"
+@ $F0D7 label=Messaging_AnyGeese
+N $F0D7 Print "#DECODESTR(#PC)".
+B $F0D7,$01 "#DECODE(#PEEK(#PC))".
+L $F0D7,$01,$05,$02
+B $F0DC,$01 Terminator.
+
+t $F0DD Messaging: "Any Buns"
+@ $F0DD label=Messaging_AnyBuns
+N $F0DD Print "#DECODESTR(#PC)".
+B $F0DD,$01 "#DECODE(#PEEK(#PC))".
+L $F0DD,$01,$04,$02
+B $F0E1,$01 Terminator.
+
+t $F0E2 Messaging: "A Woman"
+@ $F0E2 label=Messaging_Woman
+N $F0E2 Print "#DECODESTR(#PC)".
+B $F0E2,$01 "#DECODE(#PEEK(#PC))".
+L $F0E2,$01,$04,$02
+B $F0E6,$01 Terminator.
+
+t $F0E7 Messaging: ""
+N $F0E7 Print "#DECODESTR(#PC)".
+B $F0E7,$01 "#DECODE(#PEEK(#PC))".
+L $F0E7,$01,$01,$02
+B $F0E8,$01 Terminator.
+
+t $F0E9 Messaging: ""
+N $F0E9 Print "#DECODESTR(#PC)".
+B $F0E9,$01 "#DECODE(#PEEK(#PC))".
+L $F0E9,$01,$01,$02
+B $F0EA,$01 Terminator.
+
+t $F0EB Messaging: ""
+N $F0EB Print "#DECODESTR(#PC)".
+B $F0EB,$01 "#DECODE(#PEEK(#PC))".
+L $F0EB,$01,$01,$02
+B $F0EC,$01 Terminator.
+
+t $F0ED Messaging: ""
+N $F0ED Print "#DECODESTR(#PC)".
+B $F0ED,$01 "#DECODE(#PEEK(#PC))".
+L $F0ED,$01,$01,$02
+B $F0EE,$01 Terminator.
+
+t $F0EF Messaging: ""
+N $F0EF Print "#DECODESTR(#PC)".
+B $F0EF,$01 "#DECODE(#PEEK(#PC))".
+L $F0EF,$01,$01,$02
+B $F0F0,$01 Terminator.
+
+t $F0F1 Messaging: ""
+N $F0F1 Print "#DECODESTR(#PC)".
+B $F0F1,$01 "#DECODE(#PEEK(#PC))".
+L $F0F1,$01,$01,$02
+B $F0F2,$01 Terminator.
+
+t $F0F3 Messaging: ""
+N $F0F3 Print "#DECODESTR(#PC)".
+B $F0F3,$01 "#DECODE(#PEEK(#PC))".
+L $F0F3,$01,$01,$02
+B $F0F4,$01 Terminator.
+
+t $F0F5 Messaging: ""
+N $F0F5 Print "#DECODESTR(#PC)".
+B $F0F5,$01 "#DECODE(#PEEK(#PC))".
+L $F0F5,$01,$01,$02
+B $F0F6,$01 Terminator.
+
+t $F0F7 Messaging: ""
+N $F0F7 Print "#DECODESTR(#PC)".
+B $F0F7,$01 "#DECODE(#PEEK(#PC))".
+L $F0F7,$01,$01,$02
+B $F0F8,$01 Terminator.
+
+t $F0F9 Messaging: "A Diamond"
+@ $F0F9 label=Messaging__Diamond
+N $F0F9 Print "#DECODESTR(#PC)".
+B $F0F9,$01 "#DECODE(#PEEK(#PC))".
+L $F0F9,$01,$07,$02
+B $F100,$01 Terminator.
+
+t $F101 Messaging: "Some Fruit"
+@ $F101 label=Messaging_Fruit
+N $F101 Print "#DECODESTR(#PC)".
+B $F101,$01 "#DECODE(#PEEK(#PC))".
+L $F101,$01,$06,$02
+B $F107,$01 Terminator.
+
+t $F108 Messaging: "Some Meat"
+@ $F108 label=Messaging_Meat
+N $F108 Print "#DECODESTR(#PC)".
+B $F108,$01 "#DECODE(#PEEK(#PC))".
+L $F108,$01,$06,$02
+B $F10E,$01 Terminator.
+
+t $F10F Messaging: "A Television"
+@ $F10F label=Messaging__Television
+N $F10F Print "#DECODESTR(#PC)".
+B $F10F,$01 "#DECODE(#PEEK(#PC))".
+L $F10F,$01,$07,$02
+B $F116,$01 Terminator.
+
+t $F117 Messaging: "A Bottle"
+@ $F117 label=Messaging__Bottle
+N $F117 Print "#DECODESTR(#PC)".
+B $F117,$01 "#DECODE(#PEEK(#PC))".
+L $F117,$01,$06,$02
+B $F11D,$01 Terminator.
+
+t $F11E Messaging: "A Bottle Of Oil"
+@ $F11E label=Messaging_BottleOfOil
+N $F11E Print "#DECODESTR(#PC)".
+B $F11E,$01 "#DECODE(#PEEK(#PC))".
+L $F11E,$01,$0A,$02
+B $F128,$01 Terminator.
+
+t $F129 Messaging: "A Bottle Of Water"
+@ $F129 label=Messaging_BottleOfWater
+N $F129 Print "#DECODESTR(#PC)".
+B $F129,$01 "#DECODE(#PEEK(#PC))".
+L $F129,$01,$0B,$02
+B $F134,$01 Terminator.
+
+t $F135 Messaging: "A Wooden Stick"
+@ $F135 label=Messaging_WoodenStick
+N $F135 Print "#DECODESTR(#PC)".
+B $F135,$01 "#DECODE(#PEEK(#PC))".
+L $F135,$01,$09,$02
+B $F13E,$01 Terminator.
+
+t $F13F Messaging: "An Elephant Standing On A Wooden Ramp"
+@ $F13F label=Messaging_ElephantOnRamp
+N $F13F Print "#DECODESTR(#PC)".
+B $F13F,$01 "#DECODE(#PEEK(#PC))".
+L $F13F,$01,$16,$02
+B $F155,$01 Terminator.
+
+t $F156 Messaging: "A Wooden Ramp"
+@ $F156 label=Messaging_WoodenRamp
+N $F156 Print "#DECODESTR(#PC)".
+B $F156,$01 "#DECODE(#PEEK(#PC))".
+L $F156,$01,$09,$02
+B $F15F,$01 Terminator.
+
+t $F160 Messaging: "A Rusty Nail"
+@ $F160 label=Messaging_RustyNail
+N $F160 Print "#DECODESTR(#PC)".
+B $F160,$01 "#DECODE(#PEEK(#PC))".
+L $F160,$01,$08,$02
+B $F168,$01 Terminator.
+
+t $F169 Messaging: "A Cap"
+@ $F169 label=Messaging__Cap
+N $F169 Print "#DECODESTR(#PC)".
+B $F169,$01 "#DECODE(#PEEK(#PC))".
+L $F169,$01,$04,$02
+B $F16D,$01 Terminator.
+
+t $F16E Messaging: "A Cap Which You Are Wearing"
+@ $F16E label=Messaging_CapWorn
+N $F16E Print "#DECODESTR(#PC)".
+B $F16E,$01 "#DECODE(#PEEK(#PC))".
+L $F16E,$01,$0E,$02
+B $F17C,$01 Terminator.
+
+t $F17D Messaging: "The Tunnel Is Flooded"
+@ $F17D label=Messaging_FloodedTunnel
+N $F17D Print "#DECODESTR(#PC)".
+B $F17D,$01 "#DECODE(#PEEK(#PC))".
+L $F17D,$01,$0C,$02
+B $F189,$01 Terminator.
+
+t $F18A Messaging: "The Tunnel Is Dry"
+@ $F18A label=Messaging_DryTunnel
+N $F18A Print "#DECODESTR(#PC)".
+B $F18A,$01 "#DECODE(#PEEK(#PC))".
+L $F18A,$01,$0A,$02
+B $F194,$01 Terminator.
+
+t $F195 Messaging: "A Ticket"
+@ $F195 label=Messaging__Ticket
+N $F195 Print "#DECODESTR(#PC)".
+B $F195,$01 "#DECODE(#PEEK(#PC))".
+L $F195,$01,$06,$02
+B $F19B,$01 Terminator.
+
+t $F19C Messaging: "A Trumpet"
+@ $F19C label=Messaging__Trumpet
+N $F19C Print "#DECODESTR(#PC)".
+B $F19C,$01 "#DECODE(#PEEK(#PC))".
+L $F19C,$01,$06,$02
+B $F1A2,$01 Terminator.
+
+t $F1A3 Messaging: "The Gates Are Open"
+@ $F1A3 label=Messaging_OpenGates
+N $F1A3 Print "#DECODESTR(#PC)".
+B $F1A3,$01 "#DECODE(#PEEK(#PC))".
+L $F1A3,$01,$08,$02
+B $F1AB,$01 Terminator.
+
+t $F1AC Messaging: "The Gates Are Closed"
+@ $F1AC label=Messaging_ClosedGates
+N $F1AC Print "#DECODESTR(#PC)".
+B $F1AC,$01 "#DECODE(#PEEK(#PC))".
+L $F1AC,$01,$0A,$02
+B $F1B6,$01 Terminator.
+
+t $F1B7 Messaging: "A Stout Wooden Beam"
+@ $F1B7 label=Messaging_StoutWoodenBeam
+N $F1B7 Print "#DECODESTR(#PC)".
+B $F1B7,$01 "#DECODE(#PEEK(#PC))".
+L $F1B7,$01,$0B,$02
+B $F1C2,$01 Terminator.
+
+t $F1C3 Messaging: "The Stairs Are Supported By A Stout Wooden Beam"
+@ $F1C3 label=Messaging_StairsSupportedByBeam
+N $F1C3 Print "#DECODESTR(#PC)".
+B $F1C3,$01 "#DECODE(#PEEK(#PC))".
+L $F1C3,$01,$1A,$02
+B $F1DD,$01 Terminator.
+
+t $F1DE Messaging: "A Closed Door"
+@ $F1DE label=Messaging_ClosedDoor
+N $F1DE Print "#DECODESTR(#PC)".
+B $F1DE,$01 "#DECODE(#PEEK(#PC))".
+L $F1DE,$01,$09,$02
+B $F1E7,$01 Terminator.
+
+t $F1E8 Messaging: "An Open Door"
+@ $F1E8 label=Messaging_OpenDoor
+N $F1E8 Print "#DECODESTR(#PC)".
+B $F1E8,$01 "#DECODE(#PEEK(#PC))".
+L $F1E8,$01,$08,$02
+B $F1F0,$01 Terminator.
+
+t $F1F1 Messaging: "A Key"
+@ $F1F1 label=Messaging__Key
+N $F1F1 Print "#DECODESTR(#PC)".
+B $F1F1,$01 "#DECODE(#PEEK(#PC))".
+L $F1F1,$01,$03,$02
+B $F1F4,$01 Terminator.
+
+t $F1F5 Messaging: "One Limp Body Lays Slumped Over The Steering Wheel Of A Nearby Car"
+@ $F1F5 label=Messaging_LimpBody
+N $F1F5 Print "#DECODESTR(#PC)".
+B $F1F5,$01 "#DECODE(#PEEK(#PC))".
+L $F1F5,$01,$27,$02
+B $F21C,$01 Terminator.
+
+t $F21D Messaging: "A Body Laying Near To The Chasm"
+@ $F21D label=Messaging_Body
+N $F21D Print "#DECODESTR(#PC)".
+B $F21D,$01 "#DECODE(#PEEK(#PC))".
+L $F21D,$01,$12,$02
+B $F22F,$01 Terminator.
+
+t $F230 Messaging: "A Wooden Ramp At The Edge Of The Chasm"
+@ $F230 label=Messaging_WoodenRampAtEdgeOfChasm
+N $F230 Print "#DECODESTR(#PC)".
+B $F230,$01 "#DECODE(#PEEK(#PC))".
+L $F230,$01,$15,$02
+B $F245,$01 Terminator.
+
+t $F246 Messaging: "An Empty Car"
+@ $F246 label=Messaging_EmptyCar
+N $F246 Print "#DECODESTR(#PC)".
+B $F246,$01 "#DECODE(#PEEK(#PC))".
+L $F246,$01,$08,$02
+B $F24E,$01 Terminator.
+
+t $F24F Messaging: "A Car Lays Wedged Into The Chasm, Forming A Bridge"
+@ $F24F label=Messaging_CarWedgedIntoChasm
+N $F24F Print "#DECODESTR(#PC)".
+B $F24F,$01 "#DECODE(#PEEK(#PC))".
+L $F24F,$01,$1E,$02
+B $F26D,$01 Terminator.
+
+t $F26E Messaging: "You Are Sitting In The Car; The Engine Is Running"
+@ $F26E label=Messaging_SittingInCarEngineRunning
+N $F26E Print "#DECODESTR(#PC)".
+B $F26E,$01 "#DECODE(#PEEK(#PC))".
+L $F26E,$01,$15,$02
+B $F283,$01 Terminator.
+
+t $F284 Messaging: "A Flashing Display"
+@ $F284 label=Messaging_FlashingDisplay
+N $F284 Print "#DECODESTR(#PC)".
+B $F284,$01 "#DECODE(#PEEK(#PC))".
+L $F284,$01,$31,$02
+B $F2B5,$01 Terminator.
+
+t $F2B6 Messaging: "A Valve"
+@ $F2B6 label=Messaging__Valve
+N $F2B6 Print "#DECODESTR(#PC)".
+B $F2B6,$01 "#DECODE(#PEEK(#PC))".
+L $F2B6,$01,$05,$02
+B $F2BB,$01 Terminator.
+
+t $F2BC Messaging: "There Is A Valve Missing From A Section Of The Blue Coolant Pipe"
+@ $F2BC label=Messaging_MissingValve
+N $F2BC Print "#DECODESTR(#PC)".
+B $F2BC,$01 "#DECODE(#PEEK(#PC))".
+L $F2BC,$01,$36,$02
+B $F2F2,$01 Terminator.
+
+t $F2F3 Messaging: "A Pair Of Wires Dangling Near To A Valve Fitted To The Blue Coolant Pipe"
+@ $F2F3 label=Messaging_PairOfWiresDangling
+N $F2F3 Print "#DECODESTR(#PC)".
+B $F2F3,$01 "#DECODE(#PEEK(#PC))".
+L $F2F3,$01,$2D,$02
+B $F320,$01 Terminator.
+
+t $F321 Messaging: "A Pair Of Wires Connected To A Valve In The Blue Coolant Pipe"
+@ $F321 label=Messaging_PairOfWiresConnectedValve
+N $F321 Print "#DECODESTR(#PC)".
+B $F321,$01 "#DECODE(#PEEK(#PC))".
+L $F321,$01,$25,$02
+B $F346,$01 Terminator.
+
+t $F347 Messaging: "A Screwdriver"
+@ $F347 label=Messaging__Screwdriver
+N $F347 Print "#DECODESTR(#PC)".
+B $F347,$01 "#DECODE(#PEEK(#PC))".
+L $F347,$01,$09,$02
+B $F350,$01 Terminator.
+
+t $F351 Messaging: "A Chair"
+@ $F351 label=Messaging__Chair
+N $F351 Print "#DECODESTR(#PC)".
+B $F351,$01 "#DECODE(#PEEK(#PC))".
+L $F351,$01,$05,$02
+B $F356,$01 Terminator.
+
+t $F357 Messaging: "A Desk"
+@ $F357 label=Messaging__Desk
+N $F357 Print "#DECODESTR(#PC)".
+B $F357,$01 "#DECODE(#PEEK(#PC))".
+L $F357,$01,$05,$02
+B $F35C,$01 Terminator.
+
+t $F35D Messaging: "You Are Standing On A Chair"
+@ $F35D label=Messaging_StandingOnChair
+N $F35D Print "#DECODESTR(#PC)".
+B $F35D,$01 "#DECODE(#PEEK(#PC))".
+L $F35D,$01,$0B,$02
+B $F368,$01 Terminator.
+
+t $F369 Messaging: "A Pen"
+@ $F369 label=Messaging__Pen
+N $F369 Print "#DECODESTR(#PC)".
+B $F369,$01 "#DECODE(#PEEK(#PC))".
+L $F369,$01,$04,$02
+B $F36D,$01 Terminator.
+
+t $F36E Messaging: "A Radio"
+@ $F36E label=Messaging__Radio
+N $F36E Print "#DECODESTR(#PC)".
+B $F36E,$01 "#DECODE(#PEEK(#PC))".
+L $F36E,$01,$06,$02
+B $F374,$01 Terminator.
+
+t $F375 Messaging: "You Are Sitting In The Car"
+@ $F375 label=Messaging_SittingInCar
+N $F375 Print "#DECODESTR(#PC)".
+B $F375,$01 "#DECODE(#PEEK(#PC))".
+L $F375,$01,$0A,$02
+B $F37F,$01 Terminator.
+
+t $F380 Messaging: "A Panel Set Into The Ceiling"
+@ $F380 label=Messaging_PanelInCeiling
+N $F380 Print "#DECODESTR(#PC)".
+B $F380,$01 "#DECODE(#PEEK(#PC))".
+L $F380,$01,$0D,$02
+B $F38D,$01 Terminator.
+
+t $F38E Messaging: "A Panel"
+@ $F38E label=Messaging__Panel
+N $F38E Print "#DECODESTR(#PC)".
+B $F38E,$01 "#DECODE(#PEEK(#PC))".
+L $F38E,$01,$05,$02
+B $F393,$01 Terminator.
+
+t $F394 Messaging: "The Isolator Is Switched On"
+@ $F394 label=Messaging_IsolatorOn
+N $F394 Print "#DECODESTR(#PC)".
+B $F394,$01 "#DECODE(#PEEK(#PC))".
+L $F394,$01,$0F,$02
+B $F3A3,$01 Terminator.
+
+t $F3A4 Messaging: "The Isolator Is Switched Off"
+@ $F3A4 label=Messaging_IsolatorOff
+N $F3A4 Print "#DECODESTR(#PC)".
+B $F3A4,$01 "#DECODE(#PEEK(#PC))".
+L $F3A4,$01,$10,$02
+B $F3B4,$01 Terminator.
+
+t $F3B5 Messaging: "A Torch"
+@ $F3B5 label=Messaging__Torch
+N $F3B5 Print "#DECODESTR(#PC)".
+B $F3B5,$01 "#DECODE(#PEEK(#PC))".
+L $F3B5,$01,$05,$02
+B $F3BA,$01 Terminator.
+
+t $F3BB Messaging: "A Torch Which Is Switched On"
+@ $F3BB label=Messaging_TorchOn
+N $F3BB Print "#DECODESTR(#PC)".
+B $F3BB,$01 "#DECODE(#PEEK(#PC))".
+L $F3BB,$01,$12,$02
+B $F3CD,$01 Terminator.
+
+t $F3CE Messaging: "Some Tissues"
+@ $F3CE label=Messaging_Tissues
+N $F3CE Print "#DECODESTR(#PC)".
+B $F3CE,$01 "#DECODE(#PEEK(#PC))".
+L $F3CE,$01,$07,$02
+B $F3D5,$01 Terminator.
+
+t $F3D6 Messaging: "A Pickaxe"
+@ $F3D6 label=Messaging__Pickaxe
+N $F3D6 Print "#DECODESTR(#PC)".
+B $F3D6,$01 "#DECODE(#PEEK(#PC))".
+L $F3D6,$01,$07,$02
+B $F3DD,$01 Terminator.
+
+t $F3DE Messaging: "The Cables Spark Ominously"
+@ $F3DE label=Messaging_Cables
+N $F3DE Print "#DECODESTR(#PC)".
+B $F3DE,$01 "#DECODE(#PEEK(#PC))".
+L $F3DE,$01,$0E,$02
+B $F3EC,$01 Terminator.
+
+t $F3ED Messaging: "A Handle"
+@ $F3ED label=Messaging__Handle
+N $F3ED Print "#DECODESTR(#PC)".
+B $F3ED,$01 "#DECODE(#PEEK(#PC))".
+L $F3ED,$01,$05,$02
+B $F3F2,$01 Terminator.
+
+t $F3F3 Messaging: "A Closed Sluicegate"
+@ $F3F3 label=Messaging_ClosedSluicegate
+N $F3F3 Print "#DECODESTR(#PC)".
+B $F3F3,$01 "#DECODE(#PEEK(#PC))".
+L $F3F3,$01,$0C,$02
+B $F3FF,$01 Terminator.
+
+t $F400 Messaging: "A Closed Sluicegate With A Handle Fitted To The Operating Shaft"
+@ $F400 label=Messaging_ClosedSluicegateWithHandle
+N $F400 Print "#DECODESTR(#PC)".
+B $F400,$01 "#DECODE(#PEEK(#PC))".
+L $F400,$01,$25,$02
+B $F425,$01 Terminator.
+
+t $F426 Messaging: "An Open Sluicegate With A Handle Fitted To The Operating Shaft"
+@ $F426 label=Messaging_OpenSluicegateWithHandle
+N $F426 Print "#DECODESTR(#PC)".
+B $F426,$01 "#DECODE(#PEEK(#PC))".
+L $F426,$01,$20,$02
+B $F446,$01 Terminator.
+
+t $F447 Messaging: "Some Sweets"
+@ $F447 label=Messaging_Sweets
+N $F447 Print "#DECODESTR(#PC)".
+B $F447,$01 "#DECODE(#PEEK(#PC))".
+L $F447,$01,$07,$02
+B $F44E,$01 Terminator.
+
+t $F44F Messaging: "A Ceiling Panel Has Been Removed"
+@ $F44F label=Messaging_CeilingPanel
+N $F44F Print "#DECODESTR(#PC)".
+B $F44F,$01 "#DECODE(#PEEK(#PC))".
+L $F44F,$01,$16,$02
+B $F465,$01 Terminator.
+
+t $F466 Messaging: "Some Buns"
+@ $F466 label=Messaging_Buns
+N $F466 Print "#DECODESTR(#PC)".
+B $F466,$01 "#DECODE(#PEEK(#PC))".
+L $F466,$01,$05,$02
+B $F46B,$01 Terminator.
+
+t $F46C Messaging: ""
+N $F46C Print "#DECODESTR(#PC)".
+B $F46C,$01 "#DECODE(#PEEK(#PC))".
+L $F46C,$01,$01,$02
+B $F46D,$01 Terminator.
+
+t $F46E Messaging: ""
+N $F46E Print "#DECODESTR(#PC)".
+B $F46E,$01 "#DECODE(#PEEK(#PC))".
+L $F46E,$01,$01,$02
+B $F46F,$01 Terminator.
+
+t $F470 Messaging: ""
+N $F470 Print "#DECODESTR(#PC)".
+B $F470,$01 "#DECODE(#PEEK(#PC))".
+L $F470,$01,$01,$02
+B $F471,$01 Terminator.
+
+t $F472 Messaging: ""
+N $F472 Print "#DECODESTR(#PC)".
+B $F472,$01 "#DECODE(#PEEK(#PC))".
+L $F472,$01,$01,$02
+B $F473,$01 Terminator.
+
+t $F474 Messaging: ""
+N $F474 Print "#DECODESTR(#PC)".
+B $F474,$01 "#DECODE(#PEEK(#PC))".
+L $F474,$01,$01,$02
+B $F475,$01 Terminator.
+
+t $F476 Messaging: ""
+N $F476 Print "#DECODESTR(#PC)".
+B $F476,$01 "#DECODE(#PEEK(#PC))".
+L $F476,$01,$01,$02
+B $F477,$01 Terminator.
+
+t $F478 Messaging: ""
+N $F478 Print "#DECODESTR(#PC)".
+B $F478,$01 "#DECODE(#PEEK(#PC))".
+L $F478,$01,$01,$02
+B $F479,$01 Terminator.
+
+t $F47A Messaging: "It's Very Dark In Here"
+@ $F47A label=Messaging_VeryDarkInHere
+N $F47A Print "#DECODESTR(#PC)".
+B $F47A,$01 "#DECODE(#PEEK(#PC))".
+L $F47A,$01,$3C,$02
+B $F4B6,$01 Terminator.
+
+t $F4B7 Messaging: "The Floor Collapses"
+@ $F4B7 label=Messaging_FloorCollapses
+N $F4B7 Print "#DECODESTR(#PC)".
+B $F4B7,$01 "#DECODE(#PEEK(#PC))".
+L $F4B7,$01,$22,$02
+B $F4D9,$01 Terminator.
+
+t $F4DA Messaging: "The Weakened Stairs Collapse"
+@ $F4DA label=Messaging_WeakenedStairsCollapse
+N $F4DA Print "#DECODESTR(#PC)".
+B $F4DA,$01 "#DECODE(#PEEK(#PC))".
+L $F4DA,$01,$1D,$02
+B $F4F7,$01 Terminator.
+
+t $F4F8 Messaging: "The Snaking, Sparking Cable Touches You"
+@ $F4F8 label=Messaging_SnakingSparkingCableTouchesYou
+N $F4F8 Print "#DECODESTR(#PC)".
+B $F4F8,$01 "#DECODE(#PEEK(#PC))".
+L $F4F8,$01,$19,$02
+B $F511,$01 Terminator.
+
+t $F512 Messaging: "With A Vicious Snapping Of Its Jaws, An Alligator Is Upon You..."
+@ $F512 label=Messaging_ViciousSnappingAlligator
+N $F512 Print "#DECODESTR(#PC)".
+B $F512,$01 "#DECODE(#PEEK(#PC))".
+L $F512,$01,$29,$02
+B $F53B,$01 Terminator.
+
+t $F53C Messaging: "You Neither Hear The Explosion"
+@ $F53C label=Messaging_DontHearExplosion
+N $F53C Print "#DECODESTR(#PC)".
+B $F53C,$01 "#DECODE(#PEEK(#PC))".
+L $F53C,$01,$63,$02
+B $F59F,$01 Terminator.
+
+t $F5A0 Messaging: "As You Enter The Street"
+@ $F5A0 label=Messaging_EnterTheStreet
+N $F5A0 Print "#DECODESTR(#PC)".
+B $F5A0,$01 "#DECODE(#PEEK(#PC))".
+L $F5A0,$01,$69,$02
+B $F609,$01 Terminator.
+
+t $F60A Messaging: "He Shouts:-"
+@ $F60A label=Messaging_HeShouts
+N $F60A Print "#DECODESTR(#PC)".
+B $F60A,$01 "#DECODE(#PEEK(#PC))".
+L $F60A,$01,$33,$02
+B $F63D,$01 Terminator.
+
+t $F63E Messaging: "He Shouts:- At Ease Men"
+@ $F63E label=Messaging_HeShoutsAtEaseMen
+N $F63E Print "#DECODESTR(#PC)".
+B $F63E,$01 "#DECODE(#PEEK(#PC))".
+L $F63E,$01,$27,$02
+B $F665,$01 Terminator.
+
+t $F666 Messaging: "As You Enter The Street"
+@ $F666 label=Messaging_EnterTheStreetLooters
+N $F666 Print "#DECODESTR(#PC)".
+B $F666,$01 "#DECODE(#PEEK(#PC))".
+L $F666,$01,$88,$02
+B $F6EE,$01 Terminator.
+
+t $F6EF Messaging: "He Says:-"
+@ $F6EF label=Messaging_HeSays
+N $F6EF Print "#DECODESTR(#PC)".
+B $F6EF,$01 "#DECODE(#PEEK(#PC))".
+L $F6EF,$01,$3F,$02
+B $F72E,$01 Terminator.
+
+t $F72F Messaging: "He Says "hey Boys, Look What We've Found!""
+@ $F72F label=Messaging_HeSayLookWhatWeFound
+N $F72F Print "#DECODESTR(#PC)".
+B $F72F,$01 "#DECODE(#PEEK(#PC))".
+L $F72F,$01,$4A,$02
+B $F779,$01 Terminator.
+
+t $F77A Messaging: "A Speeding Ambulance Rushes Past; The Siren Blaring"
+@ $F77A label=Messaging_SpeedingAmbulance
+N $F77A Print "#DECODESTR(#PC)".
+B $F77A,$01 "#DECODE(#PEEK(#PC))".
+L $F77A,$01,$1E,$02
+B $F798,$01 Terminator.
+
+t $F799 Messaging: "You Look Up"
+@ $F799 label=Messaging_YouLookUp
+N $F799 Print "#DECODESTR(#PC)".
+B $F799,$01 "#DECODE(#PEEK(#PC))".
+L $F799,$01,$3A,$02
+B $F7D3,$01 Terminator.
+
+t $F7D4 Messaging: "A Rescue Truck Tears Past You"
+@ $F7D4 label=Messaging_RescueTruckTearsPast
+N $F7D4 Print "#DECODESTR(#PC)".
+B $F7D4,$01 "#DECODE(#PEEK(#PC))".
+L $F7D4,$01,$3B,$02
+B $F80F,$01 Terminator.
+
+t $F810 Messaging: "Nasty Leak That!"
+@ $F810 label=Messaging_NastyLeakThat
+N $F810 Print "#DECODESTR(#PC)".
+B $F810,$01 "#DECODE(#PEEK(#PC))".
+L $F810,$01,$08,$02
+B $F818,$01 Terminator.
+
+t $F819 Messaging: "Try Examining Things"
+@ $F819 label=Messaging_TryExaminingThings
+N $F819 Print "#DECODESTR(#PC)".
+B $F819,$01 "#DECODE(#PEEK(#PC))".
+L $F819,$01,$0B,$02
+B $F824,$01 Terminator.
+
+t $F825 Messaging: "You Don't Really Need It"
+@ $F825 label=Messaging_YouDontReallyNeedIt
+N $F825 Print "#DECODESTR(#PC)".
+B $F825,$01 "#DECODE(#PEEK(#PC))".
+L $F825,$01,$0D,$02
+B $F832,$01 Terminator.
+
+t $F833 Messaging: "You See That This Is The Body Of A Young Woman. In Her Jacket Pocket, You Find A Key"
+@ $F833 label=Messaging_SeeThisIsBodyYoungWoman
+N $F833 Print "#DECODESTR(#PC)".
+B $F833,$01 "#DECODE(#PEEK(#PC))".
+L $F833,$01,$2E,$02
+B $F861,$01 Terminator.
+
+t $F862 Messaging: "You Turn The Body Over, A New Valve Drops From A Limp Hand"
+@ $F862 label=Messaging_TurnTheBodyOver
+N $F862 Print "#DECODESTR(#PC)".
+B $F862,$01 "#DECODE(#PEEK(#PC))".
+L $F862,$01,$22,$02
+B $F884,$01 Terminator.
+
+t $F885 Messaging: "The Bottle Is Empty"
+@ $F885 label=Messaging_BottleIsEmpty
+N $F885 Print "#DECODESTR(#PC)".
+B $F885,$01 "#DECODE(#PEEK(#PC))".
+L $F885,$01,$0B,$02
+B $F890,$01 Terminator.
+
+t $F891 Messaging: "It's Full Of Water"
+@ $F891 label=Messaging_FullOfWater
+N $F891 Print "#DECODESTR(#PC)".
+B $F891,$01 "#DECODE(#PEEK(#PC))".
+L $F891,$01,$0E,$02
+B $F89F,$01 Terminator.
+
+t $F8A0 Messaging: "It's Full Of Oil"
+@ $F8A0 label=Messaging_FullOfOil
+N $F8A0 Print "#DECODESTR(#PC)".
+B $F8A0,$01 "#DECODE(#PEEK(#PC))".
+L $F8A0,$01,$0D,$02
+B $F8AD,$01 Terminator.
+
+t $F8AE Messaging: "You Have Found A Bottle"
+@ $F8AE label=Messaging_FoundABottle
+N $F8AE Print "#DECODESTR(#PC)".
+B $F8AE,$01 "#DECODE(#PEEK(#PC))".
+L $F8AE,$01,$0C,$02
+B $F8BA,$01 Terminator.
+
+t $F8BB Messaging: "They Look Very Unsafe"
+@ $F8BB label=Messaging_LookVeryUnsafe
+N $F8BB Print "#DECODESTR(#PC)".
+B $F8BB,$01 "#DECODE(#PEEK(#PC))".
+L $F8BB,$01,$2F,$02
+B $F8EA,$01 Terminator.
+
+t $F8EB Messaging: "It's Not Worth It At The Best Of Times"
+@ $F8EB label=Messaging_NotWorthIt
+N $F8EB Print "#DECODESTR(#PC)".
+B $F8EB,$01 "#DECODE(#PEEK(#PC))".
+L $F8EB,$01,$17,$02
+B $F902,$01 Terminator.
+
+t $F903 Messaging: "It Would Appear That Someone Called "kilroy" Has Passed This Way"
+@ $F903 label=Messaging_WouldAppearKilroy
+N $F903 Print "#DECODESTR(#PC)".
+B $F903,$01 "#DECODE(#PEEK(#PC))".
+L $F903,$01,$29,$02
+B $F92C,$01 Terminator.
+
+t $F92D Messaging: "You Have Found A Key"
+@ $F92D label=Messaging_FoundKey
+N $F92D Print "#DECODESTR(#PC)".
+B $F92D,$01 "#DECODE(#PEEK(#PC))".
+L $F92D,$01,$09,$02
+B $F936,$01 Terminator.
+
+t $F937 Messaging: "It Is Meant To Have Wires Connected To It"
+@ $F937 label=Messaging_MeantWiresConnected
+N $F937 Print "#DECODESTR(#PC)".
+B $F937,$01 "#DECODE(#PEEK(#PC))".
+L $F937,$01,$1B,$02
+B $F952,$01 Terminator.
+
+t $F953 Messaging: "You Have Found A Panel In The Ceiling"
+@ $F953 label=Messaging_FoundPanelInCeiling
+N $F953 Print "#DECODESTR(#PC)".
+B $F953,$01 "#DECODE(#PEEK(#PC))".
+L $F953,$01,$12,$02
+B $F965,$01 Terminator.
+
+t $F966 Messaging: "You Have Found A Torch"
+@ $F966 label=Messaging_FoundTorch
+N $F966 Print "#DECODESTR(#PC)".
+B $F966,$01 "#DECODE(#PEEK(#PC))".
+L $F966,$01,$0B,$02
+B $F971,$01 Terminator.
+
+t $F972 Messaging: "You Find Nothing Of Interest"
+@ $F972 label=Messaging_FindNothingOfInterest
+N $F972 Print "#DECODESTR(#PC)".
+B $F972,$01 "#DECODE(#PEEK(#PC))".
+L $F972,$01,$0D,$02
+B $F97F,$01 Terminator.
+
+t $F980 Messaging: "You Have Nothing To Carry It In"
+@ $F980 label=Messaging_YouHaveNothingToCarryItIn
+N $F980 Print "#DECODESTR(#PC)".
+B $F980,$01 "#DECODE(#PEEK(#PC))".
+L $F980,$01,$10,$02
+B $F990,$01 Terminator.
+
+t $F991 Messaging: "You're Already Wearing It"
+@ $F991 label=Messaging_YoureAlreadyWearingIt
+N $F991 Print "#DECODESTR(#PC)".
+B $F991,$01 "#DECODE(#PEEK(#PC))".
+L $F991,$01,$0C,$02
+B $F99D,$01 Terminator.
+
+t $F99E Messaging: "You Can't, You're Standing On It"
+@ $F99E label=Messaging_YouCantYoureStandingOnIt
+N $F99E Print "#DECODESTR(#PC)".
+B $F99E,$01 "#DECODE(#PEEK(#PC))".
+L $F99E,$01,$10,$02
+B $F9AE,$01 Terminator.
+
+t $F9AF Messaging: "You Need Both Hands To Carry It, So Drop Everything Else"
+@ $F9AF label=Messaging_YouNeedBothHands
+N $F9AF Print "#DECODESTR(#PC)".
+B $F9AF,$01 "#DECODE(#PEEK(#PC))".
+L $F9AF,$01,$21,$02
+B $F9D0,$01 Terminator.
+
+t $F9D1 Messaging: "You Can't. You're Sitting In The Car"
+@ $F9D1 label=Messaging_YouCantSittingInTheCar
+N $F9D1 Print "#DECODESTR(#PC)".
+B $F9D1,$01 "#DECODE(#PEEK(#PC))".
+L $F9D1,$01,$12,$02
+B $F9E3,$01 Terminator.
+
+t $F9E4 Messaging: "I Don't See The Point Of Dropping Things In The Car"
+@ $F9E4 label=Messaging_IDontSeeThePointInCar
+N $F9E4 Print "#DECODESTR(#PC)".
+B $F9E4,$01 "#DECODE(#PEEK(#PC))".
+L $F9E4,$01,$1E,$02
+B $FA02,$01 Terminator.
+
+t $FA03 Messaging: "The Lions Devour The Meat Greedily"
+@ $FA03 label=Messaging_LionsDevourMeat
+N $FA03 Print "#DECODESTR(#PC)".
+B $FA03,$01 "#DECODE(#PEEK(#PC))".
+L $FA03,$01,$17,$02
+B $FA1A,$01 Terminator.
+
+t $FA1B Messaging: "The Chimps Squabble Over The Fruit, Noisily"
+@ $FA1B label=Messaging_ChimpsSquabbleOverFruit
+N $FA1B Print "#DECODESTR(#PC)".
+B $FA1B,$01 "#DECODE(#PEEK(#PC))".
+L $FA1B,$01,$18,$02
+B $FA33,$01 Terminator.
+
+t $FA34 Messaging: "The Elephant Takes The Buns"
+@ $FA34 label=Messaging_ElephantTakesBuns
+N $FA34 Print "#DECODESTR(#PC)".
+B $FA34,$01 "#DECODE(#PEEK(#PC))".
+L $FA34,$01,$57,$02
+B $FA8B,$01 Terminator.
+
+t $FA8C Messaging: "You Have Some Already"
+@ $FA8C label=Messaging_YouHaveSomeAlready
+N $FA8C Print "#DECODESTR(#PC)".
+B $FA8C,$01 "#DECODE(#PEEK(#PC))".
+L $FA8C,$01,$09,$02
+B $FA95,$01 Terminator.
+
+t $FA96 Messaging: "No. It May Be Contaminated"
+@ $FA96 label=Messaging_ItMayBeContaminated
+N $FA96 Print "#DECODESTR(#PC)".
+B $FA96,$01 "#DECODE(#PEEK(#PC))".
+L $FA96,$01,$12,$02
+B $FAA8,$01 Terminator.
+
+t $FAA9 Messaging: "It Isn't Full Of Anything"
+@ $FAA9 label=Messaging_ItIsntFullOfAnything
+N $FAA9 Print "#DECODESTR(#PC)".
+B $FAA9,$01 "#DECODE(#PEEK(#PC))".
+L $FAA9,$01,$10,$02
+B $FAB9,$01 Terminator.
+
+t $FABA Messaging: "You Don't Know How To Do That"
+@ $FABA label=Messaging_YouDontKnowHowToDoThat
+N $FABA Print "#DECODESTR(#PC)".
+B $FABA,$01 "#DECODE(#PEEK(#PC))".
+L $FABA,$01,$12,$02
+B $FACC,$01 Terminator.
+
+t $FACD Messaging: "The Elephant Totally Ignores You"
+@ $FACD label=Messaging_ElephantTotallyIgnoresYou
+N $FACD Print "#DECODESTR(#PC)".
+B $FACD,$01 "#DECODE(#PEEK(#PC))".
+L $FACD,$01,$16,$02
+B $FAE3,$01 Terminator.
+
+t $FAE4 Messaging: "As The Steel Head Strikes The Rubble, Bright Sparks Fly"
+@ $FAE4 label=Messaging_SteelHeadStrikesRubbleBrightSparksFly
+N $FAE4 Print "#DECODESTR(#PC)".
+B $FAE4,$01 "#DECODE(#PEEK(#PC))".
+L $FAE4,$01,$47,$02
+B $FB2B,$01 Terminator.
+
+t $FB2C Messaging: "The Elephant Trumpets Angrily"
+@ $FB2C label=Messaging_ElephantTrumpets
+N $FB2C Print "#DECODESTR(#PC)".
+B $FB2C,$01 "#DECODE(#PEEK(#PC))".
+L $FB2C,$01,$67,$02
+B $FB93,$01 Terminator.
+
+t $FB94 Messaging: "It Has No Noticeable Effect"
+@ $FB94 label=Messaging_HasNoNoticeableEffect
+N $FB94 Print "#DECODESTR(#PC)".
+B $FB94,$01 "#DECODE(#PEEK(#PC))".
+L $FB94,$01,$13,$02
+B $FBA7,$01 Terminator.
+
+t $FBA8 Messaging: "You're Already There"
+@ $FBA8 label=Messaging_YoureAlreadyThere
+N $FBA8 Print "#DECODESTR(#PC)".
+B $FBA8,$01 "#DECODE(#PEEK(#PC))".
+L $FBA8,$01,$0A,$02
+B $FBB2,$01 Terminator.
+
+t $FBB3 Messaging: "You Make A Valiant Attempt, But It Is Too Wide..."
+@ $FBB3 label=Messaging_YouMakeAttempt
+N $FBB3 Print "#DECODESTR(#PC)".
+B $FBB3,$01 "#DECODE(#PEEK(#PC))".
+L $FBB3,$01,$1D,$02
+B $FBD0,$01 Terminator.
+
+t $FBD1 Messaging: "Don't Be Ridiculous"
+@ $FBD1 label=Messaging_DontBeRidiculous
+N $FBD1 Print "#DECODESTR(#PC)".
+B $FBD1,$01 "#DECODE(#PEEK(#PC))".
+L $FBD1,$01,$0D,$02
+B $FBDE,$01 Terminator.
+
+t $FBDF Messaging: "You Must Be Joking!"
+@ $FBDF label=Messaging_YouMustBeJoking
+N $FBDF Print "#DECODESTR(#PC)".
+B $FBDF,$01 "#DECODE(#PEEK(#PC))".
+L $FBDF,$01,$0C,$02
+B $FBEB,$01 Terminator.
+
+t $FBEC Messaging: "You're Not In It"
+@ $FBEC label=Messaging_YoureNotInIt
+N $FBEC Print "#DECODESTR(#PC)".
+B $FBEC,$01 "#DECODE(#PEEK(#PC))".
+L $FBEC,$01,$09,$02
+B $FBF5,$01 Terminator.
+
+t $FBF6 Messaging: "You Can't Reach It"
+@ $FBF6 label=Messaging_YouCantReachIt
+N $FBF6 Print "#DECODESTR(#PC)".
+B $FBF6,$01 "#DECODE(#PEEK(#PC))".
+L $FBF6,$01,$0B,$02
+B $FC01,$01 Terminator.
+
+t $FC02 Messaging: "You've Done That Already"
+@ $FC02 label=Messaging_YouveDoneThatAlready
+N $FC02 Print "#DECODESTR(#PC)".
+B $FC02,$01 "#DECODE(#PEEK(#PC))".
+L $FC02,$01,$0C,$02
+B $FC0E,$01 Terminator.
+
+t $FC0F Messaging: "It's Already Open"
+@ $FC0F label=Messaging_AlreadyOpen
+N $FC0F Print "#DECODESTR(#PC)".
+B $FC0F,$01 "#DECODE(#PEEK(#PC))".
+L $FC0F,$01,$0B,$02
+B $FC1A,$01 Terminator.
+
+t $FC1B Messaging: "It's Already Closed"
+@ $FC1B label=Messaging_AlreadyClosed
+N $FC1B Print "#DECODESTR(#PC)".
+B $FC1B,$01 "#DECODE(#PEEK(#PC))".
+L $FC1B,$01,$0D,$02
+B $FC28,$01 Terminator.
+
+t $FC29 Messaging: "You Can't It's Locked"
+@ $FC29 label=Messaging_ItsLocked
+N $FC29 Print "#DECODESTR(#PC)".
+B $FC29,$01 "#DECODE(#PEEK(#PC))".
+L $FC29,$01,$0C,$02
+B $FC35,$01 Terminator.
+
+t $FC36 Messaging: "You See A Square Ended Shaft Protruding From The Operating Mechanism"
+@ $FC36 label=Messaging_SeeSquareEndedShaft
+N $FC36 Print "#DECODESTR(#PC)".
+B $FC36,$01 "#DECODE(#PEEK(#PC))".
+L $FC36,$01,$25,$02
+B $FC5B,$01 Terminator.
+
+t $FC5C Messaging: "You See A Square Hole Through The Boss At One End"
+@ $FC5C label=Messaging_SeeSquareHole
+N $FC5C Print "#DECODESTR(#PC)".
+B $FC5C,$01 "#DECODE(#PEEK(#PC))".
+L $FC5C,$01,$1D,$02
+B $FC79,$01 Terminator.
+
+t $FC7A Messaging: "The Mechanism Appears To Be Seized With Rust"
+@ $FC7A label=Messaging_MechanismSeizedWithRust
+N $FC7A Print "#DECODESTR(#PC)".
+B $FC7A,$01 "#DECODE(#PEEK(#PC))".
+L $FC7A,$01,$1B,$02
+B $FC95,$01 Terminator.
+
+t $FC96 Messaging: "The Sluicegate Opens, Releasing A Torrent Of Water Into The Sewer. This Continues For Several Minutes Before Finally Subsiding"
+@ $FC96 label=Messaging_SluicegateOpens
+N $FC96 Print "#DECODESTR(#PC)".
+B $FC96,$01 "#DECODE(#PEEK(#PC))".
+L $FC96,$01,$49,$02
+B $FCDF,$01 Terminator.
+
+t $FCE0 Messaging: "The Engine Is Already Running"
+@ $FCE0 label=Messaging_EngineAlreadyRunning
+N $FCE0 Print "#DECODESTR(#PC)".
+B $FCE0,$01 "#DECODE(#PEEK(#PC))".
+L $FCE0,$01,$0E,$02
+B $FCEE,$01 Terminator.
+
+t $FCEF Messaging: "You Don't Have A Key"
+@ $FCEF label=Messaging_YouDontHaveAKey
+N $FCEF Print "#DECODESTR(#PC)".
+B $FCEF,$01 "#DECODE(#PEEK(#PC))".
+L $FCEF,$01,$0A,$02
+B $FCF9,$01 Terminator.
+
+t $FCFA Messaging: "The Engine Bursts Into Life"
+@ $FCFA label=Messaging_EngineBurstsIntoLife
+N $FCFA Print "#DECODESTR(#PC)".
+B $FCFA,$01 "#DECODE(#PEEK(#PC))".
+L $FCFA,$01,$0E,$02
+B $FD08,$01 Terminator.
+
+t $FD09 Messaging: "The Circuit Is Energised"
+@ $FD09 label=Messaging_CircuitIsEnergised
+N $FD09 Print "#DECODESTR(#PC)".
+B $FD09,$01 "#DECODE(#PEEK(#PC))".
+L $FD09,$01,$48,$02
+B $FD51,$01 Terminator.
+
+t $FD52 Messaging: "The Circuit Is De-energised And The Display Disappears"
+@ $FD52 label=Messaging_CircuitIsDeenergised
+N $FD52 Print "#DECODESTR(#PC)".
+B $FD52,$01 "#DECODE(#PEEK(#PC))".
+L $FD52,$01,$1F,$02
+B $FD71,$01 Terminator.
+
+t $FD72 Messaging: "As You Touch The Wires"
+@ $FD72 label=Messaging_TouchTheWires
+N $FD72 Print "#DECODESTR(#PC)".
+B $FD72,$01 "#DECODE(#PEEK(#PC))".
+L $FD72,$01,$3F,$02
+B $FDB1,$01 Terminator.
+
+t $FDB2 Messaging: "You Won't Get In There, Carrying That"
+@ $FDB2 label=Messaging_YouWontGetInThereCarryingThat
+N $FDB2 Print "#DECODESTR(#PC)".
+B $FDB2,$01 "#DECODE(#PEEK(#PC))".
+L $FDB2,$01,$13,$02
+B $FDC5,$01 Terminator.
+
+t $FDC6 Messaging: "The Car Hurtles At The Ramp"
+@ $FDC6 label=Messaging_CarHurtlesAtRamp
+N $FDC6 Print "#DECODESTR(#PC)".
+B $FDC6,$01 "#DECODE(#PEEK(#PC))".
+L $FDC6,$01,$8C,$02
+B $FE52,$01 Terminator.
+
+t $FE53 Messaging: "You Drag The Body Out Of The Car And Lay It Down"
+@ $FE53 label=Messaging_DragBodyOutOfTheCar
+N $FE53 Print "#DECODESTR(#PC)".
+B $FE53,$01 "#DECODE(#PEEK(#PC))".
+L $FE53,$01,$23,$02
+B $FE76,$01 Terminator.
+
+t $FE77 Messaging: "It Isn't Switched On"
+@ $FE77 label=Messaging_ItIsntSwitchedOn
+N $FE77 Print "#DECODESTR(#PC)".
+B $FE77,$01 "#DECODE(#PEEK(#PC))".
+L $FE77,$01,$0E,$02
+B $FE85,$01 Terminator.
+
+t $FE86 Messaging: "You Can't, It's Uncooked"
+@ $FE86 label=Messaging_YouCantItsUncooked
+N $FE86 Print "#DECODESTR(#PC)".
+B $FE86,$01 "#DECODE(#PEEK(#PC))".
+L $FE86,$01,$10,$02
+B $FE96,$01 Terminator.
+
+t $FE97 Messaging: "That Was Delicious"
+@ $FE97 label=Messaging_ThatWasDelicious
+N $FE97 Print "#DECODESTR(#PC)".
+B $FE97,$01 "#DECODE(#PEEK(#PC))".
+L $FE97,$01,$0B,$02
+B $FEA2,$01 Terminator.
+
+t $FEA3 Messaging: "You've Eaten Them All"
+@ $FEA3 label=Messaging_YouveEatenThemAll
+N $FEA3 Print "#DECODESTR(#PC)".
+B $FEA3,$01 "#DECODE(#PEEK(#PC))".
+L $FEA3,$01,$17,$02
+B $FEBA,$01 Terminator.
+
+t $FEBB Messaging: "You Eat The Sweets"
+@ $FEBB label=Messaging_YouEatTheSweets
+N $FEBB Print "#DECODESTR(#PC)".
+B $FEBB,$01 "#DECODE(#PEEK(#PC))".
+L $FEBB,$01,$09,$02
+B $FEC4,$01 Terminator.
+
+t $FEC5 Messaging: "You Are A Sick Person"
+@ $FEC5 label=Messaging_YouAreASickPerson
+N $FEC5 Print "#DECODESTR(#PC)".
+B $FEC5,$01 "#DECODE(#PEEK(#PC))".
+L $FEC5,$01,$0B,$02
+B $FED0,$01 Terminator.
+
+t $FED1 Messaging: "That Is Not Advisable"
+@ $FED1 label=Messaging_ThatIsNotAdvisable
+N $FED1 Print "#DECODESTR(#PC)".
+B $FED1,$01 "#DECODE(#PEEK(#PC))".
+L $FED1,$01,$0C,$02
+B $FEDD,$01 Terminator.
+
+t $FEDE Messaging: "It Isn't Locked"
+@ $FEDE label=Messaging_ItIsntLocked
+N $FEDE Print "#DECODESTR(#PC)".
+B $FEDE,$01 "#DECODE(#PEEK(#PC))".
+L $FEDE,$01,$0A,$02
+B $FEE8,$01 Terminator.
+
+t $FEE9 Messaging: "You Haven't Got Any Oil"
+@ $FEE9 label=Messaging_YouHaventGotAnyOil
+N $FEE9 Print "#DECODESTR(#PC)".
+B $FEE9,$01 "#DECODE(#PEEK(#PC))".
+L $FEE9,$01,$0D,$02
+B $FEF6,$01 Terminator.
+
+t $FEF7 Messaging: "You Don't Have A Screwdriver"
+@ $FEF7 label=Messaging_YouDontHaveAScrewdriver
+N $FEF7 Print "#DECODESTR(#PC)".
+B $FEF7,$01 "#DECODE(#PEEK(#PC))".
+L $FEF7,$01,$10,$02
+B $FF07,$01 Terminator.
+
+t $FF08 Messaging: "You Have Your Hands Full At The Moment"
+@ $FF08 label=Messaging_YouHaveYourHandsFullAtTheMoment
+N $FF08 Print "#DECODESTR(#PC)".
+B $FF08,$01 "#DECODE(#PEEK(#PC))".
+L $FF08,$01,$15,$02
+B $FF1D,$01 Terminator.
+
+u $FF1E
+
+g $FF40
+

@@ -56,7 +56,7 @@ class AdventureGame:
 
     def get_word(self, address):
         """Helper method to get a word from snapshot"""
-        return self.snapshot[address] + 256 * self.snapshot[address + 1]
+        return self.snapshot[address] + 0x100 * self.snapshot[address + 0x01]
 
     def get_string(self, address, terminator=0xFF):
         """Helper method to extract a string from snapshot"""
@@ -70,8 +70,59 @@ class AdventureGame:
 
 
 class AfterShock(AdventureGame):
+    def _expand_byte(self, byte, result, processed, newline_as_space=True):
+        """Common byte expansion logic for decoding"""
+        if byte < 0x5F:
+            ascii_val = byte + 0x20
+            if ascii_val == 0x7E:
+                result.append(' ' if newline_as_space else '\n')
+            else:
+                result.append(chr(ascii_val))
+        elif byte == 0x5F:
+            pass
+        elif byte in processed:
+            result.append(f'[Loop:${byte:02X}]')
+        else:
+            processed.add(byte)
+            dict_offset = (byte - 0x60) * 0x02
+            dict_base = 0xC8EB
+
+            self._expand_byte(self.snapshot[dict_base + dict_offset], result, processed, newline_as_space)
+            self._expand_byte(self.snapshot[dict_base + dict_offset + 0x01], result, processed, newline_as_space)
+            processed.remove(byte)
+
+    def get_decoded_string(self, address, terminator=0x5F):
+        """Extract and decode a string from snapshot"""
+        result = []
+        processed = set()
+        start = address
+
+        while address < 0x10000 and self.snapshot[address] != terminator:
+            self._expand_byte(self.snapshot[address], result, processed)
+            address += 1
+
+        return ''.join(result), address
+
     def get_text(self):
-        return "# AfterShock text data\n"
+        """Extract text data from the game"""
+        start = 0xF195
+        end = 0xFF1D
+        lines = []
+        pc = start
+        while pc < end:
+            start = pc
+            decoded_string, pc = self.get_decoded_string(pc)
+            words = [word.capitalize() for word in decoded_string.split()]
+            label = [''.join(c for c in word if c.isalpha()) for word in words]
+            lines.append(f"t ${start:04X} Messaging: \"{' '.join(words)}\"")
+            lines.append(f"@ ${start:04X} label=Messaging_{''.join(label)}")
+            lines.append(f"N ${start:04X} Print \"#DECODESTR(#PC)\".")
+            lines.append(f"B ${start:04X},$01 \"#DECODE(#PEEK(#PC))\".")
+            lines.append(f"L ${start:04X},$01,${pc-start:02X},$02")
+            lines.append(f"B ${pc:04X},$01 Terminator.")
+            lines.append("")
+            pc += 0x01
+        return '\n'.join(lines)
 
 
 class BlizzardPass(AdventureGame):
