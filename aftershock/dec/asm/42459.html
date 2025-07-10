@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>After Shock: Routine at 42459</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="42438.html">42438</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#42459">Map</a></td>
+<td class="next">
+Next: <a href="42506.html">42506</a>
+</td>
+</tr>
+</table>
+<div class="description">42459: Match Phrase Tokens</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="43016.html">43016</a>.
+</div>
+<div class="paragraph">
+Matches phrase patterns with multiple variations against user input tokens.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">HL</td>
+<td class="register-desc">A pointer to phrase token data</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The Z flag is set if the input matches any pattern</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchPhraseTokens</td>
+<td class="address-2"><span id="42459"></span>42459</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1">Switch the phrase token pointer to <span class="register">DE</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42460"></span>42460</td>
+<td class="instruction">JR <a href="42459.html#42463">MatchPhraseTokens_Start</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42459.html#42463">MatchPhraseTokens_Start</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42462"></span>
+<div class="comments">
+<div class="paragraph">
+Skip the separator.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchPhraseTokens_Loop</td>
+<td class="address-2"><span id="42462"></span>42462</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Increment the phrase token pointer by one.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42463"></span>
+<div class="comments">
+<div class="paragraph">
+Fetch the second user input token (not the first, as the first token is the verb and the second token onwards gives the context).
+</div>
+<div class="paragraph">
+For example; "GET" (verb) "KEG OF GUNPOWDER" (direct object).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchPhraseTokens_Start</td>
+<td class="address-2"><span id="42463"></span>42463</td>
+<td class="instruction">LD HL,41276</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="41275.html#41276">UserInput_Token_2</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42466"></span>42466</td>
+<td class="instruction">JR <a href="42459.html#42470">CompareTokens</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42459.html#42470">CompareTokens</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42468"></span>
+<div class="comments">
+<div class="paragraph">
+The tokens matched so advance both pointers.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchTokens_Loop</td>
+<td class="address-2"><span id="42468"></span>42468</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Increment the input token pointer by one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42469"></span>42469</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Increment the pattern token pointer by one.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42470"></span>
+<div class="comments">
+<div class="paragraph">
+Keep looping if the tokens match.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CompareTokens</td>
+<td class="address-2"><span id="42470"></span>42470</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="42459.html#42468">MatchTokens_Loop</a> if the pattern token and the input token are the same.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42471"></span>42471</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42472"></span>42472</td>
+<td class="instruction">JR Z,<a href="42459.html#42468">MatchTokens_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42474"></span>
+<div class="comments">
+<div class="paragraph">
+The tokens are different, but is it just that we are at the end of the pattern?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42474"></span>42474</td>
+<td class="instruction">CP 254</td>
+<td class="comment-1" rowspan="2">Jump to <a href="42459.html#42482">CheckSeparator</a> unless this is the terminator character (254).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42476"></span>42476</td>
+<td class="instruction">JR NZ,<a href="42459.html#42482">CheckSeparator</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42478"></span>
+<div class="comments">
+<div class="paragraph">
+Yes! The input tokens all matched against the phrase pattern tokens.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42478"></span>42478</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Return with Z flag result.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42479"></span>42479</td>
+<td class="instruction">CP 255</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42481"></span>42481</td>
+<td class="instruction">RET</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42482"></span>
+<div class="comments">
+<div class="paragraph">
+The tokens are different, but is this a separator character?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckSeparator</td>
+<td class="address-2"><span id="42482"></span>42482</td>
+<td class="instruction">CP 253</td>
+<td class="comment-1" rowspan="2">Jump to <a href="42459.html#42492">MatchPhraseTokens_Next</a> if this is not the separator (253).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42484"></span>42484</td>
+<td class="instruction">JR NZ,<a href="42459.html#42492">MatchPhraseTokens_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42486"></span>42486</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="42459.html#42462">MatchPhraseTokens_Loop</a> if the input tokens are not complete.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42487"></span>42487</td>
+<td class="instruction">CP 255</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42489"></span>42489</td>
+<td class="instruction">JR NZ,<a href="42459.html#42462">MatchPhraseTokens_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42491"></span>42491</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42492"></span>
+<div class="comments">
+<div class="paragraph">
+The current variant doesn't match, so skip to the next one.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchPhraseTokens_Next</td>
+<td class="address-2"><span id="42492"></span>42492</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Increment the phrase token pointer by one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42493"></span>42493</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="42459.html#42504">MatchPhraseTokens_Return</a> if the terminator has been reached (254).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42494"></span>42494</td>
+<td class="instruction">CP 254</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42496"></span>42496</td>
+<td class="instruction">JR Z,<a href="42459.html#42504">MatchPhraseTokens_Return</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42498"></span>42498</td>
+<td class="instruction">CP 253</td>
+<td class="comment-1" rowspan="2">Jump to <a href="42459.html#42492">MatchPhraseTokens_Next</a> if this is not the separator (253).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42500"></span>42500</td>
+<td class="instruction">JR NZ,<a href="42459.html#42492">MatchPhraseTokens_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42502"></span>42502</td>
+<td class="instruction">JR <a href="42459.html#42462">MatchPhraseTokens_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42459.html#42462">MatchPhraseTokens_Loop</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42504"></span>
+<div class="comments">
+<div class="paragraph">
+The input doesn't match any patterns.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchPhraseTokens_Return</td>
+<td class="address-2"><span id="42504"></span>42504</td>
+<td class="instruction">OR A</td>
+<td class="comment-1" rowspan="1">Clear the Z flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42505"></span>42505</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/50047.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/warlord/dec/asm/44672.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="42438.html">42438</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#42459">Map</a></td>
+<td class="next">
+Next: <a href="42506.html">42506</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
+<div><a href="../../asm/A5DB.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

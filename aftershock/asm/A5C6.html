@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>After Shock: Routine at A5C6</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A591.html">A591</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a5c6">Map</a></td>
+<td class="next">
+Next: <a href="A5DB.html">A5DB</a>
+</td>
+</tr>
+</table>
+<div class="description">A5C6: Validate If Item Is Present</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="A591.html">Action_ExamineItem</a>, <a href="A652.html">CheckActiveScenicEvents</a>, <a href="A808.html">A808</a> and <a href="AC88.html">AC88</a>.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Object ID</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">Z flag set if the object is available</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ValidateItemPresent</td>
+<td class="address-2"><span id="a5c6"></span>A5C6</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Stash <span class="register">HL</span> and <span class="register">DE</span> on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5c7"></span>A5C7</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5c8"></span>A5C8</td>
+<td class="instruction">LD E,A</td>
+<td class="comment-1" rowspan="2">Store the object ID in <span class="register">DE</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5c9"></span>A5C9</td>
+<td class="instruction">LD D,$00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5cb"></span>A5CB</td>
+<td class="instruction">LD HL,$9F88</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="9F88.html">Table_ItemLocations</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5ce"></span>A5CE</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Add the object ID to the object/ event locations table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5cf"></span>A5CF</td>
+<td class="instruction">LD A,($A106)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="A5C6.html#a5d8">Handler_Objects_Return</a> if the object/ event table states that it's located in *<a href="A106.html">CurrentRoom</a>. Note also sets/ unsets the Z flag accordingly.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5d2"></span>A5D2</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5d3"></span>A5D3</td>
+<td class="instruction">JR Z,<a href="A5C6.html#a5d8">Handler_Objects_Return</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a5d5"></span>
+<div class="comments">
+<div class="paragraph">
+Check the players inventory, as an object can still be used if it's being held.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5d5"></span>A5D5</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">Lastly, set the Z flag if the item is in the players inventory.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5d7"></span>A5D7</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a5d8"></span>
+<div class="comments">
+<div class="paragraph">
+Housekeeping; restore <span class="register">DE</span> and <span class="register">HL</span> to their previous values.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_Objects_Return</td>
+<td class="address-2"><span id="a5d8"></span>A5D8</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5d9"></span>A5D9</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a5da"></span>A5DA</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/asm/C35F.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/warlord/asm/AE6B.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A591.html">A591</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a5c6">Map</a></td>
+<td class="next">
+Next: <a href="A5DB.html">A5DB</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
+<div><a href="../dec/asm/42438.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>
