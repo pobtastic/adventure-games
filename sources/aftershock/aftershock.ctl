@@ -50,10 +50,14 @@ N $9E07 Fetch the keypress.
 
 c $9E0B Clear Lines
 @ $9E0B label=ClearLines
-E $9E0B View the equivalent code in #JEWELS$BA74.
-  $9E0B,$04
+E $9E0B View the equivalent code in;
+. #LIST
+. { #JEWELS$BA74 }
+. { #WARLORD$A555 }
+. LIST#
+  $9E0B,$04 Stash #REGhl, #REGde, #REGbc and #REGaf on the stack.
   $9E0F,$05 #HTML(Clear #N$18 lines from the bottom of the screen using <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0E44.html">CL_LINE</a>.)
-  $9E14,$04
+  $9E14,$04 Restore #REGaf, #REGbc, #REGde and #REGhl from the stack.
   $9E18,$01 Return.
 
 c $9E19 Set Default Screen Position
@@ -69,7 +73,19 @@ E $9E19 View the equivalent code in;
   $9E22,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $9E25,$01 Return.
 
-c $9E26
+c $9E26 Print Character
+@ $9E26 label=PrintCharacter
+E $9E26 View the equivalent code in;
+. #LIST
+. { #JEWELS$BAC3 }
+. { #WARLORD$A5A4 }
+. LIST#
+R $A5A4 A The character to print
+  $9E26,$01 Stash the character to print on the stack.
+  $9E27,$05 #HTML(Write #N$FF to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C8C.html">SCR_CT</a>.)
+  $9E2C,$01 Restore the character to print from the stack.
+  $9E2D,$01 #HTML(Print to the screen using <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0010.html">PRINT_A_1</a>.)
+  $9E2E,$01 Return.
 
 c $9E2F Pause Loop
 @ $9E2F label=Pause_Loop
@@ -125,6 +141,49 @@ c $A1C8
 
 c $A1F4 Print String
 @ $A1F4 label=PrintString
+D $A1F4 Prints a compressed text string using a dictionary lookup. #SIM(start=$A1F4,stop=$A20C,hl=$0024)#N({sim[HL]}).
+R $A1F4 HL Messaging string ID
+  $A1F4,$06 Stash #REGix, #REGhl, #REGde, #REGbc and #REGaf on the stack.
+  $A1FA,$01 Double the messaging string ID held in #REGhl.
+  $A1FB,$07 Add the result to #R$CA2B.
+  $A202,$06 Fetch the address from the string pointer table and store it in
+. #REGhl.
+  $A208,$04 #REGhl+=#R$C8E9.
+  $A20C,$02 Jump to #R$A223.
+  $A20E,$04 Jump to #R$A217 if #REGa is less than #N$60.
+  $A212,$03 Call #R$A22F.
+  $A215,$02 Jump to #R$A222.
+  $A217,$02 #REGa+=#N$20.
+  $A219,$04 Jump to #R$A21F if #REGa is not equal to #N$7E.
+  $A21D,$02 #REGa=#N$0D.
+  $A21F,$03 Call #R$9E26.
+  $A222,$01 Increment #REGhl by one.
+  $A223,$01 #REGa=*#REGhl.
+  $A224,$04 Jump to #R$A20E if #REGa is not equal to #N$5F.
+  $A228,$06 Restore #REGaf, #REGbc, #REGde, #REGhl and #REGix from the stack.
+  $A22E,$01 Return.
+
+  $A22F,$03 Stash #REGhl, #REGde and #REGbc on the stack.
+  $A232,$02 #REGa-=#N$60.
+  $A234,$01 #REGl=#REGa.
+  $A235,$02 #REGh=#N$00.
+  $A237,$01 #REGhl+=#REGhl.
+  $A238,$03 #REGde=#R$C8EB.
+  $A23B,$01 #REGhl+=#REGde.
+  $A23C,$02 #REGb=#N$02.
+  $A23E,$02 Jump to #R$A241.
+  $A240,$01 Increment #REGhl by one.
+  $A241,$01 #REGa=*#REGhl.
+  $A242,$04 Jump to #R$A24B if #REGa is less than #N$60.
+  $A246,$03 Call #R$A22F.
+  $A249,$02 Jump to #R$A256.
+  $A24B,$02 #REGa+=#N$20.
+  $A24D,$04 Jump to #R$A253 if #REGa is not equal to #N$7E.
+  $A251,$02 #REGa=#N$0D.
+  $A253,$03 Call #R$9E26.
+  $A256,$02 Decrease counter by one and loop back to #R$A240 until counter is zero.
+  $A258,$03 Restore #REGbc, #REGde and #REGhl from the stack.
+  $A25B,$01 Return.
 
 c $A25C Print String And A Newline
 @ $A25C label=PrintStringAndNewline
@@ -134,12 +193,12 @@ E $A25C View the equivalent code in;
 . { #JEWELS$BAB1 }
 . { #WARLORD$A592 }
 . LIST#
-  $A25C,$01
+  $A25C,$01 Stash the character to print on the stack.
   $A25D,$03 Call #R$A1F4.
 N $A260 Force a newline to be "printed".
   $A260,$02 Load a "newline" character into #REGa (#N$0D).
   $A262,$03 Call #R$9E26.
-  $A265,$01
+  $A265,$01 Restore the character to print from the stack.
   $A266,$01 Return.
 
 c $A267
@@ -683,4 +742,10 @@ W $CA2B,$02
 L $CA2B,$02,$25
 
 g $C8E9
-T $C8E9
+g $C8EB
+
+b $CE65
+  $CE65,$01 #IF(#PEEK(#PC)<$5F)(#CHR(#PEEK(#PC)+$20),#STR($C8EB+((#PEEK(#PC)-$60)*$02),$04,$02))
+L $CE65,$01,$08
+B $CE6D,$01 Terminator.
+b $CE6E
