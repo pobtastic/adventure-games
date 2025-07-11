@@ -29,245 +29,846 @@ Prev: <a href="42105.html">42105</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#42160">Map</a></td>
 <td class="next">
-Next: <a href="42247.html">42247</a>
+Next: <a href="42385.html">42385</a>
 </td>
 </tr>
 </table>
-<div class="description">42160: Routine at A4B0</div>
+<div class="description">42160: Handler: User Input</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="42247.html">42247</a>, <a href="42256.html">42256</a> and <a href="44449.html">44449</a>.
+Used by the routine at <a href="44449.html">GameStart</a>.
+</div>
+<div class="paragraph">
+Handles keyboard input, tokenises commands and validates the vocabulary.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="address-2"><span id="42160"></span>42160</td>
-<td class="instruction">CALL <a href="41449.html#41453">41453</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="routine-comment" colspan="5">
+<span id="42160"></span>
+<div class="comments">
+<div class="paragraph">
+Reset the screen position to defaults.
+</div>
+</div>
+</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_UserInput</td>
+<td class="address-2"><span id="42160"></span>42160</td>
+<td class="instruction">CALL <a href="41453.html">PrintPrompt</a></td>
+<td class="comment-1" rowspan="1">Call <a href="41453.html">PrintPrompt</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42163"></span>42163</td>
 <td class="instruction">LD HL,41225</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="41225.html">CommandBuffer</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42166"></span>
+<div class="comments">
+<div class="paragraph">
+Initialise the command buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42166"></span>42166</td>
 <td class="instruction">LD B,0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Initialise a letter counter in <span class="register">B</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42168"></span>42168</td>
-<td class="instruction">JR <a href="42160.html#42172">42172</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="42160.html#42172">UserInput_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42160.html#42172">UserInput_Next</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42170"></span>
+<div class="comments">
+<div class="paragraph">
+Main input loop - process each keypress.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">UserInput_Loop</td>
 <td class="address-2"><span id="42170"></span>42170</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Move to the next byte of the command buffer.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42171"></span>42171</td>
 <td class="instruction">INC B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Increment the letter counter by one.</td>
 </tr>
 <tr>
+<td class="asm-label">UserInput_Next</td>
 <td class="address-2"><span id="42172"></span>42172</td>
-<td class="instruction">CALL <a href="42064.html">42064</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="42064.html">Print_Cursor</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42064.html">Print_Cursor</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42175"></span>42175</td>
 <td class="instruction">CALL <a href="40443.html">GetUserInput</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="40443.html">GetUserInput</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42178"></span>42178</td>
 <td class="instruction">CP 12</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="42160.html#42198">ValidateUserInput</a> if "DELETE" was not pressed.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42180"></span>42180</td>
-<td class="instruction">JR NZ,<a href="42160.html#42198">42198</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="42160.html#42198">ValidateUserInput</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42182"></span>
+<div class="comments">
+<div class="paragraph">
+The user pressed "DELETE".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42182"></span>42182</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="42160.html#42172">UserInput_Next</a> if there hasn't been any input yet (nothing to delete).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42183"></span>42183</td>
 <td class="instruction">OR B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42184"></span>42184</td>
-<td class="instruction">JR Z,<a href="42160.html#42172">42172</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="42160.html#42172">UserInput_Next</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42186"></span>
+<div class="comments">
+<div class="paragraph">
+There is input which can be deleted, so action a delete!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42186"></span>42186</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Temporarily stash the command buffer pointer in <span class="register">DE</span>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42187"></span>
+<div class="comments">
+<div class="paragraph">
+Print "SPACE BACKSPACE BACKSPACE SPACE BACKSPACE" to move the current print position on the screen to the previous character, and to delete the character present using a space.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42187"></span>42187</td>
 <td class="instruction">LD HL,42055</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="42055.html">Messaging_SpaceBackspaceBackspaceSpaceBackspace</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42190"></span>42190</td>
 <td class="instruction">CALL <a href="41575.html">41575</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="41575.html">41575</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42193"></span>
+<div class="comments">
+<div class="paragraph">
+Adjust the command buffer position and letter counter.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42193"></span>42193</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the command buffer pointer from <span class="register">DE</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42194"></span>42194</td>
 <td class="instruction">DEC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Decrease the command buffer pointer by one.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42195"></span>42195</td>
 <td class="instruction">DEC B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Decrease the letter counter by one.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42196"></span>42196</td>
-<td class="instruction">JR <a href="42160.html#42172">42172</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="42160.html#42172">UserInput_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42160.html#42172">UserInput_Next</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42198"></span>
+<div class="comments">
+<div class="paragraph">
+Check which key the user pressed:
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ValidateUserInput</td>
 <td class="address-2"><span id="42198"></span>42198</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="42160.html#42216">UserInput_WriteKeypress</a> if "ENTER" was pressed.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42199"></span>42199</td>
 <td class="instruction">CP 13</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42201"></span>42201</td>
-<td class="instruction">JR Z,<a href="42160.html#42216">42216</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="42160.html#42216">UserInput_WriteKeypress</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42203"></span>42203</td>
 <td class="instruction">CP 32</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">If the keypress was any other control key (the value being under 32 ASCII "SPACE"), it's not valid input so jump back to <a href="42160.html#42172">UserInput_Next</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42205"></span>42205</td>
-<td class="instruction">JR C,<a href="42160.html#42172">42172</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR C,<a href="42160.html#42172">UserInput_Next</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42207"></span>42207</td>
 <td class="instruction">CP 128</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">If the keypress was higher than 128 it's also not valid input so jump back to <a href="42160.html#42172">UserInput_Next</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42209"></span>42209</td>
-<td class="instruction">JR NC,<a href="42160.html#42172">42172</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="42160.html#42172">UserInput_Next</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42211"></span>
+<div class="comments">
+<div class="paragraph">
+Is the command buffer full?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42211"></span>42211</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="42160.html#42172">UserInput_Next</a> if the letter counter is 49 (so the buffer is full).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42212"></span>42212</td>
 <td class="instruction">CP 49</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42214"></span>42214</td>
-<td class="instruction">JR Z,<a href="42160.html#42172">42172</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="42160.html#42172">UserInput_Next</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42216"></span>
+<div class="comments">
+<div class="paragraph">
+Writes the keypress into the command buffer and print it to the screen.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">UserInput_WriteKeypress</td>
 <td class="address-2"><span id="42216"></span>42216</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Write the user input key to *<span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42217"></span>42217</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42218"></span>42218</td>
-<td class="instruction">CALL <a href="42087.html">42087</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="42087.html">Print_UserInputToScreen</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42087.html">Print_UserInputToScreen</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42221"></span>
+<div class="comments">
+<div class="paragraph">
+Did the user press "ENTER"?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42221"></span>42221</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="42160.html#42170">UserInput_Loop</a> if "ENTER" was not pressed.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42222"></span>42222</td>
 <td class="instruction">CP 13</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42224"></span>42224</td>
-<td class="instruction">JR NZ,<a href="42160.html#42170">42170</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="42160.html#42170">UserInput_Loop</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42226"></span>
+<div class="comments">
+<div class="paragraph">
+The player pressed "ENTER" so begin to process the user input.
+</div>
+<div class="paragraph">
+Clear down the user input tokens.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42226"></span>42226</td>
 <td class="instruction">LD HL,41275</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="41275.html">UserInput_Token_1</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42229"></span>42229</td>
 <td class="instruction">LD B,10</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for all 10 user input tokens.</td>
 </tr>
 <tr>
+<td class="asm-label">EmptyUserInputTokens_Loop</td>
 <td class="address-2"><span id="42231"></span>42231</td>
 <td class="instruction">LD (HL),255</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Write a termination byte (255) to *<span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42233"></span>42233</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42234"></span>42234</td>
-<td class="instruction">DJNZ <a href="42160.html#42231">42231</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="42160.html#42231">EmptyUserInputTokens_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the user input tokens counter by one and loop back to <a href="42160.html#42231">EmptyUserInputTokens_Loop</a> until all the tokens have been set to termination bytes (255).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42236"></span>
+<div class="comments">
+<div class="paragraph">
+Set up pointers for the command buffer, the user input tokens and the count of the number of user input tokens.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42236"></span>42236</td>
 <td class="instruction">LD HL,41225</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="41225.html">CommandBuffer</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42239"></span>42239</td>
 <td class="instruction">LD IX,41275</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="41275.html">UserInput_Token_1</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42243"></span>42243</td>
 <td class="instruction">LD C,10</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">C</span> for the 10 user input tokens.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42245"></span>42245</td>
-<td class="instruction">JR <a href="42313.html#42321">42321</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="42160.html#42321">EmptyFourLetterBuffer</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42160.html#42321">EmptyFourLetterBuffer</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42247"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Give me a command!".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_0</td>
+<td class="address-2"><span id="42247"></span>42247</td>
+<td class="instruction">LD HL,1</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=
+
+<a href="52491.html">Messaging_GiveMeACommand</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42250"></span>42250</td>
+<td class="instruction">CALL <a href="41564.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="41564.html">PrintStringAndNewline</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42253"></span>42253</td>
+<td class="instruction">JP <a href="42160.html#42160">Handler_UserInput</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42160.html">Handler_UserInput</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_1</td>
+<td class="address-2"><span id="42256"></span>42256</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42257"></span>42257</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42258"></span>42258</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42259"></span>42259</td>
+<td class="instruction">LD HL,(42051)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42262"></span>42262</td>
+<td class="instruction">LD DE,41285</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42265"></span>42265</td>
+<td class="instruction">LD BC,4</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42268"></span>42268</td>
+<td class="instruction">LD A,(42053)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42271"></span>42271</td>
+<td class="instruction">CP C</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42272"></span>42272</td>
+<td class="instruction">JR NC,<a href="42160.html#42275">Handler_UserInput_2</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42274"></span>42274</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_2</td>
+<td class="address-2"><span id="42275"></span>42275</td>
+<td class="instruction">LDIR</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42277"></span>42277</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42278"></span>42278</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42279"></span>42279</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42280"></span>42280</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42281"></span>42281</td>
+<td class="instruction">LD HL,40402</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42284"></span>42284</td>
+<td class="instruction">LD (42111),HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42287"></span>42287</td>
+<td class="instruction">CALL <a href="42105.html">42105</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42290"></span>42290</td>
+<td class="instruction">LD HL,45293</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42293"></span>42293</td>
+<td class="instruction">LD (42111),HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42296"></span>42296</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42297"></span>42297</td>
+<td class="instruction">JR C,<a href="42160.html#42321">EmptyFourLetterBuffer</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42299"></span>42299</td>
+<td class="instruction">CALL <a href="42105.html">42105</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42302"></span>42302</td>
+<td class="instruction">JR C,<a href="42160.html#42313">StoreTokenAndContinue</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42304"></span>42304</td>
+<td class="instruction">LD HL,2</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42307"></span>42307</td>
+<td class="instruction">CALL <a href="41564.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42310"></span>42310</td>
+<td class="instruction">JP <a href="42160.html#42160">Handler_UserInput</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">StoreTokenAndContinue</td>
+<td class="address-2"><span id="42313"></span>42313</td>
+<td class="instruction">LD (IX+0),A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42316"></span>42316</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42318"></span>42318</td>
+<td class="instruction">DEC C</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42319"></span>42319</td>
+<td class="instruction">JR Z,<a href="42160.html#42376">Handler_UserInput_9</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">EmptyFourLetterBuffer</td>
+<td class="address-2"><span id="42321"></span>42321</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42322"></span>42322</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42323"></span>42323</td>
+<td class="instruction">LD HL,41285</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42326"></span>42326</td>
+<td class="instruction">LD B,4</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_3</td>
+<td class="address-2"><span id="42328"></span>42328</td>
+<td class="instruction">LD (HL),32</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42330"></span>42330</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42331"></span>42331</td>
+<td class="instruction">DJNZ <a href="42160.html#42328">Handler_UserInput_3</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42333"></span>42333</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42334"></span>42334</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42335"></span>42335</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42336"></span>42336</td>
+<td class="instruction">JR <a href="42160.html#42339">Handler_UserInput_5</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_4</td>
+<td class="address-2"><span id="42338"></span>42338</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_5</td>
+<td class="address-2"><span id="42339"></span>42339</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42340"></span>42340</td>
+<td class="instruction">CP 13</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42342"></span>42342</td>
+<td class="instruction">JR Z,<a href="42160.html#42372">Handler_UserInput_8</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42344"></span>42344</td>
+<td class="instruction">CALL <a href="42073.html">42073</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42347"></span>42347</td>
+<td class="instruction">JR Z,<a href="42160.html#42338">Handler_UserInput_4</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42349"></span>42349</td>
+<td class="instruction">LD (42051),HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42352"></span>42352</td>
+<td class="instruction">LD DE,0</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_6</td>
+<td class="address-2"><span id="42355"></span>42355</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42356"></span>42356</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42357"></span>42357</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42358"></span>42358</td>
+<td class="instruction">CP 13</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42360"></span>42360</td>
+<td class="instruction">JR Z,<a href="42160.html#42367">Handler_UserInput_7</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42362"></span>42362</td>
+<td class="instruction">CALL <a href="42073.html">42073</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42365"></span>42365</td>
+<td class="instruction">JR NZ,<a href="42160.html#42355">Handler_UserInput_6</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_7</td>
+<td class="address-2"><span id="42367"></span>42367</td>
+<td class="instruction">LD (42053),DE</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42371"></span>42371</td>
+<td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_8</td>
+<td class="address-2"><span id="42372"></span>42372</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42373"></span>42373</td>
+<td class="instruction">JP C,<a href="42160.html#42256">Handler_UserInput_1</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_9</td>
+<td class="address-2"><span id="42376"></span>42376</td>
+<td class="instruction">LD A,(41275)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42379"></span>42379</td>
+<td class="instruction">CP 255</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42381"></span>42381</td>
+<td class="instruction">JP Z,<a href="42160.html#42247">Handler_UserInput_0</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="42384"></span>42384</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/49162.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/warlord/dec/asm/44338.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -277,7 +878,7 @@ Prev: <a href="42105.html">42105</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#42160">Map</a></td>
 <td class="next">
-Next: <a href="42247.html">42247</a>
+Next: <a href="42385.html">42385</a>
 </td>
 </tr>
 </table>

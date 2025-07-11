@@ -33,7 +33,7 @@ Next: <a href="9F27.html">9F27</a>
 </td>
 </tr>
 </table>
-<div class="description">9EDB: Routine at 9EDB</div>
+<div class="description">9EDB: Load From Tape</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -45,64 +45,83 @@ Used by the routine at <a href="A808.html">A808</a>.
 </td>
 </tr>
 <tr>
+<td class="asm-label">LoadTape</td>
 <td class="address-2"><span id="9edb"></span>9EDB</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Stash <span class="register">IX</span>, <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9edd"></span>9EDD</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9ede"></span>9EDE</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9edf"></span>9EDF</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9ee0"></span>
+<div class="comments">
+<div class="paragraph">
+Print "LOADING...Start Tape.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9ee0"></span>9EE0</td>
 <td class="instruction">LD HL,$9EC5</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="9EC5.html">Messaging_LoadingPressPlay</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9ee3"></span>9EE3</td>
 <td class="instruction">CALL <a href="A275.html">$A275</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="A275.html">A275</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9ee6"></span>9EE6</td>
 <td class="instruction">LD IX,$9F88</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load the starting address into <span class="register">IX</span> at <a href="9F88.html">Table_ItemLocations</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9eea"></span>9EEA</td>
 <td class="instruction">LD DE,$0181</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 0181 bytes.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9eed"></span>9EED</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to FF which indicates this is a data block.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9eef"></span>9EEF</td>
 <td class="instruction">SCF</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the carry flag to indicate this is loading.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9ef0"></span>9EF0</td>
 <td class="instruction">CALL $0556</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/0556.html">LD_BYTES</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9ef3"></span>9EF3</td>
-<td class="instruction">JR C,<a href="9EDB.html#9efd">$9EFD</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR C,<a href="9EDB.html#9efd">LoadTape_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9EDB.html#9efd">LoadTape_0</a> if the carry flag is not set.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -115,6 +134,7 @@ Print "Status file not found.".
 </td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9ef5"></span>9EF5</td>
 <td class="instruction">LD HL,$0013</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=
@@ -122,124 +142,145 @@ Print "Status file not found.".
 <a href="CD8F.html">Messaging_StatusFileNotFound</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9ef8"></span>9EF8</td>
 <td class="instruction">CALL <a href="A25C.html">PrintStringAndNewline</a></td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9efb"></span>9EFB</td>
-<td class="instruction">JR <a href="9EDB.html#9f21">$9F21</a></td>
+<td class="instruction">JR <a href="9EDB.html#9f21">LoadTape_Return</a></td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">LoadTape_0</td>
 <td class="address-2"><span id="9efd"></span>9EFD</td>
 <td class="instruction">LD A,($BBD1)</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f00"></span>9F00</td>
 <td class="instruction">OR A</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f01"></span>9F01</td>
-<td class="instruction">JR Z,<a href="9EDB.html#9f21">$9F21</a></td>
+<td class="instruction">JR Z,<a href="9EDB.html#9f21">LoadTape_Return</a></td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f03"></span>9F03</td>
 <td class="instruction">LD B,A</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f04"></span>9F04</td>
 <td class="instruction">LD IX,$BAF9</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f08"></span>9F08</td>
 <td class="instruction">LD DE,$A0D4</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f0b"></span>9F0B</td>
-<td class="instruction">JR <a href="9EDB.html#9f12">$9F12</a></td>
+<td class="instruction">JR <a href="9EDB.html#9f12">LoadTape_2</a></td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">LoadTape_1</td>
 <td class="address-2"><span id="9f0d"></span>9F0D</td>
 <td class="instruction">INC IX</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f0f"></span>9F0F</td>
 <td class="instruction">INC IX</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f11"></span>9F11</td>
 <td class="instruction">INC DE</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">LoadTape_2</td>
 <td class="address-2"><span id="9f12"></span>9F12</td>
 <td class="instruction">LD L,(IX+$00)</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f15"></span>9F15</td>
 <td class="instruction">LD H,(IX+$01)</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f18"></span>9F18</td>
 <td class="instruction">LD A,(DE)</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f19"></span>9F19</td>
 <td class="instruction">LD (HL),A</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f1a"></span>9F1A</td>
-<td class="instruction">DJNZ <a href="9EDB.html#9f0d">$9F0D</a></td>
+<td class="instruction">DJNZ <a href="9EDB.html#9f0d">LoadTape_1</a></td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f1c"></span>9F1C</td>
 <td class="instruction">LD E,$00</td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f1e"></span>9F1E</td>
-<td class="instruction">CALL <a href="A33A.html">$A33A</a></td>
+<td class="instruction">CALL <a href="A33A.html">Handler_RoomExits</a></td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">LoadTape_Return</td>
 <td class="address-2"><span id="9f21"></span>9F21</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Restore <span class="register">BC</span>, <span class="register">DE</span>, <span class="register">HL</span> and <span class="register">IX</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f22"></span>9F22</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f23"></span>9F23</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f24"></span>9F24</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="9f26"></span>9F26</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">

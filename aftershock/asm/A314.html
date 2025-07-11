@@ -33,134 +33,180 @@ Next: <a href="A33A.html">A33A</a>
 </td>
 </tr>
 </table>
-<div class="description">A314: Routine at A314</div>
+<div class="description">A314: Print Objects</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="A33A.html">A33A</a> and <a href="A6DC.html">A6DC</a>.
+Used by the routines at <a href="A33A.html">Handler_RoomExits</a> and <a href="A6CF.html">Response_YoureNotCarryingAnything</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">01 for inventory items, or room number for room objects</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">PrintObjects</td>
 <td class="address-2"><span id="a314"></span>A314</td>
 <td class="instruction">PUSH HL</td>
 <td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a315"></span>A315</td>
 <td class="instruction">PUSH DE</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a316"></span>A316</td>
 <td class="instruction">PUSH BC</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a317"></span>A317</td>
 <td class="instruction">LD HL,$9F88</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="9F88.html">Table_ItemLocations</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a31a"></span>A31A</td>
 <td class="instruction">LD BC,($BBC7)</td>
 <td class="comment-1" rowspan="1"><span class="register">BC</span>=*<a href="BBC7.html">Count_Objects_1</a>.</td>
 </tr>
 <tr>
+<td class="asm-label">FindObject_Loop</td>
 <td class="address-2"><span id="a31e"></span>A31E</td>
 <td class="instruction">CPIR</td>
-<td class="comment-1" rowspan="1">CPIR.</td>
+<td class="comment-1" rowspan="1">Search for matching objects.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a320"></span>A320</td>
-<td class="instruction">JR NZ,<a href="A314.html#a336">$A336</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A314.html#a336">A336</a> if ?? is not equal to 00.</td>
+<td class="instruction">JR NZ,<a href="A314.html#a336">PrintObjects_Return</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A314.html#a336">PrintObjects_Return</a> if no objects were found.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a322"></span>A322</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
+<td class="comment-1" rowspan="1">Stash the current place in <a href="A66C.html">FindIndexOfItemFromItemGroupPresent</a> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a323"></span>A323</td>
 <td class="instruction">CALL <a href="A6B1.html">ValidateObject</a></td>
 <td class="comment-1" rowspan="1">Call <a href="A6B1.html">ValidateObject</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a326"></span>A326</td>
-<td class="instruction">JR Z,<a href="A314.html#a32f">$A32F</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A314.html#a32f">A32F</a> if the item is invalid.</td>
+<td class="instruction">JR Z,<a href="A314.html#a32f">FindObject_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A314.html#a32f">FindObject_Next</a> if the object is invalid.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a328"></span>A328</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">AF</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Temporarily stash the object type and object counter on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a329"></span>A329</td>
 <td class="instruction">PUSH BC</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a32a"></span>A32A</td>
 <td class="instruction">CALL <a href="A25C.html">PrintStringAndNewline</a></td>
 <td class="comment-1" rowspan="1">Call <a href="A25C.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a32d"></span>A32D</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">AF</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the object counter and object type from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a32e"></span>A32E</td>
 <td class="instruction">POP AF</td>
 </tr>
 <tr>
+<td class="asm-label">FindObject_Next</td>
 <td class="address-2"><span id="a32f"></span>A32F</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Temporarily hold the object type in <span class="register">E</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a330"></span>A330</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the current place in <a href="9F88.html">Table_ItemLocations</a> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a331"></span>A331</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="2">Check <span class="register">BC</span>...</td>
+<td class="comment-1" rowspan="2">Test if all objects have been checked...</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a332"></span>A332</td>
 <td class="instruction">OR C</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a333"></span>A333</td>
 <td class="instruction">LD A,E</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">E</span>.</td>
+<td class="comment-1" rowspan="1">Restore the object type to <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a334"></span>A334</td>
-<td class="instruction">JR NZ,<a href="A314.html#a31e">$A31E</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A314.html#a31e">A31E</a> until <span class="register">BC</span> is zero.</td>
+<td class="instruction">JR NZ,<a href="A314.html#a31e">FindObject_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A314.html#a31e">FindObject_Loop</a> until all objects in the table have been checked.</td>
 </tr>
 <tr>
+<td class="asm-label">PrintObjects_Return</td>
 <td class="address-2"><span id="a336"></span>A336</td>
 <td class="instruction">POP BC</td>
 <td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a337"></span>A337</td>
 <td class="instruction">POP DE</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a338"></span>A338</td>
 <td class="instruction">POP HL</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a339"></span>A339</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/asm/C1FF.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/warlord/asm/AB97.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
