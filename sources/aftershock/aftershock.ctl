@@ -177,7 +177,7 @@ N $9EE0 Print "#STR$9EC5,$08($b==$FF)".
   $9EF0,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/0556.html">LD_BYTES</a>.)
   $9EF3,$02 Jump to #R$9EFD if the carry flag is not set.
 N $9EF5 Print "#DECODESTR$CD8F".
-  $9EF5,$03 #REGhl=#OFFSET($0013).
+  $9EF5,$03 #REGhl=#R(#OFFSET($0013)).
 
 @ $9F21 label=LoadTape_Return
   $9F21,$05 Restore #REGbc, #REGde, #REGhl and #REGix from the stack.
@@ -249,12 +249,12 @@ L $A145,$01,$04
 g $A149 Table: Directions
 @ $A149 label=Table_Directions
 D $A149 Pointer to the table containing direction messaging.
-W $A149,$02 #OFFSET($0008) "#DECODESTR$CD48".
-W $A14B,$02 #OFFSET($0009) "#DECODESTR$CD4C".
-W $A14D,$02 #OFFSET($000A) "#DECODESTR$CD50".
-W $A14F,$02 #OFFSET($000B) "#DECODESTR$CD53".
-W $A151,$02 #OFFSET($000C) "#DECODESTR$CD56".
-W $A153,$02 #OFFSET($000D) "#DECODESTR$CD59".
+W $A149,$02 #R(#OFFSET($0008)) "#DECODESTR$CD48".
+W $A14B,$02 #R(#OFFSET($0009)) "#DECODESTR$CD4C".
+W $A14D,$02 #R(#OFFSET($000A)) "#DECODESTR$CD50".
+W $A14F,$02 #R(#OFFSET($000B)) "#DECODESTR$CD53".
+W $A151,$02 #R(#OFFSET($000C)) "#DECODESTR$CD56".
+W $A153,$02 #R(#OFFSET($000D)) "#DECODESTR$CD59".
 
 c $A155
 
@@ -300,8 +300,8 @@ c $A1ED Print Input Prompt
   $A1F0,$03 Call #R$A267.
   $A1F3,$01 Return.
 
-c $A1F4 Print String
-@ $A1F4 label=PrintString
+c $A1F4 Print Compressed String
+@ $A1F4 label=PrintCompressedString
 D $A1F4 Prints a compressed text string using a dictionary lookup.
 R $A1F4 HL Messaging string ID
   $A1F4,$06 Stash #REGix, #REGhl, #REGde, #REGbc and #REGaf on the stack.
@@ -345,8 +345,8 @@ R $A1F4 HL Messaging string ID
   $A258,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $A25B,$01 Return.
 
-c $A25C Print String And A Newline
-@ $A25C label=PrintStringAndNewline
+c $A25C Print Compressed String And A Newline
+@ $A25C label=PrintCompressedStringAndNewline
 D $A25C Shortcut print routine which prints a newline after it's done.
 E $A25C View the equivalent code in;
 . #LIST
@@ -361,9 +361,45 @@ N $A260 Force a newline to be "printed".
   $A265,$01 Restore the character to print from the stack.
   $A266,$01 Return.
 
-c $A267
+c $A267 Print String
+@ $A267 label=PrintString
+D $A267 Standard printing loop, which prints the fetched character byte and
+. loops until the termination byte is reached (#N$FF).
+E $A267 View the equivalent code in;
+. #LIST
+. { #JEWELS$BAA4 }
+. { #WARLORD$A585 }
+. LIST#
+R $A267 HL Pointer to string to be printed
+  $A267,$01 Push the character to print on the stack.
+  $A268,$02 Jump to #R$A26E.
+N $A26A Just keep looping and printing the fetched character until the
+. termination byte is reached (#N$FF).
+@ $A26A label=PrintString_Loop
+  $A26A,$03 Call #R$9E26.
+  $A26D,$01 Move the string pointer to the next character.
+@ $A26E label=FetchByteToPrint
+  $A26E,$01 Load a character from the string pointer into #REGa.
+  $A26F,$04 Jump back to #R$A26A until the string termination character (#N$FF)
+. has been reached.
+  $A273,$01 Restore the character to print from the stack.
+  $A274,$01 Return.
 
-c $A275
+c $A275 Print String And A Newline
+@ $A275 label=PrintStringAndNewline
+D $A275 Shortcut print routine which prints a newline after it's done.
+E $A275 View the equivalent code in;
+. #LIST
+. { #JEWELS$BAB1 }
+. { #WARLORD$A592 }
+. LIST#
+  $A275,$03 Call #R$A267.
+  $A278,$01 Stash the character to print on the stack.
+N $A279 Force a newline to be "printed".
+  $A279,$02 Load a "newline" character into #REGa (#N$0D).
+  $A27B,$03 Call #R$9E26.
+  $A27E,$01 Restore the character to print from the stack.
+  $A27F,$01 Return.
 
 c $A280
 
@@ -474,7 +510,7 @@ N $A393 Process the exits count result.
   $A396,$05 Jump to #R$A3BD if more than #N$01 exit was found.
 N $A39B Only one exit was found:
 N $A39B Print "#DECODESTR$CD3E".
-  $A39B,$03 #REGhl=#OFFSET($0007).
+  $A39B,$03 #REGhl=#R(#OFFSET($0007)).
   $A39E,$03 Call #R$A1F4.
   $A3A1,$02 Retrieve the room data pointer and load it into #REGhl.
   $A3A3,$04 Set a pointer in #REGix to #R$A149.
@@ -493,7 +529,7 @@ N $A3AA Move both the pointers to the next item of data (increment by two for
 N $A3BD More than one exit was found:
 N $A3BD Print "#DECODESTR$CD33".
 @ $A3BD label=RoomMultipleExits
-  $A3BD,$03 #REGhl=#OFFSET($0006).
+  $A3BD,$03 #REGhl=#R(#OFFSET($0006)).
   $A3C0,$03 Call #R$A25C.
   $A3C3,$02 Retrieve the room data pointer and load it into #REGhl.
   $A3C5,$04 Set a pointer in #REGix to #R$A149.
@@ -521,7 +557,7 @@ N $A3E7 Print a comma character: ",".
   $A3ED,$02 Jump to #R$A3CC to continue processing.
 N $A3EF Print "#DECODESTR$CD2F".
 @ $A3EF label=RoomExits_PrintAmpersand
-  $A3EF,$03 #REGhl=#OFFSET($0005).
+  $A3EF,$03 #REGhl=#R(#OFFSET($0005)).
   $A3F2,$03 Call #R$A1F4.
   $A3F5,$01 #REGa=#N$00.
   $A3F6,$02 Jump to #R$A3CC.
@@ -538,7 +574,7 @@ N $A402 Are there any objects here?
   $A405,$03 Call #R$A694.
   $A408,$02 Jump to #R$A416 if no objects were found at this location.
 N $A40A Print "#DECODESTR$CD26".
-  $A40A,$03 #REGhl=#OFFSET($0004).
+  $A40A,$03 #REGhl=#R(#OFFSET($0004)).
   $A40D,$03 Call #R$A25C.
 N $A410 Print the objects at this location.
   $A410,$03 #REGa=*#R$A106.
@@ -601,7 +637,16 @@ N $A451 Print "#STR$A44D,$08($b==$FF)".
   $A457,$01 Restore #REGhl from the stack.
   $A458,$01 Return.
 
-c $A459
+c $A459 Is Character A Delimiter
+@ $A459 label=IsDelimiter
+R $A459 O:F The zero flag is set if a delimiter is found
+  $A459,$02 Stash #REGhl and #REGbc on the stack.
+  $A45B,$03 #REGhl=#R$9DCE.
+  $A45E,$03 Fetch the delimiter count and store it in #REGbc.
+  $A461,$01 Move #REGhl to point to the delimiter table.
+  $A462,$02 Search for matching delimiters.
+  $A464,$02 Restore #REGbc and #REGhl from the stack.
+  $A466,$01 Return.
 
 c $A467 Print User Input To Screen
 @ $A467 label=Print_UserInputToScreen
@@ -620,7 +665,10 @@ N $A475 Print the user input keypress to the screen.
   $A475,$03 Call #R$9E26.
   $A478,$01 Return.
 
-c $A479
+c $A479 Handler: Match Item
+@ $A479 label=Handler_MatchItem
+R $A479 O:F The carry flag is set to indicate that an item was found
+  $A479,$05 Stash #REGhl, #REGde, #REGbc and #REGix on the stack.
 
 c $A4B0 Handler: User Input
 @ $A4B0 label=Handler_UserInput
@@ -692,41 +740,44 @@ N $A4FC Set up pointers for the command buffer, the user input tokens and the
   $A503,$02 Set a counter in #REGc for the #N$0A user input tokens.
   $A505,$02 Jump to #R$A551.
 N $A507 Print "#DECODESTR$CD0B".
-  $A507,$03 #REGhl=#OFFSET($0001).
+  $A507,$03 #REGhl=#R(#OFFSET($0001)).
   $A50A,$03 Call #R$A25C.
   $A50D,$03 Jump to #R$A4B0.
 @ $A549 label=StoreTokenAndContinue
 @ $A551 label=EmptyFourLetterBuffer
 
-c $A591 Action: Examine Item
-@ $A591 label=Action_ExamineItem
-R $A591 C Item ID
-R $A591 O:F Carry flag set when the item isn't present
-  $A591,$01 Increment #REGbc by one.
-  $A592,$05 #REGe=*#R$BBC9-#REGc.
+c $A591 Parser: Validate Item
+@ $A591 label=Parser_ValidateItem
+E $A591 View the equivalent code in;
+. #LIST
+. { #JEWELS$C32A }
+. { #WARLORD$AE36 }
+. LIST#
+R $A591 BC The position in the user input token of the object
+R $A591 O:F The carry flag is set when the item isn't present
+  $A591,$01 Adjust the counter for the sum.
+  $A592,$05 Calculate the index (*#R$BBC9-#REGc) and store the result in #REGe.
   $A597,$01 Stash #REGde on the stack.
-  $A598,$04 #REGix=*#R$B60E.
-  $A59C,$03 Call #R$A305.
+  $A598,$07 Call #R$A305 with #R$B60E.
   $A59F,$01 Restore #REGde from the stack.
   $A5A0,$02 Jump to #R$A5A3.
-@ $A5A2 label=ExamineItem_Loop
+@ $A5A2 label=ValidateItem_Loop
   $A5A2,$01 Increment #REGhl by one.
-@ $A5A3 label=ExamineItem
+@ $A5A3 label=ValidateItem
   $A5A3,$05 Jump to #R$A5AE if *#REGhl is equal to #N$FF.
   $A5A8,$03 Call #R$A5C6.
   $A5AB,$02 Jump to #R$A5A2 if the item wasn't found.
   $A5AD,$01 Return.
-N $A5AE The item being examined isn't in the room or in the players inventory.
+N $A5AE The item being referenced isn't in the room or in the players inventory.
 @ $A5AE label=Response_ItemNotHere
-N $A5AE Print "STR$000E,$08($b==$FF)".
-  $A5AE,$03 #REGhl=#N$000E.
+N $A5AE Print "#DECODESTR$CD5D".
+  $A5AE,$03 #REGhl=#R(#OFFSET($000E)).
   $A5B1,$03 Call #R$A1F4.
 N $A5B4 Print the object name.
-  $A5B4,$04 #REGix=*#R$AF31.
-  $A5B8,$03 Call #R$A305.
+  $A5B4,$07 Call #R$A305 with #R$AF31.
   $A5BB,$03 Call #R$A1F4.
-N $A5BE Print "STR$000F,$08($b==$FF)".
-  $A5BE,$03 #REGhl=#N$000F.
+N $A5BE Print "#DECODESTR$CD66".
+  $A5BE,$03 #REGhl=#R(#OFFSET($000F)).
   $A5C1,$03 Call #R$A25C.
   $A5C4,$01 Set the carry flag.
   $A5C5,$01 Return.
@@ -1068,18 +1119,49 @@ c $A6CF Response: "You're Not Carrying Anything"
 @ $A6CF label=Response_YoureNotCarryingAnything
   $A6CF,$06 Jump to #R$A6DC if *#R$A0D2 is not #N$00.
 N $A6D5 Print "#DECODESTR$CE2D".
-  $A6D5,$03 #REGhl=#OFFSET($0020).
+  $A6D5,$03 #REGhl=#R(#OFFSET($0020)).
   $A6D8,$03 Call #R$A25C.
   $A6DB,$01 Return.
 @ $A6DC label=Response_YouAreCarrying
 N $A6DC Print "#DECODESTR$CE3B".
-  $A6DC,$03 #REGhl=#OFFSET($0021).
+  $A6DC,$03 #REGhl=#R(#OFFSET($0021)).
   $A6DF,$03 Call #R$A25C.
   $A6E2,$05 Call #R$A314 with a room ID of #N$01 which is the players
 . inventory.
   $A6E7,$01 Return.
 
-c $A6E8
+c $A6E8 Move Player
+@ $A6E8 label=MovePlayer
+D $A6E8 The data in #R$B8DD is stored in a particular order for each room:
+. #TABLE(default,centre,centre)
+. { =h Offset | =h Exit To Room }
+. { #N$00 | North }
+. { #N$01 | South }
+. { #N$02 | East }
+. { #N$03 | West }
+. { #N$04 | Up }
+. { #N$05 | Down }
+. TABLE#
+. This is how the movement works; taking the current room from the map - we add
+. a "movement value" (e.g. "East" which is #N$02) - this then points to data in
+. the table which correlates to either a room number for the exit, or #N$00 to
+. indicate there is no exit in that direction.
+R $A6E8 C A movement "value" from the action
+  $A6E8,$02 Initialise #REGb with #N$00 so the movement value is now in #REGbc.
+  $A6EA,$03 Call #R$A41C.
+N $A6ED #REGhl now holds a pointer to the room data for the current room at
+. #R$B8DD.
+  $A6ED,$01 Add the movement value to #REGhl.
+  $A6EE,$01 Fetch the entry from *#REGhl and store it in #REGa.
+  $A6EF,$03 Jump to #R$A6F6 if there is no exit at the requested memory
+. location.
+  $A6F2,$03 Call #R$AD79.
+  $A6F5,$01 Return.
+@ $A6F6 label=Response_YouCantGoInThatDirection
+N $A6F6 Print "#DECODESTR$CE44".
+  $A6F6,$03 #REGhl=#R(#OFFSET($0022)).
+  $A6F9,$03 Call #R$A25C.
+  $A6FC,$01 Return.
 
 g $A6FD
 W $A6FD,$02
@@ -1089,6 +1171,24 @@ c $A6FF
 g $A779
 
 c $A808
+
+c $AC45
+N $AC45 Print "#DECODESTR$CDD1".
+  $AC45,$03 #REGhl=#R(#OFFSET($0018)).
+  $AC48,$03 Call #R$A25C.
+  $AC4B,$01 Set the carry flag.
+  $AC4C,$01 Return.
+
+c $AC4D
+  $AC4D,$07 Jump to #R$AC5C if tthe second token (*#R$A13C) is not the
+. termintor character (#N$FF).
+N $AC54 Print "#DECODESTR$CDC1".
+  $AC54,$03 #REGhl=#R(#OFFSET($0017)).
+  $AC57,$03 Call #R$A25C.
+  $AC5A,$01 Set the carry flag.
+  $AC5B,$01 Return.
+  $AC5C,$03 Call #R$A60A.
+  $AC5F,$01 Return.
 
 c $AC60
 
@@ -1100,7 +1200,16 @@ W $AC86,$02
 
 c $AC88
 
-c $ACBD
+c $ACBD Move Player To Room
+@ $ACBD label=MovePlayerToRoom
+R $ACBD A Destination room ID
+E $ACBD View the equivalent code in;
+. #LIST
+. { #JEWELS$C520 }
+. { #WARLORD$B01F }
+. LIST#
+  $ACBD,$01 Load the destination room ID into #REGc.
+  $ACBE,$06 Jump to #R$ACDB if *#R$BBCF is zero.
 
 c $ACFC
 
@@ -1108,7 +1217,7 @@ c $AD43 Print Scoring
 @ $AD43 label=Print_Scoring
 D $AD43 Prints the players score as a percentage.
 N $AD43 Print "#DECODESTR$CE65".
-  $AD43,$03 #REGhl=#OFFSET($0024).
+  $AD43,$03 #REGhl=#R(#OFFSET($0024)).
   $AD46,$03 Call #R$A1F4.
   $AD49,$03 #REGhl=*#R$A107.
 N $AD4C Evaluate the first byte to see if it needs printing at all.
@@ -1142,14 +1251,31 @@ N $AD69 Lastly, always print the "units".
   $AD6A,$02,b$01 Keep only bits 0-3.
   $AD6C,$05 Convert the number to ASCII by adding #N$30 and call #R$9E26.
 N $AD71 Print "#DECODESTR$CE6E".
-  $AD71,$03 #REGhl=#OFFSET($0025).
+  $AD71,$03 #REGhl=#R(#OFFSET($0025)).
   $AD74,$03 Call #R$A25C.
   $AD77,$01 Return.
 
 g $AD78 Table:
 B $AD78,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 
-c $AD79
+c $AD79 Change Room
+@ $AD79 label=ChangeRoom
+R $AD79 A Destination room ID
+  $AD79,$03 Store the room ID in *#R$AD78.
+  $AD7C,$02 Stash #REGix on the stack.
+  $AD7E,$04 #REGix=#R$BBD8.
+  $AD82,$03 Call #R$A6FF.
+  $AD85,$02 #REGa=#N$00.
+  $AD87,$03 Call #R$A1C8.
+  $AD8A,$02 Jump to #R$AD9E if ?? is not equal to #N$00.
+  $AD8C,$03 Restore the destination room ID from *#R$AD78.
+  $AD8F,$03 Call #R$ACBD.
+  $AD92,$02 #REGe=#N$00.
+  $AD94,$03 Call #R$A33A.
+  $AD97,$04 #REGix=#R$BC4C.
+  $AD9B,$03 Call #R$A6FF.
+  $AD9E,$02 Restore #REGix from the stack.
+  $ADA0,$01 Return.
 
 c $ADA1 Game Start
 @ $ADA1 label=GameStart
@@ -1194,14 +1320,14 @@ c $ADA1 Game Start
 c $AE0D Game Over
 @ $AE0D label=GameOver
 N $AE0D Print "#DECODESTR$CD6B".
-  $AE0D,$03 #REGhl=#OFFSET($0010).
+  $AE0D,$03 #REGhl=#R(#OFFSET($0010)).
   $AE10,$03 Call #R$A25C.
 N $AE13 Print the percentage of the game the player achieved.
 @ $AE13 label=GameOver_Score
   $AE13,$03 Call #R$AD43.
 @ $AE16 label=WantAnotherGameInput
 N $AE16 Print "#DECODESTR$CD72".
-  $AE16,$03 #REGhl=#OFFSET($0011).
+  $AE16,$03 #REGhl=#R(#OFFSET($0011)).
   $AE19,$03 Call #R$A25C.
 @ $AE1C label=WantAnotherGameInput_Loop
   $AE1C,$03 Call #R$9DFB.
@@ -1214,9 +1340,30 @@ N $AE29 Just loop round for any other input.
 
 c $AE2C
 
-g $AE7D
+c $AE5E
 
-g $AF31
+g $AE7D Table: Room Descriptions
+@ $AE7D label=Table_RoomDescriptions
+E $AE7D View the equivalent code in;
+. #LIST
+. { #JEWELS$D3EC }
+. { #WARLORD$C8B0 }
+. LIST#
+W $AE7D,$02 Unused (denotes when an item is "inactive").
+W $AE7F,$02 Unused (denotes when an item is in the players inventory).
+W $AE81,$02 Room #N((#PC-$AE7D)/$02):
+. #IF(#EVAL(#PEEK(#PC)+#PEEK(#PC+$01)*$100)>$0000)(#R(#OFFSET(#PEEK(#PC)+#PEEK(#PC+$01)*$100)),N/A).
+L $AE81,$02,$58
+
+g $AF31 Table: Object Noun Phrases
+@ $AF31 label=Table_ObjectNounPhrases
+E $AF31 View the equivalent code in;
+. #LIST
+. { #JEWELS$D4C6 }
+. { #WARLORD$C83E }
+. LIST#
+W $AF31,$02 Object #R(#OFFSET(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#N((#PC-$AF31)/$02)): #OBJECT((#PC-$AF31)/$02).
+L $AF31,$02,$56
 
 g $AFDD Table: Item Descriptions
 @ $AFDD label=Table_ItemDescriptions
@@ -1226,10 +1373,88 @@ E $AFDD View the equivalent code in;
 . { #WARLORD$C732 }
 . LIST#
 W $AFDD,$02 Item #N((#PC-$AFDD)/$02):
-. #OFFSET(#PEEK(#PC)+#PEEK(#PC+$01)*$100).
-L $AFDD,$02,$86
+. #IF(#EVAL(#PEEK(#PC)+#PEEK(#PC+$01)*$100)>$0000)(#R(#OFFSET(#PEEK(#PC)+#PEEK(#PC+$01)*$100)) #ITEM((#PC-$AFDD)/$02),N/A).
+L $AFDD,$02,$88
 
-g $B0E9
+t $B0ED Table: Vocabulary
+@ $B0ED label=Table_Vocabulary
+  $B0ED,$09 Command #N((#PC-$B0ED)/$09).
+L $B0ED,$09,$0A
+  $B147,$04 Command #N((#PC-$B11F)/$04).
+L $B147,$04,$02
+  $B14F,$09 Command #N$0C.
+  $B158,$04 Command #N((#PC-$B124)/$04).
+L $B158,$04,$02
+  $B160,$09 Command #N$0F.
+  $B169,$04 Command #N((#PC-$B129)/$04).
+L $B169,$04,$03
+  $B175,$09 Command #N$13.
+  $B17E,$13 Command #N$14.
+  $B191,$09 Command #N$15.
+  $B19A,$04 Command #N((#PC-$B142)/$04).
+L $B19A,$04,$04
+  $B1AA,$09 Command #N$1A.
+  $B1B3,$04 Command #N$1B.
+  $B1B7,$09 Command #N$1C.
+  $B1C0,$04 Command #N$1D.
+  $B1C4,$09 Command #N$1E.
+  $B1CD,$04 Command #N((#PC-$B151)/$04).
+L $B1CD,$04,$02
+  $B1D5,$09 Command #N$21.
+  $B1DE,$04 Command #N((#PC-$B156)/$04).
+L $B1DE,$04,$0A
+  $B206,$09 Command #N$2C.
+  $B20F,$04 Command #N$2D.
+  $B213,$09 Command #N$2E.
+  $B21C,$04 Command #N((#PC-$B160)/$04).
+L $B21C,$04,$02
+  $B224,$09 Command #N$31.
+  $B22D,$04 Command #N$32.
+  $B231,$09 Command #N$33.
+  $B23A,$04 Command #N((#PC-$B16A)/$04).
+L $B23A,$04,$02
+  $B242,$09 Command #N((#PC-$B05C)/$09).
+L $B242,$09,$02
+  $B254,$04 Command #N((#PC-$B174)/$04).
+L $B254,$04,$04
+  $B264,$0E Command #N$3C.
+  $B272,$04 Command #N((#PC-$B17E)/$04).
+L $B272,$04,$02
+  $B27A,$09 Command #N$3F.
+  $B283,$04 Command #N((#PC-$B183)/$04).
+L $B283,$04,$04
+  $B293,$09 Command #N$44.
+  $B29C,$04 Command #N((#PC-$B188)/$04).
+L $B29C,$04,$11
+  $B2E0,$09 Command #N$56.
+  $B2E9,$04 Command #N((#PC-$B18D)/$04).
+L $B2E9,$04,$1C
+  $B359,$09 Command #N$73.
+  $B362,$04 Command #N((#PC-$B192)/$04).
+L $B362,$04,$07
+  $B37E,$09 Command #N$7B.
+  $B387,$04 Command #N((#PC-$B197)/$04).
+L $B387,$04,$04
+  $B397,$09 Command #N$80.
+  $B3A0,$04 Command #N((#PC-$B19C)/$04).
+L $B3A0,$04,$04
+  $B3B0,$09 Command #N$85.
+  $B3B9,$04 Command #N$86.
+  $B3BD,$13 Command #N$87.
+  $B3D0,$04 Command #N((#PC-$B1B0)/$04).
+L $B3D0,$04,$05
+  $B3E4,$09 Command #N$8D.
+  $B3ED,$04 Command #N((#PC-$B1B5)/$04).
+L $B3ED,$04,$02
+  $B3F5,$09 Command #N$90.
+  $B3FE,$04 Command #N((#PC-$B1BA)/$04).
+L $B3FE,$04,$02
+  $B406,$09 Command #N$93.
+  $B40F,$04 Command #N((#PC-$B1BF)/$04).
+L $B40F,$04,$04
+B $B41F,$01 Terminator.
+
+g $B420
 
 g $B49E Pointer: Token Item List Table
 g $B49E Table: Token Item List
@@ -1243,12 +1468,34 @@ E $B49E View the equivalent code in;
 B $B49E,$01 Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
 L $B49E,$01,$56
 
-g $B4F4
-W $B4F4,$02
-L $B4F4,$02,$56
+g $B4F4 Data: Item Groups
+D $B4F4 See #R$B60E for usage.
+@ $B4F4 label=Data_ItemGroup_Roman
+B $B4F4,$01 #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC))).
+L $B4F4,$01,$11A
 
-g $B60E
-W $B60E,$02
+g $B60E Table: Item Grouping
+@ $B60E label=Table_ItemGrouping
+D $B60E Items may have several item IDs which relate to a single item, this
+. table groups the items together to assist the parser with knowing that tokens
+. refer to the same thing.
+.
+. Some examples are:
+. #TABLE(default,centre,centre,centre)
+. { =h Item ID | =h Item Name | =h Relates To: }
+. { R$E353(#N$13) | #ITEM$13 | =r2 The Hare }
+. { R$E354(#N$26) | #ITEM$26 }
+. { =h Item ID | =h Item Name | =h Relates To: }
+. { R$E36B(#N$1F) | #ITEM$1F | =r2 The Bronze Helmet }
+. { R$E36C(#N$20) | #ITEM$20 }
+. { =h Item ID | =h Item Name | =h Relates To: }
+. { R$E3AD(#N$4F) | #ITEM$4F | =r2 The Pig }
+. { R$E3AE(#N$50) | #ITEM$50 }
+. TABLE#
+W $B60E,$02 Item Group: #N((#PC-$B60E)/$02): #OBJECT((#PC-$B60E)/$02).
+L $B60E,$02,$56
+
+g $B6BA
 
 g $B8DD Table: Room Map
 @ $B8DD label=Table_RoomMap
@@ -1316,6 +1563,8 @@ W $BBD5,$02
 
 g $BBD7
 B $BBD7,$01
+
+g $BC4C
 
 g $CA2B Table: Messaging Offsets
 @ $CA2B label=Table_MessagingOffsets
