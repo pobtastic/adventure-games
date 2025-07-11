@@ -33,61 +33,103 @@ Next: <a href="A275.html">A275</a>
 </td>
 </tr>
 </table>
-<div class="description">A267: Routine at A267</div>
+<div class="description">A267: Print String</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="A1ED.html">PrintPrompt</a>, <a href="A275.html">A275</a>, <a href="A450.html">Print_Cursor</a>, <a href="A467.html">Print_UserInputToScreen</a> and <a href="A4B0.html">Handler_UserInput</a>.
+Used by the routines at <a href="A1ED.html">PrintPrompt</a>, <a href="A275.html">PrintStringAndNewline</a>, <a href="A450.html">Print_Cursor</a>, <a href="A467.html">Print_UserInputToScreen</a> and <a href="A4B0.html">Handler_UserInput</a>.
+</div>
+<div class="paragraph">
+Standard printing loop, which prints the fetched character byte and loops until the termination byte is reached (FF).
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">HL</td>
+<td class="register-desc">Pointer to string to be printed</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintString</td>
+<td class="address-2"><span id="a267"></span>A267</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="1">Push the character to print on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a268"></span>A268</td>
+<td class="instruction">JR <a href="A267.html#a26e">FetchByteToPrint</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A267.html#a26e">FetchByteToPrint</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a26a"></span>
+<div class="comments">
+<div class="paragraph">
+Just keep looping and printing the fetched character until the termination byte is reached (FF).
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="address-2"><span id="a267"></span>A267</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="a268"></span>A268</td>
-<td class="instruction">JR <a href="A267.html#a26e">$A26E</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
+<td class="asm-label">PrintString_Loop</td>
 <td class="address-2"><span id="a26a"></span>A26A</td>
 <td class="instruction">CALL <a href="9E26.html">PrintCharacter</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="9E26.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a26d"></span>A26D</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Move the string pointer to the next character.</td>
 </tr>
 <tr>
+<td class="asm-label">FetchByteToPrint</td>
 <td class="address-2"><span id="a26e"></span>A26E</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load a character from the string pointer into <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a26f"></span>A26F</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="A267.html#a26a">PrintString_Loop</a> until the string termination character (FF) has been reached.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a271"></span>A271</td>
-<td class="instruction">JR NZ,<a href="A267.html#a26a">$A26A</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="A267.html#a26a">PrintString_Loop</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a273"></span>A273</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the character to print from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a274"></span>A274</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/asm/BAA4.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/warlord/asm/A585.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">

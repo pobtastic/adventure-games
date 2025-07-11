@@ -33,7 +33,7 @@ Next: <a href="42438.html">42438</a>
 </td>
 </tr>
 </table>
-<div class="description">42385: Action: Examine Item</div>
+<div class="description">42385: Parser: Validate Item</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -47,8 +47,8 @@ Used by the routine at <a href="44128.html">44128</a>.
 <th colspan="2">Input</th>
 </tr>
 <tr>
-<td class="register">C</td>
-<td class="register-desc">Item ID</td>
+<td class="register">BC</td>
+<td class="register-desc">The position in the user input token of the object</td>
 </tr>
 </table>
 <table class="output">
@@ -57,22 +57,22 @@ Used by the routine at <a href="44128.html">44128</a>.
 </tr>
 <tr>
 <td class="register">F</td>
-<td class="register-desc">Carry flag set when the item isn't present</td>
+<td class="register-desc">The carry flag is set when the item isn't present</td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Action_ExamineItem</td>
+<td class="asm-label">Parser_ValidateItem</td>
 <td class="address-2"><span id="42385"></span>42385</td>
 <td class="instruction">INC BC</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">BC</span> by one.</td>
+<td class="comment-1" rowspan="1">Adjust the counter for the sum.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42386"></span>42386</td>
 <td class="instruction">LD A,(48073)</td>
-<td class="comment-1" rowspan="3"><span class="register">E</span>=*<a href="48073.html">Count_Objects_2</a>-<span class="register">C</span>.</td>
+<td class="comment-1" rowspan="3">Calculate the index (*<a href="48073.html">Count_Objects_2</a>-<span class="register">C</span>) and store the result in <span class="register">E</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -94,13 +94,12 @@ Used by the routine at <a href="44128.html">44128</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="42392"></span>42392</td>
 <td class="instruction">LD IX,46606</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="46606.html">46606</a>.</td>
+<td class="comment-1" rowspan="2">Call <a href="41733.html">GetTableEntry</a> with <a href="46606.html">Table_ItemGrouping</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42396"></span>42396</td>
 <td class="instruction">CALL <a href="41733.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="41733.html">GetTableEntry</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -111,17 +110,17 @@ Used by the routine at <a href="44128.html">44128</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42400"></span>42400</td>
-<td class="instruction">JR <a href="42385.html#42403">ExamineItem</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42385.html#42403">ExamineItem</a>.</td>
+<td class="instruction">JR <a href="42385.html#42403">ValidateItem</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42385.html#42403">ValidateItem</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">ExamineItem_Loop</td>
+<td class="asm-label">ValidateItem_Loop</td>
 <td class="address-2"><span id="42402"></span>42402</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
-<td class="asm-label">ExamineItem</td>
+<td class="asm-label">ValidateItem</td>
 <td class="address-2"><span id="42403"></span>42403</td>
 <td class="instruction">LD A,(HL)</td>
 <td class="comment-1" rowspan="3">Jump to <a href="42385.html#42414">Response_ItemNotHere</a> if *<span class="register">HL</span> is equal to 255.</td>
@@ -145,8 +144,8 @@ Used by the routine at <a href="44128.html">44128</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42411"></span>42411</td>
-<td class="instruction">JR NZ,<a href="42385.html#42402">ExamineItem_Loop</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42385.html#42402">ExamineItem_Loop</a> if the item wasn't found.</td>
+<td class="instruction">JR NZ,<a href="42385.html#42402">ValidateItem_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42385.html#42402">ValidateItem_Loop</a> if the item wasn't found.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -159,10 +158,10 @@ Used by the routine at <a href="44128.html">44128</a>.
 <span id="42414"></span>
 <div class="comments">
 <div class="paragraph">
-The item being examined isn't in the room or in the players inventory.
+The item being referenced isn't in the room or in the players inventory.
 </div>
 <div class="paragraph">
-Print "STR$000E,$08($b==$FF)".
+Print "I can't see ".
 </div>
 </div>
 </td>
@@ -171,13 +170,13 @@ Print "STR$000E,$08($b==$FF)".
 <td class="asm-label">Response_ItemNotHere</td>
 <td class="address-2"><span id="42414"></span>42414</td>
 <td class="instruction">LD HL,14</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=14.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="52573.html">Messaging_ICantSee</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42417"></span>42417</td>
-<td class="instruction">CALL <a href="41460.html">PrintString</a></td>
-<td class="comment-1" rowspan="1">Call <a href="41460.html">PrintString</a>.</td>
+<td class="instruction">CALL <a href="41460.html">PrintCompressedString</a></td>
+<td class="comment-1" rowspan="1">Call <a href="41460.html">PrintCompressedString</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -193,26 +192,25 @@ Print the object name.
 <td class="asm-label"></td>
 <td class="address-1"><span id="42420"></span>42420</td>
 <td class="instruction">LD IX,44849</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="44849.html">44849</a>.</td>
+<td class="comment-1" rowspan="2">Call <a href="41733.html">GetTableEntry</a> with <a href="44849.html">Table_ObjectNounPhrases</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42424"></span>42424</td>
 <td class="instruction">CALL <a href="41733.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="41733.html">GetTableEntry</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42427"></span>42427</td>
-<td class="instruction">CALL <a href="41460.html">PrintString</a></td>
-<td class="comment-1" rowspan="1">Call <a href="41460.html">PrintString</a>.</td>
+<td class="instruction">CALL <a href="41460.html">PrintCompressedString</a></td>
+<td class="comment-1" rowspan="1">Call <a href="41460.html">PrintCompressedString</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42430"></span>
 <div class="comments">
 <div class="paragraph">
-Print "STR$000F,$08($b==$FF)".
+Print " here.".
 </div>
 </div>
 </td>
@@ -221,13 +219,13 @@ Print "STR$000F,$08($b==$FF)".
 <td class="asm-label"></td>
 <td class="address-1"><span id="42430"></span>42430</td>
 <td class="instruction">LD HL,15</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=15.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="52582.html">Messaging_Here</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42433"></span>42433</td>
-<td class="instruction">CALL <a href="41564.html">PrintStringAndNewline</a></td>
-<td class="comment-1" rowspan="1">Call <a href="41564.html">PrintStringAndNewline</a>.</td>
+<td class="instruction">CALL <a href="41564.html">PrintCompressedStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="41564.html">PrintCompressedStringAndNewline</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -240,6 +238,18 @@ Print "STR$000F,$08($b==$FF)".
 <td class="address-1"><span id="42437"></span>42437</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/49962.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/warlord/dec/asm/44598.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
