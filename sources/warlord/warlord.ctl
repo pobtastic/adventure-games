@@ -1880,6 +1880,7 @@ N $AF7B The first token is the verb, so target the second token for the direct
 N $AF82 The token was the terminator character (#N$FF), so the sentence is
 . malformed.
 N $AF82 E.g. They tried "TAKE" but didn't write anything after it.
+N $AF82 Print "#STR$A9BD,$08($b==$FF)".
   $AF82,$03 Call #R$AAF5.
   $AF85,$01 Set the carry flag to indicate this call was a failure.
   $AF86,$01 Return.

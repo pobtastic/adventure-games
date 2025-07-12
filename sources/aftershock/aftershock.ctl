@@ -257,10 +257,47 @@ W $A151,$02 #R(#OFFSET($000C)) "#DECODESTR$CD56".
 W $A153,$02 #R(#OFFSET($000D)) "#DECODESTR$CD59".
 
 c $A155
+  $A155,$01 Stash #REGaf on the stack.
+  $A156,$01 #REGa=#REGl.
+  $A157,$02,b$01 Keep only bits 0-2.
+  $A159,$01 #REGc=#REGa.
+  $A15A,$02 #REGb=#N$03.
+  $A15C,$02 Shift #REGh right.
+  $A15E,$02 Rotate #REGl right.
+  $A160,$02 Decrease counter by one and loop back to #R$A15C until counter is zero.
+  $A162,$01 Restore #REGaf from the stack.
+  $A163,$01 Return.
+  $A164,$02 Shift #REGh right.
+  $A166,$02 Rotate #REGl right.
+  $A168,$02 Shift #REGh right.
+  $A16A,$02 Rotate #REGl right.
+  $A16C,$01 Return.
 
 c $A16D
+  $A16D,$01 Stash #REGbc on the stack.
+  $A16E,$02 #REGb=#N$10.
+  $A170,$01 #REGa=#REGh.
+  $A171,$01 #REGc=#REGl.
+  $A172,$03 #REGhl=#N($0000,$04,$04).
+  $A175,$01 #REGhl+=#REGhl.
+  $A176,$01 Set flags.
+
 
 c $A1B4
+  $A1B4,$02 Stash #REGde and #REGbc on the stack.
+  $A1B6,$01 Exchange the #REGde and #REGhl registers.
+  $A1B7,$01 #REGl=#REGa.
+  $A1B8,$02 #REGh=#N$00.
+  $A1BA,$03 Call #R$A155.
+  $A1BD,$01 #REGhl+=#REGde.
+  $A1BE,$01 #REGb=#REGc.
+  $A1BF,$01 Increment #REGb by one.
+  $A1C0,$01 #REGa=#N$00.
+  $A1C1,$01 Set the carry flag.
+  $A1C2,$01 RLA.
+  $A1C3,$02 Decrease counter by one and loop back to #R$A1C2 until counter is zero.
+  $A1C5,$02 Restore #REGbc and #REGde from the stack.
+  $A1C7,$01 Return.
 
 c $A1C8
   $A1C8,$01 Stash #REGhl on the stack.
@@ -296,6 +333,7 @@ t $A1E9 Messaging: "> "
 
 c $A1ED Print Input Prompt
 @ $A1ED label=PrintPrompt
+N $A1ED Print "#STR$A1E9,$08($b==$FF)".
   $A1ED,$03 #REGhl=#R$A1E9.
   $A1F0,$03 Call #R$A267.
   $A1F3,$01 Return.
@@ -1172,33 +1210,239 @@ g $A779
 
 c $A808
 
-c $AC45
+c $ABF4 Parser: Validate No Direct Object
+@ $ABF4 label=Parser_ValidateNoDirectObject
+D $ABF4 The opposite of #R$AC02, checks that there's no direct object.
+E $ABF4 View the equivalent code in;
+. #LIST
+. { #JEWELS$C470 }
+. { #WARLORD$AF70 }
+. LIST#
+R $ABF4 O:F The Z flag is set when there's no direct object present
+R $ABF4 O:F The carry flag is set when there's a second token set
+  $ABF4,$06 Return if the second token (*#R$A13C) is the terminator
+. character (#N$FF).
+N $ABFA Print "#DECODESTR$CDD1".
+  $ABFA,$03 #REGhl=#R(#OFFSET($0018)).
+  $ABFD,$03 Call #R$A25C.
+  $AC00,$01 Set the carry flag to indicate the command is malformed.
+  $AC01,$01 Return.
+
+c $AC02 Parser: Validate Direct Object
+@ $AC02 label=Parser_ValidateDirectObject
+D $AC02 In most adventure games, the structure for a command is "verb + direct
+. object". This is usually how the player interacts with the game world.
+. The verb describes the action, and the direct object is what the action is
+. performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
+. object "SHOE".
+E $AC02 View the equivalent code in;
+. #LIST
+. { #JEWELS$C47B }
+. { #WARLORD$AF7B }
+. LIST#
+R $AC02 O:A The number of references to items in the user input tokens
+R $AC02 O:F The carry flag is set when the command is malformed
+N $AC02 The first token is the verb, so target the second token for the direct
+. object.
+  $AC02,$03 Fetch the #R$A13C(second token from the user input) and store it in
+. #REGa.
+  $AC05,$04 Jump forward to #R$AC11 if the token is anything other than the
+. terminator character (#N$FF).
+N $AC09 The token was the terminator character (#N$FF), so the sentence is
+. malformed.
+N $AC09 E.g. They tried "TAKE" but didn't write anything after it.
+N $AC09 Print "#DECODESTR$CDC1".
+  $AC09,$03 #REGhl=#R(#OFFSET($0017)).
+  $AC0C,$03 Call #R$A25C.
+  $AC0F,$01 Set the carry flag to indicate this call was a failure.
+  $AC10,$01 Return.
+N $AC11 Process the direct object.
+@ $AC11 label=DirectObject_Process
+  $AC11,$03 Call #R$A60A.
+  $AC14,$01 Return if there is at least one valid item mentioned in the user
+. input tokens.
+N $AC15 Any references are invalid.
+N $AC15 Print "#DECODESTR$CDD1".
+  $AC15,$03 #REGhl=#R(#OFFSET($0018)).
+  $AC18,$03 Call #R$A25C.
+  $AC1B,$01 Set the carry flag to indicate the command is malformed.
+  $AC1C,$01 Return.
+
+c $AC1D Parser: Validate Input Tokens
+@ $AC1D label=Parser_ValidateInputTokens
+E $AC1D View the equivalent code in;
+. #LIST
+. { #JEWELS$C490 }
+. { #WARLORD$AF90 }
+. LIST#
+R $AC1D O:A The number of references to items in the user input tokens
+R $AC1D O:F The zero flag is set when there is only a verb present
+R $AC1D O:F The zero flag is unset when there is at least one valid direct object
+R $AC1D O:F The carry flag is set when the command is malformed
+N $AC1D The first token is the verb, so target the second token for the direct
+. object.
+  $AC1D,$03 Fetch the #R$A13C(second token from the user input) and store it in
+. #REGa.
+  $AC20,$03 Return if there is no second token.
+N $AC23 There is a second token; so validate all direct objects after this
+. point.
+  $AC23,$03 Call #R$A60A.
+  $AC26,$01 Return if there is at least one valid item mentioned in the user
+. input tokens.
+N $AC27 Any references are invalid.
+N $AC27 Print "#DECODESTR$CDD1".
+  $AC27,$03 #REGhl=#R(#OFFSET($0018)).
+  $AC2A,$03 Call #R$A25C.
+  $AC2D,$01 Set the carry flag.
+  $AC2E,$01 Return.
+
+c $AC2F Parser: Validate Two Direct Objects
+@ $AC2F label=Parser_ValidateTwoDirectObjects
+E $AC2F View the equivalent code in;
+. #LIST
+. { #JEWELS$C49F }
+. { #WARLORD$AF9F }
+. LIST#
+R $AC2F O:F The carry flag is set when the command is malformed
+  $AC2F,$03 Call #R$AC02.
+  $AC32,$01 Return if there is no direct object in the user input (so the
+. command is malformed).
+N $AC33 #REGa now contains the count of the number of valid direct objects.
+  $AC33,$04 Jump to #R$AC3F if the number of valid direct objects in the user
+. input is not #N$01.
+N $AC37 There is only one valid direct objects in the user input and the
+. command needs two...
+N $AC37 Print "#DECODESTR$CDC1".
+  $AC37,$03 #REGhl=#R(#OFFSET($0017)).
+  $AC3A,$03 Call #R$A25C.
+  $AC3D,$01 Set the carry flag.
+  $AC3E,$01 Return.
+N $AC3F There are two or more valid direct objects in the user input.
+@ $AC3F label=ValidateTwoDirectObjects
+  $AC3F,$04 Jump to #R$AC45 if the number of valid direct objects in the user
+. input is greater than or equal to #N$03.
+  $AC43,$01 Set zero flag.
+  $AC44,$01 Return.
+N $AC45 There are more than two valid direct objects in the user input.
+@ $AC45 label=ValidateTwoDirectObjects_TooMany
 N $AC45 Print "#DECODESTR$CDD1".
   $AC45,$03 #REGhl=#R(#OFFSET($0018)).
   $AC48,$03 Call #R$A25C.
   $AC4B,$01 Set the carry flag.
   $AC4C,$01 Return.
 
-c $AC4D
-  $AC4D,$07 Jump to #R$AC5C if tthe second token (*#R$A13C) is not the
-. termintor character (#N$FF).
+c $AC4D Parser: Validate Any Direct Object
+@ $AC4D label=Parser_ValidateAnyDirectObject
+D $AC4D In most adventure games, the structure for a command is "verb + direct
+. object". This is usually how the player interacts with the game world.
+. The verb describes the action, and the direct object is what the action is
+. performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
+. object "SHOE".
+E $AC4D View the equivalent code in;
+. #LIST
+. { #JEWELS$C4B7 }
+. { #WARLORD$AFB7 }
+. LIST#
+R $AC4D O:A The number of valid direct objects in the user input tokens
+R $AC4D O:F The carry flag is set when the command is malformed
+R $AC4D O:F The zero flag is set when there are no valid direct objects present in the input tokens
+N $AC4D The first token is the verb, so target the second token for the direct
+. object.
+  $AC4D,$03 Fetch the #R$A13C(second token from the user input) and store it in
+. #REGa.
+  $AC50,$04 Jump forward to #R$AC5C if the token is anything other than the
+. terminator character (#N$FF).
+N $AC54 The token was the terminator character (#N$FF), so the sentence is
+. malformed.
+N $AC54 E.g. They tried "TAKE" but didn't write anything after it.
 N $AC54 Print "#DECODESTR$CDC1".
   $AC54,$03 #REGhl=#R(#OFFSET($0017)).
   $AC57,$03 Call #R$A25C.
-  $AC5A,$01 Set the carry flag.
+  $AC5A,$01 Set the carry flag to indicate this call was a failure.
   $AC5B,$01 Return.
+N $AC5C The user input tokens have a direct object, return how many are in the
+. command buffer.
+@ $AC5C label=ValidateAnyDirectObject
   $AC5C,$03 Call #R$A60A.
   $AC5F,$01 Return.
 
-c $AC60
+c $AC60 Parser: Process Item
+@ $AC60 label=Parser_ProcessItem
+E $AC60 View the equivalent code in;
+. #LIST
+. { #JEWELS$C4C7 }
+. { #WARLORD$AFC7 }
+. LIST#
+  $AC60,$03 #REGhl=#R$A13B.
+  $AC63,$02 Set a counter of #N$0A in #REGb of the maximum number of tokens
+. available in the user input.
+@ $AC65 label=ProcessItem_Loop
+  $AC65,$01 Fetch a token byte from the user input pointer.
+  $AC66,$03 Return if the terminator has been reached (#N$FF).
+  $AC69,$02 Stash the user input token pointer and max count on the stack.
+  $AC6B,$03 Load #R$B49E into #REGhl.
+  $AC6E,$04 Load *#R$BBC9 into #REGbc.
+  $AC72,$02 Search for matching objects.
+  $AC74,$02 Jump to #R$AC7E the current token wasn't found in the table.
+  $AC76,$03 Call #R$A591.
+  $AC79,$02 Jump to #R$AC7E if the carry flag is not set.
+  $AC7B,$02 Restore the max count and user input token pointer from the stack.
+  $AC7D,$01 Return.
+@ $AC7E label=ProcessItem_Next
+  $AC7E,$02 Restore the max count and user input token pointer from the stack.
+  $AC80,$01 Increment the user input token pointer by one.
+  $AC81,$02 Decrease the max count by one and loop back to #R$AC65 until all of
+. the user input tokens have been evaluated.
+  $AC83,$01 Return.
 
-g $AC84
+g $AC84 Temporary Storage Table Pointer
+@ $AC84 label=TempStore_TablePointer
 W $AC84,$02
 
-g $AC86
+g $AC86 Temporary Storage Table Index
+@ $AC86 label=TempStore_TableIndex
 W $AC86,$02
 
-c $AC88
+c $AC88 Handler: Scenic Events
+@ $AC88 label=Handler_ScenicEvents
+D $AC88 Handles checking if a scenic event should occur ... and also, handles
+. jumping to the correct related scenic event routine to action it.
+E $AC88 View the equivalent code in;
+. #LIST
+. { #JEWELS$C4EB }
+. { #WARLORD$AFEB }
+. LIST#
+  $AC88,$03 #REGa=*#R$BBCF.
+  $AC8B,$02 Return if *#R$BBCF is zero.
+  $AC8D,$01 #REGb=#REGa.
+  $AC8E,$03 #REGhl=#R$B6BA.
+  $AC91,$02 Jump to #R$AC94.
+@ $AC93 label=Handler_ScenicEvents_Loop
+  $AC93,$01 Increment #REGhl by one.
+@ $AC94 label=ScenicEvents_Process
+  $AC94,$01 #REGa=*#REGhl.
+  $AC95,$03 Call #R$A5C6.
+  $AC98,$02 Jump to #R$ACBA if #REGhl is not equal to #REGa.
+N $AC9A An event was found to be processed!
+N $AC9A First though, stash away the current pointer and index in the search,
+. so this can be resumed later.
+  $AC9A,$03 Write #REGhl to *#R$AC84.
+  $AC9D,$04 Write #REGbc to *#R$AC86.
+N $ACA1 Calculate the event index and get the event handler.
+  $ACA1,$05 #REGe=*#R$BBCF-#REGb.
+  $ACA6,$04 Load #REGix with #R$BBBD which contains a pointer to the scenic
+. event rountines jump table.
+  $ACAA,$03 Call #R$A305.
+  $ACAD,$03 #REGix=#REGhl (using the stack).
+  $ACB0,$03 Call #R$A6FF.
+N $ACB3 This is the return point after the handler has finished executing.
+@ $ACB3 label=ScenicEvents_PostProcessing
+  $ACB3,$03 Restore *#R$AC84 to #REGhl.
+  $ACB6,$04 Restore *#R$AC86 to #REGbc.
+@ $ACBA label=ScenicEvents_Next
+  $ACBA,$02 Decrease the event counter by one and loop back to #R$AC93 until
+. all events have been processed.
+  $ACBC,$01 Return.
 
 c $ACBD Move Player To Room
 @ $ACBD label=MovePlayerToRoom
@@ -1495,7 +1739,12 @@ D $B60E Items may have several item IDs which relate to a single item, this
 W $B60E,$02 Item Group: #N((#PC-$B60E)/$02): #OBJECT((#PC-$B60E)/$02).
 L $B60E,$02,$56
 
-g $B6BA
+g $B6BA Table: Scenic Event Locations 2
+@ $B6BA label=Table_ScenicEventLocations2
+D $B6BA A table where the index is the event ID, and the value is the room it
+. resides in (#N$00 for "currently inactive"). See #R$BBCF for the count.
+B $B6BA,$01 Event #N(#PC-$B6BA) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+L $B6BA,$01,$05
 
 g $B8DD Table: Room Map
 @ $B8DD label=Table_RoomMap
@@ -1529,6 +1778,11 @@ L $BB93,$01,$13
 
 g $BBA6
 
+g $BBBD Jump Table: Scenic Events
+@ $BBBD label=JumpTable_ScenicEvents
+W $BBBD,$02 Event #N((#PC-$BBBD)/$02).
+L $BBBD,$02,$05
+
 g $BBC7 Number Of Object
 @ $BBC7 label=Count_Objects_1
 D $BBC7 The total number of objects in the game.
@@ -1546,7 +1800,10 @@ g $BBCD Number Of Rooms With Images
 D $BBCD The total number of rooms which have related images in the game.
 W $BBCD,$02
 
-g $BBCF
+g $BBCF Number Of Scenic Events
+@ $BBCF label=Count_ScenicEvents
+E $BBCF The total number of scenic events in the game, see Table_ScenicEventLocations.
+W $BBCF,$02
 
 g $BBD1
 B $BBD1,$01
@@ -1565,6 +1822,12 @@ g $BBD7
 B $BBD7,$01
 
 g $BC4C
+
+g $BCE4
+g $BD00
+g $BD1C
+g $BD25
+g $BD2E
 
 g $CA2B Table: Messaging Offsets
 @ $CA2B label=Table_MessagingOffsets
