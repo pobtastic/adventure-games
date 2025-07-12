@@ -25,7 +25,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="44101.html">44101</a>
+Prev: <a href="44079.html">44079</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#44109">Map</a></td>
 <td class="next">
@@ -33,31 +33,71 @@ Next: <a href="44128.html">44128</a>
 </td>
 </tr>
 </table>
-<div class="description">44109: Routine at AC4D</div>
+<div class="description">44109: Parser: Validate Any Direct Object</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+In most adventure games, the structure for a command is "verb + direct object". This is usually how the player interacts with the game world. The verb describes the action, and the direct object is what the action is performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct object "SHOE".
+</div>
+</div>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">The number of valid direct objects in the user input tokens</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The carry flag is set when the command is malformed</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when there are no valid direct objects present in the input tokens</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44109"></span>
+<div class="comments">
+<div class="paragraph">
+The first token is the verb, so target the second token for the direct object.
+</div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Parser_ValidateAnyDirectObject</td>
 <td class="address-2"><span id="44109"></span>44109</td>
 <td class="instruction">LD A,(41276)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="44109.html#44124">44124</a> if tthe second token (*<a href="41275.html#41276">UserInput_Token_2</a>) is not the termintor character (255).</td>
+<td class="comment-1" rowspan="1">Fetch the <a href="41275.html#41276">second token from the user input</a> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44112"></span>44112</td>
 <td class="instruction">CP 255</td>
+<td class="comment-1" rowspan="2">Jump forward to <a href="44109.html#44124">ValidateAnyDirectObject</a> if the token is anything other than the terminator character (255).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44114"></span>44114</td>
-<td class="instruction">JR NZ,<a href="44109.html#44124">44124</a></td>
+<td class="instruction">JR NZ,<a href="44109.html#44124">ValidateAnyDirectObject</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="44116"></span>
 <div class="comments">
+<div class="paragraph">
+The token was the terminator character (255), so the sentence is malformed.
+</div>
+<div class="paragraph">
+E.g. They tried "TAKE" but didn't write anything after it.
+</div>
 <div class="paragraph">
 Print "Please be more specific.".
 </div>
@@ -65,40 +105,68 @@ Print "Please be more specific.".
 </td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44116"></span>44116</td>
 <td class="instruction">LD HL,23</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="52673.html">Messaging_PleaseBeMoreSpecific</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44119"></span>44119</td>
 <td class="instruction">CALL <a href="41564.html">PrintCompressedStringAndNewline</a></td>
 <td class="comment-1" rowspan="1">Call <a href="41564.html">PrintCompressedStringAndNewline</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44122"></span>44122</td>
 <td class="instruction">SCF</td>
-<td class="comment-1" rowspan="1">Set the carry flag.</td>
+<td class="comment-1" rowspan="1">Set the carry flag to indicate this call was a failure.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44123"></span>44123</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="44124"></span>
+<div class="comments">
+<div class="paragraph">
+The user input tokens have a direct object, return how many are in the command buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ValidateAnyDirectObject</td>
 <td class="address-2"><span id="44124"></span>44124</td>
 <td class="instruction">CALL <a href="42506.html">Parser_CountItems</a></td>
 <td class="comment-1" rowspan="1">Call <a href="42506.html">Parser_CountItems</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44127"></span>44127</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/50359.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/warlord/dec/asm/44983.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="44101.html">44101</a>
+Prev: <a href="44079.html">44079</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#44109">Map</a></td>
 <td class="next">

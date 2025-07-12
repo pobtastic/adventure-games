@@ -33,7 +33,7 @@ Next: <a href="44164.html">44164</a>
 </td>
 </tr>
 </table>
-<div class="description">44128: Routine at AC60</div>
+<div class="description">44128: Parser: Process Item</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -45,109 +45,138 @@ Used by the routine at <a href="44449.html">GameStart</a>.
 </td>
 </tr>
 <tr>
+<td class="asm-label">Parser_ProcessItem</td>
 <td class="address-2"><span id="44128"></span>44128</td>
 <td class="instruction">LD HL,41275</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="41275.html">UserInput_Token_1</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44131"></span>44131</td>
 <td class="instruction">LD B,10</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set a counter of 10 in <span class="register">B</span> of the maximum number of tokens available in the user input.</td>
 </tr>
 <tr>
+<td class="asm-label">ProcessItem_Loop</td>
 <td class="address-2"><span id="44133"></span>44133</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch a token byte from the user input pointer.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44134"></span>44134</td>
 <td class="instruction">CP 255</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return if the terminator has been reached (255).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44136"></span>44136</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44137"></span>44137</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Stash the user input token pointer and max count on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44138"></span>44138</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44139"></span>44139</td>
 <td class="instruction">LD HL,46238</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load <a href="46238.html">Table_TokenItemList</a> into <span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44142"></span>44142</td>
 <td class="instruction">LD BC,(48073)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load *<a href="48073.html">Count_Objects_2</a> into <span class="register">BC</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44146"></span>44146</td>
 <td class="instruction">CPIR</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Search for matching objects.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44148"></span>44148</td>
-<td class="instruction">JR NZ,<a href="44128.html#44158">44158</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="44128.html#44158">ProcessItem_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44128.html#44158">ProcessItem_Next</a> the current token wasn't found in the table.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44150"></span>44150</td>
 <td class="instruction">CALL <a href="42385.html">Parser_ValidateItem</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="42385.html">Parser_ValidateItem</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44153"></span>44153</td>
-<td class="instruction">JR NC,<a href="44128.html#44158">44158</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="44128.html#44158">ProcessItem_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44128.html#44158">ProcessItem_Next</a> if the carry flag is not set.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44155"></span>44155</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore the max count and user input token pointer from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44156"></span>44156</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44157"></span>44157</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="asm-label">ProcessItem_Next</td>
 <td class="address-2"><span id="44158"></span>44158</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore the max count and user input token pointer from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44159"></span>44159</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44160"></span>44160</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Increment the user input token pointer by one.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44161"></span>44161</td>
-<td class="instruction">DJNZ <a href="44128.html#44133">44133</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="44128.html#44133">ProcessItem_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the max count by one and loop back to <a href="44128.html#44133">ProcessItem_Loop</a> until all of the user input tokens have been evaluated.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44163"></span>44163</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/50375.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/warlord/dec/asm/44999.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
