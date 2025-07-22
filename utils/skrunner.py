@@ -8,8 +8,10 @@ AFTERSHOCK_SKOOL = '{}/sources/aftershock/aftershock.skool'.format(ADVENTUREGAME
 BLIZZARDPASS_SKOOL = '{}/sources/blizzardpass/blizzardpass.skool'.format(ADVENTUREGAMES_HOME)
 FORESTATWORLDSEND_SKOOL = '{}/sources/blizzardpass/forestatworldsend.skool'.format(ADVENTUREGAMES_HOME)
 HEROESOFKHAN_SKOOL = '{}/sources/heroesofkarn/heroesofkarn.skool'.format(ADVENTUREGAMES_HOME)
+HOBBIT_SKOOL = '{}/sources/hobbit/hobbit.skool'.format(ADVENTUREGAMES_HOME)
 JEWELSOFBABYLON_SKOOL = '{}/sources/jewelsofbabylon/jewelsofbabylon.skool'.format(ADVENTUREGAMES_HOME)
 MESSAGEFROMANDROMEDA_SKOOL  = '{}/sources/messagefromandromeda/messagefromandromeda.skool'.format(ADVENTUREGAMES_HOME)
+SHERLOCK_SKOOL  = '{}/sources/sherlock/sherlock.skool'.format(ADVENTUREGAMES_HOME)
 WARLORD_SKOOL = '{}/sources/warlord/warlord.skool'.format(ADVENTUREGAMES_HOME)
 
 SKOOLKIT_HOME = os.environ.get('SKOOLKIT_HOME')
@@ -34,8 +36,10 @@ def run_skool2asm():
     skool2asm.main(sys.argv[1:] + [BLIZZARDPASS_SKOOL])
     skool2asm.main(sys.argv[1:] + [FORESTATWORLDSEND_SKOOL])
     skool2asm.main(sys.argv[1:] + [HEROESOFKHAN_SKOOL])
+    skool2asm.main(sys.argv[1:] + [HOBBIT_SKOOL])
     skool2asm.main(sys.argv[1:] + [JEWELSOFBABYLON_SKOOL])
     skool2asm.main(sys.argv[1:] + [MESSAGEFROMANDROMEDA_SKOOL])
+    skool2asm.main(sys.argv[1:] + [SHERLOCK_SKOOL])
     skool2asm.main(sys.argv[1:] + [WARLORD_SKOOL])
 
 def run_skool2html():
@@ -65,6 +69,12 @@ def run_skool2html():
     skool2html.main(options.split() + hex.split() + sys.argv[1:] + [HEROESOFKHAN_SKOOL])
     skool2html.main(options.split() + dec.split() + sys.argv[1:] + [HEROESOFKHAN_SKOOL])
 
+    art.tprint("The Hobbit")
+    hex = '-H -c Config/GameDir=adventure-games/hobbit --var pub=2'
+    dec = '-D -c Config/GameDir=adventure-games/hobbit/dec --var pub=4'
+    skool2html.main(options.split() + hex.split() + sys.argv[1:] + [HOBBIT_SKOOL])
+    skool2html.main(options.split() + dec.split() + sys.argv[1:] + [HOBBIT_SKOOL])
+
     art.tprint("Jewels Of Babylon")
     hex = '-H -c Config/GameDir=adventure-games/jewelsofbabylon --var pub=2'
     dec = '-D -c Config/GameDir=adventure-games/jewelsofbabylon/dec --var pub=4'
@@ -76,6 +86,12 @@ def run_skool2html():
     dec = '-D -c Config/GameDir=adventure-games/messagefromandromeda/dec --var pub=4'
     skool2html.main(options.split() + hex.split() + sys.argv[1:] + [MESSAGEFROMANDROMEDA_SKOOL])
     skool2html.main(options.split() + dec.split() + sys.argv[1:] + [MESSAGEFROMANDROMEDA_SKOOL])
+
+    art.tprint("Sherlock")
+    hex = '-H -c Config/GameDir=adventure-games/sherlock --var pub=2'
+    dec = '-D -c Config/GameDir=adventure-games/sherlock/dec --var pub=4'
+    skool2html.main(options.split() + hex.split() + sys.argv[1:] + [SHERLOCK_SKOOL])
+    skool2html.main(options.split() + dec.split() + sys.argv[1:] + [SHERLOCK_SKOOL])
 
     art.tprint("Warlord")
     hex = '-H -c Config/GameDir=adventure-games/warlord --var pub=2'

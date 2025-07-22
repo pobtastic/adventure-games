@@ -124,36 +124,102 @@ class AfterShock(AdventureGame):
             pc += 0x01
         return '\n'.join(lines)
 
+    def get_locations(self):
+        return "# AfterShock location data\n"
+
 
 class BlizzardPass(AdventureGame):
     def get_text(self):
         return "# BlizzardPass text data\n"
+
+    def get_locations(self):
+        return "# BlizzardPass location data\n"
 
 
 class ForestAtWorldsEnd(AdventureGame):
     def get_text(self):
         return "# ForestAtWorldsEnd text data\n"
 
+    def get_locations(self):
+        return "# ForestAtWorldsEnd location data\n"
+
 
 class HeroesOfKarn(AdventureGame):
     def get_text(self):
         return "# HeroesOfKarn text data\n"
+
+    def get_locations(self):
+        return "# HeroesOfKarn location data\n"
+
+
+class Hobbit(AdventureGame):
+    def get_text(self):
+        return "# Hobbit text data\n"
+
+    def get_locations(self):
+        return "# Hobbit location data\n"
 
 
 class JewelsOfBabylon(AdventureGame):
     def get_text(self):
         return "# JewelsOfBabylon text data\n"
 
+    def get_locations(self):
+        return "# JewelsOfBabylon location data\n"
+
 
 class MessageFromAndromeda(AdventureGame):
     def get_text(self):
         return "# MessageFromAndromeda text data\n"
+
+    def get_locations(self):
+        return "# MessageFromAndromeda location data\n"
+
+
+class Sherlock(AdventureGame):
+    def get_text(self):
+        return "# Sherlock text data\n"
+
+    def get_locations(self):
+        """Extract location data from the game"""
+        lines = []
+        pc = 0x84E1
+        room = 0x00
+        while pc < 0x8B6E:
+            start = pc
+            lines.append(f"g ${start:04X} Room #N${room:02X}: \"#ROOM${room:02X}\"")
+            lines.append(f"B ${start:04X},b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))")
+            pc += 0x01
+            for x in range(0, 4):
+                lines.append(f"W ${pc:04X},$02 #TEXTTOKEN(#PC)")
+                pc += 0x02
+            byte = self.get_byte(pc)
+            if byte < 0xFF:
+                start = pc
+                movements = 0x00
+                while byte < 0xFF:
+                    movements += 0x01
+                    pc += 0x03
+                    byte = self.get_byte(pc)
+                lines.append(f"B ${start:04X},${movements*0x03:02X},$03 #TABLE(default,centre,centre,centre)")
+                lines.append(". { =h Direction | =h Via | =h Destination }")
+                for x in range(0, movements):
+                    lines.append(f". {{ #MOVEMENT(${start+x*0x03:04X}) }}")
+                lines.append(". TABLE#")
+            lines.append(f"B ${pc:04X},$01 Terminator.")
+            lines.append("")
+            room += 0x01
+            pc += 0x01
+        return '\n'.join(lines)
 
 
 class Warlord(AdventureGame):
     def get_text(self):
         lines = super().get_text(0xC97C, 0xE0B0)
         return '\n'.join(lines)
+
+    def get_locations(self):
+        return "# Warlord location data\n"
 
 
 GAMES = OrderedDict((
@@ -181,6 +247,12 @@ GAMES = OrderedDict((
         't2s': '{}/heroesofkarn.t2s'.format(ADVENTUREGAMES_HOME),
         'name': 'Heroes Of Karn'
     }),
+    ('hobbit', {
+        'class': Hobbit,
+        'z80': '{}/HobbitThe.z80'.format(ADVENTUREGAMES_HOME),
+        't2s': '{}/hobbit.t2s'.format(ADVENTUREGAMES_HOME),
+        'name': 'The Hobbit'
+    }),
     ('jewelsofbabylon', {
         'class': JewelsOfBabylon,
         'z80': '{}/JewelsofBabylon.z80'.format(ADVENTUREGAMES_HOME),
@@ -192,6 +264,12 @@ GAMES = OrderedDict((
         'z80': '{}/MessageFromAndromeda.z80'.format(ADVENTUREGAMES_HOME),
         't2s': '{}/messagefromandromeda.t2s'.format(ADVENTUREGAMES_HOME),
         'name': 'Message From Andromeda'
+    }),
+    ('sherlock', {
+        'class': Sherlock,
+        'z80': '{}/Sherlock.z80'.format(ADVENTUREGAMES_HOME),
+        't2s': '{}/sherlock.t2s'.format(ADVENTUREGAMES_HOME),
+        'name': 'Sherlock'
     }),
     ('warlord', {
         'class': Warlord,
@@ -226,6 +304,7 @@ def run(game_name, subcommand):
 ###############################################################################
 methods = OrderedDict((
     ('text', ('get_text', 'Text Data')),
+    ('locations', ('get_locations', 'Location Data')),
     ('disassemble', ('get_disassembly', 'Disassemble'))
 ))
 

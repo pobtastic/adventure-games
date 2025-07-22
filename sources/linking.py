@@ -20,6 +20,14 @@ class AdventureGamesHtmlWriter(HtmlWriter):
 	def init(self):
 		self._type = 'asm' if self.base == 16 else 'dec/asm'
 
+	def expand_shock(self, text, index, cwd):
+		# #SHOCKaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "After Shock"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/aftershock/{self._type}/{href}", link_text)
+
 	def expand_pass(self, text, index, cwd):
 		# #PASSaddress[#anchor][(link text)]
 		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
@@ -35,6 +43,46 @@ class AdventureGamesHtmlWriter(HtmlWriter):
 			link_text = "The Jewels Of Babylon"
 		href = self._asm_relpath(cwd, address, code_id, True)
 		return end, self.format_link(f"/adventure-games/jewelsofbabylon/{self._type}/{href}", link_text)
+
+	def expand_forest(self, text, index, cwd):
+		# #FORESTaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "Forest At Worlds End"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/forestatworldsend/{self._type}/{href}", link_text)
+
+	def expand_heroes(self, text, index, cwd):
+		# #HEROESaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "Heroes Of Karn"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/heroesofkarn/{self._type}/{href}", link_text)
+
+	def expand_hobbit(self, text, index, cwd):
+		# #HOBBITaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "The Hobbit"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/hobbit/{self._type}/{href}", link_text)
+
+	def expand_andromeda(self, text, index, cwd):
+		# #ANDROMEDAaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "Message From Andromeda"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/messagefromandromeda/{self._type}/{href}", link_text)
+
+	def expand_sherlock(self, text, index, cwd):
+		# #SHERLOCKaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "Sherlock"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/sherlock/{self._type}/{href}", link_text)
 
 	def expand_warlord(self, text, index, cwd):
 		# #WARLORDaddress[#anchor][(link text)]

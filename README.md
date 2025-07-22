@@ -3,6 +3,9 @@ Adventure Game disassemblies
 
 A disassembly of the [Spectrum](https://en.wikipedia.org/wiki/ZX_Spectrum) games;
 
+### [Adventuresoft UK Ltd](https://en.wikipedia.org/wiki/Adventure_Soft):
+* [Blizzard Pass](https://en.wikipedia.org/wiki/ZX_Spectrum_software) 1986
+
 ### [Interceptor Software UK](https://en.wikipedia.org/wiki/Interceptor_Micros):
 * [After Shock](https://en.wikipedia.org/wiki/After_Shock_(video_game)) 1986
 * [Forest at World's End](https://en.wikipedia.org/wiki/Forest_at_the_World%27s_End) 1984
@@ -11,8 +14,9 @@ A disassembly of the [Spectrum](https://en.wikipedia.org/wiki/ZX_Spectrum) games
 * [Message from Andromeda](https://en.wikipedia.org/wiki/Message_from_Andromeda) 1984
 * [Warlord](https://en.wikipedia.org/wiki/ZX_Spectrum_software) 1985
 
-### [Adventuresoft UK Ltd](https://en.wikipedia.org/wiki/Adventure_Soft):
-* [Blizzard Pass](https://en.wikipedia.org/wiki/ZX_Spectrum_software) 1986
+### [Melbourne House][https://en.wikipedia.org/wiki/Beam_Software]:
+* [The Hobbit](https://en.wikipedia.org/wiki/The_Hobbit_(1982_video_game)) 1982
+* [Sherlock](https://en.wikipedia.org/wiki/Sherlock_(video_game)) 1984
 
 Created using [SkoolKit](https://skoolkit.ca).
 

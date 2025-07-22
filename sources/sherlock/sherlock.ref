@@ -1,0 +1,80 @@
+;
+; SkoolKit ref file for Sherlock
+;
+; To build the HTML disassembly, run these commands:
+;   tap2sna.py @sherlock.t2s
+;   sna2skool.py -H -c sources/sherlock/sherlock.ctl Sherlock.z80 > sources/sherlock/sherlock.skool
+;   skool2html.py -H sources/sherlock/sherlock.skool -T dark -T wide -toOa
+
+[Config]
+Expand=#INCLUDE(Expand)
+RefFiles=../analytics.ref;../bases.ref;changelog.ref;pokes.ref
+HtmlWriterClass=:sherlock.SherlockHtmlWriter
+GameDir=sherlock
+
+[Game]
+Game=Sherlock
+Logo=#SCR$02,$08,$07,$11,$06,$4000,$5800(/images/logo)
+Copyright=&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.
+Repository=https://github.com/pobtastic/sherlock/
+StyleSheet=skoolkit.css;skoolkit-dark.css;skoolkit-wide.css;sherlock.css
+LinkInternalOperands=1
+AddressAnchor={address#IF({base}==16)(:04x)}
+
+[PageHeaders]
+GameIndex=The complete<>RAM disassembly (work in progress)
+
+[Expand]
+#DEF(#LOCATIONATTRIBUTE(address))
+
+#DEF(#MOVEMENT(address)
+  #MAP(#PEEK($address))(?,$01:N,$02:S,$03:E,$04:W,$05:NE,$06:NW,$07:SE,$08:SW,$09:UP,$0A:DOWN) |
+    #IF(#PEEK($address+$01)>$00)(OBJECT(#PEEK($address+$01)),---) |
+    #N(#PEEK($address+$02)) - "#ROOM(#PEEK($address+$02))")
+
+#DEF(#ROOM(id)
+  #MAP($id)(
+    N/A,
+    00:"test"
+  ))
+
+#DEF(#COLOUR(id)
+  #LET(ink=$id&$07)#IF({ink}>=$00)(INK:
+    #MAP({ink})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE)),
+  #LET(paper=$id>>$03&$07)#IF({paper}>=$00)(PAPER:
+    #MAP({paper})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE))
+  #LET(bright=$id&$40)#IF({bright}>$00)((BRIGHT))
+  #LET(flash=$id&$80)#IF({flash}>$00)(FLASH: ON))
+
+#DEF(#INK(id)
+  #LET(bright=$id&$40)
+  #LET(flash=$id&$80)
+  #LET(ink=$id&$07)#IF({ink}>=$00)(
+    #MAP({ink})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE))#IF({bright}>$00)( (BRIGHT))#IF({flash}>$00)( (FLASH: ON)))

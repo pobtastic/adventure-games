@@ -14,6 +14,88 @@ D $4000 #UDGTABLE { =h After Shock Loading Screen. } { #SCR$02(loading) } UDGTAB
   $5800,$0300,$20 Attributes.
 
 g $61A8
+W $61A8,$02 #R($61A8+#PEEK(#PC)+#PEEK(#PC+$01)*$100).
+L $61A8,$02,$0B
+
+b $61BE Graphics: Your Office
+@ $61BE label=Image_YourOffice
+D $61BE #SIM(start=$9E0B,stop=$9E18) #PUSHS #UDGTABLE
+. { =h Your Office }
+. { #SIM(start=$9F67,stop=$9F7F,a=$01)#SCR$02{$00,$00,$200,$100}(your-office) }
+. UDGTABLE# #POPS
+  $61BE
+
+b $6786 Graphics: The Sewer
+@ $6786 label=Image_TheSewer
+D $6786 #PUSHS #UDGTABLE
+. { =h Your Sewer }
+. { #SIM(start=$9F67,stop=$9F7F,a=$02)#SCR$02{$00,$00,$200,$100}(the-sewer) }
+. UDGTABLE# #POPS
+  $6786
+
+b $6C32 Graphics: Rubble
+@ $6C32 label=Image_Rubble
+D $6C32 #PUSHS #UDGTABLE
+. { =h Rubble }
+. { #SIM(start=$9F67,stop=$9F7F,a=$03)#SCR$02{$00,$00,$200,$100}(rubble) }
+. UDGTABLE# #POPS
+  $6C32
+
+b $727F Graphics: Alleyway
+@ $727F label=Image_Alleyway
+D $727F #PUSHS #UDGTABLE
+. { =h Alleyway }
+. { #SIM(start=$9F67,stop=$9F7F,a=$04)#SCR$02{$00,$00,$200,$100}(alleyway) }
+. UDGTABLE# #POPS
+  $727F
+
+b $783F Graphics: Control Room
+@ $783F label=Image_ControlRoom
+D $783F #PUSHS #UDGTABLE
+. { =h Control Room }
+. { #SIM(start=$9F67,stop=$9F7F,a=$05)#SCR$02{$00,$00,$200,$100}(control-room) }
+. UDGTABLE# #POPS
+  $783F
+
+b $7FA4 Graphics: Wreckage
+@ $7FA4 label=Image_Wreckage
+D $7FA4 #PUSHS #UDGTABLE
+. { =h Wreckage }
+. { #SIM(start=$9F67,stop=$9F7F,a=$06)#SCR$02{$00,$00,$200,$100}(wreckage) }
+. UDGTABLE# #POPS
+  $7FA4
+
+b $894E Graphics: Desert
+@ $894E label=Image_Desert
+D $894E #PUSHS #UDGTABLE
+. { =h Desert }
+. { #SIM(start=$9F67,stop=$9F7F,a=$07)#SCR$02{$00,$00,$200,$100}(desert) }
+. UDGTABLE# #POPS
+  $894E
+
+b $8C7A Graphics: Home
+@ $8C7A label=Image_Home
+D $8C7A #PUSHS #UDGTABLE
+. { =h Home }
+. { #SIM(start=$9F67,stop=$9F7F,a=$08)#SCR$02{$00,$00,$200,$100}(home) }
+. UDGTABLE# #POPS
+  $8C7A
+
+b $933D Graphics: Museum
+@ $933D label=Image_Museum
+D $933D #PUSHS #UDGTABLE
+. { =h Museum }
+. { #SIM(start=$9F67,stop=$9F7F,a=$09)#SCR$02{$00,$00,$200,$100}(museum) }
+. UDGTABLE# #POPS
+  $933D
+
+b $98B8 Graphics: Stadium
+@ $98B8 label=Image_Stadium
+D $98B8 #PUSHS #UDGTABLE
+. { =h Stadium }
+. { #SIM(start=$9F67,stop=$9F7F,a=$0A)#SCR$02{$00,$00,$200,$100}(stadium) }
+. UDGTABLE# #POPS
+  $98B8
 
 c $9DCC Game Entry Point Alias
   $9DCC,$02 Jump to #R$9DD7.
@@ -215,7 +297,9 @@ E $9F88 View the equivalent code in #JEWELS$BBF0.
 B $9F88,$01 Item #N(#PC-$9F88) #ITEM(#PC-$9F88) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $9F88,$01,$88
 
-g $A0D2
+g $A0D2 Number Of Items In The Players Inventory
+@ $A0D2 label=Count_InventoryItems
+D $A0D2 The number of items the player is currently holding.
 B $A0D2,$01
 
 g $A0D3
@@ -1204,11 +1288,184 @@ N $A6F6 Print "#DECODESTR$CE44".
 g $A6FD
 W $A6FD,$02
 
+B $A6FE,$01
+
 c $A6FF
+  $A6FF,$03 Stash #REGhl, #REGde and #REGbc on the stack.
+  $A702,$03 #REGhl=#R$A6FD.
+  $A705,$02 Write #N$40 to *#REGhl.
+  $A707,$01 Increment #REGhl by one.
+  $A708,$02 Write #N$FF to *#REGhl.
+  $A70A,$03 #REGe=*#REGix+#N$00.
+  $A70D,$02 Stash #REGix on the stack.
+  $A70F,$04 #REGix=#R$A785.
+  $A713,$03 Call #R$A305.
+  $A716,$02 Restore #REGix from the stack.
+  $A718,$01 Jump to *#REGhl.
+  $A719,$02 Increment #REGix by one.
+  $A71B,$02 Increment #REGix by one.
+  $A71D,$02 Increment #REGix by one.
+  $A71F,$02 Increment #REGix by one.
+  $A721,$02 #REGbc=#REGaf (using the stack).
+  $A723,$05 Compare *#R$A6FE with #N$FE...
+  $A728,$03 #REGa=*#R$A6FD.
+  $A72B,$02 Jump to #R$A730 if *#R$A6FE is not equal to #N$FE.
+  $A72D,$01 Set the bits from #REGc.
+  $A72E,$02 Jump to #R$A731.
+  $A730,$01 Merge the bits from #REGc.
+  $A731,$03 Write #REGa to *#R$A6FD.
+  $A734,$03 #REGa=*#REGix+#N$00.
+  $A737,$04 Jump to #R$A744 if #REGa is less than #N$FE.
+  $A73B,$03 Write #REGa to *#R$A6FE.
+  $A73E,$02 Increment #REGix by one.
+  $A740,$02 Jump to #R$A70A.
+
+  $A742,$02 Increment #REGix by one.
+  $A744,$03 #REGe=*#REGix+#N$00.
+  $A747,$02 Stash #REGix on the stack.
+  $A749,$04 #REGix=#R$A7C1.
+  $A74D,$03 Call #R$A305.
+  $A750,$02 Restore #REGix from the stack.
+  $A752,$04 #REGc=*#R$A6FD.
+  $A756,$02 #REGaf=#REGbc (using the stack).
+  $A758,$01 Jump to *#REGhl.
+
+  $A759,$02 Increment #REGix by one.
+  $A75B,$02 Increment #REGix by one.
+  $A75D,$02 Increment #REGix by one.
+  $A75F,$02 Increment #REGix by one.
+  $A761,$03 #REGa=*#REGix+#N$00.
+  $A764,$04 Jump to #R$A742 if #REGa is equal to #N$FF.
+  $A768,$02 Jump to #R$A702.
+  $A76A,$02 Jump to #R$A770 if #REGa is not equal to #N$FF.
+  $A76C,$02 #REGa=#N$01.
+  $A76E,$01 Set flags.
+  $A76F,$01 Return.
+  $A770,$01 #REGa=#N$00.
+  $A771,$01 Return.
+  $A772,$03 Return if #REGa is not equal to #N$FF.
+  $A775,$03 #REGa=*#R$A805.
+  $A778,$01 Return.
 
 g $A779
+W $A779,$02
+L $A779,$02,$06
 
-c $A808
+g $A785
+W $A785,$02
+L $A785,$02,$1E
+
+g $A7C1
+W $A7C1,$02
+L $A7C1,$02,$22
+
+g $A805
+
+c $A807
+c $A80B
+c $A817
+c $A826
+c $A832
+c $A841
+c $A84D
+c $A856
+c $A862
+c $A871
+c $A883
+c $A88F
+c $A898
+c $A8B2
+c $A8CF
+c $A8D8
+c $A8E4
+c $A8ED
+c $A8F9
+c $A90D
+c $A924
+c $A947
+c $A96A
+c $A973
+c $A97F
+c $A990
+c $A9A4
+c $A9B0
+C $A9BF
+c $A9CB
+c $A9DA
+c $A9E9
+c $AA00
+c $AA08
+c $AA17
+c $AA26
+c $AA39
+c $AA48
+c $AA5F
+
+c $AA6E Handler: Pick Up Item
+@ $AA6E label=Handler_PickUpItem
+E $AA6E View the equivalent code in;
+. #LIST
+. { #WARLORD$EDA6 }
+. LIST#
+  $AA6E,$03 Jump to #R$A75D if ?? is not equal to #N$00.
+  $AA71,$03 #REGa=*#REGix+#N$01.
+  $AA74,$03 Call #R$A772.
+N $AA77 Call #R$A663 using the item ID, to change the location to #N$01 (to the
+. players inventory).
+  $AA77,$01 #REGb=#REGa.
+  $AA78,$02 #REGc=#N$01.
+  $AA7A,$03 Call #R$A663.
+N $AA7D Player has picked up an item so handle the inventory count.
+  $AA7D,$04 Increment *#R$A0D2 by one.
+N $AA81 Print "#DECODESTR$CDE5".
+  $AA81,$03 #REGhl=#R(#OFFSET($001A)).
+  $AA84,$03 Call #R$A25C.
+  $AA87,$03 Jump to #R$A75D.
+
+c $AA8A Handler: Drop Item
+@ $AA8A label=Handler_DropItem
+E $AA8A View the equivalent code in;
+. #LIST
+. { #WARLORD$EDB8 }
+. LIST#
+  $AA8A,$03 Jump to #R$A75D if ?? is not equal to #N$00.
+  $AA8D,$03 #REGa=*#REGix+#N$01.
+  $AA90,$03 Call #R$A772.
+N $AA93 The item is in the players inventory, so move its location to the
+. current room.
+  $AA93,$01 #REGb=#REGa.
+  $AA94,$04 #REGc=*#R$A106.
+  $AA98,$03 Call #R$A663.
+N $AA9B Player has dropped an item so handle the inventory count.
+  $AA9B,$04 Decrease *#R$A0D2 by one.
+N $AA9F Print "#DECODESTR$CDE5".
+  $AA9F,$03 #REGhl=#R(#OFFSET($001A)).
+  $AAA2,$03 Call #R$A25C.
+  $AAA5,$03 Jump to #R$A75D.
+
+c $AAA8
+c $AAB4
+c $AAC0
+c $AACC
+c $AAD8
+c $AAE4
+c $AAF3
+c $AAFA
+c $AB04
+c $AB0E
+c $AB22
+c $AB37
+c $AB4A
+c $AB5E
+c $AB73
+c $AB8B
+c $AB94
+c $AB9D
+c $ABA8
+c $ABB1
+c $ABBD
+c $ABDF
+c $ABE8
 
 c $ABF4 Parser: Validate No Direct Object
 @ $ABF4 label=Parser_ValidateNoDirectObject
@@ -1583,6 +1840,31 @@ N $AE29 Just loop round for any other input.
   $AE29,$03 Jump to #R$AE1C.
 
 c $AE2C
+  $AE2C,$03 Call #R$A635.
+  $AE2F,$02 Jump to #R$AE48 if ?? is not equal to #N$00.
+N $AE31 Print "#DECODESTR$CDEA".
+  $AE31,$03 #REGhl=#R(#OFFSET($001B)).
+  $AE34,$03 #REGbc=#N($0003,$04,$04).
+  $AE37,$01 #REGa=#N$00.
+  $AE38,$01 Set the bits from #REGc.
+  $AE39,$02 Jump to #R$AE55 if ?? is equal to #REGc.
+  $AE3B,$01 Stash #REGhl on the stack.
+  $AE3C,$03 #REGhl=#R$B6F1.
+  $AE3F,$01 #REGa=#REGe.
+  $AE40,$02 CPIR.
+  $AE42,$01 Restore #REGhl from the stack.
+  $AE43,$02 Jump to #R$AE55 if ?? is not equal to #REGc.
+  $AE45,$01 Increment #REGhl by one.
+  $AE46,$02 Jump to #R$AE55.
+N $AE48 Print "#DECODESTR$CE20".
+  $AE48,$03 #REGhl=#R(#OFFSET($001F)).
+  $AE4B,$0A Jump to #R$AE5C if *#R$A0D2 is less than *#R$A0D3.
+  $AE55,$03 Call #R$A25C.
+  $AE58,$02 #REGa=#N$01.
+  $AE5A,$01 Set flags.
+  $AE5B,$01 Return.
+  $AE5C,$01 #REGa=#N$00.
+  $AE5D,$01 Return.
 
 c $AE5E
 
@@ -1746,6 +2028,8 @@ D $B6BA A table where the index is the event ID, and the value is the room it
 B $B6BA,$01 Event #N(#PC-$B6BA) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $B6BA,$01,$05
 
+g $B6F1
+
 g $B8DD Table: Room Map
 @ $B8DD label=Table_RoomMap
 N $B8DD Room #N((#PC-$B8DD)/$06): #ROOM((#PC-$B8DD)/$06).
@@ -1777,6 +2061,12 @@ B $BB93,$01 Location Slot: #N(#PC-$BB93) - room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)
 L $BB93,$01,$13
 
 g $BBA6
+B $BBA6,$01 #N(#PC-$BBA6): #N(#PEEK(#PC)).
+L $BBA6,$01,$13
+
+g $BBB9
+W $BBB9,$02
+L $BBB9,$02,$02
 
 g $BBBD Jump Table: Scenic Events
 @ $BBBD label=JumpTable_ScenicEvents
@@ -1831,7 +2121,7 @@ g $BD2E
 
 g $CA2B Table: Messaging Offsets
 @ $CA2B label=Table_MessagingOffsets
-W $CA2B,$02 Leads to: #R($C8E9+#PEEK(#PC)+#PEEK(#PC+$01)*$100).
+W $CA2B,$02 Message ID #N(#PC-$CA2B): #R($C8E9+#PEEK(#PC)+#PEEK(#PC+$01)*$100).
 L $CA2B,$02,$170
 
 g $C8E9 Data: Strings

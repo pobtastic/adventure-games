@@ -5,7 +5,7 @@ OPTIONS  = -d build/html -t
 OPTIONS += $(foreach theme,$(THEMES),-T $(theme))
 OPTIONS += $(HTML_OPTS)
 
-.PHONY: usage clean aftershock blizzardpass forestatworldsend heroesofkarn jewelsofbabylon messagefromandromeda warlord
+.PHONY: usage clean aftershock blizzardpass forestatworldsend heroesofkarn hobbit jewelsofbabylon messagefromandromeda sherlock warlord
 usage:
 	@echo "Targets:"
 	@echo "  usage                show this help"
@@ -13,8 +13,10 @@ usage:
 	@echo "  blizzardpass         build the Blizzard Pass disassembly"
 	@echo "  forestatworldsend    build the Forest At World's End disassembly"
 	@echo "  heroesofkarn         build the Heroes Of Karn disassembly"
+	@echo "  hobbit               build the The Hobbit disassembly"
 	@echo "  jewelsofbabylon      build the Jewels Of Babylon disassembly"
 	@echo "  messagefromandromeda build the Message from Andromeda disassembly"
+	@echo "  sherlock             build the Sherlock disassembly"
 	@echo "  warlord              build the Warlord disassembly"
 	@echo ""
 	@echo "Variables:"
@@ -57,6 +59,14 @@ heroesofkarn:
 	skool2html.py $(OPTIONS) -H -c Config/GameDir=adventure-games/heroesofkarn --var pub=2 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/heroesofkarn/heroesofkarn.skool sources/heroesofkarn/heroesofkarn.ref
 	skool2html.py $(OPTIONS) -D -c Config/GameDir=adventure-games/heroesofkarn/dec --var pub=4 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/heroesofkarn/heroesofkarn.skool sources/heroesofkarn/heroesofkarn.ref
 
+.PHONY: hobbit
+hobbit:
+	if [ ! -f HobbitThe.z80 ]; then tap2sna.py @hobbit.t2s; fi
+	sna2skool.py -H --ini ListRefs=2 -c sources/hobbit/hobbit.ctl HobbitThe.z80 > sources/hobbit/hobbit.skool
+	@python -c "import art; art.tprint('The Hobbit')"
+	skool2html.py $(OPTIONS) -H -c Config/GameDir=adventure-games/hobbit --var pub=2 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/hobbit/hobbit.skool sources/hobbit/hobbit.ref
+	skool2html.py $(OPTIONS) -D -c Config/GameDir=adventure-games/hobbit/dec --var pub=4 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/hobbit/hobbit.skool sources/hobbit/hobbit.ref
+
 .PHONY: jewelsofbabylon
 jewelsofbabylon:
 	if [ ! -f JewelsofBabylon.z80 ]; then tap2sna.py @jewelsofbabylon.t2s; fi
@@ -72,6 +82,14 @@ messagefromandromeda:
 	@python -c "import art; art.tprint('Message From Andromeda')"
 	skool2html.py $(OPTIONS) -H -c Config/GameDir=adventure-games/messagefromandromeda --var pub=2 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/messagefromandromeda/messagefromandromeda.skool sources/messagefromandromeda/messagefromandromeda.ref
 	skool2html.py $(OPTIONS) -D -c Config/GameDir=adventure-games/messagefromandromeda/dec --var pub=4 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/messagefromandromeda/messagefromandromeda.skool sources/messagefromandromeda/messagefromandromeda.ref
+
+.PHONY: sherlock
+sherlock:
+	if [ ! -f Sherlock.z80 ]; then tap2sna.py @sherlock.t2s; fi
+	sna2skool.py -H --ini ListRefs=2 -c sources/sherlock/sherlock.ctl Sherlock.z80 > sources/sherlock/sherlock.skool
+	@python -c "import art; art.tprint('Sherlock')"
+	skool2html.py $(OPTIONS) -H -c Config/GameDir=adventure-games/sherlock --var pub=2 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/sherlock/sherlock.skool sources/sherlock/sherlock.ref
+	skool2html.py $(OPTIONS) -D -c Config/GameDir=adventure-games/sherlock/dec --var pub=4 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/sherlock/sherlock.skool sources/sherlock/sherlock.ref
 
 .PHONY: warlord
 warlord:

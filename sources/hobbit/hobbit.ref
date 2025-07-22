@@ -1,0 +1,104 @@
+;
+; SkoolKit ref file for The Hobbit
+;
+; To build the HTML disassembly, run these commands:
+;   tap2sna.py @hobbit.t2s
+;   sna2skool.py -H -c sources/hobbit.ctl HobbitThe.z80 > sources/hobbit.skool
+;   skool2html.py -H sources/hobbit.skool -T dark -T wide -toOa
+
+[Config]
+Expand=#INCLUDE(Expand)
+RefFiles=../analytics.ref;../bases.ref;changelog.ref;facts.ref
+HtmlWriterClass=:hobbit.HobbitHtmlWriter
+GameDir=hobbit
+
+[Game]
+Game=The Hobbit
+Logo=#SCR$02,$06,$00,$013,$09,$4000,$5800(/images/logo)
+Copyright=&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.
+Repository=https://github.com/pobtastic/hobbit/
+LinkInternalOperands=1
+AddressAnchor={address#IF({base}==16)(:04x)}
+
+[PageHeaders]
+GameIndex=The complete<>RAM disassembly (work in progress)
+
+[Index:DataTables:Data tables and buffers]
+GameStatusBuffer
+Locations
+Objects
+
+[Index:Reference:Reference]
+Facts
+Credits
+Changelog
+
+[Paths]
+Changelog=reference/changelog.html
+Credits=reference/credits.html
+Links=reference/links.html
+
+[Page:Locations]
+Content=asm/#N$BA8A.html
+
+[Page:Objects]
+Content=asm/#N$C11B.html
+
+[Page:Credits]
+PageContent=#INCLUDE(Credits)
+
+[Credits]
+<div>
+  <p>This work would not be possible without the efforts of;</p>
+  <dl>
+    <dt>ICEMARK - Christopher Jon Wild</dt>
+    <dd><a href="https://www.icemark.com/dataformats/hobbit/index.html" rel="noopener noreferrer nofollow">https://www.icemark.com/dataformats/hobbit/index.html</a></dd>
+    <dt>ZX OpenSource</dt>
+    <dd><a href="http://opensourcezx.untergrund.net/a_games-hobbit_src.html" rel="noopener noreferrer nofollow">http://opensourcezx.untergrund.net/a_games-hobbit_src.html</a></dd>
+    <dt>Veronika Megler Herself!</dt>
+    <dd><a href="http://veronikamegler.com/WL/README.txt" rel="noopener noreferrer nofollow">http://veronikamegler.com/WL/README.txt</a></dd>
+  </dl>
+  <p>Without these to guide my early versions, I'm sure I wouldn't have gotten very far!</p>
+</div>
+
+[Expand]
+#DEF(#COLOUR(id)
+  #LET(ink=$id&$07)#IF({ink}>=$00)(INK:
+    #MAP({ink})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE)),
+  #LET(paper=$id>>$03&$07)#IF({paper}>=$00)(PAPER:
+    #MAP({paper})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE))
+  #LET(bright=$id&$40)#IF({bright}>$00)((BRIGHT))
+  #LET(flash=$id&$80)#IF({flash}>$00)(FLASH: ON))
+
+#DEF(#INK(id)
+  #LET(bright=$id&$40)
+  #LET(flash=$id&$80)
+  #LET(ink=$id&$07)#IF({ink}>=$00)(
+    #MAP({ink})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE))#IF({bright}>$00)( (BRIGHT))#IF({flash}>$00)( (FLASH: ON)))
