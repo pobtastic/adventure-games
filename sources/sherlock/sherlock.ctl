@@ -1,8 +1,10 @@
-; Copyright Melbourne House 1984, 2025 ArcadeGeek LTD.
-; NOTE: Disassembly is Work-In-Progress.
-; Label naming is loosely based on Action_ActionName_SubAction e.g. Print_HighScore_Loop.
+; Copyright Melbourne House 1984, 2025 ArcadeGeek LTD. NOTE: Disassembly is 
+; Work-In-Progress. Label naming is loosely based on Action_ActionName_SubAction 
+; e.g. Print_HighScore_Loop.
 
-> $4000 @org=$4000
+> $4000 @rom
+> $4000 @start
+> $4000 @set-handle-unsupported-macros=1
 b $4000 Loading Screen
 D $4000 #UDGTABLE { =h Sherlock Loading Screen. } { #SCR$02(loading) } UDGTABLE#
 @ $4000 label=Loading
@@ -11,11 +13,14 @@ D $4000 #UDGTABLE { =h Sherlock Loading Screen. } { #SCR$02(loading) } UDGTABLE#
 
 c $5B1B Game Entry Point
 @ $5B1B label=GameEntryPoint
+N $5B1B #SIM(start=$A040,stop=$A04E)#SIM(start=$A05B,stop=$A071)
   $5B1B,$03 Jump to #R$A040.
 
 b $5B1E
 
-b $5D80 Stack
+b $5D80
+
+b $68DD
 
 g $84E1 Room #N$00: "#ROOM$00"
 B $84E1,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
@@ -1370,7 +1375,10 @@ B $8B6E,$01 Terminator.
 
 b $8B6F
 
-c $9860
+g $9860
+B $9860,$01
+B $9863,$01
+W $9866,$02
 
 c $9C6A
 
@@ -1381,8 +1389,22 @@ W $9FDD,$02
 
 g $9FDF
 g $9FE0
-g $9FE1
+
+g $9FE1 Current Day Of The Week
+@ $9FE1 label=CurrentDayOfWeek
+D $9FE1 Represents the current day of the week, where:
+. #TABLE(default,centre,centre)
+. { =h Byte | =h Day }
+. #FOR$00,$06,,$04(x,{ #Nx | #STR($BF59+x*$03,$04,$03) })
+. TABLE#
+.
+. See #R$BF79.
+B $9FE1,$01
+
 g $9FE2
+g $A008
+g $A00B
+g $A00C
 g $A011
 g $A01F
 g $A01B
@@ -1405,16 +1427,14 @@ N $A05B The player pressed either "N" or "n".
   $A05C,$03 Write #REGa to *#R$A011.
   $A05F,$05 Write the contents of the Memory Refresh Register to *#R$A037.
   $A064,$04 Write #N$00 to *#R$A0DA.
-  $A068,$03 #REGa=*#R$A0DA.
-  $A06B,$03 Jump to #R$A0E7 if #REGa is not equal to #REGa.
+  $A068,$06 Jump to #R$A0E7 if *#R$A0DA is not zero.
   $A06E,$03 Call #R$BFD9.
   $A071,$03 Call #R$BF79.
   $A074,$04 #REGiy=#R$9860.
   $A078,$03 #REGa=*#REGiy+#N$03.
   $A07B,$04 Jump to #R$A093 if #REGa is not equal to #N$32.
   $A07F,$03 Call #R$C41F.
-  $A082,$02 Test bit 7 of #REGa.
-  $A084,$02 Jump to #R$A093 if #REGa is equal to #N$32.
+  $A082,$04 Jump to #R$A093 if bit 7 of #REGa is not set.
   $A086,$04 Jump to #R$A093 if #REGa is not equal to #N$8D.
   $A08A,$03 #REGhl=*#R$9FDD.
   $A08D,$03 Write #REGl to *#REGiy+#N$06.
@@ -1456,54 +1476,200 @@ c $A0DB
 
 c $A0E7
 
-c $BF79
+w $A55D
 
-c $BFAA
+c $A59F
+  $A59F,$06 Stash #REGbc, #REGde, #REGix, #REGaf and #REGhl on the stack.
+  $A5A5,$03 #REGhl=#N($000C,$04,$04).
+  $A5A8,$01 #REGhl+=#REGsp.
+  $A5A9,$03 Write #REGhl to *#R$A59D.
+  $A5AC,$01 Restore #REGhl from the stack.
+  $A5AD,$03 #REGa=*#R$A00B.
+  $A5B0,$03 Jump to #R$A5B6 if #REGa is not zero.
+  $A5B3,$03 Write #REGa to *#R$A00C.
+  $A5B6,$03 Call #R$A5C4.
+  $A5B9,$06 Restore #REGaf, #REGix, #REGde, #REGbc and #REGhl from the stack.
+  $A5BF,$04 #REGsp=*#R$A59D.
+  $A5C3,$01 Jump to *#REGhl.
+
+c $A5C4
+
+c $A63F
+
+t $BF59 Table: Days Of The Week Strings
+@ $BF59 label=Table_DaysOfWeekStrings
+  $BF59,$15,$03
+
+g $BF6E Messaging: Current Date
+@ $BF6E label=Messaging_CurrentDate
+T $BF6E,$0B "#STR$BF6E,$08,$0B".
+
+c $BF79 Handler: Date Bar
+@ $BF79 label=Handler_DateBar
+N $BF79 #PUSHS #SIM(start=$BF9C,stop=$C1BF)
+. #UDGTABLE {
+.   #SCR$02{$00,$120,$200,$10}(date-bar)
+. } UDGTABLE# #POPS
+  $BF79,$04 #REGix=#R$BF6E.
+  $BF7D,$03 #REGa=*#R$9FE1.
+  $BF80,$03 #REGhl=#R$BF59.
+  $BF83,$03 Call #R$BFC6.
+  $BF86,$02 Increment #REGix by one.
+  $BF88,$03 #REGa=*#R$9FE0.
+  $BF8B,$03 Call #R$BFB0.
+  $BF8E,$02 Increment #REGix by one.
+  $BF90,$03 #REGa=*#R$9FDF.
+  $BF93,$03 Call #R$BFB0.
+  $BF96,$06 Write *#R$9FE2 to *#REGix+#N$00.
+N $BF9C Now the date bar has been updated, set up printing it to the screen.
+  $BF9C,$03 Load #REGhl with a pointer to #R$BF6E.
+  $BF9F,$02 Set the length of the date bar in #REGb (#N$0B bytes).
+  $BFA1,$03 Jump to #R$C1A8.
+
+c $BFA4
 
 c $BFB0
+  $BFB0,$01 #REGl=#REGa.
+  $BFB1,$02 #REGh=#N$00.
+  $BFB3,$03 #REGde=#N($000A,$04,$04).
+  $BFB6,$03 Call #R$BFBB.
+  $BFB9,$02 Jump to #R$BFA4.
 
-c $BFC6
+  $BFBB,$02 #REGc=#N$2F.
+  $BFBD,$01 Increment #REGc by one.
+  $BFBE,$03 #REGhl-=#REGde (with carry).
+  $BFC1,$02 Jump to #R$BFBD if #REGc is greater than or equal to #REGa.
+  $BFC3,$01 #REGhl+=#REGde.
+  $BFC4,$01 #REGa=#REGc.
+  $BFC5,$01 Return.
 
-c $BFD9
-  $BFD9,$03 #REGhl=*#R$9FDD.
-  $BFDC,$01 Increment #REGhl by one.
-  $BFDD,$03 Write #REGhl to *#R$9FDD.
+c $BFC6 Populate Day Of The Week
+@ $BFC6 label=PopulateDayOfWeek
+R $BFC6 A Number representing the current day of the week
+R $BFC6 HL Pointer to the table containing the days of the week strings
+R $BFC6 IX Pointer to the current date messaging
+  $BFC6,$06 Multiply the day of the week by #N$03 and store the result in
+. #REGbc.
+  $BFCC,$01 Add this to the base address of the table containing the days of
+. the week strings.
+N $BFCD Each day string is three characters long (e.g. "Mon" for Monday).
+  $BFCD,$02 Set a counter in #REGb for three characters.
+@ $BFCF label=PopulateDayOfWeek_Loop
+  $BFCF,$01 Fetch a character from the table containing the days of the week
+. strings.
+  $BFD0,$03 Write the character to the current date messaging.
+  $BFD3,$02 Move to the next character in the current date messaging.
+  $BFD5,$01 Move to the next character in the days of the week string table.
+  $BFD6,$02 Decrease the character counter by one and loop back to #R$BFCF
+. until all three characters of the current day have been copied into the
+. current date messaging bar.
+  $BFD8,$01 Return.
+
+c $BFD9 Handler: Counters
+@ $BFD9 label=Handler_Counters
+  $BFD9,$07 Increment *#R$9FDD by one.
   $BFE0,$03 #REGhl=#R$9FDF.
   $BFE3,$01 Increment *#REGhl by one.
-  $BFE4,$01 #REGa=*#REGhl.
-  $BFE5,$02 Compare #REGa with #N$3C.
-  $BFE7,$01 Return if #REGa is not equal to #N$3C.
+  $BFE4,$04 Return if *#REGhl is not equal to #N$3C.
   $BFE8,$02 Write #N$00 to *#REGhl.
   $BFEA,$03 #REGhl=#R$9FE0.
   $BFED,$01 Increment *#REGhl by one.
-  $BFEE,$01 #REGa=*#REGhl.
-  $BFEF,$02 Compare #REGa with #N$0D.
-  $BFF1,$02 Jump to #R$BFF6 if #REGa is not equal to #N$0D.
+  $BFEE,$05 Jump to #R$BFF6 if *#REGhl is not equal to #N$0D.
   $BFF3,$02 Write #N$01 to *#REGhl.
   $BFF5,$01 Return.
-
-  $BFF6,$02 Compare #REGa with #N$0C.
-  $BFF8,$01 Return if #REGa is not equal to #N$0C.
+@ $BFF6 label=Counters
+  $BFF6,$03 Return if *#REGhl is not equal to #N$0C.
   $BFF9,$03 #REGa=*#R$9FE2.
   $BFFC,$02,b$01 Flip bits 0, 4.
   $BFFE,$03 Write #REGa to *#R$9FE2.
-  $C001,$02 Compare #REGa with #N$61.
-  $C003,$01 Return if #REGa is not equal to #N$61.
-  $C004,$03 #REGa=*#R$9FE1.
-  $C007,$01 Increment #REGa by one.
-  $C008,$03 Write #REGa to *#R$9FE1.
+
+  $C001,$03 Return if #REGa is not equal to #N$61.
+  $C004,$07 Increment *#R$9FE1 by one.
   $C00B,$01 Return.
 
 c $C00C
 
+c $C040
+N $C040 Prints "#STR$09A2".
+  $C040,$03 #REGhl=#N$09A2.
+  $C043,$03 Call #R$C1C0.
+  $C046,$04 Write #REGde to *#R$C109.
+  $C04A,$04 Write #REGix to *#R$C10B.
+  $C04E,$04 #REGix=#R$C0FE.
+  $C052,$03 #REGde=#N($0011,$04,$04).
+  $C055,$01 #REGa=#N$00.
+  $C056,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/04C2.html">SA_BYTES</a>.)
+  $C059,$02 #REGb=#N$32.
+  $C05B,$01 Halt operation (suspend CPU until the next interrupt).
+  $C05C,$02 Decrease counter by one and loop back to #R$C05B until counter is zero.
+  $C05E,$01 Disable interrupts.
+  $C05F,$04 #REGde=*#R$C109.
+  $C063,$04 #REGix=*#R$C10B.
+  $C067,$02 Set #REGa to #N$FF to indicate this is a data block.
+  $C069,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/04C2.html">SA_BYTES</a>.)
+  $C06C,$01 Disable interrupts.
+  $C06D,$03 #REGhl=#R$C0A5.
+  $C070,$03 Call #R$C1CB.
+N $C073 Prints "#STR$09AC".
+  $C073,$03 #REGhl=#N$09AC.
+  $C076,$03 Call #R$C1C0.
+  $C079,$04 #REGix=#R$C0FE.
+  $C07D,$03 #REGde=#N($0011,$04,$04).
+  $C080,$02 Set #REGa to #N$00 to indicate this is a header block.
+  $C082,$01 Set flags.
+  $C083,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a>.)
+  $C086,$02 Jump to #R$C098 if ?? is greater than or equal to #REGa.
+  $C088,$01 Set flags.
+  $C089,$04 #REGde=*#R$C109.
+  $C08D,$04 #REGix=*#R$C10B.
+  $C091,$02 Set #REGa to #N$FF to indicate this is a data block.
+  $C093,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a>.)
+  $C096,$01 Disable interrupts.
+  $C097,$01 Return if ?? is less than #REGa.
+  $C098,$01 Disable interrupts.
+  $C099,$03 #REGhl=#R$C0B1.
+  $C09C,$03 Call #R$C1CB.
+N $C09F Prints "#STR$09B2".
+  $C09F,$03 #REGhl=#N$09B2.
+  $C0A2,$03 Jump to #R$C1C0.
+
+t $C0A5 Messaging: Rewind Tape
+@ $C0A5 label=Messaging_RewindTape
+  $C0A5 "#STR$C0A5".
+
+t $C0B1 Messaging: Tape Error
+@ $C0B1 label=Messaging_TapeError
+  $C0B1 "#STR$C0B1".
+
+t $C0BC Messaging: Play Saved Game Tape
+@ $C0BC label=Messaging_PlaySavedGameTape
+  $C0BC "#STR$C0BC".
+
+c $C0DF
+  $C0DF,$04 Write #REGde to *#R$C109.
+  $C0E3,$04 Write #REGix to *#R$C10B.
+  $C0E7,$03 #REGhl=#R$C0BC.
+  $C0EA,$03 Call #R$C1CB.
+  $C0ED,$04 #REGix=#R$C0FE.
+  $C0F1,$03 #REGde=#N($0011,$04,$04).
+  $C0F4,$02 Set #REGa to #N$00 to indicate this is a header block.
+  $C0F6,$01 Set flags.
+  $C0F7,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a>.)
+  $C0FA,$02 Jump to #R$C0ED if there was a tape loading error.
+  $C0FC,$02 Jump to #R$C089.
+
+b $C0FE
+W $C109
+W $C10B
+
 c $C10F
   $C10F,$04 Set border colour to #INK$07.
-  $C113,$03 #REGhl=#N($4000,$04,$04).
+  $C113,$03 #REGhl=#N$4000.
   $C116,$03 #REGde=#N$4001 (screen buffer location).
-  $C119,$03 #REGbc=#N($1800,$04,$04).
+  $C119,$03 #REGbc=#N$1800.
   $C11C,$02 Write #N$00 to *#REGhl.
   $C11E,$02 LDIR.
-  $C120,$03 #REGbc=#N($02FF,$04,$04).
+  $C120,$03 #REGbc=#N$02FF.
   $C123,$02 Write #COLOUR$38 to *#REGhl.
   $C125,$02 LDIR.
   $C127,$01 Return.
@@ -1530,7 +1696,7 @@ D $C14A Draws a decorative horizontal pattern on screen as a separator.
 .
 . #PUSHS #SIM(start=$C14A,stop=$C18F)
 . #UDGTABLE
-. { #SCR$02{$00,$120,$200,$10}(squiggly-line) }
+. { #SCR$02{$00,$120,$200,$10}(decorative-line) }
 . UDGTABLE# #POPS
   $C14A,$03 Call #R$C10F.
   $C14D,$05 Store the width value (#N$24) at *#R$C1F4.
@@ -1570,25 +1736,35 @@ b $C190 Data: Decorative Line
 @ $C190 label=Data_DecorativeLine
   $C190,$08
 
-c $C1A8
-  $C1A8,$03 #REGde=#N$5041 (screen buffer location).
-  $C1AB,$01 Exchange the #REGde and #REGhl registers.
+c $C1A8 Print Date Bar
+@ $C1A8 label=PrintDateBar
+R $C1A8 HL Date messaging string
+R $C1A8 B Length of messaging string
+  $C1A8,$03 Set the screen buffer position in #REGhl (#N$5041).
+  $C1AB,$01 #REGde=Pointer to date bar messaging string.
   $C1AC,$02 #REGc=#N$00.
-  $C1AE,$02 #REGa=#N$20.
+N $C1AE Print a "SPACE" before the date string.
+  $C1AE,$02 Load ASCII "SPACE" (#N$20) into #REGa.
   $C1B0,$03 Call #R$C388.
-  $C1B3,$01 #REGa=*#REGde.
+N $C1B3 Loop through the date messaging string and output it to the screen.
+@ $C1B3 label=PrintDateBar_Loop
+  $C1B3,$01 Fetch a character from *#REGde and store it in #REGa.
   $C1B4,$03 Call #R$C388.
-  $C1B7,$01 Increment #REGde by one.
-  $C1B8,$02 Decrease counter by one and loop back to #R$C1B3 until counter is zero.
-  $C1BA,$02 #REGa=#N$20.
+  $C1B7,$01 Move to the next character of the message.
+  $C1B8,$02 Decrease the string length counter by one and loop back to #R$C1B3
+. until the whole of the date bar has been printed to the screen.
+N $C1BA Print a "SPACE" after the date string.
+  $C1BA,$02 Load ASCII "SPACE" (#N$20) into #REGa.
   $C1BC,$03 Call #R$C388.
   $C1BF,$01 Return.
 
+c $C1C0
   $C1C0,$03 Call #R$C1CB.
   $C1C3,$03 Call #R$C415.
   $C1C6,$02 #REGa=#N$0D.
   $C1C8,$03 Jump to #R$C1FD.
 
+c $C1CB
   $C1CB,$01 #REGa=*#REGhl.
   $C1CC,$02,b$01 Keep only bits 0-6.
   $C1CE,$03 Call #R$C1FD.
@@ -1597,10 +1773,13 @@ c $C1A8
   $C1D5,$02 Jump to #R$C1CB.
   $C1D7,$01 Return.
 
+c $C1D8
   $C1D8,$03 #REGhl=#N$13C5.
   $C1DB,$03 Call #R$C1C0.
   $C1DE,$03 Jump to #R$A0EB.
 
+
+c $C1E1
   $C1E1,$01 Stash #REGaf on the stack.
   $C1E2,$06 #HTML(Jump to #R$C1EA if *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3C.html">TV-FLAG</a> is not zero.)
   $C1E8,$01 Restore #REGaf from the stack.
@@ -1659,13 +1838,102 @@ c $C1FC
 c $C240 Validate Keypress
 @ $C240 label=ValidateKeypress
   $C240,$06 Return if the keypress ASCII code is less than #N$61 ("#CHR$61") or
-. greater than #N$7B ("#CHR$7B").
+. greater than #N$7A ("#CHR$7A").
   $C246,$02,b$01 Keep only bits 0-4, 6.
   $C248,$01 Return.
 
 c $C249
 
-c $C388
+c $C388 Print Character
+@ $C388 label=PrintCharacter
+R $C388 A Character to print
+R $C388 HL Screen buffer address
+  $C388,$04 Stash #REGaf, #REGbc, #REGde and #REGhl on the stack.
+  $C38C,$03 Load the character into #REGhl.
+  $C38F,$03 Multiply by #N$08 (each font character is #N$08 bytes of data).
+  $C392,$05 #HTML(#REGde+=<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/3D00.html">#N$3C00</a> (CHARSET-#N$100).)
+  $C397,$01 Restore the screen buffer address from the stack.
+  $C398,$01 But stash a copy of it back on the stack.
+  $C399,$02 Set a counter in #REGb for #N$08 bytes of the font data.
+  $C39B,$01 #REGa=*#REGde.
+  $C39C,$02 Stash #REGbc and #REGaf on the stack.
+  $C39E,$01 Decrease #REGc by one.
+  $C39F,$01 Increment #REGc by one.
+  $C3A0,$02 #REGb=#N$FF.
+  $C3A2,$02 Jump to #R$C3AB if #REGc is zero.
+  $C3A4,$02 Shift #REGa right.
+  $C3A6,$02 Shift #REGb right.
+  $C3A8,$01 Decrease #REGc by one.
+  $C3A9,$02 Jump to #R$C3A4 if #REGc is not zero.
+  $C3AB,$01 #REGc=#REGa.
+  $C3AC,$01 #REGa=#REGb.
+  $C3AD,$01 Invert the bits in #REGa.
+  $C3AE,$01 Merge the bits from *#REGhl.
+  $C3AF,$01 Set the bits from #REGc.
+  $C3B0,$01 Write #REGa to *#REGhl.
+  $C3B1,$02 Restore #REGaf and #REGbc from the stack.
+  $C3B3,$01 Decrease #REGc by one.
+  $C3B4,$01 Increment #REGc by one.
+  $C3B5,$02 Jump to #R$C3D0 if #REGc is equal to #REGc.
+  $C3B7,$02 Stash #REGbc and #REGaf on the stack.
+  $C3B9,$02 #REGa=#N$08.
+  $C3BB,$01 #REGa-=#REGc.
+  $C3BC,$01 #REGc=#REGa.
+  $C3BD,$01 Restore #REGaf from the stack.
+  $C3BE,$02 #REGb=#N$FF.
+  $C3C0,$02 Shift #REGa left (with carry).
+  $C3C2,$02 Shift #REGb left (with carry).
+  $C3C4,$01 Decrease #REGc by one.
+  $C3C5,$02 Jump to #R$C3C0 if #REGc is not equal to #REGc.
+  $C3C7,$01 #REGc=#REGa.
+  $C3C8,$01 #REGa=#REGb.
+  $C3C9,$01 Invert the bits in #REGa.
+  $C3CA,$01 Increment #REGhl by one.
+  $C3CB,$01 Merge the bits from *#REGhl.
+  $C3CC,$01 Set the bits from #REGc.
+  $C3CD,$01 Write #REGa to *#REGhl.
+  $C3CE,$01 Decrease #REGhl by one.
+  $C3CF,$01 Restore #REGbc from the stack.
+  $C3D0,$01 Increment #REGde by one.
+  $C3D1,$01 Increment #REGh by one.
+  $C3D2,$02 Decrease counter by one and loop back to #R$C39B until counter is zero.
+  $C3D4,$03 Restore #REGhl, #REGde and #REGbc from the stack.
+  $C3D7,$01 #REGa=#REGc.
+  $C3D8,$02 #REGa+=#N$07.
+  $C3DA,$02 Compare #REGa with #N$08.
+  $C3DC,$02 Jump to #R$C3E1 if #REGa is less than #N$08.
+  $C3DE,$02 #REGa-=#N$08.
+  $C3E0,$01 Increment #REGl by one.
+  $C3E1,$01 #REGc=#REGa.
+  $C3E2,$01 Restore #REGaf from the stack.
+  $C3E3,$01 Return.
+  $C3E4,$03 #REGa=*#R$A008.
+  $C3E7,$01 Set flags.
+  $C3E8,$01 Return if #REGl is equal to #REGa.
+  $C3E9,$03 Stash #REGhl, #REGde and #REGbc on the stack.
+  $C3EC,$03 #REGhl=#N($4000,$04,$04).
+  $C3EF,$02 #REGb=#N$08.
+  $C3F1,$02 Stash #REGbc and #REGhl on the stack.
+  $C3F3,$03 Call #R$C403.
+  $C3F6,$01 Restore #REGhl from the stack.
+  $C3F7,$01 Increment #REGh by one.
+  $C3F8,$01 Restore #REGbc from the stack.
+  $C3F9,$02 Decrease counter by one and loop back to #R$C3F1 until counter is zero.
+  $C3FB,$02 #REGa=#N$04.
+  $C3FD,$02 OUT #N$FB
+  $C3FF,$03 Restore #REGbc, #REGde and #REGhl from the stack.
+  $C402,$01 Return.
+  $C403,$01 #REGa=#REGb.
+  $C404,$02 Compare #REGa with #N$03.
+  $C406,$01 #REGa-=#REGa.
+  $C407,$02,b$01 Keep only bits 1.
+  $C409,$02 OUT #N$FB
+  $C40B,$01 #REGd=#REGa.
+  $C40C,$02 #REGa=byte from port #N$FB.
+  $C40E,$01 #REGa+=#REGa.
+  $C40F,$01 Return if #REGa is lower than #N$03.
+  $C410,$02 Jump to #R$C40C if #REGa is greater than or equal to #N$03.
+  $C412,$03 #HTML(Jump to <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0EF4.html#0F12">COPY_LINE#0F12</a>.)
 
 c $C415
   $C415,$03 Call #R$C41F.
@@ -1737,5 +2005,10 @@ c $CC37
 c $CC78
 
 c $D008
+
+c $D0D0
+
+  $D135,$03 #REGhl=#R$68DD.
+  $D138,$03 Call #R$A59F.
 
 g $D6B8
