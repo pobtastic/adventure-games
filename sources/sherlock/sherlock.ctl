@@ -20,7 +20,24 @@ b $5B1E
 
 b $5D80
 
+g $67B7 Table: Common Words
+@ $67B7 label=Table_CommonWords
+W $67B7,$02
+L $67B7,$02,$20
+
+b $68B1
+b $68BC
+b $68D1
 b $68DD
+b $68E4
+b $68E9
+
+g $8259
+
+g $840B Table: Locations
+@ $840B label=Table_Locations
+W $840B,$02 Room #N((#PC-$840B)/$02): "#ROOM((#PC-$840B)/$02)".
+L $840B,$02,$6B
 
 g $84E1 Room #N$00: "#ROOM$00"
 B $84E1,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
@@ -1373,16 +1390,67 @@ W $8B6A,$02 #TEXTTOKEN(#PC)
 W $8B6C,$02 #TEXTTOKEN(#PC)
 B $8B6E,$01 Terminator.
 
-b $8B6F
+g $8B6F Table: Objects
+@ $8B6F label=Table_Objects
+B $8B6F,$01 Object #N(#PEEK(#PC)): "#OBJECT(#PEEK(#PC))".
+W $8B70,$02
+L $8B6F,$03,$6E
+B $8CB9,$01 Terminator.
+
+g $8CBA Object #N$00: "#OBJECT$00"
+B $8CBA,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+  $8CBB,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+  $8CBC,$01 Volume (?)
+  $8CBD,$01 Mass (?)
+  $8CBE,$01
+  $8CBF,$01 Strength (?)
+  $8CC0,$01
+  $8CC1,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. {
+.   #IF(#PEEK(#PC)&$01<<$07)(yes,no) |
+.   #IF(#PEEK(#PC)&$01<<$06)(yes,no) |
+.   #IF(#PEEK(#PC)&$01<<$05)(yes,no) |
+.   #IF(#PEEK(#PC)&$01<<$04)(yes,no) |
+.   #IF(#PEEK(#PC)&$01<<$03)(yes,no) |
+.   #IF(#PEEK(#PC)&$01<<$02)(yes,no) |
+.   #IF(#PEEK(#PC)&$01<<$01)(yes,no) |
+.   #IF(#PEEK(#PC)&$01<<$00)(yes,no)
+. } TABLE#
+  $8CC2,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
+  $8CCA,$01 Terminator #N(#PEEK(#PC)).
+
+g $8CCB Object #N$01: "#OBJECT$01"
 
 g $9860
 B $9860,$01
 B $9863,$01
 W $9866,$02
 
+g $994D
+W $994D,$02
+
 c $9C6A
+  $9C6A,$03 #REGa=*#R$A036.
+  $9C6D,$04 #REGix=#R$9C85.
+  $9C71,$03 Call #R$D34E.
+  $9C74,$02 Compare #REGa with #N$FF.
+  $9C76,$01 Return.
 
 c $9C77
+  $9C77,$03 Call #R$9C6A.
+  $9C7A,$01 Return if #REGa is equal to #N$FF.
+  $9C7B,$03 #REGl=*#REGix+#N$01.
+  $9C7E,$03 #REGh=*#REGix+#N$02.
+  $9C81,$01 #REGa=#REGl.
+  $9C82,$01 Set the bits from #REGh.
+  $9C83,$01 Return if #REGa is equal to #REGh.
+  $9C84,$01 Jump to *#REGhl.
+
+b $9C85
+
+c $9CA2
 
 g $9FDD
 W $9FDD,$02
@@ -1405,10 +1473,48 @@ g $9FE2
 g $A008
 g $A00B
 g $A00C
+
+g $A00D
+W $A00D,$02
+
+g $A00F
 g $A011
-g $A01F
+g $A017
+g $A019
 g $A01B
+
+g $A01D
+B $A01D,$01
+
+g $A01E
+B $A01E,$01
+
+g $A01F
+B $A01F,$01
+
+g $A026
+B $A026,$01
+
+g $A027
+B $A027,$01
+
+g $A028
+B $A028,$01
+
+g $A033
+B $A033,$01
+
+g $A034
+B $A034,$01
+
+g $A035
+B $A035,$01
+
+g $A036
+B $A036,$01
+
 g $A037
+B $A037,$01
 
 c $A040
   $A040,$07 Write #N$00 to #LIST { *#R$D6B8 } { *#R$A01B } LIST#
@@ -1447,16 +1553,14 @@ N $A05B The player pressed either "N" or "n".
   $A0A0,$03 Call #R$A0DB.
   $A0A3,$02 Jump to #R$A0D1 if #REGa is less than #N$8D.
   $A0A5,$03 #REGa=*#REGiy+#N$00.
-  $A0A8,$02 Stash #REGiy on the stack.
-  $A0AA,$01 Stash #REGaf on the stack.
+  $A0A8,$03 Stash #REGiy and #REGaf on the stack.
   $A0AB,$03 Call #R$CC37.
   $A0AE,$01 Restore #REGaf from the stack.
   $A0AF,$01 Stash #REGaf on the stack.
   $A0B0,$03 Call #R$CC78.
   $A0B3,$03 #REGhl=*#R$A01F.
   $A0B6,$04 Jump back to #R$A0AE until #REGhl is zero.
-  $A0BA,$01 Restore #REGaf from the stack.
-  $A0BB,$02 Restore #REGiy from the stack.
+  $A0BA,$03 Restore #REGaf and #REGiy from the stack.
   $A0BD,$03 #REGe=*#REGiy+#N$06.
   $A0C0,$03 #REGd=*#REGiy+#N$07.
   $A0C3,$01 #REGhl+=#REGde.
@@ -1473,8 +1577,117 @@ b $A0D8
   $A0DA
 
 c $A0DB
+  $A0DB,$03 #REGe=*#REGiy+#N$06.
+  $A0DE,$03 #REGd=*#REGiy+#N$07.
+  $A0E1,$03 Return if #REGh is not equal to #REGd.
+  $A0E4,$02 Compare #REGl with #REGe.
+  $A0E6,$01 Return.
 
 c $A0E7
+
+w $A24D
+
+c $A25D
+
+c $A277
+
+c $A296
+
+c $A2A2
+
+g $A2AA
+B $A2AA,$01
+
+c $A2AB
+
+c $A2B1
+  $A2B1,$01 Decrease #REGa by one.
+  $A2B2,$01 #REGl=#REGa.
+  $A2B3,$02 #REGh=#N$00.
+  $A2B5,$03 Multiply #REGhl by #N$08.
+  $A2B8,$04 #REGhl+=#R$8259.
+  $A2BC,$01 Return.
+
+c $A2BD
+  $A2BD,$03 #REGa=*#REGix+#N$05.
+  $A2C0,$01 RRCA.
+  $A2C1,$01 RRCA.
+  $A2C2,$01 RRCA.
+  $A2C3,$01 RRCA.
+  $A2C4,$02,b$01 Keep only bits 0-3.
+  $A2C6,$01 #REGc=#REGa.
+  $A2C7,$03 #REGa=*#REGix+#N$07.
+  $A2CA,$02,b$01 Keep only bits 4-7.
+  $A2CC,$01 #REGa+=#REGc.
+  $A2CD,$03 Write #REGa to *#R$A01E.
+  $A2D0,$03 #REGa=*#REGix+#N$01.
+  $A2D3,$01 RRCA.
+  $A2D4,$01 RRCA.
+  $A2D5,$01 RRCA.
+  $A2D6,$01 RRCA.
+  $A2D7,$02,b$01 Keep only bits 0-3.
+  $A2D9,$01 #REGc=#REGa.
+  $A2DA,$03 #REGa=*#REGix+#N$03.
+  $A2DD,$02,b$01 Keep only bits 4-7.
+  $A2DF,$01 #REGa+=#REGc.
+  $A2E0,$03 Write #REGa to *#R$A01D.
+  $A2E3,$01 Return.
+
+c $A2E4
+  $A2E4,$05 Write #N$01 to *#R$A2AA.
+  $A2E9,$07 Stash #REGiy, #REGbc, #REGix, #REGhl and #REGde on the stack.
+  $A2F0,$06 Write *#R$A033 to *#R$A35D.
+  $A2F6,$06 Write *#R$A034 to *#R$A35E.
+  $A2FC,$04 #REGb=*#R$A00C.
+  $A300,$01 Set flags.
+  $A301,$02 #REGa=#N$01.
+  $A303,$02 Jump to #R$A306 if ?? is equal to #REGa.
+  $A305,$04 Write #N$00 to *#R$A027.
+  $A309,$03 Call #R$D078.
+  $A30C,$02 Jump to #R$A31A if ?? is greater than or equal to #REGa.
+  $A30E,$01 #REGa=#REGb.
+  $A30F,$01 Set flags.
+  $A310,$02 Jump to #R$A31A if ?? is not equal to #REGa.
+  $A312,$03 #REGhl=#R$68D1.
+  $A315,$03 Call #R$A59F.
+  $A318,$02 Jump to #R$A34E.
+  $A31A,$03 #REGa=*#R$A35D.
+  $A31D,$03 Call #R$A2B1.
+  $A320,$03 #REGix=#REGhl (using the stack).
+  $A323,$03 Call #R$A2BD.
+  $A326,$03 #REGa=*#R$A01D.
+  $A329,$02,b$01 Keep only bits 4.
+  $A32B,$02 Jump to #R$A34E if ?? is not equal to #REGa.
+  $A32D,$01 Compare #REGa with #REGb.
+  $A32E,$02 Jump to #R$A336 if #REGa is equal to #REGb.
+  $A330,$03 Call #R$DC6C.
+  $A333,$03 Call #R$A2A2 if #REGb is equal to #N$00.
+  $A336,$03 Call #R$A724.
+  $A339,$03 #REGde=#N$017F.
+  $A33C,$04 Jump to #R$A348 if #REGb is not equal to #N$00.
+  $A340,$03 Call #R$A887.
+  $A343,$03 Call #R$A360.
+  $A346,$02 Jump to #R$A34B.
+
+  $A348,$03 Call #R$A37D.
+  $A34B,$03 Call #R$A2A2.
+  $A34E,$07 Write #N$00 to; #LIST { *#R$A2AA } { *#R$A027 } LIST#
+  $A355,$07 Restore #REGde, #REGhl, #REGix, #REGbc and #REGiy from the stack.
+  $A35C,$01 Return.
+
+g $A35D
+B $A35D,$01
+W $A35E,$02
+
+c $A360
+
+c $A37D
+
+c $A4AB
+
+c $A4BC
+
+c $A4CD
 
 w $A55D
 
@@ -1493,8 +1706,413 @@ c $A59F
   $A5C3,$01 Jump to *#REGhl.
 
 c $A5C4
+  $A5C4,$03 #REGix=#REGhl (using the stack).
+  $A5C7,$03 Call #R$A5CD.
+  $A5CA,$02 Jump to #R$A5C7 if ?? is not equal to #N$00.
+  $A5CC,$01 Return.
+
+c $A5CD
+  $A5CD,$03 #REGa=*#REGix+#N$00.
+  $A5D0,$04 Jump to #R$A5F2 if bit 7 of #REGa is not set.
+  $A5D4,$02,b$01 Keep only bits 0-6.
+  $A5D6,$01 #REGd=#REGa.
+  $A5D7,$03 #REGe=*#REGix+#N$01.
+  $A5DA,$02 Increment #REGix by one.
+  $A5DC,$02,b$01 Keep only bits 4-7.
+  $A5DE,$04 Jump to #R$A647 if #REGa is equal to #N$30.
+  $A5E2,$04 Jump to #R$A647 if #REGa is equal to #N$20.
+  $A5E6,$04 Jump to #R$A647 if #REGa is equal to #N$60.
+  $A5EA,$03 Call #R$A887.
+  $A5ED,$02 Increment #REGix by one.
+  $A5EF,$02,b$01 Set bit 0.
+  $A5F1,$01 Return.
+
+  $A5F2,$04 Jump to #R$A621 if #REGa is less than #N$20.
+  $A5F6,$05 Jump to #R$A83A if #REGa is greater than #N$60.
+  $A5FB,$04 Jump to #R$A61C if #REGa is less than #N$40.
+  $A5FF,$02,b$01 Keep only bits 0-4.
+  $A601,$01 Increment #REGa by one.
+  $A602,$01 #REGb=#REGa.
+  $A603,$03 #REGhl=#REGix (using the stack).
+  $A606,$01 Increment #REGhl by one.
+  $A607,$02 #REGc=#N$00.
+  $A609,$03 Call #R$A990.
+  $A60C,$03 Call #R$A9B7.
+  $A60F,$02 Decrease counter by one and loop back to #R$A609 until counter is zero.
+  $A611,$03 #REGix=#REGhl (using the stack).
+  $A614,$01 #REGa=#REGc.
+  $A615,$01 Set flags.
+  $A616,$02 Jump to #R$A5ED if #REGhl is not equal to #REGa.
+  $A618,$02 Decrease #REGix by one.
+  $A61A,$02 Jump to #R$A5ED.
+
+  $A61C,$03 Call #R$A9B7.
+  $A61F,$02 Jump to #R$A5ED.
+
+  $A621,$01 Stash #REGde on the stack.
+  $A622,$01 #REGe=#REGa.
+  $A623,$02 #REGd=#N$00.
+  $A625,$03 #REGhl=#R$A55D.
+  $A628,$01 #REGhl+=#REGde.
+  $A629,$01 #REGhl+=#REGde.
+  $A62A,$01 #REGe=*#REGhl.
+  $A62B,$01 Increment #REGhl by one.
+  $A62C,$01 #REGd=*#REGhl.
+  $A62D,$01 Exchange the #REGde and #REGhl registers.
+  $A62E,$01 Restore #REGde from the stack.
+  $A62F,$04 Jump to #R$A5C3 if #REGa is greater than or equal to #N$1D.
+  $A633,$03 Call #R$A5C3.
+  $A636,$02 Jump to #R$A5ED if #REGa is equal to #N$1D.
+  $A638,$02 Jump to #R$A5EA.
+
+c $A63A
+  $A63A,$03 Call #R$A9B7.
+  $A63D,$01 #REGa=#N$00.
+  $A63E,$01 Return.
 
 c $A63F
+  $A63F,$02 #REGd=#N$60.
+  $A641,$02 Jump to #R$A64A.
+
+c $A643
+  $A643,$02 #REGd=#N$30.
+  $A645,$02 Jump to #R$A64A.
+
+  $A647,$03 Call #R$A887.
+  $A64A,$02 #REGa=#N$2E.
+  $A64C,$04 Jump to #R$A657 if bit 6 of #REGd is set.
+  $A650,$05 Call #R$A9B7 if bit 4 of #REGd is set.
+  $A655,$05 Call #R$A2A2 if bit 4 of #REGd is set.
+
+  $A65A,$01 #REGa=#N$00.
+  $A65B,$01 Return.
+
+c $A65C
+  $A65C,$01 Return.
+
+c $A65D
+  $A65D,$04 Write #N$00 to *#R$A028.
+  $A661,$03 Call #R$A66C.
+  $A664,$01 Exchange the #REGde and #REGhl registers.
+  $A665,$05 Call #R$A7BA if #REGhl is not zero.
+  $A66A,$01 #REGa=#N$00.
+  $A66B,$01 Return.
+
+c $A66C
+  $A66C,$03 #REGhl=*#R$A59D.
+  $A66F,$01 #REGe=*#REGhl.
+  $A670,$01 Increment #REGhl by one.
+  $A671,$01 #REGd=*#REGhl.
+  $A672,$01 Increment #REGhl by one.
+  $A673,$03 Write #REGhl to *#R$A59D.
+  $A676,$02,b$01 Set bit 0.
+  $A678,$01 Return.
+
+c $A679
+  $A679,$03 #REGe=*#REGix+#N$01.
+  $A67C,$03 #REGd=*#REGix+#N$02.
+  $A67F,$01 Decrease #REGde by one.
+  $A680,$02 #REGix+=#REGde.
+  $A682,$01 #REGa=#N$00.
+  $A683,$01 Return.
+
+c $A684
+  $A684,$03 Call #R$A66C.
+  $A687,$03 #REGix=#REGde (using the stack).
+  $A68A,$01 #REGa=#N$00.
+  $A68B,$01 Return.
+
+c $A68C
+
+c $A694
+
+c $A69C
+
+c $A6A4
+
+c $A6AC
+  $A6AC,$03 Call #R$C00C.
+  $A6AF,$03 Return if #REGa is equal to #N$01.
+  $A6B2,$02 Increment #REGix by one.
+  $A6B4,$03 Call #R$A6BB.
+  $A6B7,$02 Decrease #REGix by one.
+  $A6B9,$01 #REGa=#N$00.
+  $A6BA,$01 Return.
+
+c $A6BB
+  $A6BB,$03 #REGa=*#REGix+#N$00.
+  $A6BE,$04 Jump to #R$A6CC if bit 7 of #REGa is set.
+  $A6C2,$04 Jump to #R$A6CA if #REGa is equal to #N$02.
+  $A6C6,$04 Jump to #R$A6CE if #REGa is not equal to #N$0B.
+  $A6CA,$02 Increment #REGix by one.
+  $A6CC,$02 Increment #REGix by one.
+  $A6CE,$02 Increment #REGix by one.
+  $A6D0,$01 Return.
+
+g $A6D1
+B $A6D1,$01
+
+g $A6D2
+B $A6D2,$01
+
+c $A6D3
+  $A6D3,$02 Increment #REGix by one.
+  $A6D5,$03 #REGa=*#REGix+#N$00.
+  $A6D8,$03 Write #REGa to *#R$A6D1.
+  $A6DB,$01 Decrease #REGa by one.
+  $A6DC,$03 Call #R$D2A4.
+  $A6DF,$01 Increment #REGa by one.
+  $A6E0,$03 Write #REGa to *#R$A6D2.
+  $A6E3,$02 Increment #REGix by one.
+  $A6E5,$03 #REGa=*#R$A6D2.
+  $A6E8,$03 #REGhl=#R$A6D1.
+  $A6EB,$03 Jump to #R$A6F5 if #REGa is not equal to *#REGhl.
+  $A6EE,$02 Stash #REGix on the stack.
+  $A6F0,$03 Call #R$A5CD.
+  $A6F3,$02 Restore #REGix from the stack.
+  $A6F5,$03 Call #R$A6BB.
+  $A6F8,$03 #REGhl=#R$A6D1.
+  $A6FB,$01 Decrease *#REGhl by one.
+  $A6FC,$02 Jump to #R$A6E5 if *#REGhl is not equal to *#REGhl.
+  $A6FE,$02 Decrease #REGix by one.
+  $A700,$01 #REGa=#N$00.
+  $A701,$01 Return.
+
+c $A702
+  $A702,$04 #REGde=*#R$A00D.
+  $A706,$02,b$01 Set bit 0.
+  $A708,$01 Return.
+
+c $A709
+  $A709,$03 Call #R$A66C.
+  $A70C,$03 Call #R$A80E.
+  $A70F,$01 #REGa=#N$00.
+  $A710,$01 Return.
+
+c $A711
+  $A711,$02 Stash #REGix on the stack.
+  $A713,$03 Call #R$A66C.
+  $A716,$03 #REGix=#REGde (using the stack).
+  $A719,$03 Call #R$BF1C.
+  $A71C,$02 Restore #REGix from the stack.
+  $A71E,$01 #REGa=#N$00.
+  $A71F,$01 Return.
+
+c $A720
+  $A720,$04 Write #N$00 to *#R$A028.
+  $A724,$03 #REGa=*#R$A036.
+  $A727,$03 Call #R$A82F.
+  $A72A,$01 #REGa=#N$00.
+  $A72B,$01 Return.
+
+c $A72C
+  $A72C,$05 Write #N$01 to *#R$A028.
+  $A731,$03 #REGa=*#R$A034.
+  $A734,$02 Jump to #R$A751.
+
+c $A736
+  $A736,$03 Call #R$A9B7.
+  $A739,$01 #REGa=#N$00.
+  $A73A,$01 Return.
+
+c $A73B
+  $A73B,$05 Write #N$01 to *#R$A028.
+  $A740,$03 #REGa=*#R$A035.
+  $A743,$02 Jump to #R$A751.
+
+c $A745
+  $A745,$02 Jump to #R$A751 if ?? is greater than or equal to #N$01.
+  $A747,$01 Stash #REGhl on the stack.
+  $A748,$03 Call #R$A4AB.
+  $A74B,$03 Call #R$A7BA.
+  $A74E,$01 Restore #REGhl from the stack.
+  $A74F,$01 #REGa=#N$00.
+  $A750,$01 Return.
+
+c $A751
+  $A751,$01 Stash #REGhl on the stack.
+  $A752,$03 Call #R$A4BC.
+  $A755,$03 Call #R$A7C5.
+  $A758,$01 Restore #REGhl from the stack.
+  $A759,$01 #REGa=#N$00.
+  $A75A,$01 Return.
+
+c $A75B
+  $A75B,$02 Stash #REGix on the stack.
+  $A75D,$01 Restore #REGhl from the stack.
+  $A75E,$01 Stash #REGhl on the stack.
+  $A75F,$03 #REGe=*#REGix+#N$01.
+  $A762,$03 #REGd=*#REGix+#N$02.
+  $A765,$01 #REGhl+=#REGde.
+  $A766,$03 Call #R$A5C4.
+  $A769,$02 Restore #REGix from the stack.
+  $A76B,$02 Increment #REGix by one.
+  $A76D,$02 Increment #REGix by one.
+  $A76F,$01 #REGa=#N$00.
+  $A770,$01 Return.
+
+c $A771
+  $A771,$02 Stash #REGix on the stack.
+  $A773,$03 Call #R$A66C.
+  $A776,$01 Exchange the #REGde and #REGhl registers.
+  $A777,$05 Call #R$A5C4 if #REGhl is not zero.
+  $A77C,$02 Restore #REGix from the stack.
+  $A77E,$01 #REGa=#N$00.
+  $A77F,$01 Return.
+
+c $A780
+  $A780,$03 #REGa=*#R$A036.
+  $A783,$03 #REGde=#N$0414.
+  $A786,$02 Return if #REGa is not zero.
+  $A788,$03 #REGde=#N$09F2.
+  $A78B,$02,b$01 Set bit 0.
+  $A78D,$01 Return.
+
+c $A78E
+  $A78E,$03 #REGa=*#R$A034.
+  $A791,$02 Jump to #R$A783.
+
+c $A793
+  $A793,$03 #REGa=*#R$A036.
+  $A796,$01 Exchange the shadow #REGaf register with the #REGaf register.
+  $A797,$01 #REGa=#N$00.
+  $A798,$03 Write #REGa to *#R$A028.
+  $A79B,$01 Exchange the #REGaf register with the shadow #REGaf register.
+  $A79C,$01 Stash #REGaf on the stack.
+  $A79D,$03 Call #R$A82F.
+  $A7A0,$01 Restore #REGaf from the stack.
+  $A7A1,$01 Set flags.
+  $A7A2,$03 #REGde=#N$0485.
+  $A7A5,$01 Return if ?? is not equal to #REGa.
+  $A7A6,$03 #REGde=#N($007A,$04,$04).
+  $A7A9,$02,b$01 Set bit 0.
+  $A7AB,$01 Return.
+
+c $A7AC
+  $A7AC,$03 #REGa=*#R$A034.
+  $A7AF,$01 Exchange the shadow #REGaf register with the #REGaf register.
+  $A7B0,$02 #REGa=#N$01.
+  $A7B2,$02 Jump to #R$A798.
+
+c $A7B4
+  $A7B4,$03 Call #R$A66C.
+  $A7B7,$01 #REGa=#REGd.
+  $A7B8,$02 Jump to #R$A7AF.
+  $A7BA,$02 Stash #REGiy on the stack.
+  $A7BC,$01 Stash #REGhl on the stack.
+  $A7BD,$02 Restore #REGiy from the stack.
+  $A7BF,$03 Call #R$D405.
+  $A7C2,$02 Restore #REGiy from the stack.
+  $A7C4,$01 Return.
+
+  $A7C5,$02 Stash #REGiy on the stack.
+  $A7C7,$01 Stash #REGhl on the stack.
+  $A7C8,$02 Restore #REGiy from the stack.
+  $A7CA,$03 Call #R$D3E8.
+  $A7CD,$02 Restore #REGiy from the stack.
+  $A7CF,$01 Return.
+
+  $A7D0,$01 #REGa=#N$00.
+  $A7D1,$03 Write #REGa to *#R$A7EA.
+  $A7D4,$02 Test bit 7 of #REGd.
+  $A7D6,$02 Jump to #R$A7EB if ?? is equal to #REGa.
+  $A7D8,$01 #REGa=#REGe.
+  $A7D9,$03 #REGhl=#N$09EE.
+  $A7DC,$01 Compare #REGa with #REGl.
+  $A7DD,$02 Jump to #R$A7E4 if #REGa is not equal to #REGl.
+  $A7DF,$01 #REGa=#REGd.
+  $A7E0,$02,b$01 Keep only bits 0-3.
+  $A7E2,$01 Compare #REGa with #REGh.
+  $A7E3,$01 Return if #REGa is equal to #REGh.
+  $A7E4,$02 #REGa=#N$01.
+  $A7E6,$03 Write #REGa to *#R$A7EA.
+  $A7E9,$01 Return.
+
+g $A7EA
+B $A7EA,$01
+
+c $A7EB
+  $A7EB,$03 #REGhl=#R$A24D.
+  $A7EE,$03 #REGa=*#R$A027.
+  $A7F1,$01 #REGe=#REGa.
+  $A7F2,$03 #REGa=*#R$A2AA.
+  $A7F5,$01 Set the bits from #REGe.
+  $A7F6,$02 Jump to #R$A7FB if #REGa is equal to #REGe.
+  $A7F8,$03 #REGhl=#R$A255.
+  $A7FB,$01 #REGa=#REGd.
+  $A7FC,$01 RRCA.
+  $A7FD,$01 RRCA.
+  $A7FE,$01 RRCA.
+  $A7FF,$02,b$01 Keep only bits 1-4.
+  $A801,$01 Stash #REGde on the stack.
+  $A802,$01 #REGe=#REGa.
+  $A803,$02 #REGd=#N$00.
+  $A805,$01 #REGhl+=#REGde.
+  $A806,$01 #REGe=*#REGhl.
+  $A807,$01 Increment #REGhl by one.
+  $A808,$01 #REGd=*#REGhl.
+  $A809,$03 Call #R$A887.
+  $A80C,$01 Restore #REGde from the stack.
+  $A80D,$01 Return.
+
+c $A80E
+  $A80E,$01 Stash #REGde on the stack.
+  $A80F,$03 Call #R$A7D0.
+  $A812,$01 Restore #REGde from the stack.
+  $A813,$02 #REGa=#N$50.
+  $A815,$01 Stash #REGaf on the stack.
+  $A816,$01 #REGa=#REGd.
+  $A817,$02,b$01 Keep only bits 0-3.
+  $A819,$01 #REGd=#REGa.
+  $A81A,$01 Restore #REGaf from the stack.
+  $A81B,$01 Set the bits from #REGd.
+  $A81C,$01 #REGd=#REGa.
+  $A81D,$02,b$01 Keep only bits 0-3.
+  $A81F,$01 Set the bits from #REGe.
+  $A820,$01 Return if the result is zero.
+  $A821,$03 Call #R$A887.
+  $A824,$03 #REGa=*#R$A7EA.
+  $A827,$01 Stash #REGhl on the stack.
+  $A828,$03 #REGhl=#R$A026.
+  $A82B,$01 Set the bits from *#REGhl.
+  $A82C,$01 Write #REGa to *#REGhl.
+  $A82D,$01 Restore #REGhl from the stack.
+  $A82E,$01 Return.
+
+c $A82F
+  $A82F,$05 Jump to #R$A751 if #REGa is not equal to #N$FF.
+  $A834,$03 #REGde=#N$080E.
+  $A837,$03 Jump to #R$A887.
+
+c $A83A
+  $A83A,$03 Call #R$A840.
+  $A83D,$03 Jump to #R$A5EA.
+
+c $A840 Get Common Word
+@ $A840 label=GetCommonWord
+R $A840 A Letter reference
+R $A840 DE Common word address
+  $A840,$02 Subtract #N$60 from the letter byte - anything higher than #N$60
+. signifies the letter is a "common word".
+  $A842,$03 Load the letter reference into #REGde.
+  $A845,$05 #REGhl=#R$67B7+(#REGde*#N$02).
+  $A84A,$01 Fetch the LSB of the word reference and store it in #REGe.
+  $A84B,$05 Fetch the MSB of the word reference, add #N$50 and store it in
+. #REGd.
+  $A850,$01 Return.
+
+b $A851
+
+c $A852
+
+c $A880
+
+c $A990
+
+g $A9B5
+W $A9B5,$02
+
+c $A9B7
 
 t $BF59 Table: Days Of The Week Strings
 @ $BF59 label=Table_DaysOfWeekStrings
@@ -1830,7 +2448,7 @@ c $C1FC
   $C22D,$03 Write #REGa to *#R$C1F4.
   $C230,$04 Write #REGc to *#R$C1FB.
   $C234,$03 Write #REGhl to *#R$C1F6.
-  $C237,$02 #REGa=#N$2B.
+  $C237,$02 Load #REGa with ASCII code #N$2B ("#CHR$2B").
   $C239,$03 Call #R$C388.
   $C23C,$03 Restore #REGaf, #REGbc and #REGhl from the stack.
   $C23F,$01 Return.
@@ -1843,6 +2461,163 @@ c $C240 Validate Keypress
   $C248,$01 Return.
 
 c $C249
+  $C249,$02 #REGa=#N$20.
+  $C24B,$03 Call #R$C388.
+  $C24E,$03 Call #R$C267.
+  $C251,$03 Call #R$C267.
+  $C254,$03 #REGa=*#R$C1F4.
+  $C257,$01 Increment #REGa by one.
+  $C258,$04 Jump to #R$C22D if #REGa is not equal to #N$25.
+  $C25C,$02 #REGl=#N$FE.
+  $C25E,$02 #REGc=#N$07.
+  $C260,$03 Call #R$C29C.
+  $C263,$02 #REGa=#N$01.
+  $C265,$02 Jump to #R$C22D.
+  $C267,$04 #REGc-=#N$07.
+  $C26B,$01 Return if the carry flag isn't set.
+  $C26C,$01 Decrease #REGl by one.
+  $C26D,$03 #REGc=#REGa+#N$08.
+  $C270,$01 Return.
+
+c $C271
+  $C271,$03 Stash #REGhl, #REGde and #REGbc on the stack.
+  $C274,$03 #REGhl=#N$5080 (screen buffer location).
+  $C277,$03 #REGde=#N$5060 (screen buffer location).
+  $C27A,$02 #REGa=#N$08.
+  $C27C,$02 Stash #REGhl and #REGde on the stack.
+  $C27E,$03 #REGbc=#N($0080,$04,$04).
+  $C281,$02 LDIR.
+  $C283,$02 Restore #REGde and #REGhl from the stack.
+  $C285,$01 Increment #REGh by one.
+  $C286,$01 Increment #REGd by one.
+  $C287,$01 Decrease #REGa by one.
+  $C288,$02 Jump to #R$C27C if #REGa is not equal to #N$08.
+  $C28A,$03 #REGhl=#N$50E0 (screen buffer location).
+  $C28D,$02 #REGb=#N$24.
+  $C28F,$02 #REGc=#N$01.
+  $C291,$02 #REGa=#N$20.
+  $C293,$03 Call #R$C388.
+  $C296,$02 Decrease counter by one and loop back to #R$C293 until counter is zero.
+  $C298,$03 Restore #REGbc, #REGde and #REGhl from the stack.
+  $C29B,$01 Return.
+
+c $C29C
+  $C29C,$03 Stash #REGhl, #REGde and #REGbc on the stack.
+  $C29F,$03 #REGhl=#N$50DF (screen buffer location).
+  $C2A2,$03 #REGde=#N$50FF (screen buffer location).
+  $C2A5,$02 #REGa=#N$08.
+  $C2A7,$02 Stash #REGhl and #REGde on the stack.
+  $C2A9,$03 #REGbc=#N($0080,$04,$04).
+  $C2AC,$02 LDDR.
+  $C2AE,$02 Restore #REGde and #REGhl from the stack.
+  $C2B0,$01 Increment #REGh by one.
+  $C2B1,$01 Increment #REGd by one.
+  $C2B2,$01 Decrease #REGa by one.
+  $C2B3,$02 Jump to #R$C2A7 if #REGa is not equal to #N$08.
+  $C2B5,$03 #REGhl=#N$5060 (screen buffer location).
+  $C2B8,$02 Jump to #R$C28D.
+
+c $C2BA
+  $C2BA,$03 Stash #REGhl, #REGbc and #REGaf on the stack.
+  $C2BD,$03 #REGhl=*#R$C1F8.
+  $C2C0,$04 #REGc=*#R$C1FA.
+  $C2C4,$01 Restore #REGaf from the stack.
+  $C2C5,$01 Stash #REGaf on the stack.
+  $C2C6,$04 Jump to #R$C2EE if #REGa is not equal to #N$0D.
+  $C2CA,$03 #REGa=*#R$A019.
+  $C2CD,$04 Jump to #R$C2D6 if #REGa is not equal to #N$0F.
+  $C2D1,$03 Call #R$C306.
+  $C2D4,$02 #REGa=#N$FF.
+  $C2D6,$01 Increment #REGa by one.
+  $C2D7,$03 Write #REGa to *#R$A019.
+  $C2DA,$03 #REGhl=#N$5020 (screen buffer location).
+  $C2DD,$02 #REGc=#N$02.
+  $C2DF,$03 Call #R$C316.
+  $C2E2,$03 #REGa=*#R$C128.
+  $C2E5,$01 Set flags.
+  $C2E6,$02 #REGa=#N$24.
+  $C2E8,$02 Jump to #R$C2F8 if #REGa is equal to #REGa.
+  $C2EA,$02 #REGa=#N$12.
+  $C2EC,$02 Jump to #R$C2F8.
+
+  $C2EE,$03 Call #R$C388.
+  $C2F1,$03 #REGa=*#R$C1F5.
+  $C2F4,$01 Decrease #REGa by one.
+  $C2F5,$03 Jump to #R$C2CA if #REGa is zero.
+  $C2F8,$03 Write #REGa to *#R$C1F5.
+  $C2FB,$03 Write #REGhl to *#R$C1F8.
+  $C2FE,$04 Write #REGc to *#R$C1FA.
+  $C302,$03 Restore #REGaf, #REGbc and #REGhl from the stack.
+  $C305,$01 Return.
+
+c $C306
+  $C306,$01 Stash #REGhl on the stack.
+  $C307,$03 #REGhl=#N$5A5F (attribute buffer location).
+  $C30A,$02 Set bit 7 of *#REGhl.
+  $C30C,$03 Call #R$C415.
+  $C30F,$02 Reset bit 7 of *#REGhl.
+  $C311,$03 Call #R$C142.
+  $C314,$01 Restore #REGhl from the stack.
+  $C315,$01 Return.
+
+c $C316
+  $C316,$03 #REGa=*#R$C128.
+  $C319,$01 Set flags.
+  $C31A,$03 Call #R$C3E4 if #REGa is equal to #N$00.
+  $C31D,$03 Stash #REGbc, #REGhl and #REGde on the stack.
+  $C320,$03 #REGhl=#N$4020 (screen buffer location).
+  $C323,$03 #REGde=#N$4000.
+  $C326,$03 #REGbc=#N($0011,$04,$04).
+  $C329,$03 #REGa=*#R$C128.
+  $C32C,$01 Set flags.
+  $C32D,$02 #REGa=#N$20.
+  $C32F,$02 Jump to #R$C333 if #REGa is equal to #REGa.
+  $C331,$02 #REGa=#N$10.
+  $C333,$03 Stash #REGhl, #REGde and #REGbc on the stack.
+  $C336,$02 #REGc=#N$08.
+  $C338,$03 Stash #REGhl, #REGde and #REGbc on the stack.
+  $C33B,$01 #REGc=#REGa.
+  $C33C,$02 LDIR.
+  $C33E,$03 Restore #REGbc, #REGde and #REGhl from the stack.
+  $C341,$01 Increment #REGh by one.
+  $C342,$01 Increment #REGd by one.
+  $C343,$01 Decrease #REGc by one.
+  $C344,$02 Jump to #R$C338 if #REGc is not equal to #REGa.
+  $C346,$03 Restore #REGbc, #REGde and #REGhl from the stack.
+  $C349,$01 Stash #REGaf on the stack.
+  $C34A,$03 Call #R$C37D.
+  $C34D,$03 Call #R$C37D.
+  $C350,$01 Restore #REGaf from the stack.
+  $C351,$01 Decrease #REGc by one.
+  $C352,$02 Jump to #R$C333 if #REGc is not equal to #REGa.
+  $C354,$04 Jump to #R$C363 if #REGa is equal to #N$10.
+  $C358,$03 #REGhl=#N$5820 (attribute buffer location).
+  $C35B,$03 #REGde=#N$5800 (screen buffer location).
+  $C35E,$03 #REGbc=#N$0220.
+  $C361,$02 LDIR.
+  $C363,$03 #REGa=*#R$C128.
+  $C366,$01 Set flags.
+  $C367,$02 #REGb=#N$24.
+  $C369,$02 Jump to #R$C36D if #REGa is equal to #REGa.
+  $C36B,$02 #REGb=#N$12.
+  $C36D,$03 #REGhl=#N$5020 (screen buffer location).
+  $C370,$02 #REGc=#N$02.
+  $C372,$02 #REGa=#N$20.
+  $C374,$03 Call #R$C388.
+  $C377,$02 Decrease counter by one and loop back to #R$C374 until counter is zero.
+  $C379,$03 Restore #REGde, #REGhl and #REGbc from the stack.
+  $C37C,$01 Return.
+
+c $C37D
+  $C37D,$01 Exchange the #REGde and #REGhl registers.
+  $C37E,$01 #REGa=#REGl.
+  $C37F,$02 #REGa+=#N$20.
+  $C381,$01 #REGl=#REGa.
+  $C382,$01 Return if #REGa is greater than #REGa.
+  $C383,$01 #REGa=#REGh.
+  $C384,$02 #REGa+=#N$08.
+  $C386,$01 #REGh=#REGa.
+  $C387,$01 Return.
 
 c $C388 Print Character
 @ $C388 label=PrintCharacter
@@ -1984,6 +2759,32 @@ N $C44B Did the player press "ENTER"?
 
 c $C45E
 
+c $C493
+
+c $C4B2
+
+c $C4D1
+
+c $C821
+
+c $C863
+
+c $C86E
+
+c $C8A7
+
+c $C8AF
+
+c $C8BE
+
+c $C8C6
+
+c $C8EF
+
+c $C929
+
+c $C989
+
 c $CC0E
   $CC0E,$02 Stash #REGde and #REGbc on the stack.
   $CC10,$01 #REGc=#REGa.
@@ -2006,9 +2807,348 @@ c $CC78
 
 c $D008
 
+c $D026
+
+c $D045
+
+c $D04F
+
+b $D05A
+
+b $D064
+
+c $D078
+
 c $D0D0
+
+g $D0DC
+B $D0DC,$01
+
+c $D0DD
+  $D0DD,$01 Stash #REGaf on the stack.
+  $D0DE,$03 Call #R$D224.
+  $D0E1,$03 #REGa=*#R$D0DC.
+  $D0E4,$01 Set flags.
+  $D0E5,$03 #REGhl=#R$68E4.
+  $D0E8,$02 Jump to #R$D100 if ?? is not equal to #REGa.
+  $D0EA,$03 #REGa=*#REGix+#N$00.
+  $D0ED,$02,b$01 Keep only bits 1-3.
+  $D0EF,$01 #REGe=#REGa.
+  $D0F0,$02 #REGd=#N$00.
+  $D0F2,$03 #REGhl=#R$D05A.
+  $D0F5,$01 #REGhl+=#REGde.
+  $D0F6,$01 #REGe=*#REGhl.
+  $D0F7,$01 Increment #REGhl by one.
+  $D0F8,$01 #REGd=*#REGhl.
+  $D0F9,$01 Exchange the #REGde and #REGhl registers.
+  $D0FA,$03 Call #R$D0D0.
+  $D0FD,$03 #REGhl=#R$68DD.
+  $D100,$01 Restore #REGaf from the stack.
+  $D101,$01 Return.
+
+c $D102
 
   $D135,$03 #REGhl=#R$68DD.
   $D138,$03 Call #R$A59F.
 
+c $D1B2
+
+c $D1DB
+
+c $D1DC
+
+c $D206
+
+c $D224
+
+c $D237
+
+c $D275
+
+c $D29D
+
+c $D2A4
+
+c $D2F2
+
+c $D33C
+
+c $D349
+
+c $D34E
+
+c $D36A
+
+c $D3E8
+
+c $D405
+
+c $D471
+
+c $D495
+  $D495,$02 Compare #REGa with #N$FF.
+  $D497,$01 Return if #REGa is equal to #N$FF.
+  $D498,$03 Call #R$D237.
+  $D49B,$02 #REGa=#N$01.
+  $D49D,$03 Compare #REGa with *#REGix+#N$00.
+  $D4A0,$02 #REGa=#N$FF.
+  $D4A2,$01 Return if #REGa is not equal to #N$FF.
+  $D4A3,$03 #REGa=*#REGix+#N$0F.
+  $D4A6,$01 Return.
+
+c $D4A7
+  $D4A7,$04 Stash #REGiy, #REGaf and #REGbc on the stack.
+  $D4AB,$02 #REGa=#N$FF.
+  $D4AD,$03 Call #R$D4CC.
+  $D4B0,$02 Jump to #R$D4C7 if #REGa is equal to #N$FF.
+  $D4B2,$01 Stash #REGaf on the stack.
+  $D4B3,$03 #REGhl=#R$68E4.
+  $D4B6,$03 Call #R$A59F.
+  $D4B9,$01 Restore #REGbc from the stack.
+  $D4BA,$01 #REGc=#REGb.
+  $D4BB,$02 #REGa=#N$FF.
+  $D4BD,$04 #REGiy=#R$A017.
+  $D4C1,$03 #REGb=*#REGiy+#N$0F.
+  $D4C4,$03 Call #R$D51A.
+  $D4C7,$04 Restore #REGbc, #REGaf and #REGiy from the stack.
+  $D4CB,$01 Return.
+
+c $D4CC
+  $D4CC,$06 Stash #REGix, #REGiy, #REGhl and #REGbc on the stack.
+  $D4D2,$03 Call #R$D04F.
+  $D4D5,$02 #REGb=#N$00.
+  $D4D7,$01 #REGc=#REGa.
+  $D4D8,$03 Call #R$D206.
+  $D4DB,$02 Jump to #R$D4E6 if #REGa is equal to #N$00.
+  $D4DD,$01 #REGa=#REGc.
+  $D4DE,$03 Call #R$D4EF.
+  $D4E1,$02 Jump to #R$D4D8 if #REGa is greater than or equal to #N$00.
+  $D4E3,$01 Increment #REGb by one.
+  $D4E4,$02 Jump to #R$D4D8.
+  $D4E6,$01 #REGa=#REGb.
+  $D4E7,$01 Set flags.
+  $D4E8,$06 Restore #REGbc, #REGhl, #REGiy and #REGix from the stack.
+  $D4EE,$01 Return.
+
+c $D4EF
+  $D4EF,$03 Compare #REGa with *#REGiy+#N$01.
+  $D4F2,$02 Jump to #R$D518 if #REGb is not equal to #REGa.
+  $D4F4,$03 #REGa=*#R$A036.
+  $D4F7,$03 Compare #REGa with *#REGix+#N$00.
+  $D4FA,$02 Jump to #R$D518 if #REGb is equal to #REGa.
+  $D4FC,$03 #REGa=*#REGix+#N$00.
+  $D4FF,$03 Call #R$C821.
+  $D502,$02 Jump to #R$D518 if #REGb is equal to #REGa.
+  $D504,$03 #REGa=*#REGiy+#N$00.
+  $D507,$02 Compare #REGa with #N$02.
+  $D509,$02 Jump to #R$D518 if #REGa is greater than or equal to #N$02.
+  $D50B,$03 #REGa=*#R$A036.
+  $D50E,$02 Stash #REGix on the stack.
+  $D510,$01 Restore #REGhl from the stack.
+  $D511,$03 Call #R$D278.
+  $D514,$02 Jump to #R$D518 if #REGa is less than #N$02.
+  $D516,$01 Set the carry flag.
+  $D517,$01 Return.
+  $D518,$01 Set flags.
+  $D519,$01 Return.
+
+c $D51A
+  $D51A,$04 Stash #REGiy, #REGde and #REGbc on the stack.
+  $D51E,$03 Call #R$D526.
+  $D521,$04 Restore #REGbc, #REGde and #REGiy from the stack.
+  $D525,$01 Return.
+
+c $D526
+  $D526,$02 Stash #REGix on the stack.
+  $D528,$03 Call #R$D04F.
+  $D52B,$01 Stash #REGaf on the stack.
+  $D52C,$03 Call #R$D57D.
+  $D52F,$02 Jump to #R$D55A if #REGa is less than #REGa.
+  $D531,$04 Set bit 7 of *#REGiy+#N$06.
+  $D535,$01 #REGa-=#REGa.
+  $D536,$03 Write #REGa to *#R$A028.
+  $D539,$03 Call #R$D3D9.
+  $D53C,$01 Decrease #REGc by one.
+  $D53D,$01 #REGa=#REGc.
+  $D53E,$01 Set flags.
+  $D53F,$02 Jump to #R$D546 if #REGc is not equal to #REGa.
+  $D541,$03 Call #R$A414.
+  $D544,$02 Jump to #R$D557.
+  $D546,$02 Compare #REGa with #N$01.
+  $D548,$02 Jump to #R$D551 if #REGa is equal to #N$01.
+  $D54A,$02 #REGa=#N$2C.
+  $D54C,$03 Call #R$A9B7.
+  $D54F,$02 Jump to #R$D557.
+  $D551,$03 #REGde=#N($005D,$04,$04).
+  $D554,$03 Call #R$A887.
+  $D557,$01 Restore #REGaf from the stack.
+  $D558,$02 Jump to #R$D52B.
+  $D55A,$01 Restore #REGaf from the stack.
+  $D55B,$03 Call #R$D04F.
+  $D55E,$01 Stash #REGaf on the stack.
+  $D55F,$03 Call #R$D57D.
+  $D562,$02 Jump to #R$D578 if #REGa is less than #N$2C.
+  $D564,$01 Stash #REGaf on the stack.
+  $D565,$03 Call #R$D4CC.
+  $D568,$02 Jump to #R$D574 if #REGa is equal to #N$2C.
+  $D56A,$01 #REGc=#REGa.
+  $D56B,$01 Restore #REGaf from the stack.
+  $D56C,$03 Call #R$D590.
+  $D56F,$03 Call #R$D526.
+  $D572,$02 Jump to #R$D575.
+  $D574,$02 Restore #REGaf and #REGaf from the stack.
+  $D576,$02 Jump to #R$D55E.
+  $D578,$01 Restore #REGaf from the stack.
+  $D579,$02 Restore #REGix from the stack.
+  $D57B,$01 Return.
+  $D57C,$01 Restore #REGaf from the stack.
+  $D57D,$03 Call #R$D21C.
+  $D580,$02 Jump to #R$D584 if #REGa is not equal to #N$2C.
+  $D582,$01 Set the carry flag.
+  $D583,$01 Return.
+  $D584,$01 Stash #REGaf on the stack.
+  $D585,$03 Call #R$D4EF.
+  $D588,$02 Jump to #R$D57C if #REGa is greater than or equal to #N$2C.
+  $D58A,$01 Restore #REGaf from the stack.
+  $D58B,$03 #REGa=*#REGix+#N$00.
+  $D58E,$01 Set flags.
+  $D58F,$01 Return.
+
+c $D590
+  $D590,$04 Stash #REGix, #REGbc and #REGaf on the stack.
+  $D594,$03 Call #R$D237.
+  $D597,$06 Jump to #R$D5A5 if bit 6 of *#REGix+#N$05 is not set.
+  $D59D,$01 Restore #REGaf from the stack.
+  $D59E,$02 Stash #REGaf and #REGaf on the stack.
+  $D5A0,$03 #REGhl=#R$68B1.
+  $D5A3,$02 Jump to #R$D5C1.
+
+  $D5A5,$03 #REGhl=#N$0485.
+  $D5A8,$01 Decrease #REGc by one.
+  $D5A9,$02 Jump to #R$D5AE if #REGc is equal to #REGa.
+  $D5AB,$03 #REGhl=#N($007A,$04,$04).
+  $D5AE,$01 Stash #REGhl on the stack.
+  $D5AF,$03 Call #R$D5D3.
+  $D5B2,$05 Write #N$01 to *#R$A2AA.
+  $D5B7,$03 Call #R$D3D5.
+  $D5BA,$04 Write #N$00 to *#R$A2AA.
+  $D5BE,$03 #REGhl=#R$68D9.
+  $D5C1,$03 Call #R$A59F.
+  $D5C4,$04 Restore #REGaf, #REGbc and #REGix from the stack.
+  $D5C8,$01 Return.
+
+b $D5C9
+
+c $D5D3
+  $D5D3,$03 #REGhl=#R$D5C9.
+  $D5D6,$03 #REGa=*#REGix+#N$04.
+  $D5D9,$02,b$01 Keep only bits 0-2.
+  $D5DB,$02 Compare #REGa with #N$05.
+  $D5DD,$01 Stash #REGaf on the stack.
+  $D5DE,$01 Decrease #REGa by one.
+  $D5DF,$01 #REGe=#REGa.
+  $D5E0,$02 #REGd=#N$00.
+  $D5E2,$01 #REGhl+=#REGde.
+  $D5E3,$01 #REGhl+=#REGde.
+  $D5E4,$03 Call #R$A880.
+  $D5E7,$01 Restore #REGaf from the stack.
+  $D5E8,$01 Return if #REGa is not equal to #N$00.
+  $D5E9,$03 #REGde=#N$08DB.
+  $D5EC,$03 Jump to #R$A887.
+
+c $D5EF
+  $D5EF,$03 Call #R$D224.
+  $D5F2,$05 #REGix+=#N$0006.
+  $D5F7,$03 #REGbc=#N$0003.
+  $D5FA,$01 Return.
+
+c $D5FB
+  $D5FB,$03 #REGhl=#R$D064.
+  $D5FE,$02 Decrease #REGhl by two.
+  $D600,$01 #REGe=#REGa.
+  $D601,$02 Reset bit 7 of #REGe.
+  $D603,$02 #REGd=#N$00.
+  $D605,$01 #REGhl+=#REGde.
+  $D606,$01 #REGhl+=#REGde.
+  $D607,$01 #REGe=*#REGhl.
+  $D608,$01 Increment #REGhl by one.
+  $D609,$01 #REGd=*#REGhl.
+  $D60A,$01 Return.
+  $D60B,$02 Stash #REGbc and #REGde on the stack.
+  $D60D,$02 Stash #REGiy on the stack.
+  $D60F,$02 Stash #REGix on the stack.
+  $D611,$03 Call #R$D5EF.
+  $D614,$02 Stash #REGix on the stack.
+  $D616,$02 Restore #REGiy from the stack.
+  $D618,$02 Jump to #R$D660.
+  $D61A,$03 #REGa=*#REGiy+#N$01.
+  $D61D,$01 Set flags.
+  $D61E,$02 Jump to #R$D660 if #REGhl is equal to #REGa.
+  $D620,$03 #REGa=*#REGiy+#N$00.
+  $D623,$02 Compare #REGa with #N$0B.
+  $D625,$02 Jump to #R$D660 if #REGa is greater than or equal to #N$0B.
+  $D627,$03 #REGa=*#REGiy+#N$01.
+  $D62A,$03 Call #R$D237.
+  $D62D,$04 Test bit 7 of *#REGix+#N$05.
+  $D631,$02 Jump to #R$D660 if #REGa is equal to #N$0B.
+  $D633,$03 #REGa=*#REGiy+#N$00.
+  $D636,$03 Call #R$D5FB.
+  $D639,$02 Compare #REGa with #N$09.
+  $D63B,$02 Jump to #R$D647 if #REGa is less than #N$09.
+  $D63D,$03 #REGde=#N($000A,$04,$04).
+  $D640,$02 Jump to #R$D64D if #REGa is equal to #N$09.
+  $D642,$03 #REGde=#N($00E7,$04,$04).
+  $D645,$02 Jump to #R$D64D.
+  $D647,$03 #REGhl=#R$68BC.
+  $D64A,$03 Call #R$A59F.
+  $D64D,$03 Call #R$A887.
+  $D650,$03 #REGhl=#R$68E9.
+  $D653,$03 Call #R$A59F.
+  $D656,$02 Stash #REGiy on the stack.
+  $D658,$03 Call #R$D3D5.
+  $D65B,$03 Call #R$A414.
+  $D65E,$02 Restore #REGiy from the stack.
+  $D660,$02 #REGiy+=#REGbc.
+  $D662,$02 #REGa=#N$FF.
+  $D664,$03 Compare #REGa with *#REGiy+#N$00.
+  $D667,$03 Jump to #R$D61A if #REGa is not equal to #N$FF.
+  $D66A,$02 Restore #REGix from the stack.
+  $D66C,$02 Restore #REGiy from the stack.
+  $D66E,$02 Restore #REGde and #REGbc from the stack.
+  $D670,$01 Return.
+
+c $D671
+  $D671,$02 #REGix+=#REGbc.
+  $D673,$02 #REGa=#N$FF.
+  $D675,$03 Compare #REGa with *#REGix+#N$00.
+  $D678,$01 Return if #REGa is equal to #N$FF.
+  $D679,$01 #REGa=#N$00.
+  $D67A,$03 Compare #REGa with *#REGix+#N$01.
+  $D67D,$02 Jump to #R$D671 if #REGa is not equal to #N$FF.
+  $D67F,$03 #REGa=*#REGix+#N$00.
+  $D682,$01 Set flags.
+  $D683,$02 Jump to #R$D671 if #REGa is equal to #REGa.
+  $D685,$02 Compare #REGa with #N$0B.
+  $D687,$02 Jump to #R$D671 if #REGa is greater than or equal to #N$0B.
+  $D689,$02,b$01 Set bit 0.
+  $D68B,$01 Return.
+
+c $D68C
+  $D68C,$06 Stash #REGix, #REGiy, #REGde and #REGbc on the stack.
+  $D692,$03 Call #R$D5EF.
+  $D695,$03 Call #R$D671.
+  $D698,$02 Jump to #R$D6B1 if the zero flag is not set.
+  $D69A,$03 #REGhl=#R$68F1.
+  $D69D,$03 Call #R$A59F.
+  $D6A0,$03 #REGa=*#REGix+#N$00.
+  $D6A3,$03 Call #R$D5FB.
+  $D6A6,$03 Call #R$A887.
+  $D6A9,$03 Call #R$D671.
+  $D6AC,$02 Jump to #R$D6A0 if the zero flag is not set.
+  $D6AE,$03 Call #R$A414.
+  $D6B1,$06 Restore #REGbc, #REGde, #REGiy and #REGix from the stack.
+  $D6B7,$01 Return.
+
 g $D6B8
+
+c $DC6C
