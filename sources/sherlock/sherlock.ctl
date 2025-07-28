@@ -29,6 +29,9 @@ b $68B1
 b $68BC
 b $68D1
 b $68DD
+
+w $68DE
+
 b $68E4
 b $68E9
 
@@ -1398,30 +1401,1766 @@ L $8B6F,$03,$6E
 B $8CB9,$01 Terminator.
 
 g $8CBA Object #N$00: "#OBJECT$00"
+@ $8CBA label=Object_00
 B $8CBA,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
-  $8CBB,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
-  $8CBC,$01 Volume (?)
-  $8CBD,$01 Mass (?)
-  $8CBE,$01
-  $8CBF,$01 Strength (?)
-  $8CC0,$01
-  $8CC1,b$01 Attributes:
+B $8CBB,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8CBC,$01 Volume (?)
+B $8CBD,$01 Mass (?)
+B $8CBE,$01
+B $8CBF,$01 Strength (?)
+B $8CC0,$01
+B $8CC1,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
-. {
-.   #IF(#PEEK(#PC)&$01<<$07)(yes,no) |
-.   #IF(#PEEK(#PC)&$01<<$06)(yes,no) |
-.   #IF(#PEEK(#PC)&$01<<$05)(yes,no) |
-.   #IF(#PEEK(#PC)&$01<<$04)(yes,no) |
-.   #IF(#PEEK(#PC)&$01<<$03)(yes,no) |
-.   #IF(#PEEK(#PC)&$01<<$02)(yes,no) |
-.   #IF(#PEEK(#PC)&$01<<$01)(yes,no) |
-.   #IF(#PEEK(#PC)&$01<<$00)(yes,no)
-. } TABLE#
-  $8CC2,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
-  $8CCA,$01 Terminator #N(#PEEK(#PC)).
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8CC2,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8CCA,$01 Terminator #N(#PEEK(#PC)).
 
 g $8CCB Object #N$01: "#OBJECT$01"
+@ $8CCB label=Object_01
+B $8CCB,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8CCC,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8CCD,$01 Volume (?)
+B $8CCE,$01 Mass (?)
+B $8CCF,$01
+B $8CD0,$01 Strength (?)
+B $8CD1,$01
+B $8CD2,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8CD3,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8CDB,$01 Terminator #N(#PEEK(#PC)).
+
+g $8CDC Object #N$02: "#OBJECT$02"
+@ $8CDC label=Object_02
+B $8CDC,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8CDD,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8CDE,$01 Volume (?)
+B $8CDF,$01 Mass (?)
+B $8CE0,$01
+B $8CE1,$01 Strength (?)
+B $8CE2,$01
+B $8CE3,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8CE4,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8CEC,$01 Terminator #N(#PEEK(#PC)).
+
+g $8CED Object #N$03: "#OBJECT$03"
+@ $8CED label=Object_03
+B $8CED,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8CEE,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8CEF,$01 Volume (?)
+B $8CF0,$01 Mass (?)
+B $8CF1,$01
+B $8CF2,$01 Strength (?)
+B $8CF3,$01
+B $8CF4,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8CF5,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8CFD,$01 Terminator #N(#PEEK(#PC)).
+
+g $8CFE Object #N$04: "#OBJECT$04"
+@ $8CFE label=Object_04
+B $8CFE,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8CFF,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8D00,$01 Volume (?)
+B $8D01,$01 Mass (?)
+B $8D02,$01
+B $8D03,$01 Strength (?)
+B $8D04,$01
+B $8D05,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8D06,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D0E,$01 Terminator #N(#PEEK(#PC)).
+
+g $8D0F Object #N$05: "#OBJECT$05"
+@ $8D0F label=Object_05
+B $8D0F,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8D10,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8D11,$01 Volume (?)
+B $8D12,$01 Mass (?)
+B $8D13,$01
+B $8D14,$01 Strength (?)
+B $8D15,$01
+B $8D16,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8D17,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D1F,$01 Terminator #N(#PEEK(#PC)).
+
+g $8D20 Object #N$06: "#OBJECT$06"
+@ $8D20 label=Object_06
+B $8D20,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8D21,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8D22,$01 Volume (?)
+B $8D23,$01 Mass (?)
+B $8D24,$01
+B $8D25,$01 Strength (?)
+B $8D26,$01
+B $8D27,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8D28,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D30,$01 Terminator #N(#PEEK(#PC)).
+
+g $8D31 Object #N$07: "#OBJECT$07"
+@ $8D31 label=Object_07
+B $8D31,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8D32,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8D33,$01 Volume (?)
+B $8D34,$01 Mass (?)
+B $8D35,$01
+B $8D36,$01 Strength (?)
+B $8D37,$01
+B $8D38,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8D39,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D41,$01 Terminator #N(#PEEK(#PC)).
+
+g $8D42 Object #N$08: "#OBJECT$08"
+@ $8D42 label=Object_08
+B $8D42,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8D43,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8D44,$01 Volume (?)
+B $8D45,$01 Mass (?)
+B $8D46,$01
+B $8D47,$01 Strength (?)
+B $8D48,$01
+B $8D49,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8D4A,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D52,$01 Terminator #N(#PEEK(#PC)).
+
+g $8D53 Object #N$09: "#OBJECT$09"
+@ $8D53 label=Object_09
+B $8D53,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8D54,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8D55,$01 Volume (?)
+B $8D56,$01 Mass (?)
+B $8D57,$01
+B $8D58,$01 Strength (?)
+B $8D59,$01
+B $8D5A,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8D5B,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D63,$01 Terminator #N(#PEEK(#PC)).
+
+g $8D64 Object #N$0A: "#OBJECT$0A"
+@ $8D64 label=Object_10
+B $8D64,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8D65,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8D66,$01 Volume (?)
+B $8D67,$01 Mass (?)
+B $8D68,$01
+B $8D69,$01 Strength (?)
+B $8D6A,$01
+B $8D6B,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8D6C,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D74,$01 Terminator #N(#PEEK(#PC)).
+
+g $8D75 Object #N$0B: "#OBJECT$0B"
+@ $8D75 label=Object_11
+B $8D75,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8D76,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8D77,$01 Volume (?)
+B $8D78,$01 Mass (?)
+B $8D79,$01
+B $8D7A,$01 Strength (?)
+B $8D7B,$01
+B $8D7C,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8D7D,$0E,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D8B,$01 Terminator #N(#PEEK(#PC)).
+
+g $8D8C Object #N$0C: "#OBJECT$0C"
+@ $8D8C label=Object_12
+B $8D8C,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8D8D,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8D8E,$01 Volume (?)
+B $8D8F,$01 Mass (?)
+B $8D90,$01
+B $8D91,$01 Strength (?)
+B $8D92,$01
+B $8D93,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8D94,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D9C,$01 Terminator #N(#PEEK(#PC)).
+
+g $8D9D Object #N$0D: "#OBJECT$0D"
+@ $8D9D label=Object_13
+B $8D9D,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8D9E,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8D9F,$01 Volume (?)
+B $8DA0,$01 Mass (?)
+B $8DA1,$01
+B $8DA2,$01 Strength (?)
+B $8DA3,$01
+B $8DA4,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8DA5,$0E,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8DB3,$01 Terminator #N(#PEEK(#PC)).
+
+g $8DB4 Object #N$0E: "#OBJECT$0E"
+@ $8DB4 label=Object_14
+B $8DB4,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8DB5,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8DB6,$01 Volume (?)
+B $8DB7,$01 Mass (?)
+B $8DB8,$01
+B $8DB9,$01 Strength (?)
+B $8DBA,$01
+B $8DBB,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8DBC,$0C,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8DC8,$01 Terminator #N(#PEEK(#PC)).
+
+g $8DC9 Object #N$0F: "#OBJECT$0F"
+@ $8DC9 label=Object_15
+B $8DC9,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8DCA,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8DCB,$01 Volume (?)
+B $8DCC,$01 Mass (?)
+B $8DCD,$01
+B $8DCE,$01 Strength (?)
+B $8DCF,$01
+B $8DD0,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8DD1,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8DD9,$01 Terminator #N(#PEEK(#PC)).
+
+g $8DDA Object #N$10: "#OBJECT$10"
+@ $8DDA label=Object_16
+B $8DDA,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8DDB,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8DDC,$01 Volume (?)
+B $8DDD,$01 Mass (?)
+B $8DDE,$01
+B $8DDF,$01 Strength (?)
+B $8DE0,$01
+B $8DE1,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8DE2,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8DEA,$01 Terminator #N(#PEEK(#PC)).
+
+g $8DEB Object #N$11: "#OBJECT$11"
+@ $8DEB label=Object_17
+B $8DEB,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8DEC,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8DED,$01 Volume (?)
+B $8DEE,$01 Mass (?)
+B $8DEF,$01
+B $8DF0,$01 Strength (?)
+B $8DF1,$01
+B $8DF2,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8DF3,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8DFB,$01 Terminator #N(#PEEK(#PC)).
+
+g $8DFC Object #N$12: "#OBJECT$12"
+@ $8DFC label=Object_18
+B $8DFC,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8DFD,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8DFE,$01 Volume (?)
+B $8DFF,$01 Mass (?)
+B $8E00,$01
+B $8E01,$01 Strength (?)
+B $8E02,$01
+B $8E03,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8E04,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E0C,$01 Terminator #N(#PEEK(#PC)).
+
+g $8E0D Object #N$13: "#OBJECT$13"
+@ $8E0D label=Object_19
+B $8E0D,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8E0E,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8E0F,$01 Volume (?)
+B $8E10,$01 Mass (?)
+B $8E11,$01
+B $8E12,$01 Strength (?)
+B $8E13,$01
+B $8E14,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8E15,$11,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E26,$01 Terminator #N(#PEEK(#PC)).
+
+g $8E27 Object #N$14: "#OBJECT$14"
+@ $8E27 label=Object_20
+B $8E27,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8E28,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8E29,$01 Volume (?)
+B $8E2A,$01 Mass (?)
+B $8E2B,$01
+B $8E2C,$01 Strength (?)
+B $8E2D,$01
+B $8E2E,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8E2F,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E3E,$01 Terminator #N(#PEEK(#PC)).
+
+g $8E3F Object #N$15: "#OBJECT$15"
+@ $8E3F label=Object_21
+B $8E3F,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8E40,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8E41,$01 Volume (?)
+B $8E42,$01 Mass (?)
+B $8E43,$01
+B $8E44,$01 Strength (?)
+B $8E45,$01
+B $8E46,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8E47,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E54,$01 Terminator #N(#PEEK(#PC)).
+
+g $8E55 Object #N$16: "#OBJECT$16"
+@ $8E55 label=Object_22
+B $8E55,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8E56,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8E57,$01 Volume (?)
+B $8E58,$01 Mass (?)
+B $8E59,$01
+B $8E5A,$01 Strength (?)
+B $8E5B,$01
+B $8E5C,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8E5D,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E65,$01 Terminator #N(#PEEK(#PC)).
+
+g $8E66 Object #N$17: "#OBJECT$17"
+@ $8E66 label=Object_23
+B $8E66,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8E67,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8E68,$01 Volume (?)
+B $8E69,$01 Mass (?)
+B $8E6A,$01
+B $8E6B,$01 Strength (?)
+B $8E6C,$01
+B $8E6D,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8E6E,$12,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E80,$01 Terminator #N(#PEEK(#PC)).
+
+g $8E81 Object #N$18: "#OBJECT$18"
+@ $8E81 label=Object_24
+B $8E81,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8E82,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8E83,$01 Volume (?)
+B $8E84,$01 Mass (?)
+B $8E85,$01
+B $8E86,$01 Strength (?)
+B $8E87,$01
+B $8E88,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8E89,$12,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E9B,$01 Terminator #N(#PEEK(#PC)).
+
+g $8E9C Object #N$19: "#OBJECT$19"
+@ $8E9C label=Object_25
+B $8E9C,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8E9D,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8E9E,$01 Volume (?)
+B $8E9F,$01 Mass (?)
+B $8EA0,$01
+B $8EA1,$01 Strength (?)
+B $8EA2,$01
+B $8EA3,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8EA4,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8EAC,$01 Terminator #N(#PEEK(#PC)).
+
+g $8EAD Object #N$1A: "#OBJECT$1A"
+@ $8EAD label=Object_26
+B $8EAD,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8EAE,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8EAF,$01 Volume (?)
+B $8EB0,$01 Mass (?)
+B $8EB1,$01
+B $8EB2,$01 Strength (?)
+B $8EB3,$01
+B $8EB4,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8EB5,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8EBD,$01 Terminator #N(#PEEK(#PC)).
+
+g $8EBE Object #N$1B: "#OBJECT$1B"
+@ $8EBE label=Object_27
+B $8EBE,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8EBF,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8EC0,$01 Volume (?)
+B $8EC1,$01 Mass (?)
+B $8EC2,$01
+B $8EC3,$01 Strength (?)
+B $8EC4,$01
+B $8EC5,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8EC6,$0A,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8ED0,$01 Terminator #N(#PEEK(#PC)).
+
+g $8ED1 Object #N$1C: "#OBJECT$1C"
+@ $8ED1 label=Object_28
+B $8ED1,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8ED2,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8ED3,$01 Volume (?)
+B $8ED4,$01 Mass (?)
+B $8ED5,$01
+B $8ED6,$01 Strength (?)
+B $8ED7,$01
+B $8ED8,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8ED9,$0A,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8EE3,$01 Terminator #N(#PEEK(#PC)).
+
+g $8EE4 Object #N$1D: "#OBJECT$1D"
+@ $8EE4 label=Object_29
+B $8EE4,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8EE5,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8EE6,$01 Volume (?)
+B $8EE7,$01 Mass (?)
+B $8EE8,$01
+B $8EE9,$01 Strength (?)
+B $8EEA,$01
+B $8EEB,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8EEC,$09,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8EF5,$01 Terminator #N(#PEEK(#PC)).
+
+g $8EF6 Object #N$1E: "#OBJECT$1E"
+@ $8EF6 label=Object_30
+B $8EF6,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8EF7,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8EF8,$01 Volume (?)
+B $8EF9,$01 Mass (?)
+B $8EFA,$01
+B $8EFB,$01 Strength (?)
+B $8EFC,$01
+B $8EFD,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8EFE,$14,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F12,$01 Terminator #N(#PEEK(#PC)).
+
+g $8F13 Object #N$1F: "#OBJECT$1F"
+@ $8F13 label=Object_31
+B $8F13,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8F14,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8F15,$01 Volume (?)
+B $8F16,$01 Mass (?)
+B $8F17,$01
+B $8F18,$01 Strength (?)
+B $8F19,$01
+B $8F1A,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8F1B,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F2B,$01 Terminator #N(#PEEK(#PC)).
+
+g $8F2C Object #N$20: "#OBJECT$20"
+@ $8F2C label=Object_32
+B $8F2C,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8F2D,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8F2E,$01 Volume (?)
+B $8F2F,$01 Mass (?)
+B $8F30,$01
+B $8F31,$01 Strength (?)
+B $8F32,$01
+B $8F33,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8F34,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F3C,$01 Terminator #N(#PEEK(#PC)).
+
+g $8F3D Object #N$21: "#OBJECT$21"
+@ $8F3D label=Object_33
+B $8F3D,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8F3E,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8F3F,$01 Volume (?)
+B $8F40,$01 Mass (?)
+B $8F41,$01
+B $8F42,$01 Strength (?)
+B $8F43,$01
+B $8F44,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8F45,$14,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F59,$01 Terminator #N(#PEEK(#PC)).
+
+g $8F5A Object #N$22: "#OBJECT$22"
+@ $8F5A label=Object_34
+B $8F5A,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8F5B,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8F5C,$01 Volume (?)
+B $8F5D,$01 Mass (?)
+B $8F5E,$01
+B $8F5F,$01 Strength (?)
+B $8F60,$01
+B $8F61,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8F62,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F72,$01 Terminator #N(#PEEK(#PC)).
+
+g $8F73 Object #N$23: "#OBJECT$23"
+@ $8F73 label=Object_35
+B $8F73,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8F74,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8F75,$01 Volume (?)
+B $8F76,$01 Mass (?)
+B $8F77,$01
+B $8F78,$01 Strength (?)
+B $8F79,$01
+B $8F7A,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8F7B,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F83,$01 Terminator #N(#PEEK(#PC)).
+
+g $8F84 Object #N$24: "#OBJECT$24"
+@ $8F84 label=Object_36
+B $8F84,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8F85,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8F86,$01 Volume (?)
+B $8F87,$01 Mass (?)
+B $8F88,$01
+B $8F89,$01 Strength (?)
+B $8F8A,$01
+B $8F8B,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8F8C,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F9C,$01 Terminator #N(#PEEK(#PC)).
+
+g $8F9D Object #N$25: "#OBJECT$25"
+@ $8F9D label=Object_37
+B $8F9D,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8F9E,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8F9F,$01 Volume (?)
+B $8FA0,$01 Mass (?)
+B $8FA1,$01
+B $8FA2,$01 Strength (?)
+B $8FA3,$01
+B $8FA4,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8FA5,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8FB5,$01 Terminator #N(#PEEK(#PC)).
+
+g $8FB6 Object #N$26: "#OBJECT$26"
+@ $8FB6 label=Object_38
+B $8FB6,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8FB7,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8FB8,$01 Volume (?)
+B $8FB9,$01 Mass (?)
+B $8FBA,$01
+B $8FBB,$01 Strength (?)
+B $8FBC,$01
+B $8FBD,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8FBE,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8FCE,$01 Terminator #N(#PEEK(#PC)).
+
+g $8FCF Object #N$27: "#OBJECT$27"
+@ $8FCF label=Object_39
+B $8FCF,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8FD0,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8FD1,$01 Volume (?)
+B $8FD2,$01 Mass (?)
+B $8FD3,$01
+B $8FD4,$01 Strength (?)
+B $8FD5,$01
+B $8FD6,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8FD7,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8FE7,$01 Terminator #N(#PEEK(#PC)).
+
+g $8FE8 Object #N$28: "#OBJECT$28"
+@ $8FE8 label=Object_40
+B $8FE8,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $8FE9,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $8FEA,$01 Volume (?)
+B $8FEB,$01 Mass (?)
+B $8FEC,$01
+B $8FED,$01 Strength (?)
+B $8FEE,$01
+B $8FEF,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $8FF0,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9000,$01 Terminator #N(#PEEK(#PC)).
+
+g $9001 Object #N$29: "#OBJECT$29"
+@ $9001 label=Object_41
+B $9001,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9002,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9003,$01 Volume (?)
+B $9004,$01 Mass (?)
+B $9005,$01
+B $9006,$01 Strength (?)
+B $9007,$01
+B $9008,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9009,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9019,$01 Terminator #N(#PEEK(#PC)).
+
+g $901A Object #N$2A: "#OBJECT$2A"
+@ $901A label=Object_42
+B $901A,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $901B,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $901C,$01 Volume (?)
+B $901D,$01 Mass (?)
+B $901E,$01
+B $901F,$01 Strength (?)
+B $9020,$01
+B $9021,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9022,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9032,$01 Terminator #N(#PEEK(#PC)).
+
+g $9033 Object #N$2B: "#OBJECT$2B"
+@ $9033 label=Object_43
+B $9033,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9034,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9035,$01 Volume (?)
+B $9036,$01 Mass (?)
+B $9037,$01
+B $9038,$01 Strength (?)
+B $9039,$01
+B $903A,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $903B,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $904B,$01 Terminator #N(#PEEK(#PC)).
+
+g $904C Object #N$2C: "#OBJECT$2C"
+@ $904C label=Object_44
+B $904C,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $904D,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $904E,$01 Volume (?)
+B $904F,$01 Mass (?)
+B $9050,$01
+B $9051,$01 Strength (?)
+B $9052,$01
+B $9053,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9054,$09,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $905D,$01 Terminator #N(#PEEK(#PC)).
+
+g $905E Object #N$2D: "#OBJECT$2D"
+@ $905E label=Object_45
+B $905E,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $905F,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9060,$01 Volume (?)
+B $9061,$01 Mass (?)
+B $9062,$01
+B $9063,$01 Strength (?)
+B $9064,$01
+B $9065,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9066,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9075,$01 Terminator #N(#PEEK(#PC)).
+
+g $9076 Object #N$2E: "#OBJECT$2E"
+@ $9076 label=Object_46
+B $9076,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9077,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9078,$01 Volume (?)
+B $9079,$01 Mass (?)
+B $907A,$01
+B $907B,$01 Strength (?)
+B $907C,$01
+B $907D,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $907E,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9086,$01 Terminator #N(#PEEK(#PC)).
+
+g $9087 Object #N$2F: "#OBJECT$2F"
+@ $9087 label=Object_47
+B $9087,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9088,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9089,$01 Volume (?)
+B $908A,$01 Mass (?)
+B $908B,$01
+B $908C,$01 Strength (?)
+B $908D,$01
+B $908E,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $908F,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9097,$01 Terminator #N(#PEEK(#PC)).
+
+g $9098 Object #N$30: "#OBJECT$30"
+@ $9098 label=Object_48
+B $9098,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9099,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $909A,$01 Volume (?)
+B $909B,$01 Mass (?)
+B $909C,$01
+B $909D,$01 Strength (?)
+B $909E,$01
+B $909F,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $90A0,$11,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $90B1,$01 Terminator #N(#PEEK(#PC)).
+
+g $90B2 Object #N$31: "#OBJECT$31"
+@ $90B2 label=Object_49
+B $90B2,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $90B3,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $90B4,$01 Volume (?)
+B $90B5,$01 Mass (?)
+B $90B6,$01
+B $90B7,$01 Strength (?)
+B $90B8,$01
+B $90B9,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $90BA,$11,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $90CB,$01 Terminator #N(#PEEK(#PC)).
+
+g $90CC Object #N$32: "#OBJECT$32"
+@ $90CC label=Object_50
+B $90CC,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $90CD,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $90CE,$01 Volume (?)
+B $90CF,$01 Mass (?)
+B $90D0,$01
+B $90D1,$01 Strength (?)
+B $90D2,$01
+B $90D3,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $90D4,$15,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $90E9,$01 Terminator #N(#PEEK(#PC)).
+
+g $90EA Object #N$33: "#OBJECT$33"
+@ $90EA label=Object_51
+B $90EA,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $90EB,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $90EC,$01 Volume (?)
+B $90ED,$01 Mass (?)
+B $90EE,$01
+B $90EF,$01 Strength (?)
+B $90F0,$01
+B $90F1,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $90F2,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9101,$01 Terminator #N(#PEEK(#PC)).
+
+g $9102 Object #N$34: "#OBJECT$34"
+@ $9102 label=Object_52
+B $9102,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9103,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9104,$01 Volume (?)
+B $9105,$01 Mass (?)
+B $9106,$01
+B $9107,$01 Strength (?)
+B $9108,$01
+B $9109,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $910A,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9117,$01 Terminator #N(#PEEK(#PC)).
+
+g $9118 Object #N$35: "#OBJECT$35"
+@ $9118 label=Object_53
+B $9118,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9119,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $911A,$01 Volume (?)
+B $911B,$01 Mass (?)
+B $911C,$01
+B $911D,$01 Strength (?)
+B $911E,$01
+B $911F,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9120,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $912D,$01 Terminator #N(#PEEK(#PC)).
+
+g $912E Object #N$36: "#OBJECT$36"
+@ $912E label=Object_54
+B $912E,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $912F,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9130,$01 Volume (?)
+B $9131,$01 Mass (?)
+B $9132,$01
+B $9133,$01 Strength (?)
+B $9134,$01
+B $9135,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9136,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9143,$01 Terminator #N(#PEEK(#PC)).
+
+g $9144 Object #N$37: "#OBJECT$37"
+@ $9144 label=Object_55
+B $9144,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9145,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9146,$01 Volume (?)
+B $9147,$01 Mass (?)
+B $9148,$01
+B $9149,$01 Strength (?)
+B $914A,$01
+B $914B,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $914C,$13,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $915F,$01 Terminator #N(#PEEK(#PC)).
+
+g $9160 Object #N$38: "#OBJECT$38"
+@ $9160 label=Object_56
+B $9160,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9161,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9162,$01 Volume (?)
+B $9163,$01 Mass (?)
+B $9164,$01
+B $9165,$01 Strength (?)
+B $9166,$01
+B $9167,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9168,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9175,$01 Terminator #N(#PEEK(#PC)).
+
+g $9176 Object #N$39: "#OBJECT$39"
+@ $9176 label=Object_57
+B $9176,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9177,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9178,$01 Volume (?)
+B $9179,$01 Mass (?)
+B $917A,$01
+B $917B,$01 Strength (?)
+B $917C,$01
+B $917D,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $917E,$09,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9187,$01 Terminator #N(#PEEK(#PC)).
+
+g $9188 Object #N$3A: "#OBJECT$3A"
+@ $9188 label=Object_58
+B $9188,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9189,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $918A,$01 Volume (?)
+B $918B,$01 Mass (?)
+B $918C,$01
+B $918D,$01 Strength (?)
+B $918E,$01
+B $918F,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9190,$09,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9199,$01 Terminator #N(#PEEK(#PC)).
+
+g $919A Object #N$3B: "#OBJECT$3B"
+@ $919A label=Object_59
+B $919A,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $919B,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $919C,$01 Volume (?)
+B $919D,$01 Mass (?)
+B $919E,$01
+B $919F,$01 Strength (?)
+B $91A0,$01
+B $91A1,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $91A2,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $91B1,$01 Terminator #N(#PEEK(#PC)).
+
+g $91B2 Object #N$3C: "#OBJECT$3C"
+@ $91B2 label=Object_60
+B $91B2,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $91B3,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $91B4,$01 Volume (?)
+B $91B5,$01 Mass (?)
+B $91B6,$01
+B $91B7,$01 Strength (?)
+B $91B8,$01
+B $91B9,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $91BA,$12,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $91CC,$01 Terminator #N(#PEEK(#PC)).
+
+g $91CD Object #N$3D: "#OBJECT$3D"
+@ $91CD label=Object_61
+B $91CD,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $91CE,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $91CF,$01 Volume (?)
+B $91D0,$01 Mass (?)
+B $91D1,$01
+B $91D2,$01 Strength (?)
+B $91D3,$01
+B $91D4,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $91D5,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $91DD,$01 Terminator #N(#PEEK(#PC)).
+
+g $91DE Object #N$3E: "#OBJECT$3E"
+@ $91DE label=Object_62
+B $91DE,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $91DF,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $91E0,$01 Volume (?)
+B $91E1,$01 Mass (?)
+B $91E2,$01
+B $91E3,$01 Strength (?)
+B $91E4,$01
+B $91E5,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $91E6,$0E,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $91F4,$01 Terminator #N(#PEEK(#PC)).
+
+g $91F5 Object #N$3F: "#OBJECT$3F"
+@ $91F5 label=Object_63
+B $91F5,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $91F6,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $91F7,$01 Volume (?)
+B $91F8,$01 Mass (?)
+B $91F9,$01
+B $91FA,$01 Strength (?)
+B $91FB,$01
+B $91FC,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $91FD,$0C,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9209,$01 Terminator #N(#PEEK(#PC)).
+
+g $920A Object #N$40: "#OBJECT$40"
+@ $920A label=Object_64
+B $920A,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $920B,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $920C,$01 Volume (?)
+B $920D,$01 Mass (?)
+B $920E,$01
+B $920F,$01 Strength (?)
+B $9210,$01
+B $9211,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9212,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $921A,$01 Terminator #N(#PEEK(#PC)).
+
+g $921B Object #N$41: "#OBJECT$41"
+@ $921B label=Object_65
+B $921B,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $921C,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $921D,$01 Volume (?)
+B $921E,$01 Mass (?)
+B $921F,$01
+B $9220,$01 Strength (?)
+B $9221,$01
+B $9222,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9223,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $922B,$01 Terminator #N(#PEEK(#PC)).
+
+g $922C Object #N$42: "#OBJECT$42"
+@ $922C label=Object_66
+B $922C,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $922D,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $922E,$01 Volume (?)
+B $922F,$01 Mass (?)
+B $9230,$01
+B $9231,$01 Strength (?)
+B $9232,$01
+B $9233,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9234,$0B,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $923F,$01 Terminator #N(#PEEK(#PC)).
+
+g $9240 Object #N$43: "#OBJECT$43"
+@ $9240 label=Object_67
+B $9240,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9241,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9242,$01 Volume (?)
+B $9243,$01 Mass (?)
+B $9244,$01
+B $9245,$01 Strength (?)
+B $9246,$01
+B $9247,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9248,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9250,$01 Terminator #N(#PEEK(#PC)).
+
+g $9251 Object #N$44: "#OBJECT$44"
+@ $9251 label=Object_68
+B $9251,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9252,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9253,$01 Volume (?)
+B $9254,$01 Mass (?)
+B $9255,$01
+B $9256,$01 Strength (?)
+B $9257,$01
+B $9258,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9259,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9266,$01 Terminator #N(#PEEK(#PC)).
+
+g $9267 Object #N$45: "#OBJECT$45"
+@ $9267 label=Object_69
+B $9267,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9268,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9269,$01 Volume (?)
+B $926A,$01 Mass (?)
+B $926B,$01
+B $926C,$01 Strength (?)
+B $926D,$01
+B $926E,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $926F,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $927E,$01 Terminator #N(#PEEK(#PC)).
+
+g $927F Object #N$46: "#OBJECT$46"
+@ $927F label=Object_70
+B $927F,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9280,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9281,$01 Volume (?)
+B $9282,$01 Mass (?)
+B $9283,$01
+B $9284,$01 Strength (?)
+B $9285,$01
+B $9286,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9287,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9294,$01 Terminator #N(#PEEK(#PC)).
+
+g $9295 Object #N$47: "#OBJECT$47"
+@ $9295 label=Object_71
+B $9295,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9296,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9297,$01 Volume (?)
+B $9298,$01 Mass (?)
+B $9299,$01
+B $929A,$01 Strength (?)
+B $929B,$01
+B $929C,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $929D,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $92A5,$01 Terminator #N(#PEEK(#PC)).
+
+g $92A6 Object #N$48: "#OBJECT$48"
+@ $92A6 label=Object_72
+B $92A6,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $92A7,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $92A8,$01 Volume (?)
+B $92A9,$01 Mass (?)
+B $92AA,$01
+B $92AB,$01 Strength (?)
+B $92AC,$01
+B $92AD,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $92AE,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $92B6,$01 Terminator #N(#PEEK(#PC)).
+
+g $92B7 Object #N$49: "#OBJECT$49"
+@ $92B7 label=Object_73
+B $92B7,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $92B8,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $92B9,$01 Volume (?)
+B $92BA,$01 Mass (?)
+B $92BB,$01
+B $92BC,$01 Strength (?)
+B $92BD,$01
+B $92BE,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $92BF,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $92CC,$01 Terminator #N(#PEEK(#PC)).
+
+g $92CD Object #N$4A: "#OBJECT$4A"
+@ $92CD label=Object_74
+B $92CD,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $92CE,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $92CF,$01 Volume (?)
+B $92D0,$01 Mass (?)
+B $92D1,$01
+B $92D2,$01 Strength (?)
+B $92D3,$01
+B $92D4,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $92D5,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $92E4,$01 Terminator #N(#PEEK(#PC)).
+
+g $92E5 Object #N$4B: "#OBJECT$4B"
+@ $92E5 label=Object_75
+B $92E5,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $92E6,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $92E7,$01 Volume (?)
+B $92E8,$01 Mass (?)
+B $92E9,$01
+B $92EA,$01 Strength (?)
+B $92EB,$01
+B $92EC,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $92ED,$09,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $92F6,$01 Terminator #N(#PEEK(#PC)).
+
+g $92F7 Object #N$4C: "#OBJECT$4C"
+@ $92F7 label=Object_76
+B $92F7,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $92F8,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $92F9,$01 Volume (?)
+B $92FA,$01 Mass (?)
+B $92FB,$01
+B $92FC,$01 Strength (?)
+B $92FD,$01
+B $92FE,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $92FF,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9307,$01 Terminator #N(#PEEK(#PC)).
+
+g $9308 Object #N$4D: "#OBJECT$4D"
+@ $9308 label=Object_77
+B $9308,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9309,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $930A,$01 Volume (?)
+B $930B,$01 Mass (?)
+B $930C,$01
+B $930D,$01 Strength (?)
+B $930E,$01
+B $930F,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9310,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9318,$01 Terminator #N(#PEEK(#PC)).
+
+g $9319 Object #N$4E: "#OBJECT$4E"
+@ $9319 label=Object_78
+B $9319,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $931A,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $931B,$01 Volume (?)
+B $931C,$01 Mass (?)
+B $931D,$01
+B $931E,$01 Strength (?)
+B $931F,$01
+B $9320,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9321,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9329,$01 Terminator #N(#PEEK(#PC)).
+
+g $932A Object #N$4F: "#OBJECT$4F"
+@ $932A label=Object_79
+B $932A,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $932B,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $932C,$01 Volume (?)
+B $932D,$01 Mass (?)
+B $932E,$01
+B $932F,$01 Strength (?)
+B $9330,$01
+B $9331,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9332,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $933F,$01 Terminator #N(#PEEK(#PC)).
+
+g $9340 Object #N$50: "#OBJECT$50"
+@ $9340 label=Object_80
+B $9340,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9341,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9342,$01 Volume (?)
+B $9343,$01 Mass (?)
+B $9344,$01
+B $9345,$01 Strength (?)
+B $9346,$01
+B $9347,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9348,$0A,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9352,$01 Terminator #N(#PEEK(#PC)).
+
+g $9353 Object #N$51: "#OBJECT$51"
+@ $9353 label=Object_81
+B $9353,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9354,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9355,$01 Volume (?)
+B $9356,$01 Mass (?)
+B $9357,$01
+B $9358,$01 Strength (?)
+B $9359,$01
+B $935A,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $935B,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9363,$01 Terminator #N(#PEEK(#PC)).
+
+g $9364 Object #N$52: "#OBJECT$52"
+@ $9364 label=Object_82
+B $9364,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9365,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9366,$01 Volume (?)
+B $9367,$01 Mass (?)
+B $9368,$01
+B $9369,$01 Strength (?)
+B $936A,$01
+B $936B,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $936C,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9374,$01 Terminator #N(#PEEK(#PC)).
+
+g $9375 Object #N$53: "#OBJECT$53"
+@ $9375 label=Object_83
+B $9375,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9376,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9377,$01 Volume (?)
+B $9378,$01 Mass (?)
+B $9379,$01
+B $937A,$01 Strength (?)
+B $937B,$01
+B $937C,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $937D,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9385,$01 Terminator #N(#PEEK(#PC)).
+
+g $9386 Object #N$54: "#OBJECT$54"
+@ $9386 label=Object_84
+B $9386,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9387,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9388,$01 Volume (?)
+B $9389,$01 Mass (?)
+B $938A,$01
+B $938B,$01 Strength (?)
+B $938C,$01
+B $938D,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $938E,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9396,$01 Terminator #N(#PEEK(#PC)).
+
+g $9397 Object #N$55: "#OBJECT$55"
+@ $9397 label=Object_85
+B $9397,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9398,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9399,$01 Volume (?)
+B $939A,$01 Mass (?)
+B $939B,$01
+B $939C,$01 Strength (?)
+B $939D,$01
+B $939E,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $939F,$0E,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $93AD,$01 Terminator #N(#PEEK(#PC)).
+
+g $93AE Object #N$56: "#OBJECT$56"
+@ $93AE label=Object_86
+B $93AE,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $93AF,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $93B0,$01 Volume (?)
+B $93B1,$01 Mass (?)
+B $93B2,$01
+B $93B3,$01 Strength (?)
+B $93B4,$01
+B $93B5,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $93B6,$0C,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $93C2,$01 Terminator #N(#PEEK(#PC)).
+
+g $93C3 Object #N$57: "#OBJECT$57"
+@ $93C3 label=Object_87
+B $93C3,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $93C4,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $93C5,$01 Volume (?)
+B $93C6,$01 Mass (?)
+B $93C7,$01
+B $93C8,$01 Strength (?)
+B $93C9,$01
+B $93CA,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $93CB,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $93D3,$01 Terminator #N(#PEEK(#PC)).
+
+g $93D4 Object #N$58: "#OBJECT$58"
+@ $93D4 label=Object_88
+B $93D4,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $93D5,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $93D6,$01 Volume (?)
+B $93D7,$01 Mass (?)
+B $93D8,$01
+B $93D9,$01 Strength (?)
+B $93DA,$01
+B $93DB,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $93DC,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $93E4,$01 Terminator #N(#PEEK(#PC)).
+
+g $93E5 Object #N$59: "#OBJECT$59"
+@ $93E5 label=Object_89
+B $93E5,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $93E6,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $93E7,$01 Volume (?)
+B $93E8,$01 Mass (?)
+B $93E9,$01
+B $93EA,$01 Strength (?)
+B $93EB,$01
+B $93EC,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $93ED,$0C,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $93F9,$01 Terminator #N(#PEEK(#PC)).
+
+g $93FA Object #N$5A: "#OBJECT$5A"
+@ $93FA label=Object_90
+B $93FA,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $93FB,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $93FC,$01 Volume (?)
+B $93FD,$01 Mass (?)
+B $93FE,$01
+B $93FF,$01 Strength (?)
+B $9400,$01
+B $9401,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9402,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $940A,$01 Terminator #N(#PEEK(#PC)).
+
+g $940B Object #N$5B: "#OBJECT$5B"
+@ $940B label=Object_91
+B $940B,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $940C,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $940D,$01 Volume (?)
+B $940E,$01 Mass (?)
+B $940F,$01
+B $9410,$01 Strength (?)
+B $9411,$01
+B $9412,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9413,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9420,$01 Terminator #N(#PEEK(#PC)).
+
+g $9421 Object #N$5C: "#OBJECT$5C"
+@ $9421 label=Object_92
+B $9421,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9422,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9423,$01 Volume (?)
+B $9424,$01 Mass (?)
+B $9425,$01
+B $9426,$01 Strength (?)
+B $9427,$01
+B $9428,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9429,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9431,$01 Terminator #N(#PEEK(#PC)).
+
+g $9432 Object #N$5D: "#OBJECT$5D"
+@ $9432 label=Object_93
+B $9432,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9433,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9434,$01 Volume (?)
+B $9435,$01 Mass (?)
+B $9436,$01
+B $9437,$01 Strength (?)
+B $9438,$01
+B $9439,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $943A,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9442,$01 Terminator #N(#PEEK(#PC)).
+
+g $9443 Object #N$5E: "#OBJECT$5E"
+@ $9443 label=Object_94
+B $9443,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9444,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9445,$01 Volume (?)
+B $9446,$01 Mass (?)
+B $9447,$01
+B $9448,$01 Strength (?)
+B $9449,$01
+B $944A,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $944B,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9453,$01 Terminator #N(#PEEK(#PC)).
+
+g $9454 Object #N$5F: "#OBJECT$5F"
+@ $9454 label=Object_95
+B $9454,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9455,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9456,$01 Volume (?)
+B $9457,$01 Mass (?)
+B $9458,$01
+B $9459,$01 Strength (?)
+B $945A,$01
+B $945B,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $945C,$0E,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $946A,$01 Terminator #N(#PEEK(#PC)).
+
+g $946B Object #N$60: "#OBJECT$60"
+@ $946B label=Object_96
+B $946B,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $946C,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $946D,$01 Volume (?)
+B $946E,$01 Mass (?)
+B $946F,$01
+B $9470,$01 Strength (?)
+B $9471,$01
+B $9472,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9473,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $947B,$01 Terminator #N(#PEEK(#PC)).
+
+g $947C Object #N$61: "#OBJECT$61"
+@ $947C label=Object_97
+B $947C,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $947D,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $947E,$01 Volume (?)
+B $947F,$01 Mass (?)
+B $9480,$01
+B $9481,$01 Strength (?)
+B $9482,$01
+B $9483,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9484,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $948C,$01 Terminator #N(#PEEK(#PC)).
+
+g $948D Object #N$62: "#OBJECT$62"
+@ $948D label=Object_98
+B $948D,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $948E,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $948F,$01 Volume (?)
+B $9490,$01 Mass (?)
+B $9491,$01
+B $9492,$01 Strength (?)
+B $9493,$01
+B $9494,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9495,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $949D,$01 Terminator #N(#PEEK(#PC)).
+
+g $949E Object #N$63: "#OBJECT$63"
+@ $949E label=Object_99
+B $949E,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $949F,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $94A0,$01 Volume (?)
+B $94A1,$01 Mass (?)
+B $94A2,$01
+B $94A3,$01 Strength (?)
+B $94A4,$01
+B $94A5,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $94A6,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $94AE,$01 Terminator #N(#PEEK(#PC)).
+
+g $94AF Object #N$64: "#OBJECT$64"
+@ $94AF label=Object_100
+B $94AF,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $94B0,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $94B1,$01 Volume (?)
+B $94B2,$01 Mass (?)
+B $94B3,$01
+B $94B4,$01 Strength (?)
+B $94B5,$01
+B $94B6,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $94B7,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $94BF,$01 Terminator #N(#PEEK(#PC)).
+
+g $94C0 Object #N$65: "#OBJECT$65"
+@ $94C0 label=Object_101
+B $94C0,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $94C1,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $94C2,$01 Volume (?)
+B $94C3,$01 Mass (?)
+B $94C4,$01
+B $94C5,$01 Strength (?)
+B $94C6,$01
+B $94C7,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $94C8,$0C,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $94D4,$01 Terminator #N(#PEEK(#PC)).
+
+g $94D5 Object #N$66: "#OBJECT$66"
+@ $94D5 label=Object_102
+B $94D5,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $94D6,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $94D7,$01 Volume (?)
+B $94D8,$01 Mass (?)
+B $94D9,$01
+B $94DA,$01 Strength (?)
+B $94DB,$01
+B $94DC,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $94DD,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $94E5,$01 Terminator #N(#PEEK(#PC)).
+
+g $94E6 Object #N$67: "#OBJECT$67"
+@ $94E6 label=Object_103
+B $94E6,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $94E7,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $94E8,$01 Volume (?)
+B $94E9,$01 Mass (?)
+B $94EA,$01
+B $94EB,$01 Strength (?)
+B $94EC,$01
+B $94ED,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $94EE,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $94FB,$01 Terminator #N(#PEEK(#PC)).
+
+g $94FC Object #N$68: "#OBJECT$68"
+@ $94FC label=Object_104
+B $94FC,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $94FD,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $94FE,$01 Volume (?)
+B $94FF,$01 Mass (?)
+B $9500,$01
+B $9501,$01 Strength (?)
+B $9502,$01
+B $9503,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9504,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $950C,$01 Terminator #N(#PEEK(#PC)).
+
+g $950D Object #N$69: "#OBJECT$69"
+@ $950D label=Object_105
+B $950D,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $950E,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $950F,$01 Volume (?)
+B $9510,$01 Mass (?)
+B $9511,$01
+B $9512,$01 Strength (?)
+B $9513,$01
+B $9514,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9515,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $951D,$01 Terminator #N(#PEEK(#PC)).
+
+g $951E Object #N$6A: "#OBJECT$6A"
+@ $951E label=Object_106
+B $951E,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $951F,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9520,$01 Volume (?)
+B $9521,$01 Mass (?)
+B $9522,$01
+B $9523,$01 Strength (?)
+B $9524,$01
+B $9525,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9526,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $952E,$01 Terminator #N(#PEEK(#PC)).
+
+g $952F Object #N$6B: "#OBJECT$6B"
+@ $952F label=Object_107
+B $952F,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9530,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9531,$01 Volume (?)
+B $9532,$01 Mass (?)
+B $9533,$01
+B $9534,$01 Strength (?)
+B $9535,$01
+B $9536,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9537,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $953F,$01 Terminator #N(#PEEK(#PC)).
+
+g $9540 Object #N$6C: "#OBJECT$6C"
+@ $9540 label=Object_108
+B $9540,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9541,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9542,$01 Volume (?)
+B $9543,$01 Mass (?)
+B $9544,$01
+B $9545,$01 Strength (?)
+B $9546,$01
+B $9547,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9548,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9550,$01 Terminator #N(#PEEK(#PC)).
+
+g $9551 Object #N$6D: "#OBJECT$6D"
+@ $9551 label=Object_109
+B $9551,$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).
+B $9552,$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).
+B $9553,$01 Volume (?)
+B $9554,$01 Mass (?)
+B $9555,$01
+B $9556,$01 Strength (?)
+B $9557,$01
+B $9558,b$01 Attributes:
+. #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+. { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+. { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
+B $9559,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9569,$01 Terminator #N(#PEEK(#PC)).
+
+g $956A
 
 g $9860
 B $9860,$01
@@ -1451,6 +3190,11 @@ c $9C77
 b $9C85
 
 c $9CA2
+
+g $9FD4
+W $9FD4,$02
+
+g $9FD6
 
 g $9FDD
 W $9FDD,$02
@@ -1584,6 +3328,14 @@ c $A0DB
   $A0E6,$01 Return.
 
 c $A0E7
+  $A0E7,$04 Jump to #R$A0F1 if #REGa is equal to #N$02.
+  $A0EB,$03 Call #R$B0D7.
+  $A0EE,$03 Jump to #R$A040.
+
+  $A0F1,$03 Call #R$B0E4.
+  $A0F4,$03 Jump to #R$A064.
+
+c $A0F7
 
 w $A24D
 
@@ -1752,9 +3504,7 @@ c $A5CD
   $A621,$01 Stash #REGde on the stack.
   $A622,$01 #REGe=#REGa.
   $A623,$02 #REGd=#N$00.
-  $A625,$03 #REGhl=#R$A55D.
-  $A628,$01 #REGhl+=#REGde.
-  $A629,$01 #REGhl+=#REGde.
+  $A625,$05 #REGhl=#R$A55D+(#REGde*#N$02).
   $A62A,$01 #REGe=*#REGhl.
   $A62B,$01 Increment #REGhl by one.
   $A62C,$01 #REGd=*#REGhl.
@@ -2114,6 +3864,27 @@ W $A9B5,$02
 
 c $A9B7
 
+c $B0D7
+  $B0D7,$03 Call #R$B0EE.
+  $B0DA,$03 Call #R$C0DF.
+  $B0DD,$02 Jump to #R$B0D7 if the carry flag is not set.
+  $B0DF,$04 #REGiy=*#R$9FD4.
+  $B0E3,$01 Return.
+
+c $B0E4
+  $B0E4,$04 Write #REGiy to #R$9FD4.
+  $B0E8,$03 Call #R$B0EE.
+  $B0EB,$03 Jump to #R$C040.
+
+  $B0EE,$04 #REGix=#R$840B.
+  $B0F2,$03 #REGhl=#R$A01F.
+  $B0F5,$03 #REGde=#R$840B.
+  $B0F8,$03 #REGhl-=#REGde (with carry).
+  $B0FB,$01 Exchange the #REGde and #REGhl registers.
+  $B0FC,$01 Return.
+
+c $B0FD
+
 t $BF59 Table: Days Of The Week Strings
 @ $BF59 label=Table_DaysOfWeekStrings
   $BF59,$15,$03
@@ -2261,11 +4032,12 @@ t $C0B1 Messaging: Tape Error
 
 t $C0BC Messaging: Play Saved Game Tape
 @ $C0BC label=Messaging_PlaySavedGameTape
-  $C0BC "#STR$C0BC".
+  $C0BC,$23 "#STR$C0BC".
 
 c $C0DF
   $C0DF,$04 Write #REGde to *#R$C109.
   $C0E3,$04 Write #REGix to *#R$C10B.
+N $C0E7 "#STR$C0BC".
   $C0E7,$03 #REGhl=#R$C0BC.
   $C0EA,$03 Call #R$C1CB.
   $C0ED,$04 #REGix=#R$C0FE.
@@ -2811,15 +4583,33 @@ c $D026
 
 c $D045
 
-c $D04F
+c $D04F Adjust Object Table For Sum
+@ $D04F label=AdjustObjectTableForSum
+  $D04F,$04 #REGix=#R$8B6F.
+  $D053,$06 Decrease #REGix by three.
+  $D059,$01 Return.
 
-b $D05A
+w $D05A
+  $D05A,$02 "#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
+L $D05A,$02,$05
 
-b $D064
+g $D064 Table: Direction Tokens
+@ $D064 label=Table_DirectionTokens
+W $D064 "#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
+L $D064,$02,$0A
 
 c $D078
 
 c $D0D0
+  $D0D0,$01 Stash #REGde on the stack.
+  $D0D1,$03 #REGde=#R$68DE.
+  $D0D4,$01 Exchange the #REGde and #REGhl registers.
+  $D0D5,$02 Set bit 7 of #REGd.
+  $D0D7,$01 Write #REGd to *#REGhl.
+  $D0D8,$01 Increment #REGhl by one.
+  $D0D9,$01 Write #REGe to *#REGhl.
+  $D0DA,$01 Restore #REGde from the stack.
+  $D0DB,$01 Return.
 
 g $D0DC
 B $D0DC,$01
@@ -2857,9 +4647,42 @@ c $D1DB
 
 c $D1DC
 
-c $D206
+c $D206 Fetch Next Object
+@ $D206 label=FetchNextObject
+R $D206 IX Pointer to objects table
+R $D206 O:IX Pointer to object table
+R $D206 O:IY Pointer to object data
+R $D206 O:F The zero flag is set if the end of the table is reached
+  $D206,$01 Switch to the shadow registers.
+  $D207,$05 Add #N($0003,$04,$04) to the object table pointer in #REGix.
+  $D20C,$09 Fetch the pointer to the object data and store it in #REGiy.
+  $D215,$05 Check the object ID at *#REGix+#N$00 to see if the terminator
+. character (#N$FF) has been reached.
+  $D21A,$01 Switch back to the normal registers.
+  $D21B,$01 Return.
 
-c $D224
+c $D21C
+  $D21C,$01 Stash #REGbc on the stack.
+  $D21D,$01 #REGb=#REGa.
+  $D21E,$03 Call #R$D206.
+  $D221,$01 #REGa=#REGb.
+  $D222,$01 Restore #REGbc from the stack.
+  $D223,$01 Return.
+
+c $D224 Fetch Location Data Pointer
+@ $D224 label=FetchLocationDataPointer
+R $D224 A Room ID
+R $D224 O:IX Pointer to location data
+  $D224,$01 Stash #REGde on the stack.
+  $D225,$03 Load #R$840B into #REGde.
+  $D228,$01 Stash #REGhl on the stack.
+  $D229,$03 Load the room ID into #REGhl.
+  $D22C,$01 Double the offset value held in #REGhl.
+  $D22D,$01 Add the base table address to the offset to point to the requested
+. room address.
+  $D22E,$06 Fetch the location data address and store the pointer in #REGix.
+  $D234,$02 Restore #REGhl and #REGde from the stack.
+  $D236,$01 Return.
 
 c $D237
 
@@ -2919,7 +4742,7 @@ c $D4CC
   $D4D5,$02 #REGb=#N$00.
   $D4D7,$01 #REGc=#REGa.
   $D4D8,$03 Call #R$D206.
-  $D4DB,$02 Jump to #R$D4E6 if #REGa is equal to #N$00.
+  $D4DB,$02 Jump to #R$D4E6 if the terminator character was reached (#N$FF).
   $D4DD,$01 #REGa=#REGc.
   $D4DE,$03 Call #R$D4EF.
   $D4E1,$02 Jump to #R$D4D8 if #REGa is greater than or equal to #N$00.
@@ -3062,43 +4885,39 @@ c $D5EF
   $D5F7,$03 #REGbc=#N$0003.
   $D5FA,$01 Return.
 
-c $D5FB
-  $D5FB,$03 #REGhl=#R$D064.
-  $D5FE,$02 Decrease #REGhl by two.
-  $D600,$01 #REGe=#REGa.
+c $D5FB Get Direction Token
+@ $D5FB label=GetDirectionToken
+D $D5FB This routine converts a direction value into the address of its
+. corresponding token string.
+R $D5FB A Direction value
+R $D5FB O:DE Address of token string
+  $D5FB,$03 Load #R$D064 into #REGhl.
+  $D5FE,$02 Adjust #REGhl for sum.
+  $D600,$01 Copy directional value into #REGe.
   $D601,$02 Reset bit 7 of #REGe.
-  $D603,$02 #REGd=#N$00.
-  $D605,$01 #REGhl+=#REGde.
-  $D606,$01 #REGhl+=#REGde.
-  $D607,$01 #REGe=*#REGhl.
-  $D608,$01 Increment #REGhl by one.
-  $D609,$01 #REGd=*#REGhl.
+  $D603,$02 Clear the high byte in #REGd.
+  $D605,$02 Add #N$02 times the offset to the base table address.
+  $D607,$03 Fetch the token address from the table and load it into #REGde.
   $D60A,$01 Return.
-  $D60B,$02 Stash #REGbc and #REGde on the stack.
-  $D60D,$02 Stash #REGiy on the stack.
-  $D60F,$02 Stash #REGix on the stack.
+
+c $D60B
+  $D60B,$06 Stash #REGbc, #REGde, #REGiy and #REGix on the stack.
   $D611,$03 Call #R$D5EF.
-  $D614,$02 Stash #REGix on the stack.
-  $D616,$02 Restore #REGiy from the stack.
+  $D614,$04 #REGiy=#REGix (using the stack).
   $D618,$02 Jump to #R$D660.
-  $D61A,$03 #REGa=*#REGiy+#N$01.
-  $D61D,$01 Set flags.
-  $D61E,$02 Jump to #R$D660 if #REGhl is equal to #REGa.
-  $D620,$03 #REGa=*#REGiy+#N$00.
-  $D623,$02 Compare #REGa with #N$0B.
-  $D625,$02 Jump to #R$D660 if #REGa is greater than or equal to #N$0B.
+  $D61A,$06 Jump to #R$D660 if *#REGiy+#N$01 is zero.
+  $D620,$07 Jump to #R$D660 if *#REGiy+#N$00 is greater than or equal to #N$0B.
   $D627,$03 #REGa=*#REGiy+#N$01.
   $D62A,$03 Call #R$D237.
-  $D62D,$04 Test bit 7 of *#REGix+#N$05.
-  $D631,$02 Jump to #R$D660 if #REGa is equal to #N$0B.
+  $D62D,$06 Jump to #R$D660 if bit 7 of *#REGix+#N$05 is not set.
   $D633,$03 #REGa=*#REGiy+#N$00.
   $D636,$03 Call #R$D5FB.
-  $D639,$02 Compare #REGa with #N$09.
-  $D63B,$02 Jump to #R$D647 if #REGa is less than #N$09.
+  $D639,$04 Jump to #R$D647 if #REGa is less than #N$09.
   $D63D,$03 #REGde=#N($000A,$04,$04).
   $D640,$02 Jump to #R$D64D if #REGa is equal to #N$09.
   $D642,$03 #REGde=#N($00E7,$04,$04).
   $D645,$02 Jump to #R$D64D.
+
   $D647,$03 #REGhl=#R$68BC.
   $D64A,$03 Call #R$A59F.
   $D64D,$03 Call #R$A887.
@@ -3109,12 +4928,8 @@ c $D5FB
   $D65B,$03 Call #R$A414.
   $D65E,$02 Restore #REGiy from the stack.
   $D660,$02 #REGiy+=#REGbc.
-  $D662,$02 #REGa=#N$FF.
-  $D664,$03 Compare #REGa with *#REGiy+#N$00.
-  $D667,$03 Jump to #R$D61A if #REGa is not equal to #N$FF.
-  $D66A,$02 Restore #REGix from the stack.
-  $D66C,$02 Restore #REGiy from the stack.
-  $D66E,$02 Restore #REGde and #REGbc from the stack.
+  $D662,$08 Jump to #R$D61A if *#REGiy+#N$00 is not equal to #N$FF.
+  $D66A,$06 Restore #REGix, #REGiy, #REGde and #REGbc from the stack.
   $D670,$01 Return.
 
 c $D671

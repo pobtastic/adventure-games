@@ -50,6 +50,14 @@ class AdventureGame:
         """Generate disassembly for the game"""
         raise NotImplementedError("Subclass must implement get_disassembly()")
 
+    def get_locations(self):
+        """Extract location data from the game"""
+        raise NotImplementedError("Subclass must implement get_locations()")
+
+    def get_objects(self):
+        """Extract object data from the game"""
+        raise NotImplementedError("Subclass must implement get_objects()")
+
     def get_byte(self, address):
         """Helper method to get a byte from snapshot"""
         return self.snapshot[address]
@@ -124,56 +132,35 @@ class AfterShock(AdventureGame):
             pc += 0x01
         return '\n'.join(lines)
 
-    def get_locations(self):
-        return "# AfterShock location data\n"
-
 
 class BlizzardPass(AdventureGame):
     def get_text(self):
         return "# BlizzardPass text data\n"
-
-    def get_locations(self):
-        return "# BlizzardPass location data\n"
 
 
 class ForestAtWorldsEnd(AdventureGame):
     def get_text(self):
         return "# ForestAtWorldsEnd text data\n"
 
-    def get_locations(self):
-        return "# ForestAtWorldsEnd location data\n"
-
 
 class HeroesOfKarn(AdventureGame):
     def get_text(self):
         return "# HeroesOfKarn text data\n"
-
-    def get_locations(self):
-        return "# HeroesOfKarn location data\n"
 
 
 class Hobbit(AdventureGame):
     def get_text(self):
         return "# Hobbit text data\n"
 
-    def get_locations(self):
-        return "# Hobbit location data\n"
-
 
 class JewelsOfBabylon(AdventureGame):
     def get_text(self):
         return "# JewelsOfBabylon text data\n"
 
-    def get_locations(self):
-        return "# JewelsOfBabylon location data\n"
-
 
 class MessageFromAndromeda(AdventureGame):
     def get_text(self):
         return "# MessageFromAndromeda text data\n"
-
-    def get_locations(self):
-        return "# MessageFromAndromeda location data\n"
 
 
 class Sherlock(AdventureGame):
@@ -212,14 +199,38 @@ class Sherlock(AdventureGame):
             pc += 0x01
         return '\n'.join(lines)
 
+    def get_objects(self):
+        """Extract object data from the game"""
+        lines = []
+        pc = 0x8B6F
+        while pc < 0x8CB9:
+            object = self.get_byte(pc)
+            addr = self.get_word(pc+0x01)
+            last = 0x9562 if pc < 0x9551 else self.get_word(pc+0x04)
+            lines.append(f"g ${addr:04X} Object #N${object:02X}: \"#OBJECT${object:02X}\"")
+            lines.append(f"@ ${addr:04X} label=Object_{object:02}")
+            lines.append(f"B ${addr+0x00:04X},$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).")
+            lines.append(f"B ${addr+0x01:04X},$01 #IF(#PEEK(#PC)==$FF)(No mother object,Mother object: #OBJECT(#PEEK(#PC))).")
+            lines.append(f"B ${addr+0x02:04X},$01 Volume (?)")
+            lines.append(f"B ${addr+0x03:04X},$01 Mass (?)")
+            lines.append(f"B ${addr+0x04:04X},$01")
+            lines.append(f"B ${addr+0x05:04X},$01 Strength (?)")
+            lines.append(f"B ${addr+0x06:04X},$01")
+            lines.append(f"B ${addr+0x07:04X},b$01 Attributes:")
+            lines.append(". #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)")
+            lines.append(". { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }")
+            lines.append(". { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#")
+            lines.append(f"B ${addr+0x08:04X},${last-addr-0x09:02X},$02 Object Name: \"#TEXTTOKEN(#PC)\".")
+            lines.append(f"B ${last-0x01:04X},$01 Terminator #N(#PEEK(#PC)).")
+            lines.append("")
+            pc += 0x03
+        return '\n'.join(lines)
+
 
 class Warlord(AdventureGame):
     def get_text(self):
         lines = super().get_text(0xC97C, 0xE0B0)
         return '\n'.join(lines)
-
-    def get_locations(self):
-        return "# Warlord location data\n"
 
 
 GAMES = OrderedDict((
@@ -305,6 +316,7 @@ def run(game_name, subcommand):
 methods = OrderedDict((
     ('text', ('get_text', 'Text Data')),
     ('locations', ('get_locations', 'Location Data')),
+    ('objects', ('get_objects', 'Object Data')),
     ('disassemble', ('get_disassembly', 'Disassemble'))
 ))
 
