@@ -11,20 +11,21 @@ D $4000 #UDGTABLE { =h Sherlock Loading Screen. } { #SCR$02(loading) } UDGTABLE#
   $4000,$1800,$20 Pixels.
   $5800,$0300,$20 Attributes.
 
-c $5B1B Game Entry Point
-@ $5B1B label=GameEntryPoint
+c $5B1B Game Entry Point Alias
+@ $5B1B label=Alias_GameEntryPoint
 N $5B1B #SIM(start=$A040,stop=$A04E)#SIM(start=$A05B,stop=$A071)
   $5B1B,$03 Jump to #R$A040.
 
 b $5B1E
-
 b $5D80
+b $5DBF
 
 g $67B7 Table: Common Words
 @ $67B7 label=Table_CommonWords
-W $67B7,$02
+W $67B7,$02 "#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 L $67B7,$02,$20
 
+b $680B
 b $68B1
 b $68BC
 b $68D1
@@ -34,6 +35,11 @@ w $68DE
 
 b $68E4
 b $68E9
+
+b $6929
+
+b $7207
+b $7224
 
 g $8259
 
@@ -3187,20 +3193,183 @@ c $9C77
   $9C83,$01 Return if #REGa is equal to #REGh.
   $9C84,$01 Jump to *#REGhl.
 
-b $9C85
+g $9C85
+B $9C85,$01
+W $9C86,$02
+L $9C85,$03,$09
+B $9CA0,$01 Terminator.
+
+g $9CA1
+B $9CA1,$01
 
 c $9CA2
+
+c $9CE9
+
+c $9CF2
+
+g $9D10
+B $9D10,$01
+B $9D11,$01
+B $9D12,$01
+
+c $9D13
+c $9D30
+c $9D48
+
+c $9D73
+  $9D73,$03 #REGa=*#R$9D90.
+  $9D76,$02 Return if *#R$9D90 is not zero.
+  $9D78,$03 #REGhl=#R$9D70.
+  $9D7B,$02 #REGc=#N$00.
+  $9D7D,$03 Call #R$9D65.
+  $9D80,$03 #REGhl=#R$9D71.
+  $9D83,$02 #REGc=#N$03.
+  $9D85,$03 Call #R$9D65.
+  $9D88,$03 #REGhl=#R$9D72.
+  $9D8B,$02 #REGc=#N$07.
+  $9D8D,$03 Jump to #R$9D65.
+
+g $9D90
+B $9D90,$01
+B $9D91,$01
+B $9D92,$01
+B $9D93,$01
+B $9D94,$01
+
+c $9D95
+
+c $9DFF
+  $9DFF,$02 #REGc=#N$04.
+  $9E01,$03 Call #R$9CCE.
+  $9E04,$02 Jump to #R$9D95 if the zero flag is not set.
+  $9E06,$02 #REGc=#N$00.
+  $9E08,$03 Call #R$9CCE.
+  $9E0B,$02 Jump to #R$9D95 if the zero flag is not set.
+  $9E0D,$05 Write #N$04 to *#R$A034.
+  $9E12,$05 Write #N$01 to *#R$9D90.
+  $9E17,$05 Call #R$D224 with room #N$5C: #ROOM$5C.
+  $9E1C,$04 Write #N$00 to *#REGix+#N$0A.
+  $9E20,$05 Call #R$D224 with room #N$3E: #ROOM$3E.
+  $9E25,$04 Write #N$00 to *#REGix+#N$0A.
+  $9E29,$06 Write #R$9D95 to *#R$9C86.
+  $9E2F,$05 Write #N$01 to *#R$9D92.
+  $9E34,$03 #REGa=*#R$9D91.
+  $9E37,$01 Set flags.
+  $9E38,$03 #REGhl=#R$7207.
+  $9E3B,$02 Jump to #R$9E44 if ?? is not equal to #REGa.
+  $9E3D,$01 Increment #REGa by one.
+  $9E3E,$03 Write #REGa to *#R$9D91.
+  $9E41,$03 #REGhl=#R$7224.
+  $9E44,$03 Call #R$A59F.
+  $9E47,$01 Return.
+
+g $9E48
+B $9E48,$01
+B $9E49,$01
+
+c $9E4A
+
+g $9EC0
+B $9EC0,$01
+
+c $9EC1
+  $9EC1,$03 #REGhl=#R$9EC0.
+  $9EC4,$02 #REGc=#N$80.
+  $9EC6,$02 #REGb=#N$4A.
+  $9EC8,$02 Jump to #R$9ED7.
+
+g $9ECA
+B $9ECA,$01
+
+c $9ECB
+  $9ECB,$03 #REGhl=#R$9ECA.
+  $9ECE,$02 Jump to #R$9ED4.
+
+g $9ED0
+B $9ED0,$01
+
+c $9ED1
+  $9ED1,$03 #REGhl=#R$9ED0.
+  $9ED4,$03 #REGbc=#N($0000,$04,$04).
+  $9ED7,$01 #REGa=*#REGhl.
+  $9ED8,$03 Jump to #R$9EF2 if #REGa is zero.
+  $9EDB,$01 #REGb=#REGa.
+  $9EDC,$01 #REGa=#N$00.
+  $9EDD,$03 #REGde=#N($0000,$04,$04).
+  $9EE0,$03 Call #R$9F1E.
+  $9EE3,$03 #REGa=*#R$A036.
+  $9EE6,$01 #REGb=#REGc.
+  $9EE7,$03 #REGde=#N($0000,$04,$04).
+  $9EEA,$03 Call #R$F1C1.
+  $9EED,$04 Set bit 6 of *#REGix+#N$05.
+  $9EF1,$01 Return.
+
+N $9EF2 Return if it's still morning.
+  $9EF2,$06 Return if *#R$9FE2 is equal to ASCII #N$61 ("#CHR$61") e.g. is it
+. AM still?
+N $9EF8 It's afternoon now.
+  $9EF8,$06 Return if *#R$9FE0 is not equal to #N$09.
+  $9EFE,$03 #REGde=#N($01F8,$04,$04).
+  $9F01,$02 #REGa=#N$1E.
+  $9F03,$03 Call #R$D2A4.
+  $9F06,$01 #REGa+=#REGe.
+  $9F07,$01 #REGe=#REGa.
+  $9F08,$03 #REGa=*#R$A00A.
+  $9F0B,$03 Call #R$9F1E.
+  $9F0E,$03 #REGa=*#R$A036.
+  $9F11,$02 #REGb=#N$10.
+  $9F13,$03 #REGde=#N($07F0,$04,$04).
+  $9F16,$03 Call #R$F1C1.
+  $9F19,$04 Reset bit 6 of *#REGix+#N$05.
+  $9F1D,$01 Return.
+
+  $9F1E,$01 Write #REGa to *#REGhl.
+  $9F1F,$04 #REGix=*#R$A017.
+  $9F23,$03 Write #REGb to *#REGix+#N$0F.
+  $9F26,$04 Write #N$FF to *#REGix+#N$01.
+  $9F2A,$03 #REGl=*#REGiy+#N$06.
+  $9F2D,$03 #REGh=*#REGiy+#N$07.
+  $9F30,$01 #REGhl+=#REGde.
+  $9F31,$03 Write #REGl to *#REGiy+#N$06.
+  $9F34,$03 Write #REGh to *#REGiy+#N$07.
+  $9F37,$01 Return.
+
+g $9F38
+B $9F38,$01
+W $9F39,$02
+L $9F38,$03,$26
+B $9FAA,$01 Terminator.
+
+g $9FAB
+
+c $9FC9
+  $9FC9,$03 #REGhl=#R$9FCE.
+  $9FCC,$01 #REGa=#N$00.
+  $9FCD,$01 Return.
+
+  $9FCE,$03 #REGhl=#R$680B.
+  $9FD1,$03 Jump to #R$A59F.
 
 g $9FD4
 W $9FD4,$02
 
 g $9FD6
 
-g $9FDD
+g $9FDB
+
+g $9FDD Current Time Ticker
+@ $9FDD label=CurrentTime_Ticker
+D $9FDD Holds a value between #N($0000,$04,$04) to #N$FFFF, and just keeps
+. incrementing all throughout the game.
 W $9FDD,$02
 
-g $9FDF
-g $9FE0
+g $9FDF Current Time
+@ $9FDF label=CurrentTime_Minutes
+@ $9FE0 label=CurrentTime_Hour
+D $9FDF Holds the current in-game hours and minutes.
+B $9FDF,$01
+B $9FE0,$01
 
 g $9FE1 Current Day Of The Week
 @ $9FE1 label=CurrentDayOfWeek
@@ -3213,17 +3382,38 @@ D $9FE1 Represents the current day of the week, where:
 . See #R$BF79.
 B $9FE1,$01
 
-g $9FE2
+g $9FE2 Messaging: AM/ PM
+@ $9FE2 label=Messaging_AM_PM
+D $9FE2 Holds just the "a" and the "p" for AM and PM, as the "m" is already in
+. the string and so doesn't change.
+T $9FE2,$01
+T $9FE3,$01
+
+g $9FE4
+
 g $A008
+
+g $A00A
+B $A00A,$01
+
 g $A00B
+B $A00B,$01
+
 g $A00C
+B $A00C,$01
 
 g $A00D
 W $A00D,$02
 
 g $A00F
+W $A00F,$02
+
 g $A011
+B $A011,$01
+
 g $A017
+W $A017,$02
+
 g $A019
 g $A01B
 
@@ -3260,7 +3450,8 @@ B $A036,$01
 g $A037
 B $A037,$01
 
-c $A040
+c $A040 Game Entry Point
+@ $A040 label=GameEntryPoint
   $A040,$07 Write #N$00 to #LIST { *#R$D6B8 } { *#R$A01B } LIST#
   $A047,$01 Disable interrupts.
   $A048,$03 Call #R$C14A.
@@ -3436,6 +3627,12 @@ c $A360
 c $A37D
 
 c $A4AB
+  $A4AB,$03 Stash #REGix and #REGde on the stack.
+  $A4AE,$03 Call #R$D224.
+  $A4B1,$03 Load the location data pointer into #REGhl (using the stack).
+  $A4B4,$04 #REGhl+=#N($0001,$04,$04).
+  $A4B8,$03 Restore #REGix and #REGde from the stack.
+  $A4BB,$01 Return.
 
 c $A4BC
 
@@ -3885,6 +4082,103 @@ c $B0E4
 
 c $B0FD
 
+g $B16D
+
+c $B191
+
+g $B39C
+B $B39C,$01
+
+c $B39D
+
+g $B4A2
+B $B4A2,$01
+
+c $B4A3
+
+g $B549
+B $B549,$01
+
+c $B54A
+
+g $B6D6
+W $B6D6,$02
+W $B6D8,$02
+
+c $B6DA
+
+c $B6F0
+
+c $B6FD
+
+g $B6D6
+W $B6D6,$02
+W $B6D8,$02
+
+c $B6DA
+
+c $B772
+  $B772,$03 #REGhl=#R$5DBF.
+  $B775,$01 #REGa=#REGd.
+  $B776,$02,b$01 Keep only bits 0-3.
+  $B778,$01 #REGd=#REGa.
+  $B779,$01 #REGhl+=#REGde.
+  $B77A,$01 #REGa=*#REGhl.
+  $B77B,$02,b$01 Keep only bits 4-7.
+  $B77D,$01 Return.
+
+g $B77E
+B $B77E,$01
+
+c $B77F
+  $B77F,$07 Jump to #R$B7AA if *#R$B77E is not equal to #N$FF.
+  $B786,$03 #REGhl=*#R$B6D6.
+  $B789,$03 Return if #REGhl is zero.
+  $B78C,$04 Write #N$00 to *#R$B77E.
+  $B790,$03 #REGix=#REGhl (using the stack).
+  $B793,$03 #REGl=*#REGix-#N$02.
+  $B796,$03 #REGh=*#REGix-#N$01.
+  $B799,$03 Write #REGhl to *#R$B6D6.
+  $B79C,$03 #REGl=*#REGix+#N$00.
+  $B79F,$03 #REGh=*#REGix+#N$01.
+  $B7A2,$03 Call #R$A1C7.
+  $B7A5,$02 Increment #REGhl by two.
+  $B7A7,$03 #REGix=#REGhl (using the stack).
+  $B7AA,$03 #REGa=*#REGix+#N$00.
+  $B7AD,$02 Increment #REGix by one.
+  $B7AF,$04 Jump to #R$B7CD if  bit 7 of #REGa is not set.
+  $B7B3,$01 #REGd=#REGa.
+  $B7B4,$03 #REGe=*#REGix+#N$00.
+  $B7B7,$02 Increment #REGix by one.
+  $B7B9,$02,b$01 Keep only bits 4-6.
+  $B7BB,$04 Jump to #R$B7C6 if #REGa is equal to #N$60.
+  $B7BF,$04 Jump to #R$B7C6 if #REGa is equal to #N$30.
+  $B7C3,$03 Return if #REGa is not equal to #N$20.
+  $B7C6,$05 Write #N$FF to *#R$B77E.
+  $B7CB,$01 Set flags.
+  $B7CC,$01 Return.
+
+  $B7CD,$04 Jump to #R$B7F7 if #REGa is less than #N$20.
+  $B7D1,$04 Jump to #R$B7DD if #REGa is less than #N$60.
+  $B7D5,$03 Call #R$A840.
+  $B7D8,$02,b$01 Set bit 0.
+  $B7DA,$02 #REGa=#N$00.
+  $B7DC,$01 Return.
+
+  $B7DD,$02,b$01 Keep only bits 0-4.
+  $B7DF,$01 Increment #REGa by one.
+  $B7E0,$01 #REGb=#REGa.
+  $B7E1,$03 #REGhl=#REGix (using the stack).
+  $B7E4,$01 Increment #REGhl by one.
+  $B7E5,$02 #REGc=#N$00.
+  $B7E7,$03 Call #R$A990.
+  $B7EA,$02 Decrease counter by one and loop back to #R$B7E7 until counter is zero.
+  $B7EC,$03 #REGix=#REGhl (using the stack).
+  $B7EF,$01 #REGa=#REGc.
+  $B7F0,$03 Jump to #R$B7AA if #REGhl is not equal to #REGa.
+  $B7F3,$02 Decrease #REGix by one.
+  $B7F5,$02 Jump to #R$B7AA.
+
 t $BF59 Table: Days Of The Week Strings
 @ $BF59 label=Table_DaysOfWeekStrings
   $BF59,$15,$03
@@ -3895,7 +4189,7 @@ T $BF6E,$0B "#STR$BF6E,$08,$0B".
 
 c $BF79 Handler: Date Bar
 @ $BF79 label=Handler_DateBar
-N $BF79 #PUSHS #SIM(start=$BF9C,stop=$C1BF)
+N $BF79 #PUSHS #SIM(start=$BF79,stop=$C1BF)
 . #UDGTABLE {
 .   #SCR$02{$00,$120,$200,$10}(date-bar)
 . } UDGTABLE# #POPS
@@ -3954,31 +4248,46 @@ N $BFCD Each day string is three characters long (e.g. "Mon" for Monday).
 . current date messaging bar.
   $BFD8,$01 Return.
 
-c $BFD9 Handler: Counters
-@ $BFD9 label=Handler_Counters
+c $BFD9 Handler: Game Clock
+@ $BFD9 label=Handler_GameClock
+N $BFD9 Handle the game ticker.
   $BFD9,$07 Increment *#R$9FDD by one.
-  $BFE0,$03 #REGhl=#R$9FDF.
-  $BFE3,$01 Increment *#REGhl by one.
-  $BFE4,$04 Return if *#REGhl is not equal to #N$3C.
-  $BFE8,$02 Write #N$00 to *#REGhl.
-  $BFEA,$03 #REGhl=#R$9FE0.
-  $BFED,$01 Increment *#REGhl by one.
-  $BFEE,$05 Jump to #R$BFF6 if *#REGhl is not equal to #N$0D.
-  $BFF3,$02 Write #N$01 to *#REGhl.
+N $BFE0 Handle the clock minutes.
+  $BFE0,$04 Increment *#R$9FDF by one.
+  $BFE4,$04 Return if *#REGhl is not equal to 60 (e.g. it's less than 60
+. minutes).
+N $BFE8 The minutes is at 60, which is invalid - so handle rolling the clock
+. hour digits.
+  $BFE8,$02 Reset the minutes back to #N$00 at *#REGhl.
+N $BFEA Handle the clock hours.
+  $BFEA,$04 Increment *#R$9FE0 by one.
+  $BFEE,$05 Jump to #R$BFF6 if *#REGhl is not equal to 13 (e.g. it's less than
+. 13 o'clock).
+N $BFF3 The hours is at 13. which is invalid - so handle rolling the clock.
+  $BFF3,$02 Reset the hours back to #N$01 at *#REGhl.
   $BFF5,$01 Return.
-@ $BFF6 label=Counters
-  $BFF6,$03 Return if *#REGhl is not equal to #N$0C.
+N $BFF6 Is it midday yet?
+@ $BFF6 label=Handler_GameClock_AM_PM
+  $BFF6,$03 Return if *#REGhl is not equal to 12.
+N $BFF9 It's either midday or midnight, so flip between AM and PM.
   $BFF9,$03 #REGa=*#R$9FE2.
+N $BFFC Smart way of altering the letter from "a" to "p" and back again.
+. #TABLE(default,centre,centre)
+. { =h Letter | =h Bits }
+. { "a" | #EVAL($61,$02,$08) }
+. { "p" | #EVAL($70,$02,$08) }
+. TABLE#
   $BFFC,$02,b$01 Flip bits 0, 4.
-  $BFFE,$03 Write #REGa to *#R$9FE2.
-
-  $C001,$03 Return if #REGa is not equal to #N$61.
+  $BFFE,$03 Write this back to *#R$9FE2.
+N $C001 If the clock went from PM to AM, handle rolling the day of the week.
+  $C001,$03 Return if #REGa is not equal to ASCII #N$61 ("#CHR$61").
   $C004,$07 Increment *#R$9FE1 by one.
   $C00B,$01 Return.
 
 c $C00C
 
-c $C040
+c $C040 Save Game
+@ $C040 label=SaveGame
 N $C040 Prints "#STR$09A2".
   $C040,$03 #REGhl=#N$09A2.
   $C043,$03 Call #R$C1C0.
@@ -3986,9 +4295,10 @@ N $C040 Prints "#STR$09A2".
   $C04A,$04 Write #REGix to *#R$C10B.
   $C04E,$04 #REGix=#R$C0FE.
   $C052,$03 #REGde=#N($0011,$04,$04).
-  $C055,$01 #REGa=#N$00.
+  $C055,$01 Set #REGa to #N$00 to indicate this is a header block.
   $C056,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/04C2.html">SA_BYTES</a>.)
   $C059,$02 #REGb=#N$32.
+@ $C05B label=SaveGame_PauseLoop
   $C05B,$01 Halt operation (suspend CPU until the next interrupt).
   $C05C,$02 Decrease counter by one and loop back to #R$C05B until counter is zero.
   $C05E,$01 Disable interrupts.
@@ -3997,6 +4307,7 @@ N $C040 Prints "#STR$09A2".
   $C067,$02 Set #REGa to #N$FF to indicate this is a data block.
   $C069,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/04C2.html">SA_BYTES</a>.)
   $C06C,$01 Disable interrupts.
+N $C06D Prints "#STR$C0A5".
   $C06D,$03 #REGhl=#R$C0A5.
   $C070,$03 Call #R$C1CB.
 N $C073 Prints "#STR$09AC".
@@ -4007,15 +4318,19 @@ N $C073 Prints "#STR$09AC".
   $C080,$02 Set #REGa to #N$00 to indicate this is a header block.
   $C082,$01 Set flags.
   $C083,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a>.)
-  $C086,$02 Jump to #R$C098 if ?? is greater than or equal to #REGa.
+  $C086,$02 Jump to #R$C098 if there was any error returned.
   $C088,$01 Set flags.
+@ $C089 label=LoadGameData
   $C089,$04 #REGde=*#R$C109.
   $C08D,$04 #REGix=*#R$C10B.
   $C091,$02 Set #REGa to #N$FF to indicate this is a data block.
   $C093,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a>.)
   $C096,$01 Disable interrupts.
-  $C097,$01 Return if ?? is less than #REGa.
+  $C097,$01 Return if there were no tape loading errors.
+N $C098 There were errors ... so alert the player.
+@ $C098 label=SaveGame_Error
   $C098,$01 Disable interrupts.
+N $C099 Prints "#STR$C0B1".
   $C099,$03 #REGhl=#R$C0B1.
   $C09C,$03 Call #R$C1CB.
 N $C09F Prints "#STR$09B2".
@@ -4028,24 +4343,27 @@ t $C0A5 Messaging: Rewind Tape
 
 t $C0B1 Messaging: Tape Error
 @ $C0B1 label=Messaging_TapeError
-  $C0B1 "#STR$C0B1".
+  $C0B1,$0B "#STR$C0B1".
 
 t $C0BC Messaging: Play Saved Game Tape
 @ $C0BC label=Messaging_PlaySavedGameTape
   $C0BC,$23 "#STR$C0BC".
 
-c $C0DF
+c $C0DF Load Game
+@ $C0DF label=LoadGame
   $C0DF,$04 Write #REGde to *#R$C109.
   $C0E3,$04 Write #REGix to *#R$C10B.
 N $C0E7 "#STR$C0BC".
   $C0E7,$03 #REGhl=#R$C0BC.
   $C0EA,$03 Call #R$C1CB.
+@ $C0ED label=TryLoading
   $C0ED,$04 #REGix=#R$C0FE.
   $C0F1,$03 #REGde=#N($0011,$04,$04).
   $C0F4,$02 Set #REGa to #N$00 to indicate this is a header block.
   $C0F6,$01 Set flags.
   $C0F7,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a>.)
-  $C0FA,$02 Jump to #R$C0ED if there was a tape loading error.
+  $C0FA,$02 Jump back to #R$C0ED if there was a tape loading error to try
+. again.
   $C0FC,$02 Jump to #R$C089.
 
 b $C0FE
@@ -4154,16 +4472,25 @@ c $C1C0
   $C1C6,$02 #REGa=#N$0D.
   $C1C8,$03 Jump to #R$C1FD.
 
-c $C1CB
+c $C1CB Print String
+@ $C1CB label=PrintString
+R $C1CB HL Pointer to the string data
   $C1CB,$01 #REGa=*#REGhl.
+N $C1CC Strip off the termination bit to leave only the ASCII value.
   $C1CC,$02,b$01 Keep only bits 0-6.
   $C1CE,$03 Call #R$C1FD.
+N $C1D1 The string is terminated by bit 7 being set, so check if this is the
+. final character or not.
   $C1D1,$03 Return if bit 7 of *#REGhl is set.
-  $C1D4,$01 Increment #REGhl by one.
-  $C1D5,$02 Jump to #R$C1CB.
+  $C1D4,$01 Move to the next byte in the string.
+  $C1D5,$02 Jump back to #R$C1CB.
+
+u $C1D7
   $C1D7,$01 Return.
 
-c $C1D8
+c $C1D8 Error: Out Of Memory
+@ $C1D8 label=Error_OutOfMemory
+N $C1D8 Prints "#STR$13C5".
   $C1D8,$03 #REGhl=#N$13C5.
   $C1DB,$03 Call #R$C1C0.
   $C1DE,$03 Jump to #R$A0EB.
@@ -4197,7 +4524,8 @@ g $C1FB
 B $C1FB,$01
 
 c $C1FC
-  $C1FC,$01 Stash #REGaf on the stack.
+R $C1FC A Character to print
+  $C1FC,$01 Stash the character to print on the stack.
   $C1FD,$03 Stash #REGhl, #REGbc and #REGaf on the stack.
   $C200,$04 #REGc=*#R$C1FB.
   $C204,$01 Restore #REGaf from the stack.
@@ -4574,6 +4902,30 @@ c $CC0E
 c $CC29
 
 c $CC37
+  $CC37,$01 Stash #REGaf on the stack.
+  $CC38,$04 Write #N$00 to *#R$CC0B.
+  $CC3C,$01 Restore #REGaf from the stack.
+  $CC3D,$03 Call #R$CC0E.
+  $CC40,$02 Compare #REGa with #N$FF.
+  $CC42,$03 #REGhl=#N($0001,$04,$04).
+  $CC45,$03 Jump to #R$CC74 if #REGa is equal to #N$FF.
+  $CC48,$04 Write #REGiy to #R$9FDB.
+  $CC4C,$03 Write #REGa to *#R$A036.
+  $CC4F,$03 Call #R$B91F.
+  $CC52,$02 #REGa=#N$00.
+  $CC54,$02 Jump to #R$CC57 if #REGa is not equal to #N$00.
+  $CC56,$01 Increment #REGa by one.
+  $CC57,$03 Write #REGa to *#R$CC0D.
+  $CC5A,$03 Call #R$CC29.
+  $CC5D,$03 Call #R$D045.
+  $CC60,$01 #REGa-=#REGa.
+  $CC61,$03 #HTML(Write #REGa to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3C.html">TV-FLAG</a>.)
+  $CC64,$03 #REGa=*#R$9860.
+  $CC67,$03 Call #R$C821.
+  $CC6A,$02 Jump to #R$CC71 if #REGa is equal to #N$00.
+  $CC6C,$05 #HTML(Write #N$01 to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3C.html">TV-FLAG</a>.)
+  $CC71,$06 Write #N($0000,$04,$04) to *#R$A01F.
+  $CC77,$01 Return.
 
 c $CC78
 
@@ -4685,6 +5037,36 @@ R $D224 O:IX Pointer to location data
   $D236,$01 Return.
 
 c $D237
+  $D237,$04 #REGix=#R$8B6F.
+  $D23B,$03 Call #R$D34E.
+  $D23E,$01 Stash #REGhl on the stack.
+  $D23F,$03 #REGl=*#REGix+#N$01.
+  $D242,$03 #REGh=*#REGix+#N$02.
+  $D245,$01 Exchange the *#REGsp with the #REGhl register.
+  $D246,$02 Restore #REGix from the stack.
+  $D248,$01 Return.
+
+c $D249
+  $D249,$04 Stash #REGiy and #REGix on the stack.
+  $D24D,$03 Call #R$D04F.
+  $D250,$03 Call #R$D21C.
+  $D253,$02 Jump to #R$D267 if ?? is equal to #N$00.
+  $D255,$05 Jump to #R$D250 if #REGa is not equal to *#REGiy+#N$01.
+  $D25A,$03 Write #REGb to *#REGiy+#N$0F.
+  $D25D,$01 Stash #REGaf on the stack.
+  $D25E,$03 #REGa=*#REGix+#N$00.
+  $D261,$03 Call #R$D249.
+  $D264,$01 Restore #REGaf from the stack.
+  $D265,$02 Jump to #R$D250.
+  $D267,$04 Restore #REGix and #REGiy from the stack.
+  $D26B,$01 Return.
+
+c $D26C
+  $D26C,$01 Stash #REGhl on the stack.
+  $D26D,$03 #REGa=*#R$A034.
+  $D270,$03 Call #R$D275.
+  $D273,$01 Restore #REGhl from the stack.
+  $D274,$01 Return.
 
 c $D275
 
@@ -4695,10 +5077,34 @@ c $D2A4
 c $D2F2
 
 c $D33C
+  $D33C,$01 Stash #REGaf on the stack.
+  $D33D,$04 #REGix=*#R$A017.
+  $D341,$03 #REGa=*#REGix+#N$0F.
+  $D344,$03 Call #R$D224.
+  $D347,$01 Restore #REGaf from the stack.
+  $D348,$01 Return.
 
 c $D349
+  $D349,$01 Switch to the shadow registers.
+  $D34A,$02 #REGe=#N$02.
+  $D34C,$02 Jump to #R$D351.
 
 c $D34E
+  $D34E,$01 Switch to the shadow registers.
+  $D34F,$02 #REGe=#N$03.
+  $D351,$03 #REGhl=#REGix (using the stack).
+  $D354,$01 #REGb=#REGa.
+  $D355,$02 #REGd=#N$00.
+  $D357,$01 #REGa=*#REGhl.
+  $D358,$03 Jump to #R$D363 if #REGa is equal to #REGb.
+  $D35B,$04 Jump to #R$D363 if #REGa is equal to #N$FF.
+  $D35F,$01 #REGhl+=#REGde.
+  $D360,$03 Jump to #R$D357.
+
+  $D363,$03 #REGix=#REGhl (using the stack).
+  $D366,$02 Compare #REGa with #N$FF.
+  $D368,$01 Switch back to the normal registers.
+  $D369,$01 Return.
 
 c $D36A
 
@@ -4712,10 +5118,9 @@ c $D495
   $D495,$02 Compare #REGa with #N$FF.
   $D497,$01 Return if #REGa is equal to #N$FF.
   $D498,$03 Call #R$D237.
-  $D49B,$02 #REGa=#N$01.
-  $D49D,$03 Compare #REGa with *#REGix+#N$00.
+  $D49B,$05 Compare *#REGix+#N$00 with #N$01.
   $D4A0,$02 #REGa=#N$FF.
-  $D4A2,$01 Return if #REGa is not equal to #N$FF.
+  $D4A2,$01 Return if #REGa is not equal to #N$01.
   $D4A3,$03 #REGa=*#REGix+#N$0F.
   $D4A6,$01 Return.
 
