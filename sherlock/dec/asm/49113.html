@@ -36,22 +36,32 @@ Next: <a href="49164.html">49164</a>
 </td>
 </tr>
 </table>
-<div class="description">49113: Handler: Counters</div>
+<div class="description">49113: Handler: Game Clock</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="41024.html">41024</a>.
+Used by the routine at <a href="41024.html">GameEntryPoint</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_Counters</td>
+<td class="routine-comment" colspan="5">
+<span id="49113"></span>
+<div class="comments">
+<div class="paragraph">
+Handle the game ticker.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_GameClock</td>
 <td class="address-2"><span id="49113"></span>49113</td>
 <td class="instruction">LD HL,(40925)</td>
-<td class="comment-1" rowspan="3">Increment *<a href="40925.html">40925</a> by one.</td>
+<td class="comment-1" rowspan="3">Increment *<a href="40925.html">CurrentTime_Ticker</a> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -64,22 +74,31 @@ Used by the routine at <a href="41024.html">41024</a>.
 <td class="instruction">LD (40925),HL</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="49120"></span>
+<div class="comments">
+<div class="paragraph">
+Handle the clock minutes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49120"></span>49120</td>
 <td class="instruction">LD HL,40927</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="40927.html">40927</a>.</td>
+<td class="comment-1" rowspan="2">Increment *<a href="40927.html">CurrentTime_Minutes</a> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49123"></span>49123</td>
 <td class="instruction">INC (HL)</td>
-<td class="comment-1" rowspan="1">Increment *<span class="register">HL</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49124"></span>49124</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Return if *<span class="register">HL</span> is not equal to 60.</td>
+<td class="comment-1" rowspan="3">Return if *<span class="register">HL</span> is not equal to 60 (e.g. it's less than 60 minutes).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -92,28 +111,47 @@ Used by the routine at <a href="41024.html">41024</a>.
 <td class="instruction">RET NZ</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="49128"></span>
+<div class="comments">
+<div class="paragraph">
+The minutes is at 60, which is invalid - so handle rolling the clock hour digits.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49128"></span>49128</td>
 <td class="instruction">LD (HL),0</td>
-<td class="comment-1" rowspan="1">Write 0 to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Reset the minutes back to 0 at *<span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="49130"></span>
+<div class="comments">
+<div class="paragraph">
+Handle the clock hours.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49130"></span>49130</td>
 <td class="instruction">LD HL,40928</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="40928.html">40928</a>.</td>
+<td class="comment-1" rowspan="2">Increment *<a href="40927.html#40928">CurrentTime_Hour</a> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49133"></span>49133</td>
 <td class="instruction">INC (HL)</td>
-<td class="comment-1" rowspan="1">Increment *<span class="register">HL</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49134"></span>49134</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="49113.html#49142">Counters</a> if *<span class="register">HL</span> is not equal to 13.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="49113.html#49142">Handler_GameClock_AM_PM</a> if *<span class="register">HL</span> is not equal to 13 (e.g. it's less than 13 o'clock).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -123,13 +161,23 @@ Used by the routine at <a href="41024.html">41024</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49137"></span>49137</td>
-<td class="instruction">JR NZ,<a href="49113.html#49142">Counters</a></td>
+<td class="instruction">JR NZ,<a href="49113.html#49142">Handler_GameClock_AM_PM</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="49139"></span>
+<div class="comments">
+<div class="paragraph">
+The hours is at 13. which is invalid - so handle rolling the clock.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49139"></span>49139</td>
 <td class="instruction">LD (HL),1</td>
-<td class="comment-1" rowspan="1">Write 1 to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Reset the hours back to 1 at *<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -138,7 +186,17 @@ Used by the routine at <a href="41024.html">41024</a>.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">Counters</td>
+<td class="routine-comment" colspan="5">
+<span id="49142"></span>
+<div class="comments">
+<div class="paragraph">
+Is it midday yet?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_GameClock_AM_PM</td>
 <td class="address-2"><span id="49142"></span>49142</td>
 <td class="instruction">CP 12</td>
 <td class="comment-1" rowspan="2">Return if *<span class="register">HL</span> is not equal to 12.</td>
@@ -149,10 +207,43 @@ Used by the routine at <a href="41024.html">41024</a>.
 <td class="instruction">RET NZ</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="49145"></span>
+<div class="comments">
+<div class="paragraph">
+It's either midday or midnight, so flip between AM and PM.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49145"></span>49145</td>
 <td class="instruction">LD A,(40930)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="40930.html">40930</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="40930.html">Messaging_AM_PM</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="49148"></span>
+<div class="comments">
+<div class="paragraph">
+Smart way of altering the letter from "a" to "p" and back again. <table class="default">
+<tr>
+<th colspan="1" rowspan="1">Letter</th>
+<th colspan="1" rowspan="1">Bits</th>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">"a"</td>
+<td class="centre" colspan="1" rowspan="1">01100001</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">"p"</td>
+<td class="centre" colspan="1" rowspan="1">01110000</td>
+</tr>
+</table>
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -164,13 +255,23 @@ Used by the routine at <a href="41024.html">41024</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49150"></span>49150</td>
 <td class="instruction">LD (40930),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="40930.html">40930</a>.</td>
+<td class="comment-1" rowspan="1">Write this back to *<a href="40930.html">Messaging_AM_PM</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="49153"></span>
+<div class="comments">
+<div class="paragraph">
+If the clock went from PM to AM, handle rolling the day of the week.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49153"></span>49153</td>
 <td class="instruction">CP 97</td>
-<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is not equal to 97.</td>
+<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is not equal to ASCII 97 ("&#97;").</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
