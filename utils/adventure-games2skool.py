@@ -175,11 +175,29 @@ class Sherlock(AdventureGame):
         while pc < 0x8B6E:
             start = pc
             lines.append(f"g ${start:04X} Room #N${room:02X}: \"#ROOM${room:02X}\"")
+            lines.append(f"@ ${start:04X} label=Room_{room:02}")
             lines.append(f"B ${start:04X},b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))")
             pc += 0x01
-            for x in range(0, 4):
+            if self.get_word(pc) > 0x0000:
+                lines.append(f"W ${pc:04X},$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))")
+            else:
+                lines.append(f"W ${pc:04X},$02")
+            pc += 0x02
+            if self.get_word(pc) > 0x0000:
+                lines.append(f"W ${pc:04X},$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))")
+            else:
+                lines.append(f"W ${pc:04X},$02")
+            pc += 0x02
+            if self.get_word(pc) > 0x0000:
+                lines.append(f"W ${pc:04X},$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))")
+            else:
+                lines.append(f"W ${pc:04X},$02")
+            pc += 0x02
+            if self.get_word(pc) > 0x0000:
                 lines.append(f"W ${pc:04X},$02 #TEXTTOKEN(#PC)")
-                pc += 0x02
+            else:
+                lines.append(f"W ${pc:04X},$02")
+            pc += 0x02
             byte = self.get_byte(pc)
             if byte < 0xFF:
                 start = pc
@@ -188,6 +206,7 @@ class Sherlock(AdventureGame):
                     movements += 0x01
                     pc += 0x03
                     byte = self.get_byte(pc)
+                lines.append(f"N ${start:04X} Room exits:")
                 lines.append(f"B ${start:04X},${movements*0x03:02X},$03 #TABLE(default,centre,centre,centre)")
                 lines.append(". { =h Direction | =h Via | =h Destination }")
                 for x in range(0, movements):
