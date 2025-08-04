@@ -3375,41 +3375,100 @@ B $9569,$01 Terminator #N(#PEEK(#PC)).
 
 g $956A
 
-g $9860
-B $9860,$01
-B $9863,$01
-W $9866,$02
+g $9860 Table: Timetable
+@ $9860 label=Table_Timetable
+D $9860 Holds character data.
+.
+. Note for Sherlock himself the character ID can also be:
+. #TABLE(default,centre,centre)
+. { =h ID Byte | =h Character }
+. #FOREACH($00,$01,$64)(x,{ #Nx | "#OBJECTx" })
+. TABLE#
+. Due to Sherlock being able to wear disguises.
+N $9860 Timetable #N((#PC-$9860)/$08).
+B $9860,$01 Character: "#OBJECT(#PEEK(#PC))".
+W $9861,$02
+B $9863,$01 Location?
+W $9864,$02
+W $9866,$02 Timer?
+L $9860,$08,$18
+B $9920,$01 Terminator.
+
+c $9921 Action: Sherlock
 
 g $994D
 W $994D,$02
 
-c $9C6A
-  $9C6A,$03 #REGa=*#R$A036.
-  $9C6D,$04 #REGix=#R$9C85.
+c $9C6A Handler: Find Character Action
+@ $9C6A label=Handler_FindCharacterAction
+R $9C6A O:IX Action entry
+R $9C6A O:A #N$FF is no action was found
+R $9C6A O:F Zero flag is set if no action was found
+  $9C6A,$03 Load *#R$A036 into #REGa.
+  $9C6D,$04 Load #R$9C85 into #REGix.
   $9C71,$03 Call #R$D34E.
-  $9C74,$02 Compare #REGa with #N$FF.
+  $9C74,$02 Check if a character action was found.
   $9C76,$01 Return.
 
-c $9C77
+c $9C77 Execute Character Action
+@ $9C77 label=ExecuteCharacterAction
+R $9C77 IY Character timetable pointer
   $9C77,$03 Call #R$9C6A.
-  $9C7A,$01 Return if #REGa is equal to #N$FF.
-  $9C7B,$03 #REGl=*#REGix+#N$01.
-  $9C7E,$03 #REGh=*#REGix+#N$02.
-  $9C81,$03 Return if #REGhl is zero.
-  $9C84,$01 Jump to *#REGhl.
+  $9C7A,$01 Return if no action was found (the termination character was
+. returned #N$FF).
+  $9C7B,$06 Fetch the action handler address and store it in #REGhl.
+  $9C81,$03 Return if the action handler address is empty.
+  $9C84,$01 Jump to the action handler.
 
-g $9C85
-B $9C85,$01
-W $9C86,$02
+g $9C85 Table: Character Actions
+@ $9C85 label=Table_CharacterActions
+N $9C85 #OBJECT(#PEEK(#PC)):
+B $9C85,$01 Character: "#OBJECT(#PEEK(#PC))".
+W $9C86,$02 Action routine: #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
 L $9C85,$03,$09
+N $9CA0 End of table data:
 B $9CA0,$01 Terminator.
 
-g $9CA1
+g $9CA1 Character State: Basil Phipps
+@ $9CA1 label=CharacterState_BasilPhipps
 B $9CA1,$01
 
-c $9CA2
+c $9CA2 Character Action: Basil Phipps
+@ $9CA2 label=CharacterAction_BasilPhipps
+  $9CA2,$02 Load "#OBJECT$55" into #REGa.
+  $9CA4,$03 Call #R$D237.
+  $9CA7,$05 Return if bit 7 of *#REGix+#N$05 is not set.
+  $9CAC,$03 #REGhl=#R$9CA1.
+  $9CAF,$01 #REGa=*#REGhl.
+  $9CB0,$03 Return if #REGa is equal to #N$FF.
+  $9CB3,$01 Decrease *#REGhl by one.
+  $9CB4,$01 Return if *#REGhl is not equal to #N$FF.
+  $9CB5,$03 #REGhl=#N$015B.
+  $9CB8,$03 Write #REGl to *#REGix+#N$09.
+  $9CBB,$03 Write #REGh to *#REGix+#N$0A.
+  $9CBE,$07 Write #N$00 to; #LIST { *#REGix+#N$0D } { *#REGix+#N$0E } LIST#
+  $9CC5,$04 #REGix=#R$99B7.
+  $9CC9,$04 Reset bit 1 of *#REGix+#N$03.
+  $9CCD,$01 Return.
+
+c $9CCE
+  $9CCE,$04 #REGix=*#R$A017.
+  $9CD2,$03 #REGb=*#REGix+#N$0F.
+  $9CD5,$01 #REGa=#REGc.
+  $9CD6,$03 Call #R$D237.
+  $9CD9,$05 Return if *#REGix+#N$0F is not equal to #REGb.
+  $9CDE,$01 #REGa=#REGc.
+  $9CDF,$03 Call #R$C821.
+  $9CE2,$02 Jump to #R$9CE6 if #REGa is equal to #REGb.
+  $9CE4,$01 #REGa=#N$00.
+  $9CE5,$01 Return.
+  $9CE6,$02,b$01 Set bit 0.
+  $9CE8,$01 Return.
 
 c $9CE9
+  $9CE9,$03 Call #R$9CF2.
+  $9CEC,$03 #REGhl=#R$6929.
+  $9CEF,$03 Jump to #R$A59F.
 
 c $9CF2
 
@@ -3418,11 +3477,31 @@ B $9D10,$01
 B $9D11,$01
 B $9D12,$01
 
-c $9D13
-c $9D30
-c $9D48
+c $9D13 Character Action: Watson
+@ $9D13 label=CharacterAction_Watson
+  $9D13,$03 #REGhl=#R$9D10.
+  $9D16,$02 #REGc=#N$00.
+  $9D18,$03 Call #R$9CE9.
+  $9D1B,$03 #REGhl=#R$9D11.
+  $9D1E,$02 #REGc=#N$02.
+  $9D20,$03 Call #R$9CE9.
+  $9D23,$03 #REGhl=#R$9D12.
+  $9D26,$02 #REGc=#N$04.
+  $9D28,$03 Call #R$9CE9.
+  $9D2B,$03 Jump to #R$E691.
 
-c $9D73
+g $9D2E
+B $9D2E,$01
+B $9D2F,$01
+
+c $9D30 Character Action: Chief Constable Strak
+@ $9D30 label=CharacterAction_ChiefConstableStrak
+
+c $9D48 Character Action: Local Police Man #N$01
+@ $9D48 label=CharacterAction_LocalPoliceMan_01
+
+c $9D73 Character Action: Local Police Man #N$02
+@ $9D73 label=CharacterAction_LocalPoliceMan_02
   $9D73,$03 #REGa=*#R$9D90.
   $9D76,$02 Return if *#R$9D90 is not zero.
   $9D78,$03 #REGhl=#R$9D70.
@@ -3444,7 +3523,8 @@ B $9D94,$01
 
 c $9D95
 
-c $9DFF
+c $9DFF Character Action: Inspector Lestrade
+@ $9DFF label=CharacterAction_InspectorLestrade
   $9DFF,$02 #REGc=#N$04.
   $9E01,$03 Call #R$9CCE.
   $9E04,$02 Jump to #R$9D95 if the zero flag is not set.
@@ -3475,26 +3555,32 @@ B $9E49,$01
 
 c $9E4A
 
-g $9EC0
+g $9EC0 Character State: Daphne Strachan
+@ $9EC0 label=CharacterState_DaphneStrachan
 B $9EC0,$01
 
-c $9EC1
+c $9EC1 Character Action: Daphne Strachan
+@ $9EC1 label=CharacterAction_DaphneStrachan
   $9EC1,$03 #REGhl=#R$9EC0.
   $9EC4,$02 #REGc=#N$80.
   $9EC6,$02 #REGb=#N$4A.
   $9EC8,$02 Jump to #R$9ED7.
 
-g $9ECA
+g $9ECA Character State:Cook
+@ $9ECA label=CharacterState_Cook
 B $9ECA,$01
 
-c $9ECB
+c $9ECB Character Action: Cook
+@ $9ECB label=CharacterAction_Cook
   $9ECB,$03 #REGhl=#R$9ECA.
   $9ECE,$02 Jump to #R$9ED4.
 
-g $9ED0
+g $9ED0 Character State: Gardener
+@ $9ED0 label=CharacterState_Gardener
 B $9ED0,$01
 
-c $9ED1
+c $9ED1 Character Action: Gardener
+@ $9ED1 label=CharacterAction_Gardener
   $9ED1,$03 #REGhl=#R$9ED0.
   $9ED4,$03 #REGbc=#N($0000,$04,$04).
   $9ED7,$01 #REGa=*#REGhl.
@@ -3561,10 +3647,13 @@ W $9FD4,$02
 
 g $9FD6
 
-g $9FD9
+g $9FD9 Currently Processed Character Command Position
+@ $9FD9 label=CurrentCharacter_CommandPosition
 W $9FD9,$02
 
-g $9FDB
+g $9FDB Currently Processed Character Timetable Pointer
+@ $9FDB label=CurrentCharacter_TimetablePointer
+W $9FDB,$02
 
 g $9FDD Current Time Ticker
 @ $9FDD label=CurrentTime_Ticker
@@ -3641,7 +3730,8 @@ B $A01D,$01
 g $A01E
 B $A01E,$01
 
-g $A01F
+g $A01F Character Script Cycles
+@ $A01F label=CharacterScriptCycles
 B $A01F,$01
 
 g $A022
@@ -3659,13 +3749,16 @@ B $A028,$01
 g $A033
 B $A033,$01
 
-g $A034
+g $A034 Room Display Parameter
+@ $A034 label=RoomDisplayParameter
 B $A034,$01
 
-g $A035
+g $A035 Room Graphics Parameter
+@ $A035 label=RoomGraphicsParameter
 B $A035,$01
 
-g $A036
+g $A036 Currently Processed Character ID
+@ $A036 label=CurrentCharacter_ID
 B $A036,$01
 
 g $A037
@@ -3688,56 +3781,66 @@ N $A05B The player pressed either "N" or "n".
   $A05B,$01 #REGa=#N$00.
   $A05C,$03 Write #REGa to *#R$A011.
   $A05F,$05 Write the contents of the Memory Refresh Register to *#R$A037.
+@ $A064 label=Game_Initialisation
   $A064,$04 Write #N$00 to *#R$A0DA.
+@ $A068 label=Game_Loop
   $A068,$06 Jump to #R$A0E7 if *#R$A0DA is not zero.
   $A06E,$03 Call #R$BFD9.
   $A071,$03 Call #R$BF79.
   $A074,$04 #REGiy=#R$9860.
-  $A078,$03 #REGa=*#REGiy+#N$03.
-  $A07B,$04 Jump to #R$A093 if #REGa is not equal to #N$32.
+  $A078,$03 Fetch the characters location and store it in #REGa.
+  $A07B,$04 Jump to #R$A093 if the character is not in #ROOM$32.
   $A07F,$03 Call #R$C41F.
-  $A082,$04 Jump to #R$A093 if bit 7 of #REGa is not set.
-  $A086,$04 Jump to #R$A093 if #REGa is not equal to #N$8D.
-  $A08A,$03 #REGhl=*#R$9FDD.
-  $A08D,$03 Write #REGl to *#REGiy+#N$06.
-  $A090,$03 Write #REGh to *#REGiy+#N$07.
-  $A093,$04 #REGiy=#R$9860.
-@ $A097 label=Game_Loop
-  $A097,$03 #REGa=*#REGiy+#N$00.
-  $A09A,$01 Increment #REGa by one.
-  $A09B,$02 Jump to #R$A068 if #REGa is equal to #N$8D.
-  $A09D,$03 #REGhl=*#R$9FDD.
+  $A082,$08 Jump to #R$A093 if the keypress was not valid or if the keypress
+. was not #N$8D ("ENTER") - which is ASCII code #N$0D with bit 7 set for being
+. a valid keypress.
+  $A08A,$09 Write *#R$9FDD to *#REGiy+#N$06/ *#REGiy+#N$07.
+N $A093 Cycle through the character timetable and run through each characters
+. script according to their schedule and current game time.
+@ $A093 label=Handler_ProcessCharacters
+  $A093,$04 Load #R$9860 into #REGiy.
+@ $A097 label=CharacterProcessing_Loop
+  $A097,$06 Jump to #R$A068 if the character ID is the termination character
+. (#N$FF).
+N $A09D This is a valid character so begin processing them.
+  $A09D,$03 Load *#R$9FDD into #REGhl.
   $A0A0,$03 Call #R$A0DB.
-  $A0A3,$02 Jump to #R$A0D1 if #REGa is less than #N$8D.
-  $A0A5,$03 #REGa=*#REGiy+#N$00.
-  $A0A8,$03 Stash #REGiy and #REGaf on the stack.
+  $A0A3,$02 Jump to #R$A0D1 if this character is not scheduled.
+N $A0A5 The currently processed character has an active schedule so process it.
+  $A0A5,$03 Fetch the character ID and store it in #REGa.
+  $A0A8,$03 Stash the timetable pointer and character ID on the stack.
   $A0AB,$03 Call #R$CC37.
-  $A0AE,$01 Restore #REGaf from the stack.
-  $A0AF,$01 Stash #REGaf on the stack.
+N $A0AE Repeatedly execute the characters script until it completes or
+. encounters a wait condition.
+@ $A0AE label=CharacterScript_Loop
+  $A0AE,$01 Restore the character ID from the stack.
+  $A0AF,$01 But keep a copy of the character ID on the stack.
   $A0B0,$03 Call #R$CC78.
-  $A0B3,$03 #REGhl=*#R$A01F.
-  $A0B6,$04 Jump back to #R$A0AE until #REGhl is zero.
-  $A0BA,$03 Restore #REGaf and #REGiy from the stack.
-  $A0BD,$03 #REGe=*#REGiy+#N$06.
-  $A0C0,$03 #REGd=*#REGiy+#N$07.
-  $A0C3,$01 #REGhl+=#REGde.
-  $A0C4,$03 Write #REGl to *#REGiy+#N$06.
-  $A0C7,$03 Write #REGh to *#REGiy+#N$07.
-  $A0CA,$02 Stash #REGiy on the stack.
+N $A0B3 Keep looping until the script for this character is finished.
+  $A0B3,$07 Jump back to #R$A0AE until *#R$A01F is zero.
+  $A0BA,$03 Restore the character ID and timetable pointer from the stack.
+N $A0BD Set up the next schedule time for this character.
+  $A0BD,$07 Add the characters schedule time to the current time...
+  $A0C4,$06 And write it back to the characters schedule.
+  $A0CA,$02 Stash the timetable pointer on the stack briefly.
   $A0CC,$03 Call #R$9C77.
-  $A0CF,$02 Restore #REGiy from the stack.
-  $A0D1,$03 #REGde=#N($0008,$04,$04).
-  $A0D4,$02 #REGiy+=#REGde.
+  $A0CF,$02 Restore the timetable pointer from the stack.
+N $A0D1 Move to the next character in the timetable.
+@ $A0D1 label=Character_Next
+  $A0D1,$05 #REGiy+=#N($0008,$04,$04).
   $A0D6,$02 Jump to #R$A097.
 
 b $A0D8
   $A0DA
 
-c $A0DB
-  $A0DB,$03 #REGe=*#REGiy+#N$06.
-  $A0DE,$03 #REGd=*#REGiy+#N$07.
-  $A0E1,$03 Return if #REGh is not equal to #REGd.
-  $A0E4,$02 Compare #REGl with #REGe.
+c $A0DB Check Character Schedule
+@ $A0DB label=CheckCharacterSchedule
+R $A0DB HL Current game time
+R $A0DB F Carry flag is set if the character should be skipped
+  $A0DB,$06 Fetch the characters schedule offset and store it in #REGde.
+  $A0E1,$03 Return if the high byte of the characters schedule doesn't match
+. the current game time.
+  $A0E4,$02 Set the carry flag if the schedule isn't for now.
   $A0E6,$01 Return.
 
 c $A0E7
@@ -3749,6 +3852,13 @@ c $A0E7
   $A0F4,$03 Jump to #R$A064.
 
 c $A0F7
+  $A0F7,$01 Stash #REGhl on the stack.
+  $A0F8,$03 #REGl=*#REGix-#N$02.
+  $A0FB,$03 #REGh=*#REGix-#N$01.
+  $A0FE,$02 Is #REGhl zero?
+  $A100,$01 Exchange the *#REGsp with the #REGhl register.
+  $A101,$02 Restore #REGix from the stack.
+  $A103,$01 Return.
 
 c $A104
 
@@ -4536,6 +4646,21 @@ c $B77F
   $B7F3,$02 Decrease #REGix by one.
   $B7F5,$02 Jump to #R$B7AA.
 
+c $B91F
+  $B91F,$04 #REGix=#R$9FF0.
+  $B923,$03 Call #R$A0F7.
+  $B926,$02 Jump to #R$B931 if the zero flag is set.
+  $B928,$07 Return if *#R$A036 is equal to *#REGix+#N$00.
+  $B92F,$02 Jump to #R$B923.
+  $B931,$02,b$01 Set bit 0.
+  $B933,$01 Return.
+
+g $B934
+B $B934,$01
+B $B935,$01
+
+c $B936
+
 t $BF59 Table: Days Of The Week Strings
 @ $BF59 label=Table_DaysOfWeekStrings
   $BF59,$15,$03
@@ -5204,12 +5329,12 @@ N $C445 Did the player press "DELETE"?
 . *<a href="https://skoolkid.github.io/rom/asm/5C08.html">LAST-K</a> (last key
 . pressed) is not ASCII #N$0C ("DELETE").)
   $C449,$02 Load #REGa with #N$08 (delete was pressed).
-N $C44B Did the player press "ENTER"?
-@ $C44B label=GetKeypress_CheckEnter
+N $C44B Did the player press "UP"?
+@ $C44B label=GetKeypress_CheckUp
   $C44B,$04 #HTML(Jump to #R$C451 if
 . *<a href="https://skoolkid.github.io/rom/asm/5C08.html">LAST-K</a> (last key
-. pressed) is not ASCII #N$0B ("ENTER").)
-  $C44F,$02 Load #REGa with #N$5B (enter was pressed).
+. pressed) is not ASCII #N$0B ("UP").)
+  $C44F,$02 Load #REGa with #N$5B (up was pressed).
 @ $C451 label=GetKeypress_Validate
   $C451,$03 Call #R$C240.
   $C454,$02 Set bit 7 of #REGa.
@@ -5245,32 +5370,46 @@ c $C929
 
 c $C989
 
-c $CC0E
+c $CC0E Find Character
+@ $CC0E label=FindCharacter
+R $CC0E A Character ID
+R $CC0E O:A The character ID or #N$FF if it wasn't found
+R $CC0E O:IY Pointer to character data
+R $CC0E O:F The zero flag will be set if the character wasn't found
+N $CC0E Stash some registers so they don't get corrrupted.
   $CC0E,$02 Stash #REGde and #REGbc on the stack.
-  $CC10,$01 #REGc=#REGa.
-  $CC11,$03 #REGde=#N($0008,$04,$04).
+  $CC10,$01 Store the character ID in #REGc.
+  $CC11,$03 Load the length of the character data #N($0008,$04,$04) bytes into
+. #REGde.
   $CC14,$04 #REGiy=#R$9860.
-  $CC18,$03 #REGa=*#REGiy+#N$00.
-  $CC1B,$03 Jump to #R$CC26 if #REGa is equal to #REGc.
-  $CC1E,$04 Jump to #R$CC26 if #REGa is equal to #N$FF.
-  $CC22,$02 #REGiy+=#REGde.
+@ $CC18 label=FindCharacter_Loop
+  $CC18,$03 Fetch the current characters ID from the timetable pointer.
+  $CC1B,$03 Jump to #R$CC26 if this character ID and the requested character ID
+. match.
+  $CC1E,$04 Jump to #R$CC26 if the termination character has been reached
+. (#N$FF).
+  $CC22,$02 Add #N($0008,$04,$04) bytes to the timetable pointer to move to the
+. next set of character data.
   $CC24,$02 Jump to #R$CC18.
-
+N $CC26 Return with some housekeeping.
+@ $CC26 label=FindCharacter_Return
   $CC26,$02 Restore #REGbc and #REGde from the stack.
   $CC28,$01 Return.
 
 c $CC29
 
 c $CC37
-  $CC37,$01 Stash #REGaf on the stack.
+  $CC37,$01 Stash the character ID on the stack briefly.
   $CC38,$04 Write #N$00 to *#R$CC0B.
-  $CC3C,$01 Restore #REGaf from the stack.
+  $CC3C,$01 Restore the character ID from the stack.
   $CC3D,$03 Call #R$CC0E.
-  $CC40,$02 Compare #REGa with #N$FF.
+  $CC40,$02 Was the character ID found?
   $CC42,$03 #REGhl=#N($0001,$04,$04).
-  $CC45,$03 Jump to #R$CC74 if #REGa is equal to #N$FF.
-  $CC48,$04 Write #REGiy to #R$9FDB.
-  $CC4C,$03 Write #REGa to *#R$A036.
+  $CC45,$03 Jump to #R$CC74 if the character ID wasn't found, and the
+. termination character was returned instead.
+N $CC48 The character is active in the timetable.
+  $CC48,$04 Write the characters timetable pointer to *#R$9FDB.
+  $CC4C,$03 Write the character ID to *#R$A036.
   $CC4F,$03 Call #R$B91F.
   $CC52,$02 #REGa=#N$00.
   $CC54,$02 Jump to #R$CC57 if #REGa is not equal to #N$00.
@@ -5284,22 +5423,25 @@ c $CC37
   $CC67,$03 Call #R$C821.
   $CC6A,$02 Jump to #R$CC71 if #REGa is equal to #N$00.
   $CC6C,$05 #HTML(Write #N$01 to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3C.html">TV-FLAG</a>.)
-  $CC71,$06 Write #N($0000,$04,$04) to *#R$A01F.
+  $CC71,$03 #REGhl=#N($0000,$04,$04).
+  $CC74,$03 Write #REGhl to *#R$A01F.
   $CC77,$01 Return.
 
 c $CC78 Script Interpreter
 @ $CC78 label=ScriptInterpreter
+R $CC78 A Character ID
   $CC78,$03 Call #R$CC5A.
   $CC7B,$04 #REGiy=#R$9FDB.
   $CC7F,$03 Call #R$D008.
-  $CC82,$03 #REGl=*#REGiy+#N$01.
-  $CC85,$03 #REGh=*#REGiy+#N$02.
+  $CC82,$06 Get the characters script position.
   $CC88,$04 Write #N$00 to *#R$B934.
   $CC8C,$08 Jump to #R$CD8B if *#R$CC0B is equal to #N$0A.
+@ $CC94 label=FindNextCommand
   $CC94,$04 Jump to #R$CC9B if *#REGhl is not equal to #REGa.
   $CC98,$01 Increment #REGhl by one.
   $CC99,$02 Jump to #R$CC94.
-
+N $CC9B Process the current script command.
+@ $CC9B label=ProcessScriptCommand
   $CC9B,$03 #REGix=#REGhl (using the stack).
   $CC9E,$03 Write #REGhl to *#R$9FD9.
   $CCA1,$02,b$01 Keep only bits 0-3.
@@ -5317,18 +5459,21 @@ c $CC78 Script Interpreter
   $CCC2,$04 Write #N$02 to *#REGix+#N$05.
   $CCC6,$01 Return.
 
-  $CCC7,$01 #REGa=*#REGhl.
-  $CCC8,$02,b$01 Keep only bits 0-3.
-  $CCCA,$05 Jump to #R$CE3B if #REGa is equal to #N$07.
-  $CCCF,$05 Jump to #R$CD95 if #REGa is equal to #N$06.
-  $CCD4,$05 Jump to #R$CDA1 if #REGa is equal to #N$05.
-  $CCD9,$05 Jump to #R$CDBF if #REGa is equal to #N$04.
-  $CCDE,$05 Jump to #R$CE6A if #REGa is equal to #N$01.
-  $CCE3,$05 Jump to #R$CE4F if #REGa is equal to #N$03.
-  $CCE8,$04 Jump to #R$CD24 if #REGa is equal to #N$08.
-  $CCEC,$04 Jump to #R$CD47 if #REGa is equal to #N$09.
+c $CCC7 Execute Character Command
+@ $CCC7 label=ExecuteCharacterCommand
+  $CCC7,$01 Get the command byte.
+  $CCC8,$02,b$01 Extract the command type.
+  $CCCA,$05 Jump to #R$CE3B for command type #N$07.
+  $CCCF,$05 Jump to #R$CD95 for command type #N$06.
+  $CCD4,$05 Jump to #R$CDA1 for command type #N$05.
+  $CCD9,$05 Jump to #R$CDBF for command type #N$04.
+  $CCDE,$05 Jump to #R$CE6A for command type #N$01.
+  $CCE3,$05 Jump to #R$CE4F for command type #N$03.
+  $CCE8,$04 Jump to #R$CD24 for command type #N$08.
+  $CCEC,$04 Jump to #R$CD47 for command type #N$09.
   $CCF0,$03 Jump to #R$CE18.
 
+c $CCF3
   $CCF3,$04 Jump to #R$CD06 if #REGa is not equal to #N$0E.
   $CCF7,$06 Write *#REGix+#N$01 to *#REGiy+#N$01.
   $CCFD,$06 Write *#REGix+#N$02 to *#REGiy+#N$02.
@@ -5345,6 +5490,8 @@ c $CC78 Script Interpreter
   $CD1E,$03 Return if #REGa is equal to #N$02.
   $CD21,$03 Jump to #R$CEB8.
 
+c $CD24 Handle Push Stack
+@ $CD24 label=HandlePushStack
   $CD24,$03 #REGa=*#REGix+#N$01.
   $CD27,$01 Stash #REGaf on the stack.
   $CD28,$02 #REGa=#N$02.
@@ -5358,6 +5505,8 @@ c $CC78 Script Interpreter
   $CD41,$03 Write #REGa to *#REGix+#N$01.
   $CD44,$03 Jump to #R$CE8F.
 
+c $CD47 Handle Pop Stack
+@ $CD47 label=HandlePopStack
   $CD47,$03 #REGb=*#REGix+#N$01.
   $CD4A,$04 #REGix=#R$9FE9.
   $CD4E,$03 Call #R$A0F7.
@@ -5383,11 +5532,14 @@ c $CC78 Script Interpreter
   $CD91,$03 Call #R$D026.
   $CD94,$01 Return.
 
+c $CD95 Handle Display Text
+@ $CD95 label=HandleDisplayText
   $CD95,$03 #REGl=*#REGix+#N$01.
   $CD98,$03 #REGh=*#REGix+#N$02.
   $CD9B,$03 Call #R$A59F.
   $CD9E,$03 Jump to #R$CE8F.
 
+c $CDA1
   $CDA1,$03 #REGl=*#REGix+#N$02.
   $CDA4,$03 #REGh=*#REGix+#N$03.
   $CDA7,$01 Stash #REGhl on the stack.
@@ -5442,14 +5594,17 @@ c $CC78 Script Interpreter
   $CE37,$02 Jump to #R$CEB8 if #REGa is equal to #N$08.
   $CE39,$02 Jump to #R$CE8F.
 
-  $CE3B,$03 #REGa=*#REGix+#N$03.
+c $CE3B HandleRoomDisplay
+@ $CE3B label=HandleRoomDisplay
+  $CE3B,$03 Get the room display parameter.
   $CE3E,$03 Call #R$CEDE.
-  $CE41,$03 Write #REGa to *#R$A034.
-  $CE44,$03 #REGa=*#REGix+#N$04.
+  $CE41,$03 Write the room display parameter to *#R$A034.
+  $CE44,$03 Get the room graphics parameter.
   $CE47,$03 Call #R$CEDE.
-  $CE4A,$03 Write #REGa to *#R$A035.
+  $CE4A,$03 Write the room graphics parameter to *#R$A035.
   $CE4D,$02 Jump to #R$CE57.
 
+c $CE4F
   $CE4F,$08 Write #N$FF to; #LIST { *#R$A034 } { *#R$A035 } LIST#
 
 @ $CE57 label=ShowRoomDescription
@@ -5462,6 +5617,8 @@ N $CE57 Set the room description marker.
   $CE66,$02 Jump to #R$CEB8 if #REGa is equal to #N$FF.
   $CE68,$02 Jump to #R$CE8F.
 
+c $CE6A Handle Simple Action
+@ $CE6A label=HandleSimpleAction
   $CE6A,$03 #REGa=*#REGix+#N$01.
   $CE6D,$03 Call #R$CEDE.
   $CE70,$03 Write #REGa to *#R$A033.
@@ -5471,12 +5628,15 @@ N $CE57 Set the room description marker.
   $CE7F,$02 Jump to #R$CEB8 if #REGa is equal to #N$FF.
   $CE81,$02 Jump to #R$CE8F.
 
+c $CE83 Get Current Script State
+@ $CE83 label=GetCurrentScriptState
   $CE83,$04 #REGiy=*#R$9FDB.
-  $CE87,$03 #REGhl=*#R$9FD9.
-  $CE8A,$03 #REGix=#REGhl (using the stack).
-  $CE8D,$01 #REGa=*#REGhl.
+  $CE87,$06 #REGix=*#R$9FD9 (using the stack).
+  $CE8D,$01 Get the current command byte.
   $CE8E,$01 Return.
 
+c $CE8F Continue Script Execution
+@ $CE8F label=ContinueScriptExecution
   $CE8F,$03 Call #R$CE83.
   $CE92,$03 Call #R$CF03.
   $CE95,$06 Jump to #R$CEA1 if bit 7 of *#REGix+#N$00 is not set.
@@ -5492,6 +5652,7 @@ N $CE57 Set the room description marker.
   $CEB2,$03 Write #REGh to *#REGiy+#N$02.
   $CEB5,$03 Jump to #R$CD91.
 
+c $CEB8
   $CEB8,$04 Increment *#R$CC0B by one.
   $CEBC,$03 Call #R$CE83.
   $CEBF,$03 Call #R$CEFE.
@@ -5709,25 +5870,37 @@ c $D33C
   $D347,$01 Restore #REGaf from the stack.
   $D348,$01 Return.
 
-c $D349
+c $D349 Search Table
+@ $D349 label=Search__Table
+R $D349 A ID to match
+R $D349 IX Table to search
   $D349,$01 Switch to the shadow registers.
-  $D34A,$02 #REGe=#N$02.
+  $D34A,$02 Set the length of the data in #REGe (#N$02 bytes).
   $D34C,$02 Jump to #R$D351.
 
-c $D34E
+c $D34E Search Character Table
+@ $D34E label=SearchCharacterTable
+R $D34E A Character ID to match
+R $D34E IX Table to search
+R $D34E O:A Entry ID or #N$FF for no entry found
+R $D34E O:IX Pointer to found entry
+R $D34E O:F The zero flag is set when no entry was found
   $D34E,$01 Switch to the shadow registers.
-  $D34F,$02 #REGe=#N$03.
-  $D351,$03 #REGhl=#REGix (using the stack).
-  $D354,$01 #REGb=#REGa.
-  $D355,$02 #REGd=#N$00.
-  $D357,$01 #REGa=*#REGhl.
-  $D358,$03 Jump to #R$D363 if #REGa is equal to #REGb.
-  $D35B,$04 Jump to #R$D363 if #REGa is equal to #N$FF.
-  $D35F,$01 #REGhl+=#REGde.
-  $D360,$03 Jump to #R$D357.
-
-  $D363,$03 #REGix=#REGhl (using the stack).
-  $D366,$02 Compare #REGa with #N$FF.
+  $D34F,$02 Set the length of the data in #REGe (#N$03 bytes).
+@ $D351 label=SearchTable
+  $D351,$03 Copy the table for searching into #REGhl (using the stack).
+  $D354,$01 Copy the character ID into #REGb.
+  $D355,$02 Reset #REGd to #N$00 for the length offset calculation.
+@ $D357 label=SearchCharacterTable_Loop
+  $D357,$01 Fetch a byte from the table.
+  $D358,$07 Jump to #R$D363 if the byte is the character ID we're searching
+. for or if the termination character has been reached (#N$FF).
+  $D35F,$01 Move to the next table entry.
+  $D360,$03 Jump back to #R$D357.
+N $D363 Either the character ID was matched, or the terminator was reached.
+@ $D363 label=SearchCharacterTable_Return
+  $D363,$03 Copy the table pointer into #REGix (using the stack).
+  $D366,$02 Set the zero flag if the termination character was reached (#N$FF).
   $D368,$01 Switch back to the normal registers.
   $D369,$01 Return.
 
@@ -5998,6 +6171,7 @@ g $D6B8
 
 c $DC6C
 
+c $F1C1
 c $F555
 c $F55E
 c $F565
