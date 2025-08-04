@@ -163,7 +163,7 @@ This entry point is used by the routine at <a href="A0E7.html">A0E7</a>.
 </td>
 </tr>
 <tr>
-<td class="asm-label">GameEntryPoint_1</td>
+<td class="asm-label">Game_Initialisation</td>
 <td class="address-2"><span id="a064"></span>A064</td>
 <td class="instruction">XOR A</td>
 <td class="comment-1" rowspan="2">Write 00 to *<a href="A0D8.html#a0da">A0DA</a>.</td>
@@ -174,7 +174,7 @@ This entry point is used by the routine at <a href="A0E7.html">A0E7</a>.
 <td class="instruction">LD ($A0DA),A</td>
 </tr>
 <tr>
-<td class="asm-label">GameEntryPoint_2</td>
+<td class="asm-label">Game_Loop</td>
 <td class="address-2"><span id="a068"></span>A068</td>
 <td class="instruction">LD A,($A0DA)</td>
 <td class="comment-1" rowspan="3">Jump to <a href="A0E7.html">A0E7</a> if *<a href="A0D8.html#a0da">A0DA</a> is not zero.</td>
@@ -205,24 +205,24 @@ This entry point is used by the routine at <a href="A0E7.html">A0E7</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a074"></span>A074</td>
 <td class="instruction">LD IY,$9860</td>
-<td class="comment-1" rowspan="1"><span class="register">IY</span>=<a href="9860.html">9860</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">IY</span>=<a href="9860.html">Table_Timetable</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a078"></span>A078</td>
 <td class="instruction">LD A,(IY+$03)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IY</span>+03.</td>
+<td class="comment-1" rowspan="1">Fetch the characters location and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a07b"></span>A07B</td>
 <td class="instruction">CP $32</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A040.html#a093">GameEntryPoint_3</a> if <span class="register">A</span> is not equal to 32.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="A040.html#a093">Handler_ProcessCharacters</a> if the character is not in Main Street.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a07d"></span>A07D</td>
-<td class="instruction">JR NZ,<a href="A040.html#a093">GameEntryPoint_3</a></td>
+<td class="instruction">JR NZ,<a href="A040.html#a093">Handler_ProcessCharacters</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -234,95 +234,120 @@ This entry point is used by the routine at <a href="A0E7.html">A0E7</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a082"></span>A082</td>
 <td class="instruction">BIT 7,A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A040.html#a093">GameEntryPoint_3</a> if bit 7 of <span class="register">A</span> is not set.</td>
+<td class="comment-1" rowspan="4">Jump to <a href="A040.html#a093">Handler_ProcessCharacters</a> if the keypress was not valid or if the keypress was not 8D ("ENTER") - which is ASCII code 0D with bit 7 set for being a valid keypress.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a084"></span>A084</td>
-<td class="instruction">JR Z,<a href="A040.html#a093">GameEntryPoint_3</a></td>
+<td class="instruction">JR Z,<a href="A040.html#a093">Handler_ProcessCharacters</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a086"></span>A086</td>
 <td class="instruction">CP $8D</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A040.html#a093">GameEntryPoint_3</a> if <span class="register">A</span> is not equal to 8D.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a088"></span>A088</td>
-<td class="instruction">JR NZ,<a href="A040.html#a093">GameEntryPoint_3</a></td>
+<td class="instruction">JR NZ,<a href="A040.html#a093">Handler_ProcessCharacters</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a08a"></span>A08A</td>
 <td class="instruction">LD HL,($9FDD)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="9FDD.html">CurrentTime_Ticker</a>.</td>
+<td class="comment-1" rowspan="3">Write *<a href="9FDD.html">CurrentTime_Ticker</a> to *<span class="register">IY</span>+06/ *<span class="register">IY</span>+07.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a08d"></span>A08D</td>
 <td class="instruction">LD (IY+$06),L</td>
-<td class="comment-1" rowspan="1">Write <span class="register">L</span> to *<span class="register">IY</span>+06.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a090"></span>A090</td>
 <td class="instruction">LD (IY+$07),H</td>
-<td class="comment-1" rowspan="1">Write <span class="register">H</span> to *<span class="register">IY</span>+07.</td>
 </tr>
 <tr>
-<td class="asm-label">GameEntryPoint_3</td>
+<td class="routine-comment" colspan="5">
+<span id="a093"></span>
+<div class="comments">
+<div class="paragraph">
+Cycle through the character timetable and run through each characters script according to their schedule and current game time.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ProcessCharacters</td>
 <td class="address-2"><span id="a093"></span>A093</td>
 <td class="instruction">LD IY,$9860</td>
-<td class="comment-1" rowspan="1"><span class="register">IY</span>=<a href="9860.html">9860</a>.</td>
+<td class="comment-1" rowspan="1">Load <a href="9860.html">Table_Timetable</a> into <span class="register">IY</span>.</td>
 </tr>
 <tr>
-<td class="asm-label">Game_Loop</td>
+<td class="asm-label">CharacterProcessing_Loop</td>
 <td class="address-2"><span id="a097"></span>A097</td>
 <td class="instruction">LD A,(IY+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IY</span>+00.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="A040.html#a068">Game_Loop</a> if the character ID is the termination character (FF).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a09a"></span>A09A</td>
 <td class="instruction">INC A</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">A</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a09b"></span>A09B</td>
-<td class="instruction">JR Z,<a href="A040.html#a068">GameEntryPoint_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A040.html#a068">GameEntryPoint_2</a> if <span class="register">A</span> is equal to 8D.</td>
+<td class="instruction">JR Z,<a href="A040.html#a068">Game_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a09d"></span>
+<div class="comments">
+<div class="paragraph">
+This is a valid character so begin processing them.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a09d"></span>A09D</td>
 <td class="instruction">LD HL,($9FDD)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="9FDD.html">CurrentTime_Ticker</a>.</td>
+<td class="comment-1" rowspan="1">Load *<a href="9FDD.html">CurrentTime_Ticker</a> into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0a0"></span>A0A0</td>
-<td class="instruction">CALL <a href="A0DB.html">$A0DB</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A0DB.html">A0DB</a>.</td>
+<td class="instruction">CALL <a href="A0DB.html">CheckCharacterSchedule</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A0DB.html">CheckCharacterSchedule</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0a3"></span>A0A3</td>
-<td class="instruction">JR C,<a href="A040.html#a0d1">GameEntryPoint_5</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A040.html#a0d1">GameEntryPoint_5</a> if <span class="register">A</span> is less than 8D.</td>
+<td class="instruction">JR C,<a href="A040.html#a0d1">Character_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A040.html#a0d1">Character_Next</a> if this character is not scheduled.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a0a5"></span>
+<div class="comments">
+<div class="paragraph">
+The currently processed character has an active schedule so process it.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0a5"></span>A0A5</td>
 <td class="instruction">LD A,(IY+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IY</span>+00.</td>
+<td class="comment-1" rowspan="1">Fetch the character ID and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0a8"></span>A0A8</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">IY</span> and <span class="register">AF</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Stash the timetable pointer and character ID on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -336,16 +361,26 @@ This entry point is used by the routine at <a href="A0E7.html">A0E7</a>.
 <td class="comment-1" rowspan="1">Call <a href="CC37.html">CC37</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">GameEntryPoint_4</td>
+<td class="routine-comment" colspan="5">
+<span id="a0ae"></span>
+<div class="comments">
+<div class="paragraph">
+Repeatedly execute the characters script until it completes or encounters a wait condition.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CharacterScript_Loop</td>
 <td class="address-2"><span id="a0ae"></span>A0AE</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the character ID from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0af"></span>A0AF</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">AF</span> on the stack.</td>
+<td class="comment-1" rowspan="1">But keep a copy of the character ID on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -354,16 +389,25 @@ This entry point is used by the routine at <a href="A0E7.html">A0E7</a>.
 <td class="comment-1" rowspan="1">Call <a href="CC78.html">ScriptInterpreter</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a0b3"></span>
+<div class="comments">
+<div class="paragraph">
+Keep looping until the script for this character is finished.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0b3"></span>A0B3</td>
 <td class="instruction">LD HL,($A01F)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="A01F.html">A01F</a>.</td>
+<td class="comment-1" rowspan="4">Jump back to <a href="A040.html#a0ae">CharacterScript_Loop</a> until *<a href="A01F.html">CharacterScriptCycles</a> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0b6"></span>A0B6</td>
 <td class="instruction">LD A,L</td>
-<td class="comment-1" rowspan="3">Jump back to <a href="A040.html#a0ae">GameEntryPoint_4</a> until <span class="register">HL</span> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -373,13 +417,13 @@ This entry point is used by the routine at <a href="A0E7.html">A0E7</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0b8"></span>A0B8</td>
-<td class="instruction">JR Z,<a href="A040.html#a0ae">GameEntryPoint_4</a></td>
+<td class="instruction">JR Z,<a href="A040.html#a0ae">CharacterScript_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0ba"></span>A0BA</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">AF</span> and <span class="register">IY</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the character ID and timetable pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -387,70 +431,86 @@ This entry point is used by the routine at <a href="A0E7.html">A0E7</a>.
 <td class="instruction">POP IY</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a0bd"></span>
+<div class="comments">
+<div class="paragraph">
+Set up the next schedule time for this character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0bd"></span>A0BD</td>
 <td class="instruction">LD E,(IY+$06)</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=*<span class="register">IY</span>+06.</td>
+<td class="comment-1" rowspan="3">Add the characters schedule time to the current time...</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0c0"></span>A0C0</td>
 <td class="instruction">LD D,(IY+$07)</td>
-<td class="comment-1" rowspan="1"><span class="register">D</span>=*<span class="register">IY</span>+07.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0c3"></span>A0C3</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0c4"></span>A0C4</td>
 <td class="instruction">LD (IY+$06),L</td>
-<td class="comment-1" rowspan="1">Write <span class="register">L</span> to *<span class="register">IY</span>+06.</td>
+<td class="comment-1" rowspan="2">And write it back to the characters schedule.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0c7"></span>A0C7</td>
 <td class="instruction">LD (IY+$07),H</td>
-<td class="comment-1" rowspan="1">Write <span class="register">H</span> to *<span class="register">IY</span>+07.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0ca"></span>A0CA</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">IY</span> on the stack.</td>
+<td class="comment-1" rowspan="1">Stash the timetable pointer on the stack briefly.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0cc"></span>A0CC</td>
-<td class="instruction">CALL <a href="9C77.html">$9C77</a></td>
-<td class="comment-1" rowspan="1">Call <a href="9C77.html">9C77</a>.</td>
+<td class="instruction">CALL <a href="9C77.html">ExecuteCharacterAction</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9C77.html">ExecuteCharacterAction</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0cf"></span>A0CF</td>
 <td class="instruction">POP IY</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">IY</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the timetable pointer from the stack.</td>
 </tr>
 <tr>
-<td class="asm-label">GameEntryPoint_5</td>
+<td class="routine-comment" colspan="5">
+<span id="a0d1"></span>
+<div class="comments">
+<div class="paragraph">
+Move to the next character in the timetable.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Character_Next</td>
 <td class="address-2"><span id="a0d1"></span>A0D1</td>
 <td class="instruction">LD DE,$0008</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=0008.</td>
+<td class="comment-1" rowspan="2"><span class="register">IY</span>+=0008.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0d4"></span>A0D4</td>
 <td class="instruction">ADD IY,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">IY</span>+=<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a0d6"></span>A0D6</td>
-<td class="instruction">JR <a href="A040.html#a097">Game_Loop</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A040.html#a097">Game_Loop</a>.</td>
+<td class="instruction">JR <a href="A040.html#a097">CharacterProcessing_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A040.html#a097">CharacterProcessing_Loop</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

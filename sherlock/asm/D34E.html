@@ -36,109 +36,166 @@ Next: <a href="D36A.html">D36A</a>
 </td>
 </tr>
 </table>
-<div class="description">D34E: Routine at D34E</div>
+<div class="description">D34E: Search Character Table</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="9C6A.html">9C6A</a>, <a href="A25D.html">A25D</a>, <a href="C929.html">C929</a>, <a href="D237.html">D237</a> and <a href="DC6C.html">DC6C</a>.
+Used by the routines at <a href="9C6A.html">Handler_FindCharacterAction</a>, <a href="A25D.html">A25D</a>, <a href="C929.html">C929</a>, <a href="D237.html">D237</a> and <a href="DC6C.html">DC6C</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Character ID to match</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Table to search</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Entry ID or FF for no entry found</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to found entry</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when no entry was found</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">SearchCharacterTable</td>
 <td class="address-2"><span id="d34e"></span>D34E</td>
 <td class="instruction">EXX</td>
 <td class="comment-1" rowspan="1">Switch to the shadow registers.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d34f"></span>D34F</td>
 <td class="instruction">LD E,$03</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=03.</td>
+<td class="comment-1" rowspan="1">Set the length of the data in <span class="register">E</span> (03 bytes).</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="d351"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="D349.html">D349</a>.
+This entry point is used by the routine at <a href="D349.html">Search__Table</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">SearchTable</td>
 <td class="address-2"><span id="d351"></span>D351</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=<span class="register">IX</span> (using the stack).</td>
+<td class="comment-1" rowspan="2">Copy the table for searching into <span class="register">HL</span> (using the stack).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d353"></span>D353</td>
 <td class="instruction">POP HL</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d354"></span>D354</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Copy the character ID into <span class="register">B</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d355"></span>D355</td>
 <td class="instruction">LD D,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">D</span>=00.</td>
+<td class="comment-1" rowspan="1">Reset <span class="register">D</span> to 00 for the length offset calculation.</td>
 </tr>
 <tr>
+<td class="asm-label">SearchCharacterTable_Loop</td>
 <td class="address-2"><span id="d357"></span>D357</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Fetch a byte from the table.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d358"></span>D358</td>
 <td class="instruction">CP B</td>
-<td class="comment-1" rowspan="2">Jump to <a href="D34E.html#d363">D363</a> if <span class="register">A</span> is equal to <span class="register">B</span>.</td>
+<td class="comment-1" rowspan="4">Jump to <a href="D34E.html#d363">SearchCharacterTable_Return</a> if the byte is the character ID we're searching for or if the termination character has been reached (FF).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d359"></span>D359</td>
-<td class="instruction">JR Z,<a href="D34E.html#d363">$D363</a></td>
+<td class="instruction">JR Z,<a href="D34E.html#d363">SearchCharacterTable_Return</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d35b"></span>D35B</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="2">Jump to <a href="D34E.html#d363">D363</a> if <span class="register">A</span> is equal to FF.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d35d"></span>D35D</td>
-<td class="instruction">JR Z,<a href="D34E.html#d363">$D363</a></td>
+<td class="instruction">JR Z,<a href="D34E.html#d363">SearchCharacterTable_Return</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d35f"></span>D35F</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="1">Move to the next table entry.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d360"></span>D360</td>
-<td class="instruction">JP <a href="D34E.html#d357">$D357</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D34E.html#d357">D357</a>.</td>
+<td class="instruction">JP <a href="D34E.html#d357">SearchCharacterTable_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="D34E.html#d357">SearchCharacterTable_Loop</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d363"></span>
+<div class="comments">
+<div class="paragraph">
+Either the character ID was matched, or the terminator was reached.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SearchCharacterTable_Return</td>
 <td class="address-2"><span id="d363"></span>D363</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">HL</span> (using the stack).</td>
+<td class="comment-1" rowspan="2">Copy the table pointer into <span class="register">IX</span> (using the stack).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d364"></span>D364</td>
 <td class="instruction">POP IX</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d366"></span>D366</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with FF.</td>
+<td class="comment-1" rowspan="1">Set the zero flag if the termination character was reached (FF).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d368"></span>D368</td>
 <td class="instruction">EXX</td>
 <td class="comment-1" rowspan="1">Switch back to the normal registers.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d369"></span>D369</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>

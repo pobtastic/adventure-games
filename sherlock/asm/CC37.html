@@ -50,7 +50,7 @@ Used by the routine at <a href="A040.html">GameEntryPoint</a>.
 <tr>
 <td class="address-2"><span id="cc37"></span>CC37</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">AF</span> on the stack.</td>
+<td class="comment-1" rowspan="1">Stash the character ID on the stack briefly.</td>
 </tr>
 <tr>
 <td class="address-1"><span id="cc38"></span>CC38</td>
@@ -64,17 +64,17 @@ Used by the routine at <a href="A040.html">GameEntryPoint</a>.
 <tr>
 <td class="address-1"><span id="cc3c"></span>CC3C</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the character ID from the stack.</td>
 </tr>
 <tr>
 <td class="address-1"><span id="cc3d"></span>CC3D</td>
-<td class="instruction">CALL <a href="CC0E.html">$CC0E</a></td>
-<td class="comment-1" rowspan="1">Call <a href="CC0E.html">CC0E</a>.</td>
+<td class="instruction">CALL <a href="CC0E.html">FindCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="CC0E.html">FindCharacter</a>.</td>
 </tr>
 <tr>
 <td class="address-1"><span id="cc40"></span>CC40</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with FF.</td>
+<td class="comment-1" rowspan="1">Was the character ID found?</td>
 </tr>
 <tr>
 <td class="address-1"><span id="cc42"></span>CC42</td>
@@ -84,22 +84,32 @@ Used by the routine at <a href="A040.html">GameEntryPoint</a>.
 <tr>
 <td class="address-1"><span id="cc45"></span>CC45</td>
 <td class="instruction">JP Z,<a href="CC37.html#cc74">$CC74</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="CC37.html#cc74">CC74</a> if <span class="register">A</span> is equal to FF.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="CC37.html#cc74">CC74</a> if the character ID wasn't found, and the termination character was returned instead.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="cc48"></span>
+<div class="comments">
+<div class="paragraph">
+The character is active in the timetable.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="address-1"><span id="cc48"></span>CC48</td>
 <td class="instruction">LD ($9FDB),IY</td>
-<td class="comment-1" rowspan="1">Write <span class="register">IY</span> to <a href="9FDB.html">9FDB</a>.</td>
+<td class="comment-1" rowspan="1">Write the characters timetable pointer to *<a href="9FDB.html">CurrentCharacter_TimetablePointer</a>.</td>
 </tr>
 <tr>
 <td class="address-1"><span id="cc4c"></span>CC4C</td>
 <td class="instruction">LD ($A036),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="A036.html">A036</a>.</td>
+<td class="comment-1" rowspan="1">Write the character ID to *<a href="A036.html">CurrentCharacter_ID</a>.</td>
 </tr>
 <tr>
 <td class="address-1"><span id="cc4f"></span>CC4F</td>
-<td class="instruction">CALL <a href="B77F.html#b91f">$B91F</a></td>
-<td class="comment-1" rowspan="1">Call <a href="B77F.html#b91f">B91F</a>.</td>
+<td class="instruction">CALL <a href="B91F.html">$B91F</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B91F.html">B91F</a>.</td>
 </tr>
 <tr>
 <td class="address-1"><span id="cc52"></span>CC52</td>
@@ -154,7 +164,7 @@ This entry point is used by the routine at <a href="CC78.html">ScriptInterpreter
 <tr>
 <td class="address-1"><span id="cc64"></span>CC64</td>
 <td class="instruction">LD A,($9860)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="9860.html">9860</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="9860.html">Table_Timetable</a>.</td>
 </tr>
 <tr>
 <td class="address-1"><span id="cc67"></span>CC67</td>
@@ -178,11 +188,12 @@ This entry point is used by the routine at <a href="CC78.html">ScriptInterpreter
 <tr>
 <td class="address-2"><span id="cc71"></span>CC71</td>
 <td class="instruction">LD HL,$0000</td>
-<td class="comment-1" rowspan="2">Write 0000 to *<a href="A01F.html">A01F</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=0000.</td>
 </tr>
 <tr>
 <td class="address-2"><span id="cc74"></span>CC74</td>
 <td class="instruction">LD ($A01F),HL</td>
+<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to *<a href="A01F.html">CharacterScriptCycles</a>.</td>
 </tr>
 <tr>
 <td class="address-1"><span id="cc77"></span>CC77</td>
