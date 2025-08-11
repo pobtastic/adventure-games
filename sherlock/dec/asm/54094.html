@@ -36,13 +36,13 @@ Next: <a href="54122.html">54122</a>
 </td>
 </tr>
 </table>
-<div class="description">54094: Search Character Table</div>
+<div class="description">54094: Search Three-Byte Length Table</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="40042.html">Handler_FindCharacterAction</a>, <a href="41565.html">41565</a>, <a href="51497.html">51497</a>, <a href="53815.html">53815</a> and <a href="56428.html">56428</a>.
+Used by the routines at <a href="40042.html">Handler_FindCharacterAction</a>, <a href="41565.html">41565</a>, <a href="51497.html">51497</a>, <a href="53815.html">FetchObjectDataPointer</a> and <a href="56428.html">56428</a>.
 </div>
 </div>
 <table class="input">
@@ -51,7 +51,7 @@ Used by the routines at <a href="40042.html">Handler_FindCharacterAction</a>, <a
 </tr>
 <tr>
 <td class="register">A</td>
-<td class="register-desc">Character ID to match</td>
+<td class="register-desc">Table ID to match</td>
 </tr>
 <tr>
 <td class="register">IX</td>
@@ -78,7 +78,7 @@ Used by the routines at <a href="40042.html">Handler_FindCharacterAction</a>, <a
 </td>
 </tr>
 <tr>
-<td class="asm-label">SearchCharacterTable</td>
+<td class="asm-label">SearchThreeByteTable</td>
 <td class="address-2"><span id="54094"></span>54094</td>
 <td class="instruction">EXX</td>
 <td class="comment-1" rowspan="1">Switch to the shadow registers.</td>
@@ -94,13 +94,13 @@ Used by the routines at <a href="40042.html">Handler_FindCharacterAction</a>, <a
 <span id="54097"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="54089.html">Search__Table</a>.
+This entry point is used by the routine at <a href="54089.html">SearchTwoByteTable</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">SearchTable</td>
+<td class="asm-label">SearchTable_Start</td>
 <td class="address-2"><span id="54097"></span>54097</td>
 <td class="instruction">PUSH IX</td>
 <td class="comment-1" rowspan="2">Copy the table for searching into <span class="register">HL</span> (using the stack).</td>
@@ -114,7 +114,7 @@ This entry point is used by the routine at <a href="54089.html">Search__Table</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="54100"></span>54100</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1">Copy the character ID into <span class="register">B</span>.</td>
+<td class="comment-1" rowspan="1">Copy the table ID into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -123,7 +123,7 @@ This entry point is used by the routine at <a href="54089.html">Search__Table</a
 <td class="comment-1" rowspan="1">Reset <span class="register">D</span> to 0 for the length offset calculation.</td>
 </tr>
 <tr>
-<td class="asm-label">SearchCharacterTable_Loop</td>
+<td class="asm-label">SearchTable_Loop</td>
 <td class="address-2"><span id="54103"></span>54103</td>
 <td class="instruction">LD A,(HL)</td>
 <td class="comment-1" rowspan="1">Fetch a byte from the table.</td>
@@ -132,12 +132,12 @@ This entry point is used by the routine at <a href="54089.html">Search__Table</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="54104"></span>54104</td>
 <td class="instruction">CP B</td>
-<td class="comment-1" rowspan="4">Jump to <a href="54094.html#54115">SearchCharacterTable_Return</a> if the byte is the character ID we're searching for or if the termination character has been reached (255).</td>
+<td class="comment-1" rowspan="4">Jump to <a href="54094.html#54115">SearchTable_Return</a> if the byte is the table ID we're searching for or if the termination character has been reached (255).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54105"></span>54105</td>
-<td class="instruction">JR Z,<a href="54094.html#54115">SearchCharacterTable_Return</a></td>
+<td class="instruction">JR Z,<a href="54094.html#54115">SearchTable_Return</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -147,7 +147,7 @@ This entry point is used by the routine at <a href="54089.html">Search__Table</a
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54109"></span>54109</td>
-<td class="instruction">JR Z,<a href="54094.html#54115">SearchCharacterTable_Return</a></td>
+<td class="instruction">JR Z,<a href="54094.html#54115">SearchTable_Return</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -158,21 +158,21 @@ This entry point is used by the routine at <a href="54089.html">Search__Table</a
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54112"></span>54112</td>
-<td class="instruction">JP <a href="54094.html#54103">SearchCharacterTable_Loop</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="54094.html#54103">SearchCharacterTable_Loop</a>.</td>
+<td class="instruction">JP <a href="54094.html#54103">SearchTable_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="54094.html#54103">SearchTable_Loop</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="54115"></span>
 <div class="comments">
 <div class="paragraph">
-Either the character ID was matched, or the terminator was reached.
+Either the table ID was matched, or the terminator was reached.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">SearchCharacterTable_Return</td>
+<td class="asm-label">SearchTable_Return</td>
 <td class="address-2"><span id="54115"></span>54115</td>
 <td class="instruction">PUSH HL</td>
 <td class="comment-1" rowspan="2">Copy the table pointer into <span class="register">IX</span> (using the stack).</td>

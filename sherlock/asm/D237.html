@@ -36,53 +36,101 @@ Next: <a href="D249.html">D249</a>
 </td>
 </tr>
 </table>
-<div class="description">D237: Routine at D237</div>
+<div class="description">D237: Fetch Object Data Pointer</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="9CA2.html">CharacterAction_BasilPhipps</a>, <a href="9CCE.html">9CCE</a>, <a href="9E4A.html">9E4A</a>, <a href="A4BC.html">A4BC</a>, <a href="B936.html">B936</a>, <a href="C4D1.html">C4D1</a>, <a href="C821.html">C821</a>, <a href="C863.html">C863</a>, <a href="C86E.html">C86E</a>, <a href="C8A7.html">C8A7</a>, <a href="C8AF.html">C8AF</a>, <a href="C8BE.html">C8BE</a>, <a href="C8C6.html">C8C6</a>, <a href="C8EF.html">C8EF</a>, <a href="C989.html">C989</a>, <a href="D102.html">D102</a>, <a href="D275.html">D275</a>, <a href="D495.html">D495</a>, <a href="D590.html">D590</a>, <a href="D60B.html">D60B</a>, <a href="DC6C.html">DC6C</a> and <a href="F1C1.html">F1C1</a>.
+Used by the routines at <a href="9CA2.html">CharacterAction_BasilPhipps</a>, <a href="9CCE.html">9CCE</a>, <a href="9E4A.html">9E4A</a>, <a href="A4BC.html">A4BC</a>, <a href="B936.html">B936</a>, <a href="C4D1.html">C4D1</a>, <a href="C821.html">C821</a>, <a href="C863.html">C863</a>, <a href="C86E.html">C86E</a>, <a href="C8A7.html">C8A7</a>, <a href="C8AF.html">C8AF</a>, <a href="C8BE.html">C8BE</a>, <a href="C8C6.html">C8C6</a>, <a href="C8EF.html">C8EF</a>, <a href="C996.html">C996</a>, <a href="CBC2.html">CBC2</a>, <a href="D102.html">D102</a>, <a href="D275.html">D275</a>, <a href="D495.html">D495</a>, <a href="D590.html">D590</a>, <a href="D60B.html">D60B</a>, <a href="DC6C.html">DC6C</a> and <a href="F1C1.html">F1C1</a>.
+</div>
+<div class="paragraph">
+Looks up an object in the objects table and returns a pointer to it's data structure.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Object ID</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to object data</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">FetchObjectDataPointer</td>
 <td class="address-2"><span id="d237"></span>D237</td>
 <td class="instruction">LD IX,$8B6F</td>
 <td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="8B6F.html">Table_Objects</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d23b"></span>D23B</td>
-<td class="instruction">CALL <a href="D34E.html">SearchCharacterTable</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D34E.html">SearchCharacterTable</a>.</td>
+<td class="instruction">CALL <a href="D34E.html">SearchThreeByteTable</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D34E.html">SearchThreeByteTable</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d23e"></span>
+<div class="comments">
+<div class="paragraph">
+This will be restored back into <span class="register">HL</span> by the end of the routine.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d23e"></span>D23E</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack temporarily.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d23f"></span>
+<div class="comments">
+<div class="paragraph">
+Pretty clever way of using the stack here.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d23f"></span>D23F</td>
 <td class="instruction">LD L,(IX+$01)</td>
-<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>+01.</td>
+<td class="comment-1" rowspan="2">Load the object pointer into <span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d242"></span>D242</td>
 <td class="instruction">LD H,(IX+$02)</td>
-<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>+02.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d245"></span>D245</td>
 <td class="instruction">EX (SP),HL</td>
-<td class="comment-1" rowspan="1">Exchange the *<span class="register">SP</span> with the <span class="register">HL</span> register.</td>
+<td class="comment-1" rowspan="1">Swap the *<span class="register">SP</span> with the object pointer, restoring <span class="register">HL</span> to the original value.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d246"></span>D246</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">IX</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the object pointer into <span class="register">IX</span> (from the stack).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d248"></span>D248</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
