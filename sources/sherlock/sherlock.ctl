@@ -17,8 +17,8369 @@ N $5B1B #SIM(start=$A040,stop=$A04E)#SIM(start=$A05B,stop=$A071)
   $5B1B,$03 Jump to #R$A040.
 
 b $5B1E
-b $5D80
-b $5DBF
+
+g $5D80 Table: Word index
+@ $5D80 label=Table_WordIndex
+W $5D80,$02 #LET(letter=($40+(#PC-$5D80)/$02))#IF(#PEEK(#PC+$01)*$100+#PEEK(#PC))("#R($5DBF+#PEEK(#PC+$01)*$100+#PEEK(#PC))(#CHR({letter}))",)
+L $5D80,$02,$20
+
+g $5DC0 Table Dictionary: "A"
+@ $5DC0 Table_Dictionary_A
+D $5DC0 All dictionary words starting with "A".
+
+N $5DC0 Word #N(#PC-$5DBF): "#TOKEN($0001)".
+M $5DC0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DC0,$02,$01
+
+N $5DC2 Word #N(#PC-$5DBF): "#TOKEN($0003)".
+M $5DC2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DC2,$02,$01
+
+N $5DC4 Word #N(#PC-$5DBF): "#TOKEN($0005)".
+M $5DC4,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DC4,$02,$01
+M $5DC6,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5DC6,$04)
+B $5DC6,$03,b$01
+
+N $5DC9 Word #N(#PC-$5DBF): "#TOKEN($000A)".
+M $5DC9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DC9,$02,$01
+M $5DCB,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5DCB,$02)
+B $5DCB,$02,b$01
+
+N $5DCD Word #N(#PC-$5DBF): "#TOKEN($000E)".
+M $5DCD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DCD,$02,$01
+M $5DCF,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($5DCF,$06)
+B $5DCF,$04,b$01
+
+N $5DD3 Word #N(#PC-$5DBF): "#TOKEN($0014)".
+M $5DD3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DD3,$02,$01
+M $5DD5,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5DD5,$02)
+B $5DD5,$02,b$01
+
+N $5DD7 Word #N(#PC-$5DBF): "#TOKEN($0018)".
+M $5DD7,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DD7,$02,$01
+M $5DD9,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($5DD9,$06)
+B $5DD9,$04,b$01
+
+N $5DDD Word #N(#PC-$5DBF): "#TOKEN($001E)".
+M $5DDD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DDD,$02,$01
+M $5DDF,$05 Bit-packed letters (8 letters, 5 bits each):
+. #BITGROUPS($5DDF,$08)
+B $5DDF,$05,b$01
+
+N $5DE4 Word #N(#PC-$5DBF): "#TOKEN($0025)".
+M $5DE4,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DE4,$02,$01
+M $5DE6,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5DE6,$04)
+B $5DE6,$03,b$01
+
+N $5DE9 Word #N(#PC-$5DBF): "#TOKEN($002A)".
+M $5DE9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DE9,$02,$01
+M $5DEB,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5DEB,$03)
+B $5DEB,$02,b$01
+
+N $5DED Word #N(#PC-$5DBF): "#TOKEN($002E)".
+M $5DED,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DED,$02,$01
+M $5DEF,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5DEF,$01)
+B $5DEF,$01,b$01
+
+N $5DF0 Word #N(#PC-$5DBF): "#TOKEN($0031)".
+M $5DF0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DF0,$02,$01
+M $5DF2,$05 Bit-packed letters (8 letters, 5 bits each):
+. #BITGROUPS($5DF2,$08)
+B $5DF2,$05,b$01
+
+N $5DF7 Word #N(#PC-$5DBF): "#TOKEN($0038)".
+M $5DF7,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DF7,$02,$01
+M $5DF9,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5DF9,$03)
+B $5DF9,$02,b$01
+
+N $5DFB Word #N(#PC-$5DBF): "#TOKEN($003C)".
+M $5DFB,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DFB,$02,$01
+M $5DFD,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5DFD,$02)
+B $5DFD,$02,b$01
+
+N $5DFF Word #N(#PC-$5DBF): "#TOKEN($0040)".
+M $5DFF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5DFF,$02,$01
+M $5E01,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5E01,$01)
+B $5E01,$01,b$01
+
+N $5E02 Word #N(#PC-$5DBF): "#TOKEN($0043)".
+M $5E02,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E02,$02,$01
+M $5E04,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5E04,$03)
+B $5E04,$02,b$01
+
+N $5E06 Word #N(#PC-$5DBF): "#TOKEN($0047)".
+M $5E06,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E06,$02,$01
+M $5E08,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($5E08,$05)
+B $5E08,$04,b$01
+
+N $5E0C Word #N(#PC-$5DBF): "#TOKEN($004D)".
+M $5E0C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E0C,$02,$01
+M $5E0E,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($5E0E,$06)
+B $5E0E,$04,b$01
+
+N $5E12 Word #N(#PC-$5DBF): "#TOKEN($0053)".
+M $5E12,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E12,$02,$01
+M $5E14,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5E14,$03)
+B $5E14,$02,b$01
+
+N $5E16 Word #N(#PC-$5DBF): "#TOKEN($0057)".
+M $5E16,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E16,$02,$01
+M $5E18,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5E18,$01)
+B $5E18,$01,b$01
+
+N $5E19 Word #N(#PC-$5DBF): "#TOKEN($005A)".
+M $5E19,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E19,$02,$01
+M $5E1B,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5E1B,$01)
+B $5E1B,$01,b$01
+
+N $5E1C Word #N(#PC-$5DBF): "#TOKEN($005D)".
+M $5E1C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E1C,$02,$01
+M $5E1E,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5E1E,$01)
+B $5E1E,$01,b$01
+
+N $5E1F Word #N(#PC-$5DBF): "#TOKEN($0060)".
+M $5E1F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E1F,$02,$01
+M $5E21,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($5E21,$05)
+B $5E21,$04,b$01
+
+N $5E25 Word #N(#PC-$5DBF): "#TOKEN($0066)".
+M $5E25,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E25,$02,$01
+M $5E27,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5E27,$04)
+B $5E27,$03,b$01
+
+N $5E2A Word #N(#PC-$5DBF): "#TOKEN($006B)".
+M $5E2A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E2A,$02,$01
+M $5E2C,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5E2C,$04)
+B $5E2C,$03,b$01
+
+N $5E2F Word #N(#PC-$5DBF): "#TOKEN($0070)".
+M $5E2F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E2F,$02,$01
+M $5E31,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($5E31,$06)
+B $5E31,$04,b$01
+
+N $5E35 Word #N(#PC-$5DBF): "#TOKEN($0076)".
+M $5E35,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E35,$02,$01
+M $5E37,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5E37,$03)
+B $5E37,$02,b$01
+
+N $5E39 Word #N(#PC-$5DBF): "#TOKEN($007A)".
+M $5E39,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E39,$02,$01
+M $5E3B,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5E3B,$02)
+B $5E3B,$02,b$01
+
+N $5E3D Word #N(#PC-$5DBF): "#TOKEN($007E)".
+M $5E3D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E3D,$02,$01
+M $5E3F,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($5E3F,$06)
+B $5E3F,$04,b$01
+
+N $5E43 Word #N(#PC-$5DBF): "#TOKEN($0084)".
+M $5E43,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E43,$02,$01
+M $5E45,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5E45,$03)
+B $5E45,$02,b$01
+
+N $5E47 Word #N(#PC-$5DBF): "#TOKEN($0088)".
+M $5E47,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E47,$02,$01
+M $5E49,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5E49,$03)
+B $5E49,$02,b$01
+
+N $5E4B Word #N(#PC-$5DBF): "#TOKEN($008C)".
+M $5E4B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E4B,$02,$01
+M $5E4D,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5E4D,$01)
+B $5E4D,$01,b$01
+
+N $5E4E Word #N(#PC-$5DBF): "#TOKEN($008F)".
+M $5E4E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E4E,$02,$01
+M $5E50,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($5E50,$07)
+B $5E50,$05,b$01
+
+N $5E55 Word #N(#PC-$5DBF): "#TOKEN($0096)".
+M $5E55,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E55,$02,$01
+M $5E57,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5E57,$02)
+B $5E57,$02,b$01
+
+N $5E59 Word #N(#PC-$5DBF): "#TOKEN($009A)".
+M $5E59,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E59,$02,$01
+M $5E5B,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5E5B,$01)
+B $5E5B,$01,b$01
+
+N $5E5C Word #N(#PC-$5DBF): "#TOKEN($009D)".
+M $5E5C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E5C,$02,$01
+M $5E5E,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($5E5E,$05)
+B $5E5E,$04,b$01
+
+N $5E62 Word #N(#PC-$5DBF): "#TOKEN($00A3)".
+M $5E62,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E62,$02,$01
+M $5E64,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5E64,$03)
+B $5E64,$02,b$01
+
+
+g $5E66 Table Dictionary: "B"
+@ $5E66 Table_Dictionary_B
+D $5E66 All dictionary words starting with "B".
+
+N $5E66 Word #N(#PC-$5DBF): "#TOKEN($00A7)".
+M $5E66,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E66,$02,$01
+M $5E68,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5E68,$03)
+B $5E68,$02,b$01
+
+N $5E6A Word #N(#PC-$5DBF): "#TOKEN($00AB)".
+M $5E6A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E6A,$02,$01
+M $5E6C,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5E6C,$03)
+B $5E6C,$02,b$01
+
+N $5E6E Word #N(#PC-$5DBF): "#TOKEN($00AF)".
+M $5E6E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E6E,$02,$01
+M $5E70,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5E70,$02)
+B $5E70,$02,b$01
+
+N $5E72 Word #N(#PC-$5DBF): "#TOKEN($00B3)".
+M $5E72,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E72,$02,$01
+M $5E74,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($5E74,$05)
+B $5E74,$04,b$01
+
+N $5E78 Word #N(#PC-$5DBF): "#TOKEN($00B9)".
+M $5E78,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E78,$02,$01
+M $5E7A,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5E7A,$03)
+B $5E7A,$02,b$01
+
+N $5E7C Word #N(#PC-$5DBF): "#TOKEN($00BD)".
+M $5E7C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E7C,$02,$01
+M $5E7E,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5E7E,$01)
+B $5E7E,$01,b$01
+
+N $5E7F Word #N(#PC-$5DBF): "#TOKEN($00C0)".
+M $5E7F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E7F,$02,$01
+M $5E81,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5E81,$01)
+B $5E81,$01,b$01
+
+N $5E82 Word #N(#PC-$5DBF): "#TOKEN($00C3)".
+M $5E82,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E82,$02,$01
+
+N $5E84 Word #N(#PC-$5DBF): "#TOKEN($00C5)".
+M $5E84,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E84,$02,$01
+M $5E86,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($5E86,$05)
+B $5E86,$04,b$01
+
+N $5E8A Word #N(#PC-$5DBF): "#TOKEN($00CB)".
+M $5E8A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E8A,$02,$01
+M $5E8C,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5E8C,$01)
+B $5E8C,$01,b$01
+
+N $5E8D Word #N(#PC-$5DBF): "#TOKEN($00CE)".
+M $5E8D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E8D,$02,$01
+M $5E8F,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5E8F,$04)
+B $5E8F,$03,b$01
+
+N $5E92 Word #N(#PC-$5DBF): "#TOKEN($00D3)".
+M $5E92,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E92,$02,$01
+M $5E94,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5E94,$02)
+B $5E94,$02,b$01
+
+N $5E96 Word #N(#PC-$5DBF): "#TOKEN($00D7)".
+M $5E96,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E96,$02,$01
+M $5E98,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5E98,$04)
+B $5E98,$03,b$01
+
+N $5E9B Word #N(#PC-$5DBF): "#TOKEN($00DC)".
+M $5E9B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5E9B,$02,$01
+M $5E9D,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5E9D,$04)
+B $5E9D,$03,b$01
+
+N $5EA0 Word #N(#PC-$5DBF): "#TOKEN($00E1)".
+M $5EA0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EA0,$02,$01
+M $5EA2,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($5EA2,$05)
+B $5EA2,$04,b$01
+
+N $5EA6 Word #N(#PC-$5DBF): "#TOKEN($00E7)".
+M $5EA6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EA6,$02,$01
+M $5EA8,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5EA8,$02)
+B $5EA8,$02,b$01
+
+N $5EAA Word #N(#PC-$5DBF): "#TOKEN($00EB)".
+M $5EAA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EAA,$02,$01
+M $5EAC,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($5EAC,$05)
+B $5EAC,$04,b$01
+
+N $5EB0 Word #N(#PC-$5DBF): "#TOKEN($00F1)".
+M $5EB0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EB0,$02,$01
+M $5EB2,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5EB2,$02)
+B $5EB2,$02,b$01
+
+N $5EB4 Word #N(#PC-$5DBF): "#TOKEN($00F5)".
+M $5EB4,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EB4,$02,$01
+M $5EB6,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($5EB6,$05)
+B $5EB6,$04,b$01
+
+N $5EBA Word #N(#PC-$5DBF): "#TOKEN($00FB)".
+M $5EBA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EBA,$02,$01
+M $5EBC,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5EBC,$01)
+B $5EBC,$01,b$01
+
+N $5EBD Word #N(#PC-$5DBF): "#TOKEN($00FE)".
+M $5EBD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EBD,$02,$01
+M $5EBF,$05 Bit-packed letters (8 letters, 5 bits each):
+. #BITGROUPS($5EBF,$08)
+B $5EBF,$05,b$01
+
+N $5EC4 Word #N(#PC-$5DBF): "#TOKEN($0105)".
+M $5EC4,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EC4,$02,$01
+M $5EC6,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5EC6,$03)
+B $5EC6,$02,b$01
+
+N $5EC8 Word #N(#PC-$5DBF): "#TOKEN($0109)".
+M $5EC8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EC8,$02,$01
+M $5ECA,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($5ECA,$07)
+B $5ECA,$05,b$01
+
+N $5ECF Word #N(#PC-$5DBF): "#TOKEN($0110)".
+M $5ECF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5ECF,$02,$01
+M $5ED1,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($5ED1,$07)
+B $5ED1,$05,b$01
+
+N $5ED6 Word #N(#PC-$5DBF): "#TOKEN($0117)".
+M $5ED6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5ED6,$02,$01
+M $5ED8,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5ED8,$02)
+B $5ED8,$02,b$01
+
+N $5EDA Word #N(#PC-$5DBF): "#TOKEN($011B)".
+M $5EDA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EDA,$02,$01
+M $5EDC,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5EDC,$02)
+B $5EDC,$02,b$01
+
+N $5EDE Word #N(#PC-$5DBF): "#TOKEN($011F)".
+M $5EDE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EDE,$02,$01
+M $5EE0,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5EE0,$04)
+B $5EE0,$03,b$01
+
+N $5EE3 Word #N(#PC-$5DBF): "#TOKEN($0124)".
+M $5EE3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EE3,$02,$01
+M $5EE5,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5EE5,$04)
+B $5EE5,$03,b$01
+
+N $5EE8 Word #N(#PC-$5DBF): "#TOKEN($0129)".
+M $5EE8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EE8,$02,$01
+W $5EEA,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $5EEC,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5EEC,$04)
+B $5EEC,$03,b$01
+
+N $5EEF Word #N(#PC-$5DBF): "#TOKEN($0130)".
+M $5EEF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EEF,$02,$01
+M $5EF1,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5EF1,$04)
+B $5EF1,$03,b$01
+
+N $5EF4 Word #N(#PC-$5DBF): "#TOKEN($0135)".
+M $5EF4,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EF4,$02,$01
+M $5EF6,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($5EF6,$06)
+B $5EF6,$04,b$01
+
+N $5EFA Word #N(#PC-$5DBF): "#TOKEN($013B)".
+M $5EFA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EFA,$02,$01
+M $5EFC,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5EFC,$03)
+B $5EFC,$02,b$01
+
+N $5EFE Word #N(#PC-$5DBF): "#TOKEN($013F)".
+M $5EFE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5EFE,$02,$01
+M $5F00,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5F00,$03)
+B $5F00,$02,b$01
+
+N $5F02 Word #N(#PC-$5DBF): "#TOKEN($0143)".
+M $5F02,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F02,$02,$01
+M $5F04,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5F04,$02)
+B $5F04,$02,b$01
+
+N $5F06 Word #N(#PC-$5DBF): "#TOKEN($0147)".
+M $5F06,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F06,$02,$01
+M $5F08,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5F08,$01)
+B $5F08,$01,b$01
+
+N $5F09 Word #N(#PC-$5DBF): "#TOKEN($014A)".
+M $5F09,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F09,$02,$01
+M $5F0B,$06 Bit-packed letters (9 letters, 5 bits each):
+. #BITGROUPS($5F0B,$09)
+B $5F0B,$06,b$01
+
+N $5F11 Word #N(#PC-$5DBF): "#TOKEN($0152)".
+M $5F11,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F11,$02,$01
+M $5F13,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5F13,$04)
+B $5F13,$03,b$01
+
+N $5F16 Word #N(#PC-$5DBF): "#TOKEN($0157)".
+M $5F16,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F16,$02,$01
+M $5F18,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5F18,$02)
+B $5F18,$02,b$01
+
+N $5F1A Word #N(#PC-$5DBF): "#TOKEN($015B)".
+M $5F1A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F1A,$02,$01
+M $5F1C,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5F1C,$01)
+B $5F1C,$01,b$01
+
+N $5F1D Word #N(#PC-$5DBF): "#TOKEN($015E)".
+M $5F1D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F1D,$02,$01
+M $5F1F,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5F1F,$01)
+B $5F1F,$01,b$01
+
+N $5F20 Word #N(#PC-$5DBF): "#TOKEN($0161)".
+M $5F20,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F20,$02,$01
+M $5F22,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5F22,$01)
+B $5F22,$01,b$01
+
+
+g $5F23 Table Dictionary: "C"
+@ $5F23 Table_Dictionary_C
+D $5F23 All dictionary words starting with "C".
+
+N $5F23 Word #N(#PC-$5DBF): "#TOKEN($0164)".
+M $5F23,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F23,$02,$01
+M $5F25,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5F25,$02)
+B $5F25,$02,b$01
+
+N $5F27 Word #N(#PC-$5DBF): "#TOKEN($0168)".
+M $5F27,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F27,$02,$01
+M $5F29,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5F29,$03)
+B $5F29,$02,b$01
+
+N $5F2B Word #N(#PC-$5DBF): "#TOKEN($016C)".
+M $5F2B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F2B,$02,$01
+M $5F2D,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5F2D,$02)
+B $5F2D,$02,b$01
+
+N $5F2F Word #N(#PC-$5DBF): "#TOKEN($0170)".
+M $5F2F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F2F,$02,$01
+W $5F31,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+
+N $5F33 Word #N(#PC-$5DBF): "#TOKEN($0174)".
+M $5F33,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F33,$02,$01
+M $5F35,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5F35,$04)
+B $5F35,$03,b$01
+
+N $5F38 Word #N(#PC-$5DBF): "#TOKEN($0179)".
+M $5F38,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F38,$02,$01
+M $5F3A,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5F3A,$01)
+B $5F3A,$01,b$01
+
+N $5F3B Word #N(#PC-$5DBF): "#TOKEN($017C)".
+M $5F3B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F3B,$02,$01
+M $5F3D,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5F3D,$01)
+B $5F3D,$01,b$01
+
+N $5F3E Word #N(#PC-$5DBF): "#TOKEN($017F)".
+M $5F3E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F3E,$02,$01
+M $5F40,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5F40,$03)
+B $5F40,$02,b$01
+
+N $5F42 Word #N(#PC-$5DBF): "#TOKEN($0183)".
+M $5F42,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F42,$02,$01
+W $5F44,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $5F46,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($5F46,$05)
+B $5F46,$04,b$01
+
+N $5F4A Word #N(#PC-$5DBF): "#TOKEN($018B)".
+M $5F4A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F4A,$02,$01
+M $5F4C,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5F4C,$02)
+B $5F4C,$02,b$01
+
+N $5F4E Word #N(#PC-$5DBF): "#TOKEN($018F)".
+M $5F4E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F4E,$02,$01
+
+N $5F50 Word #N(#PC-$5DBF): "#TOKEN($0191)".
+M $5F50,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F50,$02,$01
+M $5F52,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5F52,$02)
+B $5F52,$02,b$01
+
+N $5F54 Word #N(#PC-$5DBF): "#TOKEN($0195)".
+M $5F54,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F54,$02,$01
+M $5F56,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5F56,$04)
+B $5F56,$03,b$01
+
+N $5F59 Word #N(#PC-$5DBF): "#TOKEN($019A)".
+M $5F59,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F59,$02,$01
+M $5F5B,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5F5B,$03)
+B $5F5B,$02,b$01
+
+N $5F5D Word #N(#PC-$5DBF): "#TOKEN($019E)".
+M $5F5D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F5D,$02,$01
+M $5F5F,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5F5F,$03)
+B $5F5F,$02,b$01
+
+N $5F61 Word #N(#PC-$5DBF): "#TOKEN($01A2)".
+M $5F61,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F61,$02,$01
+M $5F63,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5F63,$02)
+B $5F63,$02,b$01
+
+N $5F65 Word #N(#PC-$5DBF): "#TOKEN($01A6)".
+M $5F65,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F65,$02,$01
+M $5F67,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5F67,$04)
+B $5F67,$03,b$01
+
+N $5F6A Word #N(#PC-$5DBF): "#TOKEN($01AB)".
+M $5F6A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F6A,$02,$01
+M $5F6C,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($5F6C,$07)
+B $5F6C,$05,b$01
+
+N $5F71 Word #N(#PC-$5DBF): "#TOKEN($01B2)".
+M $5F71,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F71,$02,$01
+M $5F73,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5F73,$04)
+B $5F73,$03,b$01
+
+N $5F76 Word #N(#PC-$5DBF): "#TOKEN($01B7)".
+M $5F76,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F76,$02,$01
+M $5F78,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5F78,$03)
+B $5F78,$02,b$01
+
+N $5F7A Word #N(#PC-$5DBF): "#TOKEN($01BB)".
+M $5F7A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F7A,$02,$01
+M $5F7C,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5F7C,$01)
+B $5F7C,$01,b$01
+
+N $5F7D Word #N(#PC-$5DBF): "#TOKEN($01BE)".
+M $5F7D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F7D,$02,$01
+M $5F7F,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5F7F,$02)
+B $5F7F,$02,b$01
+
+N $5F81 Word #N(#PC-$5DBF): "#TOKEN($01C2)".
+M $5F81,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F81,$02,$01
+M $5F83,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5F83,$01)
+B $5F83,$01,b$01
+
+N $5F84 Word #N(#PC-$5DBF): "#TOKEN($01C5)".
+M $5F84,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F84,$02,$01
+M $5F86,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5F86,$04)
+B $5F86,$03,b$01
+
+N $5F89 Word #N(#PC-$5DBF): "#TOKEN($01CA)".
+M $5F89,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F89,$02,$01
+M $5F8B,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($5F8B,$05)
+B $5F8B,$04,b$01
+
+N $5F8F Word #N(#PC-$5DBF): "#TOKEN($01D0)".
+M $5F8F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F8F,$02,$01
+M $5F91,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5F91,$03)
+B $5F91,$02,b$01
+
+N $5F93 Word #N(#PC-$5DBF): "#TOKEN($01D4)".
+M $5F93,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F93,$02,$01
+M $5F95,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5F95,$02)
+B $5F95,$02,b$01
+
+N $5F97 Word #N(#PC-$5DBF): "#TOKEN($01D8)".
+M $5F97,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F97,$02,$01
+M $5F99,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($5F99,$07)
+B $5F99,$05,b$01
+
+N $5F9E Word #N(#PC-$5DBF): "#TOKEN($01DF)".
+M $5F9E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5F9E,$02,$01
+M $5FA0,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5FA0,$02)
+B $5FA0,$02,b$01
+
+N $5FA2 Word #N(#PC-$5DBF): "#TOKEN($01E3)".
+M $5FA2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FA2,$02,$01
+M $5FA4,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5FA4,$04)
+B $5FA4,$03,b$01
+
+N $5FA7 Word #N(#PC-$5DBF): "#TOKEN($01E8)".
+M $5FA7,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FA7,$02,$01
+M $5FA9,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5FA9,$03)
+B $5FA9,$02,b$01
+
+N $5FAB Word #N(#PC-$5DBF): "#TOKEN($01EC)".
+M $5FAB,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FAB,$02,$01
+M $5FAD,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5FAD,$02)
+B $5FAD,$02,b$01
+
+N $5FAF Word #N(#PC-$5DBF): "#TOKEN($01F0)".
+M $5FAF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FAF,$02,$01
+M $5FB1,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5FB1,$03)
+B $5FB1,$02,b$01
+
+N $5FB3 Word #N(#PC-$5DBF): "#TOKEN($01F4)".
+M $5FB3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FB3,$02,$01
+M $5FB5,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5FB5,$01)
+B $5FB5,$01,b$01
+
+N $5FB6 Word #N(#PC-$5DBF): "#TOKEN($01F7)".
+M $5FB6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FB6,$02,$01
+M $5FB8,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5FB8,$02)
+B $5FB8,$02,b$01
+
+N $5FBA Word #N(#PC-$5DBF): "#TOKEN($01FB)".
+M $5FBA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FBA,$02,$01
+M $5FBC,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5FBC,$04)
+B $5FBC,$03,b$01
+
+N $5FBF Word #N(#PC-$5DBF): "#TOKEN($0200)".
+M $5FBF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FBF,$02,$01
+M $5FC1,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5FC1,$03)
+B $5FC1,$02,b$01
+
+N $5FC3 Word #N(#PC-$5DBF): "#TOKEN($0204)".
+M $5FC3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FC3,$02,$01
+M $5FC5,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($5FC5,$05)
+B $5FC5,$04,b$01
+
+N $5FC9 Word #N(#PC-$5DBF): "#TOKEN($020A)".
+M $5FC9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FC9,$02,$01
+M $5FCB,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5FCB,$01)
+B $5FCB,$01,b$01
+
+
+g $5FCC Table Dictionary: "D"
+@ $5FCC Table_Dictionary_D
+D $5FCC All dictionary words starting with "D".
+
+N $5FCC Word #N(#PC-$5DBF): "#TOKEN($020D)".
+M $5FCC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FCC,$02,$01
+W $5FCE,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+
+N $5FD0 Word #N(#PC-$5DBF): "#TOKEN($0211)".
+M $5FD0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FD0,$02,$01
+M $5FD2,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5FD2,$04)
+B $5FD2,$03,b$01
+
+N $5FD5 Word #N(#PC-$5DBF): "#TOKEN($0216)".
+M $5FD5,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FD5,$02,$01
+M $5FD7,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5FD7,$04)
+B $5FD7,$03,b$01
+
+N $5FDA Word #N(#PC-$5DBF): "#TOKEN($021B)".
+M $5FDA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FDA,$02,$01
+M $5FDC,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5FDC,$01)
+B $5FDC,$01,b$01
+
+N $5FDD Word #N(#PC-$5DBF): "#TOKEN($021E)".
+M $5FDD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FDD,$02,$01
+M $5FDF,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5FDF,$02)
+B $5FDF,$02,b$01
+
+N $5FE1 Word #N(#PC-$5DBF): "#TOKEN($0222)".
+M $5FE1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FE1,$02,$01
+M $5FE3,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5FE3,$01)
+B $5FE3,$01,b$01
+
+N $5FE4 Word #N(#PC-$5DBF): "#TOKEN($0225)".
+M $5FE4,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FE4,$02,$01
+M $5FE6,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($5FE6,$03)
+B $5FE6,$02,b$01
+
+N $5FE8 Word #N(#PC-$5DBF): "#TOKEN($0229)".
+M $5FE8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FE8,$02,$01
+M $5FEA,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5FEA,$02)
+B $5FEA,$02,b$01
+
+N $5FEC Word #N(#PC-$5DBF): "#TOKEN($022D)".
+M $5FEC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FEC,$02,$01
+M $5FEE,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5FEE,$02)
+B $5FEE,$02,b$01
+
+N $5FF0 Word #N(#PC-$5DBF): "#TOKEN($0231)".
+M $5FF0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FF0,$02,$01
+M $5FF2,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($5FF2,$01)
+B $5FF2,$01,b$01
+
+N $5FF3 Word #N(#PC-$5DBF): "#TOKEN($0234)".
+M $5FF3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FF3,$02,$01
+M $5FF5,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($5FF5,$02)
+B $5FF5,$02,b$01
+
+N $5FF7 Word #N(#PC-$5DBF): "#TOKEN($0238)".
+M $5FF7,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FF7,$02,$01
+M $5FF9,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($5FF9,$04)
+B $5FF9,$03,b$01
+
+N $5FFC Word #N(#PC-$5DBF): "#TOKEN($023D)".
+M $5FFC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $5FFC,$02,$01
+M $5FFE,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($5FFE,$07)
+B $5FFE,$05,b$01
+
+N $6003 Word #N(#PC-$5DBF): "#TOKEN($0244)".
+M $6003,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6003,$02,$01
+M $6005,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6005,$01)
+B $6005,$01,b$01
+
+N $6006 Word #N(#PC-$5DBF): "#TOKEN($0247)".
+M $6006,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6006,$02,$01
+
+N $6008 Word #N(#PC-$5DBF): "#TOKEN($0249)".
+M $6008,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6008,$02,$01
+M $600A,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($600A,$06)
+B $600A,$04,b$01
+
+N $600E Word #N(#PC-$5DBF): "#TOKEN($024F)".
+M $600E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $600E,$02,$01
+M $6010,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6010,$04)
+B $6010,$03,b$01
+
+N $6013 Word #N(#PC-$5DBF): "#TOKEN($0254)".
+M $6013,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6013,$02,$01
+M $6015,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6015,$04)
+B $6015,$03,b$01
+
+N $6018 Word #N(#PC-$5DBF): "#TOKEN($0259)".
+M $6018,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6018,$02,$01
+M $601A,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($601A,$06)
+B $601A,$04,b$01
+
+N $601E Word #N(#PC-$5DBF): "#TOKEN($025F)".
+M $601E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $601E,$02,$01
+M $6020,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6020,$02)
+B $6020,$02,b$01
+
+N $6022 Word #N(#PC-$5DBF): "#TOKEN($0263)".
+M $6022,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6022,$02,$01
+M $6024,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6024,$01)
+B $6024,$01,b$01
+
+N $6025 Word #N(#PC-$5DBF): "#TOKEN($0266)".
+M $6025,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6025,$02,$01
+
+N $6027 Word #N(#PC-$5DBF): "#TOKEN($0268)".
+M $6027,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6027,$02,$01
+
+N $6029 Word #N(#PC-$5DBF): "#TOKEN($026A)".
+M $6029,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6029,$02,$01
+M $602B,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($602B,$02)
+B $602B,$02,b$01
+
+N $602D Word #N(#PC-$5DBF): "#TOKEN($026E)".
+M $602D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $602D,$02,$01
+M $602F,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($602F,$02)
+B $602F,$02,b$01
+
+N $6031 Word #N(#PC-$5DBF): "#TOKEN($0272)".
+M $6031,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6031,$02,$01
+M $6033,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6033,$02)
+B $6033,$02,b$01
+
+N $6035 Word #N(#PC-$5DBF): "#TOKEN($0276)".
+M $6035,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6035,$02,$01
+M $6037,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($6037,$05)
+B $6037,$04,b$01
+
+N $603B Word #N(#PC-$5DBF): "#TOKEN($027C)".
+M $603B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $603B,$02,$01
+M $603D,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($603D,$02)
+B $603D,$02,b$01
+
+
+g $603F Table Dictionary: "E"
+@ $603F Table_Dictionary_E
+D $603F All dictionary words starting with "E".
+
+N $603F Word #N(#PC-$5DBF): "#TOKEN($0280)".
+M $603F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $603F,$02,$01
+W $6041,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+
+N $6043 Word #N(#PC-$5DBF): "#TOKEN($0284)".
+M $6043,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6043,$02,$01
+M $6045,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6045,$03)
+B $6045,$02,b$01
+
+N $6047 Word #N(#PC-$5DBF): "#TOKEN($0288)".
+M $6047,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6047,$02,$01
+M $6049,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6049,$04)
+B $6049,$03,b$01
+
+N $604C Word #N(#PC-$5DBF): "#TOKEN($028D)".
+M $604C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $604C,$02,$01
+M $604E,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($604E,$06)
+B $604E,$04,b$01
+
+N $6052 Word #N(#PC-$5DBF): "#TOKEN($0293)".
+M $6052,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6052,$02,$01
+M $6054,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6054,$04)
+B $6054,$03,b$01
+
+N $6057 Word #N(#PC-$5DBF): "#TOKEN($0298)".
+M $6057,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6057,$02,$01
+M $6059,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6059,$03)
+B $6059,$02,b$01
+
+N $605B Word #N(#PC-$5DBF): "#TOKEN($029C)".
+M $605B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $605B,$02,$01
+M $605D,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($605D,$05)
+B $605D,$04,b$01
+
+N $6061 Word #N(#PC-$5DBF): "#TOKEN($02A2)".
+M $6061,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6061,$02,$01
+M $6063,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($6063,$05)
+B $6063,$04,b$01
+
+N $6067 Word #N(#PC-$5DBF): "#TOKEN($02A8)".
+M $6067,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6067,$02,$01
+M $6069,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6069,$03)
+B $6069,$02,b$01
+
+N $606B Word #N(#PC-$5DBF): "#TOKEN($02AC)".
+M $606B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $606B,$02,$01
+M $606D,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($606D,$01)
+B $606D,$01,b$01
+
+N $606E Word #N(#PC-$5DBF): "#TOKEN($02AF)".
+M $606E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $606E,$02,$01
+W $6070,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $6072,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($6072,$06)
+B $6072,$04,b$01
+
+N $6076 Word #N(#PC-$5DBF): "#TOKEN($02B7)".
+M $6076,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6076,$02,$01
+M $6078,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($6078,$06)
+B $6078,$04,b$01
+
+N $607C Word #N(#PC-$5DBF): "#TOKEN($02BD)".
+M $607C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $607C,$02,$01
+M $607E,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($607E,$03)
+B $607E,$02,b$01
+
+N $6080 Word #N(#PC-$5DBF): "#TOKEN($02C1)".
+M $6080,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6080,$02,$01
+M $6082,$07 Bit-packed letters (10 letters, 5 bits each):
+. #BITGROUPS($6082,$0A)
+B $6082,$07,b$01
+
+N $6089 Word #N(#PC-$5DBF): "#TOKEN($02CA)".
+M $6089,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6089,$02,$01
+M $608B,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($608B,$01)
+B $608B,$01,b$01
+
+N $608C Word #N(#PC-$5DBF): "#TOKEN($02CD)".
+M $608C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $608C,$02,$01
+M $608E,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($608E,$01)
+B $608E,$01,b$01
+
+N $608F Word #N(#PC-$5DBF): "#TOKEN($02D0)".
+M $608F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $608F,$02,$01
+M $6091,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($6091,$07)
+B $6091,$05,b$01
+
+N $6096 Word #N(#PC-$5DBF): "#TOKEN($02D7)".
+M $6096,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6096,$02,$01
+W $6098,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $609A,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($609A,$02)
+B $609A,$02,b$01
+
+
+g $609C Table Dictionary: "F"
+@ $609C Table_Dictionary_F
+D $609C All dictionary words starting with "F".
+
+N $609C Word #N(#PC-$5DBF): "#TOKEN($02DD)".
+M $609C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $609C,$02,$01
+M $609E,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($609E,$03)
+B $609E,$02,b$01
+
+N $60A0 Word #N(#PC-$5DBF): "#TOKEN($02E1)".
+M $60A0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60A0,$02,$01
+M $60A2,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($60A2,$02)
+B $60A2,$02,b$01
+
+N $60A4 Word #N(#PC-$5DBF): "#TOKEN($02E5)".
+M $60A4,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60A4,$02,$01
+M $60A6,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($60A6,$03)
+B $60A6,$02,b$01
+
+N $60A8 Word #N(#PC-$5DBF): "#TOKEN($02E9)".
+M $60A8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60A8,$02,$01
+M $60AA,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($60AA,$02)
+B $60AA,$02,b$01
+
+N $60AC Word #N(#PC-$5DBF): "#TOKEN($02ED)".
+M $60AC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60AC,$02,$01
+M $60AE,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($60AE,$03)
+B $60AE,$02,b$01
+
+N $60B0 Word #N(#PC-$5DBF): "#TOKEN($02F1)".
+M $60B0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60B0,$02,$01
+M $60B2,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($60B2,$01)
+B $60B2,$01,b$01
+
+N $60B3 Word #N(#PC-$5DBF): "#TOKEN($02F4)".
+M $60B3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60B3,$02,$01
+M $60B5,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($60B5,$01)
+B $60B5,$01,b$01
+
+N $60B6 Word #N(#PC-$5DBF): "#TOKEN($02F7)".
+M $60B6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60B6,$02,$01
+M $60B8,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($60B8,$05)
+B $60B8,$04,b$01
+
+N $60BC Word #N(#PC-$5DBF): "#TOKEN($02FD)".
+M $60BC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60BC,$02,$01
+M $60BE,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($60BE,$04)
+B $60BE,$03,b$01
+
+N $60C1 Word #N(#PC-$5DBF): "#TOKEN($0302)".
+M $60C1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60C1,$02,$01
+M $60C3,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($60C3,$04)
+B $60C3,$03,b$01
+
+N $60C6 Word #N(#PC-$5DBF): "#TOKEN($0307)".
+M $60C6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60C6,$02,$01
+M $60C8,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($60C8,$01)
+B $60C8,$01,b$01
+
+N $60C9 Word #N(#PC-$5DBF): "#TOKEN($030A)".
+M $60C9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60C9,$02,$01
+M $60CB,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($60CB,$07)
+B $60CB,$05,b$01
+
+N $60D0 Word #N(#PC-$5DBF): "#TOKEN($0311)".
+M $60D0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60D0,$02,$01
+M $60D2,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($60D2,$02)
+B $60D2,$02,b$01
+
+N $60D4 Word #N(#PC-$5DBF): "#TOKEN($0315)".
+M $60D4,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60D4,$02,$01
+M $60D6,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($60D6,$02)
+B $60D6,$02,b$01
+
+N $60D8 Word #N(#PC-$5DBF): "#TOKEN($0319)".
+M $60D8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60D8,$02,$01
+M $60DA,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($60DA,$05)
+B $60DA,$04,b$01
+
+N $60DE Word #N(#PC-$5DBF): "#TOKEN($031F)".
+M $60DE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60DE,$02,$01
+M $60E0,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($60E0,$02)
+B $60E0,$02,b$01
+
+N $60E2 Word #N(#PC-$5DBF): "#TOKEN($0323)".
+M $60E2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60E2,$02,$01
+M $60E4,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($60E4,$02)
+B $60E4,$02,b$01
+
+N $60E6 Word #N(#PC-$5DBF): "#TOKEN($0327)".
+M $60E6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60E6,$02,$01
+M $60E8,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($60E8,$06)
+B $60E8,$04,b$01
+
+N $60EC Word #N(#PC-$5DBF): "#TOKEN($032D)".
+M $60EC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60EC,$02,$01
+M $60EE,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($60EE,$05)
+B $60EE,$04,b$01
+
+N $60F2 Word #N(#PC-$5DBF): "#TOKEN($0333)".
+M $60F2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60F2,$02,$01
+M $60F4,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($60F4,$03)
+B $60F4,$02,b$01
+
+N $60F6 Word #N(#PC-$5DBF): "#TOKEN($0337)".
+M $60F6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60F6,$02,$01
+M $60F8,$05 Bit-packed letters (8 letters, 5 bits each):
+. #BITGROUPS($60F8,$08)
+B $60F8,$05,b$01
+
+N $60FD Word #N(#PC-$5DBF): "#TOKEN($033E)".
+M $60FD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $60FD,$02,$01
+M $60FF,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($60FF,$01)
+B $60FF,$01,b$01
+
+N $6100 Word #N(#PC-$5DBF): "#TOKEN($0341)".
+M $6100,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6100,$02,$01
+M $6102,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6102,$02)
+B $6102,$02,b$01
+
+N $6104 Word #N(#PC-$5DBF): "#TOKEN($0345)".
+M $6104,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6104,$02,$01
+M $6106,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6106,$01)
+B $6106,$01,b$01
+
+N $6107 Word #N(#PC-$5DBF): "#TOKEN($0348)".
+M $6107,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6107,$02,$01
+M $6109,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6109,$03)
+B $6109,$02,b$01
+
+N $610B Word #N(#PC-$5DBF): "#TOKEN($034C)".
+M $610B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $610B,$02,$01
+M $610D,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($610D,$04)
+B $610D,$03,b$01
+
+N $6110 Word #N(#PC-$5DBF): "#TOKEN($0351)".
+M $6110,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6110,$02,$01
+M $6112,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6112,$02)
+B $6112,$02,b$01
+
+N $6114 Word #N(#PC-$5DBF): "#TOKEN($0355)".
+M $6114,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6114,$02,$01
+M $6116,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6116,$02)
+B $6116,$02,b$01
+
+N $6118 Word #N(#PC-$5DBF): "#TOKEN($0359)".
+M $6118,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6118,$02,$01
+W $611A,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $611C,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($611C,$03)
+B $611C,$02,b$01
+
+N $611E Word #N(#PC-$5DBF): "#TOKEN($035F)".
+M $611E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $611E,$02,$01
+M $6120,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6120,$02)
+B $6120,$02,b$01
+
+N $6122 Word #N(#PC-$5DBF): "#TOKEN($0363)".
+M $6122,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6122,$02,$01
+M $6124,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($6124,$07)
+B $6124,$05,b$01
+
+
+g $6129 Table Dictionary: "G"
+@ $6129 Table_Dictionary_G
+D $6129 All dictionary words starting with "G".
+
+N $6129 Word #N(#PC-$5DBF): "#TOKEN($036A)".
+M $6129,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6129,$02,$01
+M $612B,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($612B,$05)
+B $612B,$04,b$01
+
+N $612F Word #N(#PC-$5DBF): "#TOKEN($0370)".
+M $612F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $612F,$02,$01
+M $6131,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6131,$02)
+B $6131,$02,b$01
+
+N $6133 Word #N(#PC-$5DBF): "#TOKEN($0374)".
+M $6133,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6133,$02,$01
+M $6135,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6135,$01)
+B $6135,$01,b$01
+
+N $6136 Word #N(#PC-$5DBF): "#TOKEN($0377)".
+M $6136,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6136,$02,$01
+M $6138,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6138,$02)
+B $6138,$02,b$01
+
+N $613A Word #N(#PC-$5DBF): "#TOKEN($037B)".
+M $613A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $613A,$02,$01
+M $613C,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($613C,$05)
+B $613C,$04,b$01
+
+N $6140 Word #N(#PC-$5DBF): "#TOKEN($0381)".
+M $6140,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6140,$02,$01
+M $6142,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6142,$01)
+B $6142,$01,b$01
+
+N $6143 Word #N(#PC-$5DBF): "#TOKEN($0384)".
+M $6143,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6143,$02,$01
+M $6145,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6145,$04)
+B $6145,$03,b$01
+
+N $6148 Word #N(#PC-$5DBF): "#TOKEN($0389)".
+M $6148,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6148,$02,$01
+M $614A,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($614A,$02)
+B $614A,$02,b$01
+
+N $614C Word #N(#PC-$5DBF): "#TOKEN($038D)".
+M $614C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $614C,$02,$01
+M $614E,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($614E,$01)
+B $614E,$01,b$01
+
+N $614F Word #N(#PC-$5DBF): "#TOKEN($0390)".
+M $614F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $614F,$02,$01
+
+N $6151 Word #N(#PC-$5DBF): "#TOKEN($0392)".
+M $6151,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6151,$02,$01
+M $6153,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6153,$02)
+B $6153,$02,b$01
+
+N $6155 Word #N(#PC-$5DBF): "#TOKEN($0396)".
+M $6155,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6155,$02,$01
+M $6157,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6157,$02)
+B $6157,$02,b$01
+
+N $6159 Word #N(#PC-$5DBF): "#TOKEN($039A)".
+M $6159,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6159,$02,$01
+M $615B,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($615B,$01)
+B $615B,$01,b$01
+
+N $615C Word #N(#PC-$5DBF): "#TOKEN($039D)".
+M $615C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $615C,$02,$01
+M $615E,$06 Bit-packed letters (9 letters, 5 bits each):
+. #BITGROUPS($615E,$09)
+B $615E,$06,b$01
+
+N $6164 Word #N(#PC-$5DBF): "#TOKEN($03A5)".
+M $6164,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6164,$02,$01
+M $6166,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6166,$04)
+B $6166,$03,b$01
+
+N $6169 Word #N(#PC-$5DBF): "#TOKEN($03AA)".
+M $6169,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6169,$02,$01
+M $616B,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($616B,$04)
+B $616B,$03,b$01
+
+N $616E Word #N(#PC-$5DBF): "#TOKEN($03AF)".
+M $616E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $616E,$02,$01
+M $6170,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6170,$04)
+B $6170,$03,b$01
+
+N $6173 Word #N(#PC-$5DBF): "#TOKEN($03B4)".
+M $6173,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6173,$02,$01
+M $6175,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6175,$01)
+B $6175,$01,b$01
+
+N $6176 Word #N(#PC-$5DBF): "#TOKEN($03B7)".
+M $6176,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6176,$02,$01
+M $6178,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6178,$01)
+B $6178,$01,b$01
+
+
+g $6179 Table Dictionary: "H"
+@ $6179 Table_Dictionary_H
+D $6179 All dictionary words starting with "H".
+
+N $6179 Word #N(#PC-$5DBF): "#TOKEN($03BA)".
+M $6179,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6179,$02,$01
+M $617B,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($617B,$02)
+B $617B,$02,b$01
+
+N $617D Word #N(#PC-$5DBF): "#TOKEN($03BE)".
+M $617D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $617D,$02,$01
+M $617F,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($617F,$02)
+B $617F,$02,b$01
+
+N $6181 Word #N(#PC-$5DBF): "#TOKEN($03C2)".
+M $6181,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6181,$02,$01
+M $6183,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6183,$02)
+B $6183,$02,b$01
+
+N $6185 Word #N(#PC-$5DBF): "#TOKEN($03C6)".
+M $6185,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6185,$02,$01
+M $6187,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6187,$03)
+B $6187,$02,b$01
+
+N $6189 Word #N(#PC-$5DBF): "#TOKEN($03CA)".
+M $6189,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6189,$02,$01
+M $618B,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($618B,$02)
+B $618B,$02,b$01
+
+N $618D Word #N(#PC-$5DBF): "#TOKEN($03CE)".
+M $618D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $618D,$02,$01
+M $618F,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($618F,$03)
+B $618F,$02,b$01
+
+N $6191 Word #N(#PC-$5DBF): "#TOKEN($03D2)".
+M $6191,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6191,$02,$01
+M $6193,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($6193,$06)
+B $6193,$04,b$01
+
+N $6197 Word #N(#PC-$5DBF): "#TOKEN($03D8)".
+M $6197,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6197,$02,$01
+M $6199,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6199,$01)
+B $6199,$01,b$01
+
+N $619A Word #N(#PC-$5DBF): "#TOKEN($03DB)".
+M $619A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $619A,$02,$01
+M $619C,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($619C,$03)
+B $619C,$02,b$01
+
+N $619E Word #N(#PC-$5DBF): "#TOKEN($03DF)".
+M $619E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $619E,$02,$01
+M $61A0,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($61A0,$02)
+B $61A0,$02,b$01
+
+N $61A2 Word #N(#PC-$5DBF): "#TOKEN($03E3)".
+M $61A2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61A2,$02,$01
+M $61A4,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($61A4,$01)
+B $61A4,$01,b$01
+
+N $61A5 Word #N(#PC-$5DBF): "#TOKEN($03E6)".
+M $61A5,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61A5,$02,$01
+M $61A7,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($61A7,$02)
+B $61A7,$02,b$01
+
+N $61A9 Word #N(#PC-$5DBF): "#TOKEN($03EA)".
+M $61A9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61A9,$02,$01
+M $61AB,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($61AB,$01)
+B $61AB,$01,b$01
+
+N $61AC Word #N(#PC-$5DBF): "#TOKEN($03ED)".
+M $61AC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61AC,$02,$01
+M $61AE,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($61AE,$02)
+B $61AE,$02,b$01
+
+N $61B0 Word #N(#PC-$5DBF): "#TOKEN($03F1)".
+M $61B0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61B0,$02,$01
+M $61B2,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($61B2,$03)
+B $61B2,$02,b$01
+
+N $61B4 Word #N(#PC-$5DBF): "#TOKEN($03F5)".
+M $61B4,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61B4,$02,$01
+M $61B6,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($61B6,$03)
+B $61B6,$02,b$01
+
+N $61B8 Word #N(#PC-$5DBF): "#TOKEN($03F9)".
+M $61B8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61B8,$02,$01
+M $61BA,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($61BA,$01)
+B $61BA,$01,b$01
+
+N $61BB Word #N(#PC-$5DBF): "#TOKEN($03FC)".
+M $61BB,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61BB,$02,$01
+M $61BD,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($61BD,$01)
+B $61BD,$01,b$01
+
+N $61BE Word #N(#PC-$5DBF): "#TOKEN($03FF)".
+M $61BE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61BE,$02,$01
+M $61C0,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($61C0,$01)
+B $61C0,$01,b$01
+
+N $61C1 Word #N(#PC-$5DBF): "#TOKEN($0402)".
+M $61C1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61C1,$02,$01
+M $61C3,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($61C3,$04)
+B $61C3,$03,b$01
+
+N $61C6 Word #N(#PC-$5DBF): "#TOKEN($0407)".
+M $61C6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61C6,$02,$01
+M $61C8,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($61C8,$01)
+B $61C8,$01,b$01
+
+N $61C9 Word #N(#PC-$5DBF): "#TOKEN($040A)".
+M $61C9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61C9,$02,$01
+M $61CB,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($61CB,$01)
+B $61CB,$01,b$01
+
+N $61CC Word #N(#PC-$5DBF): "#TOKEN($040D)".
+M $61CC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61CC,$02,$01
+M $61CE,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($61CE,$03)
+B $61CE,$02,b$01
+
+N $61D0 Word #N(#PC-$5DBF): "#TOKEN($0411)".
+M $61D0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61D0,$02,$01
+M $61D2,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($61D2,$01)
+B $61D2,$01,b$01
+
+N $61D3 Word #N(#PC-$5DBF): "#TOKEN($0414)".
+M $61D3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61D3,$02,$01
+M $61D5,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($61D5,$01)
+B $61D5,$01,b$01
+
+N $61D6 Word #N(#PC-$5DBF): "#TOKEN($0417)".
+M $61D6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61D6,$02,$01
+M $61D8,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($61D8,$05)
+B $61D8,$04,b$01
+
+N $61DC Word #N(#PC-$5DBF): "#TOKEN($041D)".
+M $61DC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61DC,$02,$01
+M $61DE,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($61DE,$03)
+B $61DE,$02,b$01
+
+N $61E0 Word #N(#PC-$5DBF): "#TOKEN($0421)".
+M $61E0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61E0,$02,$01
+M $61E2,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($61E2,$01)
+B $61E2,$01,b$01
+
+N $61E3 Word #N(#PC-$5DBF): "#TOKEN($0424)".
+M $61E3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61E3,$02,$01
+M $61E5,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($61E5,$03)
+B $61E5,$02,b$01
+
+N $61E7 Word #N(#PC-$5DBF): "#TOKEN($0428)".
+M $61E7,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61E7,$02,$01
+M $61E9,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($61E9,$04)
+B $61E9,$03,b$01
+
+
+g $61EC Table Dictionary: "I"
+@ $61EC Table_Dictionary_I
+D $61EC All dictionary words starting with "I".
+
+N $61EC Word #N(#PC-$5DBF): "#TOKEN($042D)".
+M $61EC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61EC,$02,$01
+W $61EE,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+
+N $61F0 Word #N(#PC-$5DBF): "#TOKEN($0431)".
+M $61F0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61F0,$02,$01
+M $61F2,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($61F2,$04)
+B $61F2,$03,b$01
+
+N $61F5 Word #N(#PC-$5DBF): "#TOKEN($0436)".
+M $61F5,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61F5,$02,$01
+M $61F7,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($61F7,$01)
+B $61F7,$01,b$01
+
+N $61F8 Word #N(#PC-$5DBF): "#TOKEN($0439)".
+M $61F8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61F8,$02,$01
+M $61FA,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($61FA,$06)
+B $61FA,$04,b$01
+
+N $61FE Word #N(#PC-$5DBF): "#TOKEN($043F)".
+M $61FE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $61FE,$02,$01
+M $6200,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($6200,$07)
+B $6200,$05,b$01
+
+N $6205 Word #N(#PC-$5DBF): "#TOKEN($0446)".
+M $6205,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6205,$02,$01
+M $6207,$05 Bit-packed letters (8 letters, 5 bits each):
+. #BITGROUPS($6207,$08)
+B $6207,$05,b$01
+
+N $620C Word #N(#PC-$5DBF): "#TOKEN($044D)".
+M $620C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $620C,$02,$01
+M $620E,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($620E,$01)
+B $620E,$01,b$01
+
+N $620F Word #N(#PC-$5DBF): "#TOKEN($0450)".
+M $620F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $620F,$02,$01
+W $6211,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $6213,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6213,$01)
+B $6213,$01,b$01
+
+N $6214 Word #N(#PC-$5DBF): "#TOKEN($0455)".
+M $6214,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6214,$02,$01
+M $6216,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($6216,$06)
+B $6216,$04,b$01
+
+N $621A Word #N(#PC-$5DBF): "#TOKEN($045B)".
+M $621A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $621A,$02,$01
+M $621C,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($621C,$04)
+B $621C,$03,b$01
+
+N $621F Word #N(#PC-$5DBF): "#TOKEN($0460)".
+M $621F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $621F,$02,$01
+M $6221,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($6221,$06)
+B $6221,$04,b$01
+
+N $6225 Word #N(#PC-$5DBF): "#TOKEN($0466)".
+M $6225,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6225,$02,$01
+M $6227,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6227,$04)
+B $6227,$03,b$01
+
+N $622A Word #N(#PC-$5DBF): "#TOKEN($046B)".
+M $622A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $622A,$02,$01
+M $622C,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($622C,$06)
+B $622C,$04,b$01
+
+N $6230 Word #N(#PC-$5DBF): "#TOKEN($0471)".
+M $6230,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6230,$02,$01
+M $6232,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($6232,$06)
+B $6232,$04,b$01
+
+N $6236 Word #N(#PC-$5DBF): "#TOKEN($0477)".
+M $6236,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6236,$02,$01
+M $6238,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6238,$01)
+B $6238,$01,b$01
+
+N $6239 Word #N(#PC-$5DBF): "#TOKEN($047A)".
+M $6239,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6239,$02,$01
+M $623B,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($623B,$07)
+B $623B,$05,b$01
+
+N $6240 Word #N(#PC-$5DBF): "#TOKEN($0481)".
+M $6240,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6240,$02,$01
+M $6242,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6242,$03)
+B $6242,$02,b$01
+
+N $6244 Word #N(#PC-$5DBF): "#TOKEN($0485)".
+M $6244,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6244,$02,$01
+M $6246,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6246,$01)
+B $6246,$01,b$01
+
+N $6247 Word #N(#PC-$5DBF): "#TOKEN($0488)".
+M $6247,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6247,$02,$01
+M $6249,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6249,$01)
+B $6249,$01,b$01
+
+
+g $624A Table Dictionary: "J"
+@ $624A Table_Dictionary_J
+D $624A All dictionary words starting with "J".
+
+N $624A Word #N(#PC-$5DBF): "#TOKEN($048B)".
+M $624A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $624A,$02,$01
+M $624C,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($624C,$04)
+B $624C,$03,b$01
+
+N $624F Word #N(#PC-$5DBF): "#TOKEN($0490)".
+M $624F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $624F,$02,$01
+M $6251,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6251,$03)
+B $6251,$02,b$01
+
+
+g $6253 Table Dictionary: "K"
+@ $6253 Table_Dictionary_K
+D $6253 All dictionary words starting with "K".
+
+N $6253 Word #N(#PC-$5DBF): "#TOKEN($0494)".
+M $6253,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6253,$02,$01
+M $6255,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6255,$03)
+B $6255,$02,b$01
+
+N $6257 Word #N(#PC-$5DBF): "#TOKEN($0498)".
+M $6257,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6257,$02,$01
+M $6259,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6259,$02)
+B $6259,$02,b$01
+
+N $625B Word #N(#PC-$5DBF): "#TOKEN($049C)".
+M $625B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $625B,$02,$01
+M $625D,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($625D,$03)
+B $625D,$02,b$01
+
+N $625F Word #N(#PC-$5DBF): "#TOKEN($04A0)".
+M $625F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $625F,$02,$01
+M $6261,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($6261,$05)
+B $6261,$04,b$01
+
+N $6265 Word #N(#PC-$5DBF): "#TOKEN($04A6)".
+M $6265,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6265,$02,$01
+M $6267,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6267,$04)
+B $6267,$03,b$01
+
+N $626A Word #N(#PC-$5DBF): "#TOKEN($04AB)".
+M $626A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $626A,$02,$01
+
+N $626C Word #N(#PC-$5DBF): "#TOKEN($04AD)".
+M $626C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $626C,$02,$01
+M $626E,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($626E,$01)
+B $626E,$01,b$01
+
+
+g $626F Table Dictionary: "L"
+@ $626F Table_Dictionary_L
+D $626F All dictionary words starting with "L".
+
+N $626F Word #N(#PC-$5DBF): "#TOKEN($04B0)".
+M $626F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $626F,$02,$01
+W $6271,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+
+N $6273 Word #N(#PC-$5DBF): "#TOKEN($04B4)".
+M $6273,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6273,$02,$01
+M $6275,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6275,$04)
+B $6275,$03,b$01
+
+N $6278 Word #N(#PC-$5DBF): "#TOKEN($04B9)".
+M $6278,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6278,$02,$01
+M $627A,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($627A,$02)
+B $627A,$02,b$01
+
+N $627C Word #N(#PC-$5DBF): "#TOKEN($04BD)".
+M $627C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $627C,$02,$01
+M $627E,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($627E,$02)
+B $627E,$02,b$01
+
+N $6280 Word #N(#PC-$5DBF): "#TOKEN($04C1)".
+M $6280,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6280,$02,$01
+M $6282,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6282,$03)
+B $6282,$02,b$01
+
+N $6284 Word #N(#PC-$5DBF): "#TOKEN($04C5)".
+M $6284,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6284,$02,$01
+M $6286,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6286,$02)
+B $6286,$02,b$01
+
+N $6288 Word #N(#PC-$5DBF): "#TOKEN($04C9)".
+M $6288,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6288,$02,$01
+M $628A,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($628A,$03)
+B $628A,$02,b$01
+
+N $628C Word #N(#PC-$5DBF): "#TOKEN($04CD)".
+M $628C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $628C,$02,$01
+M $628E,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($628E,$06)
+B $628E,$04,b$01
+
+N $6292 Word #N(#PC-$5DBF): "#TOKEN($04D3)".
+M $6292,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6292,$02,$01
+M $6294,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6294,$04)
+B $6294,$03,b$01
+
+N $6297 Word #N(#PC-$5DBF): "#TOKEN($04D8)".
+M $6297,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6297,$02,$01
+M $6299,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6299,$02)
+B $6299,$02,b$01
+
+N $629B Word #N(#PC-$5DBF): "#TOKEN($04DC)".
+M $629B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $629B,$02,$01
+M $629D,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($629D,$06)
+B $629D,$04,b$01
+
+N $62A1 Word #N(#PC-$5DBF): "#TOKEN($04E2)".
+M $62A1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62A1,$02,$01
+M $62A3,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($62A3,$01)
+B $62A3,$01,b$01
+
+N $62A4 Word #N(#PC-$5DBF): "#TOKEN($04E5)".
+M $62A4,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62A4,$02,$01
+M $62A6,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($62A6,$04)
+B $62A6,$03,b$01
+
+N $62A9 Word #N(#PC-$5DBF): "#TOKEN($04EA)".
+M $62A9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62A9,$02,$01
+M $62AB,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($62AB,$06)
+B $62AB,$04,b$01
+
+N $62AF Word #N(#PC-$5DBF): "#TOKEN($04F0)".
+M $62AF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62AF,$02,$01
+M $62B1,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($62B1,$03)
+B $62B1,$02,b$01
+
+N $62B3 Word #N(#PC-$5DBF): "#TOKEN($04F4)".
+M $62B3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62B3,$02,$01
+M $62B5,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($62B5,$01)
+B $62B5,$01,b$01
+
+N $62B6 Word #N(#PC-$5DBF): "#TOKEN($04F7)".
+M $62B6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62B6,$02,$01
+M $62B8,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($62B8,$01)
+B $62B8,$01,b$01
+
+N $62B9 Word #N(#PC-$5DBF): "#TOKEN($04FA)".
+M $62B9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62B9,$02,$01
+
+N $62BB Word #N(#PC-$5DBF): "#TOKEN($04FC)".
+M $62BB,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62BB,$02,$01
+M $62BD,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($62BD,$02)
+B $62BD,$02,b$01
+
+N $62BF Word #N(#PC-$5DBF): "#TOKEN($0500)".
+M $62BF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62BF,$02,$01
+
+N $62C1 Word #N(#PC-$5DBF): "#TOKEN($0502)".
+M $62C1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62C1,$02,$01
+W $62C3,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $62C5,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($62C5,$01)
+B $62C5,$01,b$01
+
+N $62C6 Word #N(#PC-$5DBF): "#TOKEN($0507)".
+M $62C6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62C6,$02,$01
+M $62C8,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($62C8,$02)
+B $62C8,$02,b$01
+
+N $62CA Word #N(#PC-$5DBF): "#TOKEN($050B)".
+M $62CA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62CA,$02,$01
+M $62CC,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($62CC,$03)
+B $62CC,$02,b$01
+
+N $62CE Word #N(#PC-$5DBF): "#TOKEN($050F)".
+M $62CE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62CE,$02,$01
+M $62D0,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($62D0,$04)
+B $62D0,$03,b$01
+
+N $62D3 Word #N(#PC-$5DBF): "#TOKEN($0514)".
+M $62D3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62D3,$02,$01
+M $62D5,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($62D5,$01)
+B $62D5,$01,b$01
+
+N $62D6 Word #N(#PC-$5DBF): "#TOKEN($0517)".
+M $62D6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62D6,$02,$01
+M $62D8,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($62D8,$02)
+B $62D8,$02,b$01
+
+N $62DA Word #N(#PC-$5DBF): "#TOKEN($051B)".
+M $62DA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62DA,$02,$01
+M $62DC,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($62DC,$04)
+B $62DC,$03,b$01
+
+N $62DF Word #N(#PC-$5DBF): "#TOKEN($0520)".
+M $62DF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62DF,$02,$01
+M $62E1,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($62E1,$01)
+B $62E1,$01,b$01
+
+N $62E2 Word #N(#PC-$5DBF): "#TOKEN($0523)".
+M $62E2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62E2,$02,$01
+M $62E4,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($62E4,$02)
+B $62E4,$02,b$01
+
+N $62E6 Word #N(#PC-$5DBF): "#TOKEN($0527)".
+M $62E6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62E6,$02,$01
+M $62E8,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($62E8,$01)
+B $62E8,$01,b$01
+
+N $62E9 Word #N(#PC-$5DBF): "#TOKEN($052A)".
+M $62E9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62E9,$02,$01
+M $62EB,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($62EB,$04)
+B $62EB,$03,b$01
+
+N $62EE Word #N(#PC-$5DBF): "#TOKEN($052F)".
+M $62EE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62EE,$02,$01
+M $62F0,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($62F0,$01)
+B $62F0,$01,b$01
+
+
+g $62F1 Table Dictionary: "M"
+@ $62F1 Table_Dictionary_M
+D $62F1 All dictionary words starting with "M".
+
+N $62F1 Word #N(#PC-$5DBF): "#TOKEN($0532)".
+M $62F1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62F1,$02,$01
+W $62F3,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $62F5,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($62F5,$02)
+B $62F5,$02,b$01
+
+N $62F7 Word #N(#PC-$5DBF): "#TOKEN($0538)".
+M $62F7,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62F7,$02,$01
+M $62F9,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($62F9,$01)
+B $62F9,$01,b$01
+
+N $62FA Word #N(#PC-$5DBF): "#TOKEN($053B)".
+M $62FA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62FA,$02,$01
+M $62FC,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($62FC,$02)
+B $62FC,$02,b$01
+
+N $62FE Word #N(#PC-$5DBF): "#TOKEN($053F)".
+M $62FE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $62FE,$02,$01
+M $6300,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6300,$01)
+B $6300,$01,b$01
+
+N $6301 Word #N(#PC-$5DBF): "#TOKEN($0542)".
+M $6301,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6301,$02,$01
+M $6303,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6303,$03)
+B $6303,$02,b$01
+
+N $6305 Word #N(#PC-$5DBF): "#TOKEN($0546)".
+M $6305,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6305,$02,$01
+M $6307,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6307,$01)
+B $6307,$01,b$01
+
+N $6308 Word #N(#PC-$5DBF): "#TOKEN($0549)".
+M $6308,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6308,$02,$01
+M $630A,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($630A,$01)
+B $630A,$01,b$01
+
+N $630B Word #N(#PC-$5DBF): "#TOKEN($054C)".
+M $630B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $630B,$02,$01
+M $630D,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($630D,$01)
+B $630D,$01,b$01
+
+N $630E Word #N(#PC-$5DBF): "#TOKEN($054F)".
+M $630E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $630E,$02,$01
+M $6310,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6310,$02)
+B $6310,$02,b$01
+
+N $6312 Word #N(#PC-$5DBF): "#TOKEN($0553)".
+M $6312,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6312,$02,$01
+M $6314,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6314,$04)
+B $6314,$03,b$01
+
+N $6317 Word #N(#PC-$5DBF): "#TOKEN($0558)".
+M $6317,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6317,$02,$01
+M $6319,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6319,$01)
+B $6319,$01,b$01
+
+N $631A Word #N(#PC-$5DBF): "#TOKEN($055B)".
+M $631A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $631A,$02,$01
+W $631C,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $631E,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($631E,$01)
+B $631E,$01,b$01
+
+N $631F Word #N(#PC-$5DBF): "#TOKEN($0560)".
+M $631F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $631F,$02,$01
+M $6321,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6321,$02)
+B $6321,$02,b$01
+
+N $6323 Word #N(#PC-$5DBF): "#TOKEN($0564)".
+M $6323,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6323,$02,$01
+M $6325,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6325,$01)
+B $6325,$01,b$01
+
+N $6326 Word #N(#PC-$5DBF): "#TOKEN($0567)".
+M $6326,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6326,$02,$01
+M $6328,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6328,$03)
+B $6328,$02,b$01
+
+N $632A Word #N(#PC-$5DBF): "#TOKEN($056B)".
+M $632A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $632A,$02,$01
+W $632C,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $632E,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($632E,$02)
+B $632E,$02,b$01
+
+N $6330 Word #N(#PC-$5DBF): "#TOKEN($0571)".
+M $6330,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6330,$02,$01
+M $6332,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6332,$02)
+B $6332,$02,b$01
+
+N $6334 Word #N(#PC-$5DBF): "#TOKEN($0575)".
+M $6334,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6334,$02,$01
+M $6336,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6336,$04)
+B $6336,$03,b$01
+
+N $6339 Word #N(#PC-$5DBF): "#TOKEN($057A)".
+M $6339,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6339,$02,$01
+M $633B,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($633B,$02)
+B $633B,$02,b$01
+
+N $633D Word #N(#PC-$5DBF): "#TOKEN($057E)".
+M $633D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $633D,$02,$01
+M $633F,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($633F,$01)
+B $633F,$01,b$01
+
+N $6340 Word #N(#PC-$5DBF): "#TOKEN($0581)".
+M $6340,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6340,$02,$01
+M $6342,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6342,$01)
+B $6342,$01,b$01
+
+N $6343 Word #N(#PC-$5DBF): "#TOKEN($0584)".
+M $6343,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6343,$02,$01
+M $6345,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6345,$01)
+B $6345,$01,b$01
+
+N $6346 Word #N(#PC-$5DBF): "#TOKEN($0587)".
+M $6346,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6346,$02,$01
+M $6348,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6348,$03)
+B $6348,$02,b$01
+
+N $634A Word #N(#PC-$5DBF): "#TOKEN($058B)".
+M $634A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $634A,$02,$01
+M $634C,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($634C,$04)
+B $634C,$03,b$01
+
+N $634F Word #N(#PC-$5DBF): "#TOKEN($0590)".
+M $634F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $634F,$02,$01
+M $6351,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6351,$02)
+B $6351,$02,b$01
+
+N $6353 Word #N(#PC-$5DBF): "#TOKEN($0594)".
+M $6353,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6353,$02,$01
+W $6355,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $6357,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6357,$01)
+B $6357,$01,b$01
+
+
+g $6358 Table Dictionary: "N"
+@ $6358 Table_Dictionary_N
+D $6358 All dictionary words starting with "N".
+
+N $6358 Word #N(#PC-$5DBF): "#TOKEN($0599)".
+M $6358,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6358,$02,$01
+W $635A,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+
+N $635C Word #N(#PC-$5DBF): "#TOKEN($059D)".
+M $635C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $635C,$02,$01
+M $635E,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($635E,$04)
+B $635E,$03,b$01
+
+N $6361 Word #N(#PC-$5DBF): "#TOKEN($05A2)".
+M $6361,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6361,$02,$01
+W $6363,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $6365,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6365,$01)
+B $6365,$01,b$01
+
+N $6366 Word #N(#PC-$5DBF): "#TOKEN($05A7)".
+M $6366,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6366,$02,$01
+M $6368,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6368,$03)
+B $6368,$02,b$01
+
+N $636A Word #N(#PC-$5DBF): "#TOKEN($05AB)".
+M $636A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $636A,$02,$01
+M $636C,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($636C,$01)
+B $636C,$01,b$01
+
+N $636D Word #N(#PC-$5DBF): "#TOKEN($05AE)".
+M $636D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $636D,$02,$01
+M $636F,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($636F,$04)
+B $636F,$03,b$01
+
+N $6372 Word #N(#PC-$5DBF): "#TOKEN($05B3)".
+M $6372,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6372,$02,$01
+M $6374,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6374,$01)
+B $6374,$01,b$01
+
+N $6375 Word #N(#PC-$5DBF): "#TOKEN($05B6)".
+M $6375,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6375,$02,$01
+M $6377,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($6377,$07)
+B $6377,$05,b$01
+
+N $637C Word #N(#PC-$5DBF): "#TOKEN($05BD)".
+M $637C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $637C,$02,$01
+M $637E,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($637E,$05)
+B $637E,$04,b$01
+
+N $6382 Word #N(#PC-$5DBF): "#TOKEN($05C3)".
+M $6382,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6382,$02,$01
+M $6384,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6384,$03)
+B $6384,$02,b$01
+
+N $6386 Word #N(#PC-$5DBF): "#TOKEN($05C7)".
+M $6386,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6386,$02,$01
+M $6388,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6388,$04)
+B $6388,$03,b$01
+
+N $638B Word #N(#PC-$5DBF): "#TOKEN($05CC)".
+M $638B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $638B,$02,$01
+M $638D,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($638D,$02)
+B $638D,$02,b$01
+
+N $638F Word #N(#PC-$5DBF): "#TOKEN($05D0)".
+M $638F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $638F,$02,$01
+M $6391,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6391,$04)
+B $6391,$03,b$01
+
+N $6394 Word #N(#PC-$5DBF): "#TOKEN($05D5)".
+M $6394,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6394,$02,$01
+M $6396,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6396,$01)
+B $6396,$01,b$01
+
+N $6397 Word #N(#PC-$5DBF): "#TOKEN($05D8)".
+M $6397,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6397,$02,$01
+M $6399,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6399,$01)
+B $6399,$01,b$01
+
+N $639A Word #N(#PC-$5DBF): "#TOKEN($05DB)".
+M $639A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $639A,$02,$01
+M $639C,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($639C,$04)
+B $639C,$03,b$01
+
+N $639F Word #N(#PC-$5DBF): "#TOKEN($05E0)".
+M $639F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $639F,$02,$01
+M $63A1,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($63A1,$01)
+B $63A1,$01,b$01
+
+N $63A2 Word #N(#PC-$5DBF): "#TOKEN($05E3)".
+M $63A2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63A2,$02,$01
+W $63A4,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $63A6,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($63A6,$01)
+B $63A6,$01,b$01
+
+
+g $63A7 Table Dictionary: "O"
+@ $63A7 Table_Dictionary_O
+D $63A7 All dictionary words starting with "O".
+
+N $63A7 Word #N(#PC-$5DBF): "#TOKEN($05E8)".
+M $63A7,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63A7,$02,$01
+M $63A9,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($63A9,$02)
+B $63A9,$02,b$01
+
+N $63AB Word #N(#PC-$5DBF): "#TOKEN($05EC)".
+M $63AB,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63AB,$02,$01
+M $63AD,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($63AD,$01)
+B $63AD,$01,b$01
+
+N $63AE Word #N(#PC-$5DBF): "#TOKEN($05EF)".
+M $63AE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63AE,$02,$01
+M $63B0,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($63B0,$01)
+B $63B0,$01,b$01
+
+N $63B1 Word #N(#PC-$5DBF): "#TOKEN($05F2)".
+M $63B1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63B1,$02,$01
+M $63B3,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($63B3,$04)
+B $63B3,$03,b$01
+
+N $63B6 Word #N(#PC-$5DBF): "#TOKEN($05F7)".
+M $63B6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63B6,$02,$01
+M $63B8,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($63B8,$02)
+B $63B8,$02,b$01
+
+N $63BA Word #N(#PC-$5DBF): "#TOKEN($05FB)".
+M $63BA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63BA,$02,$01
+M $63BC,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($63BC,$02)
+B $63BC,$02,b$01
+
+N $63BE Word #N(#PC-$5DBF): "#TOKEN($05FF)".
+M $63BE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63BE,$02,$01
+M $63C0,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($63C0,$01)
+B $63C0,$01,b$01
+
+N $63C1 Word #N(#PC-$5DBF): "#TOKEN($0602)".
+M $63C1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63C1,$02,$01
+
+N $63C3 Word #N(#PC-$5DBF): "#TOKEN($0604)".
+M $63C3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63C3,$02,$01
+M $63C5,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($63C5,$01)
+B $63C5,$01,b$01
+
+N $63C6 Word #N(#PC-$5DBF): "#TOKEN($0607)".
+M $63C6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63C6,$02,$01
+M $63C8,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($63C8,$02)
+B $63C8,$02,b$01
+
+N $63CA Word #N(#PC-$5DBF): "#TOKEN($060B)".
+M $63CA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63CA,$02,$01
+M $63CC,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($63CC,$03)
+B $63CC,$02,b$01
+
+N $63CE Word #N(#PC-$5DBF): "#TOKEN($060F)".
+M $63CE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63CE,$02,$01
+M $63D0,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($63D0,$03)
+B $63D0,$02,b$01
+
+N $63D2 Word #N(#PC-$5DBF): "#TOKEN($0613)".
+M $63D2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63D2,$02,$01
+M $63D4,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($63D4,$01)
+B $63D4,$01,b$01
+
+N $63D5 Word #N(#PC-$5DBF): "#TOKEN($0616)".
+M $63D5,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63D5,$02,$01
+M $63D7,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($63D7,$04)
+B $63D7,$03,b$01
+
+N $63DA Word #N(#PC-$5DBF): "#TOKEN($061B)".
+M $63DA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63DA,$02,$01
+M $63DC,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($63DC,$04)
+B $63DC,$03,b$01
+
+N $63DF Word #N(#PC-$5DBF): "#TOKEN($0620)".
+M $63DF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63DF,$02,$01
+M $63E1,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($63E1,$02)
+B $63E1,$02,b$01
+
+N $63E3 Word #N(#PC-$5DBF): "#TOKEN($0624)".
+M $63E3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63E3,$02,$01
+M $63E5,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($63E5,$04)
+B $63E5,$03,b$01
+
+N $63E8 Word #N(#PC-$5DBF): "#TOKEN($0629)".
+M $63E8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63E8,$02,$01
+M $63EA,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($63EA,$03)
+B $63EA,$02,b$01
+
+N $63EC Word #N(#PC-$5DBF): "#TOKEN($062D)".
+M $63EC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63EC,$02,$01
+M $63EE,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($63EE,$04)
+B $63EE,$03,b$01
+
+N $63F1 Word #N(#PC-$5DBF): "#TOKEN($0632)".
+M $63F1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63F1,$02,$01
+M $63F3,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($63F3,$03)
+B $63F3,$02,b$01
+
+
+g $63F5 Table Dictionary: "P"
+@ $63F5 Table_Dictionary_P
+D $63F5 All dictionary words starting with "P".
+
+N $63F5 Word #N(#PC-$5DBF): "#TOKEN($0636)".
+M $63F5,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63F5,$02,$01
+M $63F7,$06 Bit-packed letters (9 letters, 5 bits each):
+. #BITGROUPS($63F7,$09)
+B $63F7,$06,b$01
+
+N $63FD Word #N(#PC-$5DBF): "#TOKEN($063E)".
+M $63FD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $63FD,$02,$01
+M $63FF,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($63FF,$04)
+B $63FF,$03,b$01
+
+N $6402 Word #N(#PC-$5DBF): "#TOKEN($0643)".
+M $6402,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6402,$02,$01
+M $6404,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6404,$04)
+B $6404,$03,b$01
+
+N $6407 Word #N(#PC-$5DBF): "#TOKEN($0648)".
+M $6407,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6407,$02,$01
+M $6409,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6409,$03)
+B $6409,$02,b$01
+
+N $640B Word #N(#PC-$5DBF): "#TOKEN($064C)".
+M $640B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $640B,$02,$01
+M $640D,$05 Bit-packed letters (8 letters, 5 bits each):
+. #BITGROUPS($640D,$08)
+B $640D,$05,b$01
+
+N $6412 Word #N(#PC-$5DBF): "#TOKEN($0653)".
+M $6412,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6412,$02,$01
+M $6414,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($6414,$05)
+B $6414,$04,b$01
+
+N $6418 Word #N(#PC-$5DBF): "#TOKEN($0659)".
+M $6418,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6418,$02,$01
+M $641A,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($641A,$01)
+B $641A,$01,b$01
+
+N $641B Word #N(#PC-$5DBF): "#TOKEN($065C)".
+M $641B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $641B,$02,$01
+M $641D,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($641D,$02)
+B $641D,$02,b$01
+
+N $641F Word #N(#PC-$5DBF): "#TOKEN($0660)".
+M $641F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $641F,$02,$01
+M $6421,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6421,$03)
+B $6421,$02,b$01
+
+N $6423 Word #N(#PC-$5DBF): "#TOKEN($0664)".
+M $6423,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6423,$02,$01
+M $6425,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6425,$01)
+B $6425,$01,b$01
+
+N $6426 Word #N(#PC-$5DBF): "#TOKEN($0667)".
+M $6426,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6426,$02,$01
+M $6428,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($6428,$05)
+B $6428,$04,b$01
+
+N $642C Word #N(#PC-$5DBF): "#TOKEN($066D)".
+M $642C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $642C,$02,$01
+M $642E,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($642E,$06)
+B $642E,$04,b$01
+
+N $6432 Word #N(#PC-$5DBF): "#TOKEN($0673)".
+M $6432,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6432,$02,$01
+M $6434,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6434,$03)
+B $6434,$02,b$01
+
+N $6436 Word #N(#PC-$5DBF): "#TOKEN($0677)".
+M $6436,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6436,$02,$01
+M $6438,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6438,$04)
+B $6438,$03,b$01
+
+N $643B Word #N(#PC-$5DBF): "#TOKEN($067C)".
+M $643B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $643B,$02,$01
+M $643D,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($643D,$05)
+B $643D,$04,b$01
+
+N $6441 Word #N(#PC-$5DBF): "#TOKEN($0682)".
+M $6441,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6441,$02,$01
+M $6443,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6443,$04)
+B $6443,$03,b$01
+
+N $6446 Word #N(#PC-$5DBF): "#TOKEN($0687)".
+M $6446,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6446,$02,$01
+W $6448,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $644A,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($644A,$02)
+B $644A,$02,b$01
+
+N $644C Word #N(#PC-$5DBF): "#TOKEN($068D)".
+M $644C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $644C,$02,$01
+M $644E,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($644E,$03)
+B $644E,$02,b$01
+
+N $6450 Word #N(#PC-$5DBF): "#TOKEN($0691)".
+M $6450,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6450,$02,$01
+M $6452,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6452,$02)
+B $6452,$02,b$01
+
+N $6454 Word #N(#PC-$5DBF): "#TOKEN($0695)".
+M $6454,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6454,$02,$01
+M $6456,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6456,$02)
+B $6456,$02,b$01
+
+N $6458 Word #N(#PC-$5DBF): "#TOKEN($0699)".
+M $6458,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6458,$02,$01
+M $645A,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($645A,$04)
+B $645A,$03,b$01
+
+N $645D Word #N(#PC-$5DBF): "#TOKEN($069E)".
+M $645D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $645D,$02,$01
+M $645F,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($645F,$02)
+B $645F,$02,b$01
+
+N $6461 Word #N(#PC-$5DBF): "#TOKEN($06A2)".
+M $6461,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6461,$02,$01
+M $6463,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($6463,$05)
+B $6463,$04,b$01
+
+N $6467 Word #N(#PC-$5DBF): "#TOKEN($06A8)".
+M $6467,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6467,$02,$01
+M $6469,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6469,$04)
+B $6469,$03,b$01
+
+N $646C Word #N(#PC-$5DBF): "#TOKEN($06AD)".
+M $646C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $646C,$02,$01
+M $646E,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($646E,$03)
+B $646E,$02,b$01
+
+N $6470 Word #N(#PC-$5DBF): "#TOKEN($06B1)".
+M $6470,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6470,$02,$01
+M $6472,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6472,$03)
+B $6472,$02,b$01
+
+N $6474 Word #N(#PC-$5DBF): "#TOKEN($06B5)".
+M $6474,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6474,$02,$01
+M $6476,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6476,$04)
+B $6476,$03,b$01
+
+N $6479 Word #N(#PC-$5DBF): "#TOKEN($06BA)".
+M $6479,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6479,$02,$01
+M $647B,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($647B,$02)
+B $647B,$02,b$01
+
+N $647D Word #N(#PC-$5DBF): "#TOKEN($06BE)".
+M $647D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $647D,$02,$01
+M $647F,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($647F,$05)
+B $647F,$04,b$01
+
+N $6483 Word #N(#PC-$5DBF): "#TOKEN($06C4)".
+M $6483,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6483,$02,$01
+M $6485,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($6485,$07)
+B $6485,$05,b$01
+
+N $648A Word #N(#PC-$5DBF): "#TOKEN($06CB)".
+M $648A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $648A,$02,$01
+M $648C,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($648C,$03)
+B $648C,$02,b$01
+
+N $648E Word #N(#PC-$5DBF): "#TOKEN($06CF)".
+M $648E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $648E,$02,$01
+M $6490,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($6490,$05)
+B $6490,$04,b$01
+
+N $6494 Word #N(#PC-$5DBF): "#TOKEN($06D5)".
+M $6494,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6494,$02,$01
+M $6496,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6496,$03)
+B $6496,$02,b$01
+
+N $6498 Word #N(#PC-$5DBF): "#TOKEN($06D9)".
+M $6498,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6498,$02,$01
+M $649A,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($649A,$05)
+B $649A,$04,b$01
+
+N $649E Word #N(#PC-$5DBF): "#TOKEN($06DF)".
+M $649E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $649E,$02,$01
+M $64A0,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($64A0,$01)
+B $64A0,$01,b$01
+
+N $64A1 Word #N(#PC-$5DBF): "#TOKEN($06E2)".
+M $64A1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64A1,$02,$01
+M $64A3,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($64A3,$03)
+B $64A3,$02,b$01
+
+N $64A5 Word #N(#PC-$5DBF): "#TOKEN($06E6)".
+M $64A5,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64A5,$02,$01
+
+N $64A7 Word #N(#PC-$5DBF): "#TOKEN($06E8)".
+M $64A7,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64A7,$02,$01
+M $64A9,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($64A9,$01)
+B $64A9,$01,b$01
+
+
+g $64AA Table Dictionary: "Q"
+@ $64AA Table_Dictionary_Q
+D $64AA All dictionary words starting with "Q".
+
+N $64AA Word #N(#PC-$5DBF): "#TOKEN($06EB)".
+M $64AA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64AA,$02,$01
+W $64AC,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $64AE,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($64AE,$04)
+B $64AE,$03,b$01
+
+N $64B1 Word #N(#PC-$5DBF): "#TOKEN($06F2)".
+M $64B1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64B1,$02,$01
+M $64B3,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($64B3,$02)
+B $64B3,$02,b$01
+
+N $64B5 Word #N(#PC-$5DBF): "#TOKEN($06F6)".
+M $64B5,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64B5,$02,$01
+M $64B7,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($64B7,$01)
+B $64B7,$01,b$01
+
+
+g $64B8 Table Dictionary: "R"
+@ $64B8 Table_Dictionary_R
+D $64B8 All dictionary words starting with "R".
+
+N $64B8 Word #N(#PC-$5DBF): "#TOKEN($06F9)".
+M $64B8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64B8,$02,$01
+M $64BA,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($64BA,$03)
+B $64BA,$02,b$01
+
+N $64BC Word #N(#PC-$5DBF): "#TOKEN($06FD)".
+M $64BC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64BC,$02,$01
+W $64BE,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $64C0,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($64C0,$03)
+B $64C0,$02,b$01
+
+N $64C2 Word #N(#PC-$5DBF): "#TOKEN($0703)".
+M $64C2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64C2,$02,$01
+M $64C4,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($64C4,$03)
+B $64C4,$02,b$01
+
+N $64C6 Word #N(#PC-$5DBF): "#TOKEN($0707)".
+M $64C6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64C6,$02,$01
+M $64C8,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($64C8,$01)
+B $64C8,$01,b$01
+
+N $64C9 Word #N(#PC-$5DBF): "#TOKEN($070A)".
+M $64C9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64C9,$02,$01
+M $64CB,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($64CB,$03)
+B $64CB,$02,b$01
+
+N $64CD Word #N(#PC-$5DBF): "#TOKEN($070E)".
+M $64CD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64CD,$02,$01
+M $64CF,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($64CF,$04)
+B $64CF,$03,b$01
+
+N $64D2 Word #N(#PC-$5DBF): "#TOKEN($0713)".
+M $64D2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64D2,$02,$01
+M $64D4,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($64D4,$02)
+B $64D4,$02,b$01
+
+N $64D6 Word #N(#PC-$5DBF): "#TOKEN($0717)".
+M $64D6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64D6,$02,$01
+M $64D8,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($64D8,$02)
+B $64D8,$02,b$01
+
+N $64DA Word #N(#PC-$5DBF): "#TOKEN($071B)".
+M $64DA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64DA,$02,$01
+
+N $64DC Word #N(#PC-$5DBF): "#TOKEN($071D)".
+M $64DC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64DC,$02,$01
+M $64DE,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($64DE,$04)
+B $64DE,$03,b$01
+
+N $64E1 Word #N(#PC-$5DBF): "#TOKEN($0722)".
+M $64E1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64E1,$02,$01
+M $64E3,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($64E3,$04)
+B $64E3,$03,b$01
+
+N $64E6 Word #N(#PC-$5DBF): "#TOKEN($0727)".
+M $64E6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64E6,$02,$01
+M $64E8,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($64E8,$04)
+B $64E8,$03,b$01
+
+N $64EB Word #N(#PC-$5DBF): "#TOKEN($072C)".
+M $64EB,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64EB,$02,$01
+
+N $64ED Word #N(#PC-$5DBF): "#TOKEN($072E)".
+M $64ED,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64ED,$02,$01
+M $64EF,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($64EF,$03)
+B $64EF,$02,b$01
+
+N $64F1 Word #N(#PC-$5DBF): "#TOKEN($0732)".
+M $64F1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64F1,$02,$01
+M $64F3,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($64F3,$03)
+B $64F3,$02,b$01
+
+N $64F5 Word #N(#PC-$5DBF): "#TOKEN($0736)".
+M $64F5,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64F5,$02,$01
+M $64F7,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($64F7,$04)
+B $64F7,$03,b$01
+
+N $64FA Word #N(#PC-$5DBF): "#TOKEN($073B)".
+M $64FA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64FA,$02,$01
+M $64FC,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($64FC,$03)
+B $64FC,$02,b$01
+
+N $64FE Word #N(#PC-$5DBF): "#TOKEN($073F)".
+M $64FE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $64FE,$02,$01
+M $6500,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6500,$03)
+B $6500,$02,b$01
+
+N $6502 Word #N(#PC-$5DBF): "#TOKEN($0743)".
+M $6502,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6502,$02,$01
+M $6504,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6504,$02)
+B $6504,$02,b$01
+
+N $6506 Word #N(#PC-$5DBF): "#TOKEN($0747)".
+M $6506,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6506,$02,$01
+M $6508,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6508,$02)
+B $6508,$02,b$01
+
+N $650A Word #N(#PC-$5DBF): "#TOKEN($074B)".
+M $650A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $650A,$02,$01
+M $650C,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($650C,$06)
+B $650C,$04,b$01
+
+N $6510 Word #N(#PC-$5DBF): "#TOKEN($0751)".
+M $6510,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6510,$02,$01
+M $6512,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6512,$01)
+B $6512,$01,b$01
+
+N $6513 Word #N(#PC-$5DBF): "#TOKEN($0754)".
+M $6513,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6513,$02,$01
+M $6515,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($6515,$06)
+B $6515,$04,b$01
+
+
+g $6519 Table Dictionary: "S"
+@ $6519 Table_Dictionary_S
+D $6519 All dictionary words starting with "S".
+
+N $6519 Word #N(#PC-$5DBF): "#TOKEN($075A)".
+M $6519,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6519,$02,$01
+W $651B,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+
+N $651D Word #N(#PC-$5DBF): "#TOKEN($075E)".
+M $651D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $651D,$02,$01
+M $651F,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($651F,$03)
+B $651F,$02,b$01
+
+N $6521 Word #N(#PC-$5DBF): "#TOKEN($0762)".
+M $6521,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6521,$02,$01
+M $6523,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6523,$02)
+B $6523,$02,b$01
+
+N $6525 Word #N(#PC-$5DBF): "#TOKEN($0766)".
+M $6525,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6525,$02,$01
+M $6527,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6527,$02)
+B $6527,$02,b$01
+
+N $6529 Word #N(#PC-$5DBF): "#TOKEN($076A)".
+M $6529,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6529,$02,$01
+M $652B,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($652B,$07)
+B $652B,$05,b$01
+
+N $6530 Word #N(#PC-$5DBF): "#TOKEN($0771)".
+M $6530,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6530,$02,$01
+M $6532,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6532,$03)
+B $6532,$02,b$01
+
+N $6534 Word #N(#PC-$5DBF): "#TOKEN($0775)".
+M $6534,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6534,$02,$01
+M $6536,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6536,$02)
+B $6536,$02,b$01
+
+N $6538 Word #N(#PC-$5DBF): "#TOKEN($0779)".
+M $6538,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6538,$02,$01
+W $653A,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $653C,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($653C,$01)
+B $653C,$01,b$01
+
+N $653D Word #N(#PC-$5DBF): "#TOKEN($077E)".
+M $653D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $653D,$02,$01
+M $653F,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($653F,$07)
+B $653F,$05,b$01
+
+N $6544 Word #N(#PC-$5DBF): "#TOKEN($0785)".
+M $6544,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6544,$02,$01
+W $6546,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $6548,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6548,$01)
+B $6548,$01,b$01
+
+N $6549 Word #N(#PC-$5DBF): "#TOKEN($078A)".
+M $6549,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6549,$02,$01
+M $654B,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($654B,$04)
+B $654B,$03,b$01
+
+N $654E Word #N(#PC-$5DBF): "#TOKEN($078F)".
+M $654E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $654E,$02,$01
+M $6550,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6550,$04)
+B $6550,$03,b$01
+
+N $6553 Word #N(#PC-$5DBF): "#TOKEN($0794)".
+M $6553,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6553,$02,$01
+M $6555,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6555,$01)
+B $6555,$01,b$01
+
+N $6556 Word #N(#PC-$5DBF): "#TOKEN($0797)".
+M $6556,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6556,$02,$01
+M $6558,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6558,$01)
+B $6558,$01,b$01
+
+N $6559 Word #N(#PC-$5DBF): "#TOKEN($079A)".
+M $6559,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6559,$02,$01
+M $655B,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($655B,$01)
+B $655B,$01,b$01
+
+N $655C Word #N(#PC-$5DBF): "#TOKEN($079D)".
+M $655C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $655C,$02,$01
+M $655E,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($655E,$04)
+B $655E,$03,b$01
+
+N $6561 Word #N(#PC-$5DBF): "#TOKEN($07A2)".
+M $6561,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6561,$02,$01
+M $6563,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6563,$01)
+B $6563,$01,b$01
+
+N $6564 Word #N(#PC-$5DBF): "#TOKEN($07A5)".
+M $6564,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6564,$02,$01
+M $6566,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6566,$02)
+B $6566,$02,b$01
+
+N $6568 Word #N(#PC-$5DBF): "#TOKEN($07A9)".
+M $6568,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6568,$02,$01
+M $656A,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($656A,$05)
+B $656A,$04,b$01
+
+N $656E Word #N(#PC-$5DBF): "#TOKEN($07AF)".
+M $656E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $656E,$02,$01
+M $6570,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6570,$04)
+B $6570,$03,b$01
+
+N $6573 Word #N(#PC-$5DBF): "#TOKEN($07B4)".
+M $6573,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6573,$02,$01
+M $6575,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6575,$01)
+B $6575,$01,b$01
+
+N $6576 Word #N(#PC-$5DBF): "#TOKEN($07B7)".
+M $6576,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6576,$02,$01
+M $6578,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6578,$02)
+B $6578,$02,b$01
+
+N $657A Word #N(#PC-$5DBF): "#TOKEN($07BB)".
+M $657A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $657A,$02,$01
+M $657C,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($657C,$01)
+B $657C,$01,b$01
+
+N $657D Word #N(#PC-$5DBF): "#TOKEN($07BE)".
+M $657D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $657D,$02,$01
+M $657F,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($657F,$03)
+B $657F,$02,b$01
+
+N $6581 Word #N(#PC-$5DBF): "#TOKEN($07C2)".
+M $6581,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6581,$02,$01
+M $6583,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($6583,$05)
+B $6583,$04,b$01
+
+N $6587 Word #N(#PC-$5DBF): "#TOKEN($07C8)".
+M $6587,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6587,$02,$01
+M $6589,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6589,$02)
+B $6589,$02,b$01
+
+N $658B Word #N(#PC-$5DBF): "#TOKEN($07CC)".
+M $658B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $658B,$02,$01
+M $658D,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($658D,$04)
+B $658D,$03,b$01
+
+N $6590 Word #N(#PC-$5DBF): "#TOKEN($07D1)".
+M $6590,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6590,$02,$01
+M $6592,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6592,$03)
+B $6592,$02,b$01
+
+N $6594 Word #N(#PC-$5DBF): "#TOKEN($07D5)".
+M $6594,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6594,$02,$01
+M $6596,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6596,$02)
+B $6596,$02,b$01
+
+N $6598 Word #N(#PC-$5DBF): "#TOKEN($07D9)".
+M $6598,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6598,$02,$01
+M $659A,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($659A,$02)
+B $659A,$02,b$01
+
+N $659C Word #N(#PC-$5DBF): "#TOKEN($07DD)".
+M $659C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $659C,$02,$01
+M $659E,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($659E,$01)
+B $659E,$01,b$01
+
+N $659F Word #N(#PC-$5DBF): "#TOKEN($07E0)".
+M $659F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $659F,$02,$01
+M $65A1,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($65A1,$04)
+B $65A1,$03,b$01
+
+N $65A4 Word #N(#PC-$5DBF): "#TOKEN($07E5)".
+M $65A4,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65A4,$02,$01
+M $65A6,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($65A6,$04)
+B $65A6,$03,b$01
+
+N $65A9 Word #N(#PC-$5DBF): "#TOKEN($07EA)".
+M $65A9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65A9,$02,$01
+M $65AB,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($65AB,$05)
+B $65AB,$04,b$01
+
+N $65AF Word #N(#PC-$5DBF): "#TOKEN($07F0)".
+M $65AF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65AF,$02,$01
+M $65B1,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($65B1,$03)
+B $65B1,$02,b$01
+
+N $65B3 Word #N(#PC-$5DBF): "#TOKEN($07F4)".
+M $65B3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65B3,$02,$01
+M $65B5,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($65B5,$04)
+B $65B5,$03,b$01
+
+N $65B8 Word #N(#PC-$5DBF): "#TOKEN($07F9)".
+M $65B8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65B8,$02,$01
+M $65BA,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($65BA,$01)
+B $65BA,$01,b$01
+
+N $65BB Word #N(#PC-$5DBF): "#TOKEN($07FC)".
+M $65BB,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65BB,$02,$01
+M $65BD,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($65BD,$02)
+B $65BD,$02,b$01
+
+N $65BF Word #N(#PC-$5DBF): "#TOKEN($0800)".
+M $65BF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65BF,$02,$01
+M $65C1,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($65C1,$01)
+B $65C1,$01,b$01
+
+N $65C2 Word #N(#PC-$5DBF): "#TOKEN($0803)".
+M $65C2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65C2,$02,$01
+M $65C4,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($65C4,$03)
+B $65C4,$02,b$01
+
+N $65C6 Word #N(#PC-$5DBF): "#TOKEN($0807)".
+M $65C6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65C6,$02,$01
+M $65C8,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($65C8,$01)
+B $65C8,$01,b$01
+
+N $65C9 Word #N(#PC-$5DBF): "#TOKEN($080A)".
+M $65C9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65C9,$02,$01
+M $65CB,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($65CB,$02)
+B $65CB,$02,b$01
+
+N $65CD Word #N(#PC-$5DBF): "#TOKEN($080E)".
+M $65CD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65CD,$02,$01
+M $65CF,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($65CF,$03)
+B $65CF,$02,b$01
+
+N $65D1 Word #N(#PC-$5DBF): "#TOKEN($0812)".
+M $65D1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65D1,$02,$01
+M $65D3,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($65D3,$03)
+B $65D3,$02,b$01
+
+N $65D5 Word #N(#PC-$5DBF): "#TOKEN($0816)".
+M $65D5,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65D5,$02,$01
+M $65D7,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($65D7,$03)
+B $65D7,$02,b$01
+
+N $65D9 Word #N(#PC-$5DBF): "#TOKEN($081A)".
+M $65D9,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65D9,$02,$01
+M $65DB,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($65DB,$02)
+B $65DB,$02,b$01
+
+N $65DD Word #N(#PC-$5DBF): "#TOKEN($081E)".
+M $65DD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65DD,$02,$01
+M $65DF,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($65DF,$04)
+B $65DF,$03,b$01
+
+N $65E2 Word #N(#PC-$5DBF): "#TOKEN($0823)".
+M $65E2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65E2,$02,$01
+M $65E4,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($65E4,$02)
+B $65E4,$02,b$01
+
+N $65E6 Word #N(#PC-$5DBF): "#TOKEN($0827)".
+M $65E6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65E6,$02,$01
+M $65E8,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($65E8,$04)
+B $65E8,$03,b$01
+
+N $65EB Word #N(#PC-$5DBF): "#TOKEN($082C)".
+M $65EB,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65EB,$02,$01
+W $65ED,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $65EF,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($65EF,$01)
+B $65EF,$01,b$01
+
+N $65F0 Word #N(#PC-$5DBF): "#TOKEN($0831)".
+M $65F0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65F0,$02,$01
+M $65F2,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($65F2,$05)
+B $65F2,$04,b$01
+
+N $65F6 Word #N(#PC-$5DBF): "#TOKEN($0837)".
+M $65F6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65F6,$02,$01
+M $65F8,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($65F8,$04)
+B $65F8,$03,b$01
+
+N $65FB Word #N(#PC-$5DBF): "#TOKEN($083C)".
+M $65FB,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65FB,$02,$01
+
+N $65FD Word #N(#PC-$5DBF): "#TOKEN($083E)".
+M $65FD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $65FD,$02,$01
+M $65FF,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($65FF,$04)
+B $65FF,$03,b$01
+
+N $6602 Word #N(#PC-$5DBF): "#TOKEN($0843)".
+M $6602,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6602,$02,$01
+M $6604,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6604,$01)
+B $6604,$01,b$01
+
+N $6605 Word #N(#PC-$5DBF): "#TOKEN($0846)".
+M $6605,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6605,$02,$01
+M $6607,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($6607,$06)
+B $6607,$04,b$01
+
+N $660B Word #N(#PC-$5DBF): "#TOKEN($084C)".
+M $660B,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $660B,$02,$01
+M $660D,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($660D,$01)
+B $660D,$01,b$01
+
+N $660E Word #N(#PC-$5DBF): "#TOKEN($084F)".
+M $660E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $660E,$02,$01
+M $6610,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($6610,$06)
+B $6610,$04,b$01
+
+N $6614 Word #N(#PC-$5DBF): "#TOKEN($0855)".
+M $6614,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6614,$02,$01
+M $6616,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6616,$03)
+B $6616,$02,b$01
+
+N $6618 Word #N(#PC-$5DBF): "#TOKEN($0859)".
+M $6618,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6618,$02,$01
+M $661A,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($661A,$03)
+B $661A,$02,b$01
+
+N $661C Word #N(#PC-$5DBF): "#TOKEN($085D)".
+M $661C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $661C,$02,$01
+M $661E,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($661E,$03)
+B $661E,$02,b$01
+
+N $6620 Word #N(#PC-$5DBF): "#TOKEN($0861)".
+M $6620,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6620,$02,$01
+M $6622,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6622,$02)
+B $6622,$02,b$01
+
+N $6624 Word #N(#PC-$5DBF): "#TOKEN($0865)".
+M $6624,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6624,$02,$01
+M $6626,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6626,$03)
+B $6626,$02,b$01
+
+N $6628 Word #N(#PC-$5DBF): "#TOKEN($0869)".
+M $6628,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6628,$02,$01
+M $662A,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($662A,$03)
+B $662A,$02,b$01
+
+N $662C Word #N(#PC-$5DBF): "#TOKEN($086D)".
+M $662C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $662C,$02,$01
+M $662E,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($662E,$04)
+B $662E,$03,b$01
+
+N $6631 Word #N(#PC-$5DBF): "#TOKEN($0872)".
+M $6631,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6631,$02,$01
+M $6633,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6633,$01)
+B $6633,$01,b$01
+
+N $6634 Word #N(#PC-$5DBF): "#TOKEN($0875)".
+M $6634,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6634,$02,$01
+M $6636,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6636,$02)
+B $6636,$02,b$01
+
+N $6638 Word #N(#PC-$5DBF): "#TOKEN($0879)".
+M $6638,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6638,$02,$01
+W $663A,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+M $663C,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($663C,$01)
+B $663C,$01,b$01
+
+N $663D Word #N(#PC-$5DBF): "#TOKEN($087E)".
+M $663D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $663D,$02,$01
+M $663F,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($663F,$03)
+B $663F,$02,b$01
+
+
+g $6641 Table Dictionary: "T"
+@ $6641 Table_Dictionary_T
+D $6641 All dictionary words starting with "T".
+
+N $6641 Word #N(#PC-$5DBF): "#TOKEN($0882)".
+M $6641,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6641,$02,$01
+M $6643,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($6643,$04)
+B $6643,$03,b$01
+
+N $6646 Word #N(#PC-$5DBF): "#TOKEN($0887)".
+M $6646,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6646,$02,$01
+M $6648,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6648,$02)
+B $6648,$02,b$01
+
+N $664A Word #N(#PC-$5DBF): "#TOKEN($088B)".
+M $664A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $664A,$02,$01
+M $664C,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($664C,$02)
+B $664C,$02,b$01
+
+N $664E Word #N(#PC-$5DBF): "#TOKEN($088F)".
+M $664E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $664E,$02,$01
+M $6650,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6650,$03)
+B $6650,$02,b$01
+
+N $6652 Word #N(#PC-$5DBF): "#TOKEN($0893)".
+M $6652,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6652,$02,$01
+M $6654,$04 Bit-packed letters (6 letters, 5 bits each):
+. #BITGROUPS($6654,$06)
+B $6654,$04,b$01
+
+N $6658 Word #N(#PC-$5DBF): "#TOKEN($0899)".
+M $6658,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6658,$02,$01
+M $665A,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($665A,$03)
+B $665A,$02,b$01
+
+N $665C Word #N(#PC-$5DBF): "#TOKEN($089D)".
+M $665C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $665C,$02,$01
+M $665E,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($665E,$01)
+B $665E,$01,b$01
+
+N $665F Word #N(#PC-$5DBF): "#TOKEN($08A0)".
+M $665F,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $665F,$02,$01
+M $6661,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6661,$02)
+B $6661,$02,b$01
+
+N $6663 Word #N(#PC-$5DBF): "#TOKEN($08A4)".
+M $6663,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6663,$02,$01
+M $6665,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6665,$01)
+B $6665,$01,b$01
+
+N $6666 Word #N(#PC-$5DBF): "#TOKEN($08A7)".
+M $6666,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6666,$02,$01
+M $6668,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6668,$01)
+B $6668,$01,b$01
+
+N $6669 Word #N(#PC-$5DBF): "#TOKEN($08AA)".
+M $6669,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6669,$02,$01
+M $666B,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($666B,$02)
+B $666B,$02,b$01
+
+N $666D Word #N(#PC-$5DBF): "#TOKEN($08AE)".
+M $666D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $666D,$02,$01
+M $666F,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($666F,$04)
+B $666F,$03,b$01
+
+N $6672 Word #N(#PC-$5DBF): "#TOKEN($08B3)".
+M $6672,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6672,$02,$01
+M $6674,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6674,$01)
+B $6674,$01,b$01
+
+N $6675 Word #N(#PC-$5DBF): "#TOKEN($08B6)".
+M $6675,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6675,$02,$01
+M $6677,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6677,$01)
+B $6677,$01,b$01
+
+N $6678 Word #N(#PC-$5DBF): "#TOKEN($08B9)".
+M $6678,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6678,$02,$01
+M $667A,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($667A,$02)
+B $667A,$02,b$01
+
+N $667C Word #N(#PC-$5DBF): "#TOKEN($08BD)".
+M $667C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $667C,$02,$01
+M $667E,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($667E,$02)
+B $667E,$02,b$01
+
+N $6680 Word #N(#PC-$5DBF): "#TOKEN($08C1)".
+M $6680,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6680,$02,$01
+M $6682,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6682,$01)
+B $6682,$01,b$01
+
+N $6683 Word #N(#PC-$5DBF): "#TOKEN($08C4)".
+M $6683,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6683,$02,$01
+M $6685,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($6685,$05)
+B $6685,$04,b$01
+
+N $6689 Word #N(#PC-$5DBF): "#TOKEN($08CA)".
+M $6689,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6689,$02,$01
+M $668B,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($668B,$03)
+B $668B,$02,b$01
+
+N $668D Word #N(#PC-$5DBF): "#TOKEN($08CE)".
+M $668D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $668D,$02,$01
+M $668F,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($668F,$04)
+B $668F,$03,b$01
+
+N $6692 Word #N(#PC-$5DBF): "#TOKEN($08D3)".
+M $6692,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6692,$02,$01
+M $6694,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6694,$03)
+B $6694,$02,b$01
+
+N $6696 Word #N(#PC-$5DBF): "#TOKEN($08D7)".
+M $6696,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6696,$02,$01
+M $6698,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6698,$02)
+B $6698,$02,b$01
+
+N $669A Word #N(#PC-$5DBF): "#TOKEN($08DB)".
+M $669A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $669A,$02,$01
+M $669C,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($669C,$01)
+B $669C,$01,b$01
+
+N $669D Word #N(#PC-$5DBF): "#TOKEN($08DE)".
+M $669D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $669D,$02,$01
+M $669F,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($669F,$01)
+B $669F,$01,b$01
+
+N $66A0 Word #N(#PC-$5DBF): "#TOKEN($08E1)".
+M $66A0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66A0,$02,$01
+M $66A2,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($66A2,$01)
+B $66A2,$01,b$01
+
+N $66A3 Word #N(#PC-$5DBF): "#TOKEN($08E4)".
+M $66A3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66A3,$02,$01
+M $66A5,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($66A5,$01)
+B $66A5,$01,b$01
+
+N $66A6 Word #N(#PC-$5DBF): "#TOKEN($08E7)".
+M $66A6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66A6,$02,$01
+M $66A8,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($66A8,$02)
+B $66A8,$02,b$01
+
+N $66AA Word #N(#PC-$5DBF): "#TOKEN($08EB)".
+M $66AA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66AA,$02,$01
+M $66AC,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($66AC,$04)
+B $66AC,$03,b$01
+
+N $66AF Word #N(#PC-$5DBF): "#TOKEN($08F0)".
+M $66AF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66AF,$02,$01
+M $66B1,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($66B1,$02)
+B $66B1,$02,b$01
+
+N $66B3 Word #N(#PC-$5DBF): "#TOKEN($08F4)".
+M $66B3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66B3,$02,$01
+M $66B5,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($66B5,$04)
+B $66B5,$03,b$01
+
+N $66B8 Word #N(#PC-$5DBF): "#TOKEN($08F9)".
+M $66B8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66B8,$02,$01
+M $66BA,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($66BA,$04)
+B $66BA,$03,b$01
+
+N $66BD Word #N(#PC-$5DBF): "#TOKEN($08FE)".
+M $66BD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66BD,$02,$01
+M $66BF,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($66BF,$01)
+B $66BF,$01,b$01
+
+N $66C0 Word #N(#PC-$5DBF): "#TOKEN($0901)".
+M $66C0,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66C0,$02,$01
+M $66C2,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($66C2,$01)
+B $66C2,$01,b$01
+
+N $66C3 Word #N(#PC-$5DBF): "#TOKEN($0904)".
+M $66C3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66C3,$02,$01
+M $66C5,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($66C5,$03)
+B $66C5,$02,b$01
+
+N $66C7 Word #N(#PC-$5DBF): "#TOKEN($0908)".
+M $66C7,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66C7,$02,$01
+M $66C9,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($66C9,$02)
+B $66C9,$02,b$01
+
+
+g $66CB Table Dictionary: "U"
+@ $66CB Table_Dictionary_U
+D $66CB All dictionary words starting with "U".
+
+N $66CB Word #N(#PC-$5DBF): "#TOKEN($090C)".
+M $66CB,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66CB,$02,$01
+W $66CD,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+
+N $66CF Word #N(#PC-$5DBF): "#TOKEN($0910)".
+M $66CF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66CF,$02,$01
+M $66D1,$07 Bit-packed letters (10 letters, 5 bits each):
+. #BITGROUPS($66D1,$0A)
+B $66D1,$07,b$01
+
+N $66D8 Word #N(#PC-$5DBF): "#TOKEN($0919)".
+M $66D8,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66D8,$02,$01
+M $66DA,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($66DA,$03)
+B $66DA,$02,b$01
+
+N $66DC Word #N(#PC-$5DBF): "#TOKEN($091D)".
+M $66DC,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66DC,$02,$01
+M $66DE,$05 Bit-packed letters (8 letters, 5 bits each):
+. #BITGROUPS($66DE,$08)
+B $66DE,$05,b$01
+
+N $66E3 Word #N(#PC-$5DBF): "#TOKEN($0924)".
+M $66E3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66E3,$02,$01
+M $66E5,$05 Bit-packed letters (8 letters, 5 bits each):
+. #BITGROUPS($66E5,$08)
+B $66E5,$05,b$01
+
+N $66EA Word #N(#PC-$5DBF): "#TOKEN($092B)".
+M $66EA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66EA,$02,$01
+M $66EC,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($66EC,$04)
+B $66EC,$03,b$01
+
+N $66EF Word #N(#PC-$5DBF): "#TOKEN($0930)".
+M $66EF,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66EF,$02,$01
+M $66F1,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($66F1,$02)
+B $66F1,$02,b$01
+
+N $66F3 Word #N(#PC-$5DBF): "#TOKEN($0934)".
+M $66F3,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66F3,$02,$01
+M $66F5,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($66F5,$02)
+B $66F5,$02,b$01
+
+N $66F7 Word #N(#PC-$5DBF): "#TOKEN($0938)".
+M $66F7,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66F7,$02,$01
+M $66F9,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($66F9,$03)
+B $66F9,$02,b$01
+
+N $66FB Word #N(#PC-$5DBF): "#TOKEN($093C)".
+M $66FB,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66FB,$02,$01
+M $66FD,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($66FD,$01)
+B $66FD,$01,b$01
+
+N $66FE Word #N(#PC-$5DBF): "#TOKEN($093F)".
+M $66FE,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $66FE,$02,$01
+M $6700,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6700,$02)
+B $6700,$02,b$01
+
+N $6702 Word #N(#PC-$5DBF): "#TOKEN($0943)".
+M $6702,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6702,$02,$01
+M $6704,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6704,$02)
+B $6704,$02,b$01
+
+N $6706 Word #N(#PC-$5DBF): "#TOKEN($0947)".
+M $6706,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6706,$02,$01
+M $6708,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6708,$02)
+B $6708,$02,b$01
+
+
+g $670A Table Dictionary: "V"
+@ $670A Table_Dictionary_V
+D $670A All dictionary words starting with "V".
+
+N $670A Word #N(#PC-$5DBF): "#TOKEN($094B)".
+M $670A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $670A,$02,$01
+M $670C,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($670C,$03)
+B $670C,$02,b$01
+
+N $670E Word #N(#PC-$5DBF): "#TOKEN($094F)".
+M $670E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $670E,$02,$01
+M $6710,$05 Bit-packed letters (7 letters, 5 bits each):
+. #BITGROUPS($6710,$07)
+B $6710,$05,b$01
+
+N $6715 Word #N(#PC-$5DBF): "#TOKEN($0956)".
+M $6715,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6715,$02,$01
+M $6717,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6717,$03)
+B $6717,$02,b$01
+
+
+g $6719 Table Dictionary: "W"
+@ $6719 Table_Dictionary_W
+D $6719 All dictionary words starting with "W".
+
+N $6719 Word #N(#PC-$5DBF): "#TOKEN($095A)".
+M $6719,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6719,$02,$01
+W $671B,$02 Synonym reference: "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
+
+N $671D Word #N(#PC-$5DBF): "#TOKEN($095E)".
+M $671D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $671D,$02,$01
+M $671F,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($671F,$03)
+B $671F,$02,b$01
+
+N $6721 Word #N(#PC-$5DBF): "#TOKEN($0962)".
+M $6721,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6721,$02,$01
+M $6723,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6723,$02)
+B $6723,$02,b$01
+
+N $6725 Word #N(#PC-$5DBF): "#TOKEN($0966)".
+M $6725,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6725,$02,$01
+M $6727,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6727,$02)
+B $6727,$02,b$01
+
+N $6729 Word #N(#PC-$5DBF): "#TOKEN($096A)".
+M $6729,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6729,$02,$01
+M $672B,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($672B,$01)
+B $672B,$01,b$01
+
+N $672C Word #N(#PC-$5DBF): "#TOKEN($096D)".
+M $672C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $672C,$02,$01
+M $672E,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($672E,$03)
+B $672E,$02,b$01
+
+N $6730 Word #N(#PC-$5DBF): "#TOKEN($0971)".
+M $6730,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6730,$02,$01
+M $6732,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6732,$03)
+B $6732,$02,b$01
+
+N $6734 Word #N(#PC-$5DBF): "#TOKEN($0975)".
+M $6734,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6734,$02,$01
+M $6736,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6736,$01)
+B $6736,$01,b$01
+
+N $6737 Word #N(#PC-$5DBF): "#TOKEN($0978)".
+M $6737,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6737,$02,$01
+M $6739,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6739,$01)
+B $6739,$01,b$01
+
+N $673A Word #N(#PC-$5DBF): "#TOKEN($097B)".
+M $673A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $673A,$02,$01
+M $673C,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($673C,$01)
+B $673C,$01,b$01
+
+N $673D Word #N(#PC-$5DBF): "#TOKEN($097E)".
+M $673D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $673D,$02,$01
+M $673F,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($673F,$04)
+B $673F,$03,b$01
+
+N $6742 Word #N(#PC-$5DBF): "#TOKEN($0983)".
+M $6742,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6742,$02,$01
+M $6744,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6744,$01)
+B $6744,$01,b$01
+
+N $6745 Word #N(#PC-$5DBF): "#TOKEN($0986)".
+M $6745,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6745,$02,$01
+M $6747,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6747,$02)
+B $6747,$02,b$01
+
+N $6749 Word #N(#PC-$5DBF): "#TOKEN($098A)".
+M $6749,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6749,$02,$01
+M $674B,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($674B,$02)
+B $674B,$02,b$01
+
+N $674D Word #N(#PC-$5DBF): "#TOKEN($098E)".
+M $674D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $674D,$02,$01
+M $674F,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($674F,$02)
+B $674F,$02,b$01
+
+N $6751 Word #N(#PC-$5DBF): "#TOKEN($0992)".
+M $6751,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6751,$02,$01
+M $6753,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6753,$02)
+B $6753,$02,b$01
+
+N $6755 Word #N(#PC-$5DBF): "#TOKEN($0996)".
+M $6755,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6755,$02,$01
+M $6757,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6757,$03)
+B $6757,$02,b$01
+
+N $6759 Word #N(#PC-$5DBF): "#TOKEN($099A)".
+M $6759,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6759,$02,$01
+M $675B,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($675B,$02)
+B $675B,$02,b$01
+
+N $675D Word #N(#PC-$5DBF): "#TOKEN($099E)".
+M $675D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $675D,$02,$01
+M $675F,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($675F,$02)
+B $675F,$02,b$01
+
+N $6761 Word #N(#PC-$5DBF): "#TOKEN($09A2)".
+M $6761,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6761,$02,$01
+M $6763,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6763,$03)
+B $6763,$02,b$01
+
+N $6765 Word #N(#PC-$5DBF): "#TOKEN($09A6)".
+M $6765,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6765,$02,$01
+M $6767,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6767,$01)
+B $6767,$01,b$01
+
+N $6768 Word #N(#PC-$5DBF): "#TOKEN($09A9)".
+M $6768,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6768,$02,$01
+M $676A,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($676A,$03)
+B $676A,$02,b$01
+
+N $676C Word #N(#PC-$5DBF): "#TOKEN($09AD)".
+M $676C,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $676C,$02,$01
+M $676E,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($676E,$02)
+B $676E,$02,b$01
+
+N $6770 Word #N(#PC-$5DBF): "#TOKEN($09B1)".
+M $6770,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6770,$02,$01
+M $6772,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6772,$02)
+B $6772,$02,b$01
+
+N $6774 Word #N(#PC-$5DBF): "#TOKEN($09B5)".
+M $6774,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6774,$02,$01
+M $6776,$04 Bit-packed letters (5 letters, 5 bits each):
+. #BITGROUPS($6776,$05)
+B $6776,$04,b$01
+
+N $677A Word #N(#PC-$5DBF): "#TOKEN($09BB)".
+M $677A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $677A,$02,$01
+M $677C,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($677C,$02)
+B $677C,$02,b$01
+
+N $677E Word #N(#PC-$5DBF): "#TOKEN($09BF)".
+M $677E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $677E,$02,$01
+M $6780,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6780,$02)
+B $6780,$02,b$01
+
+N $6782 Word #N(#PC-$5DBF): "#TOKEN($09C3)".
+M $6782,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6782,$02,$01
+M $6784,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($6784,$03)
+B $6784,$02,b$01
+
+N $6786 Word #N(#PC-$5DBF): "#TOKEN($09C7)".
+M $6786,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6786,$02,$01
+M $6788,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($6788,$01)
+B $6788,$01,b$01
+
+N $6789 Word #N(#PC-$5DBF): "#TOKEN($09CA)".
+M $6789,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6789,$02,$01
+M $678B,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($678B,$03)
+B $678B,$02,b$01
+
+N $678D Word #N(#PC-$5DBF): "#TOKEN($09CE)".
+M $678D,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $678D,$02,$01
+M $678F,$03 Bit-packed letters (4 letters, 5 bits each):
+. #BITGROUPS($678F,$04)
+B $678F,$03,b$01
+
+N $6792 Word #N(#PC-$5DBF): "#TOKEN($09D3)".
+M $6792,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6792,$02,$01
+M $6794,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6794,$02)
+B $6794,$02,b$01
+
+N $6796 Word #N(#PC-$5DBF): "#TOKEN($09D7)".
+M $6796,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $6796,$02,$01
+M $6798,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($6798,$02)
+B $6798,$02,b$01
+
+N $679A Word #N(#PC-$5DBF): "#TOKEN($09DB)".
+M $679A,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $679A,$02,$01
+M $679C,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($679C,$02)
+B $679C,$02,b$01
+
+
+g $679E Table Dictionary: "X"
+@ $679E Table_Dictionary_X
+D $679E All dictionary words starting with "X".
+
+N $679E Word #N(#PC-$5DBF): "#TOKEN($09DF)".
+M $679E,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $679E,$02,$01
+M $67A0,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($67A0,$02)
+B $67A0,$02,b$01
+
+
+g $67A2 Table Dictionary: "Y"
+@ $67A2 Table_Dictionary_Y
+D $67A2 All dictionary words starting with "Y".
+
+N $67A2 Word #N(#PC-$5DBF): "#TOKEN($09E3)".
+M $67A2,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $67A2,$02,$01
+M $67A4,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($67A4,$03)
+B $67A4,$02,b$01
+
+N $67A6 Word #N(#PC-$5DBF): "#TOKEN($09E7)".
+M $67A6,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $67A6,$02,$01
+M $67A8,$02 Bit-packed letters (3 letters, 5 bits each):
+. #BITGROUPS($67A8,$03)
+B $67A8,$02,b$01
+
+N $67AA Word #N(#PC-$5DBF): "#TOKEN($09EB)".
+M $67AA,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $67AA,$02,$01
+M $67AC,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($67AC,$01)
+B $67AC,$01,b$01
+
+N $67AD Word #N(#PC-$5DBF): "#TOKEN($09EE)".
+M $67AD,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $67AD,$02,$01
+M $67AF,$02 Bit-packed letters (2 letters, 5 bits each):
+. #BITGROUPS($67AF,$02)
+B $67AF,$02,b$01
+
+N $67B1 Word #N(#PC-$5DBF): "#TOKEN($09F2)".
+M $67B1,$02 Word configuration:
+. #TABLE(default,centre,centre)
+. { =h Type | #WORDTYPES(#PEEK(#PC)) }
+. { =h Flection | #N(#PEEK(#PC)&$0F) }
+. { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+. { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+. { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+. TABLE#
+B $67B1,$02,$01
+M $67B3,$01 Bit-packed letters (1 letters, 5 bits each):
+. #BITGROUPS($67B3,$01)
+B $67B3,$01,b$01
+
+
+g $67B4 Table Dictionary: "Z"
+@ $67B4 Table_Dictionary_Z
+D $67B4 All dictionary words starting with "Z".
+B $67B6,$01 Terminator.
 
 g $67B7 Table: Common Words
 @ $67B7 label=Table_CommonWords
@@ -40,8 +8401,14 @@ b $68E9
 
 b $6929
 
+b $6D9A
+b $71ED
+
 b $7207
 b $7224
+b $722D
+
+b $7E27
 
 g $8259
 
@@ -65,7 +8432,7 @@ B $84EB,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $84EC,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $84EE,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $84F0,$02
-W $84F2,$02 #TEXTTOKEN(#PC)
+W $84F2,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 B $84F4,$01 Terminator.
 
 g $84F5 Room #N$02: "#ROOM$02"
@@ -74,7 +8441,7 @@ B $84F5,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $84F6,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $84F8,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $84FA,$02
-W $84FC,$02 #TEXTTOKEN(#PC)
+W $84FC,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 B $84FE,$01 Terminator.
 
 g $84FF Room #N$03: "#ROOM$03"
@@ -83,7 +8450,7 @@ B $84FF,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $8500,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8502,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8504,$02
-W $8506,$02 #TEXTTOKEN(#PC)
+W $8506,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 B $8508,$01 Terminator.
 
 g $8509 Room #N$04: "#ROOM$04"
@@ -92,7 +8459,7 @@ B $8509,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $850A,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $850C,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $850E,$02
-W $8510,$02 #TEXTTOKEN(#PC)
+W $8510,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 B $8512,$01 Terminator.
 
 g $8513 Room #N$05: "#ROOM$05"
@@ -145,7 +8512,7 @@ B $8540,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $8541,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8543,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8545,$02
-W $8547,$02 #TEXTTOKEN(#PC)
+W $8547,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $8549 Room exits:
 B $8549,$06,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -259,7 +8626,7 @@ B $85AE,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $85AF,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $85B1,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $85B3,$02
-W $85B5,$02 #TEXTTOKEN(#PC)
+W $85B5,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $85B7 Room exits:
 B $85B7,$06,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -274,7 +8641,7 @@ B $85BE,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $85BF,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $85C1,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $85C3,$02
-W $85C5,$02 #TEXTTOKEN(#PC)
+W $85C5,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $85C7 Room exits:
 B $85C7,$03,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -317,7 +8684,7 @@ B $85E8,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $85E9,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $85EB,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $85ED,$02
-W $85EF,$02 #TEXTTOKEN(#PC)
+W $85EF,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $85F1 Room exits:
 B $85F1,$06,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -332,7 +8699,7 @@ B $85F8,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $85F9,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $85FB,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $85FD,$02
-W $85FF,$02 #TEXTTOKEN(#PC)
+W $85FF,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $8601 Room exits:
 B $8601,$06,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -347,7 +8714,7 @@ B $8608,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $8609,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $860B,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $860D,$02
-W $860F,$02 #TEXTTOKEN(#PC)
+W $860F,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $8611 Room exits:
 B $8611,$06,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -362,7 +8729,7 @@ B $8618,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $8619,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $861B,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $861D,$02
-W $861F,$02 #TEXTTOKEN(#PC)
+W $861F,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $8621 Room exits:
 B $8621,$03,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -405,7 +8772,7 @@ B $8642,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $8643,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8645,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8647,$02
-W $8649,$02 #TEXTTOKEN(#PC)
+W $8649,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $864B Room exits:
 B $864B,$06,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -420,7 +8787,7 @@ B $8652,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $8653,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8655,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8657,$02
-W $8659,$02 #TEXTTOKEN(#PC)
+W $8659,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $865B Room exits:
 B $865B,$03,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -463,7 +8830,7 @@ B $867C,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $867D,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $867F,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8681,$02
-W $8683,$02 #TEXTTOKEN(#PC)
+W $8683,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $8685 Room exits:
 B $8685,$06,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -478,7 +8845,7 @@ B $868C,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $868D,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $868F,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8691,$02
-W $8693,$02 #TEXTTOKEN(#PC)
+W $8693,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $8695 Room exits:
 B $8695,$03,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -671,7 +9038,7 @@ B $8756,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $8757,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8759,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $875B,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
-W $875D,$02 #TEXTTOKEN(#PC)
+W $875D,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $875F Room exits:
 B $875F,$03,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -823,7 +9190,7 @@ B $87FC,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $87FD,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $87FF,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8801,$02
-W $8803,$02 #TEXTTOKEN(#PC)
+W $8803,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $8805 Room exits:
 B $8805,$06,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -838,7 +9205,7 @@ B $880C,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $880D,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $880F,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8811,$02
-W $8813,$02 #TEXTTOKEN(#PC)
+W $8813,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $8815 Room exits:
 B $8815,$03,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -928,7 +9295,7 @@ B $886C,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $886D,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $886F,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8871,$02
-W $8873,$02 #TEXTTOKEN(#PC)
+W $8873,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 N $8875 Room exits:
 B $8875,$06,$03 #TABLE(default,centre,centre,centre)
 . { =h Direction | =h Via | =h Destination }
@@ -1603,7 +9970,7 @@ B $8B65,b$01 #LOCATIONATTRIBUTE(#PEEK(#PC))
 W $8B66,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8B68,$02 #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))
 W $8B6A,$02
-W $8B6C,$02 #TEXTTOKEN(#PC)
+W $8B6C,$02 "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))"
 B $8B6E,$01 Terminator.
 
 g $8B6F Table: Objects
@@ -1626,7 +9993,7 @@ B $8CC1,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8CC2,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8CC2,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8CCA,$01 Terminator #N(#PEEK(#PC)).
 
 g $8CCB Object #N$01: "#OBJECT$01"
@@ -1642,7 +10009,7 @@ B $8CD2,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8CD3,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8CD3,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8CDB,$01 Terminator #N(#PEEK(#PC)).
 
 g $8CDC Object #N$02: "#OBJECT$02"
@@ -1658,7 +10025,7 @@ B $8CE3,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8CE4,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8CE4,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8CEC,$01 Terminator #N(#PEEK(#PC)).
 
 g $8CED Object #N$03: "#OBJECT$03"
@@ -1674,7 +10041,7 @@ B $8CF4,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8CF5,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8CF5,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8CFD,$01 Terminator #N(#PEEK(#PC)).
 
 g $8CFE Object #N$04: "#OBJECT$04"
@@ -1690,7 +10057,7 @@ B $8D05,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8D06,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D06,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8D0E,$01 Terminator #N(#PEEK(#PC)).
 
 g $8D0F Object #N$05: "#OBJECT$05"
@@ -1706,7 +10073,7 @@ B $8D16,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8D17,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D17,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8D1F,$01 Terminator #N(#PEEK(#PC)).
 
 g $8D20 Object #N$06: "#OBJECT$06"
@@ -1722,7 +10089,7 @@ B $8D27,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8D28,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D28,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8D30,$01 Terminator #N(#PEEK(#PC)).
 
 g $8D31 Object #N$07: "#OBJECT$07"
@@ -1738,7 +10105,7 @@ B $8D38,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8D39,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D39,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8D41,$01 Terminator #N(#PEEK(#PC)).
 
 g $8D42 Object #N$08: "#OBJECT$08"
@@ -1754,7 +10121,7 @@ B $8D49,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8D4A,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D4A,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8D52,$01 Terminator #N(#PEEK(#PC)).
 
 g $8D53 Object #N$09: "#OBJECT$09"
@@ -1770,7 +10137,7 @@ B $8D5A,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8D5B,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D5B,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8D63,$01 Terminator #N(#PEEK(#PC)).
 
 g $8D64 Object #N$0A: "#OBJECT$0A"
@@ -1786,7 +10153,7 @@ B $8D6B,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8D6C,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D6C,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8D74,$01 Terminator #N(#PEEK(#PC)).
 
 g $8D75 Object #N$0B: "#OBJECT$0B"
@@ -1802,7 +10169,7 @@ B $8D7C,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8D7D,$0E,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D7D,$0E,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8D8B,$01 Terminator #N(#PEEK(#PC)).
 
 g $8D8C Object #N$0C: "#OBJECT$0C"
@@ -1818,7 +10185,7 @@ B $8D93,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8D94,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8D94,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8D9C,$01 Terminator #N(#PEEK(#PC)).
 
 g $8D9D Object #N$0D: "#OBJECT$0D"
@@ -1834,7 +10201,7 @@ B $8DA4,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8DA5,$0E,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8DA5,$0E,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8DB3,$01 Terminator #N(#PEEK(#PC)).
 
 g $8DB4 Object #N$0E: "#OBJECT$0E"
@@ -1850,7 +10217,7 @@ B $8DBB,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8DBC,$0C,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8DBC,$0C,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8DC8,$01 Terminator #N(#PEEK(#PC)).
 
 g $8DC9 Object #N$0F: "#OBJECT$0F"
@@ -1866,7 +10233,7 @@ B $8DD0,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8DD1,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8DD1,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8DD9,$01 Terminator #N(#PEEK(#PC)).
 
 g $8DDA Object #N$10: "#OBJECT$10"
@@ -1882,7 +10249,7 @@ B $8DE1,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8DE2,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8DE2,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8DEA,$01 Terminator #N(#PEEK(#PC)).
 
 g $8DEB Object #N$11: "#OBJECT$11"
@@ -1898,7 +10265,7 @@ B $8DF2,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8DF3,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8DF3,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8DFB,$01 Terminator #N(#PEEK(#PC)).
 
 g $8DFC Object #N$12: "#OBJECT$12"
@@ -1914,7 +10281,7 @@ B $8E03,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8E04,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E04,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8E0C,$01 Terminator #N(#PEEK(#PC)).
 
 g $8E0D Object #N$13: "#OBJECT$13"
@@ -1930,7 +10297,7 @@ B $8E14,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8E15,$11,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E15,$11,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8E26,$01 Terminator #N(#PEEK(#PC)).
 
 g $8E27 Object #N$14: "#OBJECT$14"
@@ -1946,7 +10313,7 @@ B $8E2E,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8E2F,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E2F,$0F,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8E3E,$01 Terminator #N(#PEEK(#PC)).
 
 g $8E3F Object #N$15: "#OBJECT$15"
@@ -1962,7 +10329,7 @@ B $8E46,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8E47,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E47,$0D,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8E54,$01 Terminator #N(#PEEK(#PC)).
 
 g $8E55 Object #N$16: "#OBJECT$16"
@@ -1978,7 +10345,7 @@ B $8E5C,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8E5D,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E5D,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8E65,$01 Terminator #N(#PEEK(#PC)).
 
 g $8E66 Object #N$17: "#OBJECT$17"
@@ -1994,7 +10361,7 @@ B $8E6D,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8E6E,$12,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E6E,$12,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8E80,$01 Terminator #N(#PEEK(#PC)).
 
 g $8E81 Object #N$18: "#OBJECT$18"
@@ -2010,7 +10377,7 @@ B $8E88,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8E89,$12,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8E89,$12,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8E9B,$01 Terminator #N(#PEEK(#PC)).
 
 g $8E9C Object #N$19: "#OBJECT$19"
@@ -2026,7 +10393,7 @@ B $8EA3,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8EA4,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8EA4,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8EAC,$01 Terminator #N(#PEEK(#PC)).
 
 g $8EAD Object #N$1A: "#OBJECT$1A"
@@ -2042,7 +10409,7 @@ B $8EB4,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8EB5,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8EB5,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8EBD,$01 Terminator #N(#PEEK(#PC)).
 
 g $8EBE Object #N$1B: "#OBJECT$1B"
@@ -2058,7 +10425,7 @@ B $8EC5,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8EC6,$0A,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8EC6,$0A,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8ED0,$01 Terminator #N(#PEEK(#PC)).
 
 g $8ED1 Object #N$1C: "#OBJECT$1C"
@@ -2074,7 +10441,7 @@ B $8ED8,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8ED9,$0A,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8ED9,$0A,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8EE3,$01 Terminator #N(#PEEK(#PC)).
 
 g $8EE4 Object #N$1D: "#OBJECT$1D"
@@ -2090,7 +10457,7 @@ B $8EEB,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8EEC,$09,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8EEC,$09,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8EF5,$01 Terminator #N(#PEEK(#PC)).
 
 g $8EF6 Object #N$1E: "#OBJECT$1E"
@@ -2106,7 +10473,7 @@ B $8EFD,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8EFE,$14,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8EFE,$14,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8F12,$01 Terminator #N(#PEEK(#PC)).
 
 g $8F13 Object #N$1F: "#OBJECT$1F"
@@ -2122,7 +10489,7 @@ B $8F1A,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8F1B,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F1B,$10,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8F2B,$01 Terminator #N(#PEEK(#PC)).
 
 g $8F2C Object #N$20: "#OBJECT$20"
@@ -2138,7 +10505,7 @@ B $8F33,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8F34,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F34,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8F3C,$01 Terminator #N(#PEEK(#PC)).
 
 g $8F3D Object #N$21: "#OBJECT$21"
@@ -2154,7 +10521,7 @@ B $8F44,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8F45,$14,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F45,$14,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8F59,$01 Terminator #N(#PEEK(#PC)).
 
 g $8F5A Object #N$22: "#OBJECT$22"
@@ -2170,7 +10537,7 @@ B $8F61,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8F62,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F62,$10,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8F72,$01 Terminator #N(#PEEK(#PC)).
 
 g $8F73 Object #N$23: "#OBJECT$23"
@@ -2186,7 +10553,7 @@ B $8F7A,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8F7B,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F7B,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8F83,$01 Terminator #N(#PEEK(#PC)).
 
 g $8F84 Object #N$24: "#OBJECT$24"
@@ -2202,7 +10569,7 @@ B $8F8B,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8F8C,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8F8C,$10,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8F9C,$01 Terminator #N(#PEEK(#PC)).
 
 g $8F9D Object #N$25: "#OBJECT$25"
@@ -2218,7 +10585,7 @@ B $8FA4,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8FA5,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8FA5,$10,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8FB5,$01 Terminator #N(#PEEK(#PC)).
 
 g $8FB6 Object #N$26: "#OBJECT$26"
@@ -2234,7 +10601,7 @@ B $8FBD,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8FBE,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8FBE,$10,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8FCE,$01 Terminator #N(#PEEK(#PC)).
 
 g $8FCF Object #N$27: "#OBJECT$27"
@@ -2250,7 +10617,7 @@ B $8FD6,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8FD7,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8FD7,$10,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $8FE7,$01 Terminator #N(#PEEK(#PC)).
 
 g $8FE8 Object #N$28: "#OBJECT$28"
@@ -2266,7 +10633,7 @@ B $8FEF,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $8FF0,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $8FF0,$10,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9000,$01 Terminator #N(#PEEK(#PC)).
 
 g $9001 Object #N$29: "#OBJECT$29"
@@ -2282,7 +10649,7 @@ B $9008,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9009,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9009,$10,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9019,$01 Terminator #N(#PEEK(#PC)).
 
 g $901A Object #N$2A: "#OBJECT$2A"
@@ -2298,7 +10665,7 @@ B $9021,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9022,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9022,$10,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9032,$01 Terminator #N(#PEEK(#PC)).
 
 g $9033 Object #N$2B: "#OBJECT$2B"
@@ -2314,7 +10681,7 @@ B $903A,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $903B,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $903B,$10,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $904B,$01 Terminator #N(#PEEK(#PC)).
 
 g $904C Object #N$2C: "#OBJECT$2C"
@@ -2330,7 +10697,7 @@ B $9053,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9054,$09,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9054,$09,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $905D,$01 Terminator #N(#PEEK(#PC)).
 
 g $905E Object #N$2D: "#OBJECT$2D"
@@ -2346,7 +10713,7 @@ B $9065,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9066,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9066,$0F,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9075,$01 Terminator #N(#PEEK(#PC)).
 
 g $9076 Object #N$2E: "#OBJECT$2E"
@@ -2362,7 +10729,7 @@ B $907D,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $907E,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $907E,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9086,$01 Terminator #N(#PEEK(#PC)).
 
 g $9087 Object #N$2F: "#OBJECT$2F"
@@ -2378,7 +10745,7 @@ B $908E,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $908F,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $908F,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9097,$01 Terminator #N(#PEEK(#PC)).
 
 g $9098 Object #N$30: "#OBJECT$30"
@@ -2394,7 +10761,7 @@ B $909F,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $90A0,$11,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $90A0,$11,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $90B1,$01 Terminator #N(#PEEK(#PC)).
 
 g $90B2 Object #N$31: "#OBJECT$31"
@@ -2410,7 +10777,7 @@ B $90B9,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $90BA,$11,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $90BA,$11,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $90CB,$01 Terminator #N(#PEEK(#PC)).
 
 g $90CC Object #N$32: "#OBJECT$32"
@@ -2426,7 +10793,7 @@ B $90D3,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $90D4,$15,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $90D4,$15,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $90E9,$01 Terminator #N(#PEEK(#PC)).
 
 g $90EA Object #N$33: "#OBJECT$33"
@@ -2442,7 +10809,7 @@ B $90F1,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $90F2,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $90F2,$0F,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9101,$01 Terminator #N(#PEEK(#PC)).
 
 g $9102 Object #N$34: "#OBJECT$34"
@@ -2458,7 +10825,7 @@ B $9109,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $910A,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $910A,$0D,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9117,$01 Terminator #N(#PEEK(#PC)).
 
 g $9118 Object #N$35: "#OBJECT$35"
@@ -2474,7 +10841,7 @@ B $911F,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9120,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9120,$0D,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $912D,$01 Terminator #N(#PEEK(#PC)).
 
 g $912E Object #N$36: "#OBJECT$36"
@@ -2490,7 +10857,7 @@ B $9135,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9136,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9136,$0D,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9143,$01 Terminator #N(#PEEK(#PC)).
 
 g $9144 Object #N$37: "#OBJECT$37"
@@ -2506,7 +10873,7 @@ B $914B,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $914C,$13,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $914C,$13,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $915F,$01 Terminator #N(#PEEK(#PC)).
 
 g $9160 Object #N$38: "#OBJECT$38"
@@ -2522,7 +10889,7 @@ B $9167,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9168,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9168,$0D,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9175,$01 Terminator #N(#PEEK(#PC)).
 
 g $9176 Object #N$39: "#OBJECT$39"
@@ -2538,7 +10905,7 @@ B $917D,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $917E,$09,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $917E,$09,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9187,$01 Terminator #N(#PEEK(#PC)).
 
 g $9188 Object #N$3A: "#OBJECT$3A"
@@ -2554,7 +10921,7 @@ B $918F,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9190,$09,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9190,$09,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9199,$01 Terminator #N(#PEEK(#PC)).
 
 g $919A Object #N$3B: "#OBJECT$3B"
@@ -2570,7 +10937,7 @@ B $91A1,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $91A2,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $91A2,$0F,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $91B1,$01 Terminator #N(#PEEK(#PC)).
 
 g $91B2 Object #N$3C: "#OBJECT$3C"
@@ -2586,7 +10953,7 @@ B $91B9,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $91BA,$12,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $91BA,$12,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $91CC,$01 Terminator #N(#PEEK(#PC)).
 
 g $91CD Object #N$3D: "#OBJECT$3D"
@@ -2602,7 +10969,7 @@ B $91D4,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $91D5,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $91D5,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $91DD,$01 Terminator #N(#PEEK(#PC)).
 
 g $91DE Object #N$3E: "#OBJECT$3E"
@@ -2618,7 +10985,7 @@ B $91E5,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $91E6,$0E,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $91E6,$0E,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $91F4,$01 Terminator #N(#PEEK(#PC)).
 
 g $91F5 Object #N$3F: "#OBJECT$3F"
@@ -2634,7 +11001,7 @@ B $91FC,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $91FD,$0C,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $91FD,$0C,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9209,$01 Terminator #N(#PEEK(#PC)).
 
 g $920A Object #N$40: "#OBJECT$40"
@@ -2650,7 +11017,7 @@ B $9211,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9212,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9212,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $921A,$01 Terminator #N(#PEEK(#PC)).
 
 g $921B Object #N$41: "#OBJECT$41"
@@ -2666,7 +11033,7 @@ B $9222,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9223,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9223,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $922B,$01 Terminator #N(#PEEK(#PC)).
 
 g $922C Object #N$42: "#OBJECT$42"
@@ -2682,7 +11049,7 @@ B $9233,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9234,$0B,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9234,$0B,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $923F,$01 Terminator #N(#PEEK(#PC)).
 
 g $9240 Object #N$43: "#OBJECT$43"
@@ -2698,7 +11065,7 @@ B $9247,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9248,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9248,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9250,$01 Terminator #N(#PEEK(#PC)).
 
 g $9251 Object #N$44: "#OBJECT$44"
@@ -2714,7 +11081,7 @@ B $9258,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9259,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9259,$0D,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9266,$01 Terminator #N(#PEEK(#PC)).
 
 g $9267 Object #N$45: "#OBJECT$45"
@@ -2730,7 +11097,7 @@ B $926E,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $926F,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $926F,$0F,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $927E,$01 Terminator #N(#PEEK(#PC)).
 
 g $927F Object #N$46: "#OBJECT$46"
@@ -2746,7 +11113,7 @@ B $9286,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9287,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9287,$0D,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9294,$01 Terminator #N(#PEEK(#PC)).
 
 g $9295 Object #N$47: "#OBJECT$47"
@@ -2762,7 +11129,7 @@ B $929C,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $929D,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $929D,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $92A5,$01 Terminator #N(#PEEK(#PC)).
 
 g $92A6 Object #N$48: "#OBJECT$48"
@@ -2778,7 +11145,7 @@ B $92AD,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $92AE,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $92AE,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $92B6,$01 Terminator #N(#PEEK(#PC)).
 
 g $92B7 Object #N$49: "#OBJECT$49"
@@ -2794,7 +11161,7 @@ B $92BE,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $92BF,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $92BF,$0D,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $92CC,$01 Terminator #N(#PEEK(#PC)).
 
 g $92CD Object #N$4A: "#OBJECT$4A"
@@ -2810,7 +11177,7 @@ B $92D4,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $92D5,$0F,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $92D5,$0F,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $92E4,$01 Terminator #N(#PEEK(#PC)).
 
 g $92E5 Object #N$4B: "#OBJECT$4B"
@@ -2826,7 +11193,7 @@ B $92EC,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $92ED,$09,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $92ED,$09,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $92F6,$01 Terminator #N(#PEEK(#PC)).
 
 g $92F7 Object #N$4C: "#OBJECT$4C"
@@ -2842,7 +11209,7 @@ B $92FE,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $92FF,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $92FF,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9307,$01 Terminator #N(#PEEK(#PC)).
 
 g $9308 Object #N$4D: "#OBJECT$4D"
@@ -2858,7 +11225,7 @@ B $930F,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9310,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9310,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9318,$01 Terminator #N(#PEEK(#PC)).
 
 g $9319 Object #N$4E: "#OBJECT$4E"
@@ -2874,7 +11241,7 @@ B $9320,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9321,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9321,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9329,$01 Terminator #N(#PEEK(#PC)).
 
 g $932A Object #N$4F: "#OBJECT$4F"
@@ -2890,7 +11257,7 @@ B $9331,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9332,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9332,$0D,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $933F,$01 Terminator #N(#PEEK(#PC)).
 
 g $9340 Object #N$50: "#OBJECT$50"
@@ -2906,7 +11273,7 @@ B $9347,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9348,$0A,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9348,$0A,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9352,$01 Terminator #N(#PEEK(#PC)).
 
 g $9353 Object #N$51: "#OBJECT$51"
@@ -2922,7 +11289,7 @@ B $935A,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $935B,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $935B,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9363,$01 Terminator #N(#PEEK(#PC)).
 
 g $9364 Object #N$52: "#OBJECT$52"
@@ -2938,7 +11305,7 @@ B $936B,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $936C,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $936C,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9374,$01 Terminator #N(#PEEK(#PC)).
 
 g $9375 Object #N$53: "#OBJECT$53"
@@ -2954,7 +11321,7 @@ B $937C,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $937D,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $937D,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9385,$01 Terminator #N(#PEEK(#PC)).
 
 g $9386 Object #N$54: "#OBJECT$54"
@@ -2970,7 +11337,7 @@ B $938D,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $938E,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $938E,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9396,$01 Terminator #N(#PEEK(#PC)).
 
 g $9397 Object #N$55: "#OBJECT$55"
@@ -2986,7 +11353,7 @@ B $939E,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $939F,$0E,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $939F,$0E,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $93AD,$01 Terminator #N(#PEEK(#PC)).
 
 g $93AE Object #N$56: "#OBJECT$56"
@@ -3002,7 +11369,7 @@ B $93B5,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $93B6,$0C,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $93B6,$0C,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $93C2,$01 Terminator #N(#PEEK(#PC)).
 
 g $93C3 Object #N$57: "#OBJECT$57"
@@ -3018,7 +11385,7 @@ B $93CA,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $93CB,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $93CB,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $93D3,$01 Terminator #N(#PEEK(#PC)).
 
 g $93D4 Object #N$58: "#OBJECT$58"
@@ -3034,7 +11401,7 @@ B $93DB,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $93DC,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $93DC,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $93E4,$01 Terminator #N(#PEEK(#PC)).
 
 g $93E5 Object #N$59: "#OBJECT$59"
@@ -3050,7 +11417,7 @@ B $93EC,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $93ED,$0C,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $93ED,$0C,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $93F9,$01 Terminator #N(#PEEK(#PC)).
 
 g $93FA Object #N$5A: "#OBJECT$5A"
@@ -3066,7 +11433,7 @@ B $9401,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9402,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9402,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $940A,$01 Terminator #N(#PEEK(#PC)).
 
 g $940B Object #N$5B: "#OBJECT$5B"
@@ -3082,7 +11449,7 @@ B $9412,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9413,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9413,$0D,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9420,$01 Terminator #N(#PEEK(#PC)).
 
 g $9421 Object #N$5C: "#OBJECT$5C"
@@ -3098,7 +11465,7 @@ B $9428,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9429,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9429,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9431,$01 Terminator #N(#PEEK(#PC)).
 
 g $9432 Object #N$5D: "#OBJECT$5D"
@@ -3114,7 +11481,7 @@ B $9439,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $943A,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $943A,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9442,$01 Terminator #N(#PEEK(#PC)).
 
 g $9443 Object #N$5E: "#OBJECT$5E"
@@ -3130,7 +11497,7 @@ B $944A,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $944B,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $944B,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9453,$01 Terminator #N(#PEEK(#PC)).
 
 g $9454 Object #N$5F: "#OBJECT$5F"
@@ -3146,7 +11513,7 @@ B $945B,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $945C,$0E,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $945C,$0E,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $946A,$01 Terminator #N(#PEEK(#PC)).
 
 g $946B Object #N$60: "#OBJECT$60"
@@ -3162,7 +11529,7 @@ B $9472,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9473,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9473,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $947B,$01 Terminator #N(#PEEK(#PC)).
 
 g $947C Object #N$61: "#OBJECT$61"
@@ -3178,7 +11545,7 @@ B $9483,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9484,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9484,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $948C,$01 Terminator #N(#PEEK(#PC)).
 
 g $948D Object #N$62: "#OBJECT$62"
@@ -3194,7 +11561,7 @@ B $9494,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9495,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9495,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $949D,$01 Terminator #N(#PEEK(#PC)).
 
 g $949E Object #N$63: "#OBJECT$63"
@@ -3210,7 +11577,7 @@ B $94A5,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $94A6,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $94A6,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $94AE,$01 Terminator #N(#PEEK(#PC)).
 
 g $94AF Object #N$64: "#OBJECT$64"
@@ -3226,7 +11593,7 @@ B $94B6,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $94B7,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $94B7,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $94BF,$01 Terminator #N(#PEEK(#PC)).
 
 g $94C0 Object #N$65: "#OBJECT$65"
@@ -3242,7 +11609,7 @@ B $94C7,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $94C8,$0C,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $94C8,$0C,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $94D4,$01 Terminator #N(#PEEK(#PC)).
 
 g $94D5 Object #N$66: "#OBJECT$66"
@@ -3258,7 +11625,7 @@ B $94DC,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $94DD,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $94DD,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $94E5,$01 Terminator #N(#PEEK(#PC)).
 
 g $94E6 Object #N$67: "#OBJECT$67"
@@ -3274,7 +11641,7 @@ B $94ED,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $94EE,$0D,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $94EE,$0D,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $94FB,$01 Terminator #N(#PEEK(#PC)).
 
 g $94FC Object #N$68: "#OBJECT$68"
@@ -3290,7 +11657,7 @@ B $9503,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9504,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9504,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $950C,$01 Terminator #N(#PEEK(#PC)).
 
 g $950D Object #N$69: "#OBJECT$69"
@@ -3306,7 +11673,7 @@ B $9514,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9515,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9515,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $951D,$01 Terminator #N(#PEEK(#PC)).
 
 g $951E Object #N$6A: "#OBJECT$6A"
@@ -3322,7 +11689,7 @@ B $9525,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9526,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9526,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $952E,$01 Terminator #N(#PEEK(#PC)).
 
 g $952F Object #N$6B: "#OBJECT$6B"
@@ -3338,7 +11705,7 @@ B $9536,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9537,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9537,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $953F,$01 Terminator #N(#PEEK(#PC)).
 
 g $9540 Object #N$6C: "#OBJECT$6C"
@@ -3354,7 +11721,7 @@ B $9547,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9548,$08,$02 Object Name: "#TEXTTOKEN(#PC)".
+B $9548,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 B $9550,$01 Terminator #N(#PEEK(#PC)).
 
 g $9551 Object #N$6D: "#OBJECT$6D"
@@ -3370,8 +11737,8 @@ B $9558,b$01 Attributes:
 . #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
 . { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
 . { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#
-B $9559,$10,$02 Object Name: "#TEXTTOKEN(#PC)".
-B $9569,$01 Terminator #N(#PEEK(#PC)).
+B $9559,$08,$02 Object Name: "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
+B $9561,$01 Terminator #N(#PEEK(#PC)).
 
 g $956A
 
@@ -3398,6 +11765,11 @@ c $9921 Action: Sherlock
 
 g $994D
 W $994D,$02
+
+g $99A9
+g $99B7
+g $99E3
+g $99F1
 
 c $9C6A Handler: Find Character Action
 @ $9C6A label=Handler_FindCharacterAction
@@ -3471,6 +11843,22 @@ c $9CE9
   $9CEF,$03 Jump to #R$A59F.
 
 c $9CF2
+  $9CF2,$04 Write #REGc to *#R$A034.
+  $9CF6,$03 Call #R$9CCE.
+  $9CF9,$02 Jump to #R$9D02 if the zero flag is set.
+  $9CFB,$01 Decrease *#REGhl by one.
+  $9CFC,$03 Jump to #R$9D00 if *#REGhl is greater than or equal to #N$00.
+  $9CFF,$01 Increment *#REGhl by one.
+  $9D00,$01 Restore #REGde from the stack.
+  $9D01,$01 Return.
+
+  $9D02,$04 Jump to #R$9D00 if *#REGhl is not zero.
+  $9D06,$02 #REGa=#N$0F.
+  $9D08,$03 Call #R$D2A4.
+  $9D0B,$02 #REGa+=#N$1E.
+  $9D0D,$01 Write #REGa to *#REGhl.
+  $9D0E,$01 #REGa=#N$00.
+  $9D0F,$01 Return.
 
 g $9D10
 B $9D10,$01
@@ -3496,9 +11884,41 @@ B $9D2F,$01
 
 c $9D30 Character Action: Chief Constable Strak
 @ $9D30 label=CharacterAction_ChiefConstableStrak
+  $9D30,$05 Return if *#R$9D90 is zero.
+  $9D35,$03 #REGhl=#R$9D2E.
+  $9D38,$02 #REGc=#N$00.
+  $9D3A,$03 Call #R$9CE9.
+  $9D3D,$03 #REGhl=#R$9D2F.
+  $9D40,$02 #REGc=#N$03.
+  $9D42,$03 Jump to #R$9CE9.
+
+g $9D45
+B $9D45,$01
+B $9D46,$01
+B $9D47,$01
 
 c $9D48 Character Action: Local Police Man #N$01
 @ $9D48 label=CharacterAction_LocalPoliceMan_01
+  $9D48,$05 Return if *#R$9D90 is not zero.
+  $9D4D,$03 #REGhl=#R$9D45.
+  $9D50,$02 #REGc=#N$00.
+  $9D52,$03 Call #R$9D65.
+  $9D55,$03 #REGhl=#R$9D46.
+  $9D58,$02 #REGc=#N$03.
+  $9D5A,$03 Call #R$9D65.
+  $9D5D,$03 #REGhl=#R$9D47.
+  $9D60,$02 #REGc=#N$07.
+  $9D62,$03 Jump to #R$9D65.
+  $9D65,$03 Call #R$9CF2.
+  $9D68,$02 Write #N$01 to *#REGhl.
+N $9D6A Print "#TEXTTOKEN($6D9A)".
+  $9D6A,$03 #REGhl=#R$6D9A.
+  $9D6D,$03 Jump to #R$A59F.
+
+g $9D70
+B $9D70,$01
+B $9D71,$01
+B $9D72,$01
 
 c $9D73 Character Action: Local Police Man #N$02
 @ $9D73 label=CharacterAction_LocalPoliceMan_02
@@ -3522,6 +11942,50 @@ B $9D93,$01
 B $9D94,$01
 
 c $9D95
+  $9D95,$03 #REGhl=#R$9D91.
+  $9D98,$02 #REGc=#N$00.
+  $9D9A,$03 Call #R$9DC6.
+  $9D9D,$03 #REGhl=#R$9D94.
+  $9DA0,$02 #REGc=#N$00.
+  $9DA2,$03 Call #R$9DD8.
+  $9DA5,$03 #REGhl=#R$9D93.
+  $9DA8,$02 #REGc=#N$03.
+  $9DAA,$03 Call #R$9CE9.
+  $9DAD,$04 #REGix=#R$99E3.
+  $9DB1,$04 Reset bit 0 of *#REGix+#N$03.
+  $9DB5,$04 #REGix=#R$99F1.
+  $9DB9,$04 Reset bit 0 of *#REGix+#N$03.
+  $9DBD,$04 #REGix=#R$99A9.
+  $9DC1,$04 Reset bit 0 of *#REGix+#N$03.
+  $9DC5,$01 Return.
+
+  $9DC6,$01 Increment #REGhl by one.
+  $9DC7,$03 Call #R$9CF2.
+  $9DCA,$01 Decrease #REGhl by one.
+  $9DCB,$01 #REGa=*#REGhl.
+  $9DCC,$04 Jump to #R$9CEC if #REGa is not zero.
+  $9DD0,$01 Increment #REGa by one.
+  $9DD1,$01 Write #REGa to *#REGhl.
+  $9DD2,$03 #REGhl=#R$71ED.
+  $9DD5,$03 Jump to #R$A59F.
+
+  $9DD8,$03 Call #R$9CF2.
+  $9DDB,$02 Write #N$01 to *#REGhl.
+  $9DDD,$03 Call #R$BC46.
+  $9DE0,$03 Call #R$BC9C.
+  $9DE3,$04 Jump to #R$9DF5 if #REGb is not zero.
+  $9DE7,$03 Call #R$BC74.
+  $9DEA,$01 Set flags.
+  $9DEB,$01 Return if #REGa is equal to #REGa.
+  $9DEC,$02 Stash #REGix on the stack.
+N $9DEE Print "#TEXTTOKEN($722D)".
+  $9DEE,$03 #REGhl=#R$722D.
+  $9DF1,$03 Call #R$A59F.
+  $9DF4,$01 Return.
+
+  $9DF5,$05 Return if bit 4 of *#REGix+#N$03 is set.
+  $9DFA,$02 #REGa=#N$01.
+  $9DFC,$03 Jump to #R$BBE5.
 
 c $9DFF Character Action: Inspector Lestrade
 @ $9DFF label=CharacterAction_InspectorLestrade
@@ -3638,7 +12102,7 @@ c $9FC9
   $9FC9,$03 #REGhl=#R$9FCE.
   $9FCC,$01 #REGa=#N$00.
   $9FCD,$01 Return.
-
+N $9FCE Print "#TEXTTOKEN($680B)".
   $9FCE,$03 #REGhl=#R$680B.
   $9FD1,$03 Jump to #R$A59F.
 
@@ -3713,10 +12177,17 @@ g $A00D
 W $A00D,$02
 
 g $A00F
-W $A00F,$02
+B $A00F,$01
+B $A010,$01
 
 g $A011
 B $A011,$01
+
+g $A013
+W $A013,$02
+
+g $A015
+W $A015,$02
 
 g $A017
 W $A017,$02
@@ -3787,9 +12258,10 @@ N $A05B The player pressed either "N" or "n".
   $A068,$06 Jump to #R$A0E7 if *#R$A0DA is not zero.
   $A06E,$03 Call #R$BFD9.
   $A071,$03 Call #R$BF79.
+N $A074 Handler for Sherlock (as he's the first character).
   $A074,$04 #REGiy=#R$9860.
-  $A078,$03 Fetch the characters location and store it in #REGa.
-  $A07B,$04 Jump to #R$A093 if the character is not in #ROOM$32.
+  $A078,$03 Fetch Sherlocks location.
+  $A07B,$04 Jump to #R$A093 if Sherlock isn't in room #N$32: #ROOM$32.
   $A07F,$03 Call #R$C41F.
   $A082,$08 Jump to #R$A093 if the keypress was not valid or if the keypress
 . was not #N$8D ("ENTER") - which is ASCII code #N$0D with bit 7 set for being
@@ -3805,7 +12277,8 @@ N $A093 Cycle through the character timetable and run through each characters
 N $A09D This is a valid character so begin processing them.
   $A09D,$03 Load *#R$9FDD into #REGhl.
   $A0A0,$03 Call #R$A0DB.
-  $A0A3,$02 Jump to #R$A0D1 if this character is not scheduled.
+  $A0A3,$02 Jump to #R$A0D1 if this character is not scheduled to have actions
+. yet.
 N $A0A5 The currently processed character has an active schedule so process it.
   $A0A5,$03 Fetch the character ID and store it in #REGa.
   $A0A8,$03 Stash the timetable pointer and character ID on the stack.
@@ -3836,7 +12309,7 @@ b $A0D8
 c $A0DB Check Character Schedule
 @ $A0DB label=CheckCharacterSchedule
 R $A0DB HL Current game time
-R $A0DB F Carry flag is set if the character should be skipped
+R $A0DB O:F Carry flag is set if the character should be skipped
   $A0DB,$06 Fetch the characters schedule offset and store it in #REGde.
   $A0E1,$03 Return if the high byte of the characters schedule doesn't match
 . the current game time.
@@ -3852,12 +12325,15 @@ c $A0E7
   $A0F4,$03 Jump to #R$A064.
 
 c $A0F7
-  $A0F7,$01 Stash #REGhl on the stack.
+N $A0F7 This will be restored back into #REGhl by the end of the routine.
+  $A0F7,$01 Stash #REGhl on the stack temporarily.
   $A0F8,$03 #REGl=*#REGix-#N$02.
   $A0FB,$03 #REGh=*#REGix-#N$01.
   $A0FE,$02 Is #REGhl zero?
-  $A100,$01 Exchange the *#REGsp with the #REGhl register.
-  $A101,$02 Restore #REGix from the stack.
+N $A100 Pretty clever way of using the stack here.
+  $A100,$01 Swap the *#REGsp with the object pointer, restoring #REGhl to the
+. original value.
+  $A101,$02 Restore the object pointer into #REGix (from the stack).
   $A103,$01 Return.
 
 c $A104
@@ -3885,6 +12361,17 @@ W $A24D,$02 "#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))".
 L $A24D,$02,$08
 
 c $A25D
+  $A25D,$01 Stash #REGbc on the stack.
+  $A25E,$01 #REGb=#REGa.
+  $A25F,$06 Jump to #R$A275 if *#R$A011 is zero.
+  $A265,$03 #REGhl=*#R$A0D8.
+  $A268,$04 Jump to #R$A275 if #REGhl is zero.
+  $A26C,$03 #REGix=#REGhl (using the stack).
+  $A26F,$01 #REGa=#REGb.
+  $A270,$03 Call #R$D34E.
+  $A273,$02 Set the zero flag if the termination character was reached (#N$FF).
+  $A275,$01 Restore #REGbc from the stack.
+  $A276,$01 Return.
 
 c $A277
 
@@ -3994,6 +12481,9 @@ c $A4CD
 
 w $A55D
 
+g $A59D
+W $A59D,$02
+
 c $A59F
   $A59F,$06 Stash #REGbc, #REGde, #REGix, #REGaf and #REGhl on the stack.
   $A5A5,$03 #REGhl=#N($000C,$04,$04).
@@ -4006,15 +12496,23 @@ c $A59F
   $A5B6,$03 Call #R$A5C4.
   $A5B9,$06 Restore #REGaf, #REGix, #REGde, #REGbc and #REGhl from the stack.
   $A5BF,$04 #REGsp=*#R$A59D.
+@ $A5C3 label=IndirectJump
   $A5C3,$01 Jump to *#REGhl.
 
-c $A5C4
-  $A5C4,$03 #REGix=#REGhl (using the stack).
+c $A5C4 Process Text Stream
+@ $A5C4 label=ProcessTextStream
+R $A5C4 HL Pointer to text data
+  $A5C4,$03 Transfer the pointer to the text data to be printed into #REGix
+. (using the stack).
+N $A5C7 Keep on looping through until all of the text has been printed.
+@ $A5C7 label=TextProcessing_Loop
   $A5C7,$03 Call #R$A5CD.
-  $A5CA,$02 Jump to #R$A5C7 if ?? is not equal to #N$00.
+  $A5CA,$02 Jump back to #R$A5C7 until all the text has been processed.
   $A5CC,$01 Return.
 
-c $A5CD
+c $A5CD Process Text Command
+@ $A5CD label=ProcessTextCommand
+R $A5CD IX Pointer to text data
   $A5CD,$03 #REGa=*#REGix+#N$00.
   $A5D0,$04 Jump to #R$A5F2 if bit 7 of #REGa is not set.
   $A5D4,$02,b$01 Keep only bits 0-6.
@@ -4027,7 +12525,7 @@ c $A5CD
   $A5E6,$04 Jump to #R$A647 if #REGa is equal to #N$60.
   $A5EA,$03 Call #R$A887.
   $A5ED,$02 Increment #REGix by one.
-  $A5EF,$02,b$01 Set bit 0.
+  $A5EF,$02,b$01 Set bit 0 to indicate there is further text to print.
   $A5F1,$01 Return.
 
   $A5F2,$04 Jump to #R$A621 if #REGa is less than #N$20.
@@ -4079,6 +12577,7 @@ c $A643
   $A643,$02 #REGd=#N$30.
   $A645,$02 Jump to #R$A64A.
 
+c $A647
   $A647,$03 Call #R$A887.
   $A64A,$02 #REGa=#N$2E.
   $A64C,$04 Jump to #R$A657 if bit 6 of #REGd is set.
@@ -4441,7 +12940,7 @@ c $A880
   $A8CF,$04 Increment #REGix by two.
   $A8D3,$05 Jump to #R$A8C0 if #REGb is not equal to #N$7B.
   $A8D8,$01 Increment #REGb by one.
-  $A8D9,$02 Jump to #R$A8E0 if #REGb is equal to #N$7B.
+  $A8D9,$02 Jump to #R$A8E0 if #REGb is zero.
   $A8DB,$04 Decrease #REGix by two.
   $A8DF,$01 Decrease #REGb by one.
   $A8E0,$03 #REGe=*#REGix+#N$00.
@@ -4449,7 +12948,7 @@ c $A880
   $A8E6,$04 Jump to #R$A8DB until #REGde is zero.
   $A8EA,$01 #REGa=#REGb.
   $A8EB,$03 Call #R$A9B7.
-  $A8EE,$04 #REGhl+=#R$5DBF.
+  $A8EE,$04 #REGhl+=#N$5DBF.
   $A8F2,$01 Stash #REGhl on the stack.
   $A8F3,$01 Exchange the #REGde and #REGhl registers.
   $A8F4,$01 #REGhl+=#REGbc.
@@ -4470,8 +12969,7 @@ c $A880
   $A919,$03 Call #R$A92F.
   $A91C,$03 #HTML(#REGhl=<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C42.html">NEWPPC</a>.)
   $A91F,$01 #REGa=*#REGhl.
-  $A920,$01 Set flags.
-  $A921,$02 Jump to #R$A929 if #REGa is equal to #REGa.
+  $A920,$03 Jump to #R$A929 if #REGa is zero.
   $A923,$03 Call #R$A9B7.
   $A926,$01 Increment #REGhl by one.
   $A927,$02 Jump to #R$A91F.
@@ -4481,11 +12979,59 @@ c $A880
 c $A92F
 
 c $A990
+  $A990,$01 Stash #REGde on the stack.
+  $A991,$01 #REGd=*#REGhl.
+  $A992,$01 Increment #REGhl by one.
+  $A993,$01 #REGe=*#REGhl.
+  $A994,$01 Decrease #REGhl by one.
+  $A995,$04 Jump to #R$A9A0 if #REGc is zero.
+  $A999,$02 Shift #REGe left (with carry).
+  $A99B,$02 Rotate #REGd left.
+  $A99D,$01 Decrease #REGa by one.
+  $A99E,$02 Jump to #R$A999 if #REGa is not equal to #REGa.
+  $A9A0,$01 #REGa=#REGc.
+  $A9A1,$02 #REGa+=#N$05.
+  $A9A3,$04 Jump to #R$A9AA if #REGa is less than #N$08.
+  $A9A7,$02 #REGa-=#N$08.
+  $A9A9,$01 Increment #REGhl by one.
+  $A9AA,$01 #REGc=#REGa.
+  $A9AB,$01 #REGa=#REGd.
+  $A9AC,$01 Restore #REGde from the stack.
+  $A9AD,$01 RRCA.
+  $A9AE,$01 RRCA.
+  $A9AF,$01 RRCA.
+  $A9B0,$02,b$01 Keep only bits 0-4.
+  $A9B2,$02 #REGa+=#N$60.
+  $A9B4,$01 Return.
 
 g $A9B5
 W $A9B5,$02
 
 c $A9B7
+
+g $AA71
+
+g $AAAC
+
+c $AFE1
+
+c $B015
+
+c $B0AC
+  $B0AC,$06 Write #N($0000,$04,$04) to *#R$9FDD.
+  $B0B2,$04 #REGix=#R$9860.
+  $B0B6,$03 Write #REGl to *#REGix+#N$06.
+  $B0B9,$03 Write #REGh to *#REGix+#N$07.
+  $B0BC,$01 Increment #REGhl by one.
+  $B0BD,$03 Write #REGhl to *#R$A01F.
+  $B0C0,$04 Write #REGl to *#R$A0DA.
+  $B0C4,$01 Set flags.
+  $B0C5,$01 Return.
+
+  $B0C6,$03 Call #R$AFE1.
+  $B0C9,$06 Write #N($0001,$04,$04) to *#R$A01F.
+  $B0CF,$05 Write #N$02 to *#R$A0DA.
+  $B0D4,$03 Jump to #R$B015.
 
 c $B0D7
   $B0D7,$03 Call #R$B0EE.
@@ -4585,7 +13131,7 @@ W $B6D8,$02
 c $B6DA
 
 c $B772
-  $B772,$03 #REGhl=#R$5DBF.
+  $B772,$03 #REGhl=#N$5DBF.
   $B775,$01 #REGa=#REGd.
   $B776,$02,b$01 Keep only bits 0-3.
   $B778,$01 #REGd=#REGa.
@@ -5351,24 +13897,154 @@ c $C4B2
 c $C4D1
 
 c $C821
+  $C821,$03 Stash #REGix and #REGbc on the stack.
+  $C824,$03 Call #R$D237.
+  $C827,$01 #REGb=#REGa.
+  $C828,$03 #REGa=*#R$A036.
+  $C82B,$03 Call #R$C863.
+  $C82E,$03 Jump to #R$C85D if #REGa is equal to #REGb.
+  $C831,$06 Jump to #R$C85A if bit 7 of *#REGix+#N$05 is not set.
+  $C837,$01 #REGc=#REGa.
+  $C838,$01 #REGa=#REGb.
+  $C839,$01 #REGb=#REGc.
+  $C83A,$03 Call #R$C863.
+  $C83D,$01 #REGc=#REGa.
+  $C83E,$03 #REGa=*#R$A036.
+  $C841,$03 Jump to #R$C85D if #REGa is equal to #REGc.
+  $C844,$01 #REGa=#REGc.
+  $C845,$03 Jump to #R$C85A if #REGa is not equal to #REGb.
+  $C848,$01 Increment #REGa by one.
+  $C849,$02 Jump to #R$C85D if #REGa is not equal to #REGb.
+  $C84B,$03 #REGb=*#REGix+#N$00.
+  $C84E,$08 Jump to #R$C85D if *#R$A00A is equal to *#REGix+#N$0F.
+  $C856,$02 Increment #REGix by one.
+  $C858,$02 Decrease counter by one and loop back to #R$C851 until counter is zero.
+  $C85A,$01 #REGa=#N$00.
+  $C85B,$02 Jump to #R$C85F.
+
+  $C85D,$02,b$01 Set bit 0.
+  $C85F,$03 Restore #REGbc and #REGix from the stack.
+  $C862,$01 Return.
 
 c $C863
+  $C863,$02 Stash #REGix on the stack.
+  $C865,$03 Call #R$D237.
+  $C868,$03 Call #R$C86E.
+  $C86B,$02 Restore #REGix from the stack.
+  $C86D,$01 Return.
 
 c $C86E
 
 c $C8A7
+  $C8A7,$03 Call #R$D237.
+  $C8AA,$03 #REGa=*#REGix+#N$00.
+  $C8AD,$01 Decrease #REGa by one.
+  $C8AE,$01 Return.
 
 c $C8AF
+  $C8AF,$03 Call #R$D237.
+  $C8B2,$03 #REGa=*#REGix+#N$01.
+  $C8B5,$03 Return if #REGa is equal to #N$FF.
+  $C8B8,$03 Call #R$C8BE.
+  $C8BB,$01 Return if #REGa is not equal to #N$FF.
+  $C8BC,$02 Jump to #R$C8B2.
 
 c $C8BE
+  $C8BE,$03 Call #R$D237.
+  $C8C1,$04 Test bit 6 of *#REGix+#N$05.
+  $C8C5,$01 Return.
 
 c $C8C6
 
 c $C8EF
+  $C8EF,$07 Jump to #R$C90C if *#R$A034 is greater than or equal to #N$FE.
+  $C8F6,$05 Compare *#R$A00F with #N$05.
+  $C8FB,$03 #REGa=*#R$A034.
+  $C8FE,$02 Jump to #R$C905 if *#R$A00F is greater than or equal to #N$05.
+  $C900,$03 Call #R$D224.
+  $C903,$02 Jump to #R$C908.
+
+  $C905,$03 Call #R$D237.
+  $C908,$04 Write #REGix to *#R$A013.
+  $C90C,$06 Return if *#R$A035 is greater than #N$FE.
+  $C912,$05 Compare *#R$A010 with #N$05.
+  $C917,$03 #REGa=*#R$A035.
+  $C91A,$02 Jump to #R$C921 if *#R$A010 is greater than or equal to #N$05.
+  $C91C,$03 Call #R$D224.
+  $C91F,$02 Jump to #R$C924.
+  $C921,$03 Call #R$D237.
+  $C924,$04 Write #REGix to *#R$A015.
+  $C928,$01 Return.
 
 c $C929
+  $C929,$03 Call #R$C8EF.
+  $C92C,$07 Jump to #R$C972 if *#R$A034 is greater than or equal to #N$FE.
+  $C933,$04 #REGix=*#R$A017.
+  $C937,$06 Jump to #R$C94D if bit 6 of *#REGix+#N$05 is not set.
+  $C93D,$01 #REGa=#N$00.
+  $C93E,$03 Call #R$D1DC.
+  $C941,$02 Jump to #R$C94D if #REGa is greater than or equal to #N$FE.
+  $C943,$03 #REGa=*#R$A033.
+  $C946,$03 Call #R$D349.
+  $C949,$04 Jump to #R$C960 if #REGa is not equal to #N$FF.
+  $C94D,$07 Jump to #R$C972 if *#R$A00F is less than #N$07.
+  $C954,$04 #REGix=*#R$A013.
+  $C958,$03 #REGa=*#R$A033.
+  $C95B,$03 Call #R$D1DC.
+  $C95E,$02 Jump to #R$C972 if #REGa is greater than or equal to #N$07.
+  $C960,$03 #REGa=*#REGix+#N$01.
+  $C963,$01 #REGe=#REGa.
+  $C964,$02 #REGd=#N$00.
+  $C966,$03 #REGhl=#R$AA71.
+  $C969,$01 Decrease #REGde by one.
+  $C96A,$01 #REGhl+=#REGde.
+  $C96B,$01 #REGhl+=#REGde.
+  $C96C,$01 #REGe=*#REGhl.
+  $C96D,$01 Increment #REGhl by one.
+  $C96E,$01 #REGd=*#REGhl.
+  $C96F,$01 Exchange the #REGde and #REGhl registers.
+  $C970,$02 Jump to #R$C996.
+
+  $C972,$03 #REGa=*#R$A033.
+  $C975,$04 #REGix=#R$9F38.
+  $C979,$03 Call #R$D34E.
+  $C97C,$05 Jump to #R$DC15 if #REGa is equal to #N$FF.
+  $C981,$03 #REGl=*#REGix+#N$01.
+  $C984,$03 #REGh=*#REGix+#N$02.
+  $C987,$02 Jump to #R$C996.
 
 c $C989
+  $C989,$03 #REGhl=#REGix (using the stack).
+  $C98C,$01 Stash #REGhl on the stack.
+  $C98D,$03 Call #R$C8EF.
+  $C990,$03 Call #R$C996.
+  $C993,$02 Restore #REGix from the stack.
+  $C995,$01 Return.
+
+c $C996
+
+g $CB28
+W $CB28,$02
+W $CB2A,$02
+
+c $CB2C
+
+c $CB43
+
+g $CB79
+B $CB79,$01
+B $CB7A,$01
+
+c $CB7B
+
+c $CBA7
+
+c $CBC2
+
+g $CC0B
+B $CC0B,$01
+B $CC0C,$01
+B $CC0D,$01
 
 c $CC0E Find Character
 @ $CC0E label=FindCharacter
@@ -5397,6 +14073,11 @@ N $CC26 Return with some housekeeping.
   $CC28,$01 Return.
 
 c $CC29
+  $CC29,$03 #REGa=*#R$A036.
+  $CC2C,$03 Call #R$D495.
+  $CC2F,$04 Write #REGix to *#R$A017.
+  $CC33,$03 Write #REGa to *#R$A00A.
+  $CC36,$01 Return.
 
 c $CC37
   $CC37,$01 Stash the character ID on the stack briefly.
@@ -5525,9 +14206,15 @@ c $CD47 Handle Pop Stack
   $CD7D,$02 Restore #REGiy from the stack.
   $CD7F,$03 Jump to #R$CE8F.
 
+c $CD82 Set Character Script Error
+@ $CD82 label=SetCharacterScriptError
+N $CD82 Set script completion flag.
   $CD82,$06 Write #N($0001,$04,$04) to *#R$A01F.
   $CD88,$03 Jump to #R$CE8F.
 
+c $CD8B Terminate Character Script
+@ $CD8B label=TerminateCharacterScript
+N $CD8B Set script completion flag.
   $CD8B,$06 Write #N($0001,$04,$04) to *#R$A01F.
   $CD91,$03 Call #R$D026.
   $CD94,$01 Return.
@@ -5822,14 +14509,21 @@ R $D224 O:IX Pointer to location data
   $D234,$02 Restore #REGhl and #REGde from the stack.
   $D236,$01 Return.
 
-c $D237
+c $D237 Fetch Object Data Pointer
+@ $D237 label=FetchObjectDataPointer
+D $D237 Looks up an object in the objects table and returns a pointer to it's
+. data structure.
+R $D237 A Object ID
+R $D237 O:IX Pointer to object data
   $D237,$04 #REGix=#R$8B6F.
   $D23B,$03 Call #R$D34E.
-  $D23E,$01 Stash #REGhl on the stack.
-  $D23F,$03 #REGl=*#REGix+#N$01.
-  $D242,$03 #REGh=*#REGix+#N$02.
-  $D245,$01 Exchange the *#REGsp with the #REGhl register.
-  $D246,$02 Restore #REGix from the stack.
+N $D23E This will be restored back into #REGhl by the end of the routine.
+  $D23E,$01 Stash #REGhl on the stack temporarily.
+N $D23F Pretty clever way of using the stack here.
+  $D23F,$06 Load the object pointer into #REGhl.
+  $D245,$01 Swap the *#REGsp with the object pointer, restoring #REGhl to the
+. original value.
+  $D246,$02 Restore the object pointer into #REGix (from the stack).
   $D248,$01 Return.
 
 c $D249
@@ -5870,35 +14564,35 @@ c $D33C
   $D347,$01 Restore #REGaf from the stack.
   $D348,$01 Return.
 
-c $D349 Search Table
-@ $D349 label=Search__Table
-R $D349 A ID to match
+c $D349 Search Two-Byte Length Table
+@ $D349 label=SearchTwoByteTable
+R $D349 A Table ID to match
 R $D349 IX Table to search
   $D349,$01 Switch to the shadow registers.
   $D34A,$02 Set the length of the data in #REGe (#N$02 bytes).
   $D34C,$02 Jump to #R$D351.
 
-c $D34E Search Character Table
-@ $D34E label=SearchCharacterTable
-R $D34E A Character ID to match
+c $D34E Search Three-Byte Length Table
+@ $D34E label=SearchThreeByteTable
+R $D34E A Table ID to match
 R $D34E IX Table to search
 R $D34E O:A Entry ID or #N$FF for no entry found
 R $D34E O:IX Pointer to found entry
 R $D34E O:F The zero flag is set when no entry was found
   $D34E,$01 Switch to the shadow registers.
   $D34F,$02 Set the length of the data in #REGe (#N$03 bytes).
-@ $D351 label=SearchTable
+@ $D351 label=SearchTable_Start
   $D351,$03 Copy the table for searching into #REGhl (using the stack).
-  $D354,$01 Copy the character ID into #REGb.
+  $D354,$01 Copy the table ID into #REGb.
   $D355,$02 Reset #REGd to #N$00 for the length offset calculation.
-@ $D357 label=SearchCharacterTable_Loop
+@ $D357 label=SearchTable_Loop
   $D357,$01 Fetch a byte from the table.
-  $D358,$07 Jump to #R$D363 if the byte is the character ID we're searching
+  $D358,$07 Jump to #R$D363 if the byte is the table ID we're searching
 . for or if the termination character has been reached (#N$FF).
   $D35F,$01 Move to the next table entry.
   $D360,$03 Jump back to #R$D357.
-N $D363 Either the character ID was matched, or the terminator was reached.
-@ $D363 label=SearchCharacterTable_Return
+N $D363 Either the table ID was matched, or the terminator was reached.
+@ $D363 label=SearchTable_Return
   $D363,$03 Copy the table pointer into #REGix (using the stack).
   $D366,$02 Set the zero flag if the termination character was reached (#N$FF).
   $D368,$01 Switch back to the normal registers.
@@ -5913,12 +14607,12 @@ c $D405
 c $D471
 
 c $D495
-  $D495,$02 Compare #REGa with #N$FF.
-  $D497,$01 Return if #REGa is equal to #N$FF.
+R $D495 A Character ID
+  $D495,$03 Return if the character is inactive (#N$FF).
   $D498,$03 Call #R$D237.
-  $D49B,$05 Compare *#REGix+#N$00 with #N$01.
+  $D49B,$05 Is the character the "#OBJECT$01"?
   $D4A0,$02 #REGa=#N$FF.
-  $D4A2,$01 Return if #REGa is not equal to #N$01.
+  $D4A2,$01 Return if the character isn't the "#OBJECT$01".
   $D4A3,$03 #REGa=*#REGix+#N$0F.
   $D4A6,$01 Return.
 
@@ -5928,12 +14622,13 @@ c $D4A7
   $D4AD,$03 Call #R$D4CC.
   $D4B0,$02 Jump to #R$D4C7 if #REGa is equal to #N$FF.
   $D4B2,$01 Stash #REGaf on the stack.
+N $D4B3 Print "#TEXTTOKEN($68E4)".
   $D4B3,$03 #REGhl=#R$68E4.
   $D4B6,$03 Call #R$A59F.
   $D4B9,$01 Restore #REGbc from the stack.
   $D4BA,$01 #REGc=#REGb.
   $D4BB,$02 #REGa=#N$FF.
-  $D4BD,$04 #REGiy=#R$A017.
+  $D4BD,$04 #REGiy=*#R$A017.
   $D4C1,$03 #REGb=*#REGiy+#N$0F.
   $D4C4,$03 Call #R$D51A.
   $D4C7,$04 Restore #REGbc, #REGaf and #REGiy from the stack.
@@ -6169,7 +14864,11 @@ c $D68C
 
 g $D6B8
 
+c $DC15
+
 c $DC6C
+
+c $E691
 
 c $F1C1
 c $F555

@@ -165,7 +165,84 @@ class MessageFromAndromeda(AdventureGame):
 
 class Sherlock(AdventureGame):
     def get_text(self):
-        return "# Sherlock text data\n"
+        lines = []
+
+        dict_index = []
+        index_addr = 0x5D80
+        for i in range(32):
+            if index_addr + 1 < len(self.snapshot):
+                letter = chr(ord('A') - 1 + i)
+                start_addr = self.snapshot[index_addr] + (self.snapshot[index_addr + 1] << 8)
+                dict_index.append({'letter': letter, 'start_addr': start_addr})
+                index_addr += 2
+
+        for letter_idx in range(len(dict_index)):
+            letter_info = dict_index[letter_idx]
+            letter = letter_info['letter']
+
+            if letter < 'A' or letter > 'Z':
+                continue
+
+            section_start = 0x5DBF + letter_info['start_addr']
+            if letter_idx + 1 < len(dict_index):
+                section_end = 0x5DBF + dict_index[letter_idx + 1]['start_addr']
+            else:
+                section_end = 0x67B6
+
+            lines.append(f"g ${section_start:04X} Table Dictionary: \"{letter}\"")
+            lines.append(f"@ ${section_start:04X} Table_Dictionary_{letter}")
+            lines.append(f"D ${section_start:04X} All dictionary words starting with \"{letter}\".")
+            lines.append("")
+
+            pc = section_start
+
+            while pc < section_end and pc < len(self.snapshot):
+                if pc + 1 >= len(self.snapshot):
+                    break
+
+                word_start = pc
+
+                byte1 = self.snapshot[pc]
+                byte2 = self.snapshot[pc + 1]
+                pc += 2
+
+                word_type = (byte1 & 0xF0) >> 4
+                flection = byte1 & 0x0F
+                has_synonym = (byte2 & 0x80) >> 7
+                prev_letters = (byte2 & 0x70) >> 4
+                curr_letters = byte2 & 0x0F
+
+                if has_synonym:
+                    pc += 2
+
+                bit_data_bytes = ((curr_letters * 5) + 7) // 8 if curr_letters > 0 else 0
+
+                lines.append(f"N ${word_start:04X} Word #N(#PC-$5DBF): \"#TOKEN(${word_start-0x5DBF:04X})\".")
+                lines.append(f"M ${word_start:04X},$02 Word configuration:")
+                lines.append(". #TABLE(default,centre,centre)")
+                lines.append(". { =h Type | #WORDTYPES(#PEEK(#PC)) }")
+                lines.append(". { =h Flection | #N(#PEEK(#PC)&$0F) }")
+                lines.append(". { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }")
+                lines.append(". { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }")
+                lines.append(". { =h Length | #N(#PEEK(#PC+$01)&$0F) }")
+                lines.append(". TABLE#")
+                lines.append(f"B ${word_start:04X},$02,$01")
+
+                if has_synonym:
+                    lines.append(f"W ${word_start + 2:04X},$02 Synonym reference: \"#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))\".")
+
+                if curr_letters > 0 and bit_data_bytes > 0:
+                    bit_data_start = pc
+                    lines.append(f"M ${bit_data_start:04X},${bit_data_bytes:02X} Bit-packed letters ({curr_letters} letters, 5 bits each):")
+                    lines.append(f". #BITGROUPS(${bit_data_start:04X},${curr_letters:02X})")
+                    lines.append(f"B ${bit_data_start:04X},${bit_data_bytes:02X},b$01")
+                    pc += bit_data_bytes
+
+                lines.append("")
+
+            lines.append("")
+
+        return '\n'.join(lines)
 
     def get_locations(self):
         """Extract location data from the game"""
@@ -194,7 +271,7 @@ class Sherlock(AdventureGame):
                 lines.append(f"W ${pc:04X},$02")
             pc += 0x02
             if self.get_word(pc) > 0x0000:
-                lines.append(f"W ${pc:04X},$02 #TEXTTOKEN(#PC)")
+                lines.append(f"W ${pc:04X},$02 \"#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))\"")
             else:
                 lines.append(f"W ${pc:04X},$02")
             pc += 0x02
@@ -225,7 +302,7 @@ class Sherlock(AdventureGame):
         while pc < 0x8CB9:
             object = self.get_byte(pc)
             addr = self.get_word(pc+0x01)
-            last = 0x9562 if pc < 0x9551 else self.get_word(pc+0x04)
+            last = 0x9562 if object == 0x6D else self.get_word(pc+0x04)
             lines.append(f"g ${addr:04X} Object #N${object:02X}: \"#OBJECT${object:02X}\"")
             lines.append(f"@ ${addr:04X} label=Object_{object:02}")
             lines.append(f"B ${addr+0x00:04X},$01 Appears in the game #N(#PEEK(#PC)) #IF(#PEEK(#PC)>$01)(times,time).")
@@ -239,7 +316,7 @@ class Sherlock(AdventureGame):
             lines.append(". #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)")
             lines.append(". { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }")
             lines.append(". { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) } TABLE#")
-            lines.append(f"B ${addr+0x08:04X},${last-addr-0x09:02X},$02 Object Name: \"#TEXTTOKEN(#PC)\".")
+            lines.append(f"B ${addr+0x08:04X},${last-addr-0x09:02X},$02 Object Name: \"#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))\".")
             lines.append(f"B ${last-0x01:04X},$01 Terminator #N(#PEEK(#PC)).")
             lines.append("")
             pc += 0x03
