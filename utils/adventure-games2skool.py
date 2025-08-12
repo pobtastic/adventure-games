@@ -217,7 +217,7 @@ class Sherlock(AdventureGame):
 
                 bit_data_bytes = ((curr_letters * 5) + 7) // 8 if curr_letters > 0 else 0
 
-                lines.append(f"N ${word_start:04X} Word #N(#PC-$5DBF): \"#TOKEN(${word_start-0x5DBF:04X})\".")
+                lines.append(f"N ${word_start:04X} Word #N(#PC-$5DBF,$04,$04): \"#TOKEN(${word_start-0x5DBF:04X})\".")
                 lines.append(f"M ${word_start:04X},$02 Word configuration:")
                 lines.append(". #TABLE(default,centre,centre)")
                 lines.append(". { =h Type | #WORDTYPES(#PEEK(#PC)) }")
