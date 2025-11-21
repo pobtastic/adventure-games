@@ -46,55 +46,55 @@ def run_skool2html():
     options = '-c Config/InitModule={}:publish -d {}/build/html'.format(SKOOLKIT_TOOLS, ADVENTUREGAMES_HOME)
 
     art.tprint("After Shock")
-    hex = '-H -c Config/GameDir=adventure-games/aftershock --var pub=2'
-    dec = '-D -c Config/GameDir=adventure-games/aftershock/dec --var pub=4'
+    hex = '-H --ini ListRefs=2 -c Config/GameDir=adventure-games/aftershock --var pub=2'
+    dec = '-D --ini ListRefs=2 -c Config/GameDir=adventure-games/aftershock/dec --var pub=4'
     skool2html.main(options.split() + hex.split() + sys.argv[1:] + [AFTERSHOCK_SKOOL])
     skool2html.main(options.split() + dec.split() + sys.argv[1:] + [AFTERSHOCK_SKOOL])
 
     art.tprint("Blizzard Pass")
-    hex = '-H -c Config/GameDir=adventure-games/blizzardpass --var pub=2'
-    dec = '-D -c Config/GameDir=adventure-games/blizzardpass/dec --var pub=4'
+    hex = '-H --ini ListRefs=2 -c Config/GameDir=adventure-games/blizzardpass --var pub=2'
+    dec = '-D --ini ListRefs=2 -c Config/GameDir=adventure-games/blizzardpass/dec --var pub=4'
     skool2html.main(options.split() + hex.split() + sys.argv[1:] + [BLIZZARDPASS_SKOOL])
     skool2html.main(options.split() + dec.split() + sys.argv[1:] + [BLIZZARDPASS_SKOOL])
 
     art.tprint("Forest at World's End")
-    hex = '-H -c Config/GameDir=adventure-games/forestatworldsend --var pub=2'
-    dec = '-D -c Config/GameDir=adventure-games/forestatworldsend/dec --var pub=4'
+    hex = '-H --ini ListRefs=2 -c Config/GameDir=adventure-games/forestatworldsend --var pub=2'
+    dec = '-D --ini ListRefs=2 -c Config/GameDir=adventure-games/forestatworldsend/dec --var pub=4'
     skool2html.main(options.split() + hex.split() + sys.argv[1:] + [FORESTATWORLDSEND_SKOOL])
     skool2html.main(options.split() + dec.split() + sys.argv[1:] + [FORESTATWORLDSEND_SKOOL])
 
     art.tprint("Heroes Of Karn")
-    hex = '-H -c Config/GameDir=adventure-games/heroesofkarn --var pub=2'
-    dec = '-D -c Config/GameDir=adventure-games/heroesofkarn/dec --var pub=4'
+    hex = '-H --ini ListRefs=2 -c Config/GameDir=adventure-games/heroesofkarn --var pub=2'
+    dec = '-D --ini ListRefs=2 -c Config/GameDir=adventure-games/heroesofkarn/dec --var pub=4'
     skool2html.main(options.split() + hex.split() + sys.argv[1:] + [HEROESOFKHAN_SKOOL])
     skool2html.main(options.split() + dec.split() + sys.argv[1:] + [HEROESOFKHAN_SKOOL])
 
     art.tprint("The Hobbit")
-    hex = '-H -c Config/GameDir=adventure-games/hobbit --var pub=2'
-    dec = '-D -c Config/GameDir=adventure-games/hobbit/dec --var pub=4'
+    hex = '-H --ini ListRefs=2 -c Config/GameDir=adventure-games/hobbit --var pub=2'
+    dec = '-D --ini ListRefs=2 -c Config/GameDir=adventure-games/hobbit/dec --var pub=4'
     skool2html.main(options.split() + hex.split() + sys.argv[1:] + [HOBBIT_SKOOL])
     skool2html.main(options.split() + dec.split() + sys.argv[1:] + [HOBBIT_SKOOL])
 
     art.tprint("Jewels Of Babylon")
-    hex = '-H -c Config/GameDir=adventure-games/jewelsofbabylon --var pub=2'
-    dec = '-D -c Config/GameDir=adventure-games/jewelsofbabylon/dec --var pub=4'
+    hex = '-H --ini ListRefs=2 -c Config/GameDir=adventure-games/jewelsofbabylon --var pub=2'
+    dec = '-D --ini ListRefs=2 -c Config/GameDir=adventure-games/jewelsofbabylon/dec --var pub=4'
     skool2html.main(options.split() + hex.split() + sys.argv[1:] + [JEWELSOFBABYLON_SKOOL])
     skool2html.main(options.split() + dec.split() + sys.argv[1:] + [JEWELSOFBABYLON_SKOOL])
 
     art.tprint("Message From Andromeda")
-    hex = '-H -c Config/GameDir=adventure-games/messagefromandromeda --var pub=2'
-    dec = '-D -c Config/GameDir=adventure-games/messagefromandromeda/dec --var pub=4'
+    hex = '-H --ini ListRefs=2 -c Config/GameDir=adventure-games/messagefromandromeda --var pub=2'
+    dec = '-D --ini ListRefs=2 -c Config/GameDir=adventure-games/messagefromandromeda/dec --var pub=4'
     skool2html.main(options.split() + hex.split() + sys.argv[1:] + [MESSAGEFROMANDROMEDA_SKOOL])
     skool2html.main(options.split() + dec.split() + sys.argv[1:] + [MESSAGEFROMANDROMEDA_SKOOL])
 
     art.tprint("Sherlock")
-    hex = '-H -c Config/GameDir=adventure-games/sherlock --var pub=2'
-    dec = '-D -c Config/GameDir=adventure-games/sherlock/dec --var pub=4'
+    hex = '-H --ini ListRefs=2 -c Config/GameDir=adventure-games/sherlock --var pub=2'
+    dec = '-D --ini ListRefs=2 -c Config/GameDir=adventure-games/sherlock/dec --var pub=4'
     skool2html.main(options.split() + hex.split() + sys.argv[1:] + [SHERLOCK_SKOOL])
     skool2html.main(options.split() + dec.split() + sys.argv[1:] + [SHERLOCK_SKOOL])
 
     art.tprint("Warlord")
-    hex = '-H -c Config/GameDir=adventure-games/warlord --var pub=2'
-    dec = '-D -c Config/GameDir=adventure-games/warlord/dec --var pub=4'
+    hex = '-H --ini ListRefs=2 -c Config/GameDir=adventure-games/warlord --var pub=2'
+    dec = '-D --ini ListRefs=2 -c Config/GameDir=adventure-games/warlord/dec --var pub=4'
     skool2html.main(options.split() + hex.split() + sys.argv[1:] + [WARLORD_SKOOL])
     skool2html.main(options.split() + dec.split() + sys.argv[1:] + [WARLORD_SKOOL])

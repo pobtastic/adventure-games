@@ -8404,7 +8404,9 @@ b $6830
 b $68B1
 b $68BC
 b $68D1
+
 b $68DD
+  $68DD,$01,b$01
 
 w $68DE
 
@@ -8419,6 +8421,12 @@ b $71ED
 b $7207
 b $7224
 b $722D
+
+b $7BC2
+b $7BD7
+b $7C9E
+b $7CE7
+b $7C4A
 
 b $7E27
 
@@ -12364,8 +12372,6 @@ c $A1B5
 
 c $A1C7
 
-c $A203
-
 c $A20C
 
 g $A24D
@@ -12386,6 +12392,16 @@ c $A25D
   $A276,$01 Return.
 
 c $A277
+  $A277,$05 Stash #REGix, #REGhl, #REGbc and #REGaf on the stack.
+  $A27C,$03 Call #R$A25D.
+  $A27F,$02 Jump to #R$A290 if the zero flag is set.
+  $A281,$03 Call #R$A296.
+  $A284,$03 Call #R$C129.
+  $A287,$03 #REGl=*#REGix+#N$01.
+  $A28A,$03 #REGh=*#REGix+#N$02.
+  $A28D,$03 Call #R$F3C2.
+  $A290,$05 Restore #REGaf, #REGbc, #REGhl and #REGix from the stack.
+  $A295,$01 Return.
 
 c $A296
 
@@ -12487,11 +12503,23 @@ c $A4AB
   $A4B8,$03 Restore #REGix and #REGde from the stack.
   $A4BB,$01 Return.
 
-c $A4BC
+c $A4BC Point To Object Attribute Byte
+@ $A4BC label=PointToObjectAttributeByte
+R $A4BC A Object ID
+R $A4BC O:HL Pointer to the object attribute byte
+  $A4BC,$03 Stash #REGde and #REGix on the stack.
+  $A4BF,$03 Call #R$D237.
+  $A4C2,$03 #REGhl=#REGix (using the stack).
+  $A4C5,$04 #REGhl+=#N($0007,$04,$04).
+  $A4C9,$03 Restore #REGix and #REGde from the stack.
+  $A4CC,$01 Return.
 
 c $A4CD
 
-w $A55D
+g $A55D Control Character Jump Table
+@ $A55D label=JumpTable_ControlCharacters
+W $A55D,$02 ID: #N((#PC-$A55D)/$02).
+L $A55D,$02,$20
 
 g $A59D
 W $A59D,$02
@@ -12815,9 +12843,9 @@ c $A793
   $A79D,$03 Call #R$A82F.
   $A7A0,$01 Restore #REGaf from the stack.
   $A7A1,$01 Set flags.
-  $A7A2,$03 #REGde=#N$0485.
+  $A7A2,$03 #REGde="#R($5DBF+$0485)(#TOKEN($0485))".
   $A7A5,$01 Return if ?? is not equal to #REGa.
-  $A7A6,$03 #REGde=#N($007A,$04,$04).
+  $A7A6,$03 #REGde="#R($5DBF+$007A)(#TOKEN($007A)).
   $A7A9,$02,b$01 Set bit 0.
   $A7AB,$01 Return.
 
@@ -12907,7 +12935,7 @@ c $A80E
 
 c $A82F
   $A82F,$05 Jump to #R$A751 if #REGa is not equal to #N$FF.
-  $A834,$03 #REGde=#N$080E.
+  $A834,$03 #REGde="#R($5DBF+$080E)(#TOKEN($080E))".
   $A837,$03 Jump to #R$A887.
 
 c $A83A
@@ -12930,6 +12958,8 @@ R $A840 DE Common word address
 b $A851
 
 c $A852
+
+g $A85C
 
 c $A880
   $A880,$01 #REGe=*#REGhl.
@@ -13535,7 +13565,8 @@ B $C128,$01
 c $C129
   $C129,$04 Write #N$00 to *#R$A019.
   $C12D,$04 Write #N$01 to *#R$C128.
-  $C131,$05 Write #N$12 to *#R$C1F5.
+  $C131,$02 #REGa=#N$12.
+  $C133,$03 Write #REGa to *#R$C1F5.
   $C136,$06 Write #N$5020 (screen buffer location) to *#R$C1F8.
   $C13C,$05 Write #N$02 to *#R$C1FA.
   $C141,$01 Return.
@@ -14492,8 +14523,11 @@ c $D008
 
 c $D026
 
-c $D045
-  $D045,$03 #REGa=*#R$9860.
+c $D045 Is Sherlock Wearing The China Man Disguise?
+@ $D045 label=IsSherlockTheChinaMan
+N $D045 Sherlocks character ID can vary depending on whether he is wearing a
+. disguise or not.
+  $D045,$03 Fetch Sherlocks current character ID from *#R$9860.
   $D048,$03 Call #R$D495.
   $D04B,$03 Write #REGa to *#R$A009.
   $D04E,$01 Return.
@@ -14730,13 +14764,18 @@ c $D405
 
 c $D471
 
-c $D495
+c $D495 Is The Character Wearing The China Man Disguise?
+@ $D495 label=IsCharacterTheChinaMan
 R $D495 A Character ID
+R $D495 O:A Either #N$FF for when the character isn't the China man, else the attribute byte
   $D495,$03 Return if the character is inactive (#N$FF).
   $D498,$03 Call #R$D237.
   $D49B,$05 Is the character the "#OBJECT$01"?
-  $D4A0,$02 #REGa=#N$FF.
+  $D4A0,$02 Set a default in #REGa of #N$FF for when the character isn't
+. wearing the China mans disguise.
   $D4A2,$01 Return if the character isn't the "#OBJECT$01".
+N $D4A3 The character is wearing the disguise, so return with the attribute
+. byte instead.
   $D4A3,$03 #REGa=*#REGix+#N$0F.
   $D4A6,$01 Return.
 
@@ -14991,6 +15030,16 @@ g $D6B8
 c $DC15
 
 c $DC6C
+
+c $E151
+
+g $E16B
+B $E16B,$01
+W $E16C,$02
+L $E16B,$03,$05
+B $E17A,$01 Terminator.
+
+c $E17B
 
 c $E691
 

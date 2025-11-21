@@ -1286,9 +1286,7 @@ N $A6F6 Print "#DECODESTR$CE44".
   $A6FC,$01 Return.
 
 g $A6FD
-W $A6FD,$02
-
-B $A6FE,$01
+B $A6FD,$02,$01
 
 c $A6FF
   $A6FF,$03 Stash #REGhl, #REGde and #REGbc on the stack.

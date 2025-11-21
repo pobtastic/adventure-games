@@ -34,7 +34,7 @@ N $5B18 Load the third block: game data.
 N $5B21 Tape loading routine.
 @ $5B21 label=TapeLoading
   $5B21,$01 Set the carry flag to indicate "loading".
-  $5B22,$01 This resets the Z flag. (#REGd cannot hold +#N$FF.)
+  $5B22,$01 This resets the Z flag (#REGd cannot hold +#N$FF.)
   $5B23,$01 The #REGa register holds +#N$00 for a header and +#N$FF for a block
 . of data. The carry flag is reset for verifying and set for loading.
   $5B24,$01 Restore #REGd to its original value.

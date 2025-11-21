@@ -6,6 +6,11 @@ A disassembly of the [Spectrum](https://en.wikipedia.org/wiki/ZX_Spectrum) games
 ### [Adventuresoft UK Ltd](https://en.wikipedia.org/wiki/Adventure_Soft):
 * [Blizzard Pass](https://en.wikipedia.org/wiki/ZX_Spectrum_software) 1986
 
+### [Incentive Software Ltd (UK)](https://en.wikipedia.org/wiki/Incentive_Software):
+* [Mountains of Ket]() 1983
+* [Temple of Vran]() 1984
+* [The Final Mission]() 1984
+
 ### [Interceptor Software UK](https://en.wikipedia.org/wiki/Interceptor_Micros):
 * [After Shock](https://en.wikipedia.org/wiki/After_Shock_(video_game)) 1986
 * [Forest at World's End](https://en.wikipedia.org/wiki/Forest_at_the_World%27s_End) 1984
@@ -30,8 +35,23 @@ Browse the latest release:
 * [Blizzard Pass disassembly](https://pobtastic.github.io/adventure-games/blizzardpass/) (hexadecimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/blizzardpass/))
 * [Blizzard Pass disassembly](https://pobtastic.github.io/adventure-games/blizzardpass/dec/) (decimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/blizzardpass/dec/))
 
+* [Forest at World's End disassembly](https://pobtastic.github.io/adventure-games/forestatworldsend/) (hexadecimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/forestatworldsend/))
+* [Forest at World's End disassembly](https://pobtastic.github.io/adventure-games/forestatworldsend/dec/) (hexadecimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/forestatworldsend/dec/))
+
+* [Heroes of Karn disassembly](https://pobtastic.github.io/adventure-games/heroesofkarn/) (hexadecimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/heroesofkarn/))
+* [Heroes of Karn disassembly](https://pobtastic.github.io/adventure-games/heroesofkarn/dec/) (decimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/heroesofkarn/dec/))
+
+* [The Hobbit disassembly](https://pobtastic.github.io/adventure-games/hobbit/) (hexadecimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/hobbit/))
+* [The Hobbit disassembly](https://pobtastic.github.io/adventure-games/hobbit/dec/) (decimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/hobbit/dec/))
+
 * [Jewels of Babylon disassembly](https://pobtastic.github.io/adventure-games/jewelsofbabylon/) (hexadecimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/jewelsofbabylon/))
 * [Jewels of Babylon disassembly](https://pobtastic.github.io/adventure-games/jewelsofbabylon/dec/) (decimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/jewelsofbabylon/dec/))
+
+* [Message from Andromeda disassembly](https://pobtastic.github.io/adventure-games/messagefromandromeda/) (hexadecimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/messagefromandromeda/))
+* [Message from Andromeda disassembly](https://pobtastic.github.io/adventure-games/messagefromandromeda/dec/) (decimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/messagefromandromeda/dec/))
+
+* [Sherlock disassembly](https://pobtastic.github.io/adventure-games/sherlock/) (hexadecimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/sherlock/))
+* [Sherlock disassembly](https://pobtastic.github.io/adventure-games/sherlock/dec/) (decimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/sherlock/dec/))
 
 * [Warlord disassembly](https://pobtastic.github.io/adventure-games/warlord/) (hexadecimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/warlord/))
 * [Warlord of Babylon disassembly](https://pobtastic.github.io/adventure-games/warlord/dec/) (decimal; mirror [here](http://skoolkit.arcadegeek.co.uk/adventure-games/warlord/dec/))
