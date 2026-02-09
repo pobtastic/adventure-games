@@ -7,9 +7,9 @@ D $4000 #UDGTABLE { #SCR2(loading) | The Hobbit Loading Screen. } TABLE#
   $5800,$0300,$20 Attributes.
 
 b $5B00
-@ $5B00 expand=#DEF(#MOVEMENT(address) #TABLE(default,centre,centre,centre) { =h Direction | =h Via | =h Destination } { #MAP(#PEEK($address))(?,$01:N,$02:S,$03:E,$04:W,$05:NE,$06:NW,$07:SE,$08:SW,$09:UP,$0A:DN) | #IF(#PEEK($address + 1) > $00)(#OBJECT(#PEEK($address + $01), $01, $01)($),---) | #LOCATION(#PEEK($address + $02), $01, $01)($) - "#LOCATIONNAME(#PEEK($address + $02))" } TABLE#)
+@ $5B00 expand=#DEF(#MOVEMENT(address) #TABLE(default,centre,centre,centre) { =h Direction | =h Via | =h Destination } { #MAP(#PEEK($address))(?,$01:N,$02:S,$03:E,$04:W,$05:NE,$06:NW,$07:SE,$08:SW,$09:UP,$0A:DN) | #IF(#PEEK($address+$01) > $00)(#OBJECT(#PEEK($address+$01), $01, $01)($),---) | #LOCATION(#PEEK($address+$02)) - "#LOCATIONNAME(#PEEK($address+$02))" } TABLE#)
 @ $5B00 expand=#DEF(#ACTION #MAP(#PEEK(#PC))(?,$00:None,$01:North,$02:South,$03:East,$04:West,$05:Northeast,$06:Northwest,$07:Southeast,$08:Southwest,$09:Up,$0A:Down,$0B:Strike with,$0C:Close,$0D:Drop,$0F:Attack,$10:Open,$11:Put in,$12:Put on,$13:Take,$14:Take out of,$15:Take from,$16:Take off,$17:Look,$1A:Inventory,$1C:Examine,$1D:Give To,$1F:Enter,$20:Go Into,$24:Run,$27:Follow,$2A:Throw At,$2D:Burn,$2E:Tie To,$30:Capture,$33:Untie,$35:Talk To,$37:Climb Out Of,$3A:Shoot,$3B:Carry))
-@ $5B00 replace=/#WORDINDEX/#R#(#EVAL(#PEEK(#PC + 1) * $100 + #PEEK(#PC) + $6000))
+@ $5B00 replace=/#WORDINDEX/#R#(#EVAL(#PEEK(#PC+$01)*$100+#PEEK(#PC)+$6000))
 
 b $5F00
 
@@ -3641,9 +3641,9 @@ N $6C01 Initial set-up; copies "clean" data to the "CopyOf..." store. This is th
 @ $6C27 label=ReStart
   $6C27,$01 Disable interrupts.
   $6C28,$03 Set the stack pointer to #N$5EFF.
-N $6C2B Reset the border and paper colours for location #LOCATION($05,$01,$01)($) - "#LOCATIONNAME($05)".
+N $6C2B Reset the border and paper colours for location #LOCATION$05 - "#LOCATIONNAME$05".
   $6C2B,$04 #REGix=#R$CC00
-  $6C2F,$05 Call #R$9DBD with location #LOCATION($05,$01,$01)($) - "#LOCATIONNAME($05)".
+  $6C2F,$05 Call #R$9DBD with location #LOCATION$05 - "#LOCATIONNAME$05".
   $6C34,$06 #REGhl=#R$E142 (#REGhl=location graphics data for "#LOCATIONNAME($05)").
   $6C3A,$05 Write #COLOUR$00 to the first (border) and second (paper) addresses.
 N $6C3F Copy "clean" data to the game tables ready for a new game.
@@ -4235,7 +4235,7 @@ N $83BF Print the message.
 
 b $83CD Locate Help Message
 @ $83CD label=LocHlpMsg
-  $83CD,$01 Location #LOCATION(#PEEK(#PC),$01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $83CD,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
 W $83CE,$02 #TEXTMESSAGE(#PC)
 L $83CD,$03,$0B
   $83EE,$01 Termination character (#N(#PEEK(#PC),$02,$03,$01,$01)($)).
@@ -4722,7 +4722,7 @@ c $8D33 Action Pickup
 
 b $8D6E Location Percentage Completion Table
 @ $8D6E label=PercentageLocationTable
-N $8D6E #LOCATION(#PEEK(#PC),$01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+N $8D6E #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
 B $8D6E,$01 Location ID.
 W $8D6F,$02 Percentage to add.
 L $8D6E,$03,$0E
@@ -5953,7 +5953,7 @@ b $B9C8
 
 w $B9E0 Location Table
 @ $B9E0 label=LocationTable
-  $B9E0,$02 #N(#EVAL((#PC-$B9E0)/$02),$02,$03,$01,$01)($) - "#LOCATIONNAME(#EVAL((#PC-$B9E0)/$02))".
+  $B9E0,$02 #LOCATION(#EVAL((#PC-$B9E0)/$02)) - "#LOCATIONNAME(#EVAL((#PC-$B9E0)/$02))".
 L $B9E0,$02,$50
 
 b $BA80 Location Prepositions
@@ -6615,7 +6615,7 @@ N $C11B Object $00 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C123,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C129,$02 Help Message (none).
-  $C12B,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C12B,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C12C,$06
   $C132,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C133 Object $3C - "#TEXTTOKEN(#PC + $08, $01)"
@@ -6633,7 +6633,7 @@ N $C133 Object $3C - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C13B,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C141,$02 Help Message (none).
-  $C143,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C143,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C144,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C145 Object $05 - "#TEXTTOKEN(#PC + $08, $01)"
   $C145,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6650,8 +6650,8 @@ N $C145 Object $05 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C14D,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C153,$02 Help Message (none).
-  $C155,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C156,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C155,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C156,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C157,$18,$06
   $C16F,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C170 Object $01 - "#TEXTTOKEN(#PC + $08, $01)"
@@ -6669,8 +6669,8 @@ N $C170 Object $01 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C178,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C17E,$02 Help Message (none).
-  $C180,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C181,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C180,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C181,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C182,$18,$06
   $C19A,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C19B Object $2B - "#TEXTTOKEN(#PC + $08, $01)"
@@ -6688,7 +6688,7 @@ N $C19B Object $2B - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C1A3,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C1A9,$02 Help Message (none).
-  $C1AB,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C1AB,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C1AC,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C1AD Object $02 - "#TEXTTOKEN(#PC + $08, $01)"
   $C1AD,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6705,7 +6705,7 @@ N $C1AD Object $02 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C1B5,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C1BB,$02 Help Message (none).
-  $C1BD,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C1BD,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C1BE,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C1BF Object $04 - "#TEXTTOKEN(#PC + $08, $01)"
   $C1BF,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6722,7 +6722,7 @@ N $C1BF Object $04 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C1C7,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C1CD,$02 Help Message (none).
-  $C1CF,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C1CF,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C1D0,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C1D1 Object $03 - "#TEXTTOKEN(#PC + $08, $01)"
   $C1D1,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6739,7 +6739,7 @@ N $C1D1 Object $03 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C1D9,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C1DF,$02 Help Message (#R(#EVAL(#PEEK(#PC)+#PEEK(#PC + $01)*$100))).
-  $C1E1,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C1E1,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C1E5,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C1E6 Object $06 - "#TEXTTOKEN(#PC + $08, $01)"
   $C1E6,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6756,8 +6756,8 @@ N $C1E6 Object $06 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C1EE,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C1F4,$02 Help Message (none).
-  $C1F6,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C1F7,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C1F6,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C1F7,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C204,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C205 Object $07 - "#TEXTTOKEN(#PC + $08, $01)"
   $C205,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6774,11 +6774,11 @@ N $C205 Object $07 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C20D,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C213,$02 Help Message (none).
-  $C215,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C216,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C217,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C218,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C219,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C215,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C216,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C217,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C218,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C219,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C223,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C224 Object $08 - "#TEXTTOKEN(#PC + $08, $01)"
   $C224,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6795,9 +6795,9 @@ N $C224 Object $08 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C22C,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C232,$02 Help Message (none).
-  $C234,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C235,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C236,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C234,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C235,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C236,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C24C,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C24D Object $09 - "#TEXTTOKEN(#PC + $08, $01)"
   $C24D,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6814,9 +6814,9 @@ N $C24D Object $09 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C255,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C25B,$02 Help Message (#R(#EVAL(#PEEK(#PC) + #PEEK(#PC + 1) * $100))).
-  $C25D,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C25E,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C25F,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C25D,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C25E,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C25F,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C26C,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C26D Object $2A - "#TEXTTOKEN(#PC + $08, $01)"
   $C26D,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6833,9 +6833,9 @@ N $C26D Object $2A - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C275,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C27B,$02 Help Message (none).
-  $C27D,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C27E,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C27F,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C27D,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C27E,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C27F,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C28C,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C28D Object $0A - "#TEXTTOKEN(#PC + $08, $01)"
   $C28D,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6852,8 +6852,8 @@ N $C28D Object $0A - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C295,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C29B,$02 Help Message (none).
-  $C29D,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C29E,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C29D,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C29E,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C2B4,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C2B5 Object $0B - "#TEXTTOKEN(#PC + $08, $01)"
   $C2B5,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6870,8 +6870,8 @@ N $C2B5 Object $0B - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C2BD,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C2C3,$02 Help Message (none).
-  $C2C5,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C2C6,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C2C5,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C2C6,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C2DC,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C2DD Object $0C - "#TEXTTOKEN(#PC + $08, $01)"
   $C2DD,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6888,8 +6888,8 @@ N $C2DD Object $0C - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C2E5,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C2EB,$02 Help Message (none).
-  $C2ED,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C2EE,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C2ED,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C2EE,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C304,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C305 Object $0E - "#TEXTTOKEN(#PC + $08, $01)"
   $C305,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6906,7 +6906,7 @@ N $C305 Object $0E - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C30D,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C313,$02 Help Message (none).
-  $C315,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C315,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C319,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C31A Object $10 - "#TEXTTOKEN(#PC + $08, $01)"
   $C31A,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6923,7 +6923,7 @@ N $C31A Object $10 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C322,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C328,$02 Help Message (none).
-  $C32A,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C32A,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C331,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C332 Object $0F - "#TEXTTOKEN(#PC + $08, $01)"
   $C332,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6940,7 +6940,7 @@ N $C332 Object $0F - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C33A,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C340,$02 Help Message (none).
-  $C342,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C342,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C343,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C344 Object $11 - "#TEXTTOKEN(#PC + $08, $01)"
   $C344,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6957,8 +6957,8 @@ N $C344 Object $11 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C34C,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C352,$02 Help Message (none).
-  $C354,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C355,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C354,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C355,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C365,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C366 Object $12 - "#TEXTTOKEN(#PC + $08, $01)"
   $C366,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6975,7 +6975,7 @@ N $C366 Object $12 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C36E,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C374,$02 Help Message (none).
-  $C376,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C376,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C380,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C381 Object $0D - "#TEXTTOKEN(#PC + $08, $01)"
   $C381,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -6992,8 +6992,8 @@ N $C381 Object $0D - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C389,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C38F,$02 Help Message (none).
-  $C391,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C392,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C391,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C392,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C39F,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C3A0 Object $3E - "#TEXTTOKEN(#PC + $08, $01)"
   $C3A0,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7010,7 +7010,7 @@ N $C3A0 Object $3E - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C3A8,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C3AE,$02 Help Message (none).
-  $C3B0,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C3B0,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C3B1,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C3B2 Object $3F - "#TEXTTOKEN(#PC + $08, $01)"
   $C3B2,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7027,7 +7027,7 @@ N $C3B2 Object $3F - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C3BA,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C3C0,$02 Help Message (none).
-  $C3C2,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C3C2,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C3C9,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C3CA Object $40 - "#TEXTTOKEN(#PC + $08, $01)"
   $C3CA,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7044,7 +7044,7 @@ N $C3CA Object $40 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C3D2,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C3D8,$02 Help Message (none).
-  $C3DA,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C3DA,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C3DB,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C3DC Object $41 - "#TEXTTOKEN(#PC + $08, $01)"
   $C3DC,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7061,7 +7061,7 @@ N $C3DC Object $41 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C3E4,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C3EA,$02 Help Message (none).
-  $C3EC,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C3EC,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C3ED,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C3EE Object $13 - "#TEXTTOKEN(#PC + $08, $01)"
   $C3EE,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7078,7 +7078,7 @@ N $C3EE Object $13 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C3F6,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C3FC,$02 Help Message (none).
-  $C3FE,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C3FE,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C417,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C418 Object $14 - "#TEXTTOKEN(#PC + $08, $01)"
   $C418,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7095,7 +7095,7 @@ N $C418 Object $14 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C420,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C426,$02 Help Message (none).
-  $C428,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C428,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C42F,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C430 Object $42 - "#TEXTTOKEN(#PC + $08, $01)"
   $C430,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7112,7 +7112,7 @@ N $C430 Object $42 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C438,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C43E,$02 Help Message (none).
-  $C440,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C440,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C441,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C442 Object $43 - "#TEXTTOKEN(#PC + $08, $01)"
   $C442,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7129,7 +7129,7 @@ N $C442 Object $43 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C44A,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C450,$02 Help Message (none).
-  $C452,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C452,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C453,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C454 Object $15 - "#TEXTTOKEN(#PC + $08, $01)"
   $C454,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7146,7 +7146,7 @@ N $C454 Object $15 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C45C,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C462,$02 Help Message (none).
-  $C464,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C464,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C468,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C469 Object $16 - "#TEXTTOKEN(#PC + $08, $01)"
   $C469,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7163,7 +7163,7 @@ N $C469 Object $16 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C471,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C477,$02 Help Message (none).
-  $C479,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C479,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C47D,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C47E Object $17 - "#TEXTTOKEN(#PC + $08, $01)"
   $C47E,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7180,14 +7180,14 @@ N $C47E Object $17 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C486,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C48C,$02 Help Message (none).
-  $C48E,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C48F,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C490,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C491,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C492,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C493,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C494,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C495,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C48E,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C48F,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C490,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C491,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C492,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C493,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C494,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C495,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C499,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C49A Object $18 - "#TEXTTOKEN(#PC + $08, $01)"
   $C49A,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7204,9 +7204,9 @@ N $C49A Object $18 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C4A2,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C4A8,$02 Help Message (none).
-  $C4AA,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C4AB,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C4AC,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C4AA,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C4AB,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C4AC,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C4B0,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C4B1 Object $44 - "#TEXTTOKEN(#PC + $08, $01)"
   $C4B1,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7223,7 +7223,7 @@ N $C4B1 Object $44 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C4B9,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C4BF,$02 Help Message (none).
-  $C4C1,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C4C1,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C4C2,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C4C3 Object $46 - "#TEXTTOKEN(#PC + $08, $01)"
   $C4C3,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7240,7 +7240,7 @@ N $C4C3 Object $46 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C4CB,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C4D1,$02 Help Message (none).
-  $C4D3,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C4D3,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C4D4,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C4D5 Object $19 - "#TEXTTOKEN(#PC + $08, $01)"
   $C4D5,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7257,7 +7257,7 @@ N $C4D5 Object $19 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C4DD,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C4E3,$02 Help Message (none).
-  $C4E5,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C4E5,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C4E9,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C4EA Object $1A - "#TEXTTOKEN(#PC + $08, $01)"
   $C4EA,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7274,7 +7274,7 @@ N $C4EA Object $1A - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C4F2,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C4F8,$02 Help Message (none).
-  $C4FA,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C4FA,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C4FE,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C4FF Object $1B - "#TEXTTOKEN(#PC + $08, $01)"
   $C4FF,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7291,8 +7291,8 @@ N $C4FF Object $1B - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C507,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C50D,$02 Help Message (none).
-  $C50F,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C510,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C50F,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C510,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C520,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C521 Object $1C - "#TEXTTOKEN(#PC + $08, $01)"
   $C521,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7309,8 +7309,8 @@ N $C521 Object $1C - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C529,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C52F,$02 Help Message (none).
-  $C531,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C532,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C531,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C532,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C533,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C534 Object $1D - "#TEXTTOKEN(#PC + $08, $01)"
   $C534,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7327,7 +7327,7 @@ N $C534 Object $1D - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C53C,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C542,$02 Help Message (none).
-  $C544,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C544,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C54B,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C54C Object $1E - "#TEXTTOKEN(#PC + $08, $01)"
   $C54C,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7344,7 +7344,7 @@ N $C54C Object $1E - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C554,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C55A,$02 Help Message (none).
-  $C55C,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C55C,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C566,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C567 Object $1F - "#TEXTTOKEN(#PC + $08, $01)"
   $C567,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7361,7 +7361,7 @@ N $C567 Object $1F - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C56F,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C575,$02 Help Message (none).
-  $C577,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C577,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C57E,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C57F Object $20 - "#TEXTTOKEN(#PC + $08, $01)"
   $C57F,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7378,7 +7378,7 @@ N $C57F Object $20 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C587,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C58D,$02 Help Message (none).
-  $C58F,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C58F,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C596,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C597 Object $21 - "#TEXTTOKEN(#PC + $08, $01)"
   $C597,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7395,7 +7395,7 @@ N $C597 Object $21 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C59F,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C5A5,$02 Help Message (none).
-  $C5A7,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C5A7,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C5B7,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C5B8 Object $22 - "#TEXTTOKEN(#PC + $08, $01)"
   $C5B8,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7412,7 +7412,7 @@ N $C5B8 Object $22 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C5C0,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C5C6,$02 Help Message (none).
-  $C5C8,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C5C8,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C5CC,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C5CD Object $23 - "#TEXTTOKEN(#PC + $08, $01)"
   $C5CD,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7429,7 +7429,7 @@ N $C5CD Object $23 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C5D5,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C5DB,$02 Help Message (none).
-  $C5DD,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C5DD,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C5DE,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C5DF Object $24 - "#TEXTTOKEN(#PC + $08, $01)"
   $C5DF,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7446,7 +7446,7 @@ N $C5DF Object $24 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C5E7,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C5ED,$02 Help Message (none).
-  $C5EF,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C5EF,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C5F3,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C5F4 Object $25 - "#TEXTTOKEN(#PC + $08, $01)"
   $C5F4,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7463,7 +7463,7 @@ N $C5F4 Object $25 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C5FC,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C602,$02 Help Message (none).
-  $C604,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C604,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C61A,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C61B Object $29 - "#TEXTTOKEN(#PC + $08, $01)"
   $C61B,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7480,7 +7480,7 @@ N $C61B Object $29 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C623,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C629,$02 Help Message (none).
-  $C62B,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C62B,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C63E,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C63F Object $47 - "#TEXTTOKEN(#PC + $08, $01)"
   $C63F,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7497,7 +7497,7 @@ N $C63F Object $47 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C647,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C64D,$02 Help Message (none).
-  $C64F,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C64F,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C650,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C651 Object $48 - "#TEXTTOKEN(#PC + $08, $01)"
   $C651,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7514,7 +7514,7 @@ N $C651 Object $48 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C659,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C65F,$02 Help Message (none).
-  $C661,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C661,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C662,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C663 Object $26 - "#TEXTTOKEN(#PC + $08, $01)"
   $C663,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7531,7 +7531,7 @@ N $C663 Object $26 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C66B,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C671,$02 Help Message (none).
-  $C673,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C673,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C677,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C678 Object $27 - "#TEXTTOKEN(#PC + $08, $01)"
   $C678,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7548,8 +7548,8 @@ N $C678 Object $27 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C680,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C686,$02 Help Message (none).
-  $C688,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
-  $C689,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C688,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C689,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C68D,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C68E Object $28 - "#TEXTTOKEN(#PC + $08, $01)"
   $C68E,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7566,7 +7566,7 @@ N $C68E Object $28 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C696,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C69C,$02 Help Message (none).
-  $C69E,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C69E,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C69F,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C6A0 Object $3D - "#TEXTTOKEN(#PC + $08, $01)"
   $C6A0,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7583,7 +7583,7 @@ N $C6A0 Object $3D - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C6A8,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C6AE,$02 Help Message (none).
-  $C6B0,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C6B0,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C6B7,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C6B8 Object $45 - "#TEXTTOKEN(#PC + $08, $01)"
   $C6B8,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7600,7 +7600,7 @@ N $C6B8 Object $45 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C6C0,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C6C6,$02 Help Message (none).
-  $C6C8,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C6C8,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C6CF,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C6D0 Object $49 - "#TEXTTOKEN(#PC + $08, $01)"
   $C6D0,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7617,7 +7617,7 @@ N $C6D0 Object $49 - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C6D8,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C6DE,$02 Help Message (none).
-  $C6E0,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C6E0,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C6E7,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C6E8 Object $4A - "#TEXTTOKEN(#PC + $08, $01)"
   $C6E8,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7634,7 +7634,7 @@ N $C6E8 Object $4A - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C6F0,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C6F6,$02 Help Message (none).
-  $C6F8,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C6F8,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C6FF,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C700 Object $4B - "#TEXTTOKEN(#PC + $08, $01)"
   $C700,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7651,7 +7651,7 @@ N $C700 Object $4B - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C708,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C70E,$02 Help Message (none).
-  $C710,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C710,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C717,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 N $C718 Object $4C - "#TEXTTOKEN(#PC + $08, $01)"
   $C718,$01 Appears in the game #PEEK(#PC) #IF(#PEEK(#PC)>1)(times,time).
@@ -7668,7 +7668,7 @@ N $C718 Object $4C - "#TEXTTOKEN(#PC + $08, $01)"
 . TABLE#
   $C720,$06,$02 Object Name: "#TEXTTOKEN(#PC)".
 W $C726,$02 Help Message (none).
-  $C728,$01 Location #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $C728,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
   $C72F,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 
 b $C730 Action Table
@@ -7681,7 +7681,7 @@ N $C78D End of table.
 B $C78D,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 
 b $C78E Event Jump Table
-N $C78E #LOCATION(#PEEK(#PC), $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+N $C78E #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
 B $C78E,$01 Location ID.
 W $C78F,$02 Event address.
 L $C78E,$03,$07
@@ -7755,7 +7755,7 @@ W $C80A,$02
 b $C80E
 D $C80E See #R$9C9F.
 N $C80E "#LOCATIONNAME(#PEEK(#PC))".
-  $C80E,$01 Location #LOCATION(#PEEK(#PC), $01, $01)($).
+  $C80E,$01 Location #LOCATION(#PEEK(#PC)).
 W $C80F,$02 The direction for #R(#PEEK(#PC + 1) * $100 + #PEEK(#PC))(#LOCATIONNAME(#PEEK(#PC - 1))).
   $C811,$03 #MOVEMENT(#PC)
 L $C80E,$06,$05
@@ -8021,35 +8021,4671 @@ b $CACB
 
 b $CC00 Location Graphics Table
 @ $CC00 label=LocGFXTable
-  $CC00,$01 Location #LOCATION(#PEEK(#PC), $01, $01)($) - "#LOCATIONNAME(#PEEK(#PC))".
+  $CC00,$01 Location #LOCATION(#PEEK(#PC)) - "#LOCATIONNAME(#PEEK(#PC))".
 W $CC01,$02 Location graphics data address.
 L $CC00,$03,$16
   $CC42,$01 Termination character (#N(#PEEK(#PC), $02, $03, $01, $01)($)).
 
-b $CC43 Start of location graphics
-@ $CC43 label=LocGFX
-N $CC43 #LOCATION($01, $01, $01)($) - "#LOCATIONNAME$01".
-N $CE77 #LOCATION($31, $01, $01)($) - "#LOCATIONNAME$31".
-N $CFB2 #LOCATION($06, $01, $01)($) - "#LOCATIONNAME$06".
-N $D24E #LOCATION($0B, $01, $01)($) - "#LOCATIONNAME$0B".
-N $D367 #LOCATION($25, $01, $01)($) - "#LOCATIONNAME$25".
-N $D5B5 #LOCATION($2B, $01, $01)($) - "#LOCATIONNAME$2B".
-N $D713 #LOCATION($26, $01, $01)($) - "#LOCATIONNAME$26".
-N $D92A #LOCATION($07, $01, $01)($) - "#LOCATIONNAME$07".
-N $DBA8 #LOCATION($18, $01, $01)($) - "#LOCATIONNAME$18".
-N $DD79 #LOCATION($23, $01, $01)($) - "#LOCATIONNAME$23".
-N $E02C #LOCATION($0D, $01, $01)($) - "#LOCATIONNAME$0D".
-N $E049 #LOCATION($1F, $01, $01)($) - "#LOCATIONNAME$1F".
-N $E142 #LOCATION($05, $01, $01)($) - "#LOCATIONNAME$05".
-N $E19F #LOCATION($1C, $01, $01)($) - "#LOCATIONNAME$1C".
-N $E3FE #LOCATION($04, $01, $01)($) - "#LOCATIONNAME$04".
-N $E47A #LOCATION($20, $01, $01)($) - "#LOCATIONNAME$20".
-N $E6E4 #LOCATION($10, $01, $01)($) - "#LOCATIONNAME$10".
-N $E9EE #LOCATION($19, $01, $01)($) - "#LOCATIONNAME$19".
-N $EC3E #LOCATION($08, $01, $01)($) - "#LOCATIONNAME$08".
-N $EE43 #LOCATION($29, $01, $01)($) - "#LOCATIONNAME$29".
-N $F001 #LOCATION($1A, $01, $01)($) - "#LOCATIONNAME$1A".
-N $F1E6 #LOCATION($27, $01, $01)($) - "#LOCATIONNAME$27".
+b $CC43 Graphics: Tunnel Like Hall
+@ $CC43 label=Graphics_TunnelLikeHall
+N $CC43 #DRAWING(#PC,scale=$02)(tunnel-like-hall.png)
+N $CC43 Location #LOCATION$01: "#LOCATIONNAME$01".
+  $CC43,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $CC45,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CC48,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC4A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC4C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC4E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC50,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC52,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC54,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC56,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CC59,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC5B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC5D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC5F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC61,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC63,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC65,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CC68,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC6A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC6C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC6E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC70,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC72,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC74,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CC77,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC79,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC7B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC7D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC7F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC81,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CC84,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC86,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC88,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC8A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC8C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CC8F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC91,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC93,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC95,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC97,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CC9A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC9C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CC9E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCA0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCA2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CCA5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCA7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCA9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCAB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCAD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCAF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CCB2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCB4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCB6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCB8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCBA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCBC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCBE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCC0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCC2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCC4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCC6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCC8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCCA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCCC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CCCF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCD1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCD3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCD5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCD7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCD9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCDB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCDD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCDF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCE1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCE3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCE5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CCE8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCEA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CCED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCEF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CCF2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCF4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CCF7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCF9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CCFC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CCFE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD01,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD03,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD06,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD08,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD0B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD0D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD0F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD11,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD13,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD16,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD18,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD1A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD1C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD1E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD20,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD22,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD24,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD27,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD29,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD2B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD2D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD2F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD31,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD34,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD36,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD38,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD3A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD3C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD3E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD41,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD43,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD46,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD48,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD4B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD4D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD50,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD52,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD55,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD57,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD5A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD5C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD5F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD61,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD64,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD66,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD68,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD6B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD6D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD70,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD72,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD75,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD77,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD7A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD7C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD7E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD81,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD83,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD86,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD88,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD8B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD8D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD90,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD92,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD95,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD97,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD9A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CD9C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CD9F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDA1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDA4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDA6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDA9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDAB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDAE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDB0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDB3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDB5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDB8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDBA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDBD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDBF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDC2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDC4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDC6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDC9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDCB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDCE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDD0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDD3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDD5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDD8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDDA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDDD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDDF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDE2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDE4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDE7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDE9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDEC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDEE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDF1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDF3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDF6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDF8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CDFB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDFD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CDFF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE02,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE04,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE07,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE09,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE0C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE0E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE11,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE13,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE16,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE18,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE1A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE1C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE1E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE20,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE22,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE24,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE26,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE28,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE2A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE2C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE2E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE30,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE33,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE35,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE37,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE39,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE3B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE3D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE3F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE41,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE44,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE46,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE49,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE4B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE4E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE50,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE53,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE55,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CE58,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CE5B,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CE5E,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CE61,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CE64,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $CE67,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CE68,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CE69,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CE6A,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CE6B,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CE6C,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CE6D,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CE6E,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CE6F,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CE70,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CE71,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CE72,$01 Paint terminator.
+  $CE73,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CE76,$01 Stop.
+
+b $CE77 Graphics: Great River
+@ $CE77 label=Graphics_GreatRiver
+N $CE77 #DRAWING(#PC,scale=$02)(great-river.png)
+N $CE77 Location #LOCATION$31: "#LOCATIONNAME$31".
+  $CE77,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $CE79,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE7C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE7E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE80,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE82,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE84,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE86,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE88,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE8A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE8C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE8E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE90,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CE93,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE95,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE97,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE99,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE9B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE9D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CE9F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEA1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEA3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEA5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEA7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEA9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEAB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEAD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEAF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEB1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEB3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEB5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEB7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEB9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CEBC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEBE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEC0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEC2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEC4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEC6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEC8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CECA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CECC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CECE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CED0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CED2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CED4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CED6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CED8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEDA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEDC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEDE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEE0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEE2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEE4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEE6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEE8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEEA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEEC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEEE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEF0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEF2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEF4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEF6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CEF9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEFB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CEFD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF00,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF02,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF04,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF06,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF09,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF0B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF0D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF0F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF11,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF14,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF16,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF19,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF1B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF1D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF1F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF21,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF24,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF26,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF29,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF2B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF2E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF30,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF33,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF35,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CF38,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $CF3B,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CF3C,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CF3D,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CF3E,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CF3F,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CF40,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CF41,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $CF42,$01 Paint terminator.
+  $CF43,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF46,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF48,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF4A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF4C,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CF4F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF52,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF54,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF56,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF58,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF5A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF5D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF5F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF61,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF63,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF65,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF68,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF6A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF6D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF6F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF71,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF73,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF76,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF78,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF7A,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CF7D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF80,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF82,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF85,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF87,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CF8A,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CF8D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF90,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF92,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF95,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF97,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF99,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CF9C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CF9E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFA0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFA2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFA4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CFA7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFA9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CFAC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFAE,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $CFB1,$01 Stop.
+
+b $CFB2 Graphics: Trolls Path
+@ $CFB2 label=Graphics_TrollsPath
+N $CFB2 #DRAWING(#PC,scale=$02)(trolls-path.png)
+N $CFB2 Location #LOCATION$06: "#LOCATIONNAME$06".
+  $CFB2,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $CFB4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CFB7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFB9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFBB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFBD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFBF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFC1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFC3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFC5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $CFC8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFCA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFCC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFCE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFD0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFD2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFD4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFD6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFD8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFDA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFDC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFDE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFE0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFE2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFE4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFE6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFE8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFEA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFEC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFEE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFF0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFF2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFF4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFF6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFF8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFFA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFFC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $CFFE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D000,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D002,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D004,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D006,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D008,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D00A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D00C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D00E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D010,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D012,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D014,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D016,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D018,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D01A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D01C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D01E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D020,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D022,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D024,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D026,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D028,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D02A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D02C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D02E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D030,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D033,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D035,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D037,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D039,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D03B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D03E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D040,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D042,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D044,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D046,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D048,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D04A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D04C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D04F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D051,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D054,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D056,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D058,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D05B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D05D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D05F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D061,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D063,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D065,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D067,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D069,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D06B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D06D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D06F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D071,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D073,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D075,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D077,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D079,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D07B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D07D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D07F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D081,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D083,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D085,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D087,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D089,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D08B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D08D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D090,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D092,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D094,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D097,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D099,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D09C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D09E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0A0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D0A3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0A5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0A7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0A9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0AB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D0AE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0B0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0B4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D0B7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0B9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0BB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0BD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0BF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0C1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0C3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0C5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0C7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0C9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0CB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0CD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D0D0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0D2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0D4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0D6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D0D9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0DB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0DD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0DF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0E1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0E3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0E5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0E7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0E9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D0EC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0EE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D0F1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0F3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D0F6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0F8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0FA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D0FE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D100,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D102,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D104,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D106,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D108,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D10A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D10D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D10F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D112,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D114,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D117,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D11A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D11D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D11F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D121,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D123,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D126,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D128,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D12A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D12C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D12F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D131,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D133,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D135,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D138,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D13A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D13C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D13E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D141,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D143,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D145,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D147,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D149,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D14C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D14E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D150,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D152,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D155,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D157,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D159,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D15B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D15D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D160,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D162,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D164,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D166,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D168,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D16A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D16C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D16E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D170,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D173,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D175,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D177,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D179,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D17B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D17D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D17F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D181,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D183,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D185,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D187,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D189,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D18C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D18E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D190,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D192,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D194,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D196,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D198,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D19A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D19C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D19E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1A0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1A2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1A4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1A6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1A8,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D1AB,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D1AE,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D1B1,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D1B4,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D1B7,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D1BA,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D1BD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D1C0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1C2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1C4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1C6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1C8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D1CB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1CD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1CF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1D1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1D3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1D5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1D7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1D9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D1DC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1E0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1E2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1E4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1E6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1E8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1EA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1EC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1EE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1F0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D1F3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1F5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1F7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1F9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1FB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1FD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D1FF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D201,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D203,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D205,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D208,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D20B,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D20E,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D211,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D214,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D216,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D219,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D21B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D21E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D220,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D223,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D225,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D228,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D22A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D22D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D22F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D232,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D234,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D237,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D239,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D23C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D23E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D241,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D243,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D246,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D248,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D24B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D24D,$01 Stop.
+
+b $D24E Graphics: Narrow Place
+@ $D24E label=Graphics_NarrowPlace
+N $D24E #DRAWING(#PC,scale=$02)(narrow-place.png)
+N $D24E Location #LOCATION$0B: "#LOCATIONNAME$0B".
+  $D24E,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $D250,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D253,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D255,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D257,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D259,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D25B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D25D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D25F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D261,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D263,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D265,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D267,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D269,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D26B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D26D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D270,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D272,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D274,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D276,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D278,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D27A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D27C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D27E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D280,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D282,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D284,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D287,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D289,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D28C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D28E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D290,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D292,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D294,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D297,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D299,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D29C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D29E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D2A1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2A3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2A5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D2A8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2AA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D2AD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2AF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D2B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2B4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D2B7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2B9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D2BC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2BE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D2C1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2C3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D2C6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2C8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2CA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D2CD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2CF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2D1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D2D4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2D6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2D8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2DA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2DC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D2DF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2E1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2E3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2E5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2E7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2E9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2EB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2EF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2F1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2F3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2F5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2F7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2F9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2FB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2FD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D2FF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D301,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D303,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D305,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D307,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D309,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D30C,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $D30F,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D310,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D311,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D312,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D313,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D314,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D315,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D316,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D317,$01 Paint terminator.
+  $D318,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D31B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D31D,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D320,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D323,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D325,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D328,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D32B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D32D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D330,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D332,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D335,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D337,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D339,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D33C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D33E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D340,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D343,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D345,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D348,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D34A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D34D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D34F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D351,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D354,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D356,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D358,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D35A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D35C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D35E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D360,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D363,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D366,$01 Stop.
+
+b $D367 Graphics: Dragons Desolation
+@ $D367 label=Graphics_DragonsDesolation
+N $D367 #DRAWING(#PC,scale=$02)(dragons-desolation.png)
+N $D367 Location #LOCATION$25: "#LOCATIONNAME$25".
+  $D367,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $D369,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D36C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D36E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D370,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D372,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D374,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D376,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D378,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D37A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D37C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D37E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D380,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D382,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D385,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D388,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D38A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D38C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D38E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D390,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D392,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D395,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D398,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D39A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D39C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D39E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3A0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3A2,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D3A5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3A8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3AA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3AC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3AE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3B0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3B4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3B6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3B8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3BA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3BC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3BF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3C1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3C4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3C6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3C9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3CB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3CE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3D0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3D3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3D5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3D8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3DA,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D3DD,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D3E0,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D3E3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3E6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3E8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3EB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3ED,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3F0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3F2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3F5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3F7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3F9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D3FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D3FE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D400,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D402,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D404,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D407,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D40A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D40C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D40E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D410,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D412,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D414,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D416,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D418,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D41A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D41C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D41E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D420,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D422,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D424,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D426,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D428,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D42A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D42D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D42F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D431,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D433,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D435,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D437,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D439,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D43B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D43D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D440,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D442,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D444,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D446,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D448,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D44A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D44C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D44E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D450,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D453,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D456,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D458,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D45B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D45D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D460,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D462,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D465,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D467,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D46A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D46C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D46F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D471,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D474,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D476,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D479,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D47B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D47E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D480,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D483,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D485,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D487,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D489,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D48B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D48D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D48F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D492,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D494,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D496,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D498,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D49A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D49C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D49E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4A0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D4A3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4A5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4A7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4A9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4AB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4AD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D4B0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4B4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4B6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4B8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D4BB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4BD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4BF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4C1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4C3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D4C6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4C8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4CA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4CC,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D4CF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D4D2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4D4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4D6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4D8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4DA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4DC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4E0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4E2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4E4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4E6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4E8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D4EB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4EF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D4F2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4F4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4F6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4F8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4FA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D4FE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D500,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D502,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D504,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D506,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D509,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D50B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D50E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D510,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D513,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D515,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D518,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D51A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D51D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D51F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D521,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D523,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D525,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D528,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D52A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D52D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D52F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D532,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D534,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D536,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D539,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D53B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D53E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D540,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D542,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D544,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D546,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D549,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D54B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D54E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D550,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D552,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D554,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D556,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D559,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D55B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D55E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D560,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D562,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D564,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D567,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D569,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D56B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D56D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D56F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D571,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D574,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D576,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D578,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D57A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D57C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D57E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D581,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D583,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D586,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D588,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D58A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D58C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D58E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D590,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D593,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D595,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D597,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D599,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D59B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D59D,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D5A0,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D5A3,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D5A6,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D5A9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D5AC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5AE,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D5B1,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D5B4,$01 Stop.
+
+b $D5B5 Graphics: Smooth Straight Passage
+@ $D5B5 label=Graphics_SmoothStraightPassage
+N $D5B5 #DRAWING(#PC,scale=$02)(smooth-straight-passage.png)
+N $D5B5 Location #LOCATION$2B: "#LOCATIONNAME$2B".
+  $D5B5,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $D5B7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D5BA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5BC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5BE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5C0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5C2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5C4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5C6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D5C9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5CB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5CD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5CF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5D1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5D3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5D5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D5D8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5DA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5DC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5E0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5E2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5E4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D5E7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5E9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5EB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5EF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5F1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5F3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D5F6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5F8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5FA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D5FE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D600,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D602,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D604,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D606,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D609,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D60B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D60D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D60F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D611,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D613,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D615,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D617,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D61A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D61C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D61E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D620,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D622,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D625,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D627,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D629,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D62B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D62D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D62F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D632,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D634,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D636,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D638,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D63A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D63C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D63E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D640,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D642,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D644,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D647,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D649,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D64B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D64D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D64F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D651,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D653,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D655,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D657,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D659,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D65C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D65E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D660,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D662,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D664,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D666,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D669,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D66B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D66D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D66F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D671,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D673,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D675,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D677,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D67A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D67C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D67E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D680,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D682,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D684,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D686,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D688,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D68A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D68C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D68E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D690,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D692,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D695,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D697,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D699,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D69B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D69D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D69F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6A1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6A3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6A5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6A7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6A9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6AB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6AD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6AF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D6B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6B4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6B6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6B8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6BA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6BC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D6BF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6C1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6C3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6C5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6C7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6C9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6CB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6CD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6CF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6D1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6D3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D6D6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6D8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6DA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6DC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6E0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6E2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6E4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6E6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6E8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D6EB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6EF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6F1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6F3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D6F6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6F8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6FA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D6FE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D701,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D703,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D705,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D707,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D709,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D70B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D70D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D70F,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D712,$01 Stop.
+
+b $D713 Graphics: Dale Valley
+@ $D713 label=Graphics_DaleValley
+N $D713 #DRAWING(#PC,scale=$02)(dale-valley.png)
+N $D713 Location #LOCATION$26: "#LOCATIONNAME$26".
+  $D713,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $D715,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D718,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D71A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D71C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D71E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D720,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D722,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D724,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D726,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D728,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D72A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D72C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D72E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D730,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D732,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D734,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D736,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D738,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D73A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D73C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D73E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D740,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D742,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D744,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D746,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D749,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D74B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D74D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D74F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D751,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D754,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D756,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D758,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D75A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D75C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D75F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D761,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D763,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D765,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D767,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D769,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D76C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D76E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D770,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D772,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D774,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D776,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D778,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D77A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D77C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D77E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D781,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D783,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D785,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D787,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D789,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D78B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D78D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D78F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D792,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D794,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D796,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D798,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D79A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D79C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D79E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7A0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7A2,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D7A5,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $D7A8,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7A9,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7AA,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7AB,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7AC,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7AD,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7AE,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7AF,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7B0,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7B1,$01 Paint terminator.
+  $D7B2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D7B5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7B7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7B9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D7BC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7BE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7C0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7C2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D7C5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7C7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7C9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7CB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7CD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7CF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D7D2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7D4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D7D7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7D9,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D7DC,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $D7DF,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7E0,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7E1,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7E2,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7E3,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7E4,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7E5,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7E6,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $D7E7,$01 Paint terminator.
+  $D7E8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D7EB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7EF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7F1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D7F4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7F6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7F8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7FA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D7FD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D7FF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D802,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D804,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D806,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D808,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D80B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D80D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D80F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D811,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D813,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D815,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D817,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D819,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D81B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D81E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D820,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D822,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D824,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D827,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D829,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D82B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D82D,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D830,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D833,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D835,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D838,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D83A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D83D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D83F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D842,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D844,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D847,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D849,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D84C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D84E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D851,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D853,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D856,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D858,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D85A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D85C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D85E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D861,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D863,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D865,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D868,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D86B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D86D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D870,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D872,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D875,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D877,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D87A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D87C,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D87F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D882,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D884,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D886,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D889,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D88B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D88E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D890,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D893,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D895,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D898,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D89A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D89D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D89F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8A2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8A4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8A7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8A9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8AC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8AE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8B1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8B3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8B6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8B8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8BB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8BD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8C0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8C2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8C5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8C7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8CA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8CC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8CF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8D1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8D4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8D6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8D9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8DB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8E0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8E3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8E5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8E8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8EA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8EF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8F2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8F4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D8F7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8F9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8FB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8FD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D8FF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D902,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D904,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D907,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D909,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D90C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D90E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D911,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D913,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D916,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D918,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D91B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D91D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D920,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D922,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D924,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D926,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D929,$01 Stop.
+
+b $D92A Graphics: Trolls Cave
+@ $D92A label=Graphics_TrollsCave
+N $D92A #DRAWING(#PC,scale=$02)(trolls-cave.png)
+N $D92A Location #LOCATION$07: "#LOCATIONNAME$07".
+  $D92A,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $D92C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D92F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D931,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D933,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D935,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D937,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D93A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D93C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D93E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D940,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D942,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D944,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D946,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D948,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D94A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D94C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D94E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D950,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D952,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D955,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D957,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D959,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D95B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D95E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D960,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D963,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D966,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D968,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D96B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D96E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D970,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D972,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D974,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D976,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D978,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D97A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D97C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D97E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D980,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D982,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D984,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D986,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D988,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D98A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D98C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D98E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D990,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D992,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D994,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D997,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D999,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D99B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D99D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D99F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D9A2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9A4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9A6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9A8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9AA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9AC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9AE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9B0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9B2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D9B5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9B7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D9BA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9BC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D9BF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9C1,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D9C4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D9C7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9C9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9CB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9CD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9CF,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $D9D2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D9D5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9D7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9D9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9DB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9DD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9DF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9E1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9E3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9E5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9E7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9E9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9EB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $D9EE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9F0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9F2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9F4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9F6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9F8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9FA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $D9FE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA00,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA02,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA04,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA06,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA08,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA0A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA0C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA0E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA10,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA12,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA14,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA16,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA18,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DA1B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA1D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA1F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DA22,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA24,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA26,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA28,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA2A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA2C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA2E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA30,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA32,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA34,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA36,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DA39,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA3B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA3D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA3F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA41,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA43,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA45,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA47,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA49,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA4B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA4D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA4F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA51,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA53,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA55,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA57,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA59,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DA5C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA5E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA60,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA62,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA64,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA66,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA68,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA6A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DA6D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA6F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA71,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA73,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA75,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA77,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA79,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA7B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA7D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA7F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DA82,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA84,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DA87,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA89,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA8B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA8D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA8F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA91,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DA94,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA96,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DA99,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA9B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA9D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DA9F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAA1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAA3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DAA6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAA8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DAAB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAAD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAAF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAB1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAB3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAB5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAB7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DABA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DABC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DABF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAC1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAC3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAC5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DAC8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DACA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DACC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DACF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAD1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAD3,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DAD6,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DAD9,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DADC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DADF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAE1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAE3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAE5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DAE8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAEA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAEC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DAEF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAF1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAF3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DAF6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAF8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAFA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DAFD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DAFF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB01,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB04,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB07,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB09,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB0B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB0E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB10,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB12,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB15,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB17,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $DB1A,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $DB1B,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $DB1C,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $DB1D,$01 Paint terminator.
+  $DB1E,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $DB21,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $DB22,$01 Paint terminator.
+  $DB23,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $DB26,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $DB27,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $DB28,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $DB29,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $DB2A,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $DB2B,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $DB2C,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $DB2D,$01 Paint terminator.
+  $DB2E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB31,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB33,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB36,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB39,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB3B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB3E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB40,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB43,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB46,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB49,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB4B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB4E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB50,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB53,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB56,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB58,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB5B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB5D,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB60,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB63,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB65,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB68,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB6A,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB6D,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB70,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB73,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB75,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB78,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB7A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB7D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB7F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DB82,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB84,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DB86,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB89,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB8C,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB8F,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB92,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB95,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB98,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB9B,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DB9E,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DBA1,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DBA4,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DBA7,$01 Stop.
+
+b $DBA8 Graphics: Forest Gate
+@ $DBA8 label=Graphics_ForestGate
+N $DBA8 #DRAWING(#PC,scale=$02)(forest-gate.png)
+N $DBA8 Location #LOCATION$18: "#LOCATIONNAME$18".
+  $DBA8,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $DBAA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DBAD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBAF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBB1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBB3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBB5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBB7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBB9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBBB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBBD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBBF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBC1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBC3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBC5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBC7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBC9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBCB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBCD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBCF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBD1,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DBD4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DBD7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBD9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBDB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBDD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBDF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBE1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBE3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBE5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBE7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBE9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBEB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBEF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBF1,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DBF4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DBF7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBF9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBFB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DBFD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC00,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC02,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC05,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC07,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC09,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC0C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC0E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC10,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC12,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC15,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC17,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC19,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC1B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC1D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC1F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC21,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC23,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC25,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC27,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC29,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC2B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC2D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC30,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC32,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC34,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC37,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC39,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC3B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC3E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC40,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC43,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC45,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC47,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC4A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC4C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC4F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC51,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC53,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC55,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC58,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC5A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC5D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC5F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC62,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC64,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC67,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC69,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC6C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC6E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC71,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC73,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC76,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC78,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC7B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC7D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC80,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC82,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC85,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC87,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC8A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC8C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC8F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC91,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC94,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC96,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DC99,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC9B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DC9D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCA0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCA2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCA4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCA7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCA9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCAB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCAE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCB0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCB3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCB5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCB8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCBA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCBD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCBF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCC2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCC4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCC7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCC9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCCC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCCE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCD1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCD3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCD6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCD8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCDB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCDD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCE0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCE2,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DCE5,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DCE8,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DCEB,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DCEE,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DCF1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCF4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCF6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCF8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCFA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DCFC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DCFF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD01,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $DD04,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD07,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD09,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD0B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD0D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD10,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD12,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD14,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD16,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD19,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD1B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD1D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD20,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD22,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD24,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD26,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD28,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD2B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD2D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD2F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD31,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD33,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD35,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD38,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD3A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD3C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD3E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD40,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD42,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD44,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD46,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD49,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD4B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD4D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD4F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD51,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD53,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD55,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD57,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD5A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD5C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD5E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD60,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD62,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD65,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD67,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD69,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD6B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD6D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD70,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD72,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD74,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD76,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD78,$01 Stop.
+
+b $DD79 Graphics: Lake Town
+@ $DD79 label=Graphics_LakeTown
+N $DD79 #DRAWING(#PC,scale=$02)(lake-town.png)
+N $DD79 Location #LOCATION$23: "#LOCATIONNAME$23".
+  $DD79,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $DD7B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD7E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD80,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD82,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD84,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD87,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD89,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD8B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD8E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD90,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD92,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD95,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD97,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD99,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DD9C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DD9E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDA1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDA3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDA6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDA8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDAB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDAD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDB0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDB2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDB5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDB7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDBA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDBC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDBF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDC1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDC4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDC6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDC9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDCB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDCD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDCF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDD2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDD4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDD7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDD9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDDC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDDE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDE1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDE3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDE5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDE7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDE9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDEB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDEF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDF1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDF4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDF6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDF9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DDFB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DDFE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE00,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE03,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE05,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE08,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE0A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE0D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE0F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE11,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE14,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE16,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE19,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE1B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE1D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE1F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE22,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE24,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE26,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE28,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE2A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE2C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE2E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE31,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE33,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE35,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE37,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE39,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE3B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE3D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE40,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE42,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE44,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE46,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE48,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE4A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE4C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE4E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE50,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE52,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE54,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE56,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE58,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE5A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE5C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE5E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE60,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE62,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE64,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE66,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE69,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE6B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE6D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE6F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE71,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE73,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE75,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE77,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE79,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE7B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE7D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE7F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE81,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE84,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE86,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE88,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE8A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE8D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE8F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE91,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE93,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE95,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE98,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE9A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DE9D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DE9F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEA1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEA3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEA5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DEA8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEAA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEAC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DEAF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEB1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DEB4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEB6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DEB9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEBB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DEBE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEC0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DEC3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEC5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEC7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DECA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DECC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DECE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DED0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DED3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DED5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DED7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DED9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DEDC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEDE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DEE1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEE3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEE5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DEE8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEEA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEEC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEEE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEF0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEF2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEF4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEF6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEF8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DEFB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEFD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DEFF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF01,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF03,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF06,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF08,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF0A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF0C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF0E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF10,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF13,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF15,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF18,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF1A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF1D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF1F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF22,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF24,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF27,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF29,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF2C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF2E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF31,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF33,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF36,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF38,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF3B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF3D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF40,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF42,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF45,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF47,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF4A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF4C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF4F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF51,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF54,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF56,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF59,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF5B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF5E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF60,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF63,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF65,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF68,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF6A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF6D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF6F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF72,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF74,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF77,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF79,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF7C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF7E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF81,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF83,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF86,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF88,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF8B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF8D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF90,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF92,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF95,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF97,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF9A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DF9C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DF9F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFA1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFA4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFA6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFA9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFAB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFAE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFB0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFB3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFB5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFB8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFBA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFBD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFBF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFC2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFC4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFC7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFC9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFCC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFCE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFD1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFD3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFD6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFD8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFDB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFDD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFE0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFE2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFE5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFE7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFEA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFEC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFEF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFF1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFF4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFF6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFF9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $DFFB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $DFFE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E000,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E003,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E005,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E008,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E00A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E00D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E00F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E012,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E014,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E017,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E019,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E01C,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E01F,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E022,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E025,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E028,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E02B,$01 Stop.
+
+b $E02C Graphics: Goblins Dungeon
+@ $E02C label=Graphics_GoblinsDungeon
+N $E02C #DRAWING(#PC,scale=$02)(goblins-dungeon.png)
+N $E02C Location #LOCATION$0D: "#LOCATIONNAME$0D".
+  $E02C,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $E02E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E031,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E033,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E035,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E037,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E039,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E03B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E03D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E03F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E041,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E043,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E045,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E048,$01 Move (incomplete).
+
+b $E049 Graphics: Dark Dungeon
+@ $E049 label=Graphics_DarkDungeon
+N $E049 #DRAWING(#PC,scale=$02)(dark-dungeon.png)
+N $E049 Location #LOCATION$1F: "#LOCATIONNAME$1F".
+  $E049,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $E04B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E04E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E050,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E052,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E054,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E056,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E058,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E05A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E05D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E05F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E061,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E063,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E065,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E067,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E06A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E06C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E06E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E070,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E073,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E075,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E078,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E07A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E07D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E07F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E082,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E084,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E087,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E089,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E08C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E08E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E091,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E093,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E096,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E098,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E09A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E09D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E09F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0A1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0A4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0A6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0A8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0AB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0AD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0AF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0B4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0B7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0B9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0BC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0BE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0C1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0C3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0C6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0C8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0CB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0CD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0D0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0D2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0D5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0D7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0DA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0DC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0DF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0E1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0E4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0E6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0E9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0EB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0EE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0F0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0F3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0F5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0F8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0FA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E0FD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E0FF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E102,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E104,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E107,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E109,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E10C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E10E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E111,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E113,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E116,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E118,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E11A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E11C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E11E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E120,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E123,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E125,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E128,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E12A,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E12D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E130,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E132,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E135,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E137,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E13A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E13C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E13F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E141,$01 Stop.
+
+b $E142 Graphics: Trolls Clearing
+@ $E142 label=Graphics_TrollsClearing
+N $E142 #DRAWING(#PC,scale=$02)(trolls-clearing.png)
+N $E142 Location #LOCATION$05: "#LOCATIONNAME$05".
+  $E142,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $E144,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E147,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E149,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E14B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E14D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E14F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E151,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E153,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E155,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E157,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E159,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E15B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E15D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E15F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E161,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E164,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E166,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E168,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E16A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E16C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E16E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E170,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E172,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E174,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E176,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E178,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E17A,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E17D,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E180,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E183,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E186,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E188,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E18A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E18C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E18F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E191,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E194,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E196,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E198,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E19B,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E19E,$01 Move (incomplete).
+
+b $E19F Graphics: Levelled Elvish Clearing
+@ $E19F label=Graphics_LevelledElvishClearing
+N $E19F #DRAWING(#PC,scale=$02)(levelled-elvish-clearing.png)
+N $E19F Location #LOCATION$1C: "#LOCATIONNAME$1C".
+  $E19F,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $E1A1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E1A4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1A6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1A8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1AA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1AC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1AE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1B0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1B4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1B6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1B8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1BA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E1BD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1BF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1C1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1C3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1C5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1C7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E1CA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1CC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1CE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1D0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1D2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1D4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1D6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1D8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1DA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1DC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1E0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1E2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1E4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1E6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E1E9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1EB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1EF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1F1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1F3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1F5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1F7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1F9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E1FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E1FE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E200,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E202,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E204,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E206,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E208,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E20B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E20D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E20F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E211,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E213,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E215,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E218,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E21A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E21C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E21E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E220,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E222,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E224,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E226,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E228,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E22A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E22C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E22E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E230,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E232,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E235,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E237,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E23A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E23C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E23E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E240,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E242,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E244,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E246,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E248,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E24A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E24D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E24F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E251,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E253,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E255,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E257,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E259,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E25B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E25D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E25F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E262,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E264,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E266,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E268,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E26A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E26D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E26F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E272,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E274,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E276,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E278,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E27A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E27C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E27E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E280,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E282,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E284,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E286,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E289,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E28B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E28D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E28F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E291,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E293,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E295,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E297,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E29A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E29C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E29E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2A0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E2A3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2A5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2A7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2A9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2AB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2AD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2AF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E2B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2B4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2B6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2B8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2BA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2BC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2BE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2C0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2C2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2C4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E2C7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2C9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2CB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2CD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2CF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2D1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2D3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2D5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2D7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2D9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2DB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E2DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2E0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2E2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E2E5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2E7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E2EA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2EC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E2EF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2F1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2F3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2F5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2F7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2F9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2FB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E2FD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E300,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E302,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E304,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E306,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E308,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E30B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E30D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E30F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E311,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E313,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E316,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E318,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E31A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E31C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E31E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E320,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E322,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E325,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E327,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E329,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E32B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E32D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E32F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E331,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E333,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E335,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E337,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E33A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E33C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E33E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E340,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E342,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E344,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E346,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E349,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E34B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E34D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E34F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E351,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E354,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E356,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E358,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E35A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E35D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E35F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E361,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E363,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E366,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E368,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E36B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E36D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E36F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E371,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E373,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E376,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E378,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E37B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E37D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E380,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E382,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E385,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E387,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E38A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E38C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E38F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E391,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E394,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E396,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E398,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E39A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E39D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E39F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E3A2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3A4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3A6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E3A9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3AB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E3AE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3B0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3B2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E3B5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3B7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3B9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3BB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3BD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3BF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3C1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3C3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E3C6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3C8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3CA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E3CD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3CF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3D1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E3D4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3D6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E3D9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3DB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E3DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3E0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3E2,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E3E5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E3E8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3EA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E3ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3EF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E3F1,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $E3F4,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $E3F5,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $E3F6,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $E3F7,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $E3F8,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $E3F9,$01 Paint terminator.
+  $E3FA,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E3FD,$01 Stop.
+
+b $E3FE Graphics: Lonelands
+@ $E3FE label=Graphics_Lonelands
+N $E3FE #DRAWING(#PC,scale=$02)(lonelands.png)
+N $E3FE Location #LOCATION$04: "#LOCATIONNAME$04".
+  $E3FE,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $E400,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E403,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E405,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E407,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E409,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E40B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E40D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E40F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E412,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E414,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E417,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E419,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E41C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E41E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E420,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E422,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E424,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E426,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E429,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E42B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E42D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E42F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E431,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E434,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E436,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E438,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E43A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E43C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E43E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E440,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E442,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E445,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E447,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E44A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E44C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E44E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E450,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E453,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E455,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E458,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E45A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E45D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E45F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E462,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E464,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E467,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E469,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E46C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E46E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E471,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E473,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E476,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E479,$01 Stop.
+
+b $E47A Graphics: Elvenkings Cellar
+@ $E47A label=Graphics_ElvenkingsCellar
+N $E47A #DRAWING(#PC,scale=$02)(elvenkings-cellar.png)
+N $E47A Location #LOCATION$20: "#LOCATIONNAME$20".
+  $E47A,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $E47C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E47F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E481,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E483,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E485,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E487,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E489,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E48B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E48D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E48F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E491,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E493,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E495,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E497,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E499,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E49B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E49D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E49F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4A1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4A3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E4A6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4A8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4AA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4AC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4AE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4B0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4B4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4B6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4B8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4BA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4BC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4BE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4C0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4C2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4C4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4C6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4C8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4CA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4CC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4CE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4D0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4D2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4D4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4D6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4D8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4DA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4DC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4E0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E4E3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4E5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E4E8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4EA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4EC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4EE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4F0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4F2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E4F5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4F7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4F9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4FB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4FD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E4FF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E501,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E503,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E505,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E507,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E509,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E50B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E50D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E50F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E512,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E514,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E516,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E518,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E51A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E51C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E51E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E521,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E523,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E525,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E527,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E529,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E52B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E52D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E52F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E531,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E533,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E535,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E537,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E539,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E53B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E53D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E53F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E542,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E544,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E546,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E548,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E54A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E54C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E54E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E550,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E553,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E555,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E557,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E559,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E55B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E55D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E55F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E561,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E563,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E565,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E567,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E569,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E56B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E56D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E56F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E571,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E574,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E577,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E579,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E57C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E57E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E581,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E583,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E586,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E588,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E58B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E58D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E590,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E592,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E594,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E596,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E598,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E59A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E59C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E59E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5A0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5A2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5A4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5A6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5A8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5AA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5AC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5AE,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E5B1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5B4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5B6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5B9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5BB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5BE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5C0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5C3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5C5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5C8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5CA,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E5CD,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E5D0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5D3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5D5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5D8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5DA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5DD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5DF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5E2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5E4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5E7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5E9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5EC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5EE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5F0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5F2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5F4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5F6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5F8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E5FB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5FD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E5FF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E601,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E603,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E605,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E607,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E60A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E60C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E60E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E611,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E613,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E616,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E618,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E61B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E61D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E61F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E621,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E623,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E625,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E627,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E629,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E62B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E62D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E630,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E632,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E634,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E636,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E638,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E63A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E63C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E63E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E640,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E642,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E645,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E647,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E64A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E64C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E64E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E650,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E652,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E655,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E657,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E659,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E65C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E65E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E660,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E663,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E665,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E667,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E66A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E66C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E66F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E671,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E673,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E675,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E677,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E67A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E67C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E67E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E681,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E683,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E685,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E688,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E68A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E68D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E68F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E692,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E694,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E696,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E699,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E69B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E69D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E6A0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6A2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E6A5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6A7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6A9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E6AC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6AE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E6B1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6B3,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E6B6,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E6B9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E6BC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6BE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6C0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6C2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6C4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6C6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6C8,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E6CB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E6CE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6D0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6D2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6D4,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E6D7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E6DA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6DC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6E0,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E6E3,$01 Stop.
+
+b $E6E4 Graphics: Big Goblins Cavern
+@ $E6E4 label=Graphics_BigGoblinsCavern
+N $E6E4 #DRAWING(#PC,scale=$02)(big-goblins-cavern.png)
+N $E6E4 Location #LOCATION$10: "#LOCATIONNAME$10".
+  $E6E4,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $E6E6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E6E9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6EB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6EF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6F1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6F3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6F5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E6F8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6FA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E6FE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E700,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E702,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E704,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E707,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E709,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E70B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E70D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E70F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E711,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E713,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E716,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E718,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E71A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E71C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E71E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E720,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E722,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E725,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E727,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E729,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E72B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E72D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E72F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E731,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E733,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E735,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E738,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E73A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E73C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E73E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E740,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E742,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E744,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E746,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E749,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E74B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E74D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E74F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E751,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E754,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E756,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E758,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E75A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E75C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E75E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E761,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E763,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E765,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E767,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E769,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E76B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E76D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E76F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E771,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E773,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E776,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E778,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E77A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E77C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E77E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E780,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E782,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E784,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E786,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E788,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E78B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E78D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E78F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E791,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E793,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E795,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E798,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E79A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E79C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E79E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7A0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7A2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7A4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7A6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E7A9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7AB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7AD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7AF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7B1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7B3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7B5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7B7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7B9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7BB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7BD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7BF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7C1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E7C4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7C6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7C8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7CA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7CC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7CE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7D0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7D2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7D4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7D6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7D8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7DA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7DC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7DE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E7E1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7E3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7E5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7E7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7E9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7EB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E7EE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7F0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7F2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7F4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7F6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7F8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7FA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E7FE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E800,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E802,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E805,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E807,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E809,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E80B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E80D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E80F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E811,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E813,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E815,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E817,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E81A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E81C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E81E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E820,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E822,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E825,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E827,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E829,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E82B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E82D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E830,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E832,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E834,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E836,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E838,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E83A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E83C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E83E,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E841,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E844,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E846,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E848,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E84A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E84C,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E84F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E852,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E854,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E856,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E858,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E85A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E85C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E85E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E860,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E862,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E864,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E866,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E868,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E86B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E86D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E86F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E871,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E873,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E875,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E877,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E87A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E87C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E87E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E880,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E882,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E884,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E886,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E888,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E88B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E88D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E88F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E891,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E893,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E896,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E899,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E89B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E89D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E89F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8A1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8A3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8A5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8A7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8A9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8AB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E8AE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8B0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8B4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8B6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8B8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8BA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E8BD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8BF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8C1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8C3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8C5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8C7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8C9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E8CC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8CE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8D0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8D2,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E8D5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E8D8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8DA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8DC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8E0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8E2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8E4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8E6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8E8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E8EB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8EF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8F1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8F3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8F5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8F7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E8FA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E8FE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E900,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E902,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E904,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E906,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E909,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E90B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E90D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E90F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E911,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E914,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E917,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E919,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E91B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E91D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E91F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E921,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E923,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E925,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E927,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E92A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E92C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E92E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E930,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E932,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E934,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E936,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E939,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E93B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E93D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E93F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E941,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E943,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E945,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E947,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E94A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E94C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E94E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E950,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E952,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E955,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E958,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E95A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E95C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E95E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E960,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E962,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E964,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E966,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E968,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E96A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E96C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E96E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E971,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E973,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E975,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E977,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E979,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E97B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E97D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E980,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E982,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E984,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E986,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E988,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E98A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E98C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E98E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E990,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E993,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E996,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E999,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E99C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E99F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9A1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9A4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9A6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9A9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9AB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9AE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9B0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9B3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9B5,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9B8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9BA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9BD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9BF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9C2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9C4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9C7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9C9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9CC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9CE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9D1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9D3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9D6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9D8,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E9DB,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E9DE,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E9E1,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E9E4,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E9E7,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E9EA,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $E9ED,$01 Stop.
+
+b $E9EE Graphics: Bewitched Gloomy Place
+@ $E9EE label=Graphics_BewitchedGloomyPlace
+N $E9EE #DRAWING(#PC,scale=$02)(bewitched-gloomy-place.png)
+N $E9EE Location #LOCATION$19: "#LOCATIONNAME$19".
+  $E9EE,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $E9F0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9F3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9F5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9F7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9F9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $E9FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $E9FE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA00,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA02,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EA05,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA07,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA09,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA0B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA0D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA0F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA11,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA13,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA15,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA17,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA19,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA1B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA1D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA1F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA21,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA23,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA25,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA27,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA29,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA2B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA2D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA2F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA31,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA33,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA35,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA37,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA39,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EA3C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA3E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA40,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA42,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA44,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA46,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EA49,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA4B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA4D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA4F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA51,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA53,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA55,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA57,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA59,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA5B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA5D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA5F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA61,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EA64,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA66,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA68,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA6A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA6C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA6E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA70,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA72,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA74,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA76,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA78,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA7A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA7C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA7E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA80,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA82,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA84,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA86,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA88,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA8A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA8C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA8E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA90,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EA93,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA95,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA97,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA99,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA9B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EA9D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EAA0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAA2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAA4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAA6,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EAA9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EAAC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAAE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAB0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAB2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAB4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAB6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAB8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EABA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EABC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EABE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAC0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAC2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAC4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAC6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAC8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EACA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EACC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EACE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAD0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAD2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAD4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAD6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAD8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EADA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EADC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EADE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAE0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAE2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAE4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAE6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EAE9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAEB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAEF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAF1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAF3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAF5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAF7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAF9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAFB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAFD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EAFF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB01,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB03,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB05,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB07,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB09,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB0B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB0D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB0F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB11,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB13,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EB16,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB18,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB1A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB1C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB1E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB20,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB22,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB24,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB26,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EB29,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EB2C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EB2F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB31,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB33,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB35,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB37,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB39,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB3B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB3D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EB40,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB42,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB44,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EB47,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB49,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB4B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB4D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB4F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB51,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB53,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB55,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB57,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB59,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB5B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB5D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB5F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB61,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB63,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB65,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB67,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EB6A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB6C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB6E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB70,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB72,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB74,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EB77,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB79,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB7B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB7D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB7F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB81,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EB84,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EB87,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EB8A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB8C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EB8F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB91,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB93,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB95,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EB98,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB9A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB9C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EB9E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBA0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBA3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBA5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBA7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBA9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBAC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBAE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBB0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBB2,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EBB5,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EBB8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBBB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBBD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBBF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBC1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBC3,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EBC6,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EBC9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBCC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBCE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBD1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBD3,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBD6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBD8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBDB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBDD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBE0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBE2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBE5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBE7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBEA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBEC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBEF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBF1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBF4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBF6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EBF9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBFB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBFD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EBFF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EC02,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC04,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC06,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EC09,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC0B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EC0E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC10,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC12,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC14,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EC17,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC19,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EC1C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC1E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EC21,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC23,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EC26,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EC29,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC2B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EC2E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC30,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC32,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC34,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EC37,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $EC3A,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EC3B,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EC3C,$01 Paint terminator.
+  $EC3D,$01 Stop.
+
+b $EC3E Graphics: Running River
+@ $EC3E label=Graphics_RunningRiver
+N $EC3E #DRAWING(#PC,scale=$02)(running-river.png)
+N $EC3E Location #LOCATION$08: "#LOCATIONNAME$08".
+  $EC3E,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $EC40,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EC43,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC45,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC47,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC49,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC4B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC4D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC4F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC51,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC53,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC55,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC57,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC59,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC5B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC5D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC5F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC61,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC63,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC65,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC67,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC69,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EC6C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC6E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC70,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC72,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC74,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC76,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC78,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC7A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC7C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC7E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC80,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC82,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC84,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC86,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC88,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC8A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC8C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC8E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC90,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC92,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC94,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC96,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EC99,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC9B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC9D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EC9F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECA1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECA3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECA5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECA7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ECAA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECAC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECAE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECB0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECB2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECB4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECB6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECB8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECBA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECBC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECBE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECC0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECC2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECC4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECC6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECC8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECCA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECCC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ECCF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECD1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECD3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECD5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECD7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECD9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECDB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECDD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECDF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECE1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECE3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECE5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECE7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECE9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ECEC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECEE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECF0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ECF3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECF5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECF7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECF9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ECFC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ECFE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED00,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED02,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED04,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED07,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED09,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED0B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED0D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED0F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED11,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED13,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED15,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED18,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED1A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED1C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED1E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED20,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED22,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED24,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED26,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED28,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED2B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED2D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED2F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED31,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED33,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED36,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED38,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED3A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED3C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED3E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED41,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED43,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED46,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED48,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED4B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED4D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED4F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED51,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED53,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $ED56,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED59,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED5B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED5E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED60,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED63,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED65,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED68,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED6A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED6D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED6F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED71,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED73,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED75,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED77,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED79,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED7B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED7D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED7F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED81,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED83,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED85,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED87,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED89,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED8B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED8E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED90,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED93,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED95,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED97,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED99,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $ED9B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $ED9E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDA0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDA2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDA4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDA6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDA8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDAA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EDAD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDAF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDB1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDB3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDB5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDB7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDB9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDBB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDBD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDBF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDC1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDC3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDC5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDC7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDC9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDCB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDCD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDCF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EDD2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDD4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EDD7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDD9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EDDC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDDE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDE0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDE2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EDE5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDE7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDE9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDEB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EDEE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDF0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDF2,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EDF5,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EDF8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EDFB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EDFD,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EE00,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $EE03,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EE04,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EE05,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EE06,$01 Paint terminator.
+  $EE07,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $EE0A,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EE0B,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EE0C,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EE0D,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EE0E,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EE0F,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EE10,$01 Paint terminator.
+  $EE11,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EE14,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE16,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EE19,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE1B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EE1E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE20,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EE23,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE25,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE27,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE29,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE2B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE2D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE2F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE31,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE33,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE35,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE37,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE39,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE3B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE3D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE3F,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EE42,$01 Stop.
+
+b $EE43 Graphics: Lower Halls
+@ $EE43 label=Graphics_LowerHalls
+N $EE43 #DRAWING(#PC,scale=$02)(lower-halls.png)
+N $EE43 Location #LOCATION$29: "#LOCATIONNAME$29".
+  $EE43,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $EE45,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EE48,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE4A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE4C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EE4F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE51,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE53,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE55,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE57,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE59,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE5B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE5D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE5F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE61,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE63,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE65,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE67,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EE6A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE6C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE6E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EE71,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE73,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE75,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE77,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE79,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE7B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE7D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE7F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE81,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE83,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE85,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE87,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE89,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE8B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE8D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EE90,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE92,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE94,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE96,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE98,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE9A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE9C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EE9E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEA0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEA2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEA4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEA6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEA8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEAA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EEAD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEAF,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EEB2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEB4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EEB7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEB9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEBB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EEBE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEC0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEC2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EEC5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEC7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EECA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EECC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EECF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EED1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EED4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EED6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EED9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEDB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EEDE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EEE1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEE3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEE5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEE7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEE9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEEB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEEF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEF1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEF3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEF5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEF7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEF9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EEFC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EEFE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF00,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF02,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF05,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF07,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF09,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF0B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF0D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF0F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF11,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF14,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF16,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF18,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF1B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF1D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF20,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF22,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF24,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF26,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF28,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF2A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF2C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF2E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF30,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF33,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF35,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF37,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF3A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF3C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF3F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF41,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF43,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF45,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF47,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF49,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF4C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF4E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF50,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF52,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF54,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF56,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF58,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EF5B,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EF5E,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EF61,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF64,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF66,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF69,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF6B,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EF6E,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EF71,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EF74,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EF77,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $EF7A,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF7B,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF7C,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF7D,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF7E,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF7F,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF80,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF81,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF82,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF83,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF84,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF85,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF86,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF87,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF88,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF89,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF8A,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF8B,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF8C,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $EF8D,$01 Paint terminator.
+  $EF8E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF91,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF93,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF95,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF97,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EF99,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EF9C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EF9F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFA1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFA3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFA5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFA7,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EFAA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EFAD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFAF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFB1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFB3,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EFB6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EFB9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFBB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFBD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFBF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFC1,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EFC4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EFC7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFC9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFCB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFCD,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EFD0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EFD3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFD5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFD7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFD9,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EFDC,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EFDF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFE1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFE3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFE5,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EFE8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EFEB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFEF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFF1,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $EFF4,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $EFF7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFF9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFFB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $EFFD,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F000,$01 Stop.
+
+b $F001 Graphics: Spider Threads Place
+@ $F001 label=Graphics_SpiderThreadsPlace
+N $F001 #DRAWING(#PC,scale=$02)(spider-threads-place.png)
+N $F001 Location #LOCATION$1A: "#LOCATIONNAME$1A".
+  $F001,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $F003,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F006,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F008,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F00A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F00C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F00E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F010,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F012,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F014,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F016,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F018,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F01A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F01C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F01E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F020,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F022,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F024,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F026,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F028,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F02A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F02C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F02E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F030,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F032,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F034,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F036,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F038,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F03A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F03C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F03E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F040,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F042,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F044,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F046,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F048,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F04A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F04C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F04E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F050,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F052,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F054,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F056,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F058,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F05A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F05C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F05E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F060,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F062,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F064,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F066,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F068,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F06A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F06C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F06E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F070,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F072,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F074,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F076,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F078,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F07A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F07C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F07E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F080,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F082,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F084,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F086,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F088,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F08A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F08C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F08E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F090,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F092,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F094,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F096,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F098,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F09A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F09C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F09E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0A0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0A2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0A4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0A6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0A8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0AA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0AC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0AE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0B0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0B4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0B6,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F0B9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0BB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F0BE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0C0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F0C3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0C5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0C7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F0CA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0CC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0CE,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F0D1,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0D3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0D5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0D7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0D9,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F0DC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0E0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0E2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0E4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0E6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0E8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0EA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0EC,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F0EF,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F0F2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F0F5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0F7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F0FA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0FC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F0FE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F100,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F102,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F104,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F106,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F108,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F10A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F10C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F10E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F111,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F113,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F115,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F117,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F11A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F11C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F11E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F120,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F123,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F125,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F127,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F129,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F12C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F12F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F131,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F134,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F136,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F138,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F13B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F13D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F13F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F141,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F144,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F146,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F149,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F14B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F14D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F150,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F152,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F155,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F157,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F15A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F15C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F15F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F161,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F164,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F166,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F169,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F16B,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F16E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F170,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F173,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F175,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F177,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F179,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F17C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F17E,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F181,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F183,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F185,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F187,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F189,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F18C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F18E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F190,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F192,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F194,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F196,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F198,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F19B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F19D,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F1A0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1A2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F1A5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1A7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1A9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1AB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F1AE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1B0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1B2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F1B5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1B7,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F1BA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1BC,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $F1BF,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F1C0,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F1C1,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F1C2,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F1C3,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F1C4,$01 Paint terminator.
+  $F1C5,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $F1C8,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F1C9,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F1CA,$01 Paint terminator.
+  $F1CB,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F1CE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1D0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1D2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1D4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1D6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1D8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1DA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1DC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1DE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1E0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1E2,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F1E5,$01 Stop.
+
+b $F1E6 Graphics: Front Gate
+@ $F1E6 label=Graphics_FrontGate
+N $F1E6 #DRAWING(#PC,scale=$02)(front-gate.png)
+N $F1E6 Location #LOCATION$27: "#LOCATIONNAME$27".
+  $F1E6,$02 Border: #INK(#PEEK(#PC)). Colours: #COLOUR(#PEEK(#PC+$01)).
+  $F1E8,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F1EB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1EF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1F1,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F1F4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1F6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1F8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1FA,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F1FD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F1FF,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F201,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F203,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F205,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F207,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F209,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F20B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F20D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F20F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F211,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F213,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F215,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F217,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F219,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F21B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F21D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F21F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F221,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F224,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F226,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F228,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F22A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F22C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F22E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F230,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F232,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F234,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F237,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F239,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F23B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F23D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F23F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F241,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F243,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F245,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F248,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F24A,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F24D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F24F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F251,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F253,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F256,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F258,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F25A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F25C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F25E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F260,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F262,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F264,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F266,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F268,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F26A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F26C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F26E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F270,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F272,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F274,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F277,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F27A,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F27D,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F280,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F283,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F286,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F289,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F28C,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F28F,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F292,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F294,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F297,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F29A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F29C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F29E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2A0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2A2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2A4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2A6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2A8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2AA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2AC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2AE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2B0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2B2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2B4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2B6,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2B8,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2BA,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2BC,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2BE,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2C0,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2C2,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2C4,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2C6,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $F2C9,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2CA,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2CB,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2CC,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2CD,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2CE,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2CF,$01 Paint terminator.
+  $F2D0,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F2D3,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2D5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2D7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2D9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2DB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2DD,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2DF,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F2E2,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F2E5,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2E7,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2E9,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2EB,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2ED,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F2EF,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $F2F2,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2F3,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2F4,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2F5,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2F6,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2F7,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2F8,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2F9,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2FA,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2FB,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F2FC,$01 Paint terminator.
+  $F2FD,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F300,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F302,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F304,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F306,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F308,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F30A,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F30C,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F30E,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F310,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F312,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F314,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F316,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F318,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F31A,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $F31D,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F31E,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F31F,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F320,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F321,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F322,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F323,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F324,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F325,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F326,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F327,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F328,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F329,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F32A,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F32B,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F32C,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F32D,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F32E,$01 Paint terminator.
+  $F32F,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F332,$03 Paint background at attribute buffer location #N((#PEEK(#PC+$01)*$100+#PEEK(#PC+$02))), colour #COLOUR(#PEEK(#PC)).
+  $F335,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F336,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F337,$01 Step up: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F338,$01 Step left: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F339,$01 Step down: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F33A,$01 Step right: #N((#PEEK(#PC)&$FC)>>2) steps.
+  $F33B,$01 Paint terminator.
+  $F33C,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F33F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F341,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F344,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F346,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F348,$03 Move to X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)).
+  $F34B,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F34D,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F34F,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F351,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F353,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F355,$02 Draw a line #MAP(#PEEK(#PC)&$07)(?,$00:UP,$01:RIGHT,$02:DOWN,$03:LEFT,$04:UP-RIGHT,$05:DOWN-RIGHT,$06:DOWN-LEFT,$07:UP-LEFT) #N(#PEEK(#PC+$01)&$3F) pixels, step every #N((((#PEEK(#PC)&$78)>>1)+((#PEEK(#PC+$01)&$C0)>>6))) pixel(s).
+  $F357,$03 Fill at X: #N(#PEEK(#PC+$01))/ Y: #N(#PEEK(#PC+$02)) with colour #COLOUR(#PEEK(#PC)).
+  $F35A,$01 Stop.
 
 b $F400 Copy of original objects
 @ $F400 label=CopyOfObjects

@@ -61,7 +61,13 @@ heroesofkarn:
 
 .PHONY: hobbit
 hobbit:
-	if [ ! -f HobbitThe.z80 ]; then tap2sna.py @hobbit.t2s; fi
+	@if [ ! -f HobbitThe.z80 ]; then \
+		for i in 1 2 3; do \
+			tap2sna.py @hobbit.t2s && break; \
+			echo "tap2sna failed (attempt $$i), retrying in 10s..."; sleep 10; \
+		done; \
+		[ -f HobbitThe.z80 ] || { echo "Failed to create HobbitThe.z80"; exit 1; }; \
+	fi
 	sna2skool.py -H --ini ListRefs=2 -c sources/hobbit/hobbit.ctl HobbitThe.z80 > sources/hobbit/hobbit.skool
 	@python -c "import art; art.tprint('The Hobbit')"
 	skool2html.py $(OPTIONS) -H -c Config/GameDir=adventure-games/hobbit --var pub=2 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/hobbit/hobbit.skool sources/hobbit/hobbit.ref

@@ -252,7 +252,7 @@ c$5B00 LD IX,$4000   ; #REGix=#R$4000(#N$4000).
 ; Tape loading routine.
 @label=TapeLoading
 *$5B21 SCF           ; Set the carry flag to indicate "loading".
- $5B22 INC D         ; This resets the Z flag. (#REGd cannot hold +#N$FF.)
+ $5B22 INC D         ; This resets the Z flag (#REGd cannot hold +#N$FF.)
  $5B23 EX AF,AF'     ; The #REGa register holds +#N$00 for a header and +#N$FF for a block
                      ; of data. The carry flag is reset for verifying and set for loading.
  $5B24 DEC D         ; Restore #REGd to its original value.
@@ -3779,9 +3779,9 @@ c$BB94 LD HL,$BE57   ; #REGhl=#R$BE57.
  $BBAF RET           ; Return.
 @label=LoadTape_Success
 *$BBB0 LD A,($BD32)  ; #REGa=*#R$BD32.
- $BBB3 OR A          ; {Return if #REGa is zero.
+ $BBB3 OR A          ; {Return if *#R$BD32 is zero.
  $BBB4 RET Z         ; }
- $BBB5 LD B,A        ; #REGb=#REGa.
+ $BBB5 LD B,A        ; Copy *#R$BD32 into #REGb.
  $BBB6 LD IX,($BD22) ; #REGix=*#R$BD22.
  $BBBA LD DE,$BC99   ; #REGde=#R$BC99.
  $BBBD JR $BBC4      ; Jump to #R$BBC4.
@@ -3834,323 +3834,167 @@ c$BBD4 LD HL,$5080   ; #REGhl=#N$5080 (screen buffer location).
 ; When the item is in the players inventory, the room ID changes to
 ; #N$01.
 @label=Table_ItemLocations
-g$BBF0 DEFB $03                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBF1 DEFB $04                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBF2 DEFB $22                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBF3 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBF4 DEFB $07                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBF5 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBF6 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBF7 DEFB $0E                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBF8 DEFB $62                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBF9 DEFB $6A                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBFA DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBFB DEFB $0B                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBFC DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBFD DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBFE DEFB $27                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BBFF DEFB $51                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC00 DEFB $50                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC01 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC02 DEFB $42                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC03 DEFB $47                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC04 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC05 DEFB $43                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC06 DEFB $3D                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC07 DEFB $31                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC08 DEFB $1F                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC09 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC0A DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC0B DEFB $2F                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC0C DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC0D DEFB $62                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC0E DEFB $67                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC0F DEFB $69                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC10 DEFB $1C                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC11 DEFB $6B                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC12 DEFB $51                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC13 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC14 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC15 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC16 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC17 DEFB $51                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC18 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC19 DEFB $30                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC1A DEFB $32                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC1B DEFB $3F                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC1C DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC1D DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC1E DEFB $61                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC1F DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC20 DEFB $62                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC21 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC22 DEFB $6A                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC23 DEFB $15                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC24 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC25 DEFB $31                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC26 DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC27 DEFB $4E                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC28 DEFB $4F                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC29 DEFB $2E                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC2A DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC2B DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC2C DEFB $3E                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC2D DEFB $3F                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC2E DEFB $52                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC2F DEFB $66                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC30 DEFB $68                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC31 DEFB $67                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC32 DEFB $5F                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC33 DEFB $02                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC34 DEFB $30                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC35 DEFB $14                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC36 DEFB $11                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC37 DEFB $12                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC38 DEFB $64                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC39 DEFB $51                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC3A DEFB $00                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC3B DEFB $06                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC3C DEFB $06                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC3D DEFB $6B                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC3E DEFB $6C                             ; Item #N(#PC-$BBF0)
-                                            ; #ITEM(#PC-$BBF0) in room
-                                            ; #N(#PEEK(#PC)):
-                                            ; #ROOM(#PEEK(#PC)).
- $BC3F DEFB $00,$00,$00,$00,$00,$00,$00,$00
+g$BBF0 DEFB $03      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBF1 DEFB $04      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBF2 DEFB $22      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBF3 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBF4 DEFB $07      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBF5 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBF6 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBF7 DEFB $0E      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBF8 DEFB $62      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBF9 DEFB $6A      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBFA DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBFB DEFB $0B      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBFC DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBFD DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBFE DEFB $27      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BBFF DEFB $51      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC00 DEFB $50      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC01 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC02 DEFB $42      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC03 DEFB $47      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC04 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC05 DEFB $43      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC06 DEFB $3D      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC07 DEFB $31      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC08 DEFB $1F      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC09 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC0A DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC0B DEFB $2F      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC0C DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC0D DEFB $62      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC0E DEFB $67      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC0F DEFB $69      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC10 DEFB $1C      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC11 DEFB $6B      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC12 DEFB $51      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC13 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC14 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC15 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC16 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC17 DEFB $51      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC18 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC19 DEFB $30      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC1A DEFB $32      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC1B DEFB $3F      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC1C DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC1D DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC1E DEFB $61      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC1F DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC20 DEFB $62      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC21 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC22 DEFB $6A      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC23 DEFB $15      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC24 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC25 DEFB $31      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC26 DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC27 DEFB $4E      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC28 DEFB $4F      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC29 DEFB $2E      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC2A DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC2B DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC2C DEFB $3E      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC2D DEFB $3F      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC2E DEFB $52      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC2F DEFB $66      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC30 DEFB $68      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC31 DEFB $67      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC32 DEFB $5F      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC33 DEFB $02      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC34 DEFB $30      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC35 DEFB $14      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC36 DEFB $11      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC37 DEFB $12      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC38 DEFB $64      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC39 DEFB $51      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC3A DEFB $00      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC3B DEFB $06      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC3C DEFB $06      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC3D DEFB $6B      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+ $BC3E DEFB $6C      ; Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room
+                     ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+
+; Unused
+u$BC3F DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $BC47 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $BC4F DEFB $00,$00,$00,$00,$00
 
@@ -4188,8 +4032,8 @@ u$BC55 DEFB $00,$00,$00,$00,$00,$00,$00
 g$BC5C DEFB %00000000
  $BC5D DEFB %00000000
 
-; Data block at BC5E
-b$BC5E DEFB $00,$00,$00,$00,$00,$00,$00,$00
+; Unused
+u$BC5E DEFB $00,$00,$00,$00,$00,$00,$00,$00
 
 ; Flags: Turn-Based Event States
 ;
@@ -4259,15 +4103,34 @@ g$BC67 DEFB $00
 @label=Flag_EventState
 g$BC6F DEFB $00
 
-; Game status buffer entry at BC70
-g$BC70 DEFB $29
- $BC71 DEFB $00
- $BC72 DEFB $00
- $BC73 DEFB $00
- $BC74 DEFB $00
- $BC75 DEFB $00
- $BC76 DEFB $00
- $BC77 DEFB $00
+; Table: Turn-Based Event Items
+;
+; A table mapping each turn-based event (by bit position in #R$BC6F) to
+; its associated item ID.
+; .
+; When a turn-based event is active, its item is moved to the current room.
+; .
+; The events correspond to the bits as follows:
+; #TABLE(default,centre,centre,centre)
+; { =h Bit | =h Event | =h Item ID }
+; { #N$00 | Crab | #N(#PEEK($BC70)) }
+; { #N$01 | Tentacle | #N(#PEEK($BC71)) }
+; { #N$02 | Drunk | #N(#PEEK($BC72)) }
+; { #N$03 | Lion | #N(#PEEK($BC73)) }
+; { #N$04 | Crocodile | #N(#PEEK($BC74)) }
+; { #N$05 | Cannibals | #N(#PEEK($BC75)) }
+; { #N$06 | Match | #N(#PEEK($BC76)) }
+; { #N$07 | Wave | #N(#PEEK($BC77)) }
+; TABLE#
+@label=Table_TurnBasedEventItems
+g$BC70 DEFB $29      ; Event #N(#PC-$BC70) item ID: #ITEM(#PEEK(#PC)).
+ $BC71 DEFB $00      ; Event #N(#PC-$BC70) item ID: #ITEM(#PEEK(#PC)).
+ $BC72 DEFB $00      ; Event #N(#PC-$BC70) item ID: #ITEM(#PEEK(#PC)).
+ $BC73 DEFB $00      ; Event #N(#PC-$BC70) item ID: #ITEM(#PEEK(#PC)).
+ $BC74 DEFB $00      ; Event #N(#PC-$BC70) item ID: #ITEM(#PEEK(#PC)).
+ $BC75 DEFB $00      ; Event #N(#PC-$BC70) item ID: #ITEM(#PEEK(#PC)).
+ $BC76 DEFB $00      ; Event #N(#PC-$BC70) item ID: #ITEM(#PEEK(#PC)).
+ $BC77 DEFB $00      ; Event #N(#PC-$BC70) item ID: #ITEM(#PEEK(#PC)).
 
 ; Table: Scenic Event Locations
 ;
@@ -4304,8 +4167,12 @@ g$BC81 DEFB $00,$00,$00,$00,$00,$00,$00,$00
 @label=Count_InventoryItems
 g$BC98 DEFB $00
 
-; Data block at BC99
-b$BC99 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+; Load/ Save Buffer
+;
+; When #R$BB94(loading) or #R$BB59(saving), this buffer is used for
+; storing #R$ED9E - which are then copied to/ from the table itself.
+@label=LoadSaveBuffer
+g$BC99 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $BCA1 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $BCA9 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $BCB1 DEFB $00,$00,$00,$00,$00,$00,$00,$00
@@ -4474,7 +4341,7 @@ g$BD66 DEFB $FF
 ; Line Number
 @label=LineNumber
 g$BD70 DEFB $00
-; View the equivalent code in #JEWELS$A82E.
+; View the equivalent code in #WARLORD$A82E.
 
 ; Game status buffer entry at BD71
 g$BD71 DEFB $00,$00,$00,$00
@@ -4488,8 +4355,10 @@ g$BD7D DEFW $0000
 @label=TempStore_TableIndex
 g$BD7F DEFW $0000
 
-; Game status buffer entry at BD81
-g$BD81 DEFB $00,$00,$00,$00
+; Temporary Storage Word Count
+@label=TempStore_WordCount
+g$BD81 DEFW $0000
+ $BD83 DEFB $00,$00
 
 ; Messaging: "> "
 @label=Messaging_Prompt
@@ -4845,23 +4714,27 @@ c$C041 EX DE,HL      ; {Jump back to #R$C01E if the user is already at the begin
 ;
 ; Used by the routine at #R$C00A.
 ; .
-; Handles the user pressing "ENTER".
+; Parses and tokenises the user's command input when they press ENTER. The
+; input is broken down into individual words, each word is looked up in the
+; vocabulary table, and unrecognised words are reported to the player.
 ;
 ; HL Current position in the command buffer
 ; A Which contains #N$0D ("ENTER") at this point.
 @label=UserInput_Enter
-c$C058 LD (HL),A     ; Write #N$0D to the command buffer pointer for use as a termination
-                     ; character.
+c$C058 LD (HL),A     ; Write #N$0D to the command buffer at the current
+                     ; position for use as a termination character.
 ; Force a newline to be "printed" to the screen.
  $C059 CALL $BA96    ; Call #R$BA96.
  $C05C CALL $BAC3    ; Call #R$BAC3.
-; Clear down the word token buffer which will eventually hold the
-; tokenised input.
+; Initialise the word token buffer. This buffer will store up to #N$0A
+; vocabulary tokens (one per word in the command). Each token is the index of
+; the word in the vocabulary table.
  $C05F LD HL,$BD66   ; #REGhl=#R$BD66.
  $C062 LD A,$FF      ; #REGa=#N$FF.
  $C064 LD B,$0A      ; Set a counter in #REGb for the size of the word token
                      ; buffer (#N$0A bytes).
-; Write #N$FF #N$0A times wiping the word token buffer.
+; Fill the word token buffer with #N$FF (the terminator value) to mark all
+; slots as empty.
 @label=EmptyWordTokenBuffer_Loop
 *$C066 LD (HL),A     ; Write #REGa to *#REGhl.
  $C067 INC HL        ; Increment #REGhl by one.
@@ -4869,107 +4742,148 @@ c$C058 LD (HL),A     ; Write #N$0D to the command buffer pointer for use as a te
                      ; #R$C066 until the whole buffer is cleared.
  $C06A LD HL,$BD34   ; #REGhl=#R$BD34.
  $C06D LD C,$0A      ; #REGc=#N$0A.
-; Now begin tokenising the user input.
+; Begin parsing the command. Extract each word from the input, look it up
+; in the vocabulary, and store its token. Words are separated by spaces or
+; commas, and the word "The" is automatically ignored.
 @label=UserInputParser_Loop
 *$C06F LD DE,$BD71   ; #REGde=#R$BD71.
  $C072 LD B,$04      ; #REGb=#N$04.
- $C074 LD A,$20      ; {Write ASCII "SPACE" (#N$20) to *#REGde.
-*$C076 LD (DE),A     ; }
+; Clear the word buffer by writing ASCII "SPACE" (#N$20) #N$04 times.
+ $C074 LD A,$20      ; Load ASCII "SPACE" (#N$20) into #REGa.
+@label=ClearWordBuffer_Loop
+*$C076 LD (DE),A     ; Write the ASCII space to *#REGde.
  $C077 INC DE        ; Increment #REGde by one.
  $C078 DJNZ $C076    ; Decrease counter by one and loop back to #R$C076 until
                      ; counter is zero.
  $C07A XOR A         ; #REGa=#N$00.
- $C07B OR C          ; Set the bits from #REGc.
+ $C07B OR C          ; #REGa|=#REGc.
  $C07C JP Z,$C16E    ; Jump to #R$C16E if #REGde is equal to #REGc.
  $C07F LD A,(HL)     ; {Jump to #R$C16E if *#REGhl is equal to #N$0D.
  $C080 CP $0D        ;
  $C082 JP Z,$C16E    ; }
  $C085 LD B,$04      ; #REGb=#N$04.
  $C087 LD DE,$BD71   ; #REGde=#R$BD71.
-*$C08A LD A,(HL)     ; #REGa=*#REGhl.
- $C08B CP $0D        ; {Jump to #R$C0B6 if #REGa is equal to #N$0D.
- $C08D JR Z,$C0B6    ; }
- $C08F CP $20        ; {Jump to #R$C0AC if #REGa is equal to #N$20.
- $C091 JR Z,$C0AC    ; }
- $C093 CP $2C        ; {Jump to #R$C0AC if #REGa is equal to #N$2C.
+; Extract the next word from the command buffer. Copy up to #N$04 characters
+; (the maximum word length) into the word buffer, stopping at a space, comma,
+; or end of input.
+@label=CopyWord_Loop
+*$C08A LD A,(HL)     ; Read the character from *#REGhl and store it in #REGa.
+ $C08B CP $0D        ; {Jump to #R$C0B6 if this character is a newline (#N$0D,
+ $C08D JR Z,$C0B6    ; end of input).}
+ $C08F CP $20        ; {Jump to #R$C0AC if the character is either an ASCII
+ $C091 JR Z,$C0AC    ; "SPACE" (#N$20) or an ASCII comma (#N$2C).
+ $C093 CP $2C        ;
  $C095 JR Z,$C0AC    ; }
- $C097 LD (DE),A     ; Write #REGa to *#REGde.
- $C098 INC HL        ; Increment #REGhl by one.
- $C099 INC DE        ; Increment #REGde by one.
+ $C097 LD (DE),A     ; Write this character to the word buffer at *#REGde.
+ $C098 INC HL        ; Move to the next character in the command buffer.
+ $C099 INC DE        ; Move to the next position in the word buffer.
  $C09A DJNZ $C08A    ; Decrease counter by one and loop back to #R$C08A until
                      ; counter is zero.
-*$C09C LD A,(HL)     ; #REGa=*#REGhl.
- $C09D CP $0D        ; {Jump to #R$C0B6 if #REGa is equal to #N$0D.
+; If the word was longer than #N$04 characters, skip over the remaining
+; characters until a delimiter (space, comma, or end of input) is found.
+@label=SkipRemainingWord_Loop
+*$C09C LD A,(HL)     ; Read the character from *#REGhl and store it in #REGa.
+ $C09D CP $0D        ; {Jump to #R$C0B6 if this character is a newline (#N$0D).
  $C09F JR Z,$C0B6    ; }
- $C0A1 CP $20        ; {Jump to #R$C0AC if #REGa is equal to #N$20.
- $C0A3 JR Z,$C0AC    ; }
- $C0A5 CP $2C        ; {Jump to #R$C0AC if #REGa is equal to #N$2C.
- $C0A7 JR Z,$C0AC    ; }
- $C0A9 INC HL        ; Increment #REGhl by one.
+ $C0A1 CP $20        ; {Jump to #R$C0AC if the character is an ASCII "SPACE"
+ $C0A3 JR Z,$C0AC    ; (#N$20).}
+ $C0A5 CP $2C        ; {Jump to #R$C0AC if the character is an ASCII comma
+ $C0A7 JR Z,$C0AC    ; (#N$2C).}
+ $C0A9 INC HL        ; Move to the next character in the command buffer.
  $C0AA JR $C09C      ; Jump to #R$C09C.
-*$C0AC INC HL        ; Increment #REGhl by one.
- $C0AD LD A,(HL)     ; #REGa=*#REGhl.
- $C0AE CP $20        ; {Jump to #R$C0AC if #REGa is equal to #N$20.
- $C0B0 JR Z,$C0AC    ; }
- $C0B2 CP $2C        ; {Jump to #R$C0AC if #REGa is equal to #N$2C.
- $C0B4 JR Z,$C0AC    ; }
+; Skip over any consecutive spaces or commas to find the start of the next
+; word.
+@label=SkipDelimiters_Loop
+*$C0AC INC HL        ; Move to the next character in the command buffer.
+ $C0AD LD A,(HL)     ; Read the character from *#REGhl and store it in #REGa.
+ $C0AE CP $20        ; {Jump to #R$C0AC if the character is an ASCII "SPACE"
+ $C0B0 JR Z,$C0AC    ; (#N$20).}
+ $C0B2 CP $2C        ; {Jump to #R$C0AC if the character is an ASCII comma
+ $C0B4 JR Z,$C0AC    ; (#N$2C).}
+; Check if the extracted word is "The". If it is, ignore it and continue
+; with the next word (adventure games typically ignore articles like "the",
+; "a", "an").
+@label=CheckIfThe
 *$C0B6 PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
  $C0B7 PUSH DE       ;
  $C0B8 PUSH BC       ; }
  $C0B9 LD HL,$BD8C   ; #REGhl=#R$BD8C.
  $C0BC LD DE,$BD71   ; #REGde=#R$BD71.
  $C0BF LD B,$04      ; #REGb=#N$04.
-*$C0C1 LD A,(DE)     ; {Jump to #R$C0C9 if *#REGde is not equal to *#REGhl.
- $C0C2 CP (HL)       ;
+@label=CompareWord_Loop
+*$C0C1 LD A,(DE)     ; {Jump to #R$C0C9 if the characters don't match (the word
+ $C0C2 CP (HL)       ; is not "The").
  $C0C3 JR NZ,$C0C9   ; }
- $C0C5 INC DE        ; Increment #REGde by one.
- $C0C6 INC HL        ; Increment #REGhl by one.
+ $C0C5 INC DE        ; Move to the next character in the extracted word.
+ $C0C6 INC HL        ; Move to the next character in "The".
  $C0C7 DJNZ $C0C1    ; Decrease counter by one and loop back to #R$C0C1 until
-                     ; counter is zero.
+                     ; all #N$04 characters have been compared.
+@label=AfterCompareWord
 *$C0C9 POP BC        ; {Restore #REGbc, #REGde and #REGhl from the stack.
  $C0CA POP DE        ;
  $C0CB POP HL        ; }
- $C0CC JR Z,$C06F    ; Jump to #R$C06F if #REGhl is equal to *#REGhl.
+ $C0CC JR Z,$C06F    ; Jump to #R$C06F if the words matched (this was "The", so skip it and
+                     ; process the next word).
  $C0CE DEC C         ; Decrease #REGc by one.
  $C0CF LD ($BD7D),HL ; Write #REGhl to *#R$BD7D.
  $C0D2 LD ($BD7F),DE ; Write #REGde to *#R$BD7F.
  $C0D6 LD ($BD81),BC ; Write #REGbc to *#R$BD81.
+; Look up the word in the vocabulary table. The vocabulary contains all
+; recognised verbs, nouns, and other words the game understands. Each entry
+; can have synonyms separated by commas.
  $C0DA LD HL,($BD0C) ; #REGhl=*#R$BD0C.
  $C0DD LD C,$00      ; #REGc=#N$00.
-*$C0DF LD A,(HL)     ; {Jump to #R$C11C if *#REGhl is equal to #N$FF.
- $C0E0 CP $FF        ;
+@label=VocabularyLookup_Loop
+*$C0DF LD A,(HL)     ; {Jump to #R$C11C if *#REGhl is equal to #N$FF (end of
+ $C0E0 CP $FF        ; vocabulary table).
  $C0E2 JR Z,$C11C    ; }
+@label=CompareVocabularyWord
 *$C0E4 LD DE,$BD71   ; #REGde=#R$BD71.
  $C0E7 LD B,$04      ; #REGb=#N$04.
-*$C0E9 LD A,(DE)     ; {Jump to #R$C10D if *#REGde is not equal to *#REGhl.
- $C0EA CP (HL)       ;
+@label=CompareVocabularyWord_Loop
+*$C0E9 LD A,(DE)     ; {Jump to #R$C10D if the characters don't match (this
+ $C0EA CP (HL)       ; vocabulary entry doesn't match the word).
  $C0EB JR NZ,$C10D   ; }
- $C0ED INC DE        ; Increment #REGde by one.
- $C0EE INC HL        ; Increment #REGhl by one.
+ $C0ED INC DE        ; Move to the next character in the extracted word.
+ $C0EE INC HL        ; Move to the next character in the vocabulary entry.
  $C0EF DJNZ $C0E9    ; Decrease counter by one and loop back to #R$C0E9 until
-                     ; counter is zero.
+                     ; all #N$04 characters have been compared.
+; Word matched in vocabulary! Calculate which slot in the token buffer to
+; use (based on how many words have been processed so far) and store the
+; vocabulary index as the token.
  $C0F1 LD HL,$BD81   ; #REGhl=#R$BD81.
  $C0F4 LD A,$09      ; #REGa=#N$09.
- $C0F6 SUB (HL)      ; #REGa-=*#REGhl.
+ $C0F6 SUB (HL)      ; Calculate the token buffer slot index: #REGa-=*#REGhl.
  $C0F7 LD D,$00      ; #REGd=#N$00.
  $C0F9 LD E,A        ; #REGe=#REGa.
- $C0FA LD HL,$BD66   ; {#REGhl=#R$BD66+#REGde.
- $C0FD ADD HL,DE     ; }
- $C0FE LD (HL),C     ; Write #REGc to *#REGhl.
- $C0FF LD HL,($BD7D) ; #REGhl=*#R$BD7D.
- $C102 LD DE,($BD7F) ; #REGde=*#R$BD7F.
- $C106 LD BC,($BD81) ; #REGbc=*#R$BD81.
+ $C0FA LD HL,$BD66   ; {Calculate the address of the token buffer slot:
+ $C0FD ADD HL,DE     ; #REGhl=#R$BD66+#REGde.}
+ $C0FE LD (HL),C     ; Store the vocabulary index (#REGc) in the token buffer
+                     ; slot.
+ $C0FF LD HL,($BD7D) ; Restore the command buffer position from *#R$BD7D.
+ $C102 LD DE,($BD7F) ; Restore the word buffer position from *#R$BD7F.
+ $C106 LD BC,($BD81) ; Restore the word counter from *#R$BD81.
  $C10A JP $C06F      ; Jump to #R$C06F.
+; Word didn't match this vocabulary entry. Check if there's a synonym
+; (indicated by a comma). If found, try matching against the synonym instead.
+@label=VocabularyWordNoMatch
 *$C10D LD E,B        ; #REGe=#REGb.
  $C10E LD D,$00      ; #REGd=#N$00.
- $C110 ADD HL,DE     ; #REGhl+=#REGde.
- $C111 LD A,(HL)     ; #REGa=*#REGhl.
- $C112 CP $2C        ; {Jump to #R$C119 if #REGa is not equal to #N$2C.
- $C114 JR NZ,$C119   ; }
- $C116 INC HL        ; Increment #REGhl by one.
- $C117 JR $C0E4      ; Jump to #R$C0E4.
+ $C110 ADD HL,DE     ; Move the vocabulary pointer past the word that didn't
+                     ; match: #REGhl+=#REGde.
+ $C111 LD A,(HL)     ; Read the character at this position and store it in
+                     ; #REGa.
+ $C112 CP $2C        ; {Jump to #R$C119 if this character is not a comma
+ $C114 JR NZ,$C119   ; (#N$2C, meaning no synonym exists).}
+ $C116 INC HL        ; Move past the comma to the synonym.
+ $C117 JR $C0E4      ; Jump to #R$C0E4 to try matching the synonym.
+@label=VocabularyNextEntry
 *$C119 INC C         ; Increment #REGc by one.
- $C11A JR $C0DF      ; Jump to #R$C0DF.
+ $C11A JR $C0DF      ; Jump to #R$C0DF to check the next vocabulary entry.
+; All recognised words have been tokenised. Now check if there are any
+; unrecognised words remaining in the input. If so, display an error message
+; to the player showing which word(s) weren't understood.
+@label=ProcessUnrecognisedWords
 *$C11C LD HL,($BD7D) ; #REGhl=*#R$BD7D.
  $C11F LD DE,($BD7F) ; #REGde=*#R$BD7F.
  $C123 LD BC,($BD81) ; #REGbc=*#R$BD81.
@@ -4977,22 +4891,28 @@ c$C058 LD (HL),A     ; Write #N$0D to the command buffer pointer for use as a te
  $C129 SUB C         ;
  $C12A LD C,A        ; }
  $C12B LD HL,$BD34   ; #REGhl=#R$BD34.
+@label=ProcessUnrecognisedWords_Loop
 *$C12E DEC C         ; Decrease #REGc by one.
- $C12F JR Z,$C149    ; Jump to #R$C149 if #REGc is equal to #N$0A.
-*$C131 LD A,(HL)     ; #REGa=*#REGhl.
- $C132 CP $20        ; {Jump to #R$C13D if #REGa is equal to #N$20.
- $C134 JR Z,$C13D    ; }
- $C136 CP $2C        ; {Jump to #R$C13D if #REGa is equal to #N$2C.
- $C138 JR Z,$C13D    ; }
- $C13A INC HL        ; Increment #REGhl by one.
+ $C12F JR Z,$C149    ; Jump to #R$C149 if #REGc is equal to #N$0A (no
+                     ; unrecognised words found).
+@label=FindUnrecognisedWord_Loop
+*$C131 LD A,(HL)     ; Read the character from *#REGhl and store it in #REGa.
+ $C132 CP $20        ; {Jump to #R$C13D if the character is an ASCII "SPACE"
+ $C134 JR Z,$C13D    ; (#N$20).}
+ $C136 CP $2C        ; {Jump to #R$C13D if the character is an ASCII comma
+ $C138 JR Z,$C13D    ; (#N$2C).}
+ $C13A INC HL        ; Move to the next character in the command buffer.
  $C13B JR $C131      ; Jump to #R$C131.
-*$C13D INC HL        ; Increment #REGhl by one.
- $C13E LD A,(HL)     ; #REGa=*#REGhl.
- $C13F CP $20        ; {Jump to #R$C13D if #REGa is equal to #N$20.
- $C141 JR Z,$C13D    ; }
- $C143 CP $2C        ; {Jump to #R$C13D if #REGa is equal to #N$2C.
- $C145 JR Z,$C13D    ; }
+@label=SkipDelimiters_Loop2
+*$C13D INC HL        ; Move to the next character in the command buffer.
+ $C13E LD A,(HL)     ; Read the character from *#REGhl and store it in #REGa.
+ $C13F CP $20        ; {Jump to #R$C13D if the character is an ASCII "SPACE"
+ $C141 JR Z,$C13D    ; (#N$20).}
+ $C143 CP $2C        ; {Jump to #R$C13D if the character is an ASCII comma
+ $C145 JR Z,$C13D    ; (#N$2C).}
  $C147 JR $C12E      ; Jump to #R$C12E.
+; Print the unrecognised word(s) in quotes.
+@label=PrintUnrecognisedWord
 *$C149 PUSH HL       ; Stash #REGhl on the stack.
 ; Print "#STR$BDA5,$08($b==$FF)".
  $C14A LD HL,$BDA5   ; #REGhl=#R$BDA5.
@@ -5000,25 +4920,32 @@ c$C058 LD (HL),A     ; Write #N$0D to the command buffer pointer for use as a te
  $C150 POP HL        ; Restore #REGhl from the stack.
  $C151 LD A,$22      ; {#HTML(Print a double quote character:
  $C153 CALL $BAC3    ; "<code>#CHR$22</code>".)}
-*$C156 LD A,(HL)     ; #REGa=*#REGhl.
- $C157 CP $21        ; {Jump to #R$C161 if #REGa is less than #N$21.
- $C159 JR C,$C161    ; }
- $C15B INC HL        ; Increment #REGhl by one.
+@label=PrintUnrecognisedWord_Loop
+*$C156 LD A,(HL)     ; Read the character from *#REGhl and store it in #REGa.
+ $C157 CP $21        ; {Jump to #R$C161 if this character is less than #N$21 (a
+ $C159 JR C,$C161    ; control character, indicating end of word).}
+ $C15B INC HL        ; Move to the next character in the command buffer.
  $C15C CALL $BAC3    ; Call #R$BAC3.
  $C15F JR $C156      ; Jump to #R$C156.
+@label=PrintUnrecognisedWord_End
 *$C161 LD A,$22      ; {#HTML(Print a double quote character:
  $C163 CALL $BAC3    ; "<code>#CHR$22</code>".)}
 ; Print "#STR$BF29,$08($b==$FF)".
  $C166 LD HL,$BF29   ; #REGhl=#R$BF29.
  $C169 CALL $BAB1    ; Call #R$BAB1.
  $C16C JR $C17A      ; Jump to #R$C17A.
-*$C16E LD A,($BD66)  ; {Return if *#R$BD66 is not equal to #N$FF.
- $C171 CP $FF        ;
+; Check if the input was empty (no words were tokenised). If tokens were
+; found, return to allow the command to be processed. Otherwise, display "I
+; Don't Understand".
+@label=CheckIfEmptyInput
+*$C16E LD A,($BD66)  ; {Return if *#R$BD66 is not equal to #N$FF (input was not
+ $C171 CP $FF        ; empty).
  $C173 RET NZ        ; }
 ; Print "#STR$BD91,$08($b==$FF)".
  $C174 LD HL,$BD91   ; #REGhl=#R$BD91.
  $C177 CALL $BAB1    ; Call #R$BAB1.
-*$C17A JP $C00A      ; Jump to #R$C00A.
+@label=ReturnToInputHandler
+*$C17A JP $C00A      ; Jump to #R$C00A to wait for the next command input.
 
 ; Process Game Events
 ;
@@ -5713,7 +5640,7 @@ c$C3FA LD B,A        ; Copy the scenic event ID into #REGb.
 ; #R$F851, #R$F999, #R$F9E4, #R$FA3C and #R$FAA8.
 ;
 ;   HL Pointer to scenic data
-;   A
+; O:A
 ; O:F The Z flag is set then there are no matching scenic events
 @label=CheckActiveScenicEvents
 c$C401 JR $C404      ; Jump to #R$C404.
@@ -5763,8 +5690,10 @@ c$C412 BIT 7,B       ; {Jump to #R$C41D if this is a normal object/ event.
 ; Used by the routines at #R$F19D, #R$F263, #R$F4D4, #R$F7D6, #R$F8D9, #R$F9E4,
 ; #R$FA3C, #R$FAA8, #R$FB16, #R$FBA8, #R$FBD5, #R$FC24 and #R$FCCD.
 ; .
-; Rather than use item properties, the game just has separate objects
-; that don't exist until an action is performed.
+; Transforms one item into another by destroying the "from" item and
+; creating the "to" item in the same location. Rather than use item
+; properties, the game just has separate objects that don't exist until an
+; action is performed.
 ; .
 ; An example is:
 ; #TABLE(default,centre,centre)
@@ -5775,20 +5704,28 @@ c$C412 BIT 7,B       ; {Jump to #R$C41D if this is a normal object/ event.
 ; When the match is lit by the player; item #N$02 is destroyed and replaced
 ; with item #N$03.
 ;
-; B From item ID
-; C To item ID
+; B From item ID (the item to be destroyed)
+; C To item ID (the item to be created)
+;
+; Get the location of the "from" item so the "to" item can be created
+; in the same place.
 @label=TransformItem
-c$C426 LD A,B        ; #REGa=#REGb.
- $C427 CALL $C3D0    ; Call #R$C3D0.
- $C42A PUSH BC       ; {Stash #REGbc and #REGaf on the stack.
+c$C426 LD A,B        ; Copy the "from" item ID into #REGa.
+ $C427 CALL $C3D0    ; Call #R$C3D0 to get the room ID where the "from" item is located
+                     ; (returns in #REGa).
+ $C42A PUSH BC       ; {Stash the item IDs and flags on the stack for later.
  $C42B PUSH AF       ; }
- $C42C LD C,$00      ; #REGc=#N$00.
- $C42E CALL $C412    ; Call #R$C412.
- $C431 POP AF        ; {Restore #REGaf and #REGbc from the stack.
+; Destroy the "from" item by setting its location to #N$00 (inactive).
+ $C42C LD C,$00      ; Set the room ID to #N$00 to deactivate the "from" item.
+ $C42E CALL $C412    ; Call #R$C412 to update the "from" item's location to
+                     ; #N$00.
+ $C431 POP AF        ; {Restore the item IDs and flags from the stack.
  $C432 POP BC        ; }
- $C433 LD B,C        ; #REGb=#REGc.
- $C434 LD C,A        ; #REGc=#REGa.
- $C435 CALL $C412    ; Call #R$C412.
+; Create the "to" item at the same location where the "from" item was.
+ $C433 LD B,C        ; Copy the "to" item ID into #REGb.
+ $C434 LD C,A        ; Copy the location (from #REGa) into #REGc.
+ $C435 CALL $C412    ; Call #R$C412 to create the "to" item at the stored
+                     ; location.
  $C438 RET           ; Return.
 
 ; Check Room Objects
@@ -6008,30 +5945,57 @@ c$C4B7 LD A,($BD67)  ; Fetch the #R$BD67(second token from the user input) and s
 ; Parser: Process Item
 ;
 ; Used by the routine at #R$EDC4.
+; .
+; Processes the word tokens from the user's command, checking if any token
+; refers to a game item. If a valid item token is found and the item is
+; present (in the current room or player's inventory), the routine returns
+; successfully. Otherwise, it continues checking tokens until one is found
+; or all tokens have been processed.
+;
+; .
+;
+; Set up to loop through all word tokens in the token buffer.
 @label=Parser_ProcessItem
-c$C4C7 LD HL,$BD66   ; #REGhl=#R$BD66.
- $C4CA LD B,$0A      ; #REGb=#N$0A.
-*$C4CC LD A,(HL)     ; {Return if *#REGhl is equal to #N$FF.
- $C4CD CP $FF        ;
+c$C4C7 LD HL,$BD66   ; Set a pointer to the word token buffer (#R$BD66) in
+                     ; #REGhl.
+ $C4CA LD B,$0A      ; Set a counter in #REGb for #N$0A tokens (the maximum
+                     ; number of words).
+; Check if there are any tokens to process. Return immediately if the first
+; token is the terminator (#N$FF), meaning the input was empty.
+@label=ProcessItem_Loop
+*$C4CC LD A,(HL)     ; {Return if the current token is #N$FF (no more tokens to
+ $C4CD CP $FF        ; process).
  $C4CF RET Z         ; }
- $C4D0 PUSH HL       ; {Stash #REGhl and #REGbc on the stack.
- $C4D1 PUSH BC       ; }
- $C4D2 LD HL,($BD1E) ; #REGhl=*#R$BD1E.
- $C4D5 LD BC,($BD2A) ; #REGbc=*#R$BD2A.
- $C4D9 CPIR          ; CPIR.
- $C4DB JR NZ,$C4E5   ; Jump to #R$C4E5 if #REGa is not equal to #N$FF.
- $C4DD CALL $C32A    ; Call #R$C32A.
- $C4E0 JR NC,$C4E5   ; Jump to #R$C4E5 if #REGa is greater than or equal to
-                     ; #N$FF.
- $C4E2 POP BC        ; {Restore #REGbc and #REGhl from the stack.
+; Check if this token refers to a game item by searching the object list table.
+ $C4D0 PUSH HL       ; {Stash the token pointer and counter on the stack for
+ $C4D1 PUSH BC       ; later restoration.}
+ $C4D2 LD HL,($BD1E) ; Load the object list table pointer into #REGhl.
+ $C4D5 LD BC,($BD2A) ; Load the number of objects into #REGbc (for the CPIR
+                     ; search).
+ $C4D9 CPIR          ; Search the object list table to see if the token matches
+                     ; any object ID.
+ $C4DB JR NZ,$C4E5   ; Jump to #R$C4E5 if the token doesn't match any object ID
+                     ; (not an item token).
+; The token matches an object ID. Now verify that the item is actually
+; present (in the current room or player's inventory).
+ $C4DD CALL $C32A    ; Call #R$C32A to check if the item is present and
+                     ; accessible.
+ $C4E0 JR NC,$C4E5   ; Jump to #R$C4E5 if the item is not present (carry flag
+                     ; set).
+; The token refers to a valid item that is present. Success!
+ $C4E2 POP BC        ; {Restore the token pointer and counter from the stack.
  $C4E3 POP HL        ; }
- $C4E4 RET           ; Return.
-*$C4E5 POP BC        ; {Restore #REGbc and #REGhl from the stack.
+ $C4E4 RET           ; Return successfully (the item was found and is
+                     ; accessible).
+; This token wasn't a valid item or the item isn't present. Move to the next
+; token and continue searching.
+@label=ProcessItem_NextToken
+*$C4E5 POP BC        ; {Restore the token pointer and counter from the stack.
  $C4E6 POP HL        ; }
- $C4E7 INC HL        ; Increment #REGhl by one.
- $C4E8 DJNZ $C4CC    ; Decrease counter by one and loop back to #R$C4CC until
-                     ; counter is zero.
- $C4EA RET           ; Return.
+ $C4E7 INC HL        ; Move to the next token in the buffer.
+ $C4E8 DJNZ $C4CC    ; Decrease the counter by one and loop back to #R$C4CC until all #N$0A
+                     ; tokens have been checked.
+ $C4EA RET           ; Return (no valid item tokens were found in the input).
 
 ; Handler: Scenic Events
 ;
@@ -6078,68 +6042,103 @@ c$C4EB LD HL,$BC78   ; #REGhl=#R$BC78.
 ; Move Player To Room
 ;
 ; Used by the routine at #R$EF54.
+; .
+; Moves the player to a new room. Before updating the current room, it
+; updates all scenic events that were in the old room to be in the new room
+; (so they follow the player). After moving, it also updates any active
+; turn-based events to appear in the new room.
 ;
 ; A Destination room ID
+;
+; Store the destination room ID and prepare to update scenic events.
 @label=MovePlayerToRoom
-c$C520 LD C,A        ; Load the destination room ID into #REGc.
- $C521 LD A,($BD30)  ; {#REGb=*#R$BD30.
+c$C520 LD C,A        ; Copy the destination room ID into #REGc.
+ $C521 LD A,($BD30)  ; {Load *#R$BD30 into #REGb for the loop counter.
  $C524 LD B,A        ; }
- $C525 LD A,($BCCB)  ; #REGa=#R$BCCB.
- $C528 LD HL,$BC78   ; #REGhl=*#R$BC78.
+ $C525 LD A,($BCCB)  ; Load #R$BCCB into #REGa (the room we're leaving).
+ $C528 LD HL,$BC78   ; Set a pointer to *#R$BC78 in #REGhl.
  $C52B JR $C52E      ; Jump to #R$C52E.
+; Loop through all scenic events and move any that are in the current room
+; to the destination room (so they follow the player).
 @label=FindScenicEvents_Loop
-*$C52D INC HL        ; Increment the scenic event location pointer by one.
+*$C52D INC HL        ; Move to the next scenic event in the table.
 @label=FindScenicEvents
-*$C52E CP (HL)       ; {Jump to #R$C532 if #REGa is not equal to *#REGhl.
- $C52F JR NZ,$C532   ; }
- $C531 LD (HL),C     ; Write #REGc to *#REGhl.
-*$C532 DJNZ $C52D    ; Decrease counter by one and loop back to #R$C52D until
-                     ; counter is zero.
-; Sets the destination room ID as the new current room ID.
- $C534 LD A,C        ; {Write #REGc to *#R$BCCB.
+*$C52E CP (HL)       ; {Jump to #R$C532 if this scenic event is not in the
+ $C52F JR NZ,$C532   ; current room.}
+ $C531 LD (HL),C     ; Update this scenic event's location to the destination
+                     ; room.
+@label=FindScenicEvents_Next
+*$C532 DJNZ $C52D    ; Decrease the scenic event counter by one and loop back to #R$C52D
+                     ; until all scenic events have been checked.
+; Update the current room ID to the destination room.
+ $C534 LD A,C        ; {Write the destination room ID to #R$BCCB.
  $C535 LD ($BCCB),A  ; }
- $C538 LD A,($BC6F)  ; #REGa=*#R$BC6F.
- $C53B AND A         ; {Jump to #R$C555 if #REGa is zero.
- $C53C JR Z,$C555    ; }
- $C53E LD B,$08      ; #REGb=#N$08.
- $C540 LD HL,$BC70   ; #REGhl=#R$BC70.
- $C543 LD C,A        ; #REGc=#REGa.
- $C544 JR $C547      ; Jump to #R$C547.
-*$C546 INC HL        ; Increment #REGhl by one.
-*$C547 SRL C         ; Shift #REGc right.
- $C549 JR NC,$C553   ; Jump to #R$C553 if #REGhl is greater than or equal to
-                     ; #REGa.
- $C54B LD A,(HL)     ; #REGa=*#REGhl.
- $C54C PUSH HL       ; {Stash #REGhl and #REGbc on the stack.
+ $C538 LD A,($BC6F)  ; Load *#R$BC6F into #REGa (bits indicate which turn-based events are
+                     ; active).
+ $C53B AND A         ; {Jump to #R$C555 if no turn-based events are active (all bits are
+ $C53C JR Z,$C555    ; zero).}
+; Process each turn-based event. For each active event (bit set), move
+; its associated item to the current room.
+ $C53E LD B,$08      ; Set a counter in #REGb for #N$08 events (one per bit).
+ $C540 LD HL,$BC70   ; Set a pointer to #R$BC70 in #REGhl.
+ $C543 LD C,A        ; Copy the event state flags into #REGc for bit testing.
+ $C544 JR $C547      ; Jump to #R$C547 to start processing events.
+@label=ProcessTurnBasedEvents_Loop
+*$C546 INC HL        ; Move to the next event's item ID in the table.
+@label=ProcessTurnBasedEvents_CheckBit
+*$C547 SRL C         ; Shift the event state flags right to check the next bit.
+ $C549 JR NC,$C553   ; Jump to #R$C553 if this bit is not set (event is not
+                     ; active).
+; This event is active, so move its associated item to the current room.
+ $C54B LD A,(HL)     ; Get the item ID for this event from the table.
+ $C54C PUSH HL       ; {Stash the table pointer and counter on the stack.
  $C54D PUSH BC       ; }
- $C54E CALL $C3F1    ; Call #R$C3F1.
- $C551 POP BC        ; {Restore #REGbc and #REGhl from the stack.
+ $C54E CALL $C3F1    ; Call #R$C3F1 to update the item's location to the
+                     ; current room.
+ $C551 POP BC        ; {Restore the table pointer and counter from the stack.
  $C552 POP HL        ; }
-*$C553 DJNZ $C546    ; Decrease counter by one and loop back to #R$C546 until
-                     ; counter is zero.
+@label=ProcessTurnBasedEvents_Next
+*$C553 DJNZ $C546    ; Decrease the event counter by one and loop back to #R$C546 until
+                     ; all #N$08 events have been processed.
+@label=MovePlayerToRoom_Return
 *$C555 RET           ; Return.
 ; View the equivalent code in #WARLORD$B01F.
 
 ; Handler: Match Verb
 ;
 ; Used by the routine at #R$EDC4.
+; .
+; Matches the first word token from the user's command against the verb
+; word tokens table. If a match is found, it calculates the verb index and
+; jumps to the corresponding verb handler routine. If no match is found, it
+; displays "I Don't Understand" and returns.
+;
+; .
+;
+; Set up to search the verb word tokens table for the first word token.
 @label=Handler_MatchVerb
-c$C556 LD HL,($BD26) ; #REGhl=*#R$BD26.
- $C559 LD BC,($BD2C) ; #REGbc=*#R$BD2C.
- $C55D LD A,($BD66)  ; #REGa=*#R$BD66.
- $C560 CPIR          ; CPIR.
- $C562 JR Z,$C56B    ; Jump to #R$C56B if ?? is equal to #N$00.
-; Print "#STR$BD91,$08($b==$FF)".
+c$C556 LD HL,($BD26) ; Set a pointer to *#R$BD26 in #REGhl.
+ $C559 LD BC,($BD2C) ; Load *#R$BD2C tokens into #REGbc for the search.
+ $C55D LD A,($BD66)  ; Get the *#R$BD66 from the user input.
+ $C560 CPIR          ; Search the verb word tokens table for a matching token.
+ $C562 JR Z,$C56B    ; Jump to #R$C56B if a match was found (Z flag is set).
+; The token doesn't match any verb. Display an error message:
+; "#STR$BD91,$08($b==$FF)".
  $C564 LD HL,$BD91   ; #REGhl=#R$BD91.
  $C567 CALL $BAB1    ; Call #R$BAB1.
  $C56A RET           ; Return.
-*$C56B LD A,($BD2C)  ; {#REGa=*#R$BD2C-#REGc.
- $C56E SUB C         ; }
- $C56F DEC A         ; Decrease #REGa by one.
- $C570 LD E,A        ; Store the result in #REGe.
- $C571 LD IX,($BD20) ; #REGix=*#R$BD20.
- $C575 CALL $C1F0    ; Call #R$C1F0.
- $C578 JP (HL)       ; Jump to *#REGhl.
+; A verb was matched! Calculate its index in the table and jump to its
+; handler routine.
+@label=VerbMatched
+*$C56B LD A,($BD2C)  ; {Calculate the verb index: #REGa=*#R$BD2C-#REGc (total tokens minus
+ $C56E SUB C         ; remaining tokens after match).}
+ $C56F DEC A         ; Adjust the index (decrease by one, as indices are
+                     ; zero-based).
+ $C570 LD E,A        ; Store the verb index in #REGe for the table lookup.
+ $C571 LD IX,($BD20) ; Set a pointer to *#R$BD20 in #REGix.
+ $C575 CALL $C1F0    ; Call #R$C1F0 to get the address of the verb handler routine for this
+                     ; index.
+ $C578 JP (HL)       ; Jump to the verb handler routine to execute the command.
 
 ; Pause, Print String And Scroll
 ;
@@ -6248,7 +6247,7 @@ t$C6D4 DEFM "Some fruit." ; "#STR$C6D4,$08($b==$FF)".
  $C6DF DEFB $FF           ; Terminator.
 
 ; Messaging: "A Gun."
-@label=Messaging_Gun
+@label=Messaging_Gun_Duplicate
 t$C6E0 DEFM "A gun." ; "#STR$C6E0,$08($b==$FF)".
  $C6E6 DEFB $FF      ; Terminator.
 
@@ -6312,7 +6311,7 @@ t$C83A DEFM "A spear." ; "#STR$C83A,$08($b==$FF)".
  $C842 DEFB $FF        ; Terminator.
 
 ; Messaging: "A Strangely Coloured Fish."
-@label=Messaging_Fish
+@label=Messaging_StrangelyColouredFish
 t$C843 DEFM "A strangely coloured fish." ; "#STR$C843,$08($b==$FF)".
  $C85D DEFB $FF                          ; Terminator.
 
@@ -6337,7 +6336,7 @@ t$C88F DEFM "A key." ; "#STR$C88F,$08($b==$FF)".
  $C895 DEFB $FF      ; Terminator.
 
 ; Messaging: "A Human Skull."
-@label=Messaging_Skull
+@label=Messaging_HumanSkull
 t$C896 DEFM "A human skull." ; "#STR$C896,$08($b==$FF)".
  $C8A4 DEFB $FF              ; Terminator.
 
@@ -6372,12 +6371,12 @@ t$C911 DEFM "A giant crab.",$0D,"It advances toward you." ; "#STR$C911,$08($b==$
  $C936 DEFB $FF                                           ; Terminator.
 
 ; Messaging: "A Lion.<CR>It Is About To Pounce On You."
-@label=Messaging_Lion
+@label=Messaging_LionAboutToPounce
 t$C937 DEFM "A lion.",$0D,"It is about to pounce on you." ; "#STR$C937,$08($b==$FF)".
  $C95C DEFB $FF                                           ; Terminator.
 
 ; Messaging: "A Giant Octopus."
-@label=Messaging_Octopus
+@label=Messaging_GiantOctopus
 t$C95D DEFM "A giant octopus." ; "#STR$C95D,$08($b==$FF)".
  $C96D DEFB $FF                ; Terminator.
 
@@ -6412,7 +6411,7 @@ t$C9D1 DEFM "An open trapdoor." ; "#STR$C9D1,$08($b==$FF)".
  $C9E2 DEFB $FF                 ; Terminator.
 
 ; Messaging: "The Body Of A Sailor."
-@label=Messaging_Sailor
+@label=Messaging_BodyOfSailor
 t$C9E3 DEFM "The body of a sailor." ; "#STR$C9E3,$08($b==$FF)".
  $C9F8 DEFB $FF                     ; Terminator.
 
@@ -6422,7 +6421,7 @@ t$C9F9 DEFM "A makeshift bridge.",$0D,"It spans the ravine." ; "#STR$C9F9,$08($b
  $CA21 DEFB $FF                                              ; Terminator.
 
 ; Messaging: "A Makeshift Bridge."
-@label=Messaging_Bridge
+@label=Messaging_MakeshiftBridge
 t$CA22 DEFM "A makeshift bridge." ; "#STR$CA22,$08($b==$FF)".
  $CA35 DEFB $FF                   ; Terminator.
 
@@ -6437,7 +6436,7 @@ t$CA6D DEFM "A boulder." ; "#STR$CA6D,$08($b==$FF)".
  $CA77 DEFB $FF          ; Terminator.
 
 ; Messaging: "A Ring,Set Into The Floor."
-@label=Messaging_Ring
+@label=Messaging_RingSetIntoFloor
 t$CA78 DEFM "A ring,set into the floor." ; "#STR$CA78,$08($b==$FF)".
  $CA92 DEFB $FF                          ; Terminator.
 
@@ -6457,7 +6456,7 @@ t$CACF DEFM "A rowing boat." ; "#STR$CACF,$08($b==$FF)".
  $CADD DEFB $FF              ; Terminator.
 
 ; Messaging: "A Ship Anchored Offshore,<CR>To The South."
-@label=Messaging_Ship
+@label=Messaging_ShipAnchoredOffshore
 t$CADE DEFM "A ship anchored offshore,",$0D,"to the south." ; "#STR$CADE,$08($b==$FF)".
  $CB05 DEFB $FF                                             ; Terminator.
 
@@ -6738,154 +6737,192 @@ t$D1CD DEFM "a rod"  ; "#STR$D1CD,$08($b==$FF)".
  $D1D2 DEFB $FF      ; Terminator.
 
 ; Messaging: "A Bottle"
+@label=Messaging_Bottle_Duplicate
 t$D1D3 DEFM "a bottle" ; "#STR$D1D3,$08($b==$FF)".
  $D1DB DEFB $FF        ; Terminator.
 
 ; Messaging: "Any Rum"
+@label=Messaging_AnyRum
 t$D1DC DEFM "any rum" ; "#STR$D1DC,$08($b==$FF)".
  $D1E3 DEFB $FF       ; Terminator.
 
 ; Messaging: "Any Fruit"
+@label=Messaging_AnyFruit
 t$D1E4 DEFM "any fruit" ; "#STR$D1E4,$08($b==$FF)".
  $D1ED DEFB $FF         ; Terminator.
 
 ; Messaging: "A Gun"
+@label=Messaging_Gun
 t$D1EE DEFM "a gun"  ; "#STR$D1EE,$08($b==$FF)".
  $D1F3 DEFB $FF      ; Terminator.
 
 ; Messaging: "An Eyepatch"
+@label=Messaging_Eyepatch_Duplicate
 t$D1F4 DEFM "an eyepatch" ; "#STR$D1F4,$08($b==$FF)".
  $D1FF DEFB $FF           ; Terminator.
 
 ; Messaging: "Any Gunpowder"
+@label=Messaging_AnyGunpowder
 t$D200 DEFM "any gunpowder" ; "#STR$D200,$08($b==$FF)".
  $D20D DEFB $FF             ; Terminator.
 
 ; Messaging: "A Keg"
+@label=Messaging_Keg
 t$D20E DEFM "a keg"  ; "#STR$D20E,$08($b==$FF)".
  $D213 DEFB $FF      ; Terminator.
 
 ; Messaging: "A Shoe"
+@label=Messaging_Shoe_Duplicate
 t$D214 DEFM "a shoe" ; "#STR$D214,$08($b==$FF)".
  $D21A DEFB $FF      ; Terminator.
 
 ; Messaging: "A Sextant"
+@label=Messaging_Sextant_Duplicate
 t$D21B DEFM "a sextant" ; "#STR$D21B,$08($b==$FF)".
  $D224 DEFB $FF         ; Terminator.
 
 ; Messaging: "A Watch"
+@label=Messaging_Watch_Duplicate
 t$D225 DEFM "a watch" ; "#STR$D225,$08($b==$FF)".
  $D22C DEFB $FF       ; Terminator.
 
 ; Messaging: "A Fish"
+@label=Messaging_Fish
 t$D22D DEFM "a fish" ; "#STR$D22D,$08($b==$FF)".
  $D233 DEFB $FF      ; Terminator.
 
 ; Messaging: "Any Jewels"
+@label=Messaging_AnyJewels
 t$D234 DEFM "any jewels" ; "#STR$D234,$08($b==$FF)".
  $D23E DEFB $FF          ; Terminator.
 
 ; Messaging: "A Crowbar"
+@label=Messaging_Crowbar_Duplicate
 t$D23F DEFM "a crowbar" ; "#STR$D23F,$08($b==$FF)".
  $D248 DEFB $FF         ; Terminator.
 
 ; Messaging: "A Key"
+@label=Messaging_Key_Duplicate
 t$D249 DEFM "a key"  ; "#STR$D249,$08($b==$FF)".
  $D24E DEFB $FF      ; Terminator.
 
 ; Messaging: "A Skull"
+@label=Messaging_Skull
 t$D24F DEFM "a skull" ; "#STR$D24F,$08($b==$FF)".
  $D256 DEFB $FF       ; Terminator.
 
 ; Messaging: "A Spear"
+@label=Messaging_Spear_Duplicate
 t$D257 DEFM "a spear" ; "#STR$D257,$08($b==$FF)".
  $D25E DEFB $FF       ; Terminator.
 
 ; Messaging: "A Ladder"
+@label=Messaging_Ladder
 t$D25F DEFM "a ladder" ; "#STR$D25F,$08($b==$FF)".
  $D267 DEFB $FF        ; Terminator.
 
 ; Messaging: "A Boat"
+@label=Messaging_Boat
 t$D268 DEFM "a boat" ; "#STR$D268,$08($b==$FF)".
  $D26E DEFB $FF      ; Terminator.
 
 ; Messaging: "Any Oars"
+@label=Messaging_Oars
 t$D26F DEFM "any oars" ; "#STR$D26F,$08($b==$FF)".
  $D277 DEFB $FF        ; Terminator.
 
 ; Messaging: "Any Cannibals"
+@label=Messaging_AnyCannibals
 t$D278 DEFM "any cannibals" ; "#STR$D278,$08($b==$FF)".
  $D285 DEFB $FF             ; Terminator.
 
 ; Messaging: "A Pirate"
+@label=Messaging_Pirate
 t$D286 DEFM "a pirate" ; "#STR$D286,$08($b==$FF)".
  $D28E DEFB $FF        ; Terminator.
 
 ; Messaging: "A Parrot"
+@label=Messaging_Parrot
 t$D28F DEFM "a parrot" ; "#STR$D28F,$08($b==$FF)".
  $D297 DEFB $FF        ; Terminator.
 
 ; Messaging: "A Crab"
+@label=Messaging_Crab
 t$D298 DEFM "a crab" ; "#STR$D298,$08($b==$FF)".
  $D29E DEFB $FF      ; Terminator.
 
 ; Messaging: "A Crocodile"
+@label=Messaging_Crocodile_Duplicate
 t$D29F DEFM "a crocodile" ; "#STR$D29F,$08($b==$FF)".
  $D2AA DEFB $FF           ; Terminator.
 
 ; Messaging: "A Lion"
+@label=Messaging_Lion
 t$D2AB DEFM "a lion" ; "#STR$D2AB,$08($b==$FF)".
  $D2B1 DEFB $FF      ; Terminator.
 
 ; Messaging: "A Seagull"
+@label=Messaging_Seagull
 t$D2B2 DEFM "a seagull" ; "#STR$D2B2,$08($b==$FF)".
  $D2BB DEFB $FF         ; Terminator.
 
 ; Messaging: "An Octopus"
+@label=Messaging_Octopus
 t$D2BC DEFM "an octopus" ; "#STR$D2BC,$08($b==$FF)".
  $D2C6 DEFB $FF          ; Terminator.
 
 ; Messaging: "A Door"
+@label=Messaging_Door
 t$D2C7 DEFM "a door" ; "#STR$D2C7,$08($b==$FF)".
  $D2CD DEFB $FF      ; Terminator.
 
 ; Messaging: "A Sailor"
+@label=Messaging_Sailor
 t$D2CE DEFM "a sailor" ; "#STR$D2CE,$08($b==$FF)".
  $D2D6 DEFB $FF        ; Terminator.
 
 ; Messaging: "A Snake"
+@label=Messaging_Snake
 t$D2D7 DEFM "a snake" ; "#STR$D2D7,$08($b==$FF)".
  $D2DE DEFB $FF       ; Terminator.
 
 ; Messaging: "A Spider"
+@label=Messaging_Spider
 t$D2DF DEFM "a spider" ; "#STR$D2DF,$08($b==$FF)".
  $D2E7 DEFB $FF        ; Terminator.
 
 ; Messaging: "A Bridge"
+@label=Messaging_Bridge
 t$D2E8 DEFM "a bridge" ; "#STR$D2E8,$08($b==$FF)".
  $D2F0 DEFB $FF        ; Terminator.
 
 ; Messaging: "A Boulder"
+@label=Messaging_Boulder_Duplicate
 t$D2F1 DEFM "a boulder" ; "#STR$D2F1,$08($b==$FF)".
  $D2FA DEFB $FF         ; Terminator.
 
 ; Messaging: "A Ring"
+@label=Messaging_Ring
 t$D2FB DEFM "a ring" ; "#STR$D2FB,$08($b==$FF)".
  $D301 DEFB $FF      ; Terminator.
 
 ; Messaging: "A Trapdoor"
+@label=Messaging_Trapdoor
 t$D302 DEFM "a trapdoor" ; "#STR$D302,$08($b==$FF)".
  $D30C DEFB $FF          ; Terminator.
 
 ; Messaging: "A Cave"
+@label=Messaging_Cave
 t$D30D DEFM "a cave" ; "#STR$D30D,$08($b==$FF)".
  $D313 DEFB $FF      ; Terminator.
 
 ; Messaging: "A Pit"
+@label=Messaging_Pit
 t$D314 DEFM "a pit"  ; "#STR$D314,$08($b==$FF)".
  $D319 DEFB $FF      ; Terminator.
 
 ; Messaging: "A Ship"
+@label=Messaging_Ship
 t$D31A DEFM "a ship" ; "#STR$D31A,$08($b==$FF)".
  $D320 DEFB $FF      ; Terminator.
 
@@ -7382,83 +7419,102 @@ t$D526 DEFM "Congratulations!!",$0D,"Your quest has been successful.",$0D,"You w
 
 ; Messaging: "The Crab Has Reached You.<CR>A Monstrous Claw Darts Out<CR>And
 ; Crushes You."
+@label=Messaging_CrabHasReachedYou
 t$D5B0 DEFM "The crab has reached you.",$0D,"A monstrous claw darts out",$0D,"and crushes " ; {"#STR$D5B0,$08($b==$FF)".
  $D5F1 DEFM "you."                                                                          ; }
  $D5F5 DEFB $FF                                                                             ; Terminator.
 
 ; Messaging: "A Tentacle Suddenly Encircles<CR>You And Crushes You."
+@label=Messaging_TentacleEncirclesYou
 t$D5F6 DEFM "A tentacle suddenly encircles",$0D,"you and crushes you." ; "#STR$D5F6,$08($b==$FF)".
  $D628 DEFB $FF                                                        ; Terminator.
 
 ; Messaging: "You Drank Too Much Rum.<CR>You Stumble And Slip<CR>And Fall Over
 ; The Edge."
+@label=Messaging_DrankTooMuchRum
 t$D629 DEFM "You drank too much rum.",$0D,"You stumble and slip",$0D,"and fall over the ed" ; {"#STR$D629,$08($b==$FF)".
  $D66A DEFM "ge."                                                                           ; }
  $D66D DEFB $FF                                                                             ; Terminator.
 
 ; Messaging: "The Lion Pounces Upon You.<CR>It Mauls You Savagely."
+@label=Messaging_LionPouncesUponYou
 t$D66E DEFM "The lion pounces upon you.",$0D,"It mauls you savagely." ; "#STR$D66E,$08($b==$FF)".
  $D69F DEFB $FF                                                       ; Terminator.
 
 ; Messaging: "The Crocodile Lunges At You.<CR>You Are Caught In
 ; The<CR>Vicious,Snapping Jaws."
+@label=Messaging_CrocodileLungesAtYou
 t$D6A0 DEFM "The crocodile lunges at you.",$0D,"You are caught in the",$0D,"vicious,snappi" ; {"#STR$D6A0,$08($b==$FF)".
  $D6E1 DEFM "ng jaws."                                                                      ; }
  $D6E9 DEFB $FF                                                                             ; Terminator.
 
 ; Messaging: "<CR>A Seagull Soars In The Breeze<CR>Above You..."
+@label=Messaging_SeagullSoarsInBreeze
 t$D6EA DEFM $0D,"A seagull soars in the breeze",$0D,"above you..." ; "#STR$D6EA,$08($b==$FF)".
  $D715 DEFB $FF                                                    ; Terminator.
 
 ; Messaging: "It Wheels Gently,<CR>And Then Flies Off."
+@label=Messaging_WheelsGentlyThenFliesOff
 t$D716 DEFM "It wheels gently,",$0D,"and then flies off." ; "#STR$D716,$08($b==$FF)".
  $D73B DEFB $FF                                           ; Terminator.
 
 ; Messaging: "<CR>A Rat Runs Out On To The<CR>Path,In Front Of You..."
+@label=Messaging_RatRunsOutPathInFrontOfYou
 t$D73C DEFM $0D,"A rat runs out on to the",$0D,"path,in front of you..." ; "#STR$D73C,$08($b==$FF)".
  $D76D DEFB $FF                                                          ; Terminator.
 
 ; Messaging: "It Sniffs The Air And Then<CR>Scurries Off."
+@label=Messaging_SniffsTheAirThenScurriesOff
 t$D76E DEFM "It sniffs the air and then",$0D,"scurries off." ; "#STR$D76E,$08($b==$FF)".
  $D796 DEFB $FF                                              ; Terminator.
 
 ; Messaging: "<CR>A Deer Appears..."
+@label=Messaging_DeerAppears
 t$D797 DEFM $0D,"A deer appears..." ; "#STR$D797,$08($b==$FF)".
  $D7A9 DEFB $FF                     ; Terminator.
 
 ; Messaging: "It Sees You And Runs Away."
+@label=Messaging_SeesYouAndRunsAway
 t$D7AA DEFM "It sees you and runs away." ; "#STR$D7AA,$08($b==$FF)".
  $D7C4 DEFB $FF                          ; Terminator.
 
 ; Messaging: "<CR>A Pirate Attacks You..."
+@label=Messaging_PirateAttacksYou
 t$D7C5 DEFM $0D,"A pirate attacks you..." ; "#STR$D7C5,$08($b==$FF)".
  $D7DD DEFB $FF                           ; Terminator.
 
 ; Messaging: "But You Avoid His Blow."
+@label=Messaging_AvoidHisBlow
 t$D7DE DEFM "But you avoid his blow." ; "#STR$D7DE,$08($b==$FF)".
  $D7F5 DEFB $FF                       ; Terminator.
 
 ; Messaging: "After A Fierce Struggle<CR>He Overpowers You."
+@label=Messaging_AfterFierceStruggleOverpowersYou
 t$D7F6 DEFM "After a fierce struggle",$0D,"he overpowers you." ; "#STR$D7F6,$08($b==$FF)".
  $D820 DEFB $FF                                                ; Terminator.
 
 ; Messaging: "<CR>A Long Water Snake<CR>Slithers Toward You..."
+@label=Messaging_WaterSnakeSlithersTowardYou
 t$D821 DEFM $0D,"A long water snake",$0D,"slithers toward you..." ; "#STR$D821,$08($b==$FF)".
  $D84B DEFB $FF                                                   ; Terminator.
 
 ; Messaging: "It Suddenly Strikes At You..."
+@label=Messaging_SuddenlyStrikesAtYou
 t$D84C DEFM "It suddenly strikes at you..." ; "#STR$D84C,$08($b==$FF)".
  $D869 DEFB $FF                             ; Terminator.
 
 ; Messaging: "The Venomous Fangs Sink<CR>Into You."
+@label=Messaging_VenomousFangsSinkIntoYou
 t$D86A DEFM "The venomous fangs sink",$0D,"into you." ; "#STR$D86A,$08($b==$FF)".
  $D88B DEFB $FF                                       ; Terminator.
 
 ; Messaging: "But It Misses And Slips Away."
+@label=Messaging_MissesAndSlipsAway
 t$D88C DEFM "But it misses and slips away." ; "#STR$D88C,$08($b==$FF)".
  $D8A9 DEFB $FF                             ; Terminator.
 
 ; Messaging: "It Regards You For A Moment,<CR>Then Slips Away."
+@label=Messaging_RegardsYouForMomentSlipsAway
 t$D8AA DEFM "It regards you for a moment,",$0D,"then slips away." ; "#STR$D8AA,$08($b==$FF)".
  $D8D7 DEFB $FF                                                   ; Terminator.
 
@@ -7479,105 +7535,130 @@ t$D922 DEFM "It stings you." ; "#STR$D922,$08($b==$FF)".
 
 ; Messaging: "The Natives Close In.<CR>You Struggle Bravely But<CR>They
 ; Overwhelm You."
+@label=Messaging_NativesCloseIn
 t$D931 DEFM "The natives close in.",$0D,"You struggle bravely but",$0D,"they overwhelm you" ; {"#STR$D931,$08($b==$FF)".
  $D972 DEFM "."                                                                             ; }
  $D973 DEFB $FF                                                                             ; Terminator.
 
 ; Messaging: "You're Really In The Soup Now."
+@label=Messaging_YoureReallyInTheSoupNow
 t$D974 DEFM "You're really in the soup now." ; "#STR$D974,$08($b==$FF)".
  $D992 DEFB $FF                              ; Terminator.
 
 ; Messaging: "Sorry...<CR>That Was In Poor Taste."
+@label=Messaging_SorryPoorTaste
 t$D993 DEFM "Sorry...",$0D,"That was in poor taste." ; "#STR$D993,$08($b==$FF)".
  $D9B3 DEFB $FF                                      ; Terminator.
 
 ; Messaging: "Try Distracting Them."
+@label=Messaging_TryDistractingThem
 t$D9B4 DEFM "Try distracting them." ; "#STR$D9B4,$08($b==$FF)".
  $D9C9 DEFB $FF                     ; Terminator.
 
 ; Messaging: "Keep The Noise Down."
+@label=Messaging_KeepNoiseDown
 t$D9CA DEFM "Keep the noise down." ; "#STR$D9CA,$08($b==$FF)".
  $D9DE DEFB $FF                    ; Terminator.
 
 ; Messaging: "Look At Those Jaws!"
+@label=Messaging_LookAtThoseJaws
 t$D9DF DEFM "Look at those JAWS!" ; "#STR$D9DF,$08($b==$FF)".
  $D9F2 DEFB $FF                   ; Terminator.
 
 ; Messaging: "Work It Out For Yourself."
+@label=Messaging_WorkItOutForYourself
 t$D9F3 DEFM "Work it out for yourself." ; "#STR$D9F3,$08($b==$FF)".
  $DA0C DEFB $FF                         ; Terminator.
 
 ; Messaging: "You Don't Really Need It."
+@label=Messaging_YouDontReallyNeedIt
 t$DA0D DEFM "You don't really need it." ; "#STR$DA0D,$08($b==$FF)".
  $DA26 DEFB $FF                         ; Terminator.
 
 ; Messaging: "Nice Pussy!"
+@label=Messaging_NicePussy
 t$DA27 DEFM "Nice pussy!" ; "#STR$DA27,$08($b==$FF)".
  $DA32 DEFB $FF           ; Terminator.
 
 ; Messaging: "Pretty Polly!"
+@label=Messaging_PrettyPolly
 t$DA33 DEFM "Pretty polly!" ; "#STR$DA33,$08($b==$FF)".
  $DA40 DEFB $FF             ; Terminator.
 
 ; Messaging: "Now You're Really Lost."
+@label=Messaging_NowYoureReallyLost
 t$DA41 DEFM "Now you're really lost." ; "#STR$DA41,$08($b==$FF)".
  $DA58 DEFB $FF                       ; Terminator.
 
 ; Messaging: "Try Climbing."
+@label=Messaging_TryClimbing
 t$DA59 DEFM "Try climbing." ; "#STR$DA59,$08($b==$FF)".
  $DA66 DEFB $FF             ; Terminator.
 
 ; Messaging: "Try Rowing!"
+@label=Messaging_TryRowing
 t$DA67 DEFM "Try rowing!" ; "#STR$DA67,$08($b==$FF)".
  $DA72 DEFB $FF           ; Terminator.
 
 ; Messaging: "It's Full Of Rum!"
+@label=Messaging_FullOfRum
 t$DA73 DEFM "It's full of rum!" ; "#STR$DA73,$08($b==$FF)".
  $DA84 DEFB $FF                 ; Terminator.
 
 ; Messaging: "It's A Red Herring!"
+@label=Messaging_ItsARedHerring
 t$DA85 DEFM "It's a red herring!" ; "#STR$DA85,$08($b==$FF)".
  $DA98 DEFB $FF                   ; Terminator.
 
 ; Messaging: "It Appears To Work."
+@label=Messaging_AppearsToWork
 t$DA99 DEFM "It appears to work." ; "#STR$DA99,$08($b==$FF)".
  $DAAC DEFB $FF                   ; Terminator.
 
 ; Messaging: "It Is Quite Well Made<CR>And In Good Condition."
+@label=Messaging_QuiteWellMadeGoodCondition
 t$DAAD DEFM "It is quite well made",$0D,"and in good condition." ; "#STR$DAAD,$08($b==$FF)".
  $DAD9 DEFB $FF                                                  ; Terminator.
 
 ; Messaging: "It Has A Circular Cross-Section."
+@label=Messaging_HasCircularCrossSection
 t$DADA DEFM "It has a circular cross-section." ; "#STR$DADA,$08($b==$FF)".
  $DAFA DEFB $FF                                ; Terminator.
 
 ; Messaging: "It Looks Delicious."
+@label=Messaging_LooksDelicious
 t$DAFB DEFM "It looks delicious." ; "#STR$DAFB,$08($b==$FF)".
  $DB0E DEFB $FF                   ; Terminator.
 
 ; Messaging: "Be Careful.<CR>It Won't Carry Much Weight."
+@label=Messaging_BeCarefulWontCarryMuchWeight
 t$DB0F DEFM "Be careful.",$0D,"It won't carry much weight." ; "#STR$DB0F,$08($b==$FF)".
  $DB36 DEFB $FF                                             ; Terminator.
 
 ; Messaging: "They Are Very Beautiful<CR>And Very Heavy."
+@label=Messaging_VeryBeautifulVeryHeavy
 t$DB37 DEFM "They are very beautiful",$0D,"and very heavy." ; "#STR$DB37,$08($b==$FF)".
  $DB5E DEFB $FF                                             ; Terminator.
 
 ; Messaging: "That's Not Such A Good Idea."
+@label=Messaging_NotSuchAGoodIdea
 t$DB5F DEFM "That's not such a good idea." ; "#STR$DB5F,$08($b==$FF)".
  $DB7B DEFB $FF                            ; Terminator.
 
 ; Messaging: "The Door Rolls Shut."
+@label=Messaging_DoorRollsShut
 t$DB7C DEFM "The door rolls shut." ; "#STR$DB7C,$08($b==$FF)".
  $DB90 DEFB $FF                    ; Terminator.
 
 ; Messaging: "<CR>Ouch!!<CR>The Match Has Burned Away,<CR>Scorching Your
 ; Fingers."
+@label=Messaging_MatchBurnedAway
 t$DB91 DEFM $0D,"Ouch!!",$0D,"The match has burned away,",$0D,"scorching your fingers." ; "#STR$DB91,$08($b==$FF)".
  $DBCB DEFB $FF                                                                         ; Terminator.
 
 ; Messaging: "As You Start To Move,<CR>The Parrot Squawks...<CR>The Pirate
 ; Wakes<CR>And Quickly Shoots You."
+@label=Messaging_ParrotSquawks
 t$DBCC DEFM "As you start to move,",$0D,"the parrot squawks...",$0D,"The pirate wakes",$0D,"and " ; {"#STR$DBCC,$08($b==$FF)".
  $DC0D DEFM "quickly shoots you."                                                                 ; }
  $DC20 DEFB $FF                                                                                   ; Terminator.
@@ -7676,57 +7757,70 @@ t$E067 DEFM "You're not carrying it." ; "#STR$E067,$08($b==$FF)".
  $E07E DEFB $FF                       ; Terminator.
 
 ; Messaging: "You Stab At The Lion<CR>But The Beast Easily Avoids It."
+@label=Messaging_StabLion
 t$E07F DEFM "You stab at the lion",$0D,"but the beast easily avoids it." ; "#STR$E07F,$08($b==$FF)".
  $E0B3 DEFB $FF                                                          ; Terminator.
 
 ; Messaging: "The Cannibals Turn On You.<CR>They Quickly Overwhelm You."
+@label=Messaging_CannibalsTurnOnYou
 t$E0B4 DEFM "The cannibals turn on you.",$0D,"They quickly overwhelm you." ; "#STR$E0B4,$08($b==$FF)".
  $E0EA DEFB $FF                                                            ; Terminator.
 
 ; Messaging: "You Take A Shot...."
+@label=Messaging_TakeAShot
 t$E0EB DEFM "You take a shot...." ; "#STR$E0EB,$08($b==$FF)".
  $E0FE DEFB $FF                   ; Terminator.
 
 ; Messaging: "Good Shooting!<CR>The Pirate Is Dead."
+@label=Messaging_PirateDead
 t$E0FF DEFM "Good shooting!",$0D,"The pirate is dead." ; "#STR$E0FF,$08($b==$FF)".
  $E121 DEFB $FF                                        ; Terminator.
 
 ; Messaging: "Bad Luck.<CR>You Missed."
+@label=Messaging_YouMissed
 t$E122 DEFM "Bad luck.",$0D,"You missed." ; "#STR$E122,$08($b==$FF)".
  $E137 DEFB $FF                           ; Terminator.
 
 ; Messaging: "He's Dead Already."
+@label=Messaging_DeadAlready
 t$E138 DEFM "He's dead already." ; "#STR$E138,$08($b==$FF)".
  $E14A DEFB $FF                  ; Terminator.
 
 ; Messaging: "It's Already Dead."
+@label=Messaging_AlreadyDead
 t$E14B DEFM "It's already dead." ; "#STR$E14B,$08($b==$FF)".
  $E15D DEFB $FF                  ; Terminator.
 
 ; Messaging: "You Haven't Got A Gun."
+@label=Messaging_NoGun
 t$E15E DEFM "You haven't got a gun." ; "#STR$E15E,$08($b==$FF)".
  $E174 DEFB $FF                      ; Terminator.
 
 ; Messaging: "You Eat The Fish.<CR>It Was Quite Tasty."
+@label=Messaging_EatTheFish
 t$E175 DEFM "You eat the fish.",$0D,"It was quite tasty." ; "#STR$E175,$08($b==$FF)".
  $E19A DEFB $FF                                           ; Terminator.
 
 ; Messaging: "You Start To Eat The Fruit.<CR>You Suddenly Feel Very
 ; Unwell.<CR>Too Late,You Realise That<CR>The Fruit Is Poisonous."
+@label=Messaging_EatTheFruit
 t$E19B DEFM "You start to eat the fruit.",$0D,"You suddenly feel very unwell.",$0D,"Too la" ; {"#STR$E19B,$08($b==$FF)".
  $E1DC DEFM "te,you realise that",$0D,"the fruit is poisonous."                             ; }
  $E207 DEFB $FF                                                                             ; Terminator.
 
 ; Messaging: "No. You Don't Like Coconut."
+@label=Messaging_DontLikeCoconut
 t$E208 DEFM "No. You don't like coconut." ; "#STR$E208,$08($b==$FF)".
  $E223 DEFB $FF                           ; Terminator.
 
 ; Messaging: "You Must Be Joking."
+@label=Messaging_YouMustBeJoking
 t$E224 DEFM "You must be joking." ; "#STR$E224,$08($b==$FF)".
  $E237 DEFB $FF                   ; Terminator.
 
 ; Messaging: "You Drink The Golden Liquid.<CR>It Was Delicious..Hic..<CR>You
 ; Feel Decidedly Light-Headed."
+@label=Messaging_DrinkGoldenLiquid
 t$E238 DEFM "You drink the golden liquid.",$0D,"It was delicious..hic..",$0D,"You feel dec" ; {"#STR$E238,$08($b==$FF)".
  $E279 DEFM "idedly light-headed."                                                          ; }
  $E28D DEFB $FF                                                                             ; Terminator.
@@ -7752,44 +7846,54 @@ t$E2DC DEFM "It's already closed." ; "#STR$E2DC,$08($b==$FF)".
  $E2F0 DEFB $FF                    ; Terminator.
 
 ; Messaging: "The Door Is Locked."
+@label=Messaging_DoorIsLocked
 t$E2F1 DEFM "The door is locked." ; "#STR$E2F1,$08($b==$FF)".
  $E304 DEFB $FF                   ; Terminator.
 
 ; Messaging: "It's Much Too Heavy."
+@label=Messaging_MuchTooHeavy
 t$E305 DEFM "It's much too heavy." ; "#STR$E305,$08($b==$FF)".
  $E319 DEFB $FF                    ; Terminator.
 
 ; Messaging: "No. I Can't Be Bothered."
+@label=Messaging_NoCantBeBothered
 t$E31A DEFM "No. I can't be bothered." ; "#STR$E31A,$08($b==$FF)".
  $E332 DEFB $FF                        ; Terminator.
 
 ; Messaging: "The Whole Canyon Vibrates.<CR>The Boulder Is Dislodged..."
+@label=Messaging_WholeCanyonVibrates
 t$E333 DEFM "The whole canyon vibrates.",$0D,"The boulder is dislodged..." ; "#STR$E333,$08($b==$FF)".
  $E369 DEFB $FF                                                            ; Terminator.
 
 ; Messaging: "It Falls And Crushes You."
+@label=Messaging_FallsAndCrushesYou
 t$E36A DEFM "It falls and crushes you." ; "#STR$E36A,$08($b==$FF)".
  $E383 DEFB $FF                         ; Terminator.
 
 ; Messaging: "It Falls And Crushes The Crab."
+@label=Messaging_FallsAndCrushesCrab
 t$E384 DEFM "It falls and crushes the crab." ; "#STR$E384,$08($b==$FF)".
  $E3A2 DEFB $FF                              ; Terminator.
 
 ; Messaging: "Don't Be Disgusting!"
+@label=Messaging_DontBeDisgusting
 t$E3A3 DEFM "Don't be disgusting!" ; "#STR$E3A3,$08($b==$FF)".
  $E3B7 DEFB $FF                    ; Terminator.
 
 ; Messaging: "I've Warned You Before!<CR>This Deviant Practice<CR>Has Got To
 ; Stop."
+@label=Messaging_WarnedYouBefore
 t$E3B8 DEFM "I've warned you before!",$0D,"This deviant practice",$0D,"has got to stop." ; "#STR$E3B8,$08($b==$FF)".
  $E3F6 DEFB $FF                                                                          ; Terminator.
 
 ; Messaging: "I Didn't Hear That!"
+@label=Messaging_IDidntHearThat
 t$E3F7 DEFM "I didn't hear that!" ; "#STR$E3F7,$08($b==$FF)".
  $E40A DEFB $FF                   ; Terminator.
 
 ; Messaging: "A Small Section Of Floor<CR>Lifts Up,Revealing It To Be<CR>A
 ; Trapdoor."
+@label=Messaging_FloorLiftsUpRevealingTrapdoor
 t$E40B DEFM "A small section of floor",$0D,"lifts up,revealing it to be",$0D,"a trapdoor." ; "#STR$E40B,$08($b==$FF)".
  $E44B DEFB $FF                                                                            ; Terminator.
 

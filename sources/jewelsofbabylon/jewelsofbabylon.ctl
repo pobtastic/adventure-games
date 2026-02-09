@@ -388,8 +388,8 @@ N $BBA9 Print "#STR$BE6C,$08($b==$FF)".
   $BBAF,$01 Return.
 @ $BBB0 label=LoadTape_Success
   $BBB0,$03 #REGa=*#R$BD32.
-  $BBB3,$02 Return if #REGa is zero.
-  $BBB5,$01 #REGb=#REGa.
+  $BBB3,$02 Return if *#R$BD32 is zero.
+  $BBB5,$01 Copy *#R$BD32 into #REGb.
   $BBB6,$04 #REGix=*#R$BD22.
   $BBBA,$03 #REGde=#R$BC99.
   $BBBD,$02 Jump to #R$BBC4.
@@ -436,6 +436,8 @@ D $BBF0 When the item is in the players inventory, the room ID changes to
 B $BBF0,$01 Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $BBF0,$01,$4F
 
+u $BC3F
+
 g $BC54 Game Flags
 @ $BC54 label=GameFlags_Help
 D $BC54 Holds a single byte, where each bit relates to help states as follows:
@@ -466,7 +468,7 @@ D $BC5C Used by the routine at #R$C21E but uses the bit index from #R$E95D.
 B $BC5C,b,$01
 B $BC5D,b,$01
 
-b $BC5E
+u $BC5E
 
 g $BC66 Flags: Turn-Based Event States
 @ $BC66 label=Flag_TurnBasedEventState
@@ -522,8 +524,27 @@ D $BC6F Holds a single byte, where each bit relates to an event as follows:
 . When the bit is set, this indicates that a turn-based event has started.
 B $BC6F,$01
 
-g $BC70
-  $BC70,$08,$01
+g $BC70 Table: Turn-Based Event Items
+@ $BC70 label=Table_TurnBasedEventItems
+D $BC70 A table mapping each turn-based event (by bit position in #R$BC6F) to
+. its associated item ID.
+.
+. When a turn-based event is active, its item is moved to the current room.
+.
+. The events correspond to the bits as follows:
+. #TABLE(default,centre,centre,centre)
+. { =h Bit | =h Event | =h Item ID }
+. { #N$00 | Crab | #N(#PEEK($BC70)) }
+. { #N$01 | Tentacle | #N(#PEEK($BC71)) }
+. { #N$02 | Drunk | #N(#PEEK($BC72)) }
+. { #N$03 | Lion | #N(#PEEK($BC73)) }
+. { #N$04 | Crocodile | #N(#PEEK($BC74)) }
+. { #N$05 | Cannibals | #N(#PEEK($BC75)) }
+. { #N$06 | Match | #N(#PEEK($BC76)) }
+. { #N$07 | Wave | #N(#PEEK($BC77)) }
+. TABLE#
+B $BC70,$01 Event #N(#PC-$BC70) item ID: #ITEM(#PEEK(#PC)).
+L $BC70,$01,$08
 
 g $BC78 Table: Scenic Event Locations
 @ $BC78 label=Table_ScenicEventLocations
@@ -539,7 +560,11 @@ g $BC98 Number Of Items In The Players Inventory
 D $BC98 The number of items the player is currently holding.
 B $BC98,$01
 
-b $BC99
+g $BC99 Load/ Save Buffer
+@ $BC99 label=LoadSaveBuffer
+D $BC99 When #R$BB94(loading) or #R$BB59(saving), this buffer is used for
+. storing #R$ED9E - which are then copied to/ from the table itself.
+B $BC99,$32,$08
 
 g $BCCB Current Room ID
 @ $BCCB label=CurrentRoom
@@ -660,7 +685,7 @@ L $BD66,$01,$0A
 
 g $BD70 Line Number
 @ $BD70 label=LineNumber
-E $BD70 View the equivalent code in #JEWELS$A82E.
+E $BD70 View the equivalent code in #WARLORD$A82E.
 B $BD70,$01
 
 g $BD71
@@ -675,7 +700,9 @@ g $BD7F Temporary Storage Table Index
 @ $BD7F label=TempStore_TableIndex
 W $BD7F,$02
 
-g $BD81
+g $BD81 Temporary Storage Word Count
+@ $BD81 label=TempStore_WordCount
+W $BD81,$02
 
 t $BD85 Messaging: "> "
 @ $BD85 label=Messaging_Prompt
@@ -982,20 +1009,23 @@ N $C053 Now adjust the command buffer pointer to match the new position.
 
 c $C058 Handler: User Pressed "ENTER"
 @ $C058 label=UserInput_Enter
-D $C058 Handles the user pressing "ENTER".
+D $C058 Parses and tokenises the user's command input when they press ENTER. The
+. input is broken down into individual words, each word is looked up in the
+. vocabulary table, and unrecognised words are reported to the player.
 R $C058 HL Current position in the command buffer
 R $C058 A Which contains #N$0D ("ENTER") at this point.
-  $C058,$01 Write #N$0D to the command buffer pointer for use as a termination
-. character.
+  $C058,$01 Write #N$0D to the command buffer at the current position for use as a termination character.
 N $C059 Force a newline to be "printed" to the screen.
   $C059,$03 Call #R$BA96.
   $C05C,$03 Call #R$BAC3.
-N $C05F Clear down the word token buffer which will eventually hold the
-. tokenised input.
+N $C05F Initialise the word token buffer. This buffer will store up to #N$0A
+. vocabulary tokens (one per word in the command). Each token is the index of
+. the word in the vocabulary table.
   $C05F,$03 #REGhl=#R$BD66.
   $C062,$02 #REGa=#N$FF.
   $C064,$02 Set a counter in #REGb for the size of the word token buffer (#N$0A bytes).
-N $C066 Write #N$FF #N$0A times wiping the word token buffer.
+N $C066 Fill the word token buffer with #N$FF (the terminator value) to mark all
+. slots as empty.
 @ $C066 label=EmptyWordTokenBuffer_Loop
   $C066,$01 Write #REGa to *#REGhl.
   $C067,$01 Increment #REGhl by one.
@@ -1003,101 +1033,144 @@ N $C066 Write #N$FF #N$0A times wiping the word token buffer.
 . #R$C066 until the whole buffer is cleared.
   $C06A,$03 #REGhl=#R$BD34.
   $C06D,$02 #REGc=#N$0A.
-N $C06F Now begin tokenising the user input.
+N $C06F Begin parsing the command. Extract each word from the input, look it up
+. in the vocabulary, and store its token. Words are separated by spaces or
+. commas, and the word "The" is automatically ignored.
 @ $C06F label=UserInputParser_Loop
   $C06F,$03 #REGde=#R$BD71.
   $C072,$02 #REGb=#N$04.
-  $C074,$03 Write ASCII "SPACE" (#N$20) to *#REGde.
+N $C074 Clear the word buffer by writing ASCII "SPACE" (#N$20) #N$04 times.
+  $C074,$02 Load ASCII "SPACE" (#N$20) into #REGa.
+@ $C076 label=ClearWordBuffer_Loop
+  $C076,$01 Write the ASCII space to *#REGde.
   $C077,$01 Increment #REGde by one.
   $C078,$02 Decrease counter by one and loop back to #R$C076 until counter is zero.
   $C07A,$01 #REGa=#N$00.
-  $C07B,$01 Set the bits from #REGc.
+  $C07B,$01 #REGa|=#REGc.
   $C07C,$03 Jump to #R$C16E if #REGde is equal to #REGc.
   $C07F,$06 Jump to #R$C16E if *#REGhl is equal to #N$0D.
   $C085,$02 #REGb=#N$04.
   $C087,$03 #REGde=#R$BD71.
-  $C08A,$01 #REGa=*#REGhl.
-  $C08B,$04 Jump to #R$C0B6 if #REGa is equal to #N$0D.
-  $C08F,$04 Jump to #R$C0AC if #REGa is equal to #N$20.
-  $C093,$04 Jump to #R$C0AC if #REGa is equal to #N$2C.
-  $C097,$01 Write #REGa to *#REGde.
-  $C098,$01 Increment #REGhl by one.
-  $C099,$01 Increment #REGde by one.
+N $C08A Extract the next word from the command buffer. Copy up to #N$04 characters
+. (the maximum word length) into the word buffer, stopping at a space, comma,
+. or end of input.
+@ $C08A label=CopyWord_Loop
+  $C08A,$01 Read the character from *#REGhl and store it in #REGa.
+  $C08B,$04 Jump to #R$C0B6 if this character is a newline (#N$0D, end of input).
+  $C08F,$08 Jump to #R$C0AC if the character is either an ASCII "SPACE" (#N$20) or an ASCII comma (#N$2C).
+  $C097,$01 Write this character to the word buffer at *#REGde.
+  $C098,$01 Move to the next character in the command buffer.
+  $C099,$01 Move to the next position in the word buffer.
   $C09A,$02 Decrease counter by one and loop back to #R$C08A until counter is zero.
-  $C09C,$01 #REGa=*#REGhl.
-  $C09D,$04 Jump to #R$C0B6 if #REGa is equal to #N$0D.
-  $C0A1,$04 Jump to #R$C0AC if #REGa is equal to #N$20.
-  $C0A5,$04 Jump to #R$C0AC if #REGa is equal to #N$2C.
-  $C0A9,$01 Increment #REGhl by one.
+N $C09C If the word was longer than #N$04 characters, skip over the remaining
+. characters until a delimiter (space, comma, or end of input) is found.
+@ $C09C label=SkipRemainingWord_Loop
+  $C09C,$01 Read the character from *#REGhl and store it in #REGa.
+  $C09D,$04 Jump to #R$C0B6 if this character is a newline (#N$0D).
+  $C0A1,$04 Jump to #R$C0AC if the character is an ASCII "SPACE" (#N$20).
+  $C0A5,$04 Jump to #R$C0AC if the character is an ASCII comma (#N$2C).
+  $C0A9,$01 Move to the next character in the command buffer.
   $C0AA,$02 Jump to #R$C09C.
-  $C0AC,$01 Increment #REGhl by one.
-  $C0AD,$01 #REGa=*#REGhl.
-  $C0AE,$04 Jump to #R$C0AC if #REGa is equal to #N$20.
-  $C0B2,$04 Jump to #R$C0AC if #REGa is equal to #N$2C.
+N $C0AC Skip over any consecutive spaces or commas to find the start of the next
+. word.
+@ $C0AC label=SkipDelimiters_Loop
+  $C0AC,$01 Move to the next character in the command buffer.
+  $C0AD,$01 Read the character from *#REGhl and store it in #REGa.
+  $C0AE,$04 Jump to #R$C0AC if the character is an ASCII "SPACE" (#N$20).
+  $C0B2,$04 Jump to #R$C0AC if the character is an ASCII comma (#N$2C).
+@ $C0B6 label=CheckIfThe
+N $C0B6 Check if the extracted word is "The". If it is, ignore it and continue
+. with the next word (adventure games typically ignore articles like "the",
+. "a", "an").
   $C0B6,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $C0B9,$03 #REGhl=#R$BD8C.
   $C0BC,$03 #REGde=#R$BD71.
   $C0BF,$02 #REGb=#N$04.
-  $C0C1,$04 Jump to #R$C0C9 if *#REGde is not equal to *#REGhl.
-  $C0C5,$01 Increment #REGde by one.
-  $C0C6,$01 Increment #REGhl by one.
-  $C0C7,$02 Decrease counter by one and loop back to #R$C0C1 until counter is zero.
+@ $C0C1 label=CompareWord_Loop
+  $C0C1,$04 Jump to #R$C0C9 if the characters don't match (the word is not "The").
+  $C0C5,$01 Move to the next character in the extracted word.
+  $C0C6,$01 Move to the next character in "The".
+  $C0C7,$02 Decrease counter by one and loop back to #R$C0C1 until all #N$04 characters have been compared.
+@ $C0C9 label=AfterCompareWord
   $C0C9,$03 Restore #REGbc, #REGde and #REGhl from the stack.
-  $C0CC,$02 Jump to #R$C06F if #REGhl is equal to *#REGhl.
+  $C0CC,$02 Jump to #R$C06F if the words matched (this was "The", so skip it and
+. process the next word).
   $C0CE,$01 Decrease #REGc by one.
   $C0CF,$03 Write #REGhl to *#R$BD7D.
   $C0D2,$04 Write #REGde to *#R$BD7F.
   $C0D6,$04 Write #REGbc to *#R$BD81.
+N $C0DA Look up the word in the vocabulary table. The vocabulary contains all
+. recognised verbs, nouns, and other words the game understands. Each entry
+. can have synonyms separated by commas.
   $C0DA,$03 #REGhl=*#R$BD0C.
   $C0DD,$02 #REGc=#N$00.
-  $C0DF,$05 Jump to #R$C11C if *#REGhl is equal to #N$FF.
+@ $C0DF label=VocabularyLookup_Loop
+  $C0DF,$05 Jump to #R$C11C if *#REGhl is equal to #N$FF (end of vocabulary table).
+@ $C0E4 label=CompareVocabularyWord
   $C0E4,$03 #REGde=#R$BD71.
   $C0E7,$02 #REGb=#N$04.
-  $C0E9,$04 Jump to #R$C10D if *#REGde is not equal to *#REGhl.
-  $C0ED,$01 Increment #REGde by one.
-  $C0EE,$01 Increment #REGhl by one.
-  $C0EF,$02 Decrease counter by one and loop back to #R$C0E9 until counter is zero.
+@ $C0E9 label=CompareVocabularyWord_Loop
+  $C0E9,$04 Jump to #R$C10D if the characters don't match (this vocabulary entry doesn't match the word).
+  $C0ED,$01 Move to the next character in the extracted word.
+  $C0EE,$01 Move to the next character in the vocabulary entry.
+  $C0EF,$02 Decrease counter by one and loop back to #R$C0E9 until all #N$04 characters have been compared.
+N $C0F1 Word matched in vocabulary! Calculate which slot in the token buffer to
+. use (based on how many words have been processed so far) and store the
+. vocabulary index as the token.
   $C0F1,$03 #REGhl=#R$BD81.
   $C0F4,$02 #REGa=#N$09.
-  $C0F6,$01 #REGa-=*#REGhl.
+  $C0F6,$01 Calculate the token buffer slot index: #REGa-=*#REGhl.
   $C0F7,$02 #REGd=#N$00.
   $C0F9,$01 #REGe=#REGa.
-  $C0FA,$04 #REGhl=#R$BD66+#REGde.
-  $C0FE,$01 Write #REGc to *#REGhl.
-  $C0FF,$03 #REGhl=*#R$BD7D.
-  $C102,$04 #REGde=*#R$BD7F.
-  $C106,$04 #REGbc=*#R$BD81.
+  $C0FA,$04 Calculate the address of the token buffer slot: #REGhl=#R$BD66+#REGde.
+  $C0FE,$01 Store the vocabulary index (#REGc) in the token buffer slot.
+  $C0FF,$03 Restore the command buffer position from *#R$BD7D.
+  $C102,$04 Restore the word buffer position from *#R$BD7F.
+  $C106,$04 Restore the word counter from *#R$BD81.
   $C10A,$03 Jump to #R$C06F.
 
+@ $C10D label=VocabularyWordNoMatch
+N $C10D Word didn't match this vocabulary entry. Check if there's a synonym
+. (indicated by a comma). If found, try matching against the synonym instead.
   $C10D,$01 #REGe=#REGb.
   $C10E,$02 #REGd=#N$00.
-  $C110,$01 #REGhl+=#REGde.
-  $C111,$01 #REGa=*#REGhl.
-  $C112,$04 Jump to #R$C119 if #REGa is not equal to #N$2C.
-  $C116,$01 Increment #REGhl by one.
-  $C117,$02 Jump to #R$C0E4.
+  $C110,$01 Move the vocabulary pointer past the word that didn't match: #REGhl+=#REGde.
+  $C111,$01 Read the character at this position and store it in #REGa.
+  $C112,$04 Jump to #R$C119 if this character is not a comma (#N$2C, meaning no synonym exists).
+  $C116,$01 Move past the comma to the synonym.
+  $C117,$02 Jump to #R$C0E4 to try matching the synonym.
 
+@ $C119 label=VocabularyNextEntry
   $C119,$01 Increment #REGc by one.
-  $C11A,$02 Jump to #R$C0DF.
+  $C11A,$02 Jump to #R$C0DF to check the next vocabulary entry.
 
+@ $C11C label=ProcessUnrecognisedWords
+N $C11C All recognised words have been tokenised. Now check if there are any
+. unrecognised words remaining in the input. If so, display an error message
+. to the player showing which word(s) weren't understood.
   $C11C,$03 #REGhl=*#R$BD7D.
   $C11F,$04 #REGde=*#R$BD7F.
   $C123,$04 #REGbc=*#R$BD81.
   $C127,$04 #REGc=#N$0A-#REGc.
   $C12B,$03 #REGhl=#R$BD34.
+@ $C12E label=ProcessUnrecognisedWords_Loop
   $C12E,$01 Decrease #REGc by one.
-  $C12F,$02 Jump to #R$C149 if #REGc is equal to #N$0A.
-  $C131,$01 #REGa=*#REGhl.
-  $C132,$04 Jump to #R$C13D if #REGa is equal to #N$20.
-  $C136,$04 Jump to #R$C13D if #REGa is equal to #N$2C.
-  $C13A,$01 Increment #REGhl by one.
+  $C12F,$02 Jump to #R$C149 if #REGc is equal to #N$0A (no unrecognised words found).
+@ $C131 label=FindUnrecognisedWord_Loop
+  $C131,$01 Read the character from *#REGhl and store it in #REGa.
+  $C132,$04 Jump to #R$C13D if the character is an ASCII "SPACE" (#N$20).
+  $C136,$04 Jump to #R$C13D if the character is an ASCII comma (#N$2C).
+  $C13A,$01 Move to the next character in the command buffer.
   $C13B,$02 Jump to #R$C131.
-  $C13D,$01 Increment #REGhl by one.
-  $C13E,$01 #REGa=*#REGhl.
-  $C13F,$04 Jump to #R$C13D if #REGa is equal to #N$20.
-  $C143,$04 Jump to #R$C13D if #REGa is equal to #N$2C.
+@ $C13D label=SkipDelimiters_Loop2
+  $C13D,$01 Move to the next character in the command buffer.
+  $C13E,$01 Read the character from *#REGhl and store it in #REGa.
+  $C13F,$04 Jump to #R$C13D if the character is an ASCII "SPACE" (#N$20).
+  $C143,$04 Jump to #R$C13D if the character is an ASCII comma (#N$2C).
   $C147,$02 Jump to #R$C12E.
 
+@ $C149 label=PrintUnrecognisedWord
+N $C149 Print the unrecognised word(s) in quotes.
   $C149,$01 Stash #REGhl on the stack.
 N $C14A Print "#STR$BDA5,$08($b==$FF)".
   $C14A,$03 #REGhl=#R$BDA5.
@@ -1106,11 +1179,13 @@ N $C14A Print "#STR$BDA5,$08($b==$FF)".
 M $C151,$05 #HTML(Print a double quote character: "<code>#CHR$22</code>".)
   $C151,$02 #REGa=#N$22.
   $C153,$03 Call #R$BAC3.
-  $C156,$01 #REGa=*#REGhl.
-  $C157,$04 Jump to #R$C161 if #REGa is less than #N$21.
-  $C15B,$01 Increment #REGhl by one.
+@ $C156 label=PrintUnrecognisedWord_Loop
+  $C156,$01 Read the character from *#REGhl and store it in #REGa.
+  $C157,$04 Jump to #R$C161 if this character is less than #N$21 (a control character, indicating end of word).
+  $C15B,$01 Move to the next character in the command buffer.
   $C15C,$03 Call #R$BAC3.
   $C15F,$02 Jump to #R$C156.
+@ $C161 label=PrintUnrecognisedWord_End
 M $C161,$05 #HTML(Print a double quote character: "<code>#CHR$22</code>".)
   $C161,$02 #REGa=#N$22.
   $C163,$03 Call #R$BAC3.
@@ -1119,11 +1194,16 @@ N $C166 Print "#STR$BF29,$08($b==$FF)".
   $C169,$03 Call #R$BAB1.
   $C16C,$02 Jump to #R$C17A.
 
-  $C16E,$06 Return if *#R$BD66 is not equal to #N$FF.
+@ $C16E label=CheckIfEmptyInput
+N $C16E Check if the input was empty (no words were tokenised). If tokens were
+. found, return to allow the command to be processed. Otherwise, display "I
+. Don't Understand".
+  $C16E,$06 Return if *#R$BD66 is not equal to #N$FF (input was not empty).
 N $C174 Print "#STR$BD91,$08($b==$FF)".
   $C174,$03 #REGhl=#R$BD91.
   $C177,$03 Call #R$BAB1.
-  $C17A,$03 Jump to #R$C00A.
+@ $C17A label=ReturnToInputHandler
+  $C17A,$03 Jump to #R$C00A to wait for the next command input.
 
 c $C17D Process Game Events
 @ $C17D label=GameEventsProcessor
@@ -1683,10 +1763,12 @@ N $C420 Both object/ event types continue from here.
 
 c $C426 Transform Item
 @ $C426 label=TransformItem
-R $C426 B From item ID
-R $C426 C To item ID
-D $C426 Rather than use item properties, the game just has separate objects
-. that don't exist until an action is performed.
+R $C426 B From item ID (the item to be destroyed)
+R $C426 C To item ID (the item to be created)
+D $C426 Transforms one item into another by destroying the "from" item and
+. creating the "to" item in the same location. Rather than use item
+. properties, the game just has separate objects that don't exist until an
+. action is performed.
 .
 . An example is:
 . #TABLE(default,centre,centre)
@@ -1696,15 +1778,20 @@ D $C426 Rather than use item properties, the game just has separate objects
 . TABLE#
 . When the match is lit by the player; item #N$02 is destroyed and replaced
 . with item #N$03.
-  $C426,$01 #REGa=#REGb.
-  $C427,$03 Call #R$C3D0.
-  $C42A,$02 Stash #REGbc and #REGaf on the stack.
-  $C42C,$02 #REGc=#N$00.
-  $C42E,$03 Call #R$C412.
-  $C431,$02 Restore #REGaf and #REGbc from the stack.
-  $C433,$01 #REGb=#REGc.
-  $C434,$01 #REGc=#REGa.
-  $C435,$03 Call #R$C412.
+N $C426 Get the location of the "from" item so the "to" item can be created
+. in the same place.
+  $C426,$01 Copy the "from" item ID into #REGa.
+  $C427,$03 Call #R$C3D0 to get the room ID where the "from" item is located
+. (returns in #REGa).
+  $C42A,$02 Stash the item IDs and flags on the stack for later.
+N $C42C Destroy the "from" item by setting its location to #N$00 (inactive).
+  $C42C,$02 Set the room ID to #N$00 to deactivate the "from" item.
+  $C42E,$03 Call #R$C412 to update the "from" item's location to #N$00.
+  $C431,$02 Restore the item IDs and flags from the stack.
+N $C433 Create the "to" item at the same location where the "from" item was.
+  $C433,$01 Copy the "to" item ID into #REGb.
+  $C434,$01 Copy the location (from #REGa) into #REGc.
+  $C435,$03 Call #R$C412 to create the "to" item at the stored location.
   $C438,$01 Return.
 
 c $C439 Check Room Objects
@@ -1877,23 +1964,39 @@ N $C4C3 The user input tokens have a direct object, return how many are in the
 
 c $C4C7 Parser: Process Item
 @ $C4C7 label=Parser_ProcessItem
-  $C4C7,$03 #REGhl=#R$BD66.
-  $C4CA,$02 #REGb=#N$0A.
-  $C4CC,$04 Return if *#REGhl is equal to #N$FF.
-  $C4D0,$02 Stash #REGhl and #REGbc on the stack.
-  $C4D2,$03 #REGhl=*#R$BD1E.
-  $C4D5,$04 #REGbc=*#R$BD2A.
-  $C4D9,$02 CPIR.
-  $C4DB,$02 Jump to #R$C4E5 if #REGa is not equal to #N$FF.
-  $C4DD,$03 Call #R$C32A.
-  $C4E0,$02 Jump to #R$C4E5 if #REGa is greater than or equal to #N$FF.
-  $C4E2,$02 Restore #REGbc and #REGhl from the stack.
-  $C4E4,$01 Return.
-
-  $C4E5,$02 Restore #REGbc and #REGhl from the stack.
-  $C4E7,$01 Increment #REGhl by one.
-  $C4E8,$02 Decrease counter by one and loop back to #R$C4CC until counter is zero.
-  $C4EA,$01 Return.
+D $C4C7 Processes the word tokens from the user's command, checking if any token
+. refers to a game item. If a valid item token is found and the item is
+. present (in the current room or player's inventory), the routine returns
+. successfully. Otherwise, it continues checking tokens until one is found
+. or all tokens have been processed.
+N $C4C7 Set up to loop through all word tokens in the token buffer.
+  $C4C7,$03 Set a pointer to the word token buffer (#R$BD66) in #REGhl.
+  $C4CA,$02 Set a counter in #REGb for #N$0A tokens (the maximum number of words).
+N $C4CC Check if there are any tokens to process. Return immediately if the first
+. token is the terminator (#N$FF), meaning the input was empty.
+@ $C4CC label=ProcessItem_Loop
+  $C4CC,$04 Return if the current token is #N$FF (no more tokens to process).
+N $C4D0 Check if this token refers to a game item by searching the object list table.
+  $C4D0,$02 Stash the token pointer and counter on the stack for later restoration.
+  $C4D2,$03 Load the object list table pointer into #REGhl.
+  $C4D5,$04 Load the number of objects into #REGbc (for the CPIR search).
+  $C4D9,$02 Search the object list table to see if the token matches any object ID.
+  $C4DB,$02 Jump to #R$C4E5 if the token doesn't match any object ID (not an item token).
+N $C4DD The token matches an object ID. Now verify that the item is actually
+. present (in the current room or player's inventory).
+  $C4DD,$03 Call #R$C32A to check if the item is present and accessible.
+  $C4E0,$02 Jump to #R$C4E5 if the item is not present (carry flag set).
+N $C4E2 The token refers to a valid item that is present. Success!
+  $C4E2,$02 Restore the token pointer and counter from the stack.
+  $C4E4,$01 Return successfully (the item was found and is accessible).
+@ $C4E5 label=ProcessItem_NextToken
+N $C4E5 This token wasn't a valid item or the item isn't present. Move to the next
+. token and continue searching.
+  $C4E5,$02 Restore the token pointer and counter from the stack.
+  $C4E7,$01 Move to the next token in the buffer.
+  $C4E8,$02 Decrease the counter by one and loop back to #R$C4CC until all #N$0A
+. tokens have been checked.
+  $C4EA,$01 Return (no valid item tokens were found in the input).
 
 c $C4EB Handler: Scenic Events
 @ $C4EB label=Handler_ScenicEvents
@@ -1931,55 +2034,83 @@ N $C514 This is the return point after the handler has finished executing.
 c $C520 Move Player To Room
 @ $C520 label=MovePlayerToRoom
 R $C520 A Destination room ID
+D $C520 Moves the player to a new room. Before updating the current room, it
+. updates all scenic events that were in the old room to be in the new room
+. (so they follow the player). After moving, it also updates any active
+. turn-based events to appear in the new room.
 E $C520 View the equivalent code in #WARLORD$B01F.
-  $C520,$01 Load the destination room ID into #REGc.
-  $C521,$04 #REGb=*#R$BD30.
-  $C525,$03 #REGa=#R$BCCB.
-  $C528,$03 #REGhl=*#R$BC78.
+N $C520 Store the destination room ID and prepare to update scenic events.
+  $C520,$01 Copy the destination room ID into #REGc.
+  $C521,$04 Load *#R$BD30 into #REGb for the loop counter.
+  $C525,$03 Load #R$BCCB into #REGa (the room we're leaving).
+  $C528,$03 Set a pointer to *#R$BC78 in #REGhl.
   $C52B,$02 Jump to #R$C52E.
-N $C52D
+N $C52D Loop through all scenic events and move any that are in the current room
+. to the destination room (so they follow the player).
 @ $C52D label=FindScenicEvents_Loop
-  $C52D,$01 Increment the scenic event location pointer by one.
+  $C52D,$01 Move to the next scenic event in the table.
 @ $C52E label=FindScenicEvents
-  $C52E,$03 Jump to #R$C532 if #REGa is not equal to *#REGhl.
-  $C531,$01 Write #REGc to *#REGhl.
-  $C532,$02 Decrease counter by one and loop back to #R$C52D until counter is zero.
-N $C534 Sets the destination room ID as the new current room ID.
-  $C534,$04 Write #REGc to *#R$BCCB.
-  $C538,$03 #REGa=*#R$BC6F.
-  $C53B,$03 Jump to #R$C555 if #REGa is zero.
-  $C53E,$02 #REGb=#N$08.
-  $C540,$03 #REGhl=#R$BC70.
-  $C543,$01 #REGc=#REGa.
-  $C544,$02 Jump to #R$C547.
-  $C546,$01 Increment #REGhl by one.
-  $C547,$02 Shift #REGc right.
-  $C549,$02 Jump to #R$C553 if #REGhl is greater than or equal to #REGa.
-  $C54B,$01 #REGa=*#REGhl.
-  $C54C,$02 Stash #REGhl and #REGbc on the stack.
-  $C54E,$03 Call #R$C3F1.
-  $C551,$02 Restore #REGbc and #REGhl from the stack.
-  $C553,$02 Decrease counter by one and loop back to #R$C546 until counter is zero.
+  $C52E,$03 Jump to #R$C532 if this scenic event is not in the current room.
+  $C531,$01 Update this scenic event's location to the destination room.
+@ $C532 label=FindScenicEvents_Next
+  $C532,$02 Decrease the scenic event counter by one and loop back to #R$C52D
+. until all scenic events have been checked.
+N $C534 Update the current room ID to the destination room.
+  $C534,$04 Write the destination room ID to #R$BCCB.
+  $C538,$03 Load *#R$BC6F into #REGa (bits indicate which turn-based events are
+. active).
+  $C53B,$03 Jump to #R$C555 if no turn-based events are active (all bits are
+. zero).
+N $C53E Process each turn-based event. For each active event (bit set), move
+. its associated item to the current room.
+  $C53E,$02 Set a counter in #REGb for #N$08 events (one per bit).
+  $C540,$03 Set a pointer to #R$BC70 in #REGhl.
+  $C543,$01 Copy the event state flags into #REGc for bit testing.
+  $C544,$02 Jump to #R$C547 to start processing events.
+@ $C546 label=ProcessTurnBasedEvents_Loop
+  $C546,$01 Move to the next event's item ID in the table.
+@ $C547 label=ProcessTurnBasedEvents_CheckBit
+  $C547,$02 Shift the event state flags right to check the next bit.
+  $C549,$02 Jump to #R$C553 if this bit is not set (event is not active).
+N $C54B This event is active, so move its associated item to the current room.
+  $C54B,$01 Get the item ID for this event from the table.
+  $C54C,$02 Stash the table pointer and counter on the stack.
+  $C54E,$03 Call #R$C3F1 to update the item's location to the current room.
+  $C551,$02 Restore the table pointer and counter from the stack.
+@ $C553 label=ProcessTurnBasedEvents_Next
+  $C553,$02 Decrease the event counter by one and loop back to #R$C546 until
+. all #N$08 events have been processed.
+@ $C555 label=MovePlayerToRoom_Return
   $C555,$01 Return.
 
 c $C556 Handler: Match Verb
 @ $C556 label=Handler_MatchVerb
-  $C556,$03 #REGhl=*#R$BD26.
-  $C559,$04 #REGbc=*#R$BD2C.
-  $C55D,$03 #REGa=*#R$BD66.
-  $C560,$02 CPIR.
-  $C562,$02 Jump to #R$C56B if ?? is equal to #N$00.
-N $C564 Print "#STR$BD91,$08($b==$FF)".
+D $C556 Matches the first word token from the user's command against the verb
+. word tokens table. If a match is found, it calculates the verb index and
+. jumps to the corresponding verb handler routine. If no match is found, it
+. displays "I Don't Understand" and returns.
+N $C556 Set up to search the verb word tokens table for the first word token.
+  $C556,$03 Set a pointer to *#R$BD26 in #REGhl.
+  $C559,$04 Load *#R$BD2C tokens into #REGbc for the search.
+  $C55D,$03 Get the *#R$BD66 from the user input.
+  $C560,$02 Search the verb word tokens table for a matching token.
+  $C562,$02 Jump to #R$C56B if a match was found (Z flag is set).
+N $C564 The token doesn't match any verb. Display an error message:
+. "#STR$BD91,$08($b==$FF)".
   $C564,$03 #REGhl=#R$BD91.
   $C567,$03 Call #R$BAB1.
   $C56A,$01 Return.
-
-  $C56B,$04 #REGa=*#R$BD2C-#REGc.
-  $C56F,$01 Decrease #REGa by one.
-  $C570,$01 Store the result in #REGe.
-  $C571,$04 #REGix=*#R$BD20.
-  $C575,$03 Call #R$C1F0.
-  $C578,$01 Jump to *#REGhl.
+@ $C56B label=VerbMatched
+N $C56B A verb was matched! Calculate its index in the table and jump to its
+. handler routine.
+  $C56B,$04 Calculate the verb index: #REGa=*#R$BD2C-#REGc (total tokens minus
+. remaining tokens after match).
+  $C56F,$01 Adjust the index (decrease by one, as indices are zero-based).
+  $C570,$01 Store the verb index in #REGe for the table lookup.
+  $C571,$04 Set a pointer to *#R$BD20 in #REGix.
+  $C575,$03 Call #R$C1F0 to get the address of the verb handler routine for this
+. index.
+  $C578,$01 Jump to the verb handler routine to execute the command.
 
 c $C579 Pause, Print String And Scroll
 @ $C579 label=PausePrintStringAndScroll
@@ -2077,7 +2208,7 @@ t $C6D4 Messaging: "Some Fruit."
 B $C6DF,$01 Terminator.
 
 t $C6E0 Messaging: "A Gun."
-@ $C6E0 label=Messaging_Gun
+@ $C6E0 label=Messaging_Gun_Duplicate
   $C6E0,$06 "#STR$C6E0,$08($b==$FF)".
 B $C6E6,$01 Terminator.
 
@@ -2137,7 +2268,7 @@ t $C83A Messaging: "A Spear."
 B $C842,$01 Terminator.
 
 t $C843 Messaging: "A Strangely Coloured Fish."
-@ $C843 label=Messaging_Fish
+@ $C843 label=Messaging_StrangelyColouredFish
   $C843,$1A "#STR$C843,$08($b==$FF)".
 B $C85D,$01 Terminator.
 
@@ -2162,7 +2293,7 @@ t $C88F Messaging: "A Key."
 B $C895,$01 Terminator.
 
 t $C896 Messaging: "A Human Skull."
-@ $C896 label=Messaging_Skull
+@ $C896 label=Messaging_HumanSkull
   $C896,$0E "#STR$C896,$08($b==$FF)".
 B $C8A4,$01 Terminator.
 
@@ -2197,12 +2328,12 @@ t $C911 Messaging: "A Giant Crab.<CR>It Advances Toward You."
 B $C936,$01 Terminator.
 
 t $C937 Messaging: "A Lion.<CR>It Is About To Pounce On You."
-@ $C937 label=Messaging_Lion
+@ $C937 label=Messaging_LionAboutToPounce
   $C937,$25 "#STR$C937,$08($b==$FF)".
 B $C95C,$01 Terminator.
 
 t $C95D Messaging: "A Giant Octopus."
-@ $C95D label=Messaging_Octopus
+@ $C95D label=Messaging_GiantOctopus
   $C95D,$10 "#STR$C95D,$08($b==$FF)".
 B $C96D,$01 Terminator.
 
@@ -2237,7 +2368,7 @@ t $C9D1 Messaging: "An Open Trapdoor."
 B $C9E2,$01 Terminator.
 
 t $C9E3 Messaging: "The Body Of A Sailor."
-@ $C9E3 label=Messaging_Sailor
+@ $C9E3 label=Messaging_BodyOfSailor
   $C9E3,$15 "#STR$C9E3,$08($b==$FF)".
 B $C9F8,$01 Terminator.
 
@@ -2247,7 +2378,7 @@ t $C9F9 Messaging: "A Makeshift Bridge.<CR>It Spans The Ravine."
 B $CA21,$01 Terminator.
 
 t $CA22 Messaging: "A Makeshift Bridge."
-@ $CA22 label=Messaging_Bridge
+@ $CA22 label=Messaging_MakeshiftBridge
   $CA22,$13 "#STR$CA22,$08($b==$FF)".
 B $CA35,$01 Terminator.
 
@@ -2262,7 +2393,7 @@ t $CA6D Messaging: "A Boulder."
 B $CA77,$01 Terminator.
 
 t $CA78 Messaging: "A Ring,Set Into The Floor."
-@ $CA78 label=Messaging_Ring
+@ $CA78 label=Messaging_RingSetIntoFloor
   $CA78,$1A "#STR$CA78,$08($b==$FF)".
 B $CA92,$01 Terminator.
 
@@ -2282,7 +2413,7 @@ t $CACF Messaging: "A Rowing Boat."
 B $CADD,$01 Terminator.
 
 t $CADE Messaging: "A Ship Anchored Offshore,<CR>To The South."
-@ $CADE label=Messaging_Ship
+@ $CADE label=Messaging_ShipAnchoredOffshore
   $CADE,$27 "#STR$CADE,$08($b==$FF)".
 B $CB05,$01 Terminator.
 
@@ -2557,154 +2688,192 @@ t $D1CD Messaging: "A Rod"
 B $D1D2,$01 Terminator.
 
 t $D1D3 Messaging: "A Bottle"
+@ $D1D3 label=Messaging_Bottle_Duplicate
   $D1D3,$08 "#STR$D1D3,$08($b==$FF)".
 B $D1DB,$01 Terminator.
 
 t $D1DC Messaging: "Any Rum"
+@ $D1DC label=Messaging_AnyRum
   $D1DC,$07 "#STR$D1DC,$08($b==$FF)".
 B $D1E3,$01 Terminator.
 
 t $D1E4 Messaging: "Any Fruit"
+@ $D1E4 label=Messaging_AnyFruit
   $D1E4,$09 "#STR$D1E4,$08($b==$FF)".
 B $D1ED,$01 Terminator.
 
 t $D1EE Messaging: "A Gun"
+@ $D1EE label=Messaging_Gun
   $D1EE,$05 "#STR$D1EE,$08($b==$FF)".
 B $D1F3,$01 Terminator.
 
 t $D1F4 Messaging: "An Eyepatch"
+@ $D1F4 label=Messaging_Eyepatch_Duplicate
   $D1F4,$0B "#STR$D1F4,$08($b==$FF)".
 B $D1FF,$01 Terminator.
 
 t $D200 Messaging: "Any Gunpowder"
+@ $D200 label=Messaging_AnyGunpowder
   $D200,$0D "#STR$D200,$08($b==$FF)".
 B $D20D,$01 Terminator.
 
 t $D20E Messaging: "A Keg"
+@ $D20E label=Messaging_Keg
   $D20E,$05 "#STR$D20E,$08($b==$FF)".
 B $D213,$01 Terminator.
 
 t $D214 Messaging: "A Shoe"
+@ $D214 label=Messaging_Shoe_Duplicate
   $D214,$06 "#STR$D214,$08($b==$FF)".
 B $D21A,$01 Terminator.
 
 t $D21B Messaging: "A Sextant"
+@ $D21B label=Messaging_Sextant_Duplicate
   $D21B,$09 "#STR$D21B,$08($b==$FF)".
 B $D224,$01 Terminator.
 
 t $D225 Messaging: "A Watch"
+@ $D225 label=Messaging_Watch_Duplicate
   $D225,$07 "#STR$D225,$08($b==$FF)".
 B $D22C,$01 Terminator.
 
 t $D22D Messaging: "A Fish"
+@ $D22D label=Messaging_Fish
   $D22D,$06 "#STR$D22D,$08($b==$FF)".
 B $D233,$01 Terminator.
 
 t $D234 Messaging: "Any Jewels"
+@ $D234 label=Messaging_AnyJewels
   $D234,$0A "#STR$D234,$08($b==$FF)".
 B $D23E,$01 Terminator.
 
 t $D23F Messaging: "A Crowbar"
+@ $D23F label=Messaging_Crowbar_Duplicate
   $D23F,$09 "#STR$D23F,$08($b==$FF)".
 B $D248,$01 Terminator.
 
 t $D249 Messaging: "A Key"
+@ $D249 label=Messaging_Key_Duplicate
   $D249,$05 "#STR$D249,$08($b==$FF)".
 B $D24E,$01 Terminator.
 
 t $D24F Messaging: "A Skull"
+@ $D24F label=Messaging_Skull
   $D24F,$07 "#STR$D24F,$08($b==$FF)".
 B $D256,$01 Terminator.
 
 t $D257 Messaging: "A Spear"
+@ $D257 label=Messaging_Spear_Duplicate
   $D257,$07 "#STR$D257,$08($b==$FF)".
 B $D25E,$01 Terminator.
 
 t $D25F Messaging: "A Ladder"
+@ $D25F label=Messaging_Ladder
   $D25F,$08 "#STR$D25F,$08($b==$FF)".
 B $D267,$01 Terminator.
 
 t $D268 Messaging: "A Boat"
+@ $D268 label=Messaging_Boat
   $D268,$06 "#STR$D268,$08($b==$FF)".
 B $D26E,$01 Terminator.
 
 t $D26F Messaging: "Any Oars"
+@ $D26F label=Messaging_Oars
   $D26F,$08 "#STR$D26F,$08($b==$FF)".
 B $D277,$01 Terminator.
 
 t $D278 Messaging: "Any Cannibals"
+@ $D278 label=Messaging_AnyCannibals
   $D278,$0D "#STR$D278,$08($b==$FF)".
 B $D285,$01 Terminator.
 
 t $D286 Messaging: "A Pirate"
+@ $D286 label=Messaging_Pirate
   $D286,$08 "#STR$D286,$08($b==$FF)".
 B $D28E,$01 Terminator.
 
 t $D28F Messaging: "A Parrot"
+@ $D28F label=Messaging_Parrot
   $D28F,$08 "#STR$D28F,$08($b==$FF)".
 B $D297,$01 Terminator.
 
 t $D298 Messaging: "A Crab"
+@ $D298 label=Messaging_Crab
   $D298,$06 "#STR$D298,$08($b==$FF)".
 B $D29E,$01 Terminator.
 
 t $D29F Messaging: "A Crocodile"
+@ $D29F label=Messaging_Crocodile_Duplicate
   $D29F,$0B "#STR$D29F,$08($b==$FF)".
 B $D2AA,$01 Terminator.
 
 t $D2AB Messaging: "A Lion"
+@ $D2AB label=Messaging_Lion
   $D2AB,$06 "#STR$D2AB,$08($b==$FF)".
 B $D2B1,$01 Terminator.
 
 t $D2B2 Messaging: "A Seagull"
+@ $D2B2 label=Messaging_Seagull
   $D2B2,$09 "#STR$D2B2,$08($b==$FF)".
 B $D2BB,$01 Terminator.
 
 t $D2BC Messaging: "An Octopus"
+@ $D2BC label=Messaging_Octopus
   $D2BC,$0A "#STR$D2BC,$08($b==$FF)".
 B $D2C6,$01 Terminator.
 
 t $D2C7 Messaging: "A Door"
+@ $D2C7 label=Messaging_Door
   $D2C7,$06 "#STR$D2C7,$08($b==$FF)".
 B $D2CD,$01 Terminator.
 
 t $D2CE Messaging: "A Sailor"
+@ $D2CE label=Messaging_Sailor
   $D2CE,$08 "#STR$D2CE,$08($b==$FF)".
 B $D2D6,$01 Terminator.
 
 t $D2D7 Messaging: "A Snake"
+@ $D2D7 label=Messaging_Snake
   $D2D7,$07 "#STR$D2D7,$08($b==$FF)".
 B $D2DE,$01 Terminator.
 
 t $D2DF Messaging: "A Spider"
+@ $D2DF label=Messaging_Spider
   $D2DF,$08 "#STR$D2DF,$08($b==$FF)".
 B $D2E7,$01 Terminator.
 
 t $D2E8 Messaging: "A Bridge"
+@ $D2E8 label=Messaging_Bridge
   $D2E8,$08 "#STR$D2E8,$08($b==$FF)".
 B $D2F0,$01 Terminator.
 
 t $D2F1 Messaging: "A Boulder"
+@ $D2F1 label=Messaging_Boulder_Duplicate
   $D2F1,$09 "#STR$D2F1,$08($b==$FF)".
 B $D2FA,$01 Terminator.
 
 t $D2FB Messaging: "A Ring"
+@ $D2FB label=Messaging_Ring
   $D2FB,$06 "#STR$D2FB,$08($b==$FF)".
 B $D301,$01 Terminator.
 
 t $D302 Messaging: "A Trapdoor"
+@ $D302 label=Messaging_Trapdoor
   $D302,$0A "#STR$D302,$08($b==$FF)".
 B $D30C,$01 Terminator.
 
 t $D30D Messaging: "A Cave"
+@ $D30D label=Messaging_Cave
   $D30D,$06 "#STR$D30D,$08($b==$FF)".
 B $D313,$01 Terminator.
 
 t $D314 Messaging: "A Pit"
+@ $D314 label=Messaging_Pit
   $D314,$05 "#STR$D314,$08($b==$FF)".
 B $D319,$01 Terminator.
 
 t $D31A Messaging: "A Ship"
+@ $D31A label=Messaging_Ship
   $D31A,$06 "#STR$D31A,$08($b==$FF)".
 B $D320,$01 Terminator.
 
@@ -2764,78 +2933,97 @@ t $D526 Messaging: "Congratulations!!<CR>Your Quest Has Been Successful.<CR>You 
 B $D5AF,$01 Terminator.
 
 t $D5B0 Messaging: "The Crab Has Reached You.<CR>A Monstrous Claw Darts Out<CR>And Crushes You."
+@ $D5B0 label=Messaging_CrabHasReachedYou
   $D5B0,$45 "#STR$D5B0,$08($b==$FF)".
 B $D5F5,$01 Terminator.
 
 t $D5F6 Messaging: "A Tentacle Suddenly Encircles<CR>You And Crushes You."
+@ $D5F6 label=Messaging_TentacleEncirclesYou
   $D5F6,$32 "#STR$D5F6,$08($b==$FF)".
 B $D628,$01 Terminator.
 
 t $D629 Messaging: "You Drank Too Much Rum.<CR>You Stumble And Slip<CR>And Fall Over The Edge."
+@ $D629 label=Messaging_DrankTooMuchRum
   $D629,$44 "#STR$D629,$08($b==$FF)".
 B $D66D,$01 Terminator.
 
 t $D66E Messaging: "The Lion Pounces Upon You.<CR>It Mauls You Savagely."
+@ $D66E label=Messaging_LionPouncesUponYou
   $D66E,$31 "#STR$D66E,$08($b==$FF)".
 B $D69F,$01 Terminator.
 
 t $D6A0 Messaging: "The Crocodile Lunges At You.<CR>You Are Caught In The<CR>Vicious,Snapping Jaws."
+@ $D6A0 label=Messaging_CrocodileLungesAtYou
   $D6A0,$49 "#STR$D6A0,$08($b==$FF)".
 B $D6E9,$01 Terminator.
 
 t $D6EA Messaging: "<CR>A Seagull Soars In The Breeze<CR>Above You..."
+@ $D6EA label=Messaging_SeagullSoarsInBreeze
   $D6EA,$2B "#STR$D6EA,$08($b==$FF)".
 B $D715,$01 Terminator.
 
 t $D716 Messaging: "It Wheels Gently,<CR>And Then Flies Off."
+@ $D716 label=Messaging_WheelsGentlyThenFliesOff
   $D716,$25 "#STR$D716,$08($b==$FF)".
 B $D73B,$01 Terminator.
 
 t $D73C Messaging: "<CR>A Rat Runs Out On To The<CR>Path,In Front Of You..."
+@ $D73C label=Messaging_RatRunsOutPathInFrontOfYou
   $D73C,$31 "#STR$D73C,$08($b==$FF)".
 B $D76D,$01 Terminator.
 
 t $D76E Messaging: "It Sniffs The Air And Then<CR>Scurries Off."
+@ $D76E label=Messaging_SniffsTheAirThenScurriesOff
   $D76E,$28 "#STR$D76E,$08($b==$FF)".
 B $D796,$01 Terminator.
 
 t $D797 Messaging: "<CR>A Deer Appears..."
+@ $D797 label=Messaging_DeerAppears
   $D797,$12 "#STR$D797,$08($b==$FF)".
 B $D7A9,$01 Terminator.
 
 t $D7AA Messaging: "It Sees You And Runs Away."
+@ $D7AA label=Messaging_SeesYouAndRunsAway
   $D7AA,$1A "#STR$D7AA,$08($b==$FF)".
 B $D7C4,$01 Terminator.
 
 t $D7C5 Messaging: "<CR>A Pirate Attacks You..."
+@ $D7C5 label=Messaging_PirateAttacksYou
   $D7C5,$18 "#STR$D7C5,$08($b==$FF)".
 B $D7DD,$01 Terminator.
 
 t $D7DE Messaging: "But You Avoid His Blow."
+@ $D7DE label=Messaging_AvoidHisBlow
   $D7DE,$17 "#STR$D7DE,$08($b==$FF)".
 B $D7F5,$01 Terminator.
 
 t $D7F6 Messaging: "After A Fierce Struggle<CR>He Overpowers You."
+@ $D7F6 label=Messaging_AfterFierceStruggleOverpowersYou
   $D7F6,$2A "#STR$D7F6,$08($b==$FF)".
 B $D820,$01 Terminator.
 
 t $D821 Messaging: "<CR>A Long Water Snake<CR>Slithers Toward You..."
+@ $D821 label=Messaging_WaterSnakeSlithersTowardYou
   $D821,$2A "#STR$D821,$08($b==$FF)".
 B $D84B,$01 Terminator.
 
 t $D84C Messaging: "It Suddenly Strikes At You..."
+@ $D84C label=Messaging_SuddenlyStrikesAtYou
   $D84C,$1D "#STR$D84C,$08($b==$FF)".
 B $D869,$01 Terminator.
 
 t $D86A Messaging: "The Venomous Fangs Sink<CR>Into You."
+@ $D86A label=Messaging_VenomousFangsSinkIntoYou
   $D86A,$21 "#STR$D86A,$08($b==$FF)".
 B $D88B,$01 Terminator.
 
 t $D88C Messaging: "But It Misses And Slips Away."
+@ $D88C label=Messaging_MissesAndSlipsAway
   $D88C,$1D "#STR$D88C,$08($b==$FF)".
 B $D8A9,$01 Terminator.
 
 t $D8AA Messaging: "It Regards You For A Moment,<CR>Then Slips Away."
+@ $D8AA label=Messaging_RegardsYouForMomentSlipsAway
   $D8AA,$2D "#STR$D8AA,$08($b==$FF)".
 B $D8D7,$01 Terminator.
 
@@ -2855,102 +3043,127 @@ t $D922 Messaging: "It Stings You."
 B $D930,$01 Terminator.
 
 t $D931 Messaging: "The Natives Close In.<CR>You Struggle Bravely But<CR>They Overwhelm You."
+@ $D931 label=Messaging_NativesCloseIn
   $D931,$42 "#STR$D931,$08($b==$FF)".
 B $D973,$01 Terminator.
 
 t $D974 Messaging: "You're Really In The Soup Now."
+@ $D974 label=Messaging_YoureReallyInTheSoupNow
   $D974,$1E "#STR$D974,$08($b==$FF)".
 B $D992,$01 Terminator.
 
 t $D993 Messaging: "Sorry...<CR>That Was In Poor Taste."
+@ $D993 label=Messaging_SorryPoorTaste
   $D993,$20 "#STR$D993,$08($b==$FF)".
 B $D9B3,$01 Terminator.
 
 t $D9B4 Messaging: "Try Distracting Them."
+@ $D9B4 label=Messaging_TryDistractingThem
   $D9B4,$15 "#STR$D9B4,$08($b==$FF)".
 B $D9C9,$01 Terminator.
 
 t $D9CA Messaging: "Keep The Noise Down."
+@ $D9CA label=Messaging_KeepNoiseDown
   $D9CA,$14 "#STR$D9CA,$08($b==$FF)".
 B $D9DE,$01 Terminator.
 
 t $D9DF Messaging: "Look At Those Jaws!"
+@ $D9DF label=Messaging_LookAtThoseJaws
   $D9DF,$13 "#STR$D9DF,$08($b==$FF)".
 B $D9F2,$01 Terminator.
 
 t $D9F3 Messaging: "Work It Out For Yourself."
+@ $D9F3 label=Messaging_WorkItOutForYourself
   $D9F3,$19 "#STR$D9F3,$08($b==$FF)".
 B $DA0C,$01 Terminator.
 
 t $DA0D Messaging: "You Don't Really Need It."
+@ $DA0D label=Messaging_YouDontReallyNeedIt
   $DA0D,$19 "#STR$DA0D,$08($b==$FF)".
 B $DA26,$01 Terminator.
 
 t $DA27 Messaging: "Nice Pussy!"
+@ $DA27 label=Messaging_NicePussy
   $DA27,$0B "#STR$DA27,$08($b==$FF)".
 B $DA32,$01 Terminator.
 
 t $DA33 Messaging: "Pretty Polly!"
+@ $DA33 label=Messaging_PrettyPolly
   $DA33,$0D "#STR$DA33,$08($b==$FF)".
 B $DA40,$01 Terminator.
 
 t $DA41 Messaging: "Now You're Really Lost."
+@ $DA41 label=Messaging_NowYoureReallyLost
   $DA41,$17 "#STR$DA41,$08($b==$FF)".
 B $DA58,$01 Terminator.
 
 t $DA59 Messaging: "Try Climbing."
+@ $DA59 label=Messaging_TryClimbing
   $DA59,$0D "#STR$DA59,$08($b==$FF)".
 B $DA66,$01 Terminator.
 
 t $DA67 Messaging: "Try Rowing!"
+@ $DA67 label=Messaging_TryRowing
   $DA67,$0B "#STR$DA67,$08($b==$FF)".
 B $DA72,$01 Terminator.
 
 t $DA73 Messaging: "It's Full Of Rum!"
+@ $DA73 label=Messaging_FullOfRum
   $DA73,$11 "#STR$DA73,$08($b==$FF)".
 B $DA84,$01 Terminator.
 
 t $DA85 Messaging: "It's A Red Herring!"
+@ $DA85 label=Messaging_ItsARedHerring
   $DA85,$13 "#STR$DA85,$08($b==$FF)".
 B $DA98,$01 Terminator.
 
 t $DA99 Messaging: "It Appears To Work."
+@ $DA99 label=Messaging_AppearsToWork
   $DA99,$13 "#STR$DA99,$08($b==$FF)".
 B $DAAC,$01 Terminator.
 
 t $DAAD Messaging: "It Is Quite Well Made<CR>And In Good Condition."
+@ $DAAD label=Messaging_QuiteWellMadeGoodCondition
   $DAAD,$2C "#STR$DAAD,$08($b==$FF)".
 B $DAD9,$01 Terminator.
 
 t $DADA Messaging: "It Has A Circular Cross-Section."
+@ $DADA label=Messaging_HasCircularCrossSection
   $DADA,$20 "#STR$DADA,$08($b==$FF)".
 B $DAFA,$01 Terminator.
 
 t $DAFB Messaging: "It Looks Delicious."
+@ $DAFB label=Messaging_LooksDelicious
   $DAFB,$13 "#STR$DAFB,$08($b==$FF)".
 B $DB0E,$01 Terminator.
 
 t $DB0F Messaging: "Be Careful.<CR>It Won't Carry Much Weight."
+@ $DB0F label=Messaging_BeCarefulWontCarryMuchWeight
   $DB0F,$27 "#STR$DB0F,$08($b==$FF)".
 B $DB36,$01 Terminator.
 
 t $DB37 Messaging: "They Are Very Beautiful<CR>And Very Heavy."
+@ $DB37 label=Messaging_VeryBeautifulVeryHeavy
   $DB37,$27 "#STR$DB37,$08($b==$FF)".
 B $DB5E,$01 Terminator.
 
 t $DB5F Messaging: "That's Not Such A Good Idea."
+@ $DB5F label=Messaging_NotSuchAGoodIdea
   $DB5F,$1C "#STR$DB5F,$08($b==$FF)".
 B $DB7B,$01 Terminator.
 
 t $DB7C Messaging: "The Door Rolls Shut."
+@ $DB7C label=Messaging_DoorRollsShut
   $DB7C,$14 "#STR$DB7C,$08($b==$FF)".
 B $DB90,$01 Terminator.
 
 t $DB91 Messaging: "<CR>Ouch!!<CR>The Match Has Burned Away,<CR>Scorching Your Fingers."
+@ $DB91 label=Messaging_MatchBurnedAway
   $DB91,$3A "#STR$DB91,$08($b==$FF)".
 B $DBCB,$01 Terminator.
 
 t $DBCC Messaging: "As You Start To Move,<CR>The Parrot Squawks...<CR>The Pirate Wakes<CR>And Quickly Shoots You."
+@ $DBCC label=Messaging_ParrotSquawks
   $DBCC,$54 "#STR$DBCC,$08($b==$FF)".
 B $DC20,$01 Terminator.
 
@@ -3030,54 +3243,67 @@ t $E067 Messaging: "You're Not Carrying It."
 B $E07E,$01 Terminator.
 
 t $E07F Messaging: "You Stab At The Lion<CR>But The Beast Easily Avoids It."
+@ $E07F label=Messaging_StabLion
   $E07F,$34 "#STR$E07F,$08($b==$FF)".
 B $E0B3,$01 Terminator.
 
 t $E0B4 Messaging: "The Cannibals Turn On You.<CR>They Quickly Overwhelm You."
+@ $E0B4 label=Messaging_CannibalsTurnOnYou
   $E0B4,$36 "#STR$E0B4,$08($b==$FF)".
 B $E0EA,$01 Terminator.
 
 t $E0EB Messaging: "You Take A Shot...."
+@ $E0EB label=Messaging_TakeAShot
   $E0EB,$13 "#STR$E0EB,$08($b==$FF)".
 B $E0FE,$01 Terminator.
 
 t $E0FF Messaging: "Good Shooting!<CR>The Pirate Is Dead."
+@ $E0FF label=Messaging_PirateDead
   $E0FF,$22 "#STR$E0FF,$08($b==$FF)".
 B $E121,$01 Terminator.
 
 t $E122 Messaging: "Bad Luck.<CR>You Missed."
+@ $E122 label=Messaging_YouMissed
   $E122,$15 "#STR$E122,$08($b==$FF)".
 B $E137,$01 Terminator.
 
 t $E138 Messaging: "He's Dead Already."
+@ $E138 label=Messaging_DeadAlready
   $E138,$12 "#STR$E138,$08($b==$FF)".
 B $E14A,$01 Terminator.
 
 t $E14B Messaging: "It's Already Dead."
+@ $E14B label=Messaging_AlreadyDead
   $E14B,$12 "#STR$E14B,$08($b==$FF)".
 B $E15D,$01 Terminator.
 
 t $E15E Messaging: "You Haven't Got A Gun."
+@ $E15E label=Messaging_NoGun
   $E15E,$16 "#STR$E15E,$08($b==$FF)".
 B $E174,$01 Terminator.
 
 t $E175 Messaging: "You Eat The Fish.<CR>It Was Quite Tasty."
+@ $E175 label=Messaging_EatTheFish
   $E175,$25 "#STR$E175,$08($b==$FF)".
 B $E19A,$01 Terminator.
 
 t $E19B Messaging: "You Start To Eat The Fruit.<CR>You Suddenly Feel Very Unwell.<CR>Too Late,You Realise That<CR>The Fruit Is Poisonous."
+@ $E19B label=Messaging_EatTheFruit
   $E19B,$6C "#STR$E19B,$08($b==$FF)".
 B $E207,$01 Terminator.
 
 t $E208 Messaging: "No. You Don't Like Coconut."
+@ $E208 label=Messaging_DontLikeCoconut
   $E208,$1B "#STR$E208,$08($b==$FF)".
 B $E223,$01 Terminator.
 
 t $E224 Messaging: "You Must Be Joking."
+@ $E224 label=Messaging_YouMustBeJoking
   $E224,$13 "#STR$E224,$08($b==$FF)".
 B $E237,$01 Terminator.
 
 t $E238 Messaging: "You Drink The Golden Liquid.<CR>It Was Delicious..Hic..<CR>You Feel Decidedly Light-Headed."
+@ $E238 label=Messaging_DrinkGoldenLiquid
   $E238,$55 "#STR$E238,$08($b==$FF)".
 B $E28D,$01 Terminator.
 
@@ -3102,42 +3328,52 @@ t $E2DC Messaging: "It's Already Closed."
 B $E2F0,$01 Terminator.
 
 t $E2F1 Messaging: "The Door Is Locked."
+@ $E2F1 label=Messaging_DoorIsLocked
   $E2F1,$13 "#STR$E2F1,$08($b==$FF)".
 B $E304,$01 Terminator.
 
 t $E305 Messaging: "It's Much Too Heavy."
+@ $E305 label=Messaging_MuchTooHeavy
   $E305,$14 "#STR$E305,$08($b==$FF)".
 B $E319,$01 Terminator.
 
 t $E31A Messaging: "No. I Can't Be Bothered."
+@ $E31A label=Messaging_NoCantBeBothered
   $E31A,$18 "#STR$E31A,$08($b==$FF)".
 B $E332,$01 Terminator.
 
 t $E333 Messaging: "The Whole Canyon Vibrates.<CR>The Boulder Is Dislodged..."
+@ $E333 label=Messaging_WholeCanyonVibrates
   $E333,$36 "#STR$E333,$08($b==$FF)".
 B $E369,$01 Terminator.
 
 t $E36A Messaging: "It Falls And Crushes You."
+@ $E36A label=Messaging_FallsAndCrushesYou
   $E36A,$19 "#STR$E36A,$08($b==$FF)".
 B $E383,$01 Terminator.
 
 t $E384 Messaging: "It Falls And Crushes The Crab."
+@ $E384 label=Messaging_FallsAndCrushesCrab
   $E384,$1E "#STR$E384,$08($b==$FF)".
 B $E3A2,$01 Terminator.
 
 t $E3A3 Messaging: "Don't Be Disgusting!"
+@ $E3A3 label=Messaging_DontBeDisgusting
   $E3A3,$14 "#STR$E3A3,$08($b==$FF)".
 B $E3B7,$01 Terminator.
 
 t $E3B8 Messaging: "I've Warned You Before!<CR>This Deviant Practice<CR>Has Got To Stop."
+@ $E3B8 label=Messaging_WarnedYouBefore
   $E3B8,$3E "#STR$E3B8,$08($b==$FF)".
 B $E3F6,$01 Terminator.
 
 t $E3F7 Messaging: "I Didn't Hear That!"
+@ $E3F7 label=Messaging_IDidntHearThat
   $E3F7,$13 "#STR$E3F7,$08($b==$FF)".
 B $E40A,$01 Terminator.
 
 t $E40B Messaging: "A Small Section Of Floor<CR>Lifts Up,Revealing It To Be<CR>A Trapdoor."
+@ $E40B label=Messaging_FloorLiftsUpRevealingTrapdoor
   $E40B,$40 "#STR$E40B,$08($b==$FF)".
 B $E44B,$01 Terminator.
 

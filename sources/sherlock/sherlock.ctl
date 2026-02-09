@@ -8401,6 +8401,7 @@ L $67B7,$02,$20
 b $680B
 b $682A
 b $6830
+b $683F
 b $68B1
 b $68BC
 b $68D1
@@ -8410,6 +8411,8 @@ b $68DD
 
 w $68DE
 
+b $68E0
+b $68E1
 b $68E4
 b $68E9
 
@@ -8421,6 +8424,10 @@ b $71ED
 b $7207
 b $7224
 b $722D
+
+b $7611
+
+b $761D
 
 b $7BC2
 b $7BD7
@@ -11786,10 +11793,14 @@ c $9921 Action: Sherlock
 g $994D
 W $994D,$02
 
+g $9993
+
 g $99A9
 g $99B7
 g $99E3
 g $99F1
+
+g $9C60
 
 c $9C6A Handler: Find Character Action
 @ $9C6A label=Handler_FindCharacterAction
@@ -11843,7 +11854,10 @@ c $9CA2 Character Action: Basil Phipps
   $9CC9,$04 Reset bit 1 of *#REGix+#N$03.
   $9CCD,$01 Return.
 
-c $9CCE
+c $9CCE Check Object In Character Location
+@ $9CCE label=CheckObjectInCharacterLocation
+R $9CCE C Object ID to check
+R $9CCE O:F Zero flag set if object is in character's location
   $9CCE,$04 #REGix=*#R$A017.
   $9CD2,$03 #REGb=*#REGix+#N$0F.
   $9CD5,$01 #REGa=#REGc.
@@ -11857,12 +11871,19 @@ c $9CCE
   $9CE6,$02,b$01 Set bit 0.
   $9CE8,$01 Return.
 
-c $9CE9
+c $9CE9 Process Character Action With Text
+@ $9CE9 label=ProcessCharacterActionWithText
+R $9CE9 HL Pointer to text token
+R $9CE9 C Room display parameter
   $9CE9,$03 Call #R$9CF2.
   $9CEC,$03 #REGhl=#R$6929.
   $9CEF,$03 Jump to #R$A59F.
 
-c $9CF2
+c $9CF2 Process Character Action Parameter
+@ $9CF2 label=ProcessCharacterActionParameter
+R $9CF2 HL Pointer to counter/state variable
+R $9CF2 C Room display parameter
+R $9CF2 DE (preserved on stack)
   $9CF2,$04 Write #REGc to *#R$A034.
   $9CF6,$03 Call #R$9CCE.
   $9CF9,$02 Jump to #R$9D02 if the zero flag is set.
@@ -11961,7 +11982,8 @@ B $9D92,$01
 B $9D93,$01
 B $9D94,$01
 
-c $9D95
+c $9D95 Character Action: Inspector Lestrade Helper
+@ $9D95 label=CharacterAction_InspectorLestradeHelper
   $9D95,$03 #REGhl=#R$9D91.
   $9D98,$02 #REGc=#N$00.
   $9D9A,$03 Call #R$9DC6.
@@ -12037,7 +12059,8 @@ g $9E48
 B $9E48,$01
 B $9E49,$01
 
-c $9E4A
+c $9E4A Check Character State
+@ $9E4A label=CheckCharacterState
 
 g $9EC0 Character State: Daphne Strachan
 @ $9EC0 label=CharacterState_DaphneStrachan
@@ -12045,6 +12068,9 @@ B $9EC0,$01
 
 c $9EC1 Character Action: Daphne Strachan
 @ $9EC1 label=CharacterAction_DaphneStrachan
+R $9EC1 HL Pointer to Daphne Strachan state
+R $9EC1 B Object ID (#N$4A)
+R $9EC1 C Object ID (#N$80)
   $9EC1,$03 #REGhl=#R$9EC0.
   $9EC4,$02 #REGc=#N$80.
   $9EC6,$02 #REGb=#N$4A.
@@ -12065,49 +12091,61 @@ B $9ED0,$01
 
 c $9ED1 Character Action: Gardener
 @ $9ED1 label=CharacterAction_Gardener
-  $9ED1,$03 #REGhl=#R$9ED0.
-  $9ED4,$03 #REGbc=#N($0000,$04,$04).
-  $9ED7,$01 #REGa=*#REGhl.
-  $9ED8,$03 Jump to #R$9EF2 if #REGa is zero.
-  $9EDB,$01 #REGb=#REGa.
-  $9EDC,$01 #REGa=#N$00.
-  $9EDD,$03 #REGde=#N($0000,$04,$04).
-  $9EE0,$03 Call #R$9F1E.
-  $9EE3,$03 #REGa=*#R$A036.
-  $9EE6,$01 #REGb=#REGc.
-  $9EE7,$03 #REGde=#N($0000,$04,$04).
-  $9EEA,$03 Call #R$F1C1.
-  $9EED,$04 Set bit 6 of *#REGix+#N$05.
+R $9ED1 HL Pointer to gardener state
+  $9ED1,$03 #REGhl=#R$9ED0 (point to gardener state).
+@ $9ED4 label=CharacterAction_Entry
+  $9ED4,$03 #REGbc=#N($0000,$04,$04) (initialise object ID).
+@ $9ED7 label=CharacterAction_CheckState
+  $9ED7,$01 #REGa=*#REGhl (load character state).
+  $9ED8,$03 Jump to #R$9EF2 if the character state is zero (hasn't moved yet).
+N $9EDB Handle gardener's morning state (has already moved).
+  $9EDB,$01 #REGb=#REGa (store state value in B).
+  $9EDC,$01 #REGa=#N$00 (clear state for next time).
+  $9EDD,$03 #REGde=#N($0000,$04,$04) (no location offset).
+  $9EE0,$03 Call #R$9F1E (update gardener state and location).
+  $9EE3,$03 #REGa=*#R$A036 (load current character ID).
+  $9EE6,$01 #REGb=#REGc (use object ID from C).
+  $9EE7,$03 #REGde=#N($0000,$04,$04) (no location offset).
+  $9EEA,$03 Call #R$F1C1 (move the object to the character's location).
+  $9EED,$04 Set bit 6 of *#REGix+#N$05 (mark object as having special description).
   $9EF1,$01 Return.
 
-N $9EF2 Return if it's still morning.
-  $9EF2,$06 Return if *#R$9FE2 is equal to ASCII #N$61 ("#CHR$61") e.g. is it
-. AM still?
-N $9EF8 It's afternoon now.
-  $9EF8,$06 Return if *#R$9FE0 is not equal to #N$09.
-  $9EFE,$03 #REGde=#N($01F8,$04,$04).
-  $9F01,$02 #REGa=#N$1E.
-  $9F03,$03 Call #R$D2A4.
-  $9F06,$01 #REGa+=#REGe.
-  $9F07,$01 #REGe=#REGa.
-  $9F08,$03 #REGa=*#R$A00A.
-  $9F0B,$03 Call #R$9F1E.
-  $9F0E,$03 #REGa=*#R$A036.
-  $9F11,$02 #REGb=#N$10.
-  $9F13,$03 #REGde=#N($07F0,$04,$04).
-  $9F16,$03 Call #R$F1C1.
-  $9F19,$04 Reset bit 6 of *#REGix+#N$05.
+@ $9EF2 label=CharacterAction_Gardener_CheckTime
+N $9EF2 Check if it's still morning.
+  $9EF2,$06 Return if *#R$9FE2 is equal to ASCII #N$61 ("#CHR$61") (still AM).
+N $9EF8 Handle gardener's afternoon state (at 9am).
+  $9EF8,$06 Return if *#R$9FE0 is not equal to #N$09 (not 9am yet).
+  $9EFE,$03 #REGde=#N($01F8,$04,$04) (location offset for afternoon).
+  $9F01,$02 #REGa=#N$1E (attribute index).
+  $9F03,$03 Call #R$D2A4 (get character attribute with sign).
+  $9F06,$01 #REGa+=#REGe (add offset to attribute value).
+  $9F07,$01 #REGe=#REGa (store result in E).
+  $9F08,$03 #REGa=*#R$A00A (load character attribute).
+  $9F0B,$03 Call #R$9F1E (update gardener state and location).
+  $9F0E,$03 #REGa=*#R$A036 (load current character ID).
+  $9F11,$02 #REGb=#N$10 (object ID for gardener's tool).
+  $9F13,$03 #REGde=#N($07F0,$04,$04) (location offset for object).
+  $9F16,$03 Call #R$F1C1 (move the object to the new location).
+  $9F19,$04 Reset bit 6 of *#REGix+#N$05 (clear special description flag).
   $9F1D,$01 Return.
 
-  $9F1E,$01 Write #REGa to *#REGhl.
-  $9F1F,$04 #REGix=*#R$A017.
-  $9F23,$03 Write #REGb to *#REGix+#N$0F.
-  $9F26,$04 Write #N$FF to *#REGix+#N$01.
-  $9F2A,$03 #REGl=*#REGiy+#N$06.
-  $9F2D,$03 #REGh=*#REGiy+#N$07.
-  $9F30,$01 #REGhl+=#REGde.
-  $9F31,$03 Write #REGl to *#REGiy+#N$06.
-  $9F34,$03 Write #REGh to *#REGiy+#N$07.
+c $9F1E Update Character State And Location
+@ $9F1E label=UpdateCharacterStateAndLocation
+R $9F1E A New state value
+R $9F1E B Character attribute value
+R $9F1E DE Location offset
+R $9F1E HL Pointer to character state
+R $9F1E IY Pointer to character timetable data
+  $9F1E,$01 Write #REGa to *#REGhl (update character state).
+  $9F1F,$04 #REGix=*#R$A017 (load current character data pointer).
+  $9F23,$03 Write #REGb to *#REGix+#N$0F (update character attribute).
+  $9F26,$04 Write #N$FF to *#REGix+#N$01 (mark as moved).
+N $9F2A Update character's location in timetable.
+  $9F2A,$03 #REGl=*#REGiy+#N$06 (load low byte of location).
+  $9F2D,$03 #REGh=*#REGiy+#N$07 (load high byte of location).
+  $9F30,$01 #REGhl+=#REGde (add location offset).
+  $9F31,$03 Write #REGl to *#REGiy+#N$06 (store updated low byte).
+  $9F34,$03 Write #REGh to *#REGiy+#N$07 (store updated high byte).
   $9F37,$01 Return.
 
 g $9F38
@@ -12118,7 +12156,8 @@ B $9FAA,$01 Terminator.
 
 g $9FAB
 
-c $9FC9
+c $9FC9 Print Text Token And Return
+@ $9FC9 label=PrintTextTokenAndReturn
   $9FC9,$03 #REGhl=#R$9FCE.
   $9FCC,$01 #REGa=#N$00.
   $9FCD,$01 Return.
@@ -12129,7 +12168,15 @@ N $9FCE Print "#TEXTTOKEN($680B)".
 g $9FD4
 W $9FD4,$02
 
-g $9FD6
+g $9FD6 Current Room ID
+@ $9FD6 label=CurrentRoom_ID
+D $9FD6 Stores the current room ID used in room display scripts.
+B $9FD6,$01
+
+g $9FD7 Location Value
+@ $9FD7 label=LocationValue
+D $9FD7 Stores a location reference value used in room display scripts (a 2-byte value that can be accessed as high or low byte via special parameters).
+W $9FD7,$02
 
 g $9FD9 Currently Processed Character Command Position
 @ $9FD9 label=CurrentCharacter_CommandPosition
@@ -12171,9 +12218,20 @@ T $9FE2,$01
 T $9FE3,$01
 
 g $9FE4
+g $9FE5
 
 g $9FE7
 W $9FE7,$02
+
+g $9FE9 Character List Pointer
+@ $9FE9 label=CharacterListPointer
+D $9FE9 Pointer to the head of the linked list of character entries.
+W $9FE9,$02
+
+g $9FEB Character Script Entry List
+@ $9FEB label=CharacterScriptEntryList
+D $9FEB Pointer to the head of the character script entry list.
+W $9FEB,$02
 
 g $9FEE
 W $9FEE,$02
@@ -12181,10 +12239,14 @@ W $9FEE,$02
 g $A008
 B $A008,$01
 
-g $A009
+g $A009 Sherlock Disguise Check Result
+@ $A009 label=SherlockDisguiseCheckResult
+D $A009 Stores the result of checking if Sherlock is wearing the China Man disguise (#N$FF if not, otherwise the attribute byte).
 B $A009,$01
 
-g $A00A
+g $A00A Current Character Attribute
+@ $A00A label=CurrentCharacterAttribute
+D $A00A Stores the attribute value of the currently processed character (from offset +0F in character data).
 B $A00A,$01
 
 g $A00B
@@ -12196,7 +12258,9 @@ B $A00C,$01
 g $A00D
 W $A00D,$02
 
-g $A00F
+g $A00F Display Mode
+@ $A00F label=DisplayMode
+D $A00F Controls the display mode for room/object processing (values 5, 7, etc.).
 B $A00F,$01
 B $A010,$01
 
@@ -12209,13 +12273,21 @@ W $A013,$02
 g $A015
 W $A015,$02
 
-g $A017
+g $A017 Current Character Data
+@ $A017 label=CurrentCharacterData
 W $A017,$02
 
 g $A019
-g $A01B
 
-g $A01D
+g $A01B
+B $A01B,$01
+
+g $A01C
+B $A01C,$01
+
+g $A01D Object Attribute Value
+@ $A01D label=ObjectAttributeValue
+D $A01D Stores the second attribute value extracted from object data.
 B $A01D,$01
 
 g $A01E
@@ -12223,19 +12295,33 @@ B $A01E,$01
 
 g $A01F Character Script Cycles
 @ $A01F label=CharacterScriptCycles
-B $A01F,$01
+W $A01F,$02
 
-g $A022
+g $A022 Token Value Buffer
+@ $A022 label=TokenValueBuffer
 W $A022,$02
 
-g $A026
+g $A025 Print Position Flag
+@ $A025 label=PrintPositionFlag
+B $A025,$01
+
+g $A026 Token Format Flag
+@ $A026 label=TokenFormatFlag
 B $A026,$01
 
-g $A027
+g $A027 Print Mode Flag
+@ $A027 label=PrintModeFlag
 B $A027,$01
 
-g $A028
+g $A028 Object Processing Source Flag
+@ $A028 label=ObjectProcessingSourceFlag
+D $A028 Flag indicating the source of object processing: #N$00 for current character/text token, #N$01 for room display/graphics parameters.
 B $A028,$01
+
+g $A02F Display Pointer
+@ $A02F label=DisplayPointer
+D $A02F Stores the display pointer for special display mode.
+W $A02F,$02
 
 g $A033
 B $A033,$01
@@ -12254,6 +12340,11 @@ B $A036,$01
 
 g $A037
 B $A037,$01
+
+g $A038 Object Attribute Flag
+@ $A038 label=ObjectAttributeFlag
+D $A038 Stores bit 0 of the object attribute value (from A01D).
+B $A038,$01
 
 c $A040 Game Entry Point
 @ $A040 label=GameEntryPoint
@@ -12336,7 +12427,9 @@ R $A0DB O:F Carry flag is set if the character should be skipped
   $A0E4,$02 Set the carry flag if the schedule isn't for now.
   $A0E6,$01 Return.
 
-c $A0E7
+c $A0E7 Handle Game State Based On Parameter
+@ $A0E7 label=HandleGameStateBasedOnParameter
+R $A0E7 A State parameter (0, 1, or 2)
   $A0E7,$04 Jump to #R$A0F1 if #REGa is equal to #N$02.
   $A0EB,$03 Call #R$B0D7.
   $A0EE,$03 Jump to #R$A040.
@@ -12344,7 +12437,11 @@ c $A0E7
   $A0F1,$03 Call #R$B0E4.
   $A0F4,$03 Jump to #R$A064.
 
-c $A0F7
+c $A0F7 Fetch Object Pointer From Stack
+@ $A0F7 label=FetchObjectPointerFromStack
+R $A0F7 IX Object pointer (on stack)
+R $A0F7 O:IX Object pointer
+R $A0F7 O:HL Zero if object pointer was zero, otherwise preserved
 N $A0F7 This will be restored back into #REGhl by the end of the routine.
   $A0F7,$01 Stash #REGhl on the stack temporarily.
   $A0F8,$03 #REGl=*#REGix-#N$02.
@@ -12356,29 +12453,40 @@ N $A100 Pretty clever way of using the stack here.
   $A101,$02 Restore the object pointer into #REGix (from the stack).
   $A103,$01 Return.
 
-c $A104
+c $A104 Increment Pointer And Compare
+@ $A104 label=IncrementPointerAndCompare
 
 g $A11A
 W $A11A,$02
 
-c $A11C
+c $A11C Allocate Memory
+@ $A11C label=AllocateMemory
 
-c $A1AF
+c $A1AF Move IX To HL And Jump
+@ $A1AF label=MoveIXToHLAndJump
+R $A1AF IX Pointer to jump to
+R $A1AF HL (preserved on stack)
   $A1AF,$01 Stash #REGhl on the stack.
   $A1B0,$03 #REGhl=#REGix (using the stack).
   $A1B3,$02 Jump to #R$A1C1.
 
-c $A1B5
+c $A1B5 Traverse Linked List
+@ $A1B5 label=TraverseLinkedList
 
-c $A1C7
+c $A1C7 Process Memory Entry
+@ $A1C7 label=ProcessMemoryEntry
 
-c $A20C
+c $A20C Calculate Pointer Offset
+@ $A20C label=CalculatePointerOffset
 
 g $A24D
 W $A24D,$02 "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
 L $A24D,$02,$08
 
-c $A25D
+c $A25D Check Text Token Match
+@ $A25D label=CheckTextTokenMatch
+R $A25D A Token ID to check
+R $A25D O:F Zero flag set if token matches or end reached
   $A25D,$01 Stash #REGbc on the stack.
   $A25E,$01 #REGb=#REGa.
   $A25F,$06 Jump to #R$A275 if *#R$A011 is zero.
@@ -12391,7 +12499,9 @@ c $A25D
   $A275,$01 Restore #REGbc from the stack.
   $A276,$01 Return.
 
-c $A277
+c $A277 Process Text Token
+@ $A277 label=ProcessTextToken
+R $A277 A Token ID
   $A277,$05 Stash #REGix, #REGhl, #REGbc and #REGaf on the stack.
   $A27C,$03 Call #R$A25D.
   $A27F,$02 Jump to #R$A290 if the zero flag is set.
@@ -12403,16 +12513,23 @@ c $A277
   $A290,$05 Restore #REGaf, #REGbc, #REGhl and #REGix from the stack.
   $A295,$01 Return.
 
-c $A296
+c $A296 Clear Display Lines
+@ $A296 label=ClearDisplayLines
 
-c $A2A2
+c $A2A2 Print Newline
+@ $A2A2 label=PrintNewline
 
-g $A2AA
+g $A2AA Object Display Flag
+@ $A2AA label=ObjectDisplayFlag
 B $A2AA,$01
 
-c $A2AB
+c $A2AB Clear Buffer
+@ $A2AB label=ClearBuffer
 
-c $A2B1
+c $A2B1 Calculate Object Table Offset
+@ $A2B1 label=CalculateObjectTableOffset
+R $A2B1 A Object index (0-based)
+R $A2B1 O:HL Pointer to object entry in table
   $A2B1,$01 Decrease #REGa by one.
   $A2B2,$01 #REGl=#REGa.
   $A2B3,$02 #REGh=#N$00.
@@ -12420,32 +12537,31 @@ c $A2B1
   $A2B8,$04 #REGhl+=#R$8259.
   $A2BC,$01 Return.
 
-c $A2BD
-  $A2BD,$03 #REGa=*#REGix+#N$05.
-  $A2C0,$01 RRCA.
-  $A2C1,$01 RRCA.
-  $A2C2,$01 RRCA.
-  $A2C3,$01 RRCA.
+c $A2BD Extract Object Attributes
+@ $A2BD label=ExtractObjectAttributes
+R $A2BD IX Pointer to object data
+N $A2BD Extract the first attribute value from bit-packed object data.
+  $A2BD,$03 #REGa=*#REGix+#N$05 (load byte from offset +5).
+  $A2C0,$04 Shift right by 4 bits (extract low nibble from offset +5).
   $A2C4,$02,b$01 Keep only bits 0-3.
-  $A2C6,$01 #REGc=#REGa.
-  $A2C7,$03 #REGa=*#REGix+#N$07.
-  $A2CA,$02,b$01 Keep only bits 4-7.
-  $A2CC,$01 #REGa+=#REGc.
-  $A2CD,$03 Write #REGa to *#R$A01E.
-  $A2D0,$03 #REGa=*#REGix+#N$01.
-  $A2D3,$01 RRCA.
-  $A2D4,$01 RRCA.
-  $A2D5,$01 RRCA.
-  $A2D6,$01 RRCA.
+  $A2C6,$01 #REGc=#REGa (store the low nibble).
+  $A2C7,$03 #REGa=*#REGix+#N$07 (load byte from offset +7).
+  $A2CA,$02,b$01 Keep only bits 4-7 (extract high nibble from offset +7).
+  $A2CC,$01 #REGa+=#REGc (combine high and low nibbles).
+  $A2CD,$03 Write #REGa to *#R$A01E (store the first attribute value).
+N $A2D0 Extract the second attribute value from bit-packed object data.
+  $A2D0,$03 #REGa=*#REGix+#N$01 (load byte from offset +1).
+  $A2D3,$04 Shift right by 4 bits (extract low nibble from offset +1).
   $A2D7,$02,b$01 Keep only bits 0-3.
-  $A2D9,$01 #REGc=#REGa.
-  $A2DA,$03 #REGa=*#REGix+#N$03.
-  $A2DD,$02,b$01 Keep only bits 4-7.
-  $A2DF,$01 #REGa+=#REGc.
-  $A2E0,$03 Write #REGa to *#R$A01D.
+  $A2D9,$01 #REGc=#REGa (store the low nibble).
+  $A2DA,$03 #REGa=*#REGix+#N$03 (load byte from offset +3).
+  $A2DD,$02,b$01 Keep only bits 4-7 (extract high nibble from offset +3).
+  $A2DF,$01 #REGa+=#REGc (combine high and low nibbles).
+  $A2E0,$03 Write #REGa to *#R$A01D (store the second attribute value).
   $A2E3,$01 Return.
 
-c $A2E4
+c $A2E4 Process Object Display
+@ $A2E4 label=ProcessObjectDisplay
   $A2E4,$05 Write #N$01 to *#R$A2AA.
   $A2E9,$07 Stash #REGiy, #REGbc, #REGix, #REGhl and #REGde on the stack.
   $A2F0,$06 Write *#R$A033 to *#R$A35D.
@@ -12491,11 +12607,16 @@ B $A35D,$01
 B $A35E,$01
 B $A35F,$01
 
-c $A360
+c $A360 Check And Reset Character State
+@ $A360 label=CheckAndResetCharacterState
 
-c $A37D
+c $A37D Process Object Display
+@ $A37D label=ProcessObject_Display
 
-c $A4AB
+c $A4AB Point To Location Data Plus One
+@ $A4AB label=PointToLocationDataPlusOne
+R $A4AB A Room ID
+R $A4AB O:HL Pointer to location data + 1
   $A4AB,$03 Stash #REGix and #REGde on the stack.
   $A4AE,$03 Call #R$D224.
   $A4B1,$03 Load the location data pointer into #REGhl (using the stack).
@@ -12514,7 +12635,8 @@ R $A4BC O:HL Pointer to the object attribute byte
   $A4C9,$03 Restore #REGix and #REGde from the stack.
   $A4CC,$01 Return.
 
-c $A4CD
+c $A4CD Compare Location Data
+@ $A4CD label=CompareLocationData
 
 g $A55D Control Character Jump Table
 @ $A55D label=JumpTable_ControlCharacters
@@ -12524,7 +12646,9 @@ L $A55D,$02,$20
 g $A59D
 W $A59D,$02
 
-c $A59F
+c $A59F Print Text And Handle Control Characters
+@ $A59F label=PrintTextAndHandleControlCharacters
+R $A59F HL Pointer to text data
   $A59F,$06 Stash #REGbc, #REGde, #REGix, #REGaf and #REGhl on the stack.
   $A5A5,$03 #REGhl=#N($000C,$04,$04).
   $A5A8,$01 #REGhl+=#REGsp.
@@ -12604,20 +12728,26 @@ R $A5CD IX Pointer to text data
   $A636,$02 Jump to #R$A5ED if #REGa is equal to #N$1D.
   $A638,$02 Jump to #R$A5EA.
 
-c $A63A
+c $A63A Print Character And Return Zero
+@ $A63A label=PrintCharacterAndReturnZero
   $A63A,$03 Call #R$A9B7.
   $A63D,$01 #REGa=#N$00.
   $A63E,$01 Return.
 
-c $A63F
+c $A63F Set Time Period To 60 Minutes
+@ $A63F label=SetTimePeriodTo60Minutes
   $A63F,$02 #REGd=#N$60.
   $A641,$02 Jump to #R$A64A.
 
-c $A643
+c $A643 Set Time Period To 30 Minutes
+@ $A643 label=SetTimePeriodTo30Minutes
   $A643,$02 #REGd=#N$30.
   $A645,$02 Jump to #R$A64A.
 
-c $A647
+c $A647 Print Character With Time Period
+@ $A647 label=PrintCharacterWithTimePeriod
+R $A647 D Time period value (30 or 60)
+R $A647 O:A Character code
   $A647,$03 Call #R$A887.
   $A64A,$02 #REGa=#N$2E.
   $A64C,$04 Jump to #R$A657 if bit 6 of #REGd is set.
@@ -12627,10 +12757,13 @@ c $A647
   $A65A,$01 #REGa=#N$00.
   $A65B,$01 Return.
 
-c $A65C
+c $A65C Return Immediately
+@ $A65C label=ReturnImmediately
   $A65C,$01 Return.
 
-c $A65D
+c $A65D Process Text Token And Call Handler
+@ $A65D label=ProcessTextTokenAndCallHandler
+  $A65D,$04 Write #N$00 to *#R$A028.
   $A65D,$04 Write #N$00 to *#R$A028.
   $A661,$03 Call #R$A66C.
   $A664,$01 Exchange the #REGde and #REGhl registers.
@@ -12638,7 +12771,10 @@ c $A65D
   $A66A,$01 #REGa=#N$00.
   $A66B,$01 Return.
 
-c $A66C
+c $A66C Fetch Next Text Token
+@ $A66C label=FetchNextTextToken
+R $A66C O:DE Token value (word)
+R $A66C O:F Zero flag set if token is terminator
   $A66C,$03 #REGhl=*#R$A59D.
   $A66F,$01 #REGe=*#REGhl.
   $A670,$01 Increment #REGhl by one.
@@ -12648,7 +12784,10 @@ c $A66C
   $A676,$02,b$01 Set bit 0.
   $A678,$01 Return.
 
-c $A679
+c $A679 Calculate Pointer Offset From IX
+@ $A679 label=CalculatePointerOffsetFromIX
+R $A679 IX Pointer to data structure
+R $A679 O:IX Updated pointer (IX + (IX+1,IX+2) - 1)
   $A679,$03 #REGe=*#REGix+#N$01.
   $A67C,$03 #REGd=*#REGix+#N$02.
   $A67F,$01 Decrease #REGde by one.
@@ -12656,7 +12795,9 @@ c $A679
   $A682,$01 #REGa=#N$00.
   $A683,$01 Return.
 
-c $A684
+c $A684 Fetch Text Token And Return Pointer
+@ $A684 label=FetchTextTokenAndReturnPointer
+R $A684 O:IX Pointer to token data
   $A684,$03 Call #R$A66C.
   $A687,$03 #REGix=#REGde (using the stack).
   $A68A,$01 #REGa=#N$00.
@@ -12701,7 +12842,10 @@ N $A6B2 It's daytime; 6 AM - 7 PM.
   $A6B9,$01 #REGa=#N$00.
   $A6BA,$01 Return.
 
-c $A6BB
+c $A6BB Skip Text Token Based On Type
+@ $A6BB label=SkipTextTokenBasedOnType
+R $A6BB IX Pointer to text token
+R $A6BB O:IX Updated pointer (skips token data)
   $A6BB,$03 #REGa=*#REGix+#N$00.
   $A6BE,$04 Jump to #R$A6CC if bit 7 of #REGa is set.
   $A6C2,$04 Jump to #R$A6CA if #REGa is equal to #N$02.
@@ -12717,7 +12861,9 @@ B $A6D1,$01
 g $A6D2
 B $A6D2,$01
 
-c $A6D3
+c $A6D3 Process Text Token Loop
+@ $A6D3 label=ProcessTextTokenLoop
+R $A6D3 IX Pointer to text token data
   $A6D3,$02 Increment #REGix by one.
   $A6D5,$03 #REGa=*#REGix+#N$00.
   $A6D8,$03 Write #REGa to *#R$A6D1.
@@ -12739,18 +12885,21 @@ c $A6D3
   $A700,$01 #REGa=#N$00.
   $A701,$01 Return.
 
-c $A702
+c $A702 Set Bit 0 Of A00D
+@ $A702 label=SetBit0OfA00D
   $A702,$04 #REGde=*#R$A00D.
   $A706,$02,b$01 Set bit 0.
   $A708,$01 Return.
 
-c $A709
+c $A709 Process Text Token And Call Handler
+@ $A709 label=ProcessTextTokenAndCallHandler_A709
   $A709,$03 Call #R$A66C.
   $A70C,$03 Call #R$A80E.
   $A70F,$01 #REGa=#N$00.
   $A710,$01 Return.
 
-c $A711
+c $A711 Fetch Text Token And Call BF1C
+@ $A711 label=FetchTextTokenAndCallBF1C
   $A711,$02 Stash #REGix on the stack.
   $A713,$03 Call #R$A66C.
   $A716,$03 #REGix=#REGde (using the stack).
@@ -12759,29 +12908,34 @@ c $A711
   $A71E,$01 #REGa=#N$00.
   $A71F,$01 Return.
 
-c $A720
-  $A720,$04 Write #N$00 to *#R$A028.
+c $A720 Process Object From Current Character ID
+@ $A720 label=ProcessObjectFromCurrentCharacterID
+  $A720,$04 Write #N$00 to *#R$A028 (set flag for current character processing).
   $A724,$03 #REGa=*#R$A036.
   $A727,$03 Call #R$A82F.
   $A72A,$01 #REGa=#N$00.
   $A72B,$01 Return.
 
-c $A72C
-  $A72C,$05 Write #N$01 to *#R$A028.
+c $A72C Process Object From Room Display Parameter
+@ $A72C label=ProcessObjectFromRoomDisplayParameter
+  $A72C,$05 Write #N$01 to *#R$A028 (set flag for room display parameter processing).
   $A731,$03 #REGa=*#R$A034.
   $A734,$02 Jump to #R$A751.
 
-c $A736
+c $A736 Print Character And Return
+@ $A736 label=PrintCharacterAndReturn
   $A736,$03 Call #R$A9B7.
   $A739,$01 #REGa=#N$00.
   $A73A,$01 Return.
 
-c $A73B
-  $A73B,$05 Write #N$01 to *#R$A028.
+c $A73B Process Object From Room Graphics Parameter
+@ $A73B label=ProcessObjectFromRoomGraphicsParameter
+  $A73B,$05 Write #N$01 to *#R$A028 (set flag for room graphics parameter processing).
   $A740,$03 #REGa=*#R$A035.
   $A743,$02 Jump to #R$A751.
 
-c $A745
+c $A745 Process Location Data If Valid
+@ $A745 label=ProcessLocationDataIfValid
   $A745,$02 Jump to #R$A751 if ?? is greater than or equal to #N$01.
   $A747,$01 Stash #REGhl on the stack.
   $A748,$03 Call #R$A4AB.
@@ -12790,7 +12944,8 @@ c $A745
   $A74F,$01 #REGa=#N$00.
   $A750,$01 Return.
 
-c $A751
+c $A751 Process Object Attribute
+@ $A751 label=ProcessObjectAttribute
   $A751,$01 Stash #REGhl on the stack.
   $A752,$03 Call #R$A4BC.
   $A755,$03 Call #R$A7C5.
@@ -12798,7 +12953,8 @@ c $A751
   $A759,$01 #REGa=#N$00.
   $A75A,$01 Return.
 
-c $A75B
+c $A75B Process Text Token With Offset
+@ $A75B label=ProcessTextTokenWithOffset
   $A75B,$02 Stash #REGix on the stack.
   $A75D,$01 Restore #REGhl from the stack.
   $A75E,$01 Stash #REGhl on the stack.
@@ -12812,7 +12968,8 @@ c $A75B
   $A76F,$01 #REGa=#N$00.
   $A770,$01 Return.
 
-c $A771
+c $A771 Process Text Token If Non-Zero
+@ $A771 label=ProcessTextTokenIfNonZero
   $A771,$02 Stash #REGix on the stack.
   $A773,$03 Call #R$A66C.
   $A776,$01 Exchange the #REGde and #REGhl registers.
@@ -12821,19 +12978,26 @@ c $A771
   $A77E,$01 #REGa=#N$00.
   $A77F,$01 Return.
 
-c $A780
+c $A780 Get Character Pronoun Token
+@ $A780 label=GetCharacterPronounToken
+R $A780 O:DE Pronoun token
   $A780,$03 #REGa=*#R$A036.
-  $A783,$03 #REGde=#N$0414.
+N $A783 Pronoun token for other characters.
+@ $A783 label=GetCharacterPronounToken_OtherCharacters
+  $A783,$03 #REGde="#R($5DBF+$0414)(#TOKEN($0414))".
   $A786,$02 Return if #REGa is not zero.
-  $A788,$03 #REGde=#N$09F2.
+N $A788 Pronoun token for player.
+  $A788,$03 #REGde="#R($5DBF+$09F2)(#TOKEN($09F2))".
   $A78B,$02,b$01 Set bit 0.
   $A78D,$01 Return.
 
-c $A78E
+c $A78E Get Room Display Pronoun Token
+@ $A78E label=GetRoomDisplayPronounToken
   $A78E,$03 #REGa=*#R$A034.
   $A791,$02 Jump to #R$A783.
 
-c $A793
+c $A793 Process Object And Check Token
+@ $A793 label=ProcessObjectAndCheckToken
   $A793,$03 #REGa=*#R$A036.
   $A796,$01 Exchange the shadow #REGaf register with the #REGaf register.
   $A797,$01 #REGa=#N$00.
@@ -12849,29 +13013,37 @@ c $A793
   $A7A9,$02,b$01 Set bit 0.
   $A7AB,$01 Return.
 
-c $A7AC
+c $A7AC Process Object From Room Display Parameter
+@ $A7AC label=LoadRoomDisplayParameterForObject
   $A7AC,$03 #REGa=*#R$A034.
+@ $A7AF label=ProcessObjectFromRoomDisplayParameterWithFlag
   $A7AF,$01 Exchange the shadow #REGaf register with the #REGaf register.
   $A7B0,$02 #REGa=#N$01.
   $A7B2,$02 Jump to #R$A798.
 
-c $A7B4
-  $A7B4,$03 Call #R$A66C.
-  $A7B7,$01 #REGa=#REGd.
-  $A7B8,$02 Jump to #R$A7AF.
-  $A7BA,$02 Stash #REGiy on the stack.
-  $A7BC,$03 #REGiy=#REGhl (using the stack).
-  $A7BF,$03 Call #R$D405.
-  $A7C2,$02 Restore #REGiy from the stack.
-  $A7C4,$01 Return.
+c $A7B4 Fetch Text Token And Process Object
+@ $A7B4 label=FetchTextTokenAndProcessObject
+R $A7B4 O:A High byte of token
+  $A7B4,$03 Call #R$A66C to fetch the next text token.
+  $A7B7,$03 Load the high byte of the token into #REGa and jump to #R$A7AF to process the object with flag set.
 
-  $A7C5,$02 Stash #REGiy on the stack.
-  $A7C7,$03 #REGiy=#REGhl (using the stack).
-  $A7CA,$03 Call #R$D3E8.
-  $A7CD,$02 Restore #REGiy from the stack.
-  $A7CF,$01 Return.
+c $A7BA Check Object Attribute With Flag
+@ $A7BA label=CheckObjectAttributeWithFlag_Wrapper
+R $A7BA HL Object pointer
+  $A7BA,$05 Stash #REGiy and set object pointer (#REGiy=#REGhl).
+  $A7BF,$03 Call #R$D405 to check the object attribute.
+  $A7C2,$03 Restore #REGiy from the stack and return.
 
-c $A7D0
+c $A7C5 Check Object Has Special Description
+@ $A7C5 label=CheckObjectHasSpecialDescription_Wrapper
+R $A7C5 HL Object pointer
+  $A7C5,$05 Stash #REGiy and set object pointer (#REGiy=#REGhl).
+  $A7CA,$03 Call #R$D3E8 to check if the object has a special description (bit 6).
+  $A7CD,$03 Restore #REGiy from the stack and return.
+
+c $A7D0 Check Token Match And Set Flag
+@ $A7D0 label=CheckTokenMatchAndSetFlag
+R $A7D0 DE Token value to check
   $A7D0,$04 Write #N$00 to *#R$A7EA.
   $A7D4,$04 Jump to #R$A7EB if bit 7 of #REGd is not set.
   $A7D8,$01 #REGa=#REGe.
@@ -12886,7 +13058,9 @@ c $A7D0
 g $A7EA
 B $A7EA,$01
 
-c $A7EB
+c $A7EB Print Token Based On Parameters
+@ $A7EB label=PrintTokenBasedOnParameters
+R $A7EB D Token parameter
   $A7EB,$03 #REGhl=#R$A24D.
   $A7EE,$04 #REGe=*#R$A027.
   $A7F2,$03 #REGa=*#R$A2AA.
@@ -12909,7 +13083,9 @@ c $A7EB
   $A80C,$01 Restore #REGde from the stack.
   $A80D,$01 Return.
 
-c $A80E
+c $A80E Process Text Token With Attributes
+@ $A80E label=ProcessTextTokenWithAttributes
+R $A80E DE Token value
   $A80E,$01 Stash #REGde on the stack.
   $A80F,$03 Call #R$A7D0.
   $A812,$01 Restore #REGde from the stack.
@@ -12933,12 +13109,15 @@ c $A80E
   $A82D,$01 Restore #REGhl from the stack.
   $A82E,$01 Return.
 
-c $A82F
+c $A82F Process Object Or Print Token
+@ $A82F label=ProcessObjectOrPrintToken
+R $A82F A Object ID (FF = print token)
   $A82F,$05 Jump to #R$A751 if #REGa is not equal to #N$FF.
   $A834,$03 #REGde="#R($5DBF+$080E)(#TOKEN($080E))".
   $A837,$03 Jump to #R$A887.
 
-c $A83A
+c $A83A Get Common Word And Process
+@ $A83A label=GetCommonWordAndProcess
   $A83A,$03 Call #R$A840.
   $A83D,$03 Jump to #R$A5EA.
 
@@ -12955,149 +13134,520 @@ R $A840 DE Common word address
 . #REGd.
   $A850,$01 Return.
 
-b $A851
+g $A851 Lowercase Handling Flag
+@ $A851 label=LowercaseHandlingFlag
+B $A851,$01
 
-c $A852
+c $A852 Toggle Lowercase Handling
+@ $A852 label=ToggleLowercaseHandling
+D $A852 Switch lowercase handling setting on if it's off, and off if it's on.
+  $A852,$08 Toggle the value at *#R$A851.
+  $A85A,$01 #REGa=#N$00.
+  $A85B,$01 Return.
 
-g $A85C
+g $A85C Table: Format Data
+@ $A85C label=Table_FormatData
+D $A85C Format data entries indexed by format type (#N$00-#N$08).
+. Each entry is #N$04 bytes that are copied to the format buffer.
+N $A85C Format type #N((#PC-$A85C)/$04):
+B $A85C,$04,$01 Format data bytes:
+. #TABLE(default,centre,centre,centre,centre)
+. { =h Position | =h Command or Data | =h Command Type | =h Parameter/ Data }
+. { =h Byte | =h Bit 7 | =h Bits 4-6 | =h Bits 0-3 }
+. #FOR$00,$03""x"
+.   { #N((#PC+x-$A85C)%$04) | #IF(#PEEK(#PC+x)&$80)(Command,Data) | #N((#PEEK(#PC+x)&$70)>>$04) | #N(#PEEK(#PC+x)&$0F) }
+. ""
+. TABLE#
+L $A85C,$04,$09
 
-c $A880
-  $A880,$01 #REGe=*#REGhl.
-  $A881,$01 Increment #REGhl by one.
-  $A882,$01 #REGa=*#REGhl.
-  $A883,$01 Increment #REGhl by one.
-  $A884,$02,b$01 Keep only bits 0-3.
-  $A886,$01 #REGd=#REGa.
-  $A887,$03 #HTML(#REGa=*<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3C.html">TV-FLAG</a>.)
-  $A88A,$02 Return if #REGa is zero.
-  $A88C,$04 Write #REGde to *#R$A022.
-  $A890,$01 #REGa=#REGd.
-  $A891,$02,b$01 Keep only bits 0-3.
-  $A893,$01 Set the bits from #REGe.
-  $A894,$01 Return if #REGhl is equal to #REGe.
+c $A880 Extract Token From Text
+@ $A880 label=ExtractTokenFromText
+R $A880 HL Pointer to text data
+R $A880 O:DE Token value (word)
+R $A880 O:HL Updated pointer
+N $A880 Read the token value from the text data.
+  $A880,$01 #REGe=*#REGhl (load the first byte of the token into #REGe).
+  $A881,$01 Increment #REGhl by one (move to the second byte).
+  $A882,$01 #REGa=*#REGhl (load the second byte of the token into #REGa).
+  $A883,$01 Increment #REGhl by one (advance the text pointer past the token).
+  $A884,$02,b$01 Keep only bits 0-3 (extract the low nibble from the second byte).
+  $A886,$01 #REGd=#REGa (store the low nibble in #REGd).
+@ $A887 label=PrintTextToken
+  $A887,$05 #HTML(Return if *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3C.html">TV-FLAG</a> is not set.)
+  $A88C,$04 Write #REGde (the token value) to *#R$A022.
+N $A890 Check if this is a simple token that doesn't need further processing.
+  $A890,$01 #REGa=#REGd (load the low nibble into #REGa).
+  $A891,$02,b$01 Keep only bits 0-3 (ensure we have just the low nibble).
+  $A893,$01 Set the bits from #REGe (merge with the first byte).
+  $A894,$01 Return if this is a simple token (#REGhl equals #REGe).
   $A895,$05 Stash #REGix, #REGhl, #REGbc and #REGde on the stack.
-  $A89A,$02 #REGa=#N$20.
-  $A89C,$03 Call #R$A9B7.
-  $A89F,$01 #REGa=#REGd.
-  $A8A0,$02,b$01 Keep only bits 4-7.
-  $A8A2,$03 Compare #REGc with #N$70.
+N $A89A Process the token format and prepare for dictionary lookup.
+  $A89A,$02 #REGa=#N$20 (load space character code).
+  $A89C,$03 Call #R$A9B7 to print the space character.
+  $A89F,$01 #REGa=#REGd (load the token byte).
+  $A8A0,$02,b$01 Keep only bits 4-7 (extract the high nibble).
+  $A8A2,$03 Compare #REGc (the high nibble) with #N$70.
+N $A8A5 Prepare to set a flag if the token format is #N$70.
   $A8A5,$02 #REGa=#N$01.
-  $A8A7,$02 Jump to #R$A8AC if #REGc is not equal to #N$70.
-  $A8A9,$03 Write #REGa to *#R$A026.
-  $A8AC,$01 #REGa=#REGd.
-  $A8AD,$02,b$01 Keep only bits 0-3.
-  $A8AF,$01 #REGd=#REGa.
-  $A8B0,$01 Exchange the #REGde and #REGhl registers.
-  $A8B1,$01 Stash #REGhl on the stack.
-  $A8B2,$01 #REGa=#REGh.
-  $A8B3,$01 Set the bits from #REGc.
-  $A8B4,$01 #REGh=#REGa.
-  $A8B5,$03 Write #REGhl to *#R$A022.
-  $A8B8,$01 Restore #REGhl from the stack.
+  $A8A7,$02 Jump to #R$A8AC if the token format is not #N$70.
+  $A8A9,$03 Write #REGa to *#R$A026 (set a flag for this token format).
+@ $A8AC label=ExtractTokenFromText_ProcessToken
+  $A8AC,$01 #REGa=#REGd (restore the token byte).
+  $A8AD,$02,b$01 Keep only bits 0-3 (extract the low nibble).
+  $A8AF,$01 #REGd=#REGa (store the low nibble in #REGd).
+  $A8B0,$01 Exchange the #REGde and #REGhl registers (swap token and text pointer).
+  $A8B1,$01 Stash #REGhl (the text pointer) on the stack.
+  $A8B2,$01 #REGa=#REGh (load the high byte of the token).
+  $A8B3,$01 Set the bits from #REGc (merge with the format bits).
+  $A8B4,$01 #REGh=#REGa (store the modified high byte).
+  $A8B5,$03 Write #REGhl (the modified token) to *#R$A022.
+  $A8B8,$01 Restore #REGhl (the text pointer) from the stack.
   $A8B9,$01 Stash #REGbc on the stack.
-  $A8BA,$04 #REGix=#R$5D80.
-  $A8BE,$02 #REGb=#N$5F.
-  $A8C0,$01 Increment #REGb by one.
-  $A8C1,$06 Jump to #R$A8CF if *#REGix+#N$01 is less than #REGh.
-  $A8C7,$02 Jump to #R$A8D9 if *#REGix+#N$01 is not equal to #REGh.
-  $A8C9,$06 Jump to #R$A8D9 if *#REGix+#N$00 is greater than or equal to #REGl.
-  $A8CF,$04 Increment #REGix by two.
-  $A8D3,$05 Jump to #R$A8C0 if #REGb is not equal to #N$7B.
-  $A8D8,$01 Increment #REGb by one.
-  $A8D9,$02 Jump to #R$A8E0 if #REGb is zero.
-  $A8DB,$04 Decrease #REGix by two.
-  $A8DF,$01 Decrease #REGb by one.
-  $A8E0,$03 #REGe=*#REGix+#N$00.
-  $A8E3,$03 #REGd=*#REGix+#N$01.
-  $A8E6,$04 Jump to #R$A8DB until #REGde is zero.
-  $A8EA,$01 #REGa=#REGb.
-  $A8EB,$03 Call #R$A9B7.
-  $A8EE,$04 #REGhl+=#N$5DBF.
-  $A8F2,$01 Stash #REGhl on the stack.
-  $A8F3,$01 Exchange the #REGde and #REGhl registers.
-  $A8F4,$01 #REGhl+=#REGbc.
-  $A8F5,$01 Stash #REGhl on the stack.
-  $A8F6,$03 #REGhl-=#REGde (with carry).
-  $A8F9,$01 Restore #REGhl from the stack.
-  $A8FA,$01 Stash #REGaf on the stack.
-  $A8FB,$03 Call #R$A95B.
-  $A8FE,$01 Restore #REGaf from the stack.
-  $A8FF,$02 Jump to #R$A8F5 if #REGb is not equal to #REGa.
+N $A8BA Search the word index table for the token value.
+  $A8BA,$04 #REGix=#R$5D80 (load the address of the word index table).
+  $A8BE,$02 #REGb=#N$5F (initialise the search index).
+@ $A8C0 label=ExtractTokenFromText_SearchLoop
+  $A8C0,$01 Increment #REGb by one (move to the next entry).
+  $A8C1,$06 Jump to #R$A8CF if the high byte of the table entry is less than #REGh (token high byte).
+  $A8C7,$02 Jump to #R$A8D9 if the high byte doesn't match (#REGix+#N$01 is not equal to #REGh).
+  $A8C9,$06 Jump to #R$A8D9 if the low byte is too high (#REGix+#N$00 is greater than or equal to #REGl).
+@ $A8CF label=ExtractTokenFromText_ContinueSearch
+  $A8CF,$04 Increment #REGix by two (move to the next table entry).
+  $A8D3,$05 Jump to #R$A8C0 if we haven't reached the end of the table (#REGb is not equal to #N$7B).
+  $A8D8,$01 Increment #REGb by one (adjust for end of table).
+@ $A8D9 label=ExtractTokenFromText_FoundEntry
+  $A8D9,$02 Jump to #R$A8E0 if no matching entry was found (#REGb is zero).
+@ $A8E0 label=ExtractTokenFromText_GetWordAddress
+  $A8E0,$06 Load the word address from the table entry into #REGde.
+  $A8E6,$04 Jump to #R$A8DB until we find a non-zero word address (#REGde is zero).
+@ $A8DB label=ExtractTokenFromText_BackupEntry
+  $A8DB,$04 Decrease #REGix by two (back up to the matching entry).
+  $A8DF,$01 Decrease #REGb by one (adjust the index).
+N $A8EA Print the word from the dictionary.
+  $A8EA,$01 #REGa=#REGb (load the word index).
+  $A8EB,$03 Call #R$A9B7 to print the word character.
+  $A8EE,$04 #REGhl+=#N$5DBF (add the dictionary base address to get the word data pointer).
+  $A8F2,$01 Stash #REGhl (the word data pointer) on the stack.
+  $A8F3,$01 Exchange the #REGde and #REGhl registers (swap word address and word data pointer).
+  $A8F4,$01 #REGhl+=#REGbc (add the offset to the word data).
+@ $A8F5 label=ExtractTokenFromText_PrintWordContinue
+  $A8F5,$01 Stash #REGhl (the calculated word data address) on the stack.
+@ $A8F6 label=ExtractTokenFromText_PrintWordLoop
+  $A8F6,$03 #REGhl-=#REGde (with carry) (calculate the remaining length).
+  $A8F9,$01 Restore #REGhl (the word data address) from the stack.
+  $A8FA,$01 Stash #REGaf (the length comparison result) on the stack.
+  $A8FB,$03 Call #R$A95B to print characters from the word.
+  $A8FE,$01 Restore #REGaf (the length comparison result) from the stack.
+  $A8FF,$02 Jump to #R$A8F5 if there are more characters to print (#REGb is not equal to #REGa).
   $A901,$02 Restore #REGhl and #REGbc from the stack.
-  $A903,$05 Jump to #R$A91C if #REGc is equal to #N$50.
-  $A908,$04 Jump to #R$A919 if #REGc is equal to #N$40.
-  $A90C,$02 Compare #REGc with #N$10.
-  $A90E,$03 #REGa=*#R$A034.
-  $A911,$02 Jump to #R$A916 if #REGc is equal to #N$10.
-  $A913,$06 Jump to #R$A91C if *#R$A036 is zero.
-  $A919,$03 Call #R$A92F.
+N $A903 Handle special token format cases.
+  $A903,$05 Jump to #R$A91C if the token format is #N$50.
+  $A908,$04 Jump to #R$A919 if the token format is #N$40.
+N $A90C Check if the token format is #N$10 (requires special handling).
+  $A90C,$02 Compare #REGc (the token format) with #N$10.
+  $A90E,$03 #REGa=*#R$A034 (load the room display parameter).
+  $A911,$02 Jump to #R$A916 if the token format is #N$10.
+  $A913,$03 Load #REGa with *#R$A036.
+@ $A916 label=ExtractTokenFromText_Format10
+  $A916,$03 Jump to #R$A91C (skip format processing for format #N$10).
+@ $A919 label=ExtractTokenFromText_ProcessFormat
+  $A919,$03 Call #R$A92F to process the text token format.
+@ $A91C label=ExtractTokenFromText_PrintRemainingText
   $A91C,$03 #HTML(#REGhl=<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C42.html">NEWPPC</a>.)
-  $A91F,$01 #REGa=*#REGhl.
-  $A920,$03 Jump to #R$A929 if #REGa is zero.
-  $A923,$03 Call #R$A9B7.
-  $A926,$01 Increment #REGhl by one.
-  $A927,$02 Jump to #R$A91F.
+@ $A91F label=ExtractTokenFromText_PrintLoop
+  $A91F,$01 #HTML(Load a byte from *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C42.html">NEWPPC</a>.)
+  $A920,$03 Jump to #R$A929 if we've reached the end of the text (#REGa is zero).
+  $A923,$03 Call #R$A9B7 to print the character.
+  $A926,$01 Increment #REGhl by one (move to the next character).
+  $A927,$02 Jump to #R$A91F to continue printing.
+@ $A929 label=ExtractTokenFromText_End
+N $A929 All text printed - restore registers and return.
   $A929,$05 Restore #REGde, #REGbc, #REGhl and #REGix from the stack.
   $A92E,$01 Return.
 
-c $A92F
+c $A92F Process Text Token Format
+@ $A92F label=ProcessTextTokenFormat
+R $A92F IX Buffer pointer (where to write format data)
+R $A92F HL Pointer to token format byte
+N $A92F Extract the format type and copy format data to the buffer.
+  $A92F,$01 #REGa=*#REGhl (load the token format byte).
+  $A930,$02,b$01 Keep only bits 0-3.
+M $A930,$02 Extract the format type.
+  $A932,$03 Return if the format type is #N$0F (the end marker).
+N $A935 Calculate the table offset for this format type (multiply by 4).
+  $A935,$02 Multiply by #N$04 to get the table offset.
+  $A937,$03 Set #REGhl to the offset value (#REGl=#REGa, #REGh=#N$00).
+  $A93A,$03 #REGbc=#R$A85C (load the address of the format data table).
+  $A93D,$01 #REGhl+=#REGbc (add the table base to get the format data pointer).
+  $A93E,$02 #REGb=#N$04 (set the copy counter to 4 bytes).
+@ $A940 label=ProcessTextTokenFormat_CopyLoop
+  $A940,$01 #REGa=*#REGhl (load a byte from the format data).
+  $A941,$01 Increment #REGhl by one (move to the next byte).
+  $A942,$03 Write #REGa to *#REGix+#N$00 (copy the byte to the buffer).
+  $A945,$02 Increment #REGix by one (move to the next buffer position).
+  $A947,$02 Decrease counter by one and loop back to #R$A940 until counter is zero.
+  $A949,$03 Write #REGb (#N$04, the terminator) to *#REGix+#N$00.
+  $A94C,$01 Return.
+N $A94D Handle nested format processing (recursive call).
+  $A94D,$02 Stash #REGix (the buffer pointer) on the stack.
+  $A94F,$01 Stash #REGhl (the text pointer) on the stack.
+  $A950,$03 Call #R$A95B to process the nested format.
+  $A953,$01 Exchange the *#REGsp with the #REGhl register (restore the text pointer).
+  $A954,$03 Call #R$A92F to recursively process the format.
+  $A957,$01 Restore #REGhl from the stack.
+  $A958,$02 Restore #REGix from the stack.
+  $A95A,$01 Return.
 
-c $A990
+c $A95B Process Format Data Byte
+@ $A95B label=ProcessFormatDataByte
+R $A95B HL Pointer to format data byte
+R $A95B O:A Result value
+R $A95B O:F Zero flag set if end of format reached
+  $A95B,$01 Stash #REGbc on the stack.
+  $A95C,$04 #HTML(#REGix=<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C42.html">NEWPPC</a> (load the buffer pointer).)
+N $A960 Read and process the format data byte.
+  $A960,$01 Increment #REGhl by one (move to the format data byte).
+  $A961,$01 #REGa=*#REGhl (load the format data byte).
+  $A962,$02 Test bit 7 of #REGa (check if this is a command byte).
+  $A964,$01 Increment #REGhl by one (move to the parameter byte).
+  $A965,$02 Jump to #R$A969 if bit 7 is not set (data byte, not command).
+  $A967,$02 Increment #REGhl by two (skip the parameter bytes for command formats).
+@ $A969 label=ProcessFormatDataByte_ProcessBits
+  $A969,$01 Stash #REGaf (the bit 7 test result) on the stack.
+  $A96A,$02,b$01 Keep only bits 4-6 (extract the format command type).
+  $A96C,$02 Jump to #R$A974 if the command type is zero (simple format).
+@ $A96E label=ProcessFormatDataByte_AdjustBuffer
+N $A96E Adjust the buffer pointer based on the command type.
+  $A96E,$02 Increment #REGix by one (move to the next buffer position).
+  $A970,$02 #REGa-=#N$10 (decrease the command type value).
+  $A972,$02 Jump to #R$A96E if we need to skip more positions.
+@ $A974 label=ProcessFormatDataByte_ProcessLowNibble
+  $A974,$02 #REGc=#N$00 (initialise the result counter).
+  $A976,$01 Restore #REGaf (the bit 7 test result) from the stack.
+  $A977,$02,b$01 Keep only bits 0-3 (extract the low nibble).
+  $A979,$02 Jump to #R$A986 if there's nothing to process.
+@ $A97B label=ProcessFormatDataByte_ProcessLoop
+  $A97B,$01 #REGb=#REGa (store the count in #REGb).
+@ $A97C label=ProcessFormatDataByte_ProcessCommand
+  $A97C,$03 Call #R$A990 to process the format command.
+  $A97F,$03 Write #REGa (the processed value) to *#REGix+#N$00.
+  $A982,$02 Increment #REGix by one (move to the next buffer position).
+  $A984,$02 Decrease counter by one and loop back to #R$A97C until counter is zero.
+@ $A986 label=ProcessFormatDataByte_End
+  $A986,$04 Write #N$00 (terminator) to *#REGix+#N$00.
+  $A98A,$01 #REGa=#REGc (load the result counter).
+  $A98B,$01 Restore #REGbc from the stack.
+  $A98C,$02 Return if the result counter is zero.
+  $A98E,$01 Increment #REGhl by one (move to the next format byte).
+  $A98F,$01 Return.
+
+c $A990 Rotate And Extract Character Code
+@ $A990 label=RotateAndExtractCharacterCode
+R $A990 HL Pointer to bit-packed character data
+R $A990 C Rotation count (bit offset within the data)
+R $A990 O:A Character code (#N$60-#N$7F)
+R $A990 O:C Updated rotation count
   $A990,$01 Stash #REGde on the stack.
-  $A991,$01 #REGd=*#REGhl.
-  $A992,$01 Increment #REGhl by one.
-  $A993,$01 #REGe=*#REGhl.
-  $A994,$01 Decrease #REGhl by one.
-  $A995,$04 Jump to #R$A9A0 if #REGc is zero.
-  $A999,$02 Shift #REGe left (with carry).
-  $A99B,$02 Rotate #REGd left.
-  $A99D,$01 Decrease #REGa by one.
-  $A99E,$02 Jump to #R$A999 if #REGa is not equal to #REGa.
-  $A9A0,$01 #REGa=#REGc.
-  $A9A1,$02 #REGa+=#N$05.
-  $A9A3,$04 Jump to #R$A9AA if #REGa is less than #N$08.
-  $A9A7,$02 #REGa-=#N$08.
-  $A9A9,$01 Increment #REGhl by one.
-  $A9AA,$01 #REGc=#REGa.
-  $A9AB,$01 #REGa=#REGd.
+N $A991 Read two bytes from the bit-packed data.
+  $A991,$03 Load two bytes from the bit-packed data into #REGde.
+  $A994,$01 Decrease #REGhl by one (restore the pointer).
+  $A995,$04 Jump to #R$A9A0 if no rotation is needed.
+N $A999 Rotate the two bytes left by the rotation count.
+@ $A999 label=RotateAndExtractCharacterCode_RotateLoop
+  $A999,$02 Shift #REGe left (with carry) (move bit from high byte to carry).
+  $A99B,$02 Rotate #REGd left (move carry bit into low byte).
+  $A99D,$01 Decrease #REGa (the rotation counter) by one.
+  $A99E,$02 Jump to #R$A999 if more rotations are needed.
+@ $A9A0 label=RotateAndExtractCharacterCode_UpdateRotation
+N $A9A0 Update the rotation count for the next character extraction.
+  $A9A0,$01 #REGa=#REGc (load the current rotation count).
+  $A9A1,$02 #REGa+=#N$05 (add 5 bits for the character we're extracting).
+  $A9A3,$04 Jump to #R$A9AA if we haven't crossed a byte boundary (#REGa is less than #N$08).
+  $A9A7,$02 #REGa-=#N$08 (wrap around within the byte).
+  $A9A9,$01 Increment #REGhl by one (move to the next byte for the next character).
+@ $A9AA label=RotateAndExtractCharacterCode_Extract
+  $A9AA,$01 #REGc=#REGa (store the updated rotation count).
+  $A9AB,$01 #REGa=#REGd (load the rotated low byte).
   $A9AC,$01 Restore #REGde from the stack.
-  $A9AD,$01 RRCA.
-  $A9AE,$01 RRCA.
-  $A9AF,$01 RRCA.
-  $A9B0,$02,b$01 Keep only bits 0-4.
-  $A9B2,$02 #REGa+=#N$60.
+N $A9AD Extract the 5-bit character code from the rotated byte.
+  $A9AD,$03 RRCA three times (shift right by 3 bits to align the 5-bit code).
+  $A9B0,$02,b$01 Keep only bits 0-4 (extract the 5-bit character code).
+  $A9B2,$02 #REGa+=#N$60 (convert to ASCII character code range #N$60-#N$7F).
   $A9B4,$01 Return.
 
-g $A9B5
+g $A9B5 Buffer Pointer
+@ $A9B5 label=BufferPointer
 W $A9B5,$02
 
-c $A9B7
+c $A9B7 Print Character
+@ $A9B7 label=Print_Character
+R $A9B7 A Character code to print
+  $A9B7,$01 Stash the character code on the stack.
+  $A9B8,$06 Jump to #R$AA10 if *#R$A027 isn't set (not in direct print mode).
+N $A9BE Handle direct print mode - write character to buffer.
+  $A9BE,$01 Restore the character code from the stack.
+  $A9BF,$02 Stash the character code and #REGhl on the stack.
+  $A9C1,$03 #REGhl=*#R$A9B5 (load the buffer pointer).
+  $A9C4,$04 Jump to #R$A9DF if the character is a "SPACE" (ASCII #N$20).
+  $A9C8,$04 Jump to #R$A9DF if the character is an "ENTER" (ASCII #N$0D).
+  $A9CC,$04 Jump to #R$A9DF if the character is a quotation mark (ASCII #N$22).
+  $A9D0,$04 Jump to #R$A9D7 if the character is not a backspace (ASCII #N$08).
+N $A9D4 The character IS a backspace, so handle this.
+  $A9D4,$01 Decrease #REGhl by one (move buffer pointer back for backspace).
+  $A9D5,$02 Jump to #R$A9D9 (skip writing the character).
+@ $A9D7 label=Print_Character_WriteToBuffer
+N $A9D7 Write the character to the buffer.
+  $A9D7,$01 Write the character to the buffer.
+  $A9D8,$01 Increment the buffer pointer by one.
+@ $A9D9 label=Print_Character_UpdateBufferPointer
+  $A9D9,$03 Write the buffer pointer back to *#R$A9B5.
+  $A9DC,$02 Restore #REGhl and the character code from the stack.
+  $A9DE,$01 Return.
+N $A9DF Handle screen print mode - check if we need to scroll.
+@ $A9DF label=Print_Character_ScreenPrintMode
+  $A9DF,$01 Stash #REGde on the stack.
+  $A9E0,$08 #HTML(Jump to #R$AA0B if <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C0B.html">DEFADD</a> is equal to #REGhl.)
+N $A9E8 Check if we need to scroll the screen.
+  $A9E8,$03 #REGa=*#R$C1F5.
+  $A9EB,$01 Compare *#R$C1F5 with #REGl (the screen offset).
+  $A9EC,$01 Stash the comparison result on the stack.
+  $A9ED,$02 Jump to #R$A9F4 if we don't need to scroll (#REGa is greater than or equal to #REGl).
+  $A9EF,$02 #REGa=#N$0D (load carriage return character).
+  $A9F1,$03 Call #R$AA14 to process the carriage return.
+@ $A9F4 label=Print_Character_ScrollScreen
+N $A9F4 Scroll the screen by clearing the first line.
+  $A9F4,$01 Stash #REGbc on the stack.
+  $A9F5,$01 #REGb=#REGl (store the line width in #REGb).
+  $A9F6,$03 #HTML(#REGhl=<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C0B.html">DEFADD</a> (reset to the start of the screen buffer).)
+  $A9F9,$03 Write #REGhl (the screen buffer pointer) to *#R$A9B5.
+@ $A9FC label=Print_Character_ScrollLoop
+  $A9FC,$01 Load a character from the screen buffer into #REGa.
+  $A9FD,$03 Call #R$AA14 to process the character (shift it up).
+  $AA00,$01 Move to the next character.
+  $AA01,$02 Decrease counter by one and loop back to #R$A9FC until counter is zero.
+  $AA03,$02 Restore #REGbc and #REGaf from the stack.
+  $AA05,$02 Jump to #R$AA0B if we haven't finished scrolling (#REGhl is not equal to #REGl).
+N $AA07 Clear the print position flag after scrolling is complete.
+  $AA07,$04 Reset *#R$A025.
+@ $AA0B label=Print_Character_ProcessChar
+  $AA0B,$03 Restore #REGde, #REGhl and the character code from the stack.
+  $AA0E,$02 Jump to #R$AA14 to process the character.
+@ $AA10 label=Print_Character_AlternateMode
+N $AA10 Use alternate print method (direct screen printing).
+  $AA10,$01 Restore the character code from the stack.
+  $AA11,$03 Jump to #R$C1E1 to print using alternate method.
+@ $AA14 label=Print_Character_ProcessCharacter
+N $AA14 Convert uppercase letters to lowercase if needed.
+  $AA14,$08 Jump to #R$AA1E if the character is not uppercase.
+  $AA1C,$02,b$01 Set bit 5 (convert to lowercase).
+@ $AA1E label=Print_Character_CheckSpace
+  $AA1E,$01 Stash the character code on the stack.
+  $AA1F,$06 Jump to #R$AA2A if we're not at the start of a line (load print position flag from *#R$A025, set flags, jump if not zero).
+  $AA25,$01 Restore the character code from the stack.
+  $AA26,$03 Return if the character is a "SPACE".
+  $AA29,$01 Stash the character code on the stack.
+@ $AA2A label=Print_Character_MarkPrintStarted
+N $AA2A Mark that we've started printing on this line.
+  $AA2A,$05 Set *#R$A025.
+  $AA2F,$01 Restore the character code from the stack.
+  $AA30,$01 Stash the character code on the stack.
+  $AA31,$04 Jump to #R$AA3B if the character is not a carriage return (compare with #N$0D, jump if not equal).
+N $AA35 Reset the print position flag for a carriage return.
+  $AA35,$04 Clear *#R$A025.
+  $AA39,$02 Jump to #R$AA6D (skip further processing).
+@ $AA3B label=Print_Character_CheckQuote
+N $AA3B Check if the character is a quotation mark (needs special handling).
+  $AA3B,$04 Jump to #R$AA46 if the character is not a quote mark (compare with #N$22, jump if not equal).
+  $AA3F,$02 #REGa=#N$20 (replace quote with space).
+  $AA41,$03 Call #R$C1E1 to print the space.
+  $AA44,$02 Jump to #R$AA4A (continue processing).
+@ $AA46 label=Print_Character_CheckPeriod
+N $AA46 Check if the character is a period (sets token format flag if it is).
+  $AA46,$04 Jump to #R$AA51 if the character is not a period (compare with #N$2E, jump if not equal).
+@ $AA4A label=Print_Character_SetTokenFormatFlag
+  $AA4A,$05 Set *#R$A026.
+  $AA4F,$02 Jump to #R$AA6D (skip further processing).
+@ $AA51 label=Print_Character_CheckLowercase
+N $AA51 Handle lowercase letters (dictionary word characters).
+  $AA51,$04 Jump to #R$AA6D if the character is less than #N$61 (ASCII "a").
+  $AA55,$04 Jump to #R$AA6D if the character is greater than or equal to #N$7B (ASCII "z"+#N$01).
+  $AA59,$06 Check the lowercase handling flag and jump to #R$AA65 if it's not set (load flag from *#R$A851, set flags, jump if not set).
+  $AA5F,$06 Jump to #R$AA6D if *#R$A026 the token format flag is not set.
+@ $AA65 label=Print_Character_ResetTokenFormatFlag
+N $AA65 Reset the token format flag before converting to uppercase.
+  $AA65,$04 Reset *#R$A026.
+  $AA69,$01 Restore the character code from the stack.
+N $AA6A Clear bit 5 from the character code (convert to uppercase).
+  $AA6A,$02,b$01 Keep only bits 0-4, 6 (clear bit 5 to convert lowercase to uppercase).
+  $AA6C,$01 Stash the modified character code on the stack.
+@ $AA6D label=Print_Character_Print
+  $AA6D,$01 Restore the character code from the stack.
+  $AA6E,$03 Jump to #R$C1E1 to print the character.
 
-g $AA71
+g $AA71 Lookup Table: Object Display Data
+@ $AA71 label=Table_ObjectDisplayData
+D $AA71 Table of 2-byte entries used for object display logic.
+. Each entry contains display data indexed by object attribute value (minus #N$01).
+B $AA71,$02
+L $AA71,$02,$18
 
-g $AAAC
+g $AAA8
 
-c $AFE1
+g $AAAC Buffer: Co-ordinate Data
+@ $AAAC label=Buffer_CoordinateData
+D $AAAC 6-byte buffer used for storing co-ordinate pairs and related display data.
+B $AAAC,$06
 
-c $B015
+c $AAB2
 
-c $B0AC
-  $B0AC,$06 Write #N($0000,$04,$04) to *#R$9FDD.
-  $B0B2,$04 #REGix=#R$9860.
-  $B0B6,$03 Write #REGl to *#REGix+#N$06.
-  $B0B9,$03 Write #REGh to *#REGix+#N$07.
-  $B0BC,$01 Increment #REGhl by one.
-  $B0BD,$03 Write #REGhl to *#R$A01F.
-  $B0C0,$04 Write #REGl to *#R$A0DA.
-  $B0C4,$01 Set flags.
+c $AB52
+
+c $AB91
+
+c $ABF3
+
+c $AC24
+
+c $AC41
+
+c $ACA6 Copy Display Data To Display Buffer
+@ $ACA6 label=CopyDisplayDataToDisplayBuffer
+R $ACA6 E Flags (bits 6 and 7 indicate which display data set to copy)
+R $ACA6 O:A Bit 0 is set if data was copied
+D $ACA6 Copies display data from the character data structure to the display buffer at #R$AAA8. If bit 6 of E is set, copies from offset #N$04; if bit 7 is set, copies from offset #N$0E. Always sets bit 0 of the return value.
+
+c $ACCC Process Text Token And Save State
+@ $ACCC label=ProcessTextTokenAndSaveState
+R $ACCC E Flags (bit 3 is reset)
+D $ACCC Processes text tokens until a non-#N$A0 token is found, then saves the current text processing state (pointer, flags, and display mode) to the display buffer structure.
+
+c $ACFB
+
+c $AE59 Copy Display Data If Zero
+@ $AE59 label=CopyDisplayDataIfZero
+R $AE59 HL Destination pointer (2-byte display data)
+R $AE59 DE Source pointer (2-byte display data)
+D $AE59 Conditionally copies a 2-byte display data value from DE to HL if the destination is currently zero. Used to initialise display data only when it hasn't been set yet.
+
+
+c $AE6A Initialise Character Data Structure
+@ $AE6A label=InitialiseCharacterDataStructure
+R $AE6A E Flags
+R $AE6A O:IY Pointer to the initialised character data structure
+D $AE6A Initialises a character data structure by finding the character with ID #N$1E, storing the pointer to it in the previous character data location, and setting IY to point to the new character data.
+
+c $AE7F
+
+c $AEA9
+
+c $AEB6
+
+c $AEC5
+
+c $AEEA Initialise Character Search
+@ $AEEA label=InitialiseCharacterSearch
+D $AEEA Initialises the character search by setting IY to zero, then jumps to the character search routine at #R$AEC6.
+  $AEEA,$04 Set IY to zero to start the character search.
+  $AEEE,$03 Jump to the character search routine.
+
+c $AEF1
+
+c $AF38
+
+c $AF4E
+
+c $AF52
+
+c $AF56
+
+c $AF67
+
+g $AF6B Table: Command Handler Lookup (Standard)
+@ $AF6B label=Table_CommandHandlerLookup_Standard
+D $AF6B Lookup table for command handlers when *#R$A024 is not equal to #N$02. Each entry consists of a 1-byte first value, a 1-byte second value, and a 2-byte handler pointer.
+B $AF6B,$01 First value
+B $AF6C,$01 Second value
+W $AF6D,$02 Handler pointer
+L $AF6B,$04,$0C
+
+g $AF9B Table: Command Handler Lookup (Alternate)
+@ $AF9B label=Table_CommandHandlerLookup_Alternate
+D $AF9B Lookup table for command handlers when *#R$A024 is equal to #N$02. Each entry consists of a 1-byte first value, a 1-byte second value, and a 2-byte handler pointer.
+B $AF9B,$01 First value
+B $AF9C,$01 Second value
+W $AF9D,$02 Handler pointer
+L $AF9B,$04,$06
+
+c $AFB3 Search Command Handler Table
+@ $AFB3 label=SearchCommandHandlerTable
+R $AFB3 B Second value to match
+R $AFB3 C First value to match
+D $AFB3 Searches through a command handler lookup table for a matching value pair and jumps to the associated handler routine if found.
+  $AFB3,$03 Set the table pointer to #R$AF6B.
+  $AFB6,$05 Check which lookup table to use based on the current mode.
+  $AFBB,$02 Use the alternate lookup table if the mode is #N$02.
+  $AFBD,$03 Else, set the table pointer to #R$AF9B.
+@ $AFC0 label=SearchCommandHandlerTable_StartSearch
+  $AFC0,$01 Stash #REGde on the stack.
+  $AFC1,$06 Set the table entry counter to #N$0C entries, or #N$06 if the mode is #N$0C.
+@ $AFC7 label=SearchCommandHandlerTable_Loop
+  $AFC7,$03 Check if the first value in the current table entry matches the search value.
+  $AFCA,$02 Skip to the next entry if it doesn't match.
+  $AFCC,$02 Check if the second value in the current table entry matches the search value.
+  $AFCE,$02 Jump to the handler if both values match.
+@ $AFD0 label=SearchCommandHandlerTable_NextEntry
+  $AFD0,$03 Move to the next table entry.
+  $AFD3,$03 Decrease the entry counter and continue searching if there are more entries.
+@ $AFD6 label=SearchCommandHandlerTable_NotFound
+  $AFD6,$01 Restore #REGde from the stack.
+  $AFD7,$03 Jump to #R$AF67 (no handler found).
+N $AFDA A handler was found, use it!
+@ $AFDA label=SearchCommandHandlerTable_Found
+  $AFDA,$06 Load the handler pointer from the table entry.
+  $AFE0,$01 Jump to the handler.
+
+c $AFE1 Check Bit And Jump
+@ $AFE1 label=CheckBitAndJump
+
+c $AFFA
+
+c $AFFF
+
+c $B00B
+
+c $B015 Handle Game State
+@ $B015 label=HandleGameState
+
+c $B01C
+
+c $B033
+
+c $B049
+
+c $B09A
+
+c $B0A3
+
+c $B0AC Initialise Character Timer
+@ $B0AC label=InitialiseCharacterTimer
+D $B0AC Initialises character timing data by resetting the time ticker, setting the character's timer in the character table to zero, and initialising the character script cycles counter.
+  $B0AC,$06 Reset #R$9FDD to zero.
+  $B0B2,$04 Point to #R$9860.
+  $B0B6,$06 Set the character's timer to zero.
+  $B0BC,$04 Write #N($0001,$04,$04) to *#R$A01F.
+  $B0C0,$04 Write #N$01 to *#R$A0DA.
+  $B0C4,$01 Clear the carry flag.
   $B0C5,$01 Return.
 
+c $B0C6
   $B0C6,$03 Call #R$AFE1.
   $B0C9,$06 Write #N($0001,$04,$04) to *#R$A01F.
   $B0CF,$05 Write #N$02 to *#R$A0DA.
   $B0D4,$03 Jump to #R$B015.
 
-c $B0D7
+c $B0D7 Load Game State
+@ $B0D7 label=LoadGameState
+R $B0D7 O:IY Restored game state pointer
   $B0D7,$03 Call #R$B0EE.
   $B0DA,$03 Call #R$C0DF.
   $B0DD,$02 Jump back to #R$B0D7 if there was a tape loading error to try
@@ -13105,12 +13655,16 @@ c $B0D7
   $B0DF,$04 #REGiy=*#R$9FD4.
   $B0E3,$01 Return.
 
-c $B0E4
+c $B0E4 Save Game State
+@ $B0E4 label=SaveGameState
+R $B0E4 IY Game state pointer to save
   $B0E4,$04 Write #REGiy to #R$9FD4.
   $B0E8,$03 Call #R$B0EE.
   $B0EB,$03 Jump to #R$C040.
 
-c $B0EE
+c $B0EE Calculate Location Offset
+@ $B0EE label=CalculateLocationOffset
+R $B0EE O:DE Offset from base location address
   $B0EE,$04 #REGix=#R$840B.
   $B0F2,$03 #REGhl=#R$A01F.
   $B0F5,$03 #REGde=#R$840B.
@@ -13118,36 +13672,144 @@ c $B0EE
   $B0FB,$01 Exchange the #REGde and #REGhl registers.
   $B0FC,$01 Return.
 
-c $B0FD
+c $B0FD Process Character Data
+@ $B0FD label=ProcessCharacterData
 
-g $B16D
+c $B135
 
-c $B191
+c $B13F
+
+c $B151
+
+c $B15B
+
+g $B16D Display Flag
+@ $B16D label=DisplayFlag
+D $B16D Flag byte for display processing (bit 1 indicates objects have been processed).
+B $B16D,$01
+
+g $B172 Display Data Pointer
+@ $B172 label=DisplayDataPointer
+D $B172 Pointer to display data used for processing room displays.
+B $B172,$01
+
+g $B173 Display Mode Flag
+@ $B173 label=DisplayModeFlag
+D $B173 Flag controlling display mode (bit 7 indicates special display mode).
+B $B173,$01
+
+g $B17E Object Table Pointer
+@ $B17E label=ObjectTablePointer
+D $B17E Pointer to the current position in the object table being processed.
+W $B17E,$02
+
+c $B191 Initialise Display Buffer
+@ $B191 label=InitialiseDisplayBuffer
 
 g $B39C
 B $B39C,$01
 
-c $B39D
+c $B39D Process Display Pointer
+@ $B39D label=ProcessDisplayPointer
 
-g $B4A2
+g $B4A2 Display Setup Flag
+@ $B4A2 label=DisplaySetupFlag
+D $B4A2 Flag indicating whether the display has been set up (FF = not set up, 00 = set up).
 B $B4A2,$01
 
-c $B4A3
+c $B4A3 Check Flag And Set Display
+@ $B4A3 label=CheckFlagAndSetDisplay
+D $B4A3 Sets up which room to display based on display flags and processes objects for that room.
+  $B4A3,$03 #REGa=*#R$B4A2.
+  $B4A6,$01 Increment #REGa.
+  $B4A7,$02 Jump to #R$B4CF if display already set up.
+  $B4A9,$03 Write #REGa to *#R$B4A2.
+  $B4AC,$03 #REGa=*#R$B173.
+  $B4AF,$02,b$01 Check bit 7.
+M $B4AF,$04 Jump to #R$B4CF if special display mode not needed.
+N $B4B3 Set up special display mode.
+  $B4B3,$05 Write #N$FE to *#R$A034 (set room display parameter).
+  $B4B8,$06 Write *#R$B172 to *#R$A02F.
+  $B4BE,$02,b$01 Set bit 0.
+  $B4C0,$01 Return.
+@ $B4C1 label=CheckFlagAndSetDisplay_Entry
+  $B4C1,$07 Jump to #R$B4A3 if *#R$A00F is #N$05.
+  $B4C8,$03 #REGa=*#R$B173 (check display mode flag).
+  $B4CB,$02,b$01 Check bit 7.
+M $B4CB,$04 Jump to #R$B4D4 if special mode isn't needed.
+@ $B4CF label=CheckFlagAndSetDisplay_NoAction
+  $B4CF,$02 #REGa=#N$FF.
+  $B4D1,$02 Compare with #N$FF.
+  $B4D3,$01 Return.
+@ $B4D4 label=CheckFlagAndSetDisplay_ProcessObjects
+  $B4D4,$02 Stash #REGiy on the stack.
+  $B4D6,$04 #REGix=*#R$B17E (get object table pointer).
+  $B4DA,$03 #REGa=*#R$A01D (get object attribute).
+  $B4DD,$02,b$01 Keep only bit 0.
+  $B4DF,$03 Write #REGa to *#R$A038 (save attribute flag).
+  $B4E2,$05 Compare *#R$A00F with #N$05.
+  $B4E7,$04 #REGiy=#R$D39B (set object processing routine).
+  $B4EB,$02 Jump to #R$B4F1 if *#R$A00F is less than #N$05.
+  $B4ED,$04 #REGiy=#R$D36A (use alternate routine).
+@ $B4F1 label=CheckFlagAndSetDisplay_ProcessLoop
+@ $B4F1 label=CheckFlagAndSetDisplay_ProcessLoop
+  $B4F1,$03 Call #R$B4FD (process display pointer).
+  $B4F4,$02 Compare with #N$FF.
+  $B4F6,$04 Write #REGix to *#R$B17E (save updated object table pointer).
+  $B4FA,$02 Restore #REGiy from the stack.
+  $B4FC,$01 Return.
+
+c $B4FD Process Display Pointer
+@ $B4FD label=CheckFlagAndSetDisplay_ProcessPointer
+  $B4FD,$03 #REGhl=#R$B172.
+  $B500,$03 Call #R$B39D (process display pointer).
+  $B503,$03 Return if the terminator has been reached (#N$FF) signifying the end of the display data.
+  $B506,$03 Write #REGa to *#R$A034.
+  $B509,$03 Call #R$B517 (check and process objects).
+  $B50C,$02 Jump to #R$B4FD if more objects to process.
+  $B50E,$03 #REGa=*#R$A034.
+  $B511,$03 #REGhl=#R$B16D.
+  $B514,$02,b$01 Set bit 1 (mark objects as processed).
+  $B516,$01 Return.
+
+c $B517 Check And Process Objects
+@ $B517 label=CheckFlagAndSetDisplay_CheckObjects
+  $B517,$05 Check if objects need processing and return if none.
+  $B51C,$05 Stash #REGiy, #REGde and #REGix on the stack.
+@ $B521 label=CheckFlagAndSetDisplay_ObjectLoop
+  $B521,$03 Call #R$AEA9 (get next object).
+  $B524,$06,b$01 Check bit 6 of object attribute and jump to #R$B543 if object doesn't need special handling.
+  $B52A,$03 Call #R$D04F (adjust object table for sum).
+@ $B52D label=CheckFlagAndSetDisplay_ProcessObject
+  $B52D,$03 Stash #REGiy on the stack and restore into #REGhl.
+  $B530,$04 #REGhl+=#N($0008,$04,$04) (move to next object).
+  $B534,$03 Call #R$D36A (process object entry).
+  $B537,$04 Compare with #N$FF and jump to #R$B521 if end of objects.
+  $B53B,$04 #REGhl=#R$A034 and compare with room parameter.
+  $B53F,$04 Jump to #R$B52D if object doesn't match room, otherwise set bit 0.
+@ $B543 label=CheckFlagAndSetDisplay_RestoreAndReturn
+  $B543,$05 Restore #REGix, #REGde and #REGiy from the stack.
+  $B548,$01 Return.
 
 g $B549
 B $B549,$01
 
-c $B54A
+c $B54A Check Flag And Set Display Parameter
+@ $B54A label=CheckFlagAndSetDisplayParameter
 
 g $B6D6
 W $B6D6,$02
 W $B6D8,$02
 
-c $B6DA
+c $B6DA Process Display Entry
+@ $B6DA label=ProcessDisplayEntry
 
-c $B6F0
+c $B6F0 Process Display Entry Alternate
+@ $B6F0 label=ProcessDisplayEntryAlternate
 
-c $B6FD
+c $B6FD Process Location Display
+@ $B6FD label=ProcessLocationDisplay
+R $B6FD HL Location pointer
   $B6FD,$04 Write #N$00 to *#R$B77E.
   $B701,$03 Write #REGhl to *#R$B6D8.
   $B704,$03 Call #R$D33C.
@@ -13192,9 +13854,10 @@ g $B6D6
 W $B6D6,$02
 W $B6D8,$02
 
-c $B6DA
-
-c $B772
+c $B772 Extract Character Attribute
+@ $B772 label=ExtractCharacterAttribute
+R $B772 D Character code
+R $B772 O:A Attribute value (bits 4-7)
   $B772,$03 #REGhl=#N$5DBF.
   $B775,$01 #REGa=#REGd.
   $B776,$02,b$01 Keep only bits 0-3.
@@ -13207,7 +13870,9 @@ c $B772
 g $B77E
 B $B77E,$01
 
-c $B77F
+c $B77F Process Text Token Stream
+@ $B77F label=ProcessTextTokenStream
+R $B77F O:F Zero flag set if end of stream reached
   $B77F,$07 Jump to #R$B7AA if *#R$B77E is not equal to #N$FF.
   $B786,$03 #REGhl=*#R$B6D6.
   $B789,$03 Return if #REGhl is zero.
@@ -13256,7 +13921,9 @@ c $B77F
   $B7F3,$02 Decrease #REGix by one.
   $B7F5,$02 Jump to #R$B7AA.
 
-c $B91F
+c $B91F Check Object In A036
+@ $B91F label=CheckObjectInA036
+R $B91F O:F Zero flag set if object found, bit 0 set if not found
   $B91F,$04 #REGix=#R$9FF0.
   $B923,$03 Call #R$A0F7.
   $B926,$02 Jump to #R$B931 if the zero flag is set.
@@ -13269,43 +13936,61 @@ g $B934
 B $B934,$01
 B $B935,$01
 
-c $B936
+c $B936 Process Script Display
+@ $B936 label=ProcessScriptDisplay
 
-c $B9FA
+c $B9FA Copy Pointer To Stack
+@ $B9FA label=CopyPointerToStack
 
 g $BA13
 
-c $BA20
+c $BA20 Process Character Display
+@ $BA20 label=ProcessCharacterDisplay
 
-c $BBE5
+c $BBE5 Print Text Based On Flag
+@ $BBE5 label=PrintTextBasedOnFlag
 
-c $BC21
+c $BC21 Check Object Attribute
+@ $BC21 label=CheckObjectAttribute
 
-c $BC46
+c $BC46 Process Game Status Entries
+@ $BC46 label=ProcessGameStatusEntries
 
-c $BC74
+c $BC74 Process Game Status Entries With Counter
+@ $BC74 label=ProcessGameStatusEntriesWithCounter
 
-c $BC9C
+c $BC9C Process Game Status Entries Alternate
+@ $BC9C label=ProcessGameStatusEntriesAlternate
 
-c $BCC9
+c $BCC9 Check Bit And Process
+@ $BCC9 label=CheckBitAndProcess
 
-c $BD06
+c $BD06 Process Object Pointer
+@ $BD06 label=ProcessObjectPointer
 
-c $BD4B
+c $BD4B Set Object Table Pointer
+@ $BD4B label=SetObjectTablePointer
 
-c $BD51
+c $BD51 Search Object Table
+@ $BD51 label=SearchObjectTable
 
-c $BD7E
+c $BD7E Calculate Object Pointer Offset
+@ $BD7E label=CalculateObjectPointerOffset
 
-c $BE5A
+c $BE5A Advance Pointer And Check Bit
+@ $BE5A label=AdvancePointerAndCheckBit
 
-c $BE72
+c $BE72 Process Entry With Counter
+@ $BE72 label=ProcessEntryWithCounter
 
-c $BF08
+c $BF08 Check Bit And Process Entry
+@ $BF08 label=CheckBitAndProcessEntry
 
-c $BF1C
+c $BF1C Process Text Token Entry
+@ $BF1C label=ProcessTextTokenEntry
 
-c $BF45
+c $BF45 Process Text Token Data
+@ $BF45 label=ProcessTextTokenData
 
 t $BF59 Table: Days Of The Week Strings
 @ $BF59 label=Table_DaysOfWeekStrings
@@ -13337,9 +14022,14 @@ N $BF9C Now the date bar has been updated, set up printing it to the screen.
   $BF9F,$02 Set the length of the date bar in #REGb (#N$0B bytes).
   $BFA1,$03 Jump to #R$C1A8.
 
-c $BFA4
+c $BFA4 Convert Number To ASCII
+@ $BFA4 label=ConvertNumberToASCII
 
-c $BFB0
+c $BFB0 Convert Number To String
+@ $BFB0 label=ConvertNumberToString
+R $BFB0 A Number to convert (0-99)
+R $BFB0 IX Pointer to output buffer
+  $BFB0,$01 #REGl=#REGa.
   $BFB0,$01 #REGl=#REGa.
   $BFB1,$02 #REGh=#N$00.
   $BFB3,$03 #REGde=#N($000A,$04,$04).
@@ -13460,7 +14150,8 @@ N $C038 It's early morning; 6 AM.
   $C038,$02 #REGa=#N$05.
   $C03A,$01 Return.
 
-c $C03B
+c $C03B Check Input Port
+@ $C03B label=CheckInputPort
 
 c $C040 Save Game
 @ $C040 label=SaveGame
@@ -13562,7 +14253,8 @@ c $C10F Clear Screen
 g $C128
 B $C128,$01
 
-c $C129
+c $C129 Initialise Screen Display
+@ $C129 label=InitialiseScreenDisplay
   $C129,$04 Write #N$00 to *#R$A019.
   $C12D,$04 Write #N$01 to *#R$C128.
   $C131,$02 #REGa=#N$12.
@@ -13571,7 +14263,8 @@ c $C129
   $C13C,$05 Write #N$02 to *#R$C1FA.
   $C141,$01 Return.
 
-c $C142
+c $C142 Reset Screen Display
+@ $C142 label=ResetScreenDisplay
   $C142,$04 Write #N$00 to *#R$C128.
   $C146,$02 #REGa=#N$24.
   $C148,$02 Jump to #R$C133.
@@ -13676,7 +14369,8 @@ N $C1D8 Prints "#STR$13C5".
   $C1DE,$03 Jump to #R$A0EB.
 
 
-c $C1E1
+c $C1E1 Check TV Flag And Process
+@ $C1E1 label=CheckTVFlagAndProcess
   $C1E1,$01 Stash #REGaf on the stack.
   $C1E2,$06 #HTML(Jump to #R$C1EA if *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3C.html">TV-FLAG</a> is not zero.)
   $C1E8,$01 Restore #REGaf from the stack.
@@ -13690,7 +14384,8 @@ g $C1F4 Storage Decorative Line Width
 @ $C1F4 label=DecorativeLine_Width
 B $C1F4,$01
 
-g $C1F5
+g $C1F5 Screen Width
+@ $C1F5 label=ScreenWidth
 B $C1F5,$01
 
 g $C1F6 Storage Decorative Line Screen Position
@@ -13703,7 +14398,9 @@ B $C1FA,$01
 g $C1FB
 B $C1FB,$01
 
-c $C1FC
+c $C1FC Process Character Input
+@ $C1FC label=ProcessCharacterInput
+R $C1FC A Character code
   $C1FC,$01 Restore #REGaf from the stack.
   $C1FD,$03 Stash #REGhl, #REGbc and #REGaf on the stack.
   $C200,$04 #REGc=*#R$C1FB.
@@ -13739,7 +14436,8 @@ c $C240 Validate Keypress
   $C246,$02,b$01 Keep only bits 0-4, 6.
   $C248,$01 Return.
 
-c $C249
+c $C249 Handle Backspace Key
+@ $C249 label=HandleBackspaceKey
   $C249,$02 #REGa=#N$20.
   $C24B,$03 Call #R$C388.
   $C24E,$03 Call #R$C267.
@@ -13758,7 +14456,8 @@ c $C249
   $C26D,$03 #REGc=#REGa+#N$08.
   $C270,$01 Return.
 
-c $C271
+c $C271 Scroll Screen Up
+@ $C271 label=ScrollScreenUp
   $C271,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $C274,$03 #REGhl=#N$5080 (screen buffer location).
   $C277,$03 #REGde=#N$5060 (screen buffer location).
@@ -13780,7 +14479,8 @@ c $C271
   $C298,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $C29B,$01 Return.
 
-c $C29C
+c $C29C Scroll Screen Down
+@ $C29C label=ScrollScreenDown
   $C29C,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $C29F,$03 #REGhl=#N$50DF (screen buffer location).
   $C2A2,$03 #REGde=#N$50FF (screen buffer location).
@@ -13796,7 +14496,9 @@ c $C29C
   $C2B5,$03 #REGhl=#N$5060 (screen buffer location).
   $C2B8,$02 Jump to #R$C28D.
 
-c $C2BA
+c $C2BA Process Screen Character
+@ $C2BA label=ProcessScreenCharacter
+R $C2BA A Character code
   $C2BA,$03 Stash #REGhl, #REGbc and #REGaf on the stack.
   $C2BD,$03 #REGhl=*#R$C1F8.
   $C2C0,$04 #REGc=*#R$C1FA.
@@ -13829,7 +14531,8 @@ c $C2BA
   $C302,$03 Restore #REGaf, #REGbc and #REGhl from the stack.
   $C305,$01 Return.
 
-c $C306
+c $C306 Scroll Screen And Reset Display
+@ $C306 label=ScrollScreenAndResetDisplay
   $C306,$01 Stash #REGhl on the stack.
   $C307,$03 #REGhl=#N$5A5F (attribute buffer location).
   $C30A,$02 Set bit 7 of *#REGhl.
@@ -13839,7 +14542,10 @@ c $C306
   $C314,$01 Restore #REGhl from the stack.
   $C315,$01 Return.
 
-c $C316
+c $C316 Update Screen Display
+@ $C316 label=UpdateScreenDisplay
+R $C316 HL Screen position
+R $C316 C Column count
   $C316,$03 #REGa=*#R$C128.
   $C319,$01 Set flags.
   $C31A,$03 Call #R$C3E4 if #REGa is equal to #N$00.
@@ -13887,16 +14593,11 @@ c $C316
   $C379,$03 Restore #REGde, #REGhl and #REGbc from the stack.
   $C37C,$01 Return.
 
-c $C37D
+c $C37D Advance Screen Position
+@ $C37D label=AdvanceScreenPosition
+R $C37D HL Screen position
+R $C37D O:HL Updated screen position
   $C37D,$01 Exchange the #REGde and #REGhl registers.
-  $C37E,$01 #REGa=#REGl.
-  $C37F,$02 #REGa+=#N$20.
-  $C381,$01 #REGl=#REGa.
-  $C382,$01 Return if #REGa is greater than #REGa.
-  $C383,$01 #REGa=#REGh.
-  $C384,$02 #REGa+=#N$08.
-  $C386,$01 #REGh=#REGa.
-  $C387,$01 Return.
 
 c $C388 Print Character
 @ $C388 label=PrintCharacter
@@ -14040,15 +14741,22 @@ N $C44B Did the player press "UP"?
   $C456,$07 Restore #REGbc, #REGde, #REGhl, #REGix and #REGiy from the stack.
   $C45D,$01 Return.
 
-c $C45E
+c $C45E Check Display Parameter
+@ $C45E label=CheckDisplayParameter
 
-c $C493
+c $C493 Check Display Flag Bit 3
+@ $C493 label=CheckDisplayFlagBit3
 
-c $C4B2
+c $C4B2 Check Display Flag Bit 2
+@ $C4B2 label=CheckDisplayFlagBit2
 
-c $C4D1
+c $C4D1 Process Display Action
+@ $C4D1 label=ProcessDisplayAction
 
-c $C821
+c $C821 Check Object Location Match
+@ $C821 label=CheckObjectLocationMatch
+R $C821 A Object ID
+R $C821 O:F Zero flag set if location matches
   $C821,$03 Stash #REGix and #REGbc on the stack.
   $C824,$03 Call #R$D237.
   $C827,$01 #REGb=#REGa.
@@ -14078,22 +14786,32 @@ c $C821
   $C85F,$03 Restore #REGbc and #REGix from the stack.
   $C862,$01 Return.
 
-c $C863
+c $C863 Get Object Location
+@ $C863 label=GetObjectLocation
+R $C863 A Object ID
+R $C863 O:A Location ID
   $C863,$02 Stash #REGix on the stack.
   $C865,$03 Call #R$D237.
   $C868,$03 Call #R$C86E.
   $C86B,$02 Restore #REGix from the stack.
   $C86D,$01 Return.
 
-c $C86E
+c $C86E Check Object Mother
+@ $C86E label=CheckObjectMother
 
-c $C8A7
+c $C8A7 Get Object Attribute
+@ $C8A7 label=GetObjectAttribute
+R $C8A7 A Object ID
+R $C8A7 O:A Object attribute byte
   $C8A7,$03 Call #R$D237.
   $C8AA,$03 #REGa=*#REGix+#N$00.
   $C8AD,$01 Decrease #REGa by one.
   $C8AE,$01 Return.
 
-c $C8AF
+c $C8AF Get Object Mother ID
+@ $C8AF label=GetObjectMotherID
+R $C8AF A Object ID
+R $C8AF O:A Mother object ID (or #N$FF if none)
   $C8AF,$03 Call #R$D237.
   $C8B2,$03 #REGa=*#REGix+#N$01.
   $C8B5,$03 Return if #REGa is equal to #N$FF.
@@ -14101,14 +14819,20 @@ c $C8AF
   $C8BB,$01 Return if #REGa is not equal to #N$FF.
   $C8BC,$02 Jump to #R$C8B2.
 
-c $C8BE
-  $C8BE,$03 Call #R$D237.
-  $C8C1,$04 Test bit 6 of *#REGix+#N$05.
+c $C8BE Test Object Has Special Description
+@ $C8BE label=TestObjectHasSpecialDescription
+R $C8BE A Object ID
+R $C8BE O:F Zero flag set if object has special description (bit 6 is set)
+  $C8BE,$03 Call #R$D237 to load the object data pointer.
+  $C8C1,$04 Test bit 6 of *#REGix+#N$05 (special description flag).
   $C8C5,$01 Return.
 
-c $C8C6
+c $C8C6 Process Object Attribute
+@ $C8C6 label=ProcessObjectAttribute_C8C6
 
-c $C8EF
+c $C8EF Set Object Pointers
+@ $C8EF label=SetObjectPointers
+  $C8EF,$07 Jump to #R$C90C if *#R$A034 is greater than or equal to #N$FE.
   $C8EF,$07 Jump to #R$C90C if *#R$A034 is greater than or equal to #N$FE.
   $C8F6,$05 Compare *#R$A00F with #N$05.
   $C8FB,$03 #REGa=*#R$A034.
@@ -14128,11 +14852,12 @@ c $C8EF
   $C924,$04 Write #REGix to *#R$A015.
   $C928,$01 Return.
 
-c $C929
+c $C929 Process Object Display Logic
+@ $C929 label=ProcessObjectDisplayLogic
   $C929,$03 Call #R$C8EF.
   $C92C,$07 Jump to #R$C972 if *#R$A034 is greater than or equal to #N$FE.
   $C933,$04 #REGix=*#R$A017.
-  $C937,$06 Jump to #R$C94D if bit 6 of *#REGix+#N$05 is not set.
+  $C937,$06 Jump to #R$C94D if the object doesn't have a special description (bit 6 of *#REGix+#N$05 is not set).
   $C93D,$01 #REGa=#N$00.
   $C93E,$03 Call #R$D1DC.
   $C941,$02 Jump to #R$C94D if #REGa is greater than or equal to #N$FE.
@@ -14165,7 +14890,9 @@ c $C929
   $C984,$03 #REGh=*#REGix+#N$02.
   $C987,$02 Jump to #R$C996.
 
-c $C989
+c $C989 Process Object Display With Pointer
+@ $C989 label=ProcessObjectDisplayWithPointer
+R $C989 IX Object pointer
   $C989,$03 #REGhl=#REGix (using the stack).
   $C98C,$01 Stash #REGhl on the stack.
   $C98D,$03 Call #R$C8EF.
@@ -14173,25 +14900,31 @@ c $C989
   $C993,$02 Restore #REGix from the stack.
   $C995,$01 Return.
 
-c $C996
+c $C996 Process Object Display Entry
+@ $C996 label=ProcessObjectDisplayEntry
 
 g $CB28
 W $CB28,$02
 W $CB2A,$02
 
-c $CB2C
+c $CB2C Save And Restore Pointers
+@ $CB2C label=SaveAndRestorePointers
 
-c $CB43
+c $CB43 Process Display With Location Check
+@ $CB43 label=ProcessDisplayWithLocationCheck
 
 g $CB79
 B $CB79,$01
 B $CB7A,$01
 
-c $CB7B
+c $CB7B Get Display Address Based On Flag
+@ $CB7B label=GetDisplayAddressBasedOnFlag
 
-c $CBA7
+c $CBA7 Check Flag And Jump To Newline
+@ $CBA7 label=CheckFlagAndJumpToNewline
 
-c $CBC2
+c $CBC2 Process Character Display
+@ $CBC2 label=ProcessCharacterDisplay_CBC2
 
 g $CC0B
 B $CC0B,$01
@@ -14204,7 +14937,7 @@ R $CC0E A Character ID
 R $CC0E O:A The character ID or #N$FF if it wasn't found
 R $CC0E O:IY Pointer to character data
 R $CC0E O:F The zero flag will be set if the character wasn't found
-N $CC0E Stash some registers so they don't get corrrupted.
+N $CC0E Stash some registers so they don't get corrupted.
   $CC0E,$02 Stash #REGde and #REGbc on the stack.
   $CC10,$01 Store the character ID in #REGc.
   $CC11,$03 Load the length of the character data #N($0008,$04,$04) bytes into
@@ -14224,14 +14957,17 @@ N $CC26 Return with some housekeeping.
   $CC26,$02 Restore #REGbc and #REGde from the stack.
   $CC28,$01 Return.
 
-c $CC29
+c $CC29 Set Character Pointer And ID
+@ $CC29 label=SetCharacterPointerAndID
   $CC29,$03 #REGa=*#R$A036.
   $CC2C,$03 Call #R$D495.
   $CC2F,$04 Write #REGix to *#R$A017.
   $CC33,$03 Write #REGa to *#R$A00A.
   $CC36,$01 Return.
 
-c $CC37
+c $CC37 Process Character Action
+@ $CC37 label=ProcessCharacterAction
+R $CC37 A Character ID
   $CC37,$01 Stash the character ID on the stack briefly.
   $CC38,$04 Write #N$00 to *#R$CC0B.
   $CC3C,$01 Restore the character ID from the stack.
@@ -14306,7 +15042,9 @@ c $CCC7 Execute Character Command
   $CCEC,$04 Jump to #R$CD47 for command type #N$09.
   $CCF0,$03 Jump to #R$CE18.
 
-c $CCF3
+c $CCF3 Handle Command Type 0E/0C/0B/0A
+@ $CCF3 label=HandleCommandType_0E_0C_0B_0A
+R $CCF3 A Command type
   $CCF3,$04 Jump to #R$CD06 if #REGa is not equal to #N$0E.
   $CCF7,$06 Write *#REGix+#N$01 to *#REGiy+#N$01.
   $CCFD,$06 Write *#REGix+#N$02 to *#REGiy+#N$02.
@@ -14378,7 +15116,9 @@ c $CD95 Handle Display Text
   $CD9B,$03 Call #R$A59F.
   $CD9E,$03 Jump to #R$CE8F.
 
-c $CDA1
+c $CDA1 Handle Display Room Description
+@ $CDA1 label=HandleDisplayRoomDescription
+R $CDA1 IX Script pointer
   $CDA1,$03 #REGl=*#REGix+#N$02.
   $CDA4,$03 #REGh=*#REGix+#N$03.
   $CDA7,$01 Stash #REGhl on the stack.
@@ -14443,7 +15183,8 @@ c $CE3B HandleRoomDisplay
   $CE4A,$03 Write the room graphics parameter to *#R$A035.
   $CE4D,$02 Jump to #R$CE57.
 
-c $CE4F
+c $CE4F Clear Room Display Parameters
+@ $CE4F label=ClearRoomDisplayParameters
   $CE4F,$08 Write #N$FF to; #LIST { *#R$A034 } { *#R$A035 } LIST#
 
 @ $CE57 label=ShowRoomDescription
@@ -14491,37 +15232,177 @@ c $CE8F Continue Script Execution
   $CEB2,$03 Write #REGh to *#REGiy+#N$02.
   $CEB5,$03 Jump to #R$CD91.
 
-c $CEB8
-  $CEB8,$04 Increment *#R$CC0B by one.
-  $CEBC,$03 Call #R$CE83.
-  $CEBF,$03 Call #R$CEFE.
-  $CEC2,$06 Jump to #R$CECC if bit 4 of *#REGix+#N$00 is not set.
-  $CEC8,$01 #REGe=*#REGhl.
-  $CEC9,$01 Increment #REGhl by one.
-  $CECA,$01 #REGd=*#REGhl.
-  $CECB,$01 Exchange the #REGde and #REGhl registers.
-  $CECC,$03 Write #REGl to *#REGiy+#N$01.
-  $CECF,$03 Write #REGh to *#REGiy+#N$02.
-  $CED2,$03 #REGde=#REGix (using the stack).
-  $CED5,$03 #REGhl-=#REGde (with carry).
-  $CED8,$03 Jump to #R$CD8B if #REGhl is equal to #REGa.
-  $CEDB,$03 Jump to #R$CC82.
+c $CEB8 Process Script Command With Counter
+@ $CEB8 label=ProcessScriptCommandWithCounter
+R $CEB8 A Counter value (maximum number of commands to process)
+D $CEB8 Processes a character script command, tracking how many commands have been executed. If the counter limit is reached, the script is terminated.
+  $CEB8,$04 Increment the script command counter.
+  $CEBC,$03 Get the current script state (command byte and position).
+  $CEBF,$03 Process the command byte and advance the script pointer.
+  $CEC2,$06 Jump to #R$CECC if bit 4 is not set (no pointer to load).
+  $CEC8,$04 Load the script pointer from the command data (two bytes into #REGde).
+@ $CECC label=ProcessScriptCommandWithCounter_UpdatePosition
+  $CECC,$03 Update the character's script position pointer (#REGiy+#N$01/#N$02).
+  $CED2,$06 Calculate how many bytes have been processed in the script (#REGhl-#REGix).
+  $CED8,$03 Jump to #R$CD8B if the counter limit has been reached (#REGhl equals #REGa).
+  $CEDB,$03 Jump to #R$CC82 (continue processing the next script command).
 
-c $CEDE
+c $CEDE Process Room Display Parameter
+@ $CEDE label=ProcessRoomDisplayParameter
+R $CEDE A Parameter value (#N$F5-#N$FE are special values)
+R $CEDE O:A Resolved parameter value
+D $CEDE Resolves special parameter values used in room display scripts to actual game values (current room, character ID, location value).
+  $CEDE,$03 Return unchanged if the parameter is not a special value (less than #N$F5).
+  $CEE1,$03 Return unchanged if the parameter is not a special value (greater than #N$FE).
+  $CEE4,$04 Jump to #R$CEEC if not room parameter (#N$FA).
+  $CEE8,$03 Return the current room ID (#REGa=*#R$9FD6).
+@ $CEEC label=ProcessRoomDisplayParameter_CheckCharacterID
+  $CEEC,$04 Jump to #R$CEF4 if not character ID parameter (#N$FB).
+  $CEF0,$03 Return the current character ID (#REGa=*#R$A036).
+@ $CEF4 label=ProcessRoomDisplayParameter_GetLocationValue
+  $CEF4,$05 Return the location value (high byte) if parameter is #N$FC, otherwise return the location value (low byte).
 
-c $CEFE
+c $CEFE Advance Script Pointer By Command Size
+@ $CEFE label=AdvanceScriptPointerByCommandSize
+R $CEFE A Command byte
+R $CEFE O:HL Updated script pointer
+D $CEFE Advances the script pointer past a command byte by the appropriate number of bytes based on the command type. Different command types have different data sizes, so the pointer must be advanced accordingly.
+N $CEFE Extended commands (bit 7 set) require an extra 2-byte advance before the normal command type advance.
+  $CEFE,$05 Call #R$CF40 if bit 7 is set (extended command).
+@ $CF03 label=AdvanceScriptPointerByCommandSize_ExtractType
+  $CF03,$02,b$01 Extract the command type (bits 0-3).
+N $CF05 Route to the appropriate handler based on command type to advance the script pointer by the correct number of bytes.
+  $CF05,$04 Jump to #R$CF41 for command type #N$0F.
+  $CF09,$0C Jump to #R$CF40 for command types: #LIST { #N$08 } { #N$09 } { #N$01 } LIST#
+  $CF15,$04 Jump to #R$CF3E for command type #N$02.
+  $CF19,$04 Jump to #R$CF3F for command type #N$03.
+  $CF1D,$04 Jump to #R$CF40 for command type #N$0D.
+  $CF21,$04 Jump to #R$CF3F for command type #N$0E.
+  $CF25,$08 Jump to #R$CF3D for command types: #LIST { #N$07 } { #N$0C } LIST#
+  $CF2D,$08 Jump to #R$CF41 for command types: #LIST { #N$0B } { #N$0A } LIST#
+  $CF35,$04 Jump to #R$CF3E for command type #N$05.
+  $CF39,$04 Jump to #R$CF3F for command type #N$04.
+@ $CF3D label=AdvanceScriptPointerByCommandSize_AdvanceFive
+  $CF3D,$01 Advance #REGhl by five bytes.
+@ $CF3E label=AdvanceScriptPointerByCommandSize_AdvanceFour
+  $CF3E,$01 Advance #REGhl by four bytes.
+@ $CF3F label=AdvanceScriptPointerByCommandSize_AdvanceThree
+  $CF3F,$01 Advance #REGhl by three bytes.
+@ $CF40 label=AdvanceScriptPointerByCommandSize_AdvanceTwo
+  $CF40,$01 Advance #REGhl by two bytes.
+@ $CF41 label=AdvanceScriptPointerByCommandSize_AdvanceOne
+  $CF41,$01 Advance #REGhl by one byte.
+  $CF42,$01 Return.
 
-c $CF43
+c $CF43 Clear Script Command Flags
+@ $CF43 label=ClearScriptCommandFlags
+R $CF43 IX Pointer to script command data
+D $CF43 Clears flag bytes in a script command based on the command type and flag bits. Different command types require clearing different numbers of flag bytes to mark them as processed.
+  $CF43,$03 Read the command flag byte.
+N $CF46 Clear the first flag byte if certain flag bits are set, indicating those conditions have been processed.
+  $CF46,$05 Call #R$CF73 if bit 7 is set.
+  $CF4B,$05 Call #R$CF73 if bit 4 is set.
+  $CF50,$02,b$01 Extract the command type (bits 0-3).
+N $CF52 Route to the appropriate handler based on command type to clear the required number of flag bytes.
+  $CF52,$04 Jump to #R$CF73 for command type #N$01.
+  $CF56,$0C Jump to #R$CF6B for command types: #LIST { #N$02 } { #N$05 } { #N$07 } LIST#
+  $CF62,$04 Jump to #R$CF70 for command type #N$06.
+  $CF66,$02 Call #R$CF79 for command type #N$04.
+@ $CF68 label=ClearScriptCommandFlags_ClearOne
+  $CF68,$03 Clear one flag byte.
+@ $CF6B label=ClearScriptCommandFlags_ClearTwo
+  $CF6B,$03 Call #R$CF73 for command type #N$04 (alternative path).
+  $CF6E,$02 Call #R$CF79 for command type #N$03.
+@ $CF70 label=ClearScriptCommandFlags_ClearOneAlt
+  $CF70,$03 Clear one flag byte.
+@ $CF73 label=ClearScriptCommandFlags_ClearFirst
+  $CF73,$04 Clear the first flag byte.
+  $CF77,$02 Advance the pointer.
+@ $CF79 label=ClearScriptCommandFlags_ClearSecond
+  $CF79,$04 Clear the second flag byte.
+  $CF7D,$02 Advance the pointer.
+  $CF7F,$01 Return.
 
-c $CF80
+c $CF80 Allocate Memory And Store Character
+@ $CF80 label=AllocateMemoryAndStoreCharacter
+R $CF80 HL Character location co-ordinates
+R $CF80 B Character attribute value
+D $CF80 Creates a new character entry in the character tracking system and adds it to the active character list, storing the character's current state for game logic purposes.
+  $CF80,$02 Stash the pointer register on the stack.
+  $CF82,$02 Allocate #N$07 bytes of memory for the character entry.
+  $CF84,$03 Call #R$A11C.
+  $CF87,$06 Store *#R$A036 in the entry.
+  $CF8D,$06 Store the character's location co-ordinates in the entry.
+  $CF93,$0A Store *#R$A034 in the entry.
+@ $CF9D label=AllocateMemoryAndStoreCharacter_StoreAttribute
+  $CF9D,$03 Store the character's attribute value in the entry.
+  $CFA0,$06 Store *#R$9FD6 in the entry.
+  $CFA6,$03 Get the current head of *#R$9FE9.
+  $CFA9,$04 Add this character entry to the front of the active character list.
+  $CFAD,$06 Set up the backward link to maintain the list structure.
+  $CFB3,$02 Restore the pointer register from the stack.
+  $CFB5,$01 Return.
 
-c $CFB6
+c $CFB6 Find Character Script Entry
+@ $CFB6 label=FindCharacterScriptEntry
+R $CFB6 O:IX Character script entry pointer (if found)
+R $CFB6 O:A #N$00 if not found, bit 0 set if found
+D $CFB6 Searches through the character script entry list to find an entry matching the current character ID. Returns the entry pointer if found, otherwise returns #N$00.
+  $CFB6,$03 #REGa=*#R$A036.
+@ $CFB9 label=FindCharacterScriptEntry_StartSearch
+  $CFB9,$04 #REGix=*#R$9FEB.
+@ $CFBD label=FindCharacterScriptEntry_Loop
+  $CFBD,$01 Stash the current character ID on the stack.
+  $CFBE,$03 Call #R$A0F7.
+  $CFC1,$02 Jump to #R$CFCC if the end of the list has been reached.
+  $CFC3,$01 Restore the current character ID from the stack.
+  $CFC4,$05 Jump to #R$CFBD if this entry doesn't match the character ID.
+  $CFC9,$02,b$01 Mark that the entry was found.
+  $CFCB,$01 Return with the entry pointer.
+@ $CFCC label=FindCharacterScriptEntry_NotFound
+N $CFCC No matching entry was found in the list.
+  $CFCC,$01 Restore the current character ID from the stack.
+  $CFCD,$02 Return #N$00 (entry not found).
 
-c $CFCF
+c $CFCF Get Script Pointer
+@ $CFCF label=GetScriptPointer
+  $CFCF,$03 Call #R$CFB6.
+  $CFD2,$03 #REGe=*#REGix+#N$01.
+  $CFD5,$03 #REGd=*#REGix+#N$02.
+  $CFD8,$04 Write #REGde to *#R$9FD9.
+  $CFDC,$03 Write #REGe to *#REGiy+#N$01.
+  $CFDF,$03 Write #REGd to *#REGiy+#N$02.
+  $CFE2,$03 #REGde=#REGix (using the stack).
+  $CFE5,$02 Stash #REGiy on the stack.
+  $CFE7,$04 #REGiy=#R$9FE9.
+  $CFEB,$03 Call #R$A104.
+  $CFEE,$03 #REGl=*#REGix-#N$02.
+  $CFF1,$03 #REGh=*#REGix-#N$01.
+  $CFF4,$03 Write #REGl to *#REGiy-#N$02.
+  $CFF7,$03 Write #REGh to *#REGiy-#N$01.
+  $CFFA,$03 #REGa=*#REGix+#N$05.
+  $CFFD,$01 Stash #REGaf on the stack.
+  $CFFE,$03 Call #R$A1C7.
+  $D001,$03 Call #R$D008.
+  $D004,$03 Restore #REGaf and #REGiy from the stack.
+  $D007,$01 Return.
 
-c $D008
+c $D008 Get Script Pointer From Timetable
+@ $D008 label=GetScriptPointerFromTimetable
+  $D008,$03 #REGl=*#REGiy+#N$04.
+  $D00B,$03 #REGh=*#REGiy+#N$05.
+  $D00E,$03 Call #R$CFB6.
+  $D011,$03 #REGa=*#REGiy+#N$03.
+  $D014,$02 Jump to #R$D01F if #R$CFB6???
+  $D016,$03 #REGl=*#REGix+#N$03.
+  $D019,$03 #REGh=*#REGix+#N$04.
+  $D01C,$03 #REGa=*#REGix+#N$06.
+  $D01F,$03 Write #REGa to *#R$9FD6.
+  $D022,$03 Write #REGhl to *#R$9FD7.
+  $D025,$01 Return.
 
-c $D026
+c $D026 Update Script Pointer
+@ $D026 label=UpdateScriptPointer
 
 c $D045 Is Sherlock Wearing The China Man Disguise?
 @ $D045 label=IsSherlockTheChinaMan
@@ -14548,7 +15429,9 @@ g $D064 Table: Direction Tokens
 W $D064 "#R($5DBF+(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))".
 L $D064,$02,$0A
 
-c $D078
+c $D078 Check Object Visibility
+@ $D078 label=CheckObjectVisibility
+R $D078 O:F Carry flag set if object is visible
   $D078,$05 Stash #REGix, #REGiy and #REGbc on the stack.
   $D07D,$04 #REGix=*#R$A017.
   $D081,$03 #REGa=*#REGix+#N$04.
@@ -14583,7 +15466,10 @@ N $D09E It's late night/ evening (8 PM - 5 AM).
   $D0CA,$05 Restore #REGbc, #REGiy and #REGix from the stack.
   $D0CF,$01 Return.
 
-c $D0D0
+c $D0D0 Write Token To Buffer
+@ $D0D0 label=WriteTokenToBuffer
+R $D0D0 HL Pointer to output buffer
+R $D0D0 DE Token value (word)
   $D0D0,$01 Stash #REGde on the stack.
   $D0D1,$03 #REGde=#R$68DE.
   $D0D4,$01 Exchange the #REGde and #REGhl registers.
@@ -14594,10 +15480,15 @@ c $D0D0
   $D0DA,$01 Restore #REGde from the stack.
   $D0DB,$01 Return.
 
-g $D0DC
+g $D0DC Location Token Processing Flag
+@ $D0DC label=LocationTokenProcessingFlag
+D $D0DC Flag that enables location token processing in ProcessLocationToken.
+. When set to #N$01, location token data is processed and when #N$00, processing is skipped.
 B $D0DC,$01
 
-c $D0DD
+c $D0DD Process Location Token
+@ $D0DD label=ProcessLocationToken
+R $D0DD A Room ID
   $D0DD,$01 Stash #REGaf on the stack.
   $D0DE,$03 Call #R$D224.
   $D0E1,$03 #REGa=*#R$D0DC.
@@ -14619,16 +15510,20 @@ c $D0DD
   $D100,$01 Restore #REGaf from the stack.
   $D101,$01 Return.
 
-c $D102
+c $D102 Process Location Token Display
+@ $D102 label=ProcessLocationTokenDisplay
 
   $D135,$03 #REGhl=#R$68DD.
   $D138,$03 Call #R$A59F.
 
-c $D1B2
+c $D1B2 Process Object Display With Check
+@ $D1B2 label=ProcessObjectDisplayWithCheck
 
-c $D1DB
+c $D1DB Jump To Handler
+@ $D1DB label=JumpToHandler
 
-c $D1DC
+c $D1DC Calculate Handler Offset
+@ $D1DC label=CalculateHandlerOffset
 
 c $D206 Fetch Next Object
 @ $D206 label=FetchNextObject
@@ -14644,7 +15539,11 @@ R $D206 O:F The zero flag is set if the end of the table is reached
   $D21A,$01 Switch back to the normal registers.
   $D21B,$01 Return.
 
-c $D21C
+c $D21C Fetch Next Object With ID
+@ $D21C label=FetchNextObjectWithID
+R $D21C A Object ID to search for
+R $D21C O:A Object ID (or #N$FF if not found)
+R $D21C O:F Zero flag set if object found
   $D21C,$01 Stash #REGbc on the stack.
   $D21D,$01 #REGb=#REGa.
   $D21E,$03 Call #R$D206.
@@ -14684,7 +15583,10 @@ N $D23F Pretty clever way of using the stack here.
   $D246,$02 Restore the object pointer into #REGix (from the stack).
   $D248,$01 Return.
 
-c $D249
+c $D249 Process Object Location Recursively
+@ $D249 label=ProcessObjectLocationRecursively
+R $D249 A Object ID
+R $D249 B Location ID
   $D249,$04 Stash #REGiy and #REGix on the stack.
   $D24D,$03 Call #R$D04F.
   $D250,$03 Call #R$D21C.
@@ -14699,22 +15601,30 @@ c $D249
   $D267,$04 Restore #REGix and #REGiy from the stack.
   $D26B,$01 Return.
 
-c $D26C
+c $D26C Process Object From A034
+@ $D26C label=ProcessObjectFromA034_D26C
   $D26C,$01 Stash #REGhl on the stack.
   $D26D,$03 #REGa=*#R$A034.
   $D270,$03 Call #R$D275.
   $D273,$01 Restore #REGhl from the stack.
   $D274,$01 Return.
 
-c $D275
+c $D275 Check Character ID Range
+@ $D275 label=CheckCharacterIDRange
 
-c $D29D
+c $D29D Get Character Attribute
+@ $D29D label=GetCharacterAttribute
 
-c $D2A4
+c $D2A4 Get Character Attribute With Sign
+@ $D2A4 label=GetCharacterAttributeWithSign
 
-c $D2F2
+c $D2F2 Get Object Attribute Value
+@ $D2F2 label=GetObjectAttributeValue
 
-c $D33C
+c $D33C Fetch Current Character Location
+@ $D33C label=FetchCurrentCharacterLocation
+R $D33C O:IX Pointer to location data
+  $D33C,$01 Stash #REGaf on the stack.
   $D33C,$01 Stash #REGaf on the stack.
   $D33D,$04 #REGix=*#R$A017.
   $D341,$03 #REGa=*#REGix+#N$0F.
@@ -14756,13 +15666,24 @@ N $D363 Either the table ID was matched, or the terminator was reached.
   $D368,$01 Switch back to the normal registers.
   $D369,$01 Return.
 
-c $D36A
+c $D36A Process Object Entry
+@ $D36A label=ProcessObjectEntry
 
-c $D3E8
+c $D39B Process Object Entry Alternate
+@ $D39B label=ProcessObjectEntryAlternate
+D $D39B Alternate routine for processing objects when display mode is less than 5.
 
-c $D405
+  $D3D5
+  $D3D9
 
-c $D471
+c $D3E8 Check Object Has Special Description
+@ $D3E8 label=CheckObjectHasSpecialDescription
+
+c $D405 Check Object Attribute With Flag
+@ $D405 label=CheckObjectAttributeWithFlag
+
+c $D471 Process Object Display Type
+@ $D471 label=ProcessObjectDisplayType
 
 c $D495 Is The Character Wearing The China Man Disguise?
 @ $D495 label=IsCharacterTheChinaMan
@@ -14779,168 +15700,234 @@ N $D4A3 The character is wearing the disguise, so return with the attribute
   $D4A3,$03 #REGa=*#REGix+#N$0F.
   $D4A6,$01 Return.
 
-c $D4A7
+c $D4A7 Print Object List
+@ $D4A7 label=PrintObjectList
   $D4A7,$04 Stash #REGiy, #REGaf and #REGbc on the stack.
-  $D4AB,$02 #REGa=#N$FF.
+  $D4AB,$02 Set the location ID to #N$FF (current character location).
   $D4AD,$03 Call #R$D4CC.
-  $D4B0,$02 Jump to #R$D4C7 if #REGa is equal to #N$FF.
-  $D4B2,$01 Stash #REGaf on the stack.
-N $D4B3 Print "#TEXTTOKEN($68E4)".
-  $D4B3,$03 #REGhl=#R$68E4.
-  $D4B6,$03 Call #R$A59F.
-  $D4B9,$01 Restore #REGbc from the stack.
-  $D4BA,$01 #REGc=#REGb.
-  $D4BB,$02 #REGa=#N$FF.
-  $D4BD,$04 #REGiy=*#R$A017.
-  $D4C1,$03 #REGb=*#REGiy+#N$0F.
+N $D4B0 Skip printing if no objects were found.
+  $D4B0,$02 Jump to #R$D4C7 if no objects were found (count is #N$FF).
+  $D4B2,$01 Stash the object count on the stack for later use.
+N $D4B3 Print the introductory text for the object list.
+  $D4B3,$03 Load the address of the introductory text token into #REGhl.
+  $D4B6,$03 Call #R$A59F to print the text token.
+  $D4B9,$01 Restore the object count from the stack.
+  $D4BA,$01 Store the object count in #REGc.
+  $D4BB,$02 Set the location ID to #N$FF (current character location) again.
+  $D4BD,$04 Load *#R$A017 into #REGiy.
+  $D4C1,$03 Fetch the current character's location ID from the character data into #REGb.
   $D4C4,$03 Call #R$D51A.
+@ $D4C7 label=PrintObjectList_End
   $D4C7,$04 Restore #REGbc, #REGaf and #REGiy from the stack.
   $D4CB,$01 Return.
 
-c $D4CC
+c $D4CC Count Objects In Location
+@ $D4CC label=CountObjectsInLocation
+R $D4CC A Location ID (or #N$FF for current character location)
+R $D4CC O:A Count of visible objects found in the specified location
   $D4CC,$06 Stash #REGix, #REGiy, #REGhl and #REGbc on the stack.
-  $D4D2,$03 Call #R$D04F.
-  $D4D5,$02 #REGb=#N$00.
-  $D4D7,$01 #REGc=#REGa.
+  $D4D2,$03 Call #R$D04F to set up the object table pointer.
+  $D4D5,$02 Initialise the object counter in #REGb to zero.
+  $D4D7,$01 Store the location ID in #REGc for later use.
+@ $D4D8 label=CountObjectsInLocation_Loop
   $D4D8,$03 Call #R$D206.
-  $D4DB,$02 Jump to #R$D4E6 if the terminator character was reached (#N$FF).
-  $D4DD,$01 #REGa=#REGc.
-  $D4DE,$03 Call #R$D4EF.
-  $D4E1,$02 Jump to #R$D4D8 if #REGa is greater than or equal to #N$00.
-  $D4E3,$01 Increment #REGb by one.
-  $D4E4,$02 Jump to #R$D4D8.
-  $D4E6,$01 #REGa=#REGb.
-  $D4E7,$01 Set flags.
+  $D4DB,$02 Jump to #R$D4E6 if we've reached the end of the object table (#N$FF).
+  $D4DD,$01 Restore the location ID from #REGc into #REGa.
+  $D4DE,$03 Call #R$D4EF to check if this object matches the location and visibility criteria.
+N $D4E1 Skip this object if it doesn't match the criteria (carry flag not set).
+  $D4E1,$02 Jump back to #R$D4D8 to continue checking objects if this one doesn't match.
+N $D4E3 This object matches the criteria, so count it.
+  $D4E3,$01 Increment the object counter in #REGb by one.
+  $D4E4,$02 Jump back to #R$D4D8 to check the next object.
+@ $D4E6 label=CountObjectsInLocation_End
+  $D4E6,$01 Transfer the object count from #REGb to #REGa.
+  $D4E7,$01 Set flags based on the count (zero flag set if no objects found).
   $D4E8,$06 Restore #REGbc, #REGhl, #REGiy and #REGix from the stack.
   $D4EE,$01 Return.
 
-c $D4EF
-  $D4EF,$03 Compare #REGa with *#REGiy+#N$01.
-  $D4F2,$02 Jump to #R$D518 if #REGb is not equal to #REGa.
-  $D4F4,$03 #REGa=*#R$A036.
-  $D4F7,$03 Compare #REGa with *#REGix+#N$00.
-  $D4FA,$02 Jump to #R$D518 if #REGb is equal to #REGa.
-  $D4FC,$03 #REGa=*#REGix+#N$00.
+c $D4EF Check Object Match Criteria
+@ $D4EF label=CheckObjectMatchCriteria
+R $D4EF A Object ID
+R $D4EF B Location ID
+R $D4EF O:F Carry flag set if object matches all criteria (location, visibility, type, etc.)
+N $D4EF Check if the object is in the specified location.
+  $D4EF,$05 Jump to #R$D518 if the object's location (from *#REGiy+#N$01) doesn't match the requested location ID.
+N $D4F4 Check if the object belongs to the current character.
+  $D4F4,$08 Jump to #R$D518 if the object belongs to the current character (compare #R$A036 with the object's character ID from *#REGix+#N$00).
+N $D4FC Check if the object is visible to the current character.
+  $D4FC,$03 Load the object's character ID into #REGa.
   $D4FF,$03 Call #R$C821.
-  $D502,$02 Jump to #R$D518 if #REGb is equal to #REGa.
-  $D504,$03 #REGa=*#REGiy+#N$00.
-  $D507,$02 Compare #REGa with #N$02.
-  $D509,$02 Jump to #R$D518 if #REGa is greater than or equal to #N$02.
+  $D502,$02 Jump to #R$D518 if the object is not visible (doesn't match criteria).
+N $D504 Check the object type.
+  $D504,$07 Jump to #R$D518 if the object type (from *#REGiy+#N$00) is #N$02 or greater (doesn't match criteria).
+N $D50B Perform final validation check.
   $D50B,$03 #REGa=*#R$A036.
-  $D50E,$02 Stash #REGix on the stack.
-  $D510,$01 Restore #REGhl from the stack.
-  $D511,$03 Call #R$D278.
-  $D514,$02 Jump to #R$D518 if #REGa is less than #N$02.
-  $D516,$01 Set the carry flag.
-  $D517,$01 Return.
-  $D518,$01 Set flags.
-  $D519,$01 Return.
+  $D50E,$03 Copy #REGix into #REGhl using the stack.
+  $D511,$03 Call #R$D278 to perform an additional validation check.
+  $D514,$02 Jump to #R$D518 if the validation check fails (#REGa is less than #N$02).
+N $D516 All checks passed - object matches the criteria.
+  $D516,$01 Set the carry flag to indicate the object matches.
+  $D517,$01 Return with carry flag set.
+N $D518 Object doesn't match any criteria.
+@ $D518 label=CheckObjectMatchCriteria_NoMatch
+  $D518,$01 Clear the carry flag (object doesn't match criteria).
+  $D519,$01 Return with carry flag clear.
 
-c $D51A
+c $D51A Print Object List With Formatting
+@ $D51A label=PrintObjectListWithFormatting
+R $D51A B Location ID
   $D51A,$04 Stash #REGiy, #REGde and #REGbc on the stack.
   $D51E,$03 Call #R$D526.
   $D521,$04 Restore #REGbc, #REGde and #REGiy from the stack.
   $D525,$01 Return.
 
-c $D526
-  $D526,$02 Stash #REGix on the stack.
-  $D528,$03 Call #R$D04F.
-  $D52B,$01 Stash #REGaf on the stack.
-  $D52C,$03 Call #R$D57D.
-  $D52F,$02 Jump to #R$D55A if #REGa is less than #REGa.
-  $D531,$04 Set bit 7 of *#REGiy+#N$06.
-  $D535,$01 #REGa-=#REGa.
-  $D536,$03 Write #REGa to *#R$A028.
-  $D539,$03 Call #R$D3D9.
-  $D53C,$01 Decrease #REGc by one.
-  $D53D,$01 #REGa=#REGc.
-  $D53E,$01 Set flags.
-  $D53F,$02 Jump to #R$D546 if #REGc is not equal to #REGa.
-  $D541,$03 Call #R$A414.
-  $D544,$02 Jump to #R$D557.
-  $D546,$02 Compare #REGa with #N$01.
-  $D548,$02 Jump to #R$D551 if #REGa is equal to #N$01.
-  $D54A,$02 #REGa=#N$2C.
-  $D54C,$03 Call #R$A9B7.
-  $D54F,$02 Jump to #R$D557.
-  $D551,$03 #REGde=#N($005D,$04,$04).
-  $D554,$03 Call #R$A887.
-  $D557,$01 Restore #REGaf from the stack.
-  $D558,$02 Jump to #R$D52B.
-  $D55A,$01 Restore #REGaf from the stack.
-  $D55B,$03 Call #R$D04F.
-  $D55E,$01 Stash #REGaf on the stack.
-  $D55F,$03 Call #R$D57D.
-  $D562,$02 Jump to #R$D578 if #REGa is less than #N$2C.
-  $D564,$01 Stash #REGaf on the stack.
-  $D565,$03 Call #R$D4CC.
-  $D568,$02 Jump to #R$D574 if #REGa is equal to #N$2C.
-  $D56A,$01 #REGc=#REGa.
-  $D56B,$01 Restore #REGaf from the stack.
-  $D56C,$03 Call #R$D590.
-  $D56F,$03 Call #R$D526.
-  $D572,$02 Jump to #R$D575.
-  $D574,$02 Restore #REGaf and #REGaf from the stack.
-  $D576,$02 Jump to #R$D55E.
-  $D578,$01 Restore #REGaf from the stack.
-  $D579,$02 Restore #REGix from the stack.
+c $D526 Print Formatted Object List
+@ $D526 label=PrintFormattedObjectList
+R $D526 IX Context pointer (preserved but not directly used)
+R $D526 A Object ID (starting object ID for the list, or #N$FF for all objects)
+  $D526,$02 Stash the context pointer (#REGix) on the stack.
+  $D528,$03 Call #R$D04F to set up the object table pointer.
+@ $D52B label=PrintFormattedObjectList_Loop
+  $D52B,$01 Stash the object ID on the stack.
+  $D52C,$03 Call #R$D57D to find the next matching object.
+N $D52F Check if we found a valid object to print.
+  $D52F,$02 Jump to #R$D55A if no matching object was found (carry flag not set).
+N $D531 Mark this object as processed and prepare to print its name.
+  $D531,$04 Set bit 7 of *#REGiy+#N$06 to mark the object as processed.
+  $D535,$01 Clear #REGa (set to zero).
+  $D536,$03 Write #N$00 to *#R$A028 (clear the object name buffer pointer).
+  $D539,$03 Call #R$D3D9 to print the object name.
+N $D53C Check how many objects remain to be printed.
+  $D53C,$01 Decrease #REGc (the remaining object counter) by one.
+  $D53D,$01 #REGa=#REGc (copy the counter value into #REGa).
+  $D53E,$01 Set flags based on the counter value in #REGa.
+  $D53F,$02 Jump to #R$D546 if there are more objects to print (#REGc is not zero).
+N $D541 Print separator for the last object in the list.
+  $D541,$03 Call #R$A414 to print the final separator.
+  $D544,$02 Jump to #R$D557 to continue the loop.
+@ $D546 label=PrintFormattedObjectList_CheckSeparator
+N $D546 Determine which separator to print based on how many objects remain.
+  $D546,$04 Jump to #R$D551 if this is the second-to-last object (compare #REGa with #N$01).
+N $D54A Print comma separator for multiple objects.
+  $D54A,$02 Load an ASCII comma (#N$2C) into #REGa.
+  $D54C,$03 Call #R$A9B7 to print the comma character.
+  $D54F,$02 Jump to #R$D557 to continue the loop.
+@ $D551 label=PrintFormattedObjectList_Print_And
+N $D551 Print "and" separator before the last object.
+  $D551,$03 #REGde=#N($005D,$04,$04) (load address of "and" text token into #REGde).
+  $D554,$03 Call #R$A887 to print the "and" text.
+@ $D557 label=PrintFormattedObjectList_LoopContinue
+  $D557,$01 Restore the object ID from the stack.
+  $D558,$02 Jump back to #R$D52B to process the next object.
+@ $D55A label=PrintFormattedObjectList_CheckNested
+N $D55A No more objects found in the main list - check for nested objects.
+  $D55A,$01 Restore the object ID from the stack.
+  $D55B,$03 Call #R$D04F to reset the object table pointer.
+@ $D55E label=PrintFormattedObjectList_NestedLoop
+  $D55E,$01 Stash the object ID on the stack.
+  $D55F,$03 Call #R$D57D to find nested objects.
+  $D562,$02 Jump to #R$D578 if no nested objects found (#REGa is less than #N$2C).
+N $D564 Check if there are multiple nested objects.
+  $D564,$01 Stash the object ID on the stack.
+  $D565,$03 Call #R$D4CC to count nested objects in the location.
+  $D568,$02 Jump to #R$D574 if there's only one nested object (#REGa equals #N$2C).
+N $D56A Print description and recursively print nested objects.
+  $D56A,$01 Store the object count in #REGc for later use.
+  $D56B,$01 Restore the object ID from the stack.
+  $D56C,$03 Call #R$D590 to print the object description.
+  $D56F,$03 Call #R$D526 to recursively print nested object names.
+  $D572,$02 Jump to #R$D575 (continue processing nested objects).
+@ $D574 label=PrintFormattedObjectList_SkipNested
+  $D574,$02 Restore the object ID twice (to clean up) from the stack.
+  $D576,$02 Jump back to #R$D55E to check for more nested objects.
+@ $D575 label=PrintFormattedObjectList_NestedDone
+@ $D578 label=PrintFormattedObjectList_End
+N $D578 No nested objects found - restore registers and return.
+  $D578,$01 Restore the object ID from the stack.
+  $D579,$02 Restore the context pointer (#REGix) from the stack.
   $D57B,$01 Return.
-  $D57C,$01 Restore #REGaf from the stack.
-  $D57D,$03 Call #R$D21C.
-  $D580,$02 Jump to #R$D584 if #REGa is not equal to #N$2C.
-  $D582,$01 Set the carry flag.
+
+c $D57C Find Next Matching Object
+@ $D57C label=FindNextMatchingObject
+  $D57C,$01 Restore the object ID from the stack.
+@ $D57D label=FindNextMatchingObject_Entry
+  $D57D,$03 Call #R$D21C to fetch the next object with the specified ID.
+  $D580,$02 Jump to #R$D584 if the object was not found (#REGa is not equal to #N$2C).
+N $D582 Object not found - return with carry flag set.
+  $D582,$01 Set the carry flag to indicate no object was found.
   $D583,$01 Return.
-  $D584,$01 Stash #REGaf on the stack.
-  $D585,$03 Call #R$D4EF.
-  $D588,$02 Jump to #R$D57C if #REGa is greater than or equal to #N$2C.
-  $D58A,$01 Restore #REGaf from the stack.
-  $D58B,$03 #REGa=*#REGix+#N$00.
-  $D58E,$01 Set flags.
-  $D58F,$01 Return.
+@ $D584 label=FindNextMatchingObject_CheckCriteria
+N $D584 Check if the object matches the location and visibility criteria.
+  $D584,$01 Stash the object ID on the stack.
+  $D585,$03 Call #R$D4EF to check if the object matches the location and visibility criteria.
+  $D588,$02 Jump to #R$D57C if the object doesn't match (#REGa is greater than or equal to #N$2C).
+@ $D58A label=FindNextMatchingObject_Found
+N $D58A Object matches - return with object ID.
+  $D58A,$01 Restore the object ID from the stack.
+  $D58B,$03 #REGa=*#REGix+#N$00 (load the object ID from the object data into #REGa).
+  $D58E,$01 Set flags based on the object ID in #REGa.
+  $D58F,$01 Return with the object ID in #REGa and carry flag clear.
 
-c $D590
-  $D590,$04 Stash #REGix, #REGbc and #REGaf on the stack.
-  $D594,$03 Call #R$D237.
-  $D597,$06 Jump to #R$D5A5 if bit 6 of *#REGix+#N$05 is not set.
-  $D59D,$01 Restore #REGaf from the stack.
-  $D59E,$02 Stash #REGaf and #REGaf on the stack.
-  $D5A0,$03 #REGhl=#R$68B1.
-  $D5A3,$02 Jump to #R$D5C1.
-
-  $D5A5,$03 #REGhl=#N$0485.
-  $D5A8,$01 Decrease #REGc by one.
-  $D5A9,$02 Jump to #R$D5AE if #REGc is equal to #REGa.
-  $D5AB,$03 #REGhl=#N($007A,$04,$04).
-  $D5AE,$01 Stash #REGhl on the stack.
-  $D5AF,$03 Call #R$D5D3.
-  $D5B2,$05 Write #N$01 to *#R$A2AA.
-  $D5B7,$03 Call #R$D3D5.
-  $D5BA,$04 Write #N$00 to *#R$A2AA.
-  $D5BE,$03 #REGhl=#R$68D9.
-  $D5C1,$03 Call #R$A59F.
-  $D5C4,$04 Restore #REGaf, #REGbc and #REGix from the stack.
+c $D590 Print Object Description
+@ $D590 label=PrintObjectDescription
+R $D590 A Object ID
+R $D590 C Description type (#N$00 or #N$01)
+  $D590,$04 Stash the object pointer, object count/ description type and object ID on the stack.
+  $D594,$03 Call #R$D237 to load the object data pointer into #REGix.
+  $D597,$06 Jump to #R$D5A5 if the object doesn't have a special description (bit 6 of *#REGix+#N$05 is not set).
+@ $D59D label=PrintObjectDescription_Special
+N $D59D Print the special description text for this object.
+  $D59D,$01 Restore the object ID from the stack.
+  $D59E,$02 Stash #REGaf and #REGaf (preserve flags) on the stack.
+  $D5A0,$03 #REGhl=#R$68B1 (load the address of the special description text token into #REGhl).
+  $D5A3,$02 Jump to #R$D5C1 to print the text.
+@ $D5A5 label=PrintObjectDescription_Standard
+N $D5A5 Determine which standard description text to use based on the description type.
+  $D5A5,$03 #REGhl=#N$0485 (load address for description type 0 text into #REGhl).
+  $D5A8,$01 Decrease #REGc (the description type) by one (check if description type is 1).
+  $D5A9,$02 Jump to #R$D5AE if description type is 0 (#REGc equals #REGa after decrement).
+  $D5AB,$03 #REGhl=#N($007A,$04,$04) (load address for description type 1 text into #REGhl).
+@ $D5AE label=PrintObjectDescription_PrintAttributes
+  $D5AE,$01 Stash the description text address on the stack.
+  $D5AF,$03 Call #R$D5D3 to print the object attribute description.
+  $D5B2,$05 Enable *#R$A2AA (write #N$01 to it).
+  $D5B7,$03 Call #R$D3D5 to print additional object information.
+  $D5BA,$04 Disable *#R$A2AA (write #N$00 to it).
+  $D5BE,$03 #REGhl=#R$68D9 (load the address of the closing text token into #REGhl).
+@ $D5C1 label=PrintObjectDescription_PrintText
+  $D5C1,$03 Call #R$A59F to print the text token.
+  $D5C4,$04 Restore the object ID, object count/ description type and the object pointer from the stack.
   $D5C8,$01 Return.
 
-b $D5C9
+g $D5C9 Table: Object Attribute Description Text Tokens
+@ $D5C9 label=Table_ObjectAttributeDescriptionTokens
+B $D5C9,$01
+L $D5C9,$01,$0A
 
-c $D5D3
-  $D5D3,$03 #REGhl=#R$D5C9.
-  $D5D6,$03 #REGa=*#REGix+#N$04.
-  $D5D9,$02,b$01 Keep only bits 0-2.
-  $D5DB,$02 Compare #REGa with #N$05.
-  $D5DD,$01 Stash #REGaf on the stack.
-  $D5DE,$01 Decrease #REGa by one.
-  $D5DF,$01 #REGe=#REGa.
-  $D5E0,$02 #REGd=#N$00.
-  $D5E2,$01 #REGhl+=#REGde.
-  $D5E3,$01 #REGhl+=#REGde.
-  $D5E4,$03 Call #R$A880.
-  $D5E7,$01 Restore #REGaf from the stack.
-  $D5E8,$01 Return if #REGa is not equal to #N$00.
-  $D5E9,$03 #REGde=#N$08DB.
-  $D5EC,$03 Jump to #R$A887.
+c $D5D3 Print Object Attribute Description
+@ $D5D3 label=PrintObjectAttributeDescription
+R $D5D3 IX Object pointer
+  $D5D3,$03 #REGhl=#R$D5C9 (load the address of the object attribute description text token table).
+N $D5D6 Extract the attribute type from the object data.
+  $D5D6,$03 #REGa=*#REGix+#N$04 (load the object attribute byte).
+  $D5D9,$02,b$01 Keep only bits 0-2 (extract the attribute type value, 0-7).
+  $D5DB,$02 Compare the attribute type with #N$05.
+  $D5DD,$01 Stash the comparison result on the stack.
+  $D5DE,$01 Decrease #REGa by one (convert to 0-based index for the table).
+  $D5DF,$03 Set #REGde to the index value (#REGe=#REGa, #REGd=#N$00).
+  $D5E2,$02 Add the index to the table base address twice (multiply by #N$02 for 2-byte word entries).
+  $D5E4,$03 Call #R$A880 to print the text token from the table.
+  $D5E7,$01 Restore the comparison result from the stack.
+  $D5E8,$01 Return if the attribute type was not #N$05 (original value was not #N$06).
+N $D5E9 Print an additional text token for attribute type #N$06.
+  $D5E9,$03 #REGde="#R($5DBF+$08DB)(#TOKEN($08DB))".
+  $D5EC,$03 Jump to #R$A887 to print the text token.
 
-c $D5EF
+c $D5EF Get Location Exit Data
+@ $D5EF label=GetLocationExitData
+R $D5EF A Room ID
+R $D5EF O:IX Pointer to exit data
+R $D5EF O:BC Exit data length (3 bytes)
   $D5EF,$03 Call #R$D224.
   $D5F2,$05 #REGix+=#N$0006.
   $D5F7,$03 #REGbc=#N$0003.
@@ -14961,7 +15948,9 @@ R $D5FB O:DE Address of token string
   $D607,$03 Fetch the token address from the table and load it into #REGde.
   $D60A,$01 Return.
 
-c $D60B
+c $D60B Print Location Exits
+@ $D60B label=PrintLocationExits
+R $D60B A Room ID
   $D60B,$06 Stash #REGbc, #REGde, #REGiy and #REGix on the stack.
   $D611,$03 Call #R$D5EF.
   $D614,$04 #REGiy=#REGix (using the stack).
@@ -14974,9 +15963,9 @@ c $D60B
   $D633,$03 #REGa=*#REGiy+#N$00.
   $D636,$03 Call #R$D5FB.
   $D639,$04 Jump to #R$D647 if #REGa is less than #N$09.
-  $D63D,$03 #REGde=#N($000A,$04,$04).
+  $D63D,$03 #REGde="#R($5DBF+$000A)(#TOKEN($000A))".
   $D640,$02 Jump to #R$D64D if #REGa is equal to #N$09.
-  $D642,$03 #REGde=#N($00E7,$04,$04).
+  $D642,$03 #REGde="#R($5DBF+$00E7)(#TOKEN($00E7))".
   $D645,$02 Jump to #R$D64D.
 
   $D647,$03 #REGhl=#R$68BC.
@@ -14993,7 +15982,11 @@ c $D60B
   $D66A,$06 Restore #REGix, #REGiy, #REGde and #REGbc from the stack.
   $D670,$01 Return.
 
-c $D671
+c $D671 Find Next Valid Exit
+@ $D671 label=FindNextValidExit
+R $D671 IX Pointer to exit data
+R $D671 BC Exit data length
+R $D671 O:F Zero flag set if valid exit found
   $D671,$02 #REGix+=#REGbc.
   $D673,$02 #REGa=#N$FF.
   $D675,$03 Compare #REGa with *#REGix+#N$00.
@@ -15009,7 +16002,9 @@ c $D671
   $D689,$02,b$01 Set bit 0.
   $D68B,$01 Return.
 
-c $D68C
+c $D68C Print Location Exits With Formatting
+@ $D68C label=PrintLocationExitsWithFormatting
+R $D68C A Room ID
   $D68C,$06 Stash #REGix, #REGiy, #REGde and #REGbc on the stack.
   $D692,$03 Call #R$D5EF.
   $D695,$03 Call #R$D671.
@@ -15027,24 +16022,106 @@ c $D68C
 
 g $D6B8
 
-c $DC15
+c $DC15 Return Zero
+@ $DC15 label=ReturnZero
 
-c $DC6C
+B $DC57,$05
+  $DC5C
 
-c $E151
+c $DC6C Check Character ID
+@ $DC6C label=CheckCharacterID
 
-g $E16B
-B $E16B,$01
-W $E16C,$02
+c $DD0B
+
+c $DD35
+
+c $DF5B Print Object Description Text
+@ $DF5B label=PrintObjectDescriptionText
+D $DF5B Prints the description text for an object specified by the room display parameter.
+. If the object has custom description text, that is printed; otherwise a default description is used.
+. Additional object information is then printed followed by a period.
+  $DF5B,$03 #REGa=*#R$A034.
+  $DF5E,$03 Call #R$D237.
+  $DF61,$04 Set bit 6 of *#REGix+#N$06.
+  $DF65,$06 Load the object's description text pointer from offsets #N$0D/#N$0E.
+  $DF6B,$05 Jump to #R$A59F if the object has custom description text.
+  $DF70,$03 #REGhl=#R$68E1.
+  $DF73,$03 Call #R$A59F.
+  $DF76,$03 Call #R$D3D5.
+  $DF79,$02 Load a period character (ASCII #N$2E) into #REGa.
+  $DF7B,$03 Jump to #R$A9B7.
+
+c $DFCC
+
+c $E03A
+
+c $E151 Lookup And Print Display Text
+@ $E151 label=LookupAndPrintDisplayText
+D $E151 Looks up a display text message based on the room display parameter and prints it to the screen.
+  $E151,$03 Call #R$DF5B.
+  $E154,$03 #REGa=*#R$A034.
+  $E157,$04 #REGix=*#R$E16B.
+  $E15B,$03 Call #R$D34E.
+  $E15E,$03 Return if no matching entry was found.
+  $E161,$06 Load the text token pointer from the table entry.
+  $E167,$03 Call #R$A59F.
+  $E16A,$01 Return.
+
+g $E16B Table: Display Entry Lookup
+@ $E16B label=Table_DisplayEntryLookup
+D $E16B Lookup table used by #R$E151 to map room display parameter values to text token pointers.
+. Each entry consists of a 1-byte parameter value followed by a 2-byte pointer to a text token buffer.
+B $E16B,$01 Parameter value.
+W $E16C,$02 Text token pointer.
 L $E16B,$03,$05
 B $E17A,$01 Terminator.
 
 c $E17B
 
-c $E691
+c $E619
 
-c $F1C1
-c $F555
-c $F55E
-c $F565
-c $F56E
+c $E63E
+
+c $E686
+
+c $E691 Process Character Attribute
+@ $E691 label=ProcessCharacterAttribute
+
+c $E6BC
+
+c $F1C1 Update Object Location
+@ $F1C1 label=UpdateObjectLocation
+
+c $F1D6
+
+g $F3A2
+
+c $F3C2
+
+c $F490
+
+c $F514
+
+c $F525
+
+c $F536
+
+c $F540
+
+c $F54A
+
+c $F555 Decrement E With Wrap
+@ $F555 label=DecrementEWithWrap
+
+c $F55E Increment D With Wrap
+@ $F55E label=IncrementDWithWrap
+
+c $F565 Decrement D With Wrap
+@ $F565 label=DecrementDWithWrap
+
+c $F56E Process Location Update
+@ $F56E label=ProcessLocationUpdate
+
+c $F5FB
+
+b $F60B
