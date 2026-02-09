@@ -36,101 +36,134 @@ Next: <a href="52990.html">52990</a>
 </td>
 </tr>
 </table>
-<div class="description">52958: Routine at CEDE</div>
+<div class="description">52958: Process Room Display Parameter</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="47414.html">47414</a>, <a href="52641.html">52641</a>, <a href="52795.html">HandleRoomDisplay</a> and <a href="52842.html">HandleSimpleAction</a>.
+Used by the routines at <a href="47414.html">ProcessScriptDisplay</a>, <a href="52641.html">HandleDisplayRoomDescription</a>, <a href="52795.html">HandleRoomDisplay</a> and <a href="52842.html">HandleSimpleAction</a>.
+</div>
+<div class="paragraph">
+Resolves special parameter values used in room display scripts to actual game values (current room, character ID, location value).
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Parameter value (245-254 are special values)</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Resolved parameter value</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">ProcessRoomDisplayParameter</td>
 <td class="address-2"><span id="52958"></span>52958</td>
 <td class="instruction">CP 245</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return unchanged if the parameter is not a special value (less than 245).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52960"></span>52960</td>
 <td class="instruction">RET C</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52961"></span>52961</td>
 <td class="instruction">CP 254</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return unchanged if the parameter is not a special value (greater than 254).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52963"></span>52963</td>
 <td class="instruction">RET NC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52964"></span>52964</td>
 <td class="instruction">CP 250</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="52958.html#52972">ProcessRoomDisplayParameter_CheckCharacterID</a> if not room parameter (250).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52966"></span>52966</td>
-<td class="instruction">JR NZ,<a href="52958.html#52972">52972</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="52958.html#52972">ProcessRoomDisplayParameter_CheckCharacterID</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52968"></span>52968</td>
 <td class="instruction">LD A,(40918)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return the current room ID (<span class="register">A</span>=*<a href="40918.html">CurrentRoom_ID</a>).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52971"></span>52971</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">ProcessRoomDisplayParameter_CheckCharacterID</td>
 <td class="address-2"><span id="52972"></span>52972</td>
 <td class="instruction">CP 251</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="52958.html#52980">ProcessRoomDisplayParameter_GetLocationValue</a> if not character ID parameter (251).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52974"></span>52974</td>
-<td class="instruction">JR NZ,<a href="52958.html#52980">52980</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="52958.html#52980">ProcessRoomDisplayParameter_GetLocationValue</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52976"></span>52976</td>
 <td class="instruction">LD A,(41014)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return the current character ID (<span class="register">A</span>=*<a href="41014.html">CurrentCharacter_ID</a>).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52979"></span>52979</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">ProcessRoomDisplayParameter_GetLocationValue</td>
 <td class="address-2"><span id="52980"></span>52980</td>
 <td class="instruction">CP 252</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return the location value (high byte) if parameter is 252 otherwise return the location value (low byte).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52982"></span>52982</td>
 <td class="instruction">LD A,(40920)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52985"></span>52985</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52986"></span>52986</td>
 <td class="instruction">LD A,(40919)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52989"></span>52989</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 </table>
 <table class="asm-navigation">

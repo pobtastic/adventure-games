@@ -36,26 +36,58 @@ Next: <a href="53059.html">53059</a>
 </td>
 </tr>
 </table>
-<div class="description">52990: Routine at CEFE</div>
+<div class="description">52990: Advance Script Pointer By Command Size</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="52920.html">52920</a>.
+Used by the routine at <a href="52920.html">ProcessScriptCommandWithCounter</a>.
+</div>
+<div class="paragraph">
+Advances the script pointer past a command byte by the appropriate number of bytes based on the command type. Different command types have different data sizes, so the pointer must be advanced accordingly.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Command byte</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">HL</td>
+<td class="register-desc">Updated script pointer</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52990"></span>
+<div class="comments">
+<div class="paragraph">
+Extended commands (bit 7 set) require an extra 2-byte advance before the normal command type advance.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">AdvanceScriptPointerByCommandSize</td>
 <td class="address-2"><span id="52990"></span>52990</td>
 <td class="instruction">BIT 7,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Call <a href="52990.html#53056">AdvanceScriptPointerByCommandSize_AdvanceTwo</a> if bit 7 is set (extended command).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52992"></span>52992</td>
-<td class="instruction">CALL NZ,<a href="52990.html#53056">53056</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL NZ,<a href="52990.html#53056">AdvanceScriptPointerByCommandSize_AdvanceTwo</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -68,164 +100,198 @@ This entry point is used by the routine at <a href="52879.html">ContinueScriptEx
 </td>
 </tr>
 <tr>
+<td class="asm-label">AdvanceScriptPointerByCommandSize_ExtractType</td>
 <td class="address-2"><span id="52995"></span>52995</td>
-<td class="instruction">AND 15</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">AND %00001111</td>
+<td class="comment-1" rowspan="1">Extract the command type (bits 0-3).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="52997"></span>
+<div class="comments">
+<div class="paragraph">
+Route to the appropriate handler based on command type to advance the script pointer by the correct number of bytes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52997"></span>52997</td>
 <td class="instruction">CP 15</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="52990.html#53057">AdvanceScriptPointerByCommandSize_AdvanceOne</a> for command type 15.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="52999"></span>52999</td>
-<td class="instruction">JR Z,<a href="52990.html#53057">53057</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53057">AdvanceScriptPointerByCommandSize_AdvanceOne</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53001"></span>53001</td>
 <td class="instruction">CP 8</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="6">Jump to <a href="52990.html#53056">AdvanceScriptPointerByCommandSize_AdvanceTwo</a> for command types: <ul class="">
+<li>8</li>
+<li>9</li>
+<li>1</li>
+</ul></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53003"></span>53003</td>
-<td class="instruction">JR Z,<a href="52990.html#53056">53056</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53056">AdvanceScriptPointerByCommandSize_AdvanceTwo</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53005"></span>53005</td>
 <td class="instruction">CP 9</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53007"></span>53007</td>
-<td class="instruction">JR Z,<a href="52990.html#53056">53056</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53056">AdvanceScriptPointerByCommandSize_AdvanceTwo</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53009"></span>53009</td>
 <td class="instruction">CP 1</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53011"></span>53011</td>
-<td class="instruction">JR Z,<a href="52990.html#53056">53056</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53056">AdvanceScriptPointerByCommandSize_AdvanceTwo</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53013"></span>53013</td>
 <td class="instruction">CP 2</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="52990.html#53054">AdvanceScriptPointerByCommandSize_AdvanceFour</a> for command type 2.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53015"></span>53015</td>
-<td class="instruction">JR Z,<a href="52990.html#53054">53054</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53054">AdvanceScriptPointerByCommandSize_AdvanceFour</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53017"></span>53017</td>
 <td class="instruction">CP 3</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="52990.html#53055">AdvanceScriptPointerByCommandSize_AdvanceThree</a> for command type 3.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53019"></span>53019</td>
-<td class="instruction">JR Z,<a href="52990.html#53055">53055</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53055">AdvanceScriptPointerByCommandSize_AdvanceThree</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53021"></span>53021</td>
 <td class="instruction">CP 13</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="52990.html#53056">AdvanceScriptPointerByCommandSize_AdvanceTwo</a> for command type 13.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53023"></span>53023</td>
-<td class="instruction">JR Z,<a href="52990.html#53056">53056</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53056">AdvanceScriptPointerByCommandSize_AdvanceTwo</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53025"></span>53025</td>
 <td class="instruction">CP 14</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="52990.html#53055">AdvanceScriptPointerByCommandSize_AdvanceThree</a> for command type 14.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53027"></span>53027</td>
-<td class="instruction">JR Z,<a href="52990.html#53055">53055</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53055">AdvanceScriptPointerByCommandSize_AdvanceThree</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53029"></span>53029</td>
 <td class="instruction">CP 7</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Jump to <a href="52990.html#53053">AdvanceScriptPointerByCommandSize_AdvanceFive</a> for command types: <ul class="">
+<li>7</li>
+<li>12</li>
+</ul></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53031"></span>53031</td>
-<td class="instruction">JR Z,<a href="52990.html#53053">53053</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53053">AdvanceScriptPointerByCommandSize_AdvanceFive</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53033"></span>53033</td>
 <td class="instruction">CP 12</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53035"></span>53035</td>
-<td class="instruction">JR Z,<a href="52990.html#53053">53053</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53053">AdvanceScriptPointerByCommandSize_AdvanceFive</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53037"></span>53037</td>
 <td class="instruction">CP 11</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Jump to <a href="52990.html#53057">AdvanceScriptPointerByCommandSize_AdvanceOne</a> for command types: <ul class="">
+<li>11</li>
+<li>10</li>
+</ul></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53039"></span>53039</td>
-<td class="instruction">JR Z,<a href="52990.html#53057">53057</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53057">AdvanceScriptPointerByCommandSize_AdvanceOne</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53041"></span>53041</td>
 <td class="instruction">CP 10</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53043"></span>53043</td>
-<td class="instruction">JR Z,<a href="52990.html#53057">53057</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53057">AdvanceScriptPointerByCommandSize_AdvanceOne</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53045"></span>53045</td>
 <td class="instruction">CP 5</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="52990.html#53054">AdvanceScriptPointerByCommandSize_AdvanceFour</a> for command type 5.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53047"></span>53047</td>
-<td class="instruction">JR Z,<a href="52990.html#53054">53054</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="52990.html#53054">AdvanceScriptPointerByCommandSize_AdvanceFour</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53049"></span>53049</td>
 <td class="instruction">CP 4</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="52990.html#53055">AdvanceScriptPointerByCommandSize_AdvanceThree</a> for command type 4.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53051"></span>53051</td>
-<td class="instruction">JR NZ,<a href="52990.html#53055">53055</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="52990.html#53055">AdvanceScriptPointerByCommandSize_AdvanceThree</a></td>
 </tr>
 <tr>
+<td class="asm-label">AdvanceScriptPointerByCommandSize_AdvanceFive</td>
 <td class="address-2"><span id="53053"></span>53053</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> by five bytes.</td>
 </tr>
 <tr>
+<td class="asm-label">AdvanceScriptPointerByCommandSize_AdvanceFour</td>
 <td class="address-2"><span id="53054"></span>53054</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> by four bytes.</td>
 </tr>
 <tr>
+<td class="asm-label">AdvanceScriptPointerByCommandSize_AdvanceThree</td>
 <td class="address-2"><span id="53055"></span>53055</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> by three bytes.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -238,19 +304,22 @@ This entry point is used by the routine at <a href="52879.html">ContinueScriptEx
 </td>
 </tr>
 <tr>
+<td class="asm-label">AdvanceScriptPointerByCommandSize_AdvanceTwo</td>
 <td class="address-2"><span id="53056"></span>53056</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> by two bytes.</td>
 </tr>
 <tr>
+<td class="asm-label">AdvanceScriptPointerByCommandSize_AdvanceOne</td>
 <td class="address-2"><span id="53057"></span>53057</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> by one byte.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53058"></span>53058</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">

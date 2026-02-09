@@ -36,531 +36,769 @@ Next: <a href="AA71.html">AA71</a>
 </td>
 </tr>
 </table>
-<div class="description">A9B7: Routine at A9B7</div>
+<div class="description">A9B7: Print Character</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="A2A2.html">A2A2</a>, <a href="A37D.html">A37D</a>, <a href="A5CD.html">ProcessTextCommand</a>, <a href="A63A.html">A63A</a>, <a href="A647.html">A647</a>, <a href="A736.html">A736</a>, <a href="A880.html">A880</a>, <a href="BBE5.html">BBE5</a>, <a href="D102.html">D102</a>, <a href="D526.html">D526</a>, <a href="DC6C.html">DC6C</a> and <a href="E691.html">E691</a>.
+Used by the routines at <a href="A2A2.html">PrintNewline</a>, <a href="A37D.html">ProcessObject_Display</a>, <a href="A5CD.html">ProcessTextCommand</a>, <a href="A63A.html">PrintCharacterAndReturnZero</a>, <a href="A647.html">PrintCharacterWithTimePeriod</a>, <a href="A736.html">PrintCharacterAndReturn</a>, <a href="A880.html">ExtractTokenFromText</a>, <a href="BBE5.html">PrintTextBasedOnFlag</a>, <a href="D102.html">ProcessLocationTokenDisplay</a>, <a href="D526.html">PrintFormattedObjectList</a>, <a href="DF5B.html">PrintObjectDescriptionText</a> and <a href="E6BC.html">E6BC</a>.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Character code to print</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character</td>
+<td class="address-2"><span id="a9b7"></span>A9B7</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="1">Stash the character code on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a9b8"></span>A9B8</td>
+<td class="instruction">LD A,($A027)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="A9B7.html#aa10">Print_Character_AlternateMode</a> if *<a href="A027.html">PrintModeFlag</a> isn't set (not in direct print mode).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a9bb"></span>A9BB</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a9bc"></span>A9BC</td>
+<td class="instruction">JR NZ,<a href="A9B7.html#aa10">Print_Character_AlternateMode</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a9be"></span>
+<div class="comments">
+<div class="paragraph">
+Handle direct print mode - write character to buffer.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="address-2"><span id="a9b7"></span>A9B7</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="a9b8"></span>A9B8</td>
-<td class="instruction">LD A,($A027)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="a9bb"></span>A9BB</td>
-<td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="a9bc"></span>A9BC</td>
-<td class="instruction">JR NZ,<a href="A9B7.html#aa10">$AA10</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9be"></span>A9BE</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9bf"></span>A9BF</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Stash the character code and <span class="register">HL</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9c0"></span>A9C0</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9c1"></span>A9C1</td>
 <td class="instruction">LD HL,($A9B5)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="A9B5.html">BufferPointer</a> (load the buffer pointer).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9c4"></span>A9C4</td>
 <td class="instruction">CP $20</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="A9B7.html#a9df">Print_Character_ScreenPrintMode</a> if the character is a "SPACE" (ASCII 20).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9c6"></span>A9C6</td>
-<td class="instruction">JR Z,<a href="A9B7.html#a9df">$A9DF</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A9B7.html#a9df">Print_Character_ScreenPrintMode</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9c8"></span>A9C8</td>
 <td class="instruction">CP $0D</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="A9B7.html#a9df">Print_Character_ScreenPrintMode</a> if the character is an "ENTER" (ASCII 0D).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9ca"></span>A9CA</td>
-<td class="instruction">JR Z,<a href="A9B7.html#a9df">$A9DF</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A9B7.html#a9df">Print_Character_ScreenPrintMode</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9cc"></span>A9CC</td>
 <td class="instruction">CP $22</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="A9B7.html#a9df">Print_Character_ScreenPrintMode</a> if the character is a quotation mark (ASCII 22).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9ce"></span>A9CE</td>
-<td class="instruction">JR Z,<a href="A9B7.html#a9df">$A9DF</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A9B7.html#a9df">Print_Character_ScreenPrintMode</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9d0"></span>A9D0</td>
 <td class="instruction">CP $08</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="A9B7.html#a9d7">Print_Character_WriteToBuffer</a> if the character is not a backspace (ASCII 08).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9d2"></span>A9D2</td>
-<td class="instruction">JR NZ,<a href="A9B7.html#a9d7">$A9D7</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="A9B7.html#a9d7">Print_Character_WriteToBuffer</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a9d4"></span>
+<div class="comments">
+<div class="paragraph">
+The character IS a backspace, so handle this.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9d4"></span>A9D4</td>
 <td class="instruction">DEC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Decrease <span class="register">HL</span> by one (move buffer pointer back for backspace).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9d5"></span>A9D5</td>
-<td class="instruction">JR <a href="A9B7.html#a9d9">$A9D9</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="A9B7.html#a9d9">Print_Character_UpdateBufferPointer</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A9B7.html#a9d9">Print_Character_UpdateBufferPointer</a> (skip writing the character).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a9d7"></span>
+<div class="comments">
+<div class="paragraph">
+Write the character to the buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_WriteToBuffer</td>
 <td class="address-2"><span id="a9d7"></span>A9D7</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Write the character to the buffer.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9d8"></span>A9D8</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Increment the buffer pointer by one.</td>
 </tr>
 <tr>
+<td class="asm-label">Print_Character_UpdateBufferPointer</td>
 <td class="address-2"><span id="a9d9"></span>A9D9</td>
 <td class="instruction">LD ($A9B5),HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Write the buffer pointer back to *<a href="A9B5.html">BufferPointer</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9dc"></span>A9DC</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore <span class="register">HL</span> and the character code from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9dd"></span>A9DD</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9de"></span>A9DE</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a9df"></span>
+<div class="comments">
+<div class="paragraph">
+Handle screen print mode - check if we need to scroll.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_ScreenPrintMode</td>
 <td class="address-2"><span id="a9df"></span>A9DF</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9e0"></span>A9E0</td>
 <td class="instruction">LD DE,$5C0B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Jump to <a href="A9B7.html#aa0b">Print_Character_ProcessChar</a> if <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C0B.html">DEFADD</a> is equal to <span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9e3"></span>A9E3</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9e4"></span>A9E4</td>
 <td class="instruction">SBC HL,DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9e6"></span>A9E6</td>
-<td class="instruction">JR Z,<a href="A9B7.html#aa0b">$AA0B</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A9B7.html#aa0b">Print_Character_ProcessChar</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a9e8"></span>
+<div class="comments">
+<div class="paragraph">
+Check if we need to scroll the screen.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9e8"></span>A9E8</td>
 <td class="instruction">LD A,($C1F5)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="C1F5.html">ScreenWidth</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9eb"></span>A9EB</td>
 <td class="instruction">CP L</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Compare *<a href="C1F5.html">ScreenWidth</a> with <span class="register">L</span> (the screen offset).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9ec"></span>A9EC</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the comparison result on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9ed"></span>A9ED</td>
-<td class="instruction">JR NC,<a href="A9B7.html#a9f4">$A9F4</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="A9B7.html#a9f4">Print_Character_ScrollScreen</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A9B7.html#a9f4">Print_Character_ScrollScreen</a> if we don't need to scroll (<span class="register">A</span> is greater than or equal to <span class="register">L</span>).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9ef"></span>A9EF</td>
 <td class="instruction">LD A,$0D</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=0D (load carriage return character).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9f1"></span>A9F1</td>
-<td class="instruction">CALL <a href="A9B7.html#aa14">$AA14</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="A9B7.html#aa14">Print_Character_ProcessCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A9B7.html#aa14">Print_Character_ProcessCharacter</a> to process the carriage return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a9f4"></span>
+<div class="comments">
+<div class="paragraph">
+Scroll the screen by clearing the first line.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_ScrollScreen</td>
 <td class="address-2"><span id="a9f4"></span>A9F4</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9f5"></span>A9F5</td>
 <td class="instruction">LD B,L</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">L</span> (store the line width in <span class="register">B</span>).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9f6"></span>A9F6</td>
 <td class="instruction">LD HL,$5C0B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C0B.html">DEFADD</a> (reset to the start of the screen buffer).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9f9"></span>A9F9</td>
 <td class="instruction">LD ($A9B5),HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Write <span class="register">HL</span> (the screen buffer pointer) to *<a href="A9B5.html">BufferPointer</a>.</td>
 </tr>
 <tr>
+<td class="asm-label">Print_Character_ScrollLoop</td>
 <td class="address-2"><span id="a9fc"></span>A9FC</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load a character from the screen buffer into <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a9fd"></span>A9FD</td>
-<td class="instruction">CALL <a href="A9B7.html#aa14">$AA14</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="A9B7.html#aa14">Print_Character_ProcessCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A9B7.html#aa14">Print_Character_ProcessCharacter</a> to process the character (shift it up).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa00"></span>AA00</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Move to the next character.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa01"></span>AA01</td>
-<td class="instruction">DJNZ <a href="A9B7.html#a9fc">$A9FC</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="A9B7.html#a9fc">Print_Character_ScrollLoop</a></td>
+<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="A9B7.html#a9fc">Print_Character_ScrollLoop</a> until counter is zero.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa03"></span>AA03</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">AF</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa04"></span>AA04</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa05"></span>AA05</td>
-<td class="instruction">JR NZ,<a href="A9B7.html#aa0b">$AA0B</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="A9B7.html#aa0b">Print_Character_ProcessChar</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A9B7.html#aa0b">Print_Character_ProcessChar</a> if we haven't finished scrolling (<span class="register">HL</span> is not equal to <span class="register">L</span>).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="aa07"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the print position flag after scrolling is complete.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa07"></span>AA07</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Reset *<a href="A025.html">PrintPositionFlag</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa08"></span>AA08</td>
 <td class="instruction">LD ($A025),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">Print_Character_ProcessChar</td>
 <td class="address-2"><span id="aa0b"></span>AA0B</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Restore <span class="register">DE</span>, <span class="register">HL</span> and the character code from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa0c"></span>AA0C</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa0d"></span>AA0D</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa0e"></span>AA0E</td>
-<td class="instruction">JR <a href="A9B7.html#aa14">$AA14</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="A9B7.html#aa14">Print_Character_ProcessCharacter</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A9B7.html#aa14">Print_Character_ProcessCharacter</a> to process the character.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="aa10"></span>
+<div class="comments">
+<div class="paragraph">
+Use alternate print method (direct screen printing).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_AlternateMode</td>
 <td class="address-2"><span id="aa10"></span>AA10</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa11"></span>AA11</td>
-<td class="instruction">JP <a href="C1E1.html">$C1E1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP <a href="C1E1.html">CheckTVFlagAndProcess</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C1E1.html">CheckTVFlagAndProcess</a> to print using alternate method.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="aa14"></span>
+<div class="comments">
+<div class="paragraph">
+Convert uppercase letters to lowercase if needed.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_ProcessCharacter</td>
 <td class="address-2"><span id="aa14"></span>AA14</td>
 <td class="instruction">CP $41</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Jump to <a href="A9B7.html#aa1e">Print_Character_CheckSpace</a> if the character is not uppercase.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa16"></span>AA16</td>
-<td class="instruction">JR C,<a href="A9B7.html#aa1e">$AA1E</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR C,<a href="A9B7.html#aa1e">Print_Character_CheckSpace</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa18"></span>AA18</td>
 <td class="instruction">CP $5B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa1a"></span>AA1A</td>
-<td class="instruction">JR NC,<a href="A9B7.html#aa1e">$AA1E</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="A9B7.html#aa1e">Print_Character_CheckSpace</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa1c"></span>AA1C</td>
-<td class="instruction">OR $20</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">OR %00100000</td>
+<td class="comment-1" rowspan="1">Set bit 5 (convert to lowercase).</td>
 </tr>
 <tr>
+<td class="asm-label">Print_Character_CheckSpace</td>
 <td class="address-2"><span id="aa1e"></span>AA1E</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the character code on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa1f"></span>AA1F</td>
 <td class="instruction">LD A,($A025)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="A9B7.html#aa2a">Print_Character_MarkPrintStarted</a> if we're not at the start of a line (load print position flag from *<a href="A025.html">PrintPositionFlag</a>, set flags, jump if not zero).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa22"></span>AA22</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa23"></span>AA23</td>
-<td class="instruction">JR NZ,<a href="A9B7.html#aa2a">$AA2A</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="A9B7.html#aa2a">Print_Character_MarkPrintStarted</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa25"></span>AA25</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa26"></span>AA26</td>
 <td class="instruction">CP $20</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return if the character is a "SPACE".</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa28"></span>AA28</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa29"></span>AA29</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the character code on the stack.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="aa2a"></span>
+<div class="comments">
+<div class="paragraph">
+Mark that we've started printing on this line.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_MarkPrintStarted</td>
 <td class="address-2"><span id="aa2a"></span>AA2A</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Set *<a href="A025.html">PrintPositionFlag</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa2c"></span>AA2C</td>
 <td class="instruction">LD ($A025),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa2f"></span>AA2F</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa30"></span>AA30</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the character code on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa31"></span>AA31</td>
 <td class="instruction">CP $0D</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="A9B7.html#aa3b">Print_Character_CheckQuote</a> if the character is not a carriage return (compare with 0D jump if not equal).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa33"></span>AA33</td>
-<td class="instruction">JR NZ,<a href="A9B7.html#aa3b">$AA3B</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="A9B7.html#aa3b">Print_Character_CheckQuote</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="aa35"></span>
+<div class="comments">
+<div class="paragraph">
+Reset the print position flag for a carriage return.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa35"></span>AA35</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Clear *<a href="A025.html">PrintPositionFlag</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa36"></span>AA36</td>
 <td class="instruction">LD ($A025),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa39"></span>AA39</td>
-<td class="instruction">JR <a href="A9B7.html#aa6d">$AA6D</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="A9B7.html#aa6d">Print_Character_Print</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A9B7.html#aa6d">Print_Character_Print</a> (skip further processing).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="aa3b"></span>
+<div class="comments">
+<div class="paragraph">
+Check if the character is a quotation mark (needs special handling).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_CheckQuote</td>
 <td class="address-2"><span id="aa3b"></span>AA3B</td>
 <td class="instruction">CP $22</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="A9B7.html#aa46">Print_Character_CheckPeriod</a> if the character is not a quote mark (compare with 22 jump if not equal).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa3d"></span>AA3D</td>
-<td class="instruction">JR NZ,<a href="A9B7.html#aa46">$AA46</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="A9B7.html#aa46">Print_Character_CheckPeriod</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa3f"></span>AA3F</td>
 <td class="instruction">LD A,$20</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=20 (replace quote with space).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa41"></span>AA41</td>
-<td class="instruction">CALL <a href="C1E1.html">$C1E1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="C1E1.html">CheckTVFlagAndProcess</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C1E1.html">CheckTVFlagAndProcess</a> to print the space.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa44"></span>AA44</td>
-<td class="instruction">JR <a href="A9B7.html#aa4a">$AA4A</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="A9B7.html#aa4a">Print_Character_SetTokenFormatFlag</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A9B7.html#aa4a">Print_Character_SetTokenFormatFlag</a> (continue processing).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="aa46"></span>
+<div class="comments">
+<div class="paragraph">
+Check if the character is a period (sets token format flag if it is).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_CheckPeriod</td>
 <td class="address-2"><span id="aa46"></span>AA46</td>
 <td class="instruction">CP $2E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="A9B7.html#aa51">Print_Character_CheckLowercase</a> if the character is not a period (compare with 2E jump if not equal).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa48"></span>AA48</td>
-<td class="instruction">JR NZ,<a href="A9B7.html#aa51">$AA51</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="A9B7.html#aa51">Print_Character_CheckLowercase</a></td>
 </tr>
 <tr>
+<td class="asm-label">Print_Character_SetTokenFormatFlag</td>
 <td class="address-2"><span id="aa4a"></span>AA4A</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Set *<a href="A026.html">TokenFormatFlag</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa4c"></span>AA4C</td>
 <td class="instruction">LD ($A026),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa4f"></span>AA4F</td>
-<td class="instruction">JR <a href="A9B7.html#aa6d">$AA6D</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="A9B7.html#aa6d">Print_Character_Print</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A9B7.html#aa6d">Print_Character_Print</a> (skip further processing).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="aa51"></span>
+<div class="comments">
+<div class="paragraph">
+Handle lowercase letters (dictionary word characters).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_CheckLowercase</td>
 <td class="address-2"><span id="aa51"></span>AA51</td>
 <td class="instruction">CP $61</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="A9B7.html#aa6d">Print_Character_Print</a> if the character is less than 61 (ASCII "a").</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa53"></span>AA53</td>
-<td class="instruction">JR C,<a href="A9B7.html#aa6d">$AA6D</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR C,<a href="A9B7.html#aa6d">Print_Character_Print</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa55"></span>AA55</td>
 <td class="instruction">CP $7B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="A9B7.html#aa6d">Print_Character_Print</a> if the character is greater than or equal to 7B (ASCII "z"+01).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa57"></span>AA57</td>
-<td class="instruction">JR NC,<a href="A9B7.html#aa6d">$AA6D</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="A9B7.html#aa6d">Print_Character_Print</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa59"></span>AA59</td>
 <td class="instruction">LD A,($A851)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Check the lowercase handling flag and jump to <a href="A9B7.html#aa65">Print_Character_ResetTokenFormatFlag</a> if it's not set (load flag from *<a href="A851.html">LowercaseHandlingFlag</a>, set flags, jump if not set).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa5c"></span>AA5C</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa5d"></span>AA5D</td>
-<td class="instruction">JR NZ,<a href="A9B7.html#aa65">$AA65</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="A9B7.html#aa65">Print_Character_ResetTokenFormatFlag</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa5f"></span>AA5F</td>
 <td class="instruction">LD A,($A026)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="A9B7.html#aa6d">Print_Character_Print</a> if *<a href="A026.html">TokenFormatFlag</a> the token format flag is not set.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa62"></span>AA62</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa63"></span>AA63</td>
-<td class="instruction">JR Z,<a href="A9B7.html#aa6d">$AA6D</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A9B7.html#aa6d">Print_Character_Print</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="aa65"></span>
+<div class="comments">
+<div class="paragraph">
+Reset the token format flag before converting to uppercase.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_ResetTokenFormatFlag</td>
 <td class="address-2"><span id="aa65"></span>AA65</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Reset *<a href="A026.html">TokenFormatFlag</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa66"></span>AA66</td>
 <td class="instruction">LD ($A026),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa69"></span>AA69</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="aa6a"></span>
+<div class="comments">
+<div class="paragraph">
+Clear bit 5 from the character code (convert to uppercase).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa6a"></span>AA6A</td>
-<td class="instruction">AND $5F</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">AND %01011111</td>
+<td class="comment-1" rowspan="1">Keep only bits 0-4, 6 (clear bit 5 to convert lowercase to uppercase).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa6c"></span>AA6C</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the modified character code on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label">Print_Character_Print</td>
 <td class="address-2"><span id="aa6d"></span>AA6D</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa6e"></span>AA6E</td>
-<td class="instruction">JP <a href="C1E1.html">$C1E1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP <a href="C1E1.html">CheckTVFlagAndProcess</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C1E1.html">CheckTVFlagAndProcess</a> to print the character.</td>
 </tr>
 </table>
 <table class="asm-navigation">

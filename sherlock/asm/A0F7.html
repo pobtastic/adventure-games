@@ -36,15 +36,37 @@ Next: <a href="A104.html">A104</a>
 </td>
 </tr>
 </table>
-<div class="description">A0F7: Routine at A0F7</div>
+<div class="description">A0F7: Fetch Object Pointer From Stack</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="B77F.html">B77F</a>, <a href="B91F.html">B91F</a>, <a href="BA20.html">BA20</a>, <a href="BD06.html">BD06</a>, <a href="CD47.html">HandlePopStack</a>, <a href="CFB6.html">CFB6</a>, <a href="E17B.html">E17B</a> and <a href="E691.html">E691</a>.
+Used by the routines at <a href="B77F.html">ProcessTextTokenStream</a>, <a href="B91F.html">CheckObjectInA036</a>, <a href="BA20.html">ProcessCharacterDisplay</a>, <a href="BD06.html">ProcessObjectPointer</a>, <a href="CD47.html">HandlePopStack</a>, <a href="CFB6.html">FindCharacterScriptEntry</a>, <a href="E17B.html">E17B</a> and <a href="E691.html">ProcessCharacterAttribute</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Object pointer (on stack)</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Object pointer</td>
+</tr>
+<tr>
+<td class="register">HL</td>
+<td class="register-desc">Zero if object pointer was zero, otherwise preserved</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -58,26 +80,31 @@ This will be restored back into <span class="register">HL</span> by the end of t
 </td>
 </tr>
 <tr>
+<td class="asm-label">FetchObjectPointerFromStack</td>
 <td class="address-2"><span id="a0f7"></span>A0F7</td>
 <td class="instruction">PUSH HL</td>
 <td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack temporarily.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0f8"></span>A0F8</td>
 <td class="instruction">LD L,(IX-$02)</td>
 <td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>-02.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0fb"></span>A0FB</td>
 <td class="instruction">LD H,(IX-$01)</td>
 <td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>-01.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0fe"></span>A0FE</td>
 <td class="instruction">LD A,L</td>
 <td class="comment-1" rowspan="2">Is <span class="register">HL</span> zero?</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0ff"></span>A0FF</td>
 <td class="instruction">OR H</td>
 </tr>
@@ -92,16 +119,19 @@ Pretty clever way of using the stack here.
 </td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a100"></span>A100</td>
 <td class="instruction">EX (SP),HL</td>
 <td class="comment-1" rowspan="1">Swap the *<span class="register">SP</span> with the object pointer, restoring <span class="register">HL</span> to the original value.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a101"></span>A101</td>
 <td class="instruction">POP IX</td>
 <td class="comment-1" rowspan="1">Restore the object pointer into <span class="register">IX</span> (from the stack).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a103"></span>A103</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>

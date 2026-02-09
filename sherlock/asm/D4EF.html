@@ -36,116 +36,222 @@ Next: <a href="D51A.html">D51A</a>
 </td>
 </tr>
 </table>
-<div class="description">D4EF: Routine at D4EF</div>
+<div class="description">D4EF: Check Object Match Criteria</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="D4CC.html">D4CC</a> and <a href="D526.html">D526</a>.
+Used by the routines at <a href="D4CC.html">CountObjectsInLocation</a> and <a href="D57C.html">FindNextMatchingObject</a>.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Object ID</td>
+</tr>
+<tr>
+<td class="register">B</td>
+<td class="register-desc">Location ID</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">Carry flag set if object matches all criteria (location, visibility, type, etc.)</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d4ef"></span>
+<div class="comments">
+<div class="paragraph">
+Check if the object is in the specified location.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">CheckObjectMatchCriteria</td>
 <td class="address-2"><span id="d4ef"></span>D4EF</td>
 <td class="instruction">CP (IY+$01)</td>
-<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with *<span class="register">IY</span>+01.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="D4EF.html#d518">CheckObjectMatchCriteria_NoMatch</a> if the object's location (from *<span class="register">IY</span>+01) doesn't match the requested location ID.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4f2"></span>D4F2</td>
-<td class="instruction">JR NZ,<a href="D4EF.html#d518">$D518</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D4EF.html#d518">D518</a> if <span class="register">B</span> is not equal to <span class="register">A</span>.</td>
+<td class="instruction">JR NZ,<a href="D4EF.html#d518">CheckObjectMatchCriteria_NoMatch</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d4f4"></span>
+<div class="comments">
+<div class="paragraph">
+Check if the object belongs to the current character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4f4"></span>D4F4</td>
 <td class="instruction">LD A,($A036)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A036.html">CurrentCharacter_ID</a>.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="D4EF.html#d518">CheckObjectMatchCriteria_NoMatch</a> if the object belongs to the current character (compare <a href="A036.html">CurrentCharacter_ID</a> with the object's character ID from *<span class="register">IX</span>+00).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4f7"></span>D4F7</td>
 <td class="instruction">CP (IX+$00)</td>
-<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with *<span class="register">IX</span>+00.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4fa"></span>D4FA</td>
-<td class="instruction">JR Z,<a href="D4EF.html#d518">$D518</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D4EF.html#d518">D518</a> if <span class="register">B</span> is equal to <span class="register">A</span>.</td>
+<td class="instruction">JR Z,<a href="D4EF.html#d518">CheckObjectMatchCriteria_NoMatch</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d4fc"></span>
+<div class="comments">
+<div class="paragraph">
+Check if the object is visible to the current character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4fc"></span>D4FC</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+00.</td>
+<td class="comment-1" rowspan="1">Load the object's character ID into <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4ff"></span>D4FF</td>
-<td class="instruction">CALL <a href="C821.html">$C821</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C821.html">C821</a>.</td>
+<td class="instruction">CALL <a href="C821.html">CheckObjectLocationMatch</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C821.html">CheckObjectLocationMatch</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d502"></span>D502</td>
-<td class="instruction">JR Z,<a href="D4EF.html#d518">$D518</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D4EF.html#d518">D518</a> if <span class="register">B</span> is equal to <span class="register">A</span>.</td>
+<td class="instruction">JR Z,<a href="D4EF.html#d518">CheckObjectMatchCriteria_NoMatch</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="D4EF.html#d518">CheckObjectMatchCriteria_NoMatch</a> if the object is not visible (doesn't match criteria).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d504"></span>
+<div class="comments">
+<div class="paragraph">
+Check the object type.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d504"></span>D504</td>
 <td class="instruction">LD A,(IY+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IY</span>+00.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="D4EF.html#d518">CheckObjectMatchCriteria_NoMatch</a> if the object type (from *<span class="register">IY</span>+00) is 02 or greater (doesn't match criteria).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d507"></span>D507</td>
 <td class="instruction">CP $02</td>
-<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with 02.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d509"></span>D509</td>
-<td class="instruction">JR NC,<a href="D4EF.html#d518">$D518</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D4EF.html#d518">D518</a> if <span class="register">A</span> is greater than or equal to 02.</td>
+<td class="instruction">JR NC,<a href="D4EF.html#d518">CheckObjectMatchCriteria_NoMatch</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d50b"></span>
+<div class="comments">
+<div class="paragraph">
+Perform final validation check.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d50b"></span>D50B</td>
 <td class="instruction">LD A,($A036)</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A036.html">CurrentCharacter_ID</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d50e"></span>D50E</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">IX</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Copy <span class="register">IX</span> into <span class="register">HL</span> using the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d510"></span>D510</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d511"></span>D511</td>
-<td class="instruction">CALL <a href="D275.html#d278">$D278</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D275.html#d278">D278</a>.</td>
+<td class="instruction">CALL <a href="D275.html#d278">CheckCharacterIDRange_0</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D275.html#d278">CheckCharacterIDRange_0</a> to perform an additional validation check.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d514"></span>D514</td>
-<td class="instruction">JR C,<a href="D4EF.html#d518">$D518</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D4EF.html#d518">D518</a> if <span class="register">A</span> is less than 02.</td>
+<td class="instruction">JR C,<a href="D4EF.html#d518">CheckObjectMatchCriteria_NoMatch</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="D4EF.html#d518">CheckObjectMatchCriteria_NoMatch</a> if the validation check fails (<span class="register">A</span> is less than 02).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d516"></span>
+<div class="comments">
+<div class="paragraph">
+All checks passed - object matches the criteria.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d516"></span>D516</td>
 <td class="instruction">SCF</td>
-<td class="comment-1" rowspan="1">Set the carry flag.</td>
+<td class="comment-1" rowspan="1">Set the carry flag to indicate the object matches.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d517"></span>D517</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
+<td class="comment-1" rowspan="1">Return with carry flag set.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d518"></span>
+<div class="comments">
+<div class="paragraph">
+Object doesn't match any criteria.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckObjectMatchCriteria_NoMatch</td>
 <td class="address-2"><span id="d518"></span>D518</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
+<td class="comment-1" rowspan="1">Clear the carry flag (object doesn't match criteria).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d519"></span>D519</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
+<td class="comment-1" rowspan="1">Return with carry flag clear.</td>
 </tr>
 </table>
 <table class="asm-navigation">

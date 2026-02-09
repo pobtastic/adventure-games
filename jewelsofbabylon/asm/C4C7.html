@@ -41,6 +41,19 @@ Next: <a href="C4EB.html">C4EB</a>
 <div class="paragraph">
 Used by the routine at <a href="EDC4.html">GameLoop</a>.
 </div>
+<div class="paragraph">
+Processes the word tokens from the user's command, checking if any token refers to a game item. If a valid item token is found and the item is present (in the current room or player's inventory), the routine returns successfully. Otherwise, it continues checking tokens until one is found or all tokens have been processed.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c4c7"></span>
+<div class="comments">
+<div class="paragraph">
+Set up to loop through all word tokens in the token buffer.
+</div>
 </div>
 </td>
 </tr>
@@ -48,19 +61,29 @@ Used by the routine at <a href="EDC4.html">GameLoop</a>.
 <td class="asm-label">Parser_ProcessItem</td>
 <td class="address-2"><span id="c4c7"></span>C4C7</td>
 <td class="instruction">LD HL,$BD66</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BD66.html">UserInput_Token_1</a>.</td>
+<td class="comment-1" rowspan="1">Set a pointer to the word token buffer (<a href="BD66.html">UserInput_Token_1</a>) in <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4ca"></span>C4CA</td>
 <td class="instruction">LD B,$0A</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=0A.</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for 0A tokens (the maximum number of words).</td>
 </tr>
 <tr>
-<td class="asm-label">Parser_ProcessItem_0</td>
+<td class="routine-comment" colspan="5">
+<span id="c4cc"></span>
+<div class="comments">
+<div class="paragraph">
+Check if there are any tokens to process. Return immediately if the first token is the terminator (FF), meaning the input was empty.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessItem_Loop</td>
 <td class="address-2"><span id="c4cc"></span>C4CC</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Return if *<span class="register">HL</span> is equal to FF.</td>
+<td class="comment-1" rowspan="3">Return if the current token is FF (no more tokens to process).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -73,10 +96,20 @@ Used by the routine at <a href="EDC4.html">GameLoop</a>.
 <td class="instruction">RET Z</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c4d0"></span>
+<div class="comments">
+<div class="paragraph">
+Check if this token refers to a game item by searching the object list table.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4d0"></span>C4D0</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">HL</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Stash the token pointer and counter on the stack for later restoration.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -87,43 +120,63 @@ Used by the routine at <a href="EDC4.html">GameLoop</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4d2"></span>C4D2</td>
 <td class="instruction">LD HL,($BD1E)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="BD1E.html">Pointer_ObjectList</a>.</td>
+<td class="comment-1" rowspan="1">Load the object list table pointer into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4d5"></span>C4D5</td>
 <td class="instruction">LD BC,($BD2A)</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=*<a href="BD2A.html">Count_Objects</a>.</td>
+<td class="comment-1" rowspan="1">Load the number of objects into <span class="register">BC</span> (for the CPIR search).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4d9"></span>C4D9</td>
 <td class="instruction">CPIR</td>
-<td class="comment-1" rowspan="1">CPIR.</td>
+<td class="comment-1" rowspan="1">Search the object list table to see if the token matches any object ID.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4db"></span>C4DB</td>
-<td class="instruction">JR NZ,<a href="C4C7.html#c4e5">Parser_ProcessItem_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C4C7.html#c4e5">Parser_ProcessItem_1</a> if <span class="register">A</span> is not equal to FF.</td>
+<td class="instruction">JR NZ,<a href="C4C7.html#c4e5">ProcessItem_NextToken</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C4C7.html#c4e5">ProcessItem_NextToken</a> if the token doesn't match any object ID (not an item token).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c4dd"></span>
+<div class="comments">
+<div class="paragraph">
+The token matches an object ID. Now verify that the item is actually present (in the current room or player's inventory).
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4dd"></span>C4DD</td>
 <td class="instruction">CALL <a href="C32A.html">Action_ExamineItem</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C32A.html">Action_ExamineItem</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="C32A.html">Action_ExamineItem</a> to check if the item is present and accessible.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4e0"></span>C4E0</td>
-<td class="instruction">JR NC,<a href="C4C7.html#c4e5">Parser_ProcessItem_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C4C7.html#c4e5">Parser_ProcessItem_1</a> if <span class="register">A</span> is greater than or equal to FF.</td>
+<td class="instruction">JR NC,<a href="C4C7.html#c4e5">ProcessItem_NextToken</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C4C7.html#c4e5">ProcessItem_NextToken</a> if the item is not present (carry flag set).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c4e2"></span>
+<div class="comments">
+<div class="paragraph">
+The token refers to a valid item that is present. Success!
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4e2"></span>C4E2</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the token pointer and counter from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -134,13 +187,23 @@ Used by the routine at <a href="EDC4.html">GameLoop</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4e4"></span>C4E4</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
+<td class="comment-1" rowspan="1">Return successfully (the item was found and is accessible).</td>
 </tr>
 <tr>
-<td class="asm-label">Parser_ProcessItem_1</td>
+<td class="routine-comment" colspan="5">
+<span id="c4e5"></span>
+<div class="comments">
+<div class="paragraph">
+This token wasn't a valid item or the item isn't present. Move to the next token and continue searching.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessItem_NextToken</td>
 <td class="address-2"><span id="c4e5"></span>C4E5</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the token pointer and counter from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -151,19 +214,19 @@ Used by the routine at <a href="EDC4.html">GameLoop</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4e7"></span>C4E7</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next token in the buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4e8"></span>C4E8</td>
-<td class="instruction">DJNZ <a href="C4C7.html#c4cc">Parser_ProcessItem_0</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="C4C7.html#c4cc">Parser_ProcessItem_0</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="C4C7.html#c4cc">ProcessItem_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the counter by one and loop back to <a href="C4C7.html#c4cc">ProcessItem_Loop</a> until all 0A tokens have been checked.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c4ea"></span>C4EA</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
+<td class="comment-1" rowspan="1">Return (no valid item tokens were found in the input).</td>
 </tr>
 </table>
 <table class="asm-navigation">

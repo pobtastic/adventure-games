@@ -36,7 +36,7 @@ Next: <a href="53120.html">53120</a>
 </td>
 </tr>
 </table>
-<div class="description">53059: Routine at CF43</div>
+<div class="description">53059: Clear Script Command Flags</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -44,138 +44,191 @@ Next: <a href="53120.html">53120</a>
 <div class="paragraph">
 Used by the routine at <a href="52879.html">ContinueScriptExecution</a>.
 </div>
+<div class="paragraph">
+Clears flag bytes in a script command based on the command type and flag bits. Different command types require clearing different numbers of flag bytes to mark them as processed.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to script command data</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ClearScriptCommandFlags</td>
+<td class="address-2"><span id="53059"></span>53059</td>
+<td class="instruction">LD A,(IX+0)</td>
+<td class="comment-1" rowspan="1">Read the command flag byte.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="53062"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the first flag byte if certain flag bits are set, indicating those conditions have been processed.
+</div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="address-2"><span id="53059"></span>53059</td>
-<td class="instruction">LD A,(IX+0)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53062"></span>53062</td>
 <td class="instruction">BIT 7,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Call <a href="53059.html#53107">ClearScriptCommandFlags_ClearFirst</a> if bit 7 is set.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53064"></span>53064</td>
-<td class="instruction">CALL NZ,<a href="53059.html#53107">53107</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL NZ,<a href="53059.html#53107">ClearScriptCommandFlags_ClearFirst</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53067"></span>53067</td>
 <td class="instruction">BIT 4,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Call <a href="53059.html#53107">ClearScriptCommandFlags_ClearFirst</a> if bit 4 is set.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53069"></span>53069</td>
-<td class="instruction">CALL NZ,<a href="53059.html#53107">53107</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL NZ,<a href="53059.html#53107">ClearScriptCommandFlags_ClearFirst</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53072"></span>53072</td>
-<td class="instruction">AND 15</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">AND %00001111</td>
+<td class="comment-1" rowspan="1">Extract the command type (bits 0-3).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="53074"></span>
+<div class="comments">
+<div class="paragraph">
+Route to the appropriate handler based on command type to clear the required number of flag bytes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53074"></span>53074</td>
 <td class="instruction">CP 1</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="53059.html#53107">ClearScriptCommandFlags_ClearFirst</a> for command type 1.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53076"></span>53076</td>
-<td class="instruction">JR Z,<a href="53059.html#53107">53107</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="53059.html#53107">ClearScriptCommandFlags_ClearFirst</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53078"></span>53078</td>
 <td class="instruction">CP 2</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="6">Jump to <a href="53059.html#53099">ClearScriptCommandFlags_ClearTwo</a> for command types: <ul class="">
+<li>2</li>
+<li>5</li>
+<li>7</li>
+</ul></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53080"></span>53080</td>
-<td class="instruction">JR Z,<a href="53059.html#53099">53099</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="53059.html#53099">ClearScriptCommandFlags_ClearTwo</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53082"></span>53082</td>
 <td class="instruction">CP 5</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53084"></span>53084</td>
-<td class="instruction">JR Z,<a href="53059.html#53099">53099</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="53059.html#53099">ClearScriptCommandFlags_ClearTwo</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53086"></span>53086</td>
 <td class="instruction">CP 7</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53088"></span>53088</td>
-<td class="instruction">JR Z,<a href="53059.html#53096">53096</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="53059.html#53096">ClearScriptCommandFlags_ClearOne</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53090"></span>53090</td>
 <td class="instruction">CP 6</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="53059.html#53104">ClearScriptCommandFlags_ClearOneAlt</a> for command type 6.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53092"></span>53092</td>
-<td class="instruction">JR Z,<a href="53059.html#53104">53104</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="53059.html#53104">ClearScriptCommandFlags_ClearOneAlt</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53094"></span>53094</td>
 <td class="instruction">CP 4</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="53059.html#53113">ClearScriptCommandFlags_ClearSecond</a> for command type 4.</td>
 </tr>
 <tr>
+<td class="asm-label">ClearScriptCommandFlags_ClearOne</td>
 <td class="address-2"><span id="53096"></span>53096</td>
-<td class="instruction">CALL Z,<a href="53059.html#53113">53113</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL Z,<a href="53059.html#53113">ClearScriptCommandFlags_ClearSecond</a></td>
+<td class="comment-1" rowspan="1">Clear one flag byte.</td>
 </tr>
 <tr>
+<td class="asm-label">ClearScriptCommandFlags_ClearTwo</td>
 <td class="address-2"><span id="53099"></span>53099</td>
-<td class="instruction">CALL Z,<a href="53059.html#53107">53107</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL Z,<a href="53059.html#53107">ClearScriptCommandFlags_ClearFirst</a></td>
+<td class="comment-1" rowspan="1">Call <a href="53059.html#53107">ClearScriptCommandFlags_ClearFirst</a> for command type 4 (alternative path).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53102"></span>53102</td>
 <td class="instruction">CP 3</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="53059.html#53113">ClearScriptCommandFlags_ClearSecond</a> for command type 3.</td>
 </tr>
 <tr>
+<td class="asm-label">ClearScriptCommandFlags_ClearOneAlt</td>
 <td class="address-2"><span id="53104"></span>53104</td>
-<td class="instruction">CALL Z,<a href="53059.html#53113">53113</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL Z,<a href="53059.html#53113">ClearScriptCommandFlags_ClearSecond</a></td>
+<td class="comment-1" rowspan="1">Clear one flag byte.</td>
 </tr>
 <tr>
+<td class="asm-label">ClearScriptCommandFlags_ClearFirst</td>
 <td class="address-2"><span id="53107"></span>53107</td>
 <td class="instruction">LD (IX+0),0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear the first flag byte.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53111"></span>53111</td>
 <td class="instruction">INC IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance the pointer.</td>
 </tr>
 <tr>
+<td class="asm-label">ClearScriptCommandFlags_ClearSecond</td>
 <td class="address-2"><span id="53113"></span>53113</td>
 <td class="instruction">LD (IX+0),0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear the second flag byte.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53117"></span>53117</td>
 <td class="instruction">INC IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance the pointer.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="53119"></span>53119</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">

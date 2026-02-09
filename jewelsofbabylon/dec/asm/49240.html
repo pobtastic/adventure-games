@@ -42,7 +42,7 @@ Next: <a href="49533.html">49533</a>
 Used by the routine at <a href="49162.html">Handler_UserInput</a>.
 </div>
 <div class="paragraph">
-Handles the user pressing "ENTER".
+Parses and tokenises the user's command input when they press ENTER. The input is broken down into individual words, each word is looked up in the vocabulary table, and unrecognised words are reported to the player.
 </div>
 </div>
 <table class="input">
@@ -64,7 +64,7 @@ Handles the user pressing "ENTER".
 <td class="asm-label">UserInput_Enter</td>
 <td class="address-2"><span id="49240"></span>49240</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1">Write 13 to the command buffer pointer for use as a termination character.</td>
+<td class="comment-1" rowspan="1">Write 13 to the command buffer at the current position for use as a termination character.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -93,7 +93,7 @@ Force a newline to be "printed" to the screen.
 <span id="49247"></span>
 <div class="comments">
 <div class="paragraph">
-Clear down the word token buffer which will eventually hold the tokenised input.
+Initialise the word token buffer. This buffer will store up to 10 vocabulary tokens (one per word in the command). Each token is the index of the word in the vocabulary table.
 </div>
 </div>
 </td>
@@ -121,7 +121,7 @@ Clear down the word token buffer which will eventually hold the tokenised input.
 <span id="49254"></span>
 <div class="comments">
 <div class="paragraph">
-Write 255 10 times wiping the word token buffer.
+Fill the word token buffer with 255 (the terminator value) to mark all slots as empty.
 </div>
 </div>
 </td>
@@ -161,7 +161,7 @@ Write 255 10 times wiping the word token buffer.
 <span id="49263"></span>
 <div class="comments">
 <div class="paragraph">
-Now begin tokenising the user input.
+Begin parsing the command. Extract each word from the input, look it up in the vocabulary, and store its token. Words are separated by spaces or commas, and the word "The" is automatically ignored.
 </div>
 </div>
 </td>
@@ -179,15 +179,26 @@ Now begin tokenising the user input.
 <td class="comment-1" rowspan="1"><span class="register">B</span>=4.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="49268"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the word buffer by writing ASCII "SPACE" (32) 4 times.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49268"></span>49268</td>
 <td class="instruction">LD A,32</td>
-<td class="comment-1" rowspan="2">Write ASCII "SPACE" (32) to *<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="1">Load ASCII "SPACE" (32) into <span class="register">A</span>.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_0</td>
+<td class="asm-label">ClearWordBuffer_Loop</td>
 <td class="address-2"><span id="49270"></span>49270</td>
 <td class="instruction">LD (DE),A</td>
+<td class="comment-1" rowspan="1">Write the ASCII space to *<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -198,8 +209,8 @@ Now begin tokenising the user input.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49272"></span>49272</td>
-<td class="instruction">DJNZ <a href="49240.html#49270">UserInput_Enter_0</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="49240.html#49270">UserInput_Enter_0</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="49240.html#49270">ClearWordBuffer_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="49240.html#49270">ClearWordBuffer_Loop</a> until counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -211,19 +222,19 @@ Now begin tokenising the user input.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49275"></span>49275</td>
 <td class="instruction">OR C</td>
-<td class="comment-1" rowspan="1">Set the bits from <span class="register">C</span>.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>|=<span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49276"></span>49276</td>
-<td class="instruction">JP Z,<a href="49240.html#49518">UserInput_Enter_19</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49518">UserInput_Enter_19</a> if <span class="register">DE</span> is equal to <span class="register">C</span>.</td>
+<td class="instruction">JP Z,<a href="49240.html#49518">CheckIfEmptyInput</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49518">CheckIfEmptyInput</a> if <span class="register">DE</span> is equal to <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49279"></span>49279</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="49240.html#49518">UserInput_Enter_19</a> if *<span class="register">HL</span> is equal to 13.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="49240.html#49518">CheckIfEmptyInput</a> if *<span class="register">HL</span> is equal to 13.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -233,7 +244,7 @@ Now begin tokenising the user input.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49282"></span>49282</td>
-<td class="instruction">JP Z,<a href="49240.html#49518">UserInput_Enter_19</a></td>
+<td class="instruction">JP Z,<a href="49240.html#49518">CheckIfEmptyInput</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -248,155 +259,194 @@ Now begin tokenising the user input.
 <td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="48497.html">48497</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_1</td>
+<td class="routine-comment" colspan="5">
+<span id="49290"></span>
+<div class="comments">
+<div class="paragraph">
+Extract the next word from the command buffer. Copy up to 4 characters (the maximum word length) into the word buffer, stopping at a space, comma, or end of input.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CopyWord_Loop</td>
 <td class="address-2"><span id="49290"></span>49290</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Read the character from *<span class="register">HL</span> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49291"></span>49291</td>
 <td class="instruction">CP 13</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49334">UserInput_Enter_4</a> if <span class="register">A</span> is equal to 13.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49334">CheckIfThe</a> if this character is a newline (13 end of input).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49293"></span>49293</td>
-<td class="instruction">JR Z,<a href="49240.html#49334">UserInput_Enter_4</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49334">CheckIfThe</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49295"></span>49295</td>
 <td class="instruction">CP 32</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49324">UserInput_Enter_3</a> if <span class="register">A</span> is equal to 32.</td>
+<td class="comment-1" rowspan="4">Jump to <a href="49240.html#49324">SkipDelimiters_Loop</a> if the character is either an ASCII "SPACE" (32) or an ASCII comma (44).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49297"></span>49297</td>
-<td class="instruction">JR Z,<a href="49240.html#49324">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49324">SkipDelimiters_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49299"></span>49299</td>
 <td class="instruction">CP 44</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49324">UserInput_Enter_3</a> if <span class="register">A</span> is equal to 44.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49301"></span>49301</td>
-<td class="instruction">JR Z,<a href="49240.html#49324">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49324">SkipDelimiters_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49303"></span>49303</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="1">Write this character to the word buffer at *<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49304"></span>49304</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next character in the command buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49305"></span>49305</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">DE</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next position in the word buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49306"></span>49306</td>
-<td class="instruction">DJNZ <a href="49240.html#49290">UserInput_Enter_1</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="49240.html#49290">UserInput_Enter_1</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="49240.html#49290">CopyWord_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="49240.html#49290">CopyWord_Loop</a> until counter is zero.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_2</td>
+<td class="routine-comment" colspan="5">
+<span id="49308"></span>
+<div class="comments">
+<div class="paragraph">
+If the word was longer than 4 characters, skip over the remaining characters until a delimiter (space, comma, or end of input) is found.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SkipRemainingWord_Loop</td>
 <td class="address-2"><span id="49308"></span>49308</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Read the character from *<span class="register">HL</span> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49309"></span>49309</td>
 <td class="instruction">CP 13</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49334">UserInput_Enter_4</a> if <span class="register">A</span> is equal to 13.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49334">CheckIfThe</a> if this character is a newline (13).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49311"></span>49311</td>
-<td class="instruction">JR Z,<a href="49240.html#49334">UserInput_Enter_4</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49334">CheckIfThe</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49313"></span>49313</td>
 <td class="instruction">CP 32</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49324">UserInput_Enter_3</a> if <span class="register">A</span> is equal to 32.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49324">SkipDelimiters_Loop</a> if the character is an ASCII "SPACE" (32).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49315"></span>49315</td>
-<td class="instruction">JR Z,<a href="49240.html#49324">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49324">SkipDelimiters_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49317"></span>49317</td>
 <td class="instruction">CP 44</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49324">UserInput_Enter_3</a> if <span class="register">A</span> is equal to 44.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49324">SkipDelimiters_Loop</a> if the character is an ASCII comma (44).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49319"></span>49319</td>
-<td class="instruction">JR Z,<a href="49240.html#49324">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49324">SkipDelimiters_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49321"></span>49321</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next character in the command buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49322"></span>49322</td>
-<td class="instruction">JR <a href="49240.html#49308">UserInput_Enter_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49308">UserInput_Enter_2</a>.</td>
+<td class="instruction">JR <a href="49240.html#49308">SkipRemainingWord_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49308">SkipRemainingWord_Loop</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_3</td>
+<td class="routine-comment" colspan="5">
+<span id="49324"></span>
+<div class="comments">
+<div class="paragraph">
+Skip over any consecutive spaces or commas to find the start of the next word.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SkipDelimiters_Loop</td>
 <td class="address-2"><span id="49324"></span>49324</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next character in the command buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49325"></span>49325</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Read the character from *<span class="register">HL</span> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49326"></span>49326</td>
 <td class="instruction">CP 32</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49324">UserInput_Enter_3</a> if <span class="register">A</span> is equal to 32.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49324">SkipDelimiters_Loop</a> if the character is an ASCII "SPACE" (32).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49328"></span>49328</td>
-<td class="instruction">JR Z,<a href="49240.html#49324">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49324">SkipDelimiters_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49330"></span>49330</td>
 <td class="instruction">CP 44</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49324">UserInput_Enter_3</a> if <span class="register">A</span> is equal to 44.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49324">SkipDelimiters_Loop</a> if the character is an ASCII comma (44).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49332"></span>49332</td>
-<td class="instruction">JR Z,<a href="49240.html#49324">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49324">SkipDelimiters_Loop</a></td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_4</td>
+<td class="routine-comment" colspan="5">
+<span id="49334"></span>
+<div class="comments">
+<div class="paragraph">
+Check if the extracted word is "The". If it is, ignore it and continue with the next word (adventure games typically ignore articles like "the", "a", "an").
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckIfThe</td>
 <td class="address-2"><span id="49334"></span>49334</td>
 <td class="instruction">PUSH HL</td>
 <td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
@@ -430,10 +480,10 @@ Now begin tokenising the user input.
 <td class="comment-1" rowspan="1"><span class="register">B</span>=4.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_5</td>
+<td class="asm-label">CompareWord_Loop</td>
 <td class="address-2"><span id="49345"></span>49345</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="49240.html#49353">UserInput_Enter_6</a> if *<span class="register">DE</span> is not equal to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="49240.html#49353">AfterCompareWord</a> if the characters don't match (the word is not "The").</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -443,28 +493,28 @@ Now begin tokenising the user input.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49347"></span>49347</td>
-<td class="instruction">JR NZ,<a href="49240.html#49353">UserInput_Enter_6</a></td>
+<td class="instruction">JR NZ,<a href="49240.html#49353">AfterCompareWord</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49349"></span>49349</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">DE</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next character in the extracted word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49350"></span>49350</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next character in "The".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49351"></span>49351</td>
-<td class="instruction">DJNZ <a href="49240.html#49345">UserInput_Enter_5</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="49240.html#49345">UserInput_Enter_5</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="49240.html#49345">CompareWord_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="49240.html#49345">CompareWord_Loop</a> until all 4 characters have been compared.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_6</td>
+<td class="asm-label">AfterCompareWord</td>
 <td class="address-2"><span id="49353"></span>49353</td>
 <td class="instruction">POP BC</td>
 <td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
@@ -483,7 +533,7 @@ Now begin tokenising the user input.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49356"></span>49356</td>
 <td class="instruction">JR Z,<a href="49240.html#49263">UserInputParser_Loop</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49263">UserInputParser_Loop</a> if <span class="register">HL</span> is equal to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49263">UserInputParser_Loop</a> if the words matched (this was "The", so skip it and process the next word).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -507,7 +557,17 @@ Now begin tokenising the user input.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49366"></span>49366</td>
 <td class="instruction">LD (48513),BC</td>
-<td class="comment-1" rowspan="1">Write <span class="register">BC</span> to *<a href="48513.html">48513</a>.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">BC</span> to *<a href="48513.html">TempStore_WordCount</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="49370"></span>
+<div class="comments">
+<div class="paragraph">
+Look up the word in the vocabulary table. The vocabulary contains all recognised verbs, nouns, and other words the game understands. Each entry can have synonyms separated by commas.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -522,10 +582,10 @@ Now begin tokenising the user input.
 <td class="comment-1" rowspan="1"><span class="register">C</span>=0.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_7</td>
+<td class="asm-label">VocabularyLookup_Loop</td>
 <td class="address-2"><span id="49375"></span>49375</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="49240.html#49436">UserInput_Enter_12</a> if *<span class="register">HL</span> is equal to 255.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="49240.html#49436">ProcessUnrecognisedWords</a> if *<span class="register">HL</span> is equal to 255 (end of vocabulary table).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -535,10 +595,10 @@ Now begin tokenising the user input.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49378"></span>49378</td>
-<td class="instruction">JR Z,<a href="49240.html#49436">UserInput_Enter_12</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49436">ProcessUnrecognisedWords</a></td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_8</td>
+<td class="asm-label">CompareVocabularyWord</td>
 <td class="address-2"><span id="49380"></span>49380</td>
 <td class="instruction">LD DE,48497</td>
 <td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="48497.html">48497</a>.</td>
@@ -550,10 +610,10 @@ Now begin tokenising the user input.
 <td class="comment-1" rowspan="1"><span class="register">B</span>=4.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_9</td>
+<td class="asm-label">CompareVocabularyWord_Loop</td>
 <td class="address-2"><span id="49385"></span>49385</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="49240.html#49421">UserInput_Enter_10</a> if *<span class="register">DE</span> is not equal to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="49240.html#49421">VocabularyWordNoMatch</a> if the characters don't match (this vocabulary entry doesn't match the word).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -563,31 +623,41 @@ Now begin tokenising the user input.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49387"></span>49387</td>
-<td class="instruction">JR NZ,<a href="49240.html#49421">UserInput_Enter_10</a></td>
+<td class="instruction">JR NZ,<a href="49240.html#49421">VocabularyWordNoMatch</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49389"></span>49389</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">DE</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next character in the extracted word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49390"></span>49390</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next character in the vocabulary entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49391"></span>49391</td>
-<td class="instruction">DJNZ <a href="49240.html#49385">UserInput_Enter_9</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="49240.html#49385">UserInput_Enter_9</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="49240.html#49385">CompareVocabularyWord_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="49240.html#49385">CompareVocabularyWord_Loop</a> until all 4 characters have been compared.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="49393"></span>
+<div class="comments">
+<div class="paragraph">
+Word matched in vocabulary! Calculate which slot in the token buffer to use (based on how many words have been processed so far) and store the vocabulary index as the token.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49393"></span>49393</td>
 <td class="instruction">LD HL,48513</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="48513.html">48513</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="48513.html">TempStore_WordCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -599,7 +669,7 @@ Now begin tokenising the user input.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49398"></span>49398</td>
 <td class="instruction">SUB (HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>-=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Calculate the token buffer slot index: <span class="register">A</span>-=*<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -617,7 +687,7 @@ Now begin tokenising the user input.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49402"></span>49402</td>
 <td class="instruction">LD HL,48486</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=<a href="48486.html">UserInput_Token_1</a>+<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="2">Calculate the address of the token buffer slot: <span class="register">HL</span>=<a href="48486.html">UserInput_Token_1</a>+<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -628,25 +698,25 @@ Now begin tokenising the user input.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49406"></span>49406</td>
 <td class="instruction">LD (HL),C</td>
-<td class="comment-1" rowspan="1">Write <span class="register">C</span> to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Store the vocabulary index (<span class="register">C</span>) in the token buffer slot.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49407"></span>49407</td>
 <td class="instruction">LD HL,(48509)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="48509.html">TempStore_TablePointer</a>.</td>
+<td class="comment-1" rowspan="1">Restore the command buffer position from *<a href="48509.html">TempStore_TablePointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49410"></span>49410</td>
 <td class="instruction">LD DE,(48511)</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=*<a href="48511.html">TempStore_TableIndex</a>.</td>
+<td class="comment-1" rowspan="1">Restore the word buffer position from *<a href="48511.html">TempStore_TableIndex</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49414"></span>49414</td>
 <td class="instruction">LD BC,(48513)</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=*<a href="48513.html">48513</a>.</td>
+<td class="comment-1" rowspan="1">Restore the word counter from *<a href="48513.html">TempStore_WordCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -655,7 +725,17 @@ Now begin tokenising the user input.
 <td class="comment-1" rowspan="1">Jump to <a href="49240.html#49263">UserInputParser_Loop</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_10</td>
+<td class="routine-comment" colspan="5">
+<span id="49421"></span>
+<div class="comments">
+<div class="paragraph">
+Word didn't match this vocabulary entry. Check if there's a synonym (indicated by a comma). If found, try matching against the synonym instead.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">VocabularyWordNoMatch</td>
 <td class="address-2"><span id="49421"></span>49421</td>
 <td class="instruction">LD E,B</td>
 <td class="comment-1" rowspan="1"><span class="register">E</span>=<span class="register">B</span>.</td>
@@ -670,39 +750,39 @@ Now begin tokenising the user input.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49424"></span>49424</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="1">Move the vocabulary pointer past the word that didn't match: <span class="register">HL</span>+=<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49425"></span>49425</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Read the character at this position and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49426"></span>49426</td>
 <td class="instruction">CP 44</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49433">UserInput_Enter_11</a> if <span class="register">A</span> is not equal to 44.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49433">VocabularyNextEntry</a> if this character is not a comma (44 meaning no synonym exists).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49428"></span>49428</td>
-<td class="instruction">JR NZ,<a href="49240.html#49433">UserInput_Enter_11</a></td>
+<td class="instruction">JR NZ,<a href="49240.html#49433">VocabularyNextEntry</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49430"></span>49430</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move past the comma to the synonym.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49431"></span>49431</td>
-<td class="instruction">JR <a href="49240.html#49380">UserInput_Enter_8</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49380">UserInput_Enter_8</a>.</td>
+<td class="instruction">JR <a href="49240.html#49380">CompareVocabularyWord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49380">CompareVocabularyWord</a> to try matching the synonym.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_11</td>
+<td class="asm-label">VocabularyNextEntry</td>
 <td class="address-2"><span id="49433"></span>49433</td>
 <td class="instruction">INC C</td>
 <td class="comment-1" rowspan="1">Increment <span class="register">C</span> by one.</td>
@@ -710,11 +790,21 @@ Now begin tokenising the user input.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49434"></span>49434</td>
-<td class="instruction">JR <a href="49240.html#49375">UserInput_Enter_7</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49375">UserInput_Enter_7</a>.</td>
+<td class="instruction">JR <a href="49240.html#49375">VocabularyLookup_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49375">VocabularyLookup_Loop</a> to check the next vocabulary entry.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_12</td>
+<td class="routine-comment" colspan="5">
+<span id="49436"></span>
+<div class="comments">
+<div class="paragraph">
+All recognised words have been tokenised. Now check if there are any unrecognised words remaining in the input. If so, display an error message to the player showing which word(s) weren't understood.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessUnrecognisedWords</td>
 <td class="address-2"><span id="49436"></span>49436</td>
 <td class="instruction">LD HL,(48509)</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="48509.html">TempStore_TablePointer</a>.</td>
@@ -729,7 +819,7 @@ Now begin tokenising the user input.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49443"></span>49443</td>
 <td class="instruction">LD BC,(48513)</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=*<a href="48513.html">48513</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">BC</span>=*<a href="48513.html">TempStore_WordCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -754,7 +844,7 @@ Now begin tokenising the user input.
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="48436.html">CommandBuffer</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_13</td>
+<td class="asm-label">ProcessUnrecognisedWords_Loop</td>
 <td class="address-2"><span id="49454"></span>49454</td>
 <td class="instruction">DEC C</td>
 <td class="comment-1" rowspan="1">Decrease <span class="register">C</span> by one.</td>
@@ -762,91 +852,101 @@ Now begin tokenising the user input.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49455"></span>49455</td>
-<td class="instruction">JR Z,<a href="49240.html#49481">UserInput_Enter_16</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49481">UserInput_Enter_16</a> if <span class="register">C</span> is equal to 10.</td>
+<td class="instruction">JR Z,<a href="49240.html#49481">PrintUnrecognisedWord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49481">PrintUnrecognisedWord</a> if <span class="register">C</span> is equal to 10 (no unrecognised words found).</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_14</td>
+<td class="asm-label">FindUnrecognisedWord_Loop</td>
 <td class="address-2"><span id="49457"></span>49457</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Read the character from *<span class="register">HL</span> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49458"></span>49458</td>
 <td class="instruction">CP 32</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49469">UserInput_Enter_15</a> if <span class="register">A</span> is equal to 32.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49469">SkipDelimiters_Loop2</a> if the character is an ASCII "SPACE" (32).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49460"></span>49460</td>
-<td class="instruction">JR Z,<a href="49240.html#49469">UserInput_Enter_15</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49469">SkipDelimiters_Loop2</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49462"></span>49462</td>
 <td class="instruction">CP 44</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49469">UserInput_Enter_15</a> if <span class="register">A</span> is equal to 44.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49469">SkipDelimiters_Loop2</a> if the character is an ASCII comma (44).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49464"></span>49464</td>
-<td class="instruction">JR Z,<a href="49240.html#49469">UserInput_Enter_15</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49469">SkipDelimiters_Loop2</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49466"></span>49466</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next character in the command buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49467"></span>49467</td>
-<td class="instruction">JR <a href="49240.html#49457">UserInput_Enter_14</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49457">UserInput_Enter_14</a>.</td>
+<td class="instruction">JR <a href="49240.html#49457">FindUnrecognisedWord_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49457">FindUnrecognisedWord_Loop</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_15</td>
+<td class="asm-label">SkipDelimiters_Loop2</td>
 <td class="address-2"><span id="49469"></span>49469</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next character in the command buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49470"></span>49470</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Read the character from *<span class="register">HL</span> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49471"></span>49471</td>
 <td class="instruction">CP 32</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49469">UserInput_Enter_15</a> if <span class="register">A</span> is equal to 32.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49469">SkipDelimiters_Loop2</a> if the character is an ASCII "SPACE" (32).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49473"></span>49473</td>
-<td class="instruction">JR Z,<a href="49240.html#49469">UserInput_Enter_15</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49469">SkipDelimiters_Loop2</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49475"></span>49475</td>
 <td class="instruction">CP 44</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49469">UserInput_Enter_15</a> if <span class="register">A</span> is equal to 44.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49469">SkipDelimiters_Loop2</a> if the character is an ASCII comma (44).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49477"></span>49477</td>
-<td class="instruction">JR Z,<a href="49240.html#49469">UserInput_Enter_15</a></td>
+<td class="instruction">JR Z,<a href="49240.html#49469">SkipDelimiters_Loop2</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49479"></span>49479</td>
-<td class="instruction">JR <a href="49240.html#49454">UserInput_Enter_13</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49454">UserInput_Enter_13</a>.</td>
+<td class="instruction">JR <a href="49240.html#49454">ProcessUnrecognisedWords_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49454">ProcessUnrecognisedWords_Loop</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_16</td>
+<td class="routine-comment" colspan="5">
+<span id="49481"></span>
+<div class="comments">
+<div class="paragraph">
+Print the unrecognised word(s) in quotes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintUnrecognisedWord</td>
 <td class="address-2"><span id="49481"></span>49481</td>
 <td class="instruction">PUSH HL</td>
 <td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
@@ -891,27 +991,27 @@ Print "I don't know the word:-".
 <td class="instruction">CALL <a href="47811.html">PrintCharacter</a></td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_17</td>
+<td class="asm-label">PrintUnrecognisedWord_Loop</td>
 <td class="address-2"><span id="49494"></span>49494</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Read the character from *<span class="register">HL</span> and store it in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49495"></span>49495</td>
 <td class="instruction">CP 33</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49505">UserInput_Enter_18</a> if <span class="register">A</span> is less than 33.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49240.html#49505">PrintUnrecognisedWord_End</a> if this character is less than 33 (a control character, indicating end of word).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49497"></span>49497</td>
-<td class="instruction">JR C,<a href="49240.html#49505">UserInput_Enter_18</a></td>
+<td class="instruction">JR C,<a href="49240.html#49505">PrintUnrecognisedWord_End</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49499"></span>49499</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next character in the command buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -922,11 +1022,11 @@ Print "I don't know the word:-".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49503"></span>49503</td>
-<td class="instruction">JR <a href="49240.html#49494">UserInput_Enter_17</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49494">UserInput_Enter_17</a>.</td>
+<td class="instruction">JR <a href="49240.html#49494">PrintUnrecognisedWord_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49494">PrintUnrecognisedWord_Loop</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_18</td>
+<td class="asm-label">PrintUnrecognisedWord_End</td>
 <td class="address-2"><span id="49505"></span>49505</td>
 <td class="instruction">LD A,34</td>
 <td class="comment-1" rowspan="2">Print a double quote character: "<code>&#34;</code>".</td>
@@ -961,14 +1061,24 @@ Print ".".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49516"></span>49516</td>
-<td class="instruction">JR <a href="49240.html#49530">UserInput_Enter_20</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49530">UserInput_Enter_20</a>.</td>
+<td class="instruction">JR <a href="49240.html#49530">ReturnToInputHandler</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="49240.html#49530">ReturnToInputHandler</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_19</td>
+<td class="routine-comment" colspan="5">
+<span id="49518"></span>
+<div class="comments">
+<div class="paragraph">
+Check if the input was empty (no words were tokenised). If tokens were found, return to allow the command to be processed. Otherwise, display "I Don't Understand".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckIfEmptyInput</td>
 <td class="address-2"><span id="49518"></span>49518</td>
 <td class="instruction">LD A,(48486)</td>
-<td class="comment-1" rowspan="3">Return if *<a href="48486.html">UserInput_Token_1</a> is not equal to 255.</td>
+<td class="comment-1" rowspan="3">Return if *<a href="48486.html">UserInput_Token_1</a> is not equal to 255 (input was not empty).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1003,10 +1113,10 @@ Print "I don't understand.".
 <td class="comment-1" rowspan="1">Call <a href="47793.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_20</td>
+<td class="asm-label">ReturnToInputHandler</td>
 <td class="address-2"><span id="49530"></span>49530</td>
 <td class="instruction">JP <a href="49162.html">Handler_UserInput</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49162.html">Handler_UserInput</a>.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="49162.html">Handler_UserInput</a> to wait for the next command input.</td>
 </tr>
 </table>
 <table class="asm-navigation">

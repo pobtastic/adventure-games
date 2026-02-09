@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at B517</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B4FD.html">B4FD</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b517">Map</a></td>
+<td class="next">
+Next: <a href="B549.html">B549</a>
+</td>
+</tr>
+</table>
+<div class="description">B517: Check And Process Objects</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="B4FD.html">CheckFlagAndSetDisplay_ProcessPointer</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckFlagAndSetDisplay_CheckObjects</td>
+<td class="address-2"><span id="b517"></span>B517</td>
+<td class="instruction">LD A,($A01C)</td>
+<td class="comment-1" rowspan="3">Check if objects need processing and return if none.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b51a"></span>B51A</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b51b"></span>B51B</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b51c"></span>B51C</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="3">Stash <span class="register">IY</span>, <span class="register">DE</span> and <span class="register">IX</span> on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b51e"></span>B51E</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b51f"></span>B51F</td>
+<td class="instruction">PUSH IX</td>
+</tr>
+<tr>
+<td class="asm-label">CheckFlagAndSetDisplay_ObjectLoop</td>
+<td class="address-2"><span id="b521"></span>B521</td>
+<td class="instruction">CALL <a href="AEA9.html">$AEA9</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AEA9.html">AEA9</a> (get next object).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b524"></span>B524</td>
+<td class="instruction">BIT 6,(IY+%00000001)</td>
+<td class="comment-1" rowspan="2">Check bit 6 of object attribute and jump to <a href="B517.html#b543">CheckFlagAndSetDisplay_RestoreAndReturn</a> if object doesn't need special handling.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b528"></span>B528</td>
+<td class="instruction">JR Z,<a href="B517.html#b543">CheckFlagAndSetDisplay_RestoreAndReturn</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b52a"></span>B52A</td>
+<td class="instruction">CALL <a href="D04F.html">AdjustObjectTableForSum</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D04F.html">AdjustObjectTableForSum</a> (adjust object table for sum).</td>
+</tr>
+<tr>
+<td class="asm-label">CheckFlagAndSetDisplay_ProcessObject</td>
+<td class="address-2"><span id="b52d"></span>B52D</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="2">Stash <span class="register">IY</span> on the stack and restore into <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b52f"></span>B52F</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b530"></span>B530</td>
+<td class="instruction">LD DE,$0008</td>
+<td class="comment-1" rowspan="2"><span class="register">HL</span>+=0008 (move to next object).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b533"></span>B533</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b534"></span>B534</td>
+<td class="instruction">CALL <a href="D36A.html">ProcessObjectEntry</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D36A.html">ProcessObjectEntry</a> (process object entry).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b537"></span>B537</td>
+<td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="2">Compare with FF and jump to <a href="B517.html#b521">CheckFlagAndSetDisplay_ObjectLoop</a> if end of objects.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b539"></span>B539</td>
+<td class="instruction">JR Z,<a href="B517.html#b521">CheckFlagAndSetDisplay_ObjectLoop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b53b"></span>B53B</td>
+<td class="instruction">LD HL,$A034</td>
+<td class="comment-1" rowspan="2"><span class="register">HL</span>=<a href="A034.html">RoomDisplayParameter</a> and compare with room parameter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b53e"></span>B53E</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b53f"></span>B53F</td>
+<td class="instruction">JR NZ,<a href="B517.html#b52d">CheckFlagAndSetDisplay_ProcessObject</a></td>
+<td class="comment-1" rowspan="2">Jump to <a href="B517.html#b52d">CheckFlagAndSetDisplay_ProcessObject</a> if object doesn't match room, otherwise set bit 0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b541"></span>B541</td>
+<td class="instruction">OR $01</td>
+</tr>
+<tr>
+<td class="asm-label">CheckFlagAndSetDisplay_RestoreAndReturn</td>
+<td class="address-2"><span id="b543"></span>B543</td>
+<td class="instruction">POP IX</td>
+<td class="comment-1" rowspan="3">Restore <span class="register">IX</span>, <span class="register">DE</span> and <span class="register">IY</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b545"></span>B545</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b546"></span>B546</td>
+<td class="instruction">POP IY</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b548"></span>B548</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B4FD.html">B4FD</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b517">Map</a></td>
+<td class="next">
+Next: <a href="B549.html">B549</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/46359.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

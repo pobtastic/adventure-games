@@ -36,101 +36,134 @@ Next: <a href="CEFE.html">CEFE</a>
 </td>
 </tr>
 </table>
-<div class="description">CEDE: Routine at CEDE</div>
+<div class="description">CEDE: Process Room Display Parameter</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="B936.html">B936</a>, <a href="CDA1.html">CDA1</a>, <a href="CE3B.html">HandleRoomDisplay</a> and <a href="CE6A.html">HandleSimpleAction</a>.
+Used by the routines at <a href="B936.html">ProcessScriptDisplay</a>, <a href="CDA1.html">HandleDisplayRoomDescription</a>, <a href="CE3B.html">HandleRoomDisplay</a> and <a href="CE6A.html">HandleSimpleAction</a>.
+</div>
+<div class="paragraph">
+Resolves special parameter values used in room display scripts to actual game values (current room, character ID, location value).
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Parameter value (F5-FE are special values)</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Resolved parameter value</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">ProcessRoomDisplayParameter</td>
 <td class="address-2"><span id="cede"></span>CEDE</td>
 <td class="instruction">CP $F5</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return unchanged if the parameter is not a special value (less than F5).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cee0"></span>CEE0</td>
 <td class="instruction">RET C</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cee1"></span>CEE1</td>
 <td class="instruction">CP $FE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return unchanged if the parameter is not a special value (greater than FE).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cee3"></span>CEE3</td>
 <td class="instruction">RET NC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cee4"></span>CEE4</td>
 <td class="instruction">CP $FA</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="CEDE.html#ceec">ProcessRoomDisplayParameter_CheckCharacterID</a> if not room parameter (FA).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cee6"></span>CEE6</td>
-<td class="instruction">JR NZ,<a href="CEDE.html#ceec">$CEEC</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="CEDE.html#ceec">ProcessRoomDisplayParameter_CheckCharacterID</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cee8"></span>CEE8</td>
 <td class="instruction">LD A,($9FD6)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return the current room ID (<span class="register">A</span>=*<a href="9FD6.html">CurrentRoom_ID</a>).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ceeb"></span>CEEB</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">ProcessRoomDisplayParameter_CheckCharacterID</td>
 <td class="address-2"><span id="ceec"></span>CEEC</td>
 <td class="instruction">CP $FB</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="CEDE.html#cef4">ProcessRoomDisplayParameter_GetLocationValue</a> if not character ID parameter (FB).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ceee"></span>CEEE</td>
-<td class="instruction">JR NZ,<a href="CEDE.html#cef4">$CEF4</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="CEDE.html#cef4">ProcessRoomDisplayParameter_GetLocationValue</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cef0"></span>CEF0</td>
 <td class="instruction">LD A,($A036)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return the current character ID (<span class="register">A</span>=*<a href="A036.html">CurrentCharacter_ID</a>).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cef3"></span>CEF3</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">ProcessRoomDisplayParameter_GetLocationValue</td>
 <td class="address-2"><span id="cef4"></span>CEF4</td>
 <td class="instruction">CP $FC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return the location value (high byte) if parameter is FC otherwise return the location value (low byte).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cef6"></span>CEF6</td>
 <td class="instruction">LD A,($9FD8)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cef9"></span>CEF9</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cefa"></span>CEFA</td>
 <td class="instruction">LD A,($9FD7)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cefd"></span>CEFD</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 </table>
 <table class="asm-navigation">

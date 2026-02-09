@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at 44979</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="44955.html">44955</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#44979">Map</a></td>
+<td class="next">
+Next: <a href="45025.html">45025</a>
+</td>
+</tr>
+</table>
+<div class="description">44979: Search Command Handler Table</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="43698.html">43698</a> and <a href="43858.html">43858</a>.
+</div>
+<div class="paragraph">
+Searches through a command handler lookup table for a matching value pair and jumps to the associated handler routine if found.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">B</td>
+<td class="register-desc">Second value to match</td>
+</tr>
+<tr>
+<td class="register">C</td>
+<td class="register-desc">First value to match</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SearchCommandHandlerTable</td>
+<td class="address-2"><span id="44979"></span>44979</td>
+<td class="instruction">LD HL,44907</td>
+<td class="comment-1" rowspan="1">Set the table pointer to <a href="44907.html">Table_CommandHandlerLookup_Standard</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44982"></span>44982</td>
+<td class="instruction">LD A,(40996)</td>
+<td class="comment-1" rowspan="2">Check which lookup table to use based on the current mode.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44985"></span>44985</td>
+<td class="instruction">CP 2</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44987"></span>44987</td>
+<td class="instruction">JR NZ,<a href="44979.html#44992">SearchCommandHandlerTable_StartSearch</a></td>
+<td class="comment-1" rowspan="1">Use the alternate lookup table if the mode is 2.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44989"></span>44989</td>
+<td class="instruction">LD HL,44955</td>
+<td class="comment-1" rowspan="1">Else, set the table pointer to <a href="44955.html">Table_CommandHandlerLookup_Alternate</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">SearchCommandHandlerTable_StartSearch</td>
+<td class="address-2"><span id="44992"></span>44992</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44993"></span>44993</td>
+<td class="instruction">LD E,12</td>
+<td class="comment-1" rowspan="3">Set the table entry counter to 12 entries, or 6 if the mode is 12.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44995"></span>44995</td>
+<td class="instruction">JR NZ,<a href="44979.html#44999">SearchCommandHandlerTable_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44997"></span>44997</td>
+<td class="instruction">LD E,6</td>
+</tr>
+<tr>
+<td class="asm-label">SearchCommandHandlerTable_Loop</td>
+<td class="address-2"><span id="44999"></span>44999</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Check if the first value in the current table entry matches the search value.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45000"></span>45000</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45001"></span>45001</td>
+<td class="instruction">CP C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45002"></span>45002</td>
+<td class="instruction">JR NZ,<a href="44979.html#45008">SearchCommandHandlerTable_NextEntry</a></td>
+<td class="comment-1" rowspan="1">Skip to the next entry if it doesn't match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45004"></span>45004</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="2">Check if the second value in the current table entry matches the search value.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45005"></span>45005</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45006"></span>45006</td>
+<td class="instruction">JR Z,<a href="44979.html#45018">SearchCommandHandlerTable_Found</a></td>
+<td class="comment-1" rowspan="1">Jump to the handler if both values match.</td>
+</tr>
+<tr>
+<td class="asm-label">SearchCommandHandlerTable_NextEntry</td>
+<td class="address-2"><span id="45008"></span>45008</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="3">Move to the next table entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45009"></span>45009</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45010"></span>45010</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45011"></span>45011</td>
+<td class="instruction">DEC E</td>
+<td class="comment-1" rowspan="2">Decrease the entry counter and continue searching if there are more entries.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45012"></span>45012</td>
+<td class="instruction">JR NZ,<a href="44979.html#44999">SearchCommandHandlerTable_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label">SearchCommandHandlerTable_NotFound</td>
+<td class="address-1"><span id="45014"></span>45014</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45015"></span>45015</td>
+<td class="instruction">JP <a href="44903.html">44903</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44903.html">44903</a> (no handler found).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="45018"></span>
+<div class="comments">
+<div class="paragraph">
+A handler was found, use it!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SearchCommandHandlerTable_Found</td>
+<td class="address-2"><span id="45018"></span>45018</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="6">Load the handler pointer from the table entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45019"></span>45019</td>
+<td class="instruction">LD E,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45020"></span>45020</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45021"></span>45021</td>
+<td class="instruction">LD D,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45022"></span>45022</td>
+<td class="instruction">EX DE,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45023"></span>45023</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45024"></span>45024</td>
+<td class="instruction">JP (HL)</td>
+<td class="comment-1" rowspan="1">Jump to the handler.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="44955.html">44955</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#44979">Map</a></td>
+<td class="next">
+Next: <a href="45025.html">45025</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../../asm/AFB3.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

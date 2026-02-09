@@ -36,21 +36,38 @@ Next: <a href="CFCF.html">CFCF</a>
 </td>
 </tr>
 </table>
-<div class="description">CFB6: Routine at CFB6</div>
+<div class="description">CFB6: Find Character Script Entry</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="CC78.html">ScriptInterpreter</a>, <a href="CFCF.html">CFCF</a>, <a href="D008.html">D008</a>, <a href="D026.html">D026</a>, <a href="DC6C.html">DC6C</a>, <a href="E17B.html">E17B</a> and <a href="E691.html">E691</a>.
+Used by the routines at <a href="CC78.html">ScriptInterpreter</a>, <a href="CFCF.html">GetScriptPointer</a>, <a href="D008.html">GetScriptPointerFromTimetable</a>, <a href="D026.html">UpdateScriptPointer</a>, <a href="E03A.html">E03A</a>, <a href="E17B.html">E17B</a> and <a href="E6BC.html">E6BC</a>.
+</div>
+<div class="paragraph">
+Searches through the character script entry list to find an entry matching the current character ID. Returns the entry pointer if found, otherwise returns 00.
 </div>
 </div>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Character script entry pointer (if found)</td>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">00 if not found, bit 0 set if found</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">FindCharacterScriptEntry</td>
 <td class="address-2"><span id="cfb6"></span>CFB6</td>
 <td class="instruction">LD A,($A036)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A036.html">CurrentCharacter_ID</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -63,64 +80,84 @@ This entry point is used by the routine at <a href="E17B.html">E17B</a>.
 </td>
 </tr>
 <tr>
+<td class="asm-label">FindCharacterScriptEntry_StartSearch</td>
 <td class="address-2"><span id="cfb9"></span>CFB9</td>
 <td class="instruction">LD IX,$9FEB</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="9FEB.html">CharacterScriptEntryList</a>.</td>
 </tr>
 <tr>
+<td class="asm-label">FindCharacterScriptEntry_Loop</td>
 <td class="address-2"><span id="cfbd"></span>CFBD</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the current character ID on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cfbe"></span>CFBE</td>
-<td class="instruction">CALL <a href="A0F7.html">$A0F7</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="A0F7.html">FetchObjectPointerFromStack</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A0F7.html">FetchObjectPointerFromStack</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cfc1"></span>CFC1</td>
-<td class="instruction">JR Z,<a href="CFB6.html#cfcc">$CFCC</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="CFB6.html#cfcc">FindCharacterScriptEntry_NotFound</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="CFB6.html#cfcc">FindCharacterScriptEntry_NotFound</a> if the end of the list has been reached.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cfc3"></span>CFC3</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the current character ID from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cfc4"></span>CFC4</td>
 <td class="instruction">CP (IX+$00)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="CFB6.html#cfbd">FindCharacterScriptEntry_Loop</a> if this entry doesn't match the character ID.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cfc7"></span>CFC7</td>
-<td class="instruction">JR NZ,<a href="CFB6.html#cfbd">$CFBD</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="CFB6.html#cfbd">FindCharacterScriptEntry_Loop</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cfc9"></span>CFC9</td>
-<td class="instruction">OR $01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Mark that the entry was found.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cfcb"></span>CFCB</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return with the entry pointer.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="cfcc"></span>
+<div class="comments">
+<div class="paragraph">
+No matching entry was found in the list.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FindCharacterScriptEntry_NotFound</td>
 <td class="address-2"><span id="cfcc"></span>CFCC</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the current character ID from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cfcd"></span>CFCD</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return 00 (entry not found).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="cfce"></span>CFCE</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 </table>
 <table class="asm-navigation">

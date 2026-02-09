@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at DF5B</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DD35.html">DD35</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#df5b">Map</a></td>
+<td class="next">
+Next: <a href="DFCC.html">DFCC</a>
+</td>
+</tr>
+</table>
+<div class="description">DF5B: Print Object Description Text</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="DD35.html">DD35</a>, <a href="E03A.html">E03A</a> and <a href="E151.html">LookupAndPrintDisplayText</a>.
+</div>
+<div class="paragraph">
+Prints the description text for an object specified by the room display parameter. If the object has custom description text, that is printed; otherwise a default description is used. Additional object information is then printed followed by a period.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintObjectDescriptionText</td>
+<td class="address-2"><span id="df5b"></span>DF5B</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A034.html">RoomDisplayParameter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df5e"></span>DF5E</td>
+<td class="instruction">CALL <a href="D237.html">FetchObjectDataPointer</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D237.html">FetchObjectDataPointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df61"></span>DF61</td>
+<td class="instruction">SET 6,(IX+$06)</td>
+<td class="comment-1" rowspan="1">Set bit 6 of *<span class="register">IX</span>+06.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df65"></span>DF65</td>
+<td class="instruction">LD L,(IX+$0D)</td>
+<td class="comment-1" rowspan="2">Load the object's description text pointer from offsets 0D/0E.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df68"></span>DF68</td>
+<td class="instruction">LD H,(IX+$0E)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df6b"></span>DF6B</td>
+<td class="instruction">LD A,H</td>
+<td class="comment-1" rowspan="3">Jump to <a href="A59F.html">PrintTextAndHandleControlCharacters</a> if the object has custom description text.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df6c"></span>DF6C</td>
+<td class="instruction">OR L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df6d"></span>DF6D</td>
+<td class="instruction">JP NZ,<a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df70"></span>DF70</td>
+<td class="instruction">LD HL,$68E1</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="68E1.html">68E1</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df73"></span>DF73</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df76"></span>DF76</td>
+<td class="instruction">CALL <a href="D39B.html#d3d5">ProcessObjectEntryAlternate_3</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D39B.html#d3d5">ProcessObjectEntryAlternate_3</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df79"></span>DF79</td>
+<td class="instruction">LD A,$2E</td>
+<td class="comment-1" rowspan="1">Load a period character (ASCII 2E) into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df7b"></span>DF7B</td>
+<td class="instruction">JP <a href="A9B7.html">Print_Character</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A9B7.html">Print_Character</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df7e"></span>DF7E</td>
+<td class="instruction">ADC A,B</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df7f"></span>DF7F</td>
+<td class="instruction">NOP</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df80"></span>DF80</td>
+<td class="instruction">RLCA</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df81"></span>DF81</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df82"></span>DF82</td>
+<td class="instruction">CALL C,$FFFD</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df85"></span>DF85</td>
+<td class="instruction">RLCA</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df86"></span>DF86</td>
+<td class="instruction">ADC A,E</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df87"></span>DF87</td>
+<td class="instruction">RST $18</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df88"></span>DF88</td>
+<td class="instruction">DEFB $FD</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df89"></span>DF89</td>
+<td class="instruction">RST $38</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df8a"></span>DF8A</td>
+<td class="instruction">DEC BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df8b"></span>DF8B</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df8c"></span>DF8C</td>
+<td class="instruction">NOP</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df8d"></span>DF8D</td>
+<td class="instruction">LD A,($9CA1)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df90"></span>DF90</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df91"></span>DF91</td>
+<td class="instruction">JR Z,<a href="DFCC.html#e000">$E000</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df93"></span>DF93</td>
+<td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df95"></span>DF95</td>
+<td class="instruction">LD ($9CA1),A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df98"></span>DF98</td>
+<td class="instruction">LD IX,($A013)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df9c"></span>DF9C</td>
+<td class="instruction">LD HL,$07D5</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df9f"></span>DF9F</td>
+<td class="instruction">LD (IX+$09),L</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfa2"></span>DFA2</td>
+<td class="instruction">LD (IX+$0A),H</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfa5"></span>DFA5</td>
+<td class="instruction">JR <a href="DFCC.html#e000">$E000</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfa7"></span>DFA7</td>
+<td class="instruction">RET Z</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfa8"></span>DFA8</td>
+<td class="instruction">NOP</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfa9"></span>DFA9</td>
+<td class="instruction">INC E</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfaa"></span>DFAA</td>
+<td class="instruction">RET PO</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfab"></span>DFAB</td>
+<td class="instruction">RLCA</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfac"></span>DFAC</td>
+<td class="instruction">OR (HL)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfad"></span>DFAD</td>
+<td class="instruction">RST $18</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfae"></span>DFAE</td>
+<td class="instruction">DEFB $FD</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfaf"></span>DFAF</td>
+<td class="instruction">RST $38</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfb0"></span>DFB0</td>
+<td class="instruction">RLCA</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfb1"></span>DFB1</td>
+<td class="instruction">SBC A,L</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfb2"></span>DFB2</td>
+<td class="instruction">SBC A,$FD</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfb4"></span>DFB4</td>
+<td class="instruction">RST $38</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfb5"></span>DFB5</td>
+<td class="instruction">DEC BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfb6"></span>DFB6</td>
+<td class="instruction">RLCA</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfb7"></span>DFB7</td>
+<td class="instruction">RET P</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfb8"></span>DFB8</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfbb"></span>DFBB</td>
+<td class="instruction">CP $59</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfbd"></span>DFBD</td>
+<td class="instruction">JP NZ,<a href="DFCC.html#e000">$E000</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfc0"></span>DFC0</td>
+<td class="instruction">LD A,($9FE1)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfc3"></span>DFC3</td>
+<td class="instruction">CP $00</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfc5"></span>DFC5</td>
+<td class="instruction">JP NZ,<a href="DFCC.html#e000">$E000</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfc8"></span>DFC8</td>
+<td class="instruction">JR <a href="DFCC.html">$DFCC</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfca"></span>DFCA</td>
+<td class="instruction">NOP</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dfcb"></span>DFCB</td>
+<td class="instruction">NOP</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DD35.html">DD35</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#df5b">Map</a></td>
+<td class="next">
+Next: <a href="DFCC.html">DFCC</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/57179.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

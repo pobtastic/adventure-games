@@ -41,6 +41,19 @@ Next: <a href="C579.html">C579</a>
 <div class="paragraph">
 Used by the routine at <a href="EDC4.html">GameLoop</a>.
 </div>
+<div class="paragraph">
+Matches the first word token from the user's command against the verb word tokens table. If a match is found, it calculates the verb index and jumps to the corresponding verb handler routine. If no match is found, it displays "I Don't Understand" and returns.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c556"></span>
+<div class="comments">
+<div class="paragraph">
+Set up to search the verb word tokens table for the first word token.
+</div>
 </div>
 </td>
 </tr>
@@ -48,38 +61,38 @@ Used by the routine at <a href="EDC4.html">GameLoop</a>.
 <td class="asm-label">Handler_MatchVerb</td>
 <td class="address-2"><span id="c556"></span>C556</td>
 <td class="instruction">LD HL,($BD26)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="BD26.html">Pointer_VerbWordTokens</a>.</td>
+<td class="comment-1" rowspan="1">Set a pointer to *<a href="BD26.html">Pointer_VerbWordTokens</a> in <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c559"></span>C559</td>
 <td class="instruction">LD BC,($BD2C)</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=*<a href="BD2C.html">Count_VerbTokens</a>.</td>
+<td class="comment-1" rowspan="1">Load *<a href="BD2C.html">Count_VerbTokens</a> tokens into <span class="register">BC</span> for the search.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c55d"></span>C55D</td>
 <td class="instruction">LD A,($BD66)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="BD66.html">UserInput_Token_1</a>.</td>
+<td class="comment-1" rowspan="1">Get the *<a href="BD66.html">UserInput_Token_1</a> from the user input.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c560"></span>C560</td>
 <td class="instruction">CPIR</td>
-<td class="comment-1" rowspan="1">CPIR.</td>
+<td class="comment-1" rowspan="1">Search the verb word tokens table for a matching token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c562"></span>C562</td>
-<td class="instruction">JR Z,<a href="C556.html#c56b">Handler_MatchVerb_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C556.html#c56b">Handler_MatchVerb_0</a> if ?? is equal to 00.</td>
+<td class="instruction">JR Z,<a href="C556.html#c56b">VerbMatched</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C556.html#c56b">VerbMatched</a> if a match was found (Z flag is set).</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="c564"></span>
 <div class="comments">
 <div class="paragraph">
-Print "I don't understand.".
+The token doesn't match any verb. Display an error message: "I don't understand.".
 </div>
 </div>
 </td>
@@ -103,10 +116,20 @@ Print "I don't understand.".
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchVerb_0</td>
+<td class="routine-comment" colspan="5">
+<span id="c56b"></span>
+<div class="comments">
+<div class="paragraph">
+A verb was matched! Calculate its index in the table and jump to its handler routine.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">VerbMatched</td>
 <td class="address-2"><span id="c56b"></span>C56B</td>
 <td class="instruction">LD A,($BD2C)</td>
-<td class="comment-1" rowspan="2"><span class="register">A</span>=*<a href="BD2C.html">Count_VerbTokens</a>-<span class="register">C</span>.</td>
+<td class="comment-1" rowspan="2">Calculate the verb index: <span class="register">A</span>=*<a href="BD2C.html">Count_VerbTokens</a>-<span class="register">C</span> (total tokens minus remaining tokens after match).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -117,31 +140,31 @@ Print "I don't understand.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="c56f"></span>C56F</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">A</span> by one.</td>
+<td class="comment-1" rowspan="1">Adjust the index (decrease by one, as indices are zero-based).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c570"></span>C570</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-1" rowspan="1">Store the result in <span class="register">E</span>.</td>
+<td class="comment-1" rowspan="1">Store the verb index in <span class="register">E</span> for the table lookup.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c571"></span>C571</td>
 <td class="instruction">LD IX,($BD20)</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="BD20.html">Pointer_JumpTable_Verbs</a>.</td>
+<td class="comment-1" rowspan="1">Set a pointer to *<a href="BD20.html">Pointer_JumpTable_Verbs</a> in <span class="register">IX</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c575"></span>C575</td>
 <td class="instruction">CALL <a href="C1F0.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C1F0.html">GetTableEntry</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="C1F0.html">GetTableEntry</a> to get the address of the verb handler routine for this index.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c578"></span>C578</td>
 <td class="instruction">JP (HL)</td>
-<td class="comment-1" rowspan="1">Jump to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Jump to the verb handler routine to execute the command.</td>
 </tr>
 </table>
 <table class="asm-navigation">

@@ -42,7 +42,7 @@ Next: <a href="C439.html">C439</a>
 Used by the routines at <a href="F19D.html">Action_Examine</a>, <a href="F263.html">Action_Take</a>, <a href="F4D4.html">Action_DropThrow</a>, <a href="F7D6.html">Action_Place</a>, <a href="F8D9.html">Action_Shooting</a>, <a href="F9E4.html">Action_Drink</a>, <a href="FA3C.html">Action_Open</a>, <a href="FAA8.html">Action_Close</a>, <a href="FB16.html">Action_Shout</a>, <a href="FBA8.html">Action_Pull</a>, <a href="FBD5.html">Action_Wear</a>, <a href="FC24.html">Action_Light</a> and <a href="FCCD.html">Action_Unlock</a>.
 </div>
 <div class="paragraph">
-Rather than use item properties, the game just has separate objects that don't exist until an action is performed.
+Transforms one item into another by destroying the "from" item and creating the "to" item in the same location. Rather than use item properties, the game just has separate objects that don't exist until an action is performed.
 </div>
 <div class="paragraph">
 An example is: <table class="default">
@@ -67,32 +67,42 @@ An example is: <table class="default">
 </tr>
 <tr>
 <td class="register">B</td>
-<td class="register-desc">From item ID</td>
+<td class="register-desc">From item ID (the item to be destroyed)</td>
 </tr>
 <tr>
 <td class="register">C</td>
-<td class="register-desc">To item ID</td>
+<td class="register-desc">To item ID (the item to be created)</td>
 </tr>
 </table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c426"></span>
+<div class="comments">
+<div class="paragraph">
+Get the location of the "from" item so the "to" item can be created in the same place.
+</div>
+</div>
 </td>
 </tr>
 <tr>
 <td class="asm-label">TransformItem</td>
 <td class="address-2"><span id="c426"></span>C426</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">B</span>.</td>
+<td class="comment-1" rowspan="1">Copy the "from" item ID into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c427"></span>C427</td>
 <td class="instruction">CALL <a href="C3D0.html">ObjectEventLocator</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C3D0.html">ObjectEventLocator</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="C3D0.html">ObjectEventLocator</a> to get the room ID where the "from" item is located (returns in <span class="register">A</span>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c42a"></span>C42A</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">BC</span> and <span class="register">AF</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Stash the item IDs and flags on the stack for later.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -100,22 +110,32 @@ An example is: <table class="default">
 <td class="instruction">PUSH AF</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c42c"></span>
+<div class="comments">
+<div class="paragraph">
+Destroy the "from" item by setting its location to 00 (inactive).
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c42c"></span>C42C</td>
 <td class="instruction">LD C,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=00.</td>
+<td class="comment-1" rowspan="1">Set the room ID to 00 to deactivate the "from" item.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c42e"></span>C42E</td>
 <td class="instruction">CALL <a href="C412.html">Handler_UpdateObjectLocation</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C412.html">Handler_UpdateObjectLocation</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="C412.html">Handler_UpdateObjectLocation</a> to update the "from" item's location to 00.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c431"></span>C431</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">AF</span> and <span class="register">BC</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the item IDs and flags from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -123,22 +143,32 @@ An example is: <table class="default">
 <td class="instruction">POP BC</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c433"></span>
+<div class="comments">
+<div class="paragraph">
+Create the "to" item at the same location where the "from" item was.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c433"></span>C433</td>
 <td class="instruction">LD B,C</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">C</span>.</td>
+<td class="comment-1" rowspan="1">Copy the "to" item ID into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c434"></span>C434</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Copy the location (from <span class="register">A</span>) into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c435"></span>C435</td>
 <td class="instruction">CALL <a href="C412.html">Handler_UpdateObjectLocation</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C412.html">Handler_UpdateObjectLocation</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="C412.html">Handler_UpdateObjectLocation</a> to create the "to" item at the stored location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

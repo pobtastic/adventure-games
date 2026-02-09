@@ -36,112 +36,171 @@ Next: <a href="54511.html">54511</a>
 </td>
 </tr>
 </table>
-<div class="description">54476: Routine at D4CC</div>
+<div class="description">54476: Count Objects In Location</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="53506.html">53506</a>, <a href="54439.html">54439</a>, <a href="54566.html">54566</a> and <a href="56428.html">56428</a>.
+Used by the routines at <a href="53506.html">ProcessLocationTokenDisplay</a>, <a href="54439.html">PrintObjectList</a>, <a href="54566.html">PrintFormattedObjectList</a> and <a href="56629.html">56629</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Location ID (or 255 for current character location)</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Count of visible objects found in the specified location</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">CountObjectsInLocation</td>
 <td class="address-2"><span id="54476"></span>54476</td>
 <td class="instruction">PUSH IX</td>
 <td class="comment-1" rowspan="4">Stash <span class="register">IX</span>, <span class="register">IY</span>, <span class="register">HL</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54478"></span>54478</td>
 <td class="instruction">PUSH IY</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54480"></span>54480</td>
 <td class="instruction">PUSH HL</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54481"></span>54481</td>
 <td class="instruction">PUSH BC</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54482"></span>54482</td>
 <td class="instruction">CALL <a href="53327.html">AdjustObjectTableForSum</a></td>
-<td class="comment-1" rowspan="1">Call <a href="53327.html">AdjustObjectTableForSum</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="53327.html">AdjustObjectTableForSum</a> to set up the object table pointer.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54485"></span>54485</td>
 <td class="instruction">LD B,0</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=0.</td>
+<td class="comment-1" rowspan="1">Initialise the object counter in <span class="register">B</span> to zero.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54487"></span>54487</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Store the location ID in <span class="register">C</span> for later use.</td>
 </tr>
 <tr>
+<td class="asm-label">CountObjectsInLocation_Loop</td>
 <td class="address-2"><span id="54488"></span>54488</td>
 <td class="instruction">CALL <a href="53766.html">FetchNextObject</a></td>
 <td class="comment-1" rowspan="1">Call <a href="53766.html">FetchNextObject</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54491"></span>54491</td>
-<td class="instruction">JR Z,<a href="54476.html#54502">54502</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="54476.html#54502">54502</a> if the terminator character was reached (255).</td>
+<td class="instruction">JR Z,<a href="54476.html#54502">CountObjectsInLocation_End</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="54476.html#54502">CountObjectsInLocation_End</a> if we've reached the end of the object table (255).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54493"></span>54493</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">C</span>.</td>
+<td class="comment-1" rowspan="1">Restore the location ID from <span class="register">C</span> into <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54494"></span>54494</td>
-<td class="instruction">CALL <a href="54511.html">54511</a></td>
-<td class="comment-1" rowspan="1">Call <a href="54511.html">54511</a>.</td>
+<td class="instruction">CALL <a href="54511.html">CheckObjectMatchCriteria</a></td>
+<td class="comment-1" rowspan="1">Call <a href="54511.html">CheckObjectMatchCriteria</a> to check if this object matches the location and visibility criteria.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="54497"></span>
+<div class="comments">
+<div class="paragraph">
+Skip this object if it doesn't match the criteria (carry flag not set).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54497"></span>54497</td>
-<td class="instruction">JR NC,<a href="54476.html#54488">54488</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="54476.html#54488">54488</a> if <span class="register">A</span> is greater than or equal to 0.</td>
+<td class="instruction">JR NC,<a href="54476.html#54488">CountObjectsInLocation_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="54476.html#54488">CountObjectsInLocation_Loop</a> to continue checking objects if this one doesn't match.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="54499"></span>
+<div class="comments">
+<div class="paragraph">
+This object matches the criteria, so count it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54499"></span>54499</td>
 <td class="instruction">INC B</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">B</span> by one.</td>
+<td class="comment-1" rowspan="1">Increment the object counter in <span class="register">B</span> by one.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54500"></span>54500</td>
-<td class="instruction">JR <a href="54476.html#54488">54488</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="54476.html#54488">54488</a>.</td>
+<td class="instruction">JR <a href="54476.html#54488">CountObjectsInLocation_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="54476.html#54488">CountObjectsInLocation_Loop</a> to check the next object.</td>
 </tr>
 <tr>
+<td class="asm-label">CountObjectsInLocation_End</td>
 <td class="address-2"><span id="54502"></span>54502</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">B</span>.</td>
+<td class="comment-1" rowspan="1">Transfer the object count from <span class="register">B</span> to <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54503"></span>54503</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
+<td class="comment-1" rowspan="1">Set flags based on the count (zero flag set if no objects found).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54504"></span>54504</td>
 <td class="instruction">POP BC</td>
 <td class="comment-1" rowspan="4">Restore <span class="register">BC</span>, <span class="register">HL</span>, <span class="register">IY</span> and <span class="register">IX</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54505"></span>54505</td>
 <td class="instruction">POP HL</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54506"></span>54506</td>
 <td class="instruction">POP IY</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54508"></span>54508</td>
 <td class="instruction">POP IX</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="54510"></span>54510</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>

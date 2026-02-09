@@ -36,114 +36,143 @@ Next: <a href="D4CC.html">D4CC</a>
 </td>
 </tr>
 </table>
-<div class="description">D4A7: Routine at D4A7</div>
+<div class="description">D4A7: Print Object List</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="D102.html">D102</a>.
+Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">PrintObjectList</td>
 <td class="address-2"><span id="d4a7"></span>D4A7</td>
 <td class="instruction">PUSH IY</td>
 <td class="comment-1" rowspan="3">Stash <span class="register">IY</span>, <span class="register">AF</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4a9"></span>D4A9</td>
 <td class="instruction">PUSH AF</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4aa"></span>D4AA</td>
 <td class="instruction">PUSH BC</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4ab"></span>D4AB</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=FF.</td>
+<td class="comment-1" rowspan="1">Set the location ID to FF (current character location).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4ad"></span>D4AD</td>
-<td class="instruction">CALL <a href="D4CC.html">$D4CC</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D4CC.html">D4CC</a>.</td>
+<td class="instruction">CALL <a href="D4CC.html">CountObjectsInLocation</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D4CC.html">CountObjectsInLocation</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d4b0"></span>
+<div class="comments">
+<div class="paragraph">
+Skip printing if no objects were found.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4b0"></span>D4B0</td>
-<td class="instruction">JR Z,<a href="D4A7.html#d4c7">$D4C7</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D4A7.html#d4c7">D4C7</a> if <span class="register">A</span> is equal to FF.</td>
+<td class="instruction">JR Z,<a href="D4A7.html#d4c7">PrintObjectList_End</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="D4A7.html#d4c7">PrintObjectList_End</a> if no objects were found (count is FF).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4b2"></span>D4B2</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">AF</span> on the stack.</td>
+<td class="comment-1" rowspan="1">Stash the object count on the stack for later use.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="d4b3"></span>
 <div class="comments">
 <div class="paragraph">
-Print "[CTRL:06] [CMD:01:7C]".
+Print the introductory text for the object list.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4b3"></span>D4B3</td>
 <td class="instruction">LD HL,$68E4</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="68E4.html">68E4</a>.</td>
+<td class="comment-1" rowspan="1">Load the address of the introductory text token into <span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4b6"></span>D4B6</td>
-<td class="instruction">CALL <a href="A59F.html">$A59F</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A59F.html">A59F</a>.</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the text token.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4b9"></span>D4B9</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">BC</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the object count from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4ba"></span>D4BA</td>
 <td class="instruction">LD C,B</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">B</span>.</td>
+<td class="comment-1" rowspan="1">Store the object count in <span class="register">C</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4bb"></span>D4BB</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=FF.</td>
+<td class="comment-1" rowspan="1">Set the location ID to FF (current character location) again.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4bd"></span>D4BD</td>
 <td class="instruction">LD IY,($A017)</td>
-<td class="comment-1" rowspan="1"><span class="register">IY</span>=*<a href="A017.html">A017</a>.</td>
+<td class="comment-1" rowspan="1">Load *<a href="A017.html">CurrentCharacterData</a> into <span class="register">IY</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4c1"></span>D4C1</td>
 <td class="instruction">LD B,(IY+$0F)</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=*<span class="register">IY</span>+0F.</td>
+<td class="comment-1" rowspan="1">Fetch the current character's location ID from the character data into <span class="register">B</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4c4"></span>D4C4</td>
-<td class="instruction">CALL <a href="D51A.html">$D51A</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D51A.html">D51A</a>.</td>
+<td class="instruction">CALL <a href="D51A.html">PrintObjectListWithFormatting</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D51A.html">PrintObjectListWithFormatting</a>.</td>
 </tr>
 <tr>
+<td class="asm-label">PrintObjectList_End</td>
 <td class="address-2"><span id="d4c7"></span>D4C7</td>
 <td class="instruction">POP BC</td>
 <td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">AF</span> and <span class="register">IY</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4c8"></span>D4C8</td>
 <td class="instruction">POP AF</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4c9"></span>D4C9</td>
 <td class="instruction">POP IY</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="d4cb"></span>D4CB</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>

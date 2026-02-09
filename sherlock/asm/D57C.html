@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at D57C</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D526.html">D526</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d57c">Map</a></td>
+<td class="next">
+Next: <a href="D590.html">D590</a>
+</td>
+</tr>
+</table>
+<div class="description">D57C: Find Next Matching Object</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FindNextMatchingObject</td>
+<td class="address-2"><span id="d57c"></span>D57C</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore the object ID from the stack.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d57d"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="D526.html">PrintFormattedObjectList</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FindNextMatchingObject_Entry</td>
+<td class="address-2"><span id="d57d"></span>D57D</td>
+<td class="instruction">CALL <a href="D21C.html">FetchNextObjectWithID</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D21C.html">FetchNextObjectWithID</a> to fetch the next object with the specified ID.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d580"></span>D580</td>
+<td class="instruction">JR NZ,<a href="D57C.html#d584">FindNextMatchingObject_CheckCriteria</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="D57C.html#d584">FindNextMatchingObject_CheckCriteria</a> if the object was not found (<span class="register">A</span> is not equal to 2C).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d582"></span>
+<div class="comments">
+<div class="paragraph">
+Object not found - return with carry flag set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d582"></span>D582</td>
+<td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set the carry flag to indicate no object was found.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d583"></span>D583</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d584"></span>
+<div class="comments">
+<div class="paragraph">
+Check if the object matches the location and visibility criteria.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FindNextMatchingObject_CheckCriteria</td>
+<td class="address-2"><span id="d584"></span>D584</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="1">Stash the object ID on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d585"></span>D585</td>
+<td class="instruction">CALL <a href="D4EF.html">CheckObjectMatchCriteria</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D4EF.html">CheckObjectMatchCriteria</a> to check if the object matches the location and visibility criteria.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d588"></span>D588</td>
+<td class="instruction">JR NC,<a href="D57C.html#d57c">FindNextMatchingObject</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="D57C.html">FindNextMatchingObject</a> if the object doesn't match (<span class="register">A</span> is greater than or equal to 2C).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d58a"></span>
+<div class="comments">
+<div class="paragraph">
+Object matches - return with object ID.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FindNextMatchingObject_Found</td>
+<td class="address-1"><span id="d58a"></span>D58A</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore the object ID from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d58b"></span>D58B</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+00 (load the object ID from the object data into <span class="register">A</span>).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d58e"></span>D58E</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="1">Set flags based on the object ID in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d58f"></span>D58F</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return with the object ID in <span class="register">A</span> and carry flag clear.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D526.html">D526</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d57c">Map</a></td>
+<td class="next">
+Next: <a href="D590.html">D590</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/54652.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>
