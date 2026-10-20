@@ -13,10 +13,17 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+from pathlib import Path
+
 from skoolkit.graphics import Frame, Udg
-from skoolkit.skoolhtml import HtmlWriter
 from skoolkit.skoolmacro import parse_strings, parse_ints, parse_image_macro, MacroParsingError
 from skoolkit import (BASE_10, BASE_16, CASE_LOWER, CASE_UPPER)
+
+_SOURCES_DIR = str(Path(__file__).resolve().parent.parent)
+if _SOURCES_DIR not in sys.path:
+    sys.path.insert(0, _SOURCES_DIR)
+from linking import AdventureGamesHtmlWriter
 
 # The Hobbit (1982) graphics engine - Python port of hobbitgfx.js by Richard Carlsson.
 # Graphics opcodes: 0x08 X Y = move to X Y; 0x80-0xFF = draw line; 0x40-0x7F X Y = fill;
@@ -241,7 +248,7 @@ def _hobbit_graphic_to_udgs(bits, ink, paper):
     return udg_rows
 
 
-class HobbitHtmlWriter(HtmlWriter):
+class HobbitHtmlWriter(AdventureGamesHtmlWriter):
     def expand_drawing(self, text, index, cwd):
         # #DRAWINGaddress[,scale][{X,Y,W,H}](fname)
         # Renders Hobbit location graphics from bytecode at address (e.g. #DRAWING(#PC)(img.png)).

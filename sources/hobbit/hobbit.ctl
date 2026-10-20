@@ -32,6 +32,7 @@
 > $4000 @expand=#IF({asm})(#DEF(#TEXTMESSAGE(address)))
 > $4000 @expand=#IF({asm})(#DEF(#TEXTTOKEN(address,order=0)))
 > $4000 @expand=#DEF(#PICTURE(id,blank=0)(fname) #PUSHS #POKES$824E,$00;$B707,$01;$B6EA,$01#IF($blank)(#POKES(#PC,$00,$02)) #UDGTABLE { =h #LOCATIONNAME($id) } { #SIM(start=$7F87,stop=$7FA0,a=$id)#SCR$02,$00,$00,$20,$10($fname) } UDGTABLE# #POPS)
+> $4000 @expand=#IF({asm})(#DEF(#SHERLOCK(addr)(link=Sherlock)$link))
 > $4000 @set-handle-unsupported-macros=1
 > $4000 @expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
 
@@ -3838,6 +3839,10 @@ D $6DCC Read by #R$6CCD.
 
 c $6DD6 Read The Input Line
 @ $6DD6 label=ReadTheInputLine
+E $6DD6 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D8AD }
+. LIST#
 D $6DD6 Reads one line into the input buffer. Cursor keys become the compass
 . letters, and a quote or full stop ends a word.
   $6DD6,$06 Store #N($0BB8,$04) in *#R$B714.
@@ -3891,6 +3896,10 @@ N $6E41 Print the character in #REGa.
 
 c $6E4F Input: Map A Cursor Key
 @ $6E4F label=Input_MapACursorKey
+E $6E4F View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D978 }
+. LIST#
 D $6E4F Turns a cursor key into the matching direction letter and plants ENTER after it.
   $6E4F,$04 Jump to #R$6E72 if the key is right.
   $6E53,$04 Jump to #R$6E76 if the key is left.
@@ -3928,6 +3937,10 @@ N $6E86 Print the character in #REGa.
 
 c $6E8B Input: Rub Out Characters
 @ $6E8B label=Input_RubOutCharacters
+E $6E8B View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D9B7 }
+. LIST#
 D $6E8B Prints backspaces and steps back through the input buffer until the count runs out.
   $6E8B,$03 Return if bit 7 of the free-space count in #REGb is set.
 N $6E8E Print character #N$08.
@@ -4005,6 +4018,10 @@ D $6E97 Skips spaces, stores the start of the next word, and classifies it.
 
 c $6F30 Input: Classify Punctuation
 @ $6F30 label=Input_ClassifyPunctuation
+E $6F30 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$DAC6 }
+. LIST#
 D $6F30 Turns a full stop, comma or quote into the class being matched the parser expects.
   $6F30,$06 Take class #N($B0), and jump to #R$6F41 if this character is a full stop.
   $6F36,$06 Take class #N($A0), and jump to #R$6F41 if this character is a comma.
@@ -4082,6 +4099,10 @@ D $6FBA Compares the typed word with the dictionary word of the same length.
 
 c $6FD3 Clear Screen
 @ $6FD3 label=ClearScreen
+E $6FD3 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$C10F }
+. LIST#
 D $6FD3 Clears the picture and paints the attributes for a fresh screen.
   $6FD3,$07 Set the border colour to #INK$07.
   $6FDA,$0D Write #N$00 to #N$1800 memory locations (clearing the screen buffer).
@@ -4113,6 +4134,10 @@ W $70E0,$02 #REGix saved by #R$72DD and restored by #R$735F.
 
 c $70E2 Blanks "n" memory locations
 @ $70E2 label=Blanker
+E $70E2 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A2AB }
+. LIST#
 D $70E2 Fills a run of bytes with one value. The turn loop uses it to clear
 . the token buffer and the workspace.
 R $70E2 B Counter
@@ -4125,6 +4150,10 @@ R $70E2 HL Target
 
 c $70E8 Index Action
 @ $70E8 label=IndexAction
+E $70E8 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A2B1 }
+. LIST#
 D $70E8 Turns an action id into the address of its #N$08-byte entry in #R$AB53.
 R $70E8 A The ID of the Action; #N$01-#N$3B
   $70E8,$0A Turn the id into an address in the action table, #N$08 bytes per entry.
@@ -4132,6 +4161,10 @@ R $70E8 A The ID of the Action; #N$01-#N$3B
 
 c $70F3 Clause: Pack The Action Scores
 @ $70F3 label=ClausePackTheActionScores
+E $70F3 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A2BD }
+. LIST#
 D $70F3 Packs two scores from the action entry into the clause. The high nibbles of bytes 5
 . and 7 are stored at #R$B71E. The high nibbles of bytes 1 and 3 are stored at #R$B71D.
   $70F3,$03 Read byte 5 of this action entry.
@@ -4210,6 +4243,10 @@ N $712B Decide whether a sentence is due, and which noun it names.
 
 c $71D5 Table: Address Past The Location
 @ $71D5 label=Table_AddressPastTheLocation
+E $71D5 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A4AB }
+. LIST#
 D $71D5 Finds the location record and returns the address of its name. The name token starts two bytes in.
   $71D5,$05 Find the location record.
   $71DA,$03 Take that record's address.
@@ -4219,6 +4256,10 @@ D $71D5 Finds the location record and returns the address of its name. The name 
 
 c $71E2 Table: Address The Object Name
 @ $71E2 label=Table_AddressTheObjectName
+E $71E2 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A4BC }
+. LIST#
 D $71E2 Finds the object record and returns the address of its name, eight bytes in.
   $71E2,$06 Find the object's record.
   $71E8,$03 Take that record's address.
@@ -4228,6 +4269,10 @@ D $71E2 Finds the object record and returns the address of its name, eight bytes
 
 c $71F3 Inglish: Match Clause Pairs
 @ $71F3 label=Inglish_MatchClausePairs
+E $71F3 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A4E0 }
+. LIST#
 D $71F3 Tries several pairs of clause bytes. One pattern returns #N$01 and another returns
 . #N$00. Which dictionary words those pairs stand for is unconfirmed.
   $71F3,$07 Compare the first pair.
@@ -4251,6 +4296,10 @@ D $71F3 Tries several pairs of clause bytes. One pattern returns #N$01 and anoth
 
 c $722E Inglish: Compare One Clause Pair
 @ $722E label=Inglish_CompareOneClausePair
+E $722E View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A51B }
+. LIST#
 D $722E Compares one pair of clause bytes with the pair the caller addressed. An empty pair
 . matches. Otherwise the low nibbles of the second bytes must agree and the first bytes must be
 . equal. Both pointers then move on by two.
@@ -4312,6 +4361,10 @@ W $7295,$2E
 
 c $72C3 Message: Print One Character
 @ $72C3 label=MessagePrintOneCharacter
+E $72C3 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A63A }
+. LIST#
 D $72C3 Prints one character, after the message gate and the day/night
 . filter.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
@@ -4336,6 +4389,10 @@ N $72D3 Test the conjunction count.
 
 c $72DD Print Message
 @ $72DD label=PrintMessage
+E $72DD View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A59F }
+. LIST#
 D $72DD Prints a message. Bytes under #N$20 are control codes from the table
 . at #R$7295. Dictionary tokens are expanded in line.
 R $72DD HL Text message address
@@ -4384,6 +4441,10 @@ D $733F Jumps to the control-code handler the message printer looked up.
 
 c $7340 Message: Print A Stop
 @ $7340 label=MessagePrintAStop
+E $7340 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A63F }
+. LIST#
 D $7340 Prints a full stop and a newline, as the token class asks (bit 6 skips the stop, bit 4 prints it).
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
   $7340,$02 Class #N$60 skips the stop and prints a newline.
@@ -4394,6 +4455,10 @@ N $7344 Reached through the control-code table at #R$7295, dispatched by #R$72DD
 
 c $7348 Message: Print The Token And Stop
 @ $7348 label=PrintMessage_TokenByNibble
+E $7348 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A647 }
+. LIST#
 D $7348 Prints the token already addressed, then a full stop, and a newline when the token class
 . asks for one.
   $7348,$03 Call #R$74C1 to print a dictionary token.
@@ -4412,6 +4477,10 @@ N $735B Reached through the control-code table at #R$7295, dispatched by #R$72DD
 
 c $7367 Message: Code #N($00), The Stacked Object
 @ $7367 label=Message_NameTheStackedObject
+E $7367 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A65D }
+. LIST#
 D $7367 Message code #N$00. Pops the object-record pointer the caller pushed.
 . When that pointer is not zero, #R$7434 names the object.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
@@ -4423,6 +4492,10 @@ D $7367 Message code #N$00. Pops the object-record pointer the caller pushed.
 
 c $7376 Message: Code #N($01), The Stacked Token
 @ $7376 label=Message_PrintTheStackedToken
+E $7376 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A66C }
+. LIST#
 D $7376 Message code #N$01. Takes the token the caller pushed into #REGde and
 . returns with the zero flag clear, so #R$733D prints that token.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
@@ -4433,6 +4506,10 @@ D $7376 Message code #N$01. Takes the token the caller pushed into #REGde and
 
 c $737E Message: Code #N($02), Step By A Signed Byte
 @ $737E label=Message_StepByASignedByte
+E $737E View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A679 }
+. LIST#
 D $737E Message code #N$02. Steps the message pointer by a signed byte.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
   $737E,$09 Jump to #R$7389 if bit 7 of the message byte at offset 1 is clear.
@@ -4446,6 +4523,10 @@ N $738B Codes #N($05), #N($0A), #N$0F and #N$12 come straight here through the c
 
 c $738D Message: Code #N($03), The Saved Token
 @ $738D label=Message_PrintTheSavedToken
+E $738D View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A702 }
+. LIST#
 D $738D Message code #N$03. Returns the token at #R$B6FC, the weapon name, with the zero flag clear so #R$733D prints it.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
   $738D,$04 Read the saved token at #R$B6FC.
@@ -4454,6 +4535,10 @@ D $738D Message code #N$03. Returns the token at #R$B6FC, the weapon name, with 
 
 c $7394 Message: Code #N($04), The Stacked Class Token
 @ $7394 label=Message_PrintTheStackedClassToken
+E $7394 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A709 }
+. LIST#
 D $7394 Message code #N$04. Prints the token the caller pushed as a class token.
 . #R$B703 is set to #N$01 and #R$7478 prints it.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
@@ -4466,6 +4551,10 @@ D $7394 Message code #N$04. Prints the token the caller pushed as a class token.
 
 c $73A3 Message: Code #N($06), Print The Current Character
 @ $73A3 label=Message_PrintWhoseTurn
+E $73A3 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A720 }
+. LIST#
 D $73A3 Message code #N$06. Prints the name of the character whose turn it is.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
   $73A3,$04 Write #N$00 to #R$B703.
@@ -4476,6 +4565,10 @@ D $73A3 Message code #N$06. Prints the name of the character whose turn it is.
 
 c $73AF Message: Code #N($07), Print The Current Object
 @ $73AF label=Message_PrintTheObject
+E $73AF View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A72C }
+. LIST#
 D $73AF Message code #N$07. Prints the name of the current object.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
   $73AF,$05 Write #N$01 to *#R$B703.
@@ -4486,6 +4579,10 @@ D $73AF Message code #N$07. Prints the name of the current object.
 
 c $73BD Message: Code #N($08), Print A Backspace
 @ $73BD label=Message_PrintABackspace
+E $73BD View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A736 }
+. LIST#
 D $73BD Message code #N$08. Prints a backspace. The dispatcher leaves #N$08 in #REGa, and nothing else jumps here.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
 N $73BD Print a backspace.
@@ -4495,6 +4592,10 @@ N $73BD Print a backspace.
 
 c $73C2 Message: Code #N($09), Print The Second Noun
 @ $73C2 label=Message_PrintTheSecondNoun
+E $73C2 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A73B }
+. LIST#
 D $73C2 Message code #N$09. Prints the second noun of the command.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
   $73C2,$05 Write #N$01 to *#R$B703.
@@ -4507,6 +4608,10 @@ D $73C2 Message code #N$09. Prints the second noun of the command.
 
 c $73D6 Message: Name By The Indirect Pointer
 @ $73D6 label=Message_NameByTheIndirectPointer
+E $73D6 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A751 }
+. LIST#
 D $73D6 Prints the current object's name. It finds the object record and hands the saved name to
 . the printer, then returns with the text pointer restored.
 . The message code #N$09 handler at #R$73C2 jumps here, and #R$7488 loops back here.
@@ -4518,6 +4623,10 @@ D $73D6 Prints the current object's name. It finds the object record and hands t
 
 c $73E0 Message: Code #N($0B), Print Text At A Signed Offset
 @ $73E0 label=Message_PrintAtASignedOffset
+E $73E0 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A75B }
+. LIST#
 D $73E0 Message code #N$0B. Prints text at a signed offset from the message
 . pointer.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
@@ -4533,6 +4642,10 @@ D $73E0 Message code #N$0B. Prints text at a signed offset from the message
 
 c $73F9 Message: Code #N($0C), Pronoun
 @ $73F9 label=Message_PrintThePronoun
+E $73F9 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A780 }
+. LIST#
 D $73F9 Message code #N$0C. Prints the pronoun for the character being talked
 . about.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
@@ -4544,6 +4657,10 @@ D $73F9 Message code #N$0C. Prints the pronoun for the character being talked
 
 c $7407 Message: Code #N($0E), Object Pronoun
 @ $7407 label=Message_PrintTheObjectPronoun
+E $7407 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A78E }
+. LIST#
 D $7407 Message code #N$0E. Prints the pronoun for the current object.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
   $7407,$03 Read the current object.
@@ -4551,6 +4668,10 @@ D $7407 Message code #N$0E. Prints the pronoun for the current object.
 
 c $740C Message: Code #N($10), Is Or Are
 @ $740C label=Message_PrintTheCharacterIsOrAre
+E $740C View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A793 }
+. LIST#
 D $740C Message code #N$10. Prints the character's name, then #TOKEN($039B), or #TOKEN($0065) when the character is the player.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
   $740C,$03 Read *#R$B6EA.
@@ -4565,6 +4686,10 @@ D $740C Message code #N$10. Prints the character's name, then #TOKEN($039B), or 
 
 c $7425 Message: Code #N($11), Object Is Or Are
 @ $7425 label=Message_PrintTheObjectIsOrAre
+E $7425 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A7AC }
+. LIST#
 D $7425 Message code #N$11. Prints the current object's name, then #TOKEN($039B) or #TOKEN($0065), as code #N$10 does.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
   $7425,$03 Read the current object.
@@ -4574,12 +4699,21 @@ D $7425 Message code #N$11. Prints the current object's name, then #TOKEN($039B)
 
 c $742D Message: Code #N($13), The Stacked Object Is Or Are
 @ $742D label=Message_PrintTheStackedObjectIsOrAre
+E $742D View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A7B4 }
+. LIST#
 D $742D Message code #N$13. Does what code #N$11 at #R$7425 does, but for the object id the caller pushed rather than the current object.
 . Reached through the control-code table at #R$7295, dispatched by #R$72DD.
   $742D,$07 Take the object id the caller pushed into #REGa, keeping the two return addresses, and jump back to #R$7428.
 
 c $7434 Message: Apply The Saved Name
 @ $7434 label=Message_ApplyTheSavedName
+E $7434 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A7BA(Sherlock #N$A7BA) }
+. { #SHERLOCK$A7C5(Sherlock #N$A7C5) }
+. LIST#
 D $7434 Prints the name token held for the current noun. The noun printer runs, and the parser
 . pointer is restored.
   $7434,$08 Call #R$9ED6 to choose which noun byte to print.
@@ -4588,6 +4722,10 @@ D $7434 Prints the name token held for the current noun. The noun printer runs, 
 
 c $743F Message: Choose A Class Token
 @ $743F label=Message_ChooseAClassToken
+E $743F View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A7D0 }
+. LIST#
 D $743F Turns a class token into a dictionary word and prints it. Bit 7 of the token selects the
 . class table; a zero neighbour ends the line.
   $743F,$04 Jump to #R$7455 if the token is not a class token.
@@ -4615,6 +4753,10 @@ D $743F Turns a class token into a dictionary word and prints it. Bit 7 of the t
 
 c $7478 Message: Print The Class Token
 @ $7478 label=Message_PrintTheClassToken
+E $7478 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A80E }
+. LIST#
 D $7478 Prints the class token for the noun being named. When no noun is selected it returns the
 . token at #R$AD35.
   $7478,$04 Read which noun is being named.
@@ -4626,6 +4768,10 @@ D $7478 Prints the class token for the noun being named. When no noun is selecte
 
 c $7488 Message: Print The Fallback Token
 @ $7488 label=Message_PrintTheFallbackToken
+E $7488 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A82F }
+. LIST#
 D $7488 Prints #TOKEN($0AE3) when the class token at #R$AD35 is #N$FF. Any other token goes back to
 . naming the object.
   $7488,$05 Jump back to #R$73D6 while the class token is not #N$FF.
@@ -4634,6 +4780,10 @@ D $7488 Prints #TOKEN($0AE3) when the class token at #R$AD35 is #N$FF. Any other
 
 c $7493 Get Common Word
 @ $7493 label=GetCommonWord
+E $7493 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A840 }
+. LIST#
 D $7493 Looks up one of the common words used by the message printer.
 R $7493 A Letter reference
 R $7493 O:DE Common word address
@@ -4655,11 +4805,15 @@ D $74A6 Read by #R$74C1.
 
 c $74BA Print Action
 @ $74BA label=PrintAction
+E $74BA Continues on to #R$74C1 to print.
+E $74BA View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A880 }
+. LIST#
 D $74BA Prints the name of an action from the action table.
 R $74BA HL Pointer to an action in the #R$AB53(actions table)
 R $74BA O:HL Pointer is incremented twice
 R $74BA O:DE A word token
-E $74BA Continues on to #R$74C1 to print.
 M $74BA,$07 Store the token in #REGde, keeping only bits 0-3 of the high byte.
   $74BA,$04
   $74BE,$02,b$01
@@ -4816,6 +4970,10 @@ D $75F6 Clears the flag that would make the matcher repeat a word.
 
 c $75FA Inglish: Match One Word
 @ $75FA label=InglishMatchOneWord
+E $75FA View the equivalent code in;
+. #LIST
+. { #SHERLOCK$AD57 }
+. LIST#
 D $75FA Matches one word of the clause against the dictionary.
 . Reached through the jump table at #R$75D2, dispatched from #R$75D0.
   $75FA,$04 Jump to #R$7614 if bit 1 of the grammar flag is clear.
@@ -4928,6 +5086,10 @@ N $76F7 Test the matcher phase.
 
 c $770B Inglish: Save The Match
 @ $770B label=InglishSaveTheMatch
+E $770B View the equivalent code in;
+. #LIST
+. { #SHERLOCK$ACCC }
+. LIST#
 D $770B Saves the bytes of a match so it can be restored if a later try
 . fails.
 . Reached through the jump table at #R$75D2, dispatched from #R$75D0.
@@ -5067,6 +5229,10 @@ N $77D9 Test the matcher phase.
 
 c $7809 Inglish: Patch The Matcher Word
 @ $7809 label=Inglish_PatchTheMatcherWord
+E $7809 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$AC94 }
+. LIST#
 D $7809 Patches the matcher word at #N$7581 with the saved bytes. When those bytes do not match,
 . the player is asked "what?".
   $7809,$03 Point #REGhl at the patched matcher word at #N$7581.
@@ -5091,6 +5257,10 @@ D $781C Counts another grammar try at #R$757A, up to three, then returns to read
 
 c $782B Inglish: Follow The Grammar Flag
 @ $782B label=Inglish_FollowTheGrammarFlag
+E $782B View the equivalent code in;
+. #LIST
+. { #SHERLOCK$ACA6 }
+. LIST#
 D $782B Follows the grammar flag in #REGe. Bit 6 copies four grammar bytes, bit 7 copies ten,
 . and neither asks "what?" and reports no match.
   $782B,$04 Jump to #R$7850 if bit 6 of the grammar flag is set.
@@ -5140,6 +5310,10 @@ N $7869 Fill the buffer at #REGhl.
 
 c $7873 Inglish: Read The Next Grammar Byte
 @ $7873 label=Inglish_ReadTheNextGrammarByte
+E $7873 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$AE7F }
+. LIST#
 D $7873 Reads the next grammar byte from the token pointer, splits it into nibbles, and stores
 . the token pointer, the unknown word and the class.
   $7873,$03 Read *#R$B6DC.
@@ -5192,6 +5366,10 @@ D $78A5 Steps through clause records of #N$18 bytes, skipping any whose location
 
 c $78B7 Inglish: Copy Two Bytes From The Other Clause
 @ $78B7 label=Inglish_CopyTwoBytesFromTheOtherClause
+E $78B7 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$AEF1 }
+. LIST#
 D $78B7 Copies byte 0 and byte 1 from the other clause record into this clause. When bit 7 of the
 . grammar flag is set, the name bytes are copied too.
   $78B7,$01 Switch to the saved registers for this phrase.
@@ -5220,12 +5398,20 @@ D $78B7 Copies byte 0 and byte 1 from the other clause record into this clause. 
 
 c $78FF Inglish: Copy With A Count Of Ten
 @ $78FF label=Inglish_CopyWithACountOfTen
+E $78FF View the equivalent code in;
+. #LIST
+. { #SHERLOCK$AF52 }
+. LIST#
 D $78FF Sets the copy length to ten and joins the two-byte copy.
   $78FF,$02 Copy #N$0A bytes of the clause.
   $7901,$02 Jump to #R$7905 to copy them.
 
 c $7903 Inglish: Copy With A Count Of Two
 @ $7903 label=Inglish_CopyWithACountOfTwo
+E $7903 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$AF56 }
+. LIST#
 D $7903 Copies two bytes, then the prepared bytes, from the token pointer into the clause.
   $7903,$02 Copy the two clause bytes.
 @ $7905 label=Inglish_CopyWithACountOfTwo_PointAtTheClause
@@ -5414,6 +5600,10 @@ D $7A14 Resolves the first noun of the clause into the current object, or counts
 
 c $7A73 Inglish: Search The Previous Slot
 @ $7A73 label=Inglish_SearchThePreviousSlot
+E $7A73 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B517 }
+. LIST#
 D $7A73 Searches the previous parser slot for an object in the same place as the player whose id matches the current
 . object, and sets that object when bit 6 of the clause byte is set.
   $7A73,$07 Step back one #N$18-byte parser record.
@@ -5467,6 +5657,10 @@ D $7ACC Points the object search at the slot before the object table when the se
 
 c $7AD8 Inglish: Test The Scratch Bits
 @ $7AD8 label=Inglish_TestTheScratchBits
+E $7AD8 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B387 }
+. LIST#
 D $7AD8 Tests bits 0, 1 and 2 of the phrase scratch byte and the second match buffer, and
 . reports no match when bit 1 is set.
   $7AD8,$03 Read *#R$B71D.
@@ -5572,6 +5766,10 @@ D $7B78 Splits the clause flags into the noun-print flag, the second-noun flag a
 
 c $7B9E Inglish: Save The Clause Window
 @ $7B9E label=Inglish_SaveTheClauseWindow
+E $7B9E View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B39D }
+. LIST#
 D $7B9E Saves the clause window: the object's id and location, then copies the clause pairs into
 . the match buffers.
   $7B9E,$05 Read the low byte of the pointer in the clause.
@@ -5624,6 +5822,10 @@ N $7BF4 Test the low half of the class being matched.
 
 c $7C23 Inglish: Score The Swapped Clause
 @ $7C23 label=Inglish_ScoreTheSwappedClause
+E $7C23 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B405 }
+. LIST#
 D $7C23 Swaps the two clause pointers when the conjunction count is odd, then scores that clause
 . against the action table.
   $7C23,$03 Jump to #R$7C34 if the match result is zero.
@@ -5681,6 +5883,10 @@ D $7C23 Swaps the two clause pointers when the conjunction count is odd, then sc
 
 c $7CAC Inglish: Copy One Clause Pair
 @ $7CAC label=Inglish_CopyOneClausePair
+E $7CAC View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B483 }
+. LIST#
 D $7CAC Copies one id-and-location pair from the object into the second match buffer, and stops
 . when #N$06 or the clause bits say so.
   $7CAC,$03 Return when the count in #REGb is zero.
@@ -5699,11 +5905,19 @@ D $7CAC Copies one id-and-location pair from the object into the second match bu
 
 c $7CC9 Inglish: Jump To The Clause Handler
 @ $7CC9 label=Inglish_JumpToTheClauseHandler
+E $7CC9 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B4A0 }
+. LIST#
 D $7CC9 Jumps to the handler the clause selected.
   $7CC9,$02 Jump to the handler this clause selected.
 
 c $7CCB Inglish: Find The First Noun
 @ $7CCB label=Inglish_FindTheFirstNoun
+E $7CCB View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B4C1 }
+. LIST#
 D $7CCB Finds the first noun. When the noun-print flag at #R$B6FE is #N$01 it uses the place-by-exit test at
 . #R$9EA0; otherwise it uses the object test at #R$9DD9, which looks in the same place as the player. The record
 . found is kept in the saved object pointer at #R$794E.
@@ -5728,6 +5942,10 @@ D $7CCB Finds the first noun. When the noun-print flag at #R$B6FE is #N$01 it us
 
 c $7CFC Inglish: Run The First Noun Test
 @ $7CFC label=Inglish_RunTheFirstNounTest
+E $7CFC View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B4FD }
+. LIST#
 D $7CFC Runs the first-noun test through the clause handler, stores the object, and runs the
 . action handler until the message-suppressed flag is set.
   $7CFC,$03 Point #REGhl at the first copy window.
@@ -5743,6 +5961,10 @@ N $7D10 Test the message-suppressed flag.
 
 c $7D17 Inglish: Find The Second Noun
 @ $7D17 label=Inglish_FindTheSecondNoun
+E $7D17 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B568 }
+. LIST#
 D $7D17 Finds the second noun the same way, storing it as the second object. When the second-noun flag at
 . #R$B6FF is #N$01 it uses the place-by-exit test at #R$9EA0; otherwise it uses the object test at #R$9DD9.
 . The record found is kept at #R$7950, and bit 0 of #R$B71D is copied to #R$B70F.
@@ -5770,6 +5992,10 @@ D $7D17 Finds the second noun the same way, storing it as the second object. Whe
 
 c $7D54 Inglish: Run The Second Noun Test
 @ $7D54 label=Inglish_RunTheSecondNounTest
+E $7D54 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B5A4 }
+. LIST#
 D $7D54 Runs the second-noun test, stores the second object, and asks whether the sentence
 . should be suppressed.
   $7D54,$03 Point #REGhl at the second copy window.
@@ -5884,12 +6110,20 @@ N $7E65 Test this flag.
 
 c $7E78 Inglish: Plant JR Z
 @ $7E78 label=Inglish_PlantJumpRelativeIfZero
+E $7E78 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B62F }
+. LIST#
 D $7E78 Plants the JR Z opcode at #R$7E92 and #R$7EA1, then reads two words from the action entry. Each word is kept when its bit is clear.
   $7E78,$02 Take the JR Z opcode.
   $7E7A,$02 Jump to #R$7E7E to plant that opcode.
 
 c $7E7C Inglish: Plant JR NZ
 @ $7E7C label=Inglish_PlantJumpRelativeIfNonZero
+E $7E7C View the equivalent code in;
+. #LIST
+. { #SHERLOCK$B633 }
+. LIST#
 D $7E7C Plants the JR NZ opcode at #R$7E92 and #R$7EA1, then reads two words from the action entry. Each word is kept when its bit is set.
   $7E7C,$02 Take the JR NZ opcode.
 @ $7E7E label=Inglish_PlantJumpRelativeIfNonZero_PlantTheOpcode
@@ -6046,6 +6280,10 @@ N $7F86 Drawing Check
 
 c $7FA7 Drawing: Start A Picture Command
 @ $7FA7 label=DrawingSetup
+E $7FA7 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F3C2 }
+. LIST#
 D $7FA7 Reads picture commands. #N$00 ends the picture, #N$08 moves the pen, bit 7 draws a line,
 . and the other bytes fill or paint.
 N $7FA7 Drawing routines.
@@ -6182,6 +6420,10 @@ N $80BF Test this flag.
 
 c $80EE Drawing: Mask One Screen Byte
 @ $80EE label=Drawing_MaskOneScreenByte
+E $80EE View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F50D }
+. LIST#
 D $80EE Masks one screen byte. It turns the row into a screen address and keeps the picture
 . pointer.
   $80EE,$04 Call #R$81DE to turn the pen into a screen address.
@@ -6190,6 +6432,10 @@ D $80EE Masks one screen byte. It turns the row into a screen address and keeps 
 
 c $80F5 Drawing: Step Up One Row
 @ $80F5 label=Drawing_StepUpOneRow
+E $80F5 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F514 }
+. LIST#
 D $80F5 Moves the screen address up one character row.
   $80F5,$05 One screen row is #N$20 bytes.
   $80FA,$01 Clear carry before stepping the screen address back one row.
@@ -6202,6 +6448,10 @@ D $80F5 Moves the screen address up one character row.
 
 c $8106 Drawing: Step Down One Row
 @ $8106 label=Drawing_StepDownOneRow
+E $8106 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F525 }
+. LIST#
 D $8106 Moves the screen address down one character row, and undoes that step if it would leave
 . the screen.
   $8106,$0B Step down one attribute row and jump to #N$8113 if the screen address is not #N$5A.
@@ -6212,6 +6462,10 @@ D $8106 Moves the screen address down one character row, and undoes that step if
 
 c $8117 Drawing: Step Left One Pixel
 @ $8117 label=Drawing_StepLeftOnePixel
+E $8117 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F536 }
+. LIST#
 D $8117 Moves the screen address left one pixel, wrapping inside the line.
   $8117,$07 Step the screen address back and jump to #R$811F if it is not in row #N$57.
   $811E,$01 Step #REGhl on.
@@ -6221,6 +6475,10 @@ D $8117 Moves the screen address left one pixel, wrapping inside the line.
 
 c $8121 Drawing: Step Right One Pixel
 @ $8121 label=Drawing_StepRightOnePixel
+E $8121 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F540 }
+. LIST#
 D $8121 Moves the screen address right one pixel, wrapping inside the line.
   $8121,$07 Step the screen address on and jump to #R$8129 if it has not reached row #N$5A.
   $8128,$01 Step the screen address back one byte.
@@ -6230,6 +6488,10 @@ D $8121 Moves the screen address right one pixel, wrapping inside the line.
 
 c $812B Drawing: Advance The Low Coordinate
 @ $812B label=Drawing_AdvanceTheLowCoordinate
+E $812B View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F54A }
+. LIST#
 D $812B Advances the low coordinate. If that sets bit 7, the coordinate is put back and the routine returns zero.
   $812B,$05 Step the low coordinate on and jump to #R$8135 if bit 7 is clear.
   $8130,$01 Put the low coordinate back.
@@ -6245,6 +6507,10 @@ D $812B Advances the low coordinate. If that sets bit 7, the coordinate is put b
 
 c $813A Drawing: Retreat The Low Coordinate
 @ $813A label=Drawing_RetreatTheLowCoordinate
+E $813A View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F555 }
+. LIST#
 D $813A Retreats the low coordinate. If that sets bit 7, the coordinate is put back and one step is counted.
   $813A,$05 Step the low coordinate back and jump to #R$8135 if bit 7 is clear.
   $813F,$01 Put the low coordinate back.
@@ -6252,6 +6518,10 @@ D $813A Retreats the low coordinate. If that sets bit 7, the coordinate is put b
 
 c $8141 Drawing: Advance The High Coordinate
 @ $8141 label=Drawing_AdvanceTheHighCoordinate
+E $8141 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F55E }
+. LIST#
 D $8141 Advances the high coordinate. When it wraps from #N($FF), it is put back and the routine returns zero.
   $8141,$02 Step the high coordinate on and return unless it wrapped to zero.
   $8143,$01 Put the high coordinate back to #N$FF.
@@ -6262,6 +6532,10 @@ D $8141 Advances the high coordinate. When it wraps from #N($FF), it is put back
 
 c $8148 Drawing: Retreat The High Coordinate
 @ $8148 label=Drawing_RetreatTheHighCoordinate
+E $8148 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F565 }
+. LIST#
 D $8148 Retreats the high coordinate. When it was already zero, it is put back and one step is counted.
   $8148,$07 Step the high coordinate back and return unless it wrapped to #N$FF.
   $814F,$01 Put the high coordinate back to #N$00.
@@ -6269,6 +6543,10 @@ D $8148 Retreats the high coordinate. When it was already zero, it is put back a
 
 c $8151 Drawing: Plot The Selected Pixel
 @ $8151 label=Drawing_PlotTheSelectedPixel
+E $8151 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F56E }
+. LIST#
 D $8151 Plots one line. Bit 0 of the direction chooses which coordinate steps first, and #REGl is how many pixels are drawn.
   $8151,$06 Jump to #R$8185 when bit 0 of the direction is set.
 @ $8157 label=Drawing_PlotTheSelectedPixel_AddressThePixel
@@ -6326,6 +6604,10 @@ D $8151 Plots one line. Bit 0 of the direction chooses which coordinate steps fi
 
 c $81B5 Drawing: Address The Pixel
 @ $81B5 label=Drawing_AddressThePixel
+E $81B5 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$F5D2 }
+. LIST#
 D $81B5 Turns the pixel coordinate into a screen address and sets the bit in that screen byte.
   $81B5,$04 Call #R$81DE to turn the pen into a screen address.
   $81B9,$03 Keep the screen address and split out its row bits.
@@ -6415,6 +6697,10 @@ B $824E,$03
 
 c $8251 Command: Match A Special Key
 @ $8251 label=Command_MatchASpecialKey
+E $8251 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$AFB3 }
+. LIST#
 D $8251 Matches a special key such as save, load or inventory.
 . Reached through the jump table at #R$75D2, dispatched from #R$75D0.
   $8251,$03 Point at the special-key table.
@@ -6797,6 +7083,10 @@ D $8576 Gates printing on the time of day, and prints a character once the
 
 c $8583 Print: A Newline
 @ $8583 label=Print_LineBreak
+E $8583 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$A2A2 }
+. LIST#
 D $8583 Prints a carriage return.
   $8583,$03 Use ENTER as the character.
   $8586,$03 Call #R$858B to print one character.
@@ -7020,6 +7310,10 @@ N $8746 Draw this character with the game font.
 
 c $8761 Print: Wrap The Column
 @ $8761 label=Print_WrapTheColumn
+E $8761 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$C267 }
+. LIST#
 D $8761 Wraps the print column. A column below #N$06 is moved on by #N($08), and the count drops
 . by one.
   $8761,$05 Take #N$06 off the column and return if it did not go below zero.
@@ -7083,6 +7377,10 @@ N $87C4 Housekeeping and return.
 
 c $87C9 Print: Proportional Character
 @ $87C9 label=Print_ProportionalCharacter
+E $87C9 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$C388 }
+. LIST#
 D $87C9 Draws one character with the game's own font.
 R $87C9 A ASCII value
 R $87C9 C Bit offset
@@ -8388,6 +8686,10 @@ D $962B Prints "you see" and describes the place the player is in.
 
 c $9630 Turn: Describe This Location
 @ $9630 label=YouSeePreposition
+E $9630 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D0DD }
+. LIST#
 D $9630 Describes this location: the preposition, "You are in", and the location text.
   $9630,$04 Call #R$9BB1 to find this location's record.
 M $9634,$05 Fetch the location attribute, keep only bits 1-3 which signify the location preposition ("IN", "ON", "AT", etc).
@@ -8431,6 +8733,10 @@ N $965B From here starts the "intro" to a location;
 
 c $9686 Turn: Print Or Describe
 @ $9686 label=YouSeePrint
+E $9686 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D1C6 }
+. LIST#
 D $9686 Prints the location description when one is present. Otherwise it prints the location
 . name.
   $9686,$03 Jump to #R$72DD to print the location description if its pointer in #REGhl is not zero (the caller sets the zero flag).
@@ -8993,6 +9299,10 @@ D $9B80 Jumps to the action handler the caller addressed.
 
 c $9B81 Table: Find An Action Record
 @ $9B81 label=TableFindAnActionRecord
+E $9B81 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D1DC }
+. LIST#
 D $9B81 Finds an action handler. The copy count plus #N$10 is where the action list starts.
   $9B81,$05 Save #REGde, keep the action id in #REGd, and read the copy count.
   $9B86,$02 Add #N$10 to the copy count. The action list starts that far into the object.
@@ -9007,6 +9317,10 @@ N $9B8E Find this id in the table at #REGix.
 
 c $9B93 Table: Next Record
 @ $9B93 label=Table_StepThroughThreeByteRecords
+E $9B93 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D206 }
+. LIST#
 D $9B93 Steps to the next record in a table.
 R $9B93 IX Pointer to the record data
 R $9B93 O:A The record ID
@@ -9022,6 +9336,10 @@ R $9B93 O:IY The record data
 
 c $9BA9 Table: Find The Record
 @ $9BA9 label=Table_FindTheRecord
+E $9BA9 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D21C }
+. LIST#
 D $9BA9 Finds the record whose id matches #REGa.
 R $9BA9 IX Pointer to 3 byte table data
 R $9BA9 O:IX Pointer moved to the next record
@@ -9032,6 +9350,10 @@ R $9BA9 O:IY Contents of the record
 
 c $9BB1 Locate Location
 @ $9BB1 label=LocateLocation
+E $9BB1 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D224 }
+. LIST#
 D $9BB1 Finds a location record from its id.
 R $9BB1 A Location ID
 R $9BB1 O:IX Pointer to #R$BA8A(location data)
@@ -9058,6 +9380,10 @@ N $9BBF Calculate Location address, some examples would be;
 
 c $9BCA Locate Object
 @ $9BCA label=LocateObject
+E $9BCA View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D237 }
+. LIST#
 D $9BCA Finds an object record from its id.
 N $9BCA Locates an object from a given object ID.
 R $9BCA A Object ID
@@ -9096,6 +9422,10 @@ N $9BE9 Test this flag.
 
 c $9C17 Object: Move Nested Contents
 @ $9C17 label=Object_MoveContents_Recurse
+E $9C17 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D249 }
+. LIST#
 D $9C17 Moves every object held by the id in #REGa to the location in #REGb, then does the same for what those objects hold. Meeting the player (id #N$00) clears the flag at #R$9BDC.
   $9C17,$08 Start the object search one slot before #R$C063.
 @ $9C1F label=Object_MoveContents_Recurse_Loop
@@ -9139,6 +9469,11 @@ N $9C5E This object has one copy. Compare its location with the one being sought
 
 c $9C78 Condition: Is The Object Carried
 @ $9C78 label=ConditionIsTheObjectCarried
+E $9C78 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D26C(Sherlock #N$D26C) }
+. { #SHERLOCK$D278(Sherlock #N$D278) }
+. LIST#
 D $9C78 Tests whether the object is being carried.
   $9C78,$03 Read *#R$B6E8.
   $9C7B,$03 Point #REGhl at the character whose turn it is.
@@ -9151,6 +9486,10 @@ D $9C78 Tests whether the object is being carried.
 
 c $9C8A Condition: Test The Object Is Held
 @ $9C8A label=Condition_TestTheObjectIsHeld
+E $9C8A View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D288 }
+. LIST#
 D $9C8A Returns with carry set when the character whose turn it is holds the object, either directly or inside
 . something the character holds. Otherwise returns with carry clear.
 N $9C8A Find the object's record.
@@ -9166,6 +9505,10 @@ N $9C8A Find the object's record.
 
 c $9C9F Random Number
 @ $9C9F label=GetRandomNumber
+E $9C9F View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D2A4 }
+. LIST#
 D $9C9F Returns a random number from the seed taken at the start of the
 . game.
 R $9C9F A Random seed?
@@ -9177,6 +9520,10 @@ R $9C9F O:A Random number
 
 c $9CA8 Random: Scale The Roll
 @ $9CA8 label=CalculateRandom
+E $9CA8 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D2AD }
+. LIST#
 D $9CA8 Scales the random roll by the limit passed in #REGb, advances the random seed at
 . #R$B712, and returns the scaled roll in #REGa.
   $9CA8,$04 Keep the limit passed in.
@@ -9210,12 +9557,20 @@ D $9CA8 Scales the random roll by the limit passed in #REGb, advances the random
 
 c $9CE8 Condition: Total The Volume Inside
 @ $9CE8 label=Condition_TotalTheVolumeInside
+E $9CE8 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D2ED }
+. LIST#
 D $9CE8 Returns in #REGa the total volume of the objects inside object #REGa, or #N$FF on overflow.
   $9CE8,$03 Set #REGb to add volumes.
   $9CEB,$02 Jump to #R$9CF0 to add them up.
 
 c $9CED Condition: Total The Mass Inside
 @ $9CED label=Condition_TotalTheMassInside
+E $9CED View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D2F2 }
+. LIST#
 D $9CED Returns in #REGa the total mass of the objects inside object #REGa, including what they hold, or #N$FF on overflow.
   $9CED,$03 Set #REGb to zero to add masses.
 @ $9CF0 label=Condition_TotalTheMassInside_StartTheTotal
@@ -9227,6 +9582,10 @@ D $9CED Returns in #REGa the total mass of the objects inside object #REGa, incl
 
 c $9D00 Condition: Add Up The Objects Inside
 @ $9D00 label=Condition_AddUpTheObjectsInside
+E $9D00 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D305 }
+. LIST#
 D $9D00 Adds the volume or the mass of each object inside the id in #REGa. Volume covers
 . those objects only; mass also adds what they hold. An overflow returns #N$FF.
   $9D00,$06 Point #REGix at the object table.
@@ -9256,6 +9615,10 @@ D $9D00 Adds the volume or the mass of each object inside the id in #REGa. Volum
 
 c $9D37 Get Object Location In IX
 @ $9D37 label=GetObjectLocationInIX
+E $9D37 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D33C }
+. LIST#
 D $9D37 Points #REGix at the location of the object.
 R $9D37 O:IX The object location
   $9D37,$08 Fetch the location ID for the object held by #R$B70C.
@@ -9301,6 +9664,10 @@ D $9D50 Works out where the object is. A fluid that is no longer contained evapo
 
 c $9D97 Condition: Count The Visible Objects
 @ $9D97 label=ObjectCount
+E $9D97 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D4CC }
+. LIST#
 D $9D97 Counts the visible objects at the location or container in #REGa. A character
 . id counts what that character holds. An object is visible when bit 7 of its
 . attribute byte is set.
@@ -9322,6 +9689,10 @@ R $9D97 O:A The number of objects
 
 c $9DBD Index ID Table
 @ $9DBD label=IndexIdTable
+E $9DBD View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D34E }
+. LIST#
 D $9DBD Looks an id up in a table of id-and-address pairs.
 N $9DBD Searches through what is essentially key value data to find a key match.
 R $9DBD A Key ID
@@ -9346,6 +9717,10 @@ N $9DD2 Handle the output.
 
 c $9DD9 Condition: Same Place As The Player
 @ $9DD9 label=ConditionSamePlaceAsThePlayer
+E $9DD9 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D36A }
+. LIST#
 D $9DD9 Tests whether an object is in the same place as the player.
   $9DD9,$08 Read *#R$B70C.
   $9DE1,$03 Read the location from #REGiy.
@@ -9394,6 +9769,10 @@ D $9E34 Tests whether the object is in the current location.
 
 c $9E40 Condition: A Visible Object
 @ $9E40 label=Condition_AVisibleObject
+E $9E40 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$C821 }
+. LIST#
 D $9E40 Returns whether the object is visible and in the location just tested.
   $9E40,$05 Return if the object is not "visible".
   $9E45,$06 Save #REGiy, #REGix and #REGbc, and keep #REGa in #REGb.
@@ -9423,6 +9802,10 @@ D $9E40 Returns whether the object is visible and in the location just tested.
 
 c $9E7A Condition: Is The Container Lit?
 @ $9E7A label=ContainerLit
+E $9E7A View the equivalent code in;
+. #LIST
+. { #SHERLOCK$C86E }
+. LIST#
 D $9E7A Tests whether the container the object is inside is lit.
 R $9E7A IX Object Data Address e.g. #R$C11B
 R $9E7A O:A Either #N$FF if this object is not inside a container, or the object ID of the container object
@@ -9449,6 +9832,10 @@ D $9E95 Points #REGix at the exit list (record + #N$07) of the location holding 
 
 c $9EA0 Exits: Find The Exit To A Named Place
 @ $9EA0 label=ExitsFindTheExitToANamedPlace
+E $9EA0 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D39B }
+. LIST#
 D $9EA0 Walks the current location's exits, finds each destination and matches its name against the clause.
   $9EA0,$06 Set #REGde to #N($0002,$04,$04), the offset of a location's name.
 @ $9EA6 label=ExitsFindTheExitToANamedPlace_Loop
@@ -9467,6 +9854,10 @@ N $9EB0 Find the location's record.
 
 c $9EC7 Message: Name An Object
 @ $9EC7 label=MessageNameAnObject
+E $9EC7 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D3D5 }
+. LIST#
 D $9EC7 Prints the name of an object.
   $9EC7,$08 Step the pointer on by #N$08 bytes.
   $9ECF,$03 Call #R$9ED6 to choose which noun byte to print.
@@ -9475,6 +9866,11 @@ D $9EC7 Prints the name of an object.
 
 c $9ED6 Message: Choose The Noun Byte
 @ $9ED6 label=Message_ChooseTheNounByte
+E $9ED6 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D3E8(Sherlock #N$D3E8) }
+. { #SHERLOCK$D405(Sherlock #N$D405) }
+. LIST#
 D $9ED6 Chooses which noun byte to print. A set #R$B703 prints the class token; otherwise the
 . object's name tokens are printed.
   $9ED6,$09 If #R$B703 is not zero then jump to #R$9EFA.
@@ -9496,6 +9892,10 @@ D $9ED6 Chooses which noun byte to print. A set #R$B703 prints the class token; 
 
 c $9F08 Table: Find An Exit In A Direction
 @ $9F08 label=TableFindAnExitInADirection
+E $9F08 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D448 }
+. LIST#
 D $9F08 Finds the exit that leaves in a given direction.
   $9F08,$04 Keep the direction.
   $9F0C,$03 Call #R$9E95 to point #REGix at the exit list.
@@ -9512,6 +9912,10 @@ D $9F08 Finds the exit that leaves in a given direction.
 
 c $9F25 Exits: Find The Exit Through An Object
 @ $9F25 label=ExitsFindTheExitThroughAnObject
+E $9F25 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D46C }
+. LIST#
 D $9F25 Searches the exit list for an exit whose via byte (offset #N$01) matches the object id in #REGa (#R$9F28 entry point). Returns with #REGix at the exit, or with #REGa=#N$FF and the zero flag set at the end of the list.
   $9F25,$03 Read *#R$B6E8.
   $9F28,$03 Search on the via byte (offset #N$01).
@@ -9519,6 +9923,10 @@ D $9F25 Searches the exit list for an exit whose via byte (offset #N$01) matches
 
 c $9F2D Exits: Find The Exit To A Location
 @ $9F2D label=ExitsFindTheExitToALocation
+E $9F2D View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D471 }
+. LIST#
 D $9F2D As #R$9F25, but matches the destination byte (offset #N$02).
   $9F2D,$03 Search on the destination byte (offset #N$02).
 @ $9F30 label=ExitsFindTheExitToALocation_PatchTheOffset
@@ -9563,6 +9971,10 @@ D $9F76 Prints that the command will not work.
 
 c $9F82 Get Object First Location
 @ $9F82 label=ObjectFirstLocation
+E $9F82 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D495 }
+. LIST#
 D $9F82 Reads the first location an object appears in.
 R $9F82 A Object ID
 R $9F82 O:A #N$FF if the object does not appear exactly once, otherwise the location where it first appears.
@@ -9576,6 +9988,10 @@ R $9F82 O:A #N$FF if the object does not appear exactly once, otherwise the loca
 
 c $9F94 Turn: Describe What Is Here
 @ $9F94 label=TurnDescribeWhatIsHere
+E $9F94 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D4A7 }
+. LIST#
 D $9F94 Describes the place and what is in it.
   $9F94,$07 Point at the message "You see :[0x14]".
   $9F9B,$03 Call #R$72DD to print message.
@@ -9713,6 +10129,10 @@ D $A09D Prints the exit messages for this location from the list at #R$AFCA, ind
 
 c $A0AE Exits: Point At The List
 @ $A0AE label=ExitsPointAtTheList
+E $A0AE View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D5EF }
+. LIST#
 D $A0AE Finds the current location and points #REGix at its exit list, seven
 . bytes into the record. #REGbc is #N($03), the length of one exit.
 N $A0AE Find the location's record.
@@ -9723,6 +10143,10 @@ N $A0AE Find the location's record.
 
 c $A0BA Exits: The Direction Word
 @ $A0BA label=ExitsTheDirectionWord
+E $A0BA View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D5FB }
+. LIST#
 D $A0BA Looks a direction id up at #R$A20E plus twice the id. The words run
 . from #TOKEN($0480) to #TOKEN($01C4). Bit 7 of the id is ignored.
   $A0BA,$03 Point at the token-address table at #N$A20E.
@@ -9737,6 +10161,10 @@ D $A0BA Looks a direction id up at #R$A20E plus twice the id. The words run
 
 c $A0C8 Exits: To The North There Is
 @ $A0C8 label=MessageListTheObjects
+E $A0C8 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D60B }
+. LIST#
 D $A0C8 Walks the location's exit triples. For each exit guarded by a visible
 . object it prints "to the <direction> there is". Direction #N$09 is printed
 . as #TOKEN($07B5) and direction #N$0A as #TOKEN($082B).
@@ -9769,6 +10197,10 @@ N $A0C8 Point at this location's exits.
 
 c $A124 Message: A Conjunction
 @ $A124 label=MessageAConjunction
+E $A124 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D671 }
+. LIST#
 D $A124 Prints "and" between listed objects.
   $A124,$08 Return if this direction is #N$FF.
   $A12C,$06 Jump back to #R$A124 if this exit goes via an object.
@@ -9777,6 +10209,10 @@ D $A124 Prints "and" between listed objects.
 
 c $A138 Display Exits
 @ $A138 label=DisplayExits
+E $A138 View the equivalent code in;
+. #LIST
+. { #SHERLOCK$D68C }
+. LIST#
 D $A138 Prints the exits out of the current place.
 N $A138 Save the registers used while the exits are listed.
   $A138,$09 Save #REGix, #REGiy, #REGde and #REGbc, then call #R$A0AE to list the exits.

@@ -10,6 +10,11 @@
 > $4000 @expand=#DEF(#FACT()(anchor,text) #LINK(Facts#$anchor)($text))
 > $4000 @expand=#DEF(#MESSAGE(addr) #STR$addr,$08($b==$FF))
 > $4000 @expand=#DEF(#INK(id) #LET(bright=$id&$40)#HTML(&#10;)#LET(flash=$id&$80)#HTML(&#10;)#LET(ink=$id&$07)#IF({ink}>=$00)(#HTML(&#10;)#MAP({ink})(#HTML(&#10;)UNKNOWN,0:BLACK,1:BLUE,2:RED,3:MAGENTA,4:GREEN,5:CYAN,6:YELLOW,7:WHITE))#IF({bright}>$00)( (BRIGHT))#IF({flash}>$00)( (FLASH: ON)))
+> $4000 @expand=#IF({asm})(#DEF(#ANDROMEDA(addr)(link=Message From Andromeda)$link))
+> $4000 @expand=#IF({asm})(#DEF(#FOREST(addr)(link=Forest At Worlds End)$link))
+> $4000 @expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon)$link))
+> $4000 @expand=#IF({asm})(#DEF(#SHOCK(addr)(link=After Shock)$link))
+> $4000 @expand=#IF({asm})(#DEF(#WARLORD(addr)(link=Warlord)$link))
 > $4000 @set-handle-unsupported-macros=1
 
 b $4000 Loading Screen
@@ -23,6 +28,12 @@ D $4000 #UDGTABLE
 
 c $5B00 Tape Loader
 @ $5B00 label=TapeLoader
+E $5B00 View the equivalent code in;
+. #LIST
+. { #FOREST$5B00 }
+. { #JEWELS$5B00 }
+. { #WARLORD$5B00 }
+. LIST#
 D $5B00 Load the screen, the room pictures and the game. The last block falls
 . straight into the tape loading routine.
 N $5B00 Load the first block: the loading screen.
@@ -160,6 +171,11 @@ D $A351 #PUSHS
 
 c $ABD4 Game Entry Point
 @ $ABD4 label=GameEntryPoint
+E $ABD4 View the equivalent code in;
+. #LIST
+. { #JEWELS$BA50 }
+. { #WARLORD$A531 }
+. LIST#
 D $ABD4 Turn caps lock on, set the screen line, and enter the cold start.
   $ABD4,$03 Point #REGhl at *#SKOOLKID$5C6A(FLAGS2).
   $ABD7,$02 Turn caps lock on.
@@ -168,6 +184,14 @@ D $ABD4 Turn caps lock on, set the screen line, and enter the cold start.
 
 c $ABE1 Get User Input
 @ $ABE1 label=GetUserInput
+E $ABE1 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6495 }
+. { #FOREST$BDDA }
+. { #JEWELS$BA5D }
+. { #WARLORD$A53E }
+. { #SHOCK$9DFB }
+. LIST#
 D $ABE1 Wait until the player presses a key, then return that key.
 R $ABE1 O:A The keypress value
   $ABE1,$03 #REGa=*#SKOOLKID$5C3B(FLAGS).
@@ -180,6 +204,13 @@ N $ABED Fetch the keypress.
 
 c $ABF1 Clear Screen
 @ $ABF1 label=ClearScreen
+E $ABF1 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$64A5 }
+. { #FOREST$BDEA }
+. { #JEWELS$BA6D }
+. { #WARLORD$A54E }
+. LIST#
 D $ABF1 Clear the display before a new room or a full-screen message.
   $ABF1,$03 Call #R$AC1A to switch to the normal screen output.
   $ABF4,$03 Clear the display with #SKOOLKID$0D6B(CLS).
@@ -187,6 +218,13 @@ D $ABF1 Clear the display before a new room or a full-screen message.
 
 c $ABF8 Clear Lines
 @ $ABF8 label=ClearLines
+E $ABF8 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$64AC }
+. { #FOREST$BDF1 }
+. { #JEWELS$BA74 }
+. { #WARLORD$A555 }
+. LIST#
 D $ABF8 Clear the lines given by *#R$AF38 from the bottom of the screen.
 . Nothing calls this routine.
   $ABF8,$03 Call #R$AC1A to switch to the normal screen output.
@@ -195,6 +233,13 @@ D $ABF8 Clear the lines given by *#R$AF38 from the bottom of the screen.
 
 c $AC03 Set Default Screen Position
 @ $AC03 label=SetDefaultScreenPosition
+E $AC03 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$64B7 }
+. { #FOREST$BDFC }
+. { #JEWELS$BA7F }
+. { #WARLORD$A560 }
+. LIST#
 D $AC03 Open the normal screen channel and park the cursor at the default line.
   $AC03,$03 Call #R$AC1A to switch to the normal screen output.
   $AC06,$06 Call #SKOOLKID$0DD9(CL_SET).
@@ -202,6 +247,13 @@ D $AC03 Open the normal screen channel and park the cursor at the default line.
 
 c $AC0D Set Screen Position
 @ $AC0D label=SetScreenPosition
+E $AC0D View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$64C1 }
+. { #FOREST$BE06 }
+. { #JEWELS$BA89 }
+. { #WARLORD$A56A }
+. LIST#
 D $AC0D Open the normal screen channel and park the cursor on the current screen line.
   $AC0D,$03 Call #R$AC1A to switch to the normal screen output.
   $AC10,$03 Read the screen line into #REGa.
@@ -211,6 +263,13 @@ D $AC0D Open the normal screen channel and park the cursor on the current screen
 
 c $AC1A Switch To Normal Screen Output
 @ $AC1A label=SwitchToNormalScreenOutput
+E $AC1A View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$64CE }
+. { #FOREST$BE13 }
+. { #JEWELS$BA96 }
+. { #WARLORD$A577 }
+. LIST#
 D $AC1A Select the normal screen channel without losing the registers.
   $AC1A,$04 Hold the caller's values while the screen channel opens.
   $AC1E,$05 Call #SKOOLKID$1601(CHAN_OPEN).
@@ -219,6 +278,13 @@ D $AC1A Select the normal screen channel without losing the registers.
 
 c $AC28 Print String
 @ $AC28 label=PrintString
+E $AC28 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$64DC }
+. { #FOREST$BE21 }
+. { #JEWELS$BAA4 }
+. { #WARLORD$A585 }
+. LIST#
 D $AC28 Print an #N$FF-terminated string.
 R $AC28 HL Pointer to string to be printed
   $AC28,$03 Call #R$AC1A to switch to the normal screen output.
@@ -233,6 +299,15 @@ N $AC2B Just keep looping and printing the fetched character until the terminati
 
 c $AC35 Print String And A Newline
 @ $AC35 label=PrintStringAndANewline
+E $AC35 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$64E9 }
+. { #FOREST$BE2E }
+. { #JEWELS$BAB1 }
+. { #WARLORD$A592 }
+. { #SHOCK$A25C(After Shock (compressed)) }
+. { #SHOCK$A275(After Shock (plain)) }
+. LIST#
 D $AC35 Print an #N$FF-terminated string and move to the next line.
   $AC35,$03 Call #R$AC28 to print the string.
 N $AC38 Force a newline to be "printed".
@@ -242,6 +317,13 @@ N $AC38 Force a newline to be "printed".
 
 c $AC3E Scroll Screen
 @ $AC3E label=ScrollScreen
+E $AC3E View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6510 }
+. { #FOREST$BE55 }
+. { #JEWELS$BABA }
+. { #WARLORD$A59B }
+. LIST#
 D $AC3E Scroll the screen and put the cursor back on the default line.
   $AC3E,$01 Keep the caller's #REGbc, #REGde and #REGhl safe in the shadow registers while the screen scrolls.
 N $AC3F Scroll the screen up.
@@ -253,6 +335,13 @@ N $AC42 Reset the print position.
 
 c $AC47 Print Character
 @ $AC47 label=PrintCharacter
+E $AC47 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$64F2 }
+. { #FOREST$BE37 }
+. { #JEWELS$BAC3 }
+. { #WARLORD$A5A4 }
+. LIST#
 D $AC47 Print one character on the screen channel.
 R $AC47 A The character to print
   $AC47,$01 Keep the character to print on the stack.
@@ -275,6 +364,14 @@ N $AC62 Actions printing #REGa to the screen.
 
 c $AC65 Pause Loop
 @ $AC65 label=PauseLoop
+E $AC65 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$65D2 }
+. { #FOREST$BF41 }
+. { #JEWELS$BB51 }
+. { #WARLORD$A5C2 }
+. { #SHOCK$9E2F }
+. LIST#
 D $AC65 Wait for the number of frames held in #REGb.
   $AC65,$01 Wait for the next frame.
   $AC66,$02 Count down #REGb and repeat from #R$AC65 until the count is exhausted.
@@ -282,12 +379,25 @@ D $AC65 Wait for the number of frames held in #REGb.
 
 c $AC69 Fetch Frames
 @ $AC69 label=FetchFrames
+E $AC69 View the equivalent code in;
+. #LIST
+. { #JEWELS$BB55 }
+. { #WARLORD$A5C6 }
+. LIST#
 D $AC69 Read the ROM frame counter, used as a seed for chance.
   $AC69,$03 Read *#SKOOLKID$5C78(FRAMES) into #REGa.
   $AC6C,$01 Return.
 
 c $AC6D Save Game
 @ $AC6D label=SaveGame
+E $AC6D View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$69A1 }
+. { #FOREST$C345 }
+. { #JEWELS$BB59 }
+. { #WARLORD$A5CA }
+. { #SHOCK$9E80 }
+. LIST#
 D $AC6D Copy the configurable exits into the save buffer and write them to tape.
   $AC6D,$03 Read the configurable-exit count into #REGa.
   $AC70,$03 Jump to #R$AC8C if #REGa is zero.
@@ -306,6 +416,14 @@ N $AC73 #REGb counts the exits, #REGix walks their addresses and #REGde the save
 
 c $ACA8 Load From Tape
 @ $ACA8 label=LoadFromTape
+E $ACA8 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$69DC }
+. { #FOREST$C380 }
+. { #JEWELS$BB94 }
+. { #WARLORD$A605 }
+. { #SHOCK$9EDB }
+. LIST#
 D $ACA8 Read a save block back from tape into the configurable exits.
   $ACA8,$06 Print "#MESSAGE$B01F" and start a new line.
   $ACAE,$04 Load the starting address into #REGix at the item-location table.
@@ -331,6 +449,13 @@ N $ACCA #REGb counts the exits, #REGix walks their addresses and #REGde the save
 
 c $ACEA Print Input Prompt
 @ $ACEA label=PrintInputPrompt
+E $ACEA View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6A1C }
+. { #FOREST$C3C0 }
+. { #JEWELS$BBD4 }
+. { #WARLORD$A647 }
+. LIST#
 D $ACEA Print the input prompt.
   $ACEA,$03 Point at the prompt graphic in the display file.
   $ACED,$03 Set the increment in #REGde for the next screen line.
@@ -349,6 +474,11 @@ N $ACFA Force a newline to be "printed".
 
 c $AD06 Print Room Graphic
 @ $AD06 label=PrintRoomGraphic
+E $AD06 View the equivalent code in;
+. #LIST
+. { #FOREST$BE5E }
+. { #JEWELS$BAE1 }
+. LIST#
 D $AD06 Expand one compressed room picture into the display.
 R $AD06 IX Pointer to room image data
   $AD06,$03 Call #R$AC1A to switch to the normal screen output.
@@ -393,6 +523,12 @@ N $AD0F Reset graphic display area.
 
 c $AD54 Colour Room Image
 @ $AD54 label=ColourRoomImage
+E $AD54 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6535 }
+. { #FOREST$BEAC }
+. { #JEWELS$BB2F }
+. LIST#
 D $AD54 Copy the picture's attribute bytes onto the screen.
 R $AD54 IX Pointer to the room attribute data
   $AD54,$03 Point #REGde at the attribute file.
@@ -403,6 +539,12 @@ R $AD54 IX Pointer to the room attribute data
 
 c $AD60 Print Room Image
 @ $AD60 label=Print_RoomImage
+E $AD60 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6541 }
+. { #FOREST$BEB8 }
+. { #JEWELS$BB3B }
+. LIST#
 D $AD60 Draw the room picture and then colour it.
   $AD60,$03 Call #R$AD06 to draw the room picture.
   $AD63,$03 Call #R$AD54 to colour the room picture.
@@ -410,6 +552,12 @@ D $AD60 Draw the room picture and then colour it.
 
 c $AD67 Clear Room Image
 @ $AD67 label=ClearRoomImage
+E $AD67 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6548 }
+. { #FOREST$BEBF }
+. { #JEWELS$BB42 }
+. LIST#
 D $AD67 Copy one attribute byte across the #N$0200 cells of the picture.
 . Nothing calls this routine.
 R $AD67 A Attribute byte value
@@ -426,6 +574,12 @@ R $AD67 A Attribute byte value
 
 g $AD76 Table: Item Locations
 @ $AD76 label=Table_ItemLocations
+E $AD76 View the equivalent code in;
+. #LIST
+. { #JEWELS$BBF0 }
+. { #WARLORD$A66C }
+. { #SHOCK$9F88 }
+. LIST#
 D $AD76 One byte per item. The value is the room the item is in, #N$00 when
 . the item is inactive, and the inventory room when the player is carrying it.
 B $AD76,$01 Room #N(#PEEK(#PC)).
@@ -616,6 +770,11 @@ L $AF2E,$01,$0A
 
 b $AF38 Line Number
 @ $AF38 label=LineNumber
+E $AF38 View the equivalent code in;
+. #LIST
+. { #JEWELS$BD70 }
+. { #WARLORD$A82E }
+. LIST#
 D $AF38 The entry point writes #N$18 here.
 B $AF38,$01
 
@@ -862,6 +1021,13 @@ L $B1D8,$02,$06
 
 c $B1E4 Messaging: "Please Rephrase That."
 @ $B1E4 label=Messaging_PleaseRephraseThat_Newline
+E $B1E4 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6479 }
+. { #FOREST$BDBE }
+. { #JEWELS$BFEE }
+. { #WARLORD$AAEE }
+. LIST#
 D $B1E4 Print "Please Rephrase That."
 N $B1E4 Print it and start a new line: #MESSAGE$B0CC.
   $B1E4,$06 Point at the message and print it and start a new line.
@@ -869,6 +1035,13 @@ N $B1E4 Print it and start a new line: #MESSAGE$B0CC.
 
 c $B1EB Messaging: "Please Be More Specific."
 @ $B1EB label=Messaging_PleaseBeMoreSpecific_Newline
+E $B1EB View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6480 }
+. { #FOREST$BDC5 }
+. { #JEWELS$BFF5 }
+. { #WARLORD$AAF5 }
+. LIST#
 D $B1EB Print "Please Be More Specific."
 N $B1EB Print it and start a new line: #MESSAGE$B0B3.
   $B1EB,$06 Point at the message and print it and start a new line.
@@ -876,6 +1049,13 @@ N $B1EB Print it and start a new line: #MESSAGE$B0B3.
 
 c $B1F2 Messaging: "You can't."
 @ $B1F2 label=Messaging_YouCant_Newline
+E $B1F2 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6487 }
+. { #FOREST$BDCC }
+. { #JEWELS$BFFC }
+. { #WARLORD$AAFC }
+. LIST#
 D $B1F2 Print "You can't." Nothing calls this copy; play uses #R$EAE2.
 N $B1F2 Print it and start a new line: #MESSAGE$B0E2.
   $B1F2,$06 Point at the message and print it and start a new line.
@@ -883,6 +1063,13 @@ N $B1F2 Print it and start a new line: #MESSAGE$B0E2.
 
 c $B1F9 Messaging: "O.K."
 @ $B1F9 label=Messaging_OK_Newline
+E $B1F9 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$648E }
+. { #FOREST$BDD3 }
+. { #JEWELS$C003 }
+. { #WARLORD$AB03 }
+. LIST#
 D $B1F9 Print "O.K." Nothing calls this copy; play uses #R$EAE8.
 N $B1F9 Print it and start a new line: #MESSAGE$B0ED.
   $B1F9,$06 Point at the message and print it and start a new line.
@@ -890,6 +1077,12 @@ N $B1F9 Print it and start a new line: #MESSAGE$B0ED.
 
 c $B200 Handler: User Input
 @ $B200 label=HandlerUserInput
+E $B200 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6604 }
+. { #FOREST$BF73 }
+. { #JEWELS$C00A }
+. LIST#
 D $B200 Read a command, tokenise it, and reject words the game does not know.
   $B200,$03 Call #R$AC03 to park the cursor on the default line.
   $B203,$03 Point #REGhl at the command buffer.
@@ -915,6 +1108,10 @@ D $B200 Read a command, tokenise it, and reject words the game does not know.
 
 c $B237 Handler: User Pressed "DELETE"
 @ $B237 label=HandlerUserPressedDELETE
+E $B237 View the equivalent code in;
+. #LIST
+. { #JEWELS$C041 }
+. LIST#
 D $B237 Rub out the last character of the command when the player presses DELETE.
 R $B237 HL Current position in the command buffer
   $B237,$08 See whether the cursor is still on the first character.
@@ -931,6 +1128,12 @@ N $B249 Now adjust the command buffer pointer to match the new position.
 
 c $B24E Handler: User Pressed "ENTER"
 @ $B24E label=HandlerUserPressedENTER
+E $B24E View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6669 }
+. { #FOREST$BFD8 }
+. { #JEWELS$C058 }
+. LIST#
 D $B24E Turn the finished command into word tokens.
 R $B24E HL Current position in the command buffer
 R $B24E A Which contains #N$0D ("ENTER") at this point.
@@ -1059,6 +1262,11 @@ N $B33F Print the unrecognised word(s) in quotes.
 
 c $B364 Handler: Unknown Word
 @ $B364 label=HandlerUnknownWord
+E $B364 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6745 }
+. { #FOREST$C0B4 }
+. LIST#
 D $B364 Answer a command the game cannot parse.
   $B364,$03 Read the first word token into #REGa.
   $B367,$03 Return when the command contains a word.
@@ -1067,6 +1275,13 @@ D $B364 Answer a command the game cannot parse.
 
 c $B373 Process Game Events
 @ $B373 label=ProcessGameEvents
+E $B373 View the equivalent code in;
+. #LIST
+. { #FOREST$BECE }
+. { #JEWELS$C17D }
+. { #WARLORD$AB0A }
+. { #SHOCK$A280 }
+. LIST#
 D $B373 Advance turn-based events, then any scenic events, before the player types again.
 N $B373 First process the turn-based events (if any are active).
   $B373,$03 Load the turn-based event flags into #REGa.
@@ -1143,6 +1358,14 @@ N $B3A5 Process scenic events.
 
 c $B3F1 Get Table Entry
 @ $B3F1 label=GetTableEntry
+E $B3F1 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6754 }
+. { #FOREST$C0C3 }
+. { #JEWELS$C1F0 }
+. { #WARLORD$AB88 }
+. { #SHOCK$A305 }
+. LIST#
 D $B3F1 Look up one entry in a word table.
 R $B3F1 E Index of item
 R $B3F1 IX Base table address
@@ -1155,6 +1378,14 @@ R $B3F1 O:IX Address of the table entry
 
 c $B400 Print Objects
 @ $B400 label=PrintObjects
+E $B400 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6763 }
+. { #FOREST$C0D2 }
+. { #JEWELS$C1FF }
+. { #WARLORD$AB97 }
+. { #SHOCK$A314 }
+. LIST#
 D $B400 List the objects the player can see in this room.
 R $B400 A #N$01 for inventory items, or room number for room objects
   $B400,$03 Point #REGhl at #R$AD76.
@@ -1179,6 +1410,11 @@ R $B400 A #N$01 for inventory items, or room number for room objects
 
 c $B41F Handler: Display Room Image
 @ $B41F label=HandlerDisplayRoomImage
+E $B41F View the equivalent code in;
+. #LIST
+. { #JEWELS$C21E }
+. { #WARLORD$ABB6 }
+. LIST#
 D $B41F Show the picture for the current room when that room has one.
 R $B41F E #N$01 If the image should be displayed, #N$00 if it should be skipped
 N $B41F The game can also load without any graphics at all, so bail if there's nothing needed to do here.
@@ -1232,6 +1468,13 @@ N $B459 Finally! Display the room image.
 
 c $B46B Handler: Display Room Exits
 @ $B46B label=HandlerDisplayRoomExits
+E $B46B View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$678A }
+. { #FOREST$C0F9 }
+. { #JEWELS$C26A }
+. { #WARLORD$AC02 }
+. LIST#
 D $B46B Print the exits that leave the current room.
   $B46B,$03 Call #R$ABF1 to clear the screen.
   $B46E,$05 Set up the printing position.
@@ -1314,6 +1557,11 @@ N $B4FC Print the objects at this location.
 
 c $B503 Get Room Pointer
 @ $B503 label=GetRoomPointer
+E $B503 View the equivalent code in;
+. #LIST
+. { #JEWELS$C302 }
+. { #WARLORD$AC9A }
+. LIST#
 D $B503 Point at the current room's six exit bytes.
 R $B503 O:HL Pointer to the room data
   $B503,$03 Read the current room into #REGa.
@@ -1324,6 +1572,12 @@ R $B503 O:HL Pointer to the room data
 
 c $B516 Print Room Description
 @ $B516 label=PrintRoomDescription
+E $B516 View the equivalent code in;
+. #LIST
+. { #JEWELS$C315 }
+. { #WARLORD$ACAD }
+. { #SHOCK$A42F }
+. LIST#
 D $B516 Print the description of the current room.
 R $B516 A Line number to begin printing
   $B516,$03 Store #REGa in the screen line.
@@ -1337,6 +1591,14 @@ R $B516 A Line number to begin printing
 
 c $B52B Action: Examine Item
 @ $B52B label=ActionExamineItem
+E $B52B View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$68A4 }
+. { #FOREST$C213 }
+. { #JEWELS$C32A }
+. { #WARLORD$AE36 }
+. { #SHOCK$A591 }
+. LIST#
 D $B52B Carry out the "Examine Item" command.
 R $B52B C Item ID
 R $B52B O:F Carry flag set when the item isn't present
@@ -1366,6 +1628,14 @@ N $B54E Print the object name.
 
 c $B560 Get Object Location
 @ $B560 label=Get_ObjectLocation
+E $B560 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$68E0 }
+. { #FOREST$C24F }
+. { #JEWELS$C35F }
+. { #WARLORD$AE6B }
+. { #SHOCK$A5C6 }
+. LIST#
 D $B560 Get Object Location.
 R $B562 A Object number
 R $B562 O:A Location of the object
@@ -1380,6 +1650,14 @@ R $B562 O:A Location of the object
 
 c $B575 Match Phrase Tokens
 @ $B575 label=MatchPhraseTokens
+E $B575 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6900 }
+. { #FOREST$C26F }
+. { #JEWELS$C37F }
+. { #WARLORD$AE80 }
+. { #SHOCK$A5DB }
+. LIST#
 D $B575 Match Phrase Tokens.
 R $B575 HL A pointer to phrase token data
 R $B575 O:F The Z flag is set if the input matches any pattern
@@ -1413,6 +1691,14 @@ R $B575 O:F The Z flag is set if the input matches any pattern
 
 c $B5A4 Parser: Count Item References
 @ $B5A4 label=ParserCountItemReferences
+E $B5A4 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$692F }
+. { #FOREST$C29E }
+. { #JEWELS$C3AE }
+. { #WARLORD$AEAF }
+. { #SHOCK$A60A }
+. LIST#
 D $B5A4 Parser: Count Item References.
 R $B5A4 O:A The number of references to items in the user input tokens
 R $B5A4 O:E As #REGa
@@ -1443,6 +1729,14 @@ N $B5BF This token does point to a game item, so increase the item counter.
 
 c $B5C6 Get Item Room
 @ $B5C6 label=GetItemRoom
+E $B5C6 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$694F }
+. { #FOREST$C2BE }
+. { #JEWELS$C3D0 }
+. { #WARLORD$AED1 }
+. { #SHOCK$A62C }
+. LIST#
 D $B5C6 Get Item Room.
   $B5C6,$07 Look this item up in the item-location table.
   $B5CD,$01 Read the room that holds this item.
@@ -1450,6 +1744,12 @@ D $B5C6 Get Item Room.
 
 c $B5CF Is Object In Inventory?
 @ $B5CF label=IsObjectInInventory
+E $B5CF View the equivalent code in;
+. #LIST
+. { #JEWELS$C3E4 }
+. { #WARLORD$AEDA }
+. { #SHOCK$A635 }
+. LIST#
 D $B5CF Is Object In Inventory?.
 R $B5CF A Object ID
 R $B5CF O:F Z flag set if object is in the players inventory
@@ -1460,6 +1760,13 @@ N $B5CF The #R$B5C6 routine returns with #REGa containing the room ID of the req
 
 c $B5D5 Handler: Destroy Item/ Event
 @ $B5D5 label=HandlerDestroyItemEvent
+E $B5D5 View the equivalent code in;
+. #LIST
+. { #FOREST$C2D8 }
+. { #JEWELS$C3EA }
+. { #WARLORD$AEE0 }
+. { #SHOCK$A63B }
+. LIST#
 D $B5D5 Destroy Item/ Event.
 R $B5D5 A Item/ event ID
   $B5D5,$01 Hold the item while its room is cleared.
@@ -1468,6 +1775,13 @@ R $B5D5 A Item/ event ID
 
 c $B5DC Handler: Update Item/ Event For The Current Room
 @ $B5DC label=HandlerUpdateItemEventForTheCurrentRoom
+E $B5DC View the equivalent code in;
+. #LIST
+. { #FOREST$C2DF }
+. { #JEWELS$C3F1 }
+. { #WARLORD$AEE7 }
+. { #SHOCK$A642 }
+. LIST#
 D $B5DC Update Item/ Event For The Current Room.
 R $B5DC A Item/ event ID
   $B5DC,$01 Hold the item while the current room is read.
@@ -1478,6 +1792,12 @@ R $B5DC A Item/ event ID
 
 c $B5E5 Handler: Set Scenic Event As Triggered
 @ $B5E5 label=ScenicEventTriggered
+E $B5E5 View the equivalent code in;
+. #LIST
+. { #JEWELS$C3FA }
+. { #WARLORD$AEF0 }
+. { #SHOCK$A64B }
+. LIST#
 D $B5E5 Mark the scenic event in #REGa as already fired. The scenic-event
 . count is zero, so nothing calls this routine.
 R $B5E5 A Scenic event id
@@ -1488,6 +1808,11 @@ R $B5E5 A Scenic event id
 
 c $B5EC Check Active Scenic Events
 @ $B5EC label=CheckActiveScenicEvents
+E $B5EC View the equivalent code in;
+. #LIST
+. { #JEWELS$C401 }
+. { #SHOCK$A652 }
+. LIST#
 D $B5EC Check Active Scenic Events.
 R $B5EC HL Pointer to scenic data
 R $B5EC O:A The listed item that is here, or #N$FF if there is none
@@ -1507,6 +1832,11 @@ R $B5EC O:F The zero flag is set when an item on the list is here or carried
 
 c $B5FD Set Item Room
 @ $B5FD label=SetItemRoom
+E $B5FD View the equivalent code in;
+. #LIST
+. { #WARLORD$AF08 }
+. { #SHOCK$A663 }
+. LIST#
 D $B5FD Set Item Room.
   $B5FD,$03 Point #REGhl at the item-location table.
   $B600,$05 Write the room into the item's slot in the item-location table.
@@ -1529,6 +1859,13 @@ D $B606 Walk the scenic-event list at #REGhl and return the index of the
 
 c $B613 Transform Item
 @ $B613 label=TransformItem
+E $B613 View the equivalent code in;
+. #LIST
+. { #FOREST$C48F }
+. { #JEWELS$C426 }
+. { #WARLORD$AF1E }
+. { #SHOCK$A679 }
+. LIST#
 D $B613 Transform Item.
 R $B613 B From item ID (the item to be destroyed)
 R $B613 C To item ID (the item to be created)
@@ -1549,6 +1886,11 @@ N $B620 Create the "to" item at the same location where the "from" item was.
 
 c $B626 Is Item In Current Room
 @ $B626 label=IsItemInCurrentRoom
+E $B626 View the equivalent code in;
+. #LIST
+. { #WARLORD$AF31 }
+. { #SHOCK$A68C }
+. LIST#
 D $B626 Compare the item's room with the room the player is in.
 R $B626 A Item id
 R $B626 O:F The zero flag is set when the item is in the current room
@@ -1559,6 +1901,12 @@ R $B626 O:F The zero flag is set when the item is in the current room
 
 c $B62E Check Room Objects
 @ $B62E label=CheckRoomObjects
+E $B62E View the equivalent code in;
+. #LIST
+. { #JEWELS$C439 }
+. { #WARLORD$AF39 }
+. { #SHOCK$A694 }
+. LIST#
 D $B62E Check Room Objects.
 R $B62E A Room number
 R $B62E O:A #N$00 or #N$01 if objects are found or not
@@ -1586,6 +1934,12 @@ N $B649 Set the "failure" output.
 
 c $B64B Validate Object
 @ $B64B label=ValidateObject
+E $B64B View the equivalent code in;
+. #LIST
+. { #JEWELS$C456 }
+. { #WARLORD$AF56 }
+. { #SHOCK$A6B1 }
+. LIST#
 D $B64B Validate Object.
   $B64B,$02 Remember the room and the search position.
   $B64D,$01 Advance #REGbc to the next byte.
@@ -1606,6 +1960,14 @@ D $B64B Validate Object.
 
 c $B665 Parser: Validate No Direct Object
 @ $B665 label=ParserValidateNoDirectObject
+E $B665 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6972 }
+. { #FOREST$C2FE }
+. { #JEWELS$C470 }
+. { #WARLORD$AF70 }
+. { #SHOCK$ABF4 }
+. LIST#
 D $B665 Parser: Validate No Direct Object.
 R $B665 O:F The Z flag is set when there's no direct object present
 R $B665 O:F The carry flag is set when there's a second token set
@@ -1617,6 +1979,14 @@ R $B665 O:F The carry flag is set when there's a second token set
 
 c $B670 Parser: Validate Direct Object
 @ $B670 label=ParserValidateDirectObject
+E $B670 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$697D }
+. { #FOREST$C309 }
+. { #JEWELS$C47B }
+. { #WARLORD$AF7B }
+. { #SHOCK$AC02 }
+. LIST#
 D $B670 Parser: Validate Direct Object.
 R $B670 O:F The carry flag is set when the command is malformed
 N $B670 The first token is the verb, so target the second token for the direct object.
@@ -1639,6 +2009,14 @@ N $B67C Process the direct object.
 
 c $B685 Parser: Validate Input Tokens
 @ $B685 label=Parser_ValidateInputTokens
+E $B685 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$6992 }
+. { #FOREST$C31E }
+. { #JEWELS$C490 }
+. { #WARLORD$AF90 }
+. { #SHOCK$AC1D }
+. LIST#
 D $B685 Check the words after the verb, and ask for a rephrase when none of
 . them is a known item. Nothing calls this routine.
 R $B685 O:F The carry flag is set when the command is malformed
@@ -1656,6 +2034,13 @@ N $B68F The words are not known items.
 
 c $B694 Parser: Validate Two Direct Objects
 @ $B694 label=ParserValidateTwoDirectObjects
+E $B694 View the equivalent code in;
+. #LIST
+. { #FOREST$C32D }
+. { #JEWELS$C49F }
+. { #WARLORD$AF9F }
+. { #SHOCK$AC2F }
+. LIST#
 D $B694 Parser: Validate Two Direct Objects.
 R $B694 O:F The carry flag is set when the command is malformed
   $B694,$03 Call #R$B670 to check that the command names an object.
@@ -1682,6 +2067,12 @@ N $B6A7 There are more than two valid direct objects in the user input.
 
 c $B6AC Parser: Validate Any Direct Object
 @ $B6AC label=ParserValidateAnyDirectObject
+E $B6AC View the equivalent code in;
+. #LIST
+. { #JEWELS$C4B7 }
+. { #WARLORD$AFB7 }
+. { #SHOCK$AC4D }
+. LIST#
 D $B6AC Parser: Validate Any Direct Object.
 R $B6AC O:A The number of valid direct objects in the user input tokens
 R $B6AC O:F The carry flag is set when the command is malformed
@@ -1703,6 +2094,13 @@ N $B6B8 The user input tokens have a direct object, return how many are in the c
 
 c $B6BC Parser: Process Item
 @ $B6BC label=ParserProcessItem
+E $B6BC View the equivalent code in;
+. #LIST
+. { #FOREST$C3DC }
+. { #JEWELS$C4C7 }
+. { #WARLORD$AFC7 }
+. { #SHOCK$AC60 }
+. LIST#
 D $B6BC Parser: Process Item.
 N $B6BC Set up to loop through all word tokens in the token buffer.
   $B6BC,$03 Set a pointer to the word token buffer (the first word token) in #REGhl.
@@ -1756,6 +2154,12 @@ b $B70E Data
 
 c $B714 Handler: Set Current Room
 @ $B714 label=Handler_SetCurrentRoom
+E $B714 View the equivalent code in;
+. #LIST
+. { #JEWELS$C520 }
+. { #WARLORD$B01F }
+. { #SHOCK$ACBD }
+. LIST#
 D $B714 Move the player into the room held in #REGa and update events there.
   $B714,$01 Remember the destination room.
   $B715,$03 Read the scenic-event count into #REGa.
@@ -1799,6 +2203,13 @@ D $B714 Move the player into the room held in #REGa and update events there.
 
 c $B753 Handler: Match Verb
 @ $B753 label=HandlerMatchVerb
+E $B753 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$8D85 }
+. { #FOREST$C463 }
+. { #JEWELS$C556 }
+. { #WARLORD$B05E }
+. LIST#
 D $B753 Turn the first word token into a verb and run its action.
 N $B753 Set up to search the verb word tokens table for the first word token.
   $B753,$03 Set a pointer to the verb-token pointer in #REGhl.
@@ -1822,6 +2233,12 @@ N $B768 A verb was matched! Calculate its index in the table and jump to its han
 
 c $B776 Pause, Print String And Scroll
 @ $B776 label=PausePrintStringAndScroll
+E $B776 View the equivalent code in;
+. #LIST
+. { #FOREST$C486 }
+. { #JEWELS$C579 }
+. { #WARLORD$B081 }
+. LIST#
 D $B776 Pause, Print String And Scroll.
   $B776,$05 Call #R$AC65 to pause for the frame count in #REGb.
   $B77B,$03 Call #R$AC35 to print the string and start a new line.
@@ -1829,6 +2246,14 @@ D $B776 Pause, Print String And Scroll.
 
 c $B77F Generate Random Number
 @ $B77F label=GenerateRandomNumber
+E $B77F View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$65D6 }
+. { #FOREST$BF45 }
+. { #JEWELS$C582 }
+. { #WARLORD$B08A }
+. { #SHOCK$AD25 }
+. LIST#
 D $B77F Pick a number below the limit in #REGa.
 R $B77F A Maximum value of generated number
   $B77F,$01 Remember the caller's registers.
@@ -1845,6 +2270,11 @@ R $B77F A Maximum value of generated number
 
 c $B78F Add To Score
 @ $B78F label=AddToScore
+E $B78F View the equivalent code in;
+. #LIST
+. { #WARLORD$B09A }
+. { #SHOCK$AD34 }
+. LIST#
 D $B78F Add the points in #REGa to the BCD score.
   $B78F,$01 Remember the caller's pointer.
   $B790,$03 Load the word at the score into #REGhl.
@@ -1858,6 +2288,11 @@ D $B78F Add the points in #REGa to the BCD score.
 
 c $B79E Messaging: "You Have Scored"
 @ $B79E label=Messaging_YouHaveScored_Print
+E $B79E View the equivalent code in;
+. #LIST
+. { #WARLORD$B0A9 }
+. { #SHOCK$AD43 }
+. LIST#
 D $B79E Print "You Have Scored"
 N $B79E Print it: #MESSAGE$B1C4.
   $B79E,$06 Point at the message and print it.
@@ -3127,18 +3562,40 @@ B $CD57,$01 Terminator.
 
 g $CD58 Table: Item Descriptions
 @ $CD58 label=Table_ItemDescriptions
+E $CD58 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$84E6 }
+. { #FOREST$D3B8 }
+. { #JEWELS$D34E }
+. { #WARLORD$C732 }
+. { #SHOCK$AFDD }
+. LIST#
 D $CD58 One word per item. Each entry points at an #N$FF-terminated name.
 W $CD58,$02
 L $CD58,$02,$87
 
 g $CE66 Table: Room Descriptions
 @ $CE66 label=Table_RoomDescriptions
+E $CE66 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$8568 }
+. { #FOREST$D44C }
+. { #JEWELS$D3EC }
+. { #WARLORD$C8B0 }
+. { #SHOCK$AE7D }
+. LIST#
 D $CE66 One word per room. Rooms #N$00 and #N$01 are unused. The rest point at the room text.
 W $CE66,$02
 L $CE66,$02,$42
 
 g $CEEA Table: Object Noun Phrases
 @ $CEEA label=Table_ObjectNounPhrases
+E $CEEA View the equivalent code in;
+. #LIST
+. { #JEWELS$D4C6 }
+. { #WARLORD$C83E }
+. { #SHOCK$AF31 }
+. LIST#
 D $CEEA One word per object. Each entry points at the noun text.
 W $CEEA,$02
 L $CEEA,$02,$48
@@ -3763,6 +4220,12 @@ D $E99E Game Cold Start lands here and jumps on to Game Start.
 
 c $E9A1 Game Loop
 @ $E9A1 label=GameLoop
+E $E9A1 View the equivalent code in;
+. #LIST
+. { #FOREST$EB10 }
+. { #JEWELS$EDC4 }
+. { #WARLORD$E99F }
+. LIST#
 D $E9A1 One turn: run events, read a command, and dispatch its verb.
   $E9A1,$03 Call #R$B373 to advance the turn-based events.
   $E9A4,$04 Clear the turn scratch flag (#N$08 marks an attack).
@@ -3774,12 +4237,24 @@ D $E9A1 One turn: run events, read a command, and dispatch its verb.
 
 c $E9B5 Messaging: "You are dead."
 @ $E9B5 label=Messaging_YouAreDead_Continue
+E $E9B5 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$8DB3 }
+. { #FOREST$EB23 }
+. { #JEWELS$EDD7 }
+. { #WARLORD$E9B2 }
+. { #SHOCK$AE0D }
+. LIST#
 D $E9B5 Print "You are dead." and fall into the play-again question.
 N $E9B5 Print it and start a new line: #MESSAGE$AFF9.
   $E9B5,$06 Point at the message and print it and start a new line.
 
 c $E9BB Handler: Ask To Play Again
 @ $E9BB label=HandlerAskToPlayAgain
+E $E9BB View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$8DB9 }
+. LIST#
 D $E9BB Ask To Play Again.
   $E9BB,$03 Call #R$B79E to tell the player the score.
 N $E9BE Print it and start a new line: #MESSAGE$B007.
@@ -3792,6 +4267,12 @@ N $E9BE Print it and start a new line: #MESSAGE$B007.
 
 c $E9D3 Game Complete
 @ $E9D3 label=GameComplete
+E $E9D3 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$8DCE }
+. { #FOREST$EB3E }
+. { #JEWELS$EDF2 }
+. LIST#
 D $E9D3 Announce that the quest is over and offer another game.
   $E9D3,$03 Call #R$ABF1 to clear the screen.
   $E9D6,$03 Call #R$AC0D to park the cursor on the current screen line.
@@ -3877,6 +4358,12 @@ b $EA9D Data
 
 c $EA9E Print Response
 @ $EA9E label=PrintResponse
+E $EA9E View the equivalent code in;
+. #LIST
+. { #FOREST$ED66 }
+. { #JEWELS$F03A }
+. { #WARLORD$ED6D }
+. LIST#
 D $EA9E Print the message at #REGhl and return to the command.
   $EA9E,$03 Call #R$AC35 to print the string and start a new line.
   $EAA1,$01 Return.
@@ -3948,6 +4435,10 @@ b $EAEE Data
 
 c $EAFA Handler: Print Carrying
 @ $EAFA label=HandlerPrintCarrying
+E $EAFA View the equivalent code in;
+. #LIST
+. { #FOREST$EEC0 }
+. LIST#
 D $EAFA Print Carrying.
   $EAFA,$06 Print "#MESSAGE$B0F2".
   $EB00,$09 See whether the object is the jade fragments.
@@ -4078,6 +4569,14 @@ N $F74D Print it as the reply: #MESSAGE$D12B.
 
 c $F756 Action: Inventory
 @ $F756 label=Action_Inventory
+E $F756 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$8EC4 }
+. { #FOREST$EDE8 }
+. { #JEWELS$F12E }
+. { #WARLORD$F824 }
+. { #SHOCK$A6CF }
+. LIST#
 D $F756 Carry out the "Inventory" command.
   $F756,$03 Call #R$B665 to check that the command has no object.
 N $F759 The "INVENTORY" command can only be called on its own.
@@ -4094,6 +4593,13 @@ N $F761 Clear the screen and display the players inventory.
 
 c $F773 Action: Look
 @ $F773 label=Action_Look
+E $F773 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$8EDA }
+. { #FOREST$EE05 }
+. { #JEWELS$F14B }
+. { #WARLORD$F841 }
+. LIST#
 D $F773 Carry out the "Look" command.
   $F773,$03 Call #R$B665 to check that the command has no object.
 N $F776 The "LOOK" command can only be called on its own.
@@ -4104,6 +4610,10 @@ N $F776 The "LOOK" command can only be called on its own.
 
 c $F77D Action: Score
 @ $F77D label=Action_Score
+E $F77D View the equivalent code in;
+. #LIST
+. { #WARLORD$F84B }
+. LIST#
 D $F77D Carry out the "Score" command.
   $F77D,$03 Call #R$B665 to check that the command has no object.
 N $F780 The "LOAD" command can only be called on its own.
@@ -4113,6 +4623,10 @@ N $F780 The "LOAD" command can only be called on its own.
 
 c $F785 Action: Examine
 @ $F785 label=Action_Examine
+E $F785 View the equivalent code in;
+. #LIST
+. { #WARLORD$F853 }
+. LIST#
 D $F785 Carry out the "Examine" command.
   $F785,$04 Call #R$B670 to check that the command names an object, and return if it does not.
   $F789,$0C Call #R$B7D3 to dispatch the matching phrase, for #N$05 entries.
@@ -4135,6 +4649,13 @@ D $F7AC Carry out the "Load" command.
 
 c $F7BC Action: Save
 @ $F7BC label=Action_Save
+E $F7BC View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$8FA9 }
+. { #FOREST$EE89 }
+. { #JEWELS$F23E }
+. { #WARLORD$F8A1 }
+. LIST#
 D $F7BC Carry out the "Save" command.
   $F7BC,$04 Call #R$B665 to check that the command has no object, and return if it does not.
   $F7C0,$03 Call #R$AC6D to write the game to tape.
@@ -4142,6 +4663,13 @@ D $F7BC Carry out the "Save" command.
 
 c $F7C4 Action: Quit
 @ $F7C4 label=Action_Quit
+E $F7C4 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$8FB1 }
+. { #FOREST$EE91 }
+. { #JEWELS$F246 }
+. { #WARLORD$F8A9 }
+. LIST#
 D $F7C4 Carry out the "Quit" command.
   $F7C4,$04 Call #R$B665 to check that the command has no object, and return if it does not.
   $F7C8,$03 Call #R$B79E to tell the player the score.
@@ -4183,6 +4711,13 @@ D $F7F4 Carry out the "Up" command.
 
 c $F7F8 Action: Down
 @ $F7F8 label=Action_Down
+E $F7F8 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$8EF8 }
+. { #FOREST$EE23 }
+. { #JEWELS$F169 }
+. { #WARLORD$F8DD }
+. LIST#
 D $F7F8 Carry out the "Down" command.
   $F7F8,$02 Select the down exit.
 @ $F7FA label=Action_Move
@@ -4210,6 +4745,10 @@ L $F820,$02,$58
 
 c $F8D0 Action: Drop
 @ $F8D0 label=Action_Drop
+E $F8D0 View the equivalent code in;
+. #LIST
+. { #WARLORD$F975 }
+. LIST#
 D $F8D0 Carry out the "Drop" command.
   $F8D0,$04 Call #R$B670 to check that the command names an object, and return if it does not.
   $F8D4,$0C Call #R$B7D3 to dispatch the matching phrase, for #N$2C entries.
@@ -4333,6 +4872,10 @@ D $FA4B Phrase pointers and handler pointers for Play.
 
 c $FA72 Action: Kill
 @ $FA72 label=ActionCapture
+E $FA72 View the equivalent code in;
+. #LIST
+. { #WARLORD$FBDE }
+. LIST#
 D $FA72 Carry out the "Kill" command.
   $FA72,$01 Remember the caller's flags.
   $FA73,$04 Call #R$B670 to check that the command names an object, and return if it does not.
@@ -4364,6 +4907,10 @@ L $FA9D,$02,$04
 
 c $FAA5 Action: Drink
 @ $FAA5 label=Action_Drink
+E $FAA5 View the equivalent code in;
+. #LIST
+. { #WARLORD$FA91 }
+. LIST#
 D $FAA5 Carry out the "Drink" command.
   $FAA5,$04 Call #R$B670 to check that the command names an object, and return if it does not.
   $FAA9,$0C Call #R$B7D3 to dispatch the matching phrase, for #N$04 entries.
@@ -4493,6 +5040,11 @@ L $FBA5,$02,$02
 
 c $FBA9 Game Start
 @ $FBA9 label=GameStart
+E $FBA9 View the equivalent code in;
+. #LIST
+. { #JEWELS$FD82 }
+. { #WARLORD$FCCE }
+. LIST#
 D $FBA9 Copy the default state into working memory, open the starting exits, and enter the game loop.
   $FBA9,$0B Copy #N$0186 bytes from #R$FBDC to the item-location table.
 N $FBB4 Remove a bunch of room exits (as actions in the game will open them back up).
@@ -4519,6 +5071,13 @@ D $FD62 The byte between the default game state and the verb jump table.
 
 w $FD63 Jump Table: Verbs
 @ $FD63 label=JumpTable_Verbs
+E $FD63 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$FA20 }
+. { #FOREST$FB0D }
+. { #JEWELS$FF3A }
+. { #WARLORD$FE89 }
+. LIST#
 D $FD63 One word per verb token, in token order.
 W $FD63,$02
 L $FD63,$02,$24

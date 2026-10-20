@@ -13,12 +13,19 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-from skoolkit.skoolhtml import HtmlWriter
+import sys
+from pathlib import Path
+
 from skoolkit.skoolmacro import parse_strings, parse_ints, MacroParsingError
 from skoolkit import (BASE_10, BASE_16, CASE_LOWER, CASE_UPPER)
 
+_SOURCES_DIR = str(Path(__file__).resolve().parent.parent)
+if _SOURCES_DIR not in sys.path:
+    sys.path.insert(0, _SOURCES_DIR)
+from linking import AdventureGamesHtmlWriter
 
-class SherlockHtmlWriter(HtmlWriter):
+
+class SherlockHtmlWriter(AdventureGamesHtmlWriter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.dict_index = []

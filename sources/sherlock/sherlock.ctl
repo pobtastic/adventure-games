@@ -3,6 +3,7 @@
 ; e.g. Print_HighScore_Loop.
 
 > $4000 @start
+> $4000 @expand=#IF({asm})(#DEF(#HOBBIT(addr)(link=The Hobbit)$link))
 > $4000 @set-handle-unsupported-macros=1
 > $4000 @expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
 > $4000 @rom
@@ -7896,6 +7897,10 @@ N $A298 Print newline.
 
 c $A2A2 Print Newline
 @ $A2A2 label=PrintNewline
+E $A2A2 View the equivalent code in;
+. #LIST
+. { #HOBBIT$8583 }
+. LIST#
 D $A2A2 Prints a carriage return and puts the flags back afterwards.
   $A2A2,$06 Keep #REGa, print a carriage return through #R$A9B7.
   $A2A8,$01 Restore #REGa from the stack.
@@ -7908,6 +7913,10 @@ B $A2AA,$01
 
 c $A2AB Clear Buffer
 @ $A2AB label=ClearBuffer
+E $A2AB View the equivalent code in;
+. #LIST
+. { #HOBBIT$70E2 }
+. LIST#
 D $A2AB Blanks the buffer before the next step uses it.
   $A2AB,$01 Start from zero.
   $A2AC,$04 Count down and repeat from #R$A2AC until the count runs out.
@@ -7915,6 +7924,10 @@ D $A2AB Blanks the buffer before the next step uses it.
 
 c $A2B1 Calculate Object Table Offset
 @ $A2B1 label=CalculateObjectTableOffset
+E $A2B1 View the equivalent code in;
+. #LIST
+. { #HOBBIT$70E8 }
+. LIST#
 D $A2B1 Turns an object index into the address of its eight-byte runtime record at #R$8259.
 R $A2B1 A Object index (0-based)
 R $A2B1 O:HL Pointer to object entry in table
@@ -7926,6 +7939,10 @@ R $A2B1 O:HL Pointer to object entry in table
 
 c $A2BD Extract Object Attributes
 @ $A2BD label=ExtractObjectAttributes
+E $A2BD View the equivalent code in;
+. #LIST
+. { #HOBBIT$70F3 }
+. LIST#
 D $A2BD Packs two attribute nibbles from the object record into #R$A01E and #R$A01D.
 R $A2BD IX Pointer to object data
 N $A2BD Extract the first attribute value from bit-packed object data.
@@ -8125,6 +8142,10 @@ D $A490 Prints #REGb as up to three decimal digits.
 
 c $A4AB Point To Location Data Plus One
 @ $A4AB label=PointToLocationDataPlusOne
+E $A4AB View the equivalent code in;
+. #LIST
+. { #HOBBIT$71D5 }
+. LIST#
 D $A4AB Points one byte past the room record for the id just looked up.
 R $A4AB A Room ID
 R $A4AB O:HL Pointer to location data + 1
@@ -8135,6 +8156,10 @@ R $A4AB O:HL Pointer to location data + 1
 
 c $A4BC Point To Object Attribute Byte
 @ $A4BC label=PointToObjectAttributeByte
+E $A4BC View the equivalent code in;
+. #LIST
+. { #HOBBIT$71E2 }
+. LIST#
 D $A4BC Points at the flag byte seven bytes into the object's record.
 R $A4BC A Object ID
 R $A4BC O:HL Pointer to the object attribute byte
@@ -8153,6 +8178,10 @@ D $A4CD Compares the two room records from the exit field onward and reports whe
 
 c $A4E0 Leave Success For The Script
 @ $A4E0 label=CompareFollowingFields
+E $A4E0 View the equivalent code in;
+. #LIST
+. { #HOBBIT$71F3 }
+. LIST#
 D $A4E0 Compares the following fields and records a match when they agree.
   $A4E0,$07 Keep the schedule entry, then call #R$A51B to compare location data.
   $A4E7,$02 Go to #R$A516 if the script position does not match.
@@ -8172,6 +8201,10 @@ D $A4E0 Compares the following fields and records a match when they agree.
 
 c $A51B Read The Script Position
 @ $A51B label=ReadScriptPosition
+E $A51B View the equivalent code in;
+. #LIST
+. { #HOBBIT$722E }
+. LIST#
 D $A51B Reads a pair of bytes and reports whether the low digit matches the script.
   $A51B,$06 Go to #R$A52E if both bytes of this word are zero.
 N $A521 Does the low nibble of #REGiy+#N$01 differ from the script byte at #REGhl?
@@ -8214,6 +8247,10 @@ W $A59D,$02
 
 c $A59F Print Text And Handle Control Characters
 @ $A59F label=PrintTextAndHandleControlCharacters
+E $A59F View the equivalent code in;
+. #LIST
+. { #HOBBIT$72DD }
+. LIST#
 D $A59F Prints the message at the pointer, carrying out the control characters inside
 . it and then returns to the instruction after the call.
 R $A59F HL Pointer to text data
@@ -8300,6 +8337,10 @@ N $A621 Store the result in the low byte of the source, then clear the high byte
 
 c $A63A Print This Character
 @ $A63A label=PrintThisCharacter
+E $A63A View the equivalent code in;
+. #LIST
+. { #HOBBIT$72C3 }
+. LIST#
 D $A63A Sends the character in #REGa to #R$A9B7 and returns zero. The same three
 . instructions as #R$A736.
 .
@@ -8312,6 +8353,10 @@ D $A63A Sends the character in #REGa to #R$A9B7 and returns zero. The same three
 
 c $A63F Choose The Line Break
 @ $A63F label=ChooseTheLineBreak
+E $A63F View the equivalent code in;
+. #LIST
+. { #HOBBIT$7340 }
+. LIST#
 D $A63F Puts #N$60 in #REGd and jumps to #R$A64A, which skips the full stop but still
 . prints a new line. #R$A643 puts #N$30 in #REGd, which makes #R$A64A print a full stop
 . and a new line.
@@ -8327,6 +8372,10 @@ N $A643 Puts #N$30 in #REGd so #R$A64A prints a full stop and a new line.
 
 c $A647 Print Character With Time Period
 @ $A647 label=PrintCharacterWithTimePeriod
+E $A647 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7348 }
+. LIST#
 D $A647 Prints the dictionary word for the character.
 R $A647 D Time period value (#N$30 or #N$60)
 R $A647 O:A Character code
@@ -8354,6 +8403,10 @@ N $A65C Returns to the caller without changing the result. Commands use it when 
 
 c $A65D Process Text Token And Call Handler
 @ $A65D label=ProcessTextTokenAndCallHandler
+E $A65D View the equivalent code in;
+. #LIST
+. { #HOBBIT$7367 }
+. LIST#
 D $A65D Fetches the next token and calls #R$A7BA when that pointer is not zero.
 .
 . Control code #N$00 in the table at #R$A55D.
@@ -8367,6 +8420,10 @@ D $A65D Fetches the next token and calls #R$A7BA when that pointer is not zero.
 c $A66C Fetch Next Text Token
 @ $A66C refs=$A5C3
 @ $A66C label=FetchNextTextToken
+E $A66C View the equivalent code in;
+. #LIST
+. { #HOBBIT$7376 }
+. LIST#
 D $A66C Reads the next word from the pointer at #R$A59D into #REGde and steps that pointer on two bytes.
 .
 . Control code #N$01 in the table at #R$A55D.
@@ -8379,6 +8436,10 @@ R $A66C O:F Zero flag always reset
 
 c $A679 Step The Record By Its Length
 @ $A679 label=StepRecordByItsLength
+E $A679 View the equivalent code in;
+. #LIST
+. { #HOBBIT$737E }
+. LIST#
 D $A679 Adds the word at offset #N$01, minus one, to the record pointer and returns zero.
 .
 . Control code #N$02 in the table at #R$A55D.
@@ -8490,6 +8551,10 @@ N $A6F5 Skip this alternative.
 
 c $A702 Read The Parser Workspace
 @ $A702 label=ReadParserWorkspace
+E $A702 View the equivalent code in;
+. #LIST
+. { #HOBBIT$738D }
+. LIST#
 D $A702 Loads the words the player typed and leaves a non-zero result so parsing continues.
 .
 . Control code #N$03 in the table at #R$A55D.
@@ -8501,6 +8566,10 @@ D $A702 Loads the words the player typed and leaves a non-zero result so parsing
 
 c $A709 Print The Next Token
 @ $A709 label=PrintTheNextToken
+E $A709 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7394 }
+. LIST#
 D $A709 Fetches the next token, hands it to #R$A80E, and returns zero.
 .
 . Control code #N$04 in the table at #R$A55D.
@@ -8528,6 +8597,10 @@ D $A711 Fetches the next token and calls #R$BF1C with that token as the record, 
 
 c $A720 Clear The Object Source
 @ $A720 label=ClearTheObjectSource
+E $A720 View the equivalent code in;
+. #LIST
+. { #HOBBIT$73A3 }
+. LIST#
 D $A720 Clears the object processing source flag at #R$A028 and falls through into #R$A724.
 .
 . Control code #N$06 in the table at #R$A55D.
@@ -8545,6 +8618,10 @@ D $A724 Reads the character being processed, prints its token, and reports that 
 
 c $A72C Check The Room Display Parameter
 @ $A72C label=CheckTheRoomDisplayParameter
+E $A72C View the equivalent code in;
+. #LIST
+. { #HOBBIT$73AF }
+. LIST#
 D $A72C Sets the object source flag to #N$01 and jumps to #R$A751 with the room display
 . parameter in #REGa.
 .
@@ -8556,6 +8633,10 @@ D $A72C Sets the object source flag to #N$01 and jumps to #R$A751 with the room 
 
 c $A736 Print The Control Character
 @ $A736 label=PrintTheControlCharacter
+E $A736 View the equivalent code in;
+. #LIST
+. { #HOBBIT$73BD }
+. LIST#
 D $A736 Sends the character in #REGa to #R$A9B7 and returns zero. The same three
 . instructions as #R$A63A.
 .
@@ -8568,6 +8649,10 @@ D $A736 Sends the character in #REGa to #R$A9B7 and returns zero. The same three
 
 c $A73B Check The Room Graphics Parameter
 @ $A73B label=CheckTheRoomGraphicsParameter
+E $A73B View the equivalent code in;
+. #LIST
+. { #HOBBIT$73C2 }
+. LIST#
 D $A73B Sets the object source flag to #N$01 and jumps to #R$A751 with the room graphics
 . parameter in #REGa.
 .
@@ -8588,6 +8673,10 @@ D $A745 When the token names a room, checks that room and tells the script the t
 
 c $A751 Process Object Attribute
 @ $A751 label=ProcessObjectAttribute
+E $A751 View the equivalent code in;
+. #LIST
+. { #HOBBIT$73D6 }
+. LIST#
 D $A751 Checks the object's flag byte and tells the script the test did not pass.
   $A751,$04 Call #R$A4BC to point to object attribute byte, saving pointer.
   $A755,$04 Call #R$A7C5 to check object has special description.
@@ -8596,6 +8685,10 @@ D $A751 Checks the object's flag byte and tells the script the test did not pass
 
 c $A75B Print Text At An Offset
 @ $A75B label=PrintTextAtAnOffset
+E $A75B View the equivalent code in;
+. #LIST
+. { #HOBBIT$73E0 }
+. LIST#
 D $A75B Adds the word at offset #N$01 to the record address, prints the text there through
 . #R$A5C4, steps the record on two bytes, and returns zero.
 .
@@ -8627,6 +8720,10 @@ D $A771 Fetches the next word and, when it is not zero, prints the text it point
 
 c $A780 Pronoun For This Character
 @ $A780 label=PronounForThisCharacter
+E $A780 View the equivalent code in;
+. #LIST
+. { #HOBBIT$73F9 }
+. LIST#
 D $A780 Reads the current character and continues at #R$A783. A zero id returns token
 . #N$09F2. Any other id returns token #N$0414. Either result is non-zero, so the caller
 . prints the token.
@@ -8646,6 +8743,10 @@ N $A783 Returns token #N$0414 for any other character id, and token #N$09F2 for 
 
 c $A78E Pronoun For The Room
 @ $A78E label=PronounForTheRoom
+E $A78E View the equivalent code in;
+. #LIST
+. { #HOBBIT$7407 }
+. LIST#
 D $A78E Reads the room display parameter and joins the pronoun test at #R$A783.
 .
 . Control code #N$0E in the table at #R$A55D.
@@ -8655,6 +8756,10 @@ D $A78E Reads the room display parameter and joins the pronoun test at #R$A783.
 
 c $A793 Describe This Character
 @ $A793 label=DescribeThisCharacter
+E $A793 View the equivalent code in;
+. #LIST
+. { #HOBBIT$740C }
+. LIST#
 D $A793 Saves the current character, clears the object source flag, and continues at
 . #R$A798. That entry runs #R$A82F, then returns token #N$0485, or token #N($007A,$04,$04)
 . when the character id is zero.
@@ -8677,6 +8782,10 @@ N $A798 Stores the object source flag, runs #R$A82F, and returns the description
 
 c $A7AC Describe The Displayed Room
 @ $A7AC label=DescribeTheDisplayedRoom
+E $A7AC View the equivalent code in;
+. #LIST
+. { #HOBBIT$7425 }
+. LIST#
 D $A7AC Reads the room display parameter and continues at #R$A7AF, which sets the object
 . source flag to #N$01 and joins #R$A798, the same description #R$A793 prints.
 .
@@ -8691,6 +8800,10 @@ N $A7AF Saves the value, sets the object source flag, and joins #R$A798.
 
 c $A7B4 Describe The Next Token
 @ $A7B4 label=DescribeTheNextToken
+E $A7B4 View the equivalent code in;
+. #LIST
+. { #HOBBIT$742D }
+. LIST#
 D $A7B4 Fetches the next token and joins #R$A7AF with the token's high byte in #REGa.
 . #R$A798 then describes that value the same way #R$A793 describes the character.
 .
@@ -8703,6 +8816,10 @@ R $A7B4 O:A High byte of the token
 
 c $A7BA Check Object Attribute With Flag
 @ $A7BA label=CheckObjectAttributeWithFlag_Wrapper
+E $A7BA View the equivalent code in;
+. #LIST
+. { #HOBBIT$7434 }
+. LIST#
 D $A7BA The same sequence as #R$A7C5. Keeps the schedule entry, points #REGiy at the object, and calls #R$D405 to test the object's attribute flag.
 R $A7BA HL Object pointer
   $A7BA,$02 Save the schedule entry.
@@ -8713,6 +8830,10 @@ R $A7BA HL Object pointer
 
 c $A7C5 Check Object Has Special Description
 @ $A7C5 label=CheckObjectHasSpecialDescription_Wrapper
+E $A7C5 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7434 }
+. LIST#
 D $A7C5 The same sequence as #R$A7BA. Keeps the schedule entry, points #REGiy at the object, and calls #R$D3E8 to test the special-description flag.
 R $A7C5 HL Object pointer
   $A7C5,$02 Save the schedule entry.
@@ -8723,6 +8844,10 @@ R $A7C5 HL Object pointer
 
 c $A7D0 Check Token Match And Set Flag
 @ $A7D0 label=CheckTokenMatchAndSetFlag
+E $A7D0 View the equivalent code in;
+. #LIST
+. { #HOBBIT$743F }
+. LIST#
 D $A7D0 Compares the token with the text and sets the match flag.
 R $A7D0 DE Token value to check
   $A7D0,$04 Clear the token match flag at #R$A7EA.
@@ -8759,6 +8884,10 @@ R $A7EB D Token parameter
 
 c $A80E Process Text Token With Attributes
 @ $A80E label=ProcessTextTokenWithAttributes
+E $A80E View the equivalent code in;
+. #LIST
+. { #HOBBIT$7478 }
+. LIST#
 R $A80E DE Token value
 D $A80E Checks whether this token matches, then keeps the dictionary page of the following word.
   $A80E,$05 Call #R$A7D0 to compare the token and set the match flag.
@@ -8785,6 +8914,10 @@ N $A821 Print text token.
 
 c $A82F Process Object Or Print Token
 @ $A82F label=ProcessObjectOrPrintToken
+E $A82F View the equivalent code in;
+. #LIST
+. { #HOBBIT$7488 }
+. LIST#
 R $A82F A Object ID (FF = print token)
 D $A82F See whether the text byte is the end marker, then print the dictionary word.
   $A82F,$05 Jump back to #R$A751 while the object is not the end marker.
@@ -8797,6 +8930,10 @@ D $A83A Looks the common word up and prints it.
 
 c $A840 Get Common Word
 @ $A840 label=GetCommonWord
+E $A840 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7493 }
+. LIST#
 D $A840 Turns a vocabulary code into the dictionary address of that word.
 R $A840 A Letter reference
 R $A840 DE Common word address
@@ -8839,6 +8976,10 @@ L $A85C,$04,$09
 
 c $A880 Extract Token From Text
 @ $A880 label=ExtractTokenFromText
+E $A880 View the equivalent code in;
+. #LIST
+. { #HOBBIT$74BA }
+. LIST#
 D $A880 Reads the next dictionary token from the message and keeps its low digit as the page.
 R $A880 HL Pointer to text data
 R $A880 O:DE Token value (word)
@@ -9394,6 +9535,10 @@ D $AC8F Points at the four-byte picture origin and continues with the token chec
 
 c $AC94 Read The Next Coordinate Pair
 @ $AC94 label=ReadBytePointer
+E $AC94 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7809 }
+. LIST#
 D $AC94 Points at the co-ordinate data and skips the token check when the next pair is empty.
   $AC94,$03 Use the buffer: co-ordinate data (#R$AAAC+#N$02).
 @ $AC97 label=ReadBytePointer_CheckToken
@@ -9411,6 +9556,10 @@ D $AC94 Points at the co-ordinate data and skips the token check when the next p
 
 c $ACA6 Copy Display Data To Display Buffer
 @ $ACA6 label=CopyDisplayDataToDisplayBuffer
+E $ACA6 View the equivalent code in;
+. #LIST
+. { #HOBBIT$782B }
+. LIST#
 D $ACA6 Copies display data from the character data structure to the display buffer at #R$AAA8. If bit 6 of #REGe is set, copies from offset #N$04; if bit 7 of #REGe is set, copies from offset #N$0E. Always sets bit 0 of the return value.
 R $ACA6 E Flags (bits 6 and 7 indicate which display data set to copy)
 R $ACA6 O:A Bit 0 is set if data was copied
@@ -9431,6 +9580,10 @@ N $ACB2 Bit 7 selects the second display block.
 
 c $ACCC Handle A Class #N$A0 Word
 @ $ACCC label=HandleClassAWord
+E $ACCC View the equivalent code in;
+. #LIST
+. { #HOBBIT$770B }
+. LIST#
 D $ACCC Skips class #N$A0 tokens, saves the word pointer and this clause record, and carries on at the class #N$B0 matcher (#R$AD57). When the parser count at #R$A019+#N$01 is #N$02, it sets bit 6 of the clause record first.
 R $ACCC E Flags (bit 3 is reset)
   $ACCC,$03 Run text token and save state.
@@ -9473,6 +9626,10 @@ N $AD2E Restores the saved word as class #N$B0, unlinks the clause record, and f
 
 c $AD57 Match A Class #N$B0 Word
 @ $AD57 label=MatchWordAgainstEarlierClause
+E $AD57 View the equivalent code in;
+. #LIST
+. { #HOBBIT$75FA }
+. LIST#
 D $AD57 Grammar handler for word class #N$B0. It matches the word in #REGd against the earlier clause records, which are kept in a linked list.
   $AD57,$07 Read the parser count, count down one and point #REGhl at #R$A012.
   $AD5E,$04 Jump ahead to #R$AD66 unless the parser count was #N$02.
@@ -9573,6 +9730,10 @@ R $AE6A O:IY Pointer to the initialised character data structure
 
 c $AE7F Save Text Pointer
 @ $AE7F label=SaveTextPointer
+E $AE7F View the equivalent code in;
+. #LIST
+. { #HOBBIT$7873 }
+. LIST#
 D $AE7F Remembers the text pointer so the message can be continued afterwards.
   $AE7F,$07 Copy the word at #R$A02B into the word at #R$A029 and keep #REGd.
   $AE86,$03 Store #REGa at #R$A02D.
@@ -9634,6 +9795,10 @@ D $AEEA Starts a character search with no current record, then joins the list wa
 
 c $AEF1 Merge Character Flags
 @ $AEF1 label=MergeCharacterFlags
+E $AEF1 View the equivalent code in;
+. #LIST
+. { #HOBBIT$78B7 }
+. LIST#
 D $AEF1 Copies the id, script marker and attribute bytes from the character record onto the
 . schedule entry so the two stay in step.
   $AEF1,$04 Read the moved marker.
@@ -9679,12 +9844,20 @@ N $AF4E Sets copy length #N$06.
 
 c $AF52 Set Copy Length #N$0A
 @ $AF52 label=SetCopyLengthTen
+E $AF52 View the equivalent code in;
+. #LIST
+. { #HOBBIT$78FF }
+. LIST#
 D $AF52 Chooses a length of #N$0A bytes and copies them from the character record into the
 . schedule entry.
   $AF52,$04 Copy the bytes for the chosen length.
 
 c $AF56 Set Copy Length #N$02
 @ $AF56 label=SetCopyLengthTwo
+E $AF56 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7903 }
+. LIST#
 D $AF56 Chooses a length of #N$02 bytes and copies them from the character record into the
 . schedule entry.
   $AF56,$02 Count #N$02.
@@ -9726,6 +9899,10 @@ L $AF9B,$04,$06
 
 c $AFB3 Search Command Handler Table
 @ $AFB3 label=SearchCommandHandlerTable
+E $AFB3 View the equivalent code in;
+. #LIST
+. { #HOBBIT$8251 }
+. LIST#
 D $AFB3 Searches through a command handler lookup table for a matching value pair and jumps to the associated handler routine if found.
 R $AFB3 B Second value to match
 R $AFB3 C First value to match
@@ -10190,6 +10367,10 @@ N $B374 Adjust object table for sum.
 
 c $B387 Read The Object Attribute
 @ $B387 label=ReadObjectAttribute
+E $B387 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7AD8 }
+. LIST#
 D $B387 Returns the object attribute when its bit 2 is clear, or when bit 0 of #R$B16E is set. Returns zero when bit 1 of the attribute is set.
   $B387,$03 Read the object attribute.
   $B38A,$02 See whether bit 2 of it is set.
@@ -10212,6 +10393,10 @@ B $B39C,$01
 
 c $B39D Process Display Pointer
 @ $B39D label=ProcessDisplayPointer
+E $B39D View the equivalent code in;
+. #LIST
+. { #HOBBIT$7B9E }
+. LIST#
 D $B39D Stores the result in the display, then clears the mark on this character.
   $B39D,$08 Read the word at #REGiy+#N$00-#N$01 into #REGhl, keeping #REGiy.
   $B3A5,$01 Read the high byte of the pointer.
@@ -10248,6 +10433,10 @@ N $B3FD Restores the character, swaps the display pointers, and leaves a non-zer
 
 c $B405 Swap The Object Display Pointers
 @ $B405 label=SwapObjectDisplayPointers
+E $B405 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7C23 }
+. LIST#
 D $B405 When the count is still set, swaps the two display pointers and reads the object flags.
   $B405,$03 Jump ahead to #R$B416 if the count is zero.
   $B408,$07 Read the two pointers at #R$B188 and #R$B17E+#N$0C.
@@ -10295,6 +10484,10 @@ D $B468 Copies six display bytes and reports failure when every copied byte is z
 
 c $B483 Copy The Character Into The Display
 @ $B483 label=CopyCharacterDisplay
+E $B483 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7CAC }
+. LIST#
 D $B483 Returns at once when the count is zero. Otherwise copies this character's id and script
 . position into the display.
   $B483,$03 Return at once if the count in #REGb is zero.
@@ -10310,6 +10503,10 @@ D $B483 Returns at once when the count is zero. Otherwise copies this character'
   $B49F,$01 Return.
 
 c $B4A0 Dispatch Looked-Up Handler
+E $B4A0 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7CC9 }
+. LIST#
 D $B4A0 Jumps to the handler the caller looked up.
   $B4A0,$02 Jump to the handler address in #REGiy.
 
@@ -10334,6 +10531,10 @@ N $B4B3 Set up special display mode.
 
 c $B4C1 Find The First Noun
 @ $B4C1 label=FindFirstNoun
+E $B4C1 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7CCB }
+. LIST#
 D $B4C1 Finds the first noun. A value of #N$05 at #R$A00F takes the noun already prepared in the flag bytes. Otherwise, when bit 7 of #R$B173 is clear, it scans objects from #R$B17E with the handler at #R$D39B or #R$D36A.
   $B4C1,$07 Jump to #R$B4A3 if the display mode is #N$05.
   $B4C8,$03 Read the display mode flag.
@@ -10360,6 +10561,10 @@ M $B4CB,$04 Go to #R$B4D4 if bit 7 of the display mode flag is clear.
 
 c $B4FD Process Display Pointer
 @ $B4FD label=CheckFlagAndSetDisplay_ProcessPointer
+E $B4FD View the equivalent code in;
+. #LIST
+. { #HOBBIT$7CFC }
+. LIST#
 D $B4FD Runs the looked-up handler for each object that belongs in this picture.
   $B4FD,$03 Take the display data pointer.
   $B500,$03 Call #R$B4A0 to run the handler that was looked up.
@@ -10373,6 +10578,10 @@ D $B4FD Runs the looked-up handler for each object that belongs in this picture.
 
 c $B517 Check And Process Objects
 @ $B517 label=CheckFlagAndSetDisplay_CheckObjects
+E $B517 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7A73 }
+. LIST#
 D $B517 Returns when the display flag at #R$A01C is zero. Otherwise walks the character's objects and returns non-zero when one matches the room display parameter.
   $B517,$05 Return if the display flag (#R$A01C) is zero.
   $B51C,$05 Keep the character record.
@@ -10409,6 +10618,10 @@ D $B54A Sets the room graphics parameter to #N$FE and returns non-zero when the 
 
 c $B568 Match The Second Noun
 @ $B568 label=MatchSecondNoun
+E $B568 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7D17 }
+. LIST#
 D $B568 Matches the second noun, using the second set of variables: #R$A010, #R$B179, #R$B549, #R$B180, #R$A035 and #R$B178. The tests are the same shape as #R$B4C1.
   $B568,$07 Jump to #R$B54A if the display mode is #N$05.
   $B56F,$07 Jump ahead to #R$B57B if bit 7 of display mode flag (#R$B179) is clear.
@@ -10433,6 +10646,10 @@ N $B57B Read the pointer at #R$B180, then read the object attribute at #R$A01D.
 
 c $B5A4 Test For The End Marker
 @ $B5A4 label=TestEndMarker
+E $B5A4 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7D54 }
+. LIST#
 D $B5A4 Returns when the display byte is the end marker.
   $B5A4,$06 Call #R$B4A0 to run the handler that was looked up.
   $B5AA,$03 Return when the handler reports the end marker.
@@ -10475,11 +10692,19 @@ N $B610 #HTML(Plant the <code>JR Z</code> test, push a zero pointer and #R$B172,
 
 c $B62F Select Jump If Zero
 @ $B62F label=SelectJumpIfZero
+E $B62F View the equivalent code in;
+. #LIST
+. { #HOBBIT$7E78 }
+. LIST#
 D $B62F #HTML(Plants the <code>JR Z</code> opcode for the two tests at #R$B645 and #R$B656.)
   $B62F,$04 #HTML(Use the <code>JR Z</code> opcode (#N$28) and go to #R$B635.)
 
 c $B633 Select Jump If Not Zero
 @ $B633 label=SelectJumpIfNotZero
+E $B633 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7E7C }
+. LIST#
 D $B633 #HTML(Plants the <code>JR NZ</code> opcode for the two tests at #R$B645 and #R$B656, then reads the character record.)
   $B633,$02 #HTML(Use the <code>JR NZ</code> opcode (#N$20).)
 @ $B635 label=SelectJumpIfNotZero_WriteOpcode
@@ -11673,6 +11898,10 @@ W $C10D,$02 Parameter.
 
 c $C10F Clear Screen
 @ $C10F label=ClearScreen
+E $C10F View the equivalent code in;
+. #LIST
+. { #HOBBIT$6FD3 }
+. LIST#
 D $C10F Blanks the screen before a new picture is drawn.
   $C10F,$04 Set border colour to #INK$07.
   $C113,$06 Point at the start of the screen and the byte after it, ready to fill the pixels with zero.
@@ -11897,6 +12126,10 @@ D $C249 Deletes the character before the cursor, and scrolls the line when the w
 
 c $C267 Subtract Seven
 @ $C267 label=SubtractSeven
+E $C267 View the equivalent code in;
+. #LIST
+. { #HOBBIT$8761 }
+. LIST#
 D $C267 Steps the print column back by one cell and wraps when the column underflows.
   $C267,$01 Read the low byte of the count.
   $C268,$02 Step back one character cell, wrapping to the previous row when the column underflows.
@@ -12037,6 +12270,10 @@ R $C37D O:HL Updated screen position
 
 c $C388 Print Character
 @ $C388 label=PrintCharacter
+E $C388 View the equivalent code in;
+. #LIST
+. { #HOBBIT$87C9 }
+. LIST#
 D $C388 Looks the character up in the font and draws it at the screen address.
 R $C388 A Character to print
 R $C388 HL Screen buffer address
@@ -12562,6 +12799,10 @@ N $C814 The object is in the room, so follow whatever contains it.
 
 c $C821 Check Object Location Match
 @ $C821 label=CheckObjectLocationMatch
+E $C821 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9E40 }
+. LIST#
 D $C821 Looks the object up and clears the zero flag when its location matches the current character.
 R $C821 A Object ID
 R $C821 O:F Zero flag clear when the location matches
@@ -12598,6 +12839,10 @@ R $C863 O:A Location ID
 
 c $C86E Check Object Mother
 @ $C86E label=CheckObjectMother
+E $C86E View the equivalent code in;
+. #LIST
+. { #HOBBIT$9E7A }
+. LIST#
 D $C86E Follows the moved marker until #N$FF and leaves the id it stopped on in the alternate accumulator.
   $C86E,$05 Switch to the saved result and take the end marker.
 @ $C873 label=CheckObjectMother_Loop
@@ -13632,6 +13877,10 @@ B $D0DC,$01
 
 c $D0DD Process Location Token
 @ $D0DD label=ProcessLocationToken
+E $D0DD View the equivalent code in;
+. #LIST
+. { #HOBBIT$9630 }
+. LIST#
 R $D0DD A Room ID
 D $D0DD Looks the room up and, unless an exit line is already being printed, chooses the exit text from
 . the room's direction bits.
@@ -13726,6 +13975,10 @@ D $D1B2 Prints the exit line when the direction is open, and prints the closed-w
   $D1C5,$01 Return.
 
 c $D1C6 Record The Result In The Object Processing
+E $D1C6 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9686 }
+. LIST#
 D $D1C6 Steps to the next schedule entry and clears the object-processing flag.
   $D1C6,$05 Take an offset of #N($0001,$04,$04) and keep #REGiy.
   $D1CB,$04 Copy the character record from #REGix into #REGiy.
@@ -13740,6 +13993,10 @@ D $D1DB Jumps to the handler address just looked up. Callers leave that address 
 
 c $D1DC Calculate Handler Offset
 @ $D1DC label=CalculateHandlerOffset
+E $D1DC View the equivalent code in;
+. #LIST
+. { #HOBBIT$9B81 }
+. LIST#
 D $D1DC Adds #N$0F to the record's flag byte and steps #REGix on by that many bytes.
   $D1DC,$08 Read the record's flag byte and add #N$0F to the total.
   $D1E4,$06 Step to the next record.
@@ -13761,6 +14018,10 @@ N $D1FF The condition holds, so the caller continues.
 
 c $D206 Fetch Next Object
 @ $D206 label=FetchNextObject
+E $D206 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9B93 }
+. LIST#
 D $D206 Steps to the next object in the list and reports whether the list has ended.
 R $D206 IX Pointer to objects table
 R $D206 O:IX Pointer to object table
@@ -13775,6 +14036,10 @@ R $D206 O:F The zero flag is set if the end of the table is reached
 
 c $D21C Fetch Next Object With ID
 @ $D21C label=FetchNextObjectWithID
+E $D21C View the equivalent code in;
+. #LIST
+. { #HOBBIT$9BA9 }
+. LIST#
 D $D21C Keeps the id and steps to the next object.
 R $D21C A Object ID to search for
 R $D21C O:A Object ID that was searched for
@@ -13786,6 +14051,10 @@ R $D21C O:F Zero flag set when there is no further object
 
 c $D224 Fetch Location Data Pointer
 @ $D224 label=FetchLocationDataPointer
+E $D224 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9BB1 }
+. LIST#
 D $D224 Turns a room id into the address of that room's data.
 R $D224 A Room ID
 R $D224 O:IX Pointer to location data
@@ -13799,6 +14068,10 @@ R $D224 O:IX Pointer to location data
 
 c $D237 Fetch Object Data Pointer
 @ $D237 label=FetchObjectDataPointer
+E $D237 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9BCA }
+. LIST#
 D $D237 Looks up an object in the objects table and returns a pointer to it's
 . data structure.
 R $D237 A Object ID
@@ -13814,6 +14087,10 @@ N $D23F Pretty clever way of using the stack here.
 
 c $D249 Process Object Location Recursively
 @ $D249 label=ProcessObjectLocationRecursively
+E $D249 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9C17 }
+. LIST#
 R $D249 A Object ID
 R $D249 B Location ID
 D $D249 Walks the objects inside the current one and records the room of each.
@@ -13832,6 +14109,10 @@ N $D267 Return.
 
 c $D26C Look Up The Room Display Parameter
 @ $D26C label=LookUpRoomDisplayParameter
+E $D26C View the equivalent code in;
+. #LIST
+. { #HOBBIT$9C78 }
+. LIST#
 D $D26C Looks up the object named by the room display parameter and restores the pointer
 . it saved.
   $D26C,$08 Call #R$D275 to check character id range.
@@ -13843,6 +14124,10 @@ D $D275 Points #REGhl at the character being processed and falls through into #R
   $D275,$03 Take the character being processed.
 
 c $D278 Test For The End Marker
+E $D278 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9C78 }
+. LIST#
 D $D278 Treats either end marker as the end of the list.
   $D278,$04 Return, with the carry set, if the character is the end marker.
   $D27C,$04 Return, with the carry set, when the id is the other end marker (#N$FE).
@@ -13851,6 +14136,10 @@ D $D278 Treats either end marker as the end of the list.
 
 c $D288 Look Up Object And Test Moved Marker
 @ $D288 label=LookUpObjectAndTestMovedMarker
+E $D288 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9C8A }
+. LIST#
 D $D288 Looks the object up and keeps searching while the moved marker is not the end.
   $D288,$03 Call #R$D237 to look that object up.
   $D28B,$08 Jump to #R$D29A if the moved marker is #N$FF.
@@ -13874,6 +14163,10 @@ D $D29D Reads the character's last attribute and returns one more than its signe
 
 c $D2A4 Random Number
 @ $D2A4 label=GetRandomNumber
+E $D2A4 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9C9F }
+. LIST#
 D $D2A4 Calls #R$D2AD to scale the roll, and makes the result negative when bit 7 is set.
   $D2A4,$06 Call #R$D2AD to scale the roll, and return if bit 7 is clear.
   $D2AA,$02 Make the result negative.
@@ -13881,6 +14174,10 @@ D $D2A4 Calls #R$D2AD to scale the roll, and makes the result negative when bit 
 
 c $D2AD Scale The Roll
 @ $D2AD label=ScaleTheRoll
+E $D2AD View the equivalent code in;
+. #LIST
+. { #HOBBIT$9CA8 }
+. LIST#
 D $D2AD Mixes the seed at #R$A037 with the counter at #R$A039 and scales #REGa down to the limit in #REGc.
   $D2AD,$08 Keep the record and the count, copy the roll into #REGc, and go to #R$D2B7 if bit 7 is clear.
   $D2B5,$02 Take #N$FF for the count.
@@ -13909,11 +14206,19 @@ N $D2E8 Return.
 
 c $D2ED Start The Attribute Count
 @ $D2ED label=StartTheAttributeCount
+E $D2ED View the equivalent code in;
+. #LIST
+. { #HOBBIT$9CE8 }
+. LIST#
 D $D2ED Starts the attribute count at one and joins #R$D2F5.
   $D2ED,$05 Save #REGbc, set the count to #N$01 and jump ahead to #R$D2F5.
 
 c $D2F2 Get Object Attribute Value
 @ $D2F2 label=GetObjectAttributeValue
+E $D2F2 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9CED }
+. LIST#
 D $D2F2 Counts the matching object attributes and returns how many there were.
   $D2F2,$03 Save #REGbc and count #N$00.
 
@@ -13929,6 +14234,10 @@ D $D2F5 Counts how many objects match this id and returns that count.
 
 c $D305 Scan Objects For This Id
 @ $D305 label=ScanObjectsId
+E $D305 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9D00 }
+. LIST#
 D $D305 Walks the object list at #R$8B6F until the id matches.
   $D305,$06 Use the objects at #R$8B6F.
 @ $D30B label=ScanObjectsId_UseCharacter
@@ -13957,6 +14266,10 @@ N $D337 Bring back the object id and carry on with the scan.
 
 c $D33C Fetch Current Character Location
 @ $D33C label=FetchCurrentCharacterLocation
+E $D33C View the equivalent code in;
+. #LIST
+. { #HOBBIT$9D37 }
+. LIST#
 D $D33C Reads the room of the character on screen and points at that room's data.
 R $D33C O:IX Pointer to location data
   $D33C,$05 Read the current character record, keeping character.
@@ -13975,6 +14288,10 @@ R $D349 IX Table to search
 
 c $D34E Search Three-Byte Length Table
 @ $D34E label=SearchThreeByteTable
+E $D34E View the equivalent code in;
+. #LIST
+. { #HOBBIT$9DBD }
+. LIST#
 D $D34E Walks a list of three-byte groups until the end marker.
 R $D34E A Table ID to match
 R $D34E IX Table to search
@@ -14005,6 +14322,10 @@ N $D363 Either the table ID was matched, or the terminator was reached.
 
 c $D36A Process Object Entry
 @ $D36A label=ProcessObjectEntry
+E $D36A View the equivalent code in;
+. #LIST
+. { #HOBBIT$9DD9 }
+. LIST#
 D $D36A Steps through the objects and marks each one that passes the attribute test.
   $D36A,$04 Keep the schedule entry.
   $D36E,$03 Call #R$D206 to fetch the next object.
@@ -14023,6 +14344,10 @@ D $D36A Steps through the objects and marks each one that passes the attribute t
 
 c $D39B Process Object Entry Alternate
 @ $D39B label=ProcessObjectEntryAlternate
+E $D39B View the equivalent code in;
+. #LIST
+. { #HOBBIT$9EA0 }
+. LIST#
 D $D39B Walks the objects in this room and describes each one that is here.
 . Pointed at by #R$B4E7 and #R$B58E.
   $D39B,$06 Save the schedule entry, the source, the count and the character record.
@@ -14046,6 +14371,10 @@ N $D3A5 Has the object count reached #N$6A?
 
 c $D3D5 Take The Found Object
 @ $D3D5 label=TakeTheFoundObject
+E $D3D5 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9EC7 }
+. LIST#
 D $D3D5 Points #REGiy at the object just found and continues at #R$D3D9. That entry steps
 . seven bytes to the description flag and calls #R$D3E8.
   $D3D5,$04 Copy the object record from #REGix into #REGiy.
@@ -14057,6 +14386,10 @@ D $D3D5 Points #REGiy at the object just found and continues at #R$D3D9. That en
 
 c $D3E8 Check Object Has Special Description
 @ $D3E8 label=CheckObjectHasSpecialDescription
+E $D3E8 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9ED6 }
+. LIST#
 D $D3E8 Reads the object's description word through #R$A7D0 and clears #R$A7EA unless bit 6 of #REGiy-#N$02 is set. Then prints the tokens at #REGiy+#N$02 and #REGiy+#N$04, or only the one at #REGiy+#N$04 when bit 5 of #REGiy-#N$01 is set.
   $D3E8,$08 Save the registers, then read the word at #REGiy+#N$00-#N$01 into #REGde.
   $D3F0,$03 Call #R$A7D0 to test the token and set the flag.
@@ -14068,6 +14401,10 @@ D $D3E8 Reads the object's description word through #R$A7D0 and clears #R$A7EA u
 
 c $D405 Check Object Attribute With Flag
 @ $D405 label=CheckObjectAttributeWithFlag
+E $D405 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9ED6 }
+. LIST#
 D $D405 Reads the object's attribute word and prints the attribute text selected by the object's flags.
   $D405,$08 Save the registers, then read the word at #REGiy+#N$00-#N$01 into #REGde.
   $D40D,$03 Call #R$A7D0 to test the token and set the flag.
@@ -14093,6 +14430,10 @@ D $D427 Reads the next schedule pair and clears its top bit.
 
 c $D448 Read The Character's Room
 @ $D448 label=ReadCharacterRoom
+E $D448 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9F08 }
+. LIST#
 D $D448 Fetches this character's location and steps on to the next record.
   $D448,$08 Call #R$D33C to fetch current character location.
   $D450,$05 Step to the next record.
@@ -14106,11 +14447,19 @@ D $D448 Fetches this character's location and steps on to the next record.
 
 c $D46C Find Object By Field One
 @ $D46C label=FindObjectByFieldOne
+E $D46C View the equivalent code in;
+. #LIST
+. { #HOBBIT$9F25 }
+. LIST#
 D $D46C Selects field 1 and searches for an object whose field matches #REGb.
   $D46C,$05 Take #N$01 and continue at #R$D474.
 
 c $D471 Find Object By Field Two
 @ $D471 label=FindObjectByFieldTwo
+E $D471 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9F2D }
+. LIST#
 D $D471 Selects field 2 and searches for an object whose field matches #REGb.
   $D471,$03 Take #N$02.
 
@@ -14130,6 +14479,10 @@ N $D48B #R$D474 writes #N$01 or #N$02 into the displacement of this instruction.
 
 c $D495 Get Object First Location
 @ $D495 label=GetObjectFirstLocation
+E $D495 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9F82 }
+. LIST#
 D $D495 Returns at once when the id is #N$FF. Otherwise looks the object up. Returns #N$FF when the object appears more than once, and the first location at offset #N$0F when it appears once.
 R $D495 A Object ID
 R $D495 O:A #N$FF when the id is empty or the object appears more than once, else its first location
@@ -14144,6 +14497,10 @@ N $D4A3 The object appears once, so return its first location.
 
 c $D4A7 Print Object List
 @ $D4A7 label=PrintObjectList
+E $D4A7 View the equivalent code in;
+. #LIST
+. { #HOBBIT$9F94 }
+. LIST#
 D $D4A7 Counts the objects in this room and prints them when the room is not empty.
   $D4A7,$04 Save the schedule entry, the result and the count.
   $D4AB,$02 Set the location ID to #N$FF (current character location).
@@ -14164,6 +14521,10 @@ N $D4B3 Print the introductory text for the object list.
 
 c $D4CC Count Objects In Location
 @ $D4CC label=CountObjectsInLocation
+E $D4CC View the equivalent code in;
+. #LIST
+. { #HOBBIT$9D97 }
+. LIST#
 D $D4CC Counts how many objects are inside the current room.
 R $D4CC A Location ID (or #N$FF for current character location)
 R $D4CC O:A Count of visible objects found in the specified location
@@ -14367,6 +14728,10 @@ N $D5E9 Print an additional text token for attribute type #N$06.
 
 c $D5EF Get Location Exit Data
 @ $D5EF label=GetLocationExitData
+E $D5EF View the equivalent code in;
+. #LIST
+. { #HOBBIT$A0AE }
+. LIST#
 D $D5EF Points at the exit list for the room, three bytes for each direction.
 R $D5EF A Room ID
 R $D5EF O:IX Pointer to exit data
@@ -14378,6 +14743,10 @@ N $D5EF Fetch location data pointer.
 
 c $D5FB Get Direction Token
 @ $D5FB label=GetDirectionToken
+E $D5FB View the equivalent code in;
+. #LIST
+. { #HOBBIT$A0BA }
+. LIST#
 D $D5FB This routine converts a direction value into the address of its
 . corresponding token string.
 R $D5FB A Direction value
@@ -14398,6 +14767,10 @@ D $D607 Reads the room-graphics link stored at the pointer.
 
 c $D60B Print Location Exits
 @ $D60B label=PrintLocationExits
+E $D60B View the equivalent code in;
+. #LIST
+. { #HOBBIT$A0C8 }
+. LIST#
 D $D60B Reads this room's exits and prints them.
 R $D60B A Room ID
   $D60B,$09 Call #R$D5EF to get location exit data.
@@ -14432,6 +14805,10 @@ N $D64D Print text token.
 
 c $D671 Find Next Valid Exit
 @ $D671 label=FindNextValidExit
+E $D671 View the equivalent code in;
+. #LIST
+. { #HOBBIT$A124 }
+. LIST#
 D $D671 Steps through the exit list until it finds one whose door object is zero.
 R $D671 IX Pointer to exit data
 R $D671 BC Exit data length
@@ -14448,6 +14825,10 @@ R $D671 O:F Zero flag clear when a valid exit is found
 
 c $D68C Print Location Exits With Formatting
 @ $D68C label=PrintLocationExitsWithFormatting
+E $D68C View the equivalent code in;
+. #LIST
+. { #HOBBIT$A138 }
+. LIST#
 D $D68C Prints the exit lead-in and then each valid way out of the room.
 R $D68C A Room ID
   $D68C,$09 Call #R$D5EF to get location exit data.
@@ -14666,6 +15047,10 @@ D $D898 Prints the input prompt and stores the typed command in the line buffer 
 
 c $D8AD Read A Command Line
 @ $D8AD label=ReadCommandLine_CommandLinePrints
+E $D8AD View the equivalent code in;
+. #LIST
+. { #HOBBIT$6DD6 }
+. LIST#
 D $D8AD Reads a command line. Prints a prompt and stores the text at #R$5B00.
   $D8AD,$05 Print character #N$3E through #R$A9B7.
   $D8B2,$05 Take a space and print it through #R$A9B7.
@@ -14744,6 +15129,10 @@ D $D968 Prints a sentence stop when the previous character is not already one.
 
 c $D978 Map The Cursor Keys
 @ $D978 label=MapCursorKeys
+E $D978 View the equivalent code in;
+. #LIST
+. { #HOBBIT$6E4F }
+. LIST#
 D $D978 Turns a cursor key into a compass letter: right (#N$09) to E, left (#N$08) to W, down (#N$0A) to S and up (#N$5B) to N.
   $D978,$04 Jump ahead to #R$D996 if the key is cursor right (#N$09).
   $D97C,$04 Jump ahead to #R$D99A if the key is cursor left (#N$08).
@@ -14784,6 +15173,10 @@ D $D99E Returns without deleting a character when the initialised flag is still 
 
 c $D9B7 Delete Input Character
 @ $D9B7 label=DeleteInputCharacter
+E $D9B7 View the equivalent code in;
+. #LIST
+. { #HOBBIT$6E8B }
+. LIST#
 D $D9B7 Deletes the character before the cursor on the command line and prints the correction.
 N $D9B7 Delete the character before the cursor.
   $D9B7,$02 See whether bit 7 of the count is set.
@@ -14906,6 +15299,10 @@ N $DAC1 Keep the match flags before returning.
 
 c $DAC6 Test For A Common Word
 @ $DAC6 label=TestCommonWord
+E $DAC6 View the equivalent code in;
+. #LIST
+. { #HOBBIT$6F30 }
+. LIST#
 D $DAC6 Classifies a vocabulary code, a numeral, a sentence stop or a comma for the command parser.
   $DAC6,$05 Jump ahead to #R$DB67 if the dictionary index is #N$60.
   $DACB,$06 Jump to #R$DAEF if the character is a digit.
@@ -17399,6 +17796,10 @@ B $F3C1,$01 #SCRIPT($01)
 
 c $F3C2 Drawing
 @ $F3C2 label=Drawing
+E $F3C2 View the equivalent code in;
+. #LIST
+. { #HOBBIT$7FA7 }
+. LIST#
 D $F3C2 Draws one location picture from line, fill and attribute commands. Pictures are not
 . bitmaps. The pen starts at X=#N$7F and Y=#N$3F (Y counts up from the bottom, so this is
 . screen row 112). #N$00 ends the picture. #N$08 followed by two bytes moves the pen.
@@ -17522,6 +17923,10 @@ N $F4A5 Plot this pixel and step the pen right.
 
 c $F50D Keep Only The Bits That Are Set
 @ $F50D label=KeepOnlyBitsThatAreSet
+E $F50D View the equivalent code in;
+. #LIST
+. { #HOBBIT$80EE }
+. LIST#
 D $F50D Reads the screen byte under the pen and keeps only the bits already set there.
   $F50D,$04 Call #R$F5FB to work out the pixel address.
   $F511,$01 Keep only the screen bits already set under the pen.
@@ -17530,6 +17935,10 @@ D $F50D Reads the screen byte under the pen and keeps only the bits already set 
 
 c $F514 Attribute Up
 @ $F514 label=AttributeUp
+E $F514 View the equivalent code in;
+. #LIST
+. { #HOBBIT$80F5 }
+. LIST#
 D $F514 Moves the attribute address one row up. The attribute file begins at #N$5800, so a high byte of #N$57 means the step left the screen.
   $F514,$08 Keep the colour and the pen, and step the screen pointer back one attribute row.
   $F51C,$05 Jump ahead to #R$F522 if the high byte of the address is not #N$57.
@@ -17540,6 +17949,10 @@ D $F514 Moves the attribute address one row up. The attribute file begins at #N$
 
 c $F525 Attribute Down
 @ $F525 label=AttributeDown
+E $F525 View the equivalent code in;
+. #LIST
+. { #HOBBIT$8106 }
+. LIST#
 D $F525 Moves the attribute address one row down. A high byte of #N$5A means the step passed the end of the attribute file.
   $F525,$06 Keep the colour and step the attribute address down one row.
   $F52B,$05 Leave the new row in place when it is still on screen, and fall through when
@@ -17551,6 +17964,10 @@ D $F525 Moves the attribute address one row down. A high byte of #N$5A means the
 
 c $F536 Attribute Left
 @ $F536 label=AttributeLeft
+E $F536 View the equivalent code in;
+. #LIST
+. { #HOBBIT$8117 }
+. LIST#
 D $F536 Moves the attribute address one byte left, back toward the top of the attribute file at #N$5800.
   $F536,$02 Step back one attribute.
   $F538,$05 Jump ahead to #R$F53E unless the high byte is #N$57.
@@ -17561,6 +17978,10 @@ D $F536 Moves the attribute address one byte left, back toward the top of the at
 
 c $F540 Attribute Right
 @ $F540 label=AttributeRight
+E $F540 View the equivalent code in;
+. #LIST
+. { #HOBBIT$8121 }
+. LIST#
 D $F540 Moves the attribute address one byte right. A high byte of #N$5A means it passed the end of the attribute file.
   $F540,$02 Step to the next attribute.
   $F542,$05 Skip the correction unless the pointer has gone past the end of the attribute file
@@ -17572,6 +17993,10 @@ D $F540 Moves the attribute address one byte right. A high byte of #N$5A means i
 
 c $F54A Step Pen Up
 @ $F54A label=StepPenUp
+E $F54A View the equivalent code in;
+. #LIST
+. { #HOBBIT$812B }
+. LIST#
 D $F54A Moves the pen one pixel up the screen. #REGe counts up from the bottom row, because #R$F5FB
 . hands it to the ROM PIXEL-ADD routine. When the pen would pass the top row (#REGe=#N$B0) it stays
 . put and the zero flag is set.
@@ -17581,6 +18006,10 @@ D $F54A Moves the pen one pixel up the screen. #REGe counts up from the bottom r
 
 c $F555 Step Pen Down
 @ $F555 label=StepPenDown
+E $F555 View the equivalent code in;
+. #LIST
+. { #HOBBIT$813A }
+. LIST#
 D $F555 Moves the pen one pixel down the screen. When #REGe would wrap through #N$FF (below the
 . bottom row) the pen stays put and the zero flag is set.
   $F555,$07 Move the pen down and return when it is still on screen.
@@ -17589,6 +18018,10 @@ D $F555 Moves the pen one pixel down the screen. When #REGe would wrap through #
 
 c $F55E Step Pen Right
 @ $F55E label=StepPenRight
+E $F55E View the equivalent code in;
+. #LIST
+. { #HOBBIT$8141 }
+. LIST#
 D $F55E Moves the pen one pixel right, and steps back if X wraps.
   $F55E,$02 Move the pen right and return when it is still on the line.
   $F560,$04 The pen wrapped, so step back and tell the caller.
@@ -17596,6 +18029,10 @@ D $F55E Moves the pen one pixel right, and steps back if X wraps.
 
 c $F565 Step Pen Left
 @ $F565 label=StepPenLeft
+E $F565 View the equivalent code in;
+. #LIST
+. { #HOBBIT$8148 }
+. LIST#
 D $F565 Moves the pen one pixel left. The top bit stays set while X is on the picture, and is clear once the pen has passed the left edge.
   $F565,$04 Move the pen left and return when it is still on the picture.
   $F569,$04 The pen passed the left edge, so step back and tell the caller it did not move.
@@ -17603,6 +18040,10 @@ D $F565 Moves the pen one pixel left. The top bit stays set while X is on the pi
 
 c $F56E Drawing Line
 @ $F56E label=DrawingLine
+E $F56E View the equivalent code in;
+. #LIST
+. { #HOBBIT$8151 }
+. LIST#
 D $F56E Draws a straight line from the pen. Bit 0 of the direction chooses a steep line.
   $F56E,$04 Jump ahead to #R$F5A2 if bit 0 is set (steep line).
   $F572,$05 Keep the picture pointer and the counters, then plot this pixel.
@@ -17657,6 +18098,10 @@ N $F5C5 Steps the pen right and repeats for the pixels still left.
 
 c $F5D2 Plot A Pixel
 @ $F5D2 label=PlotPixel
+E $F5D2 View the equivalent code in;
+. #LIST
+. { #HOBBIT$81B5 }
+. LIST#
 D $F5D2 Sets the pixel under the pen and paints its attribute with the ink at #R$F60B.
   $F5D2,$06 Ask the ROM for this pixel's address and keep the mask.
   $F5D8,$01 Take the high byte of the pixel address.

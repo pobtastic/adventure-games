@@ -4,6 +4,11 @@
 @expand=#DEF(#POKE()(anchor,text) #LINK(Pokes#$anchor)($text))
 @expand=#DEF(#FACT()(anchor,text) #LINK(Facts#$anchor)($text))
 @expand=#DEF(#MESSAGE(addr) #STR$addr,$08($b==$FF))
+@expand=#IF({asm})(#DEF(#ANDROMEDA(addr)(link=Message From Andromeda)$link))
+@expand=#IF({asm})(#DEF(#HEROES(addr)(link=Heroes Of Karn)$link))
+@expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon)$link))
+@expand=#IF({asm})(#DEF(#SHOCK(addr)(link=After Shock)$link))
+@expand=#IF({asm})(#DEF(#WARLORD(addr)(link=Warlord)$link))
 @set-handle-unsupported-macros=1
 
 @org=$4000
@@ -250,6 +255,11 @@ c$5B00 LD IX,$4000   ; {Load #N$1B00 bytes of the picture to #N$4000.
 @nowarn
  $5B14 LD IX,$B9C5   ; {Load #N$41C8 bytes of the game to #R$B9C5.
  $5B18 LD DE,$41C8   ; }
+; View the equivalent code in;
+; #LIST
+; { #HEROES$5B00 }
+; { #ANDROMEDA$5CD0 }
+; LIST#
 
 ; Tape Loading
 ;
@@ -265,6 +275,10 @@ c$5B1B LD A,$45      ; This is a data block (#N$45).
  $5B1D SCF           ; Set the carry flag to indicate "loading".
  $5B1E CALL $0802    ; Call #SKOOLKID$0802(LD_BLOCK).
  $5B21 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #ANDROMEDA$5D01 }
+; LIST#
 
 ; Unused
 ;
@@ -4046,6 +4060,13 @@ g$BDB2 DEFW $BBCF    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
 c$BDBE LD HL,$BCBA   ; {Print "#MESSAGE$BCBA".
  $BDC1 CALL $BE2E    ; }
  $BDC4 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B1E4 }
+; { #ANDROMEDA$6479 }
+; { #JEWELS$BFEE }
+; { #WARLORD$AAEE }
+; LIST#
 
 ; Response: "Please Be More Specific"
 ;
@@ -4056,6 +4077,13 @@ c$BDBE LD HL,$BCBA   ; {Print "#MESSAGE$BCBA".
 c$BDC5 LD HL,$BCA1   ; {Print "#MESSAGE$BCA1".
  $BDC8 CALL $BE2E    ; }
  $BDCB RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B1EB }
+; { #ANDROMEDA$6480 }
+; { #JEWELS$BFF5 }
+; { #WARLORD$AAF5 }
+; LIST#
 
 ; Response: "You Can't"
 ;
@@ -4064,6 +4092,13 @@ c$BDC5 LD HL,$BCA1   ; {Print "#MESSAGE$BCA1".
 c$BDCC LD HL,$BCD0   ; {Print "#MESSAGE$BCD0".
  $BDCF CALL $BE2E    ; }
  $BDD2 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B1F2 }
+; { #ANDROMEDA$6487 }
+; { #JEWELS$BFFC }
+; { #WARLORD$AAFC }
+; LIST#
 
 ; Response: "O.K"
 ;
@@ -4072,6 +4107,13 @@ c$BDCC LD HL,$BCD0   ; {Print "#MESSAGE$BCD0".
 c$BDD3 LD HL,$BCDB   ; {Print "#MESSAGE$BCDB".
  $BDD6 CALL $BE2E    ; }
  $BDD9 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B1F9 }
+; { #ANDROMEDA$648E }
+; { #JEWELS$C003 }
+; { #WARLORD$AB03 }
+; LIST#
 
 ; Get User Input
 ;
@@ -4089,6 +4131,14 @@ c$BDDA LD A,($5C3B)  ; {Read *#SKOOLKID$5C3B(FLAGS) and jump back to #R$BDDA
 ; Fetch the keypress.
  $BDE6 LD A,($5C08)  ; Copy the key from *#SKOOLKID$5C08(LAST_K).
  $BDE9 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$ABE1 }
+; { #ANDROMEDA$6495 }
+; { #JEWELS$BA5D }
+; { #WARLORD$A53E }
+; { #SHOCK$9DFB }
+; LIST#
 
 ; Clear Screen
 ;
@@ -4099,6 +4149,13 @@ c$BDDA LD A,($5C3B)  ; {Read *#SKOOLKID$5C3B(FLAGS) and jump back to #R$BDDA
 c$BDEA CALL $BE13    ; Call #R$BE13 to select the screen channel.
  $BDED CALL $0D6B    ; Call #SKOOLKID$0D6B(CLS).
  $BDF0 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$ABF1 }
+; { #ANDROMEDA$64A5 }
+; { #JEWELS$BA6D }
+; { #WARLORD$A54E }
+; LIST#
 
 ; Clear Lines
 ;
@@ -4111,6 +4168,13 @@ c$BDF1 CALL $BE13    ; Call #R$BE13 to select the screen channel.
  $BDF7 LD B,A        ; bottom of the screen using #SKOOLKID$0E44(CL_LINE).
  $BDF8 CALL $0E44    ; }
  $BDFB RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$ABF8 }
+; { #ANDROMEDA$64AC }
+; { #JEWELS$BA74 }
+; { #WARLORD$A555 }
+; LIST#
 
 ; Set Default Screen Position
 ;
@@ -4122,6 +4186,13 @@ c$BDFC CALL $BE13    ; Call #R$BE13 to select the screen channel.
  $BDFF LD BC,$0321   ; Park the cursor at column #N$21 of row #N$03.
  $BE02 CALL $0DD9    ; Call #SKOOLKID$0DD9(CL_SET).
  $BE05 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AC03 }
+; { #ANDROMEDA$64B7 }
+; { #JEWELS$BA7F }
+; { #WARLORD$A560 }
+; LIST#
 
 ; Set Screen Position
 ;
@@ -4137,6 +4208,13 @@ c$BE06 CALL $BE13    ; Call #R$BE13 to select the screen channel.
  $BE0D LD C,$21      ; {Call #SKOOLKID$0DD9(CL_SET) with column #N$21.
  $BE0F CALL $0DD9    ; }
  $BE12 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AC0D }
+; { #ANDROMEDA$64C1 }
+; { #JEWELS$BA89 }
+; { #WARLORD$A56A }
+; LIST#
 
 ; Switch To Normal Screen Output
 ;
@@ -4156,6 +4234,13 @@ c$BE13 PUSH HL       ; {Save the registers and open the upper screen with
  $BE1E POP DE        ;
  $BE1F POP HL        ; }
  $BE20 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AC1A }
+; { #ANDROMEDA$64CE }
+; { #JEWELS$BA96 }
+; { #WARLORD$A577 }
+; LIST#
 
 ; Print String
 ;
@@ -4176,6 +4261,13 @@ c$BE21 CALL $BE13    ; Call #R$BE13 to select the screen channel.
 ; Print this character.
  $BE29 CALL $BE37    ; Call #R$BE37.
  $BE2C JR $BE24      ; Jump back to #R$BE24 for the next character.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AC28 }
+; { #ANDROMEDA$64DC }
+; { #JEWELS$BAA4 }
+; { #WARLORD$A585 }
+; LIST#
 
 ; Print String And A Newline
 ;
@@ -4196,6 +4288,15 @@ c$BE2E CALL $BE21    ; Call #R$BE21.
  $BE31 LD A,$0D      ; Start a new line (#N$0D).
  $BE33 CALL $BE37    ; Call #R$BE37 to print the newline.
  $BE36 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AC35 }
+; { #ANDROMEDA$64E9 }
+; { #JEWELS$BAB1 }
+; { #WARLORD$A592 }
+; { #SHOCK$A25C(After Shock (compressed)) }
+; { #SHOCK$A275(After Shock (plain)) }
+; LIST#
 
 ; Print Character
 ;
@@ -4229,6 +4330,13 @@ c$BE37 PUSH AF       ; Keep the character safe on the stack.
 *$BE52 POP AF        ; Restore the character from the stack.
  $BE53 RST $10       ; Print it with #SKOOLKID$0010(PRINT_A_1).
  $BE54 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AC47 }
+; { #ANDROMEDA$64F2 }
+; { #JEWELS$BAC3 }
+; { #WARLORD$A5A4 }
+; LIST#
 
 ; Scroll Screen
 ;
@@ -4243,6 +4351,13 @@ c$BE55 EXX           ; Switch to the shadow registers.
  $BE59 CALL $BDFC    ; Call #R$BDFC to put the cursor back at the top.
  $BE5C EXX           ; Switch back to the main registers.
  $BE5D RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AC3E }
+; { #ANDROMEDA$6510 }
+; { #JEWELS$BABA }
+; { #WARLORD$A59B }
+; LIST#
 
 ; Print Room Graphic
 ;
@@ -4303,6 +4418,11 @@ c$BE5E CALL $BE13    ; Call #R$BE13 to select the screen channel.
  $BEA6 JR NZ,$BE79   ; }
  $BEA8 CALL $0D4D    ; Call #SKOOLKID$0D4D(TEMPS).
  $BEAB RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AD06 }
+; { #JEWELS$BAE1 }
+; LIST#
 
 ; Colour Room Image
 ;
@@ -4318,6 +4438,12 @@ c$BEAC LD DE,$5800   ; Point #REGde at the attribute file (#N$5800).
  $BEB2 LD BC,$0200   ; {Copy #N$0200 attribute bytes onto the screen.
  $BEB5 LDIR          ; }
  $BEB7 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AD54 }
+; { #ANDROMEDA$6535 }
+; { #JEWELS$BB2F }
+; LIST#
 
 ; Print Room Image
 ;
@@ -4332,6 +4458,12 @@ c$BEAC LD DE,$5800   ; Point #REGde at the attribute file (#N$5800).
 c$BEB8 CALL $BE5E    ; Call #R$BE5E.
  $BEBB CALL $BEAC    ; Call #R$BEAC.
  $BEBE RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AD60 }
+; { #ANDROMEDA$6541 }
+; { #JEWELS$BB3B }
+; LIST#
 
 ; Clear Room Image
 ;
@@ -4350,6 +4482,12 @@ c$BEBF LD BC,$0200   ; {Start at the attribute file and count #N$0200 bytes.
  $BECA OR C          ; }
  $BECB JR NZ,$BEC6   ; Jump back to #R$BEC6 until the picture area is filled.
  $BECD RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AD67 }
+; { #ANDROMEDA$6548 }
+; { #JEWELS$BB42 }
+; LIST#
 
 ; Handler: Turn-Based Events
 ;
@@ -4430,6 +4568,12 @@ c$BECE LD A,($BA36)  ; {Jump to #R$BF00 when the event mask is zero.
 *$BF3E DJNZ $BF0D    ; Repeat from #R$BF0D for the remaining scenic events.
 @label=Handler_TurnBasedEvents_Return
 *$BF40 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B373 }
+; { #JEWELS$C17D }
+; { #WARLORD$AB0A }
+; LIST#
 
 ; Pause Loop
 ;
@@ -4442,6 +4586,14 @@ c$BECE LD A,($BA36)  ; {Jump to #R$BF00 when the event mask is zero.
 c$BF41 HALT          ; Halt for one frame.
  $BF42 DJNZ $BF41    ; Repeat until those frames have passed.
  $BF44 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AC65 }
+; { #ANDROMEDA$65D2 }
+; { #JEWELS$BB51 }
+; { #WARLORD$A5C2 }
+; { #SHOCK$9E2F }
+; LIST#
 
 ; Generate Random Number
 ;
@@ -4466,6 +4618,14 @@ c$BF45 PUSH BC       ; {Save the limit and take the low byte of
                      ; zero.
  $BF53 POP BC        ; Restore the saved limit from the stack.
  $BF54 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B77F }
+; { #ANDROMEDA$65D6 }
+; { #JEWELS$C582 }
+; { #WARLORD$B08A }
+; { #SHOCK$AD25 }
+; LIST#
 
 ; Handler: Update Object Location
 ;
@@ -4491,6 +4651,11 @@ c$BF55 BIT 7,B       ; {Jump to #R$BF60 for an ordinary object.
  $BF66 ADD HL,DE     ;
  $BF67 LD (HL),C     ; }
  $BF68 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #ANDROMEDA$65E6 }
+; { #JEWELS$C412 }
+; LIST#
 
 ; Is Object Present?
 ;
@@ -4502,6 +4667,10 @@ c$BF69 LD BC,($BAF8) ; {Search the object locations at #R$B9C8 for this object.
  $BF6D LD HL,$B9C8   ;
  $BF70 CPIR          ; }
  $BF72 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #ANDROMEDA$65FA }
+; LIST#
 
 ; Handler: User Input
 ;
@@ -4580,6 +4749,12 @@ c$BF73 CALL $BDFC    ; Call #R$BDFC to park the cursor at the top of the text.
  $BFD1 DJNZ $BFCF    ; }
  $BFD3 LD HL,$BB04   ; {Start at the command and allow #N$0A words, then fall into the
  $BFD6 LD C,$0A      ; parser.}
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B200 }
+; { #ANDROMEDA$6604 }
+; { #JEWELS$C00A }
+; LIST#
 
 ; Parser: Match Input Word
 ;
@@ -4743,6 +4918,12 @@ c$BFD8 LD DE,$BB41   ; Start at the word buffer (#R$BB41).
  $C0AC LD HL,$BCF9   ; {Print "#MESSAGE$BCF9" and read another command.
  $C0AF CALL $BE2E    ;
  $C0B2 JR $C0C0      ; }
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B24E }
+; { #ANDROMEDA$6669 }
+; { #JEWELS$C058 }
+; LIST#
 
 ; Handler: Unknown Word
 ;
@@ -4758,6 +4939,11 @@ c$C0B4 LD A,($BB36)  ; {Return when the first token was recognised.
 ; This entry point is used by the routine at #R$BFD8.
 @label=Handler_UnknownWord_Retry
 *$C0C0 JP $BF73      ; Jump to #R$BF73 to read another command.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B364 }
+; { #ANDROMEDA$6745 }
+; LIST#
 
 ; Get Table Entry
 ;
@@ -4778,6 +4964,14 @@ c$C0C3 LD D,$00      ; {Double the index and add it to the table.
  $C0CB LD L,(IX+$00) ; {Copy that address out of the table.
  $C0CE LD H,(IX+$01) ; }
  $C0D1 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B3F1 }
+; { #ANDROMEDA$6754 }
+; { #JEWELS$C1F0 }
+; { #WARLORD$AB88 }
+; { #SHOCK$A305 }
+; LIST#
 
 ; Print Objects
 ;
@@ -4810,6 +5004,14 @@ c$C0D2 LD HL,$B9C8   ; {Look up the object locations.
  $C0F5 LD A,E        ;
  $C0F6 JR NZ,$C0D9   ; }
  $C0F8 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B400 }
+; { #ANDROMEDA$6763 }
+; { #JEWELS$C1FF }
+; { #WARLORD$AB97 }
+; { #SHOCK$A314 }
+; LIST#
 
 ; Handler: Display Room
 ;
@@ -4969,6 +5171,13 @@ c$C0F9 PUSH DE       ; Keep #REGde safe on the stack.
  $C1FA LD A,($BA9B)  ; {Call #R$C0D2 to list what is in this room.
  $C1FD CALL $C0D2    ; }
  $C200 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B46B }
+; { #ANDROMEDA$678A }
+; { #JEWELS$C26A }
+; { #WARLORD$AC02 }
+; LIST#
 
 ; Get Room Pointer
 ;
@@ -4984,6 +5193,10 @@ c$C201 LD A,($BA9B)  ; {Fetch the current room into #REGde.
  $C20D LD DE,($BAE0) ; {Add the table base to the offset.
  $C211 ADD HL,DE     ; }
  $C212 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #ANDROMEDA$6892 }
+; LIST#
 
 ; Parser: Resolve Phrase
 ;
@@ -5028,6 +5241,14 @@ c$C213 INC BC        ; {Scan the phrase list for the end marker.
  $C24A CALL $BE2E    ; }
  $C24D SCF           ; Set the carry flag to reject the command.
  $C24E RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B52B }
+; { #ANDROMEDA$68A4 }
+; { #JEWELS$C32A }
+; { #WARLORD$AE36 }
+; { #SHOCK$A591 }
+; LIST#
 
 ; Is Object In The Current Room?
 ;
@@ -5063,6 +5284,14 @@ c$C24F PUSH HL       ; {Jump to #R$C25D when this is a scenic entry rather than
 *$C26C POP DE        ; {Restore #REGde and #REGhl from the stack.
  $C26D POP HL        ; }
  $C26E RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B560 }
+; { #ANDROMEDA$68E0 }
+; { #JEWELS$C35F }
+; { #WARLORD$AE6B }
+; { #SHOCK$A5C6 }
+; LIST#
 
 ; Parser: Advance To Separator
 ;
@@ -5111,6 +5340,14 @@ c$C26F EX DE,HL      ; {Hand the typed tokens to the phrase walk.
 @label=Parser_AdvanceToSeparator_Done
 *$C29C OR A          ; Clear the carry flag; the phrase matched.
  $C29D RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B575 }
+; { #ANDROMEDA$6900 }
+; { #JEWELS$C37F }
+; { #WARLORD$AE80 }
+; { #SHOCK$A5DB }
+; LIST#
 
 ; Parser: Find Phrase
 ;
@@ -5139,6 +5376,14 @@ c$C29E LD HL,$BB36   ; {Start at the token buffer.
 *$C2BB XOR A         ; {Test whether #REGe is zero.
  $C2BC OR E          ; }
  $C2BD RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B5A4 }
+; { #ANDROMEDA$692F }
+; { #JEWELS$C3AE }
+; { #WARLORD$AEAF }
+; { #SHOCK$A60A }
+; LIST#
 
 ; Get Object Location
 ;
@@ -5163,6 +5408,14 @@ c$C2BE LD E,A        ; {Jump to #R$C2CA when this is a scenic entry rather than
 *$C2CF ADD HL,DE     ; {Add the index to the base address.
  $C2D0 LD A,(HL)     ; }
  $C2D1 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B5C6 }
+; { #ANDROMEDA$694F }
+; { #JEWELS$C3D0 }
+; { #WARLORD$AED1 }
+; { #SHOCK$A62C }
+; LIST#
 
 ; Is Object Carried?
 ;
@@ -5174,6 +5427,10 @@ c$C2BE LD E,A        ; {Jump to #R$C2CA when this is a scenic entry rather than
 c$C2D2 CALL $C2BE    ; Call #R$C2BE to fetch where the object is.
  $C2D5 CP $01        ; Compare the location with #N$01 (carried).
  $C2D7 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #ANDROMEDA$6958 }
+; LIST#
 
 ; Handler: Destroy Item
 ;
@@ -5187,6 +5444,13 @@ c$C2D8 LD B,A        ; {Call #R$BF55 to destroy the object.
  $C2D9 LD C,$00      ;
  $C2DB CALL $BF55    ; }
  $C2DE RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B5D5 }
+; { #JEWELS$C3EA }
+; { #WARLORD$AEE0 }
+; { #SHOCK$A63B }
+; LIST#
 
 ; Handler: Update Item For The Current Room
 ;
@@ -5200,6 +5464,13 @@ c$C2DF LD B,A        ; {Call #R$BF55 to move the object to this room.
  $C2E3 LD C,A        ;
  $C2E4 CALL $BF55    ; }
  $C2E7 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B5DC }
+; { #JEWELS$C3F1 }
+; { #WARLORD$AEE7 }
+; { #SHOCK$A642 }
+; LIST#
 
 ; Handler: Remove Item From Play
 ;
@@ -5246,6 +5517,14 @@ c$C2FE LD A,($BB37)  ; {Return if the end-of-list marker was pressed.
  $C304 CALL $BDBE    ; Call #R$BDBE.
  $C307 SCF           ; Set the carry flag to reject the command.
  $C308 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B665 }
+; { #ANDROMEDA$6972 }
+; { #JEWELS$C470 }
+; { #WARLORD$AF70 }
+; { #SHOCK$ABF4 }
+; LIST#
 
 ; Parser: Validate Direct Object
 ;
@@ -5269,6 +5548,14 @@ c$C309 LD A,($BB37)  ; {Jump to #R$C315 if the end-of-list marker was not
  $C319 CALL $BDBE    ; Call #R$BDBE.
  $C31C SCF           ; Set the carry flag to reject the command.
  $C31D RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B670 }
+; { #ANDROMEDA$697D }
+; { #JEWELS$C47B }
+; { #WARLORD$AF7B }
+; { #SHOCK$AC02 }
+; LIST#
 
 ; Parser: Match Or Rephrase
 ;
@@ -5283,6 +5570,14 @@ c$C31E LD A,($BB37)  ; {Return if the end-of-list marker was pressed.
  $C328 CALL $BDBE    ; Call #R$BDBE.
  $C32B SCF           ; Set the carry flag to reject the command.
  $C32C RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B685 }
+; { #ANDROMEDA$6992 }
+; { #JEWELS$C490 }
+; { #WARLORD$AF90 }
+; { #SHOCK$AC1D }
+; LIST#
 
 ; Parser: Validate Input Tokens
 ;
@@ -5308,6 +5603,13 @@ c$C32D CALL $C309    ; {Return if the words after the verb are not valid for
 *$C340 CALL $BDBE    ; Call #R$BDBE.
  $C343 SCF           ; Set the carry flag to reject the command.
  $C344 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B694 }
+; { #JEWELS$C49F }
+; { #WARLORD$AF9F }
+; { #SHOCK$AC2F }
+; LIST#
 
 ; Save Game
 ;
@@ -5345,6 +5647,14 @@ c$C345 LD A,($BB02)  ; {Jump to #R$C364 when *#R$BB02 is zero, so there is no
  $C379 LD HL,$BC6A   ; {Print "#MESSAGE$BC6A".
  $C37C CALL $BE2E    ; }
  $C37F RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AC6D }
+; { #ANDROMEDA$69A1 }
+; { #JEWELS$BB59 }
+; { #WARLORD$A5CA }
+; { #SHOCK$9E80 }
+; LIST#
 
 ; Load From Tape
 ;
@@ -5389,6 +5699,14 @@ c$C380 LD HL,$BC27   ; {Print "#MESSAGE$BC27".
  $C3BA LD E,$00      ; {Call #R$C0F9 to show the restored room.
  $C3BC CALL $C0F9    ; }
  $C3BF RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$ACA8 }
+; { #ANDROMEDA$69DC }
+; { #JEWELS$BB94 }
+; { #WARLORD$A605 }
+; { #SHOCK$9EDB }
+; LIST#
 
 ; Print Input Prompt
 ;
@@ -5412,6 +5730,13 @@ c$C3C0 LD HL,$5080   ; {Scan eight rows from the top of the screen.
 *$C3D5 LD HL,$BB55   ; {Print "#MESSAGE$BB55".
  $C3D8 CALL $BE21    ; }
  $C3DB RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$ACEA }
+; { #ANDROMEDA$6A1C }
+; { #JEWELS$BBD4 }
+; { #WARLORD$A647 }
+; LIST#
 
 ; Parser: Match Vocabulary
 ;
@@ -5437,6 +5762,12 @@ c$C3DC LD HL,$BB36   ; {Start at the token buffer.
  $C3F6 INC HL        ;
  $C3F7 DJNZ $C3E1    ; }
  $C3F9 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B6BC }
+; { #JEWELS$C4C7 }
+; { #WARLORD$AFC7 }
+; LIST#
 
 ; Handler: Scenic Events
 ;
@@ -5470,6 +5801,10 @@ c$C3FA LD HL,$BA48   ; {Start at the scenic list.
  $C42C JR NZ,$C401   ; }
 @label=Handler_ScenicEvents_Next
 *$C42E RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #JEWELS$C4EB }
+; LIST#
 
 ; Move Player To Room
 ;
@@ -5514,6 +5849,10 @@ c$C42F LD C,A        ; {Read the current room and the scenic list. Jump to #R$C4
 *$C460 DJNZ $C455    ; Repeat from #R$C455 for the remaining event bits.
 @label=MovePlayerToRoom_Return
 *$C462 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #JEWELS$C520 }
+; LIST#
 
 ; Handler: Match Verb
 ;
@@ -5538,6 +5877,13 @@ c$C463 LD HL,($BAF6) ; {Jump to #R$C478 if the search found a match.
  $C47E LD IX,($BAF0) ;
  $C482 CALL $C0C3    ; }
  $C485 JP (HL)       ; Jump to that handler.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B753 }
+; { #ANDROMEDA$8D85 }
+; { #JEWELS$C556 }
+; { #WARLORD$B05E }
+; LIST#
 
 ; Pause, Print String And Scroll
 ;
@@ -5550,6 +5896,12 @@ c$C486 LD B,$19      ; {Call #R$BF41 to pause for a moment.
  $C488 CALL $BF41    ; }
  $C48B CALL $BE2E    ; Call #R$BE2E to print the message and start a new line.
  $C48E RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B776 }
+; { #JEWELS$C579 }
+; { #WARLORD$B081 }
+; LIST#
 
 ; Transform Item
 ;
@@ -5571,6 +5923,13 @@ c$C48F LD A,B        ; {Call #R$C2BE to fetch where the original object is.
  $C49D LD C,A        ;
  $C49E CALL $BF55    ; }
  $C4A1 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B613 }
+; { #JEWELS$C426 }
+; { #WARLORD$AF1E }
+; { #SHOCK$A679 }
+; LIST#
 
 ; Messaging: "Some Food"
 @label=Messaging_SomeFood
@@ -6391,6 +6750,14 @@ g$D3B8 DEFW $C4A2    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $D446 DEFW $CA77    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $D448 DEFW $CA7D    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $D44A DEFW $CA98    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
+; View the equivalent code in;
+; #LIST
+; { #HEROES$CD58 }
+; { #ANDROMEDA$84E6 }
+; { #JEWELS$D34E }
+; { #WARLORD$C732 }
+; { #SHOCK$AFDD }
+; LIST#
 
 ; Table: Room Descriptions
 ;
@@ -6474,6 +6841,14 @@ g$D44C DEFW $0000    ; #IF(#PEEK(#PC)+#PEEK(#PC+$01)==$00)(Unused.,#R(#PEEK(#PC+
  $D4E0 DEFW $D1BB    ; #IF(#PEEK(#PC)+#PEEK(#PC+$01)==$00)(Unused.,#R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).)
  $D4E2 DEFW $D1D6    ; #IF(#PEEK(#PC)+#PEEK(#PC+$01)==$00)(Unused.,#R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).)
  $D4E4 DEFW $D1FE    ; #IF(#PEEK(#PC)+#PEEK(#PC+$01)==$00)(Unused.,#R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).)
+; View the equivalent code in;
+; #LIST
+; { #HEROES$CE66 }
+; { #ANDROMEDA$8568 }
+; { #JEWELS$D3EC }
+; { #WARLORD$C8B0 }
+; { #SHOCK$AE7D }
+; LIST#
 
 ; Table: Nouns
 ;
@@ -9281,6 +9656,12 @@ c$EB10 CALL $BECE    ; Call #R$BECE.
                      ; understood.
  $EB1E CALL $C463    ; Call #R$C463 to carry out the verb.
  $EB21 JR $EB10      ; Jump back to #R$EB10 for the next turn.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$E9A1 }
+; { #JEWELS$EDC4 }
+; { #WARLORD$E99F }
+; LIST#
 
 ; Game Over
 ;
@@ -9307,6 +9688,14 @@ c$EB23 LD HL,$BC01   ; {Print "#MESSAGE$BC01".
  $EB37 CP $59        ; {Jump to #R$B9C5 to play again if the player pressed
  $EB39 JP Z,$B9C5    ; "Y".}
  $EB3C JR $EB2F      ; Jump back to #R$EB2F until the answer is Y or N.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$E9B5 }
+; { #ANDROMEDA$8DB3 }
+; { #JEWELS$EDD7 }
+; { #WARLORD$E9B2 }
+; { #SHOCK$AE0D }
+; LIST#
 
 ; Game Complete
 ;
@@ -9324,6 +9713,12 @@ c$EB3E CALL $BDEA    ; Call #R$BDEA.
  $EB44 LD HL,$D53A   ; {Print "#MESSAGE$D53A".
  $EB47 CALL $BE2E    ; }
  $EB4A JR $EB29      ; Jump to #R$EB29 to ask whether to play again.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$E9D3 }
+; { #ANDROMEDA$8DCE }
+; { #JEWELS$EDF2 }
+; LIST#
 
 ; Events: Wood Nymph
 ;
@@ -9668,6 +10063,12 @@ c$ECB6 LD C,A        ; {Call #R$C24F to test whether the injury is in this room.
 @label=PrintResponse
 c$ED66 CALL $BE2E    ; Call #R$BE2E to print the message and start a new line.
  $ED69 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$EA9E }
+; { #JEWELS$F03A }
+; { #WARLORD$ED6D }
+; LIST#
 
 ; Pause And Print Response
 ;
@@ -9941,6 +10342,14 @@ c$EDE8 CALL $C2FE    ; {Return if the words after the verb are not valid for
  $EDFF LD A,$01      ; {Call #R$C0D2 to list what is being carried.
  $EE01 CALL $C0D2    ; }
  $EE04 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$F756 }
+; { #ANDROMEDA$8EC4 }
+; { #JEWELS$F12E }
+; { #WARLORD$F824 }
+; { #SHOCK$A6CF }
+; LIST#
 
 ; Action: Look
 ;
@@ -9951,6 +10360,13 @@ c$EE05 CALL $C2FE    ; {Return if the words after the verb are not valid for
  $EE09 LD E,$01      ; {Call #R$C0F9 to describe the current room.
  $EE0B CALL $C0F9    ; }
  $EE0E RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$F773 }
+; { #ANDROMEDA$8EDA }
+; { #JEWELS$F14B }
+; { #WARLORD$F841 }
+; LIST#
 
 ; Action: North
 ;
@@ -10010,6 +10426,13 @@ c$EE23 LD C,$05      ; Choose the down exit and join the movement routine.
 @label=Action_Down_Next
 *$EE37 LD HL,$BD32   ; {Print "#MESSAGE$BD32" and return to the game loop.
  $EE3A JP $ED66      ; }
+; View the equivalent code in;
+; #LIST
+; { #HEROES$F7F8 }
+; { #ANDROMEDA$8EF8 }
+; { #JEWELS$F169 }
+; { #WARLORD$F8DD }
+; LIST#
 
 ; Action: Examine
 ;
@@ -10056,6 +10479,11 @@ c$EE81 CALL $C2FE    ; {Return if the words after the verb are not valid for
  $EE84 RET C         ; this command.}
  $EE85 CALL $C380    ; Call #R$C380 to load a saved game from tape.
  $EE88 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #ANDROMEDA$8FA1 }
+; { #JEWELS$F236 }
+; LIST#
 
 ; Action: Save
 ;
@@ -10065,6 +10493,13 @@ c$EE89 CALL $C2FE    ; {Return if the words after the verb are not valid for
  $EE8C RET C         ; this command.}
  $EE8D CALL $C345    ; Call #R$C345 to save the game to tape.
  $EE90 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$F7BC }
+; { #ANDROMEDA$8FA9 }
+; { #JEWELS$F23E }
+; { #WARLORD$F8A1 }
+; LIST#
 
 ; Action: Quit
 ;
@@ -10086,6 +10521,13 @@ c$EE91 CALL $C2FE    ; {Return if the words after the verb are not valid for
 *$EEA9 LD HL,$EB29   ; {Switch #R$EB29 onto the stack.
  $EEAC EX (SP),HL    ; }
  $EEAD RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$F7C4 }
+; { #ANDROMEDA$8FB1 }
+; { #JEWELS$F246 }
+; { #WARLORD$F8A9 }
+; LIST#
 
 ; Action: Take
 ;
@@ -10127,6 +10569,10 @@ c$EEC0 LD HL,$BCE0   ; {Print "#MESSAGE$BCE0".
 @label=Handler_PrintCarrying_Next
 *$EED7 LD HL,$BCFF   ; {Print "#MESSAGE$BCFF" and return to the game loop.
  $EEDA JP $ED66      ; }
+; View the equivalent code in;
+; #LIST
+; { #HEROES$EAFA }
+; LIST#
 
 ; Handler: Inventory Full
 ;
@@ -10161,6 +10607,11 @@ c$EEED LD C,$01      ; {Call #R$BF55 to mark the object as carried.
  $EEF5 INC (HL)      ; return to the game loop.
  $EEF6 LD HL,$BCDB   ;
  $EEF9 JP $ED66      ; }
+; View the equivalent code in;
+; #LIST
+; { #WARLORD$EDA6 }
+; { #SHOCK$AA6E }
+; LIST#
 
 ; Action: Examine Item
 ;
@@ -11554,6 +12005,10 @@ c$F8E4 CALL $C309    ; {Return if the words after the verb are not valid for
  $F910 JP $ED96      ; Jump back to #R$ED96 to confirm.
 @label=Action_Unlock_YouCant
 *$F913 JP $ED6E      ; Tell the player the command is impossible.
+; View the equivalent code in;
+; #LIST
+; { #JEWELS$FCCD }
+; LIST#
 
 ; Action: Blow
 ;
@@ -11624,6 +12079,10 @@ c$F964 LD HL,$5C6A   ; {Turn CAPS LOCK on, using bit 3 of
  $F98A LD A,$05      ; Enter room #N($05), the Great Valley.
  $F98C CALL $ECB6    ; Call #R$ECB6 to enter the Great Valley.
  $F98F JP $EB10      ; Jump to #R$EB10 to take the first turn.
+; View the equivalent code in;
+; #LIST
+; { #ANDROMEDA$F8AF }
+; LIST#
 
 ; Default Game State
 ;
@@ -12065,6 +12524,13 @@ g$FB0D DEFW $EDC3    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $FB4B DEFW $F8AB    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $FB4D DEFW $F8E4    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $FB4F DEFW $F916    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
+; View the equivalent code in;
+; #LIST
+; { #HEROES$FD63 }
+; { #ANDROMEDA$FA20 }
+; { #JEWELS$FF3A }
+; { #WARLORD$FE89 }
+; LIST#
 
 ; Jump Table: Turn-Based Events
 ;

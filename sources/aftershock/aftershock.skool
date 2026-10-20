@@ -10,10 +10,13 @@
 @expand=#DEF(#OFFSET(id) #LET(addr=$CA2B+$id*$02)#LET(offset=#PEEK({addr})+#PEEK({addr}+$01)*$100)#EVAL($C8E9+{offset}))
 @expand=#IF({asm})(#DEF(#DECODE(value)))
 @expand=#IF({asm})(#DEF(#DECODESTR(addr)))
-@expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon){link}))
-@expand=#IF({asm})(#DEF(#WARLORD(addr)(link=Warlord){link}))
+@expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon)$link))
+@expand=#IF({asm})(#DEF(#WARLORD(addr)(link=Warlord)$link))
 @expand=#IF({asm})(#DEF(#COLOUR(id)))
 @expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
+@expand=#IF({asm})(#DEF(#ANDROMEDA(addr)(link=Message From Andromeda)$link))
+@expand=#IF({asm})(#DEF(#FOREST(addr)(link=Forest At Worlds End)$link))
+@expand=#IF({asm})(#DEF(#HEROES(addr)(link=Heroes Of Karn)$link))
 @set-handle-unsupported-macros=1
 
 @org=$4000
@@ -4439,6 +4442,9 @@ c$9DFB LD A,($5C3B)  ; #REGa=*#SKOOLKID$5C3B(FLAGS).
  $9E0A RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$ABE1 }
+; { #ANDROMEDA$6495 }
+; { #FOREST$BDDA }
 ; { #JEWELS$BA5D }
 ; { #WARLORD$A53E }
 ; LIST#
@@ -4514,6 +4520,9 @@ c$9E2F HALT          ; #HTML(Wait for the next interrupt (<code>HALT</code>).)
  $9E32 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$AC65 }
+; { #ANDROMEDA$65D2 }
+; { #FOREST$BF41 }
 ; { #JEWELS$BB51 }
 ; { #WARLORD$A5C2 }
 ; LIST#
@@ -4568,6 +4577,14 @@ c$9E80 PUSH IX       ; {Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
  $9EC1 POP HL        ;
  $9EC2 POP IX        ; }
  $9EC4 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AC6D }
+; { #ANDROMEDA$69A1 }
+; { #FOREST$C345 }
+; { #JEWELS$BB59 }
+; { #WARLORD$A5CA }
+; LIST#
 
 ; Messaging: "LOADING...Start Tape"
 @label=Messaging_LoadingPressPlay
@@ -4626,6 +4643,14 @@ c$9EDB PUSH IX       ; {Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
  $9F23 POP HL        ;
  $9F24 POP IX        ; }
  $9F26 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$ACA8 }
+; { #ANDROMEDA$69DC }
+; { #FOREST$C380 }
+; { #JEWELS$BB94 }
+; { #WARLORD$A605 }
+; LIST#
 
 ; Just Return
 ;
@@ -4688,6 +4713,10 @@ c$9F28 PUSH IX       ; {Copy the room-image pointer from #REGix into #REGhl.
  $9F64 JR NZ,$9F53   ; }
 ; The picture is on screen.
  $9F66 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #WARLORD$B10B }
+; LIST#
 
 ; Handler: Room Images
 ;
@@ -4992,7 +5021,12 @@ g$9F88 DEFB $02      ; Item #N(#PC-$9F88) #ITEM(#PC-$9F88) in room
                      ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
  $A00F DEFB $1C      ; Item #N(#PC-$9F88) #ITEM(#PC-$9F88) in room
                      ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
-; View the equivalent code in #JEWELS$BBF0.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$AD76 }
+; { #JEWELS$BBF0 }
+; { #WARLORD$A66C }
+; LIST#
 
 ; Unused
 u$A010 DEFB $00,$00,$00,$00,$00,$00,$00,$00
@@ -5511,6 +5545,9 @@ c$A25C PUSH AF       ; Stash the character to print on the stack.
  $A266 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$AC35 }
+; { #ANDROMEDA$64E9 }
+; { #FOREST$BE2E }
 ; { #JEWELS$BAB1 }
 ; { #WARLORD$A592 }
 ; LIST#
@@ -5558,6 +5595,9 @@ c$A275 CALL $A267    ; Call #R$A267.
  $A27F RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$AC35 }
+; { #ANDROMEDA$64E9 }
+; { #FOREST$BE2E }
 ; { #JEWELS$BAB1 }
 ; { #WARLORD$A592 }
 ; LIST#
@@ -5668,6 +5708,11 @@ c$A280 LD A,($A0C8)  ; {Leave the events alone when none are armed.
 ; Move on to the next scenic event.
 *$A302 DJNZ $A2C3    ; Every scenic event is considered once.
 *$A304 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B373 }
+; { #WARLORD$AB0A }
+; LIST#
 
 ; Get Table Entry
 ;
@@ -5690,6 +5735,9 @@ c$A305 LD D,$00      ; {Multiply the given index by #N$02 and store the result
  $A313 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B3F1 }
+; { #ANDROMEDA$6754 }
+; { #FOREST$C0C3 }
 ; { #JEWELS$C1F0 }
 ; { #WARLORD$AB88 }
 ; LIST#
@@ -5731,6 +5779,9 @@ c$A314 PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
  $A339 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B400 }
+; { #ANDROMEDA$6763 }
+; { #FOREST$C0D2 }
 ; { #JEWELS$C1FF }
 ; { #WARLORD$AB97 }
 ; LIST#
@@ -5946,6 +5997,12 @@ c$A42F LD A,$0D      ; #REGa=#N$0D.
  $A43C CALL $A305    ; Call #R$A305.
  $A43F CALL $A25C    ; Call #R$A25C.
  $A442 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B516 }
+; { #JEWELS$C315 }
+; { #WARLORD$ACAD }
+; LIST#
 
 ; Pointer: Command Word
 ;
@@ -5982,6 +6039,10 @@ c$A450 PUSH HL       ; Stash #REGhl on the stack.
  $A454 CALL $A267    ; Call #R$A267.
  $A457 POP HL        ; Restore #REGhl from the stack.
  $A458 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #WARLORD$ACCF }
+; LIST#
 
 ; Is Character A Delimiter
 ;
@@ -5999,6 +6060,10 @@ c$A459 PUSH HL       ; {Stash #REGhl and #REGbc on the stack.
  $A464 POP BC        ; {Restore #REGbc and #REGhl from the stack.
  $A465 POP HL        ; }
  $A466 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #WARLORD$ACD8 }
+; LIST#
 
 ; Print User Input To Screen
 ;
@@ -6021,6 +6086,10 @@ c$A467 PUSH AF       ; Stash the user input keypress on the stack.
 ; Print the user input keypress to the screen.
  $A475 CALL $9E26    ; Call #R$9E26.
  $A478 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #WARLORD$ACE6 }
+; LIST#
 
 ; Handler: Match Item
 ;
@@ -6073,6 +6142,10 @@ c$A479 PUSH HL       ; {Stash #REGhl, #REGde, #REGbc and #REGix on the stack.
  $A4AD POP DE        ;
  $A4AE POP HL        ; }
  $A4AF RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #WARLORD$ACFB }
+; LIST#
 
 ; Handler: User Input
 ;
@@ -6291,6 +6364,9 @@ c$A591 INC BC        ; Adjust the counter for the sum.
  $A5C5 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B52B }
+; { #ANDROMEDA$68A4 }
+; { #FOREST$C213 }
 ; { #JEWELS$C32A }
 ; { #WARLORD$AE36 }
 ; LIST#
@@ -6323,6 +6399,9 @@ c$A5C6 PUSH HL       ; {Stash #REGhl and #REGde on the stack.
  $A5DA RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B560 }
+; { #ANDROMEDA$68E0 }
+; { #FOREST$C24F }
 ; { #JEWELS$C35F }
 ; { #WARLORD$AE6B }
 ; LIST#
@@ -6389,6 +6468,9 @@ c$A5DB EX DE,HL      ; Switch the phrase token pointer to #REGde.
  $A609 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B575 }
+; { #ANDROMEDA$6900 }
+; { #FOREST$C26F }
 ; { #JEWELS$C37F }
 ; { #WARLORD$AE80 }
 ; LIST#
@@ -6432,6 +6514,9 @@ c$A60A LD HL,$A13B   ; Set a pointer to #R$A13B in #REGhl.
  $A62B RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B5A4 }
+; { #ANDROMEDA$692F }
+; { #FOREST$C29E }
 ; { #JEWELS$C3AE }
 ; { #WARLORD$AEAF }
 ; LIST#
@@ -6459,6 +6544,9 @@ c$A62C LD E,A        ; {Load the item ID into #REGde.
  $A634 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B5C6 }
+; { #ANDROMEDA$694F }
+; { #FOREST$C2BE }
 ; { #JEWELS$C3D0 }
 ; { #WARLORD$AED1 }
 ; LIST#
@@ -6482,6 +6570,7 @@ c$A635 CALL $A62C    ; Call #R$A62C.
  $A63A RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B5CF }
 ; { #JEWELS$C3E4 }
 ; { #WARLORD$AEDA }
 ; LIST#
@@ -6504,6 +6593,8 @@ c$A63B LD B,A        ; Load the item/ event ID into #REGb.
  $A641 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B5D5 }
+; { #FOREST$C2D8 }
 ; { #JEWELS$C3EA }
 ; { #WARLORD$AEE0 }
 ; LIST#
@@ -6525,6 +6616,8 @@ c$A642 LD B,A        ; Load the item/ event ID into #REGb.
  $A64A RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B5DC }
+; { #FOREST$C2DF }
 ; { #JEWELS$C3F1 }
 ; { #WARLORD$AEE7 }
 ; LIST#
@@ -6542,6 +6635,7 @@ c$A64B LD B,A        ; Copy the scenic event ID into #REGb.
  $A651 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B5E5 }
 ; { #JEWELS$C3FA }
 ; { #WARLORD$AEF0 }
 ; LIST#
@@ -6569,7 +6663,11 @@ c$A652 JR $A655      ; Jump to #R$A655.
 *$A661 AND A         ; Clear the zero flag (#REGa holds the #N$FF end marker)
                      ; to report that nothing on the list is here.
  $A662 RET           ; Return.
-; View the equivalent code in #JEWELS$C401.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B5EC }
+; { #JEWELS$C401 }
+; LIST#
 
 ; Handler: Update Item Location
 ;
@@ -6585,6 +6683,11 @@ c$A663 LD HL,$9F88   ; #REGhl=#R$9F88.
  $A669 ADD HL,DE     ; Add the item ID to #R$9F88.
  $A66A LD (HL),C     ; Update the table with the new room ID in #REGc.
  $A66B RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B5FD }
+; { #WARLORD$AF08 }
+; LIST#
 
 ; Find Index Of Item From Item Group Present
 ;
@@ -6642,6 +6745,8 @@ c$A679 LD A,B        ; {Call #R$A62C with the source item ID.
  $A68B RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B613 }
+; { #FOREST$C48F }
 ; { #JEWELS$C426 }
 ; { #WARLORD$AF1E }
 ; LIST#
@@ -6659,6 +6764,11 @@ c$A68C CALL $A62C    ; Call #R$A62C.
  $A68F LD HL,$A106   ; {Set the zero flag if that location is the current room
  $A692 CP (HL)       ; in *#R$A106.}
  $A693 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B626 }
+; { #WARLORD$AF31 }
+; LIST#
 
 ; Check Room Objects
 ;
@@ -6693,6 +6803,7 @@ c$A694 LD HL,$9F88   ; #REGhl=#R$9F88.
  $A6B0 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B62E }
 ; { #JEWELS$C439 }
 ; { #WARLORD$AF39 }
 ; LIST#
@@ -6729,6 +6840,7 @@ c$A6B1 PUSH AF       ; {Stash #REGaf and #REGbc on the stack.
  $A6CE RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B64B }
 ; { #JEWELS$C456 }
 ; { #WARLORD$AF56 }
 ; LIST#
@@ -6751,6 +6863,14 @@ c$A6CF LD A,($A0D2)  ; {Jump to #R$A6DC if *#R$A0D2 is not #N$00.
  $A6E2 LD A,$01      ; {Call #R$A314 with a room ID of #N$01 which is the players
  $A6E4 CALL $A314    ; inventory.}
  $A6E7 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$F756 }
+; { #ANDROMEDA$8EC4 }
+; { #FOREST$EDE8 }
+; { #JEWELS$F12E }
+; { #WARLORD$F824 }
+; LIST#
 
 ; Move Player
 ;
@@ -6789,6 +6909,11 @@ c$A6E8 LD B,$00      ; Initialise #REGb with #N$00 so the movement value is now
 *$A6F6 LD HL,$0022   ; #REGhl=#R(#OFFSET($0022)).
  $A6F9 CALL $A25C    ; Call #R$A25C.
  $A6FC RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #JEWELS$F16B }
+; { #WARLORD$F8DF }
+; LIST#
 
 ; Script Condition State
 ;
@@ -7635,6 +7760,7 @@ c$AA6E JP NZ,$A75D   ; The item stays where it is.
  $AA87 JP $A75D      ; Jump to #R$A75D.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$EEED }
 ; { #WARLORD$EDA6 }
 ; LIST#
 
@@ -8047,6 +8173,9 @@ c$ABF4 LD A,($A13C)  ; {Return if the second token (*#R$A13C) is the terminator
  $AC01 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B665 }
+; { #ANDROMEDA$6972 }
+; { #FOREST$C2FE }
 ; { #JEWELS$C470 }
 ; { #WARLORD$AF70 }
 ; LIST#
@@ -8095,6 +8224,9 @@ c$AC02 LD A,($A13C)  ; Fetch the #R$A13C(second token from the user input) and s
  $AC1C RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B670 }
+; { #ANDROMEDA$697D }
+; { #FOREST$C309 }
 ; { #JEWELS$C47B }
 ; { #WARLORD$AF7B }
 ; LIST#
@@ -8129,6 +8261,9 @@ c$AC1D LD A,($A13C)  ; Fetch the #R$A13C(second token from the user input) and s
  $AC2E RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B685 }
+; { #ANDROMEDA$6992 }
+; { #FOREST$C31E }
 ; { #JEWELS$C490 }
 ; { #WARLORD$AF90 }
 ; LIST#
@@ -8166,6 +8301,8 @@ c$AC2F CALL $AC02    ; Call #R$AC02.
  $AC4C RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B694 }
+; { #FOREST$C32D }
 ; { #JEWELS$C49F }
 ; { #WARLORD$AF9F }
 ; LIST#
@@ -8207,6 +8344,7 @@ c$AC4D LD A,($A13C)  ; Fetch the #R$A13C(second token from the user input) and s
  $AC5F RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B6AC }
 ; { #JEWELS$C4B7 }
 ; { #WARLORD$AFB7 }
 ; LIST#
@@ -8243,6 +8381,7 @@ c$AC60 LD HL,$A13B   ; #REGhl=#R$A13B.
  $AC83 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B6BC }
 ; { #JEWELS$C4C7 }
 ; { #WARLORD$AFC7 }
 ; LIST#
@@ -8363,6 +8502,7 @@ c$ACBD LD C,A        ; Load the destination room ID into #REGc.
  $ACFB RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$B714 }
 ; { #JEWELS$C520 }
 ; { #WARLORD$B01F }
 ; LIST#
@@ -8426,6 +8566,14 @@ c$AD25 PUSH BC       ; {Walk around the range until the refresh count runs out.
  $AD31 DEC A         ; }
  $AD32 POP BC        ; Restore #REGbc from the stack.
  $AD33 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B77F }
+; { #ANDROMEDA$65D6 }
+; { #FOREST$BF45 }
+; { #JEWELS$C582 }
+; { #WARLORD$B08A }
+; LIST#
 
 ; Add To Score
 ;
@@ -8447,6 +8595,11 @@ c$AD34 PUSH HL       ; {Add the points in #REGa to the BCD score at #R$A107.
 *$AD3E LD ($A107),HL ; }
  $AD41 POP HL        ; Restore #REGhl from the stack.
  $AD42 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B78F }
+; { #WARLORD$B09A }
+; LIST#
 
 ; Print Scoring
 ;
@@ -8500,6 +8653,11 @@ c$AD43 LD HL,$0024   ; #REGhl=#R(#OFFSET($0024)).
  $AD71 LD HL,$0025   ; #REGhl=#R(#OFFSET($0025)).
  $AD74 CALL $A25C    ; Call #R$A25C.
  $AD77 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$B79E }
+; { #WARLORD$B0A9 }
+; LIST#
 
 ; Temporary Room ID
 ;
@@ -8613,6 +8771,14 @@ c$AE0D LD HL,$0010   ; #REGhl=#R(#OFFSET($0010)).
  $AE26 JP Z,$9DD7    ; "<code>#CHR$59</code>".)}
 ; Just loop round for any other input.
  $AE29 JP $AE1C      ; Jump to #R$AE1C.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$E9B5 }
+; { #ANDROMEDA$8DB3 }
+; { #FOREST$EB23 }
+; { #JEWELS$EDD7 }
+; { #WARLORD$E9B2 }
+; LIST#
 
 ; Handler: Can Take Item
 ;
@@ -8877,6 +9043,9 @@ g$AE7D DEFW $0000    ; Unused (denotes when an item is "inactive").
                      ; #IF(#EVAL(#PEEK(#PC)+#PEEK(#PC+$01)*$100)>$0000)(#R(#OFFSET(#PEEK(#PC)+#PEEK(#PC+$01)*$100)),N/A).
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$CE66 }
+; { #ANDROMEDA$8568 }
+; { #FOREST$D44C }
 ; { #JEWELS$D3EC }
 ; { #WARLORD$C8B0 }
 ; LIST#
@@ -9143,6 +9312,7 @@ g$AF31 DEFW $007D    ; Object
                      ; #OBJECT((#PC-$AF31)/$02).
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$CEEA }
 ; { #JEWELS$D4C6 }
 ; { #WARLORD$C83E }
 ; LIST#
@@ -9423,6 +9593,9 @@ g$AFDD DEFW $0000    ; Item #N((#PC-$AFDD)/$02):
                      ; #IF(#EVAL(#PEEK(#PC)+#PEEK(#PC+$01)*$100)>$0000)(#R(#OFFSET(#PEEK(#PC)+#PEEK(#PC+$01)*$100)) #ITEM((#PC-$AFDD)/$02),N/A).
 ; View the equivalent code in;
 ; #LIST
+; { #HEROES$CD58 }
+; { #ANDROMEDA$84E6 }
+; { #FOREST$D3B8 }
 ; { #JEWELS$D34E }
 ; { #WARLORD$C732 }
 ; LIST#
