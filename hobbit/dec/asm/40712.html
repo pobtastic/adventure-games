@@ -25,7 +25,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="40647.html">40647</a>
+Prev: <a href="40662.html">40662</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#40712">Map</a></td>
 <td class="next">
@@ -33,86 +33,101 @@ Next: <a href="40741.html">40741</a>
 </td>
 </tr>
 </table>
-<div class="description">40712: Routine at 9F08</div>
+<div class="description">40712: Table: Find An Exit In A Direction</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="36253.html">Action_Dir</a> and <a href="36781.html">Action_Run</a>.
+Used by the routines at <a href="36253.html">Action_Direction</a> and <a href="36781.html">Action_Run</a>.
+</div>
+<div class="paragraph">
+Finds the exit that leaves in a given direction.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">TableFindAnExitInADirection</td>
 <td class="address-2"><span id="40712"></span>40712</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">BC</span> and <span class="register">IY</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Keep the direction.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40713"></span>40713</td>
 <td class="instruction">PUSH IY</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40715"></span>40715</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40716"></span>40716</td>
-<td class="instruction">CALL <a href="40597.html">40597</a></td>
-<td class="comment-1" rowspan="1">Call <a href="40597.html">40597</a>.</td>
+<td class="instruction">CALL <a href="40597.html">ExitsPointAtTheExitList</a></td>
+<td class="comment-1" rowspan="1">Call <a href="40597.html">ExitsPointAtTheExitList</a> to point <span class="register">IX</span> at the exit list.</td>
 </tr>
 <tr>
+<td class="asm-label">TableFindAnExitInADirection_Loop</td>
 <td class="address-2"><span id="40719"></span>40719</td>
-<td class="instruction">CALL <a href="39827.html">Step3ByteTable</a></td>
-<td class="comment-1" rowspan="1">Call <a href="39827.html">Step3ByteTable</a>.</td>
+<td class="instruction">CALL <a href="39827.html">Table_StepThroughThreeByteRecords</a></td>
+<td class="comment-1" rowspan="1">Call <a href="39827.html">Table_StepThroughThreeByteRecords</a> to step to the next exit.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40722"></span>40722</td>
-<td class="instruction">JR Z,<a href="40712.html#40737">40737</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="40712.html#40737">TableFindAnExitInADirection_RestoreAndReturn</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="40712.html#40737">TableFindAnExitInADirection_RestoreAndReturn</a> at the end of the exit list.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40724"></span>40724</td>
 <td class="instruction">LD A,(IX+2)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read this exit's destination.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40727"></span>40727</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="40712.html#40719">TableFindAnExitInADirection_Loop</a> if byte 2 of this record is zero.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40728"></span>40728</td>
-<td class="instruction">JR Z,<a href="40712.html#40719">40719</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="40712.html#40719">TableFindAnExitInADirection_Loop</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40730"></span>40730</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read this exit's direction.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40733"></span>40733</td>
 <td class="instruction">CP B</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="40712.html#40719">TableFindAnExitInADirection_Loop</a> unless this exit's direction is the one in <span class="register">B</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40734"></span>40734</td>
-<td class="instruction">JP NZ,<a href="40712.html#40719">40719</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP NZ,<a href="40712.html#40719">TableFindAnExitInADirection_Loop</a></td>
 </tr>
 <tr>
+<td class="asm-label">TableFindAnExitInADirection_RestoreAndReturn</td>
 <td class="address-2"><span id="40737"></span>40737</td>
 <td class="instruction">POP IY</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">IY</span> and <span class="register">BC</span> off the stack.</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">IY</span> and <span class="register">BC</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40739"></span>40739</td>
 <td class="instruction">POP BC</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40740"></span>40740</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
@@ -121,7 +136,7 @@ Used by the routines at <a href="36253.html">Action_Dir</a> and <a href="36781.h
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="40647.html">40647</a>
+Prev: <a href="40662.html">40662</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#40712">Map</a></td>
 <td class="next">
@@ -132,7 +147,7 @@ Next: <a href="40741.html">40741</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../../asm/9F08.html">Switch to hexadecimal</a>.</div>
 </footer>

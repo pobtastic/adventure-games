@@ -42,7 +42,10 @@ Next: <a href="D4CC.html">D4CC</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
+Used by the routine at <a href="D178.html">D178</a>.
+</div>
+<div class="paragraph">
+Counts the objects in this room and prints them when the room is not empty.
 </div>
 </div>
 </td>
@@ -51,7 +54,7 @@ Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
 <td class="asm-label">PrintObjectList</td>
 <td class="address-2"><span id="d4a7"></span>D4A7</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="3">Stash <span class="register">IY</span>, <span class="register">AF</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Save the schedule entry, the result and the count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -70,10 +73,20 @@ Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
 <td class="comment-1" rowspan="1">Set the location ID to FF (current character location).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d4ad"></span>
+<div class="comments">
+<div class="paragraph">
+Count objects in location.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4ad"></span>D4AD</td>
 <td class="instruction">CALL <a href="D4CC.html">CountObjectsInLocation</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D4CC.html">CountObjectsInLocation</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="D4CC.html">CountObjectsInLocation</a> to count the objects in this location.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -89,13 +102,13 @@ Skip printing if no objects were found.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4b0"></span>D4B0</td>
 <td class="instruction">JR Z,<a href="D4A7.html#d4c7">PrintObjectList_End</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D4A7.html#d4c7">PrintObjectList_End</a> if no objects were found (count is FF).</td>
+<td class="comment-1" rowspan="1">Stop the list when there are no more objects in this room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4b2"></span>D4B2</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the object count on the stack for later use.</td>
+<td class="comment-1" rowspan="1">Keep the object count and take the message at <a href="68E4.html">68E4</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -111,25 +124,24 @@ Print the introductory text for the object list.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4b3"></span>D4B3</td>
 <td class="instruction">LD HL,$68E4</td>
-<td class="comment-1" rowspan="1">Load the address of the introductory text token into <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4b6"></span>D4B6</td>
 <td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the text token.</td>
+<td class="comment-1" rowspan="1">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4b9"></span>D4B9</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1">Restore the object count from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the object count into <span class="register">C</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4ba"></span>D4BA</td>
 <td class="instruction">LD C,B</td>
-<td class="comment-1" rowspan="1">Store the object count in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,25 +153,23 @@ Print the introductory text for the object list.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4bd"></span>D4BD</td>
 <td class="instruction">LD IY,($A017)</td>
-<td class="comment-1" rowspan="1">Load *<a href="A017.html">CurrentCharacterData</a> into <span class="register">IY</span>.</td>
+<td class="comment-1" rowspan="3">Read the current character's record, then call <a href="D51A.html">PrintObjectListWithFormatting</a> to list the objects and describe them.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4c1"></span>D4C1</td>
 <td class="instruction">LD B,(IY+$0F)</td>
-<td class="comment-1" rowspan="1">Fetch the current character's location ID from the character data into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4c4"></span>D4C4</td>
 <td class="instruction">CALL <a href="D51A.html">PrintObjectListWithFormatting</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D51A.html">PrintObjectListWithFormatting</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintObjectList_End</td>
 <td class="address-2"><span id="d4c7"></span>D4C7</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">AF</span> and <span class="register">IY</span> from the stack.</td>
+<td class="comment-1" rowspan="3">Restore the saved count, the saved result and the saved schedule entry from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -192,7 +202,7 @@ Next: <a href="D4CC.html">D4CC</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/54439.html">Switch to decimal</a>.</div>
 </footer>

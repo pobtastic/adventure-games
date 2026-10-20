@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at 60598</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="60569.html">60569</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#60598">Map</a></td>
+<td class="next">
+Next: <a href="60774.html">60774</a>
+</td>
+</tr>
+</table>
+<div class="description">60598: Handler: Injury Check</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="60963.html">Action_Down</a>, <a href="61840.html">Action_Climb</a>, <a href="63259.html">Action_Enter</a> and <a href="63844.html">GameStart</a>.
+</div>
+<div class="paragraph">
+Refuse the move while the player is badly hurt. Otherwise change rooms and arm the local dangers.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_InjuryCheck</td>
+<td class="address-2"><span id="60598"></span>60598</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="4">Call <a href="49743.html">IsObjectInCurrentRoom</a> to test whether the injury is in this room. Jump to <a href="60598.html#60613">Handler_InjuryCheck_Next</a> when the player is not too badly hurt.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60599"></span>60599</td>
+<td class="instruction">LD A,72</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60601"></span>60601</td>
+<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60604"></span>60604</td>
+<td class="instruction">JR NZ,<a href="60598.html#60613">Handler_InjuryCheck_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60606"></span>60606</td>
+<td class="instruction">LD HL,56120</td>
+<td class="comment-1" rowspan="2">Print "You can't move.You are too badly injured.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60609"></span>60609</td>
+<td class="instruction">CALL <a href="48686.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60612"></span>60612</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_InjuryCheck_Next</td>
+<td class="address-2"><span id="60613"></span>60613</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="2">Call <a href="50223.html">MovePlayerToRoom</a> to move the player into that room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60614"></span>60614</td>
+<td class="instruction">CALL <a href="50223.html">MovePlayerToRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60617"></span>60617</td>
+<td class="instruction">LD E,0</td>
+<td class="comment-1" rowspan="2">Call <a href="49401.html">Handler_DisplayRoom</a> to describe the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60619"></span>60619</td>
+<td class="instruction">CALL <a href="49401.html">Handler_DisplayRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60622"></span>60622</td>
+<td class="instruction">LD A,65</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60639">Handler_InjuryCheck_SlimeMonster</a> if object 65 (the giant spider) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60624"></span>60624</td>
+<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60627"></span>60627</td>
+<td class="instruction">JR NZ,<a href="60598.html#60639">Handler_InjuryCheck_SlimeMonster</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60629"></span>60629</td>
+<td class="instruction">LD HL,47670</td>
+<td class="comment-1" rowspan="4">Arm the giant spider for six turns.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60632"></span>60632</td>
+<td class="instruction">SET 1,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60634"></span>60634</td>
+<td class="instruction">LD A,6</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60636"></span>60636</td>
+<td class="instruction">LD (47672),A</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_InjuryCheck_SlimeMonster</td>
+<td class="address-2"><span id="60639"></span>60639</td>
+<td class="instruction">LD A,30</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60656">Handler_InjuryCheck_Demons</a> if object 30 (the slime monster) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60641"></span>60641</td>
+<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60644"></span>60644</td>
+<td class="instruction">JR NZ,<a href="60598.html#60656">Handler_InjuryCheck_Demons</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60646"></span>60646</td>
+<td class="instruction">LD HL,47670</td>
+<td class="comment-1" rowspan="4">Arm the slime monster for six turns.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60649"></span>60649</td>
+<td class="instruction">SET 2,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60651"></span>60651</td>
+<td class="instruction">LD A,6</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60653"></span>60653</td>
+<td class="instruction">LD (47673),A</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_InjuryCheck_Demons</td>
+<td class="address-2"><span id="60656"></span>60656</td>
+<td class="instruction">LD A,41</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60673">Handler_InjuryCheck_Zarn</a> if object 41 (the demons) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60658"></span>60658</td>
+<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60661"></span>60661</td>
+<td class="instruction">JR NZ,<a href="60598.html#60673">Handler_InjuryCheck_Zarn</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60663"></span>60663</td>
+<td class="instruction">LD HL,47670</td>
+<td class="comment-1" rowspan="4">Arm the demons for six turns.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60666"></span>60666</td>
+<td class="instruction">SET 3,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60668"></span>60668</td>
+<td class="instruction">LD A,6</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60670"></span>60670</td>
+<td class="instruction">LD (47674),A</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_InjuryCheck_Zarn</td>
+<td class="address-2"><span id="60673"></span>60673</td>
+<td class="instruction">LD A,42</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60690">Handler_InjuryCheck_Witch</a> if object 42 (Zarn) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60675"></span>60675</td>
+<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60678"></span>60678</td>
+<td class="instruction">JR NZ,<a href="60598.html#60690">Handler_InjuryCheck_Witch</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60680"></span>60680</td>
+<td class="instruction">LD HL,47670</td>
+<td class="comment-1" rowspan="4">Arm Zarn for six turns.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60683"></span>60683</td>
+<td class="instruction">SET 4,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60685"></span>60685</td>
+<td class="instruction">LD A,6</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60687"></span>60687</td>
+<td class="instruction">LD (47675),A</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_InjuryCheck_Witch</td>
+<td class="address-2"><span id="60690"></span>60690</td>
+<td class="instruction">LD A,46</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60727">Handler_InjuryCheck_OldMan</a> if object 46 (the witch) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60692"></span>60692</td>
+<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60695"></span>60695</td>
+<td class="instruction">JR NZ,<a href="60598.html#60727">Handler_InjuryCheck_OldMan</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60697"></span>60697</td>
+<td class="instruction">LD A,67</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60716">Handler_InjuryCheck_WitchSeesRing</a> when the player is carrying object 67 (the ring being worn).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60699"></span>60699</td>
+<td class="instruction">CALL <a href="49874.html">IsObjectCarried</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60702"></span>60702</td>
+<td class="instruction">JR Z,<a href="60598.html#60716">Handler_InjuryCheck_WitchSeesRing</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60704"></span>60704</td>
+<td class="instruction">LD HL,56163</td>
+<td class="comment-1" rowspan="2">Print "The Witch sees you,chucklesgleefully,then throws somemajic powder at you.You cannot move.She beats you with her broom.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60707"></span>60707</td>
+<td class="instruction">CALL <a href="48686.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60710"></span>60710</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Discard the return address on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60711"></span>60711</td>
+<td class="instruction">LD HL,60195</td>
+<td class="comment-1" rowspan="2">Switch <a href="60195.html">GameOver</a> onto the stack so the player dies.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60714"></span>60714</td>
+<td class="instruction">EX (SP),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60715"></span>60715</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_InjuryCheck_WitchSeesRing</td>
+<td class="address-2"><span id="60716"></span>60716</td>
+<td class="instruction">LD HL,56286</td>
+<td class="comment-1" rowspan="2">Print "The Witch sees the ring onyour hand,then she screamsand vanishes in a puff of smoke.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60719"></span>60719</td>
+<td class="instruction">CALL <a href="48686.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60722"></span>60722</td>
+<td class="instruction">LD A,46</td>
+<td class="comment-1" rowspan="2">Destroy object 46 (the witch).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60724"></span>60724</td>
+<td class="instruction">CALL <a href="49880.html">Handler_DestroyItem</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_InjuryCheck_OldMan</td>
+<td class="address-2"><span id="60727"></span>60727</td>
+<td class="instruction">LD A,47</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60755">Handler_InjuryCheck_GreatValley</a> if object 47 (the old man) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60729"></span>60729</td>
+<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60732"></span>60732</td>
+<td class="instruction">JR NZ,<a href="60598.html#60755">Handler_InjuryCheck_GreatValley</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60734"></span>60734</td>
+<td class="instruction">LD A,47</td>
+<td class="comment-1" rowspan="2">Destroy object 47 (the old man).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60736"></span>60736</td>
+<td class="instruction">CALL <a href="49880.html">Handler_DestroyItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60739"></span>60739</td>
+<td class="instruction">LD A,3</td>
+<td class="comment-1" rowspan="2">Move object 3 (the bow) into the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60741"></span>60741</td>
+<td class="instruction">CALL <a href="49887.html">Handler_UpdateItemForTheCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60744"></span>60744</td>
+<td class="instruction">LD A,4</td>
+<td class="comment-1" rowspan="2">Move object 4 (the arrows) into the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60746"></span>60746</td>
+<td class="instruction">CALL <a href="49887.html">Handler_UpdateItemForTheCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60749"></span>60749</td>
+<td class="instruction">LD HL,55613</td>
+<td class="comment-1" rowspan="2">Print "He suddenly vanishes.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60752"></span>60752</td>
+<td class="instruction">CALL <a href="50310.html">PausePrintStringAndScroll</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_InjuryCheck_GreatValley</td>
+<td class="address-2"><span id="60755"></span>60755</td>
+<td class="instruction">LD A,(47771)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60773">Handler_InjuryCheck_Return</a> unless the player is in room 5 (The Great Valley).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60758"></span>60758</td>
+<td class="instruction">CP 5</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60760"></span>60760</td>
+<td class="instruction">JR NZ,<a href="60598.html#60773">Handler_InjuryCheck_Return</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60762"></span>60762</td>
+<td class="instruction">LD A,44</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60773">Handler_InjuryCheck_Return</a> if object 44 (Princess Mara) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60764"></span>60764</td>
+<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60767"></span>60767</td>
+<td class="instruction">JR NZ,<a href="60598.html#60773">Handler_InjuryCheck_Return</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60769"></span>60769</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Discard the return address on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="60770"></span>60770</td>
+<td class="instruction">JP <a href="60222.html">GameComplete</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="60222.html">GameComplete</a> to announce the win.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_InjuryCheck_Return</td>
+<td class="address-2"><span id="60773"></span>60773</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="60569.html">60569</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#60598">Map</a></td>
+<td class="next">
+Next: <a href="60774.html">60774</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../../asm/ECB6.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

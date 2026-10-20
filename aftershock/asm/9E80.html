@@ -39,7 +39,7 @@ Next: <a href="9EC5.html">9EC5</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="AB94.html">AB94</a> and <a href="ABBD.html">ABBD</a>.
+Used by the routines at <a href="AB94.html">Action_SaveGame</a> and <a href="ABBD.html">Action_OfferSave</a>.
 </div>
 </div>
 </td>
@@ -69,19 +69,28 @@ Used by the routines at <a href="AB94.html">AB94</a> and <a href="ABBD.html">ABB
 <td class="asm-label"></td>
 <td class="address-1"><span id="9e85"></span>9E85</td>
 <td class="instruction">LD A,($BBD1)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="BBD1.html">BBD1</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="BBD1.html">Count_SavedStateBytes</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9e88"></span>
+<div class="comments">
+<div class="paragraph">
+Skip packing the save when there are no state bytes.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9e88"></span>9E88</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="1">Set the bits from <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="9E80.html#9ea4">SaveGame_2</a> if there are no saved state bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9e89"></span>9E89</td>
 <td class="instruction">JR Z,<a href="9E80.html#9ea4">SaveGame_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="9E80.html#9ea4">SaveGame_2</a> if ?? is equal to <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -93,13 +102,13 @@ Used by the routines at <a href="AB94.html">AB94</a> and <a href="ABBD.html">ABB
 <td class="asm-label"></td>
 <td class="address-1"><span id="9e8c"></span>9E8C</td>
 <td class="instruction">LD IX,$BAF9</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="BAF9.html">BAF9</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="BAF9.html">Table_SavedStateAddresses</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9e90"></span>9E90</td>
 <td class="instruction">LD DE,$A0D4</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="A0D4.html">A0D4</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="A0D4.html">SavedStateBytes</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -111,7 +120,7 @@ Used by the routines at <a href="AB94.html">AB94</a> and <a href="ABBD.html">ABB
 <td class="asm-label">SaveGame_0</td>
 <td class="address-2"><span id="9e95"></span>9E95</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="2">Increment <span class="register">IX</span> by two.</td>
+<td class="comment-1" rowspan="2">Move <span class="register">IX</span> on to the next saved-state address.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -122,7 +131,7 @@ Used by the routines at <a href="AB94.html">AB94</a> and <a href="ABBD.html">ABB
 <td class="asm-label"></td>
 <td class="address-1"><span id="9e99"></span>9E99</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">DE</span> by one.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">DE</span> on to the next packed state byte.</td>
 </tr>
 <tr>
 <td class="asm-label">SaveGame_1</td>
@@ -146,13 +155,13 @@ Used by the routines at <a href="AB94.html">AB94</a> and <a href="ABBD.html">ABB
 <td class="asm-label"></td>
 <td class="address-1"><span id="9ea1"></span>9EA1</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="1">Store that state byte in the packed save buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9ea2"></span>9EA2</td>
 <td class="instruction">DJNZ <a href="9E80.html#9e95">SaveGame_0</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="9E80.html#9e95">SaveGame_0</a> until counter is zero.</td>
+<td class="comment-1" rowspan="1">Decrease the pack counter and loop back to <a href="9E80.html#9e95">SaveGame_0</a> until every state byte is packed.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -204,7 +213,7 @@ Print "Press REC & PLAY on tape...Then press any key.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="9eb6"></span>9EB6</td>
 <td class="instruction">CALL $04C2</td>
-<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/04C2.html">SA_BYTES</a>.</td>
+<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/04C2.html">SA_BYTES</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -260,7 +269,7 @@ Next: <a href="9EC5.html">9EC5</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/40576.html">Switch to decimal</a>.</div>
 </footer>

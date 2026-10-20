@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="D39B.html">D39B</a>
+Prev: <a href="D3D5.html">D3D5</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#d3e8">Map</a></td>
 <td class="next">
@@ -42,7 +42,10 @@ Next: <a href="D405.html">D405</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="A7C5.html">CheckObjectHasSpecialDescription_Wrapper</a>, <a href="BF1C.html">ProcessTextTokenEntry</a> and <a href="D39B.html">ProcessObjectEntryAlternate</a>.
+Used by the routines at <a href="A7C5.html">CheckObjectHasSpecialDescription_Wrapper</a>, <a href="BF1C.html">ProcessTextTokenEntry</a> and <a href="D3D5.html">TakeTheFoundObject</a>.
+</div>
+<div class="paragraph">
+Reads the object's description word through <a href="A7D0.html">CheckTokenMatchAndSetFlag</a> and clears <a href="A7EA.html">A7EA</a> unless bit 6 of <span class="register">IY</span>-02 is set. Then prints the tokens at <span class="register">IY</span>+02 and <span class="register">IY</span>+04 or only the one at <span class="register">IY</span>+04 when bit 5 of <span class="register">IY</span>-01 is set.
 </div>
 </div>
 </td>
@@ -51,79 +54,73 @@ Used by the routines at <a href="A7C5.html">CheckObjectHasSpecialDescription_Wra
 <td class="asm-label">CheckObjectHasSpecialDescription</td>
 <td class="address-2"><span id="d3e8"></span>D3E8</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Save the registers, then read the word at <span class="register">IY</span>+00-01 into <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d3e9"></span>D3E9</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d3ea"></span>D3EA</td>
 <td class="instruction">LD D,(IY+$01)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d3ed"></span>D3ED</td>
 <td class="instruction">LD E,(IY+$00)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d3f0"></span>D3F0</td>
 <td class="instruction">CALL <a href="A7D0.html">CheckTokenMatchAndSetFlag</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="A7D0.html">CheckTokenMatchAndSetFlag</a> to test the token and set the flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d3f3"></span>D3F3</td>
 <td class="instruction">BIT 6,(IY-$02)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="D3E8.html#d3fd">CheckObjectHasSpecialDescription_Next</a> if bit 6 of this byte is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d3f7"></span>D3F7</td>
-<td class="instruction">JR NZ,<a href="D3E8.html#d3fd">CheckObjectHasSpecialDescription_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="D3E8.html#d3fd">CheckObjectHasSpecialDescription_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d3f9"></span>D3F9</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Clear the token match flag at <a href="A7EA.html">A7EA</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d3fa"></span>D3FA</td>
 <td class="instruction">LD ($A7EA),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectHasSpecialDescription_0</td>
+<td class="asm-label">CheckObjectHasSpecialDescription_Next</td>
 <td class="address-2"><span id="d3fd"></span>D3FD</td>
 <td class="instruction">BIT 5,(IY-$01)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="D427.html">ReadScheduleField</a> if bit 5 of this byte is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d401"></span>D401</td>
-<td class="instruction">JR NZ,<a href="D405.html#d427">CheckObjectAttributeWithFlag_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="D427.html">ReadScheduleField</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d403"></span>D403</td>
-<td class="instruction">JR <a href="D405.html#d416">CheckObjectAttributeWithFlag_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="D416.html">$D416</a></td>
+<td class="comment-1" rowspan="1">Go on to read the high byte of the object's description token.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="D39B.html">D39B</a>
+Prev: <a href="D3D5.html">D3D5</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#d3e8">Map</a></td>
 <td class="next">
@@ -134,7 +131,7 @@ Next: <a href="D405.html">D405</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/54248.html">Switch to decimal</a>.</div>
 </footer>

@@ -42,7 +42,10 @@ Next: <a href="BC46.html">BC46</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="BA20.html">ProcessCharacterDisplay</a>.
+Used by the routine at <a href="BB5C.html">ReadActionFlags</a>.
+</div>
+<div class="paragraph">
+Returns zero unless <a href="BD51.html">SearchObjectTable</a> passes and the top two bits of the action flags are 80. A match is stored at <a href="BA13.html#ba1b">BA1B</a>+03 and passed to <a href="BCC9.html">CheckBitAndProcess</a>.
 </div>
 </div>
 </td>
@@ -51,97 +54,101 @@ Used by the routine at <a href="BA20.html">ProcessCharacterDisplay</a>.
 <td class="asm-label">CheckObjectAttribute</td>
 <td class="address-2"><span id="bc21"></span>BC21</td>
 <td class="instruction">CALL <a href="BD51.html">SearchObjectTable</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="BC21.html#bc2f">CheckObjectAttribute_Next</a> if the object table ends before the moved marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc24"></span>BC24</td>
-<td class="instruction">JR NZ,<a href="BC21.html#bc2f">CheckObjectAttribute_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="BC21.html#bc2f">CheckObjectAttribute_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc26"></span>BC26</td>
 <td class="instruction">LD A,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Jump to <a href="BC21.html#bc31">CheckObjectAttribute_StoreRecord</a> if the top two bits of the action flags are 80.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc29"></span>BC29</td>
 <td class="instruction">AND $C0</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc2b"></span>BC2B</td>
 <td class="instruction">CP $80</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc2d"></span>BC2D</td>
-<td class="instruction">JR Z,<a href="BC21.html#bc31">CheckObjectAttribute_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BC21.html#bc31">CheckObjectAttribute_StoreRecord</a></td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectAttribute_0</td>
+<td class="asm-label">CheckObjectAttribute_Next</td>
 <td class="address-2"><span id="bc2f"></span>BC2F</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc30"></span>BC30</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectAttribute_1</td>
+<td class="routine-comment" colspan="5">
+<span id="bc31"></span>
+<div class="comments">
+<div class="paragraph">
+Stores this record and tests it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckObjectAttribute_StoreRecord</td>
 <td class="address-2"><span id="bc31"></span>BC31</td>
 <td class="instruction">LD ($BA1E),IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Store this record at <a href="BA13.html">BA13</a>+0B and call <a href="BCC9.html">CheckBitAndProcess</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc35"></span>BC35</td>
 <td class="instruction">CALL <a href="BCC9.html">CheckBitAndProcess</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc38"></span>BC38</td>
-<td class="instruction">JR Z,<a href="BC21.html#bc43">CheckObjectAttribute_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BC21.html#bc43">CheckObjectAttribute_TestActionSucceeded</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="BC21.html#bc43">CheckObjectAttribute_TestActionSucceeded</a> if the attribute needs no extra bit handling.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc3a"></span>BC3A</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Write 01 to the flag at <a href="BA13.html">BA13</a>+0A.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc3c"></span>BC3C</td>
 <td class="instruction">LD ($BA1D),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc3f"></span>BC3F</td>
 <td class="instruction">SET 0,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the action-pending flag.</td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectAttribute_2</td>
+<td class="asm-label">CheckObjectAttribute_TestActionSucceeded</td>
 <td class="address-2"><span id="bc43"></span>BC43</td>
-<td class="instruction">OR $01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc45"></span>BC45</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -158,7 +165,7 @@ Next: <a href="BC46.html">BC46</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/48161.html">Switch to decimal</a>.</div>
 </footer>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blizzard Pass: Routine at 680C</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6807.html">6807</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#680c">Map</a></td>
+<td class="next">
+Next: <a href="685B.html">685B</a>
+</td>
+</tr>
+</table>
+<div class="description">680C: Action: Inventory</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Prints message 10, you are carrying the following, then every carried or worn object. Nothing carried says so. A worn object is marked with message 1E.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ListCarried</td>
+<td class="address-2"><span id="680c"></span>680C</td>
+<td class="instruction">LD A,$10</td>
+<td class="comment-1" rowspan="2">Message 10: you are carrying the following.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="680e"></span>680E</td>
+<td class="instruction">CALL <a href="63D4.html">PrintSystemMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6811"></span>6811</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Nothing has been listed yet.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6812"></span>6812</td>
+<td class="instruction">LD ($5B7A),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6815"></span>6815</td>
+<td class="instruction">LD B,$A0</td>
+<td class="comment-1" rowspan="2">A0 object slots, from the first location byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6817"></span>6817</td>
+<td class="instruction">LD HL,$5DCA</td>
+</tr>
+<tr>
+<td class="asm-label">ListCarried_Scan</td>
+<td class="address-2"><span id="681a"></span>681A</td>
+<td class="instruction">LD A,($5D89)</td>
+<td class="comment-1" rowspan="3">A carried object is printed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="681d"></span>681D</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="681e"></span>681E</td>
+<td class="instruction">CALL Z,<a href="680C.html#6845">ListCarried_One</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6821"></span>6821</td>
+<td class="instruction">LD A,($5D8A)</td>
+<td class="comment-1" rowspan="3">A worn object is printed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6824"></span>6824</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6825"></span>6825</td>
+<td class="instruction">CALL Z,<a href="680C.html#6845">ListCarried_One</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6828"></span>6828</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">The next object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6829"></span>6829</td>
+<td class="instruction">DJNZ <a href="680C.html#681a">ListCarried_Scan</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="682b"></span>682B</td>
+<td class="instruction">LD A,($5B7A)</td>
+<td class="comment-1" rowspan="3">An empty list says so.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="682e"></span>682E</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="682f"></span>682F</td>
+<td class="instruction">JR NZ,<a href="680C.html#6836">ListCarried_End</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6831"></span>6831</td>
+<td class="instruction">LD A,$11</td>
+<td class="comment-1" rowspan="2">Message 11: nothing at all.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6833"></span>6833</td>
+<td class="instruction">JP <a href="63D4.html">PrintSystemMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label">ListCarried_End</td>
+<td class="address-2"><span id="6836"></span>6836</td>
+<td class="instruction">LD A,$0C</td>
+<td class="comment-1" rowspan="4">Two backspaces remove the trailing comma.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6838"></span>6838</td>
+<td class="instruction">CALL <a href="6394.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="683b"></span>683B</td>
+<td class="instruction">LD A,$0C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="683d"></span>683D</td>
+<td class="instruction">CALL <a href="6394.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6840"></span>6840</td>
+<td class="instruction">LD A,$2E</td>
+<td class="comment-1" rowspan="2">A full stop ends the list.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6842"></span>6842</td>
+<td class="instruction">JP <a href="6394.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label">ListCarried_One</td>
+<td class="address-2"><span id="6845"></span>6845</td>
+<td class="instruction">LD A,$A0</td>
+<td class="comment-1" rowspan="2">The object id is A0 minus the countdown.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6847"></span>6847</td>
+<td class="instruction">SUB B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6848"></span>6848</td>
+<td class="instruction">CALL <a href="63D7.html">PrintObjectName</a></td>
+<td class="comment-1" rowspan="1">Call <a href="63D7.html">PrintObjectName</a> to print its name.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="684b"></span>684B</td>
+<td class="instruction">LD ($5B7A),A</td>
+<td class="comment-1" rowspan="1">Remember that something was listed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="684e"></span>684E</td>
+<td class="instruction">LD A,($5D8A)</td>
+<td class="comment-1" rowspan="3">Message 1E marks the worn object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6851"></span>6851</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6852"></span>6852</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6853"></span>6853</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="3">Print " (worn),".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6854"></span>6854</td>
+<td class="instruction">LD A,$1E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6856"></span>6856</td>
+<td class="instruction">CALL <a href="63D4.html">PrintSystemMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6859"></span>6859</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1">Restore the countdown from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="685a"></span>685A</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6807.html">6807</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#680c">Map</a></td>
+<td class="next">
+Next: <a href="685B.html">685B</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1986 Adventuresoft UK Ltd &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/blizzardpass/">Source code</a>.</div>
+<div><a href="../dec/asm/26636.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

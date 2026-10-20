@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="43311.html">43311</a>
+Prev: <a href="43341.html">43341</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#43355">Map</a></td>
 <td class="next">
@@ -42,7 +42,10 @@ Next: <a href="43408.html">43408</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="43136.html">ExtractTokenFromText</a> and <a href="43311.html">ProcessTextTokenFormat</a>.
+Used by the routines at <a href="43143.html">PrintTextToken</a> and <a href="43341.html">43341</a>.
+</div>
+<div class="paragraph">
+Reads the next format byte and skips the extra bytes when its top bit is set.
 </div>
 </div>
 <table class="input">
@@ -73,13 +76,12 @@ Used by the routines at <a href="43136.html">ExtractTokenFromText</a> and <a hre
 <td class="asm-label">ProcessFormatDataByte</td>
 <td class="address-2"><span id="43355"></span>43355</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="2"><span class="register">IX</span>=<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C42.html">NEWPPC</a>, saving the count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43356"></span>43356</td>
 <td class="instruction">LD IX,23618</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C42.html">NEWPPC</a> (load the buffer pointer).</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -95,37 +97,33 @@ Read and process the format data byte.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43360"></span>43360</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one (move to the format data byte).</td>
+<td class="comment-1" rowspan="5">Step to the format byte and go to <a href="43355.html#43369">ProcessFormatDataByte_ProcessBits</a> if bit 7 is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43361"></span>43361</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span> (load the format data byte).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43362"></span>43362</td>
 <td class="instruction">BIT 7,A</td>
-<td class="comment-1" rowspan="1">Test bit 7 of <span class="register">A</span> (check if this is a command byte).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43364"></span>43364</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one (move to the parameter byte).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43365"></span>43365</td>
 <td class="instruction">JR Z,<a href="43355.html#43369">ProcessFormatDataByte_ProcessBits</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43355.html#43369">ProcessFormatDataByte_ProcessBits</a> if bit 7 is not set (data byte, not command).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43367"></span>43367</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="2">Increment <span class="register">HL</span> by two (skip the parameter bytes for command formats).</td>
+<td class="comment-1" rowspan="2">Step on two places.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -136,19 +134,19 @@ Read and process the format data byte.
 <td class="asm-label">ProcessFormatDataByte_ProcessBits</td>
 <td class="address-2"><span id="43369"></span>43369</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">AF</span> (the bit 7 test result) on the stack.</td>
+<td class="comment-1" rowspan="1">Keep the format byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43370"></span>43370</td>
 <td class="instruction">AND %01110000</td>
-<td class="comment-1" rowspan="1">Keep only bits 4-6 (extract the format command type).</td>
+<td class="comment-1" rowspan="1">Keep bits 4-6, which name the format command.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43372"></span>43372</td>
 <td class="instruction">JR Z,<a href="43355.html#43380">ProcessFormatDataByte_ProcessLowNibble</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43355.html#43380">ProcessFormatDataByte_ProcessLowNibble</a> if the command type is zero (simple format).</td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="43355.html#43380">ProcessFormatDataByte_ProcessLowNibble</a> when the format command is empty.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -164,31 +162,29 @@ Adjust the buffer pointer based on the command type.
 <td class="asm-label">ProcessFormatDataByte_AdjustBuffer</td>
 <td class="address-2"><span id="43374"></span>43374</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one (move to the next buffer position).</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="43355.html#43374">ProcessFormatDataByte_AdjustBuffer</a> while at least 16 is still left.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43376"></span>43376</td>
 <td class="instruction">SUB 16</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>-=16 (decrease the command type value).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43378"></span>43378</td>
 <td class="instruction">JR NZ,<a href="43355.html#43374">ProcessFormatDataByte_AdjustBuffer</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43355.html#43374">ProcessFormatDataByte_AdjustBuffer</a> if we need to skip more positions.</td>
 </tr>
 <tr>
 <td class="asm-label">ProcessFormatDataByte_ProcessLowNibble</td>
 <td class="address-2"><span id="43380"></span>43380</td>
 <td class="instruction">LD C,0</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=0 (initialise the result counter).</td>
+<td class="comment-1" rowspan="1">Reset the count in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43382"></span>43382</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> (the bit 7 test result) from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the format byte from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -200,19 +196,19 @@ Adjust the buffer pointer based on the command type.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43385"></span>43385</td>
 <td class="instruction">JR Z,<a href="43355.html#43398">ProcessFormatDataByte_End</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43355.html#43398">ProcessFormatDataByte_End</a> if there's nothing to process.</td>
+<td class="comment-1" rowspan="1">Go to <a href="43355.html#43398">ProcessFormatDataByte_End</a> if the low four bits are clear.</td>
 </tr>
 <tr>
 <td class="asm-label">ProcessFormatDataByte_ProcessLoop</td>
 <td class="address-1"><span id="43387"></span>43387</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">A</span> (store the count in <span class="register">B</span>).</td>
+<td class="comment-1" rowspan="1">Use the low digit as the repeat count.</td>
 </tr>
 <tr>
 <td class="asm-label">ProcessFormatDataByte_ProcessCommand</td>
 <td class="address-2"><span id="43388"></span>43388</td>
 <td class="instruction">CALL <a href="43408.html">RotateAndExtractCharacterCode</a></td>
-<td class="comment-1" rowspan="1">Call <a href="43408.html">RotateAndExtractCharacterCode</a> to process the format command.</td>
+<td class="comment-1" rowspan="1">Call <a href="43408.html">RotateAndExtractCharacterCode</a> to unpack the next letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -224,13 +220,13 @@ Adjust the buffer pointer based on the command type.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43394"></span>43394</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one (move to the next buffer position).</td>
+<td class="comment-1" rowspan="1">Step the text pointer on one byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43396"></span>43396</td>
 <td class="instruction">DJNZ <a href="43355.html#43388">ProcessFormatDataByte_ProcessCommand</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="43355.html#43388">ProcessFormatDataByte_ProcessCommand</a> until counter is zero.</td>
+<td class="comment-1" rowspan="1">Count the next entry and repeat from <a href="43355.html#43388">ProcessFormatDataByte_ProcessCommand</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">ProcessFormatDataByte_End</td>
@@ -242,7 +238,7 @@ Adjust the buffer pointer based on the command type.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43402"></span>43402</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">C</span> (load the result counter).</td>
+<td class="comment-1" rowspan="1">Take the bit offset from <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -254,7 +250,7 @@ Adjust the buffer pointer based on the command type.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43404"></span>43404</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="2">Return if the result counter is zero.</td>
+<td class="comment-1" rowspan="2">Return if the bit offset is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -265,7 +261,7 @@ Adjust the buffer pointer based on the command type.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43406"></span>43406</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one (move to the next format byte).</td>
+<td class="comment-1" rowspan="1">Step to the next byte of the format data.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -277,7 +273,7 @@ Adjust the buffer pointer based on the command type.
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="43311.html">43311</a>
+Prev: <a href="43341.html">43341</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#43355">Map</a></td>
 <td class="next">
@@ -288,7 +284,7 @@ Next: <a href="43408.html">43408</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/A95B.html">Switch to hexadecimal</a>.</div>
 </footer>

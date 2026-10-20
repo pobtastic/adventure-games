@@ -42,7 +42,10 @@ Next: <a href="41700.html">41700</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="41700.html">ProcessObjectDisplay</a>, <a href="41853.html">ProcessObject_Display</a>, <a href="45981.html">ProcessDisplayPointer</a> and <a href="50385.html">ProcessDisplayAction</a>.
+Used by the routines at <a href="41700.html">ProcessObjectDisplay</a>, <a href="41853.html">ProcessObject_Display</a>, <a href="46085.html">SwapObjectDisplayPointers</a> and <a href="50385.html">ProcessDisplayAction</a>.
+</div>
+<div class="paragraph">
+Packs two attribute nibbles from the object record into <a href="40990.html">40990</a> and <a href="40989.html">ObjectAttributeValue</a>.
 </div>
 </div>
 <table class="input">
@@ -70,13 +73,12 @@ Extract the first attribute value from bit-packed object data.
 <td class="asm-label">ExtractObjectAttributes</td>
 <td class="address-2"><span id="41661"></span>41661</td>
 <td class="instruction">LD A,(IX+5)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+5 (load byte from offset +5).</td>
+<td class="comment-1" rowspan="5">Read the object attribute.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41664"></span>41664</td>
 <td class="instruction">RRCA</td>
-<td class="comment-1" rowspan="4">Shift right by 4 bits (extract low nibble from offset +5).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -97,37 +99,36 @@ Extract the first attribute value from bit-packed object data.
 <td class="asm-label"></td>
 <td class="address-1"><span id="41668"></span>41668</td>
 <td class="instruction">AND %00001111</td>
-<td class="comment-1" rowspan="1">Keep only bits 0-3.</td>
+<td class="comment-1" rowspan="1">Keep the high nibble of the object attribute (now in bits 0-3) as the low half of the display flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41670"></span>41670</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span> (store the low nibble).</td>
+<td class="comment-1" rowspan="2">Read the character record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41671"></span>41671</td>
 <td class="instruction">LD A,(IX+7)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+7 (load byte from offset +7).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41674"></span>41674</td>
 <td class="instruction">AND %11110000</td>
-<td class="comment-1" rowspan="1">Keep only bits 4-7 (extract high nibble from offset +7).</td>
+<td class="comment-1" rowspan="1">Take the high nibble of byte 7 of the object data as the high half of the display flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41676"></span>41676</td>
 <td class="instruction">ADD A,C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>+=<span class="register">C</span> (combine high and low nibbles).</td>
+<td class="comment-1" rowspan="1">Join the two halves into one byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41677"></span>41677</td>
 <td class="instruction">LD (40990),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="40990.html">40990</a> (store the first attribute value).</td>
+<td class="comment-1" rowspan="1">Record the result in the display flag at <a href="40990.html">40990</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -143,13 +144,12 @@ Extract the second attribute value from bit-packed object data.
 <td class="asm-label"></td>
 <td class="address-1"><span id="41680"></span>41680</td>
 <td class="instruction">LD A,(IX+1)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+1 (load byte from offset +1).</td>
+<td class="comment-1" rowspan="5">Read the moved marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41683"></span>41683</td>
 <td class="instruction">RRCA</td>
-<td class="comment-1" rowspan="4">Shift right by 4 bits (extract low nibble from offset +1).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -170,37 +170,36 @@ Extract the second attribute value from bit-packed object data.
 <td class="asm-label"></td>
 <td class="address-1"><span id="41687"></span>41687</td>
 <td class="instruction">AND %00001111</td>
-<td class="comment-1" rowspan="1">Keep only bits 0-3.</td>
+<td class="comment-1" rowspan="1">Keep the high nibble of the moved marker (now in bits 0-3) as the low half of the object attribute value.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41689"></span>41689</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span> (store the low nibble).</td>
+<td class="comment-1" rowspan="2">Read the action flags.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41690"></span>41690</td>
 <td class="instruction">LD A,(IX+3)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+3 (load byte from offset +3).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41693"></span>41693</td>
 <td class="instruction">AND %11110000</td>
-<td class="comment-1" rowspan="1">Keep only bits 4-7 (extract high nibble from offset +3).</td>
+<td class="comment-1" rowspan="1">Take the high nibble of the action flags (byte 3) as the high half of the object attribute value.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41695"></span>41695</td>
 <td class="instruction">ADD A,C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>+=<span class="register">C</span> (combine high and low nibbles).</td>
+<td class="comment-1" rowspan="1">Join the two halves into one byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41696"></span>41696</td>
 <td class="instruction">LD (40989),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="40989.html">ObjectAttributeValue</a> (store the second attribute value).</td>
+<td class="comment-1" rowspan="1">Record the result in the object attribute value at <a href="40989.html">ObjectAttributeValue</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -223,7 +222,7 @@ Next: <a href="41700.html">41700</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/A2BD.html">Switch to hexadecimal</a>.</div>
 </footer>

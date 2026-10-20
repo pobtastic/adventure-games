@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at 5B8B</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="5B30.html">5B30</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#5b8b">Map</a></td>
+<td class="next">
+Next: <a href="5BAA.html">5BAA</a>
+</td>
+</tr>
+</table>
+<div class="description">5B8B: Tape Loader: LD_BYTES</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="5B30.html">TapeLoader_Game</a>.
+</div>
+<div class="paragraph">
+Calls the ROM tape loader, shows a white border while it runs, and records success or failure in the tape load result.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="5b8b"></span>
+<div class="comments">
+<div class="paragraph">
+Arrange the flags the ROM loader expects.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TapeLoader_LoadBytes</td>
+<td class="address-2"><span id="5b8b"></span>5B8B</td>
+<td class="instruction">INC D</td>
+<td class="comment-1" rowspan="1">Leave <span class="register">D</span> one below FF so the block length survives the ROM loader's test.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b8c"></span>5B8C</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="1">Park the header/data marker. <span class="register">A</span> is 00 for a header and FF for a data block.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b8d"></span>5B8D</td>
+<td class="instruction">DEC D</td>
+<td class="comment-1" rowspan="1">Put the block length back. The ROM loader rejects a length whose top byte is FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b8e"></span>5B8E</td>
+<td class="instruction">DI</td>
+<td class="comment-1" rowspan="1">Disable interrupts so the tape timing is stable.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="5b8f"></span>
+<div class="comments">
+<div class="paragraph">
+Show a white border while the tape runs.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b8f"></span>5B8F</td>
+<td class="instruction">LD A,$0F</td>
+<td class="comment-1" rowspan="2">Set a white border (
+
+
+WHITE) and raise the MIC bit on port FE.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b91"></span>5B91</td>
+<td class="instruction">OUT ($FE),A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="5b93"></span>
+<div class="comments">
+<div class="paragraph">
+Enter the ROM loader and come back to <a href="5B8B.html#5b9a">TapeLoader_AfterBytes</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b93"></span>5B93</td>
+<td class="instruction">LD HL,$5B9A</td>
+<td class="comment-1" rowspan="2">Push <a href="5B8B.html#5b9a">TapeLoader_AfterBytes</a> as the return address.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b96"></span>5B96</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b97"></span>5B97</td>
+<td class="instruction">JP $0562</td>
+<td class="comment-1" rowspan="1">Jump into <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a> at 0562.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="5b9a"></span>
+<div class="comments">
+<div class="paragraph">
+The ROM loader returns here. Restore the border.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TapeLoader_AfterBytes</td>
+<td class="address-1"><span id="5b9a"></span>5B9A</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="3">Set the border to 
+
+
+WHITE, saving flags the ROM loader returned.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b9b"></span>5B9B</td>
+<td class="instruction">LD A,$07</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b9d"></span>5B9D</td>
+<td class="instruction">OUT ($FE),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b9f"></span>5B9F</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore the ROM flags from the stack.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="5ba0"></span>
+<div class="comments">
+<div class="paragraph">
+Record success as 01 and failure as 02.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5ba0"></span>5BA0</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="3">Record 01 when the block loaded, and 02 when it did not.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5ba2"></span>5BA2</td>
+<td class="instruction">JR C,<a href="5B8B.html#5ba5">TapeLoader_StoreResult</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5ba4"></span>5BA4</td>
+<td class="instruction">INC A</td>
+</tr>
+<tr>
+<td class="asm-label">TapeLoader_StoreResult</td>
+<td class="address-2"><span id="5ba5"></span>5BA5</td>
+<td class="instruction">LD ($5B2F),A</td>
+<td class="comment-1" rowspan="1">Store that result in the tape load result (<a href="5B2F.html">5B2F</a>).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5ba8"></span>5BA8</td>
+<td class="instruction">DI</td>
+<td class="comment-1" rowspan="1">Disable interrupts before returning to the caller.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5ba9"></span>5BA9</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="5B30.html">5B30</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#5b8b">Map</a></td>
+<td class="next">
+Next: <a href="5BAA.html">5BAA</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/23435.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -62,48 +62,48 @@ This section draws the "Squiggle" line which separates the windows.
 <td class="asm-label">SquiggleLine</td>
 <td class="address-2"><span id="27853"></span>27853</td>
 <td class="instruction">CALL <a href="28627.html">ClearScreen</a></td>
-<td class="comment-1" rowspan="1">Call <a href="28627.html">ClearScreen</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="28627.html">ClearScreen</a> to clear screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27856"></span>27856</td>
 <td class="instruction">LD HL,20800</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=20800 (screen buffer position).</td>
+<td class="comment-1" rowspan="1">Point at the squiggle row on screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27859"></span>27859</td>
 <td class="instruction">LD DE,28108</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="28108.html">SquiggleGFX</a>.</td>
+<td class="comment-1" rowspan="1">Point at the squiggle pattern.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27862"></span>27862</td>
 <td class="instruction">LD C,5</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=5.</td>
+<td class="comment-1" rowspan="1">Five rows of the squiggle are drawn.</td>
 </tr>
 <tr>
-<td class="asm-label">SquiggleGFX_Outer_Loop</td>
+<td class="asm-label">SquiggleLine_OuterLoop</td>
 <td class="address-2"><span id="27864"></span>27864</td>
 <td class="instruction">LD B,16</td>
-<td class="comment-1" rowspan="1">Set a counter of 16.</td>
+<td class="comment-1" rowspan="2">Set a counter of 16.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27866"></span>27866</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> (the screen buffer pointer) temporarily - this is because the line is a repeated pattern.</td>
 </tr>
 <tr>
-<td class="asm-label">SquiggleGFX_Inner_Loop</td>
+<td class="asm-label">SquiggleLine_InnerLoop</td>
 <td class="address-2"><span id="27867"></span>27867</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="2">Copy one byte from <span class="register">DE</span> (the squiggle graphics data), to <span class="register">HL</span> (the screen buffer).</td>
+<td class="comment-1" rowspan="1">Read the next byte of the picture.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27868"></span>27868</td>
 <td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Store it at 20800.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -120,7 +120,7 @@ This section draws the "Squiggle" line which separates the windows.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27871"></span>27871</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="2">Copy one byte from <span class="register">DE</span> (the squiggle graphics data), to <span class="register">HL</span> (the screen buffer).</td>
+<td class="comment-1" rowspan="2">Store the squiggle pattern in the squiggle row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -131,25 +131,25 @@ This section draws the "Squiggle" line which separates the windows.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27873"></span>27873</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increase <span class="register">HL</span> (the screen buffer) pointer by one.</td>
+<td class="comment-1" rowspan="1">Step <span class="register">HL</span> on.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27874"></span>27874</td>
 <td class="instruction">DEC DE</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">DE</span> (the squiggle graphics data) pointer by one.</td>
+<td class="comment-1" rowspan="1">Step back one byte through <a href="28108.html">Graphics_Squiggle</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27875"></span>27875</td>
-<td class="instruction">DJNZ <a href="27853.html#27867">SquiggleGFX_Inner_Loop</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="27853.html#27867">SquiggleGFX_Inner_Loop</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="27853.html#27867">SquiggleLine_InnerLoop</a></td>
+<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="27853.html#27867">SquiggleLine_InnerLoop</a> until counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27877"></span>27877</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="2">Increase <span class="register">DE</span> (the squiggle graphics data) pointer by two.</td>
+<td class="comment-1" rowspan="2">Step on through <a href="28108.html">Graphics_Squiggle</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -160,30 +160,28 @@ This section draws the "Squiggle" line which separates the windows.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27879"></span>27879</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> (the screen buffer position) from the stack.</td>
+<td class="comment-1" rowspan="4">Move to the next screen row and repeat while squiggle rows remain.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27880"></span>27880</td>
 <td class="instruction">INC H</td>
-<td class="comment-1" rowspan="1">Increase <span class="register">H</span> by one (i.e. move down a line).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27881"></span>27881</td>
 <td class="instruction">DEC C</td>
-<td class="comment-1" rowspan="2">Decrease <span class="register">C</span> by one and loop back to <a href="27853.html#27864">SquiggleGFX_Outer_Loop</a> until counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27882"></span>27882</td>
-<td class="instruction">JR NZ,<a href="27853.html#27864">SquiggleGFX_Outer_Loop</a></td>
+<td class="instruction">JR NZ,<a href="27853.html#27864">SquiggleLine_OuterLoop</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="comments">
 <div class="paragraph">
-Continue on to <a href="27884.html">27884</a>.
+Continue on to <a href="27884.html">TurnReadAndTokeniseTheCommand</a>.
 </div>
 </div>
 </td>
@@ -203,7 +201,7 @@ Next: <a href="27884.html">27884</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../../asm/6CCD.html">Switch to hexadecimal</a>.</div>
 </footer>

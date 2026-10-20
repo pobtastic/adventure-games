@@ -114,7 +114,7 @@ Keep shifting the event flags one-by-one to find which bits are set.
 <td class="asm-label">GameEventChecker_Loop</td>
 <td class="address-2"><span id="ab13"></span>AB13</td>
 <td class="instruction">SRL C</td>
-<td class="comment-1" rowspan="1">Shift <span class="register">C</span> one position left to check the next event flag bit.</td>
+<td class="comment-1" rowspan="1">Shift <span class="register">C</span> right; bit 0 (the next event flag) goes into the carry flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -130,7 +130,7 @@ Keep shifting the event flags one-by-one to find which bits are set.
 The currently processed turn-based event is active, so process it.
 </div>
 <div class="paragraph">
-This is: <a href="A77F.html">Counter_01</a>+(08-the current event counter).
+This is: <a href="A77F.html">Counter_Drowning</a>+(08-the current event counter).
 </div>
 </div>
 </td>
@@ -282,7 +282,7 @@ Process scenic events.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab3d"></span>AB3D</td>
 <td class="instruction">LD HL,($A7E2)</td>
-<td class="comment-1" rowspan="1">Load <span class="register">HL</span> with *<a href="A7E2.html">Pointer_ScenicEventLocations</a>.</td>
+<td class="comment-1" rowspan="1">Load <span class="register">HL</span> with *<a href="A7E2.html">Pointer_ScenicEventItems</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -333,61 +333,61 @@ This is the main scenic event loop.
 <td class="asm-label">GameScenicEventChecker</td>
 <td class="address-2"><span id="ab4a"></span>AB4A</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load the scenic event item ID into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab4b"></span>AB4B</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the scenic event pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab4c"></span>AB4C</td>
 <td class="instruction">CALL <a href="AED1.html">ItemLocator</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="AED1.html">ItemLocator</a> to find where this scenic event's item is.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab4f"></span>AB4F</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the scenic event pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab50"></span>AB50</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the flags from the item location in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab51"></span>AB51</td>
 <td class="instruction">JR Z,<a href="AB0A.html#ab85">GameScenicEventChecker_Next</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AB0A.html#ab85">GameScenicEventChecker_Next</a> if the item is inactive.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab53"></span>AB53</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store the item location in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab54"></span>AB54</td>
 <td class="instruction">LD A,($A7C3)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load the player's current room (*<a href="A7C3.html">CurrentRoom</a>) into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab57"></span>AB57</td>
 <td class="instruction">CP C</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Compare the current room with the item location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab58"></span>AB58</td>
 <td class="instruction">JR Z,<a href="AB0A.html#ab85">GameScenicEventChecker_Next</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AB0A.html#ab85">GameScenicEventChecker_Next</a> if the item is in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -470,7 +470,7 @@ The routine at <a href="AB88.html">GetTableEntry</a> is usually used to fetch an
 <span id="ab6e"></span>
 <div class="comments">
 <div class="paragraph">
-The table at <a href="A7E4.html">Pointer_ScenicEventRooms</a> is indexed by event (there are 08 entries), but each address points to a "group" of room IDs where this event could occur. Each set of room IDs for the event is terminated using FF.
+The table at <a href="A7E4.html">Pointer_ScenicEventRooms</a> is indexed by event (there are 11 entries), and each address points to a group of room IDs where this event could occur. Each set of room IDs for the event is terminated using FF.
 </div>
 </div>
 </td>
@@ -529,25 +529,25 @@ Use the random number to select a room from the group - this loops through the r
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab7c"></span>AB7C</td>
 <td class="instruction">LD C,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load the chosen room ID into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab7d"></span>AB7D</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the scenic event pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab7e"></span>AB7E</td>
 <td class="instruction">LD B,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Load the scenic event item ID into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab7f"></span>AB7F</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the scenic event pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -612,7 +612,7 @@ Next: <a href="AB88.html">AB88</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/warlord/">Source code</a>.</div>
 <div><a href="../dec/asm/43786.html">Switch to decimal</a>.</div>
 </footer>

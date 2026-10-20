@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blizzard Pass: Routine at 6A3C</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6A2F.html">6A2F</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6a3c">Map</a></td>
+<td class="next">
+Next: <a href="6A68.html">6A68</a>
+</td>
+</tr>
+</table>
+<div class="description">6A3C: Action: Print Flag</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Prints flag <span class="register">B</span> as a decimal number followed by a space. The conversion goes through the DAA instruction, so the flag is treated as two decimal digits.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintFlag</td>
+<td class="address-2"><span id="6a3c"></span>6A3C</td>
+<td class="instruction">CALL <a href="67FF.html">FlagAddress</a></td>
+<td class="comment-1" rowspan="4">Read flag <span class="register">B</span>. Zero prints as a single 0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a3f"></span>6A3F</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a40"></span>6A40</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a41"></span>6A41</td>
+<td class="instruction">JR Z,<a href="6A3C.html#6a49">PrintFlag_High</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a43"></span>6A43</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="2">Count that value through DAA.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a44"></span>6A44</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label">PrintFlag_Tens</td>
+<td class="address-2"><span id="6a45"></span>6A45</td>
+<td class="instruction">INC A</td>
+<td class="comment-1" rowspan="3">Each pass through DAA builds one decimal step.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a46"></span>6A46</td>
+<td class="instruction">DAA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a47"></span>6A47</td>
+<td class="instruction">DJNZ <a href="6A3C.html#6a45">PrintFlag_Tens</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintFlag_High</td>
+<td class="address-2"><span id="6a49"></span>6A49</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="3">The high digit is the tens.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a4a"></span>6A4A</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a4b"></span>6A4B</td>
+<td class="instruction">JR Z,<a href="6A3C.html#6a5a">PrintFlag_Units</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a4d"></span>6A4D</td>
+<td class="instruction">SRL A</td>
+<td class="comment-1" rowspan="4">Shift the tens digit down.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a4f"></span>6A4F</td>
+<td class="instruction">SRL A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a51"></span>6A51</td>
+<td class="instruction">SRL A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a53"></span>6A53</td>
+<td class="instruction">SRL A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a55"></span>6A55</td>
+<td class="instruction">ADD A,$30</td>
+<td class="comment-1" rowspan="2">Print the tens digit when it is not zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a57"></span>6A57</td>
+<td class="instruction">CALL <a href="6394.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintFlag_Units</td>
+<td class="address-2"><span id="6a5a"></span>6A5A</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="4">Print the units digit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a5b"></span>6A5B</td>
+<td class="instruction">AND $0F</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a5d"></span>6A5D</td>
+<td class="instruction">ADD A,$30</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a5f"></span>6A5F</td>
+<td class="instruction">CALL <a href="6394.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a62"></span>6A62</td>
+<td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="2">Print a following space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a64"></span>6A64</td>
+<td class="instruction">CALL <a href="63FC.html">PlotCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6a67"></span>6A67</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6A2F.html">6A2F</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6a3c">Map</a></td>
+<td class="next">
+Next: <a href="6A68.html">6A68</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1986 Adventuresoft UK Ltd &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/blizzardpass/">Source code</a>.</div>
+<div><a href="../dec/asm/27196.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="D5FB.html">D5FB</a>
+Prev: <a href="D607.html">D607</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#d60b">Map</a></td>
 <td class="next">
@@ -42,7 +42,10 @@ Next: <a href="D671.html">D671</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
+Used by the routine at <a href="D113.html">DescribeCurrentRoom</a>.
+</div>
+<div class="paragraph">
+Reads this room's exits and prints them.
 </div>
 </div>
 <table class="input">
@@ -60,7 +63,7 @@ Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
 <td class="asm-label">PrintLocationExits</td>
 <td class="address-2"><span id="d60b"></span>D60B</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="4">Stash <span class="register">BC</span>, <span class="register">DE</span>, <span class="register">IY</span> and <span class="register">IX</span> on the stack.</td>
+<td class="comment-1" rowspan="5">Call <a href="D5EF.html">GetLocationExitData</a> to get location exit data.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -81,13 +84,12 @@ Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d611"></span>D611</td>
 <td class="instruction">CALL <a href="D5EF.html">GetLocationExitData</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D5EF.html">GetLocationExitData</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d614"></span>D614</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="2"><span class="register">IY</span>=<span class="register">IX</span> (using the stack).</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="D60B.html#d660">PrintLocationExits_DoesMatchCharacter</a> to step to the next schedule entry and take the end marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -97,14 +99,23 @@ Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d618"></span>D618</td>
-<td class="instruction">JR <a href="D60B.html#d660">PrintLocationExits_3</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D60B.html#d660">PrintLocationExits_3</a>.</td>
+<td class="instruction">JR <a href="D60B.html#d660">PrintLocationExits_DoesMatchCharacter</a></td>
 </tr>
 <tr>
-<td class="asm-label">PrintLocationExits_0</td>
+<td class="routine-comment" colspan="5">
+<span id="d61a"></span>
+<div class="comments">
+<div class="paragraph">
+Skip this exit when its door object is zero.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintLocationExits_Loop</td>
 <td class="address-2"><span id="d61a"></span>D61A</td>
 <td class="instruction">LD A,(IY+$01)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="D60B.html#d660">PrintLocationExits_3</a> if *<span class="register">IY</span>+01 is zero.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="D60B.html#d660">PrintLocationExits_DoesMatchCharacter</a> if the door object is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -114,13 +125,13 @@ Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d61e"></span>D61E</td>
-<td class="instruction">JR Z,<a href="D60B.html#d660">PrintLocationExits_3</a></td>
+<td class="instruction">JR Z,<a href="D60B.html#d660">PrintLocationExits_DoesMatchCharacter</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d620"></span>D620</td>
 <td class="instruction">LD A,(IY+$00)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="D60B.html#d660">PrintLocationExits_3</a> if *<span class="register">IY</span>+00 is greater than or equal to 0B.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="D60B.html#d660">PrintLocationExits_DoesMatchCharacter</a> if the direction is 0B or more.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -130,143 +141,155 @@ Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d625"></span>D625</td>
-<td class="instruction">JR NC,<a href="D60B.html#d660">PrintLocationExits_3</a></td>
+<td class="instruction">JR NC,<a href="D60B.html#d660">PrintLocationExits_DoesMatchCharacter</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d627"></span>D627</td>
 <td class="instruction">LD A,(IY+$01)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IY</span>+01.</td>
+<td class="comment-1" rowspan="2">Look up the door object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d62a"></span>D62A</td>
 <td class="instruction">CALL <a href="D237.html">FetchObjectDataPointer</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D237.html">FetchObjectDataPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d62d"></span>D62D</td>
 <td class="instruction">BIT 7,(IX+$05)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="D60B.html#d660">PrintLocationExits_3</a> if bit 7 of *<span class="register">IX</span>+05 is not set.</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="D60B.html#d660">PrintLocationExits_DoesMatchCharacter</a> if the object-attribute flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d631"></span>D631</td>
-<td class="instruction">JR Z,<a href="D60B.html#d660">PrintLocationExits_3</a></td>
+<td class="instruction">JR Z,<a href="D60B.html#d660">PrintLocationExits_DoesMatchCharacter</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d633"></span>D633</td>
 <td class="instruction">LD A,(IY+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IY</span>+00.</td>
+<td class="comment-1" rowspan="2">Call <a href="D5FB.html">GetDirectionToken</a> to get direction token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d636"></span>D636</td>
 <td class="instruction">CALL <a href="D5FB.html">GetDirectionToken</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D5FB.html">GetDirectionToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d639"></span>D639</td>
 <td class="instruction">CP $09</td>
-<td class="comment-1" rowspan="2">Jump to <a href="D60B.html#d647">PrintLocationExits_1</a> if <span class="register">A</span> is less than 09.</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="D60B.html#d647">PrintLocationExits_Next</a> if the direction is below a tab.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d63b"></span>D63B</td>
-<td class="instruction">JR C,<a href="D60B.html#d647">PrintLocationExits_1</a></td>
+<td class="instruction">JR C,<a href="D60B.html#d647">PrintLocationExits_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d63d"></span>D63D</td>
 <td class="instruction">LD DE,$000A</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>="<a href="5DC0.html#5dc9">ABOVE</a>".</td>
+<td class="comment-1" rowspan="2">Take a step of 000A and jump ahead to <a href="D60B.html#d64d">PrintLocationExits_PrintTextToken</a> if the direction token is 09.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d640"></span>D640</td>
-<td class="instruction">JR Z,<a href="D60B.html#d64d">PrintLocationExits_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D60B.html#d64d">PrintLocationExits_2</a> if <span class="register">A</span> is equal to 09.</td>
+<td class="instruction">JR Z,<a href="D60B.html#d64d">PrintLocationExits_PrintTextToken</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d642"></span>D642</td>
 <td class="instruction">LD DE,$00E7</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>="<a href="5E66.html#5ea6">BELOW</a>".</td>
+<td class="comment-1" rowspan="2">Use a step of 00E7 and join <a href="D60B.html#d64d">PrintLocationExits_PrintTextToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d645"></span>D645</td>
-<td class="instruction">JR <a href="D60B.html#d64d">PrintLocationExits_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D60B.html#d64d">PrintLocationExits_2</a>.</td>
+<td class="instruction">JR <a href="D60B.html#d64d">PrintLocationExits_PrintTextToken</a></td>
 </tr>
 <tr>
-<td class="asm-label">PrintLocationExits_1</td>
+<td class="routine-comment" colspan="5">
+<span id="d647"></span>
+<div class="comments">
+<div class="paragraph">
+Use the text: message at <a href="68BC.html">68BC</a> as the pointer, then use the text: exits at <a href="68E9.html">68E9</a> as the pointer, then advance the schedule entry by the count.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintLocationExits_Next</td>
 <td class="address-2"><span id="d647"></span>D647</td>
 <td class="instruction">LD HL,$68BC</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="68BC.html">68BC</a>.</td>
+<td class="comment-1" rowspan="2">Take the message, then call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d64a"></span>D64A</td>
 <td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintLocationExits_2</td>
+<td class="routine-comment" colspan="5">
+<span id="d64d"></span>
+<div class="comments">
+<div class="paragraph">
+Print text token.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintLocationExits_PrintTextToken</td>
 <td class="address-2"><span id="d64d"></span>D64D</td>
-<td class="instruction">CALL <a href="A880.html#a887">PrintTextToken</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A880.html#a887">PrintTextToken</a>.</td>
+<td class="instruction">CALL <a href="A887.html">PrintTextToken</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A887.html">PrintTextToken</a> to print the dictionary word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d650"></span>D650</td>
 <td class="instruction">LD HL,$68E9</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="68E9.html">68E9</a>.</td>
+<td class="comment-1" rowspan="2">Take the exits message, then call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the exits message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d653"></span>D653</td>
 <td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d656"></span>D656</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">IY</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Keep the schedule entry, then call <a href="D3D5.html">TakeTheFoundObject</a> to run object entry alternate.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d658"></span>D658</td>
-<td class="instruction">CALL <a href="D39B.html#d3d5">ProcessObjectEntryAlternate_3</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D39B.html#d3d5">ProcessObjectEntryAlternate_3</a>.</td>
+<td class="instruction">CALL <a href="D3D5.html">TakeTheFoundObject</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d65b"></span>D65B</td>
-<td class="instruction">CALL <a href="A37D.html#a414">ProcessObject_Display_5</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A37D.html#a414">ProcessObject_Display_5</a>.</td>
+<td class="instruction">CALL <a href="A414.html">PrintFullStop</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A414.html">PrintFullStop</a> to print a full stop.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d65e"></span>D65E</td>
 <td class="instruction">POP IY</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">IY</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the schedule entry from the stack.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintLocationExits_3</td>
+<td class="asm-label">PrintLocationExits_DoesMatchCharacter</td>
 <td class="address-2"><span id="d660"></span>D660</td>
 <td class="instruction">ADD IY,BC</td>
-<td class="comment-1" rowspan="1"><span class="register">IY</span>+=<span class="register">BC</span>.</td>
+<td class="comment-1" rowspan="4">Jump back to <a href="D60B.html#d61a">PrintLocationExits_Loop</a> unless the next entry is the end marker (FF).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d662"></span>D662</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="3">Jump to <a href="D60B.html#d61a">PrintLocationExits_0</a> if *<span class="register">IY</span>+00 is not equal to FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -276,13 +299,13 @@ Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d667"></span>D667</td>
-<td class="instruction">JP NZ,<a href="D60B.html#d61a">PrintLocationExits_0</a></td>
+<td class="instruction">JP NZ,<a href="D60B.html#d61a">PrintLocationExits_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d66a"></span>D66A</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="4">Restore <span class="register">IX</span>, <span class="register">IY</span>, <span class="register">DE</span> and <span class="register">BC</span> from the stack.</td>
+<td class="comment-1" rowspan="4">Restore the saved character record, the saved schedule entry, the saved source and the saved count from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -309,7 +332,7 @@ Used by the routine at <a href="D102.html">ProcessLocationTokenDisplay</a>.
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="D5FB.html">D5FB</a>
+Prev: <a href="D607.html">D607</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#d60b">Map</a></td>
 <td class="next">
@@ -320,7 +343,7 @@ Next: <a href="D671.html">D671</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/54795.html">Switch to decimal</a>.</div>
 </footer>

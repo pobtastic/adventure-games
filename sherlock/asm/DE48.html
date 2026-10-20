@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at DE48</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DD35.html">DD35</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#de48">Map</a></td>
+<td class="next">
+Next: <a href="DE60.html">DE60</a>
+</td>
+</tr>
+</table>
+<div class="description">DE48: Scale The High Byte By Sixty</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="DD35.html">DescribeObjectIfPresent</a>.
+</div>
+<div class="paragraph">
+Returns the low byte plus sixty times the high byte. When the high byte is 0C only the low byte is kept.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleHighByteBySixty</td>
+<td class="address-2"><span id="de48"></span>DE48</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="5">Clear the pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de49"></span>DE49</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de4a"></span>DE4A</td>
+<td class="instruction">LD C,L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de4b"></span>DE4B</td>
+<td class="instruction">LD B,H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de4c"></span>DE4C</td>
+<td class="instruction">LD HL,$0000</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de4f"></span>DE4F</td>
+<td class="instruction">LD DE,$003C</td>
+<td class="comment-1" rowspan="1">Take sixty (3C), the scale for the high byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de52"></span>DE52</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="3">Go to <a href="DE48.html#de5a">ScaleHighByteBySixty_AddLowByte</a> when the high byte is 0C so only the low byte is kept.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de53"></span>DE53</td>
+<td class="instruction">CP $0C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de55"></span>DE55</td>
+<td class="instruction">JR Z,<a href="DE48.html#de5a">ScaleHighByteBySixty_AddLowByte</a></td>
+</tr>
+<tr>
+<td class="asm-label">ScaleHighByteBySixty_Hour</td>
+<td class="address-2"><span id="de57"></span>DE57</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="2">Add sixty to <span class="register">HL</span> once per hour in <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de58"></span>DE58</td>
+<td class="instruction">DJNZ <a href="DE48.html#de57">ScaleHighByteBySixty_Hour</a></td>
+</tr>
+<tr>
+<td class="asm-label">ScaleHighByteBySixty_AddLowByte</td>
+<td class="address-2"><span id="de5a"></span>DE5A</td>
+<td class="instruction">LD B,$00</td>
+<td class="comment-1" rowspan="1">Clear the high byte of the count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de5c"></span>DE5C</td>
+<td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1">Advance the pointer by the count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de5d"></span>DE5D</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore the saved count and the saved source from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de5e"></span>DE5E</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="de5f"></span>DE5F</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DD35.html">DD35</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#de48">Map</a></td>
+<td class="next">
+Next: <a href="DE60.html">DE60</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/56904.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

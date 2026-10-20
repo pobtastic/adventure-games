@@ -41,6 +41,9 @@ Next: <a href="B135.html">B135</a>
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Follows the character link, and calls <a href="AEC6.html">WalkSavedClauseList</a> when bit 3 of the flag is clear. Reached through the alternate command table at <a href="AF9B.html">Table_CommandHandlerLookup_Alternate</a>, dispatched by <a href="AFB3.html#afe0">AFE0</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -48,191 +51,186 @@ Next: <a href="B135.html">B135</a>
 <td class="asm-label">ProcessCharacterData</td>
 <td class="address-2"><span id="b0fd"></span>B0FD</td>
 <td class="instruction">LD BC,$0008</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="B0FD.html#b107">ProcessCharacterData_Next</a> if bit 3 is present.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b100"></span>B100</td>
 <td class="instruction">BIT 3,E</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b102"></span>B102</td>
-<td class="instruction">JR NZ,<a href="B0FD.html#b107">ProcessCharacterData_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="B0FD.html#b107">ProcessCharacterData_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b104"></span>B104</td>
-<td class="instruction">CALL <a href="AEC5.html#aec6">$AEC6</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="AEC6.html">WalkSavedClauseList</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AEC6.html">WalkSavedClauseList</a> to walk the saved clause list.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessCharacterData_0</td>
+<td class="asm-label">ProcessCharacterData_Next</td>
 <td class="address-2"><span id="b107"></span>B107</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="5">Run character data.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b109"></span>B109</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b10a"></span>B10A</td>
 <td class="instruction">ADD HL,BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b10b"></span>B10B</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b10c"></span>B10C</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b10d"></span>B10D</td>
 <td class="instruction">BIT 3,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="B0FD.html#b118">ProcessCharacterData_PicturesEnabledPointer</a> if bit 3 is present.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b10f"></span>B10F</td>
-<td class="instruction">JR NZ,<a href="B0FD.html#b118">ProcessCharacterData_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="B0FD.html#b118">ProcessCharacterData_PicturesEnabledPointer</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b111"></span>B111</td>
 <td class="instruction">SET 3,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Mark this character as already linked.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b113"></span>B113</td>
-<td class="instruction">CALL <a href="AEA9.html">$AEA9</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="AEA9.html">FollowCharacterLink</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AEA9.html">FollowCharacterLink</a> to follow the character link.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b116"></span>B116</td>
-<td class="instruction">JR <a href="B0FD.html#b11f">ProcessCharacterData_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="B0FD.html#b11f">ProcessCharacterData_LengthCharacters</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="B0FD.html#b11f">ProcessCharacterData_LengthCharacters</a> to step on 18 bytes.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessCharacterData_1</td>
+<td class="routine-comment" colspan="5">
+<span id="b118"></span>
+<div class="comments">
+<div class="paragraph">
+Mark another picture enabled and initialise the character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessCharacterData_PicturesEnabledPointer</td>
 <td class="address-2"><span id="b118"></span>B118</td>
 <td class="instruction">LD HL,$A012</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Call <a href="AE6A.html">InitialiseCharacterDataStructure</a> to initialise character data structure.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b11b"></span>B11B</td>
 <td class="instruction">INC (HL)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b11c"></span>B11C</td>
 <td class="instruction">CALL <a href="AE6A.html">InitialiseCharacterDataStructure</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessCharacterData_2</td>
+<td class="asm-label">ProcessCharacterData_LengthCharacters</td>
 <td class="address-2"><span id="b11f"></span>B11F</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="5">Point <span class="register">HL</span> 18 bytes past <span class="register">IY</span> and restore <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b121"></span>B121</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b122"></span>B122</td>
 <td class="instruction">LD BC,$0018</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b125"></span>B125</td>
 <td class="instruction">ADD HL,BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b126"></span>B126</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b127"></span>B127</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Swap the pointers, copy 06 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b128"></span>B128</td>
 <td class="instruction">LD BC,$0006</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b12b"></span>B12B</td>
 <td class="instruction">LDIR</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b12d"></span>B12D</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="b12e"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routines at <a href="B13F.html">B13F</a> and <a href="B15B.html">B15B</a>.
+This entry point is used by the routines at <a href="B13F.html">FollowLinkWhenFlagged</a> and <a href="B15B.html">InitialiseWhenFlagged</a>.
+</div>
+<div class="paragraph">
+Read the low byte of the source, then mark bits 0, 1, 2, 6, 7 on the result, then store the result in the low byte of the source.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">ProcessCharacterData_3</td>
+<td class="asm-label">ProcessCharacterData_0</td>
 <td class="address-2"><span id="b12e"></span>B12E</td>
 <td class="instruction">LD A,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Jump back to <a href="AAD1.html">StartPictureModeScreenIdle</a> to prepare character for display.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b12f"></span>B12F</td>
 <td class="instruction">OR $C7</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b131"></span>B131</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b132"></span>B132</td>
-<td class="instruction">JP <a href="AAB2.html#aad1">$AAD1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP <a href="AAD1.html">StartPictureModeScreenIdle</a></td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -249,7 +247,7 @@ Next: <a href="B135.html">B135</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/45309.html">Switch to decimal</a>.</div>
 </footer>

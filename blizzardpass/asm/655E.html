@@ -29,585 +29,468 @@ Prev: <a href="655A.html">655A</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#655e">Map</a></td>
 <td class="next">
-Next: <a href="6618.html">6618</a>
+Next: <a href="65ED.html">65ED</a>
 </td>
 </tr>
 </table>
-<div class="description">655E: Routine at 655E</div>
+<div class="description">655E: Scroll Text Window</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="63D4.html">63D4</a>.
+Used by the routine at <a href="63FC.html">PlotCharacter</a>.
+</div>
+<div class="paragraph">
+Moves every pixel row of the text window up by one character and clears the bottom row. During a description the picture is left where it is.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="655e"></span>
+<div class="comments">
+<div class="paragraph">
+A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player read before the next scroll.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScrollWindow</td>
 <td class="address-2"><span id="655e"></span>655E</td>
 <td class="instruction">LD A,($5B97)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">The bottom row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6561"></span>6561</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6562"></span>6562</td>
 <td class="instruction">LD A,$16</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Blank lines left are 16 minus that row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6564"></span>6564</td>
 <td class="instruction">SUB B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6565"></span>6565</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6566"></span>6566</td>
 <td class="instruction">LD A,($655C)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Fewer scrolls than blank lines means scroll now.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6569"></span>6569</td>
 <td class="instruction">CP B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="656a"></span>656A</td>
-<td class="instruction">JR C,<a href="655E.html#6582">$6582</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR C,<a href="655E.html#6582">ScrollWindow_Row</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="656c"></span>656C</td>
 <td class="instruction">LD HL,($655A)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Otherwise copy the repeat delay into the frame counter, <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C78.html">FRAMES</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="656f"></span>656F</td>
 <td class="instruction">LD ($5C78),HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">ScrollWindow_Wait</td>
 <td class="address-2"><span id="6572"></span>6572</td>
 <td class="instruction">LD A,($5C04)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">A key releases the pause.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6575"></span>6575</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6577"></span>6577</td>
-<td class="instruction">JR NZ,<a href="655E.html#6582">$6582</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="655E.html#6582">ScrollWindow_Row</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6579"></span>6579</td>
 <td class="instruction">CALL $0052</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Call the RET at the end of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0038.html">MASKABLE INTERRUPT</a> and scroll once the frame counter has moved.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="657c"></span>657C</td>
 <td class="instruction">LD A,($5C79)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="657f"></span>657F</td>
 <td class="instruction">OR A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6580"></span>6580</td>
-<td class="instruction">JR Z,<a href="655E.html#6572">$6572</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="655E.html#6572">ScrollWindow_Wait</a></td>
 </tr>
 <tr>
+<td class="asm-label">ScrollWindow_Row</td>
 <td class="address-2"><span id="6582"></span>6582</td>
 <td class="instruction">LD HL,$655C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Count this scroll.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6585"></span>6585</td>
 <td class="instruction">INC (HL)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6586"></span>6586</td>
 <td class="instruction">LD A,($5B97)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">The bottom row is the first one to move.</td>
 </tr>
 <tr>
+<td class="asm-label">ScrollWindow_Up</td>
 <td class="address-2"><span id="6589"></span>6589</td>
-<td class="instruction">CALL <a href="5F16.html">$5F16</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="5F16.html">RowAddress</a></td>
+<td class="comment-1" rowspan="1">Address of that character row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="658c"></span>658C</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Keep this row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="658d"></span>658D</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Address of the row below it.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="658e"></span>658E</td>
-<td class="instruction">CALL <a href="5F16.html">$5F16</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="5F16.html">RowAddress</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6591"></span>6591</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">That address is the destination.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6592"></span>6592</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6593"></span>6593</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Eight pixel rows.</td>
 </tr>
 <tr>
+<td class="asm-label">ScrollWindow_Pixels</td>
 <td class="address-2"><span id="6595"></span>6595</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Save the row pair.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6596"></span>6596</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6597"></span>6597</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="6598"></span>6598</td>
 <td class="instruction">LD BC,$0020</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Copy one pixel row, 20 bytes.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="659b"></span>659B</td>
 <td class="instruction">LDIR</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="659d"></span>659D</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Restore the row pair from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="659e"></span>659E</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="659f"></span>659F</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65a0"></span>65A0</td>
 <td class="instruction">INC H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">The next pixel row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65a1"></span>65A1</td>
 <td class="instruction">INC D</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65a2"></span>65A2</td>
-<td class="instruction">DJNZ <a href="655E.html#6595">$6595</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="655E.html#6595">ScrollWindow_Pixels</a></td>
+<td class="comment-1" rowspan="1">All eight pixel rows.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65a4"></span>65A4</td>
 <td class="instruction">CP $13</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Row 13 is the pause row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65a6"></span>65A6</td>
-<td class="instruction">JR Z,<a href="655E.html#65ae">$65AE</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="655E.html#65ae">ScrollWindow_Pause</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65a8"></span>65A8</td>
 <td class="instruction">CP $17</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Row 17 is the bottom of the window.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65aa"></span>65AA</td>
-<td class="instruction">JR NZ,<a href="655E.html#6589">$6589</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="655E.html#6589">ScrollWindow_Up</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65ac"></span>65AC</td>
-<td class="instruction">JR <a href="655E.html#65be">$65BE</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="655E.html#65be">ScrollWindow_Bottom</a></td>
+<td class="comment-1" rowspan="1">Otherwise the blank line is the bottom row.</td>
 </tr>
 <tr>
+<td class="asm-label">ScrollWindow_Pause</td>
 <td class="address-2"><span id="65ae"></span>65AE</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">A description in progress blanks the pause row instead.</td>
 </tr>
 <tr>
-<td class="routine-comment" colspan="5">
-<span id="65af"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routine at <a href="6B41.html">6B41</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="address-2"><span id="65af"></span>65AF</td>
+<td class="asm-label"></td>
+<td class="address-1"><span id="65af"></span>65AF</td>
 <td class="instruction">LD A,($6186)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65b2"></span>65B2</td>
 <td class="instruction">OR A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65b3"></span>65B3</td>
-<td class="instruction">JR Z,<a href="655E.html#65bb">$65BB</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="655E.html#65bb">ScrollWindow_More</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65b5"></span>65B5</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">The blank line is at 5060 while the description is paused.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65b6"></span>65B6</td>
 <td class="instruction">LD HL,$5060</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65b9"></span>65B9</td>
-<td class="instruction">JR <a href="655E.html#65c1">$65C1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="655E.html#65c1">ScrollWindow_Clear</a></td>
+<td class="comment-1" rowspan="1">Clear that line.</td>
 </tr>
 <tr>
+<td class="asm-label">ScrollWindow_More</td>
 <td class="address-2"><span id="65bb"></span>65BB</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Keep copying while the window has not been reached.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65bc"></span>65BC</td>
-<td class="instruction">JR <a href="655E.html#6589">$6589</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="655E.html#6589">ScrollWindow_Up</a></td>
 </tr>
 <tr>
+<td class="asm-label">ScrollWindow_Bottom</td>
 <td class="address-2"><span id="65be"></span>65BE</td>
 <td class="instruction">LD HL,$50E0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">The ordinary blank line is at 50E0.</td>
 </tr>
 <tr>
+<td class="asm-label">ScrollWindow_Clear</td>
 <td class="address-2"><span id="65c1"></span>65C1</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">The cleared row is copied onto itself, one byte on.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65c2"></span>65C2</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65c3"></span>65C3</td>
 <td class="instruction">INC DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65c4"></span>65C4</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Eight pixel rows.</td>
 </tr>
 <tr>
+<td class="asm-label">ScrollWindow_Wipe</td>
 <td class="address-2"><span id="65c6"></span>65C6</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Save the row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65c7"></span>65C7</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65c8"></span>65C8</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65c9"></span>65C9</td>
 <td class="instruction">LD (HL),$00</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Write a zero and copy it across the row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65cb"></span>65CB</td>
 <td class="instruction">LD BC,$001F</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65ce"></span>65CE</td>
 <td class="instruction">LDIR</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65d0"></span>65D0</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Restore the row from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65d1"></span>65D1</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65d2"></span>65D2</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65d3"></span>65D3</td>
 <td class="instruction">INC H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">The next pixel row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65d4"></span>65D4</td>
 <td class="instruction">INC D</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65d5"></span>65D5</td>
-<td class="instruction">DJNZ <a href="655E.html#65c6">$65C6</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="655E.html#65c6">ScrollWindow_Wipe</a></td>
+<td class="comment-1" rowspan="1">All eight.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65d7"></span>65D7</td>
 <td class="instruction">LD A,($6186)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">A paused description leaves the cursor on the pause row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65da"></span>65DA</td>
 <td class="instruction">OR A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65db"></span>65DB</td>
-<td class="instruction">JR Z,<a href="655E.html#65e2">$65E2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="655E.html#65e2">ScrollWindow_Home</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65dd"></span>65DD</td>
 <td class="instruction">LD HL,$5060</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">That row is 5060.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65e0"></span>65E0</td>
-<td class="instruction">JR <a href="655E.html#65e5">$65E5</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="655E.html#65e5">ScrollWindow_Cursor</a></td>
+<td class="comment-1" rowspan="1">Home there.</td>
 </tr>
 <tr>
+<td class="asm-label">ScrollWindow_Home</td>
 <td class="address-2"><span id="65e2"></span>65E2</td>
 <td class="instruction">LD HL,$50E0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Otherwise the cursor sits on 50E0.</td>
 </tr>
 <tr>
+<td class="asm-label">ScrollWindow_Cursor</td>
 <td class="address-2"><span id="65e5"></span>65E5</td>
 <td class="instruction">LD ($5B87),HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store the print address.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65e8"></span>65E8</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Column 0.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65e9"></span>65E9</td>
 <td class="instruction">LD ($5B8A),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="65ec"></span>65EC</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="65ed"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routines at <a href="6187.html">6187</a> and <a href="662D.html">662D</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="address-2"><span id="65ed"></span>65ED</td>
-<td class="instruction">LD A,($66D6)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="65f0"></span>65F0</td>
-<td class="instruction">OR A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="65f1"></span>65F1</td>
-<td class="instruction">JR Z,<a href="655E.html#65f5">$65F5</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="65f3"></span>65F3</td>
-<td class="instruction">LD A,$0C</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-2"><span id="65f5"></span>65F5</td>
-<td class="instruction">DEC A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-2"><span id="65f6"></span>65F6</td>
-<td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="65f7"></span>65F7</td>
-<td class="instruction">LD HL,$5B97</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="65fa"></span>65FA</td>
-<td class="instruction">LD B,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="65fb"></span>65FB</td>
-<td class="instruction">CP B</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="65fc"></span>65FC</td>
-<td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="65fd"></span>65FD</td>
-<td class="instruction">CALL <a href="5F16.html">$5F16</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6600"></span>6600</td>
-<td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6601"></span>6601</td>
-<td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6602"></span>6602</td>
-<td class="instruction">INC DE</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6603"></span>6603</td>
-<td class="instruction">LD B,$08</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="6605"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routine at <a href="6B41.html">6B41</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="address-2"><span id="6605"></span>6605</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6606"></span>6606</td>
-<td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6607"></span>6607</td>
-<td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6608"></span>6608</td>
-<td class="instruction">LD BC,$001F</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="660b"></span>660B</td>
-<td class="instruction">LD (HL),$00</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="660d"></span>660D</td>
-<td class="instruction">LDIR</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="660f"></span>660F</td>
-<td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6610"></span>6610</td>
-<td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6611"></span>6611</td>
-<td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6612"></span>6612</td>
-<td class="instruction">INC D</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6613"></span>6613</td>
-<td class="instruction">INC H</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6614"></span>6614</td>
-<td class="instruction">DJNZ <a href="655E.html#6605">$6605</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="6616"></span>6616</td>
-<td class="instruction">JR <a href="655E.html#65f6">$65F6</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -617,14 +500,14 @@ Prev: <a href="655A.html">655A</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#655e">Map</a></td>
 <td class="next">
-Next: <a href="6618.html">6618</a>
+Next: <a href="65ED.html">65ED</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Adventuresoft UK Ltd &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/blizzardpass/">Source code</a>.</div>
 <div><a href="../dec/asm/25950.html">Switch to decimal</a>.</div>
 </footer>

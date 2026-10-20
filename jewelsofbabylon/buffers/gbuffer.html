@@ -36,10 +36,27 @@ gtag('config', 'G-75RERFCHBG');
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BBF0.html">Table: Item Locations</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-A table where the index is the item ID, and the value is the room it resides in (00 for "currently inactive").
+Where each of the 4F items is (the count is at <a href="../asm/BD28.html">Count_Items</a>). The item number is the position in this table, and the same number indexes the item descriptions at <a href="../asm/D34E.html">Table_ItemDescriptions</a>. <table class="default">
+<tr>
+<th colspan="1" rowspan="1">Byte</th>
+<th colspan="1" rowspan="1">Meaning</th>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">00</td>
+<td class="centre" colspan="1" rowspan="1">Not in play yet, or used up</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">01</td>
+<td class="centre" colspan="1" rowspan="1">Carried by the player</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">Other</td>
+<td class="centre" colspan="1" rowspan="1">The room the item is in</td>
+</tr>
+</table> This is the start of the game status buffer. <a href="../asm/FD82.html">GameStart</a> copies the 0144 bytes from <a href="../asm/FDB5.html">DefaultGameState</a> over it at the start of every game (that list names every item and where it starts), and <a href="../asm/BB59.html">SaveGame</a> and <a href="../asm/BB94.html">LoadTape</a> save and load it as a single tape block.
 </div>
 <div class="paragraph">
-When the item is in the players inventory, the room ID changes to 01.
+Populated by <a href="../asm/FD82.html">GameStart</a> and <a href="../asm/C412.html">Handler_UpdateObjectLocation</a>. See <a href="../asm/C1FF.html">PrintObjects</a>, <a href="../asm/C35F.html">ValidateItemPresent</a>, <a href="../asm/C3D0.html">ObjectEventLocator</a> and <a href="../asm/C439.html">CheckRoomObjects</a> for usage.
 </div>
 </div>
 </td>
@@ -178,7 +195,7 @@ Corresponds to whether the player has already seen the image for the following r
 </table>
 </div>
 <div class="paragraph">
-Used by the routine at <a href="../asm/C21E.html">Handler_DisplayRoomImage</a> but uses the bit index from <a href="../asm/E95D.html">Table_RoomsWithImages</a>.
+<a href="../asm/C21E.html">Handler_DisplayRoomImage</a> tests and sets the bit for the current room. The bit number is the room's place in <a href="../asm/E95D.html">Table_RoomsWithImages</a>.
 </div>
 </div>
 </td>
@@ -245,47 +262,14 @@ Holds a single byte, where each bit relates to a turn-based event as follows: <t
 <td class="map-g"><span id="bc6f"></span><a href="../asm/BC6F.html">BC6F</a></td>
 <td class="map-length">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BC6F.html">Flags: Event States</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BC6F.html">Flag: Crab Following</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Holds a single byte, where each bit relates to an event as follows: <table class="default">
-<tr>
-<th colspan="1" rowspan="1">Bit</th>
-<th colspan="1" rowspan="1">Relating To</th>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">00</td>
-<td class="centre" colspan="1" rowspan="1">Crab</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">01</td>
-<td class="centre" colspan="1" rowspan="1">Tentacle</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">02</td>
-<td class="centre" colspan="1" rowspan="1">Drunk</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">03</td>
-<td class="centre" colspan="1" rowspan="1">Lion</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">04</td>
-<td class="centre" colspan="1" rowspan="1">Crocodile</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">05</td>
-<td class="centre" colspan="1" rowspan="1">Cannibals</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">06</td>
-<td class="centre" colspan="1" rowspan="1">Match</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">07</td>
-<td class="centre" colspan="1" rowspan="1">Wave</td>
-</tr>
-</table> When the bit is set, this indicates that a turn-based event has started.
+Only bit 0 is used. When it is set, the giant crab ("A giant crab", the first byte of <a href="../asm/BC70.html">Table_FollowingItems</a>) follows the player from room to room. <a href="../asm/EF54.html">ChangeRoom</a> sets the bit at <a href="../asm/EF54.html#ef91">EF91</a> when the player walks into 
+
+<a href="../asm/CECA.html">The Rockpool</a> while the crab is there, and clears it at <a href="../asm/EF54.html#ef64">EF64</a> on reaching 
+
+<a href="../asm/CE54.html">The Rocky Path</a>. <a href="../asm/FB16.html">Action_Shout</a> clears it at <a href="../asm/FB16.html#fb43">Shout_Crab</a> when the boulder falls on the crab. Bits 1-7 are never set. <a href="../asm/C520.html">MovePlayerToRoom</a> moves the item for each set bit into the room the player just entered.
 </div>
 </div>
 </td>
@@ -294,62 +278,14 @@ Holds a single byte, where each bit relates to an event as follows: <table class
 <td class="map-g"><span id="bc70"></span><a href="../asm/BC70.html">BC70</a></td>
 <td class="map-length">8</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BC70.html">Table: Turn-Based Event Items</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BC70.html">Table: Following Items</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-A table mapping each turn-based event (by bit position in <a href="../asm/BC6F.html">Flag_EventState</a>) to its associated item ID.
-</div>
-<div class="paragraph">
-When a turn-based event is active, its item is moved to the current room.
-</div>
-<div class="paragraph">
-The events correspond to the bits as follows: <table class="default">
-<tr>
-<th colspan="1" rowspan="1">Bit</th>
-<th colspan="1" rowspan="1">Event</th>
-<th colspan="1" rowspan="1">Item ID</th>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">00</td>
-<td class="centre" colspan="1" rowspan="1">Crab</td>
-<td class="centre" colspan="1" rowspan="1">29</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">01</td>
-<td class="centre" colspan="1" rowspan="1">Tentacle</td>
-<td class="centre" colspan="1" rowspan="1">00</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">02</td>
-<td class="centre" colspan="1" rowspan="1">Drunk</td>
-<td class="centre" colspan="1" rowspan="1">00</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">03</td>
-<td class="centre" colspan="1" rowspan="1">Lion</td>
-<td class="centre" colspan="1" rowspan="1">00</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">04</td>
-<td class="centre" colspan="1" rowspan="1">Crocodile</td>
-<td class="centre" colspan="1" rowspan="1">00</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">05</td>
-<td class="centre" colspan="1" rowspan="1">Cannibals</td>
-<td class="centre" colspan="1" rowspan="1">00</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">06</td>
-<td class="centre" colspan="1" rowspan="1">Match</td>
-<td class="centre" colspan="1" rowspan="1">00</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">07</td>
-<td class="centre" colspan="1" rowspan="1">Wave</td>
-<td class="centre" colspan="1" rowspan="1">00</td>
-</tr>
-</table>
+Each bit of <a href="../asm/BC6F.html">Flag_CrabFollowing</a> makes the item at the same position here follow the player: every time the player changes room, <a href="../asm/C520.html">MovePlayerToRoom</a> moves the item into the new room. Only bit 0 is used. <a href="../asm/EF54.html">ChangeRoom</a> sets it when the player walks into 
+
+<a href="../asm/CECA.html">The Rockpool</a> while the giant crab is there, and closes the way out to the west and north; the crab then chases the player until they reach 
+
+<a href="../asm/CE54.html">The Rocky Path</a> or until the boulder falls on it (<a href="../asm/FB16.html">Action_Shout</a>).
 </div>
 </div>
 </td>
@@ -361,17 +297,28 @@ The events correspond to the bits as follows: <table class="default">
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BC78.html">Table: Scenic Event Locations</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-A table where the index is the event ID, and the value is the room it resides in (00 for "currently inactive"). See <a href="../asm/BD30.html">Count_ScenicEvents</a> for the count.
-</div>
-</div>
-</td>
+Where each of the 09 scenic events is (the count is at <a href="../asm/BD30.html">Count_ScenicEvents</a>). Scenic events are the animals and pirates that wander about; in the item groups at <a href="../asm/E86E.html">Data_ItemGroup_Match</a> event 00 is written as 80 and so on. <table class="default">
+<tr>
+<th colspan="1" rowspan="1">Byte</th>
+<th colspan="1" rowspan="1">Meaning</th>
 </tr>
 <tr>
-<td class="map-g"><span id="bc81"></span><a href="../asm/BC81.html">BC81</a></td>
-<td class="map-length">23</td>
-<td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BC81.html">Game status buffer entry at BC81</a></div>
-<div class="map-entry-desc">
+<td class="centre" colspan="1" rowspan="1">00</td>
+<td class="centre" colspan="1" rowspan="1">Not in play</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">FF</td>
+<td class="centre" colspan="1" rowspan="1">Just put into play by <a href="../asm/C3FA.html">Handler_PutScenicEventIntoPlay</a>, so it gets a room on the next turn</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">Other</td>
+<td class="centre" colspan="1" rowspan="1">The room the event is in</td>
+</tr>
+</table> Each turn <a href="../asm/C17D.html">GameEventsProcessor</a> moves every event that is in play, and not with the player, to a random room from its list in <a href="../asm/E933.html">Data_ScenicEvents_Seagull</a>, found through the pointers at <a href="../asm/BCCC.html">Table_ScenicEventRooms</a>. When the player leaves a room <a href="../asm/C520.html">MovePlayerToRoom</a> takes any event that is there along too, and <a href="../asm/C4EB.html">Handler_ScenicEvents</a> runs the handler from <a href="../asm/FF96.html">JumpTable_ScenicEvents</a> for every event in the player's room.
+</div>
+<div class="paragraph">
+Populated by <a href="../asm/FD82.html">GameStart</a> and <a href="../asm/C412.html">Handler_UpdateObjectLocation</a>. See <a href="../asm/C17D.html">GameEventsProcessor</a>, <a href="../asm/C35F.html">ValidateItemPresent</a>, <a href="../asm/C3D0.html">ObjectEventLocator</a>, <a href="../asm/C4EB.html">Handler_ScenicEvents</a> and <a href="../asm/C520.html">MovePlayerToRoom</a> for usage.
+</div>
 </div>
 </td>
 </tr>
@@ -422,15 +369,6 @@ The room the player starts the game in is room 03:
 <div class="paragraph">
 Pointer to the table containing groups of room IDs that an event could occur in.
 </div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="map-g"><span id="bcde"></span><a href="../asm/BCDE.html">BCDE</a></td>
-<td class="map-length">46</td>
-<td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BCDE.html">Game status buffer entry at BCDE</a></div>
-<div class="map-entry-desc">
 </div>
 </td>
 </tr>
@@ -635,6 +573,9 @@ The total number of rooms which have related images in the game.
 <td class="map-g-desc">
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BD30.html">Number Of Scenic Events</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The total number of scenic events in the game, see <a href="../asm/BC78.html">Table_ScenicEventLocations</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -662,6 +603,12 @@ The total number of rooms which have related images in the game.
 <td class="map-g-desc">
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BD66.html">User Input: Word Tokens</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The vocabulary number (<a href="../asm/E61D.html">Table_Vocabulary</a>) of each word of the last command, in the order they were typed, with FF in every slot that isn't used. "THE" is skipped, and a word that isn't in the vocabulary stops the command with an error, so the words always fill the slots from the start.
+</div>
+<div class="paragraph">
+Populated by <a href="../asm/C058.html">UserInput_Enter</a>, which first fills all 0A slots with FF. <a href="../asm/C556.html">Handler_MatchVerb</a> looks the verb up in <a href="../asm/E90D.html">Table_VerbWordTokens</a>, <a href="../asm/C37F.html">MatchPhraseTokens</a> matches the words after it against a phrase from <a href="../asm/E9CA.html">PhraseTokens_Bottle</a>, and <a href="../asm/C3AE.html">Parser_CountItems</a> and <a href="../asm/C4C7.html">Parser_ProcessItem</a> look through every slot for the name of an object. See also <a href="../asm/C470.html">Parser_ValidateNoDirectObject</a>, <a href="../asm/C47B.html">Parser_ValidateDirectObject</a>, <a href="../asm/C490.html">Parser_ValidateInputTokens</a>, <a href="../asm/C4B7.html">Parser_ValidateAnyDirectObject</a> and <a href="../asm/F4D4.html">Action_DropThrow</a> for usage.
+</div>
 </div>
 </td>
 </tr>
@@ -676,10 +623,25 @@ The total number of rooms which have related images in the game.
 </tr>
 <tr>
 <td class="map-g"><span id="bd71"></span><a href="../asm/BD71.html">BD71</a></td>
-<td class="map-length">12</td>
+<td class="map-length">4</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BD71.html">Game status buffer entry at BD71</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BD71.html">Four Letter Buffer</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The four-character word <a href="../asm/C058.html">UserInput_Enter</a> is matching. The routine fills it with ASCII spaces (20) and then copies up to 04 characters of the next command word into it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="bd75"></span><a href="../asm/BD75.html">BD75</a></td>
+<td class="map-length">8</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BD75.html">Graphics: Room Image Row</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+Eight bytes assembled by <a href="../asm/BAE1.html">Print_RoomGraphic</a> for one character row of a room image, then passed to the ROM print routine.
+</div>
 </div>
 </td>
 </tr>
@@ -703,7 +665,7 @@ The total number of rooms which have related images in the game.
 </tr>
 <tr>
 <td class="map-g"><span id="bd81"></span><a href="../asm/BD81.html">BD81</a></td>
-<td class="map-length">4</td>
+<td class="map-length">2</td>
 <td class="map-g-desc">
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BD81.html">Temporary Storage Word Count</a></div>
 <div class="map-entry-desc">
@@ -750,63 +712,6 @@ Pointer to the table containing direction messaging.
 </td>
 </tr>
 <tr>
-<td class="map-g"><span id="e83e"></span><a href="../asm/E83E.html">E83E</a></td>
-<td class="map-length">48</td>
-<td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E83E.html">Table: Token Item List</a></div>
-<div class="map-entry-desc">
-<div class="paragraph">
-A list of all tokens which relate to items.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="map-g"><span id="e86e"></span><a href="../asm/E86E.html">E86E</a></td>
-<td class="map-length">159</td>
-<td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E86E.html">Data: Item Groups</a></div>
-<div class="map-entry-desc">
-<div class="paragraph">
-See <a href="../asm/E96A.html">Table_ItemGrouping</a> for usage.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="map-g"><span id="e90d"></span><a href="../asm/E90D.html">E90D</a></td>
-<td class="map-length">38</td>
-<td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E90D.html">Table: Verb Word Tokens</a></div>
-<div class="map-entry-desc">
-<div class="paragraph">
-A list of all available verb tokens in the game. See <a href="../asm/BD2C.html">Count_VerbTokens</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="map-g"><span id="e933"></span><a href="../asm/E933.html">E933</a></td>
-<td class="map-length">42</td>
-<td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E933.html">Data: Scenic Event Rooms</a></div>
-<div class="map-entry-desc">
-</div>
-</td>
-</tr>
-<tr>
-<td class="map-g"><span id="e95d"></span><a href="../asm/E95D.html">E95D</a></td>
-<td class="map-length">13</td>
-<td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E95D.html">Table: Rooms With Images</a></div>
-<div class="map-entry-desc">
-<div class="paragraph">
-See <a href="../asm/FFA8.html">JumpTable_RoomImages</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
 <td class="map-g"><span id="e96a"></span><a href="../asm/E96A.html">E96A</a></td>
 <td class="map-length">96</td>
 <td class="map-g-desc">
@@ -828,7 +733,7 @@ Some examples are: <table class="default">
 <td class="centre" colspan="1" rowspan="2">The Match</td>
 </tr>
 <tr>
-<td class="centre" colspan="1" rowspan="1"><a href="../asm/E86E.html#e86f">03</a></td>
+<td class="centre" colspan="1" rowspan="1"><a href="../asm/E86E.html">03</a></td>
 <td class="centre" colspan="1" rowspan="1">"A lighted match"</td>
 </tr>
 <tr>
@@ -842,7 +747,7 @@ Some examples are: <table class="default">
 <td class="centre" colspan="1" rowspan="2">The Eyepatch</td>
 </tr>
 <tr>
-<td class="centre" colspan="1" rowspan="1"><a href="../asm/E86E.html#e886">11</a></td>
+<td class="centre" colspan="1" rowspan="1"><a href="../asm/E86E.html#e885">11</a></td>
 <td class="centre" colspan="1" rowspan="1">"An eyepatch (worn)"</td>
 </tr>
 <tr>
@@ -856,22 +761,10 @@ Some examples are: <table class="default">
 <td class="centre" colspan="1" rowspan="2">The Parrot</td>
 </tr>
 <tr>
-<td class="centre" colspan="1" rowspan="1"><a href="../asm/E86E.html#e8bd">28</a></td>
+<td class="centre" colspan="1" rowspan="1"><a href="../asm/E86E.html#e8bc">28</a></td>
 <td class="centre" colspan="1" rowspan="1">"A dead parrot"</td>
 </tr>
 </table>
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="map-g"><span id="e9ca"></span><a href="../asm/E9CA.html">E9CA</a></td>
-<td class="map-length">326</td>
-<td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E9CA.html">Data: Phrase Tokens</a></div>
-<div class="map-entry-desc">
-<div class="paragraph">
-The user input is broken down into tokens which represent the words they've entered. These tokens are then compared against these token patterns to determine the outcome the player was trying to communicate.
 </div>
 </div>
 </td>
@@ -891,6 +784,9 @@ The user input is broken down into tokens which represent the words they've ente
 <td class="map-g-desc">
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/ED9E.html">Table: Configurable Exits</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Addresses of room-map exit bytes. <a href="../asm/FD82.html">GameStart</a> writes 00 to each of them, and <a href="../asm/BB59.html">SaveGame</a> copies the bytes into <a href="../asm/BC99.html">LoadSaveBuffer</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -900,6 +796,9 @@ The user input is broken down into tokens which represent the words they've ente
 <td class="map-g-desc">
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/FDB5.html">Default Game State</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The starting values for the game status buffer. <a href="../asm/FD82.html">GameStart</a> copies all 0144 bytes over <a href="../asm/BBF0.html">Table_ItemLocations</a> at the start of every game, so the layout is the same as the entries from <a href="../asm/BBF0.html">Table_ItemLocations</a> to <a href="../asm/BD32.html">Count_ConfigurableExits</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -952,7 +851,7 @@ See <a href="../asm/E95D.html">Table_RoomsWithImages</a>.
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/jewelsofbabylon/">Source code</a>.</div>
 <div><a href="../dec/buffers/gbuffer.html">Switch to decimal</a>.</div>
 </footer>

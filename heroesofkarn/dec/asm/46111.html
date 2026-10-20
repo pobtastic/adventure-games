@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at 46111</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="46080.html">46080</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#46111">Map</a></td>
+<td class="next">
+Next: <a href="46187.html">46187</a>
+</td>
+</tr>
+</table>
+<div class="description">46111: Handler: Display Room Image</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="44200.html">LoadFromTape</a>, <a href="60021.html">Handler_ShowNewRoom</a> and <a href="63347.html">Action_Look</a>.
+</div>
+<div class="paragraph">
+Show the picture for the current room when that room has one.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">E</td>
+<td class="register-desc">1 If the image should be displayed, 0 if it should be skipped</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46111"></span>
+<div class="comments">
+<div class="paragraph">
+The game can also load without any graphics at all, so bail if there's nothing needed to do here.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerDisplayRoomImage</td>
+<td class="address-2"><span id="46111"></span>46111</td>
+<td class="instruction">LD A,(44790)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="46187.html">HandlerDisplayRoomExits</a> if the picture-room count is set to zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46114"></span>46114</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46115"></span>46115</td>
+<td class="instruction">JR Z,<a href="46187.html">HandlerDisplayRoomExits</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46117"></span>
+<div class="comments">
+<div class="paragraph">
+The version of the game being played DOES have graphics, so continue.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46117"></span>46117</td>
+<td class="instruction">LD A,(44749)</td>
+<td class="comment-1" rowspan="1">Fetch the current room and load it into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46120"></span>46120</td>
+<td class="instruction">LD HL,(44760)</td>
+<td class="comment-1" rowspan="1">Fetch the address of the table from the rooms-with-images pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46123"></span>46123</td>
+<td class="instruction">LD BC,(44790)</td>
+<td class="comment-1" rowspan="1">Fetch the count of the number of rooms in the table from the picture-room count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46127"></span>46127</td>
+<td class="instruction">CPIR</td>
+<td class="comment-1" rowspan="1">Search to see if the current room ID is in the table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46129"></span>46129</td>
+<td class="instruction">JR NZ,<a href="46187.html">HandlerDisplayRoomExits</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="46187.html">HandlerDisplayRoomExits</a> if the current room ID does not appear in the table.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46131"></span>
+<div class="comments">
+<div class="paragraph">
+The current room does have an image associated with it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46131"></span>46131</td>
+<td class="instruction">LD A,(44790)</td>
+<td class="comment-1" rowspan="1">Read the picture-room count into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46134"></span>46134</td>
+<td class="instruction">INC C</td>
+<td class="comment-1" rowspan="3">Turn the picture search into this room's image index.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46135"></span>46135</td>
+<td class="instruction">SUB C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46136"></span>46136</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46137"></span>
+<div class="comments">
+<div class="paragraph">
+The <span class="register">E</span> register is used as a flag to indicate that the room image should not be displayed, e.g. after the player has requested to view their inventory and have seen the room image already when they entered the location.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46137"></span>46137</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Jump to <a href="46111.html#46169">DisplayRoomImage</a> if <span class="register">E</span> was set to 1 (Display the image).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46138"></span>46138</td>
+<td class="instruction">OR E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46139"></span>46139</td>
+<td class="instruction">JR NZ,<a href="46111.html#46169">DisplayRoomImage</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46141"></span>
+<div class="comments">
+<div class="paragraph">
+The game also maintains a table of "already seen room images" so the player doesn't have to view an image for a room they've already been in.
+</div>
+<div class="paragraph">
+The player can view it manually by typing "LOOK" (or just "L").
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46141"></span>46141</td>
+<td class="instruction">LD HL,44670</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the room-image-seen flags.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46144"></span>46144</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="1">Copy the room image index into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46145"></span>
+<div class="comments">
+<div class="paragraph">
+Only two bytes hold the data for all 12 rooms with images so first - find the correct byte which references this room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FindAlreadySeenByte_Loop</td>
+<td class="address-2"><span id="46145"></span>46145</td>
+<td class="instruction">CP 8</td>
+<td class="comment-1" rowspan="2">Jump to <a href="46111.html#46154">FoundAlreadySeenByte</a> if the room index is less than 8.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46147"></span>46147</td>
+<td class="instruction">JR C,<a href="46111.html#46154">FoundAlreadySeenByte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46149"></span>46149</td>
+<td class="instruction">SUB 8</td>
+<td class="comment-1" rowspan="1">Move this room into the next flag byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46151"></span>46151</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Increment the "image already seen" table pointer by one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46152"></span>46152</td>
+<td class="instruction">JR <a href="46111.html#46145">FindAlreadySeenByte_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="46111.html#46145">FindAlreadySeenByte_Loop</a> until the flag byte for this room is found.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46154"></span>
+<div class="comments">
+<div class="paragraph">
+Now the correct byte has been found, check the appropriate bit.
+</div>
+<div class="paragraph">
+Create a mask with a single bit set corresponding to this rooms position (0-7) in the byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FoundAlreadySeenByte</td>
+<td class="address-2"><span id="46154"></span>46154</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Copy the "image already seen" byte into <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46155"></span>46155</td>
+<td class="instruction">INC B</td>
+<td class="comment-1" rowspan="1">Include a shift for bit 0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46156"></span>46156</td>
+<td class="instruction">LD D,0</td>
+<td class="comment-1" rowspan="1">Start with all bits clear in <span class="register">D</span>.</td>
+</tr>
+<tr>
+<td class="asm-label">AlreadySeenBitShift_Loop</td>
+<td class="address-2"><span id="46158"></span>46158</td>
+<td class="instruction">RL D</td>
+<td class="comment-1" rowspan="2">Slide this room's bit into place.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46160"></span>46160</td>
+<td class="instruction">DJNZ <a href="46111.html#46158">AlreadySeenBitShift_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46162"></span>
+<div class="comments">
+<div class="paragraph">
+Test the bit held in <span class="register">D</span> against the room flag.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46162"></span>46162</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Fetch the current room flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46163"></span>46163</td>
+<td class="instruction">AND D</td>
+<td class="comment-1" rowspan="2">If the room image has already been seen ... jump to <a href="46187.html">HandlerDisplayRoomExits</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46164"></span>46164</td>
+<td class="instruction">JR NZ,<a href="46187.html">HandlerDisplayRoomExits</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46166"></span>
+<div class="comments">
+<div class="paragraph">
+The room image hasn't already been seen, so update the bit to indicate that the player will have viewed it for the next time this routine runs.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46166"></span>46166</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Merge the set room bit with the room flags and write the result back to the room flag byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46167"></span>46167</td>
+<td class="instruction">OR D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46168"></span>46168</td>
+<td class="instruction">LD (HL),A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46169"></span>
+<div class="comments">
+<div class="paragraph">
+Finally! Display the room image.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DisplayRoomImage</td>
+<td class="address-2"><span id="46169"></span>46169</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="3">Call <a href="44017.html">ClearScreen</a> to clear the screen, keeping the location image index in <span class="register">C</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46170"></span>46170</td>
+<td class="instruction">CALL <a href="44017.html">ClearScreen</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46173"></span>46173</td>
+<td class="instruction">POP BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46174"></span>46174</td>
+<td class="instruction">LD IX,(44762)</td>
+<td class="comment-1" rowspan="1">Fetch the address of the table from the room-image jump pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46178"></span>46178</td>
+<td class="instruction">LD E,C</td>
+<td class="comment-1" rowspan="1">Load the location image index into <span class="register">E</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46179"></span>46179</td>
+<td class="instruction">CALL <a href="46065.html">GetTableEntry</a></td>
+<td class="comment-1" rowspan="1">Call <a href="46065.html">GetTableEntry</a> to look up the table entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46182"></span>46182</td>
+<td class="instruction">LD DE,46187</td>
+<td class="comment-1" rowspan="2">Push <a href="46187.html">HandlerDisplayRoomExits</a> onto the stack so that the next return will go on to show the room exits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46185"></span>46185</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46186"></span>46186</td>
+<td class="instruction">JP (HL)</td>
+<td class="comment-1" rowspan="1">Jump to the routine pointed to by *<span class="register">HL</span> to display the room image.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="46080.html">46080</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#46111">Map</a></td>
+<td class="next">
+Next: <a href="46187.html">46187</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../../asm/B41F.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

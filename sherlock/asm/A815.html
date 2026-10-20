@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at A815</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A80E.html">A80E</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a815">Map</a></td>
+<td class="next">
+Next: <a href="A82F.html">A82F</a>
+</td>
+</tr>
+</table>
+<div class="description">A815: Read The High Byte Of The Token</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="D416.html">D416</a> and <a href="D427.html">ReadScheduleField</a>.
+</div>
+<div class="paragraph">
+Keeps the low digit of the token and folds it into the dictionary page.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="address-2"><span id="a815"></span>A815</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="2">Keep the token and take its high byte.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a816"></span>A816</td>
+<td class="instruction">LD A,D</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a817"></span>A817</td>
+<td class="instruction">AND %00001111</td>
+<td class="comment-1" rowspan="1">Keep the dictionary page (the low nibble of the token's high byte).</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a819"></span>A819</td>
+<td class="instruction">LD D,A</td>
+<td class="comment-1" rowspan="1">Keep the low digit of the token in <span class="register">D</span>.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a81a"></span>A81A</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore the saved result from the stack.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a81b"></span>A81B</td>
+<td class="instruction">OR D</td>
+<td class="comment-1" rowspan="1">Set the bits from <span class="register">D</span>.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a81c"></span>A81C</td>
+<td class="instruction">LD D,A</td>
+<td class="comment-1" rowspan="1">Fold the saved token bits back into <span class="register">D</span>.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a81d"></span>A81D</td>
+<td class="instruction">AND %00001111</td>
+<td class="comment-1" rowspan="1">Keep the dictionary page of the folded token, ready to test the whole token.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a81f"></span>A81F</td>
+<td class="instruction">OR E</td>
+<td class="comment-1" rowspan="1">Fold in the low byte of the token, so the zero flag shows an empty token.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a820"></span>A820</td>
+<td class="instruction">RET Z</td>
+<td class="comment-1" rowspan="1">Return if the folded token is zero.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a821"></span>
+<div class="comments">
+<div class="paragraph">
+Print text token.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a821"></span>A821</td>
+<td class="instruction">CALL <a href="A887.html">PrintTextToken</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A887.html">PrintTextToken</a> to print the dictionary word.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a824"></span>A824</td>
+<td class="instruction">LD A,($A7EA)</td>
+<td class="comment-1" rowspan="3">Read the token match flag at <a href="A7EA.html">A7EA</a> and point <span class="register">HL</span> at the token format flag at <a href="A026.html">TokenFormatFlag</a>.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a827"></span>A827</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a828"></span>A828</td>
+<td class="instruction">LD HL,$A026</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a82b"></span>A82B</td>
+<td class="instruction">OR (HL)</td>
+<td class="comment-1" rowspan="1">Set the bits from *<span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a82c"></span>A82C</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Store the result at the pointer.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a82d"></span>A82D</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore the text pointer from the stack.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="a82e"></span>A82E</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A80E.html">A80E</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a815">Map</a></td>
+<td class="next">
+Next: <a href="A82F.html">A82F</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/43029.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

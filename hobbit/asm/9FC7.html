@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 9FC7</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="9FAF.html">9FAF</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#9fc7">Map</a></td>
+<td class="next">
+Next: <a href="A050.html">A050</a>
+</td>
+</tr>
+</table>
+<div class="description">9FC7: Message: Remember The Separator</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="9FAF.html">Message_ListWithASeparator</a>.
+</div>
+<div class="paragraph">
+Remembers the separator at <a href="869B.html#869f">869F</a> and walks the objects here, skipping any with no copies left.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Message_RememberTheSeparator</td>
+<td class="address-2"><span id="9fc7"></span>9FC7</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Save <span class="register">HL</span> and keep the id in <span class="register">L</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fc8"></span>9FC8</td>
+<td class="instruction">LD L,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fc9"></span>9FC9</td>
+<td class="instruction">LD A,($869F)</td>
+<td class="comment-1" rowspan="1">Read the space count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fcc"></span>9FCC</td>
+<td class="instruction">LD H,A</td>
+<td class="comment-1" rowspan="1">Keep the space count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fcd"></span>9FCD</td>
+<td class="instruction">LD A,D</td>
+<td class="comment-1" rowspan="2">Store <span class="register">D</span> in the space count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fce"></span>9FCE</td>
+<td class="instruction">LD ($869F),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fd1"></span>9FD1</td>
+<td class="instruction">LD A,L</td>
+<td class="comment-1" rowspan="1">Take the id back into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fd2"></span>9FD2</td>
+<td class="instruction">EX (SP),HL</td>
+<td class="comment-1" rowspan="1">Swap the id and the saved separator with <span class="register">HL</span> on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fd3"></span>9FD3</td>
+<td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="2">Point <span class="register">IX</span> at the slot before the object table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fd5"></span>9FD5</td>
+<td class="instruction">LD IX,$C060</td>
+</tr>
+<tr>
+<td class="asm-label">Message_RememberTheSeparator_Loop</td>
+<td class="address-2"><span id="9fd9"></span>9FD9</td>
+<td class="instruction">CALL <a href="9BA9.html">Table_FindTheRecord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9BA9.html">Table_FindTheRecord</a> to find the record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fdc"></span>9FDC</td>
+<td class="instruction">JR Z,<a href="9FC7.html#a046">Message_RememberTheSeparator_RestoreTheSeparator</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9FC7.html#a046">Message_RememberTheSeparator_RestoreTheSeparator</a> when the object search returns with the zero flag set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fde"></span>9FDE</td>
+<td class="instruction">CP (IY+$01)</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="9FC7.html#9fd9">Message_RememberTheSeparator_Loop</a> unless this object is inside the one in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fe1"></span>9FE1</td>
+<td class="instruction">JR NZ,<a href="9FC7.html#9fd9">Message_RememberTheSeparator_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fe3"></span>9FE3</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="2">Save <span class="register">A</span>, then increment it (the zero flag is set if it was FF).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fe4"></span>9FE4</td>
+<td class="instruction">INC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fe5"></span>9FE5</td>
+<td class="instruction">LD E,(IY+$00)</td>
+<td class="comment-1" rowspan="1">Read the copy count from the object record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fe8"></span>9FE8</td>
+<td class="instruction">JR NZ,<a href="9FC7.html#9fef">Message_RememberTheSeparator_TestTheLocation</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9FC7.html#9fef">Message_RememberTheSeparator_TestTheLocation</a> unless <span class="register">A</span> was FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fea"></span>9FEA</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="3">Jump to <a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a> unless this object has one copy.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fec"></span>9FEC</td>
+<td class="instruction">CP E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9fed"></span>9FED</td>
+<td class="instruction">JR NZ,<a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a></td>
+</tr>
+<tr>
+<td class="asm-label">Message_RememberTheSeparator_TestTheLocation</td>
+<td class="address-2"><span id="9fef"></span>9FEF</td>
+<td class="instruction">LD A,(IY+$10)</td>
+<td class="comment-1" rowspan="1">Read the location from <span class="register">IY</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9ff2"></span>9FF2</td>
+<td class="instruction">CP B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="9FC7.html#9ffe">Message_RememberTheSeparator_TestWhoseTurn</a> if the object is at the location in <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9ff3"></span>9FF3</td>
+<td class="instruction">JR Z,<a href="9FC7.html#9ffe">Message_RememberTheSeparator_TestWhoseTurn</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9ff5"></span>9FF5</td>
+<td class="instruction">DEC E</td>
+<td class="comment-1" rowspan="2">Jump to <a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a> if the copy count has run out.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9ff6"></span>9FF6</td>
+<td class="instruction">JR Z,<a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9ff8"></span>9FF8</td>
+<td class="instruction">LD A,(IY+$11)</td>
+<td class="comment-1" rowspan="1">Read byte +11 from <span class="register">IY</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9ffb"></span>9FFB</td>
+<td class="instruction">CP B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a> if byte 11 of this record is not the object's location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9ffc"></span>9FFC</td>
+<td class="instruction">JR NZ,<a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a></td>
+</tr>
+<tr>
+<td class="asm-label">Message_RememberTheSeparator_TestWhoseTurn</td>
+<td class="address-2"><span id="9ffe"></span>9FFE</td>
+<td class="instruction">LD A,($B6EA)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6ea">CurrentCharacter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a001"></span>A001</td>
+<td class="instruction">CP (IX+$00)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="9FC7.html#a00b">Message_RememberTheSeparator_TestTheObjectHere</a> if the character whose turn it is is not this object's id.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a004"></span>A004</td>
+<td class="instruction">JR NZ,<a href="9FC7.html#a00b">Message_RememberTheSeparator_TestTheObjectHere</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a006"></span>A006</td>
+<td class="instruction">LD A,$04</td>
+<td class="comment-1" rowspan="3">Jump to <a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a> if the separator in <span class="register">D</span> is 04.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a008"></span>A008</td>
+<td class="instruction">CP D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a009"></span>A009</td>
+<td class="instruction">JR Z,<a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a></td>
+</tr>
+<tr>
+<td class="asm-label">Message_RememberTheSeparator_TestTheObjectHere</td>
+<td class="address-2"><span id="a00b"></span>A00B</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="1">Read the id from the index entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a00e"></span>A00E</td>
+<td class="instruction">CALL <a href="9E34.html">ConditionTheObjectIsHere</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9E34.html">ConditionTheObjectIsHere</a> to test whether the object is here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a011"></span>A011</td>
+<td class="instruction">JR Z,<a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a> if <a href="9E34.html">ConditionTheObjectIsHere</a> did not find the object here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a013"></span>A013</td>
+<td class="instruction">INC C</td>
+<td class="comment-1" rowspan="1">Count one more object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a014"></span>A014</td>
+<td class="instruction">SUB A</td>
+<td class="comment-1" rowspan="1">Take zero for the two flags below.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a015"></span>A015</td>
+<td class="instruction">LD ($B704),A</td>
+<td class="comment-1" rowspan="1">Clear the capitalise-the-next-letter flag before the object's name.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a018"></span>A018</td>
+<td class="instruction">LD ($B703),A</td>
+<td class="comment-1" rowspan="1">Update *<a href="B6DA.html#b703">B703</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a01b"></span>A01B</td>
+<td class="instruction">CALL <a href="9EC7.html">MessageNameAnObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9EC7.html">MessageNameAnObject</a> to print the object's name.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a01e"></span>A01E</td>
+<td class="instruction">LD A,($B6EA)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6ea">CurrentCharacter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a021"></span>A021</td>
+<td class="instruction">CP (IX+$00)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="9FC7.html#a041">Message_RememberTheSeparator_PrintANewline</a> if the character whose turn it is is this object's id.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a024"></span>A024</td>
+<td class="instruction">JR Z,<a href="9FC7.html#a041">Message_RememberTheSeparator_PrintANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a026"></span>A026</td>
+<td class="instruction">LD A,$2E</td>
+<td class="comment-1" rowspan="1">Use the character '.'.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a028"></span>A028</td>
+<td class="instruction">CALL <a href="858B.html">Print_Character</a></td>
+<td class="comment-1" rowspan="1">Call <a href="858B.html">Print_Character</a> to print one character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a02b"></span>A02B</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="1">Read the id from the index entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a02e"></span>A02E</td>
+<td class="instruction">CALL <a href="A050.html">TableListWhatIsHere</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A050.html">TableListWhatIsHere</a> to list what is here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a031"></span>A031</td>
+<td class="instruction">JR C,<a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a> if <a href="A050.html">TableListWhatIsHere</a> returned with carry set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a033"></span>A033</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="1">Read the id from the index entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a036"></span>A036</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="2">Save <span class="register">DE</span> and step the separator on.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a037"></span>A037</td>
+<td class="instruction">INC D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a038"></span>A038</td>
+<td class="instruction">INC D</td>
+<td class="comment-1" rowspan="1">Step the separator on once more.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a039"></span>A039</td>
+<td class="instruction">CALL <a href="9FC7.html#9fc7">Message_RememberTheSeparator</a></td>
+<td class="comment-1" rowspan="2">Call <a href="9FC7.html">Message_RememberTheSeparator</a> to remember the separator and walk the objects, then restore <span class="register">DE</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a03c"></span>A03C</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label">Message_RememberTheSeparator_FindTheRecord</td>
+<td class="address-2"><span id="a03d"></span>A03D</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="9FC7.html#9fd9">Message_RememberTheSeparator_Loop</a> to find the record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a03e"></span>A03E</td>
+<td class="instruction">JP <a href="9FC7.html#9fd9">Message_RememberTheSeparator_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label">Message_RememberTheSeparator_PrintANewline</td>
+<td class="address-2"><span id="a041"></span>A041</td>
+<td class="instruction">CALL <a href="8583.html">Print_LineBreak</a></td>
+<td class="comment-1" rowspan="1">Call <a href="8583.html">Print_LineBreak</a> to print a newline.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a044"></span>A044</td>
+<td class="instruction">JR <a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="9FC7.html#a03d">Message_RememberTheSeparator_FindTheRecord</a> to find the record.</td>
+</tr>
+<tr>
+<td class="asm-label">Message_RememberTheSeparator_RestoreTheSeparator</td>
+<td class="address-2"><span id="a046"></span>A046</td>
+<td class="instruction">POP IX</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">IX</span> from the stack and swap <span class="register">HL</span> with the address on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a048"></span>A048</td>
+<td class="instruction">EX (SP),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a049"></span>A049</td>
+<td class="instruction">LD A,H</td>
+<td class="comment-1" rowspan="2">Put the saved separator back at <a href="869B.html#869f">869F</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a04a"></span>A04A</td>
+<td class="instruction">LD ($869F),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a04d"></span>A04D</td>
+<td class="instruction">LD A,L</td>
+<td class="comment-1" rowspan="1">Take the id back into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a04e"></span>A04E</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a04f"></span>A04F</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="9FAF.html">9FAF</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#9fc7">Map</a></td>
+<td class="next">
+Next: <a href="A050.html">A050</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/40903.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

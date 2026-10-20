@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at FAC8</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FAB8.html">FAB8</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fac8">Map</a></td>
+<td class="next">
+Next: <a href="FAF9.html">FAF9</a>
+</td>
+</tr>
+</table>
+<div class="description">FAC8: Action: Dig</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Carry out the "Dig" command.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Dig</td>
+<td class="address-2"><span id="fac8"></span>FAC8</td>
+<td class="instruction">CALL <a href="B665.html">ParserValidateNoDirectObject</a></td>
+<td class="comment-1" rowspan="2">Call <a href="B665.html">ParserValidateNoDirectObject</a> to check that the command has no object, and return if it does not.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="facb"></span>FACB</td>
+<td class="instruction">RET C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="facc"></span>FACC</td>
+<td class="instruction">LD A,$60</td>
+<td class="comment-1" rowspan="3">Refuse to dig without the shovel.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="face"></span>FACE</td>
+<td class="instruction">CALL <a href="B5CF.html">IsObjectInInventory</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fad1"></span>FAD1</td>
+<td class="instruction">JP NZ,<a href="F537.html">Messaging_YouHaveNothingToDigWith_Reply</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fad4"></span>FAD4</td>
+<td class="instruction">LD A,($AECD)</td>
+<td class="comment-1" rowspan="1">Read the current room into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fad7"></span>FAD7</td>
+<td class="instruction">CP $3C</td>
+<td class="comment-1" rowspan="2">Branch to <a href="F53D.html">Response_YouFindNothing</a> when 3C means the values differ.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fad9"></span>FAD9</td>
+<td class="instruction">JP NZ,<a href="F53D.html">Response_YouFindNothing</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fadc"></span>FADC</td>
+<td class="instruction">LD HL,$AE77</td>
+<td class="comment-1" rowspan="3">See whether this spot on the beach has already been dug.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fadf"></span>FADF</td>
+<td class="instruction">BIT 0,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fae1"></span>FAE1</td>
+<td class="instruction">JP NZ,<a href="F53D.html">Response_YouFindNothing</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fae4"></span>FAE4</td>
+<td class="instruction">SET 0,(HL)</td>
+<td class="comment-1" rowspan="1">Remember that this spot on the beach has been dug.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fae6"></span>FAE6</td>
+<td class="instruction">LD A,$72</td>
+<td class="comment-1" rowspan="2">Call <a href="B5DC.html">HandlerUpdateItemEventForTheCurrentRoom</a> to update the item for this room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fae8"></span>FAE8</td>
+<td class="instruction">CALL <a href="B5DC.html">HandlerUpdateItemEventForTheCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faeb"></span>FAEB</td>
+<td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2">Call <a href="B78F.html">AddToScore</a> to add the points to the score.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faed"></span>FAED</td>
+<td class="instruction">CALL <a href="B78F.html">AddToScore</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faf0"></span>FAF0</td>
+<td class="instruction">CALL <a href="EAE8.html">Messaging_OK_Reply</a></td>
+<td class="comment-1" rowspan="1">Call <a href="EAE8.html">Messaging_OK_Reply</a> to tell the player that worked.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="faf3"></span>
+<div class="comments">
+<div class="paragraph">
+Print it as the reply: You uncover an emerald!.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faf3"></span>FAF3</td>
+<td class="instruction">LD HL,$DE88</td>
+<td class="comment-1" rowspan="2">Point at the message and print it as the reply.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="faf6"></span>FAF6</td>
+<td class="instruction">JP <a href="EA9E.html">PrintResponse</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FAB8.html">FAB8</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fac8">Map</a></td>
+<td class="next">
+Next: <a href="FAF9.html">FAF9</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../dec/asm/64200.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

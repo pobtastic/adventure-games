@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at B9CA</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B936.html">B936</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b9ca">Map</a></td>
+<td class="next">
+Next: <a href="B9FA.html">B9FA</a>
+</td>
+</tr>
+</table>
+<div class="description">B9CA: Copy The Link Ahead Of This Record</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="B936.html">ProcessScriptDisplay</a>.
+</div>
+<div class="paragraph">
+Reads the saved character record and copies the link ahead of it into the object attribute.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CopyLinkAhead</td>
+<td class="address-2"><span id="b9ca"></span>B9CA</td>
+<td class="instruction">LD IX,($B866)</td>
+<td class="comment-1" rowspan="1">Read the saved character record.</td>
+</tr>
+<tr>
+<td class="asm-label">CopyLinkAhead_StoreLink</td>
+<td class="address-2"><span id="b9ce"></span>B9CE</td>
+<td class="instruction">LD L,(IY-$02)</td>
+<td class="comment-1" rowspan="2">Read the link word stored before the record at <span class="register">IY</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9d1"></span>B9D1</td>
+<td class="instruction">LD H,(IY-$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9d4"></span>B9D4</td>
+<td class="instruction">LD (IX+$05),L</td>
+<td class="comment-1" rowspan="1">Store the low byte of the link at offset 05.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9d7"></span>B9D7</td>
+<td class="instruction">LD (IX+$06),H</td>
+<td class="comment-1" rowspan="2">Store the high byte of the link at offset 06 and keep <span class="register">IX</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9da"></span>B9DA</td>
+<td class="instruction">PUSH IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9dc"></span>B9DC</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="2">Copy the memory-link record from <span class="register">IY</span> into <span class="register">IX</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9de"></span>B9DE</td>
+<td class="instruction">POP IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9e0"></span>B9E0</td>
+<td class="instruction">CALL <a href="A1C7.html">ProcessMemoryEntry</a></td>
+<td class="comment-1" rowspan="2">Call <a href="A1C7.html">ProcessMemoryEntry</a> to follow this memory link.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9e3"></span>B9E3</td>
+<td class="instruction">POP IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9e5"></span>B9E5</td>
+<td class="instruction">LD A,L</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="B9CA.html#b9f5">CopyLinkAhead_ClearAndReturn</a> if the pointer is 0000.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9e6"></span>B9E6</td>
+<td class="instruction">OR H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9e7"></span>B9E7</td>
+<td class="instruction">JR Z,<a href="B9CA.html#b9f5">CopyLinkAhead_ClearAndReturn</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9e9"></span>B9E9</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="4">Point <span class="register">IY</span> at <span class="register">HL</span> and jump to <a href="B9CA.html#b9ce">CopyLinkAhead_StoreLink</a> if bit 6 of <span class="register">IY</span>+01 is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9ea"></span>B9EA</td>
+<td class="instruction">POP IY</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9ec"></span>B9EC</td>
+<td class="instruction">BIT 6,(IY+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9f0"></span>B9F0</td>
+<td class="instruction">JR NZ,<a href="B9CA.html#b9ce">CopyLinkAhead_StoreLink</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9f2"></span>B9F2</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9f4"></span>B9F4</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b9f5"></span>
+<div class="comments">
+<div class="paragraph">
+Copies the pointer and clears the result.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CopyLinkAhead_ClearAndReturn</td>
+<td class="address-2"><span id="b9f5"></span>B9F5</td>
+<td class="instruction">CALL <a href="B9FA.html">CopyPointerToStack</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B9FA.html">CopyPointerToStack</a> to copy pointer to stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9f8"></span>B9F8</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b9f9"></span>B9F9</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B936.html">B936</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b9ca">Map</a></td>
+<td class="next">
+Next: <a href="B9FA.html">B9FA</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/47562.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

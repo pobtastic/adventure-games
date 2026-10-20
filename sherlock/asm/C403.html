@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at C403</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C3E4.html">C3E4</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c403">Map</a></td>
+<td class="next">
+Next: <a href="C415.html">C415</a>
+</td>
+</tr>
+</table>
+<div class="description">C403: Set The Printer Motor Speed Via Port FB</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="C3E4.html">C3E4</a>.
+</div>
+<div class="paragraph">
+The game's copy of the ROM <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0EF4.html">COPY_LINE</a> code: writes 02 to port FB when the count in <span class="register">B</span> is below three (slowing the printer motor for the last two pixel lines), and 00 otherwise, then waits until a read from that port comes back negative.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SetPrinterMotorSpeed</td>
+<td class="address-2"><span id="c403"></span>C403</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="3">Compare <span class="register">B</span> with 03 and leave FF in <span class="register">A</span> when the count is below.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c404"></span>C404</td>
+<td class="instruction">CP $03</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c406"></span>C406</td>
+<td class="instruction">SBC A,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c407"></span>C407</td>
+<td class="instruction">AND %00000010</td>
+<td class="comment-1" rowspan="1">Keep just bit 1, giving 02 (slow the printer motor) when the count is below three and 00 otherwise.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c409"></span>C409</td>
+<td class="instruction">OUT ($FB),A</td>
+<td class="comment-1" rowspan="1">Send that strobe to the ZX Printer on port FB.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c40b"></span>C40B</td>
+<td class="instruction">LD D,A</td>
+<td class="comment-1" rowspan="1">Keep the motor value just sent in <span class="register">D</span>.</td>
+</tr>
+<tr>
+<td class="asm-label">SetPrinterMotorSpeed_0</td>
+<td class="address-2"><span id="c40c"></span>C40C</td>
+<td class="instruction">IN A,($FB)</td>
+<td class="comment-1" rowspan="3">Read port FB and return if the ZX Printer is busy.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c40e"></span>C40E</td>
+<td class="instruction">ADD A,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c40f"></span>C40F</td>
+<td class="instruction">RET M</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c410"></span>C410</td>
+<td class="instruction">JR NC,<a href="C403.html#c40c">SetPrinterMotorSpeed_0</a></td>
+<td class="comment-1" rowspan="1">Go back to <a href="C403.html#c40c">SetPrinterMotorSpeed_0</a> while the ZX Printer is not ready.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c412"></span>C412</td>
+<td class="instruction">JP $0F12</td>
+<td class="comment-1" rowspan="1">Jump to <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0EF4.html">COPY_LINE</a> at 0F12.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C3E4.html">C3E4</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c403">Map</a></td>
+<td class="next">
+Next: <a href="C415.html">C415</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/50179.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

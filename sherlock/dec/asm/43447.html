@@ -32,7 +32,7 @@ Prev: <a href="43445.html">43445</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#43447">Map</a></td>
 <td class="next">
-Next: <a href="43633.html">43633</a>
+Next: <a href="43540.html">43540</a>
 </td>
 </tr>
 </table>
@@ -42,7 +42,10 @@ Next: <a href="43633.html">43633</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="41634.html">PrintNewline</a>, <a href="41853.html">ProcessObject_Display</a>, <a href="42445.html">ProcessTextCommand</a>, <a href="42554.html">PrintCharacterAndReturnZero</a>, <a href="42567.html">PrintCharacterWithTimePeriod</a>, <a href="42806.html">PrintCharacterAndReturn</a>, <a href="43136.html">ExtractTokenFromText</a>, <a href="48101.html">PrintTextBasedOnFlag</a>, <a href="53506.html">ProcessLocationTokenDisplay</a>, <a href="54566.html">PrintFormattedObjectList</a>, <a href="57179.html">PrintObjectDescriptionText</a> and <a href="59068.html">59068</a>.
+Used by the routines at <a href="41634.html">PrintNewline</a>, <a href="42004.html">PrintFullStop</a>, <a href="42009.html">ShiftTextPointer</a>, <a href="42078.html">PrintHyphen</a>, <a href="42089.html">PrintLetterD</a>, <a href="42112.html">PrintOneDecimalDigit</a>, <a href="42128.html">PrintHundredsTensAndUnits</a>, <a href="42482.html">TestSpace</a>, <a href="42554.html">PrintThisCharacter</a>, <a href="42570.html">LeaveFullStop</a>, <a href="42806.html">PrintTheControlCharacter</a>, <a href="43143.html">PrintTextToken</a>, <a href="48101.html">PrintTextBasedOnFlag</a>, <a href="53639.html">PrintLocationText</a>, <a href="54566.html">PrintFormattedObjectList</a>, <a href="54977.html">ParseInput</a>, <a href="55469.html">ReadCommandLine_CommandLinePrints</a>, <a href="55644.html">LeaveQuoteResult</a>, <a href="55656.html">TestFullStop</a>, <a href="55672.html">MapCursorKeys</a>, <a href="55710.html">IgnoreInputUntilGameHasStarted</a>, <a href="55735.html">DeleteInputCharacter</a>, <a href="57179.html">PrintObjectDescriptionText</a> and <a href="59025.html">ProcessCharacterAttribute</a>.
+</div>
+<div class="paragraph">
+In word-wrap mode, stores each letter at *<a href="43445.html">BufferPointer</a> in the word buffer at <a href="23563.html">WordBuffer</a> until a space, newline or quote, then prints the buffered word. When the print mode flag at <a href="40999.html">PrintModeFlag</a> is set, uses the alternate printer instead.
 </div>
 </div>
 <table class="input">
@@ -60,13 +63,12 @@ Used by the routines at <a href="41634.html">PrintNewline</a>, <a href="41853.ht
 <td class="asm-label">Print_Character</td>
 <td class="address-2"><span id="43447"></span>43447</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the character code on the stack.</td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="43447.html#43536">Print_Character_AlternateMode</a> if the print mode flag at <a href="40999.html">PrintModeFlag</a> is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43448"></span>43448</td>
 <td class="instruction">LD A,(40999)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="43447.html#43536">Print_Character_AlternateMode</a> if *<a href="40999.html">PrintModeFlag</a> isn't set (not in direct print mode).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -83,7 +85,7 @@ Used by the routines at <a href="41634.html">PrintNewline</a>, <a href="41853.ht
 <span id="43454"></span>
 <div class="comments">
 <div class="paragraph">
-Handle direct print mode - write character to buffer.
+Handle word-wrap mode - write the character into the word buffer.
 </div>
 </div>
 </td>
@@ -92,13 +94,12 @@ Handle direct print mode - write character to buffer.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43454"></span>43454</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
+<td class="comment-1" rowspan="4">Read the word buffer pointer from *<a href="43445.html">BufferPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43455"></span>43455</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="2">Stash the character code and <span class="register">HL</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -109,13 +110,12 @@ Handle direct print mode - write character to buffer.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43457"></span>43457</td>
 <td class="instruction">LD HL,(43445)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="43445.html">BufferPointer</a> (load the buffer pointer).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43460"></span>43460</td>
 <td class="instruction">CP 32</td>
-<td class="comment-1" rowspan="2">Jump to <a href="43447.html#43487">Print_Character_ScreenPrintMode</a> if the character is a "SPACE" (ASCII 32).</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="43447.html#43487">Print_Character_ScreenPrintMode</a> if the character is a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -126,7 +126,7 @@ Handle direct print mode - write character to buffer.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43464"></span>43464</td>
 <td class="instruction">CP 13</td>
-<td class="comment-1" rowspan="2">Jump to <a href="43447.html#43487">Print_Character_ScreenPrintMode</a> if the character is an "ENTER" (ASCII 13).</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="43447.html#43487">Print_Character_ScreenPrintMode</a> if the character is a new line.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -137,7 +137,7 @@ Handle direct print mode - write character to buffer.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43468"></span>43468</td>
 <td class="instruction">CP 34</td>
-<td class="comment-1" rowspan="2">Jump to <a href="43447.html#43487">Print_Character_ScreenPrintMode</a> if the character is a quotation mark (ASCII 34).</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="43447.html#43487">Print_Character_ScreenPrintMode</a> if the character is a quotation mark.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -148,7 +148,7 @@ Handle direct print mode - write character to buffer.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43472"></span>43472</td>
 <td class="instruction">CP 8</td>
-<td class="comment-1" rowspan="2">Jump to <a href="43447.html#43479">Print_Character_WriteToBuffer</a> if the character is not a backspace (ASCII 8).</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="43447.html#43479">Print_Character_WriteToBuffer</a> if the character is not a backspace.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -169,20 +169,22 @@ The character IS a backspace, so handle this.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43476"></span>43476</td>
 <td class="instruction">DEC HL</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">HL</span> by one (move buffer pointer back for backspace).</td>
+<td class="comment-1" rowspan="2">Step the word buffer pointer back and join <a href="43447.html#43481">Print_Character_UpdateBufferPointer</a> to store it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43477"></span>43477</td>
 <td class="instruction">JR <a href="43447.html#43481">Print_Character_UpdateBufferPointer</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43447.html#43481">Print_Character_UpdateBufferPointer</a> (skip writing the character).</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="43479"></span>
 <div class="comments">
 <div class="paragraph">
-Write the character to the buffer.
+Write the character into the word buffer and move the pointer on.
+</div>
+<div class="paragraph">
+Write the character to the word buffer.
 </div>
 </div>
 </td>
@@ -191,25 +193,25 @@ Write the character to the buffer.
 <td class="asm-label">Print_Character_WriteToBuffer</td>
 <td class="address-2"><span id="43479"></span>43479</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1">Write the character to the buffer.</td>
+<td class="comment-1" rowspan="1">Write the character to the word buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43480"></span>43480</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment the buffer pointer by one.</td>
+<td class="comment-1" rowspan="1">Increment the word buffer pointer by one.</td>
 </tr>
 <tr>
 <td class="asm-label">Print_Character_UpdateBufferPointer</td>
 <td class="address-2"><span id="43481"></span>43481</td>
 <td class="instruction">LD (43445),HL</td>
-<td class="comment-1" rowspan="1">Write the buffer pointer back to *<a href="43445.html">BufferPointer</a>.</td>
+<td class="comment-1" rowspan="1">Write the word buffer pointer back to *<a href="43445.html">BufferPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43484"></span>43484</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">HL</span> and the character code from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the saved pointer and the saved result from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -227,7 +229,10 @@ Write the character to the buffer.
 <span id="43487"></span>
 <div class="comments">
 <div class="paragraph">
-Handle screen print mode - check if we need to scroll.
+The character ends a word. If the word buffer holds letters, print them.
+</div>
+<div class="paragraph">
+Flush the word buffer when it is not empty.
 </div>
 </div>
 </td>
@@ -236,13 +241,12 @@ Handle screen print mode - check if we need to scroll.
 <td class="asm-label">Print_Character_ScreenPrintMode</td>
 <td class="address-2"><span id="43487"></span>43487</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
+<td class="comment-1" rowspan="5">Jump to <a href="43447.html#43531">Print_Character_RestoreCharacter</a> if the word buffer is empty.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43488"></span>43488</td>
 <td class="instruction">LD DE,23563</td>
-<td class="comment-1" rowspan="4">Jump to <a href="43447.html#43531">Print_Character_ProcessChar</a> if <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C0B.html">DEFADD</a> is equal to <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -257,60 +261,49 @@ Handle screen print mode - check if we need to scroll.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43494"></span>43494</td>
-<td class="instruction">JR Z,<a href="43447.html#43531">Print_Character_ProcessChar</a></td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="43496"></span>
-<div class="comments">
-<div class="paragraph">
-Check if we need to scroll the screen.
-</div>
-</div>
-</td>
+<td class="instruction">JR Z,<a href="43447.html#43531">Print_Character_RestoreCharacter</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43496"></span>43496</td>
 <td class="instruction">LD A,(49653)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="49653.html">ScreenWidth</a>.</td>
+<td class="comment-1" rowspan="1">Read the screen width.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43499"></span>43499</td>
 <td class="instruction">CP L</td>
-<td class="comment-1" rowspan="1">Compare *<a href="49653.html">ScreenWidth</a> with <span class="register">L</span> (the screen offset).</td>
+<td class="comment-1" rowspan="1">Compare *<a href="49653.html">ScreenWidth</a> with <span class="register">L</span> (the buffered word length).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43500"></span>43500</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the comparison result on the stack.</td>
+<td class="comment-1" rowspan="2">Go to <a href="43447.html#43508">Print_Character_ScrollScreen</a> if the word fits on the line.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43501"></span>43501</td>
 <td class="instruction">JR NC,<a href="43447.html#43508">Print_Character_ScrollScreen</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43447.html#43508">Print_Character_ScrollScreen</a> if we don't need to scroll (<span class="register">A</span> is greater than or equal to <span class="register">L</span>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43503"></span>43503</td>
 <td class="instruction">LD A,13</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=13 (load carriage return character).</td>
+<td class="comment-1" rowspan="1">Take a new line.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43505"></span>43505</td>
-<td class="instruction">CALL <a href="43447.html#43540">Print_Character_ProcessCharacter</a></td>
-<td class="comment-1" rowspan="1">Call <a href="43447.html#43540">Print_Character_ProcessCharacter</a> to process the carriage return.</td>
+<td class="instruction">CALL <a href="43540.html">Print_Character_ProcessCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="43540.html">Print_Character_ProcessCharacter</a> to print one character and remember the line.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="43508"></span>
 <div class="comments">
 <div class="paragraph">
-Scroll the screen by clearing the first line.
+Print the buffered letters from <a href="23563.html">WordBuffer</a> and reset the word buffer pointer.
 </div>
 </div>
 </td>
@@ -319,37 +312,36 @@ Scroll the screen by clearing the first line.
 <td class="asm-label">Print_Character_ScrollScreen</td>
 <td class="address-2"><span id="43508"></span>43508</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Keep the print column and use the buffered length as the glyph counter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43509"></span>43509</td>
 <td class="instruction">LD B,L</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">L</span> (store the line width in <span class="register">B</span>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43510"></span>43510</td>
 <td class="instruction">LD HL,23563</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C0B.html">DEFADD</a> (reset to the start of the screen buffer).</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=23563 (the start of the word buffer, which overwrites <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C0B.html">DEFADD</a> onwards).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43513"></span>43513</td>
 <td class="instruction">LD (43445),HL</td>
-<td class="comment-1" rowspan="1">Write <span class="register">HL</span> (the screen buffer pointer) to *<a href="43445.html">BufferPointer</a>.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">HL</span> (the start of the word buffer) to *<a href="43445.html">BufferPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">Print_Character_ScrollLoop</td>
 <td class="address-2"><span id="43516"></span>43516</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Load a character from the screen buffer into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Read the next character of the buffered word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43517"></span>43517</td>
-<td class="instruction">CALL <a href="43447.html#43540">Print_Character_ProcessCharacter</a></td>
-<td class="comment-1" rowspan="1">Call <a href="43447.html#43540">Print_Character_ProcessCharacter</a> to process the character (shift it up).</td>
+<td class="instruction">CALL <a href="43540.html">Print_Character_ProcessCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="43540.html">Print_Character_ProcessCharacter</a> to print one character and remember the line.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -361,13 +353,13 @@ Scroll the screen by clearing the first line.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43521"></span>43521</td>
 <td class="instruction">DJNZ <a href="43447.html#43516">Print_Character_ScrollLoop</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="43447.html#43516">Print_Character_ScrollLoop</a> until counter is zero.</td>
+<td class="comment-1" rowspan="1">Count the next character and repeat from <a href="43447.html#43516">Print_Character_ScrollLoop</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43523"></span>43523</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">AF</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -377,15 +369,15 @@ Scroll the screen by clearing the first line.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43525"></span>43525</td>
-<td class="instruction">JR NZ,<a href="43447.html#43531">Print_Character_ProcessChar</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43447.html#43531">Print_Character_ProcessChar</a> if we haven't finished scrolling (<span class="register">HL</span> is not equal to <span class="register">L</span>).</td>
+<td class="instruction">JR NZ,<a href="43447.html#43531">Print_Character_RestoreCharacter</a></td>
+<td class="comment-1" rowspan="1">And the saved flags, and go to <a href="43447.html#43531">Print_Character_RestoreCharacter</a> when the zero flag is clear.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="43527"></span>
 <div class="comments">
 <div class="paragraph">
-Clear the print position flag after scrolling is complete.
+Clear the print position flag after the buffered word is printed.
 </div>
 </div>
 </td>
@@ -402,10 +394,10 @@ Clear the print position flag after scrolling is complete.
 <td class="instruction">LD (40997),A</td>
 </tr>
 <tr>
-<td class="asm-label">Print_Character_ProcessChar</td>
+<td class="asm-label">Print_Character_RestoreCharacter</td>
 <td class="address-2"><span id="43531"></span>43531</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="3">Restore <span class="register">DE</span>, <span class="register">HL</span> and the character code from the stack.</td>
+<td class="comment-1" rowspan="3">Restore the character from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -420,13 +412,16 @@ Clear the print position flag after scrolling is complete.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43534"></span>43534</td>
-<td class="instruction">JR <a href="43447.html#43540">Print_Character_ProcessCharacter</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43447.html#43540">Print_Character_ProcessCharacter</a> to process the character.</td>
+<td class="instruction">JR <a href="43540.html">Print_Character_ProcessCharacter</a></td>
+<td class="comment-1" rowspan="1">And jump to <a href="43540.html">Print_Character_ProcessCharacter</a> to print it.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="43536"></span>
 <div class="comments">
+<div class="paragraph">
+Print the character on the screen.
+</div>
 <div class="paragraph">
 Use alternate print method (direct screen printing).
 </div>
@@ -437,368 +432,12 @@ Use alternate print method (direct screen printing).
 <td class="asm-label">Print_Character_AlternateMode</td>
 <td class="address-2"><span id="43536"></span>43536</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49633.html">CheckTVFlagAndProcess</a> to check the television flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43537"></span>43537</td>
 <td class="instruction">JP <a href="49633.html">CheckTVFlagAndProcess</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49633.html">CheckTVFlagAndProcess</a> to print using alternate method.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="43540"></span>
-<div class="comments">
-<div class="paragraph">
-Convert uppercase letters to lowercase if needed.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">Print_Character_ProcessCharacter</td>
-<td class="address-2"><span id="43540"></span>43540</td>
-<td class="instruction">CP 65</td>
-<td class="comment-1" rowspan="4">Jump to <a href="43447.html#43550">Print_Character_CheckSpace</a> if the character is not uppercase.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43542"></span>43542</td>
-<td class="instruction">JR C,<a href="43447.html#43550">Print_Character_CheckSpace</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43544"></span>43544</td>
-<td class="instruction">CP 91</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43546"></span>43546</td>
-<td class="instruction">JR NC,<a href="43447.html#43550">Print_Character_CheckSpace</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43548"></span>43548</td>
-<td class="instruction">OR %00100000</td>
-<td class="comment-1" rowspan="1">Set bit 5 (convert to lowercase).</td>
-</tr>
-<tr>
-<td class="asm-label">Print_Character_CheckSpace</td>
-<td class="address-2"><span id="43550"></span>43550</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the character code on the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43551"></span>43551</td>
-<td class="instruction">LD A,(40997)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="43447.html#43562">Print_Character_MarkPrintStarted</a> if we're not at the start of a line (load print position flag from *<a href="40997.html">PrintPositionFlag</a>, set flags, jump if not zero).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43554"></span>43554</td>
-<td class="instruction">AND A</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43555"></span>43555</td>
-<td class="instruction">JR NZ,<a href="43447.html#43562">Print_Character_MarkPrintStarted</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43557"></span>43557</td>
-<td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43558"></span>43558</td>
-<td class="instruction">CP 32</td>
-<td class="comment-1" rowspan="2">Return if the character is a "SPACE".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43560"></span>43560</td>
-<td class="instruction">RET Z</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43561"></span>43561</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the character code on the stack.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="43562"></span>
-<div class="comments">
-<div class="paragraph">
-Mark that we've started printing on this line.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">Print_Character_MarkPrintStarted</td>
-<td class="address-2"><span id="43562"></span>43562</td>
-<td class="instruction">LD A,1</td>
-<td class="comment-1" rowspan="2">Set *<a href="40997.html">PrintPositionFlag</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43564"></span>43564</td>
-<td class="instruction">LD (40997),A</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43567"></span>43567</td>
-<td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43568"></span>43568</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the character code on the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43569"></span>43569</td>
-<td class="instruction">CP 13</td>
-<td class="comment-1" rowspan="2">Jump to <a href="43447.html#43579">Print_Character_CheckQuote</a> if the character is not a carriage return (compare with 13 jump if not equal).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43571"></span>43571</td>
-<td class="instruction">JR NZ,<a href="43447.html#43579">Print_Character_CheckQuote</a></td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="43573"></span>
-<div class="comments">
-<div class="paragraph">
-Reset the print position flag for a carriage return.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43573"></span>43573</td>
-<td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Clear *<a href="40997.html">PrintPositionFlag</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43574"></span>43574</td>
-<td class="instruction">LD (40997),A</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43577"></span>43577</td>
-<td class="instruction">JR <a href="43447.html#43629">Print_Character_Print</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43447.html#43629">Print_Character_Print</a> (skip further processing).</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="43579"></span>
-<div class="comments">
-<div class="paragraph">
-Check if the character is a quotation mark (needs special handling).
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">Print_Character_CheckQuote</td>
-<td class="address-2"><span id="43579"></span>43579</td>
-<td class="instruction">CP 34</td>
-<td class="comment-1" rowspan="2">Jump to <a href="43447.html#43590">Print_Character_CheckPeriod</a> if the character is not a quote mark (compare with 34 jump if not equal).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43581"></span>43581</td>
-<td class="instruction">JR NZ,<a href="43447.html#43590">Print_Character_CheckPeriod</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43583"></span>43583</td>
-<td class="instruction">LD A,32</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=32 (replace quote with space).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43585"></span>43585</td>
-<td class="instruction">CALL <a href="49633.html">CheckTVFlagAndProcess</a></td>
-<td class="comment-1" rowspan="1">Call <a href="49633.html">CheckTVFlagAndProcess</a> to print the space.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43588"></span>43588</td>
-<td class="instruction">JR <a href="43447.html#43594">Print_Character_SetTokenFormatFlag</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43447.html#43594">Print_Character_SetTokenFormatFlag</a> (continue processing).</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="43590"></span>
-<div class="comments">
-<div class="paragraph">
-Check if the character is a period (sets token format flag if it is).
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">Print_Character_CheckPeriod</td>
-<td class="address-2"><span id="43590"></span>43590</td>
-<td class="instruction">CP 46</td>
-<td class="comment-1" rowspan="2">Jump to <a href="43447.html#43601">Print_Character_CheckLowercase</a> if the character is not a period (compare with 46 jump if not equal).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43592"></span>43592</td>
-<td class="instruction">JR NZ,<a href="43447.html#43601">Print_Character_CheckLowercase</a></td>
-</tr>
-<tr>
-<td class="asm-label">Print_Character_SetTokenFormatFlag</td>
-<td class="address-2"><span id="43594"></span>43594</td>
-<td class="instruction">LD A,1</td>
-<td class="comment-1" rowspan="2">Set *<a href="40998.html">TokenFormatFlag</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43596"></span>43596</td>
-<td class="instruction">LD (40998),A</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43599"></span>43599</td>
-<td class="instruction">JR <a href="43447.html#43629">Print_Character_Print</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43447.html#43629">Print_Character_Print</a> (skip further processing).</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="43601"></span>
-<div class="comments">
-<div class="paragraph">
-Handle lowercase letters (dictionary word characters).
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">Print_Character_CheckLowercase</td>
-<td class="address-2"><span id="43601"></span>43601</td>
-<td class="instruction">CP 97</td>
-<td class="comment-1" rowspan="2">Jump to <a href="43447.html#43629">Print_Character_Print</a> if the character is less than 97 (ASCII "a").</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43603"></span>43603</td>
-<td class="instruction">JR C,<a href="43447.html#43629">Print_Character_Print</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43605"></span>43605</td>
-<td class="instruction">CP 123</td>
-<td class="comment-1" rowspan="2">Jump to <a href="43447.html#43629">Print_Character_Print</a> if the character is greater than or equal to 123 (ASCII "z"+1).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43607"></span>43607</td>
-<td class="instruction">JR NC,<a href="43447.html#43629">Print_Character_Print</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43609"></span>43609</td>
-<td class="instruction">LD A,(43089)</td>
-<td class="comment-1" rowspan="3">Check the lowercase handling flag and jump to <a href="43447.html#43621">Print_Character_ResetTokenFormatFlag</a> if it's not set (load flag from *<a href="43089.html">LowercaseHandlingFlag</a>, set flags, jump if not set).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43612"></span>43612</td>
-<td class="instruction">AND A</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43613"></span>43613</td>
-<td class="instruction">JR NZ,<a href="43447.html#43621">Print_Character_ResetTokenFormatFlag</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43615"></span>43615</td>
-<td class="instruction">LD A,(40998)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="43447.html#43629">Print_Character_Print</a> if *<a href="40998.html">TokenFormatFlag</a> the token format flag is not set.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43618"></span>43618</td>
-<td class="instruction">AND A</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43619"></span>43619</td>
-<td class="instruction">JR Z,<a href="43447.html#43629">Print_Character_Print</a></td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="43621"></span>
-<div class="comments">
-<div class="paragraph">
-Reset the token format flag before converting to uppercase.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">Print_Character_ResetTokenFormatFlag</td>
-<td class="address-2"><span id="43621"></span>43621</td>
-<td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Reset *<a href="40998.html">TokenFormatFlag</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43622"></span>43622</td>
-<td class="instruction">LD (40998),A</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43625"></span>43625</td>
-<td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="43626"></span>
-<div class="comments">
-<div class="paragraph">
-Clear bit 5 from the character code (convert to uppercase).
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43626"></span>43626</td>
-<td class="instruction">AND %01011111</td>
-<td class="comment-1" rowspan="1">Keep only bits 0-4, 6 (clear bit 5 to convert lowercase to uppercase).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43628"></span>43628</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the modified character code on the stack.</td>
-</tr>
-<tr>
-<td class="asm-label">Print_Character_Print</td>
-<td class="address-2"><span id="43629"></span>43629</td>
-<td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the character code from the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43630"></span>43630</td>
-<td class="instruction">JP <a href="49633.html">CheckTVFlagAndProcess</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49633.html">CheckTVFlagAndProcess</a> to print the character.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -808,14 +447,14 @@ Prev: <a href="43445.html">43445</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#43447">Map</a></td>
 <td class="next">
-Next: <a href="43633.html">43633</a>
+Next: <a href="43540.html">43540</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/A9B7.html">Switch to hexadecimal</a>.</div>
 </footer>

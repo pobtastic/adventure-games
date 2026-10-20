@@ -36,136 +36,150 @@ Next: <a href="AEA9.html">AEA9</a>
 </td>
 </tr>
 </table>
-<div class="description">AE7F: Routine at AE7F</div>
+<div class="description">AE7F: Save Text Pointer</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="AB91.html">AB91</a>, <a href="ABF3.html">ABF3</a>, <a href="AC24.html">AC24</a>, <a href="AC41.html">AC41</a>, <a href="ACCC.html">ProcessTextTokenAndSaveState</a>, <a href="B049.html">B049</a> and <a href="B77F.html">ProcessTextTokenStream</a>.
+Used by the routines at <a href="AB91.html">CheckDisplayMode</a>, <a href="ABF3.html">MatchCharacterPair</a>, <a href="AC24.html">ClearCoordinateBuffer</a>, <a href="ACCC.html">HandleClassAWord</a>, <a href="B049.html">LinkCharacterWhenFlagged</a> and <a href="B86A.html">FollowLinkPointer</a>.
+</div>
+<div class="paragraph">
+Remembers the text pointer so the message can be continued afterwards.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">SaveTextPointer</td>
 <td class="address-2"><span id="ae7f"></span>AE7F</td>
 <td class="instruction">LD HL,($A02B)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Copy the word at <a href="A02B.html">ActiveTextPointer</a> into the word at <a href="A029.html">SavedTextPointer</a> and keep <span class="register">D</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae82"></span>AE82</td>
 <td class="instruction">LD ($A029),HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae85"></span>AE85</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae86"></span>AE86</td>
 <td class="instruction">LD ($A02D),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store <span class="register">A</span> at <a href="A02D.html">SavedSourceByte</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae89"></span>AE89</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Take the saved text pointer and start its length at zero.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae8a"></span>AE8A</td>
 <td class="instruction">LD D,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae8b"></span>AE8B</td>
 <td class="instruction">LD BC,$0000</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae8e"></span>AE8E</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Move past this byte and go to <a href="AE7F.html#ae9f">SaveTextPointer_Next</a> if it is E0.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae8f"></span>AE8F</td>
 <td class="instruction">CP $E0</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae91"></span>AE91</td>
-<td class="instruction">JR Z,<a href="AE7F.html#ae9f">$AE9F</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="AE7F.html#ae9f">SaveTextPointer_Next</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae93"></span>AE93</td>
 <td class="instruction">CP $F0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="AE7F.html#ae9f">SaveTextPointer_Next</a> if the token code is F0.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae95"></span>AE95</td>
-<td class="instruction">JR Z,<a href="AE7F.html#ae9f">$AE9F</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="AE7F.html#ae9f">SaveTextPointer_Next</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae97"></span>AE97</td>
 <td class="instruction">CP $90</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="AE7F.html#ae9f">SaveTextPointer_Next</a> if it is 90.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae99"></span>AE99</td>
-<td class="instruction">JR Z,<a href="AE7F.html#ae9f">$AE9F</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="AE7F.html#ae9f">SaveTextPointer_Next</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae9b"></span>AE9B</td>
 <td class="instruction">CP $80</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="AE7F.html#aea4">SaveTextPointer_RecordObjectProcessing</a> if the token code is at least 80.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ae9d"></span>AE9D</td>
-<td class="instruction">JR NC,<a href="AE7F.html#aea4">$AEA4</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="AE7F.html#aea4">SaveTextPointer_RecordObjectProcessing</a></td>
 </tr>
 <tr>
+<td class="asm-label">SaveTextPointer_Next</td>
 <td class="address-2"><span id="ae9f"></span>AE9F</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="5">Read the next text pair and step past it.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aea0"></span>AEA0</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aea1"></span>AEA1</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aea2"></span>AEA2</td>
 <td class="instruction">LD C,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aea3"></span>AEA3</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">SaveTextPointer_RecordObjectProcessing</td>
 <td class="address-2"><span id="aea4"></span>AEA4</td>
 <td class="instruction">LD ($A02B),HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store <span class="register">HL</span> in the word at <a href="A02B.html">ActiveTextPointer</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aea7"></span>AEA7</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the high byte of the source.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aea8"></span>AEA8</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -182,7 +196,7 @@ Next: <a href="AEA9.html">AEA9</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/44671.html">Switch to decimal</a>.</div>
 </footer>

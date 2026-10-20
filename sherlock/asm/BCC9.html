@@ -44,6 +44,9 @@ Next: <a href="BD06.html">BD06</a>
 <div class="paragraph">
 Used by the routines at <a href="BC21.html">CheckObjectAttribute</a>, <a href="BC46.html">ProcessGameStatusEntries</a>, <a href="BC74.html">ProcessGameStatusEntriesWithCounter</a> and <a href="BC9C.html">ProcessGameStatusEntriesAlternate</a>.
 </div>
+<div class="paragraph">
+Tests the action flags and runs <a href="BF08.html">CheckBitAndProcessEntry</a> when bit 2 is set. Returns non-zero when that entry is accepted, and zero when it is not.
+</div>
 </div>
 </td>
 </tr>
@@ -51,151 +54,149 @@ Used by the routines at <a href="BC21.html">CheckObjectAttribute</a>, <a href="B
 <td class="asm-label">CheckBitAndProcess</td>
 <td class="address-2"><span id="bcc9"></span>BCC9</td>
 <td class="instruction">BIT 2,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="BCC9.html#bcda">CheckBitAndProcess_Next</a> if a marker on the action flags is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bccd"></span>BCCD</td>
-<td class="instruction">JR Z,<a href="BCC9.html#bcda">CheckBitAndProcess_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BCC9.html#bcda">CheckBitAndProcess_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bccf"></span>BCCF</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Call <a href="BF08.html">CheckBitAndProcessEntry</a> to test bit and process entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcd1"></span>BCD1</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcd2"></span>BCD2</td>
 <td class="instruction">CALL <a href="BF08.html">CheckBitAndProcessEntry</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcd5"></span>BCD5</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcd6"></span>BCD6</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="BCC9.html#bd03">CheckBitAndProcess_TestStepSucceedsScript</a> if the entry check returns zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcd8"></span>BCD8</td>
-<td class="instruction">JR Z,<a href="BCC9.html#bd03">CheckBitAndProcess_3</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BCC9.html#bd03">CheckBitAndProcess_TestStepSucceedsScript</a></td>
 </tr>
 <tr>
-<td class="asm-label">CheckBitAndProcess_0</td>
+<td class="asm-label">CheckBitAndProcess_Next</td>
 <td class="address-2"><span id="bcda"></span>BCDA</td>
 <td class="instruction">BIT 5,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="BCC9.html#bce6">CheckBitAndProcess_MarkActionTaken</a> if a marker on the action flags is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcde"></span>BCDE</td>
-<td class="instruction">JR Z,<a href="BCC9.html#bce6">CheckBitAndProcess_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BCC9.html#bce6">CheckBitAndProcess_MarkActionTaken</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bce0"></span>BCE0</td>
 <td class="instruction">SET 0,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Set the action-pending flag and jump ahead to <a href="BCC9.html#bd01">CheckBitAndProcess_ClearResult</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bce4"></span>BCE4</td>
-<td class="instruction">JR <a href="BCC9.html#bd01">CheckBitAndProcess_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="BCC9.html#bd01">CheckBitAndProcess_ClearResult</a></td>
 </tr>
 <tr>
-<td class="asm-label">CheckBitAndProcess_1</td>
+<td class="routine-comment" colspan="5">
+<span id="bce6"></span>
+<div class="comments">
+<div class="paragraph">
+Mark the action taken and clear the bit that would repeat it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckBitAndProcess_MarkActionTaken</td>
 <td class="address-2"><span id="bce6"></span>BCE6</td>
 <td class="instruction">SET 1,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Mark the action taken so the script will not repeat it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcea"></span>BCEA</td>
 <td class="instruction">RES 0,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcee"></span>BCEE</td>
 <td class="instruction">BIT 4,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="BCC9.html#bd01">CheckBitAndProcess_ClearResult</a> if the action state flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcf2"></span>BCF2</td>
-<td class="instruction">JR Z,<a href="BCC9.html#bd01">CheckBitAndProcess_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BCC9.html#bd01">CheckBitAndProcess_ClearResult</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcf4"></span>BCF4</td>
 <td class="instruction">LD L,(IX+$04)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Read the handler address from bytes 04-05 of the record and keep the record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcf7"></span>BCF7</td>
 <td class="instruction">LD H,(IX+$05)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcfa"></span>BCFA</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcfc"></span>BCFC</td>
 <td class="instruction">CALL <a href="D1DB.html">JumpToHandler</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Call <a href="D1DB.html">JumpToHandler</a> to jump to handler.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bcff"></span>BCFF</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">CheckBitAndProcess_2</td>
+<td class="asm-label">CheckBitAndProcess_ClearResult</td>
 <td class="address-2"><span id="bd01"></span>BD01</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd02"></span>BD02</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">CheckBitAndProcess_3</td>
+<td class="asm-label">CheckBitAndProcess_TestStepSucceedsScript</td>
 <td class="address-2"><span id="bd03"></span>BD03</td>
-<td class="instruction">OR $01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd05"></span>BD05</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -212,7 +213,7 @@ Next: <a href="BD06.html">BD06</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/48329.html">Switch to decimal</a>.</div>
 </footer>

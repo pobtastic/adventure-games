@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blizzard Pass: Routine at 62A2</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="629D.html">629D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#62a2">Map</a></td>
+<td class="next">
+Next: <a href="62D7.html">62D7</a>
+</td>
+</tr>
+</table>
+<div class="description">62A2: Find And Print Message</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="629D.html">PrintMessage</a>.
+</div>
+<div class="paragraph">
+Skips earlier messages by counting 5E and 7E terminators, then expands each byte as a dictionary word.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FindMessage</td>
+<td class="address-2"><span id="62a2"></span>62A2</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="4">The next word is collected at <a href="5B60.html">WordBuffer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62a3"></span>62A3</td>
+<td class="instruction">LD HL,$5B60</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62a6"></span>62A6</td>
+<td class="instruction">LD ($5B99),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62a9"></span>62A9</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62aa"></span>62AA</td>
+<td class="instruction">LD A,($5B8F)</td>
+<td class="comment-1" rowspan="4">Message 0 is already under <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62ad"></span>62AD</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62ae"></span>62AE</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62af"></span>62AF</td>
+<td class="instruction">JR Z,<a href="62A2.html#62c1">FindMessage_Byte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62b1"></span>62B1</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="1">The scan starts on the byte before the message.</td>
+</tr>
+<tr>
+<td class="asm-label">FindMessage_Skip</td>
+<td class="address-2"><span id="62b2"></span>62B2</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="4">Look at the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62b3"></span>62B3</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62b4"></span>62B4</td>
+<td class="instruction">CP $5E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62b6"></span>62B6</td>
+<td class="instruction">JR Z,<a href="62A2.html#62be">FindMessage_Count</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62b8"></span>62B8</td>
+<td class="instruction">CP $7E</td>
+<td class="comment-1" rowspan="3">7E ends a message too, otherwise keep scanning.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62ba"></span>62BA</td>
+<td class="instruction">JR Z,<a href="62A2.html#62be">FindMessage_Count</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62bc"></span>62BC</td>
+<td class="instruction">JR <a href="62A2.html#62b2">FindMessage_Skip</a></td>
+</tr>
+<tr>
+<td class="asm-label">FindMessage_Count</td>
+<td class="address-2"><span id="62be"></span>62BE</td>
+<td class="instruction">DJNZ <a href="62A2.html#62b2">FindMessage_Skip</a></td>
+<td class="comment-1" rowspan="2">Count down the messages and land on the chosen one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62c0"></span>62C0</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label">FindMessage_Byte</td>
+<td class="address-2"><span id="62c1"></span>62C1</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Remember this byte and expand it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62c2"></span>62C2</td>
+<td class="instruction">LD ($5B90),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62c5"></span>62C5</td>
+<td class="instruction">CALL <a href="62D7.html">ExpandToken</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62c8"></span>62C8</td>
+<td class="instruction">LD A,($5B9B)</td>
+<td class="comment-1" rowspan="3">7E ends the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62cb"></span>62CB</td>
+<td class="instruction">CP $7E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62cd"></span>62CD</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62ce"></span>62CE</td>
+<td class="instruction">CP $5E</td>
+<td class="comment-1" rowspan="2">5E ends the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62d0"></span>62D0</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62d1"></span>62D1</td>
+<td class="instruction">LD HL,($5B90)</td>
+<td class="comment-1" rowspan="3">Otherwise expand the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62d4"></span>62D4</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62d5"></span>62D5</td>
+<td class="instruction">JR <a href="62A2.html#62c1">FindMessage_Byte</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="629D.html">629D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#62a2">Map</a></td>
+<td class="next">
+Next: <a href="62D7.html">62D7</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1986 Adventuresoft UK Ltd &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/blizzardpass/">Source code</a>.</div>
+<div><a href="../dec/asm/25250.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

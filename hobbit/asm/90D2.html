@@ -33,13 +33,16 @@ Next: <a href="90EB.html">90EB</a>
 </td>
 </tr>
 </table>
-<div class="description">90D2: "You are dead" controller.</div>
+<div class="description">90D2: Action: You Are Dead</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="8D9D.html">Action_Dir</a>, <a href="93DA.html">Action_Examine</a>, <a href="96B3.html">96B3</a>, <a href="A55F.html">A55F</a> and <a href="C7EA.html">EventForestriver</a>.
+Used by the routines at <a href="8D9D.html">Action_Direction</a>, <a href="93DA.html">Action_Examine</a>, <a href="977C.html">Turn_ThePlayerHasDied</a>, <a href="A5FB.html">Event_TheBarrel</a>, <a href="A7AA.html">Event_TheDeepBog</a>, <a href="A86E.html">Event_ARandomHalf</a>, <a href="AB10.html">Event_TheWebSmothersYou</a>, <a href="AB3A.html">Event_StungFromAbove</a> and <a href="C7EA.html">EventForestriver</a>.
+</div>
+<div class="paragraph">
+Kills the player and ends the game. Reached through the action list of <a href="C11B.html#c11b">$00</a> - "You" for action 00, dispatched by <a href="9B6C.html">TriggerAction</a>.
 </div>
 </div>
 </td>
@@ -48,41 +51,41 @@ Used by the routines at <a href="8D9D.html">Action_Dir</a>, <a href="93DA.html">
 <td class="asm-label">YouAreDead</td>
 <td class="address-2"><span id="90d2"></span>90D2</td>
 <td class="instruction">SUB A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear the character whose turn it is.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="90d3"></span>90D3</td>
 <td class="instruction">LD ($B6EA),A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Update *<a href="B6DA.html#b6ea">CurrentCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="90d6"></span>90D6</td>
 <td class="instruction">LD HL,$AFF1</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="AD7D.html#aff1">"You are dead"</a>.</td>
+<td class="comment-1" rowspan="1">Point at the message "You are dead" (<a href="AD7D.html#aff1">AFF1</a>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="90d9"></span>90D9</td>
-<td class="instruction">CALL <a href="72DD.html">PrintMsg</a></td>
-<td class="comment-1" rowspan="1">Call <a href="72DD.html">PrintMsg</a>.</td>
+<td class="instruction">CALL <a href="72DD.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="72DD.html">PrintMessage</a> to print message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="90dc"></span>90DC</td>
-<td class="instruction">CALL <a href="83EF.html#83f5">GameOver_Start</a></td>
-<td class="comment-1" rowspan="1">Call <a href="83EF.html#83f5">GameOver_Start</a>.</td>
+<td class="instruction">CALL <a href="83F5.html">GameOver_Start</a></td>
+<td class="comment-1" rowspan="1">Call <a href="83F5.html">GameOver_Start</a> to print the score.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="90df"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="A55F.html">A55F</a>.
+This entry point is used by the routine at <a href="A9D6.html">Event_LocationTwentyFive</a>.
 </div>
 <div class="paragraph">
-This is almost a carbon copy of <a href="83EF.html#8441">WaitForKey</a> only differing in that it ends with a jump to <a href="6C00.html#6c27">ReStart</a> and doesn't set a border colour.
+This is the same key wait as <a href="84B9.html#84c2">Normal_AnyKey</a>, but it ends with a jump to <a href="6C00.html#6c27">Restart</a> to restart the game.
 </div>
 </div>
 </td>
@@ -102,7 +105,7 @@ This is almost a carbon copy of <a href="83EF.html#8441">WaitForKey</a> only dif
 <td class="asm-label"></td>
 <td class="address-1"><span id="90e2"></span>90E2</td>
 <td class="instruction">AND %00011111</td>
-<td class="comment-1" rowspan="1">A pressed key from any line will set its respective bit; bit 0 (outer key) to bit 4 (inner key). Hence keep only bits 0-4 for the check.</td>
+<td class="comment-1" rowspan="1">Keep bits 0-4, one for each key in the half-row. XOR A then IN A,(FE) reads every half-row at once, and a pressed key reads as a reset bit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -118,8 +121,8 @@ This is almost a carbon copy of <a href="83EF.html#8441">WaitForKey</a> only dif
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="90e8"></span>90E8</td>
-<td class="instruction">JP <a href="6C00.html#6c27">ReStart</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="6C00.html#6c27">ReStart</a>.</td>
+<td class="instruction">JP <a href="6C00.html#6c27">Restart</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="6C00.html#6c27">Restart</a> to restart the game.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -136,7 +139,7 @@ Next: <a href="90EB.html">90EB</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../dec/asm/37074.html">Switch to decimal</a>.</div>
 </footer>

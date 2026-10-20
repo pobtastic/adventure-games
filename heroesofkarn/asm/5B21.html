@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at 5B21</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="5B00.html">5B00</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#5b21">Map</a></td>
+<td class="next">
+Next: <a href="5B4F.html">5B4F</a>
+</td>
+</tr>
+</table>
+<div class="description">5B21: Tape Loading</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="5B00.html">TapeLoader</a>.
+</div>
+<div class="paragraph">
+Pull one tape block into the address and length set up by the caller.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="5b21"></span>
+<div class="comments">
+<div class="paragraph">
+Tape loading routine.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TapeLoading</td>
+<td class="address-2"><span id="5b21"></span>5B21</td>
+<td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set the carry flag to indicate "loading".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b22"></span>5B22</td>
+<td class="instruction">INC D</td>
+<td class="comment-1" rowspan="1">This resets the Z flag (<span class="register">D</span> cannot hold +FF.)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b23"></span>5B23</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="1">The <span class="register">A</span> register holds +00 for a header and +FF for a block of data. The carry flag is reset for verifying and set for loading.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b24"></span>5B24</td>
+<td class="instruction">DEC D</td>
+<td class="comment-1" rowspan="1">Put back <span class="register">D</span> to its original value.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b25"></span>5B25</td>
+<td class="instruction">DI</td>
+<td class="comment-1" rowspan="1">Disable interrupts while the tape loads, as the start of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a> would.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b26"></span>5B26</td>
+<td class="instruction">LD A,$0F</td>
+<td class="comment-1" rowspan="2">Set the border to 
+
+
+WHITE.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b28"></span>5B28</td>
+<td class="instruction">OUT ($FE),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b2a"></span>5B2A</td>
+<td class="instruction">CALL $0562</td>
+<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a> at 0562.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b2d"></span>5B2D</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="1">Remember whether the block loaded.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b2e"></span>5B2E</td>
+<td class="instruction">LD A,($5C48)</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C48.html">BORDCR</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b31"></span>5B31</td>
+<td class="instruction">AND %00111000</td>
+<td class="comment-1" rowspan="1">Keep the border colour (bits 3-5 of *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C48.html">BORDCR</a>).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b33"></span>5B33</td>
+<td class="instruction">RRC A</td>
+<td class="comment-1" rowspan="3">Move the border colour into the low three bits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b35"></span>5B35</td>
+<td class="instruction">RRC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b37"></span>5B37</td>
+<td class="instruction">RRC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b39"></span>5B39</td>
+<td class="instruction">OUT ($FE),A</td>
+<td class="comment-1" rowspan="1">Set border to the colour held by <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b3b"></span>5B3B</td>
+<td class="instruction">LD A,$7F</td>
+<td class="comment-1" rowspan="3">See whether SPACE is pressed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b3d"></span>5B3D</td>
+<td class="instruction">IN A,($FE)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b3f"></span>5B3F</td>
+<td class="instruction">RRA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b40"></span>5B40</td>
+<td class="instruction">EI</td>
+<td class="comment-1" rowspan="1">Re-enable interrupts, as the ROM does when its own load ends.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b41"></span>5B41</td>
+<td class="instruction">JP NC,$0000</td>
+<td class="comment-1" rowspan="1">Jump to <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0000.html">START</a> if the carry flag is not set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b44"></span>5B44</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore the load result from the stack (the carry flag is set when the block loaded).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b45"></span>5B45</td>
+<td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the carry flag is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b46"></span>5B46</td>
+<td class="instruction">LD HL,($5C53)</td>
+<td class="comment-1" rowspan="2">Write *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C53.html">PROG</a> to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C4B.html">VARS</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b49"></span>5B49</td>
+<td class="instruction">LD ($5C4B),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b4c"></span>5B4C</td>
+<td class="instruction">LD (HL),$80</td>
+<td class="comment-1" rowspan="1">Write 80 to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C53.html">PROG</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5b4e"></span>5B4E</td>
+<td class="instruction">RST $08</td>
+<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0008.html">ERROR_1</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="5B00.html">5B00</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#5b21">Map</a></td>
+<td class="next">
+Next: <a href="5B4F.html">5B4F</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../dec/asm/23329.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

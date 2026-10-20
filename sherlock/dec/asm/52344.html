@@ -28,11 +28,11 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="52279.html">52279</a>
+Prev: <a href="52314.html">52314</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#52344">Map</a></td>
 <td class="next">
-Next: <a href="52423.html">52423</a>
+Next: <a href="52354.html">52354</a>
 </td>
 </tr>
 </table>
@@ -42,7 +42,10 @@ Next: <a href="52423.html">52423</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="41024.html">GameEntryPoint</a>.
+Used by the routine at <a href="41060.html">Game_Initialisation</a>.
+</div>
+<div class="paragraph">
+Runs the current character's script from the timetable entry at <a href="40923.html">CurrentCharacter_TimetablePointer</a>, one command at a time, until the script ends or yields.
 </div>
 </div>
 <table class="input">
@@ -59,239 +62,36 @@ Used by the routine at <a href="41024.html">GameEntryPoint</a>.
 <tr>
 <td class="asm-label">ScriptInterpreter</td>
 <td class="address-2"><span id="52344"></span>52344</td>
-<td class="instruction">CALL <a href="52279.html#52314">ProcessCharacterAction_1</a></td>
-<td class="comment-1" rowspan="1">Call <a href="52279.html#52314">ProcessCharacterAction_1</a>.</td>
+<td class="instruction">CALL <a href="52314.html">NoteDisguiseAndReadTimetable</a></td>
+<td class="comment-1" rowspan="1">Call <a href="52314.html">NoteDisguiseAndReadTimetable</a> to read this character's timetable.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="52347"></span>52347</td>
 <td class="instruction">LD IY,(40923)</td>
-<td class="comment-1" rowspan="1"><span class="register">IY</span>=<a href="40923.html">CurrentCharacter_TimetablePointer</a>.</td>
+<td class="comment-1" rowspan="2">Read the currently processed character timetable pointer, then call <a href="53256.html">GetScriptPointerFromTimetable</a> to get script pointer from timetable.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="52351"></span>52351</td>
 <td class="instruction">CALL <a href="53256.html">GetScriptPointerFromTimetable</a></td>
-<td class="comment-1" rowspan="1">Call <a href="53256.html">GetScriptPointerFromTimetable</a>.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="52354"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routines at <a href="52467.html">HandleCommandType_0E_0C_0B_0A</a> and <a href="52920.html">ProcessScriptCommandWithCounter</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">ScriptInterpreter_0</td>
-<td class="address-2"><span id="52354"></span>52354</td>
-<td class="instruction">LD L,(IY+1)</td>
-<td class="comment-1" rowspan="2">Get the characters script position.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52357"></span>52357</td>
-<td class="instruction">LD H,(IY+2)</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52360"></span>52360</td>
-<td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Write 0 to *<a href="47412.html">47412</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52361"></span>52361</td>
-<td class="instruction">LD (47412),A</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52364"></span>52364</td>
-<td class="instruction">LD A,(52235)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="52619.html">TerminateCharacterScript</a> if *<a href="52235.html">52235</a> is equal to 10.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52367"></span>52367</td>
-<td class="instruction">CP 10</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52369"></span>52369</td>
-<td class="instruction">JP Z,<a href="52619.html">TerminateCharacterScript</a></td>
-</tr>
-<tr>
-<td class="asm-label">FindNextCommand</td>
-<td class="address-2"><span id="52372"></span>52372</td>
-<td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="52344.html#52379">ProcessScriptCommand</a> if *<span class="register">HL</span> is not equal to <span class="register">A</span>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52373"></span>52373</td>
-<td class="instruction">AND A</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52374"></span>52374</td>
-<td class="instruction">JR NZ,<a href="52344.html#52379">ProcessScriptCommand</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52376"></span>52376</td>
-<td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52377"></span>52377</td>
-<td class="instruction">JR <a href="52344.html#52372">FindNextCommand</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="52344.html#52372">FindNextCommand</a>.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="52379"></span>
-<div class="comments">
-<div class="paragraph">
-Process the current script command.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">ProcessScriptCommand</td>
-<td class="address-2"><span id="52379"></span>52379</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">HL</span> (using the stack).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52380"></span>52380</td>
-<td class="instruction">POP IX</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52382"></span>52382</td>
-<td class="instruction">LD (40921),HL</td>
-<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to *<a href="40921.html">CurrentCharacter_CommandPosition</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52385"></span>52385</td>
-<td class="instruction">AND %00001111</td>
-<td class="comment-1" rowspan="1">Keep only bits 0-3.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52387"></span>52387</td>
-<td class="instruction">CP 10</td>
-<td class="comment-1" rowspan="2">Jump to <a href="52467.html">HandleCommandType_0E_0C_0B_0A</a> if <span class="register">A</span> is greater than or equal to 10.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52389"></span>52389</td>
-<td class="instruction">JR NC,<a href="52467.html">HandleCommandType_0E_0C_0B_0A</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52391"></span>52391</td>
-<td class="instruction">LD A,(52237)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="52423.html">ExecuteCharacterCommand</a> if *<a href="52235.html#52237">52237</a> is not equal to 1.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52394"></span>52394</td>
-<td class="instruction">CP 1</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52396"></span>52396</td>
-<td class="instruction">JR NZ,<a href="52423.html">ExecuteCharacterCommand</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52398"></span>52398</td>
-<td class="instruction">SUB A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>-=<span class="register">A</span>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52399"></span>52399</td>
-<td class="instruction">LD (52237),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="52235.html#52237">52237</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52402"></span>52402</td>
-<td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52403"></span>52403</td>
-<td class="instruction">CALL <a href="47414.html">ProcessScriptDisplay</a></td>
-<td class="comment-1" rowspan="1">Call <a href="47414.html">ProcessScriptDisplay</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52406"></span>52406</td>
-<td class="instruction">JP C,<a href="52619.html#52625">TerminateCharacterScript_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="52619.html#52625">TerminateCharacterScript_0</a> if <span class="register">A</span> is less than 1.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52409"></span>52409</td>
-<td class="instruction">JR Z,<a href="52423.html">ExecuteCharacterCommand</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="52423.html">ExecuteCharacterCommand</a> if <span class="register">A</span> is equal to 1.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52411"></span>52411</td>
-<td class="instruction">CALL <a href="50385.html">ProcessDisplayAction</a></td>
-<td class="comment-1" rowspan="1">Call <a href="50385.html">ProcessDisplayAction</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52414"></span>52414</td>
-<td class="instruction">RET NC</td>
-<td class="comment-1" rowspan="1">Return if <span class="register">A</span> is greater than 1.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52415"></span>52415</td>
-<td class="instruction">CALL <a href="53174.html">FindCharacterScriptEntry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="53174.html">FindCharacterScriptEntry</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52418"></span>52418</td>
-<td class="instruction">LD (IX+5),2</td>
-<td class="comment-1" rowspan="1">Write 2 to *<span class="register">IX</span>+5.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="52422"></span>52422</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="52279.html">52279</a>
+Prev: <a href="52314.html">52314</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#52344">Map</a></td>
 <td class="next">
-Next: <a href="52423.html">52423</a>
+Next: <a href="52354.html">52354</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/CC78.html">Switch to hexadecimal</a>.</div>
 </footer>

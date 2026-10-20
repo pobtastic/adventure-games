@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at 45646</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="45623.html">45623</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#45646">Map</a></td>
+<td class="next">
+Next: <a href="45924.html">45924</a>
+</td>
+</tr>
+</table>
+<div class="description">45646: Handler: User Pressed "ENTER"</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="45568.html">HandlerUserInput</a>.
+</div>
+<div class="paragraph">
+Turn the finished command into word tokens.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">HL</td>
+<td class="register-desc">Current position in the command buffer</td>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Which contains 13 ("ENTER") at this point.</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerUserPressedENTER</td>
+<td class="address-2"><span id="45646"></span>45646</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Write 13 to the command buffer at the current position for use as a termination character.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="45647"></span>
+<div class="comments">
+<div class="paragraph">
+Force a newline to be "printed" to the screen.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45647"></span>45647</td>
+<td class="instruction">CALL <a href="44058.html">SwitchToNormalScreenOutput</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44058.html">SwitchToNormalScreenOutput</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45650"></span>45650</td>
+<td class="instruction">CALL <a href="44103.html">PrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44103.html">PrintCharacter</a> to print the character.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="45653"></span>
+<div class="comments">
+<div class="paragraph">
+Initialise the word token buffer. This buffer will store up to 10 vocabulary tokens (one per word in the command). Each token is the index of the word in the vocabulary table.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45653"></span>45653</td>
+<td class="instruction">LD HL,44846</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the first word token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45656"></span>45656</td>
+<td class="instruction">LD A,255</td>
+<td class="comment-1" rowspan="1">Use the the terminator key code.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45658"></span>45658</td>
+<td class="instruction">LD B,10</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the size of the word token buffer (10 bytes).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="45660"></span>
+<div class="comments">
+<div class="paragraph">
+Fill the word token buffer with 255 (the terminator value) to mark all slots as empty.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">EmptyWordTokenBuffer_Loop</td>
+<td class="address-2"><span id="45660"></span>45660</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="3">Mark every word slot empty.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45661"></span>45661</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45662"></span>45662</td>
+<td class="instruction">DJNZ <a href="45646.html#45660">EmptyWordTokenBuffer_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45664"></span>45664</td>
+<td class="instruction">LD HL,44796</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the command buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45667"></span>45667</td>
+<td class="instruction">LD C,10</td>
+<td class="comment-1" rowspan="1">Allow ten words in the command.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord</td>
+<td class="address-2"><span id="45669"></span>45669</td>
+<td class="instruction">LD DE,44857</td>
+<td class="comment-1" rowspan="3">Blank the four-byte word scratch with spaces.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45672"></span>45672</td>
+<td class="instruction">LD B,4</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45674"></span>45674</td>
+<td class="instruction">LD A,32</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerUserPressedENTER_0</td>
+<td class="address-2"><span id="45676"></span>45676</td>
+<td class="instruction">LD (DE),A</td>
+<td class="comment-1" rowspan="3">Fill the word scratch with spaces.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45677"></span>45677</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45678"></span>45678</td>
+<td class="instruction">DJNZ <a href="45646.html#45676">HandlerUserPressedENTER_0</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45680"></span>45680</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Finish when every word slot is full.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45681"></span>45681</td>
+<td class="instruction">OR C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45682"></span>45682</td>
+<td class="instruction">JP Z,<a href="45924.html">HandlerUnknownWord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45685"></span>45685</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the next character of the command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45686"></span>45686</td>
+<td class="instruction">CP 13</td>
+<td class="comment-1" rowspan="2">Finish the command at ENTER.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45688"></span>45688</td>
+<td class="instruction">JP Z,<a href="45924.html">HandlerUnknownWord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45691"></span>45691</td>
+<td class="instruction">LD B,4</td>
+<td class="comment-1" rowspan="2">Copy the next word into the four-byte scratch.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45693"></span>45693</td>
+<td class="instruction">LD DE,44857</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerUserPressedENTER_1</td>
+<td class="address-2"><span id="45696"></span>45696</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the next character of this word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45697"></span>45697</td>
+<td class="instruction">CP 13</td>
+<td class="comment-1" rowspan="2">End the word at ENTER.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45699"></span>45699</td>
+<td class="instruction">JR Z,<a href="45646.html#45740">HandlerUserPressedENTER_4</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45701"></span>45701</td>
+<td class="instruction">CP 32</td>
+<td class="comment-1" rowspan="2">End the word at a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45703"></span>45703</td>
+<td class="instruction">JR Z,<a href="45646.html#45730">HandlerUserPressedENTER_3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45705"></span>45705</td>
+<td class="instruction">CP 44</td>
+<td class="comment-1" rowspan="2">End the word at a comma.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45707"></span>45707</td>
+<td class="instruction">JR Z,<a href="45646.html#45730">HandlerUserPressedENTER_3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45709"></span>45709</td>
+<td class="instruction">LD (DE),A</td>
+<td class="comment-1" rowspan="1">Store that character in the word scratch.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45710"></span>45710</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Advance through the command and the word scratch.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45711"></span>45711</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45712"></span>45712</td>
+<td class="instruction">DJNZ <a href="45646.html#45696">HandlerUserPressedENTER_1</a></td>
+<td class="comment-1" rowspan="1">Copy up to four letters of this word into the word scratch.</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerUserPressedENTER_2</td>
+<td class="address-2"><span id="45714"></span>45714</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the character past a word that did not fit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45715"></span>45715</td>
+<td class="instruction">CP 13</td>
+<td class="comment-1" rowspan="2">Stop skipping once ENTER is reached.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45717"></span>45717</td>
+<td class="instruction">JR Z,<a href="45646.html#45740">HandlerUserPressedENTER_4</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45719"></span>45719</td>
+<td class="instruction">CP 32</td>
+<td class="comment-1" rowspan="2">Stop skipping at a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45721"></span>45721</td>
+<td class="instruction">JR Z,<a href="45646.html#45730">HandlerUserPressedENTER_3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45723"></span>45723</td>
+<td class="instruction">CP 44</td>
+<td class="comment-1" rowspan="2">Stop skipping at a comma.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45725"></span>45725</td>
+<td class="instruction">JR Z,<a href="45646.html#45730">HandlerUserPressedENTER_3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45727"></span>45727</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Skip the rest of a word that does not fit the scratch.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45728"></span>45728</td>
+<td class="instruction">JR <a href="45646.html#45714">HandlerUserPressedENTER_2</a></td>
+<td class="comment-1" rowspan="1">Keep skipping to the end of a long word.</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerUserPressedENTER_3</td>
+<td class="address-2"><span id="45730"></span>45730</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step past the space or comma between words.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45731"></span>45731</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the character after that space or comma.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45732"></span>45732</td>
+<td class="instruction">CP 32</td>
+<td class="comment-1" rowspan="2">Skip spaces between words.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45734"></span>45734</td>
+<td class="instruction">JR Z,<a href="45646.html#45730">HandlerUserPressedENTER_3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45736"></span>45736</td>
+<td class="instruction">CP 44</td>
+<td class="comment-1" rowspan="2">Skip commas between words.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45738"></span>45738</td>
+<td class="instruction">JR Z,<a href="45646.html#45730">HandlerUserPressedENTER_3</a></td>
+</tr>
+<tr>
+<td class="asm-label">HandlerUserPressedENTER_4</td>
+<td class="address-2"><span id="45740"></span>45740</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="3">Remember the command, the scratch and the word count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45741"></span>45741</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45742"></span>45742</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45743"></span>45743</td>
+<td class="instruction">LD HL,44884</td>
+<td class="comment-1" rowspan="3">Compare the scratch word with "THE ".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45746"></span>45746</td>
+<td class="instruction">LD DE,44857</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45749"></span>45749</td>
+<td class="instruction">LD B,4</td>
+</tr>
+<tr>
+<td class="asm-label">CompareWord_Loop</td>
+<td class="address-2"><span id="45751"></span>45751</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="45646.html#45759">HandlerUserPressedENTER_5</a> if the characters don't match (the word is not "The").</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45752"></span>45752</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45753"></span>45753</td>
+<td class="instruction">JR NZ,<a href="45646.html#45759">HandlerUserPressedENTER_5</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45755"></span>45755</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="2">Compare the next letter of "THE".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45756"></span>45756</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45757"></span>45757</td>
+<td class="instruction">DJNZ <a href="45646.html#45751">CompareWord_Loop</a></td>
+<td class="comment-1" rowspan="1">Keep going until all four letters have been compared.</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerUserPressedENTER_5</td>
+<td class="address-2"><span id="45759"></span>45759</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">DE</span>, <span class="register">HL</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45760"></span>45760</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45761"></span>45761</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45762"></span>45762</td>
+<td class="instruction">JR Z,<a href="45646.html#45669">Parser_MatchInputWord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="45646.html#45669">Parser_MatchInputWord</a> if the words matched (this was "The", so skip it and process the next word).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45764"></span>45764</td>
+<td class="instruction">DEC C</td>
+<td class="comment-1" rowspan="1">Use up one of the ten word slots for this word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45765"></span>45765</td>
+<td class="instruction">LD (44869),HL</td>
+<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to the word scratch.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45768"></span>45768</td>
+<td class="instruction">LD (44871),DE</td>
+<td class="comment-1" rowspan="1">Write <span class="register">DE</span> to the word pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45772"></span>45772</td>
+<td class="instruction">LD (44873),BC</td>
+<td class="comment-1" rowspan="1">Write <span class="register">BC</span> to *<a href="44873.html">Workspace_Tail</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="45776"></span>
+<div class="comments">
+<div class="paragraph">
+Look up the word in the vocabulary table. The vocabulary contains all recognised verbs, nouns, and other words the game understands. Each entry can have synonyms separated by commas.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45776"></span>45776</td>
+<td class="instruction">LD HL,(44752)</td>
+<td class="comment-1" rowspan="1">Load the pointer for the vocabulary pointer into <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45779"></span>45779</td>
+<td class="instruction">LD C,0</td>
+<td class="comment-1" rowspan="1">Select the north exit.</td>
+</tr>
+<tr>
+<td class="asm-label">VocabularyLookup_Loop</td>
+<td class="address-2"><span id="45781"></span>45781</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="45646.html#45842">ProcessUnrecognisedWords</a> if *<span class="register">HL</span> is equal to 255 (end of vocabulary table).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45782"></span>45782</td>
+<td class="instruction">CP 255</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45784"></span>45784</td>
+<td class="instruction">JR Z,<a href="45646.html#45842">ProcessUnrecognisedWords</a></td>
+</tr>
+<tr>
+<td class="asm-label">CompareVocabularyWord</td>
+<td class="address-2"><span id="45786"></span>45786</td>
+<td class="instruction">LD DE,44857</td>
+<td class="comment-1" rowspan="2">Compare this vocabulary word with the scratch word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45789"></span>45789</td>
+<td class="instruction">LD B,4</td>
+</tr>
+<tr>
+<td class="asm-label">CompareVocabularyWord_Loop</td>
+<td class="address-2"><span id="45791"></span>45791</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="45646.html#45827">VocabularyWordNoMatch</a> if the characters don't match (this vocabulary entry doesn't match the word).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45792"></span>45792</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45793"></span>45793</td>
+<td class="instruction">JR NZ,<a href="45646.html#45827">VocabularyWordNoMatch</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45795"></span>45795</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Move to the next character in the extracted word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45796"></span>45796</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move to the next character in the vocabulary entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45797"></span>45797</td>
+<td class="instruction">DJNZ <a href="45646.html#45791">CompareVocabularyWord_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="45646.html#45791">CompareVocabularyWord_Loop</a> until all 4 characters have been compared.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="45799"></span>
+<div class="comments">
+<div class="paragraph">
+Word matched in vocabulary! Calculate which slot in the token buffer to use (based on how many words have been processed so far) and store the vocabulary index as the token.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45799"></span>45799</td>
+<td class="instruction">LD HL,44873</td>
+<td class="comment-1" rowspan="4">Work out which token slot this word fills.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45802"></span>45802</td>
+<td class="instruction">LD A,9</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45804"></span>45804</td>
+<td class="instruction">SUB (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45805"></span>45805</td>
+<td class="instruction">LD D,0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45807"></span>45807</td>
+<td class="instruction">LD E,A</td>
+<td class="comment-1" rowspan="1">Use the filled slot as an offset into the token buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45808"></span>45808</td>
+<td class="instruction">LD HL,44846</td>
+<td class="comment-1" rowspan="2">Calculate the address of the token buffer slot: <span class="register">HL</span>=the first word token+<span class="register">DE</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45811"></span>45811</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45812"></span>45812</td>
+<td class="instruction">LD (HL),C</td>
+<td class="comment-1" rowspan="1">Store the vocabulary index (<span class="register">C</span>) in the token buffer slot.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45813"></span>45813</td>
+<td class="instruction">LD HL,(44869)</td>
+<td class="comment-1" rowspan="1">Put back the command buffer position from the word scratch.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45816"></span>45816</td>
+<td class="instruction">LD DE,(44871)</td>
+<td class="comment-1" rowspan="1">Put back the word buffer position from the word pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45820"></span>45820</td>
+<td class="instruction">LD BC,(44873)</td>
+<td class="comment-1" rowspan="1">Put back the word counter from *<a href="44873.html">Workspace_Tail</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45824"></span>45824</td>
+<td class="instruction">JP <a href="45646.html#45669">Parser_MatchInputWord</a></td>
+<td class="comment-1" rowspan="1">Take the next word.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="45827"></span>
+<div class="comments">
+<div class="paragraph">
+Word didn't match this vocabulary entry. Check if there's a synonym (indicated by a comma). If found, try matching against the synonym instead.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">VocabularyWordNoMatch</td>
+<td class="address-2"><span id="45827"></span>45827</td>
+<td class="instruction">LD E,B</td>
+<td class="comment-1" rowspan="3">Step past the vocabulary word that did not match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45828"></span>45828</td>
+<td class="instruction">LD D,0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45830"></span>45830</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45831"></span>45831</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the character at this position and store it in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45832"></span>45832</td>
+<td class="instruction">CP 44</td>
+<td class="comment-1" rowspan="2">Jump to <a href="45646.html#45839">VocabularyNextEntry</a> if this character is not a comma (44, meaning no synonym exists).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45834"></span>45834</td>
+<td class="instruction">JR NZ,<a href="45646.html#45839">VocabularyNextEntry</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45836"></span>45836</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move past the comma to the synonym.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45837"></span>45837</td>
+<td class="instruction">JR <a href="45646.html#45786">CompareVocabularyWord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="45646.html#45786">CompareVocabularyWord</a> to try matching the synonym.</td>
+</tr>
+<tr>
+<td class="asm-label">VocabularyNextEntry</td>
+<td class="address-2"><span id="45839"></span>45839</td>
+<td class="instruction">INC C</td>
+<td class="comment-1" rowspan="1">Advance to the next vocabulary word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45840"></span>45840</td>
+<td class="instruction">JR <a href="45646.html#45781">VocabularyLookup_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="45646.html#45781">VocabularyLookup_Loop</a> to check the next vocabulary entry.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="45842"></span>
+<div class="comments">
+<div class="paragraph">
+All recognised words have been tokenised. Now check if there are any unrecognised words remaining in the input. If so, display an error message to the player showing which word(s) weren't understood.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessUnrecognisedWords</td>
+<td class="address-2"><span id="45842"></span>45842</td>
+<td class="instruction">LD HL,(44869)</td>
+<td class="comment-1" rowspan="1">Load the pointer for the word scratch into <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45845"></span>45845</td>
+<td class="instruction">LD DE,(44871)</td>
+<td class="comment-1" rowspan="1">Restore the word pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45849"></span>45849</td>
+<td class="instruction">LD BC,(44873)</td>
+<td class="comment-1" rowspan="1">Restore the word count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45853"></span>45853</td>
+<td class="instruction">LD A,10</td>
+<td class="comment-1" rowspan="3">Count the words still to check.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45855"></span>45855</td>
+<td class="instruction">SUB C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45856"></span>45856</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45857"></span>45857</td>
+<td class="instruction">LD HL,44796</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the command buffer.</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessUnrecognisedWords_Loop</td>
+<td class="address-2"><span id="45860"></span>45860</td>
+<td class="instruction">DEC C</td>
+<td class="comment-1" rowspan="1">Count off one recognised word; the unrecognised word is reached when the count runs out.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45861"></span>45861</td>
+<td class="instruction">JR Z,<a href="45646.html#45887">PrintUnrecognisedWord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="45646.html#45887">PrintUnrecognisedWord</a> if <span class="register">C</span> is equal to 10 (no unrecognised words found).</td>
+</tr>
+<tr>
+<td class="asm-label">FindUnrecognisedWord_Loop</td>
+<td class="address-2"><span id="45863"></span>45863</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the character from *<span class="register">HL</span> and store it in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45864"></span>45864</td>
+<td class="instruction">CP 32</td>
+<td class="comment-1" rowspan="2">Jump to <a href="45646.html#45875">SkipDelimiters_Loop2</a> if the character is an ASCII "SPACE" (32).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45866"></span>45866</td>
+<td class="instruction">JR Z,<a href="45646.html#45875">SkipDelimiters_Loop2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45868"></span>45868</td>
+<td class="instruction">CP 44</td>
+<td class="comment-1" rowspan="2">Jump to <a href="45646.html#45875">SkipDelimiters_Loop2</a> if the character is an ASCII comma (44).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45870"></span>45870</td>
+<td class="instruction">JR Z,<a href="45646.html#45875">SkipDelimiters_Loop2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45872"></span>45872</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move to the next character in the command buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45873"></span>45873</td>
+<td class="instruction">JR <a href="45646.html#45863">FindUnrecognisedWord_Loop</a></td>
+<td class="comment-1" rowspan="1">Keep reading this unrecognised word.</td>
+</tr>
+<tr>
+<td class="asm-label">SkipDelimiters_Loop2</td>
+<td class="address-2"><span id="45875"></span>45875</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move to the next character in the command buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45876"></span>45876</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the character from *<span class="register">HL</span> and store it in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45877"></span>45877</td>
+<td class="instruction">CP 32</td>
+<td class="comment-1" rowspan="2">Jump to <a href="45646.html#45875">SkipDelimiters_Loop2</a> if the character is an ASCII "SPACE" (32).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45879"></span>45879</td>
+<td class="instruction">JR Z,<a href="45646.html#45875">SkipDelimiters_Loop2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45881"></span>45881</td>
+<td class="instruction">CP 44</td>
+<td class="comment-1" rowspan="2">Jump to <a href="45646.html#45875">SkipDelimiters_Loop2</a> if the character is an ASCII comma (44).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45883"></span>45883</td>
+<td class="instruction">JR Z,<a href="45646.html#45875">SkipDelimiters_Loop2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45885"></span>45885</td>
+<td class="instruction">JR <a href="45646.html#45860">ProcessUnrecognisedWords_Loop</a></td>
+<td class="comment-1" rowspan="1">Look for the next unrecognised word.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="45887"></span>
+<div class="comments">
+<div class="paragraph">
+Print the unrecognised word(s) in quotes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintUnrecognisedWord</td>
+<td class="address-2"><span id="45887"></span>45887</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1">Remember where the unrecognised word starts.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45888"></span>45888</td>
+<td class="instruction">LD HL,44909</td>
+<td class="comment-1" rowspan="2">Print "I don't know the word:-" and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45891"></span>45891</td>
+<td class="instruction">CALL <a href="44085.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45894"></span>45894</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore the start of the unrecognised word from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45895"></span>45895</td>
+<td class="instruction">LD A,34</td>
+<td class="comment-1" rowspan="1">Open a quote around the unrecognised word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45897"></span>45897</td>
+<td class="instruction">CALL <a href="44103.html">PrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44103.html">PrintCharacter</a> to print the character.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintUnrecognisedWord_Loop</td>
+<td class="address-2"><span id="45900"></span>45900</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the character from *<span class="register">HL</span> and store it in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45901"></span>45901</td>
+<td class="instruction">CP 33</td>
+<td class="comment-1" rowspan="2">Jump to <a href="45646.html#45911">PrintUnrecognisedWord_End</a> if this character is less than 33 (a control character, indicating end of word).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45903"></span>45903</td>
+<td class="instruction">JR C,<a href="45646.html#45911">PrintUnrecognisedWord_End</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45905"></span>45905</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move to the next character in the command buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45906"></span>45906</td>
+<td class="instruction">CALL <a href="44103.html">PrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44103.html">PrintCharacter</a> to print the character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45909"></span>45909</td>
+<td class="instruction">JR <a href="45646.html#45900">PrintUnrecognisedWord_Loop</a></td>
+<td class="comment-1" rowspan="1">Print the next character of the unrecognised word.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintUnrecognisedWord_End</td>
+<td class="address-2"><span id="45911"></span>45911</td>
+<td class="instruction">LD A,34</td>
+<td class="comment-1" rowspan="1">Close the quote around the unrecognised word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45913"></span>45913</td>
+<td class="instruction">CALL <a href="44103.html">PrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44103.html">PrintCharacter</a> to print the character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45916"></span>45916</td>
+<td class="instruction">LD HL,45323</td>
+<td class="comment-1" rowspan="2">Print "." and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45919"></span>45919</td>
+<td class="instruction">CALL <a href="44085.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="45922"></span>45922</td>
+<td class="instruction">JR <a href="45924.html#45936">HandlerUnknownWord_0</a></td>
+<td class="comment-1" rowspan="1">Read another command.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="45623.html">45623</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#45646">Map</a></td>
+<td class="next">
+Next: <a href="45924.html">45924</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../../asm/B24E.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

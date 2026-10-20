@@ -42,7 +42,10 @@ Next: <a href="BD4B.html">BD4B</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="BA20.html">ProcessCharacterDisplay</a>.
+Used by the routine at <a href="BA3E.html">RecordResultCharacterScript</a>.
+</div>
+<div class="paragraph">
+Follows the object link and compares it with the character on screen.
 </div>
 </div>
 </td>
@@ -51,181 +54,167 @@ Used by the routine at <a href="BA20.html">ProcessCharacterDisplay</a>.
 <td class="asm-label">ProcessObjectPointer</td>
 <td class="address-2"><span id="bd06"></span>BD06</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Save the schedule entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd08"></span>BD08</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Copy the character record from <span class="register">IX</span> into <span class="register">IY</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd0a"></span>BD0A</td>
 <td class="instruction">POP IY</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd0c"></span>BD0C</td>
 <td class="instruction">LD IX,$9FF6</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point at the object display link.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessObjectPointer_0</td>
+<td class="asm-label">ProcessObjectPointer_Loop</td>
 <td class="address-2"><span id="bd10"></span>BD10</td>
 <td class="instruction">CALL <a href="A0F7.html">FetchObjectPointerFromStack</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="BD06.html#bd46">ProcessObjectPointer_TestStepSucceedsScript</a> if the object pointer is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd13"></span>BD13</td>
-<td class="instruction">JR Z,<a href="BD06.html#bd46">ProcessObjectPointer_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BD06.html#bd46">ProcessObjectPointer_TestStepSucceedsScript</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd15"></span>BD15</td>
 <td class="instruction">LD B,(IX+$02)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Take the byte at <span class="register">IX</span>+02 into <span class="register">B</span> and the byte at <span class="register">IY</span>+02 into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd18"></span>BD18</td>
 <td class="instruction">LD C,(IY+$02)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd1b"></span>BD1B</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="BD06.html#bd3e">ProcessObjectPointer_Next</a> if this id matches the character id.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd1e"></span>BD1E</td>
 <td class="instruction">CP (IY+$00)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd21"></span>BD21</td>
-<td class="instruction">JR Z,<a href="BD06.html#bd3e">ProcessObjectPointer_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BD06.html#bd3e">ProcessObjectPointer_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd23"></span>BD23</td>
 <td class="instruction">LD C,(IY+$00)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Store <span class="register">IY</span>+00 in <span class="register">C</span> and jump ahead to <a href="BD06.html#bd3e">ProcessObjectPointer_Next</a> if the id in <span class="register">A</span> matches <span class="register">IY</span>+02.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd26"></span>BD26</td>
 <td class="instruction">CP (IY+$02)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd29"></span>BD29</td>
-<td class="instruction">JR Z,<a href="BD06.html#bd3e">ProcessObjectPointer_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BD06.html#bd3e">ProcessObjectPointer_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd2b"></span>BD2B</td>
 <td class="instruction">LD B,(IX+$00)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the record's flag byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd2e"></span>BD2E</td>
 <td class="instruction">LD A,(IX+$02)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="BD06.html#bd3e">ProcessObjectPointer_Next</a> if the byte at <span class="register">IX</span>+02 matches the byte at <span class="register">IY</span>+02.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd31"></span>BD31</td>
 <td class="instruction">CP (IY+$02)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd34"></span>BD34</td>
-<td class="instruction">JR Z,<a href="BD06.html#bd3e">ProcessObjectPointer_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BD06.html#bd3e">ProcessObjectPointer_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd36"></span>BD36</td>
 <td class="instruction">LD C,(IY+$02)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="BD06.html#bd10">ProcessObjectPointer_Loop</a> while this id does not match the character id.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd39"></span>BD39</td>
 <td class="instruction">CP (IY+$00)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd3c"></span>BD3C</td>
-<td class="instruction">JR NZ,<a href="BD06.html#bd10">ProcessObjectPointer_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="BD06.html#bd10">ProcessObjectPointer_Loop</a></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessObjectPointer_1</td>
+<td class="asm-label">ProcessObjectPointer_Next</td>
 <td class="address-2"><span id="bd3e"></span>BD3E</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Go to <a href="BD06.html#bd10">ProcessObjectPointer_Loop</a> if the object id matches the character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd3f"></span>BD3F</td>
 <td class="instruction">CP C</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd40"></span>BD40</td>
-<td class="instruction">JR Z,<a href="BD06.html#bd10">ProcessObjectPointer_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BD06.html#bd10">ProcessObjectPointer_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd42"></span>BD42</td>
 <td class="instruction">POP IY</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd44"></span>BD44</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd45"></span>BD45</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessObjectPointer_2</td>
+<td class="asm-label">ProcessObjectPointer_TestStepSucceedsScript</td>
 <td class="address-2"><span id="bd46"></span>BD46</td>
 <td class="instruction">OR $01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd48"></span>BD48</td>
 <td class="instruction">POP IY</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore <span class="register">IY</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bd4a"></span>BD4A</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -242,7 +231,7 @@ Next: <a href="BD4B.html">BD4B</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/48390.html">Switch to decimal</a>.</div>
 </footer>

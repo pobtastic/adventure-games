@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at B405</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B39D.html">B39D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b405">Map</a></td>
+<td class="next">
+Next: <a href="B468.html">B468</a>
+</td>
+</tr>
+</table>
+<div class="description">B405: Swap The Object Display Pointers</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="B39D.html">ProcessDisplayPointer</a>.
+</div>
+<div class="paragraph">
+When the count is still set, swaps the two display pointers and reads the object flags.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SwapObjectDisplayPointers</td>
+<td class="address-2"><span id="b405"></span>B405</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="B405.html#b416">SwapObjectDisplayPointers_ExtractObjectAttributes</a> if the count is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b406"></span>B406</td>
+<td class="instruction">JR Z,<a href="B405.html#b416">SwapObjectDisplayPointers_ExtractObjectAttributes</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b408"></span>B408</td>
+<td class="instruction">LD HL,($B188)</td>
+<td class="comment-1" rowspan="2">Read the two pointers at <a href="B17E.html#b188">B188</a> and <a href="B17E.html">ObjectTablePointer</a>+0C.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b40b"></span>B40B</td>
+<td class="instruction">LD DE,($B18A)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b40f"></span>B40F</td>
+<td class="instruction">LD ($B188),DE</td>
+<td class="comment-1" rowspan="1">Store the pointer from <span class="register">DE</span> at <a href="B17E.html#b188">B188</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b413"></span>B413</td>
+<td class="instruction">LD ($B18A),HL</td>
+<td class="comment-1" rowspan="1">Store the pointer from <span class="register">HL</span> at <a href="B17E.html#b18a">B18A</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b416"></span>
+<div class="comments">
+<div class="paragraph">
+Extract object attributes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SwapObjectDisplayPointers_ExtractObjectAttributes</td>
+<td class="address-2"><span id="b416"></span>B416</td>
+<td class="instruction">CALL <a href="A2BD.html">ExtractObjectAttributes</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A2BD.html">ExtractObjectAttributes</a> to read the object's flags.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b419"></span>B419</td>
+<td class="instruction">LD HL,$B188</td>
+<td class="comment-1" rowspan="5">Jump ahead to <a href="B405.html#b426">SwapObjectDisplayPointers_TestStepObjectMatches</a> when the saved display pointer at <a href="B17E.html#b188">B188</a> is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b41c"></span>B41C</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b41d"></span>B41D</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b41e"></span>B41E</td>
+<td class="instruction">OR (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b41f"></span>B41F</td>
+<td class="instruction">JR NZ,<a href="B405.html#b426">SwapObjectDisplayPointers_TestStepObjectMatches</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b421"></span>B421</td>
+<td class="instruction">LD A,($A01E)</td>
+<td class="comment-1" rowspan="2">Take the display flag and continue at <a href="B405.html#b445">SwapObjectDisplayPointers_RunDisplayPointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b424"></span>B424</td>
+<td class="instruction">JR <a href="B405.html#b445">SwapObjectDisplayPointers_RunDisplayPointer</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b426"></span>
+<div class="comments">
+<div class="paragraph">
+Step back to the object id and see whether it matches the schedule.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SwapObjectDisplayPointers_TestStepObjectMatches</td>
+<td class="address-2"><span id="b426"></span>B426</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="B405.html#b435">SwapObjectDisplayPointers_0</a> if this id does not match the schedule entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b427"></span>B427</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b428"></span>B428</td>
+<td class="instruction">CP (IY+$0E)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b42b"></span>B42B</td>
+<td class="instruction">JR NZ,<a href="B405.html#b435">SwapObjectDisplayPointers_0</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b42d"></span>B42D</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="B405.html#b440">SwapObjectDisplayPointers_ObjectAttributeContinue</a> if this id matches the schedule entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b42e"></span>B42E</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b42f"></span>B42F</td>
+<td class="instruction">CP (IY+$0F)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b432"></span>B432</td>
+<td class="instruction">JR Z,<a href="B405.html#b440">SwapObjectDisplayPointers_ObjectAttributeContinue</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b434"></span>B434</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="1">Step back one entry.</td>
+</tr>
+<tr>
+<td class="asm-label">SwapObjectDisplayPointers_0</td>
+<td class="address-2"><span id="b435"></span>B435</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Go to <a href="B405.html#b440">SwapObjectDisplayPointers_ObjectAttributeContinue</a> if this display byte does not match the schedule.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b436"></span>B436</td>
+<td class="instruction">CP (IY+$10)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b439"></span>B439</td>
+<td class="instruction">JR NZ,<a href="B405.html#b440">SwapObjectDisplayPointers_ObjectAttributeContinue</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b43b"></span>B43B</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="3">Read the next display byte and compare it with <span class="register">IY</span>+11.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b43c"></span>B43C</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b43d"></span>B43D</td>
+<td class="instruction">CP (IY+$11)</td>
+</tr>
+<tr>
+<td class="asm-label">SwapObjectDisplayPointers_ObjectAttributeContinue</td>
+<td class="address-2"><span id="b440"></span>B440</td>
+<td class="instruction">LD A,($A01D)</td>
+<td class="comment-1" rowspan="2">Take the object attribute and continue at <a href="B405.html#b447">SwapObjectDisplayPointers_TestBitClear</a> when the display byte does not match <span class="register">IY</span>+11.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b443"></span>B443</td>
+<td class="instruction">JR NZ,<a href="B405.html#b447">SwapObjectDisplayPointers_TestBitClear</a></td>
+</tr>
+<tr>
+<td class="asm-label">SwapObjectDisplayPointers_RunDisplayPointer</td>
+<td class="address-2"><span id="b445"></span>B445</td>
+<td class="instruction">XOR $20</td>
+<td class="comment-1" rowspan="1">Flip bit 5 of the value.</td>
+</tr>
+<tr>
+<td class="asm-label">SwapObjectDisplayPointers_TestBitClear</td>
+<td class="address-2"><span id="b447"></span>B447</td>
+<td class="instruction">BIT 5,A</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="B405.html#b451">SwapObjectDisplayPointers_ObjectTablePointer</a> if bit 5 is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b449"></span>B449</td>
+<td class="instruction">LD BC,$1208</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b44c"></span>B44C</td>
+<td class="instruction">JR Z,<a href="B405.html#b451">SwapObjectDisplayPointers_ObjectTablePointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b44e"></span>B44E</td>
+<td class="instruction">LD BC,$0812</td>
+<td class="comment-1" rowspan="1">Take 0812 for the display.</td>
+</tr>
+<tr>
+<td class="asm-label">SwapObjectDisplayPointers_ObjectTablePointer</td>
+<td class="address-2"><span id="b451"></span>B451</td>
+<td class="instruction">LD HL,$B182</td>
+<td class="comment-1" rowspan="5">Use the object table pointer (<a href="B17E.html">ObjectTablePointer</a>+04).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b454"></span>B454</td>
+<td class="instruction">LD (HL),B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b455"></span>B455</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b456"></span>B456</td>
+<td class="instruction">LD (HL),C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b457"></span>B457</td>
+<td class="instruction">LD A,B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b458"></span>B458</td>
+<td class="instruction">LD DE,$B172</td>
+<td class="comment-1" rowspan="1">Take the display data pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b45b"></span>B45B</td>
+<td class="instruction">LD HL,$B16D</td>
+<td class="comment-1" rowspan="2">Point <span class="register">HL</span> at the display flag at <a href="B16D.html">DisplayFlag</a> and call <a href="B468.html">CopySixDisplayBytes</a> to copy six bytes.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b45e"></span>B45E</td>
+<td class="instruction">CALL <a href="B468.html">CopySixDisplayBytes</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b461"></span>B461</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="3">Take the attribute count and point at the second display flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b462"></span>B462</td>
+<td class="instruction">LD DE,$B178</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b465"></span>B465</td>
+<td class="instruction">LD HL,$B16E</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B39D.html">B39D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b405">Map</a></td>
+<td class="next">
+Next: <a href="B468.html">B468</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/46085.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

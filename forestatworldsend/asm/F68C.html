@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at F68C</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F665.html">F665</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f68c">Map</a></td>
+<td class="next">
+Next: <a href="F6FD.html">F6FD</a>
+</td>
+</tr>
+</table>
+<div class="description">F68C: Action: Close</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Close the named door, gate or chest.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Close</td>
+<td class="address-2"><span id="f68c"></span>F68C</td>
+<td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
+<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f68f"></span>F68F</td>
+<td class="instruction">RET C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f690"></span>F690</td>
+<td class="instruction">LD HL,$E8EA</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F6FD.html">Handler_CloseTheChest</a> unless the player named the door.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f693"></span>F693</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f696"></span>F696</td>
+<td class="instruction">JP NZ,<a href="F6FD.html">Handler_CloseTheChest</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f699"></span>F699</td>
+<td class="instruction">LD HL,$E797</td>
+<td class="comment-1" rowspan="2">Call <a href="C2EF.html">Parser_SkipToken</a> to skip to the object named by this phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f69c"></span>F69C</td>
+<td class="instruction">CALL <a href="C2EF.html">Parser_SkipToken</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f69f"></span>F69F</td>
+<td class="instruction">BIT 0,A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F68C.html#f6a9">Action_Close_Next</a> when the named door is open.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6a1"></span>F6A1</td>
+<td class="instruction">JR NZ,<a href="F68C.html#f6a9">Action_Close_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f6a3"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "It's already closed.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6a3"></span>F6A3</td>
+<td class="instruction">LD HL,$E185</td>
+<td class="comment-1" rowspan="2">Print "It's already closed." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6a6"></span>F6A6</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Close_Next</td>
+<td class="address-2"><span id="f6a9"></span>F6A9</td>
+<td class="instruction">LD A,($BA9B)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F68C.html#f6b4">Action_Close_Farmhouse</a> when the player is in room 02 (Inside the Farmhouse).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6ac"></span>F6AC</td>
+<td class="instruction">CP $02</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6ae"></span>F6AE</td>
+<td class="instruction">JR Z,<a href="F68C.html#f6b4">Action_Close_Farmhouse</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6b0"></span>F6B0</td>
+<td class="instruction">CP $03</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F68C.html#f6c7">Action_Close_WoodmansHutCheck</a> unless the player is in room 03 (At a large Farmhouse).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6b2"></span>F6B2</td>
+<td class="instruction">JR NZ,<a href="F68C.html#f6c7">Action_Close_WoodmansHutCheck</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Close_Farmhouse</td>
+<td class="address-2"><span id="f6b4"></span>F6B4</td>
+<td class="instruction">LD BC,$3536</td>
+<td class="comment-1" rowspan="2">Replace object 35 (an open door) with object 36 (a closed door).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6b7"></span>F6B7</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6ba"></span>F6BA</td>
+<td class="instruction">LD BC,$3738</td>
+<td class="comment-1" rowspan="2">Replace object 37 with object 38.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6bd"></span>F6BD</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6c0"></span>F6C0</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="ED96.html">Response_OK</a> to confirm.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6c1"></span>F6C1</td>
+<td class="instruction">LD ($E941),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6c4"></span>F6C4</td>
+<td class="instruction">JP <a href="ED96.html">Response_OK</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Close_WoodmansHutCheck</td>
+<td class="address-2"><span id="f6c7"></span>F6C7</td>
+<td class="instruction">CP $0F</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F68C.html#f6cf">Action_Close_WoodmansHut</a> when the player is in room 0F (At the Woodman's Hut).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6c9"></span>F6C9</td>
+<td class="instruction">JR Z,<a href="F68C.html#f6cf">Action_Close_WoodmansHut</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6cb"></span>F6CB</td>
+<td class="instruction">CP $10</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F68C.html#f6e2">Action_Close_WitchsHovelCheck</a> unless the player is in room 10 (Inside the Woodman's Hut).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6cd"></span>F6CD</td>
+<td class="instruction">JR NZ,<a href="F68C.html#f6e2">Action_Close_WitchsHovelCheck</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Close_WoodmansHut</td>
+<td class="address-2"><span id="f6cf"></span>F6CF</td>
+<td class="instruction">LD BC,$393A</td>
+<td class="comment-1" rowspan="2">Replace object 39 with object 3A.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6d2"></span>F6D2</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6d5"></span>F6D5</td>
+<td class="instruction">LD BC,$3B3C</td>
+<td class="comment-1" rowspan="2">Replace object 3B with object 3C.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6d8"></span>F6D8</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6db"></span>F6DB</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="ED96.html">Response_OK</a> to confirm.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6dc"></span>F6DC</td>
+<td class="instruction">LD ($E996),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6df"></span>F6DF</td>
+<td class="instruction">JP <a href="ED96.html">Response_OK</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Close_WitchsHovelCheck</td>
+<td class="address-2"><span id="f6e2"></span>F6E2</td>
+<td class="instruction">CP $3C</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F68C.html#f6ea">Action_Close_WitchsHovel</a> when the player is in room 3C (At the Witch's Hovel).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6e4"></span>F6E4</td>
+<td class="instruction">JR Z,<a href="F68C.html#f6ea">Action_Close_WitchsHovel</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6e6"></span>F6E6</td>
+<td class="instruction">CP $3D</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F6FD.html">Handler_CloseTheChest</a> unless the player is in room 3D (Inside the Witch's Hovel).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6e8"></span>F6E8</td>
+<td class="instruction">JR NZ,<a href="F6FD.html">Handler_CloseTheChest</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Close_WitchsHovel</td>
+<td class="address-2"><span id="f6ea"></span>F6EA</td>
+<td class="instruction">LD BC,$3D3E</td>
+<td class="comment-1" rowspan="2">Replace object 3D with object 3E.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6ed"></span>F6ED</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6f0"></span>F6F0</td>
+<td class="instruction">LD BC,$3F40</td>
+<td class="comment-1" rowspan="2">Replace object 3F with object 40.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6f3"></span>F6F3</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6f6"></span>F6F6</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="ED96.html">Response_OK</a> to confirm.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6f7"></span>F6F7</td>
+<td class="instruction">LD ($EAA4),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f6fa"></span>F6FA</td>
+<td class="instruction">JP <a href="ED96.html">Response_OK</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F665.html">F665</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f68c">Map</a></td>
+<td class="next">
+Next: <a href="F6FD.html">F6FD</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/63116.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

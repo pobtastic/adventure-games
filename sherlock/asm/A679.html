@@ -36,11 +36,20 @@ Next: <a href="A684.html">A684</a>
 </td>
 </tr>
 </table>
-<div class="description">A679: Calculate Pointer Offset From IX</div>
+<div class="description">A679: Step The Record By Its Length</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Adds the word at offset 01 minus one, to the record pointer and returns zero.
+</div>
+<div class="paragraph">
+Control code 02 in the table at <a href="A55D.html">JumpTable_ControlCharacters</a>.
+</div>
+<div class="paragraph">
+Used by the routine at <a href="A5C3.html">DispatchTextControlHandler</a>.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -48,7 +57,7 @@ Next: <a href="A684.html">A684</a>
 </tr>
 <tr>
 <td class="register">IX</td>
-<td class="register-desc">Pointer to data structure</td>
+<td class="register-desc">Record pointer</td>
 </tr>
 </table>
 <table class="output">
@@ -57,40 +66,48 @@ Next: <a href="A684.html">A684</a>
 </tr>
 <tr>
 <td class="register">IX</td>
-<td class="register-desc">Updated pointer (IX + (IX+1,IX+2) - 1)</td>
+<td class="register-desc">Record pointer plus the length word, minus one</td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<td class="asm-label">CalculatePointerOffsetFromIX</td>
+<td class="asm-label">StepRecordByItsLength</td>
 <td class="address-2"><span id="a679"></span>A679</td>
 <td class="instruction">LD E,(IX+$01)</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=*<span class="register">IX</span>+01.</td>
+<td class="comment-1" rowspan="3">Read the length word and subtract one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a67c"></span>A67C</td>
 <td class="instruction">LD D,(IX+$02)</td>
-<td class="comment-1" rowspan="1"><span class="register">D</span>=*<span class="register">IX</span>+02.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a67f"></span>A67F</td>
 <td class="instruction">DEC DE</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">DE</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a680"></span>A680</td>
 <td class="instruction">ADD IX,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>+=<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="1">Add that length to the record pointer.</td>
 </tr>
 <tr>
-<td class="asm-label"></td>
+<td class="routine-comment" colspan="5">
+<span id="a682"></span>
+<div class="comments">
+<div class="paragraph">
+Returns zero. Control code 1C enters here.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">StepRecordByItsLength_ReturnZero</td>
 <td class="address-1"><span id="a682"></span>A682</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -113,7 +130,7 @@ Next: <a href="A684.html">A684</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/42617.html">Switch to decimal</a>.</div>
 </footer>

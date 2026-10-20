@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="A6AC.html">A6AC</a>
+Prev: <a href="A684.html">A684</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#a6bb">Map</a></td>
 <td class="next">
@@ -42,7 +42,10 @@ Next: <a href="A6D1.html">A6D1</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="A6AC.html">CheckTimePeriod_NotLateNightEvening</a> and <a href="A6D3.html">ProcessTextTokenLoop</a>.
+Used by the routines at <a href="A684.html">ContinueAtTheNextToken</a> and <a href="A6D3.html">PrintRandomAlternative</a>.
+</div>
+<div class="paragraph">
+Skips a text token whose record flag says this token type is not printed.
 </div>
 </div>
 <table class="input">
@@ -69,58 +72,57 @@ Used by the routines at <a href="A6AC.html">CheckTimePeriod_NotLateNightEvening<
 <td class="asm-label">SkipTextTokenBasedOnType</td>
 <td class="address-2"><span id="a6bb"></span>A6BB</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+00.</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="A6BB.html#a6cc">SkipTextTokenBasedOnType_SkipPair</a> if bit 7 of the record's flag byte is present.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6be"></span>A6BE</td>
 <td class="instruction">BIT 7,A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A6BB.html#a6cc">SkipTextTokenBasedOnType_1</a> if bit 7 of <span class="register">A</span> is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6c0"></span>A6C0</td>
-<td class="instruction">JR NZ,<a href="A6BB.html#a6cc">SkipTextTokenBasedOnType_1</a></td>
+<td class="instruction">JR NZ,<a href="A6BB.html#a6cc">SkipTextTokenBasedOnType_SkipPair</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6c2"></span>A6C2</td>
 <td class="instruction">CP $02</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A6BB.html#a6ca">SkipTextTokenBasedOnType_0</a> if <span class="register">A</span> is equal to 02.</td>
+<td class="comment-1" rowspan="2">Go to <a href="A6BB.html#a6ca">SkipTextTokenBasedOnType_Next</a> if it is 02.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6c4"></span>A6C4</td>
-<td class="instruction">JR Z,<a href="A6BB.html#a6ca">SkipTextTokenBasedOnType_0</a></td>
+<td class="instruction">JR Z,<a href="A6BB.html#a6ca">SkipTextTokenBasedOnType_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6c6"></span>A6C6</td>
 <td class="instruction">CP $0B</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A6BB.html#a6ce">SkipTextTokenBasedOnType_2</a> if <span class="register">A</span> is not equal to 0B.</td>
+<td class="comment-1" rowspan="2">Go to <a href="A6BB.html#a6ce">SkipTextTokenBasedOnType_0</a> if it is not 0B.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6c8"></span>A6C8</td>
-<td class="instruction">JR NZ,<a href="A6BB.html#a6ce">SkipTextTokenBasedOnType_2</a></td>
+<td class="instruction">JR NZ,<a href="A6BB.html#a6ce">SkipTextTokenBasedOnType_0</a></td>
+</tr>
+<tr>
+<td class="asm-label">SkipTextTokenBasedOnType_Next</td>
+<td class="address-2"><span id="a6ca"></span>A6CA</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="1">Step to the next byte of this text token.</td>
+</tr>
+<tr>
+<td class="asm-label">SkipTextTokenBasedOnType_SkipPair</td>
+<td class="address-2"><span id="a6cc"></span>A6CC</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="1">Step to the next byte of this text token.</td>
 </tr>
 <tr>
 <td class="asm-label">SkipTextTokenBasedOnType_0</td>
-<td class="address-2"><span id="a6ca"></span>A6CA</td>
-<td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
-</tr>
-<tr>
-<td class="asm-label">SkipTextTokenBasedOnType_1</td>
-<td class="address-2"><span id="a6cc"></span>A6CC</td>
-<td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
-</tr>
-<tr>
-<td class="asm-label">SkipTextTokenBasedOnType_2</td>
 <td class="address-2"><span id="a6ce"></span>A6CE</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">Step to the next byte of this text token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -132,7 +134,7 @@ Used by the routines at <a href="A6AC.html">CheckTimePeriod_NotLateNightEvening<
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="A6AC.html">A6AC</a>
+Prev: <a href="A684.html">A684</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#a6bb">Map</a></td>
 <td class="next">
@@ -143,7 +145,7 @@ Next: <a href="A6D1.html">A6D1</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/42683.html">Switch to decimal</a>.</div>
 </footer>

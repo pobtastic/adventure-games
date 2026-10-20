@@ -33,11 +33,14 @@ Next: <a href="37074.html">37074</a>
 </td>
 </tr>
 </table>
-<div class="description">36982: Action Shoot</div>
+<div class="description">36982: Action: Shoot</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Shoots an arrow at the current object. Reached through the action table at <a href="50992.html">ActionTable</a>, dispatched by <a href="38159.html">Turn_RunTheHandlerIfPresent</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -45,199 +48,241 @@ Next: <a href="37074.html">37074</a>
 <td class="asm-label">Action_Shoot</td>
 <td class="address-2"><span id="36982"></span>36982</td>
 <td class="instruction">LD A,25</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Pass object id 25 to the carried test.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36984"></span>36984</td>
-<td class="instruction">CALL <a href="40056.html#40059">40059</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="40056.html#40059">ConditionIsTheObjectCarried_0</a></td>
+<td class="comment-1" rowspan="1">Call <a href="40056.html#40059">ConditionIsTheObjectCarried_0</a> to test whether the character whose turn it is is carrying it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36987"></span>36987</td>
 <td class="instruction">LD HL,45345</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="44413.html#45345">"You are not carrying the bow"</a></td>
+<td class="comment-1" rowspan="1">Point at the message "You are not carrying the bow" (<a href="44413.html#45345">45345</a>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36990"></span>36990</td>
-<td class="instruction">JP NC,<a href="29405.html">PrintMsg</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP NC,<a href="29405.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="29405.html">PrintMessage</a> if <a href="40056.html#40059">ConditionIsTheObjectCarried_0</a> found the object not carried, to print "You are not carrying the bow".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36993"></span>36993</td>
-<td class="instruction">CALL <a href="37134.html#37194">37194</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="37194.html">Action_TestTheSharedFlagBits</a></td>
+<td class="comment-1" rowspan="1">Call <a href="37194.html">Action_TestTheSharedFlagBits</a> to test the shared flag bits.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="36996"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, no arrow is shot.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36996"></span>36996</td>
-<td class="instruction">CALL <a href="40260.html">40260</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="40260.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="40260.html">ConditionSuppressTheMessage</a>. If the message is held back, no arrow is shot.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36999"></span>36999</td>
 <td class="instruction">LD A,15</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Write 15 (attack) to *<a href="46810.html#46823">CurrentAction</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37001"></span>37001</td>
 <td class="instruction">LD (46823),A</td>
-<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="37004"></span>
+<div class="comments">
+<div class="paragraph">
+Test whose turn it is.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37004"></span>37004</td>
 <td class="instruction">LD A,(46826)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="36982.html#37032">Action_Shoot_PointAtTheArrow</a> if *<a href="46810.html#46826">CurrentCharacter</a> is 70.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37007"></span>37007</td>
 <td class="instruction">CP 70</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37009"></span>37009</td>
-<td class="instruction">JR Z,<a href="36982.html#37032">Action_Shoot_0</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="36982.html#37032">Action_Shoot_PointAtTheArrow</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37011"></span>37011</td>
 <td class="instruction">LD A,(46824)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="46810.html#46824">CurrentObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37014"></span>37014</td>
 <td class="instruction">CP 60</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="29405.html">PrintMessage</a> if the current object is 60.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37016"></span>37016</td>
 <td class="instruction">LD HL,45351</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="44413.html#45351">"the arrow misses[0x09] by a wide margin"</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37019"></span>37019</td>
-<td class="instruction">JP Z,<a href="29405.html">PrintMsg</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP Z,<a href="29405.html">PrintMessage</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37022"></span>37022</td>
 <td class="instruction">LD A,8</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Roll a random number below 8.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="37024"></span>
+<div class="comments">
+<div class="paragraph">
+Roll a random number.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37024"></span>37024</td>
-<td class="instruction">CALL <a href="40095.html">GetRandomNum</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="40095.html">GetRandomNumber</a></td>
+<td class="comment-1" rowspan="1">Call <a href="40095.html">GetRandomNumber</a> to roll a number from the limit in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37027"></span>37027</td>
 <td class="instruction">CP 3</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="29405.html">PrintMessage</a> if the roll is below 3.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37029"></span>37029</td>
-<td class="instruction">JP C,<a href="29405.html">PrintMsg</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP C,<a href="29405.html">PrintMessage</a></td>
 </tr>
 <tr>
-<td class="asm-label">Action_Shoot_0</td>
+<td class="asm-label">Action_Shoot_PointAtTheArrow</td>
 <td class="address-2"><span id="37032"></span>37032</td>
 <td class="instruction">LD IX,50410</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at <a href="49435.html#50410">26</a> - "Strong Arrow".</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="37036"></span>
+<div class="comments">
+<div class="paragraph">
+Test the current object.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37036"></span>37036</td>
 <td class="instruction">LD A,(46824)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="36982.html#37047">Action_Shoot_PrintTheHit</a> if *<a href="46810.html#46824">CurrentObject</a> is 26.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37039"></span>37039</td>
 <td class="instruction">CP 26</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37041"></span>37041</td>
-<td class="instruction">JR Z,<a href="36982.html#37047">Action_Shoot_1</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="36982.html#37047">Action_Shoot_PrintTheHit</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37043"></span>37043</td>
 <td class="instruction">LD (IX+1),255</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Mark where this object is as unset.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Shoot_1</td>
+<td class="asm-label">Action_Shoot_PrintTheHit</td>
 <td class="address-2"><span id="37047"></span>37047</td>
 <td class="instruction">LD HL,45366</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="44413.html#45366">"the arrow{5} hits[0x07][0x15]"</a>.</td>
+<td class="comment-1" rowspan="1">Point at the message "the arrow{5} hits[0x07][0x15]" (<a href="44413.html#45366">45366</a>).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="37050"></span>
+<div class="comments">
+<div class="paragraph">
+Print the message at <span class="register">HL</span>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37050"></span>37050</td>
-<td class="instruction">CALL <a href="29405.html">PrintMsg</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="29405.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="29405.html">PrintMessage</a> to print message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37053"></span>37053</td>
 <td class="instruction">LD IX,(46856)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="46810.html#46856">46856</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37057"></span>37057</td>
-<td class="instruction">CALL <a href="41272.html#41416">DisplayExits_10</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="41416.html">Condition_AnimalAndNotBroken</a></td>
+<td class="comment-1" rowspan="1">Call <a href="41416.html">Condition_AnimalAndNotBroken</a> to test whether the object is an animal and not broken.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37060"></span>37060</td>
-<td class="instruction">JP NZ,<a href="37233.html#37613">Action_Attack_17</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP NZ,<a href="37613.html">Action_UseTheOtherObject</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="37613.html">Action_UseTheOtherObject</a> unless <a href="41416.html">Condition_AnimalAndNotBroken</a> found the object is an animal and not broken.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37063"></span>37063</td>
 <td class="instruction">LD A,(46824)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="46810.html#46824">CurrentObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37066"></span>37066</td>
-<td class="instruction">CALL <a href="38579.html#38783">38783</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="38780.html#38783">Turn_ThePlayerHasDied_0</a></td>
+<td class="comment-1" rowspan="1">Call <a href="38780.html#38783">Turn_ThePlayerHasDied_0</a>. The player dies if no object is left.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37069"></span>37069</td>
 <td class="instruction">LD A,6</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Pass 6 to the routine that names this object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="37071"></span>37071</td>
-<td class="instruction">JP <a href="41272.html#41324">DisplayExits_3</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP <a href="41324.html">Message_NameFromThisRecord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="41324.html">Message_NameFromThisRecord</a> to print the object's name.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -254,7 +299,7 @@ Next: <a href="37074.html">37074</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../../asm/9076.html">Switch to hexadecimal</a>.</div>
 </footer>

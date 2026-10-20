@@ -32,7 +32,7 @@ Prev: <a href="46242.html">46242</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#46243">Map</a></td>
 <td class="next">
-Next: <a href="46333.html">46333</a>
+Next: <a href="46273.html">46273</a>
 </td>
 </tr>
 </table>
@@ -41,6 +41,9 @@ Next: <a href="46333.html">46333</a>
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Used by the routine at <a href="46273.html">FindFirstNoun</a>.
+</div>
 <div class="paragraph">
 Sets up which room to display based on display flags and processes objects for that room.
 </div>
@@ -51,42 +54,39 @@ Sets up which room to display based on display flags and processes objects for t
 <td class="asm-label">CheckFlagAndSetDisplay</td>
 <td class="address-2"><span id="46243"></span>46243</td>
 <td class="instruction">LD A,(46242)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="46242.html">DisplaySetupFlag</a>.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="46273.html#46287">FindFirstNoun_NoAction</a> if the display setup flag is not 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="46246"></span>46246</td>
 <td class="instruction">INC A</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="46247"></span>46247</td>
-<td class="instruction">JR NZ,<a href="46243.html#46287">CheckFlagAndSetDisplay_NoAction</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="46243.html#46287">CheckFlagAndSetDisplay_NoAction</a> if display already set up.</td>
+<td class="instruction">JR NZ,<a href="46273.html#46287">FindFirstNoun_NoAction</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="46249"></span>46249</td>
 <td class="instruction">LD (46242),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="46242.html">DisplaySetupFlag</a>.</td>
+<td class="comment-1" rowspan="2">Record the display setup flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="46252"></span>46252</td>
 <td class="instruction">LD A,(45427)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="45427.html">DisplayModeFlag</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="46255"></span>46255</td>
 <td class="instruction">BIT 7,A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="46243.html#46287">CheckFlagAndSetDisplay_NoAction</a> if special display mode not needed.</td>
+<td class="comment-1" rowspan="2">Go to <a href="46273.html#46287">FindFirstNoun_NoAction</a> if bit 7 of the display flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="46257"></span>46257</td>
-<td class="instruction">JR Z,<a href="46243.html#46287">CheckFlagAndSetDisplay_NoAction</a></td>
+<td class="instruction">JR Z,<a href="46273.html#46287">FindFirstNoun_NoAction</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -102,7 +102,7 @@ Set up special display mode.
 <td class="asm-label"></td>
 <td class="address-1"><span id="46259"></span>46259</td>
 <td class="instruction">LD A,254</td>
-<td class="comment-1" rowspan="2">Write 254 to *<a href="41012.html">RoomDisplayParameter</a> (set room display parameter).</td>
+<td class="comment-1" rowspan="2">Write 254 to the room display parameter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -124,161 +124,11 @@ Set up special display mode.
 <td class="asm-label"></td>
 <td class="address-1"><span id="46270"></span>46270</td>
 <td class="instruction">OR %00000001</td>
-<td class="comment-1" rowspan="1">Set bit 0.</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="46272"></span>46272</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="46273"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routine at <a href="45457.html">InitialiseDisplayBuffer</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">CheckFlagAndSetDisplay_Entry</td>
-<td class="address-2"><span id="46273"></span>46273</td>
-<td class="instruction">LD A,(40975)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="46243.html">CheckFlagAndSetDisplay</a> if *<a href="40975.html">DisplayMode</a> is 5.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46276"></span>46276</td>
-<td class="instruction">CP 5</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46278"></span>46278</td>
-<td class="instruction">JR Z,<a href="46243.html#46243">CheckFlagAndSetDisplay</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46280"></span>46280</td>
-<td class="instruction">LD A,(45427)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="45427.html">DisplayModeFlag</a> (check display mode flag).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46283"></span>46283</td>
-<td class="instruction">BIT 7,A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="46243.html#46292">CheckFlagAndSetDisplay_ProcessObjects</a> if special mode isn't needed.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46285"></span>46285</td>
-<td class="instruction">JR Z,<a href="46243.html#46292">CheckFlagAndSetDisplay_ProcessObjects</a></td>
-</tr>
-<tr>
-<td class="asm-label">CheckFlagAndSetDisplay_NoAction</td>
-<td class="address-2"><span id="46287"></span>46287</td>
-<td class="instruction">LD A,255</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=255.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46289"></span>46289</td>
-<td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="1">Compare with 255.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46291"></span>46291</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
-</tr>
-<tr>
-<td class="asm-label">CheckFlagAndSetDisplay_ProcessObjects</td>
-<td class="address-2"><span id="46292"></span>46292</td>
-<td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">IY</span> on the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46294"></span>46294</td>
-<td class="instruction">LD IX,(45438)</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="45438.html">ObjectTablePointer</a> (get object table pointer).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46298"></span>46298</td>
-<td class="instruction">LD A,(40989)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="40989.html">ObjectAttributeValue</a> (get object attribute).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46301"></span>46301</td>
-<td class="instruction">AND %00000001</td>
-<td class="comment-1" rowspan="1">Keep only bit 0.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46303"></span>46303</td>
-<td class="instruction">LD (41016),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="41016.html">ObjectAttributeFlag</a> (save attribute flag).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46306"></span>46306</td>
-<td class="instruction">LD A,(40975)</td>
-<td class="comment-1" rowspan="2">Compare *<a href="40975.html">DisplayMode</a> with 5.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46309"></span>46309</td>
-<td class="instruction">CP 5</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46311"></span>46311</td>
-<td class="instruction">LD IY,54171</td>
-<td class="comment-1" rowspan="1"><span class="register">IY</span>=<a href="54171.html">ProcessObjectEntryAlternate</a> (set object processing routine).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46315"></span>46315</td>
-<td class="instruction">JR C,<a href="46243.html#46321">CheckFlagAndSetDisplay_ProcessLoop</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="46243.html#46321">CheckFlagAndSetDisplay_ProcessLoop</a> if *<a href="40975.html">DisplayMode</a> is less than 5.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46317"></span>46317</td>
-<td class="instruction">LD IY,54122</td>
-<td class="comment-1" rowspan="1"><span class="register">IY</span>=<a href="54122.html">ProcessObjectEntry</a> (use alternate routine).</td>
-</tr>
-<tr>
-<td class="asm-label">CheckFlagAndSetDisplay_ProcessLoop</td>
-<td class="address-2"><span id="46321"></span>46321</td>
-<td class="instruction">CALL <a href="46333.html">CheckFlagAndSetDisplay_ProcessPointer</a></td>
-<td class="comment-1" rowspan="1">Call <a href="46333.html">CheckFlagAndSetDisplay_ProcessPointer</a> (process display pointer).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46324"></span>46324</td>
-<td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="1">Compare with 255.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46326"></span>46326</td>
-<td class="instruction">LD (45438),IX</td>
-<td class="comment-1" rowspan="1">Write <span class="register">IX</span> to *<a href="45438.html">ObjectTablePointer</a> (save updated object table pointer).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46330"></span>46330</td>
-<td class="instruction">POP IY</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">IY</span> from the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="46332"></span>46332</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
@@ -290,14 +140,14 @@ Prev: <a href="46242.html">46242</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#46243">Map</a></td>
 <td class="next">
-Next: <a href="46333.html">46333</a>
+Next: <a href="46273.html">46273</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/B4A3.html">Switch to hexadecimal</a>.</div>
 </footer>

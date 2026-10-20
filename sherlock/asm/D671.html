@@ -44,6 +44,9 @@ Next: <a href="D68C.html">D68C</a>
 <div class="paragraph">
 Used by the routine at <a href="D68C.html">PrintLocationExitsWithFormatting</a>.
 </div>
+<div class="paragraph">
+Steps through the exit list until it finds one whose door object is zero.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -64,7 +67,7 @@ Used by the routine at <a href="D68C.html">PrintLocationExitsWithFormatting</a>.
 </tr>
 <tr>
 <td class="register">F</td>
-<td class="register-desc">Zero flag set if valid exit found</td>
+<td class="register-desc">Zero flag clear when a valid exit is found</td>
 </tr>
 </table>
 </td>
@@ -73,79 +76,74 @@ Used by the routine at <a href="D68C.html">PrintLocationExitsWithFormatting</a>.
 <td class="asm-label">FindNextValidExit</td>
 <td class="address-2"><span id="d671"></span>D671</td>
 <td class="instruction">ADD IX,BC</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>+=<span class="register">BC</span>.</td>
+<td class="comment-1" rowspan="1">Step to the next exit entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d673"></span>D673</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=FF.</td>
+<td class="comment-1" rowspan="1">Take the end marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d675"></span>D675</td>
 <td class="instruction">CP (IX+$00)</td>
-<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with *<span class="register">IX</span>+00.</td>
+<td class="comment-1" rowspan="1">See whether this exit is the end marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d678"></span>D678</td>
 <td class="instruction">RET Z</td>
-<td class="comment-1" rowspan="1">Return if <span class="register">A</span> is equal to FF.</td>
+<td class="comment-1" rowspan="1">Return if this exit is the end marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d679"></span>D679</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="3">Go to <a href="D671.html">FindNextValidExit</a> if the door object is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d67a"></span>D67A</td>
 <td class="instruction">CP (IX+$01)</td>
-<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with *<span class="register">IX</span>+01.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d67d"></span>D67D</td>
 <td class="instruction">JR NZ,<a href="D671.html#d671">FindNextValidExit</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D671.html">FindNextValidExit</a> if <span class="register">A</span> is not equal to FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d67f"></span>D67F</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+00.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="D671.html">FindNextValidExit</a> if this exit has no direction.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d682"></span>D682</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d683"></span>D683</td>
 <td class="instruction">JR Z,<a href="D671.html#d671">FindNextValidExit</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D671.html">FindNextValidExit</a> if <span class="register">A</span> is equal to <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d685"></span>D685</td>
 <td class="instruction">CP $0B</td>
-<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with 0B.</td>
+<td class="comment-1" rowspan="2">Go to <a href="D671.html">FindNextValidExit</a> if the direction is 0B or more.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d687"></span>D687</td>
 <td class="instruction">JR NC,<a href="D671.html#d671">FindNextValidExit</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D671.html">FindNextValidExit</a> if <span class="register">A</span> is greater than or equal to 0B.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d689"></span>D689</td>
 <td class="instruction">OR %00000001</td>
-<td class="comment-1" rowspan="1">Set bit 0.</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -168,7 +166,7 @@ Next: <a href="D68C.html">D68C</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/54897.html">Switch to decimal</a>.</div>
 </footer>

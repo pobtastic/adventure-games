@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at C345</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C32D.html">C32D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c345">Map</a></td>
+<td class="next">
+Next: <a href="C380.html">C380</a>
+</td>
+</tr>
+</table>
+<div class="description">C345: Save Game</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="EE89.html">Action_Save</a> and <a href="EE91.html">Action_Quit</a>.
+</div>
+<div class="paragraph">
+Ask for a tape and write the game state out.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame</td>
+<td class="address-2"><span id="c345"></span>C345</td>
+<td class="instruction">LD A,($BB02)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C345.html#c364">SaveGame_PrintSaving</a> when *<a href="B9C8.html#bb02">BB02</a> is zero, so there is no flag state to copy.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c348"></span>C348</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c349"></span>C349</td>
+<td class="instruction">JR Z,<a href="C345.html#c364">SaveGame_PrintSaving</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c34b"></span>C34B</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="4">Take the flag addresses and the save area.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c34c"></span>C34C</td>
+<td class="instruction">LD IX,($BAF2)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c350"></span>C350</td>
+<td class="instruction">LD DE,$BA69</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c353"></span>C353</td>
+<td class="instruction">JR <a href="C345.html#c35a">SaveGame_StoreFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame_Copy</td>
+<td class="address-2"><span id="c355"></span>C355</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="3">Step to the next flag address and the next save byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c357"></span>C357</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c359"></span>C359</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame_StoreFlag</td>
+<td class="address-2"><span id="c35a"></span>C35A</td>
+<td class="instruction">LD L,(IX+$00)</td>
+<td class="comment-1" rowspan="5">Copy that flag into the save area and repeat until every flag is stored.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c35d"></span>C35D</td>
+<td class="instruction">LD H,(IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c360"></span>C360</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c361"></span>C361</td>
+<td class="instruction">LD (DE),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c362"></span>C362</td>
+<td class="instruction">DJNZ <a href="C345.html#c355">SaveGame_Copy</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c364"></span>
+<div class="comments">
+<div class="paragraph">
+Print "SAVING.Start tape,press any key.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame_PrintSaving</td>
+<td class="address-2"><span id="c364"></span>C364</td>
+<td class="instruction">LD HL,$BC48</td>
+<td class="comment-1" rowspan="3">Print "SAVING.Start tape,press any key." and wait for a key.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c367"></span>C367</td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c36a"></span>C36A</td>
+<td class="instruction">CALL <a href="BDDA.html">GetUserInput</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c36d"></span>C36D</td>
+<td class="instruction">LD IX,$B9C8</td>
+<td class="comment-1" rowspan="3">Point the save at the game state (<a href="B9C8.html">GameState</a>) for 013C bytes, marked as a data block.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c371"></span>C371</td>
+<td class="instruction">LD DE,$013C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c374"></span>C374</td>
+<td class="instruction">LD A,$FF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c376"></span>C376</td>
+<td class="instruction">CALL $04C2</td>
+<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/04C2.html">SA_BYTES</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c379"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Stop tape.Saving complete.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c379"></span>C379</td>
+<td class="instruction">LD HL,$BC6A</td>
+<td class="comment-1" rowspan="2">Print "Stop tape.Saving complete.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c37c"></span>C37C</td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c37f"></span>C37F</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C32D.html">C32D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c345">Map</a></td>
+<td class="next">
+Next: <a href="C380.html">C380</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/49989.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

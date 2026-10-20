@@ -44,6 +44,9 @@ Next: <a href="D57C.html">D57C</a>
 <div class="paragraph">
 Used by the routine at <a href="D51A.html">PrintObjectListWithFormatting</a>.
 </div>
+<div class="paragraph">
+Sets up the object table and prints each matching object.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -64,41 +67,29 @@ Used by the routine at <a href="D51A.html">PrintObjectListWithFormatting</a>.
 <td class="asm-label">PrintFormattedObjectList</td>
 <td class="address-2"><span id="d526"></span>D526</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="1">Stash the context pointer (<span class="register">IX</span>) on the stack.</td>
+<td class="comment-1" rowspan="2">Call <a href="D04F.html">AdjustObjectTableForSum</a> to set up the object table pointer, keeping character record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d528"></span>D528</td>
 <td class="instruction">CALL <a href="D04F.html">AdjustObjectTableForSum</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D04F.html">AdjustObjectTableForSum</a> to set up the object table pointer.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintFormattedObjectList_Loop</td>
 <td class="address-2"><span id="d52b"></span>D52B</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the object ID on the stack.</td>
+<td class="comment-1" rowspan="2">Keep the object id and call <a href="D57D.html">FindMatchingObject</a> to find the next matching object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d52c"></span>D52C</td>
-<td class="instruction">CALL <a href="D57C.html#d57d">FindNextMatchingObject_Entry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D57C.html#d57d">FindNextMatchingObject_Entry</a> to find the next matching object.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="d52f"></span>
-<div class="comments">
-<div class="paragraph">
-Check if we found a valid object to print.
-</div>
-</div>
-</td>
+<td class="instruction">CALL <a href="D57D.html">FindMatchingObject</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d52f"></span>D52F</td>
 <td class="instruction">JR C,<a href="D526.html#d55a">PrintFormattedObjectList_CheckNested</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D526.html#d55a">PrintFormattedObjectList_CheckNested</a> if no matching object was found (carry flag not set).</td>
+<td class="comment-1" rowspan="1">Go to <a href="D526.html#d55a">PrintFormattedObjectList_CheckNested</a> if there is no further object.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -114,59 +105,45 @@ Mark this object as processed and prepare to print its name.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d531"></span>D531</td>
 <td class="instruction">SET 7,(IY+$06)</td>
-<td class="comment-1" rowspan="1">Set bit 7 of *<span class="register">IY</span>+06 to mark the object as processed.</td>
+<td class="comment-1" rowspan="1">Set bit 7 of the object's byte at offset 06.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d535"></span>D535</td>
 <td class="instruction">SUB A</td>
-<td class="comment-1" rowspan="1">Clear <span class="register">A</span> (set to zero).</td>
+<td class="comment-1" rowspan="2">Clear the object processing source flag at <a href="A028.html">ObjectProcessingSourceFlag</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d536"></span>D536</td>
 <td class="instruction">LD ($A028),A</td>
-<td class="comment-1" rowspan="1">Write 00 to *<a href="A028.html">ObjectProcessingSourceFlag</a> (clear the object name buffer pointer).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d539"></span>D539</td>
-<td class="instruction">CALL <a href="D39B.html#d3d9">ProcessObjectEntryAlternate_4</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D39B.html#d3d9">ProcessObjectEntryAlternate_4</a> to print the object name.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="d53c"></span>
-<div class="comments">
-<div class="paragraph">
-Check how many objects remain to be printed.
-</div>
-</div>
-</td>
+<td class="instruction">CALL <a href="D3D5.html#d3d9">TakeTheFoundObject_DescriptionFlag</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D3D5.html#d3d9">TakeTheFoundObject_DescriptionFlag</a> to read this object's description flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d53c"></span>D53C</td>
 <td class="instruction">DEC C</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">C</span> (the remaining object counter) by one.</td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="D526.html#d546">PrintFormattedObjectList_CheckSeparator</a> if the count is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d53d"></span>D53D</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">C</span> (copy the counter value into <span class="register">A</span>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d53e"></span>D53E</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags based on the counter value in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d53f"></span>D53F</td>
 <td class="instruction">JR NZ,<a href="D526.html#d546">PrintFormattedObjectList_CheckSeparator</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D526.html#d546">PrintFormattedObjectList_CheckSeparator</a> if there are more objects to print (<span class="register">C</span> is not zero).</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -181,19 +158,22 @@ Print separator for the last object in the list.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d541"></span>D541</td>
-<td class="instruction">CALL <a href="A37D.html#a414">ProcessObject_Display_5</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A37D.html#a414">ProcessObject_Display_5</a> to print the final separator.</td>
+<td class="instruction">CALL <a href="A414.html">PrintFullStop</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A414.html">PrintFullStop</a> to print a full stop.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d544"></span>D544</td>
 <td class="instruction">JR <a href="D526.html#d557">PrintFormattedObjectList_LoopContinue</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D526.html#d557">PrintFormattedObjectList_LoopContinue</a> to continue the loop.</td>
+<td class="comment-1" rowspan="1">Carry on and print the next object in the list.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="d546"></span>
 <div class="comments">
+<div class="paragraph">
+See whether the text byte is set, then leave the result this step chose, then print the character.
+</div>
 <div class="paragraph">
 Determine which separator to print based on how many objects remain.
 </div>
@@ -204,12 +184,12 @@ Determine which separator to print based on how many objects remain.
 <td class="asm-label">PrintFormattedObjectList_CheckSeparator</td>
 <td class="address-2"><span id="d546"></span>D546</td>
 <td class="instruction">CP $01</td>
-<td class="comment-1" rowspan="2">Jump to <a href="D526.html#d551">PrintFormattedObjectList_Print_And</a> if this is the second-to-last object (compare <span class="register">A</span> with 01).</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="D526.html#d551">PrintFormattedObjectList_PrintAnd</a> if one object remains.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d548"></span>D548</td>
-<td class="instruction">JR Z,<a href="D526.html#d551">PrintFormattedObjectList_Print_And</a></td>
+<td class="instruction">JR Z,<a href="D526.html#d551">PrintFormattedObjectList_PrintAnd</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -225,24 +205,27 @@ Print comma separator for multiple objects.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d54a"></span>D54A</td>
 <td class="instruction">LD A,$2C</td>
-<td class="comment-1" rowspan="1">Load an ASCII comma (2C) into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Take a comma.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d54c"></span>D54C</td>
 <td class="instruction">CALL <a href="A9B7.html">Print_Character</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A9B7.html">Print_Character</a> to print the comma character.</td>
+<td class="comment-1" rowspan="1">Print the character in <span class="register">A</span> through <a href="A9B7.html">Print_Character</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d54f"></span>D54F</td>
 <td class="instruction">JR <a href="D526.html#d557">PrintFormattedObjectList_LoopContinue</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D526.html#d557">PrintFormattedObjectList_LoopContinue</a> to continue the loop.</td>
+<td class="comment-1" rowspan="1">Carry on and print the next object in the list.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="d551"></span>
 <div class="comments">
+<div class="paragraph">
+Print the dictionary word.
+</div>
 <div class="paragraph">
 Print "and" separator before the last object.
 </div>
@@ -250,33 +233,35 @@ Print "and" separator before the last object.
 </td>
 </tr>
 <tr>
-<td class="asm-label">PrintFormattedObjectList_Print_And</td>
+<td class="asm-label">PrintFormattedObjectList_PrintAnd</td>
 <td class="address-2"><span id="d551"></span>D551</td>
 <td class="instruction">LD DE,$005D</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=005D (load address of "and" text token into <span class="register">DE</span>).</td>
+<td class="comment-1" rowspan="1">Take token 005D.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d554"></span>D554</td>
-<td class="instruction">CALL <a href="A880.html#a887">PrintTextToken</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A880.html#a887">PrintTextToken</a> to print the "and" text.</td>
+<td class="instruction">CALL <a href="A887.html">PrintTextToken</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A887.html">PrintTextToken</a> to print token 5D.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintFormattedObjectList_LoopContinue</td>
 <td class="address-2"><span id="d557"></span>D557</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the object ID from the stack.</td>
+<td class="comment-1" rowspan="2">Keep looking for a matching object from <a href="D526.html#d52b">PrintFormattedObjectList_Loop</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d558"></span>D558</td>
 <td class="instruction">JR <a href="D526.html#d52b">PrintFormattedObjectList_Loop</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="D526.html#d52b">PrintFormattedObjectList_Loop</a> to process the next object.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="d55a"></span>
 <div class="comments">
+<div class="paragraph">
+Points the object list at the right room, finds the next matching object, and counts the objects there.
+</div>
 <div class="paragraph">
 No more objects found in the main list - check for nested objects.
 </div>
@@ -287,7 +272,7 @@ No more objects found in the main list - check for nested objects.
 <td class="asm-label">PrintFormattedObjectList_CheckNested</td>
 <td class="address-2"><span id="d55a"></span>D55A</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the object ID from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the saved result from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -299,47 +284,35 @@ No more objects found in the main list - check for nested objects.
 <td class="asm-label">PrintFormattedObjectList_NestedLoop</td>
 <td class="address-2"><span id="d55e"></span>D55E</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the object ID on the stack.</td>
+<td class="comment-1" rowspan="2">Keep the result and call <a href="D57D.html">FindMatchingObject</a> to find the next matching object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d55f"></span>D55F</td>
-<td class="instruction">CALL <a href="D57C.html#d57d">FindNextMatchingObject_Entry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D57C.html#d57d">FindNextMatchingObject_Entry</a> to find nested objects.</td>
+<td class="instruction">CALL <a href="D57D.html">FindMatchingObject</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d562"></span>D562</td>
 <td class="instruction">JR C,<a href="D526.html#d578">PrintFormattedObjectList_End</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D526.html#d578">PrintFormattedObjectList_End</a> if no nested objects found (<span class="register">A</span> is less than 2C).</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="d564"></span>
-<div class="comments">
-<div class="paragraph">
-Check if there are multiple nested objects.
-</div>
-</div>
-</td>
+<td class="comment-1" rowspan="1">Finish at <a href="D526.html#d578">PrintFormattedObjectList_End</a> when no more objects are found.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d564"></span>D564</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the object ID on the stack.</td>
+<td class="comment-1" rowspan="2">Call <a href="D4CC.html">CountObjectsInLocation</a> to count nested objects in the location, keeping find next matching object result.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d565"></span>D565</td>
 <td class="instruction">CALL <a href="D4CC.html">CountObjectsInLocation</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D4CC.html">CountObjectsInLocation</a> to count nested objects in the location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d568"></span>D568</td>
 <td class="instruction">JR Z,<a href="D526.html#d574">PrintFormattedObjectList_SkipNested</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D526.html#d574">PrintFormattedObjectList_SkipNested</a> if there's only one nested object (<span class="register">A</span> equals 2C).</td>
+<td class="comment-1" rowspan="1">Skip the nested list when nothing is inside this object.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -361,31 +334,41 @@ Print description and recursively print nested objects.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d56b"></span>D56B</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the object ID from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the saved result from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d56c"></span>D56C</td>
 <td class="instruction">CALL <a href="D590.html">PrintObjectDescription</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D590.html">PrintObjectDescription</a> to print the object description.</td>
+<td class="comment-1" rowspan="1">Call <a href="D590.html">PrintObjectDescription</a> to print object description.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d56f"></span>D56F</td>
 <td class="instruction">CALL <a href="D526.html#d526">PrintFormattedObjectList</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D526.html">PrintFormattedObjectList</a> to recursively print nested object names.</td>
+<td class="comment-1" rowspan="1">Call <a href="D526.html">PrintFormattedObjectList</a> to print the formatted object list.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d572"></span>D572</td>
 <td class="instruction">JR <a href="D526.html#d575">PrintFormattedObjectList_NestedDone</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D526.html#d575">PrintFormattedObjectList_NestedDone</a> (continue processing nested objects).</td>
+<td class="comment-1" rowspan="1">Carry on after the separator.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d574"></span>
+<div class="comments">
+<div class="paragraph">
+Drop the saved flags and carry on after the separator.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PrintFormattedObjectList_SkipNested</td>
 <td class="address-2"><span id="d574"></span>D574</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="2">Restore the object ID twice (to clean up) from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the saved values from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintFormattedObjectList_NestedDone</td>
@@ -396,12 +379,15 @@ Print description and recursively print nested objects.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d576"></span>D576</td>
 <td class="instruction">JR <a href="D526.html#d55e">PrintFormattedObjectList_NestedLoop</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="D526.html#d55e">PrintFormattedObjectList_NestedLoop</a> to check for more nested objects.</td>
+<td class="comment-1" rowspan="1">And jump to <a href="D526.html#d55e">PrintFormattedObjectList_NestedLoop</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="d578"></span>
 <div class="comments">
+<div class="paragraph">
+Return.
+</div>
 <div class="paragraph">
 No nested objects found - restore registers and return.
 </div>
@@ -412,13 +398,12 @@ No nested objects found - restore registers and return.
 <td class="asm-label">PrintFormattedObjectList_End</td>
 <td class="address-2"><span id="d578"></span>D578</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the object ID from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the saved result and the saved character record from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d579"></span>D579</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1">Restore the context pointer (<span class="register">IX</span>) from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -441,7 +426,7 @@ Next: <a href="D57C.html">D57C</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/54566.html">Switch to decimal</a>.</div>
 </footer>

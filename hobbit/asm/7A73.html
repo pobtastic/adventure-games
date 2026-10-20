@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 7A73</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="7A14.html">7A14</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#7a73">Map</a></td>
+<td class="next">
+Next: <a href="7AA1.html">7AA1</a>
+</td>
+</tr>
+</table>
+<div class="description">7A73: Inglish: Search The Previous Slot</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="79B6.html">Inglish_ScoreTheCurrentAction</a>.
+</div>
+<div class="paragraph">
+Searches the previous parser slot for an object in the same place as the player whose id matches the current object, and sets that object when bit 6 of the clause byte is set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_SearchThePreviousSlot</td>
+<td class="address-2"><span id="7a73"></span>7A73</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="4">Step back one 18-byte parser record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a75"></span>7A75</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a76"></span>7A76</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_SearchThePreviousSlot_StepBackOneRecord</td>
+<td class="address-2"><span id="7a77"></span>7A77</td>
+<td class="instruction">LD DE,$FFE8</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a7a"></span>7A7A</td>
+<td class="instruction">ADD IY,DE</td>
+<td class="comment-1" rowspan="3">Jump to <a href="7A73.html#7a9c">Inglish_SearchThePreviousSlot_RestoreAndReturn</a> if bit 6 of the clause byte at offset 1 is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a7c"></span>7A7C</td>
+<td class="instruction">BIT 6,(IY+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a80"></span>7A80</td>
+<td class="instruction">JR Z,<a href="7A73.html#7a9c">Inglish_SearchThePreviousSlot_RestoreAndReturn</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a82"></span>7A82</td>
+<td class="instruction">LD IX,$C060</td>
+<td class="comment-1" rowspan="1">Start the object search one slot before <a href="C063.html">ObjectTable</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_SearchThePreviousSlot_TestTheNextObject</td>
+<td class="address-2"><span id="7a86"></span>7A86</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="2">Use the parser workspace from here on.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a88"></span>7A88</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a89"></span>7A89</td>
+<td class="instruction">LD DE,$0008</td>
+<td class="comment-1" rowspan="2">Step the pointer on by 08 bytes.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a8c"></span>7A8C</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a8d"></span>7A8D</td>
+<td class="instruction">CALL <a href="9DD9.html">ConditionSamePlaceAsThePlayer</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9DD9.html">ConditionSamePlaceAsThePlayer</a> to test whether the object is in the same place as the player.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a90"></span>7A90</td>
+<td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="7A73.html#7a77">Inglish_SearchThePreviousSlot_StepBackOneRecord</a> if <a href="9DD9.html">ConditionSamePlaceAsThePlayer</a> returned FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a92"></span>7A92</td>
+<td class="instruction">JR Z,<a href="7A73.html#7a77">Inglish_SearchThePreviousSlot_StepBackOneRecord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a94"></span>7A94</td>
+<td class="instruction">LD HL,$B6E8</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="7A73.html#7a86">Inglish_SearchThePreviousSlot_TestTheNextObject</a> unless the object <a href="9DD9.html">ConditionSamePlaceAsThePlayer</a> found is the current object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a97"></span>7A97</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a98"></span>7A98</td>
+<td class="instruction">JR NZ,<a href="7A73.html#7a86">Inglish_SearchThePreviousSlot_TestTheNextObject</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a9a"></span>7A9A</td>
+<td class="instruction">OR $01</td>
+<td class="comment-1" rowspan="1">Clear the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_SearchThePreviousSlot_RestoreAndReturn</td>
+<td class="address-2"><span id="7a9c"></span>7A9C</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="3">Restore <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">IY</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a9d"></span>7A9D</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a9e"></span>7A9E</td>
+<td class="instruction">POP IY</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7aa0"></span>7AA0</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="7A14.html">7A14</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#7a73">Map</a></td>
+<td class="next">
+Next: <a href="7AA1.html">7AA1</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/31347.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

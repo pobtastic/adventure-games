@@ -75,184 +75,223 @@ Used by the routine at <a href="A4B0.html">Handler_UserInput</a>.
 <td class="instruction">PUSH IX</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a47e"></span>
+<div class="comments">
+<div class="paragraph">
+Search the vocabulary from the address written into this instruction, which starts as <a href="B0ED.html">Table_Vocabulary</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a47e"></span>A47E</td>
 <td class="instruction">LD HL,$B0ED</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">A comma separates synonyms and FF ends the table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a481"></span>A481</td>
 <td class="instruction">LD C,$00</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a483"></span>A483</td>
-<td class="instruction">JR <a href="A479.html#a492">Handler_MatchItem_2</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR <a href="A479.html#a492">MatchItem_Word</a></td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchItem_0</td>
+<td class="routine-comment" colspan="5">
+<span id="a485"></span>
+<div class="comments">
+<div class="paragraph">
+Step to the next synonym. Each comma advances the token number.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchItem_NextWord</td>
 <td class="address-2"><span id="a485"></span>A485</td>
 <td class="instruction">LD E,B</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="9">Skip a comma and keep the token number of the word before it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a486"></span>A486</td>
 <td class="instruction">LD D,$00</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a488"></span>A488</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a489"></span>A489</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a48a"></span>A48A</td>
 <td class="instruction">CP $2C</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a48c"></span>A48C</td>
-<td class="instruction">JR Z,<a href="A479.html#a491">Handler_MatchItem_1</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A479.html#a491">Handler_MatchItem_0</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a48e"></span>A48E</td>
 <td class="instruction">INC C</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a48f"></span>A48F</td>
-<td class="instruction">JR <a href="A479.html#a492">Handler_MatchItem_2</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR <a href="A479.html#a492">MatchItem_Word</a></td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchItem_1</td>
+<td class="asm-label">Handler_MatchItem_0</td>
 <td class="address-2"><span id="a491"></span>A491</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchItem_2</td>
+<td class="routine-comment" colspan="5">
+<span id="a492"></span>
+<div class="comments">
+<div class="paragraph">
+The vocabulary is exhausted.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchItem_Word</td>
 <td class="address-2"><span id="a492"></span>A492</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="A479.html#a4aa">MatchItem_Return</a> if the word is the FF terminator.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a493"></span>A493</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a495"></span>A495</td>
-<td class="instruction">JR Z,<a href="A479.html#a4aa">Handler_MatchItem_4</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A479.html#a4aa">MatchItem_Return</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a497"></span>
+<div class="comments">
+<div class="paragraph">
+Compare the four-letter buffer at <a href="A145.html">FourLetterBuffer</a> with this word.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a497"></span>A497</td>
 <td class="instruction">LD IX,$A145</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Four letters, starting at <a href="A145.html">FourLetterBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a49b"></span>A49B</td>
 <td class="instruction">LD B,$04</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchItem_3</td>
+<td class="asm-label">MatchItem_Letter</td>
 <td class="address-2"><span id="a49d"></span>A49D</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">This letter does not match, so try the next synonym.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4a0"></span>A4A0</td>
 <td class="instruction">CP (HL)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4a1"></span>A4A1</td>
-<td class="instruction">JR NZ,<a href="A479.html#a485">Handler_MatchItem_0</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="A479.html#a485">MatchItem_NextWord</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4a3"></span>A4A3</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">The next letter of both words.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4a4"></span>A4A4</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4a6"></span>A4A6</td>
-<td class="instruction">DJNZ <a href="A479.html#a49d">Handler_MatchItem_3</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="A479.html#a49d">MatchItem_Letter</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a4a8"></span>
+<div class="comments">
+<div class="paragraph">
+The word matched, so return its token with the carry set.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4a8"></span>A4A8</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">The token number is the count of commas passed on the way.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4a9"></span>A4A9</td>
 <td class="instruction">SCF</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchItem_4</td>
+<td class="routine-comment" colspan="5">
+<span id="a4aa"></span>
+<div class="comments">
+<div class="paragraph">
+Hand back the registers the search borrowed.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchItem_Return</td>
 <td class="address-2"><span id="a4aa"></span>A4AA</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Restore <span class="register">IX</span>, <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4ac"></span>A4AC</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4ad"></span>A4AD</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4ae"></span>A4AE</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4af"></span>A4AF</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -269,7 +308,7 @@ Next: <a href="A4B0.html">A4B0</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/42105.html">Switch to decimal</a>.</div>
 </footer>

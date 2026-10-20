@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at B753</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B714.html">B714</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b753">Map</a></td>
+<td class="next">
+Next: <a href="B776.html">B776</a>
+</td>
+</tr>
+</table>
+<div class="description">B753: Handler: Match Verb</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="E9A1.html">GameLoop</a>.
+</div>
+<div class="paragraph">
+Turn the first word token into a verb and run its action.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b753"></span>
+<div class="comments">
+<div class="paragraph">
+Set up to search the verb word tokens table for the first word token.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerMatchVerb</td>
+<td class="address-2"><span id="b753"></span>B753</td>
+<td class="instruction">LD HL,($AEEA)</td>
+<td class="comment-1" rowspan="1">Set a pointer to the verb-token pointer in <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b756"></span>B756</td>
+<td class="instruction">LD BC,($AEF4)</td>
+<td class="comment-1" rowspan="1">Load the verb-token count tokens into <span class="register">BC</span> for the search.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b75a"></span>B75A</td>
+<td class="instruction">LD A,($AF2E)</td>
+<td class="comment-1" rowspan="1">Get the the first word token from the user input.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b75d"></span>B75D</td>
+<td class="instruction">CPIR</td>
+<td class="comment-1" rowspan="1">Search the verb word tokens table for a matching token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b75f"></span>B75F</td>
+<td class="instruction">JR Z,<a href="B753.html#b768">VerbMatched</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B753.html#b768">VerbMatched</a> if a match was found (Z flag is set).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b761"></span>
+<div class="comments">
+<div class="paragraph">
+The token doesn't match any verb.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b761"></span>B761</td>
+<td class="instruction">LD HL,$AF59</td>
+<td class="comment-1" rowspan="2">Print "I don't understand." and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b764"></span>B764</td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b767"></span>B767</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b768"></span>
+<div class="comments">
+<div class="paragraph">
+A verb was matched! Calculate its index in the table and jump to its handler routine.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">VerbMatched</td>
+<td class="address-2"><span id="b768"></span>B768</td>
+<td class="instruction">LD A,($AEF4)</td>
+<td class="comment-1" rowspan="2">Calculate the verb index: <span class="register">A</span>=the verb-token count-<span class="register">C</span> (total tokens minus remaining tokens after match).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b76b"></span>B76B</td>
+<td class="instruction">SUB C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b76c"></span>B76C</td>
+<td class="instruction">DEC A</td>
+<td class="comment-1" rowspan="1">Adjust the index (decrease by one, as indices are zero-based).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b76d"></span>B76D</td>
+<td class="instruction">LD E,A</td>
+<td class="comment-1" rowspan="1">Store the verb index in <span class="register">E</span> for the table lookup.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b76e"></span>B76E</td>
+<td class="instruction">LD IX,($AEE4)</td>
+<td class="comment-1" rowspan="1">Set a pointer to the verb-jump pointer in <span class="register">IX</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b772"></span>B772</td>
+<td class="instruction">CALL <a href="B3F1.html">GetTableEntry</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B3F1.html">GetTableEntry</a> to get the address of the verb handler routine for this index.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b775"></span>B775</td>
+<td class="instruction">JP (HL)</td>
+<td class="comment-1" rowspan="1">Jump to the verb handler routine to execute the command.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B714.html">B714</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b753">Map</a></td>
+<td class="next">
+Next: <a href="B776.html">B776</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../dec/asm/46931.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

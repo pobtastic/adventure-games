@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at B633</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B62F.html">B62F</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b633">Map</a></td>
+<td class="next">
+Next: <a href="B6D6.html">B6D6</a>
+</td>
+</tr>
+</table>
+<div class="description">B633: Select Jump If Not Zero</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="B5B6.html">UnlinkNextDisplayRecord</a> and <a href="B6DA.html">ProcessDisplayEntry</a>.
+</div>
+<div class="paragraph">
+Plants the <code>JR NZ</code> opcode for the two tests at <a href="B633.html#b645">B645</a> and <a href="B633.html#b656">B656</a>, then reads the character record.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SelectJumpIfNotZero</td>
+<td class="address-2"><span id="b633"></span>B633</td>
+<td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="1">Use the <code>JR NZ</code> opcode (20).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b635"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="B62F.html">SelectJumpIfZero</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SelectJumpIfNotZero_WriteOpcode</td>
+<td class="address-2"><span id="b635"></span>B635</td>
+<td class="instruction">LD ($B649),A</td>
+<td class="comment-1" rowspan="2">Write the opcode into the jumps at <a href="B633.html#b649">B649</a> and <a href="B633.html#b658">B658</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b638"></span>B638</td>
+<td class="instruction">LD ($B658),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b63b"></span>B63B</td>
+<td class="instruction">LD IX,($B18E)</td>
+<td class="comment-1" rowspan="1">Read the pointer at <a href="B17E.html#b18c">B18C</a>+02.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b63f"></span>B63F</td>
+<td class="instruction">LD L,(IX+$04)</td>
+<td class="comment-1" rowspan="2">Read the handler address from bytes 04-05 of the record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b642"></span>B642</td>
+<td class="instruction">LD H,(IX+$05)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b645"></span>B645</td>
+<td class="instruction">BIT 7,(IX+$07)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="B633.html#b64e">SelectJumpIfNotZero_LocationActionFlags</a> if a marker on the character record is set. The opcode at <a href="B633.html#b649">B649</a> is modified by <a href="B633.html#b635">SelectJumpIfNotZero_WriteOpcode</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b649"></span>B649</td>
+<td class="instruction">JR NZ,<a href="B633.html#b64e">SelectJumpIfNotZero_LocationActionFlags</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b64b"></span>B64B</td>
+<td class="instruction">LD HL,$0000</td>
+<td class="comment-1" rowspan="1">Clear the pointer.</td>
+</tr>
+<tr>
+<td class="asm-label">SelectJumpIfNotZero_LocationActionFlags</td>
+<td class="address-2"><span id="b64e"></span>B64E</td>
+<td class="instruction">EX (SP),HL</td>
+<td class="comment-1" rowspan="1">Swap <span class="register">HL</span> with the return address.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b64f"></span>B64F</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="3">Save that address, and read the location and the action flags.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b650"></span>B650</td>
+<td class="instruction">LD L,(IX+$02)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b653"></span>B653</td>
+<td class="instruction">LD H,(IX+$03)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b656"></span>B656</td>
+<td class="instruction">BIT 5,H</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="B633.html#b65d">SelectJumpIfNotZero_ReturnWithPointers</a> if bit 5 is present. The opcode at <a href="B633.html#b658">B658</a> is modified by <a href="B633.html#b635">SelectJumpIfNotZero_WriteOpcode</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b658"></span>B658</td>
+<td class="instruction">JR NZ,<a href="B633.html#b65d">SelectJumpIfNotZero_ReturnWithPointers</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b65a"></span>B65A</td>
+<td class="instruction">LD HL,$0000</td>
+<td class="comment-1" rowspan="1">Clear the pointer.</td>
+</tr>
+<tr>
+<td class="asm-label">SelectJumpIfNotZero_ReturnWithPointers</td>
+<td class="address-2"><span id="b65d"></span>B65D</td>
+<td class="instruction">EX (SP),HL</td>
+<td class="comment-1" rowspan="1">Leave the location pointer (or 0000 when bit 5 is clear) on the stack in place of the address saved there.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b65e"></span>B65E</td>
+<td class="instruction">JP (HL)</td>
+<td class="comment-1" rowspan="1">Return to the caller (its address is now in <span class="register">HL</span>), leaving the location pointer and the handler address on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b65f"></span>B65F</td>
+<td class="instruction">LD A,($A00F)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="B633.html#b671">SelectJumpIfNotZero_MessagePrintMessage</a> if the display mode is 05.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b662"></span>B662</td>
+<td class="instruction">CP $05</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b664"></span>B664</td>
+<td class="instruction">JR Z,<a href="B633.html#b671">SelectJumpIfNotZero_MessagePrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b666"></span>B666</td>
+<td class="instruction">CP $06</td>
+<td class="comment-1" rowspan="2">Jump to <a href="B633.html#b671">SelectJumpIfNotZero_MessagePrintMessage</a> when the display mode is 06.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b668"></span>B668</td>
+<td class="instruction">JR Z,<a href="B633.html#b671">SelectJumpIfNotZero_MessagePrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b66a"></span>B66A</td>
+<td class="instruction">LD A,($B173)</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="B633.html#b678">SelectJumpIfNotZero_TestDisplayFlag</a> if bit 7 of display mode flag at <a href="B173.html">DisplayModeFlag</a> is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b66d"></span>B66D</td>
+<td class="instruction">BIT 7,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b66f"></span>B66F</td>
+<td class="instruction">JR Z,<a href="B633.html#b678">SelectJumpIfNotZero_TestDisplayFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label">SelectJumpIfNotZero_MessagePrintMessage</td>
+<td class="address-2"><span id="b671"></span>B671</td>
+<td class="instruction">LD HL,$6855</td>
+<td class="comment-1" rowspan="2">Take the message, then call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b674"></span>B674</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b677"></span>B677</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b678"></span>
+<div class="comments">
+<div class="paragraph">
+Test the display flag, and use the display data pointer when that flag is set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SelectJumpIfNotZero_TestDisplayFlag</td>
+<td class="address-2"><span id="b678"></span>B678</td>
+<td class="instruction">LD HL,$B16D</td>
+<td class="comment-1" rowspan="3">Test bit 0 of the display flag and point <span class="register">HL</span> at the display data pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b67b"></span>B67B</td>
+<td class="instruction">BIT 0,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b67d"></span>B67D</td>
+<td class="instruction">LD HL,$B172</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b680"></span>
+<div class="comments">
+<div class="paragraph">
+Build this display entry when the flag is clear.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b680"></span>B680</td>
+<td class="instruction">CALL NZ,<a href="B6DA.html">ProcessDisplayEntry</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B6DA.html">ProcessDisplayEntry</a> if bit 0 of this byte is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b683"></span>B683</td>
+<td class="instruction">CALL <a href="B633.html#b633">SelectJumpIfNotZero</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B633.html">SelectJumpIfNotZero</a> to plant the <code>JR NZ</code> opcode and test the character record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b686"></span>B686</td>
+<td class="instruction">LD A,($B16D)</td>
+<td class="comment-1" rowspan="2">Read the display flag and take the display data pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b689"></span>B689</td>
+<td class="instruction">LD HL,$B172</td>
+</tr>
+<tr>
+<td class="asm-label">SelectJumpIfNotZero_BitDisplayFlag</td>
+<td class="address-2"><span id="b68c"></span>B68C</td>
+<td class="instruction">LD DE,($B186)</td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="B633.html#b69d">SelectJumpIfNotZero_ClearStackedPointers</a> if bit 0 of display flag at <a href="B16D.html">DisplayFlag</a> is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b690"></span>B690</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b691"></span>B691</td>
+<td class="instruction">BIT 0,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b693"></span>B693</td>
+<td class="instruction">JR Z,<a href="B633.html#b69d">SelectJumpIfNotZero_ClearStackedPointers</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b695"></span>B695</td>
+<td class="instruction">CALL <a href="B83C.html">RestoreSavedCharacterRecord</a></td>
+<td class="comment-1" rowspan="3">Call <a href="B83C.html">RestoreSavedCharacterRecord</a> to restore the saved character record, then jump to <a href="B633.html#b6a6">SelectJumpIfNotZero_MessagePrintMessageAgain</a> with the message at 05B3.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b698"></span>B698</td>
+<td class="instruction">LD HL,$05B3</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b69b"></span>B69B</td>
+<td class="instruction">JR <a href="B633.html#b6a6">SelectJumpIfNotZero_MessagePrintMessageAgain</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b69d"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the stacked pointers, then print the message at 05DB.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SelectJumpIfNotZero_ClearStackedPointers</td>
+<td class="address-2"><span id="b69d"></span>B69D</td>
+<td class="instruction">LD HL,$0000</td>
+<td class="comment-1" rowspan="4">Push three zero words for the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6a0"></span>B6A0</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6a1"></span>B6A1</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6a2"></span>B6A2</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6a3"></span>B6A3</td>
+<td class="instruction">LD HL,$05DB</td>
+<td class="comment-1" rowspan="1">Take the message at 05DB.</td>
+</tr>
+<tr>
+<td class="asm-label">SelectJumpIfNotZero_MessagePrintMessageAgain</td>
+<td class="address-2"><span id="b6a6"></span>B6A6</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="3">Take the message, then call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6a7"></span>B6A7</td>
+<td class="instruction">LD HL,$6894</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6aa"></span>B6AA</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6ad"></span>B6AD</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6ae"></span>B6AE</td>
+<td class="instruction">LD A,($A010)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="B633.html#b671">SelectJumpIfNotZero_MessagePrintMessage</a> if the display mode is 05.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6b1"></span>B6B1</td>
+<td class="instruction">CP $05</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6b3"></span>B6B3</td>
+<td class="instruction">JR Z,<a href="B633.html#b671">SelectJumpIfNotZero_MessagePrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6b5"></span>B6B5</td>
+<td class="instruction">CP $06</td>
+<td class="comment-1" rowspan="2">Jump to <a href="B633.html#b671">SelectJumpIfNotZero_MessagePrintMessage</a> when the display mode is 06.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6b7"></span>B6B7</td>
+<td class="instruction">JR Z,<a href="B633.html#b671">SelectJumpIfNotZero_MessagePrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6b9"></span>B6B9</td>
+<td class="instruction">LD A,($B179)</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="B633.html#b671">SelectJumpIfNotZero_MessagePrintMessage</a> while bit 7 of display mode flag (<a href="B173.html#b179">B179</a>) is present.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6bc"></span>B6BC</td>
+<td class="instruction">BIT 7,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6be"></span>B6BE</td>
+<td class="instruction">JR NZ,<a href="B633.html#b671">SelectJumpIfNotZero_MessagePrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6c0"></span>B6C0</td>
+<td class="instruction">LD HL,$B16E</td>
+<td class="comment-1" rowspan="3">Take the display flag and take the display mode flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6c3"></span>B6C3</td>
+<td class="instruction">BIT 0,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6c5"></span>B6C5</td>
+<td class="instruction">LD HL,$B178</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b6c8"></span>
+<div class="comments">
+<div class="paragraph">
+Build the alternate display entry.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6c8"></span>B6C8</td>
+<td class="instruction">CALL NZ,<a href="B6F0.html">ProcessDisplayEntryAlternate</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B6F0.html">ProcessDisplayEntryAlternate</a> if bit 0 of this byte is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6cb"></span>B6CB</td>
+<td class="instruction">CALL <a href="B62F.html">SelectJumpIfZero</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B62F.html">SelectJumpIfZero</a> to plant the <code>JR Z</code> opcode.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6ce"></span>B6CE</td>
+<td class="instruction">LD A,($B16E)</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="B633.html#b68c">SelectJumpIfNotZero_BitDisplayFlag</a> to check flag and set display parameter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6d1"></span>B6D1</td>
+<td class="instruction">LD HL,$B178</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6d4"></span>B6D4</td>
+<td class="instruction">JR <a href="B633.html#b68c">SelectJumpIfNotZero_BitDisplayFlag</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B62F.html">B62F</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b633">Map</a></td>
+<td class="next">
+Next: <a href="B6D6.html">B6D6</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/46643.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

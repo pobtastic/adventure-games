@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="54094.html">54094</a>
+Prev: <a href="54097.html">54097</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#54122">Map</a></td>
 <td class="next">
@@ -42,7 +42,10 @@ Next: <a href="54171.html">54171</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="46359.html">CheckFlagAndSetDisplay_CheckObjects</a> and <a href="48510.html">CalculateObjectPointerOffset</a>.
+Used by the routines at <a href="46359.html">CheckFlagAndSetDisplay_CheckObjects</a>, <a href="48700.html">ReadCharacterRecordWord</a> and <a href="48715.html">ReadCharacterRecordValue</a>.
+</div>
+<div class="paragraph">
+Steps through the objects and marks each one that passes the attribute test.
 </div>
 </div>
 </td>
@@ -51,151 +54,139 @@ Used by the routines at <a href="46359.html">CheckFlagAndSetDisplay_CheckObjects
 <td class="asm-label">ProcessObjectEntry</td>
 <td class="address-2"><span id="54122"></span>54122</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Keep the schedule entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54123"></span>54123</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54124"></span>54124</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label">ProcessObjectEntry_0</td>
 <td class="address-2"><span id="54126"></span>54126</td>
 <td class="instruction">CALL <a href="53766.html">FetchNextObject</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="53766.html">FetchNextObject</a> to fetch the next object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54129"></span>54129</td>
-<td class="instruction">JR Z,<a href="54122.html#54163">ProcessObjectEntry_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="54122.html#54163">ProcessObjectEntry_Next</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="54122.html#54163">ProcessObjectEntry_Next</a> if the next object id is 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54131"></span>54131</td>
 <td class="instruction">LD BC,7</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Point <span class="register">IY</span> seven bytes further on (0007) and call <a href="42208.html">CompareFollowingFields</a> to compare the location data.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54134"></span>54134</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54136"></span>54136</td>
 <td class="instruction">ADD IY,BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54138"></span>54138</td>
-<td class="instruction">CALL <a href="42189.html#42208">CompareLocationData_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="42208.html">CompareFollowingFields</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54141"></span>54141</td>
 <td class="instruction">POP IY</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="54122.html#54126">ProcessObjectEntry_0</a> while the room fields do not match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54143"></span>54143</td>
 <td class="instruction">JR NZ,<a href="54122.html#54126">ProcessObjectEntry_0</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54145"></span>54145</td>
 <td class="instruction">LD A,(41016)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="54122.html#54163">ProcessObjectEntry_Next</a> if the object attribute flag is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54148"></span>54148</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54149"></span>54149</td>
-<td class="instruction">JR NZ,<a href="54122.html#54163">ProcessObjectEntry_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="54122.html#54163">ProcessObjectEntry_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54151"></span>54151</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Call <a href="51233.html">CheckObjectLocationMatch</a> to check object location match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54154"></span>54154</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54156"></span>54156</td>
 <td class="instruction">CALL <a href="51233.html">CheckObjectLocationMatch</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54159"></span>54159</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the object pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54161"></span>54161</td>
 <td class="instruction">JR Z,<a href="54122.html#54126">ProcessObjectEntry_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Go back to <a href="54122.html#54126">ProcessObjectEntry_0</a> for the next object if this one did not match.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessObjectEntry_1</td>
+<td class="asm-label">ProcessObjectEntry_Next</td>
 <td class="address-2"><span id="54163"></span>54163</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the record flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54166"></span>54166</td>
 <td class="instruction">POP IY</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Restore the saved schedule entry, the saved source and the saved count from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54168"></span>54168</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54169"></span>54169</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54170"></span>54170</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="54094.html">54094</a>
+Prev: <a href="54097.html">54097</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#54122">Map</a></td>
 <td class="next">
@@ -206,7 +197,7 @@ Next: <a href="54171.html">54171</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/D36A.html">Switch to hexadecimal</a>.</div>
 </footer>

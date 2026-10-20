@@ -42,7 +42,10 @@ Next: <a href="48244.html">48244</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="40341.html">CharacterAction_InspectorLestradeHelper</a> and <a href="47648.html">ProcessCharacterDisplay</a>.
+Used by the routines at <a href="40408.html">StoreSetMarkPointer</a> and <a href="47964.html">ReadActionFlags</a>.
+</div>
+<div class="paragraph">
+See whether this byte is the end marker, then test the mark on this byte
 </div>
 </div>
 </td>
@@ -51,127 +54,127 @@ Used by the routines at <a href="40341.html">CharacterAction_InspectorLestradeHe
 <td class="asm-label">ProcessGameStatusEntries</td>
 <td class="address-2"><span id="48198"></span>48198</td>
 <td class="instruction">LD IX,39269</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Use the character pairs (<a href="39245.html">39245</a>+24).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48202"></span>48202</td>
 <td class="instruction">LD HL,0</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48205"></span>48205</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessGameStatusEntries_0</td>
+<td class="asm-label">ProcessGameStatusEntries_Loop</td>
 <td class="address-2"><span id="48206"></span>48206</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="48198.html#48232">ProcessGameStatusEntries_KeepMatchFlags</a> if the record's flag byte is 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48209"></span>48209</td>
 <td class="instruction">CP 255</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48211"></span>48211</td>
-<td class="instruction">JR Z,<a href="48198.html#48232">ProcessGameStatusEntries_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="48198.html#48232">ProcessGameStatusEntries_KeepMatchFlags</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48213"></span>48213</td>
 <td class="instruction">BIT 0,(IX+3)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="48198.html#48227">ProcessGameStatusEntries_0</a> if the action-pending flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48217"></span>48217</td>
-<td class="instruction">JR Z,<a href="48198.html#48227">ProcessGameStatusEntries_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="48198.html#48227">ProcessGameStatusEntries_0</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48219"></span>48219</td>
 <td class="instruction">BIT 5,(IX+3)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="48198.html#48227">ProcessGameStatusEntries_0</a> if a marker on the action flags is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48223"></span>48223</td>
-<td class="instruction">JR NZ,<a href="48198.html#48227">ProcessGameStatusEntries_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="48198.html#48227">ProcessGameStatusEntries_0</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48225"></span>48225</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Call <a href="48730.html">AdvancePointerAndCheckBit</a>, keeping character record.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessGameStatusEntries_1</td>
+<td class="asm-label">ProcessGameStatusEntries_0</td>
 <td class="address-2"><span id="48227"></span>48227</td>
 <td class="instruction">CALL <a href="48730.html">AdvancePointerAndCheckBit</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48230"></span>48230</td>
-<td class="instruction">JR <a href="48198.html#48206">ProcessGameStatusEntries_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="48198.html#48206">ProcessGameStatusEntries_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="48198.html#48206">ProcessGameStatusEntries_Loop</a> to read the record flag, see whether it is the end marker and jump to <a href="48198.html#48232">ProcessGameStatusEntries_KeepMatchFlags</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessGameStatusEntries_2</td>
+<td class="routine-comment" colspan="5">
+<span id="48232"></span>
+<div class="comments">
+<div class="paragraph">
+Keep the match flags before returning.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessGameStatusEntries_KeepMatchFlags</td>
 <td class="address-2"><span id="48232"></span>48232</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the saved pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48233"></span>48233</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">See whether the pointer is empty.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48234"></span>48234</td>
 <td class="instruction">OR L</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48235"></span>48235</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return when the status pointer is empty.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48236"></span>48236</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Call <a href="48329.html">CheckBitAndProcess</a> to check bit and process.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48237"></span>48237</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48239"></span>48239</td>
 <td class="instruction">CALL <a href="48329.html">CheckBitAndProcess</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48242"></span>48242</td>
-<td class="instruction">JR <a href="48198.html#48232">ProcessGameStatusEntries_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="48198.html#48232">ProcessGameStatusEntries_KeepMatchFlags</a></td>
+<td class="comment-1" rowspan="1">Go back to <a href="48198.html#48232">ProcessGameStatusEntries_KeepMatchFlags</a> for the next status entry.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -188,7 +191,7 @@ Next: <a href="48244.html">48244</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/BC46.html">Switch to hexadecimal</a>.</div>
 </footer>

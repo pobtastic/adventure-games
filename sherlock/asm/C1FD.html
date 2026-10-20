@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at C1FD</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C1FC.html">C1FC</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c1fd">Map</a></td>
+<td class="next">
+Next: <a href="C22D.html">C22D</a>
+</td>
+</tr>
+</table>
+<div class="description">C1FD: Read The Pointer At The Storage Decorative</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="C1C0.html">PrintStringAndWaitForKeypress</a> and <a href="C1CB.html">PrintString</a>.
+</div>
+<div class="paragraph">
+Prints one character at the current column, and starts a new line on ENTER.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintScreenCharacter</td>
+<td class="address-2"><span id="c1fd"></span>C1FD</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="3">Keep the character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1fe"></span>C1FE</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1ff"></span>C1FF</td>
+<td class="instruction">PUSH AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c200"></span>C200</td>
+<td class="instruction">LD A,($C1FB)</td>
+<td class="comment-1" rowspan="2">Read the print column.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c203"></span>C203</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c204"></span>C204</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="5">Read the screen position at <a href="C1F6.html">DecorativeLine_ScreenPosition</a> and jump to <a href="C1FD.html#c214">PrintScreenCharacter_Next</a> if the character is not a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c205"></span>C205</td>
+<td class="instruction">PUSH AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c206"></span>C206</td>
+<td class="instruction">LD HL,($C1F6)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c209"></span>C209</td>
+<td class="instruction">CP $0D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c20b"></span>C20B</td>
+<td class="instruction">JR NZ,<a href="C1FD.html#c214">PrintScreenCharacter_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c20d"></span>C20D</td>
+<td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="3">Print a space and carry on from <a href="C1FD.html#c224">PrintScreenCharacter_SetDecorative</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c20f"></span>C20F</td>
+<td class="instruction">CALL <a href="C388.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c212"></span>C212</td>
+<td class="instruction">JR <a href="C1FD.html#c224">PrintScreenCharacter_SetDecorative</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c214"></span>
+<div class="comments">
+<div class="paragraph">
+A code of 8 starts the decorative line. Any other code counts the width down.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintScreenCharacter_Next</td>
+<td class="address-2"><span id="c214"></span>C214</td>
+<td class="instruction">CP $08</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="C249.html">HandleBackspaceKey</a> if it is 08.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c216"></span>C216</td>
+<td class="instruction">JR Z,<a href="C249.html">HandleBackspaceKey</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c218"></span>C218</td>
+<td class="instruction">CALL <a href="C240.html">ValidateKeypress</a></td>
+<td class="comment-1" rowspan="2">Call <a href="C240.html">ValidateKeypress</a> to check the key, then print the character through <a href="C388.html">PrintCharacter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c21b"></span>C21B</td>
+<td class="instruction">CALL <a href="C388.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c21e"></span>C21E</td>
+<td class="instruction">LD A,($C1F4)</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="C22D.html">RecordResultStorageDecorative</a> if the count is not finished.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c221"></span>C221</td>
+<td class="instruction">DEC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c222"></span>C222</td>
+<td class="instruction">JR NZ,<a href="C22D.html">RecordResultStorageDecorative</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintScreenCharacter_SetDecorative</td>
+<td class="address-2"><span id="c224"></span>C224</td>
+<td class="instruction">LD L,$E0</td>
+<td class="comment-1" rowspan="3">Call <a href="C271.html">ScrollScreenUp</a> to scroll screen up.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c226"></span>C226</td>
+<td class="instruction">LD C,$02</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c228"></span>C228</td>
+<td class="instruction">CALL <a href="C271.html">ScrollScreenUp</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c22b"></span>C22B</td>
+<td class="instruction">LD A,$24</td>
+<td class="comment-1" rowspan="1">Take a width of 24 for the decorative line.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C1FC.html">C1FC</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c1fd">Map</a></td>
+<td class="next">
+Next: <a href="C22D.html">C22D</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/49661.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

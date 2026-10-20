@@ -42,7 +42,20 @@ Next: <a href="51593.html">51593</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="45457.html">InitialiseDisplayBuffer</a>, <a href="46975.html">ProcessTextTokenStream</a> and <a href="50385.html">ProcessDisplayAction</a>.
+Used by the routines at <a href="45457.html">InitialiseDisplayBuffer</a>, <a href="45791.html">ReadRoomGraphicsParameter</a>, <a href="47164.html">RestoreSavedCharacterRecord</a>, <a href="50385.html">ProcessDisplayAction</a>, <a href="50522.html">RecordResultRoomGraphics</a> and <a href="50528.html">RecordResultRoomGraphics_CountCountRemaining</a>.
+</div>
+<div class="paragraph">
+Prepares the room or object named for the picture, and skips it when the record is not marked for display.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="51497"></span>
+<div class="comments">
+<div class="paragraph">
+Set object pointers.
 </div>
 </div>
 </td>
@@ -51,13 +64,13 @@ Used by the routines at <a href="45457.html">InitialiseDisplayBuffer</a>, <a hre
 <td class="asm-label">ProcessObjectDisplayLogic</td>
 <td class="address-2"><span id="51497"></span>51497</td>
 <td class="instruction">CALL <a href="51439.html">SetObjectPointers</a></td>
-<td class="comment-1" rowspan="1">Call <a href="51439.html">SetObjectPointers</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="51439.html">SetObjectPointers</a> to point at this object's records.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51500"></span>51500</td>
 <td class="instruction">LD A,(41012)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="51497.html#51570">ProcessObjectDisplayLogic_2</a> if *<a href="41012.html">RoomDisplayParameter</a> is greater than or equal to 254.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="51497.html#51570">ProcessObjectDisplayLogic_SavedCharacterMove</a> if the room display parameter is at least 254.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -67,71 +80,78 @@ Used by the routines at <a href="45457.html">InitialiseDisplayBuffer</a>, <a hre
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51505"></span>51505</td>
-<td class="instruction">JR NC,<a href="51497.html#51570">ProcessObjectDisplayLogic_2</a></td>
+<td class="instruction">JR NC,<a href="51497.html#51570">ProcessObjectDisplayLogic_SavedCharacterMove</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51507"></span>51507</td>
 <td class="instruction">LD IX,(40983)</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="40983.html">CurrentCharacterData</a>.</td>
+<td class="comment-1" rowspan="1">Read the current character record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51511"></span>51511</td>
 <td class="instruction">BIT 6,(IX+5)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="51497.html#51533">ProcessObjectDisplayLogic_0</a> if the object doesn't have a special description (bit 6 of *<span class="register">IX</span>+5 is not set).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="51497.html#51533">ProcessObjectDisplayLogic_Next</a> if the special-description flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51515"></span>51515</td>
-<td class="instruction">JR Z,<a href="51497.html#51533">ProcessObjectDisplayLogic_0</a></td>
+<td class="instruction">JR Z,<a href="51497.html#51533">ProcessObjectDisplayLogic_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="51517"></span>
+<div class="comments">
+<div class="paragraph">
+No matching handler?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51517"></span>51517</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=0.</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="51497.html#51533">ProcessObjectDisplayLogic_Next</a> if <a href="53724.html">CalculateHandlerOffset</a> finds no handler.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51518"></span>51518</td>
 <td class="instruction">CALL <a href="53724.html">CalculateHandlerOffset</a></td>
-<td class="comment-1" rowspan="1">Call <a href="53724.html">CalculateHandlerOffset</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51521"></span>51521</td>
-<td class="instruction">JR NC,<a href="51497.html#51533">ProcessObjectDisplayLogic_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="51497.html#51533">ProcessObjectDisplayLogic_0</a> if <span class="register">A</span> is greater than or equal to 254.</td>
+<td class="instruction">JR NC,<a href="51497.html#51533">ProcessObjectDisplayLogic_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51523"></span>51523</td>
 <td class="instruction">LD A,(41011)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="41011.html">41011</a>.</td>
+<td class="comment-1" rowspan="2">Read the saved character and call <a href="54089.html">SearchTwoByteTable</a> to search the two-byte table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51526"></span>51526</td>
 <td class="instruction">CALL <a href="54089.html">SearchTwoByteTable</a></td>
-<td class="comment-1" rowspan="1">Call <a href="54089.html">SearchTwoByteTable</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51529"></span>51529</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Jump to <a href="51497.html#51552">ProcessObjectDisplayLogic_1</a> if <span class="register">A</span> is not equal to 255.</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="51497.html#51552">ProcessObjectDisplayLogic_MovedMarker</a> if the entry is not the end marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51531"></span>51531</td>
-<td class="instruction">JR NZ,<a href="51497.html#51552">ProcessObjectDisplayLogic_1</a></td>
+<td class="instruction">JR NZ,<a href="51497.html#51552">ProcessObjectDisplayLogic_MovedMarker</a></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessObjectDisplayLogic_0</td>
+<td class="asm-label">ProcessObjectDisplayLogic_Next</td>
 <td class="address-2"><span id="51533"></span>51533</td>
 <td class="instruction">LD A,(40975)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="51497.html#51570">ProcessObjectDisplayLogic_2</a> if *<a href="40975.html">DisplayMode</a> is less than 7.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="51497.html#51570">ProcessObjectDisplayLogic_SavedCharacterMove</a> if the display mode is below 7.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,150 +161,145 @@ Used by the routines at <a href="45457.html">InitialiseDisplayBuffer</a>, <a hre
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51538"></span>51538</td>
-<td class="instruction">JR C,<a href="51497.html#51570">ProcessObjectDisplayLogic_2</a></td>
+<td class="instruction">JR C,<a href="51497.html#51570">ProcessObjectDisplayLogic_SavedCharacterMove</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51540"></span>51540</td>
 <td class="instruction">LD IX,(40979)</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="40979.html">40979</a>.</td>
+<td class="comment-1" rowspan="3">Call <a href="53724.html">CalculateHandlerOffset</a> to calculate handler offset.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51544"></span>51544</td>
 <td class="instruction">LD A,(41011)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="41011.html">41011</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51547"></span>51547</td>
 <td class="instruction">CALL <a href="53724.html">CalculateHandlerOffset</a></td>
-<td class="comment-1" rowspan="1">Call <a href="53724.html">CalculateHandlerOffset</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51550"></span>51550</td>
-<td class="instruction">JR NC,<a href="51497.html#51570">ProcessObjectDisplayLogic_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="51497.html#51570">ProcessObjectDisplayLogic_2</a> if <span class="register">A</span> is greater than or equal to 7.</td>
+<td class="instruction">JR NC,<a href="51497.html#51570">ProcessObjectDisplayLogic_SavedCharacterMove</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="51497.html#51570">ProcessObjectDisplayLogic_SavedCharacterMove</a> if <a href="53724.html">CalculateHandlerOffset</a> finds no handler.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessObjectDisplayLogic_1</td>
+<td class="asm-label">ProcessObjectDisplayLogic_MovedMarker</td>
 <td class="address-2"><span id="51552"></span>51552</td>
 <td class="instruction">LD A,(IX+1)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+1.</td>
+<td class="comment-1" rowspan="3">Read the moved marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51555"></span>51555</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=<span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51556"></span>51556</td>
 <td class="instruction">LD D,0</td>
-<td class="comment-1" rowspan="1"><span class="register">D</span>=0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51558"></span>51558</td>
 <td class="instruction">LD HL,43633</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43633.html">Table_ObjectDisplayData</a>.</td>
+<td class="comment-1" rowspan="1">Use the lookup table: object display data at <a href="43633.html">Table_ObjectDisplayData</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51561"></span>51561</td>
 <td class="instruction">DEC DE</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">DE</span> by one.</td>
+<td class="comment-1" rowspan="8">Index the word table at <a href="43633.html">Table_ObjectDisplayData</a> and draw that record from <a href="51606.html">ProcessObjectDisplayEntry</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51562"></span>51562</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51563"></span>51563</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51564"></span>51564</td>
 <td class="instruction">LD E,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=*<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51565"></span>51565</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51566"></span>51566</td>
 <td class="instruction">LD D,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">D</span>=*<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51567"></span>51567</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="1">Exchange the <span class="register">DE</span> and <span class="register">HL</span> registers.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51568"></span>51568</td>
 <td class="instruction">JR <a href="51606.html">ProcessObjectDisplayEntry</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="51606.html">ProcessObjectDisplayEntry</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessObjectDisplayLogic_2</td>
+<td class="routine-comment" colspan="5">
+<span id="51570"></span>
+<div class="comments">
+<div class="paragraph">
+Read the saved character, then use the display records at <a href="40760.html">40760</a> as the character record, then check for the end marker.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessObjectDisplayLogic_SavedCharacterMove</td>
 <td class="address-2"><span id="51570"></span>51570</td>
 <td class="instruction">LD A,(41011)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="41011.html">41011</a>.</td>
+<td class="comment-1" rowspan="3">Call <a href="54094.html">SearchThreeByteTable</a> to search three-byte length table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51573"></span>51573</td>
 <td class="instruction">LD IX,40760</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="40760.html">40760</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51577"></span>51577</td>
 <td class="instruction">CALL <a href="54094.html">SearchThreeByteTable</a></td>
-<td class="comment-1" rowspan="1">Call <a href="54094.html">SearchThreeByteTable</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51580"></span>51580</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Jump to <a href="56341.html">ReturnZero</a> if <span class="register">A</span> is equal to 255.</td>
+<td class="comment-1" rowspan="2">Return zero through <a href="56311.html#56341">ParseInputNumber_ReturnZero</a> if the entry is the end marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51582"></span>51582</td>
-<td class="instruction">JP Z,<a href="56341.html">ReturnZero</a></td>
+<td class="instruction">JP Z,<a href="56311.html#56341">ParseInputNumber_ReturnZero</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51585"></span>51585</td>
 <td class="instruction">LD L,(IX+1)</td>
-<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>+1.</td>
+<td class="comment-1" rowspan="3">Read the display-record pointer and draw it from <a href="51606.html">ProcessObjectDisplayEntry</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51588"></span>51588</td>
 <td class="instruction">LD H,(IX+2)</td>
-<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>+2.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51591"></span>51591</td>
 <td class="instruction">JR <a href="51606.html">ProcessObjectDisplayEntry</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="51606.html">ProcessObjectDisplayEntry</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -301,7 +316,7 @@ Next: <a href="51593.html">51593</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/C929.html">Switch to hexadecimal</a>.</div>
 </footer>

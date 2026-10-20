@@ -33,101 +33,181 @@ Next: <a href="44669.html">44669</a>
 </td>
 </tr>
 </table>
-<div class="description">44638: Routine at AE5E</div>
+<div class="description">44638: Handler: Is Carrying Item</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="43440.html">43440</a> and <a href="43467.html">43467</a>.
+Used by the routines at <a href="43455.html">Condition_IsCarryingForDrop</a> and <a href="43467.html">Condition_IsNotCarryingForDrop</a>.
+</div>
+<div class="paragraph">
+Rejects a drop when the item is not carried.
+</div>
+<div class="paragraph">
+Plural items in <a href="46833.html">Table_PluralItems</a> use the "them" message.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Item ID</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">0 when the item is carried, otherwise 1</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the item is carried</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44638"></span>
+<div class="comments">
+<div class="paragraph">
+The drop is valid when the item is already being carried.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_IsCarryingItem</td>
 <td class="address-2"><span id="44638"></span>44638</td>
 <td class="instruction">CALL <a href="42549.html">CheckObjectInInventory</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="42549.html">CheckObjectInInventory</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="44641"></span>
+<div class="comments">
+<div class="paragraph">
+The item is being carried.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44641"></span>44641</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="44642"></span>
+<div class="comments">
+<div class="paragraph">
+Tell the player the item is not carried. A plural form from <a href="46833.html">Table_PluralItems</a> is used when the item is one of those three.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44642"></span>44642</td>
 <td class="instruction">LD HL,29</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">The message for a singular item.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44645"></span>44645</td>
 <td class="instruction">LD BC,3</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Three items can take the plural message.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44648"></span>44648</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44649"></span>44649</td>
 <td class="instruction">OR C</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44650"></span>44650</td>
-<td class="instruction">JR Z,<a href="44638.html#44662">44662</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="44638.html#44662">Handler_IsCarryingItem_0</a></td>
+<td class="comment-1" rowspan="1">No plural list, so keep the singular wording.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44652"></span>44652</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Search the plural-item list.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44653"></span>44653</td>
 <td class="instruction">LD HL,46833</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44656"></span>44656</td>
 <td class="instruction">CPIR</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44658"></span>44658</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the message pointer from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44659"></span>44659</td>
-<td class="instruction">JR NZ,<a href="44638.html#44662">44662</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="44638.html#44662">Handler_IsCarryingItem_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44638.html#44662">Handler_IsCarryingItem_0</a> when this item is singular.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44661"></span>44661</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">This item is plural, so use the next message.</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_IsCarryingItem_0</td>
 <td class="address-2"><span id="44662"></span>44662</td>
 <td class="instruction">CALL <a href="41564.html">PrintCompressedStringAndNewline</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="41564.html">PrintCompressedStringAndNewline</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44665"></span>44665</td>
 <td class="instruction">LD A,1</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">The drop is rejected.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44667"></span>44667</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="44668"></span>
+<div class="comments">
+<div class="paragraph">
+The drop is rejected.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="44668"></span>44668</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -144,7 +224,7 @@ Next: <a href="44669.html">44669</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../../asm/AE5E.html">Switch to hexadecimal</a>.</div>
 </footer>

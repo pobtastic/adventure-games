@@ -42,7 +42,7 @@ Next: <a href="D249.html">D249</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="9CA2.html">CharacterAction_BasilPhipps</a>, <a href="9CCE.html">CheckObjectInCharacterLocation</a>, <a href="9E4A.html">CheckCharacterState</a>, <a href="A4BC.html">PointToObjectAttributeByte</a>, <a href="BD7E.html">CalculateObjectPointerOffset</a>, <a href="BE72.html">ProcessEntryWithCounter</a>, <a href="C4D1.html">ProcessDisplayAction</a>, <a href="C821.html">CheckObjectLocationMatch</a>, <a href="C863.html">GetObjectLocation</a>, <a href="C86E.html">CheckObjectMother</a>, <a href="C8A7.html">GetObjectAttribute</a>, <a href="C8AF.html">GetObjectMotherID</a>, <a href="C8BE.html">TestObjectHasSpecialDescription</a>, <a href="C8C6.html">ProcessObjectAttribute_C8C6</a>, <a href="C8EF.html">SetObjectPointers</a>, <a href="C996.html">ProcessObjectDisplayEntry</a>, <a href="CBC2.html">ProcessCharacterDisplay_CBC2</a>, <a href="D102.html">ProcessLocationTokenDisplay</a>, <a href="D275.html">CheckCharacterIDRange</a>, <a href="D495.html">IsCharacterTheChinaMan</a>, <a href="D590.html">PrintObjectDescription</a>, <a href="D60B.html">PrintLocationExits</a>, <a href="DD0B.html">DD0B</a>, <a href="DD35.html">DD35</a>, <a href="DF5B.html">PrintObjectDescriptionText</a>, <a href="DFCC.html">DFCC</a>, <a href="E03A.html">E03A</a>, <a href="E17B.html">E17B</a>, <a href="E619.html">E619</a> and <a href="F1C1.html">UpdateObjectLocation</a>.
+Used by the routines at <a href="9A59.html">ActionMoveMrsJones</a>, <a href="9B50.html">PlaceCharacterBesideMatch</a>, <a href="9C56.html">SetObjectHeldMark</a>, <a href="9C60.html">ClearObjectHeldMark</a>, <a href="9CA2.html">CharacterAction_BasilPhipps</a>, <a href="9CCE.html">CheckObjectInCharacterLocation</a>, <a href="9E60.html">ReadSherlocksDisguise</a>, <a href="A4BC.html">PointToObjectAttributeByte</a>, <a href="BE22.html">UseObjectDisplayLink</a>, <a href="BE91.html">InspectActionTakenFlag</a>, <a href="C74E.html">ReadObjectAttribute_LooksObjectFolds</a>, <a href="C821.html">CheckObjectLocationMatch</a>, <a href="C863.html">GetObjectLocation</a>, <a href="C86E.html">CheckObjectMother</a>, <a href="C8A7.html">GetObjectAttribute</a>, <a href="C8AF.html">GetObjectMotherID</a>, <a href="C8BE.html">TestObjectHasSpecialDescription</a>, <a href="C8C6.html">ProcessObjectAttribute_LookObjectRun</a>, <a href="C8EF.html">SetObjectPointers</a>, <a href="CA7F.html">ReadCharacterTimetable</a>, <a href="CBC2.html">ProcessCharacterDisplay_TestDisplayFlagEnd</a>, <a href="D113.html">DescribeCurrentRoom</a>, <a href="D288.html">LookUpObjectAndTestMovedMarker</a>, <a href="D495.html">GetObjectFirstLocation</a>, <a href="D590.html">PrintObjectDescription</a>, <a href="D60B.html">PrintLocationExits</a>, <a href="DD0E.html">StoreMatchedCharacterRoom</a>, <a href="DD35.html">DescribeObjectIfPresent</a>, <a href="DF5B.html">PrintObjectDescriptionText</a>, <a href="DFCC.html">SpecialCaseObject_LooksBasilPhipps</a>, <a href="E03A.html">PlaceCharacter</a>, <a href="E3A9.html">ReadSourceDisplayPointer</a>, <a href="E5C3.html">LookUpCurrentObject</a>, <a href="E619.html">ScanObjects</a> and <a href="F1C1.html">UpdateObjectLocation</a>.
 </div>
 <div class="paragraph">
 Looks up an object in the objects table and returns a pointer to it's data structure.
@@ -72,13 +72,12 @@ Looks up an object in the objects table and returns a pointer to it's data struc
 <td class="asm-label">FetchObjectDataPointer</td>
 <td class="address-2"><span id="d237"></span>D237</td>
 <td class="instruction">LD IX,$8B6F</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="8B6F.html">Table_Objects</a>.</td>
+<td class="comment-1" rowspan="2">Call <a href="D34E.html">SearchThreeByteTable</a> to search three-byte length table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d23b"></span>D23B</td>
 <td class="instruction">CALL <a href="D34E.html">SearchThreeByteTable</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D34E.html">SearchThreeByteTable</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -94,7 +93,7 @@ This will be restored back into <span class="register">HL</span> by the end of t
 <td class="asm-label"></td>
 <td class="address-1"><span id="d23e"></span>D23E</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack temporarily.</td>
+<td class="comment-1" rowspan="1">Read the moved marker and read the location, saving pointer.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -110,12 +109,13 @@ Pretty clever way of using the stack here.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d23f"></span>D23F</td>
 <td class="instruction">LD L,(IX+$01)</td>
-<td class="comment-1" rowspan="2">Load the object pointer into <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d242"></span>D242</td>
 <td class="instruction">LD H,(IX+$02)</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -127,7 +127,7 @@ Pretty clever way of using the stack here.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d246"></span>D246</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1">Restore the object pointer into <span class="register">IX</span> (from the stack).</td>
+<td class="comment-1" rowspan="1">Restore the saved character record from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -150,7 +150,7 @@ Next: <a href="D249.html">D249</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/53815.html">Switch to decimal</a>.</div>
 </footer>

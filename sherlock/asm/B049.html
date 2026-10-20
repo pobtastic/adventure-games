@@ -36,193 +36,214 @@ Next: <a href="B09A.html">B09A</a>
 </td>
 </tr>
 </table>
-<div class="description">B049: Routine at B049</div>
+<div class="description">B049: Link Character When Flagged</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+When the action flag is set, stores this character on the display list and allocates a record for the next one. Reached through the standard command table at <a href="AF6B.html">Table_CommandHandlerLookup_Standard</a>, dispatched by <a href="AFB3.html#afe0">AFE0</a>.
+</div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">LinkCharacterWhenFlagged</td>
 <td class="address-2"><span id="b049"></span>B049</td>
 <td class="instruction">BIT 1,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="B049.html#b058">LinkCharacterWhenFlagged_0</a> if bit 1 is clear.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b04b"></span>B04B</td>
-<td class="instruction">JR Z,<a href="B049.html#b058">$B058</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="B049.html#b058">LinkCharacterWhenFlagged_0</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b04d"></span>B04D</td>
 <td class="instruction">LD HL,$088B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Point <span class="register">HL</span> at 088B and store its low byte at <span class="register">IY</span>+00.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b050"></span>B050</td>
 <td class="instruction">LD (IY+$00),L</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b053"></span>B053</td>
 <td class="instruction">LD (IY+$01),H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store <span class="register">H</span> at <span class="register">IY</span>+01.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b056"></span>B056</td>
 <td class="instruction">RES 1,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear the link bit on this character.</td>
 </tr>
 <tr>
+<td class="asm-label">LinkCharacterWhenFlagged_0</td>
 <td class="address-2"><span id="b058"></span>B058</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Keep the character record.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b059"></span>B059</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b05a"></span>B05A</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b05c"></span>B05C</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b05e"></span>B05E</td>
 <td class="instruction">LD IY,$9FEC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Use the character script entry list (<a href="9FEB.html">CharacterScriptEntryList</a>+01).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b062"></span>B062</td>
 <td class="instruction">LD DE,$0000</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Call <a href="A104.html">IncrementPointerAndCompare</a> to step pointer and compare.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b065"></span>B065</td>
 <td class="instruction">CALL <a href="A104.html">IncrementPointerAndCompare</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b068"></span>B068</td>
 <td class="instruction">LD A,$02</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Call <a href="A11C.html">AllocateMemory</a> to allocate 02 bytes.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b06a"></span>B06A</td>
 <td class="instruction">CALL <a href="A11C.html">AllocateMemory</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b06d"></span>B06D</td>
 <td class="instruction">LD HL,($A02B)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Store the low byte of the word at <a href="A02B.html">ActiveTextPointer</a> as the record's flag byte.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b070"></span>B070</td>
 <td class="instruction">LD (IX+$00),L</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b073"></span>B073</td>
 <td class="instruction">LD (IX+$01),H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store the moved marker.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b076"></span>B076</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Store the low byte of the pointer in the previous record.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b078"></span>B078</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b079"></span>B079</td>
 <td class="instruction">LD (IY-$02),L</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b07c"></span>B07C</td>
 <td class="instruction">LD (IY-$01),H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store the high byte of the pointer in the previous record.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b07f"></span>B07F</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Restore the saved character record, the saved schedule entry, the saved source and the saved pointer from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b081"></span>B081</td>
 <td class="instruction">POP IY</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b083"></span>B083</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b084"></span>B084</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">LinkCharacterWhenFlagged_Loop</td>
 <td class="address-2"><span id="b085"></span>B085</td>
-<td class="instruction">CALL <a href="AE7F.html">$AE7F</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="AE7F.html">SaveTextPointer</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AE7F.html">SaveTextPointer</a> to save the text pointer.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b088"></span>B088</td>
 <td class="instruction">CP $90</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">See whether the text byte is the link marker.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b08a"></span>B08A</td>
-<td class="instruction">JR NZ,<a href="B049.html#b085">$B085</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="B049.html#b085">LinkCharacterWhenFlagged_Loop</a></td>
+<td class="comment-1" rowspan="1">Go back to <a href="B049.html#b085">LinkCharacterWhenFlagged_Loop</a> until the text byte is the link marker.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b08c"></span>B08C</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Jump back to <a href="B049.html#b085">LinkCharacterWhenFlagged_Loop</a> while the low nibble of <span class="register">B</span> or <span class="register">C</span> is not zero.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b08d"></span>B08D</td>
 <td class="instruction">AND $0F</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b08f"></span>B08F</td>
 <td class="instruction">OR C</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b090"></span>B090</td>
-<td class="instruction">JR NZ,<a href="B049.html#b085">$B085</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="B049.html#b085">LinkCharacterWhenFlagged_Loop</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b092"></span>B092</td>
 <td class="instruction">LD HL,($A029)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Write C0 through the pointer at <a href="A029.html">SavedTextPointer</a> and jump back to <a href="AB52.html">CopyDisplayIfNeeded</a> to copy display if needed.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b095"></span>B095</td>
 <td class="instruction">LD (HL),$C0</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="b097"></span>B097</td>
-<td class="instruction">JP <a href="AB52.html">$AB52</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP <a href="AB52.html">CopyDisplayIfNeeded</a></td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -239,7 +260,7 @@ Next: <a href="B09A.html">B09A</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/45129.html">Switch to decimal</a>.</div>
 </footer>

@@ -281,7 +281,7 @@ Check which key the user pressed:
 <td class="asm-label"></td>
 <td class="address-1"><span id="44388"></span>44388</td>
 <td class="instruction">CP 128</td>
-<td class="comment-1" rowspan="2">If the keypress was higher than 128 it's also not valid input so jump back to <a href="44338.html#44353">UserInput_Next</a>.</td>
+<td class="comment-1" rowspan="2">If the keypress was higher than 128, it's also not valid input so jump back to <a href="44338.html#44353">UserInput_Next</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -384,7 +384,7 @@ Clear down the user input tokens.
 <td class="asm-label"></td>
 <td class="address-1"><span id="44407"></span>44407</td>
 <td class="instruction">LD HL,43044</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43044.html">UserInput_Token_1</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43044.html">UserInput_VerbToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -430,7 +430,7 @@ Set up pointers for the command buffer, the user input tokens and the count of t
 <td class="asm-label"></td>
 <td class="address-1"><span id="44420"></span>44420</td>
 <td class="instruction">LD IX,43044</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="43044.html">UserInput_Token_1</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="43044.html">UserInput_VerbToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -505,7 +505,7 @@ Process found word into user input token.
 <td class="asm-label"></td>
 <td class="address-1"><span id="44440"></span>44440</td>
 <td class="instruction">LD HL,(44226)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="44226.html">TempStore_CommandBufferPointer</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="44226.html">TemporaryStorage_CommandBufferPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -533,7 +533,7 @@ Ensure that the length is not more than 4.
 <td class="asm-label"></td>
 <td class="address-1"><span id="44449"></span>44449</td>
 <td class="instruction">LD A,(44228)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44456">CopyWordToBuffer</a> if *<a href="44228.html">TempStore_CommandBufferCount</a> is greater than or equal to 4.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44456">CopyWordToBuffer</a> if *<a href="44228.html">TemporaryStorage_CurrentWordLength</a> is greater than or equal to 4.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -550,7 +550,7 @@ Ensure that the length is not more than 4.
 <span id="44455"></span>
 <div class="comments">
 <div class="paragraph">
-The length is less than 4 so no need to copy 4 bytes.
+The length is less than 4, so no need to copy 4 bytes.
 </div>
 </div>
 </td>
@@ -604,7 +604,7 @@ Copy the word (up to 4 characters in length) into the four letter buffer.
 <span id="44462"></span>
 <div class="comments">
 <div class="paragraph">
-Stash the vocabulary pointer for a separate check...
+Stash the vocabulary pointer for a separate check..
 </div>
 </div>
 </td>
@@ -697,7 +697,7 @@ Do nothing with with this match - just restore the vocabulary pointer from the s
 <span id="44487"></span>
 <div class="comments">
 <div class="paragraph">
-Nothing matched ... Inform the player.
+Nothing matched .. Inform the player.
 </div>
 <div class="paragraph">
 Print "I don't know the word:-".
@@ -742,13 +742,13 @@ Print a double quote character: "<code>&#34;</code>".
 <td class="asm-label"></td>
 <td class="address-1"><span id="44498"></span>44498</td>
 <td class="instruction">LD HL,(44228)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="44228.html">TempStore_CommandBufferCount</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="44228.html">TemporaryStorage_CurrentWordLength</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44501"></span>44501</td>
 <td class="instruction">LD DE,(44226)</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>+=*<a href="44226.html">TempStore_CommandBufferPointer</a>.</td>
+<td class="comment-1" rowspan="2"><span class="register">HL</span>+=*<a href="44226.html">TemporaryStorage_CommandBufferPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -995,13 +995,13 @@ The character is not a delimiter.
 <td class="asm-label"></td>
 <td class="address-1"><span id="44562"></span>44562</td>
 <td class="instruction">LD (44226),HL</td>
-<td class="comment-1" rowspan="1">Store the starting address of this new word in *<a href="44226.html">TempStore_CommandBufferPointer</a>.</td>
+<td class="comment-1" rowspan="1">Store the starting address of this new word in *<a href="44226.html">TemporaryStorage_CommandBufferPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44565"></span>44565</td>
 <td class="instruction">LD DE,0</td>
-<td class="comment-1" rowspan="1">Initialise <span class="register">DE</span> to 0000 to count the number of letters in the word.</td>
+<td class="comment-1" rowspan="1">Initialise <span class="register">DE</span> to 0 to count the number of letters in the word.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1068,7 +1068,7 @@ This is the end of the word, so store the word length.
 <td class="asm-label">StoreWordLength</td>
 <td class="address-2"><span id="44580"></span>44580</td>
 <td class="instruction">LD (44228),DE</td>
-<td class="comment-1" rowspan="1">Write the letter counter to *<a href="44228.html">TempStore_CommandBufferCount</a>.</td>
+<td class="comment-1" rowspan="1">Write the letter counter to *<a href="44228.html">TemporaryStorage_CurrentWordLength</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1102,7 +1102,7 @@ Check to see if any of the user input tokens have been populated, and if not, pr
 <td class="asm-label">CheckVerbToken</td>
 <td class="address-2"><span id="44589"></span>44589</td>
 <td class="instruction">LD A,(43044)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44428">Response_NotUnderstood</a> if *<a href="43044.html">UserInput_Token_1</a> hold the terminator byte (255).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44428">Response_NotUnderstood</a> if *<a href="43044.html">UserInput_VerbToken</a> hold the terminator byte (255).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1144,7 +1144,7 @@ Next: <a href="44598.html">44598</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/warlord/">Source code</a>.</div>
 <div><a href="../../asm/AD32.html">Switch to hexadecimal</a>.</div>
 </footer>

@@ -38,6 +38,9 @@ Next: <a href="41730.html">41730</a>
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Unties the current object. Reached through the action table at <a href="50992.html">ActionTable</a>, dispatched by <a href="38159.html">Turn_RunTheHandlerIfPresent</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -45,181 +48,207 @@ Next: <a href="41730.html">41730</a>
 <td class="asm-label">ActionUntie</td>
 <td class="address-2"><span id="41652"></span>41652</td>
 <td class="instruction">LD IX,(46856)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="46810.html#46856">46856</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41656"></span>41656</td>
 <td class="instruction">LD A,(IX+1)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read where this object is from the object record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41659"></span>41659</td>
 <td class="instruction">CP 18</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Compare where this object is with 18.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41661"></span>41661</td>
 <td class="instruction">LD HL,45202</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at "[0x07] is not tied".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41664"></span>41664</td>
-<td class="instruction">JP NZ,<a href="29405.html">PrintMsg</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP NZ,<a href="29405.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="29405.html">PrintMessage</a> if where this object is is not 18.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="41667"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, the object stays tied.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41667"></span>41667</td>
-<td class="instruction">CALL <a href="40260.html">40260</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="40260.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="40260.html">ConditionSuppressTheMessage</a>. If the message is held back, the object stays tied.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41670"></span>41670</td>
 <td class="instruction">LD A,(50023)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Copy where <a href="49435.html#50022">18</a> - "Rope" is into where this object is.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41673"></span>41673</td>
 <td class="instruction">LD (IX+1),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41676"></span>41676</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="41677"></span>
+<div class="comments">
+<div class="paragraph">
+Find the exit through the current object.
+</div>
+<div class="paragraph">
+Reached through the action list of <a href="49435.html#49773">42</a> - "Fast River" for action 50, dispatched by <a href="39788.html">TriggerAction</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41677"></span>41677</td>
-<td class="instruction">CALL <a href="40741.html">40741</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="40741.html">ExitsFindTheExitThroughAnObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="40741.html">ExitsFindTheExitThroughAnObject</a> to find the exit through the current object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41680"></span>41680</td>
 <td class="instruction">LD A,(IX+2)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read this exit's destination.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41683"></span>41683</td>
 <td class="instruction">CP 0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="41652.html#41691">ActionUntie_OpenAndMove</a> if this exit's destination is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41685"></span>41685</td>
-<td class="instruction">JR NZ,<a href="41652.html#41691">ActionUntie_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="41652.html#41691">ActionUntie_OpenAndMove</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="41687"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, the routine returns without untying.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41687"></span>41687</td>
-<td class="instruction">CALL <a href="40260.html">40260</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="40260.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="40260.html">ConditionSuppressTheMessage</a>. If the message is held back, the routine returns without untying.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41690"></span>41690</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">ActionUntie_0</td>
+<td class="asm-label">ActionUntie_OpenAndMove</td>
 <td class="address-2"><span id="41691"></span>41691</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read this exit's direction.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41694"></span>41694</td>
 <td class="instruction">LD HL,(46823)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="46810.html#46823">CurrentAction</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41697"></span>41697</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Update *<a href="46810.html#46823">CurrentAction</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41698"></span>41698</td>
 <td class="instruction">LD (46823),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41701"></span>41701</td>
 <td class="instruction">LD IX,(46856)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="46810.html#46856">46856</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41705"></span>41705</td>
 <td class="instruction">SET 5,(IX+7)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Mark the object open.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41709"></span>41709</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Write 255 to *<a href="46810.html#46824">CurrentObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41711"></span>41711</td>
 <td class="instruction">LD A,255</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41713"></span>41713</td>
 <td class="instruction">LD (46824),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41716"></span>41716</td>
-<td class="instruction">CALL <a href="36253.html#36267">Action_Dir_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="36253.html#36267">Action_Direction_TestIfInside</a></td>
+<td class="comment-1" rowspan="1">Call <a href="36253.html#36267">Action_Direction_TestIfInside</a> to carry on with the move.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41719"></span>41719</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore the object from the stack and close it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41721"></span>41721</td>
 <td class="instruction">RES 5,(IX+7)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41725"></span>41725</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Update *<a href="46810.html#46823">CurrentAction</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41726"></span>41726</td>
 <td class="instruction">LD (46823),HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41729"></span>41729</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -236,7 +265,7 @@ Next: <a href="41730.html">41730</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../../asm/A2B4.html">Switch to hexadecimal</a>.</div>
 </footer>

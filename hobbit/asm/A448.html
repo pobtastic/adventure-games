@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at A448</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A3E6.html">A3E6</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a448">Map</a></td>
+<td class="next">
+Next: <a href="A49C.html">A49C</a>
+</td>
+</tr>
+</table>
+<div class="description">A448: Action: Goblin Capture</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Runs for the goblins <a href="C11B.html#c6a0">$3D</a> - "Nasty Goblin", <a href="C11B.html#c6b8">$45</a> - "Hideous Goblin" and <a href="C11B.html#c6d0">$49</a> - "Horrible Goblin" to <a href="C11B.html#c718">$4C</a> - "Disgusting Goblin". Their action lists reach here through <a href="950F.html#9586">Turn_RunTheHandlerIfPresent_Examine_CallHandler</a> and <a href="9B6C.html">TriggerAction</a>, called from <a href="950F.html">Turn_RunTheHandlerIfPresent</a>. <span class="register">B</span> holds the character from <a href="B6DA.html#b6ea">CurrentCharacter</a> when reached through <a href="99C6.html#9a0c">Turn_ApplyTheSavedMatch_ReadTheCurrentCharacter</a>, and 00 when reached through <a href="7AF5.html#7b3a">7B3A</a>. The player's location is compared with it before the goblin speaks. Reached through the action lists of <a href="C11B.html#c6a0">$3D</a> - "Nasty Goblin", <a href="C11B.html#c6b8">$45</a> - "Hideous Goblin", <a href="C11B.html#c6d0">$49</a> - "Horrible Goblin", <a href="C11B.html#c6e8">$4A</a> - "Mean Goblin", <a href="C11B.html#c700">$4B</a> - "Vicious Goblin" and <a href="C11B.html#c718">$4C</a> - "Disgusting Goblin" for action 00, dispatched by <a href="9B6C.html">TriggerAction</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ActionGoblinCapture</td>
+<td class="address-2"><span id="a448"></span>A448</td>
+<td class="instruction">LD IX,($B708)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b708">B708</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a44c"></span>A44C</td>
+<td class="instruction">BIT 3,(IX+$07)</td>
+<td class="comment-1" rowspan="2">Return if the object is not broken.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a450"></span>A450</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a451"></span>A451</td>
+<td class="instruction">RES 3,(IX+$07)</td>
+<td class="comment-1" rowspan="1">Mark the object not broken.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a455"></span>A455</td>
+<td class="instruction">LD DE,$0006</td>
+<td class="comment-1" rowspan="1">Each capture entry is 06 bytes.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a458"></span>A458</td>
+<td class="instruction">LD IY,$A49C</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IY</span> at the capture table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a45c"></span>A45C</td>
+<td class="instruction">LD A,($B6E8)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6e8">CurrentObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">ActionGoblinCapture_Loop</td>
+<td class="address-2"><span id="a45f"></span>A45F</td>
+<td class="instruction">CP (IY+$00)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="A448.html#a468">ActionGoblinCapture_StepToTheNextByteInCapture</a> if this capture entry is the current object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a462"></span>A462</td>
+<td class="instruction">JR Z,<a href="A448.html#a468">ActionGoblinCapture_StepToTheNextByteInCapture</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a464"></span>A464</td>
+<td class="instruction">ADD IY,DE</td>
+<td class="comment-1" rowspan="1">Step <span class="register">IY</span> on by one capture entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a466"></span>A466</td>
+<td class="instruction">JR <a href="A448.html#a45f">ActionGoblinCapture_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="A448.html#a45f">ActionGoblinCapture_Loop</a> to try the next object.</td>
+</tr>
+<tr>
+<td class="asm-label">ActionGoblinCapture_StepToTheNextByteInCapture</td>
+<td class="address-2"><span id="a468"></span>A468</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="3">Step to the next byte in capture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a46a"></span>A46A</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a46b"></span>A46B</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a46c"></span>A46C</td>
+<td class="instruction">LD E,(HL)</td>
+<td class="comment-1" rowspan="1">Read the low byte of the pointer in this capture entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a46d"></span>A46D</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next byte in capture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a46e"></span>A46E</td>
+<td class="instruction">LD D,(HL)</td>
+<td class="comment-1" rowspan="1">Read the high byte of the pointer in this capture entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a46f"></span>A46F</td>
+<td class="instruction">LD (DE),A</td>
+<td class="comment-1" rowspan="2">Store the current object id at the address taken from this entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a470"></span>A470</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a471"></span>A471</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="2">Store the next table byte as the object's location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a472"></span>A472</td>
+<td class="instruction">LD (IX+$10),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a475"></span>A475</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next byte in capture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a476"></span>A476</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="2">Store the next table byte as name byte 0A of the object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a477"></span>A477</td>
+<td class="instruction">LD (IX+$0A),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a47a"></span>A47A</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next byte in capture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a47b"></span>A47B</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="2">Store the next table byte as name byte 0B of the object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a47c"></span>A47C</td>
+<td class="instruction">LD (IX+$0B),A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a47f"></span>
+<div class="comments">
+<div class="paragraph">
+Say "[0x07] fall(s|d|ing|es) down a hole and vanish(s|d|ing|es)".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a47f"></span>A47F</td>
+<td class="instruction">LD HL,$B068</td>
+<td class="comment-1" rowspan="2">Point <span class="register">HL</span> at the message and call <a href="72DD.html">PrintMessage</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a482"></span>A482</td>
+<td class="instruction">CALL <a href="72DD.html">PrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a485"></span>A485</td>
+<td class="instruction">LD A,($C12B)</td>
+<td class="comment-1" rowspan="3">Return if the player's location is not the <span class="register">B</span> passed in by the caller of <a href="950F.html">Turn_RunTheHandlerIfPresent</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a488"></span>A488</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a489"></span>A489</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a48a"></span>A48A</td>
+<td class="instruction">LD DE,$005E</td>
+<td class="comment-1" rowspan="1">Use the token ANOTHER.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a48d"></span>
+<div class="comments">
+<div class="paragraph">
+Print the token in <span class="register">DE</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a48d"></span>A48D</td>
+<td class="instruction">CALL <a href="74C1.html">PrintToken</a></td>
+<td class="comment-1" rowspan="1">Call <a href="74C1.html">PrintToken</a> to print a dictionary token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a490"></span>A490</td>
+<td class="instruction">LD DE,$02E2</td>
+<td class="comment-1" rowspan="1">Use the token GOBLIN.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a493"></span>
+<div class="comments">
+<div class="paragraph">
+Print the token in <span class="register">DE</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a493"></span>A493</td>
+<td class="instruction">CALL <a href="74C1.html">PrintToken</a></td>
+<td class="comment-1" rowspan="1">Call <a href="74C1.html">PrintToken</a> to print a dictionary token.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a496"></span>
+<div class="comments">
+<div class="paragraph">
+Print the message at <span class="register">HL</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a496"></span>A496</td>
+<td class="instruction">LD HL,$B018</td>
+<td class="comment-1" rowspan="2">Point <span class="register">HL</span> at the message and call <a href="72DD.html">PrintMessage</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a499"></span>A499</td>
+<td class="instruction">JP <a href="72DD.html">PrintMessage</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A3E6.html">A3E6</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a448">Map</a></td>
+<td class="next">
+Next: <a href="A49C.html">A49C</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/42056.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

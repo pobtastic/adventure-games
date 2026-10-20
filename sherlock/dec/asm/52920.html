@@ -42,7 +42,7 @@ Next: <a href="52958.html">52958</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="52467.html">HandleCommandType_0E_0C_0B_0A</a>, <a href="52551.html">HandlePopStack</a>, <a href="52641.html">HandleDisplayRoomDescription</a>, <a href="52815.html">ClearRoomDisplayParameters</a> and <a href="52842.html">HandleSimpleAction</a>.
+Used by the routines at <a href="52354.html">DispatchCharacterScript</a>, <a href="52760.html">52760</a>, <a href="52823.html">ReadCharactersRoom</a> and <a href="52842.html">RunSimpleAction</a>.
 </div>
 <div class="paragraph">
 Processes a character script command, tracking how many commands have been executed. If the counter limit is reached, the script is terminated.
@@ -80,13 +80,13 @@ Processes a character script command, tracking how many commands have been execu
 <td class="asm-label"></td>
 <td class="address-1"><span id="52927"></span>52927</td>
 <td class="instruction">CALL <a href="52990.html">AdvanceScriptPointerByCommandSize</a></td>
-<td class="comment-1" rowspan="1">Process the command byte and advance the script pointer.</td>
+<td class="comment-1" rowspan="1">Call <a href="52990.html">AdvanceScriptPointerByCommandSize</a> to advance past this script command.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="52930"></span>52930</td>
 <td class="instruction">BIT 4,(IX+0)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="52920.html#52940">ProcessScriptCommandWithCounter_UpdatePosition</a> if bit 4 is not set (no pointer to load).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="52920.html#52940">ProcessScriptCommandWithCounter_UpdatePosition</a> if a marker on the record's flag byte is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -97,7 +97,7 @@ Processes a character script command, tracking how many commands have been execu
 <td class="asm-label"></td>
 <td class="address-1"><span id="52936"></span>52936</td>
 <td class="instruction">LD E,(HL)</td>
-<td class="comment-1" rowspan="4">Load the script pointer from the command data (two bytes into <span class="register">DE</span>).</td>
+<td class="comment-1" rowspan="4">Read the command's address into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -124,7 +124,7 @@ Processes a character script command, tracking how many commands have been execu
 <td class="asm-label"></td>
 <td class="address-1"><span id="52943"></span>52943</td>
 <td class="instruction">LD (IY+2),H</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store <span class="register">H</span> at <span class="register">IY</span>+2.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -151,13 +151,13 @@ Processes a character script command, tracking how many commands have been execu
 <td class="asm-label"></td>
 <td class="address-1"><span id="52952"></span>52952</td>
 <td class="instruction">JP Z,<a href="52619.html">TerminateCharacterScript</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="52619.html">TerminateCharacterScript</a> if the counter limit has been reached (<span class="register">HL</span> equals <span class="register">A</span>).</td>
+<td class="comment-1" rowspan="1">Go to <a href="52619.html">TerminateCharacterScript</a> if the subtraction comes out at zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="52955"></span>52955</td>
-<td class="instruction">JP <a href="52344.html#52354">ScriptInterpreter_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="52344.html#52354">ScriptInterpreter_0</a> (continue processing the next script command).</td>
+<td class="instruction">JP <a href="52354.html">DispatchCharacterScript</a></td>
+<td class="comment-1" rowspan="1">Another command remains, so parse it from <a href="52354.html">DispatchCharacterScript</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -174,7 +174,7 @@ Next: <a href="52958.html">52958</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/CEB8.html">Switch to hexadecimal</a>.</div>
 </footer>

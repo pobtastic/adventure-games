@@ -42,7 +42,10 @@ Next: <a href="52265.html">52265</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="52279.html">ProcessCharacterAction</a>, <a href="56629.html">56629</a>, <a href="57402.html">57402</a> and <a href="57723.html">57723</a>.
+Used by the routines at <a href="52279.html">ProcessCharacterAction</a>, <a href="56629.html">DescribeObjectIfPresent</a>, <a href="57402.html">PlaceCharacter</a> and <a href="58094.html">RecordResultRoomDisplay</a>.
+</div>
+<div class="paragraph">
+Searches the timetable at <a href="39008.html">Table_Timetable</a> for the character id in <span class="register">A</span>.
 </div>
 </div>
 <table class="input">
@@ -87,7 +90,7 @@ Stash some registers so they don't get corrupted.
 <td class="asm-label">FindCharacter</td>
 <td class="address-2"><span id="52238"></span>52238</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Store the character ID in <span class="register">C</span>, saving source and the count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -98,19 +101,17 @@ Stash some registers so they don't get corrupted.
 <td class="asm-label"></td>
 <td class="address-1"><span id="52240"></span>52240</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1">Store the character ID in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="52241"></span>52241</td>
 <td class="instruction">LD DE,8</td>
-<td class="comment-1" rowspan="1">Load the length of the character data 0008 bytes into <span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="2">Use the timetable at <a href="39008.html">Table_Timetable</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="52244"></span>52244</td>
 <td class="instruction">LD IY,39008</td>
-<td class="comment-1" rowspan="1"><span class="register">IY</span>=<a href="39008.html">Table_Timetable</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">FindCharacter_Loop</td>
@@ -122,7 +123,7 @@ Stash some registers so they don't get corrupted.
 <td class="asm-label"></td>
 <td class="address-1"><span id="52251"></span>52251</td>
 <td class="instruction">CP C</td>
-<td class="comment-1" rowspan="2">Jump to <a href="52238.html#52262">FindCharacter_Return</a> if this character ID and the requested character ID match.</td>
+<td class="comment-1" rowspan="2">Go to <a href="52238.html#52262">FindCharacter_Return</a> if this timetable entry is the wanted character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -133,7 +134,7 @@ Stash some registers so they don't get corrupted.
 <td class="asm-label"></td>
 <td class="address-1"><span id="52254"></span>52254</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Jump to <a href="52238.html#52262">FindCharacter_Return</a> if the termination character has been reached (255).</td>
+<td class="comment-1" rowspan="2">Go to <a href="52238.html#52262">FindCharacter_Return</a> if it is 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,18 +145,21 @@ Stash some registers so they don't get corrupted.
 <td class="asm-label"></td>
 <td class="address-1"><span id="52258"></span>52258</td>
 <td class="instruction">ADD IY,DE</td>
-<td class="comment-1" rowspan="1">Add 0008 bytes to the timetable pointer to move to the next set of character data.</td>
+<td class="comment-1" rowspan="1">Add 8 bytes to the timetable pointer to move to the next set of character data.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="52260"></span>52260</td>
 <td class="instruction">JR <a href="52238.html#52248">FindCharacter_Loop</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="52238.html#52248">FindCharacter_Loop</a>.</td>
+<td class="comment-1" rowspan="1">Go back for the next character pair.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="52262"></span>
 <div class="comments">
+<div class="paragraph">
+Return.
+</div>
 <div class="paragraph">
 Return with some housekeeping.
 </div>
@@ -166,7 +170,7 @@ Return with some housekeeping.
 <td class="asm-label">FindCharacter_Return</td>
 <td class="address-2"><span id="52262"></span>52262</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">DE</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the saved count and the saved source from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -194,7 +198,7 @@ Next: <a href="52265.html">52265</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/CC0E.html">Switch to hexadecimal</a>.</div>
 </footer>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at AC6D</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="AC69.html">AC69</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#ac6d">Map</a></td>
+<td class="next">
+Next: <a href="ACA8.html">ACA8</a>
+</td>
+</tr>
+</table>
+<div class="description">AC6D: Save Game</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="F7BC.html">Action_Save</a> and <a href="F7C4.html">Action_Quit</a>.
+</div>
+<div class="paragraph">
+Copy the configurable exits into the save buffer and write them to tape.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame</td>
+<td class="address-2"><span id="ac6d"></span>AC6D</td>
+<td class="instruction">LD A,($AEFA)</td>
+<td class="comment-1" rowspan="1">Read the configurable-exit count into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac70"></span>AC70</td>
+<td class="instruction">OR A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="AC6D.html#ac8c">SaveGame_StartTape</a> if <span class="register">A</span> is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac71"></span>AC71</td>
+<td class="instruction">JR Z,<a href="AC6D.html#ac8c">SaveGame_StartTape</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ac73"></span>
+<div class="comments">
+<div class="paragraph">
+<span class="register">B</span> counts the exits, <span class="register">IX</span> walks their addresses and <span class="register">DE</span> the save buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac73"></span>AC73</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="3">Take the exit count and point at the exit table and the save buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac74"></span>AC74</td>
+<td class="instruction">LD IX,($AEE6)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac78"></span>AC78</td>
+<td class="instruction">LD DE,$AE9B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac7b"></span>AC7B</td>
+<td class="instruction">JR <a href="AC6D.html#ac82">SaveGame_0</a></td>
+<td class="comment-1" rowspan="1">Start with the first configurable exit.</td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame_CopyExit</td>
+<td class="address-2"><span id="ac7d"></span>AC7D</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="8">Copy each configurable exit's current destination into the save buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac7f"></span>AC7F</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac81"></span>AC81</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame_0</td>
+<td class="address-2"><span id="ac82"></span>AC82</td>
+<td class="instruction">LD L,(IX+$00)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac85"></span>AC85</td>
+<td class="instruction">LD H,(IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac88"></span>AC88</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac89"></span>AC89</td>
+<td class="instruction">LD (DE),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac8a"></span>AC8A</td>
+<td class="instruction">DJNZ <a href="AC6D.html#ac7d">SaveGame_CopyExit</a></td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame_StartTape</td>
+<td class="address-2"><span id="ac8c"></span>AC8C</td>
+<td class="instruction">LD HL,$B05A</td>
+<td class="comment-1" rowspan="2">Print "SAVING.Start tape,press any key." and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac8f"></span>AC8F</td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac92"></span>AC92</td>
+<td class="instruction">CALL <a href="ABE1.html">GetUserInput</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ABE1.html">GetUserInput</a> to read the player's key.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac95"></span>AC95</td>
+<td class="instruction">LD IX,$AD76</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the item-location table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac99"></span>AC99</td>
+<td class="instruction">LD DE,$0186</td>
+<td class="comment-1" rowspan="3">Save 0186 bytes from the item-location table to tape as a data block.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac9c"></span>AC9C</td>
+<td class="instruction">LD A,$FF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac9e"></span>AC9E</td>
+<td class="instruction">CALL $04C2</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aca1"></span>ACA1</td>
+<td class="instruction">LD HL,$B07C</td>
+<td class="comment-1" rowspan="2">Print "Stop tape.Saving complete." and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aca4"></span>ACA4</td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aca7"></span>ACA7</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="AC69.html">AC69</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#ac6d">Map</a></td>
+<td class="next">
+Next: <a href="ACA8.html">ACA8</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../dec/asm/44141.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

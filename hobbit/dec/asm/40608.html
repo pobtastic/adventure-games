@@ -33,101 +33,128 @@ Next: <a href="40647.html">40647</a>
 </td>
 </tr>
 </table>
-<div class="description">40608: Routine at 9EA0</div>
+<div class="description">40608: Exits: Find The Exit To A Named Place</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="30673.html">30673</a>.
+Used by the routine at <a href="32116.html">Inglish_CopyTheParserSlot</a>.
+</div>
+<div class="paragraph">
+Walks the current location's exits, finds each destination and matches its name against the clause.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">ExitsFindTheExitToANamedPlace</td>
 <td class="address-2"><span id="40608"></span>40608</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">IY</span> and <span class="register">DE</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Set <span class="register">DE</span> to 0002, the offset of a location's name.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40610"></span>40610</td>
 <td class="instruction">PUSH DE</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40611"></span>40611</td>
 <td class="instruction">LD DE,2</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">ExitsFindTheExitToANamedPlace_Loop</td>
 <td class="address-2"><span id="40614"></span>40614</td>
-<td class="instruction">CALL <a href="39827.html">Step3ByteTable</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="39827.html">Table_StepThroughThreeByteRecords</a></td>
+<td class="comment-1" rowspan="1">Call <a href="39827.html">Table_StepThroughThreeByteRecords</a> to step to the next exit.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40617"></span>40617</td>
-<td class="instruction">JR Z,<a href="40608.html#40643">40643</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="40608.html#40643">ExitsFindTheExitToANamedPlace_RestoreAndReturn</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="40608.html#40643">ExitsFindTheExitToANamedPlace_RestoreAndReturn</a> at the end of the exit list.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40619"></span>40619</td>
 <td class="instruction">LD A,(IX+2)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read this exit's destination.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40622"></span>40622</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="39857.html">LocateLocation</a> to find this location's record.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="40624"></span>
+<div class="comments">
+<div class="paragraph">
+Find the location's record.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40624"></span>40624</td>
 <td class="instruction">CALL <a href="39857.html">LocateLocation</a></td>
 <td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40627"></span>40627</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Point <span class="register">IY</span> at this location's name.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40629"></span>40629</td>
 <td class="instruction">POP IY</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40631"></span>40631</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40633"></span>40633</td>
 <td class="instruction">ADD IY,DE</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40635"></span>40635</td>
-<td class="instruction">CALL <a href="28915.html#29171">29171</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="29171.html">Inglish_MatchClausePairs</a></td>
+<td class="comment-1" rowspan="1">Call <a href="29171.html">Inglish_MatchClausePairs</a> to match clause pairs.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40638"></span>40638</td>
-<td class="instruction">JR NZ,<a href="40608.html#40614">40614</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="40608.html#40614">ExitsFindTheExitToANamedPlace_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="40608.html#40614">ExitsFindTheExitToANamedPlace_Loop</a> to try the next exit unless the name matched.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40640"></span>40640</td>
 <td class="instruction">LD A,(IX+2)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the destination's location id to return it.</td>
 </tr>
 <tr>
+<td class="asm-label">ExitsFindTheExitToANamedPlace_RestoreAndReturn</td>
 <td class="address-2"><span id="40643"></span>40643</td>
 <td class="instruction">POP DE</td>
 <td class="comment-1" rowspan="2">Restore <span class="register">DE</span> and <span class="register">IY</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40644"></span>40644</td>
 <td class="instruction">POP IY</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40646"></span>40646</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
@@ -147,7 +174,7 @@ Next: <a href="40647.html">40647</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../../asm/9EA0.html">Switch to hexadecimal</a>.</div>
 </footer>

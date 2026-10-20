@@ -63,7 +63,7 @@ Used by the routine at <a href="AD79.html">ChangeRoom</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="acbe"></span>ACBE</td>
 <td class="instruction">LD A,($BBCF)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ACBD.html#acdb">MovePlayerToRoom_3</a> if *<a href="BBCF.html">Count_ScenicEvents</a> is zero.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ACBD.html#acdb">MovePlayerToRoom_0</a> if *<a href="BBCF.html">Count_ScenicEvents</a> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -73,211 +73,246 @@ Used by the routine at <a href="AD79.html">ChangeRoom</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acc2"></span>ACC2</td>
-<td class="instruction">JR Z,<a href="ACBD.html#acdb">MovePlayerToRoom_3</a></td>
+<td class="instruction">JR Z,<a href="ACBD.html#acdb">MovePlayerToRoom_0</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="acc4"></span>
+<div class="comments">
+<div class="paragraph">
+Scenic events that are present come with the player to the destination room.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acc4"></span>ACC4</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">The scenic items are listed at <a href="B6BA.html">Table_ScenicEventLocations2</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acc5"></span>ACC5</td>
 <td class="instruction">LD HL,$B6BA</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acc8"></span>ACC8</td>
-<td class="instruction">JR <a href="ACBD.html#accb">MovePlayerToRoom_1</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR <a href="ACBD.html#accb">ScenicItem_Next</a></td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_0</td>
+<td class="asm-label">ScenicItem_Advance</td>
 <td class="address-2"><span id="acca"></span>ACCA</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">The next scenic item.</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_1</td>
+<td class="asm-label">ScenicItem_Next</td>
 <td class="address-2"><span id="accb"></span>ACCB</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Its item id.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="accc"></span>ACCC</td>
 <td class="instruction">CALL <a href="A5C6.html">ValidateItemPresent</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="A5C6.html">ValidateItemPresent</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="accf"></span>ACCF</td>
-<td class="instruction">JR NZ,<a href="ACBD.html#acd9">MovePlayerToRoom_2</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="ACBD.html#acd9">ScenicItem_Count</a></td>
+<td class="comment-1" rowspan="1">It is not coming with the player.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acd1"></span>ACD1</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">This scenic item, and the destination room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acd2"></span>ACD2</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acd3"></span>ACD3</td>
 <td class="instruction">LD B,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acd4"></span>ACD4</td>
 <td class="instruction">CALL <a href="A663.html">Handler_UpdateItemLocation</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="A663.html">Handler_UpdateItemLocation</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acd7"></span>ACD7</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore the scenic scan from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acd8"></span>ACD8</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_2</td>
+<td class="asm-label">ScenicItem_Count</td>
 <td class="address-2"><span id="acd9"></span>ACD9</td>
-<td class="instruction">DJNZ <a href="ACBD.html#acca">MovePlayerToRoom_0</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="ACBD.html#acca">ScenicItem_Advance</a></td>
+<td class="comment-1" rowspan="1">On to the next scenic item.</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_3</td>
+<td class="routine-comment" colspan="5">
+<span id="acdb"></span>
+<div class="comments">
+<div class="paragraph">
+The destination room is now the current room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_0</td>
 <td class="address-2"><span id="acdb"></span>ACDB</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Remember it at <a href="A106.html">CurrentRoom</a> and read the event flags.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acdc"></span>ACDC</td>
 <td class="instruction">LD ($A106),A</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acdf"></span>ACDF</td>
 <td class="instruction">LD A,($A0D1)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ace2"></span>ACE2</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ace3"></span>
+<div class="comments">
+<div class="paragraph">
+No event flag is set, so the move is finished.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ace3"></span>ACE3</td>
 <td class="instruction">RET Z</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ace4"></span>
+<div class="comments">
+<div class="paragraph">
+For each set bit in <a href="A0D1.html">Flags_EventStates</a>, bring the corresponding byte from <a href="B6F4.html">Data_PhraseTokens</a> into the room.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ace4"></span>ACE4</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Eight event bits, and the items at <a href="B6F4.html">Data_PhraseTokens</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ace6"></span>ACE6</td>
 <td class="instruction">LD HL,$B6F4</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ace9"></span>ACE9</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acea"></span>ACEA</td>
-<td class="instruction">JR <a href="ACBD.html#aced">MovePlayerToRoom_5</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR <a href="ACBD.html#aced">EventFlag_Next</a></td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_4</td>
+<td class="asm-label">EventFlag_Advance</td>
 <td class="address-2"><span id="acec"></span>ACEC</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">The next event.</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_5</td>
+<td class="asm-label">EventFlag_Next</td>
 <td class="address-2"><span id="aced"></span>ACED</td>
 <td class="instruction">SRL C</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">This event is not following the player.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acef"></span>ACEF</td>
-<td class="instruction">JR NC,<a href="ACBD.html#acf9">MovePlayerToRoom_6</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="ACBD.html#acf9">EventFlag_Count</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acf1"></span>ACF1</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">This event's item.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acf2"></span>ACF2</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acf3"></span>ACF3</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acf4"></span>ACF4</td>
 <td class="instruction">CALL <a href="A642.html">Handler_UpdateItemEventCurrentRoom</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="A642.html">Handler_UpdateItemEventCurrentRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acf7"></span>ACF7</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore the event scan from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acf8"></span>ACF8</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_6</td>
+<td class="asm-label">EventFlag_Count</td>
 <td class="address-2"><span id="acf9"></span>ACF9</td>
-<td class="instruction">DJNZ <a href="ACBD.html#acec">MovePlayerToRoom_4</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="ACBD.html#acec">EventFlag_Advance</a></td>
+<td class="comment-1" rowspan="1">The remaining event bits.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="acfb"></span>
+<div class="comments">
+<div class="paragraph">
+The move is complete.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acfb"></span>ACFB</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -306,7 +341,7 @@ Next: <a href="ACFC.html">ACFC</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/44221.html">Switch to decimal</a>.</div>
 </footer>

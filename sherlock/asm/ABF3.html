@@ -36,161 +36,187 @@ Next: <a href="AC24.html">AC24</a>
 </td>
 </tr>
 </table>
-<div class="description">ABF3: Routine at ABF3</div>
+<div class="description">ABF3: Match Character Pair</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="AB52.html">AB52</a> and <a href="AB91.html">AB91</a>.
+Used by the routines at <a href="AB52.html">CopyDisplayIfNeeded</a> and <a href="AB91.html">CheckDisplayMode</a>.
+</div>
+<div class="paragraph">
+Scans the character-id pairs at <a href="994D.html">994D</a> for the two characters being compared, and stops at the zero word that ends the table.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">MatchCharacterPair</td>
 <td class="address-2"><span id="abf3"></span>ABF3</td>
-<td class="instruction">CALL <a href="AE7F.html">$AE7F</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="AE7F.html">SaveTextPointer</a></td>
+<td class="comment-1" rowspan="3">Call <a href="AE7F.html">SaveTextPointer</a>, and call it again if it returns 80.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="abf6"></span>ABF6</td>
 <td class="instruction">CP $80</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="abf8"></span>ABF8</td>
-<td class="instruction">CALL Z,<a href="AE7F.html">$AE7F</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL Z,<a href="AE7F.html">SaveTextPointer</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="abfb"></span>ABFB</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Use the character pairs (<a href="994D.html">994D</a>).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="abfc"></span>ABFC</td>
 <td class="instruction">AND $0F</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="abfe"></span>ABFE</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="abff"></span>ABFF</td>
 <td class="instruction">LD HL,$994D</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">MatchCharacterPair_Loop</td>
 <td class="address-2"><span id="ac02"></span>AC02</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Go to <a href="ABF3.html#ac14">MatchCharacterPair_Next</a> if this word is zero.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac03"></span>AC03</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac04"></span>AC04</td>
 <td class="instruction">OR (HL)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac05"></span>AC05</td>
-<td class="instruction">JR Z,<a href="ABF3.html#ac14">$AC14</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="ABF3.html#ac14">MatchCharacterPair_Next</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac07"></span>AC07</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="ABF3.html#ac11">MatchCharacterPair_0</a> if this pair's first id differs.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac08"></span>AC08</td>
 <td class="instruction">CP (HL)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac09"></span>AC09</td>
-<td class="instruction">JR NZ,<a href="ABF3.html#ac11">$AC11</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="ABF3.html#ac11">MatchCharacterPair_0</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac0b"></span>AC0B</td>
 <td class="instruction">DEC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="ABF3.html#ac17">MatchCharacterPair_CharacterScriptPosition</a> if this pair's second id matches.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac0c"></span>AC0C</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac0d"></span>AC0D</td>
 <td class="instruction">CP (HL)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac0e"></span>AC0E</td>
-<td class="instruction">JR Z,<a href="ABF3.html#ac17">$AC17</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="ABF3.html#ac17">MatchCharacterPair_CharacterScriptPosition</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac10"></span>AC10</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Step to the next character.</td>
 </tr>
 <tr>
+<td class="asm-label">MatchCharacterPair_0</td>
 <td class="address-2"><span id="ac11"></span>AC11</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Step to the next character pair and go back to <a href="ABF3.html#ac02">MatchCharacterPair_Loop</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac12"></span>AC12</td>
-<td class="instruction">JR <a href="ABF3.html#ac02">$AC02</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="ABF3.html#ac02">MatchCharacterPair_Loop</a></td>
 </tr>
 <tr>
+<td class="asm-label">MatchCharacterPair_Next</td>
 <td class="address-2"><span id="ac14"></span>AC14</td>
-<td class="instruction">OR $01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac16"></span>AC16</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ac17"></span>
+<div class="comments">
+<div class="paragraph">
+Store this character's id and script position, then clear the link bit.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchCharacterPair_CharacterScriptPosition</td>
 <td class="address-2"><span id="ac17"></span>AC17</td>
 <td class="instruction">LD (IY+$00),C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Store <span class="register">BC</span> at <span class="register">IY</span>+00-01 and clear bit 1 of <span class="register">E</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac1a"></span>AC1A</td>
 <td class="instruction">LD (IY+$01),B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac1d"></span>AC1D</td>
 <td class="instruction">RES 1,E</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac1f"></span>AC1F</td>
-<td class="instruction">CALL <a href="AE7F.html">$AE7F</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="AE7F.html">SaveTextPointer</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AE7F.html">SaveTextPointer</a> to save the text pointer.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac22"></span>AC22</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac23"></span>AC23</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -207,7 +233,7 @@ Next: <a href="AC24.html">AC24</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/44019.html">Switch to decimal</a>.</div>
 </footer>

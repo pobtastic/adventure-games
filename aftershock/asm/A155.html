@@ -29,93 +29,101 @@ Prev: <a href="A149.html">A149</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#a155">Map</a></td>
 <td class="next">
-Next: <a href="A16D.html">A16D</a>
+Next: <a href="A164.html">A164</a>
 </td>
 </tr>
 </table>
-<div class="description">A155: Routine at A155</div>
+<div class="description">A155: Calculate Bit Address</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="A1B4.html">A1B4</a>.
+Used by the routine at <a href="A1B4.html">BuildFlagMask</a>.
+</div>
+<div class="paragraph">
+Divides the bit index in <span class="register">HL</span> by 08.
+</div>
+<div class="paragraph">
+The byte offset is left in <span class="register">HL</span> and the bit number in <span class="register">C</span>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">HL</td>
+<td class="register-desc">Bit index</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">HL</td>
+<td class="register-desc">Byte offset</td>
+</tr>
+<tr>
+<td class="register">C</td>
+<td class="register-desc">Bit number within the byte</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">CalculateBitAddress</td>
 <td class="address-2"><span id="a155"></span>A155</td>
 <td class="instruction">PUSH AF</td>
 <td class="comment-1" rowspan="1">Stash <span class="register">AF</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a156"></span>A156</td>
 <td class="instruction">LD A,L</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">L</span>.</td>
+<td class="comment-1" rowspan="3">Keep the bit number within the byte (bits 0-2 of the bit index) in <span class="register">C</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a157"></span>A157</td>
 <td class="instruction">AND %00000111</td>
-<td class="comment-1" rowspan="1">Keep only bits 0-2.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a159"></span>A159</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a15a"></span>A15A</td>
 <td class="instruction">LD B,$03</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=03.</td>
+<td class="comment-1" rowspan="4">Divide the bit index in <span class="register">HL</span> by eight (three passes, counted in <span class="register">B</span>) to give the offset of the byte holding the flag.</td>
 </tr>
 <tr>
+<td class="asm-label">CalculateBitAddress_0</td>
 <td class="address-2"><span id="a15c"></span>A15C</td>
 <td class="instruction">SRL H</td>
-<td class="comment-1" rowspan="1">Shift <span class="register">H</span> right.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a15e"></span>A15E</td>
 <td class="instruction">RR L</td>
-<td class="comment-1" rowspan="1">Rotate <span class="register">L</span> right.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a160"></span>A160</td>
-<td class="instruction">DJNZ <a href="A155.html#a15c">$A15C</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="A155.html#a15c">A15C</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="A155.html#a15c">CalculateBitAddress_0</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a162"></span>A162</td>
 <td class="instruction">POP AF</td>
 <td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a163"></span>A163</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="a164"></span>A164</td>
-<td class="instruction">SRL H</td>
-<td class="comment-1" rowspan="1">Shift <span class="register">H</span> right.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="a166"></span>A166</td>
-<td class="instruction">RR L</td>
-<td class="comment-1" rowspan="1">Rotate <span class="register">L</span> right.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="a168"></span>A168</td>
-<td class="instruction">SRL H</td>
-<td class="comment-1" rowspan="1">Shift <span class="register">H</span> right.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="a16a"></span>A16A</td>
-<td class="instruction">RR L</td>
-<td class="comment-1" rowspan="1">Rotate <span class="register">L</span> right.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="a16c"></span>A16C</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
@@ -127,14 +135,14 @@ Prev: <a href="A149.html">A149</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#a155">Map</a></td>
 <td class="next">
-Next: <a href="A16D.html">A16D</a>
+Next: <a href="A164.html">A164</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/41301.html">Switch to decimal</a>.</div>
 </footer>

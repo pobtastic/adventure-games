@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Message From Andromeda: Routine at 68E0</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="68A4.html">68A4</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#68e0">Map</a></td>
+<td class="next">
+Next: <a href="6900.html">6900</a>
+</td>
+</tr>
+</table>
+<div class="description">68E0: Is Object In The Current Room?</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="68A4.html">Parser_ResolvePhrase</a>, <a href="8DDC.html">HandlerAndroidAttack</a>, <a href="8DEC.html">HandlerSlugAttack</a>, <a href="8DFC.html">HandlerSecondAndroid</a>, <a href="8E18.html">MovePlayerToRoom</a>, <a href="8E8D.html">ActionHelp</a>, <a href="8F13.html">ActionExamine</a>, <a href="9014.html">HandlerPickUpObject</a>, <a href="9198.html">ActionDrop</a>, <a href="93A1.html">ActionEnter</a>, <a href="93E4.html">ActionLeave</a>, <a href="94B1.html">ActionCut</a>, <a href="952B.html">ActionKill</a>, <a href="96E7.html">ActionOpen</a>, <a href="975A.html">ActionClose</a>, <a href="97CA.html">ActionShoot</a>, <a href="98B9.html">ActionTurn</a>, <a href="997F.html">ActionType</a>, <a href="99DD.html">ActionTouch</a> and <a href="9A41.html">ActionUse</a>.
+</div>
+<div class="paragraph">
+Report whether the given object is in the current room or is being carried.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Object number</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">Zero flag set when the object is in the current room</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">IsObjectInCurrentRoom</td>
+<td class="address-2"><span id="68e0"></span>68E0</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Keep the caller's registers while the location is tested.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68e1"></span>68E1</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68e2"></span>68E2</td>
+<td class="instruction">LD E,A</td>
+<td class="comment-1" rowspan="2">Index the location tables by this object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68e3"></span>68E3</td>
+<td class="instruction">LD D,$00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68e5"></span>68E5</td>
+<td class="instruction">BIT 7,E</td>
+<td class="comment-1" rowspan="2">Bit 7 selects a scenic slot rather than an ordinary object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68e7"></span>68E7</td>
+<td class="instruction">JR NZ,<a href="68E0.html#68ee">IsObjectInCurrentRoom_Step1</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68e9"></span>68E9</td>
+<td class="instruction">LD HL,$61AB</td>
+<td class="comment-1" rowspan="2">Continue at <a href="68E0.html#68f3">IsObjectInCurrentRoom_Step2</a> to compare an ordinary object's location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68ec"></span>68EC</td>
+<td class="instruction">JR <a href="68E0.html#68f3">IsObjectInCurrentRoom_Step2</a></td>
+</tr>
+<tr>
+<td class="asm-label">IsObjectInCurrentRoom_Step1</td>
+<td class="address-2"><span id="68ee"></span>68EE</td>
+<td class="instruction">RES 7,E</td>
+<td class="comment-1" rowspan="1">The scenic marker is not part of the object number.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68f0"></span>68F0</td>
+<td class="instruction">LD HL,$6224</td>
+<td class="comment-1" rowspan="1">A scenic object is kept with the scenic rooms.</td>
+</tr>
+<tr>
+<td class="asm-label">IsObjectInCurrentRoom_Step2</td>
+<td class="address-2"><span id="68f3"></span>68F3</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Index this object's byte in the location table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68f4"></span>68F4</td>
+<td class="instruction">LD A,($6223)</td>
+<td class="comment-1" rowspan="1">Fetch the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68f7"></span>68F7</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">The object is here when its location is the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68f8"></span>68F8</td>
+<td class="instruction">JR Z,<a href="68E0.html#68fd">IsObjectInCurrentRoom_Step3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68fa"></span>68FA</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">A carried object counts as present too.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68fc"></span>68FC</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label">IsObjectInCurrentRoom_Step3</td>
+<td class="address-2"><span id="68fd"></span>68FD</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="2">Restore the registers the caller needs from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68fe"></span>68FE</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68ff"></span>68FF</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="68A4.html">68A4</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#68e0">Map</a></td>
+<td class="next">
+Next: <a href="6900.html">6900</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
+<div><a href="../dec/asm/26848.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

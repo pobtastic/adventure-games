@@ -28,21 +28,24 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="41244.html">41244</a>
+Prev: <a href="41354.html">41354</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#41391">Map</a></td>
 <td class="next">
-Next: <a href="41397.html">41397</a>
+Next: <a href="41415.html">41415</a>
 </td>
 </tr>
 </table>
-<div class="description">41391: Move IX To HL And Jump</div>
+<div class="description">41391: Follow Record Pointer</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="44283.html">44283</a>, <a href="46845.html">ProcessLocationDisplay</a> and <a href="47648.html">ProcessCharacterDisplay</a>.
+Used by the routines at <a href="44283.html">ApplySavedClause</a>, <a href="46845.html">ProcessLocationDisplay</a>, <a href="47678.html">RecordResultCharacterScript</a>, <a href="55421.html">ReadFirstDisplayLink</a> and <a href="55434.html">ReadNextDisplayLink</a>.
+</div>
+<div class="paragraph">
+Copies the character-record pointer and jumps to the routine that pointer holds.
 </div>
 </div>
 <table class="input">
@@ -61,16 +64,15 @@ Used by the routines at <a href="44283.html">44283</a>, <a href="46845.html">Pro
 </td>
 </tr>
 <tr>
-<td class="asm-label">MoveIXToHLAndJump</td>
+<td class="asm-label">FollowRecordPointer</td>
 <td class="address-2"><span id="41391"></span>41391</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
+<td class="comment-1" rowspan="4">Keep the pointer, copy the record into it, and go to <a href="41391.html#41409">FollowRecordPointer_0</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41392"></span>41392</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=<span class="register">IX</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -80,25 +82,99 @@ Used by the routines at <a href="44283.html">44283</a>, <a href="46845.html">Pro
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41395"></span>41395</td>
-<td class="instruction">JR <a href="41397.html#41409">TraverseLinkedList_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="41397.html#41409">TraverseLinkedList_0</a>.</td>
+<td class="instruction">JR <a href="41391.html#41409">FollowRecordPointer_0</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="41397"></span>
+<div class="comments">
+<div class="paragraph">
+Walks the linked character records from the link stored just ahead of the current record, running each one until the link is empty.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FollowRecordPointer_ReadLink</td>
+<td class="address-2"><span id="41397"></span>41397</td>
+<td class="instruction">LD L,(IX-2)</td>
+<td class="comment-1" rowspan="3">Read the pointer saved ahead of this record, then call <a href="41415.html">ProcessMemoryEntry</a> to run memory entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="41400"></span>41400</td>
+<td class="instruction">LD H,(IX-1)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="41403"></span>41403</td>
+<td class="instruction">CALL <a href="41415.html">ProcessMemoryEntry</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="41406"></span>41406</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Use the saved pointer as the character record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="41407"></span>41407</td>
+<td class="instruction">POP IX</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="41409"></span>
+<div class="comments">
+<div class="paragraph">
+Loop while the link just read is not zero.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FollowRecordPointer_0</td>
+<td class="address-2"><span id="41409"></span>41409</td>
+<td class="instruction">LD A,L</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="41391.html#41397">FollowRecordPointer_ReadLink</a> while the pointer is not zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="41410"></span>41410</td>
+<td class="instruction">OR H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="41411"></span>41411</td>
+<td class="instruction">JR NZ,<a href="41391.html#41397">FollowRecordPointer_ReadLink</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="41413"></span>41413</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore the saved pointer from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="41414"></span>41414</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="41244.html">41244</a>
+Prev: <a href="41354.html">41354</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#41391">Map</a></td>
 <td class="next">
-Next: <a href="41397.html">41397</a>
+Next: <a href="41415.html">41415</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/A1AF.html">Switch to hexadecimal</a>.</div>
 </footer>

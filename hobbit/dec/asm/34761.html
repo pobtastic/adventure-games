@@ -33,13 +33,16 @@ Next: <a href="34850.html">34850</a>
 </td>
 </tr>
 </table>
-<div class="description">34761: Print Proper Character</div>
+<div class="description">34761: Print: Proportional Character</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="34459.html">34459</a> and <a href="34667.html">ScrollLine</a>.
+Used by the routines at <a href="34459.html">PrintWriteACharacterToTheScreen</a> and <a href="34667.html">ScrollLine</a>.
+</div>
+<div class="paragraph">
+Draws one character with the game's own font.
 </div>
 </div>
 <table class="input">
@@ -72,10 +75,10 @@ Prints using the custom <a href="34850.html">font</a>.
 </td>
 </tr>
 <tr>
-<td class="asm-label">PrintPropChar</td>
+<td class="asm-label">Print_ProportionalCharacter</td>
 <td class="address-2"><span id="34761"></span>34761</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="4">Push <span class="register">AF</span>, <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span> on the stack.</td>
+<td class="comment-1" rowspan="4">Save <span class="register">AF</span>, <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span>, and put <span class="register">A</span> in <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -109,21 +112,21 @@ Calculate font graphic address, some examples would be; <table class="default">
 <td class="centre" colspan="1" rowspan="1">"&#33;"</td>
 <td class="centre" colspan="1" rowspan="1">033</td>
 <td class="centre" colspan="1" rowspan="1">264</td>
-<td class="centre" colspan="1" rowspan="1">(033*$08)+$8722</td>
+<td class="centre" colspan="1" rowspan="1">(033*8)+34594</td>
 <td class="centre" colspan="1" rowspan="1"><a href="34850.html#34858">34858</a></td>
 </tr>
 <tr>
 <td class="centre" colspan="1" rowspan="1">"&#65;"</td>
 <td class="centre" colspan="1" rowspan="1">065</td>
 <td class="centre" colspan="1" rowspan="1">520</td>
-<td class="centre" colspan="1" rowspan="1">(065*$08)+$8722</td>
+<td class="centre" colspan="1" rowspan="1">(065*8)+34594</td>
 <td class="centre" colspan="1" rowspan="1"><a href="34850.html#35114">35114</a></td>
 </tr>
 <tr>
 <td class="centre" colspan="1" rowspan="1">"&#97;"</td>
 <td class="centre" colspan="1" rowspan="1">097</td>
 <td class="centre" colspan="1" rowspan="1">776</td>
-<td class="centre" colspan="1" rowspan="1">(097*$08)+$8722</td>
+<td class="centre" colspan="1" rowspan="1">(097*8)+34594</td>
 <td class="centre" colspan="1" rowspan="1"><a href="34850.html#35370">35370</a></td>
 </tr>
 </table>
@@ -135,12 +138,13 @@ Calculate font graphic address, some examples would be; <table class="default">
 <td class="asm-label"></td>
 <td class="address-1"><span id="34765"></span>34765</td>
 <td class="instruction">LD L,A</td>
-<td class="comment-1" rowspan="2">Store the offset for the font graphic data look-up in <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34766"></span>34766</td>
 <td class="instruction">LD H,0</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -156,7 +160,7 @@ Calculate font graphic data address.
 <td class="asm-label"></td>
 <td class="address-1"><span id="34768"></span>34768</td>
 <td class="instruction">ADD HL,HL</td>
-<td class="comment-1" rowspan="5"><span class="register">HL</span>=(<span class="register">HL</span> * 8) + 34594</td>
+<td class="comment-1" rowspan="5">Multiply the offset by 8 and add the table base.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -201,67 +205,63 @@ Calculate font graphic data address.
 <td class="comment-1" rowspan="1">Set a counter for 8 lines.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintPropChar_Loop</td>
+<td class="asm-label">Print_ProportionalCharacter_Loop</td>
 <td class="address-2"><span id="34780"></span>34780</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=byte of font graphic data</td>
+<td class="comment-1" rowspan="1">Read the next byte of the font graphic data.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34781"></span>34781</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="1">Stash the counter on the stack temporarily.</td>
+<td class="comment-1" rowspan="5">Jump to <a href="34761.html#34795">Print_ProportionalCharacter_SkipShift</a> if the count in <span class="register">C</span> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34782"></span>34782</td>
 <td class="instruction">DEC C</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34783"></span>34783</td>
 <td class="instruction">INC C</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34784"></span>34784</td>
 <td class="instruction">LD B,255</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=255 as a mask.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34786"></span>34786</td>
-<td class="instruction">JR Z,<a href="34761.html#34795">PrintPropChar_SkipShift</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="34761.html#34795">Print_ProportionalCharacter_SkipShift</a></td>
 </tr>
 <tr>
-<td class="asm-label">PrintPropChar_Shift</td>
+<td class="asm-label">Print_ProportionalCharacter_Shift</td>
 <td class="address-2"><span id="34788"></span>34788</td>
 <td class="instruction">SRL A</td>
-<td class="comment-1" rowspan="1">Shift the font graphic data left.</td>
+<td class="comment-1" rowspan="1">Shift the font graphic data right.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34790"></span>34790</td>
 <td class="instruction">SRL B</td>
-<td class="comment-1" rowspan="1">Shift the mask data left.</td>
+<td class="comment-1" rowspan="1">Shift the mask data right.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34792"></span>34792</td>
 <td class="instruction">DEC C</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">C</span> by one.</td>
+<td class="comment-1" rowspan="1">Drop one from the count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34793"></span>34793</td>
-<td class="instruction">JR NZ,<a href="34761.html#34788">PrintPropChar_Shift</a></td>
-<td class="comment-1" rowspan="1">Loop back to <a href="34761.html#34788">PrintPropChar_Shift</a> until we've shifted by the number of bits specified in <span class="register">C</span>.</td>
+<td class="instruction">JR NZ,<a href="34761.html#34788">Print_ProportionalCharacter_Shift</a></td>
+<td class="comment-1" rowspan="1">Loop back to <a href="34761.html#34788">Print_ProportionalCharacter_Shift</a> until the count in <span class="register">C</span> runs out.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintPropChar_SkipShift</td>
+<td class="asm-label">Print_ProportionalCharacter_SkipShift</td>
 <td class="address-2"><span id="34795"></span>34795</td>
 <td class="instruction">LD C,A</td>
 <td class="comment-1" rowspan="1">Stash the font graphic data in <span class="register">C</span>.</td>
@@ -270,12 +270,13 @@ Calculate font graphic data address.
 <td class="asm-label"></td>
 <td class="address-1"><span id="34796"></span>34796</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="2"><span class="register">A</span>=invert the shifted mask.</td>
+<td class="comment-1" rowspan="1">Take the mask that was built in <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34797"></span>34797</td>
 <td class="instruction">CPL</td>
+<td class="comment-1" rowspan="1">Invert the mask so the new pixels replace the old ones.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -299,163 +300,154 @@ Calculate font graphic data address.
 <td class="asm-label"></td>
 <td class="address-1"><span id="34801"></span>34801</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1">Restore the counter off the stack.</td>
+<td class="comment-1" rowspan="4">Jump to <a href="34761.html#34830">Print_ProportionalCharacter_StepDownARow</a> if the count in <span class="register">C</span> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34802"></span>34802</td>
 <td class="instruction">DEC C</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34803"></span>34803</td>
 <td class="instruction">INC C</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34804"></span>34804</td>
-<td class="instruction">JR Z,<a href="34761.html#34830">PrintPropChar_1</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="34761.html#34830">Print_ProportionalCharacter_StepDownARow</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34806"></span>34806</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Eight pixel bits in a character row. Subtract how many have already been shifted.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34807"></span>34807</td>
 <td class="instruction">LD A,8</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34809"></span>34809</td>
 <td class="instruction">SUB C</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Take the shift count off 8.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34810"></span>34810</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34811"></span>34811</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the font byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34812"></span>34812</td>
 <td class="instruction">LD B,255</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Start the mask with every bit set.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintPropChar_0</td>
+<td class="asm-label">Print_ProportionalCharacter_ShiftTheMask</td>
 <td class="address-2"><span id="34814"></span>34814</td>
 <td class="instruction">SLA A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Shift the character byte and the mask, and loop until <span class="register">C</span> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34816"></span>34816</td>
 <td class="instruction">SLA B</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34818"></span>34818</td>
 <td class="instruction">DEC C</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34819"></span>34819</td>
-<td class="instruction">JR NZ,<a href="34761.html#34814">PrintPropChar_0</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="34761.html#34814">Print_ProportionalCharacter_ShiftTheMask</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34821"></span>34821</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34822"></span>34822</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Take the mask into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34823"></span>34823</td>
 <td class="instruction">CPL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Complement <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34824"></span>34824</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Step to the next screen byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34825"></span>34825</td>
 <td class="instruction">AND (HL)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Mask the screen byte and merge the character bits.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34826"></span>34826</td>
 <td class="instruction">OR C</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34827"></span>34827</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store the merged byte on screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34828"></span>34828</td>
 <td class="instruction">DEC HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Step back one byte through the text.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34829"></span>34829</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">PrintPropChar_1</td>
+<td class="asm-label">Print_ProportionalCharacter_StepDownARow</td>
 <td class="address-2"><span id="34830"></span>34830</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Step to the next byte beside it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34831"></span>34831</td>
 <td class="instruction">INC H</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Step the screen address down one pixel row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34832"></span>34832</td>
-<td class="instruction">DJNZ <a href="34761.html#34780">PrintPropChar_Loop</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="34761.html#34780">PrintPropChar_Loop</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="34761.html#34780">Print_ProportionalCharacter_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="34761.html#34780">Print_ProportionalCharacter_Loop</a> until counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34834"></span>34834</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="3">Restore <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> off the stack.</td>
+<td class="comment-1" rowspan="7">Jump to <a href="34761.html#34847">Print_ProportionalCharacter_StoreTheColumn</a> if the column plus 6 is below 8.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -471,49 +463,45 @@ Calculate font graphic data address.
 <td class="asm-label"></td>
 <td class="address-1"><span id="34837"></span>34837</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34838"></span>34838</td>
 <td class="instruction">ADD A,6</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34840"></span>34840</td>
 <td class="instruction">CP 8</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34842"></span>34842</td>
-<td class="instruction">JR C,<a href="34761.html#34847">PrintPropChar_2</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR C,<a href="34761.html#34847">Print_ProportionalCharacter_StoreTheColumn</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34844"></span>34844</td>
 <td class="instruction">SUB 8</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Take 8 off the column plus 6.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34846"></span>34846</td>
 <td class="instruction">INC L</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Step to the next character cell on this line.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintPropChar_2</td>
+<td class="asm-label">Print_ProportionalCharacter_StoreTheColumn</td>
 <td class="address-2"><span id="34847"></span>34847</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="34848"></span>34848</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> off the stack.</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -536,7 +524,7 @@ Next: <a href="34850.html">34850</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../../asm/87C9.html">Switch to hexadecimal</a>.</div>
 </footer>

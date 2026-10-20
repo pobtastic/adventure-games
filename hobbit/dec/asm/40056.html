@@ -29,40 +29,45 @@ Prev: <a href="40001.html">40001</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#40056">Map</a></td>
 <td class="next">
-Next: <a href="40095.html">40095</a>
+Next: <a href="40074.html">40074</a>
 </td>
 </tr>
 </table>
-<div class="description">40056: Routine at 9C78</div>
+<div class="description">40056: Condition: Is The Object Carried</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="35915.html">Action_Look</a>, <a href="36147.html">Action_Pickup</a>, <a href="37790.html">Action_Give</a>, <a href="37850.html">Action_Examine</a> and <a href="41544.html">ActionTie</a>.
+Used by the routines at <a href="35995.html">Action_RefuseIfNotCarried</a>, <a href="36147.html">Action_Pickup</a>, <a href="37790.html">Action_Give</a>, <a href="38159.html">Turn_RunTheHandlerIfPresent</a> and <a href="41544.html">ActionTie</a>.
+</div>
+<div class="paragraph">
+Tests whether the object is being carried.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">ConditionIsTheObjectCarried</td>
 <td class="address-2"><span id="40056"></span>40056</td>
 <td class="instruction">LD A,(46824)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="46810.html#46824">CurrentObject</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="40059"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routines at <a href="36982.html">Action_Shoot</a>, <a href="37850.html">Action_Examine</a> and <a href="38579.html">38579</a>.
+This entry point is used by the routines at <a href="36982.html">Action_Shoot</a>, <a href="38159.html">Turn_RunTheHandlerIfPresent</a> and <a href="38696.html">Turn_ReportWhoIsCarryingAnObject</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">ConditionIsTheObjectCarried_0</td>
 <td class="address-2"><span id="40059"></span>40059</td>
 <td class="instruction">LD HL,46826</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the character whose turn it is.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -75,104 +80,45 @@ This entry point is used by the routine at <a href="36006.html">Action_Putdown</
 </td>
 </tr>
 <tr>
+<td class="asm-label">ConditionIsTheObjectCarried_1</td>
 <td class="address-2"><span id="40062"></span>40062</td>
 <td class="instruction">CP 255</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Compare the object id with 255.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40064"></span>40064</td>
 <td class="instruction">SCF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">If the object matches, return with carry set: it is carried.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40065"></span>40065</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return if no object was named.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40066"></span>40066</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Call <a href="40074.html">Condition_TestTheObjectIsHeld</a> to see whether the object's location is this character.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40068"></span>40068</td>
-<td class="instruction">CALL <a href="40056.html#40074">40074</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="40074.html">Condition_TestTheObjectIsHeld</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40071"></span>40071</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore <span class="register">IX</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="40073"></span>40073</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-2"><span id="40074"></span>40074</td>
-<td class="instruction">CALL <a href="39882.html">LocateObject</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="40077"></span>40077</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="40078"></span>40078</td>
-<td class="instruction">LD A,(IX+1)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="40081"></span>40081</td>
-<td class="instruction">CP 255</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="40083"></span>40083</td>
-<td class="instruction">JR Z,<a href="40056.html#40092">40092</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="40085"></span>40085</td>
-<td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="40087"></span>40087</td>
-<td class="instruction">CP (HL)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="40088"></span>40088</td>
-<td class="instruction">JR NZ,<a href="40056.html#40074">40074</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="40090"></span>40090</td>
-<td class="instruction">SCF</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="40091"></span>40091</td>
-<td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-2"><span id="40092"></span>40092</td>
-<td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="40093"></span>40093</td>
-<td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="40094"></span>40094</td>
-<td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -182,14 +128,14 @@ Prev: <a href="40001.html">40001</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#40056">Map</a></td>
 <td class="next">
-Next: <a href="40095.html">40095</a>
+Next: <a href="40074.html">40074</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../../asm/9C78.html">Switch to hexadecimal</a>.</div>
 </footer>

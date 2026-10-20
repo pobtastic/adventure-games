@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at F216</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F190.html">F190</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f216">Map</a></td>
+<td class="next">
+Next: <a href="F26D.html">F26D</a>
+</td>
+</tr>
+</table>
+<div class="description">F216: Action: Give</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Give the chest or the crystals to the blacksmith.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Give</td>
+<td class="address-2"><span id="f216"></span>F216</td>
+<td class="instruction">CALL <a href="C32D.html">Parser_ValidateInputTokens</a></td>
+<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f219"></span>F219</td>
+<td class="instruction">RET C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f21a"></span>F21A</td>
+<td class="instruction">LD HL,$E843</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F216.html#f26a">Action_Give_YouCant</a> unless the player named the old man.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f21d"></span>F21D</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f220"></span>F220</td>
+<td class="instruction">JR NZ,<a href="F216.html#f26a">Action_Give_YouCant</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f222"></span>F222</td>
+<td class="instruction">LD A,$25</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F216.html#f22f">Action_Give_Next</a> when object 25 (the blacksmith) is here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f224"></span>F224</td>
+<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f227"></span>F227</td>
+<td class="instruction">JR Z,<a href="F216.html#f22f">Action_Give_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f229"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "You can't.He's dead.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f229"></span>F229</td>
+<td class="instruction">LD HL,$DD38</td>
+<td class="comment-1" rowspan="2">Print "You can't.He's dead." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f22c"></span>F22C</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Give_Next</td>
+<td class="address-2"><span id="f22f"></span>F22F</td>
+<td class="instruction">LD A,$0D</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F216.html#f23e">Action_Give_CheckCrystals</a> if object 0D (the open chest) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f231"></span>F231</td>
+<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f234"></span>F234</td>
+<td class="instruction">JR NZ,<a href="F216.html#f23e">Action_Give_CheckCrystals</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f236"></span>F236</td>
+<td class="instruction">LD BC,$0D0E</td>
+<td class="comment-1" rowspan="2">Replace object 0D (the open chest) with object 0E (the empty chest).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f239"></span>F239</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f23c"></span>F23C</td>
+<td class="instruction">JR <a href="F216.html#f249">Action_Give_HandOver</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F216.html#f249">Action_Give_HandOver</a> to hand the crystals over.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Give_CheckCrystals</td>
+<td class="address-2"><span id="f23e"></span>F23E</td>
+<td class="instruction">LD A,$0F</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F216.html#f249">Action_Give_HandOver</a> if the player is not carrying object 0F (the Crystals of Vulcan).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f240"></span>F240</td>
+<td class="instruction">CALL <a href="C2D2.html">IsObjectCarried</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f243"></span>F243</td>
+<td class="instruction">JR NZ,<a href="F216.html#f249">Action_Give_HandOver</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f245"></span>F245</td>
+<td class="instruction">LD HL,$BA68</td>
+<td class="comment-1" rowspan="2">Count one fewer thing carried.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f248"></span>F248</td>
+<td class="instruction">DEC (HL)</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Give_HandOver</td>
+<td class="address-2"><span id="f249"></span>F249</td>
+<td class="instruction">LD A,$0F</td>
+<td class="comment-1" rowspan="2">Destroy object 0F (the Crystals of Vulcan).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f24b"></span>F24B</td>
+<td class="instruction">CALL <a href="C2D8.html">Handler_DestroyItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f24e"></span>F24E</td>
+<td class="instruction">LD BC,$2526</td>
+<td class="comment-1" rowspan="2">Replace object 25 (the blacksmith) with object 26 (the blacksmith).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f251"></span>F251</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f254"></span>F254</td>
+<td class="instruction">LD A,$88</td>
+<td class="comment-1" rowspan="2">Destroy object 88 (the old man's quest).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f256"></span>F256</td>
+<td class="instruction">CALL <a href="C2D8.html">Handler_DestroyItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f259"></span>F259</td>
+<td class="instruction">LD A,$0A</td>
+<td class="comment-1" rowspan="2">Move object 0A (the sword) into the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f25b"></span>F25B</td>
+<td class="instruction">CALL <a href="C2DF.html">Handler_UpdateItemForTheCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f25e"></span>F25E</td>
+<td class="instruction">LD HL,$DD4D</td>
+<td class="comment-1" rowspan="2">Print "You give him the crystals.He puts them in the flames.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f261"></span>F261</td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f264"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "After some time,he shapes a piece of metal fromthe fire,on the anvil.He produces a fine sword.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f264"></span>F264</td>
+<td class="instruction">LD HL,$DD84</td>
+<td class="comment-1" rowspan="2">Print "After some time,he shapes a piece of metal fromthe fire,on the anvil.He produces a fine sword." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f267"></span>F267</td>
+<td class="instruction">JP <a href="ED6A.html">PauseAndPrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Give_YouCant</td>
+<td class="address-2"><span id="f26a"></span>F26A</td>
+<td class="instruction">JP <a href="ED6E.html">Response_YouCant_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Tell the player the command is impossible.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F190.html">F190</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f216">Map</a></td>
+<td class="next">
+Next: <a href="F26D.html">F26D</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/61974.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

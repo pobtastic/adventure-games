@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blizzard Pass: Routine at 5FAA</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="5F8F.html">5F8F</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#5faa">Map</a></td>
+<td class="next">
+Next: <a href="5FCE.html">5FCE</a>
+</td>
+</tr>
+</table>
+<div class="description">5FAA: Refuse Command</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="5F21.html">ObeyCommand</a>.
+</div>
+<div class="paragraph">
+The scripts did not handle the command. A direction says you cannot go that way, any other verb is beyond the game, and a blank verb produces the longer refusal.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RefuseCommand</td>
+<td class="address-2"><span id="5faa"></span>5FAA</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Drop any comma continuation.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fab"></span>5FAB</td>
+<td class="instruction">LD ($5B85),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fae"></span>5FAE</td>
+<td class="instruction">LD A,($5B7F)</td>
+<td class="comment-1" rowspan="3">A blank verb is not a direction.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fb1"></span>5FB1</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fb2"></span>5FB2</td>
+<td class="instruction">JR Z,<a href="5FAA.html#5fbc">RefuseCommand_Verb</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fb4"></span>5FB4</td>
+<td class="instruction">CP $0B</td>
+<td class="comment-1" rowspan="2">Verbs 01 to 0A are the directions that use message 18.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fb6"></span>5FB6</td>
+<td class="instruction">JR NC,<a href="5FAA.html#5fbc">RefuseCommand_Verb</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fb8"></span>5FB8</td>
+<td class="instruction">LD A,$18</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fba"></span>5FBA</td>
+<td class="instruction">JR <a href="5FAA.html#5fc4">RefuseCommand_Print</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">RefuseCommand_Verb</td>
+<td class="address-2"><span id="5fbc"></span>5FBC</td>
+<td class="instruction">LD A,($5B7F)</td>
+<td class="comment-1" rowspan="4">Some other verb selects message 0C: it's beyond my power to do that.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fbf"></span>5FBF</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fc0"></span>5FC0</td>
+<td class="instruction">JR Z,<a href="5FAA.html#5fca">RefuseCommand_None</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fc2"></span>5FC2</td>
+<td class="instruction">LD A,$0C</td>
+</tr>
+<tr>
+<td class="asm-label">RefuseCommand_Print</td>
+<td class="address-2"><span id="5fc4"></span>5FC4</td>
+<td class="instruction">CALL <a href="63D4.html">PrintSystemMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="63D4.html">PrintSystemMessage</a> to print the chosen refusal.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fc7"></span>5FC7</td>
+<td class="instruction">JP <a href="5ECB.html#5ede">GameLoop_Act</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5ECB.html#5ede">GameLoop_Act</a> for another turn.</td>
+</tr>
+<tr>
+<td class="asm-label">RefuseCommand_None</td>
+<td class="address-2"><span id="5fca"></span>5FCA</td>
+<td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="1">Message 20: I don't understand that verb.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="5fcc"></span>5FCC</td>
+<td class="instruction">JR <a href="5FAA.html#5fc4">RefuseCommand_Print</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="5F8F.html">5F8F</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#5faa">Map</a></td>
+<td class="next">
+Next: <a href="5FCE.html">5FCE</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1986 Adventuresoft UK Ltd &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/blizzardpass/">Source code</a>.</div>
+<div><a href="../dec/asm/24490.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

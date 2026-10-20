@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at D2AD</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D2A4.html">D2A4</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d2ad">Map</a></td>
+<td class="next">
+Next: <a href="D2ED.html">D2ED</a>
+</td>
+</tr>
+</table>
+<div class="description">D2AD: Scale The Roll</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="D2A4.html">GetRandomNumber</a>.
+</div>
+<div class="paragraph">
+Mixes the seed at <a href="A037.html">A037</a> with the counter at <a href="A038.html#a039">A039</a> and scales <span class="register">A</span> down to the limit in <span class="register">C</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleTheRoll</td>
+<td class="address-2"><span id="d2ad"></span>D2AD</td>
+<td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="5">Keep the record and the count, copy the roll into <span class="register">C</span>, and go to <a href="D2AD.html#d2b7">ScaleTheRoll_Advance</a> if bit 7 is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2af"></span>D2AF</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2b0"></span>D2B0</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2b1"></span>D2B1</td>
+<td class="instruction">SLA A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2b3"></span>D2B3</td>
+<td class="instruction">JR NC,<a href="D2AD.html#d2b7">ScaleTheRoll_Advance</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2b5"></span>D2B5</td>
+<td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="1">Take FF for the count.</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleTheRoll_Advance</td>
+<td class="address-2"><span id="d2b7"></span>D2B7</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Use the value in <span class="register">A</span> as the count.</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleTheRoll_Count</td>
+<td class="address-2"><span id="d2b8"></span>D2B8</td>
+<td class="instruction">LD IX,$A039</td>
+<td class="comment-1" rowspan="3">Jump to <a href="D2AD.html#d2c4">ScaleTheRoll_ObjectAttributeFlag</a> if the count has not reached zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2bc"></span>D2BC</td>
+<td class="instruction">INC (IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2bf"></span>D2BF</td>
+<td class="instruction">JR NZ,<a href="D2AD.html#d2c4">ScaleTheRoll_ObjectAttributeFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2c1"></span>D2C1</td>
+<td class="instruction">INC (IX+$00)</td>
+<td class="comment-1" rowspan="1">Add one to the high byte of the counter at <a href="A038.html#a039">A039</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleTheRoll_ObjectAttributeFlag</td>
+<td class="address-2"><span id="d2c4"></span>D2C4</td>
+<td class="instruction">LD IX,($A039)</td>
+<td class="comment-1" rowspan="2">Point <span class="register">IX</span> at <a href="A038.html#a039">A039</a> and read the random seed (<a href="A037.html">A037</a>).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2c8"></span>D2C8</td>
+<td class="instruction">LD A,($A037)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2cb"></span>D2CB</td>
+<td class="instruction">ADC A,(IX+$00)</td>
+<td class="comment-1" rowspan="1">Add the seed byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2ce"></span>D2CE</td>
+<td class="instruction">ADD IX,DE</td>
+<td class="comment-1" rowspan="3">Add the offset to the seed pointer, mix in the next seed byte and keep the pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2d0"></span>D2D0</td>
+<td class="instruction">XOR (IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2d3"></span>D2D3</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2d4"></span>D2D4</td>
+<td class="instruction">LD HL,$A037</td>
+<td class="comment-1" rowspan="1">Use the random seed (<a href="A037.html">A037</a>).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2d7"></span>D2D7</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="D2AD.html#d2b8">ScaleTheRoll_Count</a> if the mixed seed matches the seed at <a href="A037.html">A037</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2d8"></span>D2D8</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2d9"></span>D2D9</td>
+<td class="instruction">JR Z,<a href="D2AD.html#d2b8">ScaleTheRoll_Count</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2db"></span>D2DB</td>
+<td class="instruction">LD ($A037),A</td>
+<td class="comment-1" rowspan="1">Record the random seed.</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleTheRoll_Loop</td>
+<td class="address-2"><span id="d2de"></span>D2DE</td>
+<td class="instruction">CP B</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="D2AD.html#d2e8">ScaleTheRoll_Continue</a> if the first value is below the second.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2df"></span>D2DF</td>
+<td class="instruction">JR C,<a href="D2AD.html#d2e8">ScaleTheRoll_Continue</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2e1"></span>D2E1</td>
+<td class="instruction">JR Z,<a href="D2AD.html#d2e8">ScaleTheRoll_Continue</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="D2AD.html#d2e8">ScaleTheRoll_Continue</a> if the first value equals the second.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2e3"></span>D2E3</td>
+<td class="instruction">SRL A</td>
+<td class="comment-1" rowspan="2">Shift the roll down and test it again from <a href="D2AD.html#d2de">ScaleTheRoll_Loop</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2e5"></span>D2E5</td>
+<td class="instruction">JP <a href="D2AD.html#d2de">ScaleTheRoll_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d2e8"></span>
+<div class="comments">
+<div class="paragraph">
+Return.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleTheRoll_Continue</td>
+<td class="address-2"><span id="d2e8"></span>D2E8</td>
+<td class="instruction">SUB C</td>
+<td class="comment-1" rowspan="1">Take away the other byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2e9"></span>D2E9</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore the saved count and the saved character record from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2ea"></span>D2EA</td>
+<td class="instruction">POP IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d2ec"></span>D2EC</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D2A4.html">D2A4</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d2ad">Map</a></td>
+<td class="next">
+Next: <a href="D2ED.html">D2ED</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/53933.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="D471.html">D471</a>
+Prev: <a href="D474.html">D474</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#d495">Map</a></td>
 <td class="next">
@@ -36,13 +36,16 @@ Next: <a href="D4A7.html">D4A7</a>
 </td>
 </tr>
 </table>
-<div class="description">D495: Is The Character Wearing The China Man Disguise?</div>
+<div class="description">D495: Get Object First Location</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="C996.html">ProcessObjectDisplayEntry</a>, <a href="CBC2.html">ProcessCharacterDisplay_CBC2</a>, <a href="CC29.html">SetCharacterPointerAndID</a> and <a href="D045.html">IsSherlockTheChinaMan</a>.
+Used by the routines at <a href="CAAF.html">CheckCharacterDisguise</a>, <a href="CBC2.html">ProcessCharacterDisplay_TestDisplayFlagEnd</a>, <a href="CC29.html">SetCharacterPointerAndID</a> and <a href="D045.html">IsSherlockTheChinaMan</a>.
+</div>
+<div class="paragraph">
+Returns at once when the id is FF. Otherwise looks the object up. Returns FF when the object appears more than once, and the first location at offset 0F when it appears once.
 </div>
 </div>
 <table class="input">
@@ -51,7 +54,7 @@ Used by the routines at <a href="C996.html">ProcessObjectDisplayEntry</a>, <a hr
 </tr>
 <tr>
 <td class="register">A</td>
-<td class="register-desc">Character ID</td>
+<td class="register-desc">Object ID</td>
 </tr>
 </table>
 <table class="output">
@@ -60,16 +63,16 @@ Used by the routines at <a href="C996.html">ProcessObjectDisplayEntry</a>, <a hr
 </tr>
 <tr>
 <td class="register">A</td>
-<td class="register-desc">Either FF for when the character isn't the China man, else the attribute byte</td>
+<td class="register-desc">FF when the id is empty or the object appears more than once, else its first location</td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<td class="asm-label">IsCharacterTheChinaMan</td>
+<td class="asm-label">GetObjectFirstLocation</td>
 <td class="address-2"><span id="d495"></span>D495</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="2">Return if the character is inactive (FF).</td>
+<td class="comment-1" rowspan="2">Return if the id is FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -80,13 +83,13 @@ Used by the routines at <a href="C996.html">ProcessObjectDisplayEntry</a>, <a hr
 <td class="asm-label"></td>
 <td class="address-1"><span id="d498"></span>D498</td>
 <td class="instruction">CALL <a href="D237.html">FetchObjectDataPointer</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D237.html">FetchObjectDataPointer</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="D237.html">FetchObjectDataPointer</a> to look that object up.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d49b"></span>D49B</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="2">Is the character the "China Man"?</td>
+<td class="comment-1" rowspan="2">See whether the object appears once.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -97,20 +100,20 @@ Used by the routines at <a href="C996.html">ProcessObjectDisplayEntry</a>, <a hr
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4a0"></span>D4A0</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="1">Set a default in <span class="register">A</span> of FF for when the character isn't wearing the China mans disguise.</td>
+<td class="comment-1" rowspan="1">Leave FF when the object appears more than once.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4a2"></span>D4A2</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-1" rowspan="1">Return if the character isn't the "China Man".</td>
+<td class="comment-1" rowspan="1">Return if the object appears more than once.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="d4a3"></span>
 <div class="comments">
 <div class="paragraph">
-The character is wearing the disguise, so return with the attribute byte instead.
+The object appears once, so return its first location.
 </div>
 </div>
 </td>
@@ -119,7 +122,7 @@ The character is wearing the disguise, so return with the attribute byte instead
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4a3"></span>D4A3</td>
 <td class="instruction">LD A,(IX+$0F)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+0F.</td>
+<td class="comment-1" rowspan="1">Read the object's first location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -131,7 +134,7 @@ The character is wearing the disguise, so return with the attribute byte instead
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="D471.html">D471</a>
+Prev: <a href="D474.html">D474</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#d495">Map</a></td>
 <td class="next">
@@ -142,7 +145,7 @@ Next: <a href="D4A7.html">D4A7</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/54421.html">Switch to decimal</a>.</div>
 </footer>

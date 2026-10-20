@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 33291</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="33246.html">33246</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#33291">Map</a></td>
+<td class="next">
+Next: <a href="33361.html">33361</a>
+</td>
+</tr>
+</table>
+<div class="description">33291: Drawing: Read The Next Picture Byte</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="32679.html">DrawingSetup</a>.
+</div>
+<div class="paragraph">
+Reads the next picture byte. A dark location forces the border and paper to black, then the screen and the attributes are cleared.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DrawingClear</td>
+<td class="address-2"><span id="33291"></span>33291</td>
+<td class="instruction">CALL <a href="38381.html">LocationLit</a></td>
+<td class="comment-1" rowspan="1">Call <a href="38381.html">LocationLit</a> to test whether the location is lit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33294"></span>33294</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="2">Save the lighting flags and read the next picture byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33295"></span>33295</td>
+<td class="instruction">LD A,(IY+0)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33298"></span>33298</td>
+<td class="instruction">INC IY</td>
+<td class="comment-1" rowspan="1">Increment the graphic data pointer to the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33300"></span>33300</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="1">Switch back to the "normal" <span class="register">AF</span> register to check the result of the call to <a href="38381.html">LocationLit</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33301"></span>33301</td>
+<td class="instruction">JR NC,<a href="33291.html#33306">Drawing_Border</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="33291.html#33306">Drawing_Border</a> if <a href="38381.html">LocationLit</a> found the location lit (carry clear).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33303"></span>33303</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="2">Overwrite the graphic data in the shadow <span class="register">AF</span> register to 0 (black).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33304"></span>33304</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33305"></span>33305</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="1">Switch back to the "normal" <span class="register">AF</span> register simply to accommodate the jump from <a href="33291.html#33301">33301</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">Drawing_Border</td>
+<td class="address-2"><span id="33306"></span>33306</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="1">Switch to the shadow <span class="register">AF</span> register containing the first byte of the graphic data (or 0 if it's dark).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33307"></span>33307</td>
+<td class="instruction">OUT (254),A</td>
+<td class="comment-1" rowspan="1">Set the border colour from <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33309"></span>33309</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="4">Point at the screen buffer at 16384.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33310"></span>33310</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33311"></span>33311</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33312"></span>33312</td>
+<td class="instruction">LD HL,16384</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33315"></span>33315</td>
+<td class="instruction">LD DE,16385</td>
+<td class="comment-1" rowspan="4">Fill the screen buffer at 16384 with zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33318"></span>33318</td>
+<td class="instruction">LD BC,4095</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33321"></span>33321</td>
+<td class="instruction">LD (HL),0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33323"></span>33323</td>
+<td class="instruction">LDIR</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33325"></span>33325</td>
+<td class="instruction">LD HL,22528</td>
+<td class="comment-1" rowspan="3">Point <span class="register">HL</span> at the attributes at 22528, <span class="register">DE</span> at the next byte, and set the length to 511.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33328"></span>33328</td>
+<td class="instruction">LD DE,22529</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33331"></span>33331</td>
+<td class="instruction">LD BC,511</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33334"></span>33334</td>
+<td class="instruction">LD A,(IY+0)</td>
+<td class="comment-1" rowspan="1">Read the attribute byte for this picture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33337"></span>33337</td>
+<td class="instruction">INC IY</td>
+<td class="comment-1" rowspan="1">Increment the graphic data pointer to the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33339"></span>33339</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="1">Use the flags saved for this picture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33340"></span>33340</td>
+<td class="instruction">JR NC,<a href="33291.html#33345">Drawing_Paper</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="33291.html#33345">Drawing_Paper</a> if the location is lit (carry clear).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33342"></span>33342</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="2">Overwrite the graphic data in the shadow <span class="register">AF</span> register to 0 (black).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33343"></span>33343</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33344"></span>33344</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="1">Switch back to the "normal" <span class="register">AF</span> register simply to accommodate the jump from <a href="33291.html#33340">33340</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">Drawing_Paper</td>
+<td class="address-2"><span id="33345"></span>33345</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="1">Switch to the shadow <span class="register">AF</span> register containing the second byte of the graphic data (or 0 if it's dark).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33346"></span>33346</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="2">Write this to the attribute buffer using the target/ length specified previously.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33347"></span>33347</td>
+<td class="instruction">LDIR</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33349"></span>33349</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="4">Restore the pen from the stack. A dark place ends the picture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33350"></span>33350</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33351"></span>33351</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33352"></span>33352</td>
+<td class="instruction">EX AF,AF'</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33353"></span>33353</td>
+<td class="instruction">RET NC</td>
+<td class="comment-1" rowspan="1">Return if it is LIGHT.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33354"></span>33354</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="32679.html#32873">Drawing_End</a> to return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33355"></span>33355</td>
+<td class="instruction">JP <a href="32679.html#32873">Drawing_End</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="33358"></span>33358</td>
+<td class="instruction">DEFB 56,0,0</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="33246.html">33246</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#33291">Map</a></td>
+<td class="next">
+Next: <a href="33361.html">33361</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../../asm/820B.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

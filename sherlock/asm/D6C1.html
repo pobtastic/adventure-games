@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at D6C1</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D6BF.html">D6BF</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d6c1">Map</a></td>
+<td class="next">
+Next: <a href="D835.html">D835</a>
+</td>
+</tr>
+</table>
+<div class="description">D6C1: Parse Input</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Command parser. It reads the line buffer at <a href="4000.html#5b00">5B00</a>, tokenises it, and handles backspace and quoting. A non-zero return means the script step succeeded.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d6c1"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="D6BF.html">D6BF</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput</td>
+<td class="address-2"><span id="d6c1"></span>D6C1</td>
+<td class="instruction">CALL <a href="D898.html">ReadCommandLine</a></td>
+<td class="comment-1" rowspan="2">Return zero through <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a> if no command was entered.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6c4"></span>D6C4</td>
+<td class="instruction">JP Z,<a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6c7"></span>D6C7</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Clear the parser state.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6c8"></span>D6C8</td>
+<td class="instruction">LD ($D714),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6cb"></span>D6CB</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6cd"></span>D6CD</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6ce"></span>D6CE</td>
+<td class="instruction">LD HL,$5B00</td>
+<td class="comment-1" rowspan="1">Take the line buffer.</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput_Loop</td>
+<td class="address-2"><span id="d6d1"></span>D6D1</td>
+<td class="instruction">CALL <a href="D9C5.html">SkipSpaces</a></td>
+<td class="comment-1" rowspan="3">Call <a href="D9C5.html">SkipSpaces</a> to read the next character and jump to <a href="D6C1.html#d6e0">ParseInput_Next</a> when it is D0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6d4"></span>D6D4</td>
+<td class="instruction">CP $D0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6d6"></span>D6D6</td>
+<td class="instruction">JP Z,<a href="D6C1.html#d6e0">ParseInput_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6d9"></span>D6D9</td>
+<td class="instruction">CP $C0</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="D6C1.html#d6d1">ParseInput_Loop</a> while the character is not C0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6db"></span>D6DB</td>
+<td class="instruction">JR NZ,<a href="D6C1.html#d6d1">ParseInput_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6dd"></span>D6DD</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6df"></span>D6DF</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d6e0"></span>
+<div class="comments">
+<div class="paragraph">
+Hands the following step back to the caller and reports that the test failed.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput_Next</td>
+<td class="address-2"><span id="d6e0"></span>D6E0</td>
+<td class="instruction">LD HL,$D6E5</td>
+<td class="comment-1" rowspan="1">Hand back the address of the following step.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6e3"></span>D6E3</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6e4"></span>D6E4</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6e5"></span>D6E5</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="3">Set the print mode to 01 and point <span class="register">HL</span> at the message at <a href="683F.html#6857">6857</a>+02.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6e7"></span>D6E7</td>
+<td class="instruction">LD ($A027),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6ea"></span>D6EA</td>
+<td class="instruction">LD HL,$6859</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d6ed"></span>
+<div class="comments">
+<div class="paragraph">
+Print text and handle control characters.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6ed"></span>D6ED</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print this message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6f0"></span>D6F0</td>
+<td class="instruction">LD HL,($D6BD)</td>
+<td class="comment-1" rowspan="3">Read the parser pointer, write C0 there and read the word at <a href="A029.html">SavedTextPointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6f3"></span>D6F3</td>
+<td class="instruction">LD (HL),$C0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6f5"></span>D6F5</td>
+<td class="instruction">LD HL,($A029)</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput_Byte</td>
+<td class="address-2"><span id="d6f8"></span>D6F8</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="D6C1.html#d6ff">ParseInput_0</a> if this byte is not 2E.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6f9"></span>D6F9</td>
+<td class="instruction">CP $2E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6fb"></span>D6FB</td>
+<td class="instruction">JR NZ,<a href="D6C1.html#d6ff">ParseInput_0</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d6fd"></span>D6FD</td>
+<td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="1">Take a space.</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput_0</td>
+<td class="address-2"><span id="d6ff"></span>D6FF</td>
+<td class="instruction">CALL <a href="A9B7.html">Print_Character</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A9B7.html">Print_Character</a> to print the character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d702"></span>D702</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="3">Step on and jump back to <a href="D6C1.html#d6f8">ParseInput_Byte</a> until a space has been printed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d703"></span>D703</td>
+<td class="instruction">CP $20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d705"></span>D705</td>
+<td class="instruction">JR NZ,<a href="D6C1.html#d6f8">ParseInput_Byte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d707"></span>D707</td>
+<td class="instruction">LD A,$22</td>
+<td class="comment-1" rowspan="3">Print character 22 through <a href="A9B7.html">Print_Character</a>, then call <a href="A2A2.html">PrintNewline</a> to print a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d709"></span>D709</td>
+<td class="instruction">CALL <a href="A9B7.html">Print_Character</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d70c"></span>D70C</td>
+<td class="instruction">CALL <a href="A2A2.html">PrintNewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d70f"></span>D70F</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span> so the print mode that follows starts at zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d710"></span>D710</td>
+<td class="instruction">LD ($A027),A</td>
+<td class="comment-1" rowspan="1">Record the result in the print mode.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d713"></span>D713</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d714"></span>D714</td>
+<td class="instruction">DEFB $00</td>
+<td class="comment-1" rowspan="1">Parser state byte, read by <a href="D6C1.html">ParseInput</a> and <a href="D99E.html">IgnoreInputUntilGameHasStarted</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d715"></span>
+<div class="comments">
+<div class="paragraph">
+Named from the script command at <a href="9921.html#9928">9928</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d715"></span>D715</td>
+<td class="instruction">DEFB $40,$00,$CE,$D6</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 40 value 00 handler <a href="D6C1.html#d6ce">D6CE</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d719"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="D6C1.html#d715">D715</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d719"></span>D719</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Clear the parser state.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d71a"></span>D71A</td>
+<td class="instruction">LD ($A019),A</td>
+<td class="comment-1" rowspan="1">Record the parser.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d71d"></span>
+<div class="comments">
+<div class="paragraph">
+Reset screen display.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d71d"></span>D71D</td>
+<td class="instruction">CALL <a href="C142.html">ResetScreenDisplay</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C142.html">ResetScreenDisplay</a> to reset the screen.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d720"></span>D720</td>
+<td class="instruction">LD A,($D714)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="D6C1.html#d760">ParseInput_RecordParserPointer</a> if the state byte at <a href="D6C1.html#d714">D714</a> is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d723"></span>D723</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d724"></span>D724</td>
+<td class="instruction">JR NZ,<a href="D6C1.html#d760">ParseInput_RecordParserPointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d726"></span>D726</td>
+<td class="instruction">LD HL,$5B81</td>
+<td class="comment-1" rowspan="3">Call <a href="A2AB.html">ClearBuffer</a> to clear buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d729"></span>D729</td>
+<td class="instruction">LD B,$60</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d72b"></span>D72B</td>
+<td class="instruction">CALL <a href="A2AB.html">ClearBuffer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d72e"></span>D72E</td>
+<td class="instruction">LD HL,$5B00</td>
+<td class="comment-1" rowspan="2">Take the line buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d731"></span>D731</td>
+<td class="instruction">LD IY,$5B81</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput_CharacterParseInput</td>
+<td class="address-2"><span id="d735"></span>D735</td>
+<td class="instruction">LD (IY+$00),$C0</td>
+<td class="comment-1" rowspan="2">Store C0 as this character's id, then call <a href="D9C5.html">SkipSpaces</a> to skip spaces.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d739"></span>D739</td>
+<td class="instruction">CALL <a href="D9C5.html">SkipSpaces</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d73c"></span>D73C</td>
+<td class="instruction">LD (IY+$00),D</td>
+<td class="comment-1" rowspan="4">Store <span class="register">D</span>, step on one byte and jump ahead to <a href="D6C1.html#d751">ParseInput_CharacterLowByte</a> if the character is E0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d73f"></span>D73F</td>
+<td class="instruction">INC IY</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d741"></span>D741</td>
+<td class="instruction">CP $E0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d743"></span>D743</td>
+<td class="instruction">JR Z,<a href="D6C1.html#d751">ParseInput_CharacterLowByte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d745"></span>D745</td>
+<td class="instruction">CP $F0</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="D6C1.html#d751">ParseInput_CharacterLowByte</a> if the character is F0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d747"></span>D747</td>
+<td class="instruction">JR Z,<a href="D6C1.html#d751">ParseInput_CharacterLowByte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d749"></span>D749</td>
+<td class="instruction">CP $90</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="D6C1.html#d751">ParseInput_CharacterLowByte</a> if the character is 90.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d74b"></span>D74B</td>
+<td class="instruction">JR Z,<a href="D6C1.html#d751">ParseInput_CharacterLowByte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d74d"></span>D74D</td>
+<td class="instruction">CP $80</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="D6C1.html#d75b">ParseInput_Pointer</a> if the character is at least 80.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d74f"></span>D74F</td>
+<td class="instruction">JR NC,<a href="D6C1.html#d75b">ParseInput_Pointer</a></td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput_CharacterLowByte</td>
+<td class="address-2"><span id="d751"></span>D751</td>
+<td class="instruction">LD (IY+$00),B</td>
+<td class="comment-1" rowspan="2">Store <span class="register">B</span> and <span class="register">C</span> as the word at <span class="register">IY</span>+00-01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d754"></span>D754</td>
+<td class="instruction">LD (IY+$01),C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d757"></span>D757</td>
+<td class="instruction">INC IY</td>
+<td class="comment-1" rowspan="2">Step on two places.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d759"></span>D759</td>
+<td class="instruction">INC IY</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput_Pointer</td>
+<td class="address-2"><span id="d75b"></span>D75B</td>
+<td class="instruction">LD A,D</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="D6C1.html#d735">ParseInput_CharacterParseInput</a> while the result in <span class="register">D</span> is not C0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d75c"></span>D75C</td>
+<td class="instruction">CP $C0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d75e"></span>D75E</td>
+<td class="instruction">JR NZ,<a href="D6C1.html#d735">ParseInput_CharacterParseInput</a></td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput_RecordParserPointer</td>
+<td class="address-2"><span id="d760"></span>D760</td>
+<td class="instruction">LD HL,$5B81</td>
+<td class="comment-1" rowspan="2">Record the parser pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d763"></span>D763</td>
+<td class="instruction">LD ($D6BD),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d766"></span>D766</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d768"></span>D768</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d769"></span>
+<div class="comments">
+<div class="paragraph">
+Named from the script command at <a href="9921.html#992d">992D</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d769"></span>D769</td>
+<td class="instruction">DEFB $40,$00,$70,$D7</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 40 value 00 handler <a href="D6C1.html#d770">D770</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d76d"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="D6C1.html#d769">D769</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d76d"></span>D76D</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d76f"></span>D76F</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d770"></span>
+<div class="comments">
+<div class="paragraph">
+Reached through the display record at <a href="D6C1.html#d769">D769</a>, dispatched by <a href="CB40.html">DispatchLookedUpHandlerThird</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d770"></span>D770</td>
+<td class="instruction">LD HL,($D6BD)</td>
+<td class="comment-1" rowspan="1">Read the parser pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d773"></span>D773</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the next input character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d774"></span>D774</td>
+<td class="instruction">AND $F0</td>
+<td class="comment-1" rowspan="1">Keep bits 4-7.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d776"></span>D776</td>
+<td class="instruction">CP $C0</td>
+<td class="comment-1" rowspan="1">See whether the high nibble is C0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d778"></span>D778</td>
+<td class="instruction">JP Z,<a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a> when the high nibble is C0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d77b"></span>D77B</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d77d"></span>D77D</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d77e"></span>
+<div class="comments">
+<div class="paragraph">
+Named from the script command at <a href="9921.html#9932">9932</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d77e"></span>D77E</td>
+<td class="instruction">DEFB $00,$00</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 00 value 00.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d780"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="D6C1.html#d77e">D77E</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d780"></span>D780</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="4">Clear the character script entry list and set the command mode at <a href="A024.html">A024</a> to 01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d781"></span>D781</td>
+<td class="instruction">LD ($9FEB),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d784"></span>D784</td>
+<td class="instruction">INC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d785"></span>D785</td>
+<td class="instruction">LD ($A024),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d788"></span>D788</td>
+<td class="instruction">LD HL,($D6BD)</td>
+<td class="comment-1" rowspan="3">Read the parser pointer, store it in the word at <a href="A02B.html">ActiveTextPointer</a> and call <a href="AAB2.html">PrepareCharacterForDisplay</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d78b"></span>D78B</td>
+<td class="instruction">LD ($A02B),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d78e"></span>D78E</td>
+<td class="instruction">CALL <a href="AAB2.html">PrepareCharacterForDisplay</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d791"></span>D791</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="4">Clear the initialised flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d792"></span>D792</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d793"></span>D793</td>
+<td class="instruction">LD ($A01B),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d796"></span>D796</td>
+<td class="instruction">POP AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d797"></span>D797</td>
+<td class="instruction">LD HL,($A02B)</td>
+<td class="comment-1" rowspan="1">Read the word at <a href="A02B.html">ActiveTextPointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d79a"></span>D79A</td>
+<td class="instruction">LD ($D6BD),HL</td>
+<td class="comment-1" rowspan="2">Store the parser pointer and go to <a href="D6C1.html#d7b2">ParseInput_ReadsBothDisplay</a> if preparing the character succeeded.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d79d"></span>D79D</td>
+<td class="instruction">JR NZ,<a href="D6C1.html#d7b2">ParseInput_ReadsBothDisplay</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d79f"></span>D79F</td>
+<td class="instruction">LD HL,($9FF0)</td>
+<td class="comment-1" rowspan="2">Read the first display link and store the pointer in the next display link.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7a2"></span>D7A2</td>
+<td class="instruction">LD ($9FF2),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7a5"></span>D7A5</td>
+<td class="instruction">LD HL,$0000</td>
+<td class="comment-1" rowspan="1">Clear the pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7a8"></span>D7A8</td>
+<td class="instruction">LD ($9FF0),HL</td>
+<td class="comment-1" rowspan="3">Store the zero pointer in the first display link and clear the parser workspace byte at <a href="D6B8.html">D6B8</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7ab"></span>D7AB</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7ac"></span>D7AC</td>
+<td class="instruction">LD ($D6B8),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7af"></span>D7AF</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7b1"></span>D7B1</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d7b2"></span>
+<div class="comments">
+<div class="paragraph">
+Reads both display links, and takes the special path when the code is 2.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput_ReadsBothDisplay</td>
+<td class="address-2"><span id="d7b2"></span>D7B2</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="2">Call <a href="D87D.html">ReadFirstDisplayLink</a> to read the first display link.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7b3"></span>D7B3</td>
+<td class="instruction">CALL <a href="D87D.html">ReadFirstDisplayLink</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7b6"></span>D7B6</td>
+<td class="instruction">CALL <a href="D88A.html">ReadNextDisplayLink</a></td>
+<td class="comment-1" rowspan="2">Call <a href="D88A.html">ReadNextDisplayLink</a> to read the next display link.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7b9"></span>D7B9</td>
+<td class="instruction">POP AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7ba"></span>D7BA</td>
+<td class="instruction">CP $02</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="D6C1.html#d7d0">ParseInput_ScriptCyclePointer</a> if the character is 02.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7bc"></span>D7BC</td>
+<td class="instruction">JR Z,<a href="D6C1.html#d7d0">ParseInput_ScriptCyclePointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7be"></span>D7BE</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="3">Set the print mode to 01 and point <span class="register">HL</span> at the message at <a href="683F.html#685f">685F</a>+07.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7c0"></span>D7C0</td>
+<td class="instruction">LD ($A027),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7c3"></span>D7C3</td>
+<td class="instruction">LD HL,$6866</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d7c6"></span>
+<div class="comments">
+<div class="paragraph">
+Print text and handle control characters.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7c6"></span>D7C6</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print this message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7c9"></span>D7C9</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Clear the print mode and return zero through <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7ca"></span>D7CA</td>
+<td class="instruction">LD ($A027),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7cd"></span>D7CD</td>
+<td class="instruction">JP <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d7d0"></span>
+<div class="comments">
+<div class="paragraph">
+Read the script-cycle pointer and return when it is still set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput_ScriptCyclePointer</td>
+<td class="address-2"><span id="d7d0"></span>D7D0</td>
+<td class="instruction">LD HL,($A01F)</td>
+<td class="comment-1" rowspan="4">Return if the script-cycle pointer at <a href="A01F.html">CharacterScriptCycles</a> is not zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7d3"></span>D7D3</td>
+<td class="instruction">LD A,H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7d4"></span>D7D4</td>
+<td class="instruction">OR L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7d5"></span>D7D5</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7d6"></span>D7D6</td>
+<td class="instruction">JP <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+<td class="comment-1" rowspan="1">Return zero through <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d7d9"></span>
+<div class="comments">
+<div class="paragraph">
+Named from the script command at <a href="9921.html#9937">9937</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7d9"></span>D7D9</td>
+<td class="instruction">DEFB $40,$00,$E1,$D7</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 40 value 00 handler <a href="D6C1.html#d7e1">D7E1</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d7dd"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="D6C1.html#d7d9">D7D9</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7dd"></span>D7DD</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7df"></span>D7DF</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7e0"></span>D7E0</td>
+<td class="instruction">DEFB $00</td>
+<td class="comment-1" rowspan="1">State byte for this input step. Read by <a href="D6C1.html#d7e1">D7E1</a> and written by <a href="D6C1.html#d7e7">D7E7</a> and <a href="D85B.html#d870">RecordParserFailure_StepSucceedsScript</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d7e1"></span>
+<div class="comments">
+<div class="paragraph">
+Reached through the display record at <a href="D6C1.html#d7d9">D7D9</a>, dispatched by <a href="CB40.html">DispatchLookedUpHandlerThird</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7e1"></span>D7E1</td>
+<td class="instruction">LD A,($D7E0)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="D6C1.html#d7f1">ParseInput_TestDisplayLinkSet</a> if the state byte at <a href="D6C1.html#d7e0">D7E0</a> is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7e4"></span>D7E4</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7e5"></span>D7E5</td>
+<td class="instruction">JR Z,<a href="D6C1.html#d7f1">ParseInput_TestDisplayLinkSet</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7e7"></span>D7E7</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Clear the state byte at <a href="D6C1.html#d7e0">D7E0</a> and call <a href="D88A.html">ReadNextDisplayLink</a> to read the next display link.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7e8"></span>D7E8</td>
+<td class="instruction">LD ($D7E0),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7eb"></span>D7EB</td>
+<td class="instruction">CALL <a href="D88A.html">ReadNextDisplayLink</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7ee"></span>D7EE</td>
+<td class="instruction">JP <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+<td class="comment-1" rowspan="1">Return zero through <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d7f1"></span>
+<div class="comments">
+<div class="paragraph">
+Read the next display link and return when it is still set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInput_TestDisplayLinkSet</td>
+<td class="address-2"><span id="d7f1"></span>D7F1</td>
+<td class="instruction">LD HL,($9FF2)</td>
+<td class="comment-1" rowspan="4">Return if the next display link at <a href="9FEE.html">9FEE</a>+04 is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7f4"></span>D7F4</td>
+<td class="instruction">LD A,L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7f5"></span>D7F5</td>
+<td class="instruction">OR H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7f6"></span>D7F6</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7f7"></span>D7F7</td>
+<td class="instruction">JP <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+<td class="comment-1" rowspan="1">Return zero through <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d7fa"></span>
+<div class="comments">
+<div class="paragraph">
+Named from the script command at <a href="9921.html#993c">993C</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7fa"></span>D7FA</td>
+<td class="instruction">DEFB $00,$00</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 00 value 00.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d7fc"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="D6C1.html#d7fa">D7FA</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7fc"></span>D7FC</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Clear the display.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d7fd"></span>D7FD</td>
+<td class="instruction">LD A,($D6B8)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d800"></span>D800</td>
+<td class="instruction">LD ($A01C),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d803"></span>D803</td>
+<td class="instruction">LD IY,($9FF2)</td>
+<td class="comment-1" rowspan="1">Read the next display link.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d807"></span>D807</td>
+<td class="instruction">LD HL,($D6BB)</td>
+<td class="comment-1" rowspan="3">Call <a href="B191.html">InitialiseDisplayBuffer</a> to initialise display buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d80a"></span>D80A</td>
+<td class="instruction">LD ($B17E),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d80d"></span>D80D</td>
+<td class="instruction">CALL <a href="B191.html">InitialiseDisplayBuffer</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d810"></span>
+<div class="comments">
+<div class="paragraph">
+A command is being read.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d810"></span>D810</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="3">Remember that a command is being read, and leave the line when the display buffer came back empty.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d812"></span>D812</td>
+<td class="instruction">LD ($A00B),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d815"></span>D815</td>
+<td class="instruction">JP Z,<a href="D85B.html">RecordParserFailure</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d818"></span>D818</td>
+<td class="instruction">LD A,($A01C)</td>
+<td class="comment-1" rowspan="2">Store the display flag in the parser workspace byte at <a href="D6B8.html">D6B8</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d81b"></span>D81B</td>
+<td class="instruction">LD ($D6B8),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d81e"></span>D81E</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">Write 01 to the token format flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d820"></span>D820</td>
+<td class="instruction">LD ($A026),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d823"></span>D823</td>
+<td class="instruction">LD A,($A033)</td>
+<td class="comment-1" rowspan="2">Record the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d826"></span>D826</td>
+<td class="instruction">LD ($9FD6),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d829"></span>D829</td>
+<td class="instruction">LD HL,($A034)</td>
+<td class="comment-1" rowspan="1">Read the room display parameter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d82c"></span>D82C</td>
+<td class="instruction">LD ($9FD7),HL</td>
+<td class="comment-1" rowspan="2">Record the location value and read the object table pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d82f"></span>D82F</td>
+<td class="instruction">LD HL,($B17E)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d832"></span>D832</td>
+<td class="instruction">LD ($D6BB),HL</td>
+<td class="comment-1" rowspan="1">Record the parser workspace.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D6BF.html">D6BF</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d6c1">Map</a></td>
+<td class="next">
+Next: <a href="D835.html">D835</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/54977.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

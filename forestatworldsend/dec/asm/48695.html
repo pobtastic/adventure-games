@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at 48695</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="48686.html">48686</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#48695">Map</a></td>
+<td class="next">
+Next: <a href="48725.html">48725</a>
+</td>
+</tr>
+</table>
+<div class="description">48695: Print Character</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="48673.html">PrintString</a>, <a href="48686.html">PrintStringAndANewline</a>, <a href="49011.html">Handler_UserInput</a>, <a href="49112.html">Parser_MatchInputWord</a>, <a href="49401.html">Handler_DisplayRoom</a> and <a href="50112.html">PrintInputPrompt</a>.
+</div>
+<div class="paragraph">
+Print one character, scrolling the text window when the cursor reaches its edge.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Character to print</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter</td>
+<td class="address-2"><span id="48695"></span>48695</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="1">Keep the character safe on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48696"></span>48696</td>
+<td class="instruction">LD A,(23689)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="48695.html#48722">PrintCharacter_Direct</a> if the line byte of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C88.html">S_POSN</a> (23689) is not row 3.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48699"></span>48699</td>
+<td class="instruction">CP 3</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48701"></span>48701</td>
+<td class="instruction">JR NZ,<a href="48695.html#48722">PrintCharacter_Direct</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48703"></span>48703</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="2">Restore the character from the stack, leaving a copy.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48704"></span>48704</td>
+<td class="instruction">PUSH AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48705"></span>48705</td>
+<td class="instruction">CP 13</td>
+<td class="comment-1" rowspan="2">Jump to <a href="48695.html#48714">PrintCharacter_CheckColumn</a> if this is not a newline (13).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48707"></span>48707</td>
+<td class="instruction">JR NZ,<a href="48695.html#48714">PrintCharacter_CheckColumn</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="48709"></span>
+<div class="comments">
+<div class="paragraph">
+A newline scrolls the text window and prints nothing.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48709"></span>48709</td>
+<td class="instruction">CALL <a href="48725.html">ScrollScreen</a></td>
+<td class="comment-1" rowspan="1">Call <a href="48725.html">ScrollScreen</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48712"></span>48712</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Discard the character from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48713"></span>48713</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="48714"></span>
+<div class="comments">
+<div class="paragraph">
+Check the column.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_CheckColumn</td>
+<td class="address-2"><span id="48714"></span>48714</td>
+<td class="instruction">LD A,(23688)</td>
+<td class="comment-1" rowspan="3">Call <a href="48725.html">ScrollScreen</a> if *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C88.html">S_POSN</a> is column 1.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48717"></span>48717</td>
+<td class="instruction">CP 1</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48719"></span>48719</td>
+<td class="instruction">CALL Z,<a href="48725.html">ScrollScreen</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="48722"></span>
+<div class="comments">
+<div class="paragraph">
+Print the character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_Direct</td>
+<td class="address-2"><span id="48722"></span>48722</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore the character from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48723"></span>48723</td>
+<td class="instruction">RST 16</td>
+<td class="comment-1" rowspan="1">Print it with <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0010.html">PRINT_A_1</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="48724"></span>48724</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="48686.html">48686</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#48695">Map</a></td>
+<td class="next">
+Next: <a href="48725.html">48725</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../../asm/BE37.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at A419</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A414.html">A414</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a419">Map</a></td>
+<td class="next">
+Next: <a href="A45E.html">A45E</a>
+</td>
+</tr>
+</table>
+<div class="description">A419: Shift The Text Pointer And Print A Space</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="A37D.html">ProcessObject_Display</a>, <a href="E2EE.html">RecordResultRoomDisplay</a> and <a href="E691.html">ProcessCharacterAttribute</a>.
+</div>
+<div class="paragraph">
+Clear the top bit of the pointer, then scale the pointer down to the next bit
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ShiftTextPointer</td>
+<td class="address-2"><span id="a419"></span>A419</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="4">Save <span class="register">BC</span> and rescale the text pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a41a"></span>A41A</td>
+<td class="instruction">RES 7,H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a41c"></span>A41C</td>
+<td class="instruction">SLA L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a41e"></span>A41E</td>
+<td class="instruction">SRL H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a420"></span>A420</td>
+<td class="instruction">RR L</td>
+<td class="comment-1" rowspan="1">Rotate the bit from <span class="register">H</span> into <span class="register">L</span>, finishing the shift of <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a422"></span>A422</td>
+<td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="2">Print a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a424"></span>A424</td>
+<td class="instruction">CALL <a href="A9B7.html">Print_Character</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a427"></span>A427</td>
+<td class="instruction">LD DE,$00F0</td>
+<td class="comment-1" rowspan="2">Take 00F0 as the unit <a href="A476.html">DivideBySubtraction</a> subtracts from <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a42a"></span>A42A</td>
+<td class="instruction">CALL <a href="A476.html">DivideBySubtraction</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a42d"></span>A42D</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="A419.html#a442">ShiftTextPointer_PrintObjects</a> if <span class="register">HL</span> was below 00F0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a42e"></span>A42E</td>
+<td class="instruction">JR Z,<a href="A419.html#a442">ShiftTextPointer_PrintObjects</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a430"></span>A430</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="3">Keep the count in <span class="register">B</span> and print character 60 through <a href="A9B7.html">Print_Character</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a431"></span>A431</td>
+<td class="instruction">LD A,$60</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a433"></span>A433</td>
+<td class="instruction">CALL <a href="A9B7.html">Print_Character</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a436"></span>A436</td>
+<td class="instruction">CALL <a href="A490.html">PrintHundredsTensAndUnits</a></td>
+<td class="comment-1" rowspan="4">Call <a href="A490.html">PrintHundredsTensAndUnits</a> to print the count, then jump ahead to <a href="A45E.html#a467">PrintHyphen_Return</a> if the remainder in <span class="register">HL</span> is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a439"></span>A439</td>
+<td class="instruction">LD A,L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a43a"></span>A43A</td>
+<td class="instruction">OR H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a43b"></span>A43B</td>
+<td class="instruction">JR Z,<a href="A45E.html#a467">PrintHyphen_Return</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a43d"></span>A43D</td>
+<td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="2">Print a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a43f"></span>A43F</td>
+<td class="instruction">CALL <a href="A9B7.html">Print_Character</a></td>
+</tr>
+<tr>
+<td class="asm-label">ShiftTextPointer_PrintObjects</td>
+<td class="address-2"><span id="a442"></span>A442</td>
+<td class="instruction">LD DE,$000C</td>
+<td class="comment-1" rowspan="2">Take 000C as the unit for <a href="A476.html">DivideBySubtraction</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a445"></span>A445</td>
+<td class="instruction">CALL <a href="A476.html">DivideBySubtraction</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a448"></span>A448</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="A469.html">PrintLetterD</a> if <a href="A476.html">DivideBySubtraction</a> counted no groups of 0C.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a449"></span>A449</td>
+<td class="instruction">JR Z,<a href="A469.html">PrintLetterD</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a44b"></span>A44B</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="2">Use the count, then call <a href="A490.html">PrintHundredsTensAndUnits</a> to print it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a44c"></span>A44C</td>
+<td class="instruction">CALL <a href="A490.html">PrintHundredsTensAndUnits</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a44f"></span>A44F</td>
+<td class="instruction">LD A,$2F</td>
+<td class="comment-1" rowspan="2">Print '/'.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a451"></span>A451</td>
+<td class="instruction">CALL <a href="A9B7.html">Print_Character</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a454"></span>A454</td>
+<td class="instruction">LD A,L</td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="A45E.html">PrintHyphen</a> if the remainder in <span class="register">L</span> is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a455"></span>A455</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a456"></span>A456</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a457"></span>A457</td>
+<td class="instruction">JR Z,<a href="A45E.html">PrintHyphen</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a459"></span>A459</td>
+<td class="instruction">CALL <a href="A490.html">PrintHundredsTensAndUnits</a></td>
+<td class="comment-1" rowspan="2">Call <a href="A490.html">PrintHundredsTensAndUnits</a> to print the units and return through <a href="A45E.html#a467">PrintHyphen_Return</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a45c"></span>A45C</td>
+<td class="instruction">JR <a href="A45E.html#a467">PrintHyphen_Return</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A414.html">A414</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a419">Map</a></td>
+<td class="next">
+Next: <a href="A45E.html">A45E</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/42009.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

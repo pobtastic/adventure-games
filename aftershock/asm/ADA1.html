@@ -66,19 +66,18 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ada9"></span>ADA9</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">HL</span> on to the next byte to clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adaa"></span>ADAA</td>
 <td class="instruction">DEC BC</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">BC</span> by one.</td>
+<td class="comment-1" rowspan="4">Count down the 0181 bytes and loop back to <a href="ADA1.html#ada7">GameStart_0</a> until all are cleared.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adab"></span>ADAB</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ADA1.html#ada7">GameStart_0</a> until <span class="register">BC</span> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -94,7 +93,7 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="adaf"></span>ADAF</td>
 <td class="instruction">LD HL,$BB0B</td>
-<td class="comment-1" rowspan="4">Copy 0088 bytes of data (count is via *<a href="BBC7.html">Count_Objects_1</a>) from <a href="BB0B.html">BB0B</a> to <a href="9F88.html">Table_ItemLocations</a>.</td>
+<td class="comment-1" rowspan="4">Copy 0088 bytes of data (count is via *<a href="BBC7.html">Count_Objects_1</a>) from <a href="BB0B.html">Table_InitialItemLocations</a> to <a href="9F88.html">Table_ItemLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -115,7 +114,7 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="adbb"></span>ADBB</td>
 <td class="instruction">LD A,($BBD7)</td>
-<td class="comment-1" rowspan="2">Write *<a href="BBD7.html">BBD7</a> to *<a href="A0D3.html">A0D3</a>.</td>
+<td class="comment-1" rowspan="2">Write *<a href="BBD7.html">InitialCarryingLimit</a> to *<a href="A0D3.html">CarryingLimit</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -126,19 +125,19 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="adc1"></span>ADC1</td>
 <td class="instruction">LD IX,$BAF9</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="BAF9.html">BAF9</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="BAF9.html">Table_SavedStateAddresses</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adc5"></span>ADC5</td>
 <td class="instruction">LD DE,$BB05</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="BB05.html">BB05</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="BB05.html">InitialSavedStateBytes</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adc8"></span>ADC8</td>
 <td class="instruction">LD A,($BBD1)</td>
-<td class="comment-1" rowspan="2"><span class="register">B</span>=*<a href="BBD1.html">BBD1</a>.</td>
+<td class="comment-1" rowspan="2"><span class="register">B</span>=*<a href="BBD1.html">Count_SavedStateBytes</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -167,13 +166,13 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="add3"></span>ADD3</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Write that initial-state byte through the address from <a href="BAF9.html">Table_SavedStateAddresses</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="add4"></span>ADD4</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="2">Increment <span class="register">IX</span> by two.</td>
+<td class="comment-1" rowspan="2">Move <span class="register">IX</span> on to the next initial-state address.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -184,13 +183,13 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="add8"></span>ADD8</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">DE</span> by one.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">DE</span> on to the next initial-state byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="add9"></span>ADD9</td>
 <td class="instruction">DJNZ <a href="ADA1.html#adcc">GameStart_1</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="ADA1.html#adcc">GameStart_1</a> until counter is zero.</td>
+<td class="comment-1" rowspan="1">Decrease the init counter and loop back to <a href="ADA1.html#adcc">GameStart_1</a> until every saved-state address is primed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -218,8 +217,8 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <tr>
 <td class="asm-label">GameStart_2</td>
 <td class="address-2"><span id="ade7"></span>ADE7</td>
-<td class="instruction">CALL <a href="A280.html">$A280</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A280.html">A280</a>.</td>
+<td class="instruction">CALL <a href="A280.html">Handler_GameEvents</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A280.html">Handler_GameEvents</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -236,14 +235,14 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adef"></span>ADEF</td>
-<td class="instruction">CALL <a href="A1C8.html">$A1C8</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A1C8.html">A1C8</a>.</td>
+<td class="instruction">CALL <a href="A1C8.html">TestFlag</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A1C8.html">TestFlag</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adf2"></span>ADF2</td>
 <td class="instruction">JR NZ,<a href="AE0D.html">GameOver</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AE0D.html">GameOver</a> if <span class="register">DE</span> is not equal to <span class="register">C</span>.</td>
+<td class="comment-1" rowspan="1">End the game when the player is dead.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -254,14 +253,14 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adf6"></span>ADF6</td>
-<td class="instruction">CALL <a href="A1C8.html">$A1C8</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A1C8.html">A1C8</a>.</td>
+<td class="instruction">CALL <a href="A1C8.html">TestFlag</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A1C8.html">TestFlag</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adf9"></span>ADF9</td>
 <td class="instruction">JR NZ,<a href="AE0D.html#ae13">GameOver_Score</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AE0D.html#ae13">GameOver_Score</a> if <span class="register">DE</span> is not equal to <span class="register">C</span>.</td>
+<td class="comment-1" rowspan="1">End the game and show the score.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -272,14 +271,14 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adfd"></span>ADFD</td>
-<td class="instruction">CALL <a href="A1C8.html">$A1C8</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A1C8.html">A1C8</a>.</td>
+<td class="instruction">CALL <a href="A1C8.html">TestFlag</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A1C8.html">TestFlag</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae00"></span>AE00</td>
 <td class="instruction">JR NZ,<a href="AE0D.html#ae16">WantAnotherGameInput</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AE0D.html#ae16">WantAnotherGameInput</a> if <span class="register">DE</span> is not equal to <span class="register">C</span>.</td>
+<td class="comment-1" rowspan="1">End the game and ask for another one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -296,8 +295,8 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae08"></span>AE08</td>
-<td class="instruction">CALL NC,<a href="ACFC.html">$ACFC</a></td>
-<td class="comment-1" rowspan="1">Call <a href="ACFC.html">ACFC</a> if <span class="register">C</span> is greater than 02.</td>
+<td class="instruction">CALL NC,<a href="ACFC.html">Handler_DispatchVerb</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ACFC.html">Handler_DispatchVerb</a> if <span class="register">C</span> is greater than 02.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -320,7 +319,7 @@ Next: <a href="AE0D.html">AE0D</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/44449.html">Switch to decimal</a>.</div>
 </footer>

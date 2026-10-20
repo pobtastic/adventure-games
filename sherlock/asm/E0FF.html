@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at E0FF</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="E0FD.html">E0FD</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#e0ff">Map</a></td>
+<td class="next">
+Next: <a href="E151.html">E151</a>
+</td>
+</tr>
+</table>
+<div class="description">E0FF: Set The Other Held Mark</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Hands object 3F to the held-mark routine. A non-zero return means the script step succeeded.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e0ff"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E0FD.html">E0FD</a>, from the show-message command at <a href="E0ED.html#e0f9">E0F9</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SetHeldMark_OtherObject</td>
+<td class="address-2"><span id="e0ff"></span>E0FF</td>
+<td class="instruction">LD A,$3F</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="9C56.html">SetObjectHeldMark</a> to set object attribute bit 7.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e101"></span>E101</td>
+<td class="instruction">JP <a href="9C56.html">SetObjectHeldMark</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e104"></span>E104</td>
+<td class="instruction">DEFB $08,$60</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 08 value 60.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e106"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E0FF.html#e104">E104</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e106"></span>E106</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="1">Take 01 as the room flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e108"></span>E108</td>
+<td class="instruction">LD ($CAAE),A</td>
+<td class="comment-1" rowspan="1">Store <span class="register">A</span> as the room flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e10b"></span>E10B</td>
+<td class="instruction">LD A,($A036)</td>
+<td class="comment-1" rowspan="3">Return if the character is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e10e"></span>E10E</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e10f"></span>E10F</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e110"></span>
+<div class="comments">
+<div class="paragraph">
+Print object description text.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e110"></span>E110</td>
+<td class="instruction">CALL <a href="DF5B.html">PrintObjectDescriptionText</a></td>
+<td class="comment-1" rowspan="1">Call <a href="DF5B.html">PrintObjectDescriptionText</a> to print the object's description.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e113"></span>E113</td>
+<td class="instruction">LD IX,($A013)</td>
+<td class="comment-1" rowspan="1">Read the current object.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e117"></span>
+<div class="comments">
+<div class="paragraph">
+An object flag is set?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e117"></span>E117</td>
+<td class="instruction">BIT 5,(IX+$05)</td>
+<td class="comment-1" rowspan="2">Return if an object flag is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e11b"></span>E11B</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e11c"></span>E11C</td>
+<td class="instruction">SET 5,(IX+$05)</td>
+<td class="comment-1" rowspan="2">Set an object flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e120"></span>E120</td>
+<td class="instruction">LD HL,$7BF7</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e123"></span>E123</td>
+<td class="instruction">LD (IX+$0D),L</td>
+<td class="comment-1" rowspan="1">Store the low byte of a stored pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e126"></span>E126</td>
+<td class="instruction">LD (IX+$0E),H</td>
+<td class="comment-1" rowspan="3">Store it in the character record and take the message, then call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e129"></span>E129</td>
+<td class="instruction">LD HL,$7C13</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e12c"></span>E12C</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e12f"></span>E12F</td>
+<td class="instruction">CALL <a href="A2A2.html">PrintNewline</a></td>
+<td class="comment-1" rowspan="2">Call <a href="A2A2.html">PrintNewline</a> to print a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e132"></span>E132</td>
+<td class="instruction">OR $01</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e134"></span>E134</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e135"></span>E135</td>
+<td class="instruction">DEFB $78,$50,$2E,$DF,$80,$40,$00,$00</td>
+<td class="comment-1" rowspan="2">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 78 value 50 handler <a href="DEE4.html#df2e">DF2E</a>, parameters 80 40 00 00 00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e13d"></span>E13D</td>
+<td class="instruction">DEFB $00</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e13e"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E0FF.html#e135">E135</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e13e"></span>E13E</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="1">Take 01 as the room flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e140"></span>E140</td>
+<td class="instruction">LD ($CAAE),A</td>
+<td class="comment-1" rowspan="1">Store the room flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e143"></span>E143</td>
+<td class="instruction">LD A,($A036)</td>
+<td class="comment-1" rowspan="1">Read the character being processed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e146"></span>E146</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="2">Return if this character id is not zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e147"></span>E147</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e148"></span>E148</td>
+<td class="instruction">CALL <a href="E151.html">LookupAndPrintDisplayText</a></td>
+<td class="comment-1" rowspan="1">Call <a href="E151.html">LookupAndPrintDisplayText</a> to print the display text.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e14b"></span>E14B</td>
+<td class="instruction">CALL <a href="A2A2.html">PrintNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A2A2.html">PrintNewline</a> to print a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e14e"></span>E14E</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e150"></span>E150</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="E0FD.html">E0FD</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#e0ff">Map</a></td>
+<td class="next">
+Next: <a href="E151.html">E151</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/57599.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

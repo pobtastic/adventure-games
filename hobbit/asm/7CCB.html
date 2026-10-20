@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 7CCB</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="7CC9.html">7CC9</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#7ccb">Map</a></td>
+<td class="next">
+Next: <a href="7CFC.html">7CFC</a>
+</td>
+</tr>
+</table>
+<div class="description">7CCB: Inglish: Find The First Noun</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="7A14.html">Inglish_ResolveTheFirstNoun</a>.
+</div>
+<div class="paragraph">
+Finds the first noun. When the noun-print flag at <a href="B6DA.html#b6fe">B6FE</a> is 01 it uses the place-by-exit test at <a href="9EA0.html">ExitsFindTheExitToANamedPlace</a>; otherwise it uses the object test at <a href="9DD9.html">ConditionSamePlaceAsThePlayer</a>, which looks in the same place as the player. The record found is kept in the saved object pointer at <a href="793D.html#794e">794E</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_FindTheFirstNoun</td>
+<td class="address-2"><span id="7ccb"></span>7CCB</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="2">Use the saved object pointer as the record being walked.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7ccd"></span>7CCD</td>
+<td class="instruction">LD IX,($794E)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cd1"></span>7CD1</td>
+<td class="instruction">LD A,($B6FE)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6fe">B6FE</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cd4"></span>7CD4</td>
+<td class="instruction">DEC A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="7CCB.html#7cf1">Inglish_FindTheFirstNoun_PointAtTheNounTest</a> if the noun-print flag is 01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cd5"></span>7CD5</td>
+<td class="instruction">JR Z,<a href="7CCB.html#7cf1">Inglish_FindTheFirstNoun_PointAtTheNounTest</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cd7"></span>7CD7</td>
+<td class="instruction">LD IY,$9DD9</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IY</span> at <a href="9DD9.html">ConditionSamePlaceAsThePlayer</a> to use as the noun test.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cdb"></span>7CDB</td>
+<td class="instruction">LD A,($B71E)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b71e">B71E</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cde"></span>7CDE</td>
+<td class="instruction">RRCA</td>
+<td class="comment-1" rowspan="3">Keep the low two bits of the clause marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cdf"></span>7CDF</td>
+<td class="instruction">RRCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7ce0"></span>7CE0</td>
+<td class="instruction">AND $03</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7ce2"></span>7CE2</td>
+<td class="instruction">LD ($B710),A</td>
+<td class="comment-1" rowspan="1">Update *<a href="B6DA.html#b710">B710</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7ce5"></span>7CE5</td>
+<td class="instruction">CALL <a href="7CFC.html">Inglish_RunTheFirstNounTest</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7CFC.html">Inglish_RunTheFirstNounTest</a> to run the first noun test.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7ce8"></span>7CE8</td>
+<td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="1">Compare the result of the noun test with FF.</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_FindTheFirstNoun_SaveTheObjectRecord</td>
+<td class="address-2"><span id="7cea"></span>7CEA</td>
+<td class="instruction">LD ($794E),IX</td>
+<td class="comment-1" rowspan="1">Remember this record in the saved object pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cee"></span>7CEE</td>
+<td class="instruction">POP IY</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">IY</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cf0"></span>7CF0</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_FindTheFirstNoun_PointAtTheNounTest</td>
+<td class="address-2"><span id="7cf1"></span>7CF1</td>
+<td class="instruction">LD IY,$9EA0</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IY</span> at <a href="9EA0.html">ExitsFindTheExitToANamedPlace</a> to use as the noun test.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cf5"></span>7CF5</td>
+<td class="instruction">CALL <a href="7CFC.html">Inglish_RunTheFirstNounTest</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7CFC.html">Inglish_RunTheFirstNounTest</a> to run the first noun test.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cf8"></span>7CF8</td>
+<td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="1">Compare the clause marker with FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7cfa"></span>7CFA</td>
+<td class="instruction">JR <a href="7CCB.html#7cea">Inglish_FindTheFirstNoun_SaveTheObjectRecord</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="7CCB.html#7cea">Inglish_FindTheFirstNoun_SaveTheObjectRecord</a> to save this object record.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="7CC9.html">7CC9</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#7ccb">Map</a></td>
+<td class="next">
+Next: <a href="7CFC.html">7CFC</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/31947.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

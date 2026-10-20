@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 7A14</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="79B6.html">79B6</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#7a14">Map</a></td>
+<td class="next">
+Next: <a href="7A73.html">7A73</a>
+</td>
+</tr>
+</table>
+<div class="description">7A14: Inglish: Resolve The First Noun</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="79B6.html">Inglish_ScoreTheCurrentAction</a> and <a href="7AF5.html">Inglish_BuildTheActionSentence</a>.
+</div>
+<div class="paragraph">
+Resolves the first noun of the clause into the current object, or counts another try in the third match buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_ResolveTheFirstNoun</td>
+<td class="address-2"><span id="7a14"></span>7A14</td>
+<td class="instruction">CALL <a href="7CCB.html">Inglish_FindTheFirstNoun</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7CCB.html">Inglish_FindTheFirstNoun</a> to find the first noun.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a17"></span>7A17</td>
+<td class="instruction">JR NZ,<a href="7A14.html#7a2e">Inglish_ResolveTheFirstNoun_CountTheThirdMatch</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="7A14.html#7a2e">Inglish_ResolveTheFirstNoun_CountTheThirdMatch</a> if <a href="7CCB.html">Inglish_FindTheFirstNoun</a> returned an object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a19"></span>7A19</td>
+<td class="instruction">LD A,($7940)</td>
+<td class="comment-1" rowspan="3">Return if the grammar marker is not 01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a1c"></span>7A1C</td>
+<td class="instruction">CP $01</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a1e"></span>7A1E</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a1f"></span>7A1F</td>
+<td class="instruction">LD A,($7956)</td>
+<td class="comment-1" rowspan="1">Read the copied grammar marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a22"></span>7A22</td>
+<td class="instruction">LD ($B6E8),A</td>
+<td class="comment-1" rowspan="1">Update *<a href="B6DA.html#b6e8">CurrentObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a25"></span>7A25</td>
+<td class="instruction">CALL <a href="7ABA.html">Inglish_NoteTheSecondNoun</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7ABA.html">Inglish_NoteTheSecondNoun</a> to note the second noun.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a28"></span>7A28</td>
+<td class="instruction">CALL <a href="7AD8.html">Inglish_TestTheScratchBits</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7AD8.html">Inglish_TestTheScratchBits</a> to test the scratch bits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a2b"></span>7A2B</td>
+<td class="instruction">JR NZ,<a href="7A14.html#7a55">Inglish_ResolveTheFirstNoun_FindTheSecondNoun</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="7A14.html#7a55">Inglish_ResolveTheFirstNoun_FindTheSecondNoun</a> if <a href="7AD8.html">Inglish_TestTheScratchBits</a> returned with the zero flag clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a2d"></span>7A2D</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_ResolveTheFirstNoun_CountTheThirdMatch</td>
+<td class="address-2"><span id="7a2e"></span>7A2E</td>
+<td class="instruction">LD HL,$793F</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the third match buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a31"></span>7A31</td>
+<td class="instruction">INC (HL)</td>
+<td class="comment-1" rowspan="1">Count one more in the third match buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a32"></span>7A32</td>
+<td class="instruction">CALL <a href="7AD8.html">Inglish_TestTheScratchBits</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7AD8.html">Inglish_TestTheScratchBits</a> to test the scratch bits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a35"></span>7A35</td>
+<td class="instruction">JR Z,<a href="7A14.html#7a50">Inglish_ResolveTheFirstNoun_RunTheAction</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="7A14.html#7a50">Inglish_ResolveTheFirstNoun_RunTheAction</a> if <a href="7AD8.html">Inglish_TestTheScratchBits</a> returned zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a37"></span>7A37</td>
+<td class="instruction">CALL <a href="7ABA.html">Inglish_NoteTheSecondNoun</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7ABA.html">Inglish_NoteTheSecondNoun</a> to note the second noun.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a3a"></span>7A3A</td>
+<td class="instruction">CALL <a href="7D17.html">Inglish_FindTheSecondNoun</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7D17.html">Inglish_FindTheSecondNoun</a> to find the second noun.</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_ResolveTheFirstNoun_TestForASecondNoun</td>
+<td class="address-2"><span id="7a3d"></span>7A3D</td>
+<td class="instruction">JR Z,<a href="7A14.html#7a14">Inglish_ResolveTheFirstNoun</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="7A14.html">Inglish_ResolveTheFirstNoun</a> if <a href="7D17.html">Inglish_FindTheSecondNoun</a> found no second noun (FF).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a3f"></span>7A3F</td>
+<td class="instruction">LD A,($7953)</td>
+<td class="comment-1" rowspan="3">Return if the phrase-byte flag reached zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a42"></span>7A42</td>
+<td class="instruction">DEC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a43"></span>7A43</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a44"></span>7A44</td>
+<td class="instruction">LD A,($B6E8)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6e8">CurrentObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a47"></span>7A47</td>
+<td class="instruction">LD ($7956),A</td>
+<td class="comment-1" rowspan="1">Update the copied grammar marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a4a"></span>7A4A</td>
+<td class="instruction">LD HL,$7940</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the grammar marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a4d"></span>7A4D</td>
+<td class="instruction">INC (HL)</td>
+<td class="comment-1" rowspan="1">Count one more in the grammar marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a4e"></span>7A4E</td>
+<td class="instruction">JR <a href="7A14.html#7a14">Inglish_ResolveTheFirstNoun</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="7A14.html">Inglish_ResolveTheFirstNoun</a> to run the grammar.</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_ResolveTheFirstNoun_RunTheAction</td>
+<td class="address-2"><span id="7a50"></span>7A50</td>
+<td class="instruction">CALL <a href="7AED.html">Inglish_AskWhetherToSuppress</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7AED.html">Inglish_AskWhetherToSuppress</a> to run the action and see whether its message was held back.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a53"></span>7A53</td>
+<td class="instruction">JR <a href="7A14.html#7a3d">Inglish_ResolveTheFirstNoun_TestForASecondNoun</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="7A14.html#7a3d">Inglish_ResolveTheFirstNoun_TestForASecondNoun</a> to read the next word.</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_ResolveTheFirstNoun_FindTheSecondNoun</td>
+<td class="address-2"><span id="7a55"></span>7A55</td>
+<td class="instruction">CALL <a href="7D17.html">Inglish_FindTheSecondNoun</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7D17.html">Inglish_FindTheSecondNoun</a> to find the second noun.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a58"></span>7A58</td>
+<td class="instruction">JR NZ,<a href="7A14.html#7a67">Inglish_ResolveTheFirstNoun_ReadTheSecondObject</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="7A14.html#7a67">Inglish_ResolveTheFirstNoun_ReadTheSecondObject</a> if <a href="7D17.html">Inglish_FindTheSecondNoun</a> found a second noun.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a5a"></span>7A5A</td>
+<td class="instruction">LD A,($7941)</td>
+<td class="comment-1" rowspan="3">Return if the second grammar marker is not 01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a5d"></span>7A5D</td>
+<td class="instruction">CP $01</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a5f"></span>7A5F</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a60"></span>7A60</td>
+<td class="instruction">LD A,($7957)</td>
+<td class="comment-1" rowspan="1">Read the copied second marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a63"></span>7A63</td>
+<td class="instruction">LD ($B6E9),A</td>
+<td class="comment-1" rowspan="1">Update *<a href="B6DA.html#b6e9">B6E9</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a66"></span>7A66</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Inglish_ResolveTheFirstNoun_ReadTheSecondObject</td>
+<td class="address-2"><span id="7a67"></span>7A67</td>
+<td class="instruction">LD A,($B6E9)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6e9">B6E9</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a6a"></span>7A6A</td>
+<td class="instruction">LD ($7957),A</td>
+<td class="comment-1" rowspan="1">Update the copied second marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a6d"></span>7A6D</td>
+<td class="instruction">LD HL,$7941</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the second grammar marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a70"></span>7A70</td>
+<td class="instruction">INC (HL)</td>
+<td class="comment-1" rowspan="1">Count one more in the second grammar marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7a71"></span>7A71</td>
+<td class="instruction">JR <a href="7A14.html#7a55">Inglish_ResolveTheFirstNoun_FindTheSecondNoun</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="7A14.html#7a55">Inglish_ResolveTheFirstNoun_FindTheSecondNoun</a> to run the grammar.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="79B6.html">79B6</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#7a14">Map</a></td>
+<td class="next">
+Next: <a href="7A73.html">7A73</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/31252.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

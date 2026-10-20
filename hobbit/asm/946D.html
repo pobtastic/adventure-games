@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 946D</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="93DA.html">93DA</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#946d">Map</a></td>
+<td class="next">
+Next: <a href="948D.html">948D</a>
+</td>
+</tr>
+</table>
+<div class="description">946D: Action: Lock</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="A302.html">ActionBurn</a>.
+</div>
+<div class="paragraph">
+Locks the current object with the second object as the key. An object that is already locked or is open is refused. <a href="946D.html#9488">9488</a> is set up to SET bit 0.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Lock</td>
+<td class="address-2"><span id="946d"></span>946D</td>
+<td class="instruction">CALL <a href="A1F9.html">Action_ReadTheObjectLockFlag</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A1F9.html">Action_ReadTheObjectLockFlag</a> to read the object's lock flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9470"></span>9470</td>
+<td class="instruction">JP NZ,<a href="A16C.html">Message_NameFromThisRecord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A16C.html">Message_NameFromThisRecord</a> if the object is already locked or is open.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9473"></span>9473</td>
+<td class="instruction">LD A,$C6</td>
+<td class="comment-1" rowspan="1">Use C6, the SET 0 operation.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9475"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="948D.html">Action_Unlock</a>.
+</div>
+<div class="paragraph">
+<a href="948D.html">Action_Unlock</a> joins here with RES 0 to unlock the object.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Lock_TestTheKey</td>
+<td class="address-2"><span id="9475"></span>9475</td>
+<td class="instruction">LD ($948B),A</td>
+<td class="comment-1" rowspan="1">Plant the operation at byte 948B of <a href="946D.html#9488">9488</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9478"></span>9478</td>
+<td class="instruction">LD IY,($B70A)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b70a">B70A</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="947c"></span>947C</td>
+<td class="instruction">BIT 3,(IY+$07)</td>
+<td class="comment-1" rowspan="3">Take 83, and jump to <a href="A164.html">Message_NameFromTheOtherRecord</a> if the key is broken.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9480"></span>9480</td>
+<td class="instruction">LD A,$83</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9482"></span>9482</td>
+<td class="instruction">JP NZ,<a href="A164.html">Message_NameFromTheOtherRecord</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9485"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, the object is not locked or unlocked.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9485"></span>9485</td>
+<td class="instruction">CALL <a href="9D44.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9D44.html">ConditionSuppressTheMessage</a>. If the message is held back, the object is not locked or unlocked.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9488"></span>9488</td>
+<td class="instruction">SET 0,(IX+$07)</td>
+<td class="comment-1" rowspan="1">Lock the object (SET 0), or unlock it when <a href="948D.html">Action_Unlock</a> has planted RES 0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="948c"></span>948C</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="93DA.html">93DA</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#946d">Map</a></td>
+<td class="next">
+Next: <a href="948D.html">948D</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/37997.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

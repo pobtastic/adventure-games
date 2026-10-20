@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at C0F9</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C0D2.html">C0D2</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c0f9">Map</a></td>
+<td class="next">
+Next: <a href="C201.html">C201</a>
+</td>
+</tr>
+</table>
+<div class="description">C0F9: Handler: Display Room</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="C380.html">LoadFromTape</a>, <a href="ECB6.html">Handler_InjuryCheck</a> and <a href="EE05.html">Action_Look</a>.
+</div>
+<div class="paragraph">
+On the first visit, show the picture and the long description, then list what is here and which ways lead out.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom</td>
+<td class="address-2"><span id="c0f9"></span>C0F9</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="1">Keep <span class="register">DE</span> safe on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c0fa"></span>C0FA</td>
+<td class="instruction">CALL <a href="BDEA.html">ClearScreen</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BDEA.html">ClearScreen</a> to clear the screen.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c0fd"></span>C0FD</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c0fe"></span>C0FE</td>
+<td class="instruction">LD A,($BAFE)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C0F9.html#c14f">Handler_DisplayRoom_PrintDescription</a> when room descriptions are switched off.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c101"></span>C101</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c102"></span>C102</td>
+<td class="instruction">JR Z,<a href="C0F9.html#c14f">Handler_DisplayRoom_PrintDescription</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c104"></span>C104</td>
+<td class="instruction">LD A,($BA9B)</td>
+<td class="comment-1" rowspan="5">Search the picture list for this room. Jump to <a href="C0F9.html#c14f">Handler_DisplayRoom_PrintDescription</a> when it has no picture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c107"></span>C107</td>
+<td class="instruction">LD HL,($BAE4)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c10a"></span>C10A</td>
+<td class="instruction">LD BC,($BAFE)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c10e"></span>C10E</td>
+<td class="instruction">CPIR</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c110"></span>C110</td>
+<td class="instruction">JR NZ,<a href="C0F9.html#c14f">Handler_DisplayRoom_PrintDescription</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c112"></span>C112</td>
+<td class="instruction">LD A,($BAFE)</td>
+<td class="comment-1" rowspan="7">Jump to <a href="C0F9.html#c138">Handler_DisplayRoom_FirstVisit</a> when this visit should show the picture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c115"></span>C115</td>
+<td class="instruction">INC C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c116"></span>C116</td>
+<td class="instruction">SUB C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c117"></span>C117</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c118"></span>C118</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c119"></span>C119</td>
+<td class="instruction">OR E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c11a"></span>C11A</td>
+<td class="instruction">JR NZ,<a href="C0F9.html#c138">Handler_DisplayRoom_FirstVisit</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c11c"></span>C11C</td>
+<td class="instruction">LD HL,$BA30</td>
+<td class="comment-1" rowspan="4">Find this room's visited flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c11f"></span>C11F</td>
+<td class="instruction">LD A,C</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_Loop</td>
+<td class="address-2"><span id="c120"></span>C120</td>
+<td class="instruction">CP $08</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c122"></span>C122</td>
+<td class="instruction">JR C,<a href="C0F9.html#c129">Handler_DisplayRoom_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c124"></span>C124</td>
+<td class="instruction">SUB $08</td>
+<td class="comment-1" rowspan="3">This room's flag is in the next flag byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c126"></span>C126</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c127"></span>C127</td>
+<td class="instruction">JR <a href="C0F9.html#c120">Handler_DisplayRoom_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_Next</td>
+<td class="address-2"><span id="c129"></span>C129</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="5">Turn that bit number into a flag mask.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c12a"></span>C12A</td>
+<td class="instruction">INC B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c12b"></span>C12B</td>
+<td class="instruction">LD D,$00</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_FlagBit</td>
+<td class="address-2"><span id="c12d"></span>C12D</td>
+<td class="instruction">RL D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c12f"></span>C12F</td>
+<td class="instruction">DJNZ <a href="C0F9.html#c12d">Handler_DisplayRoom_FlagBit</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c131"></span>C131</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C0F9.html#c14f">Handler_DisplayRoom_PrintDescription</a> when this room has already been visited.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c132"></span>C132</td>
+<td class="instruction">AND D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c133"></span>C133</td>
+<td class="instruction">JR NZ,<a href="C0F9.html#c14f">Handler_DisplayRoom_PrintDescription</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c135"></span>C135</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Mark this room as visited.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c136"></span>C136</td>
+<td class="instruction">OR D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c137"></span>C137</td>
+<td class="instruction">LD (HL),A</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_FirstVisit</td>
+<td class="address-2"><span id="c138"></span>C138</td>
+<td class="instruction">LD A,$08</td>
+<td class="comment-1" rowspan="4">Remember that the long description was shown, and set the text row to 08.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c13a"></span>C13A</td>
+<td class="instruction">LD ($BB40),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c13d"></span>C13D</td>
+<td class="instruction">LD HL,$BA2C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c140"></span>C140</td>
+<td class="instruction">SET 0,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c142"></span>C142</td>
+<td class="instruction">LD IX,($BAE6)</td>
+<td class="comment-1" rowspan="3">Call <a href="C0C3.html">GetTableEntry</a> to fetch this room's picture handler.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c146"></span>C146</td>
+<td class="instruction">LD E,C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c147"></span>C147</td>
+<td class="instruction">CALL <a href="C0C3.html">GetTableEntry</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c14a"></span>C14A</td>
+<td class="instruction">LD DE,$C14F</td>
+<td class="comment-1" rowspan="3">Return to <a href="C0F9.html#c14f">Handler_DisplayRoom_PrintDescription</a> afterwards and jump to that handler.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c14d"></span>C14D</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c14e"></span>C14E</td>
+<td class="instruction">JP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_PrintDescription</td>
+<td class="address-2"><span id="c14f"></span>C14F</td>
+<td class="instruction">CALL <a href="BE06.html">SetScreenPosition</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BE06.html">SetScreenPosition</a> to move the cursor to the text line stored at <a href="BB04.html#bb40">BB40</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c152"></span>C152</td>
+<td class="instruction">LD A,$18</td>
+<td class="comment-1" rowspan="2">Set the text row to 18, under the picture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c154"></span>C154</td>
+<td class="instruction">LD ($BB40),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c157"></span>C157</td>
+<td class="instruction">LD A,($BA9B)</td>
+<td class="comment-1" rowspan="4">Call <a href="C0C3.html">GetTableEntry</a> to fetch this room's long description.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c15a"></span>C15A</td>
+<td class="instruction">LD IX,($BAE8)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c15e"></span>C15E</td>
+<td class="instruction">LD E,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c15f"></span>C15F</td>
+<td class="instruction">CALL <a href="C0C3.html">GetTableEntry</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c162"></span>C162</td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BE2E.html">PrintStringAndANewline</a> to print the room description and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c165"></span>C165</td>
+<td class="instruction">LD HL,$BA2C</td>
+<td class="comment-1" rowspan="3">Skip the key-wait unless the long description was just shown.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c168"></span>C168</td>
+<td class="instruction">BIT 0,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c16a"></span>C16A</td>
+<td class="instruction">JR Z,<a href="C0F9.html#c171">Handler_DisplayRoom_ListExits</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c16c"></span>C16C</td>
+<td class="instruction">RES 0,(HL)</td>
+<td class="comment-1" rowspan="2">Clear that flag and wait for a key.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c16e"></span>C16E</td>
+<td class="instruction">CALL <a href="BDDA.html">GetUserInput</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_ListExits</td>
+<td class="address-2"><span id="c171"></span>C171</td>
+<td class="instruction">CALL <a href="C201.html">GetRoomPointer</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C201.html">GetRoomPointer</a> to fetch this room's six exits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c174"></span>C174</td>
+<td class="instruction">LD D,H</td>
+<td class="comment-1" rowspan="10">Count how many of the six exits leave this room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c175"></span>C175</td>
+<td class="instruction">LD E,L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c176"></span>C176</td>
+<td class="instruction">LD B,$06</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c178"></span>C178</td>
+<td class="instruction">LD C,$00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c17a"></span>C17A</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_CountExits</td>
+<td class="address-2"><span id="c17b"></span>C17B</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c17c"></span>C17C</td>
+<td class="instruction">JR Z,<a href="C0F9.html#c17f">Handler_DisplayRoom_CountNext</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c17e"></span>C17E</td>
+<td class="instruction">INC C</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_CountNext</td>
+<td class="address-2"><span id="c17f"></span>C17F</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c180"></span>C180</td>
+<td class="instruction">DJNZ <a href="C0F9.html#c17b">Handler_DisplayRoom_CountExits</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c182"></span>C182</td>
+<td class="instruction">OR C</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C0F9.html#c1ed">Handler_DisplayRoom_ListObjects</a> when there are no exits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c183"></span>C183</td>
+<td class="instruction">JR Z,<a href="C0F9.html#c1ed">Handler_DisplayRoom_ListObjects</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c185"></span>C185</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C0F9.html#c1ac">Handler_DisplayRoom_ManyExits</a> when more than one exit is open.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c186"></span>C186</td>
+<td class="instruction">CP $01</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c188"></span>C188</td>
+<td class="instruction">JR NZ,<a href="C0F9.html#c1ac">Handler_DisplayRoom_ManyExits</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c18a"></span>C18A</td>
+<td class="instruction">LD HL,$BBBC</td>
+<td class="comment-1" rowspan="2">Print "There is an exit ".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c18d"></span>C18D</td>
+<td class="instruction">CALL <a href="BE21.html">PrintString</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c190"></span>C190</td>
+<td class="instruction">LD H,D</td>
+<td class="comment-1" rowspan="5">Point back at the exits and the direction names for the one way out.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c191"></span>C191</td>
+<td class="instruction">LD L,E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c192"></span>C192</td>
+<td class="instruction">LD IX,$BDB2</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c196"></span>C196</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c197"></span>C197</td>
+<td class="instruction">JR <a href="C0F9.html#c19e">Handler_DisplayRoom_OneExit</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_SkipClosed</td>
+<td class="address-2"><span id="c199"></span>C199</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="5">Skip a closed exit and move on to the next way out.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c19a"></span>C19A</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c19c"></span>C19C</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_OneExit</td>
+<td class="address-2"><span id="c19e"></span>C19E</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c19f"></span>C19F</td>
+<td class="instruction">JR Z,<a href="C0F9.html#c199">Handler_DisplayRoom_SkipClosed</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1a1"></span>C1A1</td>
+<td class="instruction">LD L,(IX+$00)</td>
+<td class="comment-1" rowspan="3">Call <a href="BE21.html">PrintString</a> to print the direction name.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1a4"></span>C1A4</td>
+<td class="instruction">LD H,(IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1a7"></span>C1A7</td>
+<td class="instruction">CALL <a href="BE21.html">PrintString</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1aa"></span>C1AA</td>
+<td class="instruction">JR <a href="C0F9.html#c1e7">Handler_DisplayRoom_FullStop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C0F9.html#c1e7">Handler_DisplayRoom_FullStop</a> to finish the exit sentence.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_ManyExits</td>
+<td class="address-2"><span id="c1ac"></span>C1AC</td>
+<td class="instruction">LD HL,$BBA9</td>
+<td class="comment-1" rowspan="2">Print "There are exits:-".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1af"></span>C1AF</td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1b2"></span>C1B2</td>
+<td class="instruction">LD H,D</td>
+<td class="comment-1" rowspan="5">Point back at the exits and the direction names.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1b3"></span>C1B3</td>
+<td class="instruction">LD L,E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1b4"></span>C1B4</td>
+<td class="instruction">LD IX,$BDB2</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1b8"></span>C1B8</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1b9"></span>C1B9</td>
+<td class="instruction">JR <a href="C0F9.html#c1c1">Handler_DisplayRoom_ExitOpen</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_NextExit</td>
+<td class="address-2"><span id="c1bb"></span>C1BB</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="6">Exchange the exit list back into <span class="register">HL</span> and step to the next open way out.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_StepExit</td>
+<td class="address-2"><span id="c1bc"></span>C1BC</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1bd"></span>C1BD</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1bf"></span>C1BF</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_ExitOpen</td>
+<td class="address-2"><span id="c1c1"></span>C1C1</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1c2"></span>C1C2</td>
+<td class="instruction">JR Z,<a href="C0F9.html#c1bc">Handler_DisplayRoom_StepExit</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1c4"></span>C1C4</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="4">Call <a href="BE21.html">PrintString</a> to print the direction name.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1c5"></span>C1C5</td>
+<td class="instruction">LD L,(IX+$00)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1c8"></span>C1C8</td>
+<td class="instruction">LD H,(IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1cb"></span>C1CB</td>
+<td class="instruction">CALL <a href="BE21.html">PrintString</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1ce"></span>C1CE</td>
+<td class="instruction">DEC C</td>
+<td class="comment-1" rowspan="4">Jump to <a href="C0F9.html#c1e7">Handler_DisplayRoom_FullStop</a> when no exits remain.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1cf"></span>C1CF</td>
+<td class="instruction">LD A,C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1d0"></span>C1D0</td>
+<td class="instruction">CP $01</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1d2"></span>C1D2</td>
+<td class="instruction">JR C,<a href="C0F9.html#c1e7">Handler_DisplayRoom_FullStop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1d4"></span>C1D4</td>
+<td class="instruction">JR Z,<a href="C0F9.html#c1de">Handler_DisplayRoom_And</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C0F9.html#c1de">Handler_DisplayRoom_And</a> to join the last exit with "and".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1d6"></span>C1D6</td>
+<td class="instruction">LD A,$2C</td>
+<td class="comment-1" rowspan="2">Print a comma between the exits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1d8"></span>C1D8</td>
+<td class="instruction">CALL <a href="BE37.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1db"></span>C1DB</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="C0F9.html#c1bb">Handler_DisplayRoom_NextExit</a> for the next exit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1dc"></span>C1DC</td>
+<td class="instruction">JR <a href="C0F9.html#c1bb">Handler_DisplayRoom_NextExit</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_And</td>
+<td class="address-2"><span id="c1de"></span>C1DE</td>
+<td class="instruction">LD HL,$BBA5</td>
+<td class="comment-1" rowspan="2">Print " & ".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1e1"></span>C1E1</td>
+<td class="instruction">CALL <a href="BE21.html">PrintString</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1e4"></span>C1E4</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="C0F9.html#c1bb">Handler_DisplayRoom_NextExit</a> for the next exit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1e5"></span>C1E5</td>
+<td class="instruction">JR <a href="C0F9.html#c1bb">Handler_DisplayRoom_NextExit</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_FullStop</td>
+<td class="address-2"><span id="c1e7"></span>C1E7</td>
+<td class="instruction">LD HL,$BCF9</td>
+<td class="comment-1" rowspan="2">Print ".".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1ea"></span>C1EA</td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DisplayRoom_ListObjects</td>
+<td class="address-2"><span id="c1ed"></span>C1ED</td>
+<td class="instruction">LD A,($BA9B)</td>
+<td class="comment-1" rowspan="3">Call <a href="BF69.html">IsObjectPresent</a> to see whether this room holds anything. Return when it does not.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1f0"></span>C1F0</td>
+<td class="instruction">CALL <a href="BF69.html">IsObjectPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1f3"></span>C1F3</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1f4"></span>C1F4</td>
+<td class="instruction">LD HL,$BB96</td>
+<td class="comment-1" rowspan="2">Print "You can see:-".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1f7"></span>C1F7</td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1fa"></span>C1FA</td>
+<td class="instruction">LD A,($BA9B)</td>
+<td class="comment-1" rowspan="2">Call <a href="C0D2.html">PrintObjects</a> to list what is in this room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c1fd"></span>C1FD</td>
+<td class="instruction">CALL <a href="C0D2.html">PrintObjects</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c200"></span>C200</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C0D2.html">C0D2</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c0f9">Map</a></td>
+<td class="next">
+Next: <a href="C201.html">C201</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/49401.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

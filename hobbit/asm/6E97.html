@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 6E97</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6E8B.html">6E8B</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6e97">Map</a></td>
+<td class="next">
+Next: <a href="6F30.html">6F30</a>
+</td>
+</tr>
+</table>
+<div class="description">6E97: Input: Take The Next Word</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="6CEC.html">TurnReadAndTokeniseTheCommand</a>.
+</div>
+<div class="paragraph">
+Skips spaces, stores the start of the next word, and classifies it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord</td>
+<td class="address-2"><span id="6e97"></span>6E97</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="5">Jump back to <a href="6E97.html#6e98">Input_TakeTheNextWord_SkipSpaces</a> if the line being typed is a space.</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_SkipSpaces</td>
+<td class="address-2"><span id="6e98"></span>6E98</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6e99"></span>6E99</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6e9a"></span>6E9A</td>
+<td class="instruction">CP $20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6e9c"></span>6E9C</td>
+<td class="instruction">JR Z,<a href="6E97.html#6e98">Input_TakeTheNextWord_SkipSpaces</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6e9e"></span>6E9E</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="1">Step back one byte through <a href="6FF2.html#6ff9">6FF9</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6e9f"></span>6E9F</td>
+<td class="instruction">LD ($B6DA),HL</td>
+<td class="comment-1" rowspan="1">Update *<a href="B6DA.html">B6DA</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ea2"></span>6EA2</td>
+<td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6E97.html#6ede">Input_TakeTheNextWord_MarkTheEndOfTheCommand</a> if the line being typed is ENTER.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ea4"></span>6EA4</td>
+<td class="instruction">JR Z,<a href="6E97.html#6ede">Input_TakeTheNextWord_MarkTheEndOfTheCommand</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ea6"></span>6EA6</td>
+<td class="instruction">CALL <a href="6F30.html">Input_ClassifyPunctuation</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6F30.html">Input_ClassifyPunctuation</a> to classify punctuation.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ea9"></span>6EA9</td>
+<td class="instruction">JR Z,<a href="6E97.html#6ee3">Input_TakeTheNextWord_ReturnTheClass</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6E97.html#6ee3">Input_TakeTheNextWord_ReturnTheClass</a> if <a href="6F30.html">Input_ClassifyPunctuation</a> classified this character as punctuation.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6eab"></span>6EAB</td>
+<td class="instruction">CALL <a href="6F47.html">Input_CopyADictionaryWord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6F47.html">Input_CopyADictionaryWord</a> to copy a dictionary word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6eae"></span>6EAE</td>
+<td class="instruction">JR NZ,<a href="6E97.html#6ebc">Input_TakeTheNextWord_MarkThisTokenAsAnUnknownWord</a></td>
+<td class="comment-1" rowspan="2">Jump to <a href="6E97.html#6ebc">Input_TakeTheNextWord_MarkThisTokenAsAnUnknownWord</a> if <a href="6F47.html">Input_CopyADictionaryWord</a> found no dictionary word starting with the typed word's first letter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6eb0"></span>6EB0</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_CompareTheDictionaryWord</td>
+<td class="address-2"><span id="6eb1"></span>6EB1</td>
+<td class="instruction">CALL <a href="6FBA.html">Input_CompareTheDictionaryWord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6FBA.html">Input_CompareTheDictionaryWord</a> to compare the dictionary word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6eb4"></span>6EB4</td>
+<td class="instruction">JR Z,<a href="6E97.html#6ec0">Input_TakeTheNextWord_CompareTheWordLengths</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6E97.html#6ec0">Input_TakeTheNextWord_CompareTheWordLengths</a> if <a href="6FBA.html">Input_CompareTheDictionaryWord</a> found the words match.</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_CopyADictionaryWord</td>
+<td class="address-2"><span id="6eb6"></span>6EB6</td>
+<td class="instruction">CALL <a href="6F47.html#6f72">Input_CopyADictionaryWord_0</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6F47.html#6f72">Input_CopyADictionaryWord_0</a> to copy a dictionary word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6eb9"></span>6EB9</td>
+<td class="instruction">JR Z,<a href="6E97.html#6eb1">Input_TakeTheNextWord_CompareTheDictionaryWord</a></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="6E97.html#6eb1">Input_TakeTheNextWord_CompareTheDictionaryWord</a> while <a href="6F47.html#6f72">Input_CopyADictionaryWord_0</a> finds another dictionary word with the same first letter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ebb"></span>6EBB</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_MarkThisTokenAsAnUnknownWord</td>
+<td class="address-2"><span id="6ebc"></span>6EBC</td>
+<td class="instruction">LD A,$D0</td>
+<td class="comment-1" rowspan="1">Mark this token as an unknown word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ebe"></span>6EBE</td>
+<td class="instruction">JR <a href="6E97.html#6ee0">Input_TakeTheNextWord_FinishTheUnknownWord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6E97.html#6ee0">Input_TakeTheNextWord_FinishTheUnknownWord</a> to finish this unknown-word token.</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_CompareTheWordLengths</td>
+<td class="address-2"><span id="6ec0"></span>6EC0</td>
+<td class="instruction">LD A,($708A)</td>
+<td class="comment-1" rowspan="1">Read *<a href="6FF2.html#708a">708A</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ec3"></span>6EC3</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ec4"></span>6EC4</td>
+<td class="instruction">LD A,($709B)</td>
+<td class="comment-1" rowspan="1">Read *<a href="6FF2.html#709b">709B</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ec7"></span>6EC7</td>
+<td class="instruction">CP B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6E97.html#6eeb">Input_TakeTheNextWord_LoadTheDictionaryPointer</a> if the length of the dictionary word is not below the length of the typed word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ec8"></span>6EC8</td>
+<td class="instruction">JR NC,<a href="6E97.html#6eeb">Input_TakeTheNextWord_LoadTheDictionaryPointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6eca"></span>6ECA</td>
+<td class="instruction">CP $04</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="6E97.html#6eb6">Input_TakeTheNextWord_CopyADictionaryWord</a> if the length of the dictionary word is below 04.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ecc"></span>6ECC</td>
+<td class="instruction">JR C,<a href="6E97.html#6eb6">Input_TakeTheNextWord_CopyADictionaryWord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ece"></span>6ECE</td>
+<td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="2">Call <a href="6F47.html#6f76">Input_CopyADictionaryWord_1</a> to unpack the dictionary word when its length matches the typed word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ed0"></span>6ED0</td>
+<td class="instruction">CALL <a href="6F47.html#6f76">Input_CopyADictionaryWord_1</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ed3"></span>6ED3</td>
+<td class="instruction">JR NZ,<a href="6E97.html#6ee9">Input_TakeTheNextWord_PopTheSavedPointer</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6E97.html#6ee9">Input_TakeTheNextWord_PopTheSavedPointer</a> if <a href="6F47.html#6f76">Input_CopyADictionaryWord_1</a> found a mismatch.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ed5"></span>6ED5</td>
+<td class="instruction">CALL <a href="6FBA.html">Input_CompareTheDictionaryWord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6FBA.html">Input_CompareTheDictionaryWord</a> to compare the dictionary word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ed8"></span>6ED8</td>
+<td class="instruction">JR NZ,<a href="6E97.html#6ee9">Input_TakeTheNextWord_PopTheSavedPointer</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6E97.html#6ee9">Input_TakeTheNextWord_PopTheSavedPointer</a> if <a href="6FBA.html">Input_CompareTheDictionaryWord</a> found the words differ.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6eda"></span>6EDA</td>
+<td class="instruction">POP IX</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="6E97.html#6eb6">Input_TakeTheNextWord_CopyADictionaryWord</a> to read the input line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6edc"></span>6EDC</td>
+<td class="instruction">JR <a href="6E97.html#6eb6">Input_TakeTheNextWord_CopyADictionaryWord</a></td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_MarkTheEndOfTheCommand</td>
+<td class="address-2"><span id="6ede"></span>6EDE</td>
+<td class="instruction">LD A,$C0</td>
+<td class="comment-1" rowspan="1">Mark this token as the end of a command.</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_FinishTheUnknownWord</td>
+<td class="address-2"><span id="6ee0"></span>6EE0</td>
+<td class="instruction">LD BC,$0000</td>
+<td class="comment-1" rowspan="1">Start from a clear pointer.</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_ReturnTheClass</td>
+<td class="address-2"><span id="6ee3"></span>6EE3</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="2">Keep the low byte of the saved pointer and put the class in <span class="register">D</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ee4"></span>6EE4</td>
+<td class="instruction">LD D,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ee5"></span>6EE5</td>
+<td class="instruction">ADD A,B</td>
+<td class="comment-1" rowspan="1">Add the length of the typed word to the class in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ee6"></span>6EE6</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ee7"></span>6EE7</td>
+<td class="instruction">LD A,D</td>
+<td class="comment-1" rowspan="1">Restore the end-of-command class C0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ee8"></span>6EE8</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_PopTheSavedPointer</td>
+<td class="address-2"><span id="6ee9"></span>6EE9</td>
+<td class="instruction">POP IX</td>
+<td class="comment-1" rowspan="2">Read *<a href="B6DA.html#b717">B717</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_LoadTheDictionaryPointer</td>
+<td class="address-2"><span id="6eeb"></span>6EEB</td>
+<td class="instruction">LD IX,($B717)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6eef"></span>6EEF</td>
+<td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="2">Save the dictionary pointer and start the length at zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ef1"></span>6EF1</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_StepThroughTheDictionaryWord</td>
+<td class="address-2"><span id="6ef2"></span>6EF2</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="4">Step to the next dictionary byte and loop back to <a href="6E97.html#6ef2">Input_TakeTheNextWord_StepThroughTheDictionaryWord</a> while bit 7 of that byte is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ef4"></span>6EF4</td>
+<td class="instruction">INC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ef5"></span>6EF5</td>
+<td class="instruction">BIT 7,(IX-$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ef9"></span>6EF9</td>
+<td class="instruction">JR Z,<a href="6E97.html#6ef2">Input_TakeTheNextWord_StepThroughTheDictionaryWord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6efb"></span>6EFB</td>
+<td class="instruction">CP $02</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="6E97.html#6ef2">Input_TakeTheNextWord_StepThroughTheDictionaryWord</a> if the dictionary byte count is 02.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6efd"></span>6EFD</td>
+<td class="instruction">JR Z,<a href="6E97.html#6ef2">Input_TakeTheNextWord_StepThroughTheDictionaryWord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6eff"></span>6EFF</td>
+<td class="instruction">CP $03</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6E97.html#6f09">Input_TakeTheNextWord_TestForAnOffset</a> unless the byte is 03.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f01"></span>6F01</td>
+<td class="instruction">JR NZ,<a href="6E97.html#6f09">Input_TakeTheNextWord_TestForAnOffset</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f03"></span>6F03</td>
+<td class="instruction">BIT 7,(IX-$02)</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="6E97.html#6ef2">Input_TakeTheNextWord_StepThroughTheDictionaryWord</a> if bit 7 of the earlier dictionary byte is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f07"></span>6F07</td>
+<td class="instruction">JR NZ,<a href="6E97.html#6ef2">Input_TakeTheNextWord_StepThroughTheDictionaryWord</a></td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_TestForAnOffset</td>
+<td class="address-2"><span id="6f09"></span>6F09</td>
+<td class="instruction">BIT 6,(IX-$01)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6E97.html#6f1a">Input_TakeTheNextWord_PackTheClassBits</a> if bit 6 of this dictionary byte is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f0d"></span>6F0D</td>
+<td class="instruction">JR Z,<a href="6E97.html#6f1a">Input_TakeTheNextWord_PackTheClassBits</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f0f"></span>6F0F</td>
+<td class="instruction">LD L,(IX+$00)</td>
+<td class="comment-1" rowspan="1">Read the low byte of this dictionary offset.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f12"></span>6F12</td>
+<td class="instruction">LD H,(IX+$01)</td>
+<td class="comment-1" rowspan="1">Read the high byte of this dictionary offset.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f15"></span>6F15</td>
+<td class="instruction">LD DE,$6000</td>
+<td class="comment-1" rowspan="2">Add the dictionary base at <a href="6000.html">WordIndex</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f18"></span>6F18</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f19"></span>6F19</td>
+<td class="instruction">EX (SP),HL</td>
+<td class="comment-1" rowspan="1">Exchange the dictionary address with the pointer saved on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label">Input_TakeTheNextWord_PackTheClassBits</td>
+<td class="address-2"><span id="6f1a"></span>6F1A</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="5">Pack the top two bits of this letter into the class.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f1b"></span>6F1B</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f1c"></span>6F1C</td>
+<td class="instruction">RLCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f1d"></span>6F1D</td>
+<td class="instruction">AND $C0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f1f"></span>6F1F</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f20"></span>6F20</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next byte of the input buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f21"></span>6F21</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Pack the next two bits of the following letter into the class.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f22"></span>6F22</td>
+<td class="instruction">RRCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f23"></span>6F23</td>
+<td class="instruction">AND $30</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f25"></span>6F25</td>
+<td class="instruction">ADD A,B</td>
+<td class="comment-1" rowspan="1">Combine the two pairs of class bits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f26"></span>6F26</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="1">Step back one byte through <a href="6FF2.html#6ff9">6FF9</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f27"></span>6F27</td>
+<td class="instruction">LD DE,$A000</td>
+<td class="comment-1" rowspan="1">Add the A000 token base onto the token pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f2a"></span>6F2A</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Add the token base to <a href="6FF2.html#6ff9">6FF9</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f2b"></span>6F2B</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="4">Keep the token address in <span class="register">BC</span> and jump to <a href="6E97.html#6ee3">Input_TakeTheNextWord_ReturnTheClass</a> to return the class.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f2c"></span>6F2C</td>
+<td class="instruction">POP BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f2d"></span>6F2D</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f2e"></span>6F2E</td>
+<td class="instruction">JR <a href="6E97.html#6ee3">Input_TakeTheNextWord_ReturnTheClass</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6E8B.html">6E8B</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6e97">Map</a></td>
+<td class="next">
+Next: <a href="6F30.html">6F30</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/28311.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

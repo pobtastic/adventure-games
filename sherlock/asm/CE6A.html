@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="CE4F.html">CE4F</a>
+Prev: <a href="CE57.html">CE57</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#ce6a">Map</a></td>
 <td class="next">
@@ -36,43 +36,45 @@ Next: <a href="CE83.html">CE83</a>
 </td>
 </tr>
 </table>
-<div class="description">CE6A: Handle Simple Action</div>
+<div class="description">CE6A: Run A Simple Action</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="CCC7.html">ExecuteCharacterCommand</a>.
+Used by the routine at <a href="CC82.html">DispatchCharacterScript</a>.
+</div>
+<div class="paragraph">
+Turns the command's parameter into a character, clears both room parameters, and runs the display action.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">HandleSimpleAction</td>
+<td class="asm-label">RunSimpleAction</td>
 <td class="address-2"><span id="ce6a"></span>CE6A</td>
 <td class="instruction">LD A,(IX+$01)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+01.</td>
+<td class="comment-1" rowspan="2">Read the command's parameter and call <a href="CEDE.html">ProcessRoomDisplayParameter</a> to turn a special value into a room or a character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ce6d"></span>CE6D</td>
 <td class="instruction">CALL <a href="CEDE.html">ProcessRoomDisplayParameter</a></td>
-<td class="comment-1" rowspan="1">Call <a href="CEDE.html">ProcessRoomDisplayParameter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ce70"></span>CE70</td>
 <td class="instruction">LD ($A033),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="A033.html">A033</a>.</td>
+<td class="comment-1" rowspan="1">Record the saved character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ce73"></span>CE73</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="3">Write FF to; <ul class="">
+<td class="comment-1" rowspan="3">Write FF to <ul class="">
 <li>*<a href="A034.html">RoomDisplayParameter</a></li>
 <li>*<a href="A035.html">RoomGraphicsParameter</a></li>
-</ul></td>
+</ul>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -85,34 +87,43 @@ Used by the routine at <a href="CCC7.html">ExecuteCharacterCommand</a>.
 <td class="instruction">LD ($A035),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ce7b"></span>
+<div class="comments">
+<div class="paragraph">
+The display record has bit 7 set, so the script resumes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ce7b"></span>CE7B</td>
 <td class="instruction">CALL <a href="C4D1.html">ProcessDisplayAction</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C4D1.html">ProcessDisplayAction</a>.</td>
+<td class="comment-1" rowspan="2">Return if the display record has bit 7 set, so the script resumes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ce7e"></span>CE7E</td>
 <td class="instruction">RET C</td>
-<td class="comment-1" rowspan="1">Return if <span class="register">A</span> is less than FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ce7f"></span>CE7F</td>
 <td class="instruction">JR Z,<a href="CEB8.html">ProcessScriptCommandWithCounter</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="CEB8.html">ProcessScriptCommandWithCounter</a> if <span class="register">A</span> is equal to FF.</td>
+<td class="comment-1" rowspan="1">Go to <a href="CEB8.html">ProcessScriptCommandWithCounter</a> if the display action matched.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ce81"></span>CE81</td>
 <td class="instruction">JR <a href="CE8F.html">ContinueScriptExecution</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="CE8F.html">ContinueScriptExecution</a>.</td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="CE8F.html">ContinueScriptExecution</a> to resume script execution.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="CE4F.html">CE4F</a>
+Prev: <a href="CE57.html">CE57</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#ce6a">Map</a></td>
 <td class="next">
@@ -123,7 +134,7 @@ Next: <a href="CE83.html">CE83</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/52842.html">Switch to decimal</a>.</div>
 </footer>

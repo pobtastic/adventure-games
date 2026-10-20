@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at AAE0</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="AAD5.html">AAD5</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#aae0">Map</a></td>
+<td class="next">
+Next: <a href="AB0B.html">AB0B</a>
+</td>
+</tr>
+</table>
+<div class="description">AAE0: Event: The Ring</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="AAB3.html">Event_OpenTheMagicDoor</a>.
+</div>
+<div class="paragraph">
+Handles the ring (object 10) when it is visible. The ring record at <a href="CA84.html#cab0">CAB0</a> calls this.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Event_TheRing</td>
+<td class="address-2"><span id="aae0"></span>AAE0</td>
+<td class="instruction">LD IX,$C31A</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at <a href="C11B.html#c31a">$10</a> - "Valuable Golden Ring".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aae4"></span>AAE4</td>
+<td class="instruction">LD A,(IX+$01)</td>
+<td class="comment-1" rowspan="1">Read where this object is from the object record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aae7"></span>AAE7</td>
+<td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="2">Return if this object is not inside anything.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aae9"></span>AAE9</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="aaea"></span>
+<div class="comments">
+<div class="paragraph">
+Find the object's record.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aaea"></span>AAEA</td>
+<td class="instruction">CALL <a href="9BCA.html">LocateObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9BCA.html">LocateObject</a> to locate object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aaed"></span>AAED</td>
+<td class="instruction">LD ($B70C),IX</td>
+<td class="comment-1" rowspan="1">Update *<a href="B6DA.html#b70c">Pointer_CurrentCharacter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aaf1"></span>AAF1</td>
+<td class="instruction">BIT 7,(IX+$07)</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="A3BC.html">Action_RemoveTheRing</a> if the character is invisible (wearing the ring).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aaf5"></span>AAF5</td>
+<td class="instruction">JP Z,<a href="A3BC.html">Action_RemoveTheRing</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aaf8"></span>AAF8</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="aaf9"></span>
+<div class="comments">
+<div class="paragraph">
+Reached through the action list of <a href="C11B.html#c418">$14</a> - "Wine" for action 00, dispatched by <a href="9B6C.html">TriggerAction</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aaf9"></span>AAF9</td>
+<td class="instruction">LD A,($B6EA)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6ea">CurrentCharacter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aafc"></span>AAFC</td>
+<td class="instruction">CP $00</td>
+<td class="comment-1" rowspan="2">Return if it is not the player's turn.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aafe"></span>AAFE</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aaff"></span>AAFF</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">Write 01 to *<a href="B6DA.html#b700">B700</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ab01"></span>AB01</td>
+<td class="instruction">LD ($B700),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ab04"></span>AB04</td>
+<td class="instruction">LD A,($CAB5)</td>
+<td class="comment-1" rowspan="2">Copy the byte at <a href="CA84.html#cab5">CAB5</a> into the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ab07"></span>AB07</td>
+<td class="instruction">LD ($CAB6),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ab0a"></span>AB0A</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="AAD5.html">AAD5</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#aae0">Map</a></td>
+<td class="next">
+Next: <a href="AB0B.html">AB0B</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/43744.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

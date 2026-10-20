@@ -42,7 +42,10 @@ Next: <a href="48965.html">48965</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="42769.html">FetchTextTokenAndCallBF1C</a>.
+Used by the routine at <a href="42769.html">RunTextTokenEntry</a>.
+</div>
+<div class="paragraph">
+Checks the object's flag byte, expands its text, and prints the dictionary word when the check passes.
 </div>
 </div>
 </td>
@@ -51,103 +54,115 @@ Used by the routine at <a href="42769.html">FetchTextTokenAndCallBF1C</a>.
 <td class="asm-label">ProcessTextTokenEntry</td>
 <td class="address-2"><span id="48924"></span>48924</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Read the record flag, then call <a href="42172.html">PointToObjectAttributeByte</a> to point to object attribute byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48927"></span>48927</td>
 <td class="instruction">CALL <a href="42172.html">PointToObjectAttributeByte</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48930"></span>48930</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Call <a href="54248.html">CheckObjectHasSpecialDescription</a> to check object has special description.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48931"></span>48931</td>
 <td class="instruction">POP IY</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48933"></span>48933</td>
 <td class="instruction">CALL <a href="54248.html">CheckObjectHasSpecialDescription</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48936"></span>48936</td>
 <td class="instruction">CALL <a href="48965.html">ProcessTextTokenData</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="48924.html#48957">ProcessTextTokenEntry_Next</a> if this token has no text.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48939"></span>48939</td>
-<td class="instruction">JR Z,<a href="48924.html#48957">ProcessTextTokenEntry_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="48924.html#48957">ProcessTextTokenEntry_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="48941"></span>
+<div class="comments">
+<div class="paragraph">
+Print text token.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48941"></span>48941</td>
-<td class="instruction">CALL <a href="43136.html#43143">PrintTextToken</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="43143.html">PrintTextToken</a></td>
+<td class="comment-1" rowspan="1">Call <a href="43143.html">PrintTextToken</a> to print the dictionary word.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenEntry_0</td>
+<td class="asm-label">ProcessTextTokenEntry_Loop</td>
 <td class="address-2"><span id="48944"></span>48944</td>
 <td class="instruction">LD A,(IX+2)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Read the character's room, then call <a href="42172.html">PointToObjectAttributeByte</a> to point to object attribute byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48947"></span>48947</td>
 <td class="instruction">CALL <a href="42172.html">PointToObjectAttributeByte</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48950"></span>48950</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Call <a href="54248.html">CheckObjectHasSpecialDescription</a> to check object has special description.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48951"></span>48951</td>
 <td class="instruction">POP IY</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48953"></span>48953</td>
 <td class="instruction">CALL <a href="54248.html">CheckObjectHasSpecialDescription</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48956"></span>48956</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenEntry_1</td>
+<td class="routine-comment" colspan="5">
+<span id="48957"></span>
+<div class="comments">
+<div class="paragraph">
+Expand token 0093.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessTextTokenEntry_Next</td>
 <td class="address-2"><span id="48957"></span>48957</td>
 <td class="instruction">LD DE,93</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Take token 0093 and call <a href="43143.html">PrintTextToken</a> to expand it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48960"></span>48960</td>
-<td class="instruction">CALL <a href="43136.html#43143">PrintTextToken</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="43143.html">PrintTextToken</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48963"></span>48963</td>
-<td class="instruction">JR <a href="48924.html#48944">ProcessTextTokenEntry_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="48924.html#48944">ProcessTextTokenEntry_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="48924.html#48944">ProcessTextTokenEntry_Loop</a> for the next character.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -164,7 +179,7 @@ Next: <a href="48965.html">48965</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/BF1C.html">Switch to hexadecimal</a>.</div>
 </footer>

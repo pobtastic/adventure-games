@@ -25,7 +25,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="82B3.html">82B3</a>
+Prev: <a href="82F7.html">82F7</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#83a0">Map</a></td>
 <td class="next">
@@ -38,32 +38,43 @@ Next: <a href="83CD.html">83CD</a>
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Prints the hint for the player's current location. Reached through the special-key table at <a href="8271.html">8271</a>, dispatched from <a href="8251.html">Command_MatchASpecialKey</a>.
+</div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">DisplayLocHlpMsg</td>
+<td class="routine-comment" colspan="5">
+<span id="83a0"></span>
+<div class="comments">
+<div class="paragraph">
+Test whose turn it is.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DisplayLocateHelpMessage</td>
 <td class="address-2"><span id="83a0"></span>83A0</td>
 <td class="instruction">LD A,($B6EA)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="7574.html#75b4">InglishPrepareTheClause_3</a> if *<a href="B6DA.html#b6ea">CurrentCharacter</a> is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="83a3"></span>83A3</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="83a4"></span>83A4</td>
-<td class="instruction">JP NZ,<a href="7574.html#75b4">$75B4</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP NZ,<a href="7574.html#75b4">InglishPrepareTheClause_3</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="83a7"></span>83A7</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Store <span class="register">HL</span> and <span class="register">IX</span> on the stack for later.</td>
+<td class="comment-1" rowspan="2">Save <span class="register">HL</span> and <span class="register">IX</span>, and point <span class="register">HL</span> at <a href="AD7D.html#b467">B467</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -84,7 +95,7 @@ Default message response should there be no match for the current location.
 <td class="asm-label"></td>
 <td class="address-1"><span id="83aa"></span>83AA</td>
 <td class="instruction">LD HL,$B467</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="AD7D.html#b467">"you're doing fine[0x15]"</a></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -100,7 +111,7 @@ Use the current location ID to look-up if there is a specific help message.
 <td class="asm-label"></td>
 <td class="address-1"><span id="83ad"></span>83AD</td>
 <td class="instruction">LD A,($C12B)</td>
-<td class="comment-1" rowspan="3">Using the <a href="C11B.html#c12b">current location number</a>, see if there is a help message available for display. This is achieved by passing <a href="83CD.html">LocHlpMsg</a> to the <a href="9DBD.html">Index ID Table</a> routine.</td>
+<td class="comment-1" rowspan="3">Using the <a href="C11B.html#c12b">current location number</a>, see if there is a help message available for display. This is achieved by passing <a href="83CD.html">LocateHelpMessage</a> to the <a href="9DBD.html">Index ID Table</a> routine.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -115,8 +126,8 @@ Use the current location ID to look-up if there is a specific help message.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="83b7"></span>83B7</td>
-<td class="instruction">JR Z,<a href="83A0.html#83bf">DisplayLocHlpMsg_Print</a></td>
-<td class="comment-1" rowspan="1">If there is no message, jump directly to <a href="83A0.html#83bf">DisplayLocHlpMsg_Print</a> to display the default message.</td>
+<td class="instruction">JR Z,<a href="83A0.html#83bf">DisplayLocateHelpMessage_Print</a></td>
+<td class="comment-1" rowspan="1">If there is no message, jump directly to <a href="83A0.html#83bf">DisplayLocateHelpMessage_Print</a> to display the default message.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -132,12 +143,13 @@ Point to the specific help for the current location.
 <td class="asm-label"></td>
 <td class="address-1"><span id="83b9"></span>83B9</td>
 <td class="instruction">LD L,(IX+$01)</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=The address of the help message</td>
+<td class="comment-1" rowspan="1">Read the low byte of this location's hint message address.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="83bc"></span>83BC</td>
 <td class="instruction">LD H,(IX+$02)</td>
+<td class="comment-1" rowspan="1">Read the high byte of this location's hint message address.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -150,10 +162,10 @@ Print the message.
 </td>
 </tr>
 <tr>
-<td class="asm-label">DisplayLocHlpMsg_Print</td>
+<td class="asm-label">DisplayLocateHelpMessage_Print</td>
 <td class="address-2"><span id="83bf"></span>83BF</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="2">Write 01 to <a href="B6DA.html#b701">WaitCoutdown</a>.</td>
+<td class="comment-1" rowspan="2">Write 01 to <a href="B6DA.html#b701">WaitCountdown</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -163,14 +175,14 @@ Print the message.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="83c4"></span>83C4</td>
-<td class="instruction">CALL <a href="72DD.html">PrintMsg</a></td>
-<td class="comment-1" rowspan="1">Call <a href="72DD.html">PrintMsg</a>.</td>
+<td class="instruction">CALL <a href="72DD.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="72DD.html">PrintMessage</a> to print message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="83c7"></span>83C7</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">IX</span> and <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="82B3.html">CommandDispatchAControl</a> to dispatch a control.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -180,14 +192,13 @@ Print the message.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="83ca"></span>83CA</td>
-<td class="instruction">JP <a href="82B3.html">$82B3</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="82B3.html">82B3</a>.</td>
+<td class="instruction">JP <a href="82B3.html">CommandDispatchAControl</a></td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="82B3.html">82B3</a>
+Prev: <a href="82F7.html">82F7</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#83a0">Map</a></td>
 <td class="next">
@@ -198,7 +209,7 @@ Next: <a href="83CD.html">83CD</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../dec/asm/33696.html">Switch to decimal</a>.</div>
 </footer>

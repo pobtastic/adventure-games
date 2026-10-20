@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at E5C3</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="E5C1.html">E5C1</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#e5c3">Map</a></td>
+<td class="next">
+Next: <a href="E619.html">E619</a>
+</td>
+</tr>
+</table>
+<div class="description">E5C3: Look Up The Current Object</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Looks up the character id at <a href="9860.html">Table_Timetable</a> and compares that object's attribute with the current character record. A non-zero return means the script step succeeded.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e5c3"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E5C1.html">E5C1</a>, from the show-message command at <a href="E710.html#e781">E781</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">LookUpCurrentObject</td>
+<td class="address-2"><span id="e5c3"></span>E5C3</td>
+<td class="instruction">LD A,($9860)</td>
+<td class="comment-1" rowspan="2">Take the character id at <a href="9860.html">Table_Timetable</a> and call <a href="D237.html">FetchObjectDataPointer</a> to look that object up.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5c6"></span>E5C6</td>
+<td class="instruction">CALL <a href="D237.html">FetchObjectDataPointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5c9"></span>E5C9</td>
+<td class="instruction">LD A,(IX+$0F)</td>
+<td class="comment-1" rowspan="2">Read byte 0F of this record and point <span class="register">IX</span> at the character record at <a href="A017.html">CurrentCharacterData</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5cc"></span>E5CC</td>
+<td class="instruction">LD IX,($A017)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5d0"></span>E5D0</td>
+<td class="instruction">CP (IX+$0F)</td>
+<td class="comment-1" rowspan="3">Compare it with the character record, take the character being processed, and jump to <a href="E5C3.html#e5f0">LookUpCurrentObject_ZeroThrough</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5d3"></span>E5D3</td>
+<td class="instruction">LD A,($A036)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5d6"></span>E5D6</td>
+<td class="instruction">JR <a href="E5C3.html#e5f0">LookUpCurrentObject_ZeroThrough</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5d8"></span>E5D8</td>
+<td class="instruction">DEFB $47,$07,$DF,$E5</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 47 value 07 handler <a href="E5C3.html#e5df">E5DF</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e5dc"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E5C3.html#e5d8">E5D8</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5dc"></span>E5DC</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5de"></span>E5DE</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5df"></span>E5DF</td>
+<td class="instruction">LD IX,($A013)</td>
+<td class="comment-1" rowspan="2">Point <span class="register">IX</span> at the current object and read byte 0F.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5e3"></span>E5E3</td>
+<td class="instruction">LD A,(IX+$0F)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5e6"></span>E5E6</td>
+<td class="instruction">LD IX,($A015)</td>
+<td class="comment-1" rowspan="1">Read the secondary pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5ea"></span>E5EA</td>
+<td class="instruction">CP (IX+$0F)</td>
+<td class="comment-1" rowspan="2">Compare <span class="register">A</span> with byte 0F of the record at <a href="A015.html">A015</a> and read the room graphics parameter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5ed"></span>E5ED</td>
+<td class="instruction">LD A,($A035)</td>
+</tr>
+<tr>
+<td class="asm-label">LookUpCurrentObject_ZeroThrough</td>
+<td class="address-2"><span id="e5f0"></span>E5F0</td>
+<td class="instruction">JP NZ,<a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+<td class="comment-1" rowspan="1">Return zero through <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a> when that comparison did not match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5f3"></span>E5F3</td>
+<td class="instruction">LD HL,$A034</td>
+<td class="comment-1" rowspan="3">Go to <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a> if <span class="register">A</span> matches the room display parameter at <a href="A034.html">RoomDisplayParameter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5f6"></span>E5F6</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5f7"></span>E5F7</td>
+<td class="instruction">JP Z,<a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5fa"></span>E5FA</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5fc"></span>E5FC</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e5fd"></span>E5FD</td>
+<td class="instruction">DEFB $47,$00,$04,$E6</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 47 value 00 handler <a href="E5C3.html#e604">E604</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e601"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E5C3.html#e5fd">E5FD</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e601"></span>E601</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e603"></span>E603</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e604"></span>
+<div class="comments">
+<div class="paragraph">
+Reached through the display record at <a href="E5C3.html#e5fd">E5FD</a>, dispatched by <a href="CB40.html">DispatchLookedUpHandlerThird</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e604"></span>E604</td>
+<td class="instruction">LD A,($A036)</td>
+<td class="comment-1" rowspan="1">Read the character being processed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e607"></span>E607</td>
+<td class="instruction">CALL <a href="C863.html">GetObjectLocation</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C863.html">GetObjectLocation</a> to get that character's location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e60a"></span>E60A</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="2">Keep the location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e60b"></span>E60B</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e60c"></span>E60C</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="1">Read the room display parameter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e60f"></span>E60F</td>
+<td class="instruction">CALL <a href="C863.html">GetObjectLocation</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C863.html">GetObjectLocation</a> to get the object's location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e612"></span>E612</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="2">Compare the two locations.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e613"></span>E613</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e614"></span>E614</td>
+<td class="instruction">LD A,($A036)</td>
+<td class="comment-1" rowspan="2">Read the character again and jump back to <a href="E5C3.html#e5f0">LookUpCurrentObject_ZeroThrough</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e617"></span>E617</td>
+<td class="instruction">JR <a href="E5C3.html#e5f0">LookUpCurrentObject_ZeroThrough</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="E5C1.html">E5C1</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#e5c3">Map</a></td>
+<td class="next">
+Next: <a href="E619.html">E619</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/58819.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

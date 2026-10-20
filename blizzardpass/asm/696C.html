@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blizzard Pass: Routine at 696C</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6965.html">6965</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#696c">Map</a></td>
+<td class="next">
+Next: <a href="69BF.html">69BF</a>
+</td>
+</tr>
+</table>
+<div class="description">696C: Action: Room Changed</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="6892.html">MoveToRoom</a>, <a href="68A2.html">MoveToObject</a>, <a href="68B0.html">GetObject</a>, <a href="68E4.html">DropObject</a>, <a href="6914.html">Saved</a>, <a href="695D.html">RemoveObject</a>, <a href="69BF.html">SwapObjects</a>, <a href="6A16.html">SetObjectLocation</a>, <a href="6A68.html">DropEverything</a> and <a href="6B43.html">RedrawLocation</a>.
+</div>
+<div class="paragraph">
+Sets the room-changed flag and walks the per-room records at <a href="B798.html">RoomRecords</a> so an illustration that depended on an object is redrawn. Verbs 43, 8A, 8B, 85 and 8E skip that walk.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RoomHasChanged</td>
+<td class="address-2"><span id="696c"></span>696C</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">The room has changed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="696e"></span>696E</td>
+<td class="instruction">LD ($5B95),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6971"></span>6971</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Keep the line pointer. The last-matched verb may skip the picture walk.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6972"></span>6972</td>
+<td class="instruction">LD A,($5BCF)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6975"></span>6975</td>
+<td class="instruction">CP $43</td>
+<td class="comment-1" rowspan="2">Verb 43 skips it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6977"></span>6977</td>
+<td class="instruction">JR Z,<a href="696C.html#69b6">RoomHasChanged_Redraw</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6979"></span>6979</td>
+<td class="instruction">CP $8A</td>
+<td class="comment-1" rowspan="2">Verb 8A skips it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="697b"></span>697B</td>
+<td class="instruction">JR Z,<a href="696C.html#69b6">RoomHasChanged_Redraw</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="697d"></span>697D</td>
+<td class="instruction">CP $8B</td>
+<td class="comment-1" rowspan="2">Verb 8B skips it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="697f"></span>697F</td>
+<td class="instruction">JR Z,<a href="696C.html#69b6">RoomHasChanged_Redraw</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6981"></span>6981</td>
+<td class="instruction">CP $85</td>
+<td class="comment-1" rowspan="2">Verb 85 skips it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6983"></span>6983</td>
+<td class="instruction">JR Z,<a href="696C.html#69b6">RoomHasChanged_Redraw</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6985"></span>6985</td>
+<td class="instruction">CP $8E</td>
+<td class="comment-1" rowspan="2">Verb 8E skips it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6987"></span>6987</td>
+<td class="instruction">JR Z,<a href="696C.html#69b6">RoomHasChanged_Redraw</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6989"></span>6989</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="4">The records live at <a href="B798.html">RoomRecords</a>, one per room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="698a"></span>698A</td>
+<td class="instruction">LD HL,$B798</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="698d"></span>698D</td>
+<td class="instruction">LD A,($5D87)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6990"></span>6990</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6991"></span>6991</td>
+<td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="1">A record ends at FF.</td>
+</tr>
+<tr>
+<td class="asm-label">RoomHasChanged_Sep</td>
+<td class="address-2"><span id="6993"></span>6993</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="3">Skip to the next separator.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6994"></span>6994</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6995"></span>6995</td>
+<td class="instruction">JR NZ,<a href="696C.html#6993">RoomHasChanged_Sep</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6997"></span>6997</td>
+<td class="instruction">DJNZ <a href="696C.html#6993">RoomHasChanged_Sep</a></td>
+<td class="comment-1" rowspan="1">Count one separator per room until this room's record.</td>
+</tr>
+<tr>
+<td class="asm-label">RoomHasChanged_Record</td>
+<td class="address-2"><span id="6999"></span>6999</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">FF ends this room's record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="699a"></span>699A</td>
+<td class="instruction">CP $FF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="699c"></span>699C</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="699d"></span>699D</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="3">Only an F8 record names an object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="699e"></span>699E</td>
+<td class="instruction">CP $F8</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69a0"></span>69A0</td>
+<td class="instruction">JR NZ,<a href="696C.html#6999">RoomHasChanged_Record</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69a2"></span>69A2</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="4">Compare the record with <a href="5F15.html">PicturedObject</a>, which nothing writes, so it matches a zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69a3"></span>69A3</td>
+<td class="instruction">LD A,($5F15)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69a6"></span>69A6</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69a7"></span>69A7</td>
+<td class="instruction">JR NZ,<a href="696C.html#69b6">RoomHasChanged_Redraw</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69a9"></span>69A9</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="4">Point at that object's location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69aa"></span>69AA</td>
+<td class="instruction">LD B,$00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69ac"></span>69AC</td>
+<td class="instruction">LD HL,$5DCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69af"></span>69AF</td>
+<td class="instruction">ADD HL,BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69b0"></span>69B0</td>
+<td class="instruction">LD A,($5D87)</td>
+<td class="comment-1" rowspan="3">The picture is left alone when the object is in this room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69b3"></span>69B3</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69b4"></span>69B4</td>
+<td class="instruction">JR Z,<a href="696C.html#69bc">RoomHasChanged_Keep</a></td>
+</tr>
+<tr>
+<td class="asm-label">RoomHasChanged_Redraw</td>
+<td class="address-2"><span id="69b6"></span>69B6</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Forget the drawn picture, restore the picture record pointer from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69b7"></span>69B7</td>
+<td class="instruction">LD ($6185),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69ba"></span>69BA</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69bb"></span>69BB</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">RoomHasChanged_Keep</td>
+<td class="address-2"><span id="69bc"></span>69BC</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore the picture record pointer from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="69bd"></span>69BD</td>
+<td class="instruction">JR <a href="696C.html#6999">RoomHasChanged_Record</a></td>
+<td class="comment-1" rowspan="1">The next byte of the record.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6965.html">6965</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#696c">Map</a></td>
+<td class="next">
+Next: <a href="69BF.html">69BF</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1986 Adventuresoft UK Ltd &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/blizzardpass/">Source code</a>.</div>
+<div><a href="../dec/asm/26988.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -36,59 +36,68 @@ Next: <a href="A7AC.html">A7AC</a>
 </td>
 </tr>
 </table>
-<div class="description">A793: Process Object And Check Token</div>
+<div class="description">A793: Describe This Character</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Saves the current character, clears the object source flag, and continues at <a href="A793.html#a798">DescribeThisCharacter_StoredFlag</a>. That entry runs <a href="A82F.html">ProcessObjectOrPrintToken</a>, then returns token 0485 or token 007A when the character id is zero.
+</div>
+<div class="paragraph">
+Control code 10 in the table at <a href="A55D.html">JumpTable_ControlCharacters</a>.
+</div>
+<div class="paragraph">
+Used by the routine at <a href="A5C3.html">DispatchTextControlHandler</a>.
+</div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">ProcessObjectAndCheckToken</td>
+<td class="asm-label">DescribeThisCharacter</td>
 <td class="address-2"><span id="a793"></span>A793</td>
 <td class="instruction">LD A,($A036)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A036.html">CurrentCharacter_ID</a>.</td>
+<td class="comment-1" rowspan="3">Save the current character and clear <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a796"></span>A796</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-1" rowspan="1">Exchange the shadow <span class="register">AF</span> register with the <span class="register">AF</span> register.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a797"></span>A797</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="a798"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="A7AC.html">LoadRoomDisplayParameterForObject</a>.
+This entry point is used by the routine at <a href="A7AC.html">DescribeTheDisplayedRoom</a>.
+</div>
+<div class="paragraph">
+Stores the object source flag, runs <a href="A82F.html">ProcessObjectOrPrintToken</a>, and returns the description token.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">ProcessObjectAndCheckToken_0</td>
+<td class="asm-label">DescribeThisCharacter_StoredFlag</td>
 <td class="address-2"><span id="a798"></span>A798</td>
 <td class="instruction">LD ($A028),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="A028.html">ObjectProcessingSourceFlag</a>.</td>
+<td class="comment-1" rowspan="1">Store <span class="register">A</span> in the object processing source flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a79b"></span>A79B</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-1" rowspan="1">Exchange the <span class="register">AF</span> register with the shadow <span class="register">AF</span> register.</td>
+<td class="comment-1" rowspan="2">Keep the character id aside.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a79c"></span>A79C</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">AF</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -100,37 +109,35 @@ This entry point is used by the routine at <a href="A7AC.html">LoadRoomDisplayPa
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7a0"></span>A7A0</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the saved character from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7a1"></span>A7A1</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
+<td class="comment-1" rowspan="3">Return token 0485 when the character id is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7a2"></span>A7A2</td>
 <td class="instruction">LD DE,$0485</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>="<a href="61EC.html#6244">IS</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7a5"></span>A7A5</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-1" rowspan="1">Return if ?? is not equal to <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7a6"></span>A7A6</td>
 <td class="instruction">LD DE,$007A</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>="<a href="5DC0.html#5e39">ARE</a>.</td>
+<td class="comment-1" rowspan="1">Take token 007A.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7a9"></span>A7A9</td>
-<td class="instruction">OR %00000001</td>
-<td class="comment-1" rowspan="1">Set bit 0.</td>
+<td class="instruction">OR $01</td>
+<td class="comment-1" rowspan="1">Mark the result non-zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -153,7 +160,7 @@ Next: <a href="A7AC.html">A7AC</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/42899.html">Switch to decimal</a>.</div>
 </footer>

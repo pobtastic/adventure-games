@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at 23344</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="23343.html">23343</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#23344">Map</a></td>
+<td class="next">
+Next: <a href="23435.html">23435</a>
+</td>
+</tr>
+</table>
+<div class="description">23344: Tape Loader: Game</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Loads the game header and the code block it names, and resets the Spectrum if either load fails or the header is not a code file. Called from the loader bytes at <a href="16384.html#23312">23312</a> and <a href="16384.html#23320">23320</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23344"></span>
+<div class="comments">
+<div class="paragraph">
+Read the game header from tape.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TapeLoader_Game</td>
+<td class="address-2"><span id="23344"></span>23344</td>
+<td class="instruction">LD IX,23326</td>
+<td class="comment-1" rowspan="4">Point <span class="register">IX</span> at the tape header (<a href="23326.html">23326</a>), request 17 bytes, and ask the ROM routine to load rather than verify.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23348"></span>23348</td>
+<td class="instruction">LD DE,17</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23351"></span>23351</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23352"></span>23352</td>
+<td class="instruction">SCF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23353"></span>23353</td>
+<td class="instruction">CALL <a href="23435.html">TapeLoader_LoadBytes</a></td>
+<td class="comment-1" rowspan="1">Call <a href="23435.html">TapeLoader_LoadBytes</a> to load the next tape block.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23356"></span>
+<div class="comments">
+<div class="paragraph">
+Give up unless the header loaded.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23356"></span>23356</td>
+<td class="instruction">LD A,(23343)</td>
+<td class="comment-1" rowspan="3">Reset the Spectrum unless the tape load result (<a href="23343.html">23343</a>) is 1.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23359"></span>23359</td>
+<td class="instruction">DEC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23360"></span>23360</td>
+<td class="instruction">JP NZ,0</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23363"></span>
+<div class="comments">
+<div class="paragraph">
+The header must describe a code block.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23363"></span>23363</td>
+<td class="instruction">LD A,(23326)</td>
+<td class="comment-1" rowspan="3">Reset the Spectrum unless the header type at <a href="23326.html">23326</a> is 3.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23366"></span>23366</td>
+<td class="instruction">CP 3</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23368"></span>23368</td>
+<td class="instruction">JP NZ,0</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23371"></span>
+<div class="comments">
+<div class="paragraph">
+Load the game block named by the header.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23371"></span>23371</td>
+<td class="instruction">LD IX,(23339)</td>
+<td class="comment-1" rowspan="4">Take the load address from <a href="23326.html#23339">23339</a> and the length from <a href="23326.html#23337">23337</a>, and load that block as data.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23375"></span>23375</td>
+<td class="instruction">LD DE,(23337)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23379"></span>23379</td>
+<td class="instruction">LD A,255</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23381"></span>23381</td>
+<td class="instruction">SCF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23382"></span>23382</td>
+<td class="instruction">CALL <a href="23435.html">TapeLoader_LoadBytes</a></td>
+<td class="comment-1" rowspan="1">Call <a href="23435.html">TapeLoader_LoadBytes</a> to load the next tape block.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23385"></span>
+<div class="comments">
+<div class="paragraph">
+Return to BASIC only if the game block loaded.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23385"></span>23385</td>
+<td class="instruction">DI</td>
+<td class="comment-1" rowspan="4">Disable interrupts and reset the Spectrum unless the tape load result (<a href="23343.html">23343</a>) is 1.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23386"></span>23386</td>
+<td class="instruction">LD A,(23343)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23389"></span>23389</td>
+<td class="instruction">DEC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23390"></span>23390</td>
+<td class="instruction">JP NZ,0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23393"></span>23393</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23394"></span>
+<div class="comments">
+<div class="paragraph">
+Loads the loading-screen header and then the screen at 16384 and resets the Spectrum if either load fails.
+</div>
+<div class="paragraph">
+Read a tape header for the loading screen.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TapeLoader_Screen</td>
+<td class="address-1"><span id="23394"></span>23394</td>
+<td class="instruction">LD IX,23326</td>
+<td class="comment-1" rowspan="4">Point <span class="register">IX</span> at the tape header (<a href="23326.html">23326</a>), request 17 bytes, and ask the ROM routine to load rather than verify.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23398"></span>23398</td>
+<td class="instruction">LD DE,17</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23401"></span>23401</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23402"></span>23402</td>
+<td class="instruction">SCF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23403"></span>23403</td>
+<td class="instruction">CALL <a href="23435.html">TapeLoader_LoadBytes</a></td>
+<td class="comment-1" rowspan="1">Call <a href="23435.html">TapeLoader_LoadBytes</a> to load the next tape block.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23406"></span>
+<div class="comments">
+<div class="paragraph">
+Give up unless that header loaded.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23406"></span>23406</td>
+<td class="instruction">LD A,(23343)</td>
+<td class="comment-1" rowspan="3">Reset the Spectrum unless the tape load result (<a href="23343.html">23343</a>) is 1.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23409"></span>23409</td>
+<td class="instruction">DEC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23410"></span>23410</td>
+<td class="instruction">JP NZ,0</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23413"></span>
+<div class="comments">
+<div class="paragraph">
+Load the picture into the display file.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23413"></span>23413</td>
+<td class="instruction">LD IX,16384</td>
+<td class="comment-1" rowspan="4">Point <span class="register">IX</span> at the screen (16384) and load 6912 bytes as data.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23417"></span>23417</td>
+<td class="instruction">LD DE,6912</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23420"></span>23420</td>
+<td class="instruction">LD A,255</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23422"></span>23422</td>
+<td class="instruction">SCF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23423"></span>23423</td>
+<td class="instruction">CALL <a href="23435.html">TapeLoader_LoadBytes</a></td>
+<td class="comment-1" rowspan="1">Call <a href="23435.html">TapeLoader_LoadBytes</a> to load the next tape block.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23426"></span>
+<div class="comments">
+<div class="paragraph">
+Return only if the screen loaded.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23426"></span>23426</td>
+<td class="instruction">DI</td>
+<td class="comment-1" rowspan="4">Disable interrupts and reset the Spectrum unless the tape load result (<a href="23343.html">23343</a>) is 1.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23427"></span>23427</td>
+<td class="instruction">LD A,(23343)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23430"></span>23430</td>
+<td class="instruction">DEC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23431"></span>23431</td>
+<td class="instruction">JP NZ,0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23434"></span>23434</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="23343.html">23343</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#23344">Map</a></td>
+<td class="next">
+Next: <a href="23435.html">23435</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../../asm/5B30.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

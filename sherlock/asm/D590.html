@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="D57C.html">D57C</a>
+Prev: <a href="D57D.html">D57D</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#d590">Map</a></td>
 <td class="next">
@@ -43,6 +43,9 @@ Next: <a href="D5C9.html">D5C9</a>
 <div class="details">
 <div class="paragraph">
 Used by the routine at <a href="D526.html">PrintFormattedObjectList</a>.
+</div>
+<div class="paragraph">
+Looks the object up and prints either its special text or the ordinary description.
 </div>
 </div>
 <table class="input">
@@ -64,7 +67,7 @@ Used by the routine at <a href="D526.html">PrintFormattedObjectList</a>.
 <td class="asm-label">PrintObjectDescription</td>
 <td class="address-2"><span id="d590"></span>D590</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="3">Stash the object pointer, object count/ description type and object ID on the stack.</td>
+<td class="comment-1" rowspan="4">Call <a href="D237.html">FetchObjectDataPointer</a> to look up that object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -80,13 +83,12 @@ Used by the routine at <a href="D526.html">PrintFormattedObjectList</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d594"></span>D594</td>
 <td class="instruction">CALL <a href="D237.html">FetchObjectDataPointer</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D237.html">FetchObjectDataPointer</a> to load the object data pointer into <span class="register">IX</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d597"></span>D597</td>
 <td class="instruction">BIT 6,(IX+$05)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="D590.html#d5a5">PrintObjectDescription_Standard</a> if the object doesn't have a special description (bit 6 of *<span class="register">IX</span>+05 is not set).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="D590.html#d5a5">PrintObjectDescription_Standard</a> if the special-description flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -107,13 +109,12 @@ Print the special description text for this object.
 <td class="asm-label">PrintObjectDescription_Special</td>
 <td class="address-1"><span id="d59d"></span>D59D</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the object ID from the stack.</td>
+<td class="comment-1" rowspan="3">Restore the saved flags from the stack, then save two copies of them back.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d59e"></span>D59E</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">AF</span> and <span class="register">AF</span> (preserve flags) on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -124,18 +125,20 @@ Print the special description text for this object.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d5a0"></span>D5A0</td>
 <td class="instruction">LD HL,$68B1</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="68B1.html">68B1</a> (load the address of the special description text token into <span class="register">HL</span>).</td>
+<td class="comment-1" rowspan="2">Print the text at <a href="68B1.html">68B1</a> from <a href="D590.html#d5c1">PrintObjectDescription_PrintText</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d5a3"></span>D5A3</td>
 <td class="instruction">JR <a href="D590.html#d5c1">PrintObjectDescription_PrintText</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D590.html#d5c1">PrintObjectDescription_PrintText</a> to print the text.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="d5a5"></span>
 <div class="comments">
+<div class="paragraph">
+Determine which standard description text to use based on the description type.
+</div>
 <div class="paragraph">
 Determine which standard description text to use based on the description type.
 </div>
@@ -146,37 +149,34 @@ Determine which standard description text to use based on the description type.
 <td class="asm-label">PrintObjectDescription_Standard</td>
 <td class="address-2"><span id="d5a5"></span>D5A5</td>
 <td class="instruction">LD HL,$0485</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=0485 (load address for description type 0 text into <span class="register">HL</span>).</td>
+<td class="comment-1" rowspan="3">Take 0485 and jump ahead to <a href="D590.html#d5ae">PrintObjectDescription_PrintAttributes</a> if the count has run out.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d5a8"></span>D5A8</td>
 <td class="instruction">DEC C</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">C</span> (the description type) by one (check if description type is 1).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d5a9"></span>D5A9</td>
 <td class="instruction">JR Z,<a href="D590.html#d5ae">PrintObjectDescription_PrintAttributes</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D590.html#d5ae">PrintObjectDescription_PrintAttributes</a> if description type is 0 (<span class="register">C</span> equals <span class="register">A</span> after decrement).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d5ab"></span>D5AB</td>
 <td class="instruction">LD HL,$007A</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=007A (load address for description type 1 text into <span class="register">HL</span>).</td>
+<td class="comment-1" rowspan="1">Take the object token at 007A.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintObjectDescription_PrintAttributes</td>
 <td class="address-2"><span id="d5ae"></span>D5AE</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Stash the description text address on the stack.</td>
+<td class="comment-1" rowspan="2">Call <a href="D5D3.html">PrintObjectAttributeDescription</a> to describe the object's attribute, saving pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d5af"></span>D5AF</td>
 <td class="instruction">CALL <a href="D5D3.html">PrintObjectAttributeDescription</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D5D3.html">PrintObjectAttributeDescription</a> to print the object attribute description.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -192,8 +192,8 @@ Determine which standard description text to use based on the description type.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d5b7"></span>D5B7</td>
-<td class="instruction">CALL <a href="D39B.html#d3d5">ProcessObjectEntryAlternate_3</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D39B.html#d3d5">ProcessObjectEntryAlternate_3</a> to print additional object information.</td>
+<td class="instruction">CALL <a href="D3D5.html">TakeTheFoundObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="D3D5.html">TakeTheFoundObject</a> to read this object's description flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -210,19 +210,19 @@ Determine which standard description text to use based on the description type.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d5be"></span>D5BE</td>
 <td class="instruction">LD HL,$68D9</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="68D1.html#68d9">68D9</a> (load the address of the closing text token into <span class="register">HL</span>).</td>
+<td class="comment-1" rowspan="1">Take the cannot see message.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintObjectDescription_PrintText</td>
 <td class="address-2"><span id="d5c1"></span>D5C1</td>
 <td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the text token.</td>
+<td class="comment-1" rowspan="1">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d5c4"></span>D5C4</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="3">Restore the object ID, object count/ description type and the object pointer from the stack.</td>
+<td class="comment-1" rowspan="3">Restore the saved result, the saved count and the saved character record from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -244,7 +244,7 @@ Determine which standard description text to use based on the description type.
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="D57C.html">D57C</a>
+Prev: <a href="D57D.html">D57D</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#d590">Map</a></td>
 <td class="next">
@@ -255,7 +255,7 @@ Next: <a href="D5C9.html">D5C9</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/54672.html">Switch to decimal</a>.</div>
 </footer>

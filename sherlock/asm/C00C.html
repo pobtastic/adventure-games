@@ -42,7 +42,7 @@ Next: <a href="C03B.html">C03B</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="A68C.html">CheckTimePeriod_Not6AM</a>, <a href="A694.html">CheckTimePeriod_NotMorningMidday</a>, <a href="A69C.html">CheckTimePeriod_NotAfternoon</a>, <a href="A6A4.html">CheckTimePeriod_Not7PM</a>, <a href="A6AC.html">CheckTimePeriod_NotLateNightEvening</a> and <a href="D078.html">CheckObjectVisibility</a>.
+Used by the routines at <a href="A684.html">ContinueAtTheNextToken</a> and <a href="D078.html">CheckObjectVisibility</a>.
 </div>
 <div class="paragraph">
 Handles calculating a time-period code for scheduling events. <table class="default">
@@ -100,23 +100,13 @@ Handles calculating a time-period code for scheduling events. <table class="defa
 <td class="asm-label"></td>
 <td class="address-1"><span id="c011"></span>C011</td>
 <td class="instruction">LD A,($9FE0)</td>
-<td class="comment-1" rowspan="1">Load *<a href="9FDF.html#9fe0">CurrentTime_Hour</a> into <span class="register">A</span>.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="c014"></span>
-<div class="comments">
-<div class="paragraph">
-Is it morning?
-</div>
-</div>
-</td>
+<td class="comment-1" rowspan="1">Read the hour.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c014"></span>C014</td>
 <td class="instruction">JR Z,<a href="C00C.html#c02b">TimePeriod_AM</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C00C.html#c02b">TimePeriod_AM</a> if *<a href="9FE2.html">Messaging_AM_PM</a> is ASCII 61 ("&#97;").</td>
+<td class="comment-1" rowspan="1">Go to <a href="C00C.html#c02b">TimePeriod_AM</a> if the period letter is 61 (morning).</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -132,7 +122,7 @@ It's the afternoon (as in, "PM").
 <td class="asm-label"></td>
 <td class="address-1"><span id="c016"></span>C016</td>
 <td class="instruction">CP $0C</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C00C.html#c035">TimePeriod_Morning</a> if it's noon (12 PM).</td>
+<td class="comment-1" rowspan="2">Go to <a href="C00C.html#c035">TimePeriod_Morning</a> if the hour is twelve (noon).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -143,12 +133,12 @@ It's the afternoon (as in, "PM").
 <td class="asm-label"></td>
 <td class="address-1"><span id="c01a"></span>C01A</td>
 <td class="instruction">CP $08</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C00C.html#c021">TimePeriod_Pre_8PM</a> if it's before 8 PM.</td>
+<td class="comment-1" rowspan="2">Go to <a href="C00C.html#c021">TimePeriod_BeforeEightPM</a> if the hour is before eight.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c01c"></span>C01C</td>
-<td class="instruction">JR C,<a href="C00C.html#c021">TimePeriod_Pre_8PM</a></td>
+<td class="instruction">JR C,<a href="C00C.html#c021">TimePeriod_BeforeEightPM</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -164,7 +154,7 @@ It's late PM/ evening; 8 PM - 11 PM.
 <td class="asm-label">TimePeriod_LateEvening</td>
 <td class="address-2"><span id="c01e"></span>C01E</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=01.</td>
+<td class="comment-1" rowspan="1">Leave 01 as the result.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -177,16 +167,19 @@ It's late PM/ evening; 8 PM - 11 PM.
 <span id="c021"></span>
 <div class="comments">
 <div class="paragraph">
+Seven in the evening leaves time-of-day code 2.
+</div>
+<div class="paragraph">
 It's before 8 PM, but break this down further.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">TimePeriod_Pre_8PM</td>
+<td class="asm-label">TimePeriod_BeforeEightPM</td>
 <td class="address-2"><span id="c021"></span>C021</td>
 <td class="instruction">CP $07</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C00C.html#c028">TimePeriod_Afternoon</a> if its not 7 PM.</td>
+<td class="comment-1" rowspan="2">Go to <a href="C00C.html#c028">TimePeriod_Afternoon</a> unless the hour is seven.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -207,7 +200,7 @@ It's 7 PM.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c025"></span>C025</td>
 <td class="instruction">LD A,$02</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=02.</td>
+<td class="comment-1" rowspan="1">Leave 02 as the result.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -220,6 +213,9 @@ It's 7 PM.
 <span id="c028"></span>
 <div class="comments">
 <div class="paragraph">
+The afternoon, from one until six, leaves time-of-day code 3.
+</div>
+<div class="paragraph">
 It's afternoon/ early PM; 1 PM - 6 PM.
 </div>
 </div>
@@ -229,7 +225,7 @@ It's afternoon/ early PM; 1 PM - 6 PM.
 <td class="asm-label">TimePeriod_Afternoon</td>
 <td class="address-2"><span id="c028"></span>C028</td>
 <td class="instruction">LD A,$03</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=03.</td>
+<td class="comment-1" rowspan="1">Leave 03 as the result.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -242,6 +238,9 @@ It's afternoon/ early PM; 1 PM - 6 PM.
 <span id="c02b"></span>
 <div class="comments">
 <div class="paragraph">
+The morning checks leave time-of-day code 4, or continue into early morning.
+</div>
+<div class="paragraph">
 It's morning, but break this down further.
 </div>
 </div>
@@ -251,7 +250,7 @@ It's morning, but break this down further.
 <td class="asm-label">TimePeriod_AM</td>
 <td class="address-2"><span id="c02b"></span>C02B</td>
 <td class="instruction">CP $0C</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C00C.html#c01e">TimePeriod_LateEvening</a> if it's midnight (12 AM).</td>
+<td class="comment-1" rowspan="2">Go to <a href="C00C.html#c01e">TimePeriod_LateEvening</a> if the hour is twelve.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -262,7 +261,7 @@ It's morning, but break this down further.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c02f"></span>C02F</td>
 <td class="instruction">CP $06</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C00C.html#c01e">TimePeriod_LateEvening</a> if it's before 6 AM.</td>
+<td class="comment-1" rowspan="2">Go to <a href="C00C.html#c01e">TimePeriod_LateEvening</a> if the hour is before six.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -273,7 +272,7 @@ It's morning, but break this down further.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c033"></span>C033</td>
 <td class="instruction">JR Z,<a href="C00C.html#c038">TimePeriod_EarlyMorning</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C00C.html#c038">TimePeriod_EarlyMorning</a> if it's 6 AM.</td>
+<td class="comment-1" rowspan="1">Go to <a href="C00C.html#c038">TimePeriod_EarlyMorning</a> if the hour is six.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -289,7 +288,7 @@ It's morning; 7 AM - noon (12 PM).
 <td class="asm-label">TimePeriod_Morning</td>
 <td class="address-2"><span id="c035"></span>C035</td>
 <td class="instruction">LD A,$04</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=04.</td>
+<td class="comment-1" rowspan="1">Leave 04 as the result.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -302,6 +301,9 @@ It's morning; 7 AM - noon (12 PM).
 <span id="c038"></span>
 <div class="comments">
 <div class="paragraph">
+Six in the morning leaves time-of-day code 5.
+</div>
+<div class="paragraph">
 It's early morning; 6 AM.
 </div>
 </div>
@@ -311,7 +313,7 @@ It's early morning; 6 AM.
 <td class="asm-label">TimePeriod_EarlyMorning</td>
 <td class="address-2"><span id="c038"></span>C038</td>
 <td class="instruction">LD A,$05</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=05.</td>
+<td class="comment-1" rowspan="1">Leave 05 as the result.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -334,7 +336,7 @@ Next: <a href="C03B.html">C03B</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/49164.html">Switch to decimal</a>.</div>
 </footer>

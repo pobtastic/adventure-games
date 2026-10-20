@@ -39,7 +39,10 @@ Next: <a href="30068.html">30068</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="28915.html">28915</a>, <a href="29405.html">PrintMsg</a>, <a href="29504.html">29504</a>, <a href="29741.html">29741</a>, <a href="35915.html">Action_Look</a>, <a href="40647.html">40647</a>, <a href="41160.html">41160</a>, <a href="41272.html">DisplayExits</a> and <a href="41958.html">ActionCapture</a>.
+Used by the routines at <a href="28971.html">Inglish_DescribeTheAction</a>, <a href="29405.html">PrintMessage</a>, <a href="29512.html">PrintMessage_TokenByNibble</a>, <a href="29759.html">Message_ChooseAClassToken</a>, <a href="29816.html">Message_PrintTheClassToken</a>, <a href="29832.html">Message_PrintTheFallbackToken</a>, <a href="35915.html">Action_Look</a>, <a href="40662.html">Message_ChooseTheNounByte</a>, <a href="41160.html">MessageListTheObjects</a>, <a href="41272.html">DisplayExits</a> and <a href="42056.html">ActionGoblinCapture</a>.
+</div>
+<div class="paragraph">
+Prints a dictionary token, expanding letters until the dictionary word ends.
 </div>
 </div>
 <table class="input">
@@ -48,7 +51,7 @@ Used by the routines at <a href="28915.html">28915</a>, <a href="29405.html">Pri
 </tr>
 <tr>
 <td class="register">DE</td>
-<td class="register-desc">e.g. 22225 token?</td>
+<td class="register-desc">The token.</td>
 </tr>
 </table>
 </td>
@@ -57,31 +60,31 @@ Used by the routines at <a href="28915.html">28915</a>, <a href="29405.html">Pri
 <td class="asm-label">PrintToken</td>
 <td class="address-2"><span id="29889"></span>29889</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">D</span></td>
+<td class="comment-1" rowspan="1">Take the token's high byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29890"></span>29890</td>
 <td class="instruction">AND %00001111</td>
-<td class="comment-1" rowspan="1">Keep only bits 0-3.</td>
+<td class="comment-1" rowspan="1">Keep its low nibble (bits 8-11 of the token).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29892"></span>29892</td>
 <td class="instruction">OR E</td>
-<td class="comment-1" rowspan="1">Combine with <span class="register">E</span>.</td>
+<td class="comment-1" rowspan="1">Merge in the low byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29893"></span>29893</td>
 <td class="instruction">RET Z</td>
-<td class="comment-1" rowspan="1">Return the result is zero.</td>
+<td class="comment-1" rowspan="1">Return if bits 0-11 of the token are all zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29894"></span>29894</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">Store <span class="register">HL</span>, <span class="register">BC</span> and <span class="register">DE</span> on the stack for later.</td>
+<td class="comment-1" rowspan="4">Save the text pointer, <span class="register">BC</span> and the token, and keep the class in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -97,31 +100,29 @@ Used by the routines at <a href="28915.html">28915</a>, <a href="29405.html">Pri
 <td class="asm-label"></td>
 <td class="address-1"><span id="29897"></span>29897</td>
 <td class="instruction">LD C,D</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29898"></span>29898</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Take the token's high byte again.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29899"></span>29899</td>
 <td class="instruction">AND 15</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Keep bits 8-11 of the token in <span class="register">D</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29901"></span>29901</td>
 <td class="instruction">LD D,A</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29902"></span>29902</td>
 <td class="instruction">LD HL,24576</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=$6000+<span class="register">DE</span></td>
+<td class="comment-1" rowspan="2">Add the token index to the pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -132,43 +133,41 @@ Used by the routines at <a href="28915.html">28915</a>, <a href="29405.html">Pri
 <td class="asm-label"></td>
 <td class="address-1"><span id="29906"></span>29906</td>
 <td class="instruction">LD DE,29862</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="29862.html">output buffer</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at output buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29909"></span>29909</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Store <span class="register">HL</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Save the dictionary address and start the letter count at zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29910"></span>29910</td>
 <td class="instruction">LD B,0</td>
-<td class="comment-1" rowspan="1">Intialise <span class="register">B</span> to 0 to count the number of letters.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintToken_Loop</td>
 <td class="address-2"><span id="29912"></span>29912</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Fetch the next character from <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Read the next byte of the dictionary word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29913"></span>29913</td>
 <td class="instruction">AND 31</td>
-<td class="comment-1" rowspan="1">Keep only bits 0-4.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="29889.html#29945">PrintToken_ChooseTheSubject</a> if the low five bits of this dictionary byte are zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29915"></span>29915</td>
-<td class="instruction">JR Z,<a href="29889.html#29945">PrintToken_</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="29889.html#29945">PrintToken_</a> if this is zero.</td>
+<td class="instruction">JR Z,<a href="29889.html#29945">PrintToken_ChooseTheSubject</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29917"></span>29917</td>
 <td class="instruction">INC B</td>
-<td class="comment-1" rowspan="1">Increase <span class="register">B</span> by one.</td>
+<td class="comment-1" rowspan="1">Count one more character of the message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -192,7 +191,7 @@ Used by the routines at <a href="28915.html">28915</a>, <a href="29405.html">Pri
 <td class="asm-label"></td>
 <td class="address-1"><span id="29922"></span>29922</td>
 <td class="instruction">BIT 7,(HL)</td>
-<td class="comment-1" rowspan="1">Check if this is the last character in the word.</td>
+<td class="comment-1" rowspan="1">Check if this is the last character in it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -204,7 +203,7 @@ Used by the routines at <a href="28915.html">28915</a>, <a href="29405.html">Pri
 <td class="asm-label"></td>
 <td class="address-1"><span id="29925"></span>29925</td>
 <td class="instruction">JR Z,<a href="29889.html#29912">PrintToken_Loop</a></td>
-<td class="comment-1" rowspan="1">If this is not the last character in the word, loop back to <a href="29889.html#29912">PrintToken_Loop</a> to continue processing.</td>
+<td class="comment-1" rowspan="1">If this is not the last character in it, loop back to <a href="29889.html#29912">PrintToken_Loop</a> to continue processing.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -220,7 +219,7 @@ Check minimum length.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29927"></span>29927</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=the number of characters.</td>
+<td class="comment-1" rowspan="1">Copy the count in <span class="register">B</span> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -237,18 +236,18 @@ Check minimum length.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29932"></span>29932</td>
 <td class="instruction">CP 3</td>
-<td class="comment-1" rowspan="2">If it is not 3 then jump to <a href="29889.html#29945">PrintToken_</a>.</td>
+<td class="comment-1" rowspan="2">If it is not 3, then jump to <a href="29889.html#29945">PrintToken_ChooseTheSubject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29934"></span>29934</td>
-<td class="instruction">JR NZ,<a href="29889.html#29945">PrintToken_</a></td>
+<td class="instruction">JR NZ,<a href="29889.html#29945">PrintToken_ChooseTheSubject</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29936"></span>29936</td>
 <td class="instruction">DEC HL</td>
-<td class="comment-1" rowspan="6">Else, fetch the first character again and check if it is the last character in the word.</td>
+<td class="comment-1" rowspan="6">Otherwise fetch the second character again and test its bit 7.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -279,397 +278,378 @@ Check minimum length.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29943"></span>29943</td>
 <td class="instruction">JR NZ,<a href="29889.html#29912">PrintToken_Loop</a></td>
-<td class="comment-1" rowspan="1">If it is not, loop back to <a href="29889.html#29912">PrintToken_Loop</a> to continue processing.</td>
+<td class="comment-1" rowspan="1">Loop back to <a href="29889.html#29912">PrintToken_Loop</a> to continue processing if bit 7 of the second character is set.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintToken_</td>
+<td class="asm-label">PrintToken_ChooseTheSubject</td>
 <td class="address-2"><span id="29945"></span>29945</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> off the stack.</td>
+<td class="comment-1" rowspan="5">Jump to <a href="29889.html#30000">PrintToken_MeasureTheOutput</a> if the high nibble of the result is 80.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29946"></span>29946</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29947"></span>29947</td>
 <td class="instruction">AND 240</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29949"></span>29949</td>
 <td class="instruction">CP 80</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29951"></span>29951</td>
-<td class="instruction">JR Z,<a href="29889.html#30000">PrintToken_____</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="29889.html#30000">PrintToken_MeasureTheOutput</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29953"></span>29953</td>
 <td class="instruction">CP 64</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="29889.html#29970">PrintToken_ExpandTheVerbEnding</a> if the high nibble of the result is 64.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29955"></span>29955</td>
-<td class="instruction">JR Z,<a href="29889.html#29970">PrintToken___</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="29889.html#29970">PrintToken_ExpandTheVerbEnding</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29957"></span>29957</td>
 <td class="instruction">CP 16</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Take the current object, and jump to <a href="29889.html#29967">PrintToken_TestForThePlayer</a> if the high nibble of the result is 16.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29959"></span>29959</td>
 <td class="instruction">LD A,(46824)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29962"></span>29962</td>
-<td class="instruction">JR Z,<a href="29889.html#29967">PrintToken__</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="29889.html#29967">PrintToken_TestForThePlayer</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29964"></span>29964</td>
 <td class="instruction">LD A,(46826)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="46810.html#46826">CurrentCharacter</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintToken__</td>
+<td class="asm-label">PrintToken_TestForThePlayer</td>
 <td class="address-2"><span id="29967"></span>29967</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="29889.html#30000">PrintToken_MeasureTheOutput</a> if the subject in <span class="register">A</span> is the player (id 0).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29968"></span>29968</td>
-<td class="instruction">JR Z,<a href="29889.html#30000">PrintToken_____</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="29889.html#30000">PrintToken_MeasureTheOutput</a></td>
 </tr>
 <tr>
-<td class="asm-label">PrintToken___</td>
+<td class="asm-label">PrintToken_ExpandTheVerbEnding</td>
 <td class="address-2"><span id="29970"></span>29970</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="29889.html#30000">PrintToken_MeasureTheOutput</a> if the token index is not a class token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29971"></span>29971</td>
 <td class="instruction">BIT 7,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29973"></span>29973</td>
-<td class="instruction">JR Z,<a href="29889.html#30000">PrintToken_____</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="29889.html#30000">PrintToken_MeasureTheOutput</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29975"></span>29975</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Step to the next byte of the token index.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29976"></span>29976</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the token index.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29977"></span>29977</td>
 <td class="instruction">AND 224</td>
-<td class="comment-1" rowspan="1">E0?</td>
+<td class="comment-1" rowspan="4">Shift the top three bits down by three places. That index, times four, selects an ending in <a href="46810.html#46879">46879</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29979"></span>29979</td>
 <td class="instruction">RRCA</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29980"></span>29980</td>
 <td class="instruction">RRCA</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29981"></span>29981</td>
 <td class="instruction">RRCA</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29982"></span>29982</td>
 <td class="instruction">LD L,A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">The shifted index is the low byte of the pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29983"></span>29983</td>
 <td class="instruction">LD H,0</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">The pointer's high byte is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29985"></span>29985</td>
 <td class="instruction">LD BC,46879</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Add the verb-ending table at <a href="46810.html#46879">46879</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29988"></span>29988</td>
 <td class="instruction">ADD HL,BC</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29989"></span>29989</td>
 <td class="instruction">LD B,4</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Copy at most 4 bytes of the ending.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintToken____</td>
+<td class="asm-label">PrintToken_CopyTheEnding</td>
 <td class="address-2"><span id="29991"></span>29991</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="29889.html#30000">PrintToken_MeasureTheOutput</a> if the token index is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29992"></span>29992</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29993"></span>29993</td>
-<td class="instruction">JR Z,<a href="29889.html#30000">PrintToken_____</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="29889.html#30000">PrintToken_MeasureTheOutput</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29995"></span>29995</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Step to the next byte of the token index.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29996"></span>29996</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Store it at <a href="29862.html">OutputBuffer</a> and step on.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29997"></span>29997</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29998"></span>29998</td>
-<td class="instruction">DJNZ <a href="29889.html#29991">PrintToken____</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="29889.html#29991">PrintToken_CopyTheEnding</a></td>
+<td class="comment-1" rowspan="1">Loop back to <a href="29889.html#29991">PrintToken_CopyTheEnding</a> until 4 runs out.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintToken_____</td>
+<td class="asm-label">PrintToken_MeasureTheOutput</td>
 <td class="address-2"><span id="30000"></span>30000</td>
 <td class="instruction">LD HL,29862</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at output buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30003"></span>30003</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Swap the print pointer with the start of the output buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30004"></span>30004</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear carry before measuring how far the print pointer has moved.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30005"></span>30005</td>
 <td class="instruction">SBC HL,DE</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">See how far the pointer is past <a href="29862.html">OutputBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30007"></span>30007</td>
 <td class="instruction">LD B,L</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Keep the length just measured, and read the action countdown.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30008"></span>30008</td>
 <td class="instruction">LD A,(46849)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30011"></span>30011</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">See whether the action countdown is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30012"></span>30012</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="29889.html#30019">PrintToken_PrintASpace</a> if the action countdown is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30013"></span>30013</td>
-<td class="instruction">JR NZ,<a href="29889.html#30019">PrintToken______</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="29889.html#30019">PrintToken_PrintASpace</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30015"></span>30015</td>
 <td class="instruction">LD A,(34464)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the character flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30018"></span>30018</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">See whether the character flag is zero.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintToken______</td>
+<td class="asm-label">PrintToken_PrintASpace</td>
 <td class="address-2"><span id="30019"></span>30019</td>
 <td class="instruction">LD A,32</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Take 32, and call <a href="34187.html">Print_Character</a> to print it if the action countdown or the character flag is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30021"></span>30021</td>
-<td class="instruction">CALL NZ,<a href="34166.html#34187">34187</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL NZ,<a href="34187.html">Print_Character</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30024"></span>30024</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Take the characters left on the line from <a href="34187.html#34227">34227</a>, and jump to <a href="29889.html#30033">PrintToken_FitOnTheLine</a> if the action countdown is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30025"></span>30025</td>
 <td class="instruction">LD A,(34227)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30028"></span>30028</td>
-<td class="instruction">JR NZ,<a href="29889.html#30033">PrintToken_______</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="29889.html#30033">PrintToken_FitOnTheLine</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30030"></span>30030</td>
 <td class="instruction">LD A,(34459)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the room left on the line at <a href="34459.html">PrintWriteACharacterToTheScreen</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintToken_______</td>
+<td class="asm-label">PrintToken_FitOnTheLine</td>
 <td class="address-2"><span id="30033"></span>30033</td>
 <td class="instruction">LD HL,46852</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="29889.html#30044">PrintToken_TestTheClassNibble</a> if <span class="register">A</span> is not below the character count. <span class="register">A</span> is *<a href="34187.html#34227">34227</a> when the action countdown is not zero, and the room left on the line otherwise.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30036"></span>30036</td>
 <td class="instruction">CP B</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30037"></span>30037</td>
-<td class="instruction">JR NC,<a href="29889.html#30044">PrintToken________</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="29889.html#30044">PrintToken_TestTheClassNibble</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30039"></span>30039</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Save the capitalise-the-next-letter flag.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="30040"></span>
+<div class="comments">
+<div class="paragraph">
+Print a newline.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30040"></span>30040</td>
-<td class="instruction">CALL <a href="34166.html#34179">34179</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="34179.html">Print_LineBreak</a></td>
+<td class="comment-1" rowspan="1">Call <a href="34179.html">Print_LineBreak</a> to print a newline.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30043"></span>30043</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Put the capitalise-the-next-letter flag back as it was before the newline.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintToken________</td>
+<td class="asm-label">PrintToken_TestTheClassNibble</td>
 <td class="address-2"><span id="30044"></span>30044</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="6">Take 1 and jump to <a href="29889.html#30055">PrintToken_Print</a> unless the high nibble of <span class="register">D</span> is 112.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30045"></span>30045</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30046"></span>30046</td>
 <td class="instruction">AND 240</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30048"></span>30048</td>
 <td class="instruction">CP 112</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30050"></span>30050</td>
 <td class="instruction">LD A,1</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30052"></span>30052</td>
 <td class="instruction">JR NZ,<a href="29889.html#30055">PrintToken_Print</a></td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30054"></span>30054</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the capitalise-the-next-letter flag.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintToken_Print</td>
 <td class="address-2"><span id="30055"></span>30055</td>
 <td class="instruction">LD HL,29862</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="29862.html">output buffer</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at output buffer.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintToken_Print_Loop</td>
@@ -680,8 +660,8 @@ Check minimum length.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="30059"></span>30059</td>
-<td class="instruction">CALL <a href="34166.html#34187">34187</a></td>
-<td class="comment-1" rowspan="1">Call <a href="34166.html#34187">34187</a>.</td>
+<td class="instruction">CALL <a href="34187.html">Print_Character</a></td>
+<td class="comment-1" rowspan="1">Call <a href="34187.html">Print_Character</a> to print one character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -699,7 +679,7 @@ Check minimum length.
 <td class="asm-label"></td>
 <td class="address-1"><span id="30065"></span>30065</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">HL</span> off the stack.</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -727,7 +707,7 @@ Next: <a href="30068.html">30068</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../../asm/74C1.html">Switch to hexadecimal</a>.</div>
 </footer>

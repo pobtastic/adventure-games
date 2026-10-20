@@ -42,7 +42,10 @@ Next: <a href="43445.html">43445</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="42445.html">ProcessTextCommand</a>, <a href="43355.html">ProcessFormatDataByte</a> and <a href="46975.html">ProcessTextTokenStream</a>.
+Used by the routines at <a href="42482.html">TestSpace</a>, <a href="43355.html">ProcessFormatDataByte</a> and <a href="46975.html">ProcessTextTokenStream</a>.
+</div>
+<div class="paragraph">
+Unpacks the next character code from the bit-packed dictionary word.
 </div>
 </div>
 <table class="input">
@@ -77,7 +80,7 @@ Used by the routines at <a href="42445.html">ProcessTextCommand</a>, <a href="43
 <td class="asm-label">RotateAndExtractCharacterCode</td>
 <td class="address-2"><span id="43408"></span>43408</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
+<td class="comment-1" rowspan="1">Read the word at <span class="register">HL</span> into <span class="register">DE</span> with the bytes swapped, and jump to <a href="43408.html#43424">RotateAndExtractCharacterCode_UpdateRotation</a> if <span class="register">C</span> is zero.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -93,39 +96,43 @@ Read two bytes from the bit-packed data.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43409"></span>43409</td>
 <td class="instruction">LD D,(HL)</td>
-<td class="comment-1" rowspan="3">Load two bytes from the bit-packed data into <span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43410"></span>43410</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43411"></span>43411</td>
 <td class="instruction">LD E,(HL)</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43412"></span>43412</td>
 <td class="instruction">DEC HL</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">HL</span> by one (restore the pointer).</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43413"></span>43413</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="3">Jump to <a href="43408.html#43424">RotateAndExtractCharacterCode_UpdateRotation</a> if no rotation is needed.</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43414"></span>43414</td>
 <td class="instruction">AND A</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43415"></span>43415</td>
 <td class="instruction">JR Z,<a href="43408.html#43424">RotateAndExtractCharacterCode_UpdateRotation</a></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -141,25 +148,22 @@ Rotate the two bytes left by the rotation count.
 <td class="asm-label">RotateAndExtractCharacterCode_RotateLoop</td>
 <td class="address-2"><span id="43417"></span>43417</td>
 <td class="instruction">SLA E</td>
-<td class="comment-1" rowspan="1">Shift <span class="register">E</span> left (with carry) (move bit from high byte to carry).</td>
+<td class="comment-1" rowspan="4">Move the packed character one bit and repeat from <a href="43408.html#43417">RotateAndExtractCharacterCode_RotateLoop</a> until the bit offset is used up.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43419"></span>43419</td>
 <td class="instruction">RL D</td>
-<td class="comment-1" rowspan="1">Rotate <span class="register">D</span> left (move carry bit into low byte).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43421"></span>43421</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">A</span> (the rotation counter) by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43422"></span>43422</td>
 <td class="instruction">JR NZ,<a href="43408.html#43417">RotateAndExtractCharacterCode_RotateLoop</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43408.html#43417">RotateAndExtractCharacterCode_RotateLoop</a> if more rotations are needed.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -175,19 +179,17 @@ Update the rotation count for the next character extraction.
 <td class="asm-label">RotateAndExtractCharacterCode_UpdateRotation</td>
 <td class="address-2"><span id="43424"></span>43424</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">C</span> (load the current rotation count).</td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="43408.html#43434">RotateAndExtractCharacterCode_Extract</a> if the rotation count plus 5 is still below 8.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43425"></span>43425</td>
 <td class="instruction">ADD A,5</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>+=5 (add 5 bits for the character we're extracting).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43427"></span>43427</td>
 <td class="instruction">CP 8</td>
-<td class="comment-1" rowspan="2">Jump to <a href="43408.html#43434">RotateAndExtractCharacterCode_Extract</a> if we haven't crossed a byte boundary (<span class="register">A</span> is less than 8).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -198,31 +200,30 @@ Update the rotation count for the next character extraction.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43431"></span>43431</td>
 <td class="instruction">SUB 8</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>-=8 (wrap around within the byte).</td>
+<td class="comment-1" rowspan="2">Drop 8 from the count and step to the next character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43433"></span>43433</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one (move to the next byte for the next character).</td>
 </tr>
 <tr>
 <td class="asm-label">RotateAndExtractCharacterCode_Extract</td>
 <td class="address-2"><span id="43434"></span>43434</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span> (store the updated rotation count).</td>
+<td class="comment-1" rowspan="1">Store the result in the low byte of the count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43435"></span>43435</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">D</span> (load the rotated low byte).</td>
+<td class="comment-1" rowspan="1">Read the high byte of the token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43436"></span>43436</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the saved source from the stack.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -238,17 +239,19 @@ Extract the 5-bit character code from the rotated byte.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43437"></span>43437</td>
 <td class="instruction">RRCA</td>
-<td class="comment-1" rowspan="3">RRCA three times (shift right by 3 bits to align the 5-bit code).</td>
+<td class="comment-1" rowspan="1">Move the bottom bit of the result up to the top.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43438"></span>43438</td>
 <td class="instruction">RRCA</td>
+<td class="comment-1" rowspan="1">Move the bottom bit of the result up to the top.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43439"></span>43439</td>
 <td class="instruction">RRCA</td>
+<td class="comment-1" rowspan="1">Move the bottom bit of the result up to the top.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -260,7 +263,7 @@ Extract the 5-bit character code from the rotated byte.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43442"></span>43442</td>
 <td class="instruction">ADD A,96</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>+=96 (convert to ASCII character code range 96-127).</td>
+<td class="comment-1" rowspan="1">Advance the result by 96.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -283,7 +286,7 @@ Next: <a href="43445.html">43445</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/A990.html">Switch to hexadecimal</a>.</div>
 </footer>

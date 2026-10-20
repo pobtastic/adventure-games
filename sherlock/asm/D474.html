@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at D474</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D471.html">D471</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d474">Map</a></td>
+<td class="next">
+Next: <a href="D495.html">D495</a>
+</td>
+</tr>
+</table>
+<div class="description">D474: Find Object By Field</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="D46C.html">FindObjectByFieldOne</a>.
+</div>
+<div class="paragraph">
+Writes the field number into the search instruction, then walks the object records for a match.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FindObjectByField</td>
+<td class="address-2"><span id="d474"></span>D474</td>
+<td class="instruction">LD ($D48D),A</td>
+<td class="comment-1" rowspan="3">Write the field number into the displacement of the instruction at <a href="D474.html#d48b">D48B</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d477"></span>D477</td>
+<td class="instruction">POP AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d478"></span>D478</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d479"></span>D479</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="4">Call <a href="D33C.html">FetchCurrentCharacterLocation</a> to fetch current character location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d47b"></span>D47B</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d47c"></span>D47C</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d47d"></span>D47D</td>
+<td class="instruction">CALL <a href="D33C.html">FetchCurrentCharacterLocation</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d480"></span>D480</td>
+<td class="instruction">LD DE,$0006</td>
+<td class="comment-1" rowspan="3">Step to the next record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d483"></span>D483</td>
+<td class="instruction">ADD IX,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d485"></span>D485</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label">FindObjectByField_Loop</td>
+<td class="address-2"><span id="d486"></span>D486</td>
+<td class="instruction">CALL <a href="D206.html">FetchNextObject</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="D474.html#d491">FindObjectByField_Next</a> if the next object id is FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d489"></span>D489</td>
+<td class="instruction">JR Z,<a href="D474.html#d491">FindObjectByField_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d48b"></span>
+<div class="comments">
+<div class="paragraph">
+<a href="D474.html">FindObjectByField</a> writes 01 or 02 into the displacement of this instruction.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d48b"></span>D48B</td>
+<td class="instruction">LD A,(IX+$02)</td>
+<td class="comment-1" rowspan="3">Compare field 02 (modified by <a href="D474.html">FindObjectByField</a>) of this object with the value wanted, and keep searching if it differs.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d48e"></span>D48E</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d48f"></span>D48F</td>
+<td class="instruction">JR NZ,<a href="D474.html#d486">FindObjectByField_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label">FindObjectByField_Next</td>
+<td class="address-2"><span id="d491"></span>D491</td>
+<td class="instruction">POP IY</td>
+<td class="comment-1" rowspan="2">Restore the saved schedule entry and the saved count from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d493"></span>D493</td>
+<td class="instruction">POP BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d494"></span>D494</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D471.html">D471</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d474">Map</a></td>
+<td class="next">
+Next: <a href="D495.html">D495</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/54388.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

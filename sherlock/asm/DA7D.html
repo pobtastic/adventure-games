@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at DA7D</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DA34.html">DA34</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#da7d">Map</a></td>
+<td class="next">
+Next: <a href="DAC6.html">DAC6</a>
+</td>
+</tr>
+</table>
+<div class="description">DA7D: Match The Dictionary Word</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="D9C5.html">SkipSpaces</a>.
+</div>
+<div class="paragraph">
+Compares the typed word with this dictionary entry and keeps the match when it is longer than the one already saved.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchDictionaryWord</td>
+<td class="address-2"><span id="da7d"></span>DA7D</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="4">Read the input length.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da7e"></span>DA7E</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da7f"></span>DA7F</td>
+<td class="instruction">LD A,($DC13)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da82"></span>DA82</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da83"></span>DA83</td>
+<td class="instruction">LD A,($DC14)</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="DA7D.html#daa5">MatchDictionaryWord_NoMatch</a> if the first value is at least the second.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da86"></span>DA86</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da87"></span>DA87</td>
+<td class="instruction">JR NC,<a href="DA7D.html#daa5">MatchDictionaryWord_NoMatch</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da89"></span>DA89</td>
+<td class="instruction">LD B,$01</td>
+<td class="comment-1" rowspan="3">Point <span class="register">DE</span> at the word buffer (<a href="5C0B.html">WordBuffer</a>) and <span class="register">HL</span> at 5C42.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da8b"></span>DA8B</td>
+<td class="instruction">LD DE,$5C0B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da8e"></span>DA8E</td>
+<td class="instruction">LD HL,$5C42</td>
+</tr>
+<tr>
+<td class="asm-label">MatchDictionaryWord_CompareLetters</td>
+<td class="address-2"><span id="da91"></span>DA91</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="DA7D.html#da9d">MatchDictionaryWord_AcceptLength</a> if this dictionary letter is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da92"></span>DA92</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da93"></span>DA93</td>
+<td class="instruction">JR Z,<a href="DA7D.html#da9d">MatchDictionaryWord_AcceptLength</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da95"></span>DA95</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="DA7D.html#da9d">MatchDictionaryWord_AcceptLength</a> if the dictionary letter differs.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da96"></span>DA96</td>
+<td class="instruction">JR NZ,<a href="DA7D.html#da9d">MatchDictionaryWord_AcceptLength</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da98"></span>DA98</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="4">Step to the next letter, count one more and jump back to <a href="DA7D.html#da91">MatchDictionaryWord_CompareLetters</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da99"></span>DA99</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da9a"></span>DA9A</td>
+<td class="instruction">INC B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da9b"></span>DA9B</td>
+<td class="instruction">JR <a href="DA7D.html#da91">MatchDictionaryWord_CompareLetters</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="da9d"></span>
+<div class="comments">
+<div class="paragraph">
+Accepts the saved index while it is still within the match length.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchDictionaryWord_AcceptLength</td>
+<td class="address-2"><span id="da9d"></span>DA9D</td>
+<td class="instruction">LD A,($DC14)</td>
+<td class="comment-1" rowspan="3">Go to <a href="DA7D.html#daa9">MatchDictionaryWord_RememberLength</a> if the match length equals the saved count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daa0"></span>DAA0</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daa1"></span>DAA1</td>
+<td class="instruction">JR Z,<a href="DA7D.html#daa9">MatchDictionaryWord_RememberLength</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daa3"></span>DAA3</td>
+<td class="instruction">JR C,<a href="DA7D.html#daa9">MatchDictionaryWord_RememberLength</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="DA7D.html#daa9">MatchDictionaryWord_RememberLength</a> if the first value is below the second.</td>
+</tr>
+<tr>
+<td class="asm-label">MatchDictionaryWord_NoMatch</td>
+<td class="address-2"><span id="daa5"></span>DAA5</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="2">Restore the text pointer from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daa6"></span>DAA6</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daa7"></span>DAA7</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daa8"></span>DAA8</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="daa9"></span>
+<div class="comments">
+<div class="paragraph">
+Take the input length and remember it in the space marker.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchDictionaryWord_RememberLength</td>
+<td class="address-2"><span id="daa9"></span>DAA9</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="2">Take the dictionary index and store it in the workspace byte at <a href="DBF7.html#dc14">DC14</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daaa"></span>DAAA</td>
+<td class="instruction">LD ($DC14),A</td>
+</tr>
+<tr>
+<td class="asm-label">MatchDictionaryWord_NextEntry</td>
+<td class="address-2"><span id="daad"></span>DAAD</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="6">Go to <a href="DA7D.html#dac1">MatchDictionaryWord_Matched</a> if bit 7 of the next byte is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daae"></span>DAAE</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daaf"></span>DAAF</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dab0"></span>DAB0</td>
+<td class="instruction">BIT 7,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dab2"></span>DAB2</td>
+<td class="instruction">DEC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dab3"></span>DAB3</td>
+<td class="instruction">JR Z,<a href="DA7D.html#dac1">MatchDictionaryWord_Matched</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dab5"></span>DAB5</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="6">Step on two places, step to the next entry and take the dictionary index.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dab6"></span>DAB6</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dab7"></span>DAB7</td>
+<td class="instruction">LD E,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dab8"></span>DAB8</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dab9"></span>DAB9</td>
+<td class="instruction">LD D,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daba"></span>DABA</td>
+<td class="instruction">LD HL,$5DBF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dabd"></span>DABD</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="DA7D.html#daad">MatchDictionaryWord_NextEntry</a> to step to the next entry and step back one entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dabe"></span>DABE</td>
+<td class="instruction">EX (SP),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dabf"></span>DABF</td>
+<td class="instruction">JR <a href="DA7D.html#daad">MatchDictionaryWord_NextEntry</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="dac1"></span>
+<div class="comments">
+<div class="paragraph">
+Keep the match flags before returning.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchDictionaryWord_Matched</td>
+<td class="address-2"><span id="dac1"></span>DAC1</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="2">Restore the saved pointers from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dac2"></span>DAC2</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dac3"></span>DAC3</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dac5"></span>DAC5</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DA34.html">DA34</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#da7d">Map</a></td>
+<td class="next">
+Next: <a href="DAC6.html">DAC6</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/55933.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at B400</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B3F1.html">B3F1</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b400">Map</a></td>
+<td class="next">
+Next: <a href="B41F.html">B41F</a>
+</td>
+</tr>
+</table>
+<div class="description">B400: Print Objects</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="B46B.html">HandlerDisplayRoomExits</a> and <a href="F756.html">Action_Inventory</a>.
+</div>
+<div class="paragraph">
+List the objects the player can see in this room.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">01 for inventory items, or room number for room objects</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintObjects</td>
+<td class="address-2"><span id="b400"></span>B400</td>
+<td class="instruction">LD HL,$AD76</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="AD76.html">Table_ItemLocations</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b403"></span>B403</td>
+<td class="instruction">LD BC,($AEF0)</td>
+<td class="comment-1" rowspan="1">Load the number of items into <span class="register">BC</span>.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintObjects_Loop</td>
+<td class="address-2"><span id="b407"></span>B407</td>
+<td class="instruction">CPIR</td>
+<td class="comment-1" rowspan="1">Search <a href="AD76.html">Table_ItemLocations</a> for the next item in this room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b409"></span>B409</td>
+<td class="instruction">RET NZ</td>
+<td class="comment-1" rowspan="1">Return if no matching items remain.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b40a"></span>B40A</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1">Stash the current place in <a href="AD76.html">Table_ItemLocations</a> on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b40b"></span>B40B</td>
+<td class="instruction">CALL <a href="B64B.html">ValidateObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B64B.html">ValidateObject</a> to see whether this item has a description.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b40e"></span>B40E</td>
+<td class="instruction">JR Z,<a href="B400.html#b417">PrintObjects_Next</a></td>
+<td class="comment-1" rowspan="1">Skip an item that has no description.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b410"></span>B410</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="2">Remember the room ID and the remaining count while the name is printed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b411"></span>B411</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b412"></span>B412</td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AC35.html">PrintStringAndANewline</a> to print the string and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b415"></span>B415</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore the remaining count and the room ID from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b416"></span>B416</td>
+<td class="instruction">POP AF</td>
+</tr>
+<tr>
+<td class="asm-label">PrintObjects_Next</td>
+<td class="address-2"><span id="b417"></span>B417</td>
+<td class="instruction">LD E,A</td>
+<td class="comment-1" rowspan="1">Hold the room ID in <span class="register">E</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b418"></span>B418</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore the current place in <a href="AD76.html">Table_ItemLocations</a> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b419"></span>B419</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="2">See whether any items remain.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b41a"></span>B41A</td>
+<td class="instruction">OR C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b41b"></span>B41B</td>
+<td class="instruction">LD A,E</td>
+<td class="comment-1" rowspan="1">Restore the room ID to <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b41c"></span>B41C</td>
+<td class="instruction">JR NZ,<a href="B400.html#b407">PrintObjects_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B400.html#b407">PrintObjects_Loop</a> while items remain.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b41e"></span>B41E</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B3F1.html">B3F1</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b400">Map</a></td>
+<td class="next">
+Next: <a href="B41F.html">B41F</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../dec/asm/46080.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

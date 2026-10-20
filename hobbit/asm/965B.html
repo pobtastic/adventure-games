@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 965B</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="9630.html">9630</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#965b">Map</a></td>
+<td class="next">
+Next: <a href="9686.html">9686</a>
+</td>
+</tr>
+</table>
+<div class="description">965B: Turn: Print The Location Text</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="9630.html">YouSeePreposition</a>.
+</div>
+<div class="paragraph">
+Prints the location text, draws the picture, waits for a key, and lists the exits and what is here.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="965b"></span>
+<div class="comments">
+<div class="paragraph">
+From here starts the "intro" to a location; <ul class="">
+<li>Print the "You see[0x16]" text</li>
+<li>Handle printing the location data message for this location (if one exists)</li>
+<li>Handles initiating the location graphics/ drawing (if it exists)</li>
+<li>Handles waiting for a keypress (if something was drawn)</li>
+<li>Prints available exits</li>
+</ul>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">YouSeeStart</td>
+<td class="address-2"><span id="965b"></span>965B</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Store <span class="register">A</span> in <span class="register">B</span> temporarily.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="965c"></span>965C</td>
+<td class="instruction">CALL <a href="9BB1.html">LocateLocation</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9BB1.html">LocateLocation</a> to set <span class="register">IX</span> to point to the appropriate <a href="BA8A.html">location data</a> for the current location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="965f"></span>965F</td>
+<td class="instruction">CALL <a href="72DD.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="72DD.html">PrintMessage</a> to print message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9662"></span>9662</td>
+<td class="instruction">LD L,(IX+$08)</td>
+<td class="comment-1" rowspan="2">Load the <a href="BA8A.html">location data</a> offset for the current location description.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9665"></span>9665</td>
+<td class="instruction">LD H,(IX+$09)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9668"></span>9668</td>
+<td class="instruction">LD A,H</td>
+<td class="comment-1" rowspan="1">Use byte 9 of this object again.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9669"></span>9669</td>
+<td class="instruction">OR L</td>
+<td class="comment-1" rowspan="1">Combine this flag with the low byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="966a"></span>966A</td>
+<td class="instruction">CALL <a href="9686.html">YouSeePrint</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9686.html">YouSeePrint</a> to print the location description.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="966d"></span>966D</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="2">Call <a href="7F78.html">Drawing</a> with the location id.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="966e"></span>966E</td>
+<td class="instruction">CALL <a href="7F78.html">Drawing</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9671"></span>9671</td>
+<td class="instruction">LD A,($7F77)</td>
+<td class="comment-1" rowspan="3">Test if <a href="7F77.html">LocationID</a> contains FF, call <a href="969A.html">Turn_WaitForAKey</a> if it does not (i.e. wait for a keypress only if something has been drawn).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9674"></span>9674</td>
+<td class="instruction">INC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9675"></span>9675</td>
+<td class="instruction">CALL NZ,<a href="969A.html">Turn_WaitForAKey</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9678"></span>9678</td>
+<td class="instruction">CALL <a href="8583.html">Print_LineBreak</a></td>
+<td class="comment-1" rowspan="1">Call <a href="8583.html">Print_LineBreak</a> to print a newline.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="967b"></span>967B</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="2">Call <a href="A0C8.html">MessageListTheObjects</a> with the location id.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="967c"></span>967C</td>
+<td class="instruction">CALL <a href="A0C8.html">MessageListTheObjects</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="967f"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="96A8.html">YouSeeController</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">YouSee_Exits</td>
+<td class="address-2"><span id="967f"></span>967F</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="2">Call <a href="A138.html">DisplayExits</a> with the location id.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9680"></span>9680</td>
+<td class="instruction">CALL <a href="A138.html">DisplayExits</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9683"></span>9683</td>
+<td class="instruction">JP <a href="9F94.html">TurnDescribeWhatIsHere</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9F94.html">TurnDescribeWhatIsHere</a> to describe what is here.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="9630.html">9630</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#965b">Map</a></td>
+<td class="next">
+Next: <a href="9686.html">9686</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/38491.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

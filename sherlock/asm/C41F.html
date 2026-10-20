@@ -42,7 +42,10 @@ Next: <a href="C45E.html">C45E</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="A040.html">GameEntryPoint</a>, <a href="A4CD.html">CompareLocationData</a> and <a href="C415.html">WaitForKeypress_Loop</a>.
+Used by the routines at <a href="A064.html">Game_Initialisation</a>, <a href="A536.html">WaitForKeyWithTimeout</a> and <a href="C415.html">WaitForKeypress_Loop</a>.
+</div>
+<div class="paragraph">
+Waits for the next frame and reads the key the Spectrum last reported.
 </div>
 </div>
 <table class="output">
@@ -60,7 +63,7 @@ Used by the routines at <a href="A040.html">GameEntryPoint</a>, <a href="A4CD.ht
 <td class="asm-label">GetKeypress</td>
 <td class="address-2"><span id="c41f"></span>C41F</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="5">Stash <span class="register">IY</span>, <span class="register">IX</span>, <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="5">Save the schedule entry, the character record, the pointer, the source and the count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -92,19 +95,17 @@ Used by the routines at <a href="A040.html">GameEntryPoint</a>, <a href="A4CD.ht
 <td class="asm-label"></td>
 <td class="address-1"><span id="c42a"></span>C42A</td>
 <td class="instruction">EI</td>
-<td class="comment-1" rowspan="1">Enable interrupts.</td>
+<td class="comment-1" rowspan="3">Let one frame interrupt through so the ROM can scan the keyboard, then turn interrupts off again.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c42b"></span>C42B</td>
 <td class="instruction">HALT</td>
-<td class="comment-1" rowspan="1">Halt operation (suspend CPU until the next interrupt).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c42c"></span>C42C</td>
 <td class="instruction">DI</td>
-<td class="comment-1" rowspan="1">Disable interrupts.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -142,12 +143,15 @@ No key has been pressed.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c435"></span>C435</td>
 <td class="instruction">JR <a href="C41F.html#c456">GetKeypress_Return</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C41F.html#c456">GetKeypress_Return</a>.</td>
+<td class="comment-1" rowspan="1">Carry on and wait for a key once the mode flags are stored.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="c437"></span>
 <div class="comments">
+<div class="paragraph">
+Clear the mark on this character, then store the result in the working byte, then read the working value.
+</div>
 <div class="paragraph">
 A key has been pressed, so process it.
 </div>
@@ -158,7 +162,7 @@ A key has been pressed, so process it.
 <td class="asm-label">GetKeypress_Process</td>
 <td class="address-2"><span id="c437"></span>C437</td>
 <td class="instruction">RES 5,A</td>
-<td class="comment-1" rowspan="2">Reset bit 5 of *<a href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3B.html">FLAGS</a> which resets "when a new key has been pressed".</td>
+<td class="comment-1" rowspan="2">Store it in the system variables.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -169,7 +173,7 @@ A key has been pressed, so process it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c43c"></span>C43C</td>
 <td class="instruction">LD A,($5C08)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="C41F.html#c445">GetKeypress_CheckDelete</a> if *<a href="https://skoolkid.github.io/rom/asm/5C08.html">LAST-K</a> (last key pressed) is not ASCII 5F ("&#95;").</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C41F.html#c445">GetKeypress_CheckDelete</a> if *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C08.html">LAST_K</a> (last key pressed) is not ASCII 5F ("&#95;").</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -185,7 +189,7 @@ A key has been pressed, so process it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c443"></span>C443</td>
 <td class="instruction">LD A,$18</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=18.</td>
+<td class="comment-1" rowspan="1">Use 18 for the key.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -201,7 +205,7 @@ Did the player press "DELETE"?
 <td class="asm-label">GetKeypress_CheckDelete</td>
 <td class="address-2"><span id="c445"></span>C445</td>
 <td class="instruction">CP $0C</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C41F.html#c44b">GetKeypress_CheckUp</a> if *<a href="https://skoolkid.github.io/rom/asm/5C08.html">LAST-K</a> (last key pressed) is not ASCII 0C ("DELETE").</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C41F.html#c44b">GetKeypress_CheckUp</a> if *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C08.html">LAST_K</a> (last key pressed) is not ASCII 0C ("DELETE").</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -228,7 +232,7 @@ Did the player press "UP"?
 <td class="asm-label">GetKeypress_CheckUp</td>
 <td class="address-2"><span id="c44b"></span>C44B</td>
 <td class="instruction">CP $0B</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C41F.html#c451">GetKeypress_Validate</a> if *<a href="https://skoolkid.github.io/rom/asm/5C08.html">LAST-K</a> (last key pressed) is not ASCII 0B ("UP").</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C41F.html#c451">GetKeypress_Validate</a> if *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C08.html">LAST_K</a> (last key pressed) is not ASCII 0B ("UP").</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -242,22 +246,32 @@ Did the player press "UP"?
 <td class="comment-1" rowspan="1">Load <span class="register">A</span> with 5B (up was pressed).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c451"></span>
+<div class="comments">
+<div class="paragraph">
+Validate keypress.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">GetKeypress_Validate</td>
 <td class="address-2"><span id="c451"></span>C451</td>
 <td class="instruction">CALL <a href="C240.html">ValidateKeypress</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C240.html">ValidateKeypress</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="C240.html">ValidateKeypress</a> to accept the key if it is in range.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c454"></span>C454</td>
 <td class="instruction">SET 7,A</td>
-<td class="comment-1" rowspan="1">Set bit 7 of <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Set the mark on this character.</td>
 </tr>
 <tr>
 <td class="asm-label">GetKeypress_Return</td>
 <td class="address-2"><span id="c456"></span>C456</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="5">Restore <span class="register">BC</span>, <span class="register">DE</span>, <span class="register">HL</span>, <span class="register">IX</span> and <span class="register">IY</span> from the stack.</td>
+<td class="comment-1" rowspan="5">Restore the saved count, the saved source, the saved pointer, the saved character record and the saved schedule entry from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -300,7 +314,7 @@ Next: <a href="C45E.html">C45E</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/50207.html">Switch to decimal</a>.</div>
 </footer>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at C380</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C345.html">C345</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c380">Map</a></td>
+<td class="next">
+Next: <a href="C3C0.html">C3C0</a>
+</td>
+</tr>
+</table>
+<div class="description">C380: Load From Tape</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="EE81.html">Action_Load</a>.
+</div>
+<div class="paragraph">
+Ask for a tape and read a previously saved game state back in.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c380"></span>
+<div class="comments">
+<div class="paragraph">
+Print "LOADING. Start tape.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">LoadFromTape</td>
+<td class="address-2"><span id="c380"></span>C380</td>
+<td class="instruction">LD HL,$BC27</td>
+<td class="comment-1" rowspan="2">Print "LOADING. Start tape.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c383"></span>C383</td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c386"></span>C386</td>
+<td class="instruction">LD IX,$B9C8</td>
+<td class="comment-1" rowspan="2">Point the load at the game state (<a href="B9C8.html">GameState</a>) for 013C bytes.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c38a"></span>C38A</td>
+<td class="instruction">LD DE,$013C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c38d"></span>C38D</td>
+<td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="2">Mark it as a data block and set the carry flag for "loading".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c38f"></span>C38F</td>
+<td class="instruction">SCF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c390"></span>C390</td>
+<td class="instruction">CALL $0556</td>
+<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c393"></span>C393</td>
+<td class="instruction">JR C,<a href="C380.html#c39c">LoadFromTape_Success</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C380.html#c39c">LoadFromTape_Success</a> when the load succeeded.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c395"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Tape error.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c395"></span>C395</td>
+<td class="instruction">LD HL,$BC3C</td>
+<td class="comment-1" rowspan="2">Print "Tape error.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c398"></span>C398</td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c39b"></span>C39B</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">LoadFromTape_Success</td>
+<td class="address-2"><span id="c39c"></span>C39C</td>
+<td class="instruction">LD A,($BB02)</td>
+<td class="comment-1" rowspan="3">Return when *<a href="B9C8.html#bb02">BB02</a> is zero, so there is no flag state to restore.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c39f"></span>C39F</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3a0"></span>C3A0</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3a1"></span>C3A1</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="4">Take the flag addresses and the saved bytes.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3a2"></span>C3A2</td>
+<td class="instruction">LD IX,($BAF2)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3a6"></span>C3A6</td>
+<td class="instruction">LD DE,$BA69</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3a9"></span>C3A9</td>
+<td class="instruction">JR <a href="C380.html#c3b0">LoadFromTape_StoreFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label">LoadFromTape_Restore</td>
+<td class="address-2"><span id="c3ab"></span>C3AB</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="3">Step to the next flag address and the next saved byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3ad"></span>C3AD</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3af"></span>C3AF</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label">LoadFromTape_StoreFlag</td>
+<td class="address-2"><span id="c3b0"></span>C3B0</td>
+<td class="instruction">LD L,(IX+$00)</td>
+<td class="comment-1" rowspan="5">Write that saved byte back and repeat until every flag is restored.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3b3"></span>C3B3</td>
+<td class="instruction">LD H,(IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3b6"></span>C3B6</td>
+<td class="instruction">LD A,(DE)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3b7"></span>C3B7</td>
+<td class="instruction">LD (HL),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3b8"></span>C3B8</td>
+<td class="instruction">DJNZ <a href="C380.html#c3ab">LoadFromTape_Restore</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3ba"></span>C3BA</td>
+<td class="instruction">LD E,$00</td>
+<td class="comment-1" rowspan="2">Call <a href="C0F9.html">Handler_DisplayRoom</a> to show the restored room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3bc"></span>C3BC</td>
+<td class="instruction">CALL <a href="C0F9.html">Handler_DisplayRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3bf"></span>C3BF</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C345.html">C345</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c380">Map</a></td>
+<td class="next">
+Next: <a href="C3C0.html">C3C0</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/50048.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

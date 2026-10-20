@@ -42,7 +42,7 @@ Next: <a href="50411.html">50411</a>
 Used by the routine at <a href="60868.html">GameLoop</a>.
 </div>
 <div class="paragraph">
-Processes the word tokens from the user's command, checking if any token refers to a game item. If a valid item token is found and the item is present (in the current room or player's inventory), the routine returns successfully. Otherwise, it continues checking tokens until one is found or all tokens have been processed.
+Checks that every object the command names is here. For each word in <a href="48486.html">UserInput_Token_1</a> that is an object, <a href="49962.html">Parser_CheckObjectIsHere</a> looks for one of its items in the current room or the inventory. If none is there, <a href="49962.html">Parser_CheckObjectIsHere</a> has already said so, and this returns with the carry flag set so that the game loop at <a href="60868.html">GameLoop</a> skips the command.
 </div>
 </div>
 </td>
@@ -153,21 +153,21 @@ The token matches an object ID. Now verify that the item is actually present (in
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50397"></span>50397</td>
-<td class="instruction">CALL <a href="49962.html">Action_ExamineItem</a></td>
-<td class="comment-1" rowspan="1">Call <a href="49962.html">Action_ExamineItem</a> to check if the item is present and accessible.</td>
+<td class="instruction">CALL <a href="49962.html">Parser_CheckObjectIsHere</a></td>
+<td class="comment-1" rowspan="1">Call <a href="49962.html">Parser_CheckObjectIsHere</a> to check if the item is present and accessible.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50400"></span>50400</td>
 <td class="instruction">JR NC,<a href="50375.html#50405">ProcessItem_NextToken</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="50375.html#50405">ProcessItem_NextToken</a> if the item is not present (carry flag set).</td>
+<td class="comment-1" rowspan="1">Jump to <a href="50375.html#50405">ProcessItem_NextToken</a> if the object is here (carry flag clear).</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="50402"></span>
 <div class="comments">
 <div class="paragraph">
-The token refers to a valid item that is present. Success!
+The object isn't here and <a href="49962.html">Parser_CheckObjectIsHere</a> has printed why.
 </div>
 </div>
 </td>
@@ -187,14 +187,14 @@ The token refers to a valid item that is present. Success!
 <td class="asm-label"></td>
 <td class="address-1"><span id="50404"></span>50404</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return successfully (the item was found and is accessible).</td>
+<td class="comment-1" rowspan="1">Return with the carry flag set.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="50405"></span>
 <div class="comments">
 <div class="paragraph">
-This token wasn't a valid item or the item isn't present. Move to the next token and continue searching.
+This word isn't an object, or the object is here. Move on to the next word.
 </div>
 </div>
 </td>
@@ -226,7 +226,7 @@ This token wasn't a valid item or the item isn't present. Move to the next token
 <td class="asm-label"></td>
 <td class="address-1"><span id="50410"></span>50410</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return (no valid item tokens were found in the input).</td>
+<td class="comment-1" rowspan="1">Return (every object named is here).</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -243,7 +243,7 @@ Next: <a href="50411.html">50411</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/jewelsofbabylon/">Source code</a>.</div>
 <div><a href="../../asm/C4C7.html">Switch to hexadecimal</a>.</div>
 </footer>

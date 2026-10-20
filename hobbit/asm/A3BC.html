@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at A3BC</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A302.html">A302</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a3bc">Map</a></td>
+<td class="next">
+Next: <a href="A3E6.html">A3E6</a>
+</td>
+</tr>
+</table>
+<div class="description">A3BC: Action: Remove The Ring</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="AAE0.html">Event_TheRing</a>.
+</div>
+<div class="paragraph">
+Takes the ring off. If the ring is not being worn (it is visible), prints "You are not wearing" and its name; otherwise the ring and the character become visible again, the strength is multiplied by four, and <a href="CA84.html#caaf">CAAF</a> is cleared. Reached through the action list of <a href="C11B.html#c31a">$10</a> - "Valuable Golden Ring" for action 16, dispatched by <a href="9B6C.html">TriggerAction</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_RemoveTheRing</td>
+<td class="address-2"><span id="a3bc"></span>A3BC</td>
+<td class="instruction">LD IX,($B70C)</td>
+<td class="comment-1" rowspan="1">Read the character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3c0"></span>A3C0</td>
+<td class="instruction">LD IY,$C31A</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IY</span> at the ring.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3c4"></span>A3C4</td>
+<td class="instruction">BIT 7,(IY+$07)</td>
+<td class="comment-1" rowspan="1">Test whether the ring is visible.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3c8"></span>A3C8</td>
+<td class="instruction">LD HL,$B074</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at "You are not wearing[0x07]".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3cb"></span>A3CB</td>
+<td class="instruction">JP NZ,<a href="72DD.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="72DD.html">PrintMessage</a> if the ring is not being worn.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a3ce"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, the ring is not taken off.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3ce"></span>A3CE</td>
+<td class="instruction">CALL <a href="9D44.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9D44.html">ConditionSuppressTheMessage</a>. If the message is held back, the ring is not taken off.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3d1"></span>A3D1</td>
+<td class="instruction">SET 7,(IY+$07)</td>
+<td class="comment-1" rowspan="1">Show the ring again.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3d5"></span>A3D5</td>
+<td class="instruction">SET 7,(IX+$07)</td>
+<td class="comment-1" rowspan="1">Make the character visible again.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3d9"></span>A3D9</td>
+<td class="instruction">SLA (IX+$05)</td>
+<td class="comment-1" rowspan="1">Double the strength and keep the overflow.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3dd"></span>A3DD</td>
+<td class="instruction">SLA (IX+$05)</td>
+<td class="comment-1" rowspan="1">Double the strength and keep the overflow.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3e1"></span>A3E1</td>
+<td class="instruction">SUB A</td>
+<td class="comment-1" rowspan="1">Clear the byte at CAAF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3e2"></span>A3E2</td>
+<td class="instruction">LD ($CAAF),A</td>
+<td class="comment-1" rowspan="1">Store the result at <a href="CA84.html#caaf">CAAF</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a3e5"></span>A3E5</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A302.html">A302</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a3bc">Map</a></td>
+<td class="next">
+Next: <a href="A3E6.html">A3E6</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/41916.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

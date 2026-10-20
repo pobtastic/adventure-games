@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at C591</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C583.html">C583</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c591">Map</a></td>
+<td class="next">
+Next: <a href="C5FC.html">C5FC</a>
+</td>
+</tr>
+</table>
+<div class="description">C591: Process Display Record From Script</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="CE57.html">ReadCharactersRoom</a>.
+</div>
+<div class="paragraph">
+<span class="register">HL</span> points at a display record. Copies the low nibbles of its flags and value byte to <a href="A00F.html">DisplayMode</a>/<a href="A00F.html#a010">A010</a>, clears <a href="A00B.html">A00B</a> and checks the record against the current room before drawing it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecordFromScript</td>
+<td class="address-2"><span id="c591"></span>C591</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="3">Point <span class="register">IX</span> at the record and copy the low nibble of its flags to <a href="A00F.html">DisplayMode</a> via <a href="C571.html">CopyRecordFlagNibble</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c592"></span>C592</td>
+<td class="instruction">POP IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c594"></span>C594</td>
+<td class="instruction">CALL <a href="C571.html">CopyRecordFlagNibble</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c597"></span>C597</td>
+<td class="instruction">CALL <a href="C57A.html">CopyRecordValueNibble</a></td>
+<td class="comment-1" rowspan="1">Copy the low nibble of the value byte via <a href="C57A.html">CopyRecordValueNibble</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c59a"></span>C59A</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Clear the parser.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c59b"></span>C59B</td>
+<td class="instruction">LD ($A00B),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c59e"></span>C59E</td>
+<td class="instruction">LD A,($A00F)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5a1"></span>C5A1</td>
+<td class="instruction">LD HL,$A010</td>
+<td class="comment-1" rowspan="1">Take the display mode.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5a4"></span>C5A4</td>
+<td class="instruction">OR (HL)</td>
+<td class="comment-1" rowspan="2">Merge the flag at <a href="A00F.html#a010">A010</a>, and go to <a href="C591.html#c5f4">ProcessDisplayRecordFromScript_RunObjectDisplay</a> when both flags are clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5a5"></span>C5A5</td>
+<td class="instruction">JR Z,<a href="C591.html#c5f4">ProcessDisplayRecordFromScript_RunObjectDisplay</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5a7"></span>C5A7</td>
+<td class="instruction">LD A,($A00F)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C591.html#c5b2">ProcessDisplayRecordFromScript_CompareRoom</a> if the display mode is 05.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5aa"></span>C5AA</td>
+<td class="instruction">CP $05</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5ac"></span>C5AC</td>
+<td class="instruction">JR Z,<a href="C591.html#c5b2">ProcessDisplayRecordFromScript_CompareRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5ae"></span>C5AE</td>
+<td class="instruction">CP $06</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="C591.html#c5ba">ProcessDisplayRecordFromScript_DisplayMode</a> if the display mode is not 06.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5b0"></span>C5B0</td>
+<td class="instruction">JR NZ,<a href="C591.html#c5ba">ProcessDisplayRecordFromScript_DisplayMode</a></td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecordFromScript_CompareRoom</td>
+<td class="address-2"><span id="c5b2"></span>C5B2</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="CB40.html#cb41">DispatchLookedUpHandlerThird_0</a> if the room display parameter is not FE.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5b5"></span>C5B5</td>
+<td class="instruction">CP $FE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5b7"></span>C5B7</td>
+<td class="instruction">JP NZ,<a href="CB40.html#cb41">DispatchLookedUpHandlerThird_0</a></td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecordFromScript_DisplayMode</td>
+<td class="address-2"><span id="c5ba"></span>C5BA</td>
+<td class="instruction">LD A,($A010)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C591.html#c5c5">ProcessDisplayRecordFromScript_TestGraphics</a> if the display mode is 05.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5bd"></span>C5BD</td>
+<td class="instruction">CP $05</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5bf"></span>C5BF</td>
+<td class="instruction">JR Z,<a href="C591.html#c5c5">ProcessDisplayRecordFromScript_TestGraphics</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5c1"></span>C5C1</td>
+<td class="instruction">CP $06</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="C591.html#c5cd">ProcessDisplayRecordFromScript_DisplayModeZero</a> if the display mode is not 06.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5c3"></span>C5C3</td>
+<td class="instruction">JR NZ,<a href="C591.html#c5cd">ProcessDisplayRecordFromScript_DisplayModeZero</a></td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecordFromScript_TestGraphics</td>
+<td class="address-2"><span id="c5c5"></span>C5C5</td>
+<td class="instruction">LD A,($A035)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="CB40.html#cb41">DispatchLookedUpHandlerThird_0</a> if the room graphics parameter is not FE.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5c8"></span>C5C8</td>
+<td class="instruction">CP $FE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5ca"></span>C5CA</td>
+<td class="instruction">JP NZ,<a href="CB40.html#cb41">DispatchLookedUpHandlerThird_0</a></td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecordFromScript_DisplayModeZero</td>
+<td class="address-2"><span id="c5cd"></span>C5CD</td>
+<td class="instruction">LD A,($A00F)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C591.html#c5eb">ProcessDisplayRecordFromScript_AcceptGraphics</a> if the display mode is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5d0"></span>C5D0</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5d1"></span>C5D1</td>
+<td class="instruction">JR Z,<a href="C591.html#c5eb">ProcessDisplayRecordFromScript_AcceptGraphics</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5d3"></span>C5D3</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C591.html#c5eb">ProcessDisplayRecordFromScript_AcceptGraphics</a> if the room display parameter is not FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5d6"></span>C5D6</td>
+<td class="instruction">CP $FF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5d8"></span>C5D8</td>
+<td class="instruction">JR NZ,<a href="C591.html#c5eb">ProcessDisplayRecordFromScript_AcceptGraphics</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5da"></span>C5DA</td>
+<td class="instruction">LD B,$00</td>
+<td class="comment-1" rowspan="1">Start the picture count at zero.</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecordFromScript_TestDisplay</td>
+<td class="address-2"><span id="c5dc"></span>C5DC</td>
+<td class="instruction">CALL <a href="C463.html">ReadDisplayModeForPicture</a></td>
+<td class="comment-1" rowspan="2">Return if the count has reached the graphics limit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5df"></span>C5DF</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5e0"></span>C5E0</td>
+<td class="instruction">LD ($A034),A</td>
+<td class="comment-1" rowspan="2">Store it in the room display parameter, then call <a href="C60D.html">RecordResultRoomGraphics_ClearHighByte</a> to run display action.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5e3"></span>C5E3</td>
+<td class="instruction">CALL <a href="C60D.html">RecordResultRoomGraphics_ClearHighByte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5e6"></span>C5E6</td>
+<td class="instruction">JR NZ,<a href="C591.html#c5f4">ProcessDisplayRecordFromScript_RunObjectDisplay</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="C591.html#c5f4">ProcessDisplayRecordFromScript_RunObjectDisplay</a> if <a href="C60D.html">RecordResultRoomGraphics_ClearHighByte</a> found a picture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5e8"></span>C5E8</td>
+<td class="instruction">INC B</td>
+<td class="comment-1" rowspan="2">Try the next display value from <a href="C591.html#c5dc">ProcessDisplayRecordFromScript_TestDisplay</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5e9"></span>C5E9</td>
+<td class="instruction">JR <a href="C591.html#c5dc">ProcessDisplayRecordFromScript_TestDisplay</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c5eb"></span>
+<div class="comments">
+<div class="paragraph">
+Accept a set graphics parameter, and return when it is empty.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecordFromScript_AcceptGraphics</td>
+<td class="address-2"><span id="c5eb"></span>C5EB</td>
+<td class="instruction">CALL <a href="C5FC.html">AcceptSetGraphicsParameter</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="C591.html#c5f4">ProcessDisplayRecordFromScript_RunObjectDisplay</a> if the set graphics parameter is not accepted.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5ee"></span>C5EE</td>
+<td class="instruction">JR Z,<a href="C591.html#c5f4">ProcessDisplayRecordFromScript_RunObjectDisplay</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5f0"></span>C5F0</td>
+<td class="instruction">CALL <a href="C613.html">RecordResultRoomGraphics_CountGraphicsSteps</a></td>
+<td class="comment-1" rowspan="2">Return if the graphics count has reached its limit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5f3"></span>C5F3</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecordFromScript_RunObjectDisplay</td>
+<td class="address-2"><span id="c5f4"></span>C5F4</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="3">Set the parser flag at <a href="A00B.html">A00B</a> to 01 and continue at <a href="C989.html">ProcessObjectDisplayWithPointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5f6"></span>C5F6</td>
+<td class="instruction">LD ($A00B),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c5f9"></span>C5F9</td>
+<td class="instruction">JP <a href="C989.html">ProcessObjectDisplayWithPointer</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C583.html">C583</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c591">Map</a></td>
+<td class="next">
+Next: <a href="C5FC.html">C5FC</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/50577.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

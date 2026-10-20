@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Message From Andromeda: Routine at 25943</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="25928.html">25928</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#25943">Map</a></td>
+<td class="next">
+Next: <a href="25994.html">25994</a>
+</td>
+</tr>
+</table>
+<div class="description">25943: Handler: Turn-Based Events</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="36138.html">GameLoop</a>.
+</div>
+<div class="paragraph">
+Count down the active turn-based events and run each one that expires.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerTurnBasedEvents</td>
+<td class="address-2"><span id="25943"></span>25943</td>
+<td class="instruction">LD A,(25113)</td>
+<td class="comment-1" rowspan="1">Fetch the turn-based event flags.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25946"></span>25946</td>
+<td class="instruction">OR A</td>
+<td class="comment-1" rowspan="2">No turn-based event is running.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25947"></span>25947</td>
+<td class="instruction">JR Z,<a href="25943.html#25993">HandlerTurnBasedEvents_Step3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25949"></span>25949</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="2">Keep the event flags and test all eight bits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25950"></span>25950</td>
+<td class="instruction">LD B,8</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25952"></span>
+<div class="comments">
+<div class="paragraph">
+Each set bit is a countdown that is still running.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerTurnBasedEvents_Loop1</td>
+<td class="address-2"><span id="25952"></span>25952</td>
+<td class="instruction">SRL C</td>
+<td class="comment-1" rowspan="1">Take the next turn-based event bit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25954"></span>25954</td>
+<td class="instruction">JR NC,<a href="25943.html#25991">HandlerTurnBasedEvents_Step2</a></td>
+<td class="comment-1" rowspan="1">This event is not running.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25956"></span>25956</td>
+<td class="instruction">LD DE,0</td>
+<td class="comment-1" rowspan="7">Count down the turn-based event whose bit was just set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25959"></span>25959</td>
+<td class="instruction">LD HL,25114</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25962"></span>25962</td>
+<td class="instruction">LD A,8</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25964"></span>25964</td>
+<td class="instruction">SUB B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25965"></span>25965</td>
+<td class="instruction">LD E,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25966"></span>25966</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25967"></span>25967</td>
+<td class="instruction">DEC (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25968"></span>25968</td>
+<td class="instruction">JR NZ,<a href="25943.html#25991">HandlerTurnBasedEvents_Step2</a></td>
+<td class="comment-1" rowspan="1">Leave this event when its countdown has not expired.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25970"></span>25970</td>
+<td class="instruction">LD IX,25250</td>
+<td class="comment-1" rowspan="1">Find the handler for this turn-based event.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25974"></span>25974</td>
+<td class="instruction">SLA E</td>
+<td class="comment-1" rowspan="2">Index the handler for this event.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25976"></span>25976</td>
+<td class="instruction">ADD IX,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25978"></span>25978</td>
+<td class="instruction">LD L,(IX+0)</td>
+<td class="comment-1" rowspan="2">Read that handler's address.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25981"></span>25981</td>
+<td class="instruction">LD H,(IX+1)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25984"></span>25984</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="1">Remember which events are still to be checked.</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerTurnBasedEvents_Step1</td>
+<td class="address-1"><span id="25985"></span>25985</td>
+<td class="instruction">LD DE,25990</td>
+<td class="comment-1" rowspan="3">Run the handler, then return here for the remaining events.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25988"></span>25988</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25989"></span>25989</td>
+<td class="instruction">JP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25990"></span>25990</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1">Restore the event flags still to be checked.</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerTurnBasedEvents_Step2</td>
+<td class="address-2"><span id="25991"></span>25991</td>
+<td class="instruction">DJNZ <a href="25943.html#25952">HandlerTurnBasedEvents_Loop1</a></td>
+<td class="comment-1" rowspan="1">Repeat for the remaining event bits.</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerTurnBasedEvents_Step3</td>
+<td class="address-2"><span id="25993"></span>25993</td>
+<td class="instruction">NOP</td>
+<td class="comment-1" rowspan="1">Leave this event for the next turn.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="25928.html">25928</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#25943">Map</a></td>
+<td class="next">
+Next: <a href="25994.html">25994</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
+<div><a href="../../asm/6557.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at 46780</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="46764.html">46764</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#46780">Map</a></td>
+<td class="next">
+Next: <a href="46816.html">46816</a>
+</td>
+</tr>
+</table>
+<div class="description">46780: Parser: Process Item</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="59809.html">GameLoop</a>.
+</div>
+<div class="paragraph">
+Parser: Process Item.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46780"></span>
+<div class="comments">
+<div class="paragraph">
+Set up to loop through all word tokens in the token buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParserProcessItem</td>
+<td class="address-2"><span id="46780"></span>46780</td>
+<td class="instruction">LD HL,44846</td>
+<td class="comment-1" rowspan="1">Set a pointer to the word token buffer (the first word token) in <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46783"></span>46783</td>
+<td class="instruction">LD B,10</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for 10 tokens (the maximum number of words).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46785"></span>
+<div class="comments">
+<div class="paragraph">
+Check if there are any tokens to process. Return immediately if the first token is the terminator (255), meaning the input was empty.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessItem_Loop</td>
+<td class="address-2"><span id="46785"></span>46785</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Return if the current token is 255 (no more tokens to process).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46786"></span>46786</td>
+<td class="instruction">CP 255</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46788"></span>46788</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46789"></span>46789</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Remember the token and the count while the object list is searched.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46790"></span>46790</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46791"></span>46791</td>
+<td class="instruction">LD HL,(44770)</td>
+<td class="comment-1" rowspan="1">Load the object list table pointer into <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46794"></span>46794</td>
+<td class="instruction">LD BC,(44786)</td>
+<td class="comment-1" rowspan="1">Load the number of objects into <span class="register">BC</span> (for the <code>CPIR</code> search).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46798"></span>46798</td>
+<td class="instruction">CPIR</td>
+<td class="comment-1" rowspan="1">Search the object list table to see if the token matches any object ID.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46800"></span>46800</td>
+<td class="instruction">JR NZ,<a href="46780.html#46810">ParserProcessItem_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="46780.html#46810">ParserProcessItem_0</a> if the token doesn't match any object ID (not an item token).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="46802"></span>
+<div class="comments">
+<div class="paragraph">
+The token matches an object ID. Now verify that the item is actually present (in the current room or player's inventory).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46802"></span>46802</td>
+<td class="instruction">CALL <a href="46379.html">ActionExamineItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="46379.html">ActionExamineItem</a> to check if the item is present and accessible.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46805"></span>46805</td>
+<td class="instruction">JR NC,<a href="46780.html#46810">ParserProcessItem_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="46780.html#46810">ParserProcessItem_0</a> to check the next token if the item is here (carry flag clear).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46807"></span>46807</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">BC</span>, <span class="register">HL</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46808"></span>46808</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46809"></span>46809</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return with the carry flag set, as a named item isn't here.</td>
+</tr>
+<tr>
+<td class="asm-label">ParserProcessItem_0</td>
+<td class="address-2"><span id="46810"></span>46810</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">BC</span>, <span class="register">HL</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46811"></span>46811</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46812"></span>46812</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move to the next token in the buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46813"></span>46813</td>
+<td class="instruction">DJNZ <a href="46780.html#46785">ProcessItem_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the counter by one and loop back to <a href="46780.html#46785">ProcessItem_Loop</a> until all 10 tokens have been checked.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="46815"></span>46815</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return (no valid item tokens were found in the input).</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="46764.html">46764</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#46780">Map</a></td>
+<td class="next">
+Next: <a href="46816.html">46816</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../../asm/B6BC.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at FBA9</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FBA5.html">FBA5</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fba9">Map</a></td>
+<td class="next">
+Next: <a href="FBDC.html">FBDC</a>
+</td>
+</tr>
+</table>
+<div class="description">FBA9: Game Start</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="E99E.html">Jump_GameStart</a>.
+</div>
+<div class="paragraph">
+Copy the default state into working memory, open the starting exits, and enter the game loop.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">GameStart</td>
+<td class="address-2"><span id="fba9"></span>FBA9</td>
+<td class="instruction">LD HL,$FBDC</td>
+<td class="comment-1" rowspan="4">Copy 0186 bytes from <a href="FBDC.html">DefaultGameState</a> to the item-location table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbac"></span>FBAC</td>
+<td class="instruction">LD DE,$AD76</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbaf"></span>FBAF</td>
+<td class="instruction">LD BC,$0186</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbb2"></span>FBB2</td>
+<td class="instruction">LDIR</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fbb4"></span>
+<div class="comments">
+<div class="paragraph">
+Remove a bunch of room exits (as actions in the game will open them back up).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbb4"></span>FBB4</td>
+<td class="instruction">LD IX,$E972</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the configurable exits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbb8"></span>FBB8</td>
+<td class="instruction">LD A,($AEFA)</td>
+<td class="comment-1" rowspan="2">Count the configurable exits to close.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbbb"></span>FBBB</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbbc"></span>FBBC</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 00 which "removes" the exit.</td>
+</tr>
+<tr>
+<td class="asm-label">GameStart_Loop</td>
+<td class="address-2"><span id="fbbd"></span>FBBD</td>
+<td class="instruction">LD L,(IX+$00)</td>
+<td class="comment-1" rowspan="6">Close this configurable exit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbc0"></span>FBC0</td>
+<td class="instruction">LD H,(IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbc3"></span>FBC3</td>
+<td class="instruction">LD (HL),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbc4"></span>FBC4</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbc6"></span>FBC6</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbc8"></span>FBC8</td>
+<td class="instruction">DJNZ <a href="FBA9.html#fbbd">GameStart_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbca"></span>FBCA</td>
+<td class="instruction">LD A,$24</td>
+<td class="comment-1" rowspan="2">Open the east exit from the Hall of Infinity into the Lair of the Hydra.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbcc"></span>FBCC</td>
+<td class="instruction">LD ($E8BA),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbcf"></span>FBCF</td>
+<td class="instruction">LD A,$3F</td>
+<td class="comment-1" rowspan="2">Open the south exit from the Hall of the Phoenix into the Hall of Black Magic.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbd1"></span>FBD1</td>
+<td class="instruction">LD ($E931),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbd4"></span>FBD4</td>
+<td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2">Begin in the Field.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbd6"></span>FBD6</td>
+<td class="instruction">CALL <a href="E9E1.html">Handler_ChangeRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbd9"></span>FBD9</td>
+<td class="instruction">JP <a href="E9A1.html">GameLoop</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="E9A1.html">GameLoop</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FBA5.html">FBA5</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fba9">Map</a></td>
+<td class="next">
+Next: <a href="FBDC.html">FBDC</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../dec/asm/64425.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

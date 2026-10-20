@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at 50223</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="50170.html">50170</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#50223">Map</a></td>
+<td class="next">
+Next: <a href="50275.html">50275</a>
+</td>
+</tr>
+</table>
+<div class="description">50223: Move Player To Room</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="60598.html">Handler_InjuryCheck</a> and <a href="63766.html">Action_Blow</a>.
+</div>
+<div class="paragraph">
+Move the player to the given room and retarget any scenic events that watched the old room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom</td>
+<td class="address-2"><span id="50223"></span>50223</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="6">Read the current room and the scenic list. Jump to <a href="50223.html#50237">MovePlayerToRoom_Next</a> to continue.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50224"></span>50224</td>
+<td class="instruction">LD A,(47872)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50227"></span>50227</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50228"></span>50228</td>
+<td class="instruction">LD A,(47771)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50231"></span>50231</td>
+<td class="instruction">LD HL,47688</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50234"></span>50234</td>
+<td class="instruction">JR <a href="50223.html#50237">MovePlayerToRoom_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Loop</td>
+<td class="address-2"><span id="50236"></span>50236</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next scenic entry.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Next</td>
+<td class="address-2"><span id="50237"></span>50237</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="50223.html#50241">MovePlayerToRoom_ScenicNext</a> unless this scenic entry watched the old room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50238"></span>50238</td>
+<td class="instruction">JR NZ,<a href="50223.html#50241">MovePlayerToRoom_ScenicNext</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50240"></span>50240</td>
+<td class="instruction">LD (HL),C</td>
+<td class="comment-1" rowspan="1">Retarget this scenic entry to the new room.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_ScenicNext</td>
+<td class="address-2"><span id="50241"></span>50241</td>
+<td class="instruction">DJNZ <a href="50223.html#50236">MovePlayerToRoom_Loop</a></td>
+<td class="comment-1" rowspan="1">Repeat from <a href="50223.html#50236">MovePlayerToRoom_Loop</a> for the remaining scenic entries.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50243"></span>50243</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="5">Remember the new room. Return when no event bits are set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50244"></span>50244</td>
+<td class="instruction">LD (47771),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50247"></span>50247</td>
+<td class="instruction">LD A,(47679)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50250"></span>50250</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50251"></span>50251</td>
+<td class="instruction">JR Z,<a href="50223.html#50274">MovePlayerToRoom_Return</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50253"></span>50253</td>
+<td class="instruction">LD B,8</td>
+<td class="comment-1" rowspan="4">Take the eight event bits and the objects they summon.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50255"></span>50255</td>
+<td class="instruction">LD HL,47680</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50258"></span>50258</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50259"></span>50259</td>
+<td class="instruction">JR <a href="50223.html#50262">MovePlayerToRoom_EventBit</a></td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_EventAdvance</td>
+<td class="address-2"><span id="50261"></span>50261</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next event object.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_EventBit</td>
+<td class="address-2"><span id="50262"></span>50262</td>
+<td class="instruction">SRL C</td>
+<td class="comment-1" rowspan="2">Skip this object when its event bit is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50264"></span>50264</td>
+<td class="instruction">JR NC,<a href="50223.html#50272">MovePlayerToRoom_EventNext</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50266"></span>50266</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Call <a href="49887.html">Handler_UpdateItemForTheCurrentRoom</a> to move that event's object into this room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50267"></span>50267</td>
+<td class="instruction">EXX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50268"></span>50268</td>
+<td class="instruction">CALL <a href="49887.html">Handler_UpdateItemForTheCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="50271"></span>50271</td>
+<td class="instruction">EXX</td>
+<td class="comment-1" rowspan="1">Switch back to the event scan.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_EventNext</td>
+<td class="address-2"><span id="50272"></span>50272</td>
+<td class="instruction">DJNZ <a href="50223.html#50261">MovePlayerToRoom_EventAdvance</a></td>
+<td class="comment-1" rowspan="1">Repeat from <a href="50223.html#50261">MovePlayerToRoom_EventAdvance</a> for the remaining event bits.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Return</td>
+<td class="address-2"><span id="50274"></span>50274</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="50170.html">50170</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#50223">Map</a></td>
+<td class="next">
+Next: <a href="50275.html">50275</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../../asm/C42F.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

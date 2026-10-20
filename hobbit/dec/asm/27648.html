@@ -38,6 +38,9 @@ Next: <a href="27853.html">27853</a>
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Starts a game. The clean object, location and save bytes are copied out, then a keypress builds a new game from those copies. Holding N while that key is pressed turns the pictures off.
+</div>
 </div>
 </td>
 </tr>
@@ -52,7 +55,7 @@ Next: <a href="27853.html">27853</a>
 <span id="27649"></span>
 <div class="comments">
 <div class="paragraph">
-Initial set-up; copies "clean" data to the "CopyOf..." store. This is then used to create a new game in <a href="27648.html#27687">ReStart</a>.
+Initial set-up; copies "clean" data to the "CopyOf..." store. This is then used to create a new game in <a href="27648.html#27687">Restart</a>.
 </div>
 </div>
 </td>
@@ -61,7 +64,7 @@ Initial set-up; copies "clean" data to the "CopyOf..." store. This is then used 
 <td class="asm-label"></td>
 <td class="address-1"><span id="27649"></span>27649</td>
 <td class="instruction">LD DE,62464</td>
-<td class="comment-1" rowspan="4">Copies <a href="49435.html">Objects</a> to <a href="62464.html">CopyOfObjects</a> (1557 bytes).</td>
+<td class="comment-1" rowspan="4">Copies 1557 bytes from <a href="49435.html">Objects</a> to <a href="62464.html">CopyOfObjects</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -82,7 +85,7 @@ Initial set-up; copies "clean" data to the "CopyOf..." store. This is then used 
 <td class="asm-label"></td>
 <td class="address-1"><span id="27660"></span>27660</td>
 <td class="instruction">LD HL,47754</td>
-<td class="comment-1" rowspan="3">Copies <a href="47754.html">Locations</a> to <a href="64021.html">CopyOfLocations</a> (1497 bytes).</td>
+<td class="comment-1" rowspan="3">Copies 1497 bytes from <a href="47754.html">Locations</a> to <a href="64021.html">CopyOfLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -98,7 +101,7 @@ Initial set-up; copies "clean" data to the "CopyOf..." store. This is then used 
 <td class="asm-label"></td>
 <td class="address-1"><span id="27668"></span>27668</td>
 <td class="instruction">LD DE,24320</td>
-<td class="comment-1" rowspan="4">Copies <a href="46810.html#46827">46827</a> to <a href="24320.html">24320</a> (0029 bytes).</td>
+<td class="comment-1" rowspan="4">Copies 29 bytes from <a href="46810.html#46827">46827</a> to <a href="24320.html">24320</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -119,7 +122,7 @@ Initial set-up; copies "clean" data to the "CopyOf..." store. This is then used 
 <td class="asm-label"></td>
 <td class="address-1"><span id="27679"></span>27679</td>
 <td class="instruction">LD HL,51844</td>
-<td class="comment-1" rowspan="3">Copies <a href="51475.html#51844">51844</a> to <a href="24349.html">24349</a> (0191 bytes).</td>
+<td class="comment-1" rowspan="3">Copies 191 bytes from <a href="51844.html">51844</a> to <a href="24349.html">24349</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -136,13 +139,13 @@ Initial set-up; copies "clean" data to the "CopyOf..." store. This is then used 
 <span id="27687"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routines at <a href="33459.html">33459</a>, <a href="33873.html">LoadGame</a> and <a href="37074.html">YouAreDead</a>.
+This entry point is used by the routines at <a href="33527.html">Command_FollowTheGrammarFlag</a>, <a href="33944.html">LoadBlock</a> and <a href="37074.html">YouAreDead</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">ReStart</td>
+<td class="asm-label">Restart</td>
 <td class="address-2"><span id="27687"></span>27687</td>
 <td class="instruction">DI</td>
 <td class="comment-1" rowspan="1">Disable interrupts.</td>
@@ -167,7 +170,7 @@ Reset the border and paper colours for location  <a href="47754.html#47804">5</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="27691"></span>27691</td>
 <td class="instruction">LD IX,52224</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="52224.html">LocGFXTable</a></td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the location graphics table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -184,23 +187,19 @@ Reset the border and paper colours for location  <a href="47754.html#47804">5</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="27700"></span>27700</td>
 <td class="instruction">LD L,(IX+1)</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=<a href="57666.html">Graphics_TrollsClearing</a> (<span class="register">HL</span>=location graphics data for "Trolls Clearing").</td>
+<td class="comment-1" rowspan="1">Read the low byte of the graphics address for  <a href="47754.html#47804">5</a> (<a href="57666.html">Graphics_TrollsClearing</a>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27703"></span>27703</td>
 <td class="instruction">LD H,(IX+2)</td>
+<td class="comment-1" rowspan="1">Read the high byte of the graphics address for  <a href="47754.html#47804">5</a> (<a href="57666.html">Graphics_TrollsClearing</a>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27706"></span>27706</td>
 <td class="instruction">LD (HL),0</td>
-<td class="comment-1" rowspan="3">Write INK:
-BLACK,
-PAPER:
-BLACK
-
- to the first (border) and second (paper) addresses.</td>
+<td class="comment-1" rowspan="3">Write 0 over the border and colour of Trolls Clearing, <a href="57666.html">Graphics_TrollsClearing</a> and the next byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -226,7 +225,7 @@ Copy "clean" data to the game tables ready for a new game.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27711"></span>27711</td>
 <td class="instruction">LD HL,62464</td>
-<td class="comment-1" rowspan="4">Copies <a href="62464.html">CopyOfObjects</a> to <a href="49435.html">Objects</a> (1557 bytes).</td>
+<td class="comment-1" rowspan="4">Copies 1557 bytes from <a href="62464.html">CopyOfObjects</a> to <a href="49435.html">Objects</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -247,7 +246,7 @@ Copy "clean" data to the game tables ready for a new game.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27722"></span>27722</td>
 <td class="instruction">LD DE,47754</td>
-<td class="comment-1" rowspan="3">Copies <a href="64021.html">CopyOfLocations</a> to <a href="47754.html">Locations</a> (1497 bytes).</td>
+<td class="comment-1" rowspan="3">Copies 1497 bytes from <a href="64021.html">CopyOfLocations</a> to <a href="47754.html">Locations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -263,7 +262,7 @@ Copy "clean" data to the game tables ready for a new game.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27730"></span>27730</td>
 <td class="instruction">LD HL,24320</td>
-<td class="comment-1" rowspan="4">Copies 24320 to <a href="46810.html#46827">46827</a> (0029 bytes).</td>
+<td class="comment-1" rowspan="4">Copies 29 bytes from <a href="24320.html">24320</a> to <a href="46810.html#46827">46827</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -284,7 +283,7 @@ Copy "clean" data to the game tables ready for a new game.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27741"></span>27741</td>
 <td class="instruction">LD DE,51844</td>
-<td class="comment-1" rowspan="3">Copies 51844 to 24349 (0191 bytes).</td>
+<td class="comment-1" rowspan="3">Copies 191 bytes from <a href="24349.html">24349</a> back to <a href="51844.html">51844</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -319,7 +318,7 @@ BLACK,
 PAPER:
 WHITE
 
- to <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/5C48.html">BORDCR</a>.</td>
+ to <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C48.html">BORDCR</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -327,7 +326,7 @@ WHITE
 <td class="instruction">LD (23624),A</td>
 </tr>
 <tr>
-<td class="asm-label">ReStart_Keypress</td>
+<td class="asm-label">Restart_Keypress</td>
 <td class="address-2"><span id="27757"></span>27757</td>
 <td class="instruction">XOR A</td>
 <td class="comment-1" rowspan="2">Read from the keyboard port.</td>
@@ -341,18 +340,18 @@ WHITE
 <td class="asm-label"></td>
 <td class="address-1"><span id="27760"></span>27760</td>
 <td class="instruction">AND %00011111</td>
-<td class="comment-1" rowspan="1">A pressed key from any line will set its respective bit; bit 0 (outer key) to bit 4 (inner key). Hence keep only bits 0-4 for the check.</td>
+<td class="comment-1" rowspan="1">Keep bits 0-4, one for each key in the half-row. XOR A then IN A,(254) reads every half-row at once, and a pressed key reads as a reset bit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27762"></span>27762</td>
 <td class="instruction">CP 31</td>
-<td class="comment-1" rowspan="2">Loop back to <a href="27648.html#27757">ReStart_Keypress</a> until any key has been pressed.</td>
+<td class="comment-1" rowspan="2">Loop back to <a href="27648.html#27757">Restart_Keypress</a> until any key has been pressed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27764"></span>27764</td>
-<td class="instruction">JR Z,<a href="27648.html#27757">ReStart_Keypress</a></td>
+<td class="instruction">JR Z,<a href="27648.html#27757">Restart_Keypress</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -373,7 +372,7 @@ WHITE
 <tr>
 <td class="centre" colspan="1" rowspan="1">127</td>
 <td class="centre" colspan="1" rowspan="1">SPACE</td>
-<td class="centre" colspan="1" rowspan="1">FULL-STOP</td>
+<td class="centre" colspan="1" rowspan="1">SYMBOL SHIFT</td>
 <td class="centre" colspan="1" rowspan="1">M</td>
 <td class="centre" colspan="1" rowspan="1">N</td>
 <td class="centre" colspan="1" rowspan="1">B</td>
@@ -401,7 +400,7 @@ WHITE
 <td class="asm-label"></td>
 <td class="address-1"><span id="27775"></span>27775</td>
 <td class="instruction">LD HL,20704</td>
-<td class="comment-1" rowspan="2">Write 20704 to <a href="34166.html#34228">the percentage buffer</a>.</td>
+<td class="comment-1" rowspan="2">Write 20704 to <a href="34187.html#34228">the percentage buffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -412,7 +411,7 @@ WHITE
 <td class="asm-label"></td>
 <td class="address-1"><span id="27781"></span>27781</td>
 <td class="instruction">LD A,43</td>
-<td class="comment-1" rowspan="2">Write 43 to <a href="34166.html#34228">$85B6</a>.</td>
+<td class="comment-1" rowspan="2">Write 43 to <a href="34187.html#34228">34230</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -445,7 +444,7 @@ WHITE
 <td class="asm-label"></td>
 <td class="address-1"><span id="27797"></span>27797</td>
 <td class="instruction">LD A,32</td>
-<td class="comment-1" rowspan="2">Write 32 to <a href="34166.html#34227">34227</a>.</td>
+<td class="comment-1" rowspan="2">Write 32 to <a href="34187.html#34227">34227</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -456,7 +455,7 @@ WHITE
 <td class="asm-label"></td>
 <td class="address-1"><span id="27802"></span>27802</td>
 <td class="instruction">LD A,42</td>
-<td class="comment-1" rowspan="2">Write 42 to <a href="34459.html">34459</a>.</td>
+<td class="comment-1" rowspan="2">Write 42 to <a href="34459.html">PrintWriteACharacterToTheScreen</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -467,7 +466,7 @@ WHITE
 <td class="asm-label"></td>
 <td class="address-1"><span id="27807"></span>27807</td>
 <td class="instruction">LD B,200</td>
-<td class="comment-1" rowspan="3">Write 0 to 200 bytes, starting from <a href="46810.html#46904">46904</a> (using <a href="28898.html">Blanker</a>).</td>
+<td class="comment-1" rowspan="3">Write 0 to 200 bytes, starting from <a href="46810.html#46904">46904</a> with <a href="28898.html">Blanker</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -483,7 +482,7 @@ WHITE
 <td class="asm-label"></td>
 <td class="address-1"><span id="27815"></span>27815</td>
 <td class="instruction">LD A,R</td>
-<td class="comment-1" rowspan="2"><span class="register">R</span> = refresh register; i.e. write a semi-random number to <a href="46810.html#46862">RandomSeed</a>.</td>
+<td class="comment-1" rowspan="2">Store the refresh register in the random seed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -494,13 +493,7 @@ WHITE
 <td class="asm-label"></td>
 <td class="address-1"><span id="27820"></span>27820</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="6">Write 0 to; <ul class="">
-<li><a href="34459.html#34463">34463</a></li>
-<li><a href="34459.html#34464">34464</a></li>
-<li><a href="46810.html#46874">46874</a></li>
-<li><a href="46810.html#46848">46848</a></li>
-<li><a href="46810.html#46834">46834</a></li>
-</ul></td>
+<td class="comment-1" rowspan="4">Clear the space count and the character flag and the matcher path flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -521,6 +514,7 @@ WHITE
 <td class="asm-label"></td>
 <td class="address-1"><span id="27830"></span>27830</td>
 <td class="instruction">LD (46848),A</td>
+<td class="comment-1" rowspan="2">Clear the S-types-an-F gate and the printer-on flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -531,7 +525,7 @@ WHITE
 <td class="asm-label"></td>
 <td class="address-1"><span id="27836"></span>27836</td>
 <td class="instruction">LD A,1</td>
-<td class="comment-1" rowspan="4">Write 1 to; <ul class="">
+<td class="comment-1" rowspan="4">Write 1 to <ul class="">
 <li><a href="46810.html#46850">NightDay</a></li>
 <li><a href="46810.html#46842">46842</a></li>
 <li><a href="46810.html#46852">46852</a></li>
@@ -578,7 +572,7 @@ Next: <a href="27853.html">27853</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../../asm/6C00.html">Switch to hexadecimal</a>.</div>
 </footer>

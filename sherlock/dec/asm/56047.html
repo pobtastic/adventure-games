@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at 56047</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="56040.html">56040</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#56047">Map</a></td>
+<td class="next">
+Next: <a href="56150.html">56150</a>
+</td>
+</tr>
+</table>
+<div class="description">56047: Parse A Time</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="56006.html">TestCommonWord</a>.
+</div>
+<div class="paragraph">
+Reads hours, an optional ":" and minutes into <span class="register">B</span>/<span class="register">C</span>, then an "A" or "P" plus "M" suffix. "A" sets bit 6 of <span class="register">B</span>; "P" sets bit 6 of <span class="register">C</span> for PM.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime</td>
+<td class="address-2"><span id="56047"></span>56047</td>
+<td class="instruction">CALL <a href="56311.html">ParseInputNumber</a></td>
+<td class="comment-1" rowspan="1">Call <a href="56311.html">ParseInputNumber</a> to start from an empty length.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56050"></span>56050</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="56047.html#56069">ParseATime_CheckHours</a> if this byte is 58.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56051"></span>56051</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56052"></span>56052</td>
+<td class="instruction">CP 58</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56054"></span>56054</td>
+<td class="instruction">JR Z,<a href="56047.html#56069">ParseATime_CheckHours</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56056"></span>56056</td>
+<td class="instruction">CP 65</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="56047.html#56069">ParseATime_CheckHours</a> when the input character is A.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56058"></span>56058</td>
+<td class="instruction">JR Z,<a href="56047.html#56069">ParseATime_CheckHours</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56060"></span>56060</td>
+<td class="instruction">CP 80</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="56047.html#56069">ParseATime_CheckHours</a> when the input character is P.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56062"></span>56062</td>
+<td class="instruction">JR Z,<a href="56047.html#56069">ParseATime_CheckHours</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56064"></span>56064</td>
+<td class="instruction">CALL <a href="56150.html">TestFullStop_TestReturnsCharacterSentence</a></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="56196.html">StartParsedNumber</a> unless the character is a full stop, a comma or a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56067"></span>56067</td>
+<td class="instruction">JR NZ,<a href="56196.html">StartParsedNumber</a></td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_CheckHours</td>
+<td class="address-2"><span id="56069"></span>56069</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="56047.html#56143">ParseATime_SignalNothingMatched</a> if the count is at least 60.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56070"></span>56070</td>
+<td class="instruction">CP 60</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56072"></span>56072</td>
+<td class="instruction">JR NC,<a href="56047.html#56143">ParseATime_SignalNothingMatched</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56074"></span>56074</td>
+<td class="instruction">SET 7,B</td>
+<td class="comment-1" rowspan="1">Set bit 7 of the count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56076"></span>56076</td>
+<td class="instruction">LD C,0</td>
+<td class="comment-1" rowspan="3">Start the number at zero, read the input character, and parse it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56078"></span>56078</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56079"></span>56079</td>
+<td class="instruction">CALL <a href="56150.html">TestFullStop_TestReturnsCharacterSentence</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56082"></span>56082</td>
+<td class="instruction">JR Z,<a href="56153.html#56160">TestComma_0</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="56153.html#56160">TestComma_0</a> if the character is a full stop, a comma or a space.</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_ReadMinutes</td>
+<td class="address-1"><span id="56084"></span>56084</td>
+<td class="instruction">CP 58</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="56047.html#56097">ParseATime_CheckSuffix</a> if the character is not 58.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56086"></span>56086</td>
+<td class="instruction">JR NZ,<a href="56047.html#56097">ParseATime_CheckSuffix</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56088"></span>56088</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Step to the next character and call <a href="56311.html">ParseInputNumber</a> to read a number.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56089"></span>56089</td>
+<td class="instruction">CALL <a href="56311.html">ParseInputNumber</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56092"></span>56092</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="56047.html#56143">ParseATime_SignalNothingMatched</a> if the number is at least 60.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56093"></span>56093</td>
+<td class="instruction">CP 60</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56095"></span>56095</td>
+<td class="instruction">JR NC,<a href="56047.html#56143">ParseATime_SignalNothingMatched</a></td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_CheckSuffix</td>
+<td class="address-2"><span id="56097"></span>56097</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="56153.html#56160">TestComma_0</a> if the character is a full stop, a comma or a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56098"></span>56098</td>
+<td class="instruction">CALL <a href="56150.html">TestFullStop_TestReturnsCharacterSentence</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56101"></span>56101</td>
+<td class="instruction">JR Z,<a href="56153.html#56160">TestComma_0</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56103"></span>56103</td>
+<td class="instruction">CP 65</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="56047.html#56112">ParseATime_AMPM</a> if the character is not 65.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56105"></span>56105</td>
+<td class="instruction">JR NZ,<a href="56047.html#56112">ParseATime_AMPM</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56107"></span>56107</td>
+<td class="instruction">SET 6,B</td>
+<td class="comment-1" rowspan="1">Set bit 6 of the count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56109"></span>56109</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Step to the next input character and continue at <a href="56047.html#56119">ParseATime_CheckM</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56110"></span>56110</td>
+<td class="instruction">JR <a href="56047.html#56119">ParseATime_CheckM</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="56112"></span>
+<div class="comments">
+<div class="paragraph">
+Accept "AM" or "PM": "A" has already set bit 6 of <span class="register">B</span>, and "P" sets bit 6 of <span class="register">C</span> for PM; both then require "M".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_AMPM</td>
+<td class="address-2"><span id="56112"></span>56112</td>
+<td class="instruction">CP 80</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="56047.html#56143">ParseATime_SignalNothingMatched</a> if the character is not 80.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56114"></span>56114</td>
+<td class="instruction">JR NZ,<a href="56047.html#56143">ParseATime_SignalNothingMatched</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56116"></span>56116</td>
+<td class="instruction">SET 6,C</td>
+<td class="comment-1" rowspan="2">Set bit 6 of <span class="register">C</span> for PM and step to the next character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56118"></span>56118</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_CheckM</td>
+<td class="address-2"><span id="56119"></span>56119</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="56047.html#56143">ParseATime_SignalNothingMatched</a> if this byte is not 77.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56120"></span>56120</td>
+<td class="instruction">CP 77</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56122"></span>56122</td>
+<td class="instruction">JR NZ,<a href="56047.html#56143">ParseATime_SignalNothingMatched</a></td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_TestStepEntry</td>
+<td class="address-2"><span id="56124"></span>56124</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next entry.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="56125"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="56196.html">StartParsedNumber</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_0</td>
+<td class="address-2"><span id="56125"></span>56125</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="56047.html#56124">ParseATime_TestStepEntry</a> if this byte is 46.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56126"></span>56126</td>
+<td class="instruction">CP 46</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56128"></span>56128</td>
+<td class="instruction">JR Z,<a href="56047.html#56124">ParseATime_TestStepEntry</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56130"></span>56130</td>
+<td class="instruction">CALL <a href="56153.html">TestComma</a></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="56153.html#56160">TestComma_0</a> if the character is a comma or a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56133"></span>56133</td>
+<td class="instruction">JR Z,<a href="56153.html#56160">TestComma_0</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56135"></span>56135</td>
+<td class="instruction">CP 13</td>
+<td class="comment-1" rowspan="2">Jump to <a href="56153.html#56159">TestComma_TestStepOneByte</a> if the player pressed "ENTER".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56137"></span>56137</td>
+<td class="instruction">JR Z,<a href="56153.html#56159">TestComma_TestStepOneByte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56139"></span>56139</td>
+<td class="instruction">CP 34</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="56153.html#56159">TestComma_TestStepOneByte</a> if the character is 34.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56141"></span>56141</td>
+<td class="instruction">JR Z,<a href="56153.html#56159">TestComma_TestStepOneByte</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="56143"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="56196.html">StartParsedNumber</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_SignalNothingMatched</td>
+<td class="address-2"><span id="56143"></span>56143</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Set the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56144"></span>56144</td>
+<td class="instruction">LD A,208</td>
+<td class="comment-1" rowspan="1">Leave 208 as the result.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56146"></span>56146</td>
+<td class="instruction">LD BC,0</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">BC</span> (no time was given).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="56149"></span>56149</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="56040.html">56040</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#56047">Map</a></td>
+<td class="next">
+Next: <a href="56150.html">56150</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../../asm/DAEF.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

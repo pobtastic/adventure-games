@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Jewels of Babylon: Game status buffer entry at E9CA</title>
+<title>Jewels of Babylon: Data at E9CA</title>
 <meta charset="utf-8" />
 <link rel="stylesheet" type="text/css" href="../skoolkit.css" />
 <link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
@@ -15,11 +15,11 @@ gtag('js', new Date());
 gtag('config', 'G-75RERFCHBG');
 </script>
 </head>
-<body class="Asm-g">
+<body class="Asm-b">
 <table class="header">
 <tr>
 <td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
-<td class="page-header">Game status buffer</td>
+<td class="page-header">Data</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -39,7 +39,7 @@ Next: <a href="EB10.html">EB10</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-The user input is broken down into tokens which represent the words they've entered. These tokens are then compared against these token patterns to determine the outcome the player was trying to communicate.
+The words an action expects after its verb, as vocabulary numbers (<a href="E61D.html">Table_Vocabulary</a>). FD separates alternative wordings and FE ends a phrase; FF at the start of a wording means "nothing at all". An action points <span class="register">HL</span> at a phrase and calls <a href="C37F.html">MatchPhraseTokens</a>. That compares it with the words after the verb (<a href="BD66.html#bd67">UserInput_Token_2</a>) and sets the zero flag when one of the wordings matches the whole of the rest of the command.
 </div>
 </div>
 </td>
@@ -57,14 +57,8 @@ Matches e.g. "bottle".
 <tr>
 <td class="asm-label">PhraseTokens_Bottle</td>
 <td class="address-1"><span id="e9ca"></span>E9CA</td>
-<td class="instruction">DEFB $04</td>
-<td class="comment-1" rowspan="1">"BOTT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9cb"></span>E9CB</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $04,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F19D.html">Action_Examine</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -79,32 +73,8 @@ Matches e.g. "fish", "herring", "red fish", "red herring", "coloured fish", "col
 <tr>
 <td class="asm-label">PhraseTokens_Fish</td>
 <td class="address-1"><span id="e9cc"></span>E9CC</td>
-<td class="instruction">DEFB $0E</td>
-<td class="comment-1" rowspan="1">"FISH,HERR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9cd"></span>E9CD</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9ce"></span>E9CE</td>
-<td class="instruction">DEFB $5A</td>
-<td class="comment-1" rowspan="1">"RED,COLO".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9cf"></span>E9CF</td>
-<td class="instruction">DEFB $0E</td>
-<td class="comment-1" rowspan="1">"FISH,HERR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9d0"></span>E9D0</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $0E,$FD,$5A,$0E,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F19D.html">Action_Examine</a>, <a href="F263.html">Action_Take</a>, <a href="F4D4.html">Action_DropThrow</a> and <a href="F999.html">Action_Eat</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -119,14 +89,8 @@ Matches e.g. "watch".
 <tr>
 <td class="asm-label">PhraseTokens_Watch</td>
 <td class="address-1"><span id="e9d1"></span>E9D1</td>
-<td class="instruction">DEFB $0D</td>
-<td class="comment-1" rowspan="1">"WATC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9d2"></span>E9D2</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $0D,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F19D.html">Action_Examine</a>, <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -141,14 +105,8 @@ Matches e.g. "shoe".
 <tr>
 <td class="asm-label">PhraseTokens_Shoe</td>
 <td class="address-1"><span id="e9d3"></span>E9D3</td>
-<td class="instruction">DEFB $0B</td>
-<td class="comment-1" rowspan="1">"SHOE".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9d4"></span>E9D4</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $0B,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F19D.html">Action_Examine</a>, <a href="F263.html">Action_Take</a>, <a href="F4D4.html">Action_DropThrow</a> and <a href="FBD5.html">Action_Wear</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -163,14 +121,8 @@ Matches e.g. "rod".
 <tr>
 <td class="asm-label">PhraseTokens_Rod</td>
 <td class="address-1"><span id="e9d5"></span>E9D5</td>
-<td class="instruction">DEFB $03</td>
-<td class="comment-1" rowspan="1">"ROD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9d6"></span>E9D6</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $03,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F19D.html">Action_Examine</a>, <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -185,14 +137,8 @@ Matches e.g. "fruit".
 <tr>
 <td class="asm-label">PhraseTokens_Fruit</td>
 <td class="address-1"><span id="e9d7"></span>E9D7</td>
-<td class="instruction">DEFB $06</td>
-<td class="comment-1" rowspan="1">"FRUI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9d8"></span>E9D8</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $06,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F19D.html">Action_Examine</a>, <a href="F263.html">Action_Take</a>, <a href="F4D4.html">Action_DropThrow</a> and <a href="F999.html">Action_Eat</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -207,14 +153,8 @@ Matches e.g. "bridge".
 <tr>
 <td class="asm-label">PhraseTokens_Bridge</td>
 <td class="address-1"><span id="e9d9"></span>E9D9</td>
-<td class="instruction">DEFB $23</td>
-<td class="comment-1" rowspan="1">"BRID".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9da"></span>E9DA</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $23,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F19D.html">Action_Examine</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -229,38 +169,8 @@ Matches e.g. "jewels", "jewels of babylon".
 <tr>
 <td class="asm-label">PhraseTokens_Jewels</td>
 <td class="address-1"><span id="e9db"></span>E9DB</td>
-<td class="instruction">DEFB $0F</td>
-<td class="comment-1" rowspan="1">"JEWE".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9dc"></span>E9DC</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9dd"></span>E9DD</td>
-<td class="instruction">DEFB $0F</td>
-<td class="comment-1" rowspan="1">"JEWE".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9de"></span>E9DE</td>
-<td class="instruction">DEFB $57</td>
-<td class="comment-1" rowspan="1">"OF".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9df"></span>E9DF</td>
-<td class="instruction">DEFB $5B</td>
-<td class="comment-1" rowspan="1">"BABY".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9e0"></span>E9E0</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $0F,$FD,$0F,$57,$5B,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F19D.html">Action_Examine</a>, <a href="F263.html">Action_Take</a>, <a href="F4D4.html">Action_DropThrow</a> and <a href="FBD5.html">Action_Wear</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -275,14 +185,8 @@ Matches e.g. "match".
 <tr>
 <td class="asm-label">PhraseTokens_Match</td>
 <td class="address-1"><span id="e9e1"></span>E9E1</td>
-<td class="instruction">DEFB $00</td>
-<td class="comment-1" rowspan="1">"MATC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9e2"></span>E9E2</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $00,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a>, <a href="F4D4.html">Action_DropThrow</a> and <a href="FC24.html">Action_Light</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -297,14 +201,8 @@ Matches e.g. "plank".
 <tr>
 <td class="asm-label">PhraseTokens_Plank</td>
 <td class="address-1"><span id="e9e3"></span>E9E3</td>
-<td class="instruction">DEFB $01</td>
-<td class="comment-1" rowspan="1">"PLAN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9e4"></span>E9E4</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $01,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -319,14 +217,8 @@ Matches e.g. "coconut".
 <tr>
 <td class="asm-label">PhraseTokens_Coconut</td>
 <td class="address-1"><span id="e9e5"></span>E9E5</td>
-<td class="instruction">DEFB $02</td>
-<td class="comment-1" rowspan="1">"COCO".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9e6"></span>E9E6</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $02,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a>, <a href="F4D4.html">Action_DropThrow</a> and <a href="F999.html">Action_Eat</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -341,50 +233,8 @@ Matches e.g. "bottle", "rum", "bottle of rum".
 <tr>
 <td class="asm-label">PhraseTokens_BottleOfRum</td>
 <td class="address-1"><span id="e9e7"></span>E9E7</td>
-<td class="instruction">DEFB $04</td>
-<td class="comment-1" rowspan="1">"BOTT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9e8"></span>E9E8</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9e9"></span>E9E9</td>
-<td class="instruction">DEFB $05</td>
-<td class="comment-1" rowspan="1">"RUM".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9ea"></span>E9EA</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9eb"></span>E9EB</td>
-<td class="instruction">DEFB $04</td>
-<td class="comment-1" rowspan="1">"BOTT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9ec"></span>E9EC</td>
-<td class="instruction">DEFB $57</td>
-<td class="comment-1" rowspan="1">"OF".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9ed"></span>E9ED</td>
-<td class="instruction">DEFB $05</td>
-<td class="comment-1" rowspan="1">"RUM".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9ee"></span>E9EE</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $04,$FD,$05,$FD,$04,$57,$05,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -399,14 +249,8 @@ Matches e.g. "gun".
 <tr>
 <td class="asm-label">PhraseTokens_Gun</td>
 <td class="address-1"><span id="e9ef"></span>E9EF</td>
-<td class="instruction">DEFB $07</td>
-<td class="comment-1" rowspan="1">"GUN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9f0"></span>E9F0</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $07,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -421,14 +265,8 @@ Matches e.g. "eyepatch", "patch".
 <tr>
 <td class="asm-label">PhraseTokens_Eyepatch</td>
 <td class="address-1"><span id="e9f1"></span>E9F1</td>
-<td class="instruction">DEFB $08</td>
-<td class="comment-1" rowspan="1">"EYEP,PATC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9f2"></span>E9F2</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $08,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a>, <a href="F4D4.html">Action_DropThrow</a> and <a href="FBD5.html">Action_Wear</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -443,50 +281,8 @@ Matches e.g. "gunpowder", "powder", "keg", "keg of gunpowder", "keg of powder".
 <tr>
 <td class="asm-label">PhraseTokens_KegGunPowder</td>
 <td class="address-1"><span id="e9f3"></span>E9F3</td>
-<td class="instruction">DEFB $09</td>
-<td class="comment-1" rowspan="1">"GUNP,POWD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9f4"></span>E9F4</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9f5"></span>E9F5</td>
-<td class="instruction">DEFB $0A</td>
-<td class="comment-1" rowspan="1">"KEG".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9f6"></span>E9F6</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9f7"></span>E9F7</td>
-<td class="instruction">DEFB $0A</td>
-<td class="comment-1" rowspan="1">"KEG".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9f8"></span>E9F8</td>
-<td class="instruction">DEFB $57</td>
-<td class="comment-1" rowspan="1">"OF".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9f9"></span>E9F9</td>
-<td class="instruction">DEFB $09</td>
-<td class="comment-1" rowspan="1">"GUNP,POWD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9fa"></span>E9FA</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $09,$FD,$0A,$FD,$0A,$57,$09,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -501,14 +297,8 @@ Matches e.g. "sextant".
 <tr>
 <td class="asm-label">PhraseTokens_Sextant</td>
 <td class="address-1"><span id="e9fb"></span>E9FB</td>
-<td class="instruction">DEFB $0C</td>
-<td class="comment-1" rowspan="1">"SEXT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9fc"></span>E9FC</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $0C,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -523,14 +313,8 @@ Matches e.g. "crowbar".
 <tr>
 <td class="asm-label">PhraseTokens_Crowbar</td>
 <td class="address-1"><span id="e9fd"></span>E9FD</td>
-<td class="instruction">DEFB $10</td>
-<td class="comment-1" rowspan="1">"CROW".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="e9fe"></span>E9FE</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $10,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -545,14 +329,8 @@ Matches e.g. "key".
 <tr>
 <td class="asm-label">PhraseTokens_Key</td>
 <td class="address-1"><span id="e9ff"></span>E9FF</td>
-<td class="instruction">DEFB $11</td>
-<td class="comment-1" rowspan="1">"KEY".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea00"></span>EA00</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $11,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -567,32 +345,8 @@ Matches e.g. "skull", "human skull".
 <tr>
 <td class="asm-label">PhraseTokens_Skull</td>
 <td class="address-1"><span id="ea01"></span>EA01</td>
-<td class="instruction">DEFB $12</td>
-<td class="comment-1" rowspan="1">"SKUL".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea02"></span>EA02</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea03"></span>EA03</td>
-<td class="instruction">DEFB $61</td>
-<td class="comment-1" rowspan="1">"HUMA".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea04"></span>EA04</td>
-<td class="instruction">DEFB $12</td>
-<td class="comment-1" rowspan="1">"SKUL".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea05"></span>EA05</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $12,$FD,$61,$12,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -607,14 +361,8 @@ Matches e.g. "spear".
 <tr>
 <td class="asm-label">PhraseTokens_Spear</td>
 <td class="address-1"><span id="ea06"></span>EA06</td>
-<td class="instruction">DEFB $13</td>
-<td class="comment-1" rowspan="1">"SPEA".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea07"></span>EA07</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $13,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -629,32 +377,8 @@ Matches e.g. "parrot", "dead parrot".
 <tr>
 <td class="asm-label">PhraseTokens_Parrot</td>
 <td class="address-1"><span id="ea08"></span>EA08</td>
-<td class="instruction">DEFB $19</td>
-<td class="comment-1" rowspan="1">"PARR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea09"></span>EA09</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea0a"></span>EA0A</td>
-<td class="instruction">DEFB $5D</td>
-<td class="comment-1" rowspan="1">"DEAD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea0b"></span>EA0B</td>
-<td class="instruction">DEFB $19</td>
-<td class="comment-1" rowspan="1">"PARR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea0c"></span>EA0C</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $19,$FD,$5D,$19,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F263.html">Action_Take</a> and <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -669,98 +393,13 @@ Matches e.g. "into boat", "in to boat", "in at boat", "into rowing boat", "in to
 <tr>
 <td class="asm-label">PhraseTokens_IntoBoat</td>
 <td class="address-1"><span id="ea0d"></span>EA0D</td>
-<td class="instruction">DEFB $54</td>
-<td class="comment-1" rowspan="1">"INTO".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea0e"></span>EA0E</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea0f"></span>EA0F</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea10"></span>EA10</td>
-<td class="instruction">DEFB $53</td>
-<td class="comment-1" rowspan="1">"IN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea11"></span>EA11</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea12"></span>EA12</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea13"></span>EA13</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea14"></span>EA14</td>
-<td class="instruction">DEFB $54</td>
-<td class="comment-1" rowspan="1">"INTO".</td>
+<td class="instruction">DEFB $54,$15,$FD,$53,$55,$15,$FD,$54</td>
+<td class="comment-1" rowspan="2">Checked by <a href="F481.html">Action_Get</a> and <a href="F946.html">Action_Climb</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ea15"></span>EA15</td>
-<td class="instruction">DEFB $5C</td>
-<td class="comment-1" rowspan="1">"ROWI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea16"></span>EA16</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea17"></span>EA17</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea18"></span>EA18</td>
-<td class="instruction">DEFB $53</td>
-<td class="comment-1" rowspan="1">"IN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea19"></span>EA19</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea1a"></span>EA1A</td>
-<td class="instruction">DEFB $5C</td>
-<td class="comment-1" rowspan="1">"ROWI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea1b"></span>EA1B</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea1c"></span>EA1C</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $5C,$15,$FD,$53,$55,$5C,$15,$FE</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -775,56 +414,13 @@ Matches e.g. "out of boat", "out of rowing boat".
 <tr>
 <td class="asm-label">PhraseTokens_OutOfBoat</td>
 <td class="address-1"><span id="ea1d"></span>EA1D</td>
-<td class="instruction">DEFB $56</td>
-<td class="comment-1" rowspan="1">"OUT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea1e"></span>EA1E</td>
-<td class="instruction">DEFB $57</td>
-<td class="comment-1" rowspan="1">"OF".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea1f"></span>EA1F</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea20"></span>EA20</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea21"></span>EA21</td>
-<td class="instruction">DEFB $56</td>
-<td class="comment-1" rowspan="1">"OUT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea22"></span>EA22</td>
-<td class="instruction">DEFB $57</td>
-<td class="comment-1" rowspan="1">"OF".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea23"></span>EA23</td>
-<td class="instruction">DEFB $5C</td>
-<td class="comment-1" rowspan="1">"ROWI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea24"></span>EA24</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
+<td class="instruction">DEFB $56,$57,$15,$FD,$56,$57,$5C,$15</td>
+<td class="comment-1" rowspan="2">Checked by <a href="F481.html">Action_Get</a> and <a href="F946.html">Action_Climb</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ea25"></span>EA25</td>
 <td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -839,26 +435,8 @@ Matches e.g. "plank across pit", "plank over pit".
 <tr>
 <td class="asm-label">PhraseTokens_PlankAcrossPit</td>
 <td class="address-1"><span id="ea26"></span>EA26</td>
-<td class="instruction">DEFB $01</td>
-<td class="comment-1" rowspan="1">"PLAN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea27"></span>EA27</td>
-<td class="instruction">DEFB $67</td>
-<td class="comment-1" rowspan="1">"ACRO,OVER".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea28"></span>EA28</td>
-<td class="instruction">DEFB $28</td>
-<td class="comment-1" rowspan="1">"PIT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea29"></span>EA29</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $01,$67,$28,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F4D4.html">Action_DropThrow</a> and <a href="F7D6.html">Action_Place</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -873,26 +451,8 @@ Matches e.g. "spear to lion", "spear at lion".
 <tr>
 <td class="asm-label">PhraseTokens_SpearAtLion</td>
 <td class="address-1"><span id="ea2a"></span>EA2A</td>
-<td class="instruction">DEFB $13</td>
-<td class="comment-1" rowspan="1">"SPEA".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea2b"></span>EA2B</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea2c"></span>EA2C</td>
-<td class="instruction">DEFB $1C</td>
-<td class="comment-1" rowspan="1">"LION".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea2d"></span>EA2D</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $13,$55,$1C,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -907,26 +467,8 @@ Matches e.g. "coconut to lion", "coconut at lion".
 <tr>
 <td class="asm-label">PhraseTokens_CoconutAtLion</td>
 <td class="address-1"><span id="ea2e"></span>EA2E</td>
-<td class="instruction">DEFB $02</td>
-<td class="comment-1" rowspan="1">"COCO".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea2f"></span>EA2F</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea30"></span>EA30</td>
-<td class="instruction">DEFB $1C</td>
-<td class="comment-1" rowspan="1">"LION".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea31"></span>EA31</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $02,$55,$1C,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -941,26 +483,8 @@ Matches e.g. "fruit to lion", "fruit at lion".
 <tr>
 <td class="asm-label">PhraseTokens_FruitAtLion</td>
 <td class="address-1"><span id="ea32"></span>EA32</td>
-<td class="instruction">DEFB $06</td>
-<td class="comment-1" rowspan="1">"FRUI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea33"></span>EA33</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea34"></span>EA34</td>
-<td class="instruction">DEFB $1C</td>
-<td class="comment-1" rowspan="1">"LION".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea35"></span>EA35</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $06,$55,$1C,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F4D4.html">Action_DropThrow</a> and <a href="F7AB.html">Action_Give</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -975,56 +499,13 @@ Matches e.g. "fish to lion", "fish at lion", "herring to lion", "herring at lion
 <tr>
 <td class="asm-label">PhraseTokens_FishAtLion</td>
 <td class="address-1"><span id="ea36"></span>EA36</td>
-<td class="instruction">DEFB $0E</td>
-<td class="comment-1" rowspan="1">"FISH,HERR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea37"></span>EA37</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea38"></span>EA38</td>
-<td class="instruction">DEFB $1C</td>
-<td class="comment-1" rowspan="1">"LION".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea39"></span>EA39</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea3a"></span>EA3A</td>
-<td class="instruction">DEFB $5A</td>
-<td class="comment-1" rowspan="1">"RED,COLO".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea3b"></span>EA3B</td>
-<td class="instruction">DEFB $0E</td>
-<td class="comment-1" rowspan="1">"FISH,HERR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea3c"></span>EA3C</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea3d"></span>EA3D</td>
-<td class="instruction">DEFB $1C</td>
-<td class="comment-1" rowspan="1">"LION".</td>
+<td class="instruction">DEFB $0E,$55,$1C,$FD,$5A,$0E,$55,$1C</td>
+<td class="comment-1" rowspan="2">Checked by <a href="F4D4.html">Action_DropThrow</a> and <a href="F7AB.html">Action_Give</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ea3e"></span>EA3E</td>
 <td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1039,26 +520,8 @@ Matches e.g. "fruit to parrot", "fruit at parrot".
 <tr>
 <td class="asm-label">PhraseTokens_FruitAtParrot</td>
 <td class="address-1"><span id="ea3f"></span>EA3F</td>
-<td class="instruction">DEFB $06</td>
-<td class="comment-1" rowspan="1">"FRUI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea40"></span>EA40</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea41"></span>EA41</td>
-<td class="instruction">DEFB $19</td>
-<td class="comment-1" rowspan="1">"PARR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea42"></span>EA42</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $06,$55,$19,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F4D4.html">Action_DropThrow</a> and <a href="F7AB.html">Action_Give</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1073,26 +536,8 @@ Matches e.g. "watch to cannibals", "watch at cannibals", "watch to natives", "wa
 <tr>
 <td class="asm-label">PhraseTokens_WatchAtCannibals</td>
 <td class="address-1"><span id="ea43"></span>EA43</td>
-<td class="instruction">DEFB $0D</td>
-<td class="comment-1" rowspan="1">"WATC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea44"></span>EA44</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea45"></span>EA45</td>
-<td class="instruction">DEFB $17</td>
-<td class="comment-1" rowspan="1">"CANN,NATI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea46"></span>EA46</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $0D,$55,$17,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F4D4.html">Action_DropThrow</a> and <a href="F7AB.html">Action_Give</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1107,56 +552,13 @@ Matches e.g. "spear to octopus", "spear at octopus", "spear to giant octopus", "
 <tr>
 <td class="asm-label">PhraseTokens_SpearAtOctopus</td>
 <td class="address-1"><span id="ea47"></span>EA47</td>
-<td class="instruction">DEFB $13</td>
-<td class="comment-1" rowspan="1">"SPEA".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea48"></span>EA48</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea49"></span>EA49</td>
-<td class="instruction">DEFB $1E</td>
-<td class="comment-1" rowspan="1">"OCTO".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea4a"></span>EA4A</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea4b"></span>EA4B</td>
-<td class="instruction">DEFB $13</td>
-<td class="comment-1" rowspan="1">"SPEA".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea4c"></span>EA4C</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea4d"></span>EA4D</td>
-<td class="instruction">DEFB $62</td>
-<td class="comment-1" rowspan="1">"GIAN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea4e"></span>EA4E</td>
-<td class="instruction">DEFB $1E</td>
-<td class="comment-1" rowspan="1">"OCTO".</td>
+<td class="instruction">DEFB $13,$55,$1E,$FD,$13,$55,$62,$1E</td>
+<td class="comment-1" rowspan="2">Checked by <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ea4f"></span>EA4F</td>
 <td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1171,86 +573,13 @@ Matches e.g. "gunpowder to crocodile", "gunpowder at crocodile", "powder to croc
 <tr>
 <td class="asm-label">PhraseTokens_KegAtCrocodile</td>
 <td class="address-1"><span id="ea50"></span>EA50</td>
-<td class="instruction">DEFB $09</td>
-<td class="comment-1" rowspan="1">"GUNP,POWD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea51"></span>EA51</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea52"></span>EA52</td>
-<td class="instruction">DEFB $1B</td>
-<td class="comment-1" rowspan="1">"CROC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea53"></span>EA53</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea54"></span>EA54</td>
-<td class="instruction">DEFB $0A</td>
-<td class="comment-1" rowspan="1">"KEG".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea55"></span>EA55</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea56"></span>EA56</td>
-<td class="instruction">DEFB $1B</td>
-<td class="comment-1" rowspan="1">"CROC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea57"></span>EA57</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
+<td class="instruction">DEFB $09,$55,$1B,$FD,$0A,$55,$1B,$FD</td>
+<td class="comment-1" rowspan="2">Checked by <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ea58"></span>EA58</td>
-<td class="instruction">DEFB $0A</td>
-<td class="comment-1" rowspan="1">"KEG".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea59"></span>EA59</td>
-<td class="instruction">DEFB $57</td>
-<td class="comment-1" rowspan="1">"OF".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea5a"></span>EA5A</td>
-<td class="instruction">DEFB $09</td>
-<td class="comment-1" rowspan="1">"GUNP,POWD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea5b"></span>EA5B</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea5c"></span>EA5C</td>
-<td class="instruction">DEFB $1B</td>
-<td class="comment-1" rowspan="1">"CROC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea5d"></span>EA5D</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $0A,$57,$09,$55,$1B,$FE</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1265,86 +594,13 @@ Matches e.g. "match to keg", "match at keg", "match to gunpowder", "match at gun
 <tr>
 <td class="asm-label">PhraseTokens_MatchAtKeg</td>
 <td class="address-1"><span id="ea5e"></span>EA5E</td>
-<td class="instruction">DEFB $00</td>
-<td class="comment-1" rowspan="1">"MATC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea5f"></span>EA5F</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea60"></span>EA60</td>
-<td class="instruction">DEFB $0A</td>
-<td class="comment-1" rowspan="1">"KEG".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea61"></span>EA61</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea62"></span>EA62</td>
-<td class="instruction">DEFB $00</td>
-<td class="comment-1" rowspan="1">"MATC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea63"></span>EA63</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea64"></span>EA64</td>
-<td class="instruction">DEFB $09</td>
-<td class="comment-1" rowspan="1">"GUNP,POWD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea65"></span>EA65</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
+<td class="instruction">DEFB $00,$55,$0A,$FD,$00,$55,$09,$FD</td>
+<td class="comment-1" rowspan="2">Checked by <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ea66"></span>EA66</td>
-<td class="instruction">DEFB $00</td>
-<td class="comment-1" rowspan="1">"MATC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea67"></span>EA67</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea68"></span>EA68</td>
-<td class="instruction">DEFB $0A</td>
-<td class="comment-1" rowspan="1">"KEG".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea69"></span>EA69</td>
-<td class="instruction">DEFB $57</td>
-<td class="comment-1" rowspan="1">"OF".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea6a"></span>EA6A</td>
-<td class="instruction">DEFB $09</td>
-<td class="comment-1" rowspan="1">"GUNP,POWD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea6b"></span>EA6B</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $00,$55,$0A,$57,$09,$FE</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1359,26 +615,8 @@ Matches e.g. "match to crocodile", "match at crocodile".
 <tr>
 <td class="asm-label">PhraseTokens_MatchAtCrocodile</td>
 <td class="address-1"><span id="ea6c"></span>EA6C</td>
-<td class="instruction">DEFB $00</td>
-<td class="comment-1" rowspan="1">"MATC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea6d"></span>EA6D</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea6e"></span>EA6E</td>
-<td class="instruction">DEFB $1B</td>
-<td class="comment-1" rowspan="1">"CROC".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea6f"></span>EA6F</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $00,$55,$1B,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F4D4.html">Action_DropThrow</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1393,176 +631,23 @@ Matches e.g. "rod in hole", "rod in round hole", "rod into hole", "rod into roun
 <tr>
 <td class="asm-label">PhraseTokens_RodInHole</td>
 <td class="address-1"><span id="ea70"></span>EA70</td>
-<td class="instruction">DEFB $03</td>
-<td class="comment-1" rowspan="1">"ROD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea71"></span>EA71</td>
-<td class="instruction">DEFB $53</td>
-<td class="comment-1" rowspan="1">"IN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea72"></span>EA72</td>
-<td class="instruction">DEFB $60</td>
-<td class="comment-1" rowspan="1">"HOLE".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea73"></span>EA73</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea74"></span>EA74</td>
-<td class="instruction">DEFB $03</td>
-<td class="comment-1" rowspan="1">"ROD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea75"></span>EA75</td>
-<td class="instruction">DEFB $53</td>
-<td class="comment-1" rowspan="1">"IN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea76"></span>EA76</td>
-<td class="instruction">DEFB $59</td>
-<td class="comment-1" rowspan="1">"ROUN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea77"></span>EA77</td>
-<td class="instruction">DEFB $60</td>
-<td class="comment-1" rowspan="1">"HOLE".</td>
+<td class="instruction">DEFB $03,$53,$60,$FD,$03,$53,$59,$60</td>
+<td class="comment-1" rowspan="4">Checked by <a href="F7D6.html">Action_Place</a> and <a href="FB71.html">Action_Insert</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ea78"></span>EA78</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea79"></span>EA79</td>
-<td class="instruction">DEFB $03</td>
-<td class="comment-1" rowspan="1">"ROD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea7a"></span>EA7A</td>
-<td class="instruction">DEFB $54</td>
-<td class="comment-1" rowspan="1">"INTO".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea7b"></span>EA7B</td>
-<td class="instruction">DEFB $60</td>
-<td class="comment-1" rowspan="1">"HOLE".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea7c"></span>EA7C</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea7d"></span>EA7D</td>
-<td class="instruction">DEFB $03</td>
-<td class="comment-1" rowspan="1">"ROD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea7e"></span>EA7E</td>
-<td class="instruction">DEFB $54</td>
-<td class="comment-1" rowspan="1">"INTO".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea7f"></span>EA7F</td>
-<td class="instruction">DEFB $59</td>
-<td class="comment-1" rowspan="1">"ROUN".</td>
+<td class="instruction">DEFB $FD,$03,$54,$60,$FD,$03,$54,$59</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ea80"></span>EA80</td>
-<td class="instruction">DEFB $60</td>
-<td class="comment-1" rowspan="1">"HOLE".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea81"></span>EA81</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea82"></span>EA82</td>
-<td class="instruction">DEFB $03</td>
-<td class="comment-1" rowspan="1">"ROD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea83"></span>EA83</td>
-<td class="instruction">DEFB $53</td>
-<td class="comment-1" rowspan="1">"IN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea84"></span>EA84</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea85"></span>EA85</td>
-<td class="instruction">DEFB $60</td>
-<td class="comment-1" rowspan="1">"HOLE".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea86"></span>EA86</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea87"></span>EA87</td>
-<td class="instruction">DEFB $03</td>
-<td class="comment-1" rowspan="1">"ROD".</td>
+<td class="instruction">DEFB $60,$FD,$03,$53,$55,$60,$FD,$03</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ea88"></span>EA88</td>
-<td class="instruction">DEFB $53</td>
-<td class="comment-1" rowspan="1">"IN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea89"></span>EA89</td>
-<td class="instruction">DEFB $55</td>
-<td class="comment-1" rowspan="1">"TO,AT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea8a"></span>EA8A</td>
-<td class="instruction">DEFB $59</td>
-<td class="comment-1" rowspan="1">"ROUN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea8b"></span>EA8B</td>
-<td class="instruction">DEFB $60</td>
-<td class="comment-1" rowspan="1">"HOLE".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea8c"></span>EA8C</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $53,$55,$59,$60,$FE</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1577,56 +662,13 @@ Matches e.g. "octopus with spear", "octopus using spear", "giant octopus with sp
 <tr>
 <td class="asm-label">PhraseTokens_OctopusWithSpear</td>
 <td class="address-1"><span id="ea8d"></span>EA8D</td>
-<td class="instruction">DEFB $1E</td>
-<td class="comment-1" rowspan="1">"OCTO".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea8e"></span>EA8E</td>
-<td class="instruction">DEFB $58</td>
-<td class="comment-1" rowspan="1">"WITH,USIN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea8f"></span>EA8F</td>
-<td class="instruction">DEFB $13</td>
-<td class="comment-1" rowspan="1">"SPEA".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea90"></span>EA90</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea91"></span>EA91</td>
-<td class="instruction">DEFB $62</td>
-<td class="comment-1" rowspan="1">"GIAN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea92"></span>EA92</td>
-<td class="instruction">DEFB $1E</td>
-<td class="comment-1" rowspan="1">"OCTO".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea93"></span>EA93</td>
-<td class="instruction">DEFB $58</td>
-<td class="comment-1" rowspan="1">"WITH,USIN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea94"></span>EA94</td>
-<td class="instruction">DEFB $13</td>
-<td class="comment-1" rowspan="1">"SPEA".</td>
+<td class="instruction">DEFB $1E,$58,$13,$FD,$62,$1E,$58,$13</td>
+<td class="comment-1" rowspan="2">Checked by <a href="F851.html">Action_Kill</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ea95"></span>EA95</td>
 <td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1641,26 +683,8 @@ Matches e.g. "lion with spear", "lion using spear".
 <tr>
 <td class="asm-label">PhraseTokens_LionWithSpear</td>
 <td class="address-1"><span id="ea96"></span>EA96</td>
-<td class="instruction">DEFB $1C</td>
-<td class="comment-1" rowspan="1">"LION".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea97"></span>EA97</td>
-<td class="instruction">DEFB $58</td>
-<td class="comment-1" rowspan="1">"WITH,USIN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea98"></span>EA98</td>
-<td class="instruction">DEFB $13</td>
-<td class="comment-1" rowspan="1">"SPEA".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea99"></span>EA99</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $1C,$58,$13,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F851.html">Action_Kill</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1675,26 +699,8 @@ Matches e.g. "cannibals with spear", "cannibals using spear", "natives with spea
 <tr>
 <td class="asm-label">PhraseTokens_CannibalsWithSpear</td>
 <td class="address-1"><span id="ea9a"></span>EA9A</td>
-<td class="instruction">DEFB $17</td>
-<td class="comment-1" rowspan="1">"CANN,NATI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea9b"></span>EA9B</td>
-<td class="instruction">DEFB $58</td>
-<td class="comment-1" rowspan="1">"WITH,USIN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea9c"></span>EA9C</td>
-<td class="instruction">DEFB $13</td>
-<td class="comment-1" rowspan="1">"SPEA".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea9d"></span>EA9D</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $17,$58,$13,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F851.html">Action_Kill</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1709,26 +715,8 @@ Matches e.g. "pirate with gun", "pirate using gun".
 <tr>
 <td class="asm-label">PhraseTokens_PirateWithGun</td>
 <td class="address-1"><span id="ea9e"></span>EA9E</td>
-<td class="instruction">DEFB $18</td>
-<td class="comment-1" rowspan="1">"PIRA".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ea9f"></span>EA9F</td>
-<td class="instruction">DEFB $58</td>
-<td class="comment-1" rowspan="1">"WITH,USIN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaa0"></span>EAA0</td>
-<td class="instruction">DEFB $07</td>
-<td class="comment-1" rowspan="1">"GUN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaa1"></span>EAA1</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $18,$58,$07,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F851.html">Action_Kill</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1743,26 +731,8 @@ Matches e.g. "parrot with gun", "parrot using gun".
 <tr>
 <td class="asm-label">PhraseTokens_ParrotWithGun</td>
 <td class="address-1"><span id="eaa2"></span>EAA2</td>
-<td class="instruction">DEFB $19</td>
-<td class="comment-1" rowspan="1">"PARR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaa3"></span>EAA3</td>
-<td class="instruction">DEFB $58</td>
-<td class="comment-1" rowspan="1">"WITH,USIN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaa4"></span>EAA4</td>
-<td class="instruction">DEFB $07</td>
-<td class="comment-1" rowspan="1">"GUN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaa5"></span>EAA5</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $19,$58,$07,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F8D9.html">Action_Shooting</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1777,38 +747,8 @@ Matches e.g. "pirate", "pirate with gun", "pirate using gun".
 <tr>
 <td class="asm-label">PhraseTokens_PirateWithGun_2</td>
 <td class="address-1"><span id="eaa6"></span>EAA6</td>
-<td class="instruction">DEFB $18</td>
-<td class="comment-1" rowspan="1">"PIRA".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaa7"></span>EAA7</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaa8"></span>EAA8</td>
-<td class="instruction">DEFB $18</td>
-<td class="comment-1" rowspan="1">"PIRA".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaa9"></span>EAA9</td>
-<td class="instruction">DEFB $58</td>
-<td class="comment-1" rowspan="1">"WITH,USIN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaaa"></span>EAAA</td>
-<td class="instruction">DEFB $07</td>
-<td class="comment-1" rowspan="1">"GUN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaab"></span>EAAB</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $18,$FD,$18,$58,$07,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F91B.html">Action_Shoot</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1823,38 +763,8 @@ Matches e.g. "parrot", "parrot with gun", "parrot using gun".
 <tr>
 <td class="asm-label">PhraseTokens_ParrotWithGun_2</td>
 <td class="address-1"><span id="eaac"></span>EAAC</td>
-<td class="instruction">DEFB $19</td>
-<td class="comment-1" rowspan="1">"PARR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaad"></span>EAAD</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaae"></span>EAAE</td>
-<td class="instruction">DEFB $19</td>
-<td class="comment-1" rowspan="1">"PARR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaaf"></span>EAAF</td>
-<td class="instruction">DEFB $58</td>
-<td class="comment-1" rowspan="1">"WITH,USIN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eab0"></span>EAB0</td>
-<td class="instruction">DEFB $07</td>
-<td class="comment-1" rowspan="1">"GUN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eab1"></span>EAB1</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $19,$FD,$19,$58,$07,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F91B.html">Action_Shoot</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1869,20 +779,8 @@ Matches e.g. "u ladder", "up ladder".
 <tr>
 <td class="asm-label">PhraseTokens_UpLadder</td>
 <td class="address-1"><span id="eab2"></span>EAB2</td>
-<td class="instruction">DEFB $35</td>
-<td class="comment-1" rowspan="1">"U,UP".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eab3"></span>EAB3</td>
-<td class="instruction">DEFB $14</td>
-<td class="comment-1" rowspan="1">"LADD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eab4"></span>EAB4</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $35,$14,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F946.html">Action_Climb</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1897,20 +795,8 @@ Matches e.g. "d ladder", "down ladder".
 <tr>
 <td class="asm-label">PhraseTokens_DownLadder</td>
 <td class="address-1"><span id="eab5"></span>EAB5</td>
-<td class="instruction">DEFB $36</td>
-<td class="comment-1" rowspan="1">"D,DOWN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eab6"></span>EAB6</td>
-<td class="instruction">DEFB $14</td>
-<td class="comment-1" rowspan="1">"LADD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eab7"></span>EAB7</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $36,$14,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F946.html">Action_Climb</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1925,14 +811,8 @@ Matches e.g. "rum".
 <tr>
 <td class="asm-label">PhraseTokens_Rum</td>
 <td class="address-1"><span id="eab8"></span>EAB8</td>
-<td class="instruction">DEFB $05</td>
-<td class="comment-1" rowspan="1">"RUM".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eab9"></span>EAB9</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $05,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F9E4.html">Action_Drink</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1947,14 +827,8 @@ Matches e.g. "water".
 <tr>
 <td class="asm-label">PhraseTokens_Water</td>
 <td class="address-1"><span id="eaba"></span>EABA</td>
-<td class="instruction">DEFB $66</td>
-<td class="comment-1" rowspan="1">"WATE".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eabb"></span>EABB</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $66,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F9E4.html">Action_Drink</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1969,14 +843,8 @@ Matches e.g. "ladder".
 <tr>
 <td class="asm-label">PhraseTokens_Ladder</td>
 <td class="address-1"><span id="eabc"></span>EABC</td>
-<td class="instruction">DEFB $14</td>
-<td class="comment-1" rowspan="1">"LADD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eabd"></span>EABD</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $14,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="F946.html">Action_Climb</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1991,14 +859,8 @@ Matches e.g. "door".
 <tr>
 <td class="asm-label">PhraseTokens_Door</td>
 <td class="address-1"><span id="eabe"></span>EABE</td>
-<td class="instruction">DEFB $1F</td>
-<td class="comment-1" rowspan="1">"DOOR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eabf"></span>EABF</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $1F,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="FA3C.html">Action_Open</a> and <a href="FAA8.html">Action_Close</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2013,32 +875,8 @@ Matches e.g. "rock door", "door".
 <tr>
 <td class="asm-label">PhraseTokens_RockDoor</td>
 <td class="address-1"><span id="eac0"></span>EAC0</td>
-<td class="instruction">DEFB $68</td>
-<td class="comment-1" rowspan="1">"ROCK".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eac1"></span>EAC1</td>
-<td class="instruction">DEFB $1F</td>
-<td class="comment-1" rowspan="1">"DOOR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eac2"></span>EAC2</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eac3"></span>EAC3</td>
-<td class="instruction">DEFB $1F</td>
-<td class="comment-1" rowspan="1">"DOOR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eac4"></span>EAC4</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $68,$1F,$FD,$1F,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="FA3C.html">Action_Open</a> and <a href="FAA8.html">Action_Close</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2053,14 +891,8 @@ Matches e.g. "trapdoor".
 <tr>
 <td class="asm-label">PhraseTokens_TrapDoor</td>
 <td class="address-1"><span id="eac5"></span>EAC5</td>
-<td class="instruction">DEFB $26</td>
-<td class="comment-1" rowspan="1">"TRAP".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eac6"></span>EAC6</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $26,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="FAA8.html">Action_Close</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2075,27 +907,8 @@ Matches e.g. "shout" on its own, or "shout loud".
 <tr>
 <td class="asm-label">PhraseTokens_Shout</td>
 <td class="address-1"><span id="eac7"></span>EAC7</td>
-<td class="instruction">DEFB $FF</td>
-<td class="comment-1" rowspan="1">
-UNKNOWN.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eac8"></span>EAC8</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eac9"></span>EAC9</td>
-<td class="instruction">DEFB $69</td>
-<td class="comment-1" rowspan="1">"LOUD".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaca"></span>EACA</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $FF,$FD,$69,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="FB16.html">Action_Shout</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2110,14 +923,8 @@ Matches e.g. "ring".
 <tr>
 <td class="asm-label">PhraseTokens_Ring</td>
 <td class="address-1"><span id="eacb"></span>EACB</td>
-<td class="instruction">DEFB $25</td>
-<td class="comment-1" rowspan="1">"RING".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eacc"></span>EACC</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $25,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="FBA8.html">Action_Pull</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2132,14 +939,8 @@ Matches e.g. "cave".
 <tr>
 <td class="asm-label">PhraseTokens_Cave</td>
 <td class="address-1"><span id="eacd"></span>EACD</td>
-<td class="instruction">DEFB $27</td>
-<td class="comment-1" rowspan="1">"CAVE".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eace"></span>EACE</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $27,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="FC61.html">Action_Enter</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2154,56 +955,13 @@ Matches e.g. "boat", "rowing boat", "ship", "pit".
 <tr>
 <td class="asm-label">PhraseTokens_Boat</td>
 <td class="address-1"><span id="eacf"></span>EACF</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ead0"></span>EAD0</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ead1"></span>EAD1</td>
-<td class="instruction">DEFB $5C</td>
-<td class="comment-1" rowspan="1">"ROWI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ead2"></span>EAD2</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ead3"></span>EAD3</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ead4"></span>EAD4</td>
-<td class="instruction">DEFB $29</td>
-<td class="comment-1" rowspan="1">"SHIP".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ead5"></span>EAD5</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ead6"></span>EAD6</td>
-<td class="instruction">DEFB $28</td>
-<td class="comment-1" rowspan="1">"PIT".</td>
+<td class="instruction">DEFB $15,$FD,$5C,$15,$FD,$29,$FD,$28</td>
+<td class="comment-1" rowspan="2">Checked by <a href="FC61.html">Action_Enter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ead7"></span>EAD7</td>
 <td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2218,32 +976,8 @@ Matches e.g. "stone", "large stone".
 <tr>
 <td class="asm-label">PhraseTokens_Stone</td>
 <td class="address-1"><span id="ead8"></span>EAD8</td>
-<td class="instruction">DEFB $5F</td>
-<td class="comment-1" rowspan="1">"STON".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="ead9"></span>EAD9</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eada"></span>EADA</td>
-<td class="instruction">DEFB $65</td>
-<td class="comment-1" rowspan="1">"LARG".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eadb"></span>EADB</td>
-<td class="instruction">DEFB $5F</td>
-<td class="comment-1" rowspan="1">"STON".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eadc"></span>EADC</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $5F,$FD,$65,$5F,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="FC98.html">Action_Move</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2258,56 +992,13 @@ Matches e.g. "stone with crowbar", "stone using crowbar", "large stone with crow
 <tr>
 <td class="asm-label">PhraseTokens_StoneWithCrowbar</td>
 <td class="address-1"><span id="eadd"></span>EADD</td>
-<td class="instruction">DEFB $5F</td>
-<td class="comment-1" rowspan="1">"STON".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eade"></span>EADE</td>
-<td class="instruction">DEFB $58</td>
-<td class="comment-1" rowspan="1">"WITH,USIN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eadf"></span>EADF</td>
-<td class="instruction">DEFB $10</td>
-<td class="comment-1" rowspan="1">"CROW".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eae0"></span>EAE0</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eae1"></span>EAE1</td>
-<td class="instruction">DEFB $65</td>
-<td class="comment-1" rowspan="1">"LARG".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eae2"></span>EAE2</td>
-<td class="instruction">DEFB $5F</td>
-<td class="comment-1" rowspan="1">"STON".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eae3"></span>EAE3</td>
-<td class="instruction">DEFB $58</td>
-<td class="comment-1" rowspan="1">"WITH,USIN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eae4"></span>EAE4</td>
-<td class="instruction">DEFB $10</td>
-<td class="comment-1" rowspan="1">"CROW".</td>
+<td class="instruction">DEFB $5F,$58,$10,$FD,$65,$5F,$58,$10</td>
+<td class="comment-1" rowspan="2">Checked by <a href="FC98.html">Action_Move</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eae5"></span>EAE5</td>
 <td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2322,38 +1013,8 @@ Matches e.g. "door", "door with key", "door using key".
 <tr>
 <td class="asm-label">PhraseTokens_Door_2</td>
 <td class="address-1"><span id="eae6"></span>EAE6</td>
-<td class="instruction">DEFB $1F</td>
-<td class="comment-1" rowspan="1">"DOOR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eae7"></span>EAE7</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eae8"></span>EAE8</td>
-<td class="instruction">DEFB $1F</td>
-<td class="comment-1" rowspan="1">"DOOR".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eae9"></span>EAE9</td>
-<td class="instruction">DEFB $58</td>
-<td class="comment-1" rowspan="1">"WITH,USIN".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaea"></span>EAEA</td>
-<td class="instruction">DEFB $11</td>
-<td class="comment-1" rowspan="1">"KEY".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaeb"></span>EAEB</td>
-<td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
+<td class="instruction">DEFB $1F,$FD,$1F,$58,$11,$FE</td>
+<td class="comment-1" rowspan="1">Checked by <a href="FCCD.html">Action_Unlock</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2368,56 +1029,13 @@ Matches e.g. "n", "north", "boat n", "boat north", "rowing boat n" "rowing boat 
 <tr>
 <td class="asm-label">PhraseTokens_North</td>
 <td class="address-1"><span id="eaec"></span>EAEC</td>
-<td class="instruction">DEFB $31</td>
-<td class="comment-1" rowspan="1">"N,NORT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaed"></span>EAED</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaee"></span>EAEE</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaef"></span>EAEF</td>
-<td class="instruction">DEFB $31</td>
-<td class="comment-1" rowspan="1">"N,NORT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaf0"></span>EAF0</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaf1"></span>EAF1</td>
-<td class="instruction">DEFB $5C</td>
-<td class="comment-1" rowspan="1">"ROWI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaf2"></span>EAF2</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaf3"></span>EAF3</td>
-<td class="instruction">DEFB $31</td>
-<td class="comment-1" rowspan="1">"N,NORT".</td>
+<td class="instruction">DEFB $31,$FD,$15,$31,$FD,$5C,$15,$31</td>
+<td class="comment-1" rowspan="2">Checked by <a href="FD02.html">Action_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eaf4"></span>EAF4</td>
 <td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2432,56 +1050,13 @@ Matches e.g. "s", "south", "boat s", "boat south", "rowing boat s", "rowing boat
 <tr>
 <td class="asm-label">PhraseTokens_South</td>
 <td class="address-1"><span id="eaf5"></span>EAF5</td>
-<td class="instruction">DEFB $32</td>
-<td class="comment-1" rowspan="1">"S,SOUT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaf6"></span>EAF6</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaf7"></span>EAF7</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaf8"></span>EAF8</td>
-<td class="instruction">DEFB $32</td>
-<td class="comment-1" rowspan="1">"S,SOUT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaf9"></span>EAF9</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eafa"></span>EAFA</td>
-<td class="instruction">DEFB $5C</td>
-<td class="comment-1" rowspan="1">"ROWI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eafb"></span>EAFB</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eafc"></span>EAFC</td>
-<td class="instruction">DEFB $32</td>
-<td class="comment-1" rowspan="1">"S,SOUT".</td>
+<td class="instruction">DEFB $32,$FD,$15,$32,$FD,$5C,$15,$32</td>
+<td class="comment-1" rowspan="2">Checked by <a href="FD02.html">Action_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eafd"></span>EAFD</td>
 <td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2496,56 +1071,13 @@ Matches e.g. "e", "east", "boat e", "boat east", "rowing boat e", "rowing boat e
 <tr>
 <td class="asm-label">PhraseTokens_East</td>
 <td class="address-1"><span id="eafe"></span>EAFE</td>
-<td class="instruction">DEFB $33</td>
-<td class="comment-1" rowspan="1">"E,EAST".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eaff"></span>EAFF</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb00"></span>EB00</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb01"></span>EB01</td>
-<td class="instruction">DEFB $33</td>
-<td class="comment-1" rowspan="1">"E,EAST".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb02"></span>EB02</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb03"></span>EB03</td>
-<td class="instruction">DEFB $5C</td>
-<td class="comment-1" rowspan="1">"ROWI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb04"></span>EB04</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb05"></span>EB05</td>
-<td class="instruction">DEFB $33</td>
-<td class="comment-1" rowspan="1">"E,EAST".</td>
+<td class="instruction">DEFB $33,$FD,$15,$33,$FD,$5C,$15,$33</td>
+<td class="comment-1" rowspan="2">Checked by <a href="FD02.html">Action_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb06"></span>EB06</td>
 <td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -2560,56 +1092,13 @@ Matches e.g. "w", "west", "boat w", "boat west", "rowing boat w", "rowing boat w
 <tr>
 <td class="asm-label">PhraseTokens_West</td>
 <td class="address-1"><span id="eb07"></span>EB07</td>
-<td class="instruction">DEFB $34</td>
-<td class="comment-1" rowspan="1">"W,WEST".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb08"></span>EB08</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb09"></span>EB09</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb0a"></span>EB0A</td>
-<td class="instruction">DEFB $34</td>
-<td class="comment-1" rowspan="1">"W,WEST".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb0b"></span>EB0B</td>
-<td class="instruction">DEFB $FD</td>
-<td class="comment-1" rowspan="1">Separator.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb0c"></span>EB0C</td>
-<td class="instruction">DEFB $5C</td>
-<td class="comment-1" rowspan="1">"ROWI".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb0d"></span>EB0D</td>
-<td class="instruction">DEFB $15</td>
-<td class="comment-1" rowspan="1">"BOAT".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="eb0e"></span>EB0E</td>
-<td class="instruction">DEFB $34</td>
-<td class="comment-1" rowspan="1">"W,WEST".</td>
+<td class="instruction">DEFB $34,$FD,$15,$34,$FD,$5C,$15,$34</td>
+<td class="comment-1" rowspan="2">Checked by <a href="FD02.html">Action_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb0f"></span>EB0F</td>
 <td class="instruction">DEFB $FE</td>
-<td class="comment-1" rowspan="1">Terminator.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -2626,7 +1115,7 @@ Next: <a href="EB10.html">EB10</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/jewelsofbabylon/">Source code</a>.</div>
 <div><a href="../dec/asm/59850.html">Switch to decimal</a>.</div>
 </footer>

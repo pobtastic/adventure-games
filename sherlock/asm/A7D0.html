@@ -44,6 +44,9 @@ Next: <a href="A7EA.html">A7EA</a>
 <div class="paragraph">
 Used by the routines at <a href="A80E.html">ProcessTextTokenWithAttributes</a>, <a href="D3E8.html">CheckObjectHasSpecialDescription</a> and <a href="D405.html">CheckObjectAttributeWithFlag</a>.
 </div>
+<div class="paragraph">
+Compares the token with the text and sets the match flag.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -60,7 +63,7 @@ Used by the routines at <a href="A80E.html">ProcessTextTokenWithAttributes</a>, 
 <td class="asm-label">CheckTokenMatchAndSetFlag</td>
 <td class="address-2"><span id="a7d0"></span>A7D0</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Write 00 to *<a href="A7EA.html">A7EA</a>.</td>
+<td class="comment-1" rowspan="2">Clear the token match flag at <a href="A7EA.html">A7EA</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -71,7 +74,7 @@ Used by the routines at <a href="A80E.html">ProcessTextTokenWithAttributes</a>, 
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7d4"></span>A7D4</td>
 <td class="instruction">BIT 7,D</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A7EB.html">PrintTokenBasedOnParameters</a> if bit 7 of <span class="register">D</span> is not set.</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="A7EB.html">PrintTokenBasedOnParameters</a> if bit 7 of <span class="register">D</span> is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -82,53 +85,52 @@ Used by the routines at <a href="A80E.html">ProcessTextTokenWithAttributes</a>, 
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7d8"></span>A7D8</td>
 <td class="instruction">LD A,E</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">E</span>.</td>
+<td class="comment-1" rowspan="4">Load 09EE and go to <a href="A7D0.html#a7e4">CheckTokenMatchAndSetFlag_Next</a> if the low byte of the token is not EE.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7d9"></span>A7D9</td>
 <td class="instruction">LD HL,$09EE</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=09EE.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7dc"></span>A7DC</td>
 <td class="instruction">CP L</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A7D0.html#a7e4">CheckTokenMatchAndSetFlag_0</a> if <span class="register">A</span> is not equal to <span class="register">L</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7dd"></span>A7DD</td>
-<td class="instruction">JR NZ,<a href="A7D0.html#a7e4">CheckTokenMatchAndSetFlag_0</a></td>
+<td class="instruction">JR NZ,<a href="A7D0.html#a7e4">CheckTokenMatchAndSetFlag_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7df"></span>A7DF</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">D</span>.</td>
+<td class="comment-1" rowspan="1">Read the high byte of the token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7e0"></span>A7E0</td>
 <td class="instruction">AND %00001111</td>
-<td class="comment-1" rowspan="1">Keep only bits 0-3.</td>
+<td class="comment-1" rowspan="1">Take the dictionary page (the low nibble of the token's high byte) to compare with the 09 of token 09EE.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7e2"></span>A7E2</td>
 <td class="instruction">CP H</td>
-<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is equal to <span class="register">H</span>.</td>
+<td class="comment-1" rowspan="1">See whether the two values match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7e3"></span>A7E3</td>
 <td class="instruction">RET Z</td>
+<td class="comment-1" rowspan="1">Return if they match.</td>
 </tr>
 <tr>
-<td class="asm-label">CheckTokenMatchAndSetFlag_0</td>
+<td class="asm-label">CheckTokenMatchAndSetFlag_Next</td>
 <td class="address-2"><span id="a7e4"></span>A7E4</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="2">Write 01 to *<a href="A7EA.html">A7EA</a>.</td>
+<td class="comment-1" rowspan="2">Write 01 to the token match flag at <a href="A7EA.html">A7EA</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -156,7 +158,7 @@ Next: <a href="A7EA.html">A7EA</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/42960.html">Switch to decimal</a>.</div>
 </footer>

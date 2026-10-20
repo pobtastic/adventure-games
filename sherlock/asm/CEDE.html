@@ -42,7 +42,7 @@ Next: <a href="CEFE.html">CEFE</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="B936.html">ProcessScriptDisplay</a>, <a href="CDA1.html">HandleDisplayRoomDescription</a>, <a href="CE3B.html">HandleRoomDisplay</a> and <a href="CE6A.html">HandleSimpleAction</a>.
+Used by the routines at <a href="B936.html">ProcessScriptDisplay</a>, <a href="CDA1.html">ShowRoomDescription</a>, <a href="CDBF.html">CDBF</a>, <a href="CE18.html">CE18</a>, <a href="CE3B.html">HandleRoomDisplay</a> and <a href="CE6A.html">RunSimpleAction</a>.
 </div>
 <div class="paragraph">
 Resolves special parameter values used in room display scripts to actual game values (current room, character ID, location value).
@@ -54,7 +54,7 @@ Resolves special parameter values used in room display scripts to actual game va
 </tr>
 <tr>
 <td class="register">A</td>
-<td class="register-desc">Parameter value (F5-FE are special values)</td>
+<td class="register-desc">Parameter value (F5-FD are special values)</td>
 </tr>
 </table>
 <table class="output">
@@ -83,7 +83,7 @@ Resolves special parameter values used in room display scripts to actual game va
 <td class="asm-label"></td>
 <td class="address-1"><span id="cee1"></span>CEE1</td>
 <td class="instruction">CP $FE</td>
-<td class="comment-1" rowspan="2">Return unchanged if the parameter is not a special value (greater than FE).</td>
+<td class="comment-1" rowspan="2">Return unchanged when the parameter is at least FE.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -94,7 +94,7 @@ Resolves special parameter values used in room display scripts to actual game va
 <td class="asm-label"></td>
 <td class="address-1"><span id="cee4"></span>CEE4</td>
 <td class="instruction">CP $FA</td>
-<td class="comment-1" rowspan="2">Jump to <a href="CEDE.html#ceec">ProcessRoomDisplayParameter_CheckCharacterID</a> if not room parameter (FA).</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="CEDE.html#ceec">ProcessRoomDisplayParameter_CheckCharacterID</a> if the room is not FA.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -105,19 +105,29 @@ Resolves special parameter values used in room display scripts to actual game va
 <td class="asm-label"></td>
 <td class="address-1"><span id="cee8"></span>CEE8</td>
 <td class="instruction">LD A,($9FD6)</td>
-<td class="comment-1" rowspan="1">Return the current room ID (<span class="register">A</span>=*<a href="9FD6.html">CurrentRoom_ID</a>).</td>
+<td class="comment-1" rowspan="1">Read the room id at <a href="9FD6.html">CurrentRoom_ID</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ceeb"></span>CEEB</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ceec"></span>
+<div class="comments">
+<div class="paragraph">
+A parameter of FB is the character being processed.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ProcessRoomDisplayParameter_CheckCharacterID</td>
 <td class="address-2"><span id="ceec"></span>CEEC</td>
 <td class="instruction">CP $FB</td>
-<td class="comment-1" rowspan="2">Jump to <a href="CEDE.html#cef4">ProcessRoomDisplayParameter_GetLocationValue</a> if not character ID parameter (FB).</td>
+<td class="comment-1" rowspan="2">Go to <a href="CEDE.html#cef4">ProcessRoomDisplayParameter_GetLocationValue</a> when the parameter is not the current character (FB).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -128,19 +138,29 @@ Resolves special parameter values used in room display scripts to actual game va
 <td class="asm-label"></td>
 <td class="address-1"><span id="cef0"></span>CEF0</td>
 <td class="instruction">LD A,($A036)</td>
-<td class="comment-1" rowspan="1">Return the current character ID (<span class="register">A</span>=*<a href="A036.html">CurrentCharacter_ID</a>).</td>
+<td class="comment-1" rowspan="1">Load the character being processed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cef3"></span>CEF3</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="cef4"></span>
+<div class="comments">
+<div class="paragraph">
+A parameter of FC is the high byte of the location value.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ProcessRoomDisplayParameter_GetLocationValue</td>
 <td class="address-2"><span id="cef4"></span>CEF4</td>
 <td class="instruction">CP $FC</td>
-<td class="comment-1" rowspan="2">Return the location value (high byte) if parameter is FC otherwise return the location value (low byte).</td>
+<td class="comment-1" rowspan="2">Compare the parameter with FC and load the high byte of the location value at <a href="9FD7.html">LocationValue</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -151,19 +171,19 @@ Resolves special parameter values used in room display scripts to actual game va
 <td class="asm-label"></td>
 <td class="address-1"><span id="cef9"></span>CEF9</td>
 <td class="instruction">RET Z</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return if it is FC.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cefa"></span>CEFA</td>
 <td class="instruction">LD A,($9FD7)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the location value at <a href="9FD7.html">LocationValue</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cefd"></span>CEFD</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -180,7 +200,7 @@ Next: <a href="CEFE.html">CEFE</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/52958.html">Switch to decimal</a>.</div>
 </footer>

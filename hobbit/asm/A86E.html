@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at A86E</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A7AA.html">A7AA</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a86e">Map</a></td>
+<td class="next">
+Next: <a href="A971.html">A971</a>
+</td>
+</tr>
+</table>
+<div class="description">A86E: Event: A Random Half</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="A7AA.html">Event_TheDeepBog</a>.
+</div>
+<div class="paragraph">
+Rolls a random half. Below 32 it returns at once; otherwise the boat may glide across the river.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Event_ARandomHalf</td>
+<td class="address-2"><span id="a86e"></span>A86E</td>
+<td class="instruction">LD A,$64</td>
+<td class="comment-1" rowspan="1">Take the roll limit 64.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a870"></span>
+<div class="comments">
+<div class="paragraph">
+Roll a random number.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a870"></span>A870</td>
+<td class="instruction">CALL <a href="9C9F.html">GetRandomNumber</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9C9F.html">GetRandomNumber</a> to roll a number from the limit in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a873"></span>A873</td>
+<td class="instruction">CP $32</td>
+<td class="comment-1" rowspan="1">Compare the roll with 32.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a875"></span>A875</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a876"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, the boat does not sail.
+</div>
+<div class="paragraph">
+Reached through the action list of <a href="C11B.html#c366">$12</a> - "Rope" for action 31, dispatched by <a href="9B6C.html">TriggerAction</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a876"></span>A876</td>
+<td class="instruction">CALL <a href="9D44.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9D44.html">ConditionSuppressTheMessage</a>. If the message is held back, the boat does not sail.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a879"></span>A879</td>
+<td class="instruction">LD A,($C61C)</td>
+<td class="comment-1" rowspan="3">Return if where that object is is not 12.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a87c"></span>A87C</td>
+<td class="instruction">CP $12</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a87e"></span>A87E</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a87f"></span>A87F</td>
+<td class="instruction">LD HL,$AF92</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at "the boat glides across the river and lands on this side".</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a882"></span>
+<div class="comments">
+<div class="paragraph">
+Print the message at <span class="register">HL</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Event_ARandomHalf_PrintMessage</td>
+<td class="address-2"><span id="a882"></span>A882</td>
+<td class="instruction">CALL <a href="72DD.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="72DD.html">PrintMessage</a> to print message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a885"></span>A885</td>
+<td class="instruction">LD A,($C62B)</td>
+<td class="comment-1" rowspan="4">Keep 42, and jump to <a href="A86E.html#a890">Event_ARandomHalf_MoveTheBoat</a> if the boat's location is not already 42.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a888"></span>A888</td>
+<td class="instruction">CP $42</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a88a"></span>A88A</td>
+<td class="instruction">LD A,$42</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a88c"></span>A88C</td>
+<td class="instruction">JR NZ,<a href="A86E.html#a890">Event_ARandomHalf_MoveTheBoat</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a88e"></span>A88E</td>
+<td class="instruction">LD A,$43</td>
+<td class="comment-1" rowspan="1">Take location 43 for the boat.</td>
+</tr>
+<tr>
+<td class="asm-label">Event_ARandomHalf_MoveTheBoat</td>
+<td class="address-2"><span id="a890"></span>A890</td>
+<td class="instruction">LD ($C62B),A</td>
+<td class="comment-1" rowspan="1">Store the boat's new location at <a href="C11B.html#c62b">C62B</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a893"></span>A893</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a894"></span>A894</td>
+<td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="2">Write FF to *<a href="C11B.html#c61c">C61C</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a896"></span>A896</td>
+<td class="instruction">LD ($C61C),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a899"></span>A899</td>
+<td class="instruction">LD A,$29</td>
+<td class="comment-1" rowspan="1">Take the id of <a href="C11B.html#c61b">$29</a> - "Wooden Boat".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a89b"></span>A89B</td>
+<td class="instruction">JP <a href="9BDC.html#9bdd">Object_MoveContents_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9BDC.html#9bdd">Object_MoveContents_0</a> to move what is inside object 29 to the boat's new location.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a89e"></span>
+<div class="comments">
+<div class="paragraph">
+Reached through the action list of <a href="C11B.html#c61b">$29</a> - "Wooden Boat" for action 00, dispatched by <a href="9B6C.html">TriggerAction</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a89e"></span>A89E</td>
+<td class="instruction">CALL <a href="97FF.html">Turn_GateTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="97FF.html">Turn_GateTheMessage</a> to let the message through or hold it back.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8a1"></span>A8A1</td>
+<td class="instruction">LD A,($B6EA)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6ea">CurrentCharacter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8a4"></span>A8A4</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="2">Return if it is not the player's turn.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8a5"></span>A8A5</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8a6"></span>A8A6</td>
+<td class="instruction">LD HL,$AFA4</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at "with a lurch the boat glides across the river and[0x02] ngfar".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8a9"></span>A8A9</td>
+<td class="instruction">JR <a href="A86E.html#a882">Event_ARandomHalf_PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="A86E.html#a882">Event_ARandomHalf_PrintMessage</a> to print "with a lurch the boat glides across the river".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8ab"></span>A8AB</td>
+<td class="instruction">LD A,($B6F4)</td>
+<td class="comment-1" rowspan="3">Return if the slot flag at <a href="B6DA.html#b6f4">B6F4</a> is not 01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8ae"></span>A8AE</td>
+<td class="instruction">CP $01</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8b0"></span>A8B0</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8b1"></span>A8B1</td>
+<td class="instruction">SUB A</td>
+<td class="comment-1" rowspan="1">Clear the flag at <a href="B6DA.html#b6f4">B6F4</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8b2"></span>A8B2</td>
+<td class="instruction">LD ($B6F4),A</td>
+<td class="comment-1" rowspan="1">Store the result at <a href="B6DA.html#b6f4">B6F4</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8b5"></span>A8B5</td>
+<td class="instruction">INC A</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 01 for <a href="7F1A.html">Inglish_SaveTheClauseAndAct</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8b6"></span>A8B6</td>
+<td class="instruction">CALL <a href="7F1A.html">Inglish_SaveTheClauseAndAct</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7F1A.html">Inglish_SaveTheClauseAndAct</a> to save the clause and act.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8b9"></span>A8B9</td>
+<td class="instruction">RET Z</td>
+<td class="comment-1" rowspan="1">Return if <a href="7F1A.html">Inglish_SaveTheClauseAndAct</a> returned with the zero flag set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8ba"></span>A8BA</td>
+<td class="instruction">SUB A</td>
+<td class="comment-1" rowspan="1">Take zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8bb"></span>A8BB</td>
+<td class="instruction">LD ($B6FB),A</td>
+<td class="comment-1" rowspan="1">Clear the message-suppressed flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8be"></span>A8BE</td>
+<td class="instruction">LD A,($B6E6)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6e6">B6E6</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8c1"></span>A8C1</td>
+<td class="instruction">LD ($C9E3),A</td>
+<td class="comment-1" rowspan="1">Store the result at <a href="C913.html#c9e3">C9E3</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8c4"></span>A8C4</td>
+<td class="instruction">LD BC,($B6E8)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6e8">CurrentObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8c8"></span>A8C8</td>
+<td class="instruction">LD ($C9E4),BC</td>
+<td class="comment-1" rowspan="1">Store <span class="register">BC</span> at C9E4.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8cc"></span>A8CC</td>
+<td class="instruction">LD A,$42</td>
+<td class="comment-1" rowspan="2">Write 42 to C9E2.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8ce"></span>A8CE</td>
+<td class="instruction">LD ($C9E2),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8d1"></span>A8D1</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8d2"></span>A8D2</td>
+<td class="instruction">LD A,($C4C1)</td>
+<td class="comment-1" rowspan="4">Return if the location of <a href="C11B.html#c4b1">$44</a> - "Gollum" is not where the player starts.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8d5"></span>A8D5</td>
+<td class="instruction">LD HL,$B6F5</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8d8"></span>A8D8</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8d9"></span>A8D9</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8da"></span>A8DA</td>
+<td class="instruction">LD HL,$C122</td>
+<td class="comment-1" rowspan="3">Return if the player is not visible.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8dd"></span>A8DD</td>
+<td class="instruction">BIT 7,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8df"></span>A8DF</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a8e0"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, the glide is not started.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8e0"></span>A8E0</td>
+<td class="instruction">CALL <a href="9D44.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9D44.html">ConditionSuppressTheMessage</a>. If the message is held back, the glide is not started.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8e3"></span>A8E3</td>
+<td class="instruction">LD HL,($B6EE)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6ee">B6EE</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8e6"></span>A8E6</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Step on through the token held for the printer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8e7"></span>A8E7</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8e8"></span>A8E8</td>
+<td class="instruction">LD E,(HL)</td>
+<td class="comment-1" rowspan="1">Read the low byte of the token held for the printer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8e9"></span>A8E9</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next byte of the token held for the printer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8ea"></span>A8EA</td>
+<td class="instruction">LD D,(HL)</td>
+<td class="comment-1" rowspan="1">Read the high byte of the token held for the printer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8eb"></span>A8EB</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="3">Call <a href="A1E3.html">Response_YouSay</a> to print "You say " and the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8ec"></span>A8EC</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8ed"></span>A8ED</td>
+<td class="instruction">CALL <a href="A1E3.html">Response_YouSay</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8f0"></span>A8F0</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">Write 01 to *<a href="B6DA.html#b6f9">B6F9</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8f2"></span>A8F2</td>
+<td class="instruction">LD ($B6F9),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8f5"></span>A8F5</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a8f6"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, the random half is not taken.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8f6"></span>A8F6</td>
+<td class="instruction">CALL <a href="9D44.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9D44.html">ConditionSuppressTheMessage</a>. If the message is held back, the random half is not taken.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8f9"></span>A8F9</td>
+<td class="instruction">SUB A</td>
+<td class="comment-1" rowspan="1">Clear the talk flag at <a href="B6DA.html#b6f9">B6F9</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8fa"></span>A8FA</td>
+<td class="instruction">LD ($B6F9),A</td>
+<td class="comment-1" rowspan="1">Update *<a href="B6DA.html#b6f9">B6F9</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a8fd"></span>A8FD</td>
+<td class="instruction">CALL <a href="7F1A.html">Inglish_SaveTheClauseAndAct</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7F1A.html">Inglish_SaveTheClauseAndAct</a> to save the clause and act.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a900"></span>A900</td>
+<td class="instruction">JR Z,<a href="A86E.html#a915">Event_ARandomHalf_HoldTheMessage</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A86E.html#a915">Event_ARandomHalf_HoldTheMessage</a> when <a href="7F1A.html">Inglish_SaveTheClauseAndAct</a> returns with the zero flag set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a902"></span>A902</td>
+<td class="instruction">LD BC,$0018</td>
+<td class="comment-1" rowspan="1">Search 18 bytes of the clause slot for the riddle answer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a905"></span>A905</td>
+<td class="instruction">LD DE,($B6EE)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6ee">B6EE</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a909"></span>A909</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="1">Read the first byte of the riddle answer.</td>
+</tr>
+<tr>
+<td class="asm-label">Event_ARandomHalf_SearchForTheRiddleAnswer</td>
+<td class="address-2"><span id="a90a"></span>A90A</td>
+<td class="instruction">CPIR</td>
+<td class="comment-1" rowspan="1">Search from <span class="register">HL</span> for this byte of the riddle answer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a90c"></span>A90C</td>
+<td class="instruction">JR NZ,<a href="A86E.html#a915">Event_ARandomHalf_HoldTheMessage</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A86E.html#a915">Event_ARandomHalf_HoldTheMessage</a> if the byte was not found.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a90e"></span>A90E</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="5">Jump back to <a href="A86E.html#a90a">Event_ARandomHalf_SearchForTheRiddleAnswer</a> unless the next byte of the riddle answer matches.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a90f"></span>A90F</td>
+<td class="instruction">LD A,(DE)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a910"></span>A910</td>
+<td class="instruction">DEC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a911"></span>A911</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a912"></span>A912</td>
+<td class="instruction">JR NZ,<a href="A86E.html#a90a">Event_ARandomHalf_SearchForTheRiddleAnswer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a914"></span>A914</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a915"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, day is not set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Event_ARandomHalf_HoldTheMessage</td>
+<td class="address-2"><span id="a915"></span>A915</td>
+<td class="instruction">CALL <a href="9D44.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9D44.html">ConditionSuppressTheMessage</a>. If the message is held back, day is not set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a918"></span>A918</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">Set <a href="B6DA.html#b702">NightDay</a> to 01 (daytime).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a91a"></span>A91A</td>
+<td class="instruction">LD ($B702),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a91d"></span>A91D</td>
+<td class="instruction">LD HL,$B1DB</td>
+<td class="comment-1" rowspan="1">Point at the message "someone strangle(s|d|ing|es) you from behind" (<a href="AD7D.html#b1db">B1DB</a>).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a920"></span>A920</td>
+<td class="instruction">CALL <a href="72DD.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="72DD.html">PrintMessage</a> to print message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a923"></span>A923</td>
+<td class="instruction">JP <a href="90D2.html">YouAreDead</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="90D2.html">YouAreDead</a> to end the game.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a926"></span>A926</td>
+<td class="instruction">LD A,($C4C1)</td>
+<td class="comment-1" rowspan="4">Return if that object's location is not where the player starts.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a929"></span>A929</td>
+<td class="instruction">LD HL,$B6F5</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a92c"></span>A92C</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a92d"></span>A92D</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a92e"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, Gollum's question is not printed.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a92e"></span>A92E</td>
+<td class="instruction">CALL <a href="9D44.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9D44.html">ConditionSuppressTheMessage</a>. If the message is held back, Gollum's question is not printed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a931"></span>A931</td>
+<td class="instruction">LD HL,$B2D9</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at "what has it got in its pocket(s|d|ing|es) ?".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a934"></span>A934</td>
+<td class="instruction">LD A,$08</td>
+<td class="comment-1" rowspan="1">Roll a random number below 08.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a936"></span>
+<div class="comments">
+<div class="paragraph">
+Roll a random number.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a936"></span>A936</td>
+<td class="instruction">CALL <a href="9C9F.html">GetRandomNumber</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9C9F.html">GetRandomNumber</a> to roll a number from the limit in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a939"></span>A939</td>
+<td class="instruction">JP NC,<a href="A1E3.html">Response_YouSay</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="A1E3.html">Response_YouSay</a> unless <a href="9C9F.html">GetRandomNumber</a> negated the roll (carry clear).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a93c"></span>A93C</td>
+<td class="instruction">LD IX,$C31A</td>
+<td class="comment-1" rowspan="4">Jump back to <a href="A1E3.html">Response_YouSay</a> if <a href="C11B.html#c31a">$10</a> - "Valuable Golden Ring" is with 44.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a940"></span>A940</td>
+<td class="instruction">LD A,$44</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a942"></span>A942</td>
+<td class="instruction">CP (IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a945"></span>A945</td>
+<td class="instruction">JP Z,<a href="A1E3.html">Response_YouSay</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a948"></span>A948</td>
+<td class="instruction">LD HL,$B2E7</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at "my birthday present".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a94b"></span>A94B</td>
+<td class="instruction">JP <a href="A1E3.html">Response_YouSay</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="A1E3.html">Response_YouSay</a> to print "my birthday present".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a94e"></span>A94E</td>
+<td class="instruction">LD A,($B6F6)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6f6">B6F6</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a951"></span>A951</td>
+<td class="instruction">LD HL,$B6F5</td>
+<td class="comment-1" rowspan="3">Return if the script location is not where the player starts.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a954"></span>A954</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a955"></span>A955</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a956"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, the action code is not stored.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a956"></span>A956</td>
+<td class="instruction">CALL <a href="9D44.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9D44.html">ConditionSuppressTheMessage</a>. If the message is held back, the action code is not stored.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a959"></span>A959</td>
+<td class="instruction">LD A,$1B</td>
+<td class="comment-1" rowspan="2">Write 1B to *<a href="B6DA.html#b6e7">CurrentAction</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a95b"></span>A95B</td>
+<td class="instruction">LD ($B6E7),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a95e"></span>A95E</td>
+<td class="instruction">LD A,$00</td>
+<td class="comment-1" rowspan="2">Write 00 to *<a href="B6DA.html#b6e8">CurrentObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a960"></span>A960</td>
+<td class="instruction">LD ($B6E8),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a963"></span>A963</td>
+<td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="2">Write FF to *<a href="B6DA.html#b6e9">B6E9</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a965"></span>A965</td>
+<td class="instruction">LD ($B6E9),A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a968"></span>
+<div class="comments">
+<div class="paragraph">
+Say that will not work.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a968"></span>A968</td>
+<td class="instruction">CALL <a href="9F76.html">ResponseThatWillNotWork</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9F76.html">ResponseThatWillNotWork</a> to answer with that will not work.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a96b"></span>A96B</td>
+<td class="instruction">CALL <a href="92B5.html">Action_AddToThePlayersStrength</a></td>
+<td class="comment-1" rowspan="1">Call <a href="92B5.html">Action_AddToThePlayersStrength</a> to add 0A to the player's strength.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a96e"></span>A96E</td>
+<td class="instruction">JP <a href="90D2.html">YouAreDead</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="90D2.html">YouAreDead</a> to end the game.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A7AA.html">A7AA</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a86e">Map</a></td>
+<td class="next">
+Next: <a href="A971.html">A971</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/43118.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

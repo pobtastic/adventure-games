@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at D9C5</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D9C3.html">D9C3</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d9c5">Map</a></td>
+<td class="next">
+Next: <a href="DA32.html">DA32</a>
+</td>
+</tr>
+</table>
+<div class="description">D9C5: Skip Spaces In The Input</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="D6C1.html">ParseInput</a>.
+</div>
+<div class="paragraph">
+Skips blanks in the typed command and classifies the next character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SkipSpaces</td>
+<td class="address-2"><span id="d9c5"></span>D9C5</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="5">Jump back to <a href="D9C5.html#d9c6">SkipSpaces_0</a> if this byte is 20 saving source.</td>
+</tr>
+<tr>
+<td class="asm-label">SkipSpaces_0</td>
+<td class="address-2"><span id="d9c6"></span>D9C6</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9c7"></span>D9C7</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9c8"></span>D9C8</td>
+<td class="instruction">CP $20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9ca"></span>D9CA</td>
+<td class="instruction">JR Z,<a href="D9C5.html#d9c6">SkipSpaces_0</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9cc"></span>D9CC</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="2">Step back to this character and store the pointer at <a href="A029.html">SavedTextPointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9cd"></span>D9CD</td>
+<td class="instruction">LD ($A029),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9d0"></span>D9D0</td>
+<td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Jump to <a href="D9C5.html#da06">SkipSpaces_EnterResult</a> if the player pressed "ENTER".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9d2"></span>D9D2</td>
+<td class="instruction">JR Z,<a href="D9C5.html#da06">SkipSpaces_EnterResult</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9d4"></span>D9D4</td>
+<td class="instruction">CALL <a href="DAC6.html">TestCommonWord</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="D9C5.html#da2f">SkipSpaces_ReturnWithHighByte</a> if the character is a full stop, a comma or a quote.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9d7"></span>D9D7</td>
+<td class="instruction">JR Z,<a href="D9C5.html#da2f">SkipSpaces_ReturnWithHighByte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9d9"></span>D9D9</td>
+<td class="instruction">CALL <a href="DA34.html">FindTokenDictionaryEntry</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="D9C5.html#da0a">SkipSpaces_UnknownWord</a> if the token has no dictionary entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9dc"></span>D9DC</td>
+<td class="instruction">JR Z,<a href="D9C5.html#da0a">SkipSpaces_UnknownWord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9de"></span>D9DE</td>
+<td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="3">Save <span class="register">IX</span> and clear the match length at <a href="DBF7.html#dc14">DC14</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9e0"></span>D9E0</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9e1"></span>D9E1</td>
+<td class="instruction">LD ($DC14),A</td>
+</tr>
+<tr>
+<td class="asm-label">SkipSpaces_SaveInputPointer</td>
+<td class="address-2"><span id="d9e4"></span>D9E4</td>
+<td class="instruction">LD ($D9C3),DE</td>
+<td class="comment-1" rowspan="1">Remember the input pointer at <a href="D9C3.html">D9C3</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">SkipSpaces_MeasureDictionary</td>
+<td class="address-2"><span id="d9e8"></span>D9E8</td>
+<td class="instruction">LD DE,($DA32)</td>
+<td class="comment-1" rowspan="4">Read the dictionary address and measure the gap from it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9ec"></span>D9EC</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9ed"></span>D9ED</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9ee"></span>D9EE</td>
+<td class="instruction">SBC HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9f0"></span>D9F0</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="D9C5.html#da12">SkipSpaces_CheckSavedLength</a> if the two pointers meet.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9f1"></span>D9F1</td>
+<td class="instruction">JR Z,<a href="D9C5.html#da12">SkipSpaces_CheckSavedLength</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9f3"></span>D9F3</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="3">Copy the pointer into <span class="register">DE</span> and call <a href="A94D.html">A94D</a> to handle the nested format.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9f4"></span>D9F4</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9f5"></span>D9F5</td>
+<td class="instruction">CALL <a href="A94D.html">$A94D</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9f8"></span>D9F8</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="4">Jump back to <a href="D9C5.html#d9e8">SkipSpaces_MeasureDictionary</a> if the high nibble is D0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9f9"></span>D9F9</td>
+<td class="instruction">AND $F0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9fb"></span>D9FB</td>
+<td class="instruction">CP $D0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9fd"></span>D9FD</td>
+<td class="instruction">JR Z,<a href="D9C5.html#d9e8">SkipSpaces_MeasureDictionary</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d9ff"></span>D9FF</td>
+<td class="instruction">CALL <a href="DA7D.html">MatchDictionaryWord</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="D9C5.html#da12">SkipSpaces_CheckSavedLength</a> if the typed word does not match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da02"></span>DA02</td>
+<td class="instruction">JR Z,<a href="D9C5.html#da12">SkipSpaces_CheckSavedLength</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da04"></span>DA04</td>
+<td class="instruction">JR <a href="D9C5.html#d9e4">SkipSpaces_SaveInputPointer</a></td>
+<td class="comment-1" rowspan="1">The word matched, so measure the next one from <a href="D9C5.html#d9e4">SkipSpaces_SaveInputPointer</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="da06"></span>
+<div class="comments">
+<div class="paragraph">
+ENTER selects the result C0.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SkipSpaces_EnterResult</td>
+<td class="address-2"><span id="da06"></span>DA06</td>
+<td class="instruction">LD A,$C0</td>
+<td class="comment-1" rowspan="2">ENTER uses the result C0 stored from <a href="D9C5.html#da0c">SkipSpaces_1</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da08"></span>DA08</td>
+<td class="instruction">JR <a href="D9C5.html#da0c">SkipSpaces_1</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="da0a"></span>
+<div class="comments">
+<div class="paragraph">
+Use D0 when the word is not in the dictionary.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SkipSpaces_UnknownWord</td>
+<td class="address-2"><span id="da0a"></span>DA0A</td>
+<td class="instruction">LD A,$D0</td>
+<td class="comment-1" rowspan="1">Take D0 as the result for an unknown word.</td>
+</tr>
+<tr>
+<td class="asm-label">SkipSpaces_1</td>
+<td class="address-2"><span id="da0c"></span>DA0C</td>
+<td class="instruction">LD BC,$0000</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">BC</span> (no time was given).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da0f"></span>DA0F</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="1">Restore the saved source from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da10"></span>DA10</td>
+<td class="instruction">LD D,A</td>
+<td class="comment-1" rowspan="1">Store the result in the high byte of the source.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da11"></span>DA11</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="da12"></span>
+<div class="comments">
+<div class="paragraph">
+The saved length decides whether this character is kept.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SkipSpaces_CheckSavedLength</td>
+<td class="address-2"><span id="da12"></span>DA12</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="4">Jump to <a href="D9C5.html#da21">SkipSpaces_ReadInputPointer</a> if the state byte at <a href="DBF7.html#dc14">DC14</a> is at least 04.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da13"></span>DA13</td>
+<td class="instruction">LD A,($DC14)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da16"></span>DA16</td>
+<td class="instruction">CP $04</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da18"></span>DA18</td>
+<td class="instruction">JR NC,<a href="D9C5.html#da21">SkipSpaces_ReadInputPointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da1a"></span>DA1A</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="4">Go to <a href="D9C5.html#da0a">SkipSpaces_UnknownWord</a> if the matched-word length does not equal the saved count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da1b"></span>DA1B</td>
+<td class="instruction">LD A,($DC13)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da1e"></span>DA1E</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da1f"></span>DA1F</td>
+<td class="instruction">JR NZ,<a href="D9C5.html#da0a">SkipSpaces_UnknownWord</a></td>
+</tr>
+<tr>
+<td class="asm-label">SkipSpaces_ReadInputPointer</td>
+<td class="address-2"><span id="da21"></span>DA21</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="4">Read the input pointer and keep the high digit of that character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da22"></span>DA22</td>
+<td class="instruction">LD HL,($D9C3)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da25"></span>DA25</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da26"></span>DA26</td>
+<td class="instruction">AND $F0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da28"></span>DA28</td>
+<td class="instruction">LD BC,$5DBF</td>
+<td class="comment-1" rowspan="1">Take the dictionary index.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da2b"></span>DA2B</td>
+<td class="instruction">SBC HL,BC</td>
+<td class="comment-1" rowspan="3">Swap in the saved pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da2d"></span>DA2D</td>
+<td class="instruction">EX (SP),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da2e"></span>DA2E</td>
+<td class="instruction">POP BC</td>
+</tr>
+<tr>
+<td class="asm-label">SkipSpaces_ReturnWithHighByte</td>
+<td class="address-2"><span id="da2f"></span>DA2F</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="1">Restore the saved source from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da30"></span>DA30</td>
+<td class="instruction">LD D,A</td>
+<td class="comment-1" rowspan="1">Store the result in the high byte of the source.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="da31"></span>DA31</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D9C3.html">D9C3</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d9c5">Map</a></td>
+<td class="next">
+Next: <a href="DA32.html">DA32</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/55749.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

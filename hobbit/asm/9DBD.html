@@ -39,7 +39,10 @@ Next: <a href="9DD9.html">9DD9</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="6C00.html">Start</a>, <a href="7F78.html">Drawing</a>, <a href="83A0.html">DisplayLocHlpMsg</a>, <a href="8D9D.html">Action_Dir</a>, <a href="93DA.html">Action_Examine</a>, <a href="9A85.html">9A85</a>, <a href="9B81.html">9B81</a>, <a href="9BCA.html">LocateObject</a> and <a href="A55F.html">A55F</a>.
+Used by the routines at <a href="6C00.html">Start</a>, <a href="7F78.html">Drawing</a>, <a href="83A0.html">DisplayLocateHelpMessage</a>, <a href="8D9D.html">Action_Direction</a>, <a href="94D6.html">Turn_RunTheActionHandler</a>, <a href="950F.html">Turn_RunTheHandlerIfPresent</a>, <a href="9AA0.html">Turn_UseASpecialObject</a>, <a href="9B81.html">TableFindAnActionRecord</a>, <a href="9BCA.html">LocateObject</a> and <a href="A971.html">Event_DayDawnsOnTheTrolls</a>.
+</div>
+<div class="paragraph">
+Looks an id up in a table of id-and-address pairs.
 </div>
 </div>
 <table class="input">
@@ -86,7 +89,7 @@ Searches through what is essentially key value data to find a key match.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9dbe"></span>9DBE</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=<span class="register">IX</span> (using the stack to do so).</td>
+<td class="comment-1" rowspan="3">Point <span class="register">HL</span> at the table in <span class="register">IX</span> and keep the sought id in <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -97,18 +100,18 @@ Searches through what is essentially key value data to find a key match.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9dc1"></span>9DC1</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=key ID</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9dc2"></span>9DC2</td>
 <td class="instruction">LD E,$03</td>
-<td class="comment-1" rowspan="2"><span class="register">DE</span>=$0003 as each record is 3 bytes of data.</td>
+<td class="comment-1" rowspan="1">Each index entry is 03 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9dc4"></span>9DC4</td>
 <td class="instruction">LD D,$00</td>
+<td class="comment-1" rowspan="1">The index stride's high byte is zero.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -130,7 +133,7 @@ Begin searching the table.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9dc7"></span>9DC7</td>
 <td class="instruction">CP B</td>
-<td class="comment-1" rowspan="2">If the key ID is the one we want, jump to <a href="9DBD.html#9dd2">IndexIdTable_Found</a>.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="9DBD.html#9dd2">IndexIdTable_Found</a> if this entry's id is the one sought.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,7 +144,7 @@ Begin searching the table.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9dca"></span>9DCA</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="2">If we've reached the termination character (key ID not found), jump to <a href="9DBD.html#9dd2">IndexIdTable_Found</a>.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="9DBD.html#9dd2">IndexIdTable_Found</a> at the end of the index.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -152,12 +155,13 @@ Begin searching the table.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9dce"></span>9DCE</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="2">Add <span class="register">DE</span> to <span class="register">HL</span> to check the next row, and jump back to <a href="9DBD.html#9dc6">IndexIdTable_Loop</a> to continue checking.</td>
+<td class="comment-1" rowspan="1">Step 03 bytes to the next id.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9dcf"></span>9DCF</td>
 <td class="instruction">JP <a href="9DBD.html#9dc6">IndexIdTable_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="9DBD.html#9dc6">IndexIdTable_Loop</a> to begin searching the table.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -173,7 +177,7 @@ Handle the output.
 <td class="asm-label">IndexIdTable_Found</td>
 <td class="address-2"><span id="9dd2"></span>9DD2</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">HL</span> (using the stack to do so).</td>
+<td class="comment-1" rowspan="3">Set flags (checking if the key ID was not found).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -184,7 +188,6 @@ Handle the output.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9dd5"></span>9DD5</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="1">Set flags (checking if the key ID was not found).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -213,7 +216,7 @@ Next: <a href="9DD9.html">9DD9</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../dec/asm/40381.html">Switch to decimal</a>.</div>
 </footer>

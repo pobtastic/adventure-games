@@ -57,7 +57,11 @@ Used by the routine at <a href="AC02.html">Handler_RoomExits</a>.
 </tr>
 <tr>
 <td class="register">A</td>
-<td class="register-desc">00 or 01 if objects are found or not</td>
+<td class="register-desc">00 when a visible object is here; otherwise non-zero (01, or the room number when nothing is in the room)</td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">Z is set when a visible object was found</td>
 </tr>
 </table>
 </td>
@@ -84,7 +88,7 @@ Used by the routine at <a href="AC02.html">Handler_RoomExits</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="af42"></span>AF42</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-1" rowspan="1">Return if no objects are found.</td>
+<td class="comment-1" rowspan="1">Return if the room number is not in the table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -107,8 +111,8 @@ Used by the routine at <a href="AC02.html">Handler_RoomExits</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="af48"></span>AF48</td>
-<td class="instruction">JR NZ,<a href="AF39.html#af54">NoRoomObjectsFound</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AF39.html#af54">NoRoomObjectsFound</a> if there are no objects found here.</td>
+<td class="instruction">JR NZ,<a href="AF39.html#af54">CheckRoomObjects_Found</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AF39.html#af54">CheckRoomObjects_Found</a> if a visible object is here.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,7 +148,7 @@ Used by the routine at <a href="AC02.html">Handler_RoomExits</a>.
 <span id="af50"></span>
 <div class="comments">
 <div class="paragraph">
-Set the "successful" output.
+No visible object was found.
 </div>
 </div>
 </td>
@@ -153,13 +157,13 @@ Set the "successful" output.
 <td class="asm-label"></td>
 <td class="address-1"><span id="af50"></span>AF50</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 01 to indicate that objects were found.</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 01 (NZ): no visible objects.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="af52"></span>AF52</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
+<td class="comment-1" rowspan="1">Set the flags from <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -172,16 +176,16 @@ Set the "successful" output.
 <span id="af54"></span>
 <div class="comments">
 <div class="paragraph">
-Set the "failure" output.
+A visible object was found.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">NoRoomObjectsFound</td>
+<td class="asm-label">CheckRoomObjects_Found</td>
 <td class="address-2"><span id="af54"></span>AF54</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 00 to indicate that no objects were found.</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 00 (Z): a visible object was found.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -213,7 +217,7 @@ Next: <a href="AF56.html">AF56</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/warlord/">Source code</a>.</div>
 <div><a href="../dec/asm/44857.html">Switch to decimal</a>.</div>
 </footer>

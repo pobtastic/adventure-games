@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blizzard Pass: Routine at 25596</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="25574.html">25574</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#25596">Map</a></td>
+<td class="next">
+Next: <a href="25731.html">25731</a>
+</td>
+</tr>
+</table>
+<div class="description">25596: Plot Character</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="24353.html">ObeyCommand</a>, <a href="24967.html">DescribeLocation</a>, <a href="25492.html">PrintCharacter</a> and <a href="27196.html">PrintFlag</a>.
+</div>
+<div class="paragraph">
+Puts A on the screen. 12 rubs out the previous character. 13 moves to the next row, pausing and scrolling when the text hits the bottom of the window.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25596"></span>
+<div class="comments">
+<div class="paragraph">
+DELETE is printed as a space and then another DELETE, so the cursor steps back.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PlotCharacter</td>
+<td class="address-2"><span id="25596"></span>25596</td>
+<td class="instruction">CP 12</td>
+<td class="comment-1" rowspan="2">DELETE prints a space and then rubs it out.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25598"></span>25598</td>
+<td class="instruction">JR NZ,<a href="25596.html#25610">PlotCharacter_Byte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25600"></span>25600</td>
+<td class="instruction">CALL <a href="25596.html#25610">PlotCharacter_Byte</a></td>
+<td class="comment-1" rowspan="3">Plot the space, then pass DELETE on.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25603"></span>25603</td>
+<td class="instruction">LD A,32</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25605"></span>25605</td>
+<td class="instruction">CALL <a href="25596.html#25610">PlotCharacter_Byte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25608"></span>25608</td>
+<td class="instruction">LD A,12</td>
+<td class="comment-1" rowspan="1">DELETE is the character that falls through.</td>
+</tr>
+<tr>
+<td class="asm-label">PlotCharacter_Byte</td>
+<td class="address-2"><span id="25610"></span>25610</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="4">Save the screen address and the character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25611"></span>25611</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25612"></span>25612</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25613"></span>25613</td>
+<td class="instruction">PUSH AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25614"></span>25614</td>
+<td class="instruction">CP 13</td>
+<td class="comment-1" rowspan="2">ENTER starts a new row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25616"></span>25616</td>
+<td class="instruction">JP Z,<a href="25596.html#25664">PlotCharacter_Newline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25619"></span>25619</td>
+<td class="instruction">CP 12</td>
+<td class="comment-1" rowspan="2">Anything except DELETE is a glyph.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25621"></span>25621</td>
+<td class="instruction">JR NZ,<a href="25731.html">PlotGlyph</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25623"></span>25623</td>
+<td class="instruction">LD A,(23434)</td>
+<td class="comment-1" rowspan="3">Column 0 wraps to the previous row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25626"></span>25626</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25627"></span>25627</td>
+<td class="instruction">JR NZ,<a href="25596.html#25643">PlotCharacter_Back</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25629"></span>25629</td>
+<td class="instruction">LD A,41</td>
+<td class="comment-1" rowspan="2">Column 41 of the row above.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25631"></span>25631</td>
+<td class="instruction">LD (23434),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25634"></span>25634</td>
+<td class="instruction">LD A,(23433)</td>
+<td class="comment-1" rowspan="4">The previous row, then the pixel address moves back.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25637"></span>25637</td>
+<td class="instruction">DEC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25638"></span>25638</td>
+<td class="instruction">LD (23433),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25641"></span>25641</td>
+<td class="instruction">JR <a href="25596.html#25654">PlotCharacter_Pixel</a></td>
+</tr>
+<tr>
+<td class="asm-label">PlotCharacter_Back</td>
+<td class="address-2"><span id="25643"></span>25643</td>
+<td class="instruction">DEC A</td>
+<td class="comment-1" rowspan="2">Step one column left.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25644"></span>25644</td>
+<td class="instruction">LD (23434),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25647"></span>25647</td>
+<td class="instruction">AND 3</td>
+<td class="comment-1" rowspan="3">A column whose low bits are 2 does not move the pixel address.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25649"></span>25649</td>
+<td class="instruction">CP 2</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25651"></span>25651</td>
+<td class="instruction">JP Z,<a href="25731.html#25926">PlotGlyph_Done</a></td>
+</tr>
+<tr>
+<td class="asm-label">PlotCharacter_Pixel</td>
+<td class="address-2"><span id="25654"></span>25654</td>
+<td class="instruction">LD HL,(23431)</td>
+<td class="comment-1" rowspan="4">Otherwise the pixel address moves back one byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25657"></span>25657</td>
+<td class="instruction">DEC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25658"></span>25658</td>
+<td class="instruction">LD (23431),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25661"></span>25661</td>
+<td class="instruction">JP <a href="25731.html#25926">PlotGlyph_Done</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25664"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="25731.html">PlotGlyph</a>.
+</div>
+<div class="paragraph">
+ENTER on row 19 while a description is on screen waits for a key. Below the window, the text scrolls.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PlotCharacter_Newline</td>
+<td class="address-2"><span id="25664"></span>25664</td>
+<td class="instruction">LD A,(23433)</td>
+<td class="comment-1" rowspan="3">Row 19 is the pause row while a description is on screen.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25667"></span>25667</td>
+<td class="instruction">CP 19</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25669"></span>25669</td>
+<td class="instruction">JR NZ,<a href="25596.html#25692">PlotCharacter_Low</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25671"></span>25671</td>
+<td class="instruction">LD A,(24966)</td>
+<td class="comment-1" rowspan="3">The pause only happens when <a href="24966.html">PauseFlag</a> is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25674"></span>25674</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25675"></span>25675</td>
+<td class="instruction">JR Z,<a href="25596.html#25692">PlotCharacter_Low</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25677"></span>25677</td>
+<td class="instruction">LD A,13</td>
+<td class="comment-1" rowspan="2">The pause row's bottom is 13.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25679"></span>25679</td>
+<td class="instruction">LD (23447),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25682"></span>25682</td>
+<td class="instruction">CALL <a href="26756.html">WaitKeyDown</a></td>
+<td class="comment-1" rowspan="2">Wait for a key and scroll.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25685"></span>25685</td>
+<td class="instruction">CALL <a href="25950.html">ScrollWindow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25688"></span>25688</td>
+<td class="instruction">LD A,19</td>
+<td class="comment-1" rowspan="2">Stay on row 19.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25690"></span>25690</td>
+<td class="instruction">JR <a href="25596.html#25701">PlotCharacter_Stay</a></td>
+</tr>
+<tr>
+<td class="asm-label">PlotCharacter_Low</td>
+<td class="address-2"><span id="25692"></span>25692</td>
+<td class="instruction">CP 23</td>
+<td class="comment-1" rowspan="2">A row below 23 simply advances.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25694"></span>25694</td>
+<td class="instruction">JR C,<a href="25596.html#25714">PlotCharacter_Down</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25696"></span>25696</td>
+<td class="instruction">CALL <a href="25950.html">ScrollWindow</a></td>
+<td class="comment-1" rowspan="2">Row 23 scrolls and stays put.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25699"></span>25699</td>
+<td class="instruction">LD A,23</td>
+</tr>
+<tr>
+<td class="asm-label">PlotCharacter_Stay</td>
+<td class="address-2"><span id="25701"></span>25701</td>
+<td class="instruction">LD (23433),A</td>
+<td class="comment-1" rowspan="4">Home the cursor on that row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25704"></span>25704</td>
+<td class="instruction">CALL <a href="25931.html">HomeRow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25707"></span>25707</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25708"></span>25708</td>
+<td class="instruction">LD (23434),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25711"></span>25711</td>
+<td class="instruction">JP <a href="25731.html#25926">PlotGlyph_Done</a></td>
+<td class="comment-1" rowspan="1">Return to the plotter.</td>
+</tr>
+<tr>
+<td class="asm-label">PlotCharacter_Down</td>
+<td class="address-2"><span id="25714"></span>25714</td>
+<td class="instruction">LD A,(23433)</td>
+<td class="comment-1" rowspan="3">Advance one row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25717"></span>25717</td>
+<td class="instruction">INC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25718"></span>25718</td>
+<td class="instruction">LD (23433),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25721"></span>25721</td>
+<td class="instruction">CALL <a href="25931.html">HomeRow</a></td>
+<td class="comment-1" rowspan="3">Home the cursor on it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25724"></span>25724</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25725"></span>25725</td>
+<td class="instruction">LD (23434),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25728"></span>25728</td>
+<td class="instruction">JP <a href="25731.html#25926">PlotGlyph_Done</a></td>
+<td class="comment-1" rowspan="1">Return to the plotter.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="25574.html">25574</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#25596">Map</a></td>
+<td class="next">
+Next: <a href="25731.html">25731</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1986 Adventuresoft UK Ltd &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/blizzardpass/">Source code</a>.</div>
+<div><a href="../../asm/63FC.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

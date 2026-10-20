@@ -25,21 +25,24 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="38579.html">38579</a>
+Prev: <a href="39513.html">39513</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#39557">Map</a></td>
 <td class="next">
-Next: <a href="39629.html">39629</a>
+Next: <a href="39584.html">39584</a>
 </td>
 </tr>
 </table>
-<div class="description">39557: Routine at 9A85</div>
+<div class="description">39557: Table: Find A Special Object</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="36916.html">Action_Talkto</a> and <a href="38579.html">38579</a>.
+Used by the routines at <a href="36916.html">Action_TalkTo</a>, <a href="38780.html">Turn_ThePlayerHasDied</a> and <a href="39584.html">Turn_UseASpecialObject</a>.
+</div>
+<div class="paragraph">
+Finds a special object by its index.
 </div>
 </div>
 <table class="input">
@@ -54,182 +57,96 @@ Used by the routines at <a href="36916.html">Action_Talkto</a> and <a href="3857
 </td>
 </tr>
 <tr>
+<td class="asm-label">TableFindASpecialObject</td>
 <td class="address-2"><span id="39557"></span>39557</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Keep the id being sought.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39558"></span>39558</td>
 <td class="instruction">PUSH BC</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39559"></span>39559</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">A</span> (search key).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39560"></span>39560</td>
 <td class="instruction">LD HL,51915</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="51915.html">51915</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the special-object records.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39563"></span>39563</td>
 <td class="instruction">LD DE,7</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=$0007.</td>
+<td class="comment-1" rowspan="1">Each special-object entry is 7 bytes.</td>
 </tr>
 <tr>
+<td class="asm-label">TableFindASpecialObject_Loop</td>
 <td class="address-2"><span id="39566"></span>39566</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">If the current pointer matches our key jump to <a href="39557.html#39578">39578</a>.</td>
+<td class="comment-1" rowspan="3">If the current pointer matches our key jump to <a href="39557.html#39578">TableFindASpecialObject_PointAtTheRecord</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39567"></span>39567</td>
 <td class="instruction">CP B</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39568"></span>39568</td>
-<td class="instruction">JR Z,<a href="39557.html#39578">39578</a></td>
+<td class="instruction">JR Z,<a href="39557.html#39578">TableFindASpecialObject_PointAtTheRecord</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39570"></span>39570</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">If we've reached the termination character then jump to <a href="39557.html#39578">39578</a>.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="39557.html#39578">TableFindASpecialObject_PointAtTheRecord</a> at the end of the special-object records.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39572"></span>39572</td>
-<td class="instruction">JR Z,<a href="39557.html#39578">39578</a></td>
+<td class="instruction">JR Z,<a href="39557.html#39578">TableFindASpecialObject_PointAtTheRecord</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39574"></span>39574</td>
 <td class="instruction">ADD HL,DE</td>
 <td class="comment-1" rowspan="1">Increase the pointer address by 0007 (using <span class="register">DE</span>).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39575"></span>39575</td>
-<td class="instruction">JP <a href="39557.html#39566">39566</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="39557.html#39566">39566</a>.</td>
+<td class="instruction">JP <a href="39557.html#39566">TableFindASpecialObject_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="39557.html#39566">TableFindASpecialObject_Loop</a> for the next special-object record.</td>
 </tr>
 <tr>
+<td class="asm-label">TableFindASpecialObject_PointAtTheRecord</td>
 <td class="address-2"><span id="39578"></span>39578</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">DE</span> from the stack.</td>
+<td class="comment-1" rowspan="4">Restore <span class="register">BC</span> and <span class="register">DE</span> from the stack, and copy the special-object record from <span class="register">HL</span> into <span class="register">IY</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39579"></span>39579</td>
 <td class="instruction">POP DE</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39580"></span>39580</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2"><span class="register">IY</span>=<span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39581"></span>39581</td>
 <td class="instruction">POP IY</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="39583"></span>39583</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="39584"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routines at <a href="37850.html">Action_Examine</a> and <a href="38579.html">38579</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="address-2"><span id="39584"></span>39584</td>
-<td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="2">Store <span class="register">IY</span> and <span class="register">IX</span> on the stack.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39586"></span>39586</td>
-<td class="instruction">PUSH IX</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39588"></span>39588</td>
-<td class="instruction">CALL <a href="39557.html#39557">39557</a></td>
-<td class="comment-1" rowspan="1">Call <a href="39557.html">39557</a>.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39591"></span>39591</td>
-<td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Jump to <a href="39557.html#39624">39624</a> if the termination character was reached.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39593"></span>39593</td>
-<td class="instruction">JR Z,<a href="39557.html#39624">39624</a></td>
-</tr>
-<tr>
-<td class="address-1"><span id="39595"></span>39595</td>
-<td class="instruction">LD L,(IY+4)</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39598"></span>39598</td>
-<td class="instruction">LD H,(IY+5)</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39601"></span>39601</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">HL</span>.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39602"></span>39602</td>
-<td class="instruction">POP IX</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39604"></span>39604</td>
-<td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="39605"></span>39605</td>
-<td class="instruction">CALL <a href="40381.html">IndexIdTable</a></td>
-<td class="comment-1" rowspan="1">Call <a href="40381.html">IndexIdTable</a>.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39608"></span>39608</td>
-<td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Jump to <a href="39557.html#39624">39624</a> if the termination character was reached.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39610"></span>39610</td>
-<td class="instruction">JR Z,<a href="39557.html#39624">39624</a></td>
-</tr>
-<tr>
-<td class="address-1"><span id="39612"></span>39612</td>
-<td class="instruction">LD L,(IX+1)</td>
-<td class="comment-1" rowspan="4">Store ... TODO</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39615"></span>39615</td>
-<td class="instruction">LD H,(IX+2)</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39618"></span>39618</td>
-<td class="instruction">LD (IY+2),L</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39621"></span>39621</td>
-<td class="instruction">LD (IY+3),H</td>
-</tr>
-<tr>
-<td class="address-2"><span id="39624"></span>39624</td>
-<td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">IX</span> and <span class="register">IY</span> from the stack.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39626"></span>39626</td>
-<td class="instruction">POP IY</td>
-</tr>
-<tr>
-<td class="address-1"><span id="39628"></span>39628</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
@@ -237,18 +154,18 @@ This entry point is used by the routines at <a href="37850.html">Action_Examine<
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="38579.html">38579</a>
+Prev: <a href="39513.html">39513</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#39557">Map</a></td>
 <td class="next">
-Next: <a href="39629.html">39629</a>
+Next: <a href="39584.html">39584</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../../asm/9A85.html">Switch to hexadecimal</a>.</div>
 </footer>

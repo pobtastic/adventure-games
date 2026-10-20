@@ -39,7 +39,7 @@ Next: <a href="9F27.html">9F27</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="AB8B.html">AB8B</a>.
+Used by the routine at <a href="AB8B.html">Action_LoadGame</a>.
 </div>
 </div>
 </td>
@@ -115,13 +115,13 @@ Print "LOADING...Start Tape.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="9ef0"></span>9EF0</td>
 <td class="instruction">CALL $0556</td>
-<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/0556.html">LD_BYTES</a>.</td>
+<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9ef3"></span>9EF3</td>
 <td class="instruction">JR C,<a href="9EDB.html#9efd">LoadTape_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="9EDB.html#9efd">LoadTape_0</a> if the carry flag is not set.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="9EDB.html#9efd">LoadTape_0</a> if the block loaded without error (carry flag set).</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -140,118 +140,158 @@ Print "Status file not found.".
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="CD8F.html">Messaging_StatusFileNotFound</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9ef8"></span>
+<div class="comments">
+<div class="paragraph">
+The tape load failed.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9ef8"></span>9EF8</td>
 <td class="instruction">CALL <a href="A25C.html">PrintCompressedStringAndNewline</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Print "Status file not found." and leave the game state unchanged.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9efb"></span>9EFB</td>
 <td class="instruction">JR <a href="9EDB.html#9f21">LoadTape_Return</a></td>
-<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9efd"></span>
+<div class="comments">
+<div class="paragraph">
+There is nothing to unpack when no state bytes were saved.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">LoadTape_0</td>
 <td class="address-2"><span id="9efd"></span>9EFD</td>
 <td class="instruction">LD A,($BBD1)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="9EDB.html#9f21">LoadTape_Return</a> if there are no saved state bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f00"></span>9F00</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f01"></span>9F01</td>
 <td class="instruction">JR Z,<a href="9EDB.html#9f21">LoadTape_Return</a></td>
-<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9f03"></span>
+<div class="comments">
+<div class="paragraph">
+Write the packed bytes at <a href="A0D4.html">SavedStateBytes</a> back through the addresses in <a href="BAF9.html">Table_SavedStateAddresses</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f03"></span>9F03</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">The addresses are listed in <a href="BAF9.html">Table_SavedStateAddresses</a> and the copies sit at <a href="A0D4.html">SavedStateBytes</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f04"></span>9F04</td>
 <td class="instruction">LD IX,$BAF9</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f08"></span>9F08</td>
 <td class="instruction">LD DE,$A0D4</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f0b"></span>9F0B</td>
-<td class="instruction">JR <a href="9EDB.html#9f12">LoadTape_2</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR <a href="9EDB.html#9f12">LoadTape_1</a></td>
+<td class="comment-1" rowspan="1">Start with the first address.</td>
 </tr>
 <tr>
-<td class="asm-label">LoadTape_1</td>
+<td class="routine-comment" colspan="5">
+<span id="9f0d"></span>
+<div class="comments">
+<div class="paragraph">
+The next saved address.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RestoreState_Loop</td>
 <td class="address-2"><span id="9f0d"></span>9F0D</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Advance to the next saved address.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f0f"></span>9F0F</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f11"></span>9F11</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">LoadTape_2</td>
+<td class="asm-label">LoadTape_1</td>
 <td class="address-2"><span id="9f12"></span>9F12</td>
 <td class="instruction">LD L,(IX+$00)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Write that byte back into the game.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f15"></span>9F15</td>
 <td class="instruction">LD H,(IX+$01)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f18"></span>9F18</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f19"></span>9F19</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f1a"></span>9F1A</td>
-<td class="instruction">DJNZ <a href="9EDB.html#9f0d">LoadTape_1</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="9EDB.html#9f0d">RestoreState_Loop</a></td>
+<td class="comment-1" rowspan="1">Repeat until every saved byte is restored.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9f1c"></span>
+<div class="comments">
+<div class="paragraph">
+Describe the room the save returned to.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f1c"></span>9F1C</td>
 <td class="instruction">LD E,$00</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Show the room as the player last saw it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f1e"></span>9F1E</td>
 <td class="instruction">CALL <a href="A33A.html">Handler_RoomExits</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="A33A.html">Handler_RoomExits</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">LoadTape_Return</td>
@@ -295,7 +335,7 @@ Next: <a href="9F27.html">9F27</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/40667.html">Switch to decimal</a>.</div>
 </footer>

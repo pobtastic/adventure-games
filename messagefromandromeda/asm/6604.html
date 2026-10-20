@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Message From Andromeda: Routine at 6604</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="65FA.html">65FA</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6604">Map</a></td>
+<td class="next">
+Next: <a href="6669.html">6669</a>
+</td>
+</tr>
+</table>
+<div class="description">6604: Handler: User Input</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="6745.html">Handler_UnknownWord</a>, <a href="8D2A.html">GameLoop</a> and <a href="9670.html">ActionRead</a>.
+</div>
+<div class="paragraph">
+Handles keyboard input, tokenises commands and validates the vocabulary.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6604"></span>
+<div class="comments">
+<div class="paragraph">
+Prepare a blank command line.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput</td>
+<td class="address-2"><span id="6604"></span>6604</td>
+<td class="instruction">CALL <a href="64B7.html">SetDefaultScreenPosition</a></td>
+<td class="comment-1" rowspan="1">Call <a href="64B7.html">SetDefaultScreenPosition</a> to park the cursor at the default position.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6607"></span>6607</td>
+<td class="instruction">LD HL,$625F</td>
+<td class="comment-1" rowspan="3">Blank the command buffer with 32 spaces.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="660a"></span>660A</td>
+<td class="instruction">LD A,$20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="660c"></span>660C</td>
+<td class="instruction">LD B,$32</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_Loop1</td>
+<td class="address-2"><span id="660e"></span>660E</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="3">Write spaces through the command buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="660f"></span>660F</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6610"></span>6610</td>
+<td class="instruction">DJNZ <a href="6604.html#660e">Handler_UserInput_Loop1</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6612"></span>
+<div class="comments">
+<div class="paragraph">
+Ask for a command.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6612"></span>6612</td>
+<td class="instruction">CALL <a href="6A1C.html">PrintInputPrompt</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6A1C.html">PrintInputPrompt</a> to print the prompt.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6615"></span>6615</td>
+<td class="instruction">LD HL,$625F</td>
+<td class="comment-1" rowspan="1">The next character is stored at the start of the command.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6618"></span>
+<div class="comments">
+<div class="paragraph">
+Read the next key.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_Loop2</td>
+<td class="address-2"><span id="6618"></span>6618</td>
+<td class="instruction">CALL <a href="6495.html">GetUserInput</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6495.html">GetUserInput</a> to wait for a keypress.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="661b"></span>661B</td>
+<td class="instruction">CP $0C</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6604.html#663b">Handler_UserInput_Step1</a> when DELETE (0C) was pressed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="661d"></span>661D</td>
+<td class="instruction">JR Z,<a href="6604.html#663b">Handler_UserInput_Step1</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="661f"></span>661F</td>
+<td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6604.html#6652">Handler_UserInput_Step2</a> when ENTER (0D) was pressed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6621"></span>6621</td>
+<td class="instruction">JR Z,<a href="6604.html#6652">Handler_UserInput_Step2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6623"></span>6623</td>
+<td class="instruction">CP $20</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="6604.html#6618">Handler_UserInput_Loop2</a> when the key is a control character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6625"></span>6625</td>
+<td class="instruction">JR C,<a href="6604.html#6618">Handler_UserInput_Loop2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6627"></span>6627</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="6">Jump back to <a href="6604.html#6618">Handler_UserInput_Loop2</a> when the command buffer is full.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6628"></span>6628</td>
+<td class="instruction">LD HL,$6290</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="662b"></span>662B</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="662c"></span>662C</td>
+<td class="instruction">SBC HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="662e"></span>662E</td>
+<td class="instruction">EX DE,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="662f"></span>662F</td>
+<td class="instruction">JR Z,<a href="6604.html#6618">Handler_UserInput_Loop2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6631"></span>6631</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="5">Store the character in the command buffer and print it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6632"></span>6632</td>
+<td class="instruction">CALL <a href="64CE.html">SwitchToNormalScreenOutput</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6635"></span>6635</td>
+<td class="instruction">CALL <a href="64F2.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6638"></span>6638</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6639"></span>6639</td>
+<td class="instruction">JR <a href="6604.html#6618">Handler_UserInput_Loop2</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="663b"></span>
+<div class="comments">
+<div class="paragraph">
+The player pressed DELETE.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_Step1</td>
+<td class="address-2"><span id="663b"></span>663B</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="6">Jump back to <a href="6604.html#6618">Handler_UserInput_Loop2</a> when there is nothing to delete.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="663c"></span>663C</td>
+<td class="instruction">LD HL,$625F</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="663f"></span>663F</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6640"></span>6640</td>
+<td class="instruction">SBC HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6642"></span>6642</td>
+<td class="instruction">EX DE,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6643"></span>6643</td>
+<td class="instruction">JR Z,<a href="6604.html#6618">Handler_UserInput_Loop2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6645"></span>6645</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="7">Print   and rub out the last character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6646"></span>6646</td>
+<td class="instruction">LD HL,$62E3</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6649"></span>6649</td>
+<td class="instruction">CALL <a href="64DC.html">PrintString</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="664c"></span>664C</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="664d"></span>664D</td>
+<td class="instruction">DEC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="664e"></span>664E</td>
+<td class="instruction">LD (HL),$20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6650"></span>6650</td>
+<td class="instruction">JR <a href="6604.html#6618">Handler_UserInput_Loop2</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6652"></span>
+<div class="comments">
+<div class="paragraph">
+The player pressed ENTER.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_Step2</td>
+<td class="address-2"><span id="6652"></span>6652</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="3">Store the terminator and echo the newline.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6653"></span>6653</td>
+<td class="instruction">CALL <a href="64CE.html">SwitchToNormalScreenOutput</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6656"></span>6656</td>
+<td class="instruction">CALL <a href="64F2.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6659"></span>6659</td>
+<td class="instruction">LD HL,$6291</td>
+<td class="comment-1" rowspan="3">Point at the word tokens and prepare the empty marker (FF).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="665c"></span>665C</td>
+<td class="instruction">LD A,$FF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="665e"></span>665E</td>
+<td class="instruction">LD B,$0A</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_Loop3</td>
+<td class="address-2"><span id="6660"></span>6660</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="3">Mark every word token as empty.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6661"></span>6661</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6662"></span>6662</td>
+<td class="instruction">DJNZ <a href="6604.html#6660">Handler_UserInput_Loop3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6664"></span>6664</td>
+<td class="instruction">LD HL,$625F</td>
+<td class="comment-1" rowspan="2">Up to 0A words of the command are accepted.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6667"></span>6667</td>
+<td class="instruction">LD C,$0A</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="65FA.html">65FA</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6604">Map</a></td>
+<td class="next">
+Next: <a href="6669.html">6669</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
+<div><a href="../dec/asm/26116.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

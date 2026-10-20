@@ -33,88 +33,121 @@ Next: <a href="A96A.html">A96A</a>
 </td>
 </tr>
 </table>
-<div class="description">A947: Routine at A947</div>
+<div class="description">A947: Condition: Parser Fails</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Calls the parser check indexed in <a href="A779.html">JumpTable_ParserChecks</a> and succeeds when it returns with the carry set.
+</div>
+<div class="paragraph">
+Stores <span class="register">A</span> at <a href="A805.html#a806">ScriptParserResult</a>.
+</div>
+</div>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the check fails</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a947"></span>
+<div class="comments">
+<div class="paragraph">
+Run the parser check selected from <a href="A779.html">JumpTable_ParserChecks</a>. It returns to <a href="A947.html#a958">ParserFails_Return</a>, its result is stored at <a href="A805.html#a806">ScriptParserResult</a>, and the condition succeeds when the carry is set.
+</div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Condition_ParserFails</td>
 <td class="address-2"><span id="a947"></span>A947</td>
 <td class="instruction">LD E,(IX+$01)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">The operand selects a check from <a href="A779.html">JumpTable_ParserChecks</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a94a"></span>A94A</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a94c"></span>A94C</td>
 <td class="instruction">LD IX,$A779</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a950"></span>A950</td>
 <td class="instruction">CALL <a href="A305.html">GetTableEntry</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">That check.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a953"></span>A953</td>
 <td class="instruction">LD DE,$A958</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Run that check. It returns here.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a956"></span>A956</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a957"></span>A957</td>
 <td class="instruction">JP (HL)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">ParserFails_Return</td>
 <td class="address-1"><span id="a958"></span>A958</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the script pointer from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a95a"></span>A95A</td>
 <td class="instruction">LD ($A806),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Remember the check's result at <a href="A805.html#a806">ScriptParserResult</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a95d"></span>A95D</td>
-<td class="instruction">JR NC,<a href="A947.html#a963">$A963</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="A947.html#a963">ParserFails_Passed</a></td>
+<td class="comment-1" rowspan="1">The check passed.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a95f"></span>A95F</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">The parser check failed, so this condition succeeds.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a960"></span>A960</td>
-<td class="instruction">JP <a href="A6FF.html#a71d">$A71D</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP <a href="A6FF.html#a71d">Handler_RunScript_3</a></td>
 </tr>
 <tr>
+<td class="asm-label">ParserFails_Passed</td>
 <td class="address-2"><span id="a963"></span>A963</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">The parser check passed, so this condition does not.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a964"></span>A964</td>
-<td class="instruction">CALL <a href="A6FF.html#a76a">$A76A</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="A6FF.html#a76a">Handler_RunScript_13</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a967"></span>A967</td>
-<td class="instruction">JP <a href="A6FF.html#a71d">$A71D</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP <a href="A6FF.html#a71d">Handler_RunScript_3</a></td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -131,7 +164,7 @@ Next: <a href="A96A.html">A96A</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/43335.html">Switch to decimal</a>.</div>
 </footer>

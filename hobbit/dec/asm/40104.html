@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 40104</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="40095.html">40095</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#40104">Map</a></td>
+<td class="next">
+Next: <a href="40168.html">40168</a>
+</td>
+</tr>
+</table>
+<div class="description">40104: Random: Scale The Roll</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="37395.html">Action_RollAgainstTen</a>, <a href="37613.html">Action_UseTheOtherObject</a> and <a href="40095.html">GetRandomNumber</a>.
+</div>
+<div class="paragraph">
+Scales the random roll by the limit passed in <span class="register">B</span>, advances the random seed at <a href="46810.html#46866">RandomCounter</a>, and returns the scaled roll in <span class="register">A</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CalculateRandom</td>
+<td class="address-2"><span id="40104"></span>40104</td>
+<td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="3">Keep the limit passed in.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40106"></span>40106</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40107"></span>40107</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40108"></span>40108</td>
+<td class="instruction">SLA A</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>*=2.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40110"></span>40110</td>
+<td class="instruction">JR NC,<a href="40104.html#40114">CalculateRandom_KeepTheDoubledLimit</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="40104.html#40114">CalculateRandom_KeepTheDoubledLimit</a> if there's no carry over.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40112"></span>40112</td>
+<td class="instruction">LD A,255</td>
+<td class="comment-1" rowspan="1">Else, set <span class="register">A</span>=255.</td>
+</tr>
+<tr>
+<td class="asm-label">CalculateRandom_KeepTheDoubledLimit</td>
+<td class="address-2"><span id="40114"></span>40114</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Keep the doubled limit in <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label">CalculateRandom_Loop</td>
+<td class="address-2"><span id="40115"></span>40115</td>
+<td class="instruction">LD IX,46866</td>
+<td class="comment-1" rowspan="2">Increase the LSB of the <a href="46810.html#46866">RandomCounter</a> by one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40119"></span>40119</td>
+<td class="instruction">INC (IX+1)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40122"></span>40122</td>
+<td class="instruction">JR NZ,<a href="40104.html#40127">CalculateRandom_UseTheRandomCounterAsTheRecord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="40104.html#40127">CalculateRandom_UseTheRandomCounterAsTheRecord</a> if the low byte of the random seed did not roll over, skipping the high byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40124"></span>40124</td>
+<td class="instruction">INC (IX+0)</td>
+<td class="comment-1" rowspan="1">Increase the MSB of the <a href="46810.html#46866">RandomCounter</a> by one.</td>
+</tr>
+<tr>
+<td class="asm-label">CalculateRandom_UseTheRandomCounterAsTheRecord</td>
+<td class="address-2"><span id="40127"></span>40127</td>
+<td class="instruction">LD IX,(46866)</td>
+<td class="comment-1" rowspan="1">Use the random counter as the record being walked.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40131"></span>40131</td>
+<td class="instruction">LD A,(46862)</td>
+<td class="comment-1" rowspan="1">Read the random seed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40134"></span>40134</td>
+<td class="instruction">ADC A,(IX+0)</td>
+<td class="comment-1" rowspan="1">Add the carry onto the random seed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40137"></span>40137</td>
+<td class="instruction">ADD IX,DE</td>
+<td class="comment-1" rowspan="1">Step on through the random counter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40139"></span>40139</td>
+<td class="instruction">XOR (IX+1)</td>
+<td class="comment-1" rowspan="1">Fold byte 1 of this record into it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40142"></span>40142</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="3">Compare <a href="46810.html#46862">RandomSeed</a> against <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40143"></span>40143</td>
+<td class="instruction">LD HL,46862</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40146"></span>40146</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40147"></span>40147</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="2">If the result of the comparison was zero, jump back to <a href="40104.html#40115">CalculateRandom_Loop</a> to try again.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40148"></span>40148</td>
+<td class="instruction">JR Z,<a href="40104.html#40115">CalculateRandom_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40150"></span>40150</td>
+<td class="instruction">LD (46862),A</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to <a href="46810.html#46862">RandomSeed</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">CalculateRandom_HalveTheSeed</td>
+<td class="address-2"><span id="40153"></span>40153</td>
+<td class="instruction">CP B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="40104.html#40163">CalculateRandom_TakeTheResultOffTheRandomSeed</a> if the random seed is below the doubled limit in <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40154"></span>40154</td>
+<td class="instruction">JR C,<a href="40104.html#40163">CalculateRandom_TakeTheResultOffTheRandomSeed</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40156"></span>40156</td>
+<td class="instruction">JR Z,<a href="40104.html#40163">CalculateRandom_TakeTheResultOffTheRandomSeed</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="40104.html#40163">CalculateRandom_TakeTheResultOffTheRandomSeed</a> if the random seed equals it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40158"></span>40158</td>
+<td class="instruction">SRL A</td>
+<td class="comment-1" rowspan="1">Halve the random seed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40160"></span>40160</td>
+<td class="instruction">JP <a href="40104.html#40153">CalculateRandom_HalveTheSeed</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="40104.html#40153">CalculateRandom_HalveTheSeed</a> to repeat this search.</td>
+</tr>
+<tr>
+<td class="asm-label">CalculateRandom_TakeTheResultOffTheRandomSeed</td>
+<td class="address-2"><span id="40163"></span>40163</td>
+<td class="instruction">SUB C</td>
+<td class="comment-1" rowspan="1">Take the result off the random seed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40164"></span>40164</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">IX</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40165"></span>40165</td>
+<td class="instruction">POP IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="40167"></span>40167</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="40095.html">40095</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#40104">Map</a></td>
+<td class="next">
+Next: <a href="40168.html">40168</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../../asm/9CA8.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

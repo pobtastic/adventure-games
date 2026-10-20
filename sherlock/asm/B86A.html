@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at B86A</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B868.html">B868</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b86a">Map</a></td>
+<td class="next">
+Next: <a href="B8AA.html">B8AA</a>
+</td>
+</tr>
+</table>
+<div class="description">B86A: Follow The Link Pointer</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="DD35.html">DescribeObjectIfPresent</a>.
+</div>
+<div class="paragraph">
+Reads the link pointer beside the character lists and follows it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">FollowLinkPointer</td>
+<td class="address-2"><span id="b86a"></span>B86A</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="3">Point at the link pointer, then call <a href="A0F7.html">FetchObjectPointerFromStack</a> to fetch object pointer from stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b86b"></span>B86B</td>
+<td class="instruction">LD IX,$9FEE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b86f"></span>B86F</td>
+<td class="instruction">CALL <a href="A0F7.html">FetchObjectPointerFromStack</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b872"></span>B872</td>
+<td class="instruction">JR Z,<a href="B86A.html#b8a8">FollowLinkPointer_HandResultCaller</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="B86A.html#b8a8">FollowLinkPointer_HandResultCaller</a> if the object pointer is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b874"></span>B874</td>
+<td class="instruction">LD C,(IX+$00)</td>
+<td class="comment-1" rowspan="2">Read the record's flag byte and read the moved marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b877"></span>B877</td>
+<td class="instruction">LD B,(IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b87a"></span>B87A</td>
+<td class="instruction">LD ($B868),BC</td>
+<td class="comment-1" rowspan="1">Store that flag word at <a href="B868.html">B868</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b87e"></span>B87E</td>
+<td class="instruction">LD L,(IX-$02)</td>
+<td class="comment-1" rowspan="2">Read the pointer saved ahead of this record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b881"></span>B881</td>
+<td class="instruction">LD H,(IX-$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b884"></span>B884</td>
+<td class="instruction">LD ($9FEC),HL</td>
+<td class="comment-1" rowspan="1">Record the character script entry list.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b887"></span>B887</td>
+<td class="instruction">CALL <a href="A1C7.html">ProcessMemoryEntry</a></td>
+<td class="comment-1" rowspan="2">Call <a href="A1C7.html">ProcessMemoryEntry</a> to run memory entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b88a"></span>B88A</td>
+<td class="instruction">POP AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b88b"></span>B88B</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="B86A.html#b894">FollowLinkPointer_CopyLink</a> if the saved result is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b88c"></span>B88C</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b88d"></span>B88D</td>
+<td class="instruction">JR Z,<a href="B86A.html#b894">FollowLinkPointer_CopyLink</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b88f"></span>B88F</td>
+<td class="instruction">CALL <a href="B8AA.html">ReadPointerFirstDisplay</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="B86A.html#b8a8">FollowLinkPointer_HandResultCaller</a> if the display list was rebuilt.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b892"></span>B892</td>
+<td class="instruction">JR Z,<a href="B86A.html#b8a8">FollowLinkPointer_HandResultCaller</a></td>
+</tr>
+<tr>
+<td class="asm-label">FollowLinkPointer_CopyLink</td>
+<td class="address-2"><span id="b894"></span>B894</td>
+<td class="instruction">LD BC,($B868)</td>
+<td class="comment-1" rowspan="2">Read the word at <a href="B868.html">B868</a> and store it in the word at <a href="A02B.html">ActiveTextPointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b898"></span>B898</td>
+<td class="instruction">LD ($A02B),BC</td>
+</tr>
+<tr>
+<td class="asm-label">FollowLinkPointer_Call</td>
+<td class="address-2"><span id="b89c"></span>B89C</td>
+<td class="instruction">CALL <a href="AE7F.html">SaveTextPointer</a></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="B86A.html#b89c">FollowLinkPointer_Call</a> while it is not C0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b89f"></span>B89F</td>
+<td class="instruction">CP $C0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b8a1"></span>B8A1</td>
+<td class="instruction">JR NZ,<a href="B86A.html#b89c">FollowLinkPointer_Call</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b8a3"></span>B8A3</td>
+<td class="instruction">LD HL,($A029)</td>
+<td class="comment-1" rowspan="2">Write 90 through the pointer at <a href="A029.html">SavedTextPointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b8a6"></span>B8A6</td>
+<td class="instruction">LD (HL),$90</td>
+</tr>
+<tr>
+<td class="asm-label">FollowLinkPointer_HandResultCaller</td>
+<td class="address-2"><span id="b8a8"></span>B8A8</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b8a9"></span>B8A9</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B868.html">B868</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b86a">Map</a></td>
+<td class="next">
+Next: <a href="B8AA.html">B8AA</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/47210.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

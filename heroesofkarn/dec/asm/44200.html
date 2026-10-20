@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at 44200</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="44141.html">44141</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#44200">Map</a></td>
+<td class="next">
+Next: <a href="44266.html">44266</a>
+</td>
+</tr>
+</table>
+<div class="description">44200: Load From Tape</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="63404.html">Action_Load</a>.
+</div>
+<div class="paragraph">
+Read a save block back from tape into the configurable exits.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">LoadFromTape</td>
+<td class="address-2"><span id="44200"></span>44200</td>
+<td class="instruction">LD HL,45087</td>
+<td class="comment-1" rowspan="2">Print "LOADING. Start tape." and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44203"></span>44203</td>
+<td class="instruction">CALL <a href="44085.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44206"></span>44206</td>
+<td class="instruction">LD IX,44406</td>
+<td class="comment-1" rowspan="1">Load the starting address into <span class="register">IX</span> at the item-location table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44210"></span>44210</td>
+<td class="instruction">LD DE,390</td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 390 bytes.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44213"></span>44213</td>
+<td class="instruction">LD A,255</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 255 which indicates this is a data block.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44215"></span>44215</td>
+<td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set the carry flag to indicate this is loading.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44216"></span>44216</td>
+<td class="instruction">CALL 1366</td>
+<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44219"></span>44219</td>
+<td class="instruction">JR C,<a href="44200.html#44229">LoadTape_Success</a></td>
+<td class="comment-1" rowspan="1">Branch to <a href="44200.html#44229">LoadTape_Success</a> if the block loaded without error (carry flag set).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44221"></span>44221</td>
+<td class="instruction">LD HL,45108</td>
+<td class="comment-1" rowspan="2">Print "Tape error.Press any key to restart." and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44224"></span>44224</td>
+<td class="instruction">CALL <a href="44085.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44227"></span>44227</td>
+<td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set the carry flag to report that the load failed, so <a href="63404.html">Action_Load</a> restarts the game.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44228"></span>44228</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">LoadTape_Success</td>
+<td class="address-2"><span id="44229"></span>44229</td>
+<td class="instruction">LD A,(44794)</td>
+<td class="comment-1" rowspan="1">Read the configurable-exit count into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44232"></span>44232</td>
+<td class="instruction">OR A</td>
+<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44233"></span>44233</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44234"></span>
+<div class="comments">
+<div class="paragraph">
+<span class="register">B</span> counts the exits, <span class="register">IX</span> walks their addresses and <span class="register">DE</span> the save buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44234"></span>44234</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="3">Take the exit count and point at the exit table and the save buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44235"></span>44235</td>
+<td class="instruction">LD IX,(44774)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44239"></span>44239</td>
+<td class="instruction">LD DE,44699</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44242"></span>44242</td>
+<td class="instruction">JR <a href="44200.html#44249">LoadFromTape_0</a></td>
+<td class="comment-1" rowspan="1">Restore the first configurable exit.</td>
+</tr>
+<tr>
+<td class="asm-label">LoadTape_RestoreExit</td>
+<td class="address-2"><span id="44244"></span>44244</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="8">Copy each saved destination back into the configurable exits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44246"></span>44246</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44248"></span>44248</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label">LoadFromTape_0</td>
+<td class="address-2"><span id="44249"></span>44249</td>
+<td class="instruction">LD L,(IX+0)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44252"></span>44252</td>
+<td class="instruction">LD H,(IX+1)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44255"></span>44255</td>
+<td class="instruction">LD A,(DE)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44256"></span>44256</td>
+<td class="instruction">LD (HL),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44257"></span>44257</td>
+<td class="instruction">DJNZ <a href="44200.html#44244">LoadTape_RestoreExit</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44259"></span>44259</td>
+<td class="instruction">LD E,0</td>
+<td class="comment-1" rowspan="2">Show the room picture only when it has not already been seen.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44261"></span>44261</td>
+<td class="instruction">CALL <a href="46111.html">HandlerDisplayRoomImage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44264"></span>44264</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="1">Clear the carry flag to report that the load worked, so <a href="63404.html">Action_Load</a> goes back to the game.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="44265"></span>44265</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="44141.html">44141</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#44200">Map</a></td>
+<td class="next">
+Next: <a href="44266.html">44266</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../../asm/ACA8.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

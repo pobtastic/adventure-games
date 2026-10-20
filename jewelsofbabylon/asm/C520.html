@@ -42,7 +42,7 @@ Next: <a href="C556.html">C556</a>
 Used by the routine at <a href="EF54.html">ChangeRoom</a>.
 </div>
 <div class="paragraph">
-Moves the player to a new room. Before updating the current room, it updates all scenic events that were in the old room to be in the new room (so they follow the player). After moving, it also updates any active turn-based events to appear in the new room.
+Moves the player to a new room. Before updating the current room, it updates all scenic events that were in the old room to be in the new room (so they follow the player). It then moves each item whose bit is set in <a href="BC6F.html">Flag_CrabFollowing</a> into the new room. Only bit 0, the giant crab, is ever set.
 </div>
 </div>
 <table class="input">
@@ -165,13 +165,13 @@ Update the current room ID to the destination room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c538"></span>C538</td>
 <td class="instruction">LD A,($BC6F)</td>
-<td class="comment-1" rowspan="1">Load *<a href="BC6F.html">Flag_EventState</a> into <span class="register">A</span> (bits indicate which turn-based events are active).</td>
+<td class="comment-1" rowspan="1">Load *<a href="BC6F.html">Flag_CrabFollowing</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c53b"></span>C53B</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C520.html#c555">MovePlayerToRoom_Return</a> if no turn-based events are active (all bits are zero).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C520.html#c555">MovePlayerToRoom_Return</a> if no following item is active.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -183,7 +183,7 @@ Update the current room ID to the destination room.
 <span id="c53e"></span>
 <div class="comments">
 <div class="paragraph">
-Process each turn-based event. For each active event (bit set), move its associated item to the current room.
+For each set bit, move the item at that position in <a href="BC70.html">Table_FollowingItems</a> into the current room.
 </div>
 </div>
 </td>
@@ -192,50 +192,50 @@ Process each turn-based event. For each active event (bit set), move its associa
 <td class="asm-label"></td>
 <td class="address-1"><span id="c53e"></span>C53E</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for 08 events (one per bit).</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for 08 bits.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c540"></span>C540</td>
 <td class="instruction">LD HL,$BC70</td>
-<td class="comment-1" rowspan="1">Set a pointer to <a href="BC70.html">Table_TurnBasedEventItems</a> in <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Set a pointer to <a href="BC70.html">Table_FollowingItems</a> in <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c543"></span>C543</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1">Copy the event state flags into <span class="register">C</span> for bit testing.</td>
+<td class="comment-1" rowspan="1">Copy the following flags into <span class="register">C</span> for bit testing.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c544"></span>C544</td>
-<td class="instruction">JR <a href="C520.html#c547">ProcessTurnBasedEvents_CheckBit</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C520.html#c547">ProcessTurnBasedEvents_CheckBit</a> to start processing events.</td>
+<td class="instruction">JR <a href="C520.html#c547">FollowingItems_CheckBit</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C520.html#c547">FollowingItems_CheckBit</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTurnBasedEvents_Loop</td>
+<td class="asm-label">FollowingItems_Loop</td>
 <td class="address-2"><span id="c546"></span>C546</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Move to the next event's item ID in the table.</td>
+<td class="comment-1" rowspan="1">Move to the next item ID.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTurnBasedEvents_CheckBit</td>
+<td class="asm-label">FollowingItems_CheckBit</td>
 <td class="address-2"><span id="c547"></span>C547</td>
 <td class="instruction">SRL C</td>
-<td class="comment-1" rowspan="1">Shift the event state flags right to check the next bit.</td>
+<td class="comment-1" rowspan="1">Shift the following flags right to check the next bit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c549"></span>C549</td>
-<td class="instruction">JR NC,<a href="C520.html#c553">ProcessTurnBasedEvents_Next</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C520.html#c553">ProcessTurnBasedEvents_Next</a> if this bit is not set (event is not active).</td>
+<td class="instruction">JR NC,<a href="C520.html#c553">FollowingItems_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C520.html#c553">FollowingItems_Next</a> if this bit is not set.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="c54b"></span>
 <div class="comments">
 <div class="paragraph">
-This event is active, so move its associated item to the current room.
+This item is following, so move it to the current room.
 </div>
 </div>
 </td>
@@ -244,7 +244,7 @@ This event is active, so move its associated item to the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c54b"></span>C54B</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Get the item ID for this event from the table.</td>
+<td class="comment-1" rowspan="1">Get the item ID from the table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -275,10 +275,10 @@ This event is active, so move its associated item to the current room.
 <td class="instruction">POP HL</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTurnBasedEvents_Next</td>
+<td class="asm-label">FollowingItems_Next</td>
 <td class="address-2"><span id="c553"></span>C553</td>
-<td class="instruction">DJNZ <a href="C520.html#c546">ProcessTurnBasedEvents_Loop</a></td>
-<td class="comment-1" rowspan="1">Decrease the event counter by one and loop back to <a href="C520.html#c546">ProcessTurnBasedEvents_Loop</a> until all 08 events have been processed.</td>
+<td class="instruction">DJNZ <a href="C520.html#c546">FollowingItems_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the bit counter by one and loop back to <a href="C520.html#c546">FollowingItems_Loop</a> until all 08 bits have been tested.</td>
 </tr>
 <tr>
 <td class="asm-label">MovePlayerToRoom_Return</td>
@@ -310,7 +310,7 @@ Next: <a href="C556.html">C556</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/jewelsofbabylon/">Source code</a>.</div>
 <div><a href="../dec/asm/50464.html">Switch to decimal</a>.</div>
 </footer>

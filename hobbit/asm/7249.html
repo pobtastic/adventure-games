@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 7249</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="722E.html">722E</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#7249">Map</a></td>
+<td class="next">
+Next: <a href="728B.html">728B</a>
+</td>
+</tr>
+</table>
+<div class="description">7249: Input: Wait For A Key</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="6DD6.html">ReadTheInputLine</a>.
+</div>
+<div class="paragraph">
+Counts down the input delay while polling the keyboard. A key raises the next delay by 01F4, up to 0BB8, and is returned. If the delay runs out, <a href="7291.html">7291</a> is printed into the buffer, ENTER is returned, and the next delay is cleared.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Input_WaitForAKey</td>
+<td class="address-2"><span id="7249"></span>7249</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Read the input delay.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="724a"></span>724A</td>
+<td class="instruction">LD HL,($B714)</td>
+</tr>
+<tr>
+<td class="asm-label">Input_WaitForAKey_Poll</td>
+<td class="address-2"><span id="724d"></span>724D</td>
+<td class="instruction">CALL <a href="8B93.html">GetKey</a></td>
+<td class="comment-1" rowspan="1">Poll the keyboard.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7250"></span>7250</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="7249.html#7273">Input_WaitForAKey_AddToTheDelay</a> if a key is waiting.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7251"></span>7251</td>
+<td class="instruction">JR NZ,<a href="7249.html#7273">Input_WaitForAKey_AddToTheDelay</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7253"></span>7253</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="4">Loop back to <a href="7249.html#724d">Input_WaitForAKey_Poll</a> to keep polling until the delay runs out.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7254"></span>7254</td>
+<td class="instruction">LD A,H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7255"></span>7255</td>
+<td class="instruction">OR L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7256"></span>7256</td>
+<td class="instruction">JR NZ,<a href="7249.html#724d">Input_WaitForAKey_Poll</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7258"></span>7258</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="3">Rub out the characters typed so far.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7259"></span>7259</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="725a"></span>725A</td>
+<td class="instruction">CALL <a href="6E8B.html">Input_RubOutCharacters</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="725d"></span>725D</td>
+<td class="instruction">LD DE,$7291</td>
+<td class="comment-1" rowspan="1">Point at the letters W, A, I, T.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7260"></span>7260</td>
+<td class="instruction">LD B,$04</td>
+<td class="comment-1" rowspan="1">Four letters.</td>
+</tr>
+<tr>
+<td class="asm-label">Input_WaitForAKey_Wait</td>
+<td class="address-2"><span id="7262"></span>7262</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="4">Store the next letter of <a href="7291.html">7291</a> in the input buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7263"></span>7263</td>
+<td class="instruction">LD (HL),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7264"></span>7264</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7265"></span>7265</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7266"></span>7266</td>
+<td class="instruction">CALL <a href="858B.html">Print_Character</a></td>
+<td class="comment-1" rowspan="1">Print that letter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7269"></span>7269</td>
+<td class="instruction">DJNZ <a href="7249.html#7262">Input_WaitForAKey_Wait</a></td>
+<td class="comment-1" rowspan="1">Loop back to <a href="7249.html#7262">Input_WaitForAKey_Wait</a> until <a href="7291.html">7291</a> is done.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="726b"></span>726B</td>
+<td class="instruction">EX (SP),HL</td>
+<td class="comment-1" rowspan="4">Remember the pointer after <a href="7291.html">7291</a>, and prepare ENTER. The next delay is FE0C plus 01F4, which is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="726c"></span>726C</td>
+<td class="instruction">LD B,$7C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="726e"></span>726E</td>
+<td class="instruction">LD A,$0D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7270"></span>7270</td>
+<td class="instruction">LD HL,$FE0C</td>
+</tr>
+<tr>
+<td class="asm-label">Input_WaitForAKey_AddToTheDelay</td>
+<td class="address-2"><span id="7273"></span>7273</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="4">Add 01F4 to the delay. A key raises the current delay; the timeout path adds it to zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7274"></span>7274</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7275"></span>7275</td>
+<td class="instruction">LD DE,$01F4</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7278"></span>7278</td>
+<td class="instruction">ADC HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="727a"></span>727A</td>
+<td class="instruction">LD DE,$0BB8</td>
+<td class="comment-1" rowspan="1">The cap is 0BB8.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="727d"></span>727D</td>
+<td class="instruction">JR C,<a href="7249.html#7284">Input_WaitForAKey_Cap</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="7249.html#7284">Input_WaitForAKey_Cap</a> if the sum overflowed, and use the cap.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="727f"></span>727F</td>
+<td class="instruction">CALL <a href="728B.html">Input_CompareTwoTotals</a></td>
+<td class="comment-1" rowspan="1">Call <a href="728B.html">Input_CompareTwoTotals</a> to compare the delay with the cap.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7282"></span>7282</td>
+<td class="instruction">JR C,<a href="7249.html#7285">Input_WaitForAKey_Store</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="7249.html#7285">Input_WaitForAKey_Store</a> if the delay is still under the cap.</td>
+</tr>
+<tr>
+<td class="asm-label">Input_WaitForAKey_Cap</td>
+<td class="address-2"><span id="7284"></span>7284</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1">Use the cap instead.</td>
+</tr>
+<tr>
+<td class="asm-label">Input_WaitForAKey_Store</td>
+<td class="address-2"><span id="7285"></span>7285</td>
+<td class="instruction">LD ($B714),HL</td>
+<td class="comment-1" rowspan="1">Store the next input delay.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7288"></span>7288</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">AF</span> and <span class="register">HL</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7289"></span>7289</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="728a"></span>728A</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="722E.html">722E</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#7249">Map</a></td>
+<td class="next">
+Next: <a href="728B.html">728B</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/29257.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

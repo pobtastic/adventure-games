@@ -58,10 +58,20 @@ Draws a decorative horizontal pattern on screen as a separator.
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="49482"></span>
+<div class="comments">
+<div class="paragraph">
+Clear screen.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">DrawDecorativeLine</td>
 <td class="address-2"><span id="49482"></span>49482</td>
 <td class="instruction">CALL <a href="49423.html">ClearScreen</a></td>
-<td class="comment-1" rowspan="1">Call <a href="49423.html">ClearScreen</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="49423.html">ClearScreen</a> to clear the screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -89,7 +99,7 @@ Draws a decorative horizontal pattern on screen as a separator.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49496"></span>49496</td>
 <td class="instruction">LD A,2</td>
-<td class="comment-1" rowspan="1">Load the height value (2) into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Use 2 for the picture.</td>
 </tr>
 <tr>
 <td class="asm-label">DrawDecorativeLine_Custom</td>
@@ -98,22 +108,31 @@ Draws a decorative horizontal pattern on screen as a separator.
 <td class="comment-1" rowspan="1">Store the height value in *<a href="49659.html">49659</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="49501"></span>
+<div class="comments">
+<div class="paragraph">
+Reset screen display.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49501"></span>49501</td>
 <td class="instruction">CALL <a href="49474.html">ResetScreenDisplay</a></td>
-<td class="comment-1" rowspan="1">Call <a href="49474.html">ResetScreenDisplay</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="49474.html">ResetScreenDisplay</a> to reset the screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49504"></span>49504</td>
 <td class="instruction">LD HL,20800</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=20800 (screen buffer location).</td>
+<td class="comment-1" rowspan="2">Point <span class="register">HL</span> at the screen address 20800 and <span class="register">DE</span> at the decorative line data at <a href="49552.html">Data_DecorativeLine</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49507"></span>49507</td>
 <td class="instruction">LD DE,49552</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="49552.html">Data_DecorativeLine</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -131,7 +150,7 @@ Draws a decorative horizontal pattern on screen as a separator.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49514"></span>49514</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="2">Stash the row counters and screen position on the stack.</td>
+<td class="comment-1" rowspan="4">Count 4 saving count and the pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -142,13 +161,11 @@ Draws a decorative horizontal pattern on screen as a separator.
 <td class="asm-label">DrawDecorativeLine_SegmentLoop</td>
 <td class="address-2"><span id="49516"></span>49516</td>
 <td class="instruction">LD B,4</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=4.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49518"></span>49518</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label">DrawDecorativeLine_CopyPatternLoop</td>
@@ -177,13 +194,13 @@ Draws a decorative horizontal pattern on screen as a separator.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49523"></span>49523</td>
 <td class="instruction">DJNZ <a href="49482.html#49519">DrawDecorativeLine_CopyPatternLoop</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="49482.html#49519">DrawDecorativeLine_CopyPatternLoop</a> until counter is zero.</td>
+<td class="comment-1" rowspan="1">Count the next attribute and repeat from <a href="49482.html#49519">DrawDecorativeLine_CopyPatternLoop</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49525"></span>49525</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="1">Restore the pattern pointer from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the caller's registers from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -232,7 +249,7 @@ Skip to the next pattern.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49533"></span>49533</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">HL</span> and <span class="register">BC</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the screen address from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -243,13 +260,13 @@ Skip to the next pattern.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49535"></span>49535</td>
 <td class="instruction">INC H</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">H</span> by one.</td>
+<td class="comment-1" rowspan="1">The count, and step to the next row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49536"></span>49536</td>
 <td class="instruction">DJNZ <a href="49482.html#49512">DrawDecorativeLine_RowLoop</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="49482.html#49512">DrawDecorativeLine_RowLoop</a> until counter is zero.</td>
+<td class="comment-1" rowspan="1">Count the next attribute and repeat from <a href="49482.html#49512">DrawDecorativeLine_RowLoop</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -265,12 +282,7 @@ Now colour the line BRIGHT WHITE.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49538"></span>49538</td>
 <td class="instruction">LD HL,23104</td>
-<td class="comment-1" rowspan="5">Write INK:
-BLACK,
-PAPER:
-WHITE
-(BRIGHT)
- to 0032 bytes starting from 23104 (attribute buffer location).</td>
+<td class="comment-1" rowspan="5">Take the attributes, take a length of 31 attributes and copy these bytes across.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -313,7 +325,7 @@ Next: <a href="49552.html">49552</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/C14A.html">Switch to hexadecimal</a>.</div>
 </footer>

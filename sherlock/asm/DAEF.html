@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at DAEF</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DAE8.html">DAE8</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#daef">Map</a></td>
+<td class="next">
+Next: <a href="DB56.html">DB56</a>
+</td>
+</tr>
+</table>
+<div class="description">DAEF: Parse A Time</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="DAC6.html">TestCommonWord</a>.
+</div>
+<div class="paragraph">
+Reads hours, an optional ":" and minutes into <span class="register">B</span>/<span class="register">C</span>, then an "A" or "P" plus "M" suffix. "A" sets bit 6 of <span class="register">B</span>; "P" sets bit 6 of <span class="register">C</span> for PM.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime</td>
+<td class="address-2"><span id="daef"></span>DAEF</td>
+<td class="instruction">CALL <a href="DBF7.html">ParseInputNumber</a></td>
+<td class="comment-1" rowspan="1">Call <a href="DBF7.html">ParseInputNumber</a> to start from an empty length.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daf2"></span>DAF2</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="DAEF.html#db05">ParseATime_CheckHours</a> if this byte is 3A.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daf3"></span>DAF3</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daf4"></span>DAF4</td>
+<td class="instruction">CP $3A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daf6"></span>DAF6</td>
+<td class="instruction">JR Z,<a href="DAEF.html#db05">ParseATime_CheckHours</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="daf8"></span>DAF8</td>
+<td class="instruction">CP $41</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="DAEF.html#db05">ParseATime_CheckHours</a> when the input character is A.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dafa"></span>DAFA</td>
+<td class="instruction">JR Z,<a href="DAEF.html#db05">ParseATime_CheckHours</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dafc"></span>DAFC</td>
+<td class="instruction">CP $50</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="DAEF.html#db05">ParseATime_CheckHours</a> when the input character is P.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dafe"></span>DAFE</td>
+<td class="instruction">JR Z,<a href="DAEF.html#db05">ParseATime_CheckHours</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db00"></span>DB00</td>
+<td class="instruction">CALL <a href="DB56.html">TestFullStop_TestReturnsCharacterSentence</a></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="DB84.html">StartParsedNumber</a> unless the character is a full stop, a comma or a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db03"></span>DB03</td>
+<td class="instruction">JR NZ,<a href="DB84.html">StartParsedNumber</a></td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_CheckHours</td>
+<td class="address-2"><span id="db05"></span>DB05</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="DAEF.html#db4f">ParseATime_SignalNothingMatched</a> if the count is at least 3C.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db06"></span>DB06</td>
+<td class="instruction">CP $3C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db08"></span>DB08</td>
+<td class="instruction">JR NC,<a href="DAEF.html#db4f">ParseATime_SignalNothingMatched</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db0a"></span>DB0A</td>
+<td class="instruction">SET 7,B</td>
+<td class="comment-1" rowspan="1">Set bit 7 of the count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db0c"></span>DB0C</td>
+<td class="instruction">LD C,$00</td>
+<td class="comment-1" rowspan="3">Start the number at zero, read the input character, and parse it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db0e"></span>DB0E</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db0f"></span>DB0F</td>
+<td class="instruction">CALL <a href="DB56.html">TestFullStop_TestReturnsCharacterSentence</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db12"></span>DB12</td>
+<td class="instruction">JR Z,<a href="DB59.html#db60">TestComma_0</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="DB59.html#db60">TestComma_0</a> if the character is a full stop, a comma or a space.</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_ReadMinutes</td>
+<td class="address-1"><span id="db14"></span>DB14</td>
+<td class="instruction">CP $3A</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="DAEF.html#db21">ParseATime_CheckSuffix</a> if the character is not 3A.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db16"></span>DB16</td>
+<td class="instruction">JR NZ,<a href="DAEF.html#db21">ParseATime_CheckSuffix</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db18"></span>DB18</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Step to the next character and call <a href="DBF7.html">ParseInputNumber</a> to read a number.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db19"></span>DB19</td>
+<td class="instruction">CALL <a href="DBF7.html">ParseInputNumber</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db1c"></span>DB1C</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="DAEF.html#db4f">ParseATime_SignalNothingMatched</a> if the number is at least 3C.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db1d"></span>DB1D</td>
+<td class="instruction">CP $3C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db1f"></span>DB1F</td>
+<td class="instruction">JR NC,<a href="DAEF.html#db4f">ParseATime_SignalNothingMatched</a></td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_CheckSuffix</td>
+<td class="address-2"><span id="db21"></span>DB21</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="DB59.html#db60">TestComma_0</a> if the character is a full stop, a comma or a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db22"></span>DB22</td>
+<td class="instruction">CALL <a href="DB56.html">TestFullStop_TestReturnsCharacterSentence</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db25"></span>DB25</td>
+<td class="instruction">JR Z,<a href="DB59.html#db60">TestComma_0</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db27"></span>DB27</td>
+<td class="instruction">CP $41</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="DAEF.html#db30">ParseATime_AMPM</a> if the character is not 41.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db29"></span>DB29</td>
+<td class="instruction">JR NZ,<a href="DAEF.html#db30">ParseATime_AMPM</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db2b"></span>DB2B</td>
+<td class="instruction">SET 6,B</td>
+<td class="comment-1" rowspan="1">Set bit 6 of the count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db2d"></span>DB2D</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Step to the next input character and continue at <a href="DAEF.html#db37">ParseATime_CheckM</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db2e"></span>DB2E</td>
+<td class="instruction">JR <a href="DAEF.html#db37">ParseATime_CheckM</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="db30"></span>
+<div class="comments">
+<div class="paragraph">
+Accept "AM" or "PM": "A" has already set bit 6 of <span class="register">B</span>, and "P" sets bit 6 of <span class="register">C</span> for PM; both then require "M".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_AMPM</td>
+<td class="address-2"><span id="db30"></span>DB30</td>
+<td class="instruction">CP $50</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="DAEF.html#db4f">ParseATime_SignalNothingMatched</a> if the character is not 50.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db32"></span>DB32</td>
+<td class="instruction">JR NZ,<a href="DAEF.html#db4f">ParseATime_SignalNothingMatched</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db34"></span>DB34</td>
+<td class="instruction">SET 6,C</td>
+<td class="comment-1" rowspan="2">Set bit 6 of <span class="register">C</span> for PM and step to the next character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db36"></span>DB36</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_CheckM</td>
+<td class="address-2"><span id="db37"></span>DB37</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="DAEF.html#db4f">ParseATime_SignalNothingMatched</a> if this byte is not 4D.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db38"></span>DB38</td>
+<td class="instruction">CP $4D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db3a"></span>DB3A</td>
+<td class="instruction">JR NZ,<a href="DAEF.html#db4f">ParseATime_SignalNothingMatched</a></td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_TestStepEntry</td>
+<td class="address-2"><span id="db3c"></span>DB3C</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next entry.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="db3d"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="DB84.html">StartParsedNumber</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_0</td>
+<td class="address-2"><span id="db3d"></span>DB3D</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="DAEF.html#db3c">ParseATime_TestStepEntry</a> if this byte is 2E.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db3e"></span>DB3E</td>
+<td class="instruction">CP $2E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db40"></span>DB40</td>
+<td class="instruction">JR Z,<a href="DAEF.html#db3c">ParseATime_TestStepEntry</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db42"></span>DB42</td>
+<td class="instruction">CALL <a href="DB59.html">TestComma</a></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="DB59.html#db60">TestComma_0</a> if the character is a comma or a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db45"></span>DB45</td>
+<td class="instruction">JR Z,<a href="DB59.html#db60">TestComma_0</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db47"></span>DB47</td>
+<td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Jump to <a href="DB59.html#db5f">TestComma_TestStepOneByte</a> if the player pressed "ENTER".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db49"></span>DB49</td>
+<td class="instruction">JR Z,<a href="DB59.html#db5f">TestComma_TestStepOneByte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db4b"></span>DB4B</td>
+<td class="instruction">CP $22</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="DB59.html#db5f">TestComma_TestStepOneByte</a> if the character is 22.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db4d"></span>DB4D</td>
+<td class="instruction">JR Z,<a href="DB59.html#db5f">TestComma_TestStepOneByte</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="db4f"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="DB84.html">StartParsedNumber</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseATime_SignalNothingMatched</td>
+<td class="address-2"><span id="db4f"></span>DB4F</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Set the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db50"></span>DB50</td>
+<td class="instruction">LD A,$D0</td>
+<td class="comment-1" rowspan="1">Leave D0 as the result.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db52"></span>DB52</td>
+<td class="instruction">LD BC,$0000</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">BC</span> (no time was given).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="db55"></span>DB55</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DAE8.html">DAE8</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#daef">Map</a></td>
+<td class="next">
+Next: <a href="DB56.html">DB56</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/56047.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

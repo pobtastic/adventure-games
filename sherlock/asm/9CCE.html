@@ -44,6 +44,9 @@ Next: <a href="9CE9.html">9CE9</a>
 <div class="paragraph">
 Used by the routines at <a href="9CF2.html">ProcessCharacterActionParameter</a> and <a href="9DFF.html">CharacterAction_InspectorLestrade</a>.
 </div>
+<div class="paragraph">
+Sets the zero flag when the object in <span class="register">C</span> is in the current character's location. A non-zero return means it is not.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -69,65 +72,63 @@ Used by the routines at <a href="9CF2.html">ProcessCharacterActionParameter</a> 
 <td class="asm-label">CheckObjectInCharacterLocation</td>
 <td class="address-2"><span id="9cce"></span>9CCE</td>
 <td class="instruction">LD IX,($A017)</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="A017.html">CurrentCharacterData</a>.</td>
+<td class="comment-1" rowspan="2">Read the current character record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9cd2"></span>9CD2</td>
 <td class="instruction">LD B,(IX+$0F)</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=*<span class="register">IX</span>+0F.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9cd5"></span>9CD5</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">C</span>.</td>
+<td class="comment-1" rowspan="2">Call <a href="D237.html">FetchObjectDataPointer</a> to look up that object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9cd6"></span>9CD6</td>
 <td class="instruction">CALL <a href="D237.html">FetchObjectDataPointer</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D237.html">FetchObjectDataPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9cd9"></span>9CD9</td>
 <td class="instruction">LD A,(IX+$0F)</td>
-<td class="comment-1" rowspan="3">Return if *<span class="register">IX</span>+0F is not equal to <span class="register">B</span>.</td>
+<td class="comment-1" rowspan="1">Read offset 0F of the object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9cdc"></span>9CDC</td>
 <td class="instruction">CP B</td>
+<td class="comment-1" rowspan="1">See whether the two values match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9cdd"></span>9CDD</td>
 <td class="instruction">RET NZ</td>
+<td class="comment-1" rowspan="1">Return if they differ.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9cde"></span>9CDE</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">C</span>.</td>
+<td class="comment-1" rowspan="3">Go to <a href="9CCE.html#9ce6">CheckObjectInCharacterLocation_Next</a> if the object is not in this location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9cdf"></span>9CDF</td>
 <td class="instruction">CALL <a href="C821.html">CheckObjectLocationMatch</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C821.html">CheckObjectLocationMatch</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9ce2"></span>9CE2</td>
-<td class="instruction">JR Z,<a href="9CCE.html#9ce6">CheckObjectInCharacterLocation_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="9CCE.html#9ce6">CheckObjectInCharacterLocation_0</a> if <span class="register">A</span> is equal to <span class="register">B</span>.</td>
+<td class="instruction">JR Z,<a href="9CCE.html#9ce6">CheckObjectInCharacterLocation_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9ce4"></span>9CE4</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -136,10 +137,10 @@ Used by the routines at <a href="9CF2.html">ProcessCharacterActionParameter</a> 
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectInCharacterLocation_0</td>
+<td class="asm-label">CheckObjectInCharacterLocation_Next</td>
 <td class="address-2"><span id="9ce6"></span>9CE6</td>
 <td class="instruction">OR %00000001</td>
-<td class="comment-1" rowspan="1">Set bit 0.</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -162,7 +163,7 @@ Next: <a href="9CE9.html">9CE9</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/40142.html">Switch to decimal</a>.</div>
 </footer>

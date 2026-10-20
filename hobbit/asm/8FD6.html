@@ -33,11 +33,14 @@ Next: <a href="8FF5.html">8FF5</a>
 </td>
 </tr>
 </table>
-<div class="description">8FD6: Action Follow</div>
+<div class="description">8FD6: Action: Follow</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Follows another character through the exit they took. Reached through the action table at <a href="C730.html">ActionTable</a>, dispatched by <a href="950F.html">Turn_RunTheHandlerIfPresent</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -45,67 +48,65 @@ Next: <a href="8FF5.html">8FF5</a>
 <td class="asm-label">Action_Follow</td>
 <td class="address-2"><span id="8fd6"></span>8FD6</td>
 <td class="instruction">LD IX,($B70C)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b70c">Pointer_CurrentCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fda"></span>8FDA</td>
 <td class="instruction">LD B,(IX+$10)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the location from the object record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fdd"></span>8FDD</td>
 <td class="instruction">LD IX,($B708)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b708">B708</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fe1"></span>8FE1</td>
 <td class="instruction">LD A,(IX+$10)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the location from the object record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fe4"></span>8FE4</td>
 <td class="instruction">CP B</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="8FD6.html#8fef">Action_Follow_PrintCannotFollow</a> if both objects are in the same location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fe5"></span>8FE5</td>
-<td class="instruction">JR Z,<a href="8FD6.html#8fef">Action_Follow_0</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="8FD6.html#8fef">Action_Follow_PrintCannotFollow</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fe7"></span>8FE7</td>
-<td class="instruction">CALL <a href="9F25.html#9f2d">$9F2D</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="9F2D.html">ExitsFindTheExitToALocation</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9F2D.html">ExitsFindTheExitToALocation</a> to find an exit whose destination is that location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fea"></span>8FEA</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="8F3B.html#8f3e">Action_LeaveIfTheWayIsOpen_0</a> if an exit leads there.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fec"></span>8FEC</td>
-<td class="instruction">JP NZ,<a href="8D9D.html#8f3e">Action_Dir_21</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP NZ,<a href="8F3B.html#8f3e">Action_LeaveIfTheWayIsOpen_0</a></td>
 </tr>
 <tr>
-<td class="asm-label">Action_Follow_0</td>
+<td class="asm-label">Action_Follow_PrintCannotFollow</td>
 <td class="address-2"><span id="8fef"></span>8FEF</td>
 <td class="instruction">LD HL,$AFE9</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="AD7D.html#afe9">"i cannot follow[0x07] from here[0x15]"</a></td>
+<td class="comment-1" rowspan="1">Point at the message "i cannot follow[0x07] from here[0x15]" (<a href="AD7D.html#afe9">AFE9</a>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8ff2"></span>8FF2</td>
-<td class="instruction">JP <a href="72DD.html">PrintMsg</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="72DD.html">PrintMsg</a>.</td>
+<td class="instruction">JP <a href="72DD.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="72DD.html">PrintMessage</a> to print "i cannot follow[0x07] from here".</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -122,7 +123,7 @@ Next: <a href="8FF5.html">8FF5</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../dec/asm/36822.html">Switch to decimal</a>.</div>
 </footer>

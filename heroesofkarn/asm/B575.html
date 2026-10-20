@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at B575</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B560.html">B560</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b575">Map</a></td>
+<td class="next">
+Next: <a href="B5A4.html">B5A4</a>
+</td>
+</tr>
+</table>
+<div class="description">B575: Match Phrase Tokens</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="B7D3.html">Handler_DispatchPhrase</a>, <a href="FB13.html">Action_Light</a>, <a href="FB20.html">Action_Rub</a>, <a href="FB2D.html">Action_Say</a> and <a href="FB3A.html">Action_Attack</a>.
+</div>
+<div class="paragraph">
+Match Phrase Tokens.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">HL</td>
+<td class="register-desc">A pointer to phrase token data</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The Z flag is set if the input matches any pattern</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchPhraseTokens</td>
+<td class="address-2"><span id="b575"></span>B575</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1">Move the phrase token pointer into <span class="register">DE</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b576"></span>B576</td>
+<td class="instruction">JR <a href="B575.html#b579">MatchPhraseTokens_Next</a></td>
+<td class="comment-1" rowspan="1">Start the match at the first pattern byte, <a href="B575.html#b579">MatchPhraseTokens_Next</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">Match_PhraseTokens_Loop</td>
+<td class="address-2"><span id="b578"></span>B578</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">DE</span> to the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label">MatchPhraseTokens_Next</td>
+<td class="address-2"><span id="b579"></span>B579</td>
+<td class="instruction">LD HL,$AF2F</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the second word token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b57c"></span>B57C</td>
+<td class="instruction">JR <a href="B575.html#b580">Match_PhraseTokens_Compare</a></td>
+<td class="comment-1" rowspan="1">Compare the command from its first word at <a href="B575.html#b580">Match_PhraseTokens_Compare</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">MatchPhraseTokens_Loop</td>
+<td class="address-2"><span id="b57e"></span>B57E</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> to the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b57f"></span>B57F</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">DE</span> to the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label">Match_PhraseTokens_Compare</td>
+<td class="address-2"><span id="b580"></span>B580</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="1">Read the next vocabulary byte into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b581"></span>B581</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">Branch to <a href="B575.html#b57e">MatchPhraseTokens_Loop</a> when the byte at <span class="register">HL</span> means the values match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b582"></span>B582</td>
+<td class="instruction">JR Z,<a href="B575.html#b57e">MatchPhraseTokens_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b584"></span>B584</td>
+<td class="instruction">CP $FE</td>
+<td class="comment-1" rowspan="2">Branch to <a href="B575.html#b58c">Match_PhraseTokens_Alternative</a> when FE means the values differ.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b586"></span>B586</td>
+<td class="instruction">JR NZ,<a href="B575.html#b58c">Match_PhraseTokens_Alternative</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b588"></span>B588</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Accept the phrase when the command has ended.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b589"></span>B589</td>
+<td class="instruction">CP $FF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b58b"></span>B58B</td>
+<td class="instruction">RET</td>
+</tr>
+<tr>
+<td class="asm-label">Match_PhraseTokens_Alternative</td>
+<td class="address-2"><span id="b58c"></span>B58C</td>
+<td class="instruction">CP $FD</td>
+<td class="comment-1" rowspan="2">Branch to <a href="B575.html#b596">Match_PhraseTokens_Skip</a> when FD means the values differ.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b58e"></span>B58E</td>
+<td class="instruction">JR NZ,<a href="B575.html#b596">Match_PhraseTokens_Skip</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b590"></span>B590</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="4">Match this alternative when the command has ended, and try the next one when the player typed another word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b591"></span>B591</td>
+<td class="instruction">CP $FF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b593"></span>B593</td>
+<td class="instruction">JR NZ,<a href="B575.html#b578">Match_PhraseTokens_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b595"></span>B595</td>
+<td class="instruction">RET</td>
+</tr>
+<tr>
+<td class="asm-label">Match_PhraseTokens_Skip</td>
+<td class="address-2"><span id="b596"></span>B596</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">DE</span> to the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b597"></span>B597</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="1">Read the next vocabulary byte into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b598"></span>B598</td>
+<td class="instruction">CP $FE</td>
+<td class="comment-1" rowspan="2">Branch to <a href="B575.html#b5a2">Match_PhraseTokens_Done</a> when FE means the values match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b59a"></span>B59A</td>
+<td class="instruction">JR Z,<a href="B575.html#b5a2">Match_PhraseTokens_Done</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b59c"></span>B59C</td>
+<td class="instruction">CP $FD</td>
+<td class="comment-1" rowspan="2">Branch to <a href="B575.html#b596">Match_PhraseTokens_Skip</a> when FD means the values differ.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b59e"></span>B59E</td>
+<td class="instruction">JR NZ,<a href="B575.html#b596">Match_PhraseTokens_Skip</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b5a0"></span>B5A0</td>
+<td class="instruction">JR <a href="B575.html#b578">Match_PhraseTokens_Loop</a></td>
+<td class="comment-1" rowspan="1">Try the next phrase alternative at <a href="B575.html#b578">Match_PhraseTokens_Loop</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">Match_PhraseTokens_Done</td>
+<td class="address-2"><span id="b5a2"></span>B5A2</td>
+<td class="instruction">OR A</td>
+<td class="comment-1" rowspan="1">Test <span class="register">A</span> so the following branch can see whether it is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b5a3"></span>B5A3</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B560.html">B560</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b575">Map</a></td>
+<td class="next">
+Next: <a href="B5A4.html">B5A4</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../dec/asm/46453.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

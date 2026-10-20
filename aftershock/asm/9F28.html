@@ -57,7 +57,7 @@ Used by the routine at <a href="9F67.html">Handler_Images</a>.
 <td class="asm-label">Print_RoomImage</td>
 <td class="address-2"><span id="9f28"></span>9F28</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=<span class="register">IX</span> (using the stack).</td>
+<td class="comment-1" rowspan="2">Copy the room-image pointer from <span class="register">IX</span> into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -65,208 +65,249 @@ Used by the routine at <a href="9F67.html">Handler_Images</a>.
 <td class="instruction">POP HL</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9f2b"></span>
+<div class="comments">
+<div class="paragraph">
+Step over the 0200 mask bytes and aim at the display file.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f2b"></span>9F2B</td>
 <td class="instruction">LD DE,$0200</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">The pixel data follows the mask.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f2e"></span>9F2E</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f2f"></span>9F2F</td>
 <td class="instruction">LD DE,$4000</td>
-<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9f32"></span>
+<div class="comments">
+<div class="paragraph">
+Expand each mask byte. Each bit stands for one screen byte (08 pixels).
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f32"></span>9F32</td>
 <td class="instruction">LD BC,$0200</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">0200 mask bytes cover the screen, eight screen bytes at a time.</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_0</td>
+<td class="asm-label">PixelControl_Loop</td>
 <td class="address-2"><span id="9f35"></span>9F35</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Take the next mask byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f36"></span>9F36</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f38"></span>9F38</td>
 <td class="instruction">LD C,(IX+$00)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_1</td>
+<td class="routine-comment" colspan="5">
+<span id="9f3b"></span>
+<div class="comments">
+<div class="paragraph">
+A set bit copies the next pixel byte onto the screen. When the bit is clear, <span class="register">DE</span> still advances but nothing is written, so those 08 pixels stay blank.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PixelBit_Loop</td>
 <td class="address-2"><span id="9f3b"></span>9F3B</td>
 <td class="instruction">SLA C</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="9F28.html#9f42">Print_RoomImage_0</a> if the mask bit is clear (skip that screen byte).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f3d"></span>9F3D</td>
-<td class="instruction">JR NC,<a href="9F28.html#9f42">Print_RoomImage_2</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="9F28.html#9f42">Print_RoomImage_0</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f3f"></span>9F3F</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Copy the next pixel byte onto the screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f40"></span>9F40</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f41"></span>9F41</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_2</td>
+<td class="asm-label">Print_RoomImage_0</td>
 <td class="address-2"><span id="9f42"></span>9F42</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Move along the screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f43"></span>9F43</td>
-<td class="instruction">DJNZ <a href="9F28.html#9f3b">Print_RoomImage_1</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="9F28.html#9f3b">PixelBit_Loop</a></td>
+<td class="comment-1" rowspan="2">This mask byte's eight screen bytes are done.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f45"></span>9F45</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f47"></span>9F47</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore the mask-byte counter from the stack and decrease it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f48"></span>9F48</td>
 <td class="instruction">DEC BC</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f49"></span>9F49</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Another mask byte remains.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f4a"></span>9F4A</td>
 <td class="instruction">OR C</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f4b"></span>9F4B</td>
-<td class="instruction">JR NZ,<a href="9F28.html#9f35">Print_RoomImage_0</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="9F28.html#9f35">PixelControl_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9f4d"></span>
+<div class="comments">
+<div class="paragraph">
+The bytes that follow are the attribute stream.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f4d"></span>9F4D</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Copy the attribute-stream pointer from <span class="register">HL</span> into <span class="register">IX</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f4e"></span>9F4E</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9f50"></span>
+<div class="comments">
+<div class="paragraph">
+Paint attributes from 5800 until the display ends at 5A00.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f50"></span>9F50</td>
 <td class="instruction">LD HL,$5800</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Start at the attribute file.</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_3</td>
+<td class="asm-label">Attribute_Loop</td>
 <td class="address-2"><span id="9f53"></span>9F53</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="4">The colour, and how many cells it covers (00 means 0100).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f56"></span>9F56</td>
 <td class="instruction">LD B,(IX+$01)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f59"></span>9F59</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f5b"></span>9F5B</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_4</td>
+<td class="asm-label">Print_RoomImage_1</td>
 <td class="address-2"><span id="9f5d"></span>9F5D</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Paint that many cells (<span class="register">B</span>=00 runs the <code>DJNZ</code> loop 0100 times).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f5e"></span>9F5E</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f5f"></span>9F5F</td>
-<td class="instruction">DJNZ <a href="9F28.html#9f5d">Print_RoomImage_4</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="9F28.html#9f5d">Print_RoomImage_1</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f61"></span>9F61</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Continue until the attribute file is full.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f62"></span>9F62</td>
 <td class="instruction">CP $5A</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f64"></span>9F64</td>
-<td class="instruction">JR NZ,<a href="9F28.html#9f53">Print_RoomImage_3</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="9F28.html#9f53">Attribute_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9f66"></span>
+<div class="comments">
+<div class="paragraph">
+The picture is on screen.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9f66"></span>9F66</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -283,7 +324,7 @@ Next: <a href="9F67.html">9F67</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/40744.html">Switch to decimal</a>.</div>
 </footer>

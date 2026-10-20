@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at C628</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C613.html">C613</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c628">Map</a></td>
+<td class="next">
+Next: <a href="C6BE.html">C6BE</a>
+</td>
+</tr>
+</table>
+<div class="description">C628: Test The Character Field Of The Display Record</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="C9BF.html">ProcessDisplayRecord</a>.
+</div>
+<div class="paragraph">
+Tests the low nibble of the record flags against the room and the object.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c628"></span>
+<div class="comments">
+<div class="paragraph">
+Low nibble of the record flags is clear?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TestLowBitsOfCharacter</td>
+<td class="address-2"><span id="c628"></span>C628</td>
+<td class="instruction">LD A,(IY+$00)</td>
+<td class="comment-1" rowspan="3">Read the low nibble of the record flags and jump ahead to <a href="C628.html#c635">TestLowBitsOfCharacter_CodeFromFive</a> when it is not zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c62b"></span>C62B</td>
+<td class="instruction">AND $0F</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c62d"></span>C62D</td>
+<td class="instruction">JR NZ,<a href="C628.html#c635">TestLowBitsOfCharacter_CodeFromFive</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c62f"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routines at <a href="C6BE.html">TestLowBitsOfGraphics</a>, <a href="C763.html">ReadHighByteSource</a> and <a href="C7A6.html">TestSeventhMarker</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TestLowBitsOfCharacter_ReportMatch</td>
+<td class="address-2"><span id="c62f"></span>C62F</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c631"></span>C631</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c632"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="C7A6.html">TestSeventhMarker</a>.
+</div>
+<div class="paragraph">
+The character field did not match.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TestLowBitsOfCharacter_GiveUp</td>
+<td class="address-2"><span id="c632"></span>C632</td>
+<td class="instruction">JP <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+<td class="comment-1" rowspan="1">Return zero through <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c635"></span>
+<div class="comments">
+<div class="paragraph">
+For a picture code from 5 up to but not including 7, reads the room chosen for the picture.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TestLowBitsOfCharacter_CodeFromFive</td>
+<td class="address-2"><span id="c635"></span>C635</td>
+<td class="instruction">CP $05</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="C628.html#c660">TestLowBitsOfCharacter_CodeBelowThree</a> if the low nibble of the record flags is below 05.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c637"></span>C637</td>
+<td class="instruction">JR C,<a href="C628.html#c660">TestLowBitsOfCharacter_CodeBelowThree</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c639"></span>C639</td>
+<td class="instruction">CP $07</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="C628.html#c682">TestLowBitsOfCharacter_UseRoom</a> if the low nibble of the record flags is at least 07.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c63b"></span>C63B</td>
+<td class="instruction">JR NC,<a href="C628.html#c682">TestLowBitsOfCharacter_UseRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c63d"></span>C63D</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C628.html#c654">TestLowBitsOfCharacter_ClearFlag</a> if the room display parameter is not FE.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c640"></span>C640</td>
+<td class="instruction">CP $FE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c642"></span>C642</td>
+<td class="instruction">JR NZ,<a href="C628.html#c654">TestLowBitsOfCharacter_ClearFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c644"></span>C644</td>
+<td class="instruction">LD HL,($A02F)</td>
+<td class="comment-1" rowspan="1">Read the display pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c647"></span>C647</td>
+<td class="instruction">LD A,(IY+$00)</td>
+<td class="comment-1" rowspan="4">Jump to <a href="C628.html#c65a">TestLowBitsOfCharacter_TestTopBit</a> unless the low nibble of the record flags is 05.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c64a"></span>C64A</td>
+<td class="instruction">AND $0F</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c64c"></span>C64C</td>
+<td class="instruction">CP $05</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c64e"></span>C64E</td>
+<td class="instruction">JR NZ,<a href="C628.html#c65a">TestLowBitsOfCharacter_TestTopBit</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c650"></span>C650</td>
+<td class="instruction">BIT 7,L</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="C628.html#c62f">TestLowBitsOfCharacter_ReportMatch</a> if bit 7 is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c652"></span>C652</td>
+<td class="instruction">JR Z,<a href="C628.html#c62f">TestLowBitsOfCharacter_ReportMatch</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c654"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="C6BE.html">TestLowBitsOfGraphics</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TestLowBitsOfCharacter_ClearFlag</td>
+<td class="address-2"><span id="c654"></span>C654</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Clear the byte at <a href="A021.html">A021</a> and return zero through <a href="C628.html#c632">TestLowBitsOfCharacter_GiveUp</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c655"></span>C655</td>
+<td class="instruction">LD ($A021),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c658"></span>C658</td>
+<td class="instruction">JR <a href="C628.html#c632">TestLowBitsOfCharacter_GiveUp</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c65a"></span>
+<div class="comments">
+<div class="paragraph">
+Bit 7 of the room pointer selects the next picture.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TestLowBitsOfCharacter_TestTopBit</td>
+<td class="address-2"><span id="c65a"></span>C65A</td>
+<td class="instruction">BIT 7,L</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="C628.html#c62f">TestLowBitsOfCharacter_ReportMatch</a> while bit 7 is present.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c65c"></span>C65C</td>
+<td class="instruction">JR NZ,<a href="C628.html#c62f">TestLowBitsOfCharacter_ReportMatch</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c65e"></span>C65E</td>
+<td class="instruction">JR <a href="C628.html#c654">TestLowBitsOfCharacter_ClearFlag</a></td>
+<td class="comment-1" rowspan="1">Bit 7 of the room pointer is clear, so give up from <a href="C628.html#c654">TestLowBitsOfCharacter_ClearFlag</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c660"></span>
+<div class="comments">
+<div class="paragraph">
+For a code below 3, looks the room up and accepts it when the top flag is set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TestLowBitsOfCharacter_CodeBelowThree</td>
+<td class="address-2"><span id="c660"></span>C660</td>
+<td class="instruction">CP $03</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="C628.html#c670">TestLowBitsOfCharacter_TestMarker</a> if the low nibble of the record flags is at least 03.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c662"></span>C662</td>
+<td class="instruction">JR NC,<a href="C628.html#c670">TestLowBitsOfCharacter_TestMarker</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c664"></span>C664</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="2">Read the room display parameter, then call <a href="D224.html">FetchLocationDataPointer</a> to look up this room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c667"></span>C667</td>
+<td class="instruction">CALL <a href="D224.html">FetchLocationDataPointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c66a"></span>C66A</td>
+<td class="instruction">BIT 7,(IX+$00)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C628.html#c654">TestLowBitsOfCharacter_ClearFlag</a> if a marker on the record's flag byte is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c66e"></span>C66E</td>
+<td class="instruction">JR Z,<a href="C628.html#c654">TestLowBitsOfCharacter_ClearFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label">TestLowBitsOfCharacter_TestMarker</td>
+<td class="address-2"><span id="c670"></span>C670</td>
+<td class="instruction">BIT 0,(IY+$00)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C628.html#c62f">TestLowBitsOfCharacter_ReportMatch</a> if bit 0 of the record flags is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c674"></span>C674</td>
+<td class="instruction">JR Z,<a href="C628.html#c62f">TestLowBitsOfCharacter_ReportMatch</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c676"></span>C676</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="2">Read the room display parameter and call <a href="D471.html">FindObjectByFieldTwo</a> to find an object by field two.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c679"></span>C679</td>
+<td class="instruction">CALL <a href="D471.html">FindObjectByFieldTwo</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c67c"></span>C67C</td>
+<td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="C628.html#c654">TestLowBitsOfCharacter_ClearFlag</a> if the entry is the end marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c67e"></span>C67E</td>
+<td class="instruction">JR Z,<a href="C628.html#c654">TestLowBitsOfCharacter_ClearFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c680"></span>C680</td>
+<td class="instruction">JR <a href="C628.html#c62f">TestLowBitsOfCharacter_ReportMatch</a></td>
+<td class="comment-1" rowspan="1">The entry is not the end marker, so return non-zero from <a href="C628.html#c62f">TestLowBitsOfCharacter_ReportMatch</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c682"></span>
+<div class="comments">
+<div class="paragraph">
+Read the room display parameter, record it in the room parameter at <a href="CB79.html#cb7a">CB7A</a> and keep it in <span class="register">C</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TestLowBitsOfCharacter_UseRoom</td>
+<td class="address-2"><span id="c682"></span>C682</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="3">Read the room display parameter, store it in the room parameter at <a href="CB79.html#cb7a">CB7A</a> and keep it in <span class="register">C</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c685"></span>C685</td>
+<td class="instruction">LD ($CB7A),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c688"></span>C688</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c689"></span>C689</td>
+<td class="instruction">LD A,(IY+$00)</td>
+<td class="comment-1" rowspan="3">Test the record flags through <a href="C7A6.html">TestSeventhMarker</a> and go to <a href="C628.html#c654">TestLowBitsOfCharacter_ClearFlag</a> if it returns zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c68c"></span>C68C</td>
+<td class="instruction">CALL <a href="C7A6.html">TestSeventhMarker</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c68f"></span>C68F</td>
+<td class="instruction">JR Z,<a href="C628.html#c654">TestLowBitsOfCharacter_ClearFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c691"></span>C691</td>
+<td class="instruction">BIT 4,(IY+$00)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C628.html#c62f">TestLowBitsOfCharacter_ReportMatch</a> if bit 4 of the record flags is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c695"></span>C695</td>
+<td class="instruction">JR Z,<a href="C628.html#c62f">TestLowBitsOfCharacter_ReportMatch</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c697"></span>C697</td>
+<td class="instruction">LD A,(IY+$02)</td>
+<td class="comment-1" rowspan="2">Read record bytes 02 and 03.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c69a"></span>C69A</td>
+<td class="instruction">LD L,(IY+$03)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c69d"></span>C69D</td>
+<td class="instruction">LD H,(IY+$04)</td>
+<td class="comment-1" rowspan="1">Read record byte 04 as the high byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6a0"></span>C6A0</td>
+<td class="instruction">BIT 6,(IY+$00)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C628.html#c6af">TestLowBitsOfCharacter_ShiftNibble</a> unless bit 6 of the record flags is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6a4"></span>C6A4</td>
+<td class="instruction">JR Z,<a href="C628.html#c6af">TestLowBitsOfCharacter_ShiftNibble</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6a6"></span>C6A6</td>
+<td class="instruction">LD A,(IY+$04)</td>
+<td class="comment-1" rowspan="2">With a handler word present, read record bytes 04-06 instead.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6a9"></span>C6A9</td>
+<td class="instruction">LD L,(IY+$05)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6ac"></span>C6AC</td>
+<td class="instruction">LD H,(IY+$06)</td>
+<td class="comment-1" rowspan="1">Read record byte 06 as the high byte.</td>
+</tr>
+<tr>
+<td class="asm-label">TestLowBitsOfCharacter_ShiftNibble</td>
+<td class="address-2"><span id="c6af"></span>C6AF</td>
+<td class="instruction">RRCA</td>
+<td class="comment-1" rowspan="6">Shift the parameter down by four bits and call <a href="C74E.html">ReadObjectAttribute_LooksObjectFolds</a> to test the object attribute.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6b0"></span>C6B0</td>
+<td class="instruction">RRCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6b1"></span>C6B1</td>
+<td class="instruction">RRCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6b2"></span>C6B2</td>
+<td class="instruction">RRCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6b3"></span>C6B3</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6b4"></span>C6B4</td>
+<td class="instruction">CALL <a href="C74E.html">ReadObjectAttribute_LooksObjectFolds</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6b7"></span>C6B7</td>
+<td class="instruction">RET NZ</td>
+<td class="comment-1" rowspan="1">Return if <a href="C74E.html">ReadObjectAttribute_LooksObjectFolds</a> does not match the attribute.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c6b8"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="C6BE.html">TestLowBitsOfGraphics</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TestLowBitsOfCharacter_MarkMatched</td>
+<td class="address-2"><span id="c6b8"></span>C6B8</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">Write 01 to the byte at <a href="A021.html">A021</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6ba"></span>C6BA</td>
+<td class="instruction">LD ($A021),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c6bd"></span>C6BD</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C613.html">C613</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c628">Map</a></td>
+<td class="next">
+Next: <a href="C6BE.html">C6BE</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/50728.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

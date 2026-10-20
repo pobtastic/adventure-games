@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blizzard Pass: Routine at 62D7</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="62A2.html">62A2</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#62d7">Map</a></td>
+<td class="next">
+Next: <a href="62F2.html">62F2</a>
+</td>
+</tr>
+</table>
+<div class="description">62D7: Expand Dictionary Word</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="62A2.html">FindMessage</a>.
+</div>
+<div class="paragraph">
+Treats A as an index into <a href="B1BC.html">Dictionary</a>. Word 0 is empty. Every other word ends with bit 7 set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ExpandToken</td>
+<td class="address-2"><span id="62d7"></span>62D7</td>
+<td class="instruction">LD HL,$B1BC</td>
+<td class="comment-1" rowspan="4">Token 0 is the first dictionary word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62da"></span>62DA</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62db"></span>62DB</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62dc"></span>62DC</td>
+<td class="instruction">JR Z,<a href="62D7.html#62e9">ExpandToken_Character</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62de"></span>62DE</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="1">The scan starts on the byte before the dictionary.</td>
+</tr>
+<tr>
+<td class="asm-label">ExpandToken_Scan</td>
+<td class="address-2"><span id="62df"></span>62DF</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="4">Skip to the end of one word. Bit 7 marks it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62e0"></span>62E0</td>
+<td class="instruction">BIT 7,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62e2"></span>62E2</td>
+<td class="instruction">JR NZ,<a href="62D7.html#62e6">ExpandToken_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62e4"></span>62E4</td>
+<td class="instruction">JR <a href="62D7.html#62df">ExpandToken_Scan</a></td>
+</tr>
+<tr>
+<td class="asm-label">ExpandToken_Next</td>
+<td class="address-2"><span id="62e6"></span>62E6</td>
+<td class="instruction">DJNZ <a href="62D7.html#62df">ExpandToken_Scan</a></td>
+<td class="comment-1" rowspan="1">Count down to the requested word.</td>
+</tr>
+<tr>
+<td class="asm-label">ExpandToken_Word</td>
+<td class="address-2"><span id="62e8"></span>62E8</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step onto its first character.</td>
+</tr>
+<tr>
+<td class="asm-label">ExpandToken_Character</td>
+<td class="address-2"><span id="62e9"></span>62E9</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="2">Print this character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62ea"></span>62EA</td>
+<td class="instruction">CALL <a href="62F2.html">Capitalise</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62ed"></span>62ED</td>
+<td class="instruction">BIT 7,(HL)</td>
+<td class="comment-1" rowspan="3">Bit 7 ends the word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62ef"></span>62EF</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62f0"></span>62F0</td>
+<td class="instruction">JR <a href="62D7.html#62e8">ExpandToken_Word</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="62A2.html">62A2</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#62d7">Map</a></td>
+<td class="next">
+Next: <a href="62F2.html">62F2</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1986 Adventuresoft UK Ltd &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/blizzardpass/">Source code</a>.</div>
+<div><a href="../dec/asm/25303.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

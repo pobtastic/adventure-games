@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at A18C</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A16C.html">A16C</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a18c">Map</a></td>
+<td class="next">
+Next: <a href="A1C8.html">A1C8</a>
+</td>
+</tr>
+</table>
+<div class="description">A18C: Action: Clear The Tie</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="92ED.html">Action_UseTheOtherObject</a>, <a href="977C.html">Turn_ThePlayerHasDied</a> and <a href="A5FB.html">Event_TheBarrel</a>.
+</div>
+<div class="paragraph">
+Clears the tie on the object. An animal's name bytes are overwritten with DEAD, and the object record is returned.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ClearTheTie</td>
+<td class="address-2"><span id="a18c"></span>A18C</td>
+<td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="1">Call <a href="9BCA.html">LocateObject</a> to locate the object.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a18e"></span>
+<div class="comments">
+<div class="paragraph">
+Find the object's record.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a18e"></span>A18E</td>
+<td class="instruction">CALL <a href="9BCA.html">LocateObject</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a191"></span>A191</td>
+<td class="instruction">LD (IX+$0C),$00</td>
+<td class="comment-1" rowspan="1">Clear byte 0C of this object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a195"></span>A195</td>
+<td class="instruction">LD (IX+$0D),$00</td>
+<td class="comment-1" rowspan="1">Clear byte 0D of this object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a199"></span>A199</td>
+<td class="instruction">LD DE,$00CD</td>
+<td class="comment-1" rowspan="3">Keep BROKEN and jump to <a href="A18C.html#a1a5">Action_ClearTheTie_StoreTheTie</a> if the object is not an animal.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a19c"></span>A19C</td>
+<td class="instruction">BIT 6,(IX+$07)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1a0"></span>A1A0</td>
+<td class="instruction">JR Z,<a href="A18C.html#a1a5">Action_ClearTheTie_StoreTheTie</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1a2"></span>A1A2</td>
+<td class="instruction">LD DE,$0192</td>
+<td class="comment-1" rowspan="1">Use the token DEAD.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ClearTheTie_StoreTheTie</td>
+<td class="address-2"><span id="a1a5"></span>A1A5</td>
+<td class="instruction">LD (IX+$0A),E</td>
+<td class="comment-1" rowspan="1">Update byte 0A of this object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1a8"></span>A1A8</td>
+<td class="instruction">LD (IX+$0B),D</td>
+<td class="comment-1" rowspan="1">Update byte 0B of this object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1ab"></span>A1AB</td>
+<td class="instruction">POP IX</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">IX</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1ad"></span>A1AD</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1ae"></span>A1AE</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="3">Start the object search one slot before <a href="C063.html">ObjectTable</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1b0"></span>A1B0</td>
+<td class="instruction">PUSH IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1b2"></span>A1B2</td>
+<td class="instruction">LD IX,$C060</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ClearTheTie_FindTheRecord</td>
+<td class="address-2"><span id="a1b6"></span>A1B6</td>
+<td class="instruction">CALL <a href="9BA9.html">Table_FindTheRecord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9BA9.html">Table_FindTheRecord</a> to find the record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1b9"></span>A1B9</td>
+<td class="instruction">JR Z,<a href="A18C.html#a1c0">Action_ClearTheTie_ReadTheIdFromTheIndexEntry</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A18C.html#a1c0">Action_ClearTheTie_ReadTheIdFromTheIndexEntry</a> if the index has ended.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1bb"></span>A1BB</td>
+<td class="instruction">CP (IY+$01)</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="A18C.html#a1b6">Action_ClearTheTie_FindTheRecord</a> if where this object is is not the id in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1be"></span>A1BE</td>
+<td class="instruction">JR NZ,<a href="A18C.html#a1b6">Action_ClearTheTie_FindTheRecord</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_ClearTheTie_ReadTheIdFromTheIndexEntry</td>
+<td class="address-2"><span id="a1c0"></span>A1C0</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="1">Read the id from the index entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1c3"></span>A1C3</td>
+<td class="instruction">POP IX</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">IX</span> and <span class="register">IY</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1c5"></span>A1C5</td>
+<td class="instruction">POP IY</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a1c7"></span>A1C7</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="A16C.html">A16C</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#a18c">Map</a></td>
+<td class="next">
+Next: <a href="A1C8.html">A1C8</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/41356.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

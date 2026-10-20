@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="C271.html">C271</a>
+Prev: <a href="C28D.html">C28D</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#c29c">Map</a></td>
 <td class="next">
@@ -44,6 +44,9 @@ Next: <a href="C2BA.html">C2BA</a>
 <div class="paragraph">
 Used by the routine at <a href="C249.html">HandleBackspaceKey</a>.
 </div>
+<div class="paragraph">
+Scrolls the screen down one character row.
+</div>
 </div>
 </td>
 </tr>
@@ -51,7 +54,7 @@ Used by the routine at <a href="C249.html">HandleBackspaceKey</a>.
 <td class="asm-label">ScrollScreenDown</td>
 <td class="address-2"><span id="c29c"></span>C29C</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="4">Keep the caller's registers and point <span class="register">HL</span> at the screen address 50DF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -67,25 +70,24 @@ Used by the routine at <a href="C249.html">HandleBackspaceKey</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c29f"></span>C29F</td>
 <td class="instruction">LD HL,$50DF</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=50DF (screen buffer location).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c2a2"></span>C2A2</td>
 <td class="instruction">LD DE,$50FF</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=50FF (screen buffer location).</td>
+<td class="comment-1" rowspan="1">Take the screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c2a5"></span>C2A5</td>
 <td class="instruction">LD A,$08</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=08.</td>
+<td class="comment-1" rowspan="1">Use 08.</td>
 </tr>
 <tr>
-<td class="asm-label">ScrollScreenDown_0</td>
+<td class="asm-label">ScrollScreenDown_Loop</td>
 <td class="address-2"><span id="c2a7"></span>C2A7</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">HL</span> and <span class="register">DE</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Take a length of 80 entries.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -96,19 +98,18 @@ Used by the routine at <a href="C249.html">HandleBackspaceKey</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c2a9"></span>C2A9</td>
 <td class="instruction">LD BC,$0080</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=0080.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c2ac"></span>C2AC</td>
 <td class="instruction">LDDR</td>
-<td class="comment-1" rowspan="1">LDDR.</td>
+<td class="comment-1" rowspan="1">Scroll 80 bytes of this screen third up one character row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c2ae"></span>C2AE</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="6">Jump back to <a href="C29C.html#c2a7">ScrollScreenDown_Loop</a> while the count is not finished.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -119,43 +120,38 @@ Used by the routine at <a href="C249.html">HandleBackspaceKey</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c2b0"></span>C2B0</td>
 <td class="instruction">INC H</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">H</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c2b1"></span>C2B1</td>
 <td class="instruction">INC D</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">D</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c2b2"></span>C2B2</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">A</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c2b3"></span>C2B3</td>
-<td class="instruction">JR NZ,<a href="C29C.html#c2a7">ScrollScreenDown_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C29C.html#c2a7">ScrollScreenDown_0</a> if <span class="register">A</span> is not equal to 08.</td>
+<td class="instruction">JR NZ,<a href="C29C.html#c2a7">ScrollScreenDown_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c2b5"></span>C2B5</td>
 <td class="instruction">LD HL,$5060</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=5060 (screen buffer location).</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="C28D.html">PrintARowOfSpaces</a> to scroll screen up.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c2b8"></span>C2B8</td>
-<td class="instruction">JR <a href="C271.html#c28d">ScrollScreenUp_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C271.html#c28d">ScrollScreenUp_1</a>.</td>
+<td class="instruction">JR <a href="C28D.html">PrintARowOfSpaces</a></td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="C271.html">C271</a>
+Prev: <a href="C28D.html">C28D</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#c29c">Map</a></td>
 <td class="next">
@@ -166,7 +162,7 @@ Next: <a href="C2BA.html">C2BA</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/49820.html">Switch to decimal</a>.</div>
 </footer>

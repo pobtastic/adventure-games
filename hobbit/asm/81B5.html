@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 81B5</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="8151.html">8151</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#81b5">Map</a></td>
+<td class="next">
+Next: <a href="81DE.html">81DE</a>
+</td>
+</tr>
+</table>
+<div class="description">81B5: Drawing: Address The Pixel</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="7FA7.html">DrawingSetup</a> and <a href="8151.html">Drawing_PlotTheSelectedPixel</a>.
+</div>
+<div class="paragraph">
+Turns the pixel coordinate into a screen address and sets the bit in that screen byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Drawing_AddressThePixel</td>
+<td class="address-2"><span id="81b5"></span>81B5</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Call <a href="81DE.html">Drawing_ScreenAddressFromTheRow</a> to turn the pen into a screen address.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81b6"></span>81B6</td>
+<td class="instruction">CALL <a href="81DE.html">Drawing_ScreenAddressFromTheRow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81b9"></span>81B9</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="3">Keep the screen address and split out its row bits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81ba"></span>81BA</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81bb"></span>81BB</td>
+<td class="instruction">LD A,H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81bc"></span>81BC</td>
+<td class="instruction">AND %00011000</td>
+<td class="comment-1" rowspan="1">Move the row bits of the screen address into the attribute address.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81be"></span>81BE</td>
+<td class="instruction">RRCA</td>
+<td class="comment-1" rowspan="1">Rotate right.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81bf"></span>81BF</td>
+<td class="instruction">RRCA</td>
+<td class="comment-1" rowspan="1">Rotate right.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81c0"></span>81C0</td>
+<td class="instruction">RRCA</td>
+<td class="comment-1" rowspan="1">Rotate right.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81c1"></span>81C1</td>
+<td class="instruction">ADD A,$58</td>
+<td class="comment-1" rowspan="1">Add it on.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81c3"></span>81C3</td>
+<td class="instruction">LD H,A</td>
+<td class="comment-1" rowspan="1">Point <span class="register">H</span> at that attribute.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81c4"></span>81C4</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the attribute byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81c5"></span>81C5</td>
+<td class="instruction">AND %00111000</td>
+<td class="comment-1" rowspan="8">Keep only the paper bits (3-5) of this attribute, and jump to <a href="81B5.html#81d3">Drawing_AddressThePixel_RestoreTheInkBits</a> unless they match the colour in <a href="820B.html#824e">824E</a> shifted into bits 3-5.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81c7"></span>81C7</td>
+<td class="instruction">LD (HL),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81c8"></span>81C8</td>
+<td class="instruction">LD A,($824E)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81cb"></span>81CB</td>
+<td class="instruction">RLCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81cc"></span>81CC</td>
+<td class="instruction">RLCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81cd"></span>81CD</td>
+<td class="instruction">RLCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81ce"></span>81CE</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81cf"></span>81CF</td>
+<td class="instruction">JR NZ,<a href="81B5.html#81d3">Drawing_AddressThePixel_RestoreTheInkBits</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81d1"></span>81D1</td>
+<td class="instruction">XOR $38</td>
+<td class="comment-1" rowspan="1">Flip the bits selected by 38.</td>
+</tr>
+<tr>
+<td class="asm-label">Drawing_AddressThePixel_RestoreTheInkBits</td>
+<td class="address-2"><span id="81d3"></span>81D3</td>
+<td class="instruction">RRCA</td>
+<td class="comment-1" rowspan="3">Shift the replacement ink back into the ink bits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81d4"></span>81D4</td>
+<td class="instruction">RRCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81d5"></span>81D5</td>
+<td class="instruction">RRCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81d6"></span>81D6</td>
+<td class="instruction">OR (HL)</td>
+<td class="comment-1" rowspan="1">Combine it with the attribute on screen.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81d7"></span>81D7</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Store the attribute.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81d8"></span>81D8</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="3">Plot the pixel into the screen byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81d9"></span>81D9</td>
+<td class="instruction">POP AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81da"></span>81DA</td>
+<td class="instruction">OR (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81db"></span>81DB</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Store the screen byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81dc"></span>81DC</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="81dd"></span>81DD</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="8151.html">8151</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#81b5">Map</a></td>
+<td class="next">
+Next: <a href="81DE.html">81DE</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/33205.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

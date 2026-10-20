@@ -32,7 +32,7 @@ Prev: <a href="51299.html">51299</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#51310">Map</a></td>
 <td class="next">
-Next: <a href="51367.html">51367</a>
+Next: <a href="51358.html">51358</a>
 </td>
 </tr>
 </table>
@@ -44,6 +44,9 @@ Next: <a href="51367.html">51367</a>
 <div class="paragraph">
 Used by the routines at <a href="51299.html">GetObjectLocation</a> and <a href="53368.html">CheckObjectVisibility</a>.
 </div>
+<div class="paragraph">
+Follows the moved marker until 255 and leaves the id it stopped on in the alternate accumulator.
+</div>
 </div>
 </td>
 </tr>
@@ -51,157 +54,127 @@ Used by the routines at <a href="51299.html">GetObjectLocation</a> and <a href="
 <td class="asm-label">CheckObjectMother</td>
 <td class="address-2"><span id="51310"></span>51310</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Switch to the saved result and take the end marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51312"></span>51312</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51313"></span>51313</td>
 <td class="instruction">LD A,255</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectMother_0</td>
+<td class="asm-label">CheckObjectMother_Loop</td>
 <td class="address-2"><span id="51315"></span>51315</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Jump to <a href="51310.html#51349">CheckObjectMother_0</a> if the moved marker is 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51316"></span>51316</td>
 <td class="instruction">LD A,(IX+1)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51319"></span>51319</td>
 <td class="instruction">CP 255</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51321"></span>51321</td>
-<td class="instruction">JR Z,<a href="51310.html#51349">CheckObjectMother_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="51310.html#51349">CheckObjectMother_0</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51323"></span>51323</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Call <a href="53815.html">FetchObjectDataPointer</a> to look up the current object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51324"></span>51324</td>
 <td class="instruction">LD A,(IX+1)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51327"></span>51327</td>
 <td class="instruction">CALL <a href="53815.html">FetchObjectDataPointer</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51330"></span>51330</td>
 <td class="instruction">BIT 7,(IX+5)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="51310.html#51348">CheckObjectMother_Next</a> if the object-attribute flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51334"></span>51334</td>
-<td class="instruction">JR Z,<a href="51310.html#51348">CheckObjectMother_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="51310.html#51348">CheckObjectMother_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="51336"></span>
+<div class="comments">
+<div class="paragraph">
+An object flag is set?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51336"></span>51336</td>
 <td class="instruction">BIT 5,(IX+5)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="51310.html#51315">CheckObjectMother_Loop</a> if an object flag is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51340"></span>51340</td>
-<td class="instruction">JR NZ,<a href="51310.html#51315">CheckObjectMother_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="51310.html#51315">CheckObjectMother_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51342"></span>51342</td>
 <td class="instruction">BIT 3,(IX+5)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">See whether bit 3 of the object attribute is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51346"></span>51346</td>
-<td class="instruction">JR NZ,<a href="51310.html#51315">CheckObjectMother_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="51310.html#51315">CheckObjectMother_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="51310.html#51315">CheckObjectMother_Loop</a> when this object's attribute bit is set.</td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectMother_1</td>
+<td class="asm-label">CheckObjectMother_Next</td>
 <td class="address-2"><span id="51348"></span>51348</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Switch to the saved result.</td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectMother_2</td>
+<td class="asm-label">CheckObjectMother_0</td>
 <td class="address-2"><span id="51349"></span>51349</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the saved character record from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51351"></span>51351</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51352"></span>51352</td>
-<td class="instruction">CALL <a href="51310.html#51358">CheckObjectMother_3</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="51358.html">ExchangeCharacterRecordSchedule</a></td>
+<td class="comment-1" rowspan="2">Run <a href="51358.html">ExchangeCharacterRecordSchedule</a>, then run <a href="51310.html">CheckObjectMother</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="51355"></span>51355</td>
 <td class="instruction">CALL <a href="51310.html#51310">CheckObjectMother</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CheckObjectMother_3</td>
-<td class="address-2"><span id="51358"></span>51358</td>
-<td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="51360"></span>51360</td>
-<td class="instruction">PUSH IY</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="51362"></span>51362</td>
-<td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="51364"></span>51364</td>
-<td class="instruction">POP IY</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="51366"></span>51366</td>
-<td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -211,14 +184,14 @@ Prev: <a href="51299.html">51299</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#51310">Map</a></td>
 <td class="next">
-Next: <a href="51367.html">51367</a>
+Next: <a href="51358.html">51358</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/C86E.html">Switch to hexadecimal</a>.</div>
 </footer>

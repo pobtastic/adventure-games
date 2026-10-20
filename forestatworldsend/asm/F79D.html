@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at F79D</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F71B.html">F71B</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f79d">Map</a></td>
+<td class="next">
+Next: <a href="F7C2.html">F7C2</a>
+</td>
+</tr>
+</table>
+<div class="description">F79D: Action: Wear</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Wear the ring.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Wear</td>
+<td class="address-2"><span id="f79d"></span>F79D</td>
+<td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
+<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f7a0"></span>F7A0</td>
+<td class="instruction">RET C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f7a1"></span>F7A1</td>
+<td class="instruction">LD HL,$E821</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F79D.html#f7bf">Action_Wear_YouCant</a> unless the player named the furnace.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f7a4"></span>F7A4</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f7a7"></span>F7A7</td>
+<td class="instruction">JR NZ,<a href="F79D.html#f7bf">Action_Wear_YouCant</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f7a9"></span>F7A9</td>
+<td class="instruction">LD A,$43</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F79D.html#f7b6">Action_Wear_Next</a> if the player is not carrying object 43 (the ring being worn).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f7ab"></span>F7AB</td>
+<td class="instruction">CALL <a href="C2D2.html">IsObjectCarried</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f7ae"></span>F7AE</td>
+<td class="instruction">JR NZ,<a href="F79D.html#f7b6">Action_Wear_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f7b0"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "You're wearing it already!".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f7b0"></span>F7B0</td>
+<td class="instruction">LD HL,$E1B1</td>
+<td class="comment-1" rowspan="2">Print "You're wearing it already!" and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f7b3"></span>F7B3</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Wear_Next</td>
+<td class="address-2"><span id="f7b6"></span>F7B6</td>
+<td class="instruction">LD BC,$0743</td>
+<td class="comment-1" rowspan="2">Replace object 07 (the ring) with object 43 (the ring being worn).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f7b9"></span>F7B9</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f7bc"></span>F7BC</td>
+<td class="instruction">JP <a href="ED96.html">Response_OK</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="ED96.html">Response_OK</a> to confirm.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Wear_YouCant</td>
+<td class="address-2"><span id="f7bf"></span>F7BF</td>
+<td class="instruction">JP <a href="ED6E.html">Response_YouCant_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Tell the player the command is impossible.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F71B.html">F71B</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f79d">Map</a></td>
+<td class="next">
+Next: <a href="F7C2.html">F7C2</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/63389.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

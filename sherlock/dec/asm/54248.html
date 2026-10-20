@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="54171.html">54171</a>
+Prev: <a href="54229.html">54229</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#54248">Map</a></td>
 <td class="next">
@@ -42,7 +42,10 @@ Next: <a href="54277.html">54277</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="42949.html">CheckObjectHasSpecialDescription_Wrapper</a>, <a href="48924.html">ProcessTextTokenEntry</a> and <a href="54171.html">ProcessObjectEntryAlternate</a>.
+Used by the routines at <a href="42949.html">CheckObjectHasSpecialDescription_Wrapper</a>, <a href="48924.html">ProcessTextTokenEntry</a> and <a href="54229.html">TakeTheFoundObject</a>.
+</div>
+<div class="paragraph">
+Reads the object's description word through <a href="42960.html">CheckTokenMatchAndSetFlag</a> and clears <a href="42986.html">42986</a> unless bit 6 of <span class="register">IY</span>-2 is set. Then prints the tokens at <span class="register">IY</span>+2 and <span class="register">IY</span>+4 or only the one at <span class="register">IY</span>+4 when bit 5 of <span class="register">IY</span>-1 is set.
 </div>
 </div>
 </td>
@@ -51,79 +54,73 @@ Used by the routines at <a href="42949.html">CheckObjectHasSpecialDescription_Wr
 <td class="asm-label">CheckObjectHasSpecialDescription</td>
 <td class="address-2"><span id="54248"></span>54248</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Save the registers, then read the word at <span class="register">IY</span>+0-1 into <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54249"></span>54249</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54250"></span>54250</td>
 <td class="instruction">LD D,(IY+1)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54253"></span>54253</td>
 <td class="instruction">LD E,(IY+0)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54256"></span>54256</td>
 <td class="instruction">CALL <a href="42960.html">CheckTokenMatchAndSetFlag</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="42960.html">CheckTokenMatchAndSetFlag</a> to test the token and set the flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54259"></span>54259</td>
 <td class="instruction">BIT 6,(IY-2)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="54248.html#54269">CheckObjectHasSpecialDescription_Next</a> if bit 6 of this byte is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54263"></span>54263</td>
-<td class="instruction">JR NZ,<a href="54248.html#54269">CheckObjectHasSpecialDescription_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="54248.html#54269">CheckObjectHasSpecialDescription_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54265"></span>54265</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Clear the token match flag at <a href="42986.html">42986</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54266"></span>54266</td>
 <td class="instruction">LD (42986),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectHasSpecialDescription_0</td>
+<td class="asm-label">CheckObjectHasSpecialDescription_Next</td>
 <td class="address-2"><span id="54269"></span>54269</td>
 <td class="instruction">BIT 5,(IY-1)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="54311.html">ReadScheduleField</a> if bit 5 of this byte is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54273"></span>54273</td>
-<td class="instruction">JR NZ,<a href="54277.html#54311">CheckObjectAttributeWithFlag_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="54311.html">ReadScheduleField</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54275"></span>54275</td>
-<td class="instruction">JR <a href="54277.html#54294">CheckObjectAttributeWithFlag_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="54294.html">54294</a></td>
+<td class="comment-1" rowspan="1">Go on to read the high byte of the object's description token.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="54171.html">54171</a>
+Prev: <a href="54229.html">54229</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#54248">Map</a></td>
 <td class="next">
@@ -134,7 +131,7 @@ Next: <a href="54277.html">54277</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/D3E8.html">Switch to hexadecimal</a>.</div>
 </footer>

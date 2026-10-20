@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at BB5C</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="BB46.html">BB46</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#bb5c">Map</a></td>
+<td class="next">
+Next: <a href="BBE5.html">BBE5</a>
+</td>
+</tr>
+</table>
+<div class="description">BB5C: Read The Action Flags</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="BA3E.html">RecordResultCharacterScript</a>.
+</div>
+<div class="paragraph">
+Reads the saved character record and dispatches through its action handler.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadActionFlags</td>
+<td class="address-2"><span id="bb5c"></span>BB5C</td>
+<td class="instruction">LD IX,($BA65)</td>
+<td class="comment-1" rowspan="3">Read the saved character record and the handler stored in it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb60"></span>BB60</td>
+<td class="instruction">LD L,(IX+$03)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb63"></span>BB63</td>
+<td class="instruction">LD H,(IX+$04)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb66"></span>BB66</td>
+<td class="instruction">JP (HL)</td>
+<td class="comment-1" rowspan="1">Jump to the handler address in <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb67"></span>BB67</td>
+<td class="instruction">LD ($BA1D),A</td>
+<td class="comment-1" rowspan="2">Store <span class="register">A</span> in the flag at <a href="BA13.html">BA13</a>+0A and the count at <a href="BA13.html">BA13</a>+09.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb6a"></span>BB6A</td>
+<td class="instruction">LD ($BA1C),A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="bb6d"></span>
+<div class="comments">
+<div class="paragraph">
+A following display value is not FF.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadActionFlags_CalculateObjectPointer</td>
+<td class="address-2"><span id="bb6d"></span>BB6D</td>
+<td class="instruction">CALL <a href="BD7E.html">CalculateObjectPointerOffset</a></td>
+<td class="comment-1" rowspan="2">Call <a href="BD7E.html">CalculateObjectPointerOffset</a> and jump to <a href="BB5C.html#bbbe">ReadActionFlags_MessagePointer</a> if a following display value is not FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb70"></span>BB70</td>
+<td class="instruction">JP C,<a href="BB5C.html#bbbe">ReadActionFlags_MessagePointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb73"></span>BB73</td>
+<td class="instruction">CALL <a href="BC21.html">CheckObjectAttribute</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="BB5C.html#bb7c">ReadActionFlags_FollowCharacterLink</a> if the object is not a moving marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb76"></span>BB76</td>
+<td class="instruction">JR Z,<a href="BB5C.html#bb7c">ReadActionFlags_FollowCharacterLink</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb78"></span>BB78</td>
+<td class="instruction">LD HL,$BA1C</td>
+<td class="comment-1" rowspan="2">Count one more at <a href="BA13.html">BA13</a>+09.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb7b"></span>BB7B</td>
+<td class="instruction">INC (HL)</td>
+</tr>
+<tr>
+<td class="asm-label">ReadActionFlags_FollowCharacterLink</td>
+<td class="address-2"><span id="bb7c"></span>BB7C</td>
+<td class="instruction">CALL <a href="AEA9.html">FollowCharacterLink</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AEA9.html">FollowCharacterLink</a> to follow the character link.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb7f"></span>BB7F</td>
+<td class="instruction">JR NZ,<a href="BB5C.html#bb6d">ReadActionFlags_CalculateObjectPointer</a></td>
+<td class="comment-1" rowspan="1">Go back to <a href="BB5C.html#bb6d">ReadActionFlags_CalculateObjectPointer</a> when the character link is still set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb81"></span>BB81</td>
+<td class="instruction">LD A,($BA1C)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="BB5C.html#bb8e">ReadActionFlags_SavedFlag</a> if the count at <a href="BA13.html">BA13</a>+09 is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb84"></span>BB84</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb85"></span>BB85</td>
+<td class="instruction">JR NZ,<a href="BB5C.html#bb8e">ReadActionFlags_SavedFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb87"></span>BB87</td>
+<td class="instruction">LD HL,$725F</td>
+<td class="comment-1" rowspan="2">Take the message, then call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb8a"></span>BB8A</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb8d"></span>BB8D</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="bb8e"></span>
+<div class="comments">
+<div class="paragraph">
+Tests the flag at <a href="BA13.html">BA13</a>+0A.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadActionFlags_SavedFlag</td>
+<td class="address-2"><span id="bb8e"></span>BB8E</td>
+<td class="instruction">LD A,($BA1D)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="BB5C.html#bbc9">ReadActionFlags_CountClearOutstanding</a> if the flag at <a href="BA13.html">BA13</a>+0A is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb91"></span>BB91</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb92"></span>BB92</td>
+<td class="instruction">JR Z,<a href="BB5C.html#bbc9">ReadActionFlags_CountClearOutstanding</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb94"></span>BB94</td>
+<td class="instruction">LD IX,($BA1E)</td>
+<td class="comment-1" rowspan="3">Point <span class="register">IX</span> at the record at <a href="BA13.html">BA13</a>+0B and call <a href="BE5A.html">AdvancePointerAndCheckBit</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb98"></span>BB98</td>
+<td class="instruction">PUSH IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bb9a"></span>BB9A</td>
+<td class="instruction">CALL <a href="BE5A.html">AdvancePointerAndCheckBit</a></td>
+</tr>
+<tr>
+<td class="asm-label">ReadActionFlags_ActionFlags</td>
+<td class="address-2"><span id="bb9d"></span>BB9D</td>
+<td class="instruction">LD A,(IX+$03)</td>
+<td class="comment-1" rowspan="4">Jump to <a href="BB5C.html#bbb1">ReadActionFlags_PrintMessageBefore</a> if the top two bits of the action flags are 80.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bba0"></span>BBA0</td>
+<td class="instruction">AND $C0</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bba2"></span>BBA2</td>
+<td class="instruction">CP $80</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bba4"></span>BBA4</td>
+<td class="instruction">JR Z,<a href="BB5C.html#bbb1">ReadActionFlags_PrintMessageBefore</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bba6"></span>BBA6</td>
+<td class="instruction">BIT 3,(IX+$03)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="BB5C.html#bbb1">ReadActionFlags_PrintMessageBefore</a> if bit 3 of the action flags is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbaa"></span>BBAA</td>
+<td class="instruction">JR NZ,<a href="BB5C.html#bbb1">ReadActionFlags_PrintMessageBefore</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbac"></span>BBAC</td>
+<td class="instruction">CALL <a href="BE72.html">ProcessEntryWithCounter</a></td>
+<td class="comment-1" rowspan="2">Call <a href="BE72.html">ProcessEntryWithCounter</a> to count down this repeating entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbaf"></span>BBAF</td>
+<td class="instruction">JR <a href="BB5C.html#bb9d">ReadActionFlags_ActionFlags</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="bbb1"></span>
+<div class="comments">
+<div class="paragraph">
+Print the message before returning.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadActionFlags_PrintMessageBefore</td>
+<td class="address-2"><span id="bbb1"></span>BBB1</td>
+<td class="instruction">POP IX</td>
+<td class="comment-1" rowspan="2">Restore the record from the stack and go to <a href="BB5C.html#bbc4">ReadActionFlags_Next</a> if bit 3 of the action flags is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbb3"></span>BBB3</td>
+<td class="instruction">JR NZ,<a href="BB5C.html#bbc4">ReadActionFlags_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbb5"></span>BBB5</td>
+<td class="instruction">LD HL,$7295</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the message at <a href="722D.html">722D</a>+68.</td>
+</tr>
+<tr>
+<td class="asm-label">ReadActionFlags_KeepCharacterRecord</td>
+<td class="address-2"><span id="bbb8"></span>BBB8</td>
+<td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="2">Keep the character record, then call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbba"></span>BBBA</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbbd"></span>BBBD</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="bbbe"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="BA3E.html">RecordResultCharacterScript</a>.
+</div>
+<div class="paragraph">
+Use the message as the pointer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadActionFlags_MessagePointer</td>
+<td class="address-2"><span id="bbbe"></span>BBBE</td>
+<td class="instruction">LD HL,$7243</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print this message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbc1"></span>BBC1</td>
+<td class="instruction">JP <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="bbc4"></span>
+<div class="comments">
+<div class="paragraph">
+Use the message as the pointer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadActionFlags_Next</td>
+<td class="address-2"><span id="bbc4"></span>BBC4</td>
+<td class="instruction">LD HL,$72A6</td>
+<td class="comment-1" rowspan="2">Point at this message and print it from <a href="BB5C.html#bbb8">ReadActionFlags_KeepCharacterRecord</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbc7"></span>BBC7</td>
+<td class="instruction">JR <a href="BB5C.html#bbb8">ReadActionFlags_KeepCharacterRecord</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="bbc9"></span>
+<div class="comments">
+<div class="paragraph">
+Read the count, then clear the outstanding borrow.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadActionFlags_CountClearOutstanding</td>
+<td class="address-2"><span id="bbc9"></span>BBC9</td>
+<td class="instruction">CALL <a href="BC46.html">ProcessGameStatusEntries</a></td>
+<td class="comment-1" rowspan="2">Call <a href="BC46.html">ProcessGameStatusEntries</a> to run game status entries, then call <a href="BC9C.html">ProcessGameStatusEntriesAlternate</a> to run game status entries alternate.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbcc"></span>BBCC</td>
+<td class="instruction">CALL <a href="BC9C.html">ProcessGameStatusEntriesAlternate</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbcf"></span>BBCF</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="BBE5.html">PrintTextBasedOnFlag</a> if the count is not zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbd0"></span>BBD0</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbd1"></span>BBD1</td>
+<td class="instruction">JR NZ,<a href="BBE5.html">PrintTextBasedOnFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbd3"></span>BBD3</td>
+<td class="instruction">CALL <a href="BC74.html">ProcessGameStatusEntriesWithCounter</a></td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="BB5C.html#bbde">ReadActionFlags_MessagePointerAgain</a> if the count is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbd6"></span>BBD6</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbd7"></span>BBD7</td>
+<td class="instruction">JR Z,<a href="BB5C.html#bbde">ReadActionFlags_MessagePointerAgain</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbd9"></span>BBD9</td>
+<td class="instruction">LD HL,$72BD</td>
+<td class="comment-1" rowspan="2">Point at this message and print it from <a href="BB5C.html#bbb8">ReadActionFlags_KeepCharacterRecord</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbdc"></span>BBDC</td>
+<td class="instruction">JR <a href="BB5C.html#bbb8">ReadActionFlags_KeepCharacterRecord</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="bbde"></span>
+<div class="comments">
+<div class="paragraph">
+Use the message as the pointer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadActionFlags_MessagePointerAgain</td>
+<td class="address-2"><span id="bbde"></span>BBDE</td>
+<td class="instruction">LD HL,$727E</td>
+<td class="comment-1" rowspan="2">Take the message, then call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbe1"></span>BBE1</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bbe4"></span>BBE4</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="BB46.html">BB46</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#bb5c">Map</a></td>
+<td class="next">
+Next: <a href="BBE5.html">BBE5</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/47964.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

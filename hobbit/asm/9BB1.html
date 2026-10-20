@@ -39,7 +39,10 @@ Next: <a href="9BCA.html">9BCA</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="70F3.html">70F3</a>, <a href="8D9D.html">Action_Dir</a>, <a href="962B.html">YouSeeEntry</a>, <a href="9C41.html">9C41</a>, <a href="9D37.html">GetObjectLocationInIX</a>, <a href="9EA0.html">9EA0</a>, <a href="A0AE.html">A0AE</a> and <a href="A55F.html">A55F</a>.
+Used by the routines at <a href="71D5.html">Table_AddressPastTheLocation</a>, <a href="8E85.html">Action_CheckTheObjectFlags</a>, <a href="8EEC.html">Action_CarryOnWithTheObject</a>, <a href="9630.html">YouSeePreposition</a>, <a href="965B.html">YouSeeStart</a>, <a href="96A8.html">YouSeeController</a>, <a href="9C41.html">TableFindAnExit</a>, <a href="9D37.html">GetObjectLocationInIX</a>, <a href="9EA0.html">ExitsFindTheExitToANamedPlace</a>, <a href="A0AE.html">ExitsPointAtTheList</a>, <a href="A5FB.html">Event_TheBarrel</a> and <a href="A7AA.html">Event_TheDeepBog</a>.
+</div>
+<div class="paragraph">
+Finds a location record from its id.
 </div>
 </div>
 <table class="input">
@@ -99,25 +102,23 @@ Work out the location now <span class="register">A</span> is validated as a legi
 <td class="asm-label">LocateLocation_Action</td>
 <td class="address-2"><span id="9bb7"></span>9BB7</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Point at the location table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9bb8"></span>9BB8</td>
 <td class="instruction">LD DE,$B9E0</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="B9E0.html">LocationTable</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9bbb"></span>9BBB</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Store offset in the <span class="register">HL</span> register pair.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9bbc"></span>9BBC</td>
 <td class="instruction">LD L,A</td>
-<td class="comment-1" rowspan="2">Store offset in the <span class="register">HL</span> register pair.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -138,19 +139,19 @@ Calculate Location address, some examples would be; <table class="default">
 </tr>
 <tr>
 <td class="centre" colspan="1" rowspan="1">$05</td>
-<td class="centre" colspan="1" rowspan="1">($05*$02) + $B9E0</td>
+<td class="centre" colspan="1" rowspan="1">($05*02) + $B9E0</td>
 <td class="centre" colspan="1" rowspan="1"><a href="B9E0.html#b9ea">B9EA</a></td>
 <td class="centre" colspan="1" rowspan="1"><a href="BA8A.html#babc">BABC</a></td>
 </tr>
 <tr>
 <td class="centre" colspan="1" rowspan="1">$20</td>
-<td class="centre" colspan="1" rowspan="1">($20*$02) + $B9E0</td>
+<td class="centre" colspan="1" rowspan="1">($20*02) + $B9E0</td>
 <td class="centre" colspan="1" rowspan="1"><a href="B9E0.html#ba20">BA20</a></td>
 <td class="centre" colspan="1" rowspan="1"><a href="BA8A.html#bdad">BDAD</a></td>
 </tr>
 <tr>
 <td class="centre" colspan="1" rowspan="1">$33</td>
-<td class="centre" colspan="1" rowspan="1">($33*$02) + $B9E0</td>
+<td class="centre" colspan="1" rowspan="1">($33*02) + $B9E0</td>
 <td class="centre" colspan="1" rowspan="1"><a href="B9E0.html#ba46">BA46</a></td>
 <td class="centre" colspan="1" rowspan="1"><a href="BA8A.html#bf5e">BF5E</a></td>
 </tr>
@@ -163,7 +164,7 @@ Calculate Location address, some examples would be; <table class="default">
 <td class="asm-label"></td>
 <td class="address-1"><span id="9bbf"></span>9BBF</td>
 <td class="instruction">ADD HL,HL</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=(<span class="register">HL</span> * 02)+<span class="register">DE</span></td>
+<td class="comment-1" rowspan="2">Multiply the offset by 02 and add the table base.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -174,23 +175,25 @@ Calculate Location address, some examples would be; <table class="default">
 <td class="asm-label"></td>
 <td class="address-1"><span id="9bc1"></span>9BC1</td>
 <td class="instruction">LD E,(HL)</td>
-<td class="comment-1" rowspan="3"><span class="register">DE</span>=the location from the pointer in <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Read the low byte of the token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9bc2"></span>9BC2</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9bc3"></span>9BC3</td>
 <td class="instruction">LD D,(HL)</td>
+<td class="comment-1" rowspan="1">Read the high byte of the token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9bc4"></span>9BC4</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">DE</span> using the stack.</td>
+<td class="comment-1" rowspan="4">Copy <span class="register">DE</span> into <span class="register">IX</span>, restore <span class="register">HL</span> and <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -201,7 +204,6 @@ Calculate Location address, some examples would be; <table class="default">
 <td class="asm-label"></td>
 <td class="address-1"><span id="9bc7"></span>9BC7</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">HL</span> and <span class="register">DE</span> off the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -229,7 +231,7 @@ Next: <a href="9BCA.html">9BCA</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../dec/asm/39857.html">Switch to decimal</a>.</div>
 </footer>

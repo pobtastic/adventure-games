@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at 9A80</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="9A7D.html">9A7D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#9a80">Map</a></td>
+<td class="next">
+Next: <a href="9AA3.html">9AA3</a>
+</td>
+</tr>
+</table>
+<div class="description">9A80: Action: Print Opening Text</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Prints the token at <a href="68E9.html">68E9</a>+2C or <a href="68E9.html">68E9</a>+37 according to the current character. Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="9A7D.html#9a7e">9A7E</a>. A non-zero return means the script step succeeded.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ActionPrintOpeningText</td>
+<td class="address-2"><span id="9a80"></span>9A80</td>
+<td class="instruction">LD A,($A036)</td>
+<td class="comment-1" rowspan="3">Compare the current character with 00 and take 01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9a83"></span>9A83</td>
+<td class="instruction">CP $00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9a85"></span>9A85</td>
+<td class="instruction">LD A,$01</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9a87"></span>9A87</td>
+<td class="instruction">LD HL,$6915</td>
+<td class="comment-1" rowspan="1">Take the message at <a href="68E9.html">68E9</a>+2C.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9a8a"></span>9A8A</td>
+<td class="instruction">JR Z,<a href="9A80.html#9a90">ActionPrintOpeningText_Next</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="9A80.html#9a90">ActionPrintOpeningText_Next</a> if the current character is 00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9a8c"></span>9A8C</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Clear <span class="register">A</span> and take the message at <a href="68E9.html">68E9</a>+37.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9a8d"></span>9A8D</td>
+<td class="instruction">LD HL,$6920</td>
+</tr>
+<tr>
+<td class="asm-label">ActionPrintOpeningText_Next</td>
+<td class="address-2"><span id="9a90"></span>9A90</td>
+<td class="instruction">LD ($A027),A</td>
+<td class="comment-1" rowspan="2">Store it in the print mode, then call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9a93"></span>9A93</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9a96"></span>9A96</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9a98"></span>9A98</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9a99"></span>
+<div class="comments">
+<div class="paragraph">
+Attribute pair.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9a99"></span>9A99</td>
+<td class="instruction">DEFB $04,$00</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 04 value 00.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9a9b"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="9A80.html#9a99">9A99</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ActionPrintOpeningText_MatchAttribute</td>
+<td class="address-1"><span id="9a9b"></span>9A9B</td>
+<td class="instruction">CALL <a href="9AA3.html">ReadRoomDisplayParameter</a></td>
+<td class="comment-1" rowspan="2">Return zero through <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a> if <a href="9AA3.html">ReadRoomDisplayParameter</a> finds no display parameter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9a9e"></span>9A9E</td>
+<td class="instruction">JP Z,<a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9aa1"></span>9AA1</td>
+<td class="instruction">JR <a href="9AA3.html#9ad7">ReadRoomDisplayParameter_0</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="9AA3.html#9ad7">ReadRoomDisplayParameter_0</a> to adjust attribute match.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="9A7D.html">9A7D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#9a80">Map</a></td>
+<td class="next">
+Next: <a href="9AA3.html">9AA3</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/39552.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

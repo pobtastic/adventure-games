@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="AC41.html">AC41</a>
+Prev: <a href="AC94.html">AC94</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#aca6">Map</a></td>
 <td class="next">
@@ -42,10 +42,10 @@ Next: <a href="ACCC.html">ACCC</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="AB52.html">AB52</a>.
+Used by the routine at <a href="AB52.html">CopyDisplayIfNeeded</a>.
 </div>
 <div class="paragraph">
-Copies display data from the character data structure to the display buffer at <a href="AAA8.html">AAA8</a>. If bit 6 of E is set, copies from offset 04; if bit 7 is set, copies from offset 0E. Always sets bit 0 of the return value.
+Copies display data from the character data structure to the display buffer at <a href="AAA8.html">AAA8</a>. If bit 6 of <span class="register">E</span> is set, copies from offset 04; if bit 7 of <span class="register">E</span> is set, copies from offset 0E. Always sets bit 0 of the return value.
 </div>
 </div>
 <table class="input">
@@ -72,133 +72,132 @@ Copies display data from the character data structure to the display buffer at <
 <td class="asm-label">CopyDisplayDataToDisplayBuffer</td>
 <td class="address-2"><span id="aca6"></span>ACA6</td>
 <td class="instruction">BIT 6,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="ACA6.html#acb2">CopyDisplayDataToDisplayBuffer_Next</a> if bit 6 is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aca8"></span>ACA8</td>
-<td class="instruction">JR Z,<a href="ACA6.html#acb2">CopyDisplayDataToDisplayBuffer_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="ACA6.html#acb2">CopyDisplayDataToDisplayBuffer_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acaa"></span>ACAA</td>
 <td class="instruction">RES 6,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear the marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acac"></span>ACAC</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Keep <span class="register">DE</span>, take offset 04 and join the copy at <a href="ACA6.html#acbb">CopyDisplayDataToDisplayBuffer_AddOffset</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acad"></span>ACAD</td>
 <td class="instruction">LD DE,$0004</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acb0"></span>ACB0</td>
-<td class="instruction">JR <a href="ACA6.html#acbb">CopyDisplayDataToDisplayBuffer_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="ACA6.html#acbb">CopyDisplayDataToDisplayBuffer_AddOffset</a></td>
 </tr>
 <tr>
-<td class="asm-label">CopyDisplayDataToDisplayBuffer_0</td>
+<td class="routine-comment" colspan="5">
+<span id="acb2"></span>
+<div class="comments">
+<div class="paragraph">
+Bit 7 selects the second display block.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CopyDisplayDataToDisplayBuffer_Next</td>
 <td class="address-2"><span id="acb2"></span>ACB2</td>
 <td class="instruction">BIT 7,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">See whether bit 7 of the low byte of the source is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acb4"></span>ACB4</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return if that marker is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acb5"></span>ACB5</td>
 <td class="instruction">RES 7,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Clear bit 7 and take offset 000E, keeping <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acb7"></span>ACB7</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acb8"></span>ACB8</td>
 <td class="instruction">LD DE,$000E</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">CopyDisplayDataToDisplayBuffer_1</td>
+<td class="asm-label">CopyDisplayDataToDisplayBuffer_AddOffset</td>
 <td class="address-2"><span id="acbb"></span>ACBB</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="5">Use the buffer: co-ordinate header (<a href="AAA8.html">AAA8</a>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acbd"></span>ACBD</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acbe"></span>ACBE</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acbf"></span>ACBF</td>
 <td class="instruction">LD DE,$AAA8</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acc2"></span>ACC2</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acc3"></span>ACC3</td>
 <td class="instruction">LD BC,$000A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Take a length of 0A entries and copy these bytes across.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acc6"></span>ACC6</td>
 <td class="instruction">LDIR</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acc8"></span>ACC8</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acc9"></span>ACC9</td>
-<td class="instruction">OR $01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="accb"></span>ACCB</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="AC41.html">AC41</a>
+Prev: <a href="AC94.html">AC94</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#aca6">Map</a></td>
 <td class="next">
@@ -209,7 +208,7 @@ Next: <a href="ACCC.html">ACCC</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/44198.html">Switch to decimal</a>.</div>
 </footer>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at BF55</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="BF45.html">BF45</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#bf55">Map</a></td>
+<td class="next">
+Next: <a href="BF69.html">BF69</a>
+</td>
+</tr>
+</table>
+<div class="description">BF55: Handler: Update Object Location</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="C2D8.html">Handler_DestroyItem</a>, <a href="C2DF.html">Handler_UpdateItemForTheCurrentRoom</a>, <a href="C2E8.html">Handler_RemoveItemFromPlay</a>, <a href="C48F.html">TransformItem</a>, <a href="EEED.html">Handler_PickUpItem</a>, <a href="EEFC.html">Action_ExamineItem</a>, <a href="F045.html">Handler_NotCarryingIt</a> and <a href="F8AB.html">Action_Row</a>.
+</div>
+<div class="paragraph">
+Write a new location for an object, or for a scenic-event room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="bf55"></span>
+<div class="comments">
+<div class="paragraph">
+Bit 7 selects the scenic-room list instead of the object table.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">UpdateObjectLocation</td>
+<td class="address-2"><span id="bf55"></span>BF55</td>
+<td class="instruction">BIT 7,B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="BF55.html#bf60">UpdateObjectLocation_Objects</a> for an ordinary object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf57"></span>BF57</td>
+<td class="instruction">JR Z,<a href="BF55.html#bf60">UpdateObjectLocation_Objects</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf59"></span>BF59</td>
+<td class="instruction">RES 7,B</td>
+<td class="comment-1" rowspan="2">Clear that bit and use the scenic list (<a href="B9C8.html#ba48">BA48</a>).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf5b"></span>BF5B</td>
+<td class="instruction">LD HL,$BA48</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf5e"></span>BF5E</td>
+<td class="instruction">JR <a href="BF55.html#bf63">UpdateObjectLocation_Write</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="BF55.html#bf63">UpdateObjectLocation_Write</a> to write the location.</td>
+</tr>
+<tr>
+<td class="asm-label">UpdateObjectLocation_Objects</td>
+<td class="address-2"><span id="bf60"></span>BF60</td>
+<td class="instruction">LD HL,$B9C8</td>
+<td class="comment-1" rowspan="1">Look up the object locations (<a href="B9C8.html">GameState</a>).</td>
+</tr>
+<tr>
+<td class="asm-label">UpdateObjectLocation_Write</td>
+<td class="address-2"><span id="bf63"></span>BF63</td>
+<td class="instruction">LD D,$00</td>
+<td class="comment-1" rowspan="4">Write the new location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf65"></span>BF65</td>
+<td class="instruction">LD E,B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf66"></span>BF66</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf67"></span>BF67</td>
+<td class="instruction">LD (HL),C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf68"></span>BF68</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="BF45.html">BF45</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#bf55">Map</a></td>
+<td class="next">
+Next: <a href="BF69.html">BF69</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/48981.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

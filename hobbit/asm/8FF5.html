@@ -33,145 +33,144 @@ Next: <a href="9034.html">9034</a>
 </td>
 </tr>
 </table>
-<div class="description">8FF5: Action Throw-At</div>
+<div class="description">8FF5: Action: Throw At</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Throws the current object at the second object. Reached through the action table at <a href="C730.html">ActionTable</a>, dispatched by <a href="950F.html">Turn_RunTheHandlerIfPresent</a>.
+</div>
 </div>
 </td>
 </tr>
 <tr>
 <td class="asm-label">Action_ThrowAt</td>
 <td class="address-2"><span id="8ff5"></span>8FF5</td>
-<td class="instruction">CALL <a href="8CA6.html#8cf1">Action_Putdown_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="8CF1.html">Action_AddTheObjectMass</a></td>
+<td class="comment-1" rowspan="1">Call <a href="8CF1.html">Action_AddTheObjectMass</a> to add the object's mass.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8ff8"></span>8FF8</td>
 <td class="instruction">LD HL,$9171</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the attack handler.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8ffb"></span>8FFB</td>
 <td class="instruction">LD A,$0F</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">The second object is taken from <a href="B6DA.html#b70a">B70A</a>, with 0F in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8ffd"></span>8FFD</td>
 <td class="instruction">LD IX,($B70A)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b70a">B70A</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9001"></span>9001</td>
 <td class="instruction">BIT 6,(IX+$07)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="8FF5.html#900c">Action_ThrowAt_HandTheObjectOver</a> if the object is an animal.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9005"></span>9005</td>
-<td class="instruction">JR NZ,<a href="8FF5.html#900c">Action_ThrowAt_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="8FF5.html#900c">Action_ThrowAt_HandTheObjectOver</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9007"></span>9007</td>
 <td class="instruction">LD HL,$92ED</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at action: Use The Other Object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="900a"></span>900A</td>
 <td class="instruction">LD A,$0B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the current action to 0B.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_ThrowAt_0</td>
+<td class="asm-label">Action_ThrowAt_HandTheObjectOver</td>
 <td class="address-2"><span id="900c"></span>900C</td>
 <td class="instruction">LD ($B6E7),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Update *<a href="B6DA.html#b6e7">CurrentAction</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="900f"></span>900F</td>
-<td class="instruction">CALL <a href="9F4A.html">$9F4A</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="9F4A.html">ActionHandAnObjectOver</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9F4A.html">ActionHandAnObjectOver</a> to hand the object from one character to another.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9012"></span>9012</td>
 <td class="instruction">LD A,$2A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Write 2A (throw) to *<a href="B6DA.html#b6e7">CurrentAction</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9014"></span>9014</td>
 <td class="instruction">LD ($B6E7),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9017"></span>9017</td>
 <td class="instruction">LD A,($B6FA)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6fa">B6FA</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="901a"></span>901A</td>
 <td class="instruction">CP $01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return if the message gate is not 01.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="901c"></span>901C</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="901d"></span>901D</td>
 <td class="instruction">LD IX,($B708)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b708">B708</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9021"></span>9021</td>
 <td class="instruction">LD (IX+$01),$FF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Mark where this object is as unset.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9025"></span>9025</td>
 <td class="instruction">LD A,$0F</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Write 0F (attack) to *<a href="B6DA.html#b6e7">CurrentAction</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9027"></span>9027</td>
 <td class="instruction">LD ($B6E7),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="902a"></span>902A</td>
 <td class="instruction">LD A,($B6E8)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6e8">CurrentObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="902d"></span>902D</td>
-<td class="instruction">JP <a href="93DA.html#95df">Action_Examine_16</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP <a href="95DF.html">Turn_WakeAnAnimal</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="95DF.html">Turn_WakeAnAnimal</a> to start the object's special-object script if it is an animal and not broken.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9030"></span>9030</td>
 <td class="instruction">LD (IX+$01),$FF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Mark where this object is as unset.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -188,7 +187,7 @@ Next: <a href="9034.html">9034</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../dec/asm/36853.html">Switch to decimal</a>.</div>
 </footer>

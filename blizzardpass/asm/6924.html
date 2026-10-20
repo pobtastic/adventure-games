@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blizzard Pass: Routine at 6924</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6914.html">6914</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6924">Map</a></td>
+<td class="next">
+Next: <a href="6953.html">6953</a>
+</td>
+</tr>
+</table>
+<div class="description">6924: Action: Restore</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Asks message 1A, do you want to restore a saved game. N returns. Y loads 0141 bytes back over the room state and jumps into the ROM loader.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RestoreGame</td>
+<td class="address-2"><span id="6924"></span>6924</td>
+<td class="instruction">LD A,$1A</td>
+<td class="comment-1" rowspan="2">Remember the pointer and select message 1A.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6926"></span>6926</td>
+<td class="instruction">LD ($6A81),IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="692a"></span>692A</td>
+<td class="instruction">CALL <a href="63D4.html">PrintSystemMessage</a></td>
+<td class="comment-1" rowspan="1">Print the question.</td>
+</tr>
+<tr>
+<td class="asm-label">RestoreGame_Key</td>
+<td class="address-2"><span id="692d"></span>692D</td>
+<td class="instruction">CALL <a href="6884.html">WaitKeyDown</a></td>
+<td class="comment-1" rowspan="1">Wait for a key.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6930"></span>6930</td>
+<td class="instruction">CP $4E</td>
+<td class="comment-1" rowspan="2">N (4E) leaves the saved game alone.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6932"></span>6932</td>
+<td class="instruction">JR Z,<a href="6924.html#6938">RestoreGame_Load</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6934"></span>6934</td>
+<td class="instruction">CP $59</td>
+<td class="comment-1" rowspan="2">Anything except Y (59) asks again.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6936"></span>6936</td>
+<td class="instruction">JR NZ,<a href="6924.html#692d">RestoreGame_Key</a></td>
+</tr>
+<tr>
+<td class="asm-label">RestoreGame_Load</td>
+<td class="address-2"><span id="6938"></span>6938</td>
+<td class="instruction">CP $4E</td>
+<td class="comment-1" rowspan="2">N returns without loading.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="693a"></span>693A</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="693b"></span>693B</td>
+<td class="instruction">LD HL,$6953</td>
+<td class="comment-1" rowspan="2">Return through <a href="6953.html">Restored</a> with the state block in <span class="register">IX</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="693e"></span>693E</td>
+<td class="instruction">LD IX,$5D87</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6942"></span>6942</td>
+<td class="instruction">LD DE,$0141</td>
+<td class="comment-1" rowspan="3">0141 bytes, marker 2A, with carry set for a headerless block.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6945"></span>6945</td>
+<td class="instruction">LD A,$2A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6947"></span>6947</td>
+<td class="instruction">SCF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6948"></span>6948</td>
+<td class="instruction">INC D</td>
+<td class="comment-1" rowspan="4">The loader wants interrupts off, and the border dance around the alternate accumulator.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6949"></span>6949</td>
+<td class="instruction">EX AF,AF'</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="694a"></span>694A</td>
+<td class="instruction">DEC D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="694b"></span>694B</td>
+<td class="instruction">DI</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="694c"></span>694C</td>
+<td class="instruction">LD A,$0F</td>
+<td class="comment-1" rowspan="2">Border yellow.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="694e"></span>694E</td>
+<td class="instruction">OUT ($FE),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6950"></span>6950</td>
+<td class="instruction">JP $0561</td>
+<td class="comment-1" rowspan="1">Jump into <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD-BYTES</a> at 0561.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6914.html">6914</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6924">Map</a></td>
+<td class="next">
+Next: <a href="6953.html">6953</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1986 Adventuresoft UK Ltd &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/blizzardpass/">Source code</a>.</div>
+<div><a href="../dec/asm/26916.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

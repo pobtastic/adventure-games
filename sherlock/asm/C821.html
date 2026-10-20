@@ -28,7 +28,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="C4D1.html">C4D1</a>
+Prev: <a href="C7A6.html">C7A6</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#c821">Map</a></td>
 <td class="next">
@@ -42,7 +42,10 @@ Next: <a href="C863.html">C863</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="9CCE.html">CheckObjectInCharacterLocation</a>, <a href="C4D1.html">ProcessDisplayAction</a>, <a href="CBC2.html">ProcessCharacterDisplay_CBC2</a>, <a href="CC37.html">ProcessCharacterAction</a>, <a href="D078.html">CheckObjectVisibility</a>, <a href="D36A.html">ProcessObjectEntry</a>, <a href="D4EF.html">CheckObjectMatchCriteria</a> and <a href="E17B.html">E17B</a>.
+Used by the routines at <a href="9CCE.html">CheckObjectInCharacterLocation</a>, <a href="C7A6.html">TestSeventhMarker</a>, <a href="CBC2.html">ProcessCharacterDisplay_TestDisplayFlagEnd</a>, <a href="CC5A.html">NoteDisguiseAndReadTimetable</a>, <a href="D078.html">CheckObjectVisibility</a>, <a href="D36A.html">ProcessObjectEntry</a>, <a href="D4EF.html">CheckObjectMatchCriteria</a> and <a href="E17B.html">DispatchRoomGraphics</a>.
+</div>
+<div class="paragraph">
+Looks the object up and clears the zero flag when its location matches the current character.
 </div>
 </div>
 <table class="input">
@@ -60,7 +63,7 @@ Used by the routines at <a href="9CCE.html">CheckObjectInCharacterLocation</a>, 
 </tr>
 <tr>
 <td class="register">F</td>
-<td class="register-desc">Zero flag set if location matches</td>
+<td class="register-desc">Zero flag clear when the location matches</td>
 </tr>
 </table>
 </td>
@@ -69,7 +72,7 @@ Used by the routines at <a href="9CCE.html">CheckObjectInCharacterLocation</a>, 
 <td class="asm-label">CheckObjectLocationMatch</td>
 <td class="address-2"><span id="c821"></span>C821</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">IX</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Call <a href="D237.html">FetchObjectDataPointer</a> to look up that object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -80,181 +83,171 @@ Used by the routines at <a href="9CCE.html">CheckObjectInCharacterLocation</a>, 
 <td class="asm-label"></td>
 <td class="address-1"><span id="c824"></span>C824</td>
 <td class="instruction">CALL <a href="D237.html">FetchObjectDataPointer</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D237.html">FetchObjectDataPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c827"></span>C827</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="3">Keep <span class="register">A</span> in <span class="register">B</span> and call <a href="C863.html">GetObjectLocation</a> to read the current character's room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c828"></span>C828</td>
 <td class="instruction">LD A,($A036)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A036.html">CurrentCharacter_ID</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c82b"></span>C82B</td>
 <td class="instruction">CALL <a href="C863.html">GetObjectLocation</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C863.html">GetObjectLocation</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c82e"></span>C82E</td>
 <td class="instruction">CP B</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C821.html#c85d">CheckObjectLocationMatch_2</a> if <span class="register">A</span> is equal to <span class="register">B</span>.</td>
+<td class="comment-1" rowspan="2">Go to <a href="C821.html#c85d">CheckObjectLocationMatch_TestStepSucceedsScript</a> if the character's room is this object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c82f"></span>C82F</td>
-<td class="instruction">JR Z,<a href="C821.html#c85d">CheckObjectLocationMatch_2</a></td>
+<td class="instruction">JR Z,<a href="C821.html#c85d">CheckObjectLocationMatch_TestStepSucceedsScript</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c831"></span>C831</td>
 <td class="instruction">BIT 7,(IX+$05)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C821.html#c85a">CheckObjectLocationMatch_1</a> if bit 7 of *<span class="register">IX</span>+05 is not set.</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="C821.html#c85a">CheckObjectLocationMatch_Next</a> if the object-attribute flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c835"></span>C835</td>
-<td class="instruction">JR Z,<a href="C821.html#c85a">CheckObjectLocationMatch_1</a></td>
+<td class="instruction">JR Z,<a href="C821.html#c85a">CheckObjectLocationMatch_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c837"></span>C837</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="4">Exchange <span class="register">A</span> with <span class="register">B</span> and call <a href="C863.html">GetObjectLocation</a> to read that object's room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c838"></span>C838</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c839"></span>C839</td>
 <td class="instruction">LD B,C</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c83a"></span>C83A</td>
 <td class="instruction">CALL <a href="C863.html">GetObjectLocation</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C863.html">GetObjectLocation</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c83d"></span>C83D</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="4">Go to <a href="C821.html#c85d">CheckObjectLocationMatch_TestStepSucceedsScript</a> if this object's room is the character being processed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c83e"></span>C83E</td>
 <td class="instruction">LD A,($A036)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A036.html">CurrentCharacter_ID</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c841"></span>C841</td>
 <td class="instruction">CP C</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C821.html#c85d">CheckObjectLocationMatch_2</a> if <span class="register">A</span> is equal to <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c842"></span>C842</td>
-<td class="instruction">JR Z,<a href="C821.html#c85d">CheckObjectLocationMatch_2</a></td>
+<td class="instruction">JR Z,<a href="C821.html#c85d">CheckObjectLocationMatch_TestStepSucceedsScript</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c844"></span>C844</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">C</span>.</td>
+<td class="comment-1" rowspan="3">Go to <a href="C821.html#c85a">CheckObjectLocationMatch_Next</a> if the two locations differ.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c845"></span>C845</td>
 <td class="instruction">CP B</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C821.html#c85a">CheckObjectLocationMatch_1</a> if <span class="register">A</span> is not equal to <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c846"></span>C846</td>
-<td class="instruction">JR NZ,<a href="C821.html#c85a">CheckObjectLocationMatch_1</a></td>
+<td class="instruction">JR NZ,<a href="C821.html#c85a">CheckObjectLocationMatch_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c848"></span>C848</td>
 <td class="instruction">INC A</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">A</span> by one.</td>
+<td class="comment-1" rowspan="2">Report a match at <a href="C821.html#c85d">CheckObjectLocationMatch_TestStepSucceedsScript</a> unless both locations are FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c849"></span>C849</td>
-<td class="instruction">JR NZ,<a href="C821.html#c85d">CheckObjectLocationMatch_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C821.html#c85d">CheckObjectLocationMatch_2</a> if <span class="register">A</span> is not equal to <span class="register">B</span>.</td>
+<td class="instruction">JR NZ,<a href="C821.html#c85d">CheckObjectLocationMatch_TestStepSucceedsScript</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c84b"></span>C84B</td>
 <td class="instruction">LD B,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=*<span class="register">IX</span>+00.</td>
+<td class="comment-1" rowspan="1">Read the record's flag byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c84e"></span>C84E</td>
 <td class="instruction">LD A,($A00A)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="C821.html#c85d">CheckObjectLocationMatch_2</a> if *<a href="A00A.html">CurrentCharacterAttribute</a> is equal to *<span class="register">IX</span>+0F.</td>
+<td class="comment-1" rowspan="1">Read the character attribute.</td>
 </tr>
 <tr>
 <td class="asm-label">CheckObjectLocationMatch_0</td>
 <td class="address-2"><span id="c851"></span>C851</td>
 <td class="instruction">CP (IX+$0F)</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="C821.html#c85d">CheckObjectLocationMatch_TestStepSucceedsScript</a> if it matches the character attribute.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c854"></span>C854</td>
-<td class="instruction">JR Z,<a href="C821.html#c85d">CheckObjectLocationMatch_2</a></td>
+<td class="instruction">JR Z,<a href="C821.html#c85d">CheckObjectLocationMatch_TestStepSucceedsScript</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c856"></span>C856</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">Step to the next byte of the object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c858"></span>C858</td>
 <td class="instruction">DJNZ <a href="C821.html#c851">CheckObjectLocationMatch_0</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="C821.html#c851">CheckObjectLocationMatch_0</a> until counter is zero.</td>
+<td class="comment-1" rowspan="1">Count the next object and repeat from <a href="C821.html#c851">CheckObjectLocationMatch_0</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectLocationMatch_1</td>
+<td class="asm-label">CheckObjectLocationMatch_Next</td>
 <td class="address-2"><span id="c85a"></span>C85A</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="2">Set the zero flag and jump ahead to <a href="C821.html#c85f">CheckObjectLocationMatch_BringSavedCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c85b"></span>C85B</td>
-<td class="instruction">JR <a href="C821.html#c85f">CheckObjectLocationMatch_3</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C821.html#c85f">CheckObjectLocationMatch_3</a>.</td>
+<td class="instruction">JR <a href="C821.html#c85f">CheckObjectLocationMatch_BringSavedCount</a></td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectLocationMatch_2</td>
+<td class="asm-label">CheckObjectLocationMatch_TestStepSucceedsScript</td>
 <td class="address-2"><span id="c85d"></span>C85D</td>
-<td class="instruction">OR %00000001</td>
-<td class="comment-1" rowspan="1">Set bit 0.</td>
+<td class="instruction">OR $01</td>
+<td class="comment-1" rowspan="1">Clear the zero flag to report that the character attribute was found.</td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectLocationMatch_3</td>
+<td class="asm-label">CheckObjectLocationMatch_BringSavedCount</td>
 <td class="address-2"><span id="c85f"></span>C85F</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">IX</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the saved count and the saved character record from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -271,7 +264,7 @@ Used by the routines at <a href="9CCE.html">CheckObjectInCharacterLocation</a>, 
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="C4D1.html">C4D1</a>
+Prev: <a href="C7A6.html">C7A6</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#c821">Map</a></td>
 <td class="next">
@@ -282,7 +275,7 @@ Next: <a href="C863.html">C863</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/51233.html">Switch to decimal</a>.</div>
 </footer>

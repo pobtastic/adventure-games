@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at EEFC</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="EEED.html">EEED</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#eefc">Map</a></td>
+<td class="next">
+Next: <a href="F03A.html">F03A</a>
+</td>
+</tr>
+</table>
+<div class="description">EEFC: Action: Examine Item</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="EEAE.html">Action_Take</a>.
+</div>
+<div class="paragraph">
+Describe, and sometimes change, the one thing the player is examining.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem</td>
+<td class="address-2"><span id="eefc"></span>EEFC</td>
+<td class="instruction">LD HL,$E812</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#ef14">Action_ExamineItem_Next</a> unless the player named Mara's body.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eeff"></span>EEFF</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef02"></span>EF02</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#ef14">Action_ExamineItem_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef04"></span>EF04</td>
+<td class="instruction">LD A,$0A</td>
+<td class="comment-1" rowspan="2">Stop if object 0A (the sword) is already carried, or if the player is holding 06 things.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef06"></span>EF06</td>
+<td class="instruction">CALL <a href="EEBA.html">Handler_AlreadyCarrying</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef09"></span>EF09</td>
+<td class="instruction">LD BC,$333E</td>
+<td class="comment-1" rowspan="2">Put object 33 (the glowing rock) in room 3E (A Rock Wall).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef0c"></span>EF0C</td>
+<td class="instruction">CALL <a href="BF55.html">UpdateObjectLocation</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef0f"></span>EF0F</td>
+<td class="instruction">LD B,$0A</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef11"></span>EF11</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_Next</td>
+<td class="address-2"><span id="ef14"></span>EF14</td>
+<td class="instruction">LD HL,$E814</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#ef28">Action_ExamineItem_RopeOverhang</a> unless the player named the witch.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef17"></span>EF17</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef1a"></span>EF1A</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#ef28">Action_ExamineItem_RopeOverhang</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef1c"></span>EF1C</td>
+<td class="instruction">LD HL,$E6FF</td>
+<td class="comment-1" rowspan="2">Call <a href="C2EF.html">Parser_SkipToken</a> to skip to the object named by this phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef1f"></span>EF1F</td>
+<td class="instruction">CALL <a href="C2EF.html">Parser_SkipToken</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef22"></span>EF22</td>
+<td class="instruction">CALL <a href="EEBA.html">Handler_AlreadyCarrying</a></td>
+<td class="comment-1" rowspan="1">Call <a href="EEBA.html">Handler_AlreadyCarrying</a> to stop if that object is already carried, or if six things are already held.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef25"></span>EF25</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_RopeOverhang</td>
+<td class="address-2"><span id="ef28"></span>EF28</td>
+<td class="instruction">LD HL,$E816</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#ef38">Action_ExamineItem_SilverCoin</a> unless the player named the rope on the overhang.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef2b"></span>EF2B</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef2e"></span>EF2E</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#ef38">Action_ExamineItem_SilverCoin</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef30"></span>EF30</td>
+<td class="instruction">LD A,$00</td>
+<td class="comment-1" rowspan="2">Stop if object 00 (the food) is already carried, or if the player is holding 06 things.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef32"></span>EF32</td>
+<td class="instruction">CALL <a href="EEBA.html">Handler_AlreadyCarrying</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef35"></span>EF35</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_SilverCoin</td>
+<td class="address-2"><span id="ef38"></span>EF38</td>
+<td class="instruction">LD HL,$E818</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#ef48">Action_ExamineItem_Bow</a> unless the player named the blacksmith.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef3b"></span>EF3B</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef3e"></span>EF3E</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#ef48">Action_ExamineItem_Bow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef40"></span>EF40</td>
+<td class="instruction">LD A,$02</td>
+<td class="comment-1" rowspan="2">Stop if object 02 (the silver coin) is already carried, or if the player is holding 06 things.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef42"></span>EF42</td>
+<td class="instruction">CALL <a href="EEBA.html">Handler_AlreadyCarrying</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef45"></span>EF45</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_Bow</td>
+<td class="address-2"><span id="ef48"></span>EF48</td>
+<td class="instruction">LD HL,$E81D</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#ef58">Action_ExamineItem_Arrows</a> unless the player named the blacksmith.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef4b"></span>EF4B</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef4e"></span>EF4E</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#ef58">Action_ExamineItem_Arrows</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef50"></span>EF50</td>
+<td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2">Stop if object 03 (the bow) is already carried, or if the player is holding 06 things.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef52"></span>EF52</td>
+<td class="instruction">CALL <a href="EEBA.html">Handler_AlreadyCarrying</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef55"></span>EF55</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_Arrows</td>
+<td class="address-2"><span id="ef58"></span>EF58</td>
+<td class="instruction">LD HL,$E81F</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#ef68">Action_ExamineItem_Furnace</a> unless the player named the dead blacksmith.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef5b"></span>EF5B</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef5e"></span>EF5E</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#ef68">Action_ExamineItem_Furnace</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef60"></span>EF60</td>
+<td class="instruction">LD A,$04</td>
+<td class="comment-1" rowspan="2">Stop if object 04 (the arrows) is already carried, or if the player is holding 06 things.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef62"></span>EF62</td>
+<td class="instruction">CALL <a href="EEBA.html">Handler_AlreadyCarrying</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef65"></span>EF65</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_Furnace</td>
+<td class="address-2"><span id="ef68"></span>EF68</td>
+<td class="instruction">LD HL,$E821</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#ef7c">Action_ExamineItem_Continue</a> unless the player named the furnace.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef6b"></span>EF6B</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef6e"></span>EF6E</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#ef7c">Action_ExamineItem_Continue</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef70"></span>EF70</td>
+<td class="instruction">LD HL,$E6EF</td>
+<td class="comment-1" rowspan="2">Call <a href="C2EF.html">Parser_SkipToken</a> to skip to the object named by this phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef73"></span>EF73</td>
+<td class="instruction">CALL <a href="C2EF.html">Parser_SkipToken</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef76"></span>EF76</td>
+<td class="instruction">CALL <a href="EEBA.html">Handler_AlreadyCarrying</a></td>
+<td class="comment-1" rowspan="1">Call <a href="EEBA.html">Handler_AlreadyCarrying</a> to stop if that object is already carried, or if six things are already held.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef79"></span>EF79</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_Continue</td>
+<td class="address-2"><span id="ef7c"></span>EF7C</td>
+<td class="instruction">JR <a href="EEFC.html#ef7e">Action_ExamineItem_Zarn</a></td>
+<td class="comment-1" rowspan="1">Carry on with the next object.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_Zarn</td>
+<td class="address-2"><span id="ef7e"></span>EF7E</td>
+<td class="instruction">LD HL,$E825</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#efad">Action_ExamineItem_PrincessMara</a> unless the player named Zarn.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef81"></span>EF81</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef84"></span>EF84</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#efad">Action_ExamineItem_PrincessMara</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef86"></span>EF86</td>
+<td class="instruction">LD A,$44</td>
+<td class="comment-1" rowspan="2">Stop if object 44 (the log) is already carried, or if the player is holding 06 things.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef88"></span>EF88</td>
+<td class="instruction">CALL <a href="EEBA.html">Handler_AlreadyCarrying</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef8b"></span>EF8B</td>
+<td class="instruction">LD A,$45</td>
+<td class="comment-1" rowspan="2">Destroy object 45 (the log bridge).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef8d"></span>EF8D</td>
+<td class="instruction">CALL <a href="C2D8.html">Handler_DestroyItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef90"></span>EF90</td>
+<td class="instruction">LD A,$46</td>
+<td class="comment-1" rowspan="2">Destroy object 46 (the log bridge).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef92"></span>EF92</td>
+<td class="instruction">CALL <a href="C2D8.html">Handler_DestroyItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef95"></span>EF95</td>
+<td class="instruction">LD BC,$1115</td>
+<td class="comment-1" rowspan="2">Put object 11 (the chasm) in room 15 (The Western Edge of a Chasm).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef98"></span>EF98</td>
+<td class="instruction">CALL <a href="BF55.html">UpdateObjectLocation</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef9b"></span>EF9B</td>
+<td class="instruction">LD BC,$1216</td>
+<td class="comment-1" rowspan="2">Put object 12 (the chasm) in room 16 (The Eastern Edge of a Chasm).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef9e"></span>EF9E</td>
+<td class="instruction">CALL <a href="BF55.html">UpdateObjectLocation</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efa1"></span>EFA1</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="5">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efa2"></span>EFA2</td>
+<td class="instruction">LD ($E9B4),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efa5"></span>EFA5</td>
+<td class="instruction">LD ($E9BB),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efa8"></span>EFA8</td>
+<td class="instruction">LD B,$44</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efaa"></span>EFAA</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_PrincessMara</td>
+<td class="address-2"><span id="efad"></span>EFAD</td>
+<td class="instruction">LD HL,$E827</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#efbd">Action_ExamineItem_OldMan</a> unless the player named Princess Mara.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efb0"></span>EFB0</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efb3"></span>EFB3</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#efbd">Action_ExamineItem_OldMan</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efb5"></span>EFB5</td>
+<td class="instruction">LD A,$09</td>
+<td class="comment-1" rowspan="2">Stop if object 09 (the horn) is already carried, or if the player is holding 06 things.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efb7"></span>EFB7</td>
+<td class="instruction">CALL <a href="EEBA.html">Handler_AlreadyCarrying</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efba"></span>EFBA</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_OldMan</td>
+<td class="address-2"><span id="efbd"></span>EFBD</td>
+<td class="instruction">LD HL,$E829</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#efe8">Action_ExamineItem_Key</a> unless the player named the old man.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efc0"></span>EFC0</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efc3"></span>EFC3</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#efe8">Action_ExamineItem_Key</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efc5"></span>EFC5</td>
+<td class="instruction">LD HL,$E706</td>
+<td class="comment-1" rowspan="2">Call <a href="C2EF.html">Parser_SkipToken</a> to skip to the object named by this phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efc8"></span>EFC8</td>
+<td class="instruction">CALL <a href="C2EF.html">Parser_SkipToken</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efcb"></span>EFCB</td>
+<td class="instruction">CALL <a href="C2D2.html">IsObjectCarried</a></td>
+<td class="comment-1" rowspan="2">Jump to <a href="EEFC.html#efd5">Action_ExamineItem_TakeChest</a> when the object is not being carried.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efce"></span>EFCE</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#efd5">Action_ExamineItem_TakeChest</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efd0"></span>EFD0</td>
+<td class="instruction">LD E,$0F</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="EEC0.html">Handler_PrintCarrying</a> to finish the carrying sentence.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efd2"></span>EFD2</td>
+<td class="instruction">JP <a href="EEC0.html">Handler_PrintCarrying</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_TakeChest</td>
+<td class="address-2"><span id="efd5"></span>EFD5</td>
+<td class="instruction">CALL <a href="EEDD.html">Handler_InventoryFull</a></td>
+<td class="comment-1" rowspan="1">Call <a href="EEDD.html">Handler_InventoryFull</a> to refuse the object when six things are already carried.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efd8"></span>EFD8</td>
+<td class="instruction">LD A,E</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#efe3">Action_ExamineItem_PickUp</a> when the value 0F matches.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efd9"></span>EFD9</td>
+<td class="instruction">CP $0F</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efdb"></span>EFDB</td>
+<td class="instruction">JR Z,<a href="EEFC.html#efe3">Action_ExamineItem_PickUp</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efdd"></span>EFDD</td>
+<td class="instruction">LD BC,$0D0E</td>
+<td class="comment-1" rowspan="2">Replace object 0D (the open chest) with object 0E (the empty chest).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efe0"></span>EFE0</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_PickUp</td>
+<td class="address-2"><span id="efe3"></span>EFE3</td>
+<td class="instruction">LD B,$0F</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efe5"></span>EFE5</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_Key</td>
+<td class="address-2"><span id="efe8"></span>EFE8</td>
+<td class="instruction">LD HL,$E82F</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#eff8">Action_ExamineItem_DeadSpider</a> unless the player named the key.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efeb"></span>EFEB</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="efee"></span>EFEE</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#eff8">Action_ExamineItem_DeadSpider</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eff0"></span>EFF0</td>
+<td class="instruction">LD A,$10</td>
+<td class="comment-1" rowspan="2">Stop if object 10 (the key) is already carried, or if the player is holding 06 things.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eff2"></span>EFF2</td>
+<td class="instruction">CALL <a href="EEBA.html">Handler_AlreadyCarrying</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eff5"></span>EFF5</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_DeadSpider</td>
+<td class="address-2"><span id="eff8"></span>EFF8</td>
+<td class="instruction">LD HL,$E831</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#f006">Action_ExamineItem_TakeRingOff</a> unless the player named the dead spider.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="effb"></span>EFFB</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="effe"></span>EFFE</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#f006">Action_ExamineItem_TakeRingOff</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f000"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "They are not removable.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f000"></span>F000</td>
+<td class="instruction">LD HL,$DC63</td>
+<td class="comment-1" rowspan="2">Print "They are not removable." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f003"></span>F003</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_TakeRingOff</td>
+<td class="address-2"><span id="f006"></span>F006</td>
+<td class="instruction">LD HL,$E833</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#f011">Action_ExamineItem_Demons</a> unless the player named taking the ring off.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f009"></span>F009</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f00c"></span>F00C</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#f011">Action_ExamineItem_Demons</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f00e"></span>F00E</td>
+<td class="instruction">JP <a href="ED7D.html">Response_PleaseRephraseThat_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="ED7D.html">Response_PleaseRephraseThat_GameLoop</a> to ask for a rephrase.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_Demons</td>
+<td class="address-2"><span id="f011"></span>F011</td>
+<td class="instruction">LD HL,$E823</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#f037">Action_ExamineItem_YouCant</a> unless the player named the demons.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f014"></span>F014</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f017"></span>F017</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#f037">Action_ExamineItem_YouCant</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f019"></span>F019</td>
+<td class="instruction">LD A,($BA9B)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#f037">Action_ExamineItem_YouCant</a> when the player is in room 48 (Inside the Volcano).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f01c"></span>F01C</td>
+<td class="instruction">CP $48</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f01e"></span>F01E</td>
+<td class="instruction">JR Z,<a href="EEFC.html#f037">Action_ExamineItem_YouCant</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f020"></span>F020</td>
+<td class="instruction">LD A,$08</td>
+<td class="comment-1" rowspan="2">Stop if object 08 (the rope) is already carried, or if the player is holding 06 things.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f022"></span>F022</td>
+<td class="instruction">CALL <a href="EEBA.html">Handler_AlreadyCarrying</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f025"></span>F025</td>
+<td class="instruction">LD A,$23</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEFC.html#f032">Action_ExamineItem_TakeRope</a> if object 23 (the rope on the overhang) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f027"></span>F027</td>
+<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f02a"></span>F02A</td>
+<td class="instruction">JR NZ,<a href="EEFC.html#f032">Action_ExamineItem_TakeRope</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f02c"></span>F02C</td>
+<td class="instruction">LD BC,$2322</td>
+<td class="comment-1" rowspan="2">Replace object 23 (the rope on the overhang) with object 22 (the rock overhang).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f02f"></span>F02F</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_TakeRope</td>
+<td class="address-2"><span id="f032"></span>F032</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="EEED.html">Handler_PickUpItem</a> to pick the object up.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f034"></span>F034</td>
+<td class="instruction">JP <a href="EEED.html">Handler_PickUpItem</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_ExamineItem_YouCant</td>
+<td class="address-2"><span id="f037"></span>F037</td>
+<td class="instruction">JP <a href="ED6E.html">Response_YouCant_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Tell the player the command is impossible.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="EEED.html">EEED</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#eefc">Map</a></td>
+<td class="next">
+Next: <a href="F03A.html">F03A</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/61180.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

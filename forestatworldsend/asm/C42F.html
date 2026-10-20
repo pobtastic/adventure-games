@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at C42F</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C3FA.html">C3FA</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c42f">Map</a></td>
+<td class="next">
+Next: <a href="C463.html">C463</a>
+</td>
+</tr>
+</table>
+<div class="description">C42F: Move Player To Room</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="ECB6.html">Handler_InjuryCheck</a> and <a href="F916.html">Action_Blow</a>.
+</div>
+<div class="paragraph">
+Move the player to the given room and retarget any scenic events that watched the old room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom</td>
+<td class="address-2"><span id="c42f"></span>C42F</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="6">Read the current room and the scenic list. Jump to <a href="C42F.html#c43d">MovePlayerToRoom_Next</a> to continue.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c430"></span>C430</td>
+<td class="instruction">LD A,($BB00)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c433"></span>C433</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c434"></span>C434</td>
+<td class="instruction">LD A,($BA9B)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c437"></span>C437</td>
+<td class="instruction">LD HL,$BA48</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c43a"></span>C43A</td>
+<td class="instruction">JR <a href="C42F.html#c43d">MovePlayerToRoom_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Loop</td>
+<td class="address-2"><span id="c43c"></span>C43C</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next scenic entry.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Next</td>
+<td class="address-2"><span id="c43d"></span>C43D</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C42F.html#c441">MovePlayerToRoom_ScenicNext</a> unless this scenic entry watched the old room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c43e"></span>C43E</td>
+<td class="instruction">JR NZ,<a href="C42F.html#c441">MovePlayerToRoom_ScenicNext</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c440"></span>C440</td>
+<td class="instruction">LD (HL),C</td>
+<td class="comment-1" rowspan="1">Retarget this scenic entry to the new room.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_ScenicNext</td>
+<td class="address-2"><span id="c441"></span>C441</td>
+<td class="instruction">DJNZ <a href="C42F.html#c43c">MovePlayerToRoom_Loop</a></td>
+<td class="comment-1" rowspan="1">Repeat from <a href="C42F.html#c43c">MovePlayerToRoom_Loop</a> for the remaining scenic entries.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c443"></span>C443</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="5">Remember the new room. Return when no event bits are set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c444"></span>C444</td>
+<td class="instruction">LD ($BA9B),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c447"></span>C447</td>
+<td class="instruction">LD A,($BA3F)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c44a"></span>C44A</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c44b"></span>C44B</td>
+<td class="instruction">JR Z,<a href="C42F.html#c462">MovePlayerToRoom_Return</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c44d"></span>C44D</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="4">Take the eight event bits and the objects they summon.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c44f"></span>C44F</td>
+<td class="instruction">LD HL,$BA40</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c452"></span>C452</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c453"></span>C453</td>
+<td class="instruction">JR <a href="C42F.html#c456">MovePlayerToRoom_EventBit</a></td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_EventAdvance</td>
+<td class="address-2"><span id="c455"></span>C455</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next event object.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_EventBit</td>
+<td class="address-2"><span id="c456"></span>C456</td>
+<td class="instruction">SRL C</td>
+<td class="comment-1" rowspan="2">Skip this object when its event bit is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c458"></span>C458</td>
+<td class="instruction">JR NC,<a href="C42F.html#c460">MovePlayerToRoom_EventNext</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c45a"></span>C45A</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Call <a href="C2DF.html">Handler_UpdateItemForTheCurrentRoom</a> to move that event's object into this room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c45b"></span>C45B</td>
+<td class="instruction">EXX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c45c"></span>C45C</td>
+<td class="instruction">CALL <a href="C2DF.html">Handler_UpdateItemForTheCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c45f"></span>C45F</td>
+<td class="instruction">EXX</td>
+<td class="comment-1" rowspan="1">Switch back to the event scan.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_EventNext</td>
+<td class="address-2"><span id="c460"></span>C460</td>
+<td class="instruction">DJNZ <a href="C42F.html#c455">MovePlayerToRoom_EventAdvance</a></td>
+<td class="comment-1" rowspan="1">Repeat from <a href="C42F.html#c455">MovePlayerToRoom_EventAdvance</a> for the remaining event bits.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Return</td>
+<td class="address-2"><span id="c462"></span>C462</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C3FA.html">C3FA</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c42f">Map</a></td>
+<td class="next">
+Next: <a href="C463.html">C463</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/50223.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

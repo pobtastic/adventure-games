@@ -33,375 +33,453 @@ Next: <a href="42873.html">42873</a>
 </td>
 </tr>
 </table>
-<div class="description">42751: Routine at A6FF</div>
+<div class="description">42751: Handler: Run Script</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="41600.html">41600</a>, <a href="44168.html">Handler_ScenicEvents</a>, <a href="44284.html">44284</a> and <a href="44409.html">ChangeRoom</a>.
+Used by the routines at <a href="41600.html">Handler_GameEvents</a>, <a href="44168.html">Handler_ScenicEvents</a>, <a href="44284.html">Handler_DispatchVerb</a> and <a href="44409.html">ChangeRoom</a>.
+</div>
+<div class="paragraph">
+Executes the bytecode at <span class="register">IX</span>.
+</div>
+<div class="paragraph">
+Each instruction is a condition from <a href="42885.html">JumpTable_ScriptConditions</a> followed by an action from <a href="42945.html">JumpTable_ScriptActions</a>. A condition that fails skips its action.
+</div>
+<div class="paragraph">
+254 selects OR for the next condition and 255 selects AND.
+</div>
+<div class="paragraph">
+255 ends the instruction and starts another one.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script bytecode</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript</td>
 <td class="address-2"><span id="42751"></span>42751</td>
 <td class="instruction">PUSH HL</td>
 <td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42752"></span>42752</td>
 <td class="instruction">PUSH DE</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42753"></span>42753</td>
 <td class="instruction">PUSH BC</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_0</td>
 <td class="address-2"><span id="42754"></span>42754</td>
 <td class="instruction">LD HL,42749</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="42749.html">42749</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="42749.html">ScriptConditionMask</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42757"></span>42757</td>
 <td class="instruction">LD (HL),64</td>
-<td class="comment-1" rowspan="1">Write 64 to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Start the condition mask at 64 (only the zero flag set, meaning the conditions hold).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42759"></span>42759</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">HL</span> on to the condition operator.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42760"></span>42760</td>
 <td class="instruction">LD (HL),255</td>
-<td class="comment-1" rowspan="1">Write 255 to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Start with the AND operator (255).</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_1</td>
 <td class="address-2"><span id="42762"></span>42762</td>
 <td class="instruction">LD E,(IX+0)</td>
 <td class="comment-1" rowspan="1"><span class="register">E</span>=*<span class="register">IX</span>+0.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42765"></span>42765</td>
 <td class="instruction">PUSH IX</td>
 <td class="comment-1" rowspan="1">Stash <span class="register">IX</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42767"></span>42767</td>
 <td class="instruction">LD IX,42885</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="42885.html">42885</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="42885.html">JumpTable_ScriptConditions</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42771"></span>42771</td>
 <td class="instruction">CALL <a href="41733.html">GetTableEntry</a></td>
 <td class="comment-1" rowspan="1">Call <a href="41733.html">GetTableEntry</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42774"></span>42774</td>
 <td class="instruction">POP IX</td>
 <td class="comment-1" rowspan="1">Restore <span class="register">IX</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42776"></span>42776</td>
 <td class="instruction">JP (HL)</td>
 <td class="comment-1" rowspan="1">Jump to *<span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42777"></span>42777</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the four bytes of that condition.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42779"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routines at <a href="43106.html">43106</a>, <a href="43121.html">43121</a>, <a href="43160.html">43160</a>, <a href="43186.html">43186</a>, <a href="43391.html">43391</a> and <a href="43408.html">43408</a>.
+This entry point is used by the routines at <a href="43106.html">Condition_ItemLocationEquals</a>, <a href="43121.html">Condition_ItemLocationDiffers</a>, <a href="43160.html">Condition_GroupItemEquals</a>, <a href="43186.html">Condition_GroupItemDiffers</a>, <a href="43391.html">Condition_RoomPairMatches</a> and <a href="43408.html">Condition_RoomPairDiffers</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_2</td>
 <td class="address-2"><span id="42779"></span>42779</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42781"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routines at <a href="43019.html">43019</a>, <a href="43031.html">43031</a>, <a href="43046.html">43046</a>, <a href="43058.html">43058</a>, <a href="43073.html">43073</a>, <a href="43085.html">43085</a>, <a href="43094.html">43094</a>, <a href="43139.html">43139</a>, <a href="43151.html">43151</a>, <a href="43215.html">43215</a>, <a href="43224.html">43224</a>, <a href="43236.html">43236</a>, <a href="43245.html">43245</a>, <a href="43257.html">43257</a>, <a href="43277.html">43277</a>, <a href="43300.html">43300</a>, <a href="43335.html">43335</a>, <a href="43370.html">43370</a>, <a href="43379.html">43379</a>, <a href="43428.html">43428</a>, <a href="43440.html">43440</a> and <a href="43467.html">43467</a>.
+This entry point is used by the routines at <a href="43019.html">Condition_ItemIsPresent</a>, <a href="43031.html">Condition_ItemIsAbsent</a>, <a href="43046.html">Condition_ItemIsCarried</a>, <a href="43058.html">Condition_ItemIsNotCarried</a>, <a href="43073.html">Condition_ItemIsHere</a>, <a href="43085.html">Condition_InRoom</a>, <a href="43094.html">Condition_NotInRoom</a>, <a href="43139.html">Condition_FlagIsSet</a>, <a href="43151.html">Condition_FlagIsClear</a>, <a href="43215.html">Condition_InventoryCountEquals</a>, <a href="43224.html">Condition_InventoryCountDiffers</a>, <a href="43236.html">Condition_MarkedRoomEquals</a>, <a href="43245.html">Condition_MarkedRoomDiffers</a>, <a href="43257.html">Condition_PhraseMatches</a>, <a href="43277.html">Condition_PhraseDoesNotMatch</a>, <a href="43300.html">Condition_ParserSucceeds</a>, <a href="43335.html">Condition_ParserFails</a>, <a href="43370.html">Condition_ParserResultEquals</a>, <a href="43379.html">Condition_ParserResultDiffers</a>, <a href="43428.html">Condition_CanTakeItem</a>, <a href="43440.html">Condition_CannotTakeItem</a>, <a href="43455.html">Condition_IsCarryingForDrop</a> and <a href="43467.html">Condition_IsNotCarryingForDrop</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_3</td>
 <td class="address-2"><span id="42781"></span>42781</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42783"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="43015.html">43015</a>.
+This entry point is used by the routine at <a href="43015.html">Condition_AlwaysSucceeds</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_4</td>
 <td class="address-2"><span id="42783"></span>42783</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">}</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42785"></span>42785</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="2"><span class="register">BC</span>=<span class="register">AF</span> (using the stack).</td>
+<td class="comment-1" rowspan="2">Copy the result flags of this condition into <span class="register">C</span> (bit 6 is its zero flag).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42786"></span>42786</td>
 <td class="instruction">POP BC</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42787"></span>42787</td>
 <td class="instruction">LD A,(42750)</td>
-<td class="comment-1" rowspan="2">Compare *<a href="42749.html#42750">42750</a> with 254...</td>
+<td class="comment-1" rowspan="2">See whether the current operator in *<a href="42749.html#42750">ScriptConditionOperator</a> is OR (254).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42790"></span>42790</td>
 <td class="instruction">CP 254</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42792"></span>42792</td>
 <td class="instruction">LD A,(42749)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="42749.html">42749</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="42749.html">ScriptConditionMask</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42795"></span>42795</td>
-<td class="instruction">JR NZ,<a href="42751.html#42800">42800</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42800">42800</a> if *<a href="42749.html#42750">42750</a> is not equal to 254.</td>
+<td class="instruction">JR NZ,<a href="42751.html#42800">Handler_RunScript_5</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42800">Handler_RunScript_5</a> if *<a href="42749.html#42750">ScriptConditionOperator</a> is not equal to 254.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42797"></span>42797</td>
 <td class="instruction">OR C</td>
-<td class="comment-1" rowspan="1">Set the bits from <span class="register">C</span>.</td>
+<td class="comment-1" rowspan="1">The script operator is "or", so this check passes if either condition held (<code>OR C</code>).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42798"></span>42798</td>
-<td class="instruction">JR <a href="42751.html#42801">42801</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42801">42801</a>.</td>
+<td class="instruction">JR <a href="42751.html#42801">Handler_RunScript_6</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42801">Handler_RunScript_6</a>.</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_5</td>
 <td class="address-2"><span id="42800"></span>42800</td>
 <td class="instruction">AND C</td>
-<td class="comment-1" rowspan="1">Merge the bits from <span class="register">C</span>.</td>
+<td class="comment-1" rowspan="1">Otherwise both conditions must hold (<code>AND C</code>).</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_6</td>
 <td class="address-2"><span id="42801"></span>42801</td>
 <td class="instruction">LD (42749),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="42749.html">42749</a>.</td>
+<td class="comment-1" rowspan="1">Store the combined condition result.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42804"></span>42804</td>
 <td class="instruction">LD A,(IX+0)</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+0.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42807"></span>42807</td>
 <td class="instruction">CP 254</td>
-<td class="comment-1" rowspan="2">Jump to <a href="42751.html#42820">42820</a> if <span class="register">A</span> is less than 254.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="42751.html#42820">Handler_RunScript_8</a> if <span class="register">A</span> is less than 254.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42809"></span>42809</td>
-<td class="instruction">JR C,<a href="42751.html#42820">42820</a></td>
+<td class="instruction">JR C,<a href="42751.html#42820">Handler_RunScript_8</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42811"></span>42811</td>
 <td class="instruction">LD (42750),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="42749.html#42750">42750</a>.</td>
+<td class="comment-1" rowspan="1">Store the new operator.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42814"></span>42814</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> on to the next script byte.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42816"></span>42816</td>
-<td class="instruction">JR <a href="42751.html#42762">42762</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42762">42762</a>.</td>
+<td class="instruction">JR <a href="42751.html#42762">Handler_RunScript_1</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42762">Handler_RunScript_1</a>.</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_7</td>
 <td class="address-2"><span id="42818"></span>42818</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> on to the action code.</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_8</td>
 <td class="address-2"><span id="42820"></span>42820</td>
 <td class="instruction">LD E,(IX+0)</td>
 <td class="comment-1" rowspan="1"><span class="register">E</span>=*<span class="register">IX</span>+0.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42823"></span>42823</td>
 <td class="instruction">PUSH IX</td>
 <td class="comment-1" rowspan="1">Stash <span class="register">IX</span> on the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42825"></span>42825</td>
 <td class="instruction">LD IX,42945</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="42945.html">42945</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="42945.html">JumpTable_ScriptActions</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42829"></span>42829</td>
 <td class="instruction">CALL <a href="41733.html">GetTableEntry</a></td>
 <td class="comment-1" rowspan="1">Call <a href="41733.html">GetTableEntry</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42832"></span>42832</td>
 <td class="instruction">POP IX</td>
 <td class="comment-1" rowspan="1">Restore <span class="register">IX</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42834"></span>42834</td>
 <td class="instruction">LD A,(42749)</td>
-<td class="comment-1" rowspan="2"><span class="register">C</span>=*<a href="42749.html">42749</a>.</td>
+<td class="comment-1" rowspan="4">Pass the condition mask to the action as its flags, so the zero flag says whether the conditions hold.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42837"></span>42837</td>
 <td class="instruction">LD C,A</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42838"></span>42838</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="2"><span class="register">AF</span>=<span class="register">BC</span> (using the stack).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42839"></span>42839</td>
 <td class="instruction">POP AF</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42840"></span>42840</td>
 <td class="instruction">JP (HL)</td>
 <td class="comment-1" rowspan="1">Jump to *<span class="register">HL</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42841"></span>42841</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the four bytes of that action.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42843"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routines at <a href="43482.html">43482</a>, <a href="43497.html">43497</a>, <a href="43528.html">43528</a>, <a href="43543.html">43543</a>, <a href="43558.html">43558</a>, <a href="43592.html">43592</a>, <a href="43831.html">43831</a> and <a href="43891.html">43891</a>.
+This entry point is used by the routines at <a href="43482.html">Action_JumpToScript</a>, <a href="43497.html">Action_CallScript</a>, <a href="43528.html">Action_PrintMessage</a>, <a href="43543.html">Action_PrintMessageAndNewline</a>, <a href="43558.html">Action_PlaceItem</a>, <a href="43592.html">Action_TransformItem</a>, <a href="43831.html">Action_SetTurnCounter</a> and <a href="43891.html">Action_WriteSavedByte</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_9</td>
 <td class="address-2"><span id="42843"></span>42843</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42845"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routines at <a href="43577.html">43577</a>, <a href="43615.html">43615</a>, <a href="43630.html">Handler_PickUpItem</a>, <a href="43658.html">Handler_DropItem</a>, <a href="43688.html">43688</a>, <a href="43700.html">43700</a>, <a href="43712.html">43712</a>, <a href="43724.html">43724</a>, <a href="43736.html">43736</a>, <a href="43748.html">43748</a>, <a href="43790.html">43790</a>, <a href="43810.html">43810</a>, <a href="43850.html">43850</a>, <a href="43870.html">43870</a>, <a href="43953.html">43953</a> and <a href="44008.html">44008</a>.
+This entry point is used by the routines at <a href="43577.html">Action_BringItemHere</a>, <a href="43615.html">Action_DestroyItem</a>, <a href="43630.html">Handler_PickUpItem</a>, <a href="43658.html">Handler_DropItem</a>, <a href="43688.html">Action_GoToRoom</a>, <a href="43700.html">Action_SetFlag</a>, <a href="43712.html">Action_ClearFlag</a>, <a href="43724.html">Action_AddToScore</a>, <a href="43736.html">Action_Pause</a>, <a href="43748.html">Action_MarkScenicEvent</a>, <a href="43790.html">Action_SetEventFlag</a>, <a href="43810.html">Action_ClearEventFlag</a>, <a href="43850.html">Action_StartTurnEvent</a>, <a href="43870.html">Action_StopTurnEvent</a>, <a href="43953.html">Action_MovePlayer</a> and <a href="44008.html">Action_SetCarryingLimit</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_10</td>
 <td class="address-2"><span id="42845"></span>42845</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42847"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routines at <a href="43520.html">43520</a>, <a href="43763.html">43763</a>, <a href="43770.html">43770</a>, <a href="43780.html">43780</a>, <a href="43915.html">43915</a>, <a href="43924.html">43924</a>, <a href="43933.html">43933</a>, <a href="43944.html">43944</a>, <a href="43965.html">43965</a> and <a href="43999.html">43999</a>.
+This entry point is used by the routines at <a href="43520.html">Action_ReturnFromScript</a>, <a href="43763.html">Action_EndScript</a>, <a href="43770.html">Action_IncrementInventory</a>, <a href="43780.html">Action_DecrementInventory</a>, <a href="43915.html">Action_LoadGame</a>, <a href="43924.html">Action_SaveGame</a>, <a href="43933.html">Action_DescribeRoom</a>, <a href="43944.html">Action_ListInventory</a>, <a href="43965.html">Action_OfferSave</a> and <a href="43999.html">Action_PrintScore</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_11</td>
 <td class="address-2"><span id="42847"></span>42847</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">}</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42849"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routines at <a href="43482.html">43482</a>, <a href="43497.html">43497</a> and <a href="43520.html">43520</a>.
+This entry point is used by the routines at <a href="43482.html">Action_JumpToScript</a>, <a href="43497.html">Action_CallScript</a> and <a href="43520.html">Action_ReturnFromScript</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_12</td>
 <td class="address-2"><span id="42849"></span>42849</td>
 <td class="instruction">LD A,(IX+0)</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+0.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42852"></span>42852</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Jump to <a href="42751.html#42818">42818</a> if <span class="register">A</span> is equal to 255.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="42751.html#42818">Handler_RunScript_7</a> if <span class="register">A</span> is equal to 255.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42854"></span>42854</td>
-<td class="instruction">JR Z,<a href="42751.html#42818">42818</a></td>
+<td class="instruction">JR Z,<a href="42751.html#42818">Handler_RunScript_7</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42856"></span>42856</td>
-<td class="instruction">JR <a href="42751.html#42754">42754</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42754">42754</a>.</td>
+<td class="instruction">JR <a href="42751.html#42754">Handler_RunScript_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42754">Handler_RunScript_0</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42858"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routines at <a href="43031.html">43031</a>, <a href="43058.html">43058</a>, <a href="43094.html">43094</a>, <a href="43121.html">43121</a>, <a href="43139.html">43139</a>, <a href="43186.html">43186</a>, <a href="43224.html">43224</a>, <a href="43245.html">43245</a>, <a href="43277.html">43277</a>, <a href="43300.html">43300</a>, <a href="43335.html">43335</a>, <a href="43379.html">43379</a>, <a href="43408.html">43408</a>, <a href="43440.html">43440</a> and <a href="43467.html">43467</a>.
+This entry point is used by the routines at <a href="43031.html">Condition_ItemIsAbsent</a>, <a href="43058.html">Condition_ItemIsNotCarried</a>, <a href="43094.html">Condition_NotInRoom</a>, <a href="43121.html">Condition_ItemLocationDiffers</a>, <a href="43139.html">Condition_FlagIsSet</a>, <a href="43186.html">Condition_GroupItemDiffers</a>, <a href="43224.html">Condition_InventoryCountDiffers</a>, <a href="43245.html">Condition_MarkedRoomDiffers</a>, <a href="43277.html">Condition_PhraseDoesNotMatch</a>, <a href="43300.html">Condition_ParserSucceeds</a>, <a href="43335.html">Condition_ParserFails</a>, <a href="43379.html">Condition_ParserResultDiffers</a>, <a href="43408.html">Condition_RoomPairDiffers</a>, <a href="43440.html">Condition_CannotTakeItem</a> and <a href="43467.html">Condition_IsNotCarryingForDrop</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_13</td>
 <td class="address-2"><span id="42858"></span>42858</td>
-<td class="instruction">JR NZ,<a href="42751.html#42864">42864</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42864">42864</a> if <span class="register">A</span> is not equal to 255.</td>
+<td class="instruction">JR NZ,<a href="42751.html#42864">Handler_RunScript_14</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42864">Handler_RunScript_14</a> if <span class="register">A</span> is not equal to 255.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42860"></span>42860</td>
 <td class="instruction">LD A,1</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=1.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42862"></span>42862</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
+<td class="comment-1" rowspan="1">The condition does not hold.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42863"></span>42863</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_14</td>
 <td class="address-2"><span id="42864"></span>42864</td>
 <td class="instruction">XOR A</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=0.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42865"></span>42865</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
@@ -411,26 +489,30 @@ This entry point is used by the routines at <a href="43031.html">43031</a>, <a h
 <span id="42866"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routines at <a href="43019.html">43019</a>, <a href="43031.html">43031</a>, <a href="43046.html">43046</a>, <a href="43058.html">43058</a>, <a href="43073.html">43073</a>, <a href="43106.html">43106</a>, <a href="43121.html">43121</a>, <a href="43428.html">43428</a>, <a href="43440.html">43440</a>, <a href="43467.html">43467</a>, <a href="43558.html">43558</a>, <a href="43577.html">43577</a>, <a href="43592.html">43592</a>, <a href="43615.html">43615</a>, <a href="43630.html">Handler_PickUpItem</a>, <a href="43658.html">Handler_DropItem</a> and <a href="43748.html">43748</a>.
+This entry point is used by the routines at <a href="43019.html">Condition_ItemIsPresent</a>, <a href="43031.html">Condition_ItemIsAbsent</a>, <a href="43046.html">Condition_ItemIsCarried</a>, <a href="43058.html">Condition_ItemIsNotCarried</a>, <a href="43073.html">Condition_ItemIsHere</a>, <a href="43106.html">Condition_ItemLocationEquals</a>, <a href="43121.html">Condition_ItemLocationDiffers</a>, <a href="43428.html">Condition_CanTakeItem</a>, <a href="43440.html">Condition_CannotTakeItem</a>, <a href="43455.html">Condition_IsCarryingForDrop</a>, <a href="43467.html">Condition_IsNotCarryingForDrop</a>, <a href="43558.html">Action_PlaceItem</a>, <a href="43577.html">Action_BringItemHere</a>, <a href="43592.html">Action_TransformItem</a>, <a href="43615.html">Action_DestroyItem</a>, <a href="43630.html">Handler_PickUpItem</a>, <a href="43658.html">Handler_DropItem</a> and <a href="43748.html">Action_MarkScenicEvent</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">Handler_RunScript_15</td>
 <td class="address-2"><span id="42866"></span>42866</td>
 <td class="instruction">CP 255</td>
 <td class="comment-1" rowspan="2">Return if <span class="register">A</span> is not equal to 255.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42868"></span>42868</td>
 <td class="instruction">RET NZ</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42869"></span>42869</td>
 <td class="instruction">LD A,(43013)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="43013.html">43013</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="43013.html">ScriptMatchedItem</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="42872"></span>42872</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
@@ -450,7 +532,7 @@ Next: <a href="42873.html">42873</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../../asm/A6FF.html">Switch to hexadecimal</a>.</div>
 </footer>

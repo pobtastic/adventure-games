@@ -42,7 +42,7 @@ Next: <a href="AFE1.html">AFE1</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="AAB2.html">AAB2</a> and <a href="AB52.html">AB52</a>.
+Used by the routines at <a href="AAD1.html">StartPictureModeScreenIdle</a> and <a href="AB52.html">CopyDisplayIfNeeded</a>.
 </div>
 <div class="paragraph">
 Searches through a command handler lookup table for a matching value pair and jumps to the associated handler routine if found.
@@ -84,25 +84,24 @@ Searches through a command handler lookup table for a matching value pair and ju
 <td class="asm-label"></td>
 <td class="address-1"><span id="afbb"></span>AFBB</td>
 <td class="instruction">JR NZ,<a href="AFB3.html#afc0">SearchCommandHandlerTable_StartSearch</a></td>
-<td class="comment-1" rowspan="1">Use the alternate lookup table if the mode is 02.</td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="AFB3.html#afc0">SearchCommandHandlerTable_StartSearch</a> if the mode is not 02.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="afbd"></span>AFBD</td>
 <td class="instruction">LD HL,$AF9B</td>
-<td class="comment-1" rowspan="1">Else, set the table pointer to <a href="AF9B.html">Table_CommandHandlerLookup_Alternate</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the alternate table at <a href="AF9B.html">Table_CommandHandlerLookup_Alternate</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">SearchCommandHandlerTable_StartSearch</td>
 <td class="address-2"><span id="afc0"></span>AFC0</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
+<td class="comment-1" rowspan="4">Count 0C entries, or 06 when the mode is 02 keeping the source.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="afc1"></span>AFC1</td>
 <td class="instruction">LD E,$0C</td>
-<td class="comment-1" rowspan="3">Set the table entry counter to 0C entries, or 06 if the mode is 0C.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -184,18 +183,20 @@ Searches through a command handler lookup table for a matching value pair and ju
 <td class="asm-label">SearchCommandHandlerTable_NotFound</td>
 <td class="address-1"><span id="afd6"></span>AFD6</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="AF58.html#af67">CopyBytes_ReportSuccess</a> to return non-zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="afd7"></span>AFD7</td>
-<td class="instruction">JP <a href="AF67.html">$AF67</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AF67.html">AF67</a> (no handler found).</td>
+<td class="instruction">JP <a href="AF58.html#af67">CopyBytes_ReportSuccess</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="afda"></span>
 <div class="comments">
+<div class="paragraph">
+Reads the handler address that follows and jumps to it.
+</div>
 <div class="paragraph">
 A handler was found, use it!
 </div>
@@ -254,7 +255,7 @@ Next: <a href="AFE1.html">AFE1</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/44979.html">Switch to decimal</a>.</div>
 </footer>

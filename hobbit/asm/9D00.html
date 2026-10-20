@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 9D00</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="9CED.html">9CED</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#9d00">Map</a></td>
+<td class="next">
+Next: <a href="9D37.html">9D37</a>
+</td>
+</tr>
+</table>
+<div class="description">9D00: Condition: Add Up The Objects Inside</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="9CED.html">Condition_TotalTheMassInside</a>.
+</div>
+<div class="paragraph">
+Adds the volume or the mass of each object inside the id in <span class="register">A</span>. Volume covers those objects only; mass also adds what they hold. An overflow returns FF.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Condition_AddUpTheObjectsInside</td>
+<td class="address-2"><span id="9d00"></span>9D00</td>
+<td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="2">Point <span class="register">IX</span> at the object table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d02"></span>9D02</td>
+<td class="instruction">LD IX,$C063</td>
+</tr>
+<tr>
+<td class="asm-label">Condition_AddUpTheObjectsInside_Loop</td>
+<td class="address-2"><span id="9d06"></span>9D06</td>
+<td class="instruction">CALL <a href="9BA9.html">Table_FindTheRecord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9BA9.html">Table_FindTheRecord</a> to find the record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d09"></span>9D09</td>
+<td class="instruction">JR Z,<a href="9D00.html#9d2f">Condition_AddUpTheObjectsInside_RestoreAndReturn</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9D00.html#9d2f">Condition_AddUpTheObjectsInside_RestoreAndReturn</a> at the end of the object index.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d0b"></span>9D0B</td>
+<td class="instruction">CP (IY+$01)</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="9D00.html#9d06">Condition_AddUpTheObjectsInside_Loop</a> if where this object is is not the id in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d0e"></span>9D0E</td>
+<td class="instruction">JR NZ,<a href="9D00.html#9d06">Condition_AddUpTheObjectsInside_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d10"></span>9D10</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="5">Jump to <a href="9D00.html#9d1f">Condition_AddUpTheObjectsInside_AddTheMass</a> if <span class="register">B</span> is zero (add masses instead of volumes).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d11"></span>9D11</td>
+<td class="instruction">SUB A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d12"></span>9D12</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d13"></span>9D13</td>
+<td class="instruction">LD A,C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d14"></span>9D14</td>
+<td class="instruction">JR Z,<a href="9D00.html#9d1f">Condition_AddUpTheObjectsInside_AddTheMass</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d16"></span>9D16</td>
+<td class="instruction">ADD A,(IY+$02)</td>
+<td class="comment-1" rowspan="1">Add the object's volume onto the total.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d19"></span>9D19</td>
+<td class="instruction">JP PE,<a href="9D00.html#9d32">Condition_AddUpTheObjectsInside_MarkTheTotalAsFull</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9D00.html#9d32">Condition_AddUpTheObjectsInside_MarkTheTotalAsFull</a> if the total overflowed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d1c"></span>9D1C</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">C</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d1d"></span>9D1D</td>
+<td class="instruction">JR <a href="9D00.html#9d2c">Condition_AddUpTheObjectsInside_FindTheRecord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9D00.html#9d2c">Condition_AddUpTheObjectsInside_FindTheRecord</a> to find the next record.</td>
+</tr>
+<tr>
+<td class="asm-label">Condition_AddUpTheObjectsInside_AddTheMass</td>
+<td class="address-2"><span id="9d1f"></span>9D1F</td>
+<td class="instruction">ADD A,(IY+$03)</td>
+<td class="comment-1" rowspan="1">Add the object's mass onto the total.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d22"></span>9D22</td>
+<td class="instruction">JP PE,<a href="9D00.html#9d32">Condition_AddUpTheObjectsInside_MarkTheTotalAsFull</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9D00.html#9d32">Condition_AddUpTheObjectsInside_MarkTheTotalAsFull</a> if the total overflowed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d25"></span>9D25</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">C</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d26"></span>9D26</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="1">Read the id from the index entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d29"></span>9D29</td>
+<td class="instruction">CALL <a href="9D00.html#9d00">Condition_AddUpTheObjectsInside</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9D00.html">Condition_AddUpTheObjectsInside</a> to add the mass of what this object holds.</td>
+</tr>
+<tr>
+<td class="asm-label">Condition_AddUpTheObjectsInside_FindTheRecord</td>
+<td class="address-2"><span id="9d2c"></span>9D2C</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="9D00.html#9d06">Condition_AddUpTheObjectsInside_Loop</a> to find the record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d2d"></span>9D2D</td>
+<td class="instruction">JR <a href="9D00.html#9d06">Condition_AddUpTheObjectsInside_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label">Condition_AddUpTheObjectsInside_RestoreAndReturn</td>
+<td class="address-2"><span id="9d2f"></span>9D2F</td>
+<td class="instruction">POP IX</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">IX</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d31"></span>9D31</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Condition_AddUpTheObjectsInside_MarkTheTotalAsFull</td>
+<td class="address-2"><span id="9d32"></span>9D32</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="2">Pop the saved id and mark the total as full (FF).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d33"></span>9D33</td>
+<td class="instruction">LD C,$FF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9d35"></span>9D35</td>
+<td class="instruction">JR <a href="9D00.html#9d2f">Condition_AddUpTheObjectsInside_RestoreAndReturn</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="9D00.html#9d2f">Condition_AddUpTheObjectsInside_RestoreAndReturn</a> to return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="9CED.html">9CED</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#9d00">Map</a></td>
+<td class="next">
+Next: <a href="9D37.html">9D37</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/40192.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

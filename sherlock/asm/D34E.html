@@ -32,7 +32,7 @@ Prev: <a href="D349.html">D349</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#d34e">Map</a></td>
 <td class="next">
-Next: <a href="D36A.html">D36A</a>
+Next: <a href="D351.html">D351</a>
 </td>
 </tr>
 </table>
@@ -42,7 +42,10 @@ Next: <a href="D36A.html">D36A</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="9C6A.html">Handler_FindCharacterAction</a>, <a href="A25D.html">CheckTextTokenMatch</a>, <a href="C929.html">ProcessObjectDisplayLogic</a>, <a href="D237.html">FetchObjectDataPointer</a>, <a href="E151.html">LookupAndPrintDisplayText</a> and <a href="E17B.html">E17B</a>.
+Used by the routines at <a href="9C6A.html">Handler_FindCharacterAction</a>, <a href="A25D.html">CheckTextTokenMatch</a>, <a href="C929.html">ProcessObjectDisplayLogic</a>, <a href="D237.html">FetchObjectDataPointer</a>, <a href="E151.html">LookupAndPrintDisplayText</a>, <a href="E201.html">TestEndMarker_WalksThreeByte</a> and <a href="E207.html">FindResponseForThisId</a>.
+</div>
+<div class="paragraph">
+Walks a list of three-byte groups until the end marker.
 </div>
 </div>
 <table class="input">
@@ -89,117 +92,6 @@ Used by the routines at <a href="9C6A.html">Handler_FindCharacterAction</a>, <a 
 <td class="instruction">LD E,$03</td>
 <td class="comment-1" rowspan="1">Set the length of the data in <span class="register">E</span> (03 bytes).</td>
 </tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="d351"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routine at <a href="D349.html">SearchTwoByteTable</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">SearchTable_Start</td>
-<td class="address-2"><span id="d351"></span>D351</td>
-<td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="2">Copy the table for searching into <span class="register">HL</span> (using the stack).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d353"></span>D353</td>
-<td class="instruction">POP HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d354"></span>D354</td>
-<td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1">Copy the table ID into <span class="register">B</span>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d355"></span>D355</td>
-<td class="instruction">LD D,$00</td>
-<td class="comment-1" rowspan="1">Reset <span class="register">D</span> to 00 for the length offset calculation.</td>
-</tr>
-<tr>
-<td class="asm-label">SearchTable_Loop</td>
-<td class="address-2"><span id="d357"></span>D357</td>
-<td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Fetch a byte from the table.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d358"></span>D358</td>
-<td class="instruction">CP B</td>
-<td class="comment-1" rowspan="4">Jump to <a href="D34E.html#d363">SearchTable_Return</a> if the byte is the table ID we're searching for or if the termination character has been reached (FF).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d359"></span>D359</td>
-<td class="instruction">JR Z,<a href="D34E.html#d363">SearchTable_Return</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d35b"></span>D35B</td>
-<td class="instruction">CP $FF</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d35d"></span>D35D</td>
-<td class="instruction">JR Z,<a href="D34E.html#d363">SearchTable_Return</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d35f"></span>D35F</td>
-<td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1">Move to the next table entry.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d360"></span>D360</td>
-<td class="instruction">JP <a href="D34E.html#d357">SearchTable_Loop</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="D34E.html#d357">SearchTable_Loop</a>.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="d363"></span>
-<div class="comments">
-<div class="paragraph">
-Either the table ID was matched, or the terminator was reached.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">SearchTable_Return</td>
-<td class="address-2"><span id="d363"></span>D363</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Copy the table pointer into <span class="register">IX</span> (using the stack).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d364"></span>D364</td>
-<td class="instruction">POP IX</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d366"></span>D366</td>
-<td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="1">Set the zero flag if the termination character was reached (FF).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d368"></span>D368</td>
-<td class="instruction">EXX</td>
-<td class="comment-1" rowspan="1">Switch back to the normal registers.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="d369"></span>D369</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
-</tr>
 </table>
 <table class="asm-navigation">
 <tr>
@@ -208,14 +100,14 @@ Prev: <a href="D349.html">D349</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#d34e">Map</a></td>
 <td class="next">
-Next: <a href="D36A.html">D36A</a>
+Next: <a href="D351.html">D351</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/54094.html">Switch to decimal</a>.</div>
 </footer>

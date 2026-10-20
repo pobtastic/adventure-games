@@ -28,361 +28,377 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="62402.html">62402</a>
+Prev: <a href="62606.html">62606</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#62608">Map</a></td>
 <td class="next">
-Next: <a href="62740.html">62740</a>
+Next: <a href="62733.html">62733</a>
 </td>
 </tr>
 </table>
-<div class="description">62608: Routine at F490</div>
+<div class="description">62608: Drawing Fill</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="62402.html">62402</a>.
+Used by the routine at <a href="62402.html">Drawing</a>.
+</div>
+<div class="paragraph">
+Flood-fills from the pen and stores the ink at <a href="62987.html">62987</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">DrawingFill</td>
 <td class="address-2"><span id="62608"></span>62608</td>
 <td class="instruction">LD (62987),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Store the ink, save the pen and the picture pointer, and push the 176 end marker.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62611"></span>62611</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62612"></span>62612</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62613"></span>62613</td>
 <td class="instruction">LD HL,176</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62616"></span>62616</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Save the end marker and read the pixel under the pen.</td>
 </tr>
 <tr>
+<td class="asm-label">DrawingFill_0</td>
 <td class="address-2"><span id="62617"></span>62617</td>
-<td class="instruction">CALL <a href="62608.html#62733">62733</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62733.html">KeepOnlyBitsThatAreSet</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62620"></span>62620</td>
-<td class="instruction">JR NZ,<a href="62608.html#62629">62629</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="62608.html#62629">DrawingFill_Next</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="62608.html#62629">DrawingFill_Next</a> if the pixel under the pen is already set.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62622"></span>62622</td>
-<td class="instruction">CALL <a href="62821.html">DecrementDWithWrap</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62821.html">StepPenLeft</a></td>
+<td class="comment-1" rowspan="2">Step the pen left and try that pixel again until the left edge.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62625"></span>62625</td>
-<td class="instruction">JR NZ,<a href="62608.html#62617">62617</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="62608.html#62617">DrawingFill_0</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62627"></span>62627</td>
-<td class="instruction">JR <a href="62608.html#62635">62635</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="62608.html#62635">DrawingFill_RecordDrawingPen</a></td>
+<td class="comment-1" rowspan="1">No set pixel to the left, so start filling from <a href="62608.html#62635">DrawingFill_RecordDrawingPen</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62629"></span>
+<div class="comments">
+<div class="paragraph">
+Plot this pixel and step the pen right.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DrawingFill_Next</td>
 <td class="address-2"><span id="62629"></span>62629</td>
-<td class="instruction">CALL <a href="62830.html#62930">ProcessLocationUpdate_15</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62930.html">PlotPixel</a></td>
+<td class="comment-1" rowspan="2">Plot this pixel, then step the pen right.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62632"></span>62632</td>
-<td class="instruction">CALL <a href="62814.html">IncrementDWithWrap</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62814.html">StepPenRight</a></td>
 </tr>
 <tr>
+<td class="asm-label">DrawingFill_RecordDrawingPen</td>
 <td class="address-2"><span id="62635"></span>62635</td>
 <td class="instruction">LD HL,0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Clear the two bytes that remember a seed.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62638"></span>62638</td>
 <td class="instruction">LD (62606),HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">DrawingFill_Loop</td>
 <td class="address-2"><span id="62641"></span>62641</td>
-<td class="instruction">CALL <a href="62794.html">62794</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62794.html">StepPenUp</a></td>
+<td class="comment-1" rowspan="3">Go to <a href="62608.html#62669">DrawingFill_DrawingPenStep</a> if the pen is already at the top edge.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62644"></span>62644</td>
 <td class="instruction">LD A,0</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62646"></span>62646</td>
-<td class="instruction">JR Z,<a href="62608.html#62669">62669</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="62608.html#62669">DrawingFill_DrawingPenStep</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62648"></span>62648</td>
-<td class="instruction">CALL <a href="62608.html#62733">62733</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62733.html">KeepOnlyBitsThatAreSet</a></td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="62608.html#62664">DrawingFill_StepPen</a> if the pixel under the pen is already set.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62651"></span>62651</td>
 <td class="instruction">LD A,0</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62653"></span>62653</td>
-<td class="instruction">JR NZ,<a href="62608.html#62664">62664</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="62608.html#62664">DrawingFill_StepPen</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62655"></span>62655</td>
 <td class="instruction">LD A,(62606)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="62608.html#62664">DrawingFill_StepPen</a> if a seed is already saved for this row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62658"></span>62658</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62659"></span>62659</td>
-<td class="instruction">JR NZ,<a href="62608.html#62664">62664</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="62608.html#62664">DrawingFill_StepPen</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62661"></span>62661</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Save this spot as a seed and note it in <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62662"></span>62662</td>
 <td class="instruction">LD A,1</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">DrawingFill_StepPen</td>
 <td class="address-2"><span id="62664"></span>62664</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Save that note, step the pen down.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62665"></span>62665</td>
-<td class="instruction">CALL <a href="62805.html">DecrementEWithWrap</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62805.html">StepPenDown</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62668"></span>62668</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the note from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label">DrawingFill_DrawingPenStep</td>
 <td class="address-2"><span id="62669"></span>62669</td>
 <td class="instruction">LD (62606),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Store the note and step the pen down.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62672"></span>62672</td>
-<td class="instruction">CALL <a href="62805.html">DecrementEWithWrap</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62805.html">StepPenDown</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62675"></span>62675</td>
 <td class="instruction">LD A,0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="62608.html#62700">DrawingFill_DrawingPenDrawing</a>, with <span class="register">A</span>=0 if the pen could not step down.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62677"></span>62677</td>
-<td class="instruction">JR Z,<a href="62608.html#62700">62700</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="62608.html#62700">DrawingFill_DrawingPenDrawing</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62679"></span>62679</td>
-<td class="instruction">CALL <a href="62608.html#62733">62733</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62733.html">KeepOnlyBitsThatAreSet</a></td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="62608.html#62695">DrawingFill_StepPenUp</a> if the pixel under the pen is already set.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62682"></span>62682</td>
 <td class="instruction">LD A,0</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62684"></span>62684</td>
-<td class="instruction">JR NZ,<a href="62608.html#62695">62695</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="62608.html#62695">DrawingFill_StepPenUp</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62686"></span>62686</td>
 <td class="instruction">LD A,(62607)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="62608.html#62695">DrawingFill_StepPenUp</a> if a seed is already saved for this row.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62689"></span>62689</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62690"></span>62690</td>
-<td class="instruction">JR NZ,<a href="62608.html#62695">62695</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="62608.html#62695">DrawingFill_StepPenUp</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62692"></span>62692</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Save this spot as a seed and note it in <span class="register">A</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62693"></span>62693</td>
 <td class="instruction">LD A,1</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">DrawingFill_StepPenUp</td>
 <td class="address-2"><span id="62695"></span>62695</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Save the note, step the pen up.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62696"></span>62696</td>
-<td class="instruction">CALL <a href="62794.html">62794</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62794.html">StepPenUp</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62699"></span>62699</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the note from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label">DrawingFill_DrawingPenDrawing</td>
 <td class="address-2"><span id="62700"></span>62700</td>
 <td class="instruction">LD (62607),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Store the note in the other pen byte and plot this pixel.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62703"></span>62703</td>
-<td class="instruction">CALL <a href="62830.html#62930">ProcessLocationUpdate_15</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62930.html">PlotPixel</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62706"></span>62706</td>
-<td class="instruction">CALL <a href="62814.html">IncrementDWithWrap</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62814.html">StepPenRight</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="62608.html#62719">DrawingFill_ByteMatchesMarker</a> if the pen is already at the right edge.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62709"></span>62709</td>
-<td class="instruction">JR Z,<a href="62608.html#62719">62719</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="62608.html#62719">DrawingFill_ByteMatchesMarker</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62711"></span>62711</td>
-<td class="instruction">CALL <a href="62608.html#62733">62733</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62733.html">KeepOnlyBitsThatAreSet</a></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="62608.html#62641">DrawingFill_Loop</a> if the pixel under the pen is clear.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62714"></span>62714</td>
-<td class="instruction">JR Z,<a href="62608.html#62641">62641</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="62608.html#62641">DrawingFill_Loop</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62716"></span>62716</td>
-<td class="instruction">CALL <a href="62830.html#62930">ProcessLocationUpdate_15</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62930.html">PlotPixel</a></td>
+<td class="comment-1" rowspan="1">Plot this pixel.</td>
 </tr>
 <tr>
+<td class="asm-label">DrawingFill_ByteMatchesMarker</td>
 <td class="address-2"><span id="62719"></span>62719</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Take the next seed off the stack, and go back to <a href="62608.html#62617">DrawingFill_0</a> until the 176 end marker, pushed at the start of the fill, comes off.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62720"></span>62720</td>
 <td class="instruction">LD A,E</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62721"></span>62721</td>
 <td class="instruction">CP 176</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62723"></span>62723</td>
-<td class="instruction">JR NZ,<a href="62608.html#62617">62617</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="62608.html#62617">DrawingFill_0</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62725"></span>62725</td>
 <td class="instruction">LD A,0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Clear the drawing ink.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62727"></span>62727</td>
 <td class="instruction">LD (62987),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62730"></span>62730</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore the picture pointer and the pen from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62731"></span>62731</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="62732"></span>62732</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-2"><span id="62733"></span>62733</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="62734"></span>62734</td>
-<td class="instruction">CALL <a href="62971.html">62971</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="62737"></span>62737</td>
-<td class="instruction">AND (HL)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="62738"></span>62738</td>
-<td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="address-1"><span id="62739"></span>62739</td>
-<td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="62402.html">62402</a>
+Prev: <a href="62606.html">62606</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#62608">Map</a></td>
 <td class="next">
-Next: <a href="62740.html">62740</a>
+Next: <a href="62733.html">62733</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/F490.html">Switch to hexadecimal</a>.</div>
 </footer>

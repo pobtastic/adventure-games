@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at B32D</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B308.html">B308</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b32d">Map</a></td>
+<td class="next">
+Next: <a href="B34F.html">B34F</a>
+</td>
+</tr>
+</table>
+<div class="description">B32D: Read The Secondary Display Flag</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="B191.html">InitialiseDisplayBuffer</a>.
+</div>
+<div class="paragraph">
+Reads the secondary display pointer, calls <a href="B36B.html">ReportNextEmptyDisplayStep</a>, and tests bit 7 of the display mode flag at <a href="B173.html#b179">B179</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadSecondaryDisplayFlag</td>
+<td class="address-2"><span id="b32d"></span>B32D</td>
+<td class="instruction">LD HL,($B180)</td>
+<td class="comment-1" rowspan="3">Call <a href="B36B.html">ReportNextEmptyDisplayStep</a> to report that this display step found nothing.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b330"></span>B330</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b331"></span>B331</td>
+<td class="instruction">CALL <a href="B36B.html">ReportNextEmptyDisplayStep</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b334"></span>B334</td>
+<td class="instruction">LD A,($B549)</td>
+<td class="comment-1" rowspan="2">Read the display.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b337"></span>B337</td>
+<td class="instruction">PUSH AF</td>
+</tr>
+<tr>
+<td class="asm-label">ReadSecondaryDisplayFlag_TestFlagDisplay</td>
+<td class="address-2"><span id="b338"></span>B338</td>
+<td class="instruction">CALL <a href="B568.html">MatchSecondNoun</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="B32D.html#b343">ReadSecondaryDisplayFlag_ResultDisplayFlag</a> if bit 7 of the display mode flag at <a href="B173.html#b179">B179</a> is set or the handler returns FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b33b"></span>B33B</td>
+<td class="instruction">JR Z,<a href="B32D.html#b343">ReadSecondaryDisplayFlag_ResultDisplayFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b33d"></span>B33D</td>
+<td class="instruction">LD HL,$B171</td>
+<td class="comment-1" rowspan="3">Count one more in <a href="B16D.html#b171">B171</a> and try the next entry from <a href="B32D.html#b338">ReadSecondaryDisplayFlag_TestFlagDisplay</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b340"></span>B340</td>
+<td class="instruction">INC (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b341"></span>B341</td>
+<td class="instruction">JR <a href="B32D.html#b338">ReadSecondaryDisplayFlag_TestFlagDisplay</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b343"></span>
+<div class="comments">
+<div class="paragraph">
+Store the result in the display flag, then read the working value before returning.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadSecondaryDisplayFlag_ResultDisplayFlag</td>
+<td class="address-2"><span id="b343"></span>B343</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore the saved result from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b344"></span>B344</td>
+<td class="instruction">LD ($B549),A</td>
+<td class="comment-1" rowspan="1">Record the result in the display flag at <a href="B549.html">B549</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b347"></span>B347</td>
+<td class="instruction">LD A,($B171)</td>
+<td class="comment-1" rowspan="1">Read the pass count at <a href="B16D.html#b171">B171</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b34a"></span>B34A</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore the saved pointer from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b34b"></span>B34B</td>
+<td class="instruction">LD ($B180),HL</td>
+<td class="comment-1" rowspan="1">Store it at <a href="B17E.html#b180">B180</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b34e"></span>B34E</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B308.html">B308</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b32d">Map</a></td>
+<td class="next">
+Next: <a href="B34F.html">B34F</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/45869.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

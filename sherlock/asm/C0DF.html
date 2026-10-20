@@ -44,6 +44,9 @@ Next: <a href="C0FE.html">C0FE</a>
 <div class="paragraph">
 Used by the routine at <a href="B0D7.html">LoadGameState</a>.
 </div>
+<div class="paragraph">
+Reads a stored game back into play.
+</div>
 </div>
 </td>
 </tr>
@@ -51,13 +54,12 @@ Used by the routine at <a href="B0D7.html">LoadGameState</a>.
 <td class="asm-label">LoadGame</td>
 <td class="address-2"><span id="c0df"></span>C0DF</td>
 <td class="instruction">LD ($C109),DE</td>
-<td class="comment-1" rowspan="1">Write <span class="register">DE</span> to *<a href="C0FE.html#c109">C109</a>.</td>
+<td class="comment-1" rowspan="2">Record the tape header: saved game.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c0e3"></span>C0E3</td>
 <td class="instruction">LD ($C10B),IX</td>
-<td class="comment-1" rowspan="1">Write <span class="register">IX</span> to *<a href="C0FE.html#c10b">C10B</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -73,25 +75,23 @@ Used by the routine at <a href="B0D7.html">LoadGameState</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c0e7"></span>C0E7</td>
 <td class="instruction">LD HL,$C0BC</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="C0BC.html">Messaging_PlaySavedGameTape</a>.</td>
+<td class="comment-1" rowspan="2">Take the messaging: play saved game tape, then call <a href="C1CB.html">PrintString</a> to print string.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c0ea"></span>C0EA</td>
 <td class="instruction">CALL <a href="C1CB.html">PrintString</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C1CB.html">PrintString</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">TryLoading</td>
+<td class="asm-label">LoadGame_TryTape</td>
 <td class="address-2"><span id="c0ed"></span>C0ED</td>
 <td class="instruction">LD IX,$C0FE</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="C0FE.html">C0FE</a>.</td>
+<td class="comment-1" rowspan="2">Use the tape header: saved game (<a href="C0FE.html">C0FE</a>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c0f1"></span>C0F1</td>
 <td class="instruction">LD DE,$0011</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=0011.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -103,7 +103,7 @@ Used by the routine at <a href="B0D7.html">LoadGameState</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c0f6"></span>C0F6</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
+<td class="comment-1" rowspan="1">Clear the carry flag so <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a> verifies the header against <a href="C0FE.html">C0FE</a> instead of loading it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -114,14 +114,14 @@ Used by the routine at <a href="B0D7.html">LoadGameState</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c0fa"></span>C0FA</td>
-<td class="instruction">JR NC,<a href="C0DF.html#c0ed">TryLoading</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="C0DF.html#c0ed">TryLoading</a> if there was a tape loading error to try again.</td>
+<td class="instruction">JR NC,<a href="C0DF.html#c0ed">LoadGame_TryTape</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="C0DF.html#c0ed">LoadGame_TryTape</a> if there was a tape loading error to try again.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c0fc"></span>C0FC</td>
-<td class="instruction">JR <a href="C040.html#c089">LoadGameData</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C040.html#c089">LoadGameData</a>.</td>
+<td class="instruction">JR <a href="C089.html">LoadGameData</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="C089.html">LoadGameData</a> once the game block has loaded.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -138,7 +138,7 @@ Next: <a href="C0FE.html">C0FE</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/49375.html">Switch to decimal</a>.</div>
 </footer>

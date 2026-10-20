@@ -41,6 +41,9 @@ Next: <a href="40142.html">40142</a>
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Scheduled behaviour for Basil Phipps. Reached through the character-action table at <a href="40069.html">Table_CharacterActions</a>, dispatched by <a href="40055.html#40068">40068</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -48,19 +51,18 @@ Next: <a href="40142.html">40142</a>
 <td class="asm-label">CharacterAction_BasilPhipps</td>
 <td class="address-2"><span id="40098"></span>40098</td>
 <td class="instruction">LD A,85</td>
-<td class="comment-1" rowspan="1">Load "Burn Note" into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="2">Call <a href="53815.html">FetchObjectDataPointer</a> to look up the Burn Note.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40100"></span>40100</td>
 <td class="instruction">CALL <a href="53815.html">FetchObjectDataPointer</a></td>
-<td class="comment-1" rowspan="1">Call <a href="53815.html">FetchObjectDataPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40103"></span>40103</td>
 <td class="instruction">BIT 7,(IX+5)</td>
-<td class="comment-1" rowspan="2">Return if bit 7 of *<span class="register">IX</span>+5 is not set.</td>
+<td class="comment-1" rowspan="2">Return if the object-attribute flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -71,19 +73,17 @@ Next: <a href="40142.html">40142</a>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40108"></span>40108</td>
 <td class="instruction">LD HL,40097</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="40097.html">CharacterState_BasilPhipps</a>.</td>
+<td class="comment-1" rowspan="4">Return if Basil Phipps's state is already 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40111"></span>40111</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40112"></span>40112</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is equal to 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -94,40 +94,39 @@ Next: <a href="40142.html">40142</a>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40115"></span>40115</td>
 <td class="instruction">DEC (HL)</td>
-<td class="comment-1" rowspan="1">Decrease *<span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Count down the entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40116"></span>40116</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-1" rowspan="1">Return if *<span class="register">HL</span> is not equal to 255.</td>
+<td class="comment-1" rowspan="1">Return while this character's countdown still has time left.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40117"></span>40117</td>
 <td class="instruction">LD HL,347</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=347.</td>
+<td class="comment-1" rowspan="2">Store the low byte of the text pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40120"></span>40120</td>
 <td class="instruction">LD (IX+9),L</td>
-<td class="comment-1" rowspan="1">Write <span class="register">L</span> to *<span class="register">IX</span>+9.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40123"></span>40123</td>
 <td class="instruction">LD (IX+10),H</td>
-<td class="comment-1" rowspan="1">Write <span class="register">H</span> to *<span class="register">IX</span>+10.</td>
+<td class="comment-1" rowspan="1">Store the high byte of the text pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40126"></span>40126</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="3">Write 0 to; <ul class="">
+<td class="comment-1" rowspan="3">Write 0 to <ul class="">
 <li>*<span class="register">IX</span>+13</li>
 <li>*<span class="register">IX</span>+14</li>
-</ul></td>
+</ul>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -143,13 +142,12 @@ Next: <a href="40142.html">40142</a>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40133"></span>40133</td>
 <td class="instruction">LD IX,39351</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="39351.html">39351</a>.</td>
+<td class="comment-1" rowspan="2">Clear the action-taken flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="40137"></span>40137</td>
 <td class="instruction">RES 1,(IX+3)</td>
-<td class="comment-1" rowspan="1">Reset bit 1 of *<span class="register">IX</span>+3.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -172,7 +170,7 @@ Next: <a href="40142.html">40142</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/9CA2.html">Switch to hexadecimal</a>.</div>
 </footer>

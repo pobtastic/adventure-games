@@ -42,7 +42,10 @@ Next: <a href="C00C.html">C00C</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="A040.html">GameEntryPoint</a>.
+Used by the routine at <a href="A064.html">Game_Initialisation</a>.
+</div>
+<div class="paragraph">
+Carries out this step while the game is running.
 </div>
 </div>
 </td>
@@ -98,7 +101,7 @@ Handle the clock minutes.
 <td class="asm-label"></td>
 <td class="address-1"><span id="bfe4"></span>BFE4</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Return if *<span class="register">HL</span> is not equal to 60 (e.g. it's less than 60 minutes).</td>
+<td class="comment-1" rowspan="3">Return unless the minute count has reached 3C.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -151,7 +154,7 @@ Handle the clock hours.
 <td class="asm-label"></td>
 <td class="address-1"><span id="bfee"></span>BFEE</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="BFD9.html#bff6">Handler_GameClock_AM_PM</a> if *<span class="register">HL</span> is not equal to 13 (e.g. it's less than 13 o'clock).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="BFD9.html#bff6">Handler_GameClock_AM_PM</a> unless the hour has reached 0D.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -190,7 +193,7 @@ The hours is at 13. which is invalid - so handle rolling the clock.
 <span id="bff6"></span>
 <div class="comments">
 <div class="paragraph">
-Is it midday yet?
+Noon or midnight flips the AM/PM marker.
 </div>
 </div>
 </td>
@@ -199,7 +202,7 @@ Is it midday yet?
 <td class="asm-label">Handler_GameClock_AM_PM</td>
 <td class="address-2"><span id="bff6"></span>BFF6</td>
 <td class="instruction">CP $0C</td>
-<td class="comment-1" rowspan="2">Return if *<span class="register">HL</span> is not equal to 12.</td>
+<td class="comment-1" rowspan="2">Return unless the hour is 0C.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -220,7 +223,7 @@ It's either midday or midnight, so flip between AM and PM.
 <td class="asm-label"></td>
 <td class="address-1"><span id="bff9"></span>BFF9</td>
 <td class="instruction">LD A,($9FE2)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="9FE2.html">Messaging_AM_PM</a>.</td>
+<td class="comment-1" rowspan="1">Read the AM/PM marker.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -271,7 +274,7 @@ If the clock went from PM to AM, handle rolling the day of the week.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c001"></span>C001</td>
 <td class="instruction">CP $61</td>
-<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is not equal to ASCII 61 ("&#97;").</td>
+<td class="comment-1" rowspan="2">Return unless the AM/PM marker is the letter a.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -315,7 +318,7 @@ Next: <a href="C00C.html">C00C</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/49113.html">Switch to decimal</a>.</div>
 </footer>

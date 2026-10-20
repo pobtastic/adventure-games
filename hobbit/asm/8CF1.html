@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 8CF1</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="8CA6.html">8CA6</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#8cf1">Map</a></td>
+<td class="next">
+Next: <a href="8D25.html">8D25</a>
+</td>
+</tr>
+</table>
+<div class="description">8CF1: Action: Add The Object's Mass</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="8D33.html">Action_Pickup</a> and <a href="8FF5.html">Action_ThrowAt</a>.
+</div>
+<div class="paragraph">
+Adds the current object's mass to what the character is carrying. Too much and the player sees "You are carrying too much".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_AddTheObjectMass</td>
+<td class="address-2"><span id="8cf1"></span>8CF1</td>
+<td class="instruction">LD IX,($B708)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b708">B708</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8cf5"></span>8CF5</td>
+<td class="instruction">LD A,($B6E8)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b6e8">CurrentObject</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8cf8"></span>8CF8</td>
+<td class="instruction">CALL <a href="9CED.html">Condition_TotalTheMassInside</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9CED.html">Condition_TotalTheMassInside</a> to total the mass inside the object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8cfb"></span>8CFB</td>
+<td class="instruction">ADD A,(IX+$03)</td>
+<td class="comment-1" rowspan="1">Add this object's mass onto the count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8cfe"></span>8CFE</td>
+<td class="instruction">JR NC,<a href="8CF1.html#8d02">Action_AddTheObjectMass_Putdown_CopyTheResult</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="8CF1.html#8d02">Action_AddTheObjectMass_Putdown_CopyTheResult</a> if the sum did not overflow.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d00"></span>8D00</td>
+<td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="1">Cap the total mass at FF.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_AddTheObjectMass_Putdown_CopyTheResult</td>
+<td class="address-2"><span id="8d02"></span>8D02</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d03"></span>8D03</td>
+<td class="instruction">LD IY,($B70C)</td>
+<td class="comment-1" rowspan="1">Read *<a href="B6DA.html#b70c">Pointer_CurrentCharacter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d07"></span>8D07</td>
+<td class="instruction">LD A,(IY+$03)</td>
+<td class="comment-1" rowspan="1">Read the mass from <span class="register">IY</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d0a"></span>8D0A</td>
+<td class="instruction">SUB B</td>
+<td class="comment-1" rowspan="3">Point <span class="register">HL</span> at <a href="AD7D.html#ae04">AE04</a> and jump to <a href="8CF1.html#8d20">Action_AddTheObjectMass_Putdown_PrintTheMessage</a> if the mass of the object at <a href="B6DA.html#b70c">Pointer_CurrentCharacter</a> is below the total in <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d0b"></span>8D0B</td>
+<td class="instruction">LD HL,$AE04</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d0e"></span>8D0E</td>
+<td class="instruction">JR C,<a href="8CF1.html#8d20">Action_AddTheObjectMass_Putdown_PrintTheMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d10"></span>8D10</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="2">Read *<a href="B6DA.html#b6ea">CurrentCharacter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d11"></span>8D11</td>
+<td class="instruction">LD A,($B6EA)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d14"></span>8D14</td>
+<td class="instruction">CALL <a href="9CED.html">Condition_TotalTheMassInside</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9CED.html">Condition_TotalTheMassInside</a> to total the mass inside the character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d17"></span>8D17</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d18"></span>8D18</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="2">Subtract the count in <span class="register">B</span> from the value saved on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d19"></span>8D19</td>
+<td class="instruction">SUB B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d1a"></span>8D1A</td>
+<td class="instruction">JP P,<a href="8D25.html">Action_StopIfTheObjectIsFixed</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="8D25.html">Action_StopIfTheObjectIsFixed</a> if the result is not negative.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d1d"></span>8D1D</td>
+<td class="instruction">LD HL,$AE0C</td>
+<td class="comment-1" rowspan="1">Point at the message "You are carrying too much" (<a href="AD7D.html#ae0c">AE0C</a>).</td>
+</tr>
+<tr>
+<td class="asm-label">Action_AddTheObjectMass_Putdown_PrintTheMessage</td>
+<td class="address-2"><span id="8d20"></span>8D20</td>
+<td class="instruction">EX (SP),HL</td>
+<td class="comment-1" rowspan="1">Swap <span class="register">HL</span> with the address on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d21"></span>8D21</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="72DD.html">PrintMessage</a> to print message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d22"></span>8D22</td>
+<td class="instruction">JP <a href="72DD.html">PrintMessage</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="8CA6.html">8CA6</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#8cf1">Map</a></td>
+<td class="next">
+Next: <a href="8D25.html">8D25</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/36081.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

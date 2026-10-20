@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Message From Andromeda: Routine at 6900</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="68E0.html">68E0</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6900">Map</a></td>
+<td class="next">
+Next: <a href="692F.html">692F</a>
+</td>
+</tr>
+</table>
+<div class="description">6900: Parser: Advance To Separator</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="8F13.html">ActionExamine</a>, <a href="8FCD.html">ActionTake</a>, <a href="9014.html">HandlerPickUpObject</a>, <a href="9198.html">ActionDrop</a>, <a href="937B.html">HandlerResolveSynonym</a>, <a href="93A1.html">ActionEnter</a>, <a href="93E4.html">ActionLeave</a>, <a href="941B.html">ActionGive</a>, <a href="947C.html">ActionSwim</a>, <a href="94B1.html">ActionCut</a>, <a href="952B.html">ActionKill</a>, <a href="9670.html">ActionRead</a>, <a href="96BE.html">ActionLand</a>, <a href="96E7.html">ActionOpen</a>, <a href="975A.html">ActionClose</a>, <a href="97CA.html">ActionShoot</a>, <a href="9861.html">ActionWear</a>, <a href="98B9.html">ActionTurn</a>, <a href="997F.html">ActionType</a>, <a href="99DD.html">ActionTouch</a> and <a href="9A41.html">ActionUse</a>.
+</div>
+<div class="paragraph">
+Report whether the words still to be parsed match the phrase passed by the caller.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_AdvanceToSeparator</td>
+<td class="address-2"><span id="6900"></span>6900</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1">Hold the phrase while the command tokens are checked.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6901"></span>6901</td>
+<td class="instruction">JR <a href="6900.html#6904">Parser_AdvanceToSeparator_Step1</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="6900.html#6904">Parser_AdvanceToSeparator_Step1</a> to start at the second word of the command.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_AdvanceToSeparator_Loop1</td>
+<td class="address-2"><span id="6903"></span>6903</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Step to the next byte of the phrase.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_AdvanceToSeparator_Step1</td>
+<td class="address-2"><span id="6904"></span>6904</td>
+<td class="instruction">LD HL,$6292</td>
+<td class="comment-1" rowspan="1">Matching starts at the second word of the command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6907"></span>6907</td>
+<td class="instruction">JR <a href="6900.html#690b">Parser_AdvanceToSeparator_Step2</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="6900.html#690b">Parser_AdvanceToSeparator_Step2</a> to compare that word with the phrase.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_AdvanceToSeparator_Loop2</td>
+<td class="address-2"><span id="6909"></span>6909</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">The next token of the command has to match too.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="690a"></span>690A</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Step to the next word of the command.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_AdvanceToSeparator_Step2</td>
+<td class="address-2"><span id="690b"></span>690B</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="1">Read the next byte of the phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="690c"></span>690C</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">Keep matching while this token agrees with the phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="690d"></span>690D</td>
+<td class="instruction">JR Z,<a href="6900.html#6909">Parser_AdvanceToSeparator_Loop2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="690f"></span>690F</td>
+<td class="instruction">CP $FE</td>
+<td class="comment-1" rowspan="2">This byte is a word token, not the end of the phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6911"></span>6911</td>
+<td class="instruction">JR NZ,<a href="6900.html#6917">Parser_AdvanceToSeparator_Step3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6913"></span>6913</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the token the phrase is waiting for.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6914"></span>6914</td>
+<td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="1">Compare with FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6916"></span>6916</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_AdvanceToSeparator_Step3</td>
+<td class="address-2"><span id="6917"></span>6917</td>
+<td class="instruction">CP $FD</td>
+<td class="comment-1" rowspan="2">This byte is not an alternative in the phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6919"></span>6919</td>
+<td class="instruction">JR NZ,<a href="6900.html#6921">Parser_AdvanceToSeparator_Loop3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="691b"></span>691B</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the token the phrase is waiting for.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="691c"></span>691C</td>
+<td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="6900.html#6903">Parser_AdvanceToSeparator_Loop1</a> when the phrase token is not the end marker (FF).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="691e"></span>691E</td>
+<td class="instruction">JR NZ,<a href="6900.html#6903">Parser_AdvanceToSeparator_Loop1</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6920"></span>6920</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_AdvanceToSeparator_Loop3</td>
+<td class="address-2"><span id="6921"></span>6921</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="6">Match the next alternative in the phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6922"></span>6922</td>
+<td class="instruction">LD A,(DE)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6923"></span>6923</td>
+<td class="instruction">CP $FE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6925"></span>6925</td>
+<td class="instruction">JR Z,<a href="6900.html#692d">Parser_AdvanceToSeparator_Step4</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6927"></span>6927</td>
+<td class="instruction">CP $FD</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6929"></span>6929</td>
+<td class="instruction">JR NZ,<a href="6900.html#6921">Parser_AdvanceToSeparator_Loop3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="692b"></span>692B</td>
+<td class="instruction">JR <a href="6900.html#6903">Parser_AdvanceToSeparator_Loop1</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="6900.html#6903">Parser_AdvanceToSeparator_Loop1</a> to try the next wording of the phrase.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_AdvanceToSeparator_Step4</td>
+<td class="address-2"><span id="692d"></span>692D</td>
+<td class="instruction">OR A</td>
+<td class="comment-1" rowspan="1">Set flags from <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="692e"></span>692E</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="68E0.html">68E0</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6900">Map</a></td>
+<td class="next">
+Next: <a href="692F.html">692F</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
+<div><a href="../dec/asm/26880.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -42,7 +42,10 @@ Next: <a href="D26C.html">D26C</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="DD0B.html">DD0B</a> and <a href="DD35.html">DD35</a>.
+Used by the routines at <a href="DD0E.html">StoreMatchedCharacterRoom</a> and <a href="DEE4.html">CombineCharacterRoom</a>.
+</div>
+<div class="paragraph">
+Walks the objects inside the current one and records the room of each.
 </div>
 </div>
 <table class="input">
@@ -64,7 +67,7 @@ Used by the routines at <a href="DD0B.html">DD0B</a> and <a href="DD35.html">DD3
 <td class="asm-label">ProcessObjectLocationRecursively</td>
 <td class="address-2"><span id="d249"></span>D249</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">IY</span> and <span class="register">IX</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Call <a href="D04F.html">AdjustObjectTableForSum</a> to adjust object table for sum.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -75,72 +78,76 @@ Used by the routines at <a href="DD0B.html">DD0B</a> and <a href="DD35.html">DD3
 <td class="asm-label"></td>
 <td class="address-1"><span id="d24d"></span>D24D</td>
 <td class="instruction">CALL <a href="D04F.html">AdjustObjectTableForSum</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D04F.html">AdjustObjectTableForSum</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessObjectLocationRecursively_0</td>
+<td class="asm-label">ProcessObjectLocationRecursively_Loop</td>
 <td class="address-2"><span id="d250"></span>D250</td>
 <td class="instruction">CALL <a href="D21C.html">FetchNextObjectWithID</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D21C.html">FetchNextObjectWithID</a>.</td>
+<td class="comment-1" rowspan="2">Go to <a href="D249.html#d267">ProcessObjectLocationRecursively_Next</a> if there is no further object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d253"></span>D253</td>
-<td class="instruction">JR Z,<a href="D249.html#d267">ProcessObjectLocationRecursively_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D249.html#d267">ProcessObjectLocationRecursively_1</a> if ?? is equal to 00.</td>
+<td class="instruction">JR Z,<a href="D249.html#d267">ProcessObjectLocationRecursively_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d255"></span>D255</td>
 <td class="instruction">CP (IY+$01)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="D249.html#d250">ProcessObjectLocationRecursively_0</a> if <span class="register">A</span> is not equal to *<span class="register">IY</span>+01.</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="D249.html#d250">ProcessObjectLocationRecursively_Loop</a> while this id does not match the schedule entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d258"></span>D258</td>
-<td class="instruction">JR NZ,<a href="D249.html#d250">ProcessObjectLocationRecursively_0</a></td>
+<td class="instruction">JR NZ,<a href="D249.html#d250">ProcessObjectLocationRecursively_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d25a"></span>D25A</td>
 <td class="instruction">LD (IY+$0F),B</td>
-<td class="comment-1" rowspan="1">Write <span class="register">B</span> to *<span class="register">IY</span>+0F.</td>
+<td class="comment-1" rowspan="4">Store it in the character attribute and read the record flag, then call <a href="D249.html">ProcessObjectLocationRecursively</a> to run object location recursively.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d25d"></span>D25D</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">AF</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d25e"></span>D25E</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+00.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d261"></span>D261</td>
 <td class="instruction">CALL <a href="D249.html#d249">ProcessObjectLocationRecursively</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D249.html">ProcessObjectLocationRecursively</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d264"></span>D264</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Fetch the next object from <a href="D249.html#d250">ProcessObjectLocationRecursively_Loop</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d265"></span>D265</td>
-<td class="instruction">JR <a href="D249.html#d250">ProcessObjectLocationRecursively_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D249.html#d250">ProcessObjectLocationRecursively_0</a>.</td>
+<td class="instruction">JR <a href="D249.html#d250">ProcessObjectLocationRecursively_Loop</a></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessObjectLocationRecursively_1</td>
+<td class="routine-comment" colspan="5">
+<span id="d267"></span>
+<div class="comments">
+<div class="paragraph">
+Return.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessObjectLocationRecursively_Next</td>
 <td class="address-2"><span id="d267"></span>D267</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">IX</span> and <span class="register">IY</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the saved character record and the saved schedule entry from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -168,7 +175,7 @@ Next: <a href="D26C.html">D26C</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/53833.html">Switch to decimal</a>.</div>
 </footer>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Message From Andromeda: Routine at 25881</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="25872.html">25872</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#25881">Map</a></td>
+<td class="next">
+Next: <a href="25909.html">25909</a>
+</td>
+</tr>
+</table>
+<div class="description">25881: Print Room Graphic</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="25921.html">Print_RoomImage</a>, <a href="63531.html">HandlerRoomImageTheYellowRoom</a>, <a href="63544.html">HandlerRoomImageTheGreenRoom</a>, <a href="63557.html">HandlerRoomImageTheBlueRoom</a> and <a href="63570.html">HandlerRoomImageTheRedRoom</a>.
+</div>
+<div class="paragraph">
+Expand a room picture into the display file.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to room image data</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintRoomGraphic</td>
+<td class="address-2"><span id="25881"></span>25881</td>
+<td class="instruction">LD B,16</td>
+<td class="comment-1" rowspan="2">Count 16 display-file blocks (passes) and point <span class="register">H</span> at 64, the first block of the top third of the display file.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25883"></span>25883</td>
+<td class="instruction">LD H,64</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25885"></span>
+<div class="comments">
+<div class="paragraph">
+Each pass fills one 256-byte block of the display file: pixel line n of all eight character rows in the top or middle third. <span class="register">H</span> is the high byte of the screen address, so the 16 values 64-79 are pixel lines 0-7 of the top two thirds (128 pixels high, matching 16 attribute rows).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintRoomGraphic_Loop1</td>
+<td class="address-2"><span id="25885"></span>25885</td>
+<td class="instruction">LD L,0</td>
+<td class="comment-1" rowspan="1">Start a new pass.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintRoomGraphic_Loop2</td>
+<td class="address-2"><span id="25887"></span>25887</td>
+<td class="instruction">LD E,(IX+0)</td>
+<td class="comment-1" rowspan="4">Read the next (offset,byte) pair into <span class="register">DE</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25890"></span>25890</td>
+<td class="instruction">LD D,(IX+1)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25893"></span>25893</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25895"></span>25895</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25897"></span>25897</td>
+<td class="instruction">LD A,E</td>
+<td class="comment-1" rowspan="3">A 0,0 pair ends this pass.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25898"></span>25898</td>
+<td class="instruction">OR D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25899"></span>25899</td>
+<td class="instruction">JR Z,<a href="25881.html#25905">PrintRoomGraphic_Step1</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25901"></span>25901</td>
+<td class="instruction">LD L,E</td>
+<td class="comment-1" rowspan="3">Set <span class="register">L</span> to the offset and write the pixel byte there, then read the next pair.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25902"></span>25902</td>
+<td class="instruction">LD (HL),D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25903"></span>25903</td>
+<td class="instruction">JR <a href="25881.html#25887">PrintRoomGraphic_Loop2</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintRoomGraphic_Step1</td>
+<td class="address-2"><span id="25905"></span>25905</td>
+<td class="instruction">INC H</td>
+<td class="comment-1" rowspan="2">Move to the next display-file block until all 16 passes are done.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25906"></span>25906</td>
+<td class="instruction">DJNZ <a href="25881.html#25885">PrintRoomGraphic_Loop1</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="25908"></span>25908</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="25872.html">25872</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#25881">Map</a></td>
+<td class="next">
+Next: <a href="25909.html">25909</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
+<div><a href="../../asm/6519.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

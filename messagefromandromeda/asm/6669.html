@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Message From Andromeda: Routine at 6669</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6604.html">6604</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6669">Map</a></td>
+<td class="next">
+Next: <a href="6745.html">6745</a>
+</td>
+</tr>
+</table>
+<div class="description">6669: Parser: Match Input Word</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Read the next word of the command and turn it into a vocabulary token.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord</td>
+<td class="address-2"><span id="6669"></span>6669</td>
+<td class="instruction">LD DE,$629E</td>
+<td class="comment-1" rowspan="1">The typed word is held as four letters.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="666c"></span>666C</td>
+<td class="instruction">LD B,$04</td>
+<td class="comment-1" rowspan="1">A word is at most four letters.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="666e"></span>666E</td>
+<td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="1">Pad the typed word with spaces.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop1</td>
+<td class="address-2"><span id="6670"></span>6670</td>
+<td class="instruction">LD (DE),A</td>
+<td class="comment-1" rowspan="3">Fill the four-letter word with spaces.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6671"></span>6671</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6672"></span>6672</td>
+<td class="instruction">DJNZ <a href="6669.html#6670">Parser_MatchInputWord_Loop1</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6674"></span>6674</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">No words left means the command has been parsed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6675"></span>6675</td>
+<td class="instruction">OR C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6676"></span>6676</td>
+<td class="instruction">JP Z,<a href="6745.html">Handler_UnknownWord</a></td>
+<td class="comment-1" rowspan="1">An empty command is an unknown word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6679"></span>6679</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the next character of the command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="667a"></span>667A</td>
+<td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6745.html">Handler_UnknownWord</a> when ENTER (0D) was pressed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="667c"></span>667C</td>
+<td class="instruction">JP Z,<a href="6745.html">Handler_UnknownWord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="667f"></span>667F</td>
+<td class="instruction">LD B,$04</td>
+<td class="comment-1" rowspan="1">Keep at most four letters of this word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6681"></span>6681</td>
+<td class="instruction">LD DE,$629E</td>
+<td class="comment-1" rowspan="1">The typed word is held as four letters.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop2</td>
+<td class="address-2"><span id="6684"></span>6684</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Stop copying when ENTER ends the command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6685"></span>6685</td>
+<td class="instruction">CP $0D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6687"></span>6687</td>
+<td class="instruction">JR Z,<a href="6669.html#66b0">Parser_MatchInputWord_Step1</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6689"></span>6689</td>
+<td class="instruction">CP $20</td>
+<td class="comment-1" rowspan="4">Stop copying at a space or a comma.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="668b"></span>668B</td>
+<td class="instruction">JR Z,<a href="6669.html#66a6">Parser_MatchInputWord_Loop4</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="668d"></span>668D</td>
+<td class="instruction">CP $2C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="668f"></span>668F</td>
+<td class="instruction">JR Z,<a href="6669.html#66a6">Parser_MatchInputWord_Loop4</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6691"></span>6691</td>
+<td class="instruction">LD (DE),A</td>
+<td class="comment-1" rowspan="4">Store this letter and read the next.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6692"></span>6692</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6693"></span>6693</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6694"></span>6694</td>
+<td class="instruction">DJNZ <a href="6669.html#6684">Parser_MatchInputWord_Loop2</a></td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop3</td>
+<td class="address-2"><span id="6696"></span>6696</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Stop skipping when ENTER ends the command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6697"></span>6697</td>
+<td class="instruction">CP $0D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6699"></span>6699</td>
+<td class="instruction">JR Z,<a href="6669.html#66b0">Parser_MatchInputWord_Step1</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="669b"></span>669B</td>
+<td class="instruction">CP $20</td>
+<td class="comment-1" rowspan="4">Stop skipping at a space or a comma.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="669d"></span>669D</td>
+<td class="instruction">JR Z,<a href="6669.html#66a6">Parser_MatchInputWord_Loop4</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="669f"></span>669F</td>
+<td class="instruction">CP $2C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66a1"></span>66A1</td>
+<td class="instruction">JR Z,<a href="6669.html#66a6">Parser_MatchInputWord_Loop4</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66a3"></span>66A3</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Skip this extra letter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66a4"></span>66A4</td>
+<td class="instruction">JR <a href="6669.html#6696">Parser_MatchInputWord_Loop3</a></td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop4</td>
+<td class="address-2"><span id="66a6"></span>66A6</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="4">Skip spaces before the next word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66a7"></span>66A7</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66a8"></span>66A8</td>
+<td class="instruction">CP $20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66aa"></span>66AA</td>
+<td class="instruction">JR Z,<a href="6669.html#66a6">Parser_MatchInputWord_Loop4</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66ac"></span>66AC</td>
+<td class="instruction">CP $2C</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="6669.html#66a6">Parser_MatchInputWord_Loop4</a> when that character is a comma (2C).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66ae"></span>66AE</td>
+<td class="instruction">JR Z,<a href="6669.html#66a6">Parser_MatchInputWord_Loop4</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="66b0"></span>
+<div class="comments">
+<div class="paragraph">
+The word THE is ignored.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Step1</td>
+<td class="address-2"><span id="66b0"></span>66B0</td>
+<td class="instruction">EXX</td>
+<td class="comment-1" rowspan="4">Compare the word with THE  without losing the command pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66b1"></span>66B1</td>
+<td class="instruction">LD HL,$62E7</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66b4"></span>66B4</td>
+<td class="instruction">LD DE,$629E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66b7"></span>66B7</td>
+<td class="instruction">LD B,$04</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop5</td>
+<td class="address-2"><span id="66b9"></span>66B9</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="6">Match the four letters of "THE ".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66ba"></span>66BA</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66bb"></span>66BB</td>
+<td class="instruction">JR NZ,<a href="6669.html#66c1">Parser_MatchInputWord_Step2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66bd"></span>66BD</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66be"></span>66BE</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66bf"></span>66BF</td>
+<td class="instruction">DJNZ <a href="6669.html#66b9">Parser_MatchInputWord_Loop5</a></td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Step2</td>
+<td class="address-2"><span id="66c1"></span>66C1</td>
+<td class="instruction">EXX</td>
+<td class="comment-1" rowspan="3">Ignore the word and parse again when it was "THE ".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66c2"></span>66C2</td>
+<td class="instruction">JR Z,<a href="6669.html#6669">Parser_MatchInputWord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66c4"></span>66C4</td>
+<td class="instruction">DEC C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66c5"></span>66C5</td>
+<td class="instruction">EXX</td>
+<td class="comment-1" rowspan="3">Search the vocabulary addressed by *<a href="625F.html#629c">629C</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66c6"></span>66C6</td>
+<td class="instruction">LD HL,($629C)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66c9"></span>66C9</td>
+<td class="instruction">LD C,$00</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop6</td>
+<td class="address-2"><span id="66cb"></span>66CB</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the next vocabulary letter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66cc"></span>66CC</td>
+<td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6669.html#66fd">Parser_MatchInputWord_Step5</a> when the vocabulary list ends (FF).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66ce"></span>66CE</td>
+<td class="instruction">JR Z,<a href="6669.html#66fd">Parser_MatchInputWord_Step5</a></td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop7</td>
+<td class="address-2"><span id="66d0"></span>66D0</td>
+<td class="instruction">LD DE,$629E</td>
+<td class="comment-1" rowspan="1">The typed word is held as four letters.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66d3"></span>66D3</td>
+<td class="instruction">LD B,$04</td>
+<td class="comment-1" rowspan="1">Compare four letters of this vocabulary word.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop8</td>
+<td class="address-2"><span id="66d5"></span>66D5</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="6">Match the typed word against this vocabulary entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66d6"></span>66D6</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66d7"></span>66D7</td>
+<td class="instruction">JR NZ,<a href="6669.html#66ee">Parser_MatchInputWord_Step3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66d9"></span>66D9</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66da"></span>66DA</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66db"></span>66DB</td>
+<td class="instruction">DJNZ <a href="6669.html#66d5">Parser_MatchInputWord_Loop8</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66dd"></span>66DD</td>
+<td class="instruction">EXX</td>
+<td class="comment-1" rowspan="10">Store this vocabulary number as the current word's token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66de"></span>66DE</td>
+<td class="instruction">LD A,$09</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66e0"></span>66E0</td>
+<td class="instruction">SUB C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66e1"></span>66E1</td>
+<td class="instruction">EXX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66e2"></span>66E2</td>
+<td class="instruction">LD D,$00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66e4"></span>66E4</td>
+<td class="instruction">LD E,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66e5"></span>66E5</td>
+<td class="instruction">LD HL,$6291</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66e8"></span>66E8</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66e9"></span>66E9</td>
+<td class="instruction">LD (HL),C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66ea"></span>66EA</td>
+<td class="instruction">EXX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66eb"></span>66EB</td>
+<td class="instruction">JP <a href="6669.html#6669">Parser_MatchInputWord</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6669.html">Parser_MatchInputWord</a> to read the next word.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Step3</td>
+<td class="address-2"><span id="66ee"></span>66EE</td>
+<td class="instruction">LD E,B</td>
+<td class="comment-1" rowspan="3">Skip the letters left in a word that did not match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66ef"></span>66EF</td>
+<td class="instruction">LD D,$00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66f1"></span>66F1</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66f2"></span>66F2</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the byte that follows this vocabulary word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66f3"></span>66F3</td>
+<td class="instruction">CP $2C</td>
+<td class="comment-1" rowspan="2">A comma marks another synonym of the same word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66f5"></span>66F5</td>
+<td class="instruction">JR NZ,<a href="6669.html#66fa">Parser_MatchInputWord_Step4</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66f7"></span>66F7</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step past that comma.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66f8"></span>66F8</td>
+<td class="instruction">JR <a href="6669.html#66d0">Parser_MatchInputWord_Loop7</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="6669.html#66d0">Parser_MatchInputWord_Loop7</a> to match this synonym against the typed word.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Step4</td>
+<td class="address-2"><span id="66fa"></span>66FA</td>
+<td class="instruction">INC C</td>
+<td class="comment-1" rowspan="1">Try the next vocabulary word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66fb"></span>66FB</td>
+<td class="instruction">JR <a href="6669.html#66cb">Parser_MatchInputWord_Loop6</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="6669.html#66cb">Parser_MatchInputWord_Loop6</a> to try the next vocabulary word.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Step5</td>
+<td class="address-2"><span id="66fd"></span>66FD</td>
+<td class="instruction">EXX</td>
+<td class="comment-1" rowspan="5">The word is unknown. Count back to it from the end of the command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="66fe"></span>66FE</td>
+<td class="instruction">LD A,$0A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6700"></span>6700</td>
+<td class="instruction">SUB C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6701"></span>6701</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6702"></span>6702</td>
+<td class="instruction">LD HL,$625F</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop9</td>
+<td class="address-2"><span id="6705"></span>6705</td>
+<td class="instruction">DEC C</td>
+<td class="comment-1" rowspan="1">Step back to the previous word of the command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6706"></span>6706</td>
+<td class="instruction">JR Z,<a href="6669.html#6720">Parser_MatchInputWord_Step6</a></td>
+<td class="comment-1" rowspan="1">This is the word the game could not recognise.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop10</td>
+<td class="address-2"><span id="6708"></span>6708</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="7">Find the end of the previous word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6709"></span>6709</td>
+<td class="instruction">CP $20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="670b"></span>670B</td>
+<td class="instruction">JR Z,<a href="6669.html#6714">Parser_MatchInputWord_Loop11</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="670d"></span>670D</td>
+<td class="instruction">CP $2C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="670f"></span>670F</td>
+<td class="instruction">JR Z,<a href="6669.html#6714">Parser_MatchInputWord_Loop11</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6711"></span>6711</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6712"></span>6712</td>
+<td class="instruction">JR <a href="6669.html#6708">Parser_MatchInputWord_Loop10</a></td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop11</td>
+<td class="address-2"><span id="6714"></span>6714</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="4">Skip the gap after that word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6715"></span>6715</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6716"></span>6716</td>
+<td class="instruction">CP $20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6718"></span>6718</td>
+<td class="instruction">JR Z,<a href="6669.html#6714">Parser_MatchInputWord_Loop11</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="671a"></span>671A</td>
+<td class="instruction">CP $2C</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="6669.html#6714">Parser_MatchInputWord_Loop11</a> when that character is a comma (2C).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="671c"></span>671C</td>
+<td class="instruction">JR Z,<a href="6669.html#6714">Parser_MatchInputWord_Loop11</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="671e"></span>671E</td>
+<td class="instruction">JR <a href="6669.html#6705">Parser_MatchInputWord_Loop9</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="6669.html#6705">Parser_MatchInputWord_Loop9</a> to count back another word of the command.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Step6</td>
+<td class="address-2"><span id="6720"></span>6720</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1">Remember where the unknown word starts.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6721"></span>6721</td>
+<td class="instruction">LD HL,$6300</td>
+<td class="comment-1" rowspan="2">Print I don't know the word:-.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6724"></span>6724</td>
+<td class="instruction">CALL <a href="64E9.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6727"></span>6727</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">The unknown word starts at the address just saved.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6728"></span>6728</td>
+<td class="instruction">LD A,$22</td>
+<td class="comment-1" rowspan="2">Print a quotation mark before the unknown word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="672a"></span>672A</td>
+<td class="instruction">CALL <a href="64F2.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Loop12</td>
+<td class="address-2"><span id="672d"></span>672D</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="6">Print the characters of the unknown word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="672e"></span>672E</td>
+<td class="instruction">CP $21</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6730"></span>6730</td>
+<td class="instruction">JR C,<a href="6669.html#6738">Parser_MatchInputWord_Step7</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6732"></span>6732</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6733"></span>6733</td>
+<td class="instruction">CALL <a href="64F2.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6736"></span>6736</td>
+<td class="instruction">JR <a href="6669.html#672d">Parser_MatchInputWord_Loop12</a></td>
+</tr>
+<tr>
+<td class="asm-label">Parser_MatchInputWord_Step7</td>
+<td class="address-2"><span id="6738"></span>6738</td>
+<td class="instruction">LD A,$22</td>
+<td class="comment-1" rowspan="2">Close the quotation.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="673a"></span>673A</td>
+<td class="instruction">CALL <a href="64F2.html">PrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="673d"></span>673D</td>
+<td class="instruction">LD HL,$646B</td>
+<td class="comment-1" rowspan="2">Print ..</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6740"></span>6740</td>
+<td class="instruction">CALL <a href="64E9.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6743"></span>6743</td>
+<td class="instruction">JR <a href="6745.html#6751">Handler_UnknownWord_Step1</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="6745.html#6751">Handler_UnknownWord_Step1</a> to ask for another command.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6604.html">6604</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#6669">Map</a></td>
+<td class="next">
+Next: <a href="6745.html">6745</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
+<div><a href="../dec/asm/26217.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

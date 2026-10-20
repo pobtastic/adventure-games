@@ -32,7 +32,7 @@ Prev: <a href="B934.html">B934</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#b936">Map</a></td>
 <td class="next">
-Next: <a href="B9FA.html">B9FA</a>
+Next: <a href="B9CA.html">B9CA</a>
 </td>
 </tr>
 </table>
@@ -42,7 +42,10 @@ Next: <a href="B9FA.html">B9FA</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="CC78.html">ScriptInterpreter</a>.
+Used by the routine at <a href="CC82.html">DispatchCharacterScript</a>.
+</div>
+<div class="paragraph">
+Saves the character record and reads the object attribute for this script display.
 </div>
 </div>
 </td>
@@ -51,475 +54,348 @@ Used by the routine at <a href="CC78.html">ScriptInterpreter</a>.
 <td class="asm-label">ProcessScriptDisplay</td>
 <td class="address-2"><span id="b936"></span>B936</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Save the character record, the schedule entry and the pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b938"></span>B938</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b93a"></span>B93A</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b93b"></span>B93B</td>
 <td class="instruction">LD ($B935),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Record the result in the display.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessScriptDisplay_0</td>
+<td class="asm-label">ProcessScriptDisplay_Loop</td>
 <td class="address-2"><span id="b93e"></span>B93E</td>
-<td class="instruction">CALL <a href="B77F.html#b90e">ProcessTextTokenStream_20</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="B90E.html">$B90E</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B90E.html">B90E</a> to read the object attribute.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b941"></span>B941</td>
 <td class="instruction">LD A,(IX+$07)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="BA20.html">ProcessCharacterDisplay</a> if byte 07 of the character record is 02.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b944"></span>B944</td>
 <td class="instruction">CP $02</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b946"></span>B946</td>
 <td class="instruction">JP Z,<a href="BA20.html">ProcessCharacterDisplay</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b949"></span>B949</td>
 <td class="instruction">LD A,(IX+$01)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="B936.html#b98c">ProcessScriptDisplay_Next</a> if the moved marker is FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b94c"></span>B94C</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b94e"></span>B94E</td>
-<td class="instruction">JR Z,<a href="B936.html#b98c">ProcessScriptDisplay_3</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="B936.html#b98c">ProcessScriptDisplay_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b950"></span>B950</td>
 <td class="instruction">LD A,($B935)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the display.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b953"></span>B953</td>
 <td class="instruction">LD ($B934),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Record the result in the display flag at <a href="B934.html">B934</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b956"></span>B956</td>
 <td class="instruction">LD A,(IX+$02)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the character's room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b959"></span>B959</td>
 <td class="instruction">LD ($A01C),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Record the result in the display flag at <a href="A01C.html">A01C</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b95c"></span>B95C</td>
 <td class="instruction">LD C,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the action flags.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b95f"></span>B95F</td>
 <td class="instruction">LD B,(IX+$04)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Call <a href="B191.html">InitialiseDisplayBuffer</a> to initialise display buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b962"></span>B962</td>
 <td class="instruction">LD ($B17E),BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b966"></span>B966</td>
 <td class="instruction">CALL <a href="B191.html">InitialiseDisplayBuffer</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b969"></span>B969</td>
-<td class="instruction">JR Z,<a href="B936.html#b9b4">ProcessScriptDisplay_6</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="B936.html#b9b4">ProcessScriptDisplay_DisplayFlagSaved</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="B936.html#b9b4">ProcessScriptDisplay_DisplayFlagSaved</a> if no room record matches.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b96b"></span>B96B</td>
 <td class="instruction">LD IX,($B866)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Read the saved character record and the object-table pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b96f"></span>B96F</td>
 <td class="instruction">LD BC,($B17E)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b973"></span>B973</td>
 <td class="instruction">LD (IX+$03),C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Store it in the action flags and store it in the attribute type.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b976"></span>B976</td>
 <td class="instruction">LD (IX+$04),B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b979"></span>B979</td>
 <td class="instruction">LD A,($A01C)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Store the display flag (<a href="A01C.html">A01C</a>) and call <a href="B9CA.html">CopyLinkAhead</a> if that flag is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b97c"></span>B97C</td>
 <td class="instruction">LD (IX+$02),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b97f"></span>B97F</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b980"></span>B980</td>
-<td class="instruction">CALL Z,<a href="B936.html#b9ca">ProcessScriptDisplay_7</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL Z,<a href="B9CA.html">CopyLinkAhead</a></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessScriptDisplay_1</td>
+<td class="asm-label">ProcessScriptDisplay_Store</td>
 <td class="address-2"><span id="b983"></span>B983</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Take 01.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessScriptDisplay_2</td>
+<td class="asm-label">ProcessScriptDisplay_BringSavedPointer</td>
 <td class="address-2"><span id="b985"></span>B985</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Restore the saved pointer, the saved schedule entry and the saved character record from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b986"></span>B986</td>
 <td class="instruction">POP IY</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b988"></span>B988</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b98a"></span>B98A</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear the borrow so an empty entry returns as a failed match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b98b"></span>B98B</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessScriptDisplay_3</td>
+<td class="routine-comment" colspan="5">
+<span id="b98c"></span>
+<div class="comments">
+<div class="paragraph">
+Read the character's room, then record the result in the saved character, then read the action flags.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessScriptDisplay_Next</td>
 <td class="address-2"><span id="b98c"></span>B98C</td>
 <td class="instruction">LD A,(IX+$02)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Read the character's room, then call <a href="CEDE.html">ProcessRoomDisplayParameter</a> to resolve the room display parameter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b98f"></span>B98F</td>
 <td class="instruction">CALL <a href="CEDE.html">ProcessRoomDisplayParameter</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b992"></span>B992</td>
 <td class="instruction">LD ($A033),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Record the saved character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b995"></span>B995</td>
 <td class="instruction">LD A,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Read the action flags, then call <a href="CEDE.html">ProcessRoomDisplayParameter</a> to resolve the room display parameter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b998"></span>B998</td>
 <td class="instruction">CALL <a href="CEDE.html">ProcessRoomDisplayParameter</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b99b"></span>B99B</td>
 <td class="instruction">LD ($A034),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Record the room display parameter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b99e"></span>B99E</td>
 <td class="instruction">LD A,(IX+$04)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Read the next parameter and call <a href="CEDE.html">ProcessRoomDisplayParameter</a> to resolve it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9a1"></span>B9A1</td>
 <td class="instruction">CALL <a href="CEDE.html">ProcessRoomDisplayParameter</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9a4"></span>B9A4</td>
 <td class="instruction">LD ($A035),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Store the room graphics parameter at <a href="A035.html">RoomGraphicsParameter</a> and call <a href="B9FA.html">CopyPointerToStack</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9a7"></span>B9A7</td>
 <td class="instruction">CALL <a href="B9FA.html">CopyPointerToStack</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9aa"></span>B9AA</td>
-<td class="instruction">JR <a href="B936.html#b983">ProcessScriptDisplay_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="B936.html#b983">ProcessScriptDisplay_Store</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="B936.html#b983">ProcessScriptDisplay_Store</a> to take 01.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessScriptDisplay_4</td>
+<td class="routine-comment" colspan="5">
+<span id="b9ac"></span>
+<div class="comments">
+<div class="paragraph">
+Follows the link until it runs out, then clears the result.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessScriptDisplay_FollowsLinkRuns</td>
 <td class="address-2"><span id="b9ac"></span>B9AC</td>
-<td class="instruction">CALL <a href="B936.html#b9ca">ProcessScriptDisplay_7</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="B9CA.html">CopyLinkAhead</a></td>
+<td class="comment-1" rowspan="2">Call <a href="B9CA.html">CopyLinkAhead</a> and jump back to <a href="B936.html#b9ac">ProcessScriptDisplay_FollowsLinkRuns</a> while it returns non-zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9af"></span>B9AF</td>
-<td class="instruction">JR NZ,<a href="B936.html#b9ac">ProcessScriptDisplay_4</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="B936.html#b9ac">ProcessScriptDisplay_FollowsLinkRuns</a></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessScriptDisplay_5</td>
+<td class="asm-label">ProcessScriptDisplay_Zero</td>
 <td class="address-2"><span id="b9b1"></span>B9B1</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="B936.html#b985">ProcessScriptDisplay_BringSavedPointer</a> to see whether it is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9b2"></span>B9B2</td>
-<td class="instruction">JR <a href="B936.html#b985">ProcessScriptDisplay_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="B936.html#b985">ProcessScriptDisplay_BringSavedPointer</a></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessScriptDisplay_6</td>
+<td class="routine-comment" colspan="5">
+<span id="b9b4"></span>
+<div class="comments">
+<div class="paragraph">
+Read the display flag, then take the saved character record.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessScriptDisplay_DisplayFlagSaved</td>
 <td class="address-2"><span id="b9b4"></span>B9B4</td>
 <td class="instruction">LD A,($A01C)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="B936.html#b9ac">ProcessScriptDisplay_FollowsLinkRuns</a> if the display is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9b7"></span>B9B7</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9b8"></span>B9B8</td>
-<td class="instruction">JR Z,<a href="B936.html#b9ac">ProcessScriptDisplay_4</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="B936.html#b9ac">ProcessScriptDisplay_FollowsLinkRuns</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9ba"></span>B9BA</td>
 <td class="instruction">LD IX,($B866)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Read the saved character record and clear its location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9be"></span>B9BE</td>
 <td class="instruction">LD (IX+$02),$00</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9c2"></span>B9C2</td>
-<td class="instruction">CALL <a href="B936.html#b9ca">ProcessScriptDisplay_7</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="B9CA.html">CopyLinkAhead</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="B936.html#b9b1">ProcessScriptDisplay_Zero</a> if the link pointer is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9c5"></span>B9C5</td>
-<td class="instruction">JR Z,<a href="B936.html#b9b1">ProcessScriptDisplay_5</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="B936.html#b9b1">ProcessScriptDisplay_Zero</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b9c7"></span>B9C7</td>
-<td class="instruction">JP <a href="B936.html#b93e">ProcessScriptDisplay_0</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessScriptDisplay_7</td>
-<td class="address-2"><span id="b9ca"></span>B9CA</td>
-<td class="instruction">LD IX,($B866)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessScriptDisplay_8</td>
-<td class="address-2"><span id="b9ce"></span>B9CE</td>
-<td class="instruction">LD L,(IY-$02)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9d1"></span>B9D1</td>
-<td class="instruction">LD H,(IY-$01)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9d4"></span>B9D4</td>
-<td class="instruction">LD (IX+$05),L</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9d7"></span>B9D7</td>
-<td class="instruction">LD (IX+$06),H</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9da"></span>B9DA</td>
-<td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9dc"></span>B9DC</td>
-<td class="instruction">PUSH IY</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9de"></span>B9DE</td>
-<td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9e0"></span>B9E0</td>
-<td class="instruction">CALL <a href="A1C7.html">ProcessMemoryEntry</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9e3"></span>B9E3</td>
-<td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9e5"></span>B9E5</td>
-<td class="instruction">LD A,L</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9e6"></span>B9E6</td>
-<td class="instruction">OR H</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9e7"></span>B9E7</td>
-<td class="instruction">JR Z,<a href="B936.html#b9f5">ProcessScriptDisplay_9</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9e9"></span>B9E9</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9ea"></span>B9EA</td>
-<td class="instruction">POP IY</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9ec"></span>B9EC</td>
-<td class="instruction">BIT 6,(IY+$01)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9f0"></span>B9F0</td>
-<td class="instruction">JR NZ,<a href="B936.html#b9ce">ProcessScriptDisplay_8</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9f2"></span>B9F2</td>
-<td class="instruction">OR $01</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9f4"></span>B9F4</td>
-<td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessScriptDisplay_9</td>
-<td class="address-2"><span id="b9f5"></span>B9F5</td>
-<td class="instruction">CALL <a href="B9FA.html">CopyPointerToStack</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9f8"></span>B9F8</td>
-<td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b9f9"></span>B9F9</td>
-<td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP <a href="B936.html#b93e">ProcessScriptDisplay_Loop</a></td>
+<td class="comment-1" rowspan="1">Go back to <a href="B936.html#b93e">ProcessScriptDisplay_Loop</a> for the next character.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -529,14 +405,14 @@ Prev: <a href="B934.html">B934</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#b936">Map</a></td>
 <td class="next">
-Next: <a href="B9FA.html">B9FA</a>
+Next: <a href="B9CA.html">B9CA</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/47414.html">Switch to decimal</a>.</div>
 </footer>

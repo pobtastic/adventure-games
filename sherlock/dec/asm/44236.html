@@ -36,16 +36,16 @@ Next: <a href="44283.html">44283</a>
 </td>
 </tr>
 </table>
-<div class="description">44236: Process Text Token And Save State</div>
+<div class="description">44236: Handle A Class 160 Word</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="43698.html">43698</a>, <a href="43858.html">43858</a> and <a href="45050.html">45050</a>.
+Used by the routines at <a href="43729.html">StartPictureModeScreenIdle</a>, <a href="43858.html">CopyDisplayIfNeeded</a> and <a href="45050.html">RememberDisplayPage</a>.
 </div>
 <div class="paragraph">
-Processes text tokens until a non-160 token is found, then saves the current text processing state (pointer, flags, and display mode) to the display buffer structure.
+Skips class 160 tokens, saves the word pointer and this clause record, and carries on at the class 176 matcher (<a href="44375.html">MatchWordAgainstEarlierClause</a>). When the parser count at <a href="40985.html">40985</a>+1 is 2 it sets bit 6 of the clause record first.
 </div>
 </div>
 <table class="input">
@@ -60,118 +60,108 @@ Processes text tokens until a non-160 token is found, then saves the current tex
 </td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenAndSaveState</td>
+<td class="asm-label">HandleClassAWord</td>
 <td class="address-2"><span id="44236"></span>44236</td>
 <td class="instruction">RES 3,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Run text token and save state.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44238"></span>44238</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenAndSaveState_0</td>
+<td class="asm-label">HandleClassAWord_Loop</td>
 <td class="address-2"><span id="44239"></span>44239</td>
-<td class="instruction">CALL <a href="44671.html">44671</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="44671.html">SaveTextPointer</a></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="44236.html#44239">HandleClassAWord_Loop</a> if the character code is 160.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44242"></span>44242</td>
 <td class="instruction">CP 160</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44244"></span>44244</td>
-<td class="instruction">JR Z,<a href="44236.html#44239">ProcessTextTokenAndSaveState_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="44236.html#44239">HandleClassAWord_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44246"></span>44246</td>
 <td class="instruction">LD HL,(41001)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Copy the word at <a href="41001.html">SavedTextPointer</a> into <a href="43681.html">DisplayBytes</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44249"></span>44249</td>
 <td class="instruction">LD (43681),HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44252"></span>44252</td>
 <td class="instruction">LD (41003),HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store <span class="register">HL</span> in the word at <a href="41003.html">ActiveTextPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44255"></span>44255</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Store the low byte in the display byte at <a href="43681.html#43683">43683</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44256"></span>44256</td>
 <td class="instruction">LD A,E</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44257"></span>44257</td>
 <td class="instruction">LD (43683),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44260"></span>44260</td>
 <td class="instruction">LD (43684),IY</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store the record pointer at <a href="43681.html#43684">43684</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44264"></span>44264</td>
 <td class="instruction">LD A,(40978)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Remember whether pictures are enabled, in the display byte at <a href="43681.html#43686">43686</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44267"></span>44267</td>
 <td class="instruction">LD (43686),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44270"></span>44270</td>
 <td class="instruction">LD A,(40986)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="44375.html">MatchWordAgainstEarlierClause</a> if the parser is not 2.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44273"></span>44273</td>
 <td class="instruction">CP 2</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44275"></span>44275</td>
-<td class="instruction">JR NZ,<a href="44283.html#44375">44375</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="44375.html">MatchWordAgainstEarlierClause</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44277"></span>44277</td>
 <td class="instruction">SET 6,(IY+1)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Set bit 6 of the clause record and jump to <a href="44375.html">MatchWordAgainstEarlierClause</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44281"></span>44281</td>
-<td class="instruction">JR <a href="44283.html#44375">44375</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="44375.html">MatchWordAgainstEarlierClause</a></td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -188,7 +178,7 @@ Next: <a href="44283.html">44283</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/ACCC.html">Switch to hexadecimal</a>.</div>
 </footer>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at C3FA</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C3DC.html">C3DC</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c3fa">Map</a></td>
+<td class="next">
+Next: <a href="C42F.html">C42F</a>
+</td>
+</tr>
+</table>
+<div class="description">C3FA: Handler: Scenic Events</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="EB10.html">GameLoop</a>.
+</div>
+<div class="paragraph">
+If this room has a scenic event, run it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ScenicEvents</td>
+<td class="address-2"><span id="c3fa"></span>C3FA</td>
+<td class="instruction">LD HL,$BA48</td>
+<td class="comment-1" rowspan="2">Start at the scenic list.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c3fd"></span>C3FD</td>
+<td class="instruction">LD BC,($BB00)</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ScenicEvents_Loop</td>
+<td class="address-2"><span id="c401"></span>C401</td>
+<td class="instruction">LD A,($BA9B)</td>
+<td class="comment-1" rowspan="3">Read the current room. Jump to <a href="C3FA.html#c42e">Handler_ScenicEvents_Next</a> if the search did not find a match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c404"></span>C404</td>
+<td class="instruction">CPIR</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c406"></span>C406</td>
+<td class="instruction">JR NZ,<a href="C3FA.html#c42e">Handler_ScenicEvents_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c408"></span>C408</td>
+<td class="instruction">LD ($BB4D),HL</td>
+<td class="comment-1" rowspan="7">Save the scenic search and turn the match into a handler index.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c40b"></span>C40B</td>
+<td class="instruction">LD ($BB4F),BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c40f"></span>C40F</td>
+<td class="instruction">INC BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c410"></span>C410</td>
+<td class="instruction">LD HL,($BB00)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c413"></span>C413</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c414"></span>C414</td>
+<td class="instruction">SBC HL,BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c416"></span>C416</td>
+<td class="instruction">EX DE,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c417"></span>C417</td>
+<td class="instruction">LD IX,($BAF4)</td>
+<td class="comment-1" rowspan="2">Call <a href="C0C3.html">GetTableEntry</a> to fetch this room's scenic handler.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c41b"></span>C41B</td>
+<td class="instruction">CALL <a href="C0C3.html">GetTableEntry</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c41e"></span>C41E</td>
+<td class="instruction">LD DE,$C423</td>
+<td class="comment-1" rowspan="3">Return to <a href="C3FA.html#c423">C423</a> afterwards and jump to that handler.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c421"></span>C421</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c422"></span>C422</td>
+<td class="instruction">JP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c423"></span>C423</td>
+<td class="instruction">LD HL,($BB4D)</td>
+<td class="comment-1" rowspan="5">Restore the scenic search and repeat while entries remain.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c426"></span>C426</td>
+<td class="instruction">LD BC,($BB4F)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c42a"></span>C42A</td>
+<td class="instruction">XOR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c42b"></span>C42B</td>
+<td class="instruction">OR C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="c42c"></span>C42C</td>
+<td class="instruction">JR NZ,<a href="C3FA.html#c401">Handler_ScenicEvents_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ScenicEvents_Next</td>
+<td class="address-2"><span id="c42e"></span>C42E</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C3DC.html">C3DC</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c3fa">Map</a></td>
+<td class="next">
+Next: <a href="C42F.html">C42F</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/50170.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

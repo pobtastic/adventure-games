@@ -42,7 +42,10 @@ Next: <a href="BC9C.html">BC9C</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="9D95.html">CharacterAction_InspectorLestradeHelper</a> and <a href="BA20.html">ProcessCharacterDisplay</a>.
+Used by the routines at <a href="9DD8.html">StoreSetMarkPointer</a> and <a href="BB5C.html">ReadActionFlags</a>.
+</div>
+<div class="paragraph">
+Walks the character pairs at <a href="994D.html">994D</a>+18 and counts the entries that still have an action pending.
 </div>
 </div>
 </td>
@@ -51,97 +54,99 @@ Used by the routines at <a href="9D95.html">CharacterAction_InspectorLestradeHel
 <td class="asm-label">ProcessGameStatusEntriesWithCounter</td>
 <td class="address-2"><span id="bc74"></span>BC74</td>
 <td class="instruction">LD IX,$9965</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Use the character pairs (<a href="994D.html">994D</a>+18).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc78"></span>BC78</td>
 <td class="instruction">LD B,$00</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessGameStatusEntriesWithCounter_0</td>
+<td class="asm-label">ProcessGameStatusEntriesWithCounter_Loop</td>
 <td class="address-2"><span id="bc7a"></span>BC7A</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="BC74.html#bc96">ProcessGameStatusEntriesWithCounter_ReturnCount</a> if the record's flag byte is FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc7d"></span>BC7D</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc7f"></span>BC7F</td>
-<td class="instruction">JR Z,<a href="BC74.html#bc96">ProcessGameStatusEntriesWithCounter_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BC74.html#bc96">ProcessGameStatusEntriesWithCounter_ReturnCount</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc81"></span>BC81</td>
 <td class="instruction">BIT 0,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="BC74.html#bc91">ProcessGameStatusEntriesWithCounter_Next</a> if the action-pending flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc85"></span>BC85</td>
-<td class="instruction">JR Z,<a href="BC74.html#bc91">ProcessGameStatusEntriesWithCounter_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BC74.html#bc91">ProcessGameStatusEntriesWithCounter_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc87"></span>BC87</td>
 <td class="instruction">CALL <a href="BCC9.html">CheckBitAndProcess</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="BC74.html#bc91">ProcessGameStatusEntriesWithCounter_Next</a> if the attribute needs no extra bit handling.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc8a"></span>BC8A</td>
-<td class="instruction">JR Z,<a href="BC74.html#bc91">ProcessGameStatusEntriesWithCounter_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="BC74.html#bc91">ProcessGameStatusEntriesWithCounter_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc8c"></span>BC8C</td>
 <td class="instruction">LD ($BA1E),IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Remember this record at <a href="BA13.html">BA13</a>+0B and count one more.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc90"></span>BC90</td>
 <td class="instruction">INC B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessGameStatusEntriesWithCounter_1</td>
+<td class="asm-label">ProcessGameStatusEntriesWithCounter_Next</td>
 <td class="address-2"><span id="bc91"></span>BC91</td>
 <td class="instruction">CALL <a href="BE5A.html">AdvancePointerAndCheckBit</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="BC74.html#bc7a">ProcessGameStatusEntriesWithCounter_Loop</a> to read the record flag, see whether it is the end marker and jump to <a href="BC74.html#bc96">ProcessGameStatusEntriesWithCounter_ReturnCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc94"></span>BC94</td>
-<td class="instruction">JR <a href="BC74.html#bc7a">ProcessGameStatusEntriesWithCounter_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="BC74.html#bc7a">ProcessGameStatusEntriesWithCounter_Loop</a></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessGameStatusEntriesWithCounter_2</td>
+<td class="routine-comment" colspan="5">
+<span id="bc96"></span>
+<div class="comments">
+<div class="paragraph">
+Returns the count and the record saved for this pass.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessGameStatusEntriesWithCounter_ReturnCount</td>
 <td class="address-2"><span id="bc96"></span>BC96</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Take the count in <span class="register">A</span> and the record at <a href="BA13.html">BA13</a>+0B.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc97"></span>BC97</td>
 <td class="instruction">LD IX,($BA1E)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bc9b"></span>BC9B</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -158,7 +163,7 @@ Next: <a href="BC9C.html">BC9C</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/48244.html">Switch to decimal</a>.</div>
 </footer>

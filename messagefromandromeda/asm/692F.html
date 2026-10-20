@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Message From Andromeda: Routine at 692F</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6900.html">6900</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#692f">Map</a></td>
+<td class="next">
+Next: <a href="694F.html">694F</a>
+</td>
+</tr>
+</table>
+<div class="description">692F: Parser: Find Phrase</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="697D.html">Parser_ValidateDirectObject</a>, <a href="6992.html">Parser_MatchOrRephrase</a> and <a href="9469.html">ActionEat</a>.
+</div>
+<div class="paragraph">
+Set the zero flag when none of the typed words is a known noun.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_FindPhrase</td>
+<td class="address-2"><span id="692f"></span>692F</td>
+<td class="instruction">LD HL,$6291</td>
+<td class="comment-1" rowspan="1">Check the command's word tokens for a noun.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6932"></span>6932</td>
+<td class="instruction">LD B,$0A</td>
+<td class="comment-1" rowspan="1">A command has at most 0A words.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6934"></span>6934</td>
+<td class="instruction">LD E,$00</td>
+<td class="comment-1" rowspan="1">No noun has matched yet.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_FindPhrase_Loop1</td>
+<td class="address-2"><span id="6936"></span>6936</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the next word token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6937"></span>6937</td>
+<td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="2">Jump to <a href="692F.html#694c">Parser_FindPhrase_Step2</a> when the command has no more words (FF).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6939"></span>6939</td>
+<td class="instruction">JR Z,<a href="692F.html#694c">Parser_FindPhrase_Step2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="693b"></span>693B</td>
+<td class="instruction">EXX</td>
+<td class="comment-1" rowspan="5">Look that token up in the noun list without losing the token pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="693c"></span>693C</td>
+<td class="instruction">LD HL,($62D6)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="693f"></span>693F</td>
+<td class="instruction">LD BC,($62C8)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6943"></span>6943</td>
+<td class="instruction">CPIR</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6945"></span>6945</td>
+<td class="instruction">EXX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6946"></span>6946</td>
+<td class="instruction">JR NZ,<a href="692F.html#6949">Parser_FindPhrase_Step1</a></td>
+<td class="comment-1" rowspan="1">Leave the match count alone when this token is not a noun.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6948"></span>6948</td>
+<td class="instruction">INC E</td>
+<td class="comment-1" rowspan="1">Count this token as a noun.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_FindPhrase_Step1</td>
+<td class="address-2"><span id="6949"></span>6949</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move on to the next word token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="694a"></span>694A</td>
+<td class="instruction">DJNZ <a href="692F.html#6936">Parser_FindPhrase_Loop1</a></td>
+<td class="comment-1" rowspan="1">Repeat for the remaining words of the command.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_FindPhrase_Step2</td>
+<td class="address-2"><span id="694c"></span>694C</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Set the zero flag when the command named no noun.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="694d"></span>694D</td>
+<td class="instruction">OR E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="694e"></span>694E</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6900.html">6900</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#692f">Map</a></td>
+<td class="next">
+Next: <a href="694F.html">694F</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
+<div><a href="../dec/asm/26927.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -25,7 +25,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="93DA.html">93DA</a>
+Prev: <a href="95DF.html">95DF</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#95ed">Map</a></td>
 <td class="next">
@@ -33,13 +33,16 @@ Next: <a href="962B.html">962B</a>
 </td>
 </tr>
 </table>
-<div class="description">95ED: Is Location Lit?</div>
+<div class="description">95ED: Condition: Is The Location Lit?</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="70F3.html">70F3</a>, <a href="7F78.html">Drawing</a>, <a href="8D9D.html">Action_Dir</a>, <a href="93DA.html">Action_Examine</a>, <a href="9B02.html">Action_None</a> and <a href="A3E6.html">ActionCapture</a>.
+Used by the routines at <a href="712B.html">Inglish_DescribeTheAction</a>, <a href="820B.html">DrawingClear</a>, <a href="8D9D.html">Action_Direction</a>, <a href="950F.html">Turn_RunTheHandlerIfPresent</a>, <a href="9B02.html">Action_None</a> and <a href="A3E6.html">ActionCapture</a>.
+</div>
+<div class="paragraph">
+Reports whether the current location is lit.
 </div>
 </div>
 </td>
@@ -84,7 +87,7 @@ Begin...
 <td class="asm-label"></td>
 <td class="address-1"><span id="95f2"></span>95F2</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="2">Store <span class="register">IX</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="2">Save <span class="register">IX</span> and <span class="register">BC</span>, and point <span class="register">IX</span> at the player.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -105,13 +108,13 @@ Check if the player object is inside "something".
 <td class="asm-label"></td>
 <td class="address-1"><span id="95f5"></span>95F5</td>
 <td class="instruction">LD IX,$C11B</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="C11B.html">"You"</a>.</td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="95f9"></span>95F9</td>
 <td class="instruction">CALL <a href="9E7A.html">ContainerLit</a></td>
-<td class="comment-1" rowspan="1">Call <a href="9E7A.html">ContainerLit</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="9E7A.html">ContainerLit</a> to test whether the container is lit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -138,7 +141,7 @@ Check the location data to see if this location is light or dark.
 <td class="asm-label"></td>
 <td class="address-1"><span id="95ff"></span>95FF</td>
 <td class="instruction">CALL <a href="9D37.html">GetObjectLocationInIX</a></td>
-<td class="comment-1" rowspan="1">Call <a href="9D37.html">GetObjectLocationInIX</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="9D37.html">GetObjectLocationInIX</a> to point <span class="register">IX</span> at this location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -165,13 +168,12 @@ The "Short Strong Sword" is a light source, can it be used?
 <td class="asm-label">LocationLit_Sword</td>
 <td class="address-2"><span id="9608"></span>9608</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">IY</span> on the stack briefly.</td>
+<td class="comment-1" rowspan="4">Save <span class="register">IY</span>, point it at <a href="C11B.html#c305">$0E</a> - "Short Strong Sword", and call <a href="9E34.html">ConditionTheObjectIsHere</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="960a"></span>960A</td>
 <td class="instruction">LD A,$0E</td>
-<td class="comment-1" rowspan="3">Using <span class="register">A</span>=$0E and <span class="register">HL</span>=<a href="C11B.html#c305">C305</a> which are the object ID and object location for "Short Strong Sword", call <a href="9E34.html">9E34</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -181,25 +183,24 @@ The "Short Strong Sword" is a light source, can it be used?
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9610"></span>9610</td>
-<td class="instruction">CALL <a href="9E34.html">$9E34</a></td>
+<td class="instruction">CALL <a href="9E34.html">ConditionTheObjectIsHere</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9613"></span>9613</td>
 <td class="instruction">POP IY</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">IY</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="95ED.html#9620">LocationLit_IsDark</a> if <a href="9E34.html">ConditionTheObjectIsHere</a> did not find that object here.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9615"></span>9615</td>
 <td class="instruction">JR Z,<a href="95ED.html#9620">LocationLit_IsDark</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="95ED.html#9620">LocationLit_IsDark</a> if it is dark.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9617"></span>9617</td>
 <td class="instruction">LD A,($C30C)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<a href="C11B.html#c30c">the attributes for "Short Strong Sword"</a>.</td>
+<td class="comment-1" rowspan="1">Read that object's attributes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -211,7 +212,7 @@ The "Short Strong Sword" is a light source, can it be used?
 <td class="asm-label"></td>
 <td class="address-1"><span id="961c"></span>961C</td>
 <td class="instruction">AND $1C</td>
-<td class="comment-1" rowspan="2">If the "Short Strong Sword" is not "Broken", "Gives Light" and is not "Full" (?) then jump to <a href="95ED.html#9628">LocationLit_IsLight</a>.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="95ED.html#9628">LocationLit_IsLight</a> if that object gives light, is not broken and is full.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -232,13 +233,13 @@ The below handle the two responses for "light" and "dark" using the carry flag t
 <td class="asm-label">LocationLit_IsDark</td>
 <td class="address-2"><span id="9620"></span>9620</td>
 <td class="instruction">LD HL,$AE1F</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="AD7D.html#ae1f">"it is dark"</a>.</td>
+<td class="comment-1" rowspan="1">Point at the message "it is dark" (<a href="AD7D.html#ae1f">AE1F</a>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9623"></span>9623</td>
 <td class="instruction">SCF</td>
-<td class="comment-1" rowspan="1">Set the carry flag.</td>
+<td class="comment-1" rowspan="1">Set carry: this location is dark.</td>
 </tr>
 <tr>
 <td class="asm-label">LocationLit_Return</td>
@@ -261,19 +262,19 @@ The below handle the two responses for "light" and "dark" using the carry flag t
 <td class="asm-label">LocationLit_IsLight</td>
 <td class="address-2"><span id="9628"></span>9628</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Reset the carry flag.</td>
+<td class="comment-1" rowspan="1">Clear carry: this location is lit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9629"></span>9629</td>
 <td class="instruction">JR <a href="95ED.html#9624">LocationLit_Return</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="95ED.html#9624">LocationLit_Return</a>.</td>
+<td class="comment-1" rowspan="1">Jump back to <a href="95ED.html#9624">LocationLit_Return</a> to return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="93DA.html">93DA</a>
+Prev: <a href="95DF.html">95DF</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#95ed">Map</a></td>
 <td class="next">
@@ -284,7 +285,7 @@ Next: <a href="962B.html">962B</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../dec/asm/38381.html">Switch to decimal</a>.</div>
 </footer>

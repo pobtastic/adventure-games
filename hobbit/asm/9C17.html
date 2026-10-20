@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 9C17</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="9BDC.html">9BDC</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#9c17">Map</a></td>
+<td class="next">
+Next: <a href="9C41.html">9C41</a>
+</td>
+</tr>
+</table>
+<div class="description">9C17: Object: Move Nested Contents</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="9BDC.html">Object_MoveContents</a>.
+</div>
+<div class="paragraph">
+Moves every object held by the id in <span class="register">A</span> to the location in <span class="register">B</span>, then does the same for what those objects hold. Meeting the player (id 00) clears the flag at <a href="9BDC.html">Object_MoveContents</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Object_MoveContents_Recurse</td>
+<td class="address-2"><span id="9c17"></span>9C17</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="3">Start the object search one slot before <a href="C063.html">ObjectTable</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c19"></span>9C19</td>
+<td class="instruction">PUSH IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c1b"></span>9C1B</td>
+<td class="instruction">LD IX,$C060</td>
+</tr>
+<tr>
+<td class="asm-label">Object_MoveContents_Recurse_Loop</td>
+<td class="address-2"><span id="9c1f"></span>9C1F</td>
+<td class="instruction">CALL <a href="9BA9.html">Table_FindTheRecord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9BA9.html">Table_FindTheRecord</a> to find the record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c22"></span>9C22</td>
+<td class="instruction">JR Z,<a href="9C17.html#9c3c">Object_MoveContents_Recurse_Done</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9C17.html#9c3c">Object_MoveContents_Recurse_Done</a> if <a href="9BA9.html">Table_FindTheRecord</a> reached the end of the index.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c24"></span>9C24</td>
+<td class="instruction">CP (IY+$01)</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="9C17.html#9c1f">Object_MoveContents_Recurse_Loop</a> if where this object is is not the id in <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c27"></span>9C27</td>
+<td class="instruction">JR NZ,<a href="9C17.html#9c1f">Object_MoveContents_Recurse_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c29"></span>9C29</td>
+<td class="instruction">LD (IY+$10),B</td>
+<td class="comment-1" rowspan="1">Set this object's location to the location in <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label">Object_MoveContents_Recurse_Player</td>
+<td class="address-1"><span id="9c2c"></span>9C2C</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="2">Save the id being sought and read the id from the index entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c2d"></span>9C2D</td>
+<td class="instruction">LD A,(IX+$00)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c30"></span>9C30</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="9C17.html#9c36">Object_MoveContents_Recurse_MoveTheContents</a> if this object's id is not zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c31"></span>9C31</td>
+<td class="instruction">JR NZ,<a href="9C17.html#9c36">Object_MoveContents_Recurse_MoveTheContents</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c33"></span>9C33</td>
+<td class="instruction">LD ($9BDC),A</td>
+<td class="comment-1" rowspan="1">Clear the flag at <a href="9BDC.html">Object_MoveContents</a>: the player was among the contents.</td>
+</tr>
+<tr>
+<td class="asm-label">Object_MoveContents_Recurse_MoveTheContents</td>
+<td class="address-2"><span id="9c36"></span>9C36</td>
+<td class="instruction">CALL <a href="9C17.html#9c17">Object_MoveContents_Recurse</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9C17.html">Object_MoveContents_Recurse</a> to move the contents.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c39"></span>9C39</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="9C17.html#9c1f">Object_MoveContents_Recurse_Loop</a> to find the record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c3a"></span>9C3A</td>
+<td class="instruction">JR <a href="9C17.html#9c1f">Object_MoveContents_Recurse_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label">Object_MoveContents_Recurse_Done</td>
+<td class="address-2"><span id="9c3c"></span>9C3C</td>
+<td class="instruction">POP IX</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">IX</span> and <span class="register">IY</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c3e"></span>9C3E</td>
+<td class="instruction">POP IY</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="9c40"></span>9C40</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="9BDC.html">9BDC</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#9c17">Map</a></td>
+<td class="next">
+Next: <a href="9C41.html">9C41</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/39959.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

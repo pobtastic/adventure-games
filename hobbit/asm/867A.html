@@ -25,7 +25,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="8576.html">8576</a>
+Prev: <a href="864A.html">864A</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#867a">Map</a></td>
 <td class="next">
@@ -33,13 +33,16 @@ Next: <a href="869B.html">869B</a>
 </td>
 </tr>
 </table>
-<div class="description">867A: Print Character</div>
+<div class="description">867A: Print: ROM Font</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="8576.html">8576</a>.
+Used by the routines at <a href="858B.html">Print_Character</a> and <a href="860D.html">Print_ScrollTheLineBuffer</a>.
+</div>
+<div class="paragraph">
+Draws one character with the Spectrum ROM font.
 </div>
 </div>
 <table class="input">
@@ -58,16 +61,16 @@ Used by the routine at <a href="8576.html">8576</a>.
 <span id="867a"></span>
 <div class="comments">
 <div class="paragraph">
-Prints using the standard ZX Spectrum <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/3D00.html">CHARSET</a>.
+Prints using the standard ZX Spectrum <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/3D00.html">CHARSET</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">PrintChar</td>
+<td class="asm-label">Print_RomFont</td>
 <td class="address-2"><span id="867a"></span>867A</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="4">Push <span class="register">AF</span>, <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span> on the stack.</td>
+<td class="comment-1" rowspan="10">Save <span class="register">AF</span>, <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span>, subtract 20, and multiply the offset by eight.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -88,36 +91,6 @@ Prints using the standard ZX Spectrum <a rel="noopener nofollow" href="https://s
 <td class="asm-label"></td>
 <td class="address-1"><span id="867e"></span>867E</td>
 <td class="instruction">SUB $20</td>
-<td class="comment-1" rowspan="6">Create offset for the font graphic data look-up. For example; <table class="default">
-<tr>
-<th colspan="1" rowspan="1">Letter</th>
-<th colspan="1" rowspan="1">ASCII Value</th>
-<th colspan="1" rowspan="1">SUB $20</th>
-<th colspan="1" rowspan="1">* $08</th>
-<th colspan="1" rowspan="1">CHARSET + offset</th>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">"&#65;"</td>
-<td class="centre" colspan="1" rowspan="1">$41</td>
-<td class="centre" colspan="1" rowspan="1">$21</td>
-<td class="centre" colspan="1" rowspan="1">$108</td>
-<td class="centre" colspan="1" rowspan="1"><a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/3D00.html#3E08">$3E08</a></td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">"&#81;"</td>
-<td class="centre" colspan="1" rowspan="1">$51</td>
-<td class="centre" colspan="1" rowspan="1">$31</td>
-<td class="centre" colspan="1" rowspan="1">$188</td>
-<td class="centre" colspan="1" rowspan="1"><a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/3D00.html#3E88">$3E88</a></td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">"&#97;"</td>
-<td class="centre" colspan="1" rowspan="1">$61</td>
-<td class="centre" colspan="1" rowspan="1">$41</td>
-<td class="centre" colspan="1" rowspan="1">$208</td>
-<td class="centre" colspan="1" rowspan="1"><a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/3D00.html#3F08">$3F08</a></td>
-</tr>
-</table></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -148,7 +121,7 @@ Prints using the standard ZX Spectrum <a rel="noopener nofollow" href="https://s
 <td class="asm-label"></td>
 <td class="address-1"><span id="8686"></span>8686</td>
 <td class="instruction">LD DE,$3D00</td>
-<td class="comment-1" rowspan="2">Calculate font graphic data address using <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/3D00.html">CHARSET</a> + offset.</td>
+<td class="comment-1" rowspan="2">Calculate font graphic data address using <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/3D00.html">CHARSET</a> + offset.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -178,7 +151,7 @@ Prints using the standard ZX Spectrum <a rel="noopener nofollow" href="https://s
 <td class="comment-1" rowspan="1">Set a counter for 08 lines.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintChar_Loop</td>
+<td class="asm-label">Print_RomFont_Loop</td>
 <td class="address-2"><span id="868f"></span>868F</td>
 <td class="instruction">LD A,(DE)</td>
 <td class="comment-1" rowspan="2">Fetch the font byte and copy it to the screen.</td>
@@ -203,14 +176,14 @@ Prints using the standard ZX Spectrum <a rel="noopener nofollow" href="https://s
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8693"></span>8693</td>
-<td class="instruction">DJNZ <a href="867A.html#868f">PrintChar_Loop</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="867A.html#868f">PrintChar_Loop</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="867A.html#868f">Print_RomFont_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="867A.html#868f">Print_RomFont_Loop</a> until counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8695"></span>8695</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="4">Restore <span class="register">HL</span>, <span class="register">DE</span>, <span class="register">BC</span> and <span class="register">AF</span> off the stack.</td>
+<td class="comment-1" rowspan="5">Move the screen pointer across one column, ready for printing the next character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -231,7 +204,6 @@ Prints using the standard ZX Spectrum <a rel="noopener nofollow" href="https://s
 <td class="asm-label"></td>
 <td class="address-1"><span id="8699"></span>8699</td>
 <td class="instruction">INC L</td>
-<td class="comment-1" rowspan="1">Move the screen pointer across one column, ready for printing the next character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -243,7 +215,7 @@ Prints using the standard ZX Spectrum <a rel="noopener nofollow" href="https://s
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="8576.html">8576</a>
+Prev: <a href="864A.html">864A</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#867a">Map</a></td>
 <td class="next">
@@ -254,7 +226,7 @@ Next: <a href="869B.html">869B</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../dec/asm/34426.html">Switch to decimal</a>.</div>
 </footer>

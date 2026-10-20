@@ -32,546 +32,372 @@ Prev: <a href="62821.html">62821</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#62830">Map</a></td>
 <td class="next">
-Next: <a href="62971.html">62971</a>
+Next: <a href="62930.html">62930</a>
 </td>
 </tr>
 </table>
-<div class="description">62830: Process Location Update</div>
+<div class="description">62830: Drawing Line</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="62402.html">62402</a>.
+Used by the routine at <a href="62402.html">Drawing</a>.
+</div>
+<div class="paragraph">
+Draws a straight line from the pen. Bit 0 of the direction chooses a steep line.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">ProcessLocationUpdate</td>
+<td class="asm-label">DrawingLine</td>
 <td class="address-2"><span id="62830"></span>62830</td>
 <td class="instruction">BIT 0,C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="62830.html#62882">DrawingLine_PlotPixel</a> if bit 0 is set (steep line).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62832"></span>62832</td>
-<td class="instruction">JR NZ,<a href="62830.html#62882">ProcessLocationUpdate_7</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="62830.html#62882">DrawingLine_PlotPixel</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62834"></span>62834</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Keep the picture pointer and the counters, then plot this pixel.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62835"></span>62835</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessLocationUpdate_0</td>
+<td class="asm-label">DrawingLine_0</td>
 <td class="address-2"><span id="62836"></span>62836</td>
-<td class="instruction">CALL <a href="62830.html#62930">ProcessLocationUpdate_15</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62930.html">PlotPixel</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62839"></span>62839</td>
 <td class="instruction">BIT 2,C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="62830.html#62850">DrawingLine_Next</a> if bit 2 is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62841"></span>62841</td>
-<td class="instruction">JR Z,<a href="62830.html#62850">ProcessLocationUpdate_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="62830.html#62850">DrawingLine_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62843"></span>62843</td>
-<td class="instruction">CALL <a href="62821.html">DecrementDWithWrap</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="62821.html">StepPenLeft</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="62830.html#62879">DrawingLine_BringSavedCount</a> if the pen is already at the left edge.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62846"></span>62846</td>
-<td class="instruction">JR Z,<a href="62830.html#62879">ProcessLocationUpdate_6</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="62830.html#62879">DrawingLine_BringSavedCount</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62848"></span>62848</td>
-<td class="instruction">JR <a href="62830.html#62855">ProcessLocationUpdate_2</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_1</td>
-<td class="address-2"><span id="62850"></span>62850</td>
-<td class="instruction">CALL <a href="62814.html">IncrementDWithWrap</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62853"></span>62853</td>
-<td class="instruction">JR Z,<a href="62830.html#62879">ProcessLocationUpdate_6</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_2</td>
-<td class="address-2"><span id="62855"></span>62855</td>
-<td class="instruction">DEC B</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62856"></span>62856</td>
-<td class="instruction">JR NZ,<a href="62830.html#62876">ProcessLocationUpdate_5</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62858"></span>62858</td>
-<td class="instruction">BIT 1,C</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62860"></span>62860</td>
-<td class="instruction">JR Z,<a href="62830.html#62869">ProcessLocationUpdate_3</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62862"></span>62862</td>
-<td class="instruction">CALL <a href="62805.html">DecrementEWithWrap</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62865"></span>62865</td>
-<td class="instruction">JR Z,<a href="62830.html#62879">ProcessLocationUpdate_6</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62867"></span>62867</td>
-<td class="instruction">JR <a href="62830.html#62874">ProcessLocationUpdate_4</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_3</td>
-<td class="address-2"><span id="62869"></span>62869</td>
-<td class="instruction">CALL <a href="62794.html">62794</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62872"></span>62872</td>
-<td class="instruction">JR Z,<a href="62830.html#62879">ProcessLocationUpdate_6</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_4</td>
-<td class="address-2"><span id="62874"></span>62874</td>
-<td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62875"></span>62875</td>
-<td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_5</td>
-<td class="address-2"><span id="62876"></span>62876</td>
-<td class="instruction">DEC L</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62877"></span>62877</td>
-<td class="instruction">JR NZ,<a href="62830.html#62836">ProcessLocationUpdate_0</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_6</td>
-<td class="address-2"><span id="62879"></span>62879</td>
-<td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62880"></span>62880</td>
-<td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62881"></span>62881</td>
-<td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_7</td>
-<td class="address-2"><span id="62882"></span>62882</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62883"></span>62883</td>
-<td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_8</td>
-<td class="address-2"><span id="62884"></span>62884</td>
-<td class="instruction">CALL <a href="62830.html#62930">ProcessLocationUpdate_15</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62887"></span>62887</td>
-<td class="instruction">BIT 1,C</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62889"></span>62889</td>
-<td class="instruction">JR Z,<a href="62830.html#62898">ProcessLocationUpdate_9</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62891"></span>62891</td>
-<td class="instruction">CALL <a href="62805.html">DecrementEWithWrap</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62894"></span>62894</td>
-<td class="instruction">JR Z,<a href="62830.html#62927">ProcessLocationUpdate_14</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62896"></span>62896</td>
-<td class="instruction">JR <a href="62830.html#62903">ProcessLocationUpdate_10</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_9</td>
-<td class="address-2"><span id="62898"></span>62898</td>
-<td class="instruction">CALL <a href="62794.html">62794</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62901"></span>62901</td>
-<td class="instruction">JR Z,<a href="62830.html#62927">ProcessLocationUpdate_14</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_10</td>
-<td class="address-2"><span id="62903"></span>62903</td>
-<td class="instruction">DEC B</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62904"></span>62904</td>
-<td class="instruction">JR NZ,<a href="62830.html#62924">ProcessLocationUpdate_13</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62906"></span>62906</td>
-<td class="instruction">BIT 2,C</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62908"></span>62908</td>
-<td class="instruction">JR Z,<a href="62830.html#62917">ProcessLocationUpdate_11</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62910"></span>62910</td>
-<td class="instruction">CALL <a href="62821.html">DecrementDWithWrap</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62913"></span>62913</td>
-<td class="instruction">JR Z,<a href="62830.html#62927">ProcessLocationUpdate_14</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62915"></span>62915</td>
-<td class="instruction">JR <a href="62830.html#62922">ProcessLocationUpdate_12</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_11</td>
-<td class="address-2"><span id="62917"></span>62917</td>
-<td class="instruction">CALL <a href="62814.html">IncrementDWithWrap</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62920"></span>62920</td>
-<td class="instruction">JR Z,<a href="62830.html#62927">ProcessLocationUpdate_14</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_12</td>
-<td class="address-2"><span id="62922"></span>62922</td>
-<td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62923"></span>62923</td>
-<td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_13</td>
-<td class="address-2"><span id="62924"></span>62924</td>
-<td class="instruction">DEC L</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62925"></span>62925</td>
-<td class="instruction">JR NZ,<a href="62830.html#62884">ProcessLocationUpdate_8</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_14</td>
-<td class="address-2"><span id="62927"></span>62927</td>
-<td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62928"></span>62928</td>
-<td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62929"></span>62929</td>
-<td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="62830.html#62855">DrawingLine_TestCountFinished</a></td>
+<td class="comment-1" rowspan="1">The pen has moved left, so skip the rightward step and join <a href="62830.html#62855">DrawingLine_TestCountFinished</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
-<span id="62930"></span>
+<span id="62850"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="62608.html">62608</a>.
+Steps the pen right, and steps it up or down (bit 1) when this pixel column is finished.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">ProcessLocationUpdate_15</td>
-<td class="address-2"><span id="62930"></span>62930</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="asm-label">DrawingLine_Next</td>
+<td class="address-2"><span id="62850"></span>62850</td>
+<td class="instruction">CALL <a href="62814.html">StepPenRight</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="62830.html#62879">DrawingLine_BringSavedCount</a> if the pen is already at the right edge.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62931"></span>62931</td>
-<td class="instruction">CALL <a href="62971.html">62971</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="62853"></span>62853</td>
+<td class="instruction">JR Z,<a href="62830.html#62879">DrawingLine_BringSavedCount</a></td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_TestCountFinished</td>
+<td class="address-2"><span id="62855"></span>62855</td>
+<td class="instruction">DEC B</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="62830.html#62876">DrawingLine_1</a> if the count is not finished.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62934"></span>62934</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="62856"></span>62856</td>
+<td class="instruction">JR NZ,<a href="62830.html#62876">DrawingLine_1</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62935"></span>62935</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="62858"></span>62858</td>
+<td class="instruction">BIT 1,C</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="62830.html#62869">DrawingLine_StepPenUp</a> if bit 1 is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62936"></span>62936</td>
-<td class="instruction">LD A,H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="62860"></span>62860</td>
+<td class="instruction">JR Z,<a href="62830.html#62869">DrawingLine_StepPenUp</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62937"></span>62937</td>
-<td class="instruction">AND 24</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="62862"></span>62862</td>
+<td class="instruction">CALL <a href="62805.html">StepPenDown</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="62830.html#62879">DrawingLine_BringSavedCount</a> if the pen is already at the bottom edge.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62939"></span>62939</td>
-<td class="instruction">RRCA</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="62865"></span>62865</td>
+<td class="instruction">JR Z,<a href="62830.html#62879">DrawingLine_BringSavedCount</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62940"></span>62940</td>
-<td class="instruction">RRCA</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="62867"></span>62867</td>
+<td class="instruction">JR <a href="62830.html#62874">DrawingLine_CountHasRun</a></td>
+<td class="comment-1" rowspan="1">Carry on with the line once this step is ready.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62869"></span>
+<div class="comments">
+<div class="paragraph">
+Steps the pen up and repeats for the pixels still left.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_StepPenUp</td>
+<td class="address-2"><span id="62869"></span>62869</td>
+<td class="instruction">CALL <a href="62794.html">StepPenUp</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="62830.html#62879">DrawingLine_BringSavedCount</a> if the pen is already at the top edge.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62941"></span>62941</td>
-<td class="instruction">RRCA</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="62872"></span>62872</td>
+<td class="instruction">JR Z,<a href="62830.html#62879">DrawingLine_BringSavedCount</a></td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_CountHasRun</td>
+<td class="address-2"><span id="62874"></span>62874</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1">Restore the counters from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62942"></span>62942</td>
-<td class="instruction">ADD A,88</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="62875"></span>62875</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="3">Keep a copy, and plot the next pixel from <a href="62830.html#62836">DrawingLine_0</a> until the length in <span class="register">L</span> runs out.</td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_1</td>
+<td class="address-2"><span id="62876"></span>62876</td>
+<td class="instruction">DEC L</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62944"></span>62944</td>
-<td class="instruction">LD H,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="62877"></span>62877</td>
+<td class="instruction">JR NZ,<a href="62830.html#62836">DrawingLine_0</a></td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_BringSavedCount</td>
+<td class="address-2"><span id="62879"></span>62879</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore the saved count and the saved pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62945"></span>62945</td>
-<td class="instruction">LD A,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62946"></span>62946</td>
-<td class="instruction">AND 56</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62948"></span>62948</td>
-<td class="instruction">LD (HL),A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62949"></span>62949</td>
-<td class="instruction">LD A,(62987)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62952"></span>62952</td>
-<td class="instruction">RLCA</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62953"></span>62953</td>
-<td class="instruction">RLCA</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62954"></span>62954</td>
-<td class="instruction">RLCA</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62955"></span>62955</td>
-<td class="instruction">CP (HL)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62956"></span>62956</td>
-<td class="instruction">JR NZ,<a href="62830.html#62960">ProcessLocationUpdate_16</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62958"></span>62958</td>
-<td class="instruction">XOR 56</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessLocationUpdate_16</td>
-<td class="address-2"><span id="62960"></span>62960</td>
-<td class="instruction">RRCA</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62961"></span>62961</td>
-<td class="instruction">RRCA</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62962"></span>62962</td>
-<td class="instruction">RRCA</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62963"></span>62963</td>
-<td class="instruction">OR (HL)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62964"></span>62964</td>
-<td class="instruction">LD (HL),A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62965"></span>62965</td>
+<td class="address-1"><span id="62880"></span>62880</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="62966"></span>62966</td>
-<td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62967"></span>62967</td>
-<td class="instruction">OR (HL)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62968"></span>62968</td>
-<td class="instruction">LD (HL),A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62969"></span>62969</td>
-<td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="62970"></span>62970</td>
+<td class="address-1"><span id="62881"></span>62881</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62882"></span>
+<div class="comments">
+<div class="paragraph">
+Plots this pixel and steps down when bit 1 is set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_PlotPixel</td>
+<td class="address-2"><span id="62882"></span>62882</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="3">Keep the picture pointer and the counters, then plot this pixel.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62883"></span>62883</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_2</td>
+<td class="address-2"><span id="62884"></span>62884</td>
+<td class="instruction">CALL <a href="62930.html">PlotPixel</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62887"></span>62887</td>
+<td class="instruction">BIT 1,C</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="62830.html#62898">DrawingLine_StepPenUpAgain</a> if bit 1 is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62889"></span>62889</td>
+<td class="instruction">JR Z,<a href="62830.html#62898">DrawingLine_StepPenUpAgain</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62891"></span>62891</td>
+<td class="instruction">CALL <a href="62805.html">StepPenDown</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="62830.html#62927">DrawingLine_BringSavedCountAgain</a> if the pen is already at the bottom edge.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62894"></span>62894</td>
+<td class="instruction">JR Z,<a href="62830.html#62927">DrawingLine_BringSavedCountAgain</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62896"></span>62896</td>
+<td class="instruction">JR <a href="62830.html#62903">DrawingLine_TestCountFinishedAgain</a></td>
+<td class="comment-1" rowspan="1">Skip the upward step and carry on from <a href="62830.html#62903">DrawingLine_TestCountFinishedAgain</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62898"></span>
+<div class="comments">
+<div class="paragraph">
+Steps the pen up, and steps it left or right when this pixel row is finished.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_StepPenUpAgain</td>
+<td class="address-2"><span id="62898"></span>62898</td>
+<td class="instruction">CALL <a href="62794.html">StepPenUp</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="62830.html#62927">DrawingLine_BringSavedCountAgain</a> if the pen is already at the top edge.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62901"></span>62901</td>
+<td class="instruction">JR Z,<a href="62830.html#62927">DrawingLine_BringSavedCountAgain</a></td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_TestCountFinishedAgain</td>
+<td class="address-2"><span id="62903"></span>62903</td>
+<td class="instruction">DEC B</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="62830.html#62924">DrawingLine_3</a> if the count is not finished.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62904"></span>62904</td>
+<td class="instruction">JR NZ,<a href="62830.html#62924">DrawingLine_3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62906"></span>62906</td>
+<td class="instruction">BIT 2,C</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="62830.html#62917">DrawingLine_StepsPenRight</a> if bit 2 is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62908"></span>62908</td>
+<td class="instruction">JR Z,<a href="62830.html#62917">DrawingLine_StepsPenRight</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62910"></span>62910</td>
+<td class="instruction">CALL <a href="62821.html">StepPenLeft</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="62830.html#62927">DrawingLine_BringSavedCountAgain</a> if the pen is already at the left edge.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62913"></span>62913</td>
+<td class="instruction">JR Z,<a href="62830.html#62927">DrawingLine_BringSavedCountAgain</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62915"></span>62915</td>
+<td class="instruction">JR <a href="62830.html#62922">DrawingLine_CountHasRunAgain</a></td>
+<td class="comment-1" rowspan="1">Carry on with the line once the other step is ready.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62917"></span>
+<div class="comments">
+<div class="paragraph">
+Steps the pen right and repeats for the pixels still left.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_StepsPenRight</td>
+<td class="address-2"><span id="62917"></span>62917</td>
+<td class="instruction">CALL <a href="62814.html">StepPenRight</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="62830.html#62927">DrawingLine_BringSavedCountAgain</a> if the pen is already at the right edge.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62920"></span>62920</td>
+<td class="instruction">JR Z,<a href="62830.html#62927">DrawingLine_BringSavedCountAgain</a></td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_CountHasRunAgain</td>
+<td class="address-2"><span id="62922"></span>62922</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1">Restore the counters from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62923"></span>62923</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="3">And plot the next pixel from <a href="62830.html#62884">DrawingLine_2</a> until the length in <span class="register">L</span> runs out.</td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_3</td>
+<td class="address-2"><span id="62924"></span>62924</td>
+<td class="instruction">DEC L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62925"></span>62925</td>
+<td class="instruction">JR NZ,<a href="62830.html#62884">DrawingLine_2</a></td>
+</tr>
+<tr>
+<td class="asm-label">DrawingLine_BringSavedCountAgain</td>
+<td class="address-2"><span id="62927"></span>62927</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore the saved count and the saved pointer from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62928"></span>62928</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62929"></span>62929</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -581,14 +407,14 @@ Prev: <a href="62821.html">62821</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#62830">Map</a></td>
 <td class="next">
-Next: <a href="62971.html">62971</a>
+Next: <a href="62930.html">62930</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/F56E.html">Switch to hexadecimal</a>.</div>
 </footer>

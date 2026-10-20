@@ -32,7 +32,7 @@ Prev: <a href="CF80.html">CF80</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#cfb6">Map</a></td>
 <td class="next">
-Next: <a href="CFCF.html">CFCF</a>
+Next: <a href="CFB9.html">CFB9</a>
 </td>
 </tr>
 </table>
@@ -42,7 +42,7 @@ Next: <a href="CFCF.html">CFCF</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="CC78.html">ScriptInterpreter</a>, <a href="CFCF.html">GetScriptPointer</a>, <a href="D008.html">GetScriptPointerFromTimetable</a>, <a href="D026.html">UpdateScriptPointer</a>, <a href="E03A.html">E03A</a>, <a href="E17B.html">E17B</a> and <a href="E6BC.html">E6BC</a>.
+Used by the routines at <a href="9B25.html">MeasureCharacterDistance</a>, <a href="CC82.html">DispatchCharacterScript</a>, <a href="CFCF.html">GetScriptPointer</a>, <a href="D008.html">GetScriptPointerFromTimetable</a>, <a href="D026.html">UpdateScriptPointer</a>, <a href="E03A.html">PlaceCharacter</a>, <a href="E3A9.html">ReadSourceDisplayPointer</a>, <a href="E6EA.html">StoreActionFlags</a> and <a href="E710.html">PrintActionMessage</a>.
 </div>
 <div class="paragraph">
 Searches through the character script entry list to find an entry matching the current character ID. Returns the entry pointer if found, otherwise returns 00.
@@ -67,97 +67,7 @@ Searches through the character script entry list to find an entry matching the c
 <td class="asm-label">FindCharacterScriptEntry</td>
 <td class="address-2"><span id="cfb6"></span>CFB6</td>
 <td class="instruction">LD A,($A036)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A036.html">CurrentCharacter_ID</a>.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="cfb9"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routine at <a href="E17B.html">E17B</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">FindCharacterScriptEntry_StartSearch</td>
-<td class="address-2"><span id="cfb9"></span>CFB9</td>
-<td class="instruction">LD IX,$9FEB</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="9FEB.html">CharacterScriptEntryList</a>.</td>
-</tr>
-<tr>
-<td class="asm-label">FindCharacterScriptEntry_Loop</td>
-<td class="address-2"><span id="cfbd"></span>CFBD</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the current character ID on the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="cfbe"></span>CFBE</td>
-<td class="instruction">CALL <a href="A0F7.html">FetchObjectPointerFromStack</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A0F7.html">FetchObjectPointerFromStack</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="cfc1"></span>CFC1</td>
-<td class="instruction">JR Z,<a href="CFB6.html#cfcc">FindCharacterScriptEntry_NotFound</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="CFB6.html#cfcc">FindCharacterScriptEntry_NotFound</a> if the end of the list has been reached.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="cfc3"></span>CFC3</td>
-<td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the current character ID from the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="cfc4"></span>CFC4</td>
-<td class="instruction">CP (IX+$00)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="CFB6.html#cfbd">FindCharacterScriptEntry_Loop</a> if this entry doesn't match the character ID.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="cfc7"></span>CFC7</td>
-<td class="instruction">JR NZ,<a href="CFB6.html#cfbd">FindCharacterScriptEntry_Loop</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="cfc9"></span>CFC9</td>
-<td class="instruction">OR %00000001</td>
-<td class="comment-1" rowspan="1">Mark that the entry was found.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="cfcb"></span>CFCB</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return with the entry pointer.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="cfcc"></span>
-<div class="comments">
-<div class="paragraph">
-No matching entry was found in the list.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">FindCharacterScriptEntry_NotFound</td>
-<td class="address-2"><span id="cfcc"></span>CFCC</td>
-<td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the current character ID from the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="cfcd"></span>CFCD</td>
-<td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Return 00 (entry not found).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="cfce"></span>CFCE</td>
-<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Read the current character.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -167,14 +77,14 @@ Prev: <a href="CF80.html">CF80</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#cfb6">Map</a></td>
 <td class="next">
-Next: <a href="CFCF.html">CFCF</a>
+Next: <a href="CFB9.html">CFB9</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/53174.html">Switch to decimal</a>.</div>
 </footer>

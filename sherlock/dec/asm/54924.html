@@ -42,7 +42,10 @@ Next: <a href="54968.html">54968</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="53506.html">ProcessLocationTokenDisplay</a>.
+Used by the routine at <a href="53624.html">53624</a>.
+</div>
+<div class="paragraph">
+Prints the exit lead-in and then each valid way out of the room.
 </div>
 </div>
 <table class="input">
@@ -60,7 +63,7 @@ Used by the routine at <a href="53506.html">ProcessLocationTokenDisplay</a>.
 <td class="asm-label">PrintLocationExitsWithFormatting</td>
 <td class="address-2"><span id="54924"></span>54924</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="4">Stash <span class="register">IX</span>, <span class="register">IY</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="5">Call <a href="54767.html">GetLocationExitData</a> to get location exit data.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -81,73 +84,67 @@ Used by the routine at <a href="53506.html">ProcessLocationTokenDisplay</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="54930"></span>54930</td>
 <td class="instruction">CALL <a href="54767.html">GetLocationExitData</a></td>
-<td class="comment-1" rowspan="1">Call <a href="54767.html">GetLocationExitData</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54933"></span>54933</td>
 <td class="instruction">CALL <a href="54897.html">FindNextValidExit</a></td>
-<td class="comment-1" rowspan="1">Call <a href="54897.html">FindNextValidExit</a>.</td>
+<td class="comment-1" rowspan="2">Go to <a href="54924.html#54961">PrintLocationExitsWithFormatting_Next</a> if there is no further exit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54936"></span>54936</td>
-<td class="instruction">JR Z,<a href="54924.html#54961">PrintLocationExitsWithFormatting_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="54924.html#54961">PrintLocationExitsWithFormatting_1</a> if the zero flag is not set.</td>
+<td class="instruction">JR Z,<a href="54924.html#54961">PrintLocationExitsWithFormatting_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54938"></span>54938</td>
 <td class="instruction">LD HL,26865</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="26857.html#26865">26865</a>.</td>
+<td class="comment-1" rowspan="2">Take the exits message, then call <a href="42399.html">PrintTextAndHandleControlCharacters</a> to print the exits message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54941"></span>54941</td>
 <td class="instruction">CALL <a href="42399.html">PrintTextAndHandleControlCharacters</a></td>
-<td class="comment-1" rowspan="1">Call <a href="42399.html">PrintTextAndHandleControlCharacters</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintLocationExitsWithFormatting_0</td>
+<td class="asm-label">PrintLocationExitsWithFormatting_Loop</td>
 <td class="address-2"><span id="54944"></span>54944</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+0.</td>
+<td class="comment-1" rowspan="2">Call <a href="54779.html">GetDirectionToken</a> to get direction token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54947"></span>54947</td>
 <td class="instruction">CALL <a href="54779.html">GetDirectionToken</a></td>
-<td class="comment-1" rowspan="1">Call <a href="54779.html">GetDirectionToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54950"></span>54950</td>
-<td class="instruction">CALL <a href="43136.html#43143">PrintTextToken</a></td>
-<td class="comment-1" rowspan="1">Call <a href="43136.html#43143">PrintTextToken</a>.</td>
+<td class="instruction">CALL <a href="43143.html">PrintTextToken</a></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="54924.html#54944">PrintLocationExitsWithFormatting_Loop</a> while another exit is valid.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54953"></span>54953</td>
 <td class="instruction">CALL <a href="54897.html">FindNextValidExit</a></td>
-<td class="comment-1" rowspan="1">Call <a href="54897.html">FindNextValidExit</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54956"></span>54956</td>
-<td class="instruction">JR NZ,<a href="54924.html#54944">PrintLocationExitsWithFormatting_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="54924.html#54944">PrintLocationExitsWithFormatting_0</a> if the zero flag is not set.</td>
+<td class="instruction">JR NZ,<a href="54924.html#54944">PrintLocationExitsWithFormatting_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54958"></span>54958</td>
-<td class="instruction">CALL <a href="41853.html#42004">ProcessObject_Display_5</a></td>
-<td class="comment-1" rowspan="1">Call <a href="41853.html#42004">ProcessObject_Display_5</a>.</td>
+<td class="instruction">CALL <a href="42004.html">PrintFullStop</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42004.html">PrintFullStop</a> to print a full stop.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintLocationExitsWithFormatting_1</td>
+<td class="asm-label">PrintLocationExitsWithFormatting_Next</td>
 <td class="address-2"><span id="54961"></span>54961</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="4">Restore <span class="register">BC</span>, <span class="register">DE</span>, <span class="register">IY</span> and <span class="register">IX</span> from the stack.</td>
+<td class="comment-1" rowspan="4">Restore the saved count, the saved source, the saved schedule entry and the saved character record from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -185,7 +182,7 @@ Next: <a href="54968.html">54968</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/D68C.html">Switch to hexadecimal</a>.</div>
 </footer>

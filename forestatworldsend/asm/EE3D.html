@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at EE3D</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="EE23.html">EE23</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#ee3d">Map</a></td>
+<td class="next">
+Next: <a href="EE81.html">EE81</a>
+</td>
+</tr>
+</table>
+<div class="description">EE3D: Action: Examine</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Describe the single object the player named.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Examine</td>
+<td class="address-2"><span id="ee3d"></span>EE3D</td>
+<td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
+<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee40"></span>EE40</td>
+<td class="instruction">RET C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee41"></span>EE41</td>
+<td class="instruction">CP $01</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="ED73.html">Response_OneAtATimePlease</a> unless the carried location matches.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee43"></span>EE43</td>
+<td class="instruction">JP NZ,<a href="ED73.html">Response_OneAtATimePlease</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee46"></span>EE46</td>
+<td class="instruction">LD HL,$E812</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EE3D.html#ee54">Action_Examine_Next</a> unless the player named Mara's body.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee49"></span>EE49</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee4c"></span>EE4C</td>
+<td class="instruction">JR NZ,<a href="EE3D.html#ee54">Action_Examine_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ee4e"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "There are curious runic symbolsalong its entire length.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee4e"></span>EE4E</td>
+<td class="instruction">LD HL,$DCB7</td>
+<td class="comment-1" rowspan="2">Print "There are curious runic symbolsalong its entire length." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee51"></span>EE51</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Examine_Next</td>
+<td class="address-2"><span id="ee54"></span>EE54</td>
+<td class="instruction">LD HL,$E814</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EE3D.html#ee69">Action_Examine_WitchClosedChest</a> unless the player named the witch.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee57"></span>EE57</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee5a"></span>EE5A</td>
+<td class="instruction">JR NZ,<a href="EE3D.html#ee69">Action_Examine_WitchClosedChest</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee5c"></span>EE5C</td>
+<td class="instruction">LD A,$0B</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EE3D.html#ee69">Action_Examine_WitchClosedChest</a> if object 0B (the chest) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee5e"></span>EE5E</td>
+<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee61"></span>EE61</td>
+<td class="instruction">JR NZ,<a href="EE3D.html#ee69">Action_Examine_WitchClosedChest</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ee63"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "It is locked.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee63"></span>EE63</td>
+<td class="instruction">LD HL,$DCF0</td>
+<td class="comment-1" rowspan="2">Print "It is locked." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee66"></span>EE66</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Examine_WitchClosedChest</td>
+<td class="address-2"><span id="ee69"></span>EE69</td>
+<td class="instruction">LD HL,$E814</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EE3D.html#ee7e">Action_Examine_NoPoint</a> unless the player named the witch.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee6c"></span>EE6C</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee6f"></span>EE6F</td>
+<td class="instruction">JR NZ,<a href="EE3D.html#ee7e">Action_Examine_NoPoint</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee71"></span>EE71</td>
+<td class="instruction">LD A,$0C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EE3D.html#ee7e">Action_Examine_NoPoint</a> if object 0C (the closed chest) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee73"></span>EE73</td>
+<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee76"></span>EE76</td>
+<td class="instruction">JR NZ,<a href="EE3D.html#ee7e">Action_Examine_NoPoint</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ee78"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "It is unlocked.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee78"></span>EE78</td>
+<td class="instruction">LD HL,$DC7B</td>
+<td class="comment-1" rowspan="2">Print "It is unlocked." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ee7b"></span>EE7B</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Examine_NoPoint</td>
+<td class="address-2"><span id="ee7e"></span>EE7E</td>
+<td class="instruction">JP <a href="ED78.html">Response_IDontSeeThePoint</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="ED78.html">Response_IDontSeeThePoint</a> to say there is no point.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="EE23.html">EE23</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#ee3d">Map</a></td>
+<td class="next">
+Next: <a href="EE81.html">EE81</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/60989.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -42,7 +42,10 @@ Next: <a href="C1D7.html">C1D7</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="C040.html">SaveGame</a>, <a href="C0DF.html">LoadGame</a> and <a href="C1C0.html">PrintStringAndWaitForKeypress</a>.
+Used by the routines at <a href="C040.html">SaveGame</a>, <a href="C089.html">LoadGameData</a>, <a href="C0DF.html">LoadGame</a> and <a href="C1C0.html">PrintStringAndWaitForKeypress</a>.
+</div>
+<div class="paragraph">
+Prints each character of a bit-7 terminated string.
 </div>
 </div>
 <table class="input">
@@ -60,7 +63,7 @@ Used by the routines at <a href="C040.html">SaveGame</a>, <a href="C0DF.html">Lo
 <td class="asm-label">PrintString</td>
 <td class="address-2"><span id="c1cb"></span>C1CB</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Read the next character of the string.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -76,13 +79,13 @@ Strip off the termination bit to leave only the ASCII value.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c1cc"></span>C1CC</td>
 <td class="instruction">AND %01111111</td>
-<td class="comment-1" rowspan="1">Keep only bits 0-6.</td>
+<td class="comment-1" rowspan="1">Strip the end-of-string marker (bit 7).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c1ce"></span>C1CE</td>
-<td class="instruction">CALL <a href="C1FC.html#c1fd">ProcessCharacterInput_0</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C1FC.html#c1fd">ProcessCharacterInput_0</a>.</td>
+<td class="instruction">CALL <a href="C1FD.html">PrintScreenCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C1FD.html">PrintScreenCharacter</a> to print this character.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -98,12 +101,13 @@ The string is terminated by bit 7 being set, so check if this is the final chara
 <td class="asm-label"></td>
 <td class="address-1"><span id="c1d1"></span>C1D1</td>
 <td class="instruction">BIT 7,(HL)</td>
-<td class="comment-1" rowspan="2">Return if bit 7 of *<span class="register">HL</span> is set.</td>
+<td class="comment-1" rowspan="1">See whether this character ends the string.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c1d3"></span>C1D3</td>
 <td class="instruction">RET NZ</td>
+<td class="comment-1" rowspan="1">Return if that marker is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -115,7 +119,7 @@ The string is terminated by bit 7 being set, so check if this is the final chara
 <td class="asm-label"></td>
 <td class="address-1"><span id="c1d5"></span>C1D5</td>
 <td class="instruction">JR <a href="C1CB.html#c1cb">PrintString</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="C1CB.html">PrintString</a>.</td>
+<td class="comment-1" rowspan="1">Jump back to <a href="C1CB.html">PrintString</a> to print the next character of the string.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -132,7 +136,7 @@ Next: <a href="C1D7.html">C1D7</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/49611.html">Switch to decimal</a>.</div>
 </footer>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at DBF7</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DB84.html">DB84</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#dbf7">Map</a></td>
+<td class="next">
+Next: <a href="DC6C.html">DC6C</a>
+</td>
+</tr>
+</table>
+<div class="description">DBF7: Parse An Input Number</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="DAEF.html">ParseATime</a>, <a href="DB59.html">TestComma</a> and <a href="DB84.html">StartParsedNumber</a>.
+</div>
+<div class="paragraph">
+Reads decimal digits from the input and returns the number they make in <span class="register">A</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInputNumber</td>
+<td class="address-2"><span id="dbf7"></span>DBF7</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="2">Count 00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dbf8"></span>DBF8</td>
+<td class="instruction">LD C,$00</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInputNumber_DigitLoop</td>
+<td class="address-2"><span id="dbfa"></span>DBFA</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="DBF7.html#dc10">ParseInputNumber_ReturnValue</a> if this character is not a digit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dbfb"></span>DBFB</td>
+<td class="instruction">CALL <a href="DAE8.html">TestDigit</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dbfe"></span>DBFE</td>
+<td class="instruction">JR C,<a href="DBF7.html#dc10">ParseInputNumber_ReturnValue</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc00"></span>DC00</td>
+<td class="instruction">SUB $30</td>
+<td class="comment-1" rowspan="5">Reduce the total by 30.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc02"></span>DC02</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc03"></span>DC03</td>
+<td class="instruction">RLC C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc05"></span>DC05</td>
+<td class="instruction">LD A,C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc06"></span>DC06</td>
+<td class="instruction">RLC C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc08"></span>DC08</td>
+<td class="instruction">RLC C</td>
+<td class="comment-1" rowspan="6">Fold this digit into the number and go back to <a href="DBF7.html#dbfa">ParseInputNumber_DigitLoop</a> for the next one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc0a"></span>DC0A</td>
+<td class="instruction">ADD A,C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc0b"></span>DC0B</td>
+<td class="instruction">ADD A,B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc0c"></span>DC0C</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc0d"></span>DC0D</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc0e"></span>DC0E</td>
+<td class="instruction">JR <a href="DBF7.html#dbfa">ParseInputNumber_DigitLoop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="dc10"></span>
+<div class="comments">
+<div class="paragraph">
+Return.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInputNumber_ReturnValue</td>
+<td class="address-2"><span id="dc10"></span>DC10</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="1">Read the low byte of the count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc11"></span>DC11</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">BC</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc12"></span>DC12</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc13"></span>DC13</td>
+<td class="instruction">DEFB $00</td>
+<td class="comment-1" rowspan="1">Length of the dictionary word. Written by <a href="DA34.html#da74">FindTokenDictionaryEntry_SignalStepFailed</a> and read by <a href="D9C5.html#da1a">DA1A</a> and <a href="DA7D.html">MatchDictionaryWord</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc14"></span>DC14</td>
+<td class="instruction">DEFB $00</td>
+<td class="comment-1" rowspan="1">Longest match accepted so far. Cleared by <a href="D9C5.html#d9de">D9DE</a>, updated by <a href="DA7D.html#daa9">MatchDictionaryWord_RememberLength</a>, and read by <a href="D9C5.html#da12">SkipSpaces_CheckSavedLength</a>, <a href="DA7D.html#da83">DA83</a> and <a href="DA7D.html#da9d">MatchDictionaryWord_AcceptLength</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="dc15"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routines at <a href="9A80.html">ActionPrintOpeningText</a>, <a href="9AA3.html">ReadRoomDisplayParameter</a>, <a href="C628.html">TestLowBitsOfCharacter</a>, <a href="C6BE.html">TestLowBitsOfGraphics</a>, <a href="C929.html">ProcessObjectDisplayLogic</a>, <a href="CBA7.html">CheckFlagAndJumpToNewline</a>, <a href="D6C1.html">ParseInput</a>, <a href="D85B.html">RecordParserFailure</a>, <a href="DCA7.html">ApplyRoomDisplay</a>, <a href="DCDD.html">ReadScheduleEntryFromCurrentCharacter</a>, <a href="DD35.html">DescribeObjectIfPresent</a>, <a href="DEE4.html">CombineCharacterRoom</a>, <a href="DFCC.html">SpecialCaseObject_LooksBasilPhipps</a>, <a href="E17B.html">DispatchRoomGraphics</a>, <a href="E28D.html">TestCharacterAgainstRoom</a>, <a href="E2EE.html">RecordResultRoomDisplay</a>, <a href="E3A9.html">ReadSourceDisplayPointer</a>, <a href="E3F5.html">CheckCharacterForRoomGraphics</a>, <a href="E4FB.html">DispatchLookedUpHandler</a>, <a href="E560.html">FindCharacterSavedPointer</a>, <a href="E58C.html">CopyClockLink</a>, <a href="E5C3.html">LookUpCurrentObject</a>, <a href="E619.html">ScanObjects</a>, <a href="E686.html">RejectLowCharacterAttribute</a>, <a href="E6F6.html">CompareCharacterWithRoom</a>, <a href="F19D.html">RejectLowerCharacterId</a>, <a href="F1D6.html">ActionRoomAndCharacterFlags</a> and <a href="F389.html">CompareRoomParameters</a>.
+</div>
+<div class="paragraph">
+Shared exit. Returns zero for both results so the caller treats the test as failed.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInputNumber_ReturnZero</td>
+<td class="address-2"><span id="dc15"></span>DC15</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Clear <span class="register">A</span> and <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc16"></span>DC16</td>
+<td class="instruction">LD L,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc17"></span>DC17</td>
+<td class="instruction">LD H,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc18"></span>DC18</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc19"></span>DC19</td>
+<td class="instruction">DEFB $1B,$20,$40,$28,$00,$00,$00</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 1B value 20 parameters 40 28 00 00 00.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="dc20"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="DBF7.html#dc19">DC19</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc20"></span>DC20</td>
+<td class="instruction">CALL <a href="DC6C.html">CheckCharacterID</a></td>
+<td class="comment-1" rowspan="2">Return if the character check did not match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc23"></span>DC23</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc24"></span>DC24</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="2">Call <a href="D46C.html">FindObjectByFieldOne</a> to find an object by field one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc27"></span>DC27</td>
+<td class="instruction">CALL <a href="D46C.html">FindObjectByFieldOne</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc2a"></span>DC2A</td>
+<td class="instruction">LD A,(IX+$02)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="DBF7.html#dc4b">ParseInputNumber_ReportSuccess</a> if the location is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc2d"></span>DC2D</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc2e"></span>DC2E</td>
+<td class="instruction">JR Z,<a href="DBF7.html#dc4b">ParseInputNumber_ReportSuccess</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc30"></span>DC30</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="4">Keep the location in <span class="register">B</span>, save the character attribute and take 01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc31"></span>DC31</td>
+<td class="instruction">LD A,($A00A)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc34"></span>DC34</td>
+<td class="instruction">PUSH AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc35"></span>DC35</td>
+<td class="instruction">LD A,$01</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc37"></span>DC37</td>
+<td class="instruction">LD ($D0DC),A</td>
+<td class="comment-1" rowspan="1">Record the location token processing flag.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="dc3a"></span>
+<div class="comments">
+<div class="paragraph">
+Compare current character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc3a"></span>DC3A</td>
+<td class="instruction">CALL <a href="DD0B.html">CompareCurrentCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="DD0B.html">CompareCurrentCharacter</a> to read the character the command is about.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc3d"></span>DC3D</td>
+<td class="instruction">LD A,($A00A)</td>
+<td class="comment-1" rowspan="3">Read the character attribute.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc40"></span>DC40</td>
+<td class="instruction">CALL <a href="D1B2.html">ProcessObjectDisplayWithCheck</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc43"></span>DC43</td>
+<td class="instruction">POP BC</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="dc44"></span>
+<div class="comments">
+<div class="paragraph">
+Compare current character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc44"></span>DC44</td>
+<td class="instruction">CALL <a href="DD0B.html">CompareCurrentCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="DD0B.html">CompareCurrentCharacter</a> to read the character the command is about.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc47"></span>DC47</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Start from zero.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="dc48"></span>
+<div class="comments">
+<div class="paragraph">
+Record the result in the location token processing flag at <a href="D0DC.html">LocationTokenProcessingFlag</a>, then mark success for the script.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc48"></span>DC48</td>
+<td class="instruction">LD ($D0DC),A</td>
+<td class="comment-1" rowspan="1">Store it in the location token processing flag.</td>
+</tr>
+<tr>
+<td class="asm-label">ParseInputNumber_ReportSuccess</td>
+<td class="address-2"><span id="dc4b"></span>DC4B</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc4d"></span>DC4D</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="dc4e"></span>
+<div class="comments">
+<div class="paragraph">
+Reached through the display record at <a href="DBF7.html#dc57">DC57</a>, dispatched by <a href="CB40.html">DispatchLookedUpHandlerThird</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc4e"></span>DC4E</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="2">Call <a href="D46C.html">FindObjectByFieldOne</a> to find an object by field one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc51"></span>DC51</td>
+<td class="instruction">CALL <a href="D46C.html">FindObjectByFieldOne</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc54"></span>DC54</td>
+<td class="instruction">JP <a href="DCDD.html">ReadScheduleEntryFromCurrentCharacter</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="DCDD.html">ReadScheduleEntryFromCurrentCharacter</a> to read the schedule entry from the current character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc57"></span>DC57</td>
+<td class="instruction">DEFB $4B,$20,$4E,$DC</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 4B value 20 handler <a href="DBF7.html#dc4e">DC4E</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="dc5b"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="DBF7.html#dc57">DC57</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc5b"></span>DC5B</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="1">Read the character id from this record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc5e"></span>DC5E</td>
+<td class="instruction">LD ($A033),A</td>
+<td class="comment-1" rowspan="1">Store it as the saved character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc61"></span>DC61</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Start from zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc62"></span>DC62</td>
+<td class="instruction">LD ($A00F),A</td>
+<td class="comment-1" rowspan="1">Clear the display mode.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc65"></span>DC65</td>
+<td class="instruction">DEC A</td>
+<td class="comment-1" rowspan="1">Count down one.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc66"></span>DC66</td>
+<td class="instruction">LD ($A034),A</td>
+<td class="comment-1" rowspan="1">Store FF as the room display parameter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dc69"></span>DC69</td>
+<td class="instruction">JP <a href="DD07.html">MatchedCharacterRoom</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="DD07.html">MatchedCharacterRoom</a> to read the matched character's room.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DB84.html">DB84</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#dbf7">Map</a></td>
+<td class="next">
+Next: <a href="DC6C.html">DC6C</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/56311.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

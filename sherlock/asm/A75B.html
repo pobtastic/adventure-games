@@ -36,79 +36,84 @@ Next: <a href="A771.html">A771</a>
 </td>
 </tr>
 </table>
-<div class="description">A75B: Process Text Token With Offset</div>
+<div class="description">A75B: Print Text At An Offset</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Adds the word at offset 01 to the record address, prints the text there through <a href="A5C4.html">ProcessTextStream</a>, steps the record on two bytes, and returns zero.
+</div>
+<div class="paragraph">
+Control code 0B in the table at <a href="A55D.html">JumpTable_ControlCharacters</a>.
+</div>
+<div class="paragraph">
+Used by the routine at <a href="A5C3.html">DispatchTextControlHandler</a>.
+</div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenWithOffset</td>
+<td class="asm-label">PrintTextAtAnOffset</td>
 <td class="address-2"><span id="a75b"></span>A75B</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">IX</span> on the stack.</td>
+<td class="comment-1" rowspan="4">Point <span class="register">HL</span> at this record and read the low byte of the offset.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a75d"></span>A75D</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a75e"></span>A75E</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a75f"></span>A75F</td>
 <td class="instruction">LD E,(IX+$01)</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=*<span class="register">IX</span>+01.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a762"></span>A762</td>
 <td class="instruction">LD D,(IX+$02)</td>
-<td class="comment-1" rowspan="1"><span class="register">D</span>=*<span class="register">IX</span>+02.</td>
+<td class="comment-1" rowspan="1">Read the high byte of the offset.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a765"></span>A765</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="2">Add the offset and call <a href="A5C4.html">ProcessTextStream</a> to print the text.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a766"></span>A766</td>
 <td class="instruction">CALL <a href="A5C4.html">ProcessTextStream</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A5C4.html">ProcessTextStream</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a769"></span>A769</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">IX</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the record from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a76b"></span>A76B</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">Step to the next byte of the record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a76d"></span>A76D</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">Step to the next byte of the record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a76f"></span>A76F</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -131,7 +136,7 @@ Next: <a href="A771.html">A771</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/42843.html">Switch to decimal</a>.</div>
 </footer>

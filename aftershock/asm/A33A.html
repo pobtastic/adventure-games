@@ -39,7 +39,7 @@ Next: <a href="A41C.html">A41C</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="9EDB.html">LoadTape</a>, <a href="AB9D.html">AB9D</a> and <a href="AD79.html">ChangeRoom</a>.
+Used by the routines at <a href="9EDB.html">LoadTape</a>, <a href="AB9D.html">Action_DescribeRoom</a> and <a href="AD79.html">ChangeRoom</a>.
 </div>
 <div class="paragraph">
 Handles displaying the exits available for the current room.
@@ -159,121 +159,123 @@ The current room does have an image associated with it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a359"></span>A359</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span> so the next instruction tests the picture request in <span class="register">E</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a35a"></span>
+<div class="comments">
+<div class="paragraph">
+A non-zero picture request shows the image even when the player has seen it.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a35a"></span>A35A</td>
 <td class="instruction">OR E</td>
-<td class="comment-1" rowspan="1">Set the bits from <span class="register">E</span>.</td>
+<td class="comment-1" rowspan="2">Show the picture even when the player has seen this room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a35b"></span>A35B</td>
 <td class="instruction">JR NZ,<a href="A33A.html#a36b">Handler_RoomExits_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A33A.html#a36b">Handler_RoomExits_0</a> if <span class="register">C</span> is not equal to <span class="register">E</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a35d"></span>A35D</td>
 <td class="instruction">LD HL,$A0A8</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="9F88.html#a0a8">A0A8</a>.</td>
+<td class="comment-1" rowspan="1">Use the already-seen room image flags at <a href="A0A8.html">Flags_SeenRoomImages</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a360"></span>A360</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">B</span>.</td>
+<td class="comment-1" rowspan="2">Call <a href="A1B4.html">BuildFlagMask</a> with this room's index to find its seen bit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a361"></span>A361</td>
-<td class="instruction">CALL <a href="A1B4.html">$A1B4</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A1B4.html">A1B4</a>.</td>
+<td class="instruction">CALL <a href="A1B4.html">BuildFlagMask</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a364"></span>A364</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Keep the mask for this room in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a365"></span>A365</td>
 <td class="instruction">AND (HL)</td>
-<td class="comment-1" rowspan="1">Merge the bits from *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Test whether this room's picture has already been shown.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a366"></span>A366</td>
 <td class="instruction">JR NZ,<a href="A33A.html#a379">Handler_RoomExits_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A33A.html#a379">Handler_RoomExits_1</a> if <span class="register">C</span> is not equal to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="A33A.html#a379">Handler_RoomExits_1</a> if this room's picture has already been shown.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a368"></span>A368</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="3">Mark this room's picture as shown, so it isn't drawn again on the next visit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a369"></span>A369</td>
 <td class="instruction">OR C</td>
-<td class="comment-1" rowspan="1">Set the bits from <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a36a"></span>A36A</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label">Handler_RoomExits_0</td>
 <td class="address-2"><span id="a36b"></span>A36B</td>
 <td class="instruction">CALL <a href="9E0B.html">ClearLines</a></td>
-<td class="comment-1" rowspan="1">Call <a href="9E0B.html">ClearLines</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="9E0B.html">ClearLines</a> to clear the text lines.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a36e"></span>A36E</td>
 <td class="instruction">LD HL,$BBA6</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BBA6.html">BBA6</a>.</td>
+<td class="comment-1" rowspan="5">Look up this room's image number in <a href="BBA6.html">Table_RoomImageNumbers</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a371"></span>A371</td>
 <td class="instruction">LD E,B</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=<span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a372"></span>A372</td>
 <td class="instruction">LD D,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">D</span>=00.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a374"></span>A374</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a375"></span>A375</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a376"></span>A376</td>
 <td class="instruction">CALL <a href="9F67.html">Handler_Images</a></td>
-<td class="comment-1" rowspan="1">Call <a href="9F67.html">Handler_Images</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="9F67.html">Handler_Images</a> to draw the room image.</td>
 </tr>
 <tr>
 <td class="asm-label">Handler_RoomExits_1</td>
 <td class="address-2"><span id="a379"></span>A379</td>
 <td class="instruction">CALL <a href="9E0B.html">ClearLines</a></td>
-<td class="comment-1" rowspan="1">Call <a href="9E0B.html">ClearLines</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="9E0B.html">ClearLines</a> to clear the text lines.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -284,8 +286,8 @@ The current room does have an image associated with it.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a37f"></span>A37F</td>
-<td class="instruction">CALL <a href="A42F.html">$A42F</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A42F.html">A42F</a>.</td>
+<td class="instruction">CALL <a href="A42F.html">PrintRoomDescription</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A42F.html">PrintRoomDescription</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -901,7 +903,7 @@ Next: <a href="A41C.html">A41C</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/41786.html">Switch to decimal</a>.</div>
 </footer>

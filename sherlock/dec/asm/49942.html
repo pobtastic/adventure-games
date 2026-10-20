@@ -44,6 +44,9 @@ Next: <a href="50045.html">50045</a>
 <div class="paragraph">
 Used by the routine at <a href="49850.html">ProcessScreenCharacter</a>.
 </div>
+<div class="paragraph">
+Copies the picture up one character row when the screen is being updated.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -64,25 +67,23 @@ Used by the routine at <a href="49850.html">ProcessScreenCharacter</a>.
 <td class="asm-label">UpdateScreenDisplay</td>
 <td class="address-2"><span id="49942"></span>49942</td>
 <td class="instruction">LD A,(49448)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="49448.html">49448</a>.</td>
+<td class="comment-1" rowspan="3">Call <a href="50148.html">50148</a> if the screen flags is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49945"></span>49945</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49946"></span>49946</td>
-<td class="instruction">CALL Z,<a href="50056.html#50148">PrintCharacter_6</a></td>
-<td class="comment-1" rowspan="1">Call <a href="50056.html#50148">PrintCharacter_6</a> if <span class="register">A</span> is equal to 0.</td>
+<td class="instruction">CALL Z,<a href="50148.html">50148</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49949"></span>49949</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="3">Stash <span class="register">BC</span>, <span class="register">HL</span> and <span class="register">DE</span> on the stack.</td>
+<td class="comment-1" rowspan="4">Save the registers and point <span class="register">HL</span> at the second character row of the screen (16416).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -98,55 +99,51 @@ Used by the routine at <a href="49850.html">ProcessScreenCharacter</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49952"></span>49952</td>
 <td class="instruction">LD HL,16416</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=16416 (screen buffer location).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49955"></span>49955</td>
 <td class="instruction">LD DE,16384</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=16384.</td>
+<td class="comment-1" rowspan="1">Point the row copy at the top of the screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49958"></span>49958</td>
 <td class="instruction">LD BC,17</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=0017.</td>
+<td class="comment-1" rowspan="1">Take a length of 17 entries.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49961"></span>49961</td>
 <td class="instruction">LD A,(49448)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="49448.html">49448</a>.</td>
+<td class="comment-1" rowspan="4">Go to <a href="49942.html#49971">UpdateScreenDisplay_Loop</a> with <span class="register">A</span>=32 if the flag at <a href="49448.html">49448</a> is zero (otherwise use 16).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49964"></span>49964</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49965"></span>49965</td>
 <td class="instruction">LD A,32</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=32.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49967"></span>49967</td>
-<td class="instruction">JR Z,<a href="49942.html#49971">UpdateScreenDisplay_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49942.html#49971">UpdateScreenDisplay_0</a> if <span class="register">A</span> is equal to <span class="register">A</span>.</td>
+<td class="instruction">JR Z,<a href="49942.html#49971">UpdateScreenDisplay_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49969"></span>49969</td>
 <td class="instruction">LD A,16</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=16.</td>
+<td class="comment-1" rowspan="1">Use 16 for the display.</td>
 </tr>
 <tr>
-<td class="asm-label">UpdateScreenDisplay_0</td>
+<td class="asm-label">UpdateScreenDisplay_Loop</td>
 <td class="address-2"><span id="49971"></span>49971</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="4">Save <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span>, and take a count of 8.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -162,13 +159,12 @@ Used by the routine at <a href="49850.html">ProcessScreenCharacter</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49974"></span>49974</td>
 <td class="instruction">LD C,8</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=8.</td>
 </tr>
 <tr>
-<td class="asm-label">UpdateScreenDisplay_1</td>
+<td class="asm-label">UpdateScreenDisplay_KeepRowDestination</td>
 <td class="address-2"><span id="49976"></span>49976</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="4">Keep the row, the destination and the count while this pixel line is copied.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -184,19 +180,18 @@ Used by the routine at <a href="49850.html">ProcessScreenCharacter</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49979"></span>49979</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49980"></span>49980</td>
 <td class="instruction">LDIR</td>
-<td class="comment-1" rowspan="1">LDIR.</td>
+<td class="comment-1" rowspan="1">Copy one row of the character being drawn onto the screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49982"></span>49982</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="7">Jump back to <a href="49942.html#49976">UpdateScreenDisplay_KeepRowDestination</a> while the count is not finished.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -212,31 +207,27 @@ Used by the routine at <a href="49850.html">ProcessScreenCharacter</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49985"></span>49985</td>
 <td class="instruction">INC H</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">H</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49986"></span>49986</td>
 <td class="instruction">INC D</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">D</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49987"></span>49987</td>
 <td class="instruction">DEC C</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">C</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49988"></span>49988</td>
-<td class="instruction">JR NZ,<a href="49942.html#49976">UpdateScreenDisplay_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49942.html#49976">UpdateScreenDisplay_1</a> if <span class="register">C</span> is not equal to <span class="register">A</span>.</td>
+<td class="instruction">JR NZ,<a href="49942.html#49976">UpdateScreenDisplay_KeepRowDestination</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49990"></span>49990</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="3">Restore the screen registers from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -252,138 +243,129 @@ Used by the routine at <a href="49850.html">ProcessScreenCharacter</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49993"></span>49993</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">AF</span> on the stack.</td>
+<td class="comment-1" rowspan="2">And call <a href="50045.html">AdvanceScreenPosition</a> to advance the screen position.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49994"></span>49994</td>
 <td class="instruction">CALL <a href="50045.html">AdvanceScreenPosition</a></td>
-<td class="comment-1" rowspan="1">Call <a href="50045.html">AdvanceScreenPosition</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49997"></span>49997</td>
 <td class="instruction">CALL <a href="50045.html">AdvanceScreenPosition</a></td>
-<td class="comment-1" rowspan="1">Call <a href="50045.html">AdvanceScreenPosition</a>.</td>
+<td class="comment-1" rowspan="2">Call <a href="50045.html">AdvanceScreenPosition</a> to advance screen position.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50000"></span>50000</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50001"></span>50001</td>
 <td class="instruction">DEC C</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">C</span> by one.</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="49942.html#49971">UpdateScreenDisplay_Loop</a> while the count is not finished.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50002"></span>50002</td>
-<td class="instruction">JR NZ,<a href="49942.html#49971">UpdateScreenDisplay_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49942.html#49971">UpdateScreenDisplay_0</a> if <span class="register">C</span> is not equal to <span class="register">A</span>.</td>
+<td class="instruction">JR NZ,<a href="49942.html#49971">UpdateScreenDisplay_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50004"></span>50004</td>
 <td class="instruction">CP 16</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49942.html#50019">UpdateScreenDisplay_2</a> if <span class="register">A</span> is equal to 16.</td>
+<td class="comment-1" rowspan="2">Go to <a href="49942.html#50019">UpdateScreenDisplay_Next</a> if it is 16.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50006"></span>50006</td>
-<td class="instruction">JR Z,<a href="49942.html#50019">UpdateScreenDisplay_2</a></td>
+<td class="instruction">JR Z,<a href="49942.html#50019">UpdateScreenDisplay_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50008"></span>50008</td>
 <td class="instruction">LD HL,22560</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=22560 (attribute buffer location).</td>
+<td class="comment-1" rowspan="2">Point at the second and first attribute rows, ready to scroll the attributes up one row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50011"></span>50011</td>
 <td class="instruction">LD DE,22528</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=22528 (screen buffer location).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50014"></span>50014</td>
 <td class="instruction">LD BC,544</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=544.</td>
+<td class="comment-1" rowspan="1">Take 544 bytes, seventeen attribute rows.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50017"></span>50017</td>
 <td class="instruction">LDIR</td>
-<td class="comment-1" rowspan="1">LDIR.</td>
+<td class="comment-1" rowspan="1">Scroll the attributes up one row.</td>
 </tr>
 <tr>
-<td class="asm-label">UpdateScreenDisplay_2</td>
+<td class="asm-label">UpdateScreenDisplay_Next</td>
 <td class="address-2"><span id="50019"></span>50019</td>
 <td class="instruction">LD A,(49448)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="49448.html">49448</a>.</td>
+<td class="comment-1" rowspan="4">Set <span class="register">B</span> to 36 and jump to <a href="49942.html#50029">UpdateScreenDisplay_FillSpaces</a> if the screen flag at <a href="49448.html">49448</a> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50022"></span>50022</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50023"></span>50023</td>
 <td class="instruction">LD B,36</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=36.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50025"></span>50025</td>
-<td class="instruction">JR Z,<a href="49942.html#50029">UpdateScreenDisplay_3</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="49942.html#50029">UpdateScreenDisplay_3</a> if <span class="register">A</span> is equal to <span class="register">A</span>.</td>
+<td class="instruction">JR Z,<a href="49942.html#50029">UpdateScreenDisplay_FillSpaces</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50027"></span>50027</td>
 <td class="instruction">LD B,18</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=18.</td>
+<td class="comment-1" rowspan="1">Count 18.</td>
 </tr>
 <tr>
-<td class="asm-label">UpdateScreenDisplay_3</td>
+<td class="asm-label">UpdateScreenDisplay_FillSpaces</td>
 <td class="address-2"><span id="50029"></span>50029</td>
 <td class="instruction">LD HL,20512</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=20512 (screen buffer location).</td>
+<td class="comment-1" rowspan="3">Point <span class="register">HL</span> at the screen address 20512 set <span class="register">C</span> to 2 and take a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50032"></span>50032</td>
 <td class="instruction">LD C,2</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=2.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50034"></span>50034</td>
 <td class="instruction">LD A,32</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=32.</td>
 </tr>
 <tr>
-<td class="asm-label">UpdateScreenDisplay_4</td>
+<td class="asm-label">UpdateScreenDisplay_0</td>
 <td class="address-2"><span id="50036"></span>50036</td>
 <td class="instruction">CALL <a href="50056.html">PrintCharacter</a></td>
-<td class="comment-1" rowspan="1">Call <a href="50056.html">PrintCharacter</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="50056.html">PrintCharacter</a> to print a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50039"></span>50039</td>
-<td class="instruction">DJNZ <a href="49942.html#50036">UpdateScreenDisplay_4</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="49942.html#50036">UpdateScreenDisplay_4</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="49942.html#50036">UpdateScreenDisplay_0</a></td>
+<td class="comment-1" rowspan="1">Count the next entry and repeat from <a href="49942.html#50036">UpdateScreenDisplay_0</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50041"></span>50041</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="3">Restore <span class="register">DE</span>, <span class="register">HL</span> and <span class="register">BC</span> from the stack.</td>
+<td class="comment-1" rowspan="3">Restore the saved source, the saved pointer and the saved count from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -416,7 +398,7 @@ Next: <a href="50045.html">50045</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/C316.html">Switch to hexadecimal</a>.</div>
 </footer>

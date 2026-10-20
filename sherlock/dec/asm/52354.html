@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at 52354</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="52344.html">52344</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#52354">Map</a></td>
+<td class="next">
+Next: <a href="52619.html">52619</a>
+</td>
+</tr>
+</table>
+<div class="description">52354: Dispatch The Character Script</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="52920.html">ProcessScriptCommandWithCounter</a>.
+</div>
+<div class="paragraph">
+Gets the character's script position and dispatches the next command.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript</td>
+<td class="address-2"><span id="52354"></span>52354</td>
+<td class="instruction">LD L,(IY+1)</td>
+<td class="comment-1" rowspan="2">Get the character's script position.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52357"></span>52357</td>
+<td class="instruction">LD H,(IY+2)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52360"></span>52360</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Clear the display.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52361"></span>52361</td>
+<td class="instruction">LD (47412),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52364"></span>52364</td>
+<td class="instruction">LD A,(52235)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="52619.html">TerminateCharacterScript</a> if the script command counter at <a href="52235.html">52235</a> is 10.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52367"></span>52367</td>
+<td class="instruction">CP 10</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52369"></span>52369</td>
+<td class="instruction">JP Z,<a href="52619.html">TerminateCharacterScript</a></td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript_NextByte</td>
+<td class="address-2"><span id="52372"></span>52372</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump ahead to <a href="52354.html#52379">DispatchCharacterScript_UseCommand</a> if this byte is not zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52373"></span>52373</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52374"></span>52374</td>
+<td class="instruction">JR NZ,<a href="52354.html#52379">DispatchCharacterScript_UseCommand</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52376"></span>52376</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="52354.html#52372">DispatchCharacterScript_NextByte</a> to find next command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52377"></span>52377</td>
+<td class="instruction">JR <a href="52354.html#52372">DispatchCharacterScript_NextByte</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52379"></span>
+<div class="comments">
+<div class="paragraph">
+Use the saved pointer as the character record, then record the pointer in the currently processed character command position at <a href="40921.html">CurrentCharacter_CommandPosition</a>, then keep bits 0-3.
+</div>
+<div class="paragraph">
+Process the current script command.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript_UseCommand</td>
+<td class="address-2"><span id="52379"></span>52379</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="3">Record the current character command position.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52380"></span>52380</td>
+<td class="instruction">POP IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52382"></span>52382</td>
+<td class="instruction">LD (40921),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52385"></span>52385</td>
+<td class="instruction">AND %00001111</td>
+<td class="comment-1" rowspan="1">Keep the script command number (the low nibble).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52387"></span>52387</td>
+<td class="instruction">CP 10</td>
+<td class="comment-1" rowspan="2">Jump to <a href="52354.html#52467">DispatchCharacterScript_TestGoto</a> when the command is at least 10.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52389"></span>52389</td>
+<td class="instruction">JR NC,<a href="52354.html#52467">DispatchCharacterScript_TestGoto</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52391"></span>52391</td>
+<td class="instruction">LD A,(52237)</td>
+<td class="comment-1" rowspan="3">Go to <a href="52354.html#52423">DispatchCharacterScript_DispatchOpcode</a> unless the display-list flag at <a href="52235.html#52237">52237</a> is 1.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52394"></span>52394</td>
+<td class="instruction">CP 1</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52396"></span>52396</td>
+<td class="instruction">JR NZ,<a href="52354.html#52423">DispatchCharacterScript_DispatchOpcode</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52398"></span>52398</td>
+<td class="instruction">SUB A</td>
+<td class="comment-1" rowspan="2">Clear the display-list flag at <a href="52235.html#52237">52237</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52399"></span>52399</td>
+<td class="instruction">LD (52237),A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52402"></span>
+<div class="comments">
+<div class="paragraph">
+The room display asked to skip?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52402"></span>52402</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Read this script byte, call <a href="47414.html">ProcessScriptDisplay</a>, and jump to <a href="52625.html">52625</a> if it returns carry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52403"></span>52403</td>
+<td class="instruction">CALL <a href="47414.html">ProcessScriptDisplay</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52406"></span>52406</td>
+<td class="instruction">JP C,<a href="52625.html">52625</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52409"></span>52409</td>
+<td class="instruction">JR Z,<a href="52354.html#52423">DispatchCharacterScript_DispatchOpcode</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="52354.html#52423">DispatchCharacterScript_DispatchOpcode</a> if <a href="47414.html">ProcessScriptDisplay</a> returns zero.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52411"></span>
+<div class="comments">
+<div class="paragraph">
+Did <a href="50385.html">ProcessDisplayAction</a> accept this display?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52411"></span>52411</td>
+<td class="instruction">CALL <a href="50385.html">ProcessDisplayAction</a></td>
+<td class="comment-1" rowspan="2">Return if <a href="50385.html">ProcessDisplayAction</a> does not accept this display.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52414"></span>52414</td>
+<td class="instruction">RET NC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52415"></span>52415</td>
+<td class="instruction">CALL <a href="53174.html">FindCharacterScriptEntry</a></td>
+<td class="comment-1" rowspan="2">Call <a href="53174.html">FindCharacterScriptEntry</a> to find the character script, then write 2 into the object attribute.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52418"></span>52418</td>
+<td class="instruction">LD (IX+5),2</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52422"></span>52422</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52423"></span>
+<div class="comments">
+<div class="paragraph">
+Reads one command byte from the character script and dispatches it. Command 7 refreshes the room display.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript_DispatchOpcode</td>
+<td class="address-2"><span id="52423"></span>52423</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Get the command byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52424"></span>52424</td>
+<td class="instruction">AND %00001111</td>
+<td class="comment-1" rowspan="1">Extract the command type.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52426"></span>52426</td>
+<td class="instruction">CP 7</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="52795.html">HandleRoomDisplay</a> when the command is 7.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52428"></span>52428</td>
+<td class="instruction">JP Z,<a href="52795.html">HandleRoomDisplay</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52431"></span>52431</td>
+<td class="instruction">CP 6</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="52629.html">PrintCommandMessage</a> when the command is 6.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52433"></span>52433</td>
+<td class="instruction">JP Z,<a href="52629.html">PrintCommandMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52436"></span>52436</td>
+<td class="instruction">CP 5</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="52641.html">ShowRoomDescription</a> when the command is 5.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52438"></span>52438</td>
+<td class="instruction">JP Z,<a href="52641.html">ShowRoomDescription</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52441"></span>52441</td>
+<td class="instruction">CP 4</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="52671.html">52671</a> when the command is 4.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52443"></span>52443</td>
+<td class="instruction">JP Z,<a href="52671.html">52671</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52446"></span>52446</td>
+<td class="instruction">CP 1</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="52842.html">RunSimpleAction</a> when the command is 1.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52448"></span>52448</td>
+<td class="instruction">JP Z,<a href="52842.html">RunSimpleAction</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52451"></span>52451</td>
+<td class="instruction">CP 3</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="52815.html">ClearRoomDisplayParameters</a> when the command is 3.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52453"></span>52453</td>
+<td class="instruction">JP Z,<a href="52815.html">ClearRoomDisplayParameters</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52456"></span>52456</td>
+<td class="instruction">CP 8</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="52354.html#52516">DispatchCharacterScript_Push</a> when the command is 8.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52458"></span>52458</td>
+<td class="instruction">JR Z,<a href="52354.html#52516">DispatchCharacterScript_Push</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52460"></span>52460</td>
+<td class="instruction">CP 9</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="52354.html#52551">DispatchCharacterScript_Pop</a> when the command is 9.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52462"></span>52462</td>
+<td class="instruction">JR Z,<a href="52354.html#52551">DispatchCharacterScript_Pop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52464"></span>52464</td>
+<td class="instruction">JP <a href="52760.html">52760</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="52760.html">52760</a> to handle display room description.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52467"></span>
+<div class="comments">
+<div class="paragraph">
+Handles command Type 14/12/11/10.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript_TestGoto</td>
+<td class="address-2"><span id="52467"></span>52467</td>
+<td class="instruction">CP 14</td>
+<td class="comment-1" rowspan="2">Jump to <a href="52354.html#52486">DispatchCharacterScript_TestStop</a> when the command is not 14.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52469"></span>52469</td>
+<td class="instruction">JR NZ,<a href="52354.html#52486">DispatchCharacterScript_TestStop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52471"></span>52471</td>
+<td class="instruction">LD A,(IX+1)</td>
+<td class="comment-1" rowspan="2">Copy <span class="register">IX</span>+1 into <span class="register">IY</span>+1.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52474"></span>52474</td>
+<td class="instruction">LD (IY+1),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52477"></span>52477</td>
+<td class="instruction">LD A,(IX+2)</td>
+<td class="comment-1" rowspan="3">Copy the script position into the character record and parse again from <a href="52354.html">DispatchCharacterScript</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52480"></span>52480</td>
+<td class="instruction">LD (IY+2),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52483"></span>52483</td>
+<td class="instruction">JP <a href="52354.html#52354">DispatchCharacterScript</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52486"></span>
+<div class="comments">
+<div class="paragraph">
+Command 12 repeats, and command 11 copies the script pointer, returning when it is 2.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript_TestStop</td>
+<td class="address-2"><span id="52486"></span>52486</td>
+<td class="instruction">CP 12</td>
+<td class="comment-1" rowspan="1">See whether the command is 12.</td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript_0</td>
+<td class="address-2"><span id="52488"></span>52488</td>
+<td class="instruction">JR Z,<a href="52354.html#52488">DispatchCharacterScript_0</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="52354.html#52488">DispatchCharacterScript_0</a> if the command is 12.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52490"></span>52490</td>
+<td class="instruction">CP 11</td>
+<td class="comment-1" rowspan="2">Jump to <a href="52354.html#52503">DispatchCharacterScript_TestNested</a> when the command is not 11.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52492"></span>52492</td>
+<td class="instruction">JR NZ,<a href="52354.html#52503">DispatchCharacterScript_TestNested</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52494"></span>52494</td>
+<td class="instruction">CALL <a href="53199.html">GetScriptPointer</a></td>
+<td class="comment-1" rowspan="3">Call <a href="53199.html">GetScriptPointer</a> and return when it reports 2.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52497"></span>52497</td>
+<td class="instruction">CP 2</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52499"></span>52499</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52500"></span>52500</td>
+<td class="instruction">JP <a href="52879.html">ContinueScriptExecution</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="52879.html">ContinueScriptExecution</a> to resume script execution.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52503"></span>
+<div class="comments">
+<div class="paragraph">
+Command 10 copies it is 2.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript_TestNested</td>
+<td class="address-2"><span id="52503"></span>52503</td>
+<td class="instruction">CP 10</td>
+<td class="comment-1" rowspan="2">Jump to <a href="52354.html#52610">DispatchCharacterScript_MarkError</a> when the command is not 10.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52505"></span>52505</td>
+<td class="instruction">JR NZ,<a href="52354.html#52610">DispatchCharacterScript_MarkError</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52507"></span>52507</td>
+<td class="instruction">CALL <a href="53199.html">GetScriptPointer</a></td>
+<td class="comment-1" rowspan="3">Call <a href="53199.html">GetScriptPointer</a> and return when it reports 2.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52510"></span>52510</td>
+<td class="instruction">CP 2</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52512"></span>52512</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52513"></span>52513</td>
+<td class="instruction">JP <a href="52920.html">ProcessScriptCommandWithCounter</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="52920.html">ProcessScriptCommandWithCounter</a> to run script command with counter.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52516"></span>
+<div class="comments">
+<div class="paragraph">
+Handles push Stack.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript_Push</td>
+<td class="address-2"><span id="52516"></span>52516</td>
+<td class="instruction">LD A,(IX+1)</td>
+<td class="comment-1" rowspan="4">Read the moved marker and use 2 for the record, then call <a href="41244.html">AllocateMemory</a> to allocate memory.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52519"></span>52519</td>
+<td class="instruction">PUSH AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52520"></span>52520</td>
+<td class="instruction">LD A,2</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52522"></span>52522</td>
+<td class="instruction">CALL <a href="41244.html">AllocateMemory</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52525"></span>52525</td>
+<td class="instruction">LD HL,(40935)</td>
+<td class="comment-1" rowspan="2">Read the saved pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52528"></span>52528</td>
+<td class="instruction">LD (40935),IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52532"></span>52532</td>
+<td class="instruction">LD (IX-2),L</td>
+<td class="comment-1" rowspan="1">Store the low byte of the pointer in the previous record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52535"></span>52535</td>
+<td class="instruction">LD (IX-1),H</td>
+<td class="comment-1" rowspan="1">Store the high byte of the pointer in the previous record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52538"></span>52538</td>
+<td class="instruction">LD A,(41014)</td>
+<td class="comment-1" rowspan="2">Write *<a href="41014.html">CurrentCharacter_ID</a> to *<span class="register">IX</span>+0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52541"></span>52541</td>
+<td class="instruction">LD (IX+0),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52544"></span>52544</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52545"></span>52545</td>
+<td class="instruction">LD (IX+1),A</td>
+<td class="comment-1" rowspan="2">Store <span class="register">A</span> at offset 1 and jump to <a href="52879.html">ContinueScriptExecution</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52548"></span>52548</td>
+<td class="instruction">JP <a href="52879.html">ContinueScriptExecution</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52551"></span>
+<div class="comments">
+<div class="paragraph">
+Handles pop Stack.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript_Pop</td>
+<td class="address-2"><span id="52551"></span>52551</td>
+<td class="instruction">LD B,(IX+1)</td>
+<td class="comment-1" rowspan="2">Use the character list pointer at <a href="40937.html">CharacterListPointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52554"></span>52554</td>
+<td class="instruction">LD IX,40937</td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript_Loop</td>
+<td class="address-2"><span id="52558"></span>52558</td>
+<td class="instruction">CALL <a href="41207.html">FetchObjectPointerFromStack</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="52920.html">ProcessScriptCommandWithCounter</a> if the object pointer is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52561"></span>52561</td>
+<td class="instruction">JP Z,<a href="52920.html">ProcessScriptCommandWithCounter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52564"></span>52564</td>
+<td class="instruction">LD A,(41014)</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="52354.html#52558">DispatchCharacterScript_Loop</a> while this id does not match the moved marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52567"></span>52567</td>
+<td class="instruction">CP (IX+1)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52570"></span>52570</td>
+<td class="instruction">JR NZ,<a href="52354.html#52558">DispatchCharacterScript_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52572"></span>52572</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="52354.html#52558">DispatchCharacterScript_Loop</a> while this id does not match the record's flag byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52573"></span>52573</td>
+<td class="instruction">CP (IX+0)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52576"></span>52576</td>
+<td class="instruction">JR NZ,<a href="52354.html#52558">DispatchCharacterScript_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52578"></span>52578</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="1">Save the schedule entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52580"></span>52580</td>
+<td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="2">Copy the character record from <span class="register">IX</span> into <span class="register">DE</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52582"></span>52582</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52583"></span>52583</td>
+<td class="instruction">LD IY,40935</td>
+<td class="comment-1" rowspan="1">Use the saved pointer (<a href="40935.html">40935</a>).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52587"></span>
+<div class="comments">
+<div class="paragraph">
+Step pointer and compare.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52587"></span>52587</td>
+<td class="instruction">CALL <a href="41220.html">IncrementPointerAndCompare</a></td>
+<td class="comment-1" rowspan="1">Call <a href="41220.html">IncrementPointerAndCompare</a> to compare the pointer with the next record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52590"></span>52590</td>
+<td class="instruction">LD L,(IX-2)</td>
+<td class="comment-1" rowspan="2">Read the pointer saved ahead of this record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52593"></span>52593</td>
+<td class="instruction">LD H,(IX-1)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52596"></span>52596</td>
+<td class="instruction">LD (IY-2),L</td>
+<td class="comment-1" rowspan="1">Store the low byte of the pointer in the previous record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52599"></span>52599</td>
+<td class="instruction">LD (IY-1),H</td>
+<td class="comment-1" rowspan="3">Store the high byte of the link and call <a href="41415.html">ProcessMemoryEntry</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52602"></span>52602</td>
+<td class="instruction">CALL <a href="41415.html">ProcessMemoryEntry</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52605"></span>52605</td>
+<td class="instruction">POP IY</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52607"></span>52607</td>
+<td class="instruction">JP <a href="52879.html">ContinueScriptExecution</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="52879.html">ContinueScriptExecution</a> to resume script execution.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="52610"></span>
+<div class="comments">
+<div class="paragraph">
+Sets character Script Error.
+</div>
+<div class="paragraph">
+Set script completion flag.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DispatchCharacterScript_MarkError</td>
+<td class="address-2"><span id="52610"></span>52610</td>
+<td class="instruction">LD HL,1</td>
+<td class="comment-1" rowspan="2">Write 0001 to *<a href="40991.html">CharacterScriptCycles</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52613"></span>52613</td>
+<td class="instruction">LD (40991),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="52616"></span>52616</td>
+<td class="instruction">JP <a href="52879.html">ContinueScriptExecution</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="52879.html">ContinueScriptExecution</a> to resume script execution.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="52344.html">52344</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#52354">Map</a></td>
+<td class="next">
+Next: <a href="52619.html">52619</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../../asm/CC82.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

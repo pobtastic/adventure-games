@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at E3F5</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="E3A9.html">E3A9</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#e3f5">Map</a></td>
+<td class="next">
+Next: <a href="E4FB.html">E4FB</a>
+</td>
+</tr>
+</table>
+<div class="description">E3F5: Check The Character For Room Graphics</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="E3A9.html">ReadSourceDisplayPointer</a>.
+</div>
+<div class="paragraph">
+Checks the character id and returns when the room has nothing to draw. Reached through the display record at <a href="E3F5.html#e40a">E40A</a>, dispatched by <a href="CB40.html">DispatchLookedUpHandlerThird</a>. A non-zero return means the script step succeeded.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckCharacterForRoomGraphics</td>
+<td class="address-2"><span id="e3f5"></span>E3F5</td>
+<td class="instruction">CALL <a href="CBA7.html">CheckFlagAndJumpToNewline</a></td>
+<td class="comment-1" rowspan="3">Call <a href="CBA7.html">CheckFlagAndJumpToNewline</a>, then return if <a href="DCA7.html">ApplyRoomDisplay</a> returns zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e3f8"></span>E3F8</td>
+<td class="instruction">CALL <a href="DCA7.html">ApplyRoomDisplay</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e3fb"></span>E3FB</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e3fc"></span>E3FC</td>
+<td class="instruction">LD IX,($A017)</td>
+<td class="comment-1" rowspan="2">Read the current character record and read the current object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e400"></span>E400</td>
+<td class="instruction">LD IY,($A013)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e404"></span>E404</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="2">Take the room display parameter and jump back to <a href="DEE4.html">CombineCharacterRoom</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e407"></span>E407</td>
+<td class="instruction">JP <a href="DEE4.html">CombineCharacterRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e40a"></span>E40A</td>
+<td class="instruction">DEFB $78,$20,$F5,$E3,$90,$40,$28,$00</td>
+<td class="comment-1" rowspan="2">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 78 value 20 handler <a href="E3F5.html">CheckCharacterForRoomGraphics</a>, parameters 90 40 28 00 00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e412"></span>E412</td>
+<td class="instruction">DEFB $00</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e413"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="E3A9.html">ReadSourceDisplayPointer</a>.
+</div>
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E3F5.html#e40a">E40A</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckCharacterForRoomGraphics_CharacterRecord</td>
+<td class="address-2"><span id="e413"></span>E413</td>
+<td class="instruction">LD IY,($A017)</td>
+<td class="comment-1" rowspan="2">Read the current character record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e417"></span>E417</td>
+<td class="instruction">LD A,($A034)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e41a"></span>E41A</td>
+<td class="instruction">LD (IY+$01),A</td>
+<td class="comment-1" rowspan="1">Store the room display parameter at <span class="register">IY</span>+01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e41d"></span>E41D</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e41f"></span>E41F</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e420"></span>
+<div class="comments">
+<div class="paragraph">
+Reached through the display record at <a href="E3F5.html#e432">E432</a>, dispatched by <a href="CB40.html">DispatchLookedUpHandlerThird</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e420"></span>E420</td>
+<td class="instruction">CALL <a href="CBA7.html">CheckFlagAndJumpToNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="CBA7.html">CheckFlagAndJumpToNewline</a> to move to the next line when the flag is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e423"></span>E423</td>
+<td class="instruction">LD A,($A036)</td>
+<td class="comment-1" rowspan="3">Read the character being processed and take the room display parameter, then call <a href="D278.html">D278</a> to test character id range.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e426"></span>E426</td>
+<td class="instruction">LD HL,$A034</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e429"></span>E429</td>
+<td class="instruction">CALL <a href="D278.html">$D278</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e42c"></span>E42C</td>
+<td class="instruction">JP NC,<a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a> if <a href="D278.html">D278</a> rejects this character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e42f"></span>E42F</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e431"></span>E431</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e432"></span>E432</td>
+<td class="instruction">DEFB $78,$20,$20,$E4,$10,$80,$28,$00</td>
+<td class="comment-1" rowspan="2">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 78 value 20 handler <a href="E3F5.html#e420">E420</a>, parameters 10 80 28 00 00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e43a"></span>E43A</td>
+<td class="instruction">DEFB $00</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e43b"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E3F5.html#e432">E432</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckCharacterForRoomGraphics_CurrentObject</td>
+<td class="address-1"><span id="e43b"></span>E43B</td>
+<td class="instruction">LD IY,($A013)</td>
+<td class="comment-1" rowspan="1">Read the current object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e43f"></span>E43F</td>
+<td class="instruction">LD A,(IY+$01)</td>
+<td class="comment-1" rowspan="2">Keep the object's marker and read the current character record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e442"></span>E442</td>
+<td class="instruction">LD IY,($A017)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e446"></span>E446</td>
+<td class="instruction">LD (IY+$01),A</td>
+<td class="comment-1" rowspan="1">Store the object's marker on the character at <span class="register">IY</span>+01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e449"></span>E449</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e44b"></span>E44B</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e44c"></span>
+<div class="comments">
+<div class="paragraph">
+Reached through the display record at <a href="E3F5.html#e452">E452</a>, dispatched by <a href="CB40.html">DispatchLookedUpHandlerThird</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e44c"></span>E44C</td>
+<td class="instruction">CALL <a href="CBA7.html">CheckFlagAndJumpToNewline</a></td>
+<td class="comment-1" rowspan="2">Check the flag at <a href="CBA7.html">CheckFlagAndJumpToNewline</a> and compare the character from <a href="E28D.html">TestCharacterAgainstRoom</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e44f"></span>E44F</td>
+<td class="instruction">JP <a href="E28D.html">TestCharacterAgainstRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e452"></span>E452</td>
+<td class="instruction">DEFB $EC,$00,$4C,$E4</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags EC value 00 handler <a href="E3F5.html#e44c">E44C</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e456"></span>E456</td>
+<td class="instruction">DEFB $07,$2F,$E5,$0A,$FF</td>
+<td class="comment-1" rowspan="1">Refresh the room from the text at <a href="E510.html#e52f">E52F</a>, using Maid, FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e45b"></span>E45B</td>
+<td class="instruction">DEFB $47,$88,$E4,$FD,$FF</td>
+<td class="comment-1" rowspan="1">Refresh the room from the text at <a href="E3F5.html#e488">E488</a>, using the low byte of the location, FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e460"></span>E460</td>
+<td class="instruction">DEFB $57,$52,$DD,$FA,$FF,$6B,$E4</td>
+<td class="comment-1" rowspan="1">Refresh the room from the text at <a href="DD35.html#dd52">DD52</a>, using the current room, FF and otherwise continue at <a href="E3F5.html#e46b">E46B</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e467"></span>E467</td>
+<td class="instruction">DEFB $43,$88,$E5</td>
+<td class="comment-1" rowspan="1">Show the message at <a href="E560.html#e588">E588</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e46a"></span>E46A</td>
+<td class="instruction">DEFB $0B</td>
+<td class="comment-1" rowspan="1">Run the nested character script.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e46b"></span>E46B</td>
+<td class="instruction">DEFB $C7,$FD,$E5,$FD,$FF,$81,$E4</td>
+<td class="comment-1" rowspan="1">Refresh the room from the text at <a href="E5C3.html#e5fd">E5FD</a>, using the low byte of the location, FF and otherwise continue at <a href="E3F5.html#e481">E481</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e472"></span>E472</td>
+<td class="instruction">DEFB $C1,$0D,$81,$E4</td>
+<td class="comment-1" rowspan="1">Perform the simple action for Tricia Fender and otherwise continue at <a href="E3F5.html#e481">E481</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e476"></span>E476</td>
+<td class="instruction">DEFB $57,$84,$DD,$FD,$FF,$81,$E4</td>
+<td class="comment-1" rowspan="1">Refresh the room from the text at <a href="DD35.html#dd84">DD84</a>, using the low byte of the location, FF and otherwise continue at <a href="E3F5.html#e481">E481</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e47d"></span>E47D</td>
+<td class="instruction">DEFB $42,$0C,$FA,$FF</td>
+<td class="comment-1" rowspan="1">Copy room parameters Local Police Man, the current room, FF into the display.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e481"></span>E481</td>
+<td class="instruction">DEFB $0F</td>
+<td class="comment-1" rowspan="1">Mark a script error and carry on.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e482"></span>E482</td>
+<td class="instruction">DEFB $C3,$7A,$E5,$5B,$E4</td>
+<td class="comment-1" rowspan="1">Show the message at <a href="E560.html#e57a">E57A</a> and otherwise continue at <a href="E3F5.html#e45b">E45B</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e487"></span>E487</td>
+<td class="instruction">DEFB $0A</td>
+<td class="comment-1" rowspan="1">Run the nested character script.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e488"></span>E488</td>
+<td class="instruction">DEFB $27,$00</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 27 value 00.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e48a"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E3F5.html#e488">E488</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e48a"></span>E48A</td>
+<td class="instruction">LD IX,($A013)</td>
+<td class="comment-1" rowspan="1">Read the current object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e48e"></span>E48E</td>
+<td class="instruction">LD A,(IX+$0F)</td>
+<td class="comment-1" rowspan="2">Record the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e491"></span>E491</td>
+<td class="instruction">LD ($9FD6),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e494"></span>E494</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e496"></span>E496</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e497"></span>E497</td>
+<td class="instruction">DEFB $47,$24,$B0,$E4</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 47 value 24 handler <a href="E3F5.html#e4b0">E4B0</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e49b"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E3F5.html#e497">E497</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e49b"></span>E49B</td>
+<td class="instruction">LD A,($A035)</td>
+<td class="comment-1" rowspan="2">Read the room graphics parameter and keep it in <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e49e"></span>E49E</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e49f"></span>E49F</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="1">Read the room display parameter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4a2"></span>E4A2</td>
+<td class="instruction">LD IX,($A013)</td>
+<td class="comment-1" rowspan="1">Read the current object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4a6"></span>E4A6</td>
+<td class="instruction">LD (IX+$01),$FF</td>
+<td class="comment-1" rowspan="2">Store FF in the moved marker, then call <a href="DD0E.html">StoreMatchedCharacterRoom</a> to compare the room display parameter with the current character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4aa"></span>E4AA</td>
+<td class="instruction">CALL <a href="DD0E.html">StoreMatchedCharacterRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4ad"></span>E4AD</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4af"></span>E4AF</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e4b0"></span>
+<div class="comments">
+<div class="paragraph">
+Reached through the display record at <a href="E3F5.html#e497">E497</a>, dispatched by <a href="CB40.html">DispatchLookedUpHandlerThird</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4b0"></span>E4B0</td>
+<td class="instruction">LD IX,($A013)</td>
+<td class="comment-1" rowspan="1">Read the current object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4b4"></span>E4B4</td>
+<td class="instruction">BIT 6,(IX+$05)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="E3F5.html#e4c6">CheckCharacterForRoomGraphics_Succeed</a> if the special-description flag is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4b8"></span>E4B8</td>
+<td class="instruction">JR Z,<a href="E3F5.html#e4c6">CheckCharacterForRoomGraphics_Succeed</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4ba"></span>E4BA</td>
+<td class="instruction">LD A,(IX+$0F)</td>
+<td class="comment-1" rowspan="2">Read the character attribute, then call <a href="D224.html">FetchLocationDataPointer</a> to look up this room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4bd"></span>E4BD</td>
+<td class="instruction">CALL <a href="D224.html">FetchLocationDataPointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4c0"></span>E4C0</td>
+<td class="instruction">LD A,(IX+$09)</td>
+<td class="comment-1" rowspan="2">Record the saved character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4c3"></span>E4C3</td>
+<td class="instruction">LD ($A033),A</td>
+</tr>
+<tr>
+<td class="asm-label">CheckCharacterForRoomGraphics_Succeed</td>
+<td class="address-2"><span id="e4c6"></span>E4C6</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4c8"></span>E4C8</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4c9"></span>E4C9</td>
+<td class="instruction">DEFB $04,$00</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 04 value 00.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e4cb"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E3F5.html#e4c9">E4C9</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4cb"></span>E4CB</td>
+<td class="instruction">LD HL,$9C56</td>
+<td class="comment-1" rowspan="3">Point <span class="register">HL</span> at <a href="9C56.html">SetObjectHeldMark</a> and read the room display parameter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4ce"></span>E4CE</td>
+<td class="instruction">LD A,($A034)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4d1"></span>E4D1</td>
+<td class="instruction">PUSH AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4d2"></span>E4D2</td>
+<td class="instruction">CP $02</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="E3F5.html#e4de">CheckCharacterForRoomGraphics_PrintMessage</a> if the room display parameter is 02.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4d4"></span>E4D4</td>
+<td class="instruction">JR Z,<a href="E3F5.html#e4de">CheckCharacterForRoomGraphics_PrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4d6"></span>E4D6</td>
+<td class="instruction">CP $03</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="E3F5.html#e4de">CheckCharacterForRoomGraphics_PrintMessage</a> if the room display parameter is 03.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4d8"></span>E4D8</td>
+<td class="instruction">JR Z,<a href="E3F5.html#e4de">CheckCharacterForRoomGraphics_PrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4da"></span>E4DA</td>
+<td class="instruction">CP $04</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="E3F5.html#e4e7">CheckCharacterForRoomGraphics_ReadCharacter</a> if the room display parameter is not 04.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4dc"></span>E4DC</td>
+<td class="instruction">JR NZ,<a href="E3F5.html#e4e7">CheckCharacterForRoomGraphics_ReadCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label">CheckCharacterForRoomGraphics_PrintMessage</td>
+<td class="address-2"><span id="e4de"></span>E4DE</td>
+<td class="instruction">LD HL,$7611</td>
+<td class="comment-1" rowspan="2">Take the message, then call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4e1"></span>E4E1</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4e4"></span>E4E4</td>
+<td class="instruction">LD HL,$9C60</td>
+<td class="comment-1" rowspan="1">Take the routine at <a href="9C60.html">ClearObjectHeldMark</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">CheckCharacterForRoomGraphics_ReadCharacter</td>
+<td class="address-2"><span id="e4e7"></span>E4E7</td>
+<td class="instruction">LD A,($A036)</td>
+<td class="comment-1" rowspan="3">Keep the current character, call <a href="E4FB.html">DispatchLookedUpHandler</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4ea"></span>E4EA</td>
+<td class="instruction">PUSH AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4eb"></span>E4EB</td>
+<td class="instruction">CALL <a href="E4FB.html">DispatchLookedUpHandler</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4ee"></span>E4EE</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore that character from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4ef"></span>E4EF</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1">Restore the room display parameter from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4f0"></span>E4F0</td>
+<td class="instruction">CALL <a href="DD0E.html">StoreMatchedCharacterRoom</a></td>
+<td class="comment-1" rowspan="1">Call <a href="DD0E.html">StoreMatchedCharacterRoom</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4f3"></span>E4F3</td>
+<td class="instruction">LD HL,($DCFF)</td>
+<td class="comment-1" rowspan="2">Read the record at <a href="DCFF.html">DCFF</a> and clear its marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4f6"></span>E4F6</td>
+<td class="instruction">RES 6,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4f8"></span>E4F8</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e4fa"></span>E4FA</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="E3A9.html">E3A9</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#e3f5">Map</a></td>
+<td class="next">
+Next: <a href="E4FB.html">E4FB</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/58357.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -42,7 +42,10 @@ Next: <a href="54767.html">54767</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="53506.html">ProcessLocationTokenDisplay</a> and <a href="54672.html">PrintObjectDescription</a>.
+Used by the routines at <a href="53523.html">DescribeCurrentRoom</a> and <a href="54672.html">PrintObjectDescription</a>.
+</div>
+<div class="paragraph">
+Reads the attribute type and prints the matching direction text.
 </div>
 </div>
 <table class="input">
@@ -60,7 +63,7 @@ Used by the routines at <a href="53506.html">ProcessLocationTokenDisplay</a> and
 <td class="asm-label">PrintObjectAttributeDescription</td>
 <td class="address-2"><span id="54739"></span>54739</td>
 <td class="instruction">LD HL,54729</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="54729.html">Table_ObjectAttributeDescriptionTokens</a> (load the address of the object attribute description text token table).</td>
+<td class="comment-1" rowspan="1">Take the object attribute description text tokens.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -76,37 +79,35 @@ Extract the attribute type from the object data.
 <td class="asm-label"></td>
 <td class="address-1"><span id="54742"></span>54742</td>
 <td class="instruction">LD A,(IX+4)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+4 (load the object attribute byte).</td>
+<td class="comment-1" rowspan="1">Read the attribute type.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54745"></span>54745</td>
 <td class="instruction">AND %00000111</td>
-<td class="comment-1" rowspan="1">Keep only bits 0-2 (extract the attribute type value, 0-7).</td>
+<td class="comment-1" rowspan="1">Keep the direction of the attribute type.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54747"></span>54747</td>
 <td class="instruction">CP 5</td>
-<td class="comment-1" rowspan="1">Compare the attribute type with 5.</td>
+<td class="comment-1" rowspan="1">See whether the attribute type is 5.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54749"></span>54749</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1">Stash the comparison result on the stack.</td>
+<td class="comment-1" rowspan="6">Count down one, store the attribute type for the next step and move the pointer on by the length.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54750"></span>54750</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">A</span> by one (convert to 0-based index for the table).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54751"></span>54751</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-1" rowspan="2">Set <span class="register">DE</span> to the index value (<span class="register">E</span>=<span class="register">A</span>, <span class="register">D</span>=0).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -117,7 +118,6 @@ Extract the attribute type from the object data.
 <td class="asm-label"></td>
 <td class="address-1"><span id="54754"></span>54754</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="2">Add the index to the table base address twice (multiply by 2 for 2-byte word entries).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -128,19 +128,19 @@ Extract the attribute type from the object data.
 <td class="asm-label"></td>
 <td class="address-1"><span id="54756"></span>54756</td>
 <td class="instruction">CALL <a href="43136.html">ExtractTokenFromText</a></td>
-<td class="comment-1" rowspan="1">Call <a href="43136.html">ExtractTokenFromText</a> to print the text token from the table.</td>
+<td class="comment-1" rowspan="1">Call <a href="43136.html">ExtractTokenFromText</a> to print the token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54759"></span>54759</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1">Restore the comparison result from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the comparison from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54760"></span>54760</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-1" rowspan="1">Return if the attribute type was not 5 (original value was not 6).</td>
+<td class="comment-1" rowspan="1">Return unless the attribute type was 5.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -156,13 +156,12 @@ Print an additional text token for attribute type 6.
 <td class="asm-label"></td>
 <td class="address-1"><span id="54761"></span>54761</td>
 <td class="instruction">LD DE,2267</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>="<a href="26177.html#26266">TO</a>".</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="43143.html">PrintTextToken</a> to print token 2267.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="54764"></span>54764</td>
-<td class="instruction">JP <a href="43136.html#43143">PrintTextToken</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="43136.html#43143">PrintTextToken</a> to print the text token.</td>
+<td class="instruction">JP <a href="43143.html">PrintTextToken</a></td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -179,7 +178,7 @@ Next: <a href="54767.html">54767</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/D5D3.html">Switch to hexadecimal</a>.</div>
 </footer>

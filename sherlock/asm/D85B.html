@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at D85B</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D835.html">D835</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d85b">Map</a></td>
+<td class="next">
+Next: <a href="D87D.html">D87D</a>
+</td>
+</tr>
+</table>
+<div class="description">D85B: Record A Parser Failure</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="D6C1.html">ParseInput</a>.
+</div>
+<div class="paragraph">
+On failure, store the result in the parser workspace, then read the display flag.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RecordParserFailure</td>
+<td class="address-2"><span id="d85b"></span>D85B</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Clear the parser workspace.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d85c"></span>D85C</td>
+<td class="instruction">LD ($D6B8),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d85f"></span>D85F</td>
+<td class="instruction">LD A,($A01C)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="D85B.html#d870">RecordParserFailure_StepSucceedsScript</a> if the display is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d862"></span>D862</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d863"></span>D863</td>
+<td class="instruction">JR Z,<a href="D85B.html#d870">RecordParserFailure_StepSucceedsScript</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d865"></span>D865</td>
+<td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="3">Store FF in the saved character and call <a href="D835.html">ReleaseNextDisplayRecord</a> to release the next display record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d867"></span>D867</td>
+<td class="instruction">LD ($A033),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d86a"></span>D86A</td>
+<td class="instruction">CALL <a href="D835.html">ReleaseNextDisplayRecord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d86d"></span>D86D</td>
+<td class="instruction">JP <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+<td class="comment-1" rowspan="1">Return zero through <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">RecordParserFailure_StepSucceedsScript</td>
+<td class="address-2"><span id="d870"></span>D870</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="3">Store 01 in the state byte at <a href="D6C1.html#d7e0">D7E0</a> and save <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d872"></span>D872</td>
+<td class="instruction">LD ($D7E0),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d875"></span>D875</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d876"></span>D876</td>
+<td class="instruction">LD HL,($D6BD)</td>
+<td class="comment-1" rowspan="1">Read the parser pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d879"></span>D879</td>
+<td class="instruction">LD (HL),$C0</td>
+<td class="comment-1" rowspan="2">Write C0 at the parser pointer, restore <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d87b"></span>D87B</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d87c"></span>D87C</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D835.html">D835</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d85b">Map</a></td>
+<td class="next">
+Next: <a href="D87D.html">D87D</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/55387.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

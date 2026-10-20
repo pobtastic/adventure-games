@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Message From Andromeda: Routine at 68A4</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6892.html">6892</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#68a4">Map</a></td>
+<td class="next">
+Next: <a href="68E0.html">68E0</a>
+</td>
+</tr>
+</table>
+<div class="description">68A4: Parser: Resolve Phrase</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="8D2A.html">GameLoop</a>.
+</div>
+<div class="paragraph">
+Replace a typed phrase with the verb it stands for.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_ResolvePhrase</td>
+<td class="address-2"><span id="68a4"></span>68A4</td>
+<td class="instruction">INC BC</td>
+<td class="comment-1" rowspan="1">The search stops one byte past the matching noun.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68a5"></span>68A5</td>
+<td class="instruction">LD A,($62C8)</td>
+<td class="comment-1" rowspan="1">Fetch how many nouns the game knows.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68a8"></span>68A8</td>
+<td class="instruction">SUB C</td>
+<td class="comment-1" rowspan="4">Select this noun's phrase and the marker that ends it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68a9"></span>68A9</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68aa"></span>68AA</td>
+<td class="instruction">LD E,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68ab"></span>68AB</td>
+<td class="instruction">LD A,$FE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68ad"></span>68AD</td>
+<td class="instruction">LD HL,($62D2)</td>
+<td class="comment-1" rowspan="1">Fetch the noun-phrase table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68b0"></span>68B0</td>
+<td class="instruction">INC B</td>
+<td class="comment-1" rowspan="1">Count the phrase terminator as one more step.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68b1"></span>68B1</td>
+<td class="instruction">JR <a href="68A4.html#68b8">Parser_ResolvePhrase_Step1</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="68A4.html#68b8">Parser_ResolvePhrase_Step1</a> to walk past the phrases already considered.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_ResolvePhrase_Loop1</td>
+<td class="address-2"><span id="68b3"></span>68B3</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Skip a byte inside the phrase just passed.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_ResolvePhrase_Loop2</td>
+<td class="address-2"><span id="68b4"></span>68B4</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="3">Walk forward until the end-of-phrase marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68b5"></span>68B5</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68b6"></span>68B6</td>
+<td class="instruction">JR Z,<a href="68A4.html#68b3">Parser_ResolvePhrase_Loop1</a></td>
+</tr>
+<tr>
+<td class="asm-label">Parser_ResolvePhrase_Step1</td>
+<td class="address-2"><span id="68b8"></span>68B8</td>
+<td class="instruction">DJNZ <a href="68A4.html#68b4">Parser_ResolvePhrase_Loop2</a></td>
+<td class="comment-1" rowspan="1">Repeat for each phrase before this noun.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68ba"></span>68BA</td>
+<td class="instruction">JR <a href="68A4.html#68bd">Parser_ResolvePhrase_Step2</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="68A4.html#68bd">Parser_ResolvePhrase_Step2</a> to read the object this phrase names.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_ResolvePhrase_Loop3</td>
+<td class="address-2"><span id="68bc"></span>68BC</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next byte of the phrase.</td>
+</tr>
+<tr>
+<td class="asm-label">Parser_ResolvePhrase_Step2</td>
+<td class="address-2"><span id="68bd"></span>68BD</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the object this phrase refers to.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68be"></span>68BE</td>
+<td class="instruction">CALL <a href="68E0.html">IsObjectInCurrentRoom</a></td>
+<td class="comment-1" rowspan="1">Call <a href="68E0.html">IsObjectInCurrentRoom</a> to test whether the object is here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68c1"></span>68C1</td>
+<td class="instruction">RET Z</td>
+<td class="comment-1" rowspan="1">Return when that object is here or being carried.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68c2"></span>68C2</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next byte of the phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68c3"></span>68C3</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the marker that follows the object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68c4"></span>68C4</td>
+<td class="instruction">CP $FE</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="68A4.html#68bc">Parser_ResolvePhrase_Loop3</a> when another object follows in the phrase (FE).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68c6"></span>68C6</td>
+<td class="instruction">JR Z,<a href="68A4.html#68bc">Parser_ResolvePhrase_Loop3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68c8"></span>68C8</td>
+<td class="instruction">LD HL,$6378</td>
+<td class="comment-1" rowspan="2">Print I can't see  on the same line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68cb"></span>68CB</td>
+<td class="instruction">CALL <a href="64DC.html">PrintString</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68ce"></span>68CE</td>
+<td class="instruction">LD IX,($62D4)</td>
+<td class="comment-1" rowspan="1">Fetch the noun table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68d2"></span>68D2</td>
+<td class="instruction">CALL <a href="6754.html">GetTableEntry</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6754.html">GetTableEntry</a> to look up the table entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68d5"></span>68D5</td>
+<td class="instruction">CALL <a href="64DC.html">PrintString</a></td>
+<td class="comment-1" rowspan="1">Call <a href="64DC.html">PrintString</a> to print the message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68d8"></span>68D8</td>
+<td class="instruction">LD HL,$6385</td>
+<td class="comment-1" rowspan="2">Print  here..</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68db"></span>68DB</td>
+<td class="instruction">CALL <a href="64E9.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68de"></span>68DE</td>
+<td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set the carry flag to reject the command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="68df"></span>68DF</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="6892.html">6892</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#68a4">Map</a></td>
+<td class="next">
+Next: <a href="68E0.html">68E0</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
+<div><a href="../dec/asm/26788.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

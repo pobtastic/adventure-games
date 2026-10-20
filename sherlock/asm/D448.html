@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at D448</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D427.html">D427</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d448">Map</a></td>
+<td class="next">
+Next: <a href="D46C.html">D46C</a>
+</td>
+</tr>
+</table>
+<div class="description">D448: Read The Character's Room</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="DCA7.html">ApplyRoomDisplay</a>.
+</div>
+<div class="paragraph">
+Fetches this character's location and steps on to the next record.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadCharacterRoom</td>
+<td class="address-2"><span id="d448"></span>D448</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="5">Call <a href="D33C.html">FetchCurrentCharacterLocation</a> to fetch current character location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d449"></span>D449</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d44a"></span>D44A</td>
+<td class="instruction">PUSH IY</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d44c"></span>D44C</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d44d"></span>D44D</td>
+<td class="instruction">CALL <a href="D33C.html">FetchCurrentCharacterLocation</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d450"></span>D450</td>
+<td class="instruction">LD DE,$0006</td>
+<td class="comment-1" rowspan="2">Step to the next record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d453"></span>D453</td>
+<td class="instruction">ADD IX,DE</td>
+</tr>
+<tr>
+<td class="asm-label">ReadCharacterRoom_Loop</td>
+<td class="address-2"><span id="d455"></span>D455</td>
+<td class="instruction">CALL <a href="D206.html">FetchNextObject</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="D448.html#d467">ReadCharacterRoom_Restore</a> if the next object id is FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d458"></span>D458</td>
+<td class="instruction">JR Z,<a href="D448.html#d467">ReadCharacterRoom_Restore</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d45a"></span>D45A</td>
+<td class="instruction">LD A,(IX+$02)</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="D448.html#d455">ReadCharacterRoom_Loop</a> if the high byte of this entry's data pointer is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d45d"></span>D45D</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d45e"></span>D45E</td>
+<td class="instruction">JR Z,<a href="D448.html#d455">ReadCharacterRoom_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d460"></span>D460</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="3">Read this entry's id and keep searching while it is not the character asked for.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d463"></span>D463</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d464"></span>D464</td>
+<td class="instruction">JP NZ,<a href="D448.html#d455">ReadCharacterRoom_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label">ReadCharacterRoom_Restore</td>
+<td class="address-2"><span id="d467"></span>D467</td>
+<td class="instruction">POP IY</td>
+<td class="comment-1" rowspan="3">Restore the saved schedule entry, the saved count and the saved source from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d469"></span>D469</td>
+<td class="instruction">POP BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d46a"></span>D46A</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="d46b"></span>D46B</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="D427.html">D427</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#d448">Map</a></td>
+<td class="next">
+Next: <a href="D46C.html">D46C</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/54344.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

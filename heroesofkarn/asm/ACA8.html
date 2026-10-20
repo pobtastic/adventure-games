@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at ACA8</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="AC6D.html">AC6D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#aca8">Map</a></td>
+<td class="next">
+Next: <a href="ACEA.html">ACEA</a>
+</td>
+</tr>
+</table>
+<div class="description">ACA8: Load From Tape</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="F7AC.html">Action_Load</a>.
+</div>
+<div class="paragraph">
+Read a save block back from tape into the configurable exits.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">LoadFromTape</td>
+<td class="address-2"><span id="aca8"></span>ACA8</td>
+<td class="instruction">LD HL,$B01F</td>
+<td class="comment-1" rowspan="2">Print "LOADING. Start tape." and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acab"></span>ACAB</td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acae"></span>ACAE</td>
+<td class="instruction">LD IX,$AD76</td>
+<td class="comment-1" rowspan="1">Load the starting address into <span class="register">IX</span> at the item-location table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acb2"></span>ACB2</td>
+<td class="instruction">LD DE,$0186</td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 0186 bytes.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acb5"></span>ACB5</td>
+<td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to FF which indicates this is a data block.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acb7"></span>ACB7</td>
+<td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set the carry flag to indicate this is loading.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acb8"></span>ACB8</td>
+<td class="instruction">CALL $0556</td>
+<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0556.html">LD_BYTES</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acbb"></span>ACBB</td>
+<td class="instruction">JR C,<a href="ACA8.html#acc5">LoadTape_Success</a></td>
+<td class="comment-1" rowspan="1">Branch to <a href="ACA8.html#acc5">LoadTape_Success</a> if the block loaded without error (carry flag set).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acbd"></span>ACBD</td>
+<td class="instruction">LD HL,$B034</td>
+<td class="comment-1" rowspan="2">Print "Tape error.Press any key to restart." and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acc0"></span>ACC0</td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acc3"></span>ACC3</td>
+<td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set the carry flag to report that the load failed, so <a href="F7AC.html">Action_Load</a> restarts the game.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acc4"></span>ACC4</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">LoadTape_Success</td>
+<td class="address-2"><span id="acc5"></span>ACC5</td>
+<td class="instruction">LD A,($AEFA)</td>
+<td class="comment-1" rowspan="1">Read the configurable-exit count into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acc8"></span>ACC8</td>
+<td class="instruction">OR A</td>
+<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acc9"></span>ACC9</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="acca"></span>
+<div class="comments">
+<div class="paragraph">
+<span class="register">B</span> counts the exits, <span class="register">IX</span> walks their addresses and <span class="register">DE</span> the save buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acca"></span>ACCA</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="3">Take the exit count and point at the exit table and the save buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="accb"></span>ACCB</td>
+<td class="instruction">LD IX,($AEE6)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="accf"></span>ACCF</td>
+<td class="instruction">LD DE,$AE9B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acd2"></span>ACD2</td>
+<td class="instruction">JR <a href="ACA8.html#acd9">LoadFromTape_0</a></td>
+<td class="comment-1" rowspan="1">Restore the first configurable exit.</td>
+</tr>
+<tr>
+<td class="asm-label">LoadTape_RestoreExit</td>
+<td class="address-2"><span id="acd4"></span>ACD4</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="8">Copy each saved destination back into the configurable exits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acd6"></span>ACD6</td>
+<td class="instruction">INC IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acd8"></span>ACD8</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label">LoadFromTape_0</td>
+<td class="address-2"><span id="acd9"></span>ACD9</td>
+<td class="instruction">LD L,(IX+$00)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acdc"></span>ACDC</td>
+<td class="instruction">LD H,(IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="acdf"></span>ACDF</td>
+<td class="instruction">LD A,(DE)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ace0"></span>ACE0</td>
+<td class="instruction">LD (HL),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ace1"></span>ACE1</td>
+<td class="instruction">DJNZ <a href="ACA8.html#acd4">LoadTape_RestoreExit</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ace3"></span>ACE3</td>
+<td class="instruction">LD E,$00</td>
+<td class="comment-1" rowspan="2">Show the room picture only when it has not already been seen.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ace5"></span>ACE5</td>
+<td class="instruction">CALL <a href="B41F.html">HandlerDisplayRoomImage</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ace8"></span>ACE8</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="1">Clear the carry flag to report that the load worked, so <a href="F7AC.html">Action_Load</a> goes back to the game.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ace9"></span>ACE9</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="AC6D.html">AC6D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#aca8">Map</a></td>
+<td class="next">
+Next: <a href="ACEA.html">ACEA</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../dec/asm/44200.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

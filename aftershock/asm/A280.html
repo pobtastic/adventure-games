@@ -33,7 +33,7 @@ Next: <a href="A305.html">A305</a>
 </td>
 </tr>
 </table>
-<div class="description">A280: Routine at A280</div>
+<div class="description">A280: Handler: Process Game Events</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -41,373 +41,541 @@ Next: <a href="A305.html">A305</a>
 <div class="paragraph">
 Used by the routine at <a href="ADA1.html">GameStart</a>.
 </div>
+<div class="paragraph">
+Counts down the turn-based events in <a href="A0C8.html">Flags_TurnEvents</a> and, when a counter reaches zero, runs the handler from <a href="BBB9.html">JumpTable_TurnEvents</a>.
+</div>
+<div class="paragraph">
+Then relocates any scenic event that is not already in the current room, picking the new room from the group at <a href="B6BA.html#b6bf">B6BF</a>.
+</div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a280"></span>
+<div class="comments">
+<div class="paragraph">
+A turn-based event runs only while its bit in <a href="A0C8.html">Flags_TurnEvents</a> is set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_GameEvents</td>
 <td class="address-2"><span id="a280"></span>A280</td>
 <td class="instruction">LD A,($A0C8)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Leave the events alone when none are armed.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a283"></span>A283</td>
 <td class="instruction">OR A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a284"></span>A284</td>
-<td class="instruction">JR Z,<a href="A280.html#a2b7">$A2B7</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A280.html#a2b7">Handler_GameEvents_1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a286"></span>
+<div class="comments">
+<div class="paragraph">
+Eight turn-based events share the flag byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a286"></span>A286</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Start with the first turn-based event.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a287"></span>A287</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a289"></span>
+<div class="comments">
+<div class="paragraph">
+This event is not running.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">TurnEvent_NextBit</td>
 <td class="address-2"><span id="a289"></span>A289</td>
 <td class="instruction">SRL C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Skip an event that is not armed.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a28b"></span>A28B</td>
-<td class="instruction">JR NC,<a href="A280.html#a2b5">$A2B5</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="A280.html#a2b5">Handler_GameEvents_0</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a28d"></span>
+<div class="comments">
+<div class="paragraph">
+Count down this event. It fires when the counter at <a href="A0C9.html">TurnEventCounters</a> reaches zero.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a28d"></span>A28D</td>
 <td class="instruction">LD DE,$0000</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="8">Leave the event for a later turn when the counter is still running.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a290"></span>A290</td>
 <td class="instruction">LD HL,$A0C9</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a293"></span>A293</td>
 <td class="instruction">LD A,$08</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a295"></span>A295</td>
 <td class="instruction">SUB B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a296"></span>A296</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a297"></span>A297</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a298"></span>A298</td>
 <td class="instruction">DEC (HL)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a299"></span>A299</td>
-<td class="instruction">JR NZ,<a href="A280.html#a2b5">$A2B5</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="A280.html#a2b5">Handler_GameEvents_0</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a29b"></span>
+<div class="comments">
+<div class="paragraph">
+The counter has expired, so run this event's script from <a href="BBB9.html">JumpTable_TurnEvents</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a29b"></span>A29B</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">The scripts are listed at <a href="BBB9.html">JumpTable_TurnEvents</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a29d"></span>A29D</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a29e"></span>A29E</td>
 <td class="instruction">LD IX,$BBB9</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2a2"></span>A2A2</td>
 <td class="instruction">SLA E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">This is the event whose counter expired.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2a4"></span>A2A4</td>
 <td class="instruction">ADD IX,DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2a6"></span>A2A6</td>
 <td class="instruction">LD L,(IX+$00)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Read that script's address.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2a9"></span>A2A9</td>
 <td class="instruction">LD H,(IX+$01)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2ac"></span>A2AC</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Copy the script address from <span class="register">HL</span> into <span class="register">IX</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2ad"></span>A2AD</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2af"></span>A2AF</td>
-<td class="instruction">CALL <a href="A6FF.html">$A6FF</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="A6FF.html">Handler_RunScript</a></td>
+<td class="comment-1" rowspan="1">Run that script.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2b2"></span>A2B2</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore the event counter and event pointer from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2b3"></span>A2B3</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a2b5"></span>
+<div class="comments">
+<div class="paragraph">
+Test the next turn-based event.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_GameEvents_0</td>
 <td class="address-2"><span id="a2b5"></span>A2B5</td>
-<td class="instruction">DJNZ <a href="A280.html#a289">$A289</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="A280.html#a289">TurnEvent_NextBit</a></td>
+<td class="comment-1" rowspan="1">Every armed event is considered once per turn.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a2b7"></span>
+<div class="comments">
+<div class="paragraph">
+Scenic events live in <a href="B6BA.html">Table_ScenicEventLocations2</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_GameEvents_1</td>
 <td class="address-2"><span id="a2b7"></span>A2B7</td>
 <td class="instruction">LD HL,$B6BA</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">There is nothing to move when no scenic event is active.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2ba"></span>A2BA</td>
 <td class="instruction">LD A,($BBCF)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2bd"></span>A2BD</td>
 <td class="instruction">OR A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2be"></span>A2BE</td>
-<td class="instruction">JR Z,<a href="A280.html#a304">$A304</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A280.html#a304">Handler_GameEvents_5</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2c0"></span>A2C0</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Visit each scenic event in turn.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2c1"></span>A2C1</td>
-<td class="instruction">JR <a href="A280.html#a2c4">$A2C4</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="A280.html#a2c4">ScenicEvent_Item</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a2c3"></span>
+<div class="comments">
+<div class="paragraph">
+Room 00 means this scenic item is inactive.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScenicEvent_Next</td>
 <td class="address-2"><span id="a2c3"></span>A2C3</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">The next scenic item.</td>
 </tr>
 <tr>
+<td class="asm-label">ScenicEvent_Item</td>
 <td class="address-2"><span id="a2c4"></span>A2C4</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Its item id.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2c5"></span>A2C5</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2c6"></span>A2C6</td>
 <td class="instruction">CALL <a href="A62C.html">ItemLocator</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="A62C.html">ItemLocator</a> to read where this item is.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2c9"></span>A2C9</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the event-list pointer from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2ca"></span>A2CA</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">An inactive item is left where it is.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2cb"></span>A2CB</td>
-<td class="instruction">JR Z,<a href="A280.html#a302">$A302</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A280.html#a302">Handler_GameEvents_4</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a2cd"></span>
+<div class="comments">
+<div class="paragraph">
+An event that is already in the player's room stays there.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2cd"></span>A2CD</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Skip an event whose room is <a href="A106.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2ce"></span>A2CE</td>
 <td class="instruction">LD A,($A106)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2d1"></span>A2D1</td>
 <td class="instruction">CP C</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2d2"></span>A2D2</td>
-<td class="instruction">JR Z,<a href="A280.html#a302">$A302</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A280.html#a302">Handler_GameEvents_4</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a2d4"></span>
+<div class="comments">
+<div class="paragraph">
+Each scenic event has a room group in <a href="B6BA.html#b6bf">B6BF</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2d4"></span>A2D4</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">The scenic scan waits while a room is chosen.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2d6"></span>A2D6</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2d7"></span>A2D7</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2d8"></span>A2D8</td>
 <td class="instruction">LD A,($BBCF)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Which event's group this is.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2db"></span>A2DB</td>
 <td class="instruction">SUB B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2dc"></span>A2DC</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2dd"></span>A2DD</td>
 <td class="instruction">LD IX,$B6BF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">The room groups are listed at <a href="B6BA.html#b6bf">B6BF</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2e1"></span>A2E1</td>
 <td class="instruction">CALL <a href="A305.html">GetTableEntry</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">This event's room group.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a2e4"></span>
+<div class="comments">
+<div class="paragraph">
+The refresh register picks how far to walk into the room group. FF ends the group and the walk wraps.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2e4"></span>A2E4</td>
 <td class="instruction">LD A,R</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="6">Choose a room from this event's group.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2e6"></span>A2E6</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2e7"></span>A2E7</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">Handler_GameEvents_2</td>
 <td class="address-2"><span id="a2e9"></span>A2E9</td>
 <td class="instruction">LD L,(IX+$00)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2ec"></span>A2EC</td>
 <td class="instruction">LD H,(IX+$01)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2ef"></span>A2EF</td>
-<td class="instruction">JR <a href="A280.html#a2f2">$A2F2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="A280.html#a2f2">Handler_GameEvents_3</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a2f1"></span>
+<div class="comments">
+<div class="paragraph">
+Walk the room group. FF restarts it, and the refresh count chooses where to stop. Then move the scenic item there.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScenicRoom_Next</td>
 <td class="address-2"><span id="a2f1"></span>A2F1</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">FF restarts the group. Otherwise step to the next room.</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_GameEvents_3</td>
 <td class="address-2"><span id="a2f2"></span>A2F2</td>
 <td class="instruction">CP (HL)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2f3"></span>A2F3</td>
-<td class="instruction">JR Z,<a href="A280.html#a2e9">$A2E9</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A280.html#a2e9">Handler_GameEvents_2</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2f5"></span>A2F5</td>
-<td class="instruction">DJNZ <a href="A280.html#a2f1">$A2F1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="A280.html#a2f1">ScenicRoom_Next</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2f7"></span>A2F7</td>
 <td class="instruction">LD C,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the destination room into <span class="register">C</span>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2f8"></span>A2F8</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the scenic-event pointer from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2f9"></span>A2F9</td>
 <td class="instruction">LD B,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Fetch the item ID into <span class="register">B</span> and stash the pointer again.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2fa"></span>A2FA</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2fb"></span>A2FB</td>
 <td class="instruction">CALL <a href="A663.html">Handler_UpdateItemLocation</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="A663.html">Handler_UpdateItemLocation</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2fe"></span>A2FE</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Restore the scenic scan from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a2ff"></span>A2FF</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a300"></span>A300</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a302"></span>
+<div class="comments">
+<div class="paragraph">
+Move on to the next scenic event.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_GameEvents_4</td>
 <td class="address-2"><span id="a302"></span>A302</td>
-<td class="instruction">DJNZ <a href="A280.html#a2c3">$A2C3</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="A280.html#a2c3">ScenicEvent_Next</a></td>
+<td class="comment-1" rowspan="1">Every scenic event is considered once.</td>
 </tr>
 <tr>
+<td class="asm-label">Handler_GameEvents_5</td>
 <td class="address-2"><span id="a304"></span>A304</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -424,7 +592,7 @@ Next: <a href="A305.html">A305</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/41600.html">Switch to decimal</a>.</div>
 </footer>

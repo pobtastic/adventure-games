@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Message From Andromeda: Routine at 8E18</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="8E0F.html">8E0F</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#8e18">Map</a></td>
+<td class="next">
+Next: <a href="8E8D.html">8E8D</a>
+</td>
+</tr>
+</table>
+<div class="description">8E18: Move Player To Room</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="8EF8.html">ActionDown</a>, <a href="93A1.html">ActionEnter</a>, <a href="93E4.html">ActionLeave</a>, <a href="9670.html">ActionRead</a>, <a href="96BE.html">ActionLand</a> and <a href="F8AF.html">GameStart</a>.
+</div>
+<div class="paragraph">
+Store the given room as the current room and update the exit record.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom</td>
+<td class="address-2"><span id="8e18"></span>8E18</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1">Remember the room being entered.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e19"></span>8E19</td>
+<td class="instruction">LD A,($6223)</td>
+<td class="comment-1" rowspan="1">Fetch the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e1c"></span>8E1C</td>
+<td class="instruction">LD HL,$6224</td>
+<td class="comment-1" rowspan="1">The scenic events remember the room the player just left.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e1f"></span>8E1F</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="1">Up to eight scenic rooms may name the room just left.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e21"></span>8E21</td>
+<td class="instruction">JR <a href="8E18.html#8e24">MovePlayerToRoom_Step1</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="8E18.html#8e24">MovePlayerToRoom_Step1</a> to see if this scenic slot names the old room.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Loop1</td>
+<td class="address-2"><span id="8e23"></span>8E23</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move on to the next scenic room.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Step1</td>
+<td class="address-2"><span id="8e24"></span>8E24</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">Leave this scenic slot when it does not name the old room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e25"></span>8E25</td>
+<td class="instruction">JR NZ,<a href="8E18.html#8e28">MovePlayerToRoom_Step2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e27"></span>8E27</td>
+<td class="instruction">LD (HL),C</td>
+<td class="comment-1" rowspan="1">This scenic slot now names the room being entered.</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Step2</td>
+<td class="address-2"><span id="8e28"></span>8E28</td>
+<td class="instruction">DJNZ <a href="8E18.html#8e23">MovePlayerToRoom_Loop1</a></td>
+<td class="comment-1" rowspan="1">Repeat for the remaining scenic rooms.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e2a"></span>8E2A</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="2">Make the new room current.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e2b"></span>8E2B</td>
+<td class="instruction">LD ($6223),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e2e"></span>8E2E</td>
+<td class="instruction">LD E,$00</td>
+<td class="comment-1" rowspan="1">Draw the room, including its picture.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e30"></span>8E30</td>
+<td class="instruction">CALL <a href="678A.html">Handler_DisplayRoom</a></td>
+<td class="comment-1" rowspan="1">Call <a href="678A.html">Handler_DisplayRoom</a> to display the room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e33"></span>8E33</td>
+<td class="instruction">LD A,$12</td>
+<td class="comment-1" rowspan="3">Jump to <a href="8E18.html#8e44">MovePlayerToRoom_Step3</a> when An android guard.He has shot at youand missed. (12) is not here or being carried.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e35"></span>8E35</td>
+<td class="instruction">CALL <a href="68E0.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e38"></span>8E38</td>
+<td class="instruction">JR NZ,<a href="8E18.html#8e44">MovePlayerToRoom_Step3</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e3a"></span>8E3A</td>
+<td class="instruction">LD HL,$6219</td>
+<td class="comment-1" rowspan="1">Check the turn-based event flags.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e3d"></span>8E3D</td>
+<td class="instruction">SET 0,(HL)</td>
+<td class="comment-1" rowspan="3">The android will attack in 02 turns.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e3f"></span>8E3F</td>
+<td class="instruction">LD A,$02</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e41"></span>8E41</td>
+<td class="instruction">LD ($621A),A</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Step3</td>
+<td class="address-2"><span id="8e44"></span>8E44</td>
+<td class="instruction">LD A,$24</td>
+<td class="comment-1" rowspan="3">Jump to <a href="8E18.html#8e55">MovePlayerToRoom_Step4</a> when A huge,blind slugis blocking the western exit.It is advancing toward you. (24) is not here or being carried.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e46"></span>8E46</td>
+<td class="instruction">CALL <a href="68E0.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e49"></span>8E49</td>
+<td class="instruction">JR NZ,<a href="8E18.html#8e55">MovePlayerToRoom_Step4</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e4b"></span>8E4B</td>
+<td class="instruction">LD HL,$6219</td>
+<td class="comment-1" rowspan="1">Check the turn-based event flags.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e4e"></span>8E4E</td>
+<td class="instruction">SET 1,(HL)</td>
+<td class="comment-1" rowspan="3">The slug will attack in 06 turns.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e50"></span>8E50</td>
+<td class="instruction">LD A,$06</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e52"></span>8E52</td>
+<td class="instruction">LD ($621B),A</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Step4</td>
+<td class="address-2"><span id="8e55"></span>8E55</td>
+<td class="instruction">LD A,$27</td>
+<td class="comment-1" rowspan="3">Jump to <a href="8E18.html#8e66">MovePlayerToRoom_Step5</a> when The alien commander,in space armour. (27) is not here or being carried.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e57"></span>8E57</td>
+<td class="instruction">CALL <a href="68E0.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e5a"></span>8E5A</td>
+<td class="instruction">JR NZ,<a href="8E18.html#8e66">MovePlayerToRoom_Step5</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e5c"></span>8E5C</td>
+<td class="instruction">LD HL,$6219</td>
+<td class="comment-1" rowspan="1">Check the turn-based event flags.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e5f"></span>8E5F</td>
+<td class="instruction">SET 2,(HL)</td>
+<td class="comment-1" rowspan="3">The second android will attack in 06 turns.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e61"></span>8E61</td>
+<td class="instruction">LD A,$06</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e63"></span>8E63</td>
+<td class="instruction">LD ($621C),A</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Step5</td>
+<td class="address-2"><span id="8e66"></span>8E66</td>
+<td class="instruction">LD A,($6223)</td>
+<td class="comment-1" rowspan="1">Fetch the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e69"></span>8E69</td>
+<td class="instruction">CP $05</td>
+<td class="comment-1" rowspan="2">The tractor beam is only dealt with on The Landing Pad..</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e6b"></span>8E6B</td>
+<td class="instruction">JR NZ,<a href="8E18.html#8e8c">MovePlayerToRoom_Step6</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e6d"></span>8E6D</td>
+<td class="instruction">LD HL,$6219</td>
+<td class="comment-1" rowspan="1">Check the turn-based event flags.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e70"></span>8E70</td>
+<td class="instruction">BIT 3,(HL)</td>
+<td class="comment-1" rowspan="2">The explosion countdown is not armed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e72"></span>8E72</td>
+<td class="instruction">JR Z,<a href="8E18.html#8e8c">MovePlayerToRoom_Step6</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e74"></span>8E74</td>
+<td class="instruction">RES 3,(HL)</td>
+<td class="comment-1" rowspan="1">Leave the explosion countdown unarmed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e76"></span>8E76</td>
+<td class="instruction">LD BC,$3000</td>
+<td class="comment-1" rowspan="2">Move A tractor beam isholding the ship.Takeoff is impossible. (30) to nowhere (00).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e79"></span>8E79</td>
+<td class="instruction">CALL <a href="65E6.html">UpdateObjectLocation</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e7c"></span>8E7C</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Close the south exit of The Landing Pad..</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e7d"></span>8E7D</td>
+<td class="instruction">LD ($8B79),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e80"></span>8E80</td>
+<td class="instruction">LD BC,$4004</td>
+<td class="comment-1" rowspan="2">Move The ship is ready to take off. (40) to In the Galaxyat rest,on a landing pad. (04).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e83"></span>8E83</td>
+<td class="instruction">CALL <a href="65E6.html">UpdateObjectLocation</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e86"></span>8E86</td>
+<td class="instruction">LD HL,$83C2</td>
+<td class="comment-1" rowspan="2">Print There is a tremendous roarunderground,to the south.The alien complex is destroyed..</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e89"></span>8E89</td>
+<td class="instruction">CALL <a href="64E9.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_Step6</td>
+<td class="address-2"><span id="8e8c"></span>8E8C</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="8E0F.html">8E0F</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#8e18">Map</a></td>
+<td class="next">
+Next: <a href="8E8D.html">8E8D</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
+<div><a href="../dec/asm/36376.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

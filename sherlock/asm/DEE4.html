@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at DEE4</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DEC1.html">DEC1</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#dee4">Map</a></td>
+<td class="next">
+Next: <a href="DF5B.html">DF5B</a>
+</td>
+</tr>
+</table>
+<div class="description">DEE4: Combine The Result With The Character's Room</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="E3F5.html">CheckCharacterForRoomGraphics</a>.
+</div>
+<div class="paragraph">
+Fails the script unless the low three bits of <span class="register">IY</span>+04 are set and <span class="register">IY</span>+02 is above <span class="register">IX</span>+02 by more than the object count of the value in <span class="register">A</span>. A non-zero return means the script step succeeded.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CombineCharacterRoom</td>
+<td class="address-2"><span id="dee4"></span>DEE4</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Keep the value in <span class="register">A</span> as the count.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="dee5"></span>
+<div class="comments">
+<div class="paragraph">
+None of the bits 07 are set in <span class="register">IY</span>+04?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dee5"></span>DEE5</td>
+<td class="instruction">LD A,(IY+$04)</td>
+<td class="comment-1" rowspan="3">Return zero through <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a> if none of the bits 07 are set in the byte at <span class="register">IY</span>+04.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="dee8"></span>DEE8</td>
+<td class="instruction">AND $07</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="deea"></span>DEEA</td>
+<td class="instruction">JP Z,<a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="deed"></span>DEED</td>
+<td class="instruction">LD A,(IY+$02)</td>
+<td class="comment-1" rowspan="3">Go to <a href="DEE4.html#df00">CombineCharacterRoom_ClearResult</a> if the byte at <span class="register">IY</span>+02 is below the byte at <span class="register">IX</span>+02.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="def0"></span>DEF0</td>
+<td class="instruction">SUB (IX+$02)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="def3"></span>DEF3</td>
+<td class="instruction">JR C,<a href="DEE4.html#df00">CombineCharacterRoom_ClearResult</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="def5"></span>DEF5</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="3">Save the difference, take the value in <span class="register">B</span> and call <a href="D2ED.html">StartTheAttributeCount</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="def6"></span>DEF6</td>
+<td class="instruction">LD A,B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="def7"></span>DEF7</td>
+<td class="instruction">CALL <a href="D2ED.html">StartTheAttributeCount</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="defa"></span>DEFA</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="4">Go to <a href="DEE4.html#df00">CombineCharacterRoom_ClearResult</a> if that difference is below the object count from <a href="D2ED.html">StartTheAttributeCount</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="defb"></span>DEFB</td>
+<td class="instruction">POP AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="defc"></span>DEFC</td>
+<td class="instruction">SUB B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="defd"></span>DEFD</td>
+<td class="instruction">JR C,<a href="DEE4.html#df00">CombineCharacterRoom_ClearResult</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="deff"></span>DEFF</td>
+<td class="instruction">RET NZ</td>
+<td class="comment-1" rowspan="1">Return if that difference is above the count from <a href="D2ED.html">StartTheAttributeCount</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">CombineCharacterRoom_ClearResult</td>
+<td class="address-2"><span id="df00"></span>DF00</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df01"></span>DF01</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df02"></span>DF02</td>
+<td class="instruction">DEFB $6A,$1D,$24,$DF</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 6A value 1D handler <a href="DEE4.html#df24">DF24</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="df06"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="DEE4.html#df02">DF02</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df06"></span>DF06</td>
+<td class="instruction">LD IY,($A015)</td>
+<td class="comment-1" rowspan="1">Read the secondary pointer at <a href="A015.html">A015</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df0a"></span>DF0A</td>
+<td class="instruction">LD IX,($A013)</td>
+<td class="comment-1" rowspan="2">Read the current object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df0e"></span>DF0E</td>
+<td class="instruction">LD A,($A035)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df11"></span>DF11</td>
+<td class="instruction">LD (IX+$01),A</td>
+<td class="comment-1" rowspan="1">Store the moved marker.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df14"></span>DF14</td>
+<td class="instruction">LD A,(IY+$0F)</td>
+<td class="comment-1" rowspan="3">Store the character attribute.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df17"></span>DF17</td>
+<td class="instruction">LD (IX+$0F),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df1a"></span>DF1A</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df1b"></span>DF1B</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="2">Read the room display parameter, then call <a href="D249.html">ProcessObjectLocationRecursively</a> to run object location recursively.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df1e"></span>DF1E</td>
+<td class="instruction">CALL <a href="D249.html">ProcessObjectLocationRecursively</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df21"></span>DF21</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df23"></span>DF23</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="df24"></span>
+<div class="comments">
+<div class="paragraph">
+Reached through the display record at <a href="DEE4.html#df02">DF02</a>, dispatched by <a href="CB40.html">DispatchLookedUpHandlerThird</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df24"></span>DF24</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="4">Pass the room display parameter in <span class="register">B</span> and the room graphics parameter in <span class="register">A</span>, and carry on at <a href="C8C6.html">ProcessObjectAttribute_LookObjectRun</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df27"></span>DF27</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df28"></span>DF28</td>
+<td class="instruction">LD A,($A035)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df2b"></span>DF2B</td>
+<td class="instruction">JP <a href="C8C6.html">ProcessObjectAttribute_LookObjectRun</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="df2e"></span>
+<div class="comments">
+<div class="paragraph">
+Reached through the display record at <a href="DEE4.html#df40">DF40</a> and <a href="E0FF.html#e135">E135</a>, dispatched by <a href="CB40.html">DispatchLookedUpHandlerThird</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df2e"></span>DF2E</td>
+<td class="instruction">LD A,($A034)</td>
+<td class="comment-1" rowspan="3">Go to <a href="DEE4.html#df3d">CombineCharacterRoom_TestActionSucceeded</a> if the mother id is FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df31"></span>DF31</td>
+<td class="instruction">CALL <a href="C8AF.html">GetObjectMotherID</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df34"></span>DF34</td>
+<td class="instruction">JR Z,<a href="DEE4.html#df3d">CombineCharacterRoom_TestActionSucceeded</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df36"></span>DF36</td>
+<td class="instruction">LD HL,$A036</td>
+<td class="comment-1" rowspan="3">Go to <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a> if the containing object is not this character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df39"></span>DF39</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df3a"></span>DF3A</td>
+<td class="instruction">JP NZ,<a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a></td>
+</tr>
+<tr>
+<td class="asm-label">CombineCharacterRoom_TestActionSucceeded</td>
+<td class="address-2"><span id="df3d"></span>DF3D</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df3f"></span>DF3F</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df40"></span>DF40</td>
+<td class="instruction">DEFB $78,$10,$2E,$DF,$80,$40,$00,$00</td>
+<td class="comment-1" rowspan="2">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 78 value 10 handler <a href="DEE4.html#df2e">DF2E</a>, parameters 80 40 00 00 00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df48"></span>DF48</td>
+<td class="instruction">DEFB $00</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="df49"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="DEE4.html#df40">DF40</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df49"></span>DF49</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="1">Take 01 as the room flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df4b"></span>DF4B</td>
+<td class="instruction">LD ($CAAE),A</td>
+<td class="comment-1" rowspan="1">Store the room flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df4e"></span>DF4E</td>
+<td class="instruction">CALL <a href="DC6C.html">CheckCharacterID</a></td>
+<td class="comment-1" rowspan="1">Call <a href="DC6C.html">CheckCharacterID</a> to check the character id.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df51"></span>DF51</td>
+<td class="instruction">RET NZ</td>
+<td class="comment-1" rowspan="1">Return unless the character is Sherlock, 01 or zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df52"></span>DF52</td>
+<td class="instruction">CALL <a href="DF5B.html">PrintObjectDescriptionText</a></td>
+<td class="comment-1" rowspan="1">Call <a href="DF5B.html">PrintObjectDescriptionText</a> to print the object's description.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df55"></span>DF55</td>
+<td class="instruction">CALL <a href="A2A2.html">PrintNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A2A2.html">PrintNewline</a> to print a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df58"></span>DF58</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="df5a"></span>DF5A</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="DEC1.html">DEC1</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#dee4">Map</a></td>
+<td class="next">
+Next: <a href="DF5B.html">DF5B</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/57060.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

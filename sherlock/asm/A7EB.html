@@ -44,6 +44,9 @@ Next: <a href="A80E.html">A80E</a>
 <div class="paragraph">
 Used by the routine at <a href="A7D0.html">CheckTokenMatchAndSetFlag</a>.
 </div>
+<div class="paragraph">
+Picks the token word table from the print mode and shifts the token parameter into place.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -60,13 +63,12 @@ Used by the routine at <a href="A7D0.html">CheckTokenMatchAndSetFlag</a>.
 <td class="asm-label">PrintTokenBasedOnParameters</td>
 <td class="address-2"><span id="a7eb"></span>A7EB</td>
 <td class="instruction">LD HL,$A24D</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="A24D.html">A24D</a>.</td>
+<td class="comment-1" rowspan="3">Point <span class="register">HL</span> at the token table and read the print mode into <span class="register">E</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7ee"></span>A7EE</td>
 <td class="instruction">LD A,($A027)</td>
-<td class="comment-1" rowspan="2"><span class="register">E</span>=*<a href="A027.html">PrintModeFlag</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -77,113 +79,94 @@ Used by the routine at <a href="A7D0.html">CheckTokenMatchAndSetFlag</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7f2"></span>A7F2</td>
 <td class="instruction">LD A,($A2AA)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A2AA.html">ObjectDisplayFlag</a>.</td>
+<td class="comment-1" rowspan="1">Read the object display flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7f5"></span>A7F5</td>
 <td class="instruction">OR E</td>
-<td class="comment-1" rowspan="1">Set the bits from <span class="register">E</span>.</td>
+<td class="comment-1" rowspan="1">Merge in the print mode, so both can be tested for zero at once.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7f6"></span>A7F6</td>
 <td class="instruction">JR Z,<a href="A7EB.html#a7fb">PrintTokenBasedOnParameters_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A7EB.html#a7fb">PrintTokenBasedOnParameters_0</a> if <span class="register">A</span> is equal to <span class="register">E</span>.</td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="A7EB.html#a7fb">PrintTokenBasedOnParameters_0</a> if the object display flag and the print mode are both zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7f8"></span>A7F8</td>
 <td class="instruction">LD HL,$A255</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="A24D.html#a255">A255</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the other half of the token table.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintTokenBasedOnParameters_0</td>
 <td class="address-2"><span id="a7fb"></span>A7FB</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">D</span>.</td>
+<td class="comment-1" rowspan="4">Shift the token parameter in <span class="register">D</span> down by three bits.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7fc"></span>A7FC</td>
 <td class="instruction">RRCA</td>
-<td class="comment-1" rowspan="1">RRCA.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7fd"></span>A7FD</td>
 <td class="instruction">RRCA</td>
-<td class="comment-1" rowspan="1">RRCA.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7fe"></span>A7FE</td>
 <td class="instruction">RRCA</td>
-<td class="comment-1" rowspan="1">RRCA.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a7ff"></span>A7FF</td>
 <td class="instruction">AND %00011110</td>
-<td class="comment-1" rowspan="1">Keep only bits 1-4.</td>
+<td class="comment-1" rowspan="1">Turn the shifted parameter into an even offset into the token word table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a801"></span>A801</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
+<td class="comment-1" rowspan="7">Save <span class="register">DE</span>, index the token table by the shifted parameter and read that word into <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a802"></span>A802</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=<span class="register">A</span>.</td>
 </tr>
 <tr>
-<td class="routine-comment" colspan="5">
-<span id="a803"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routine at <a href="F1D6.html">F1D6</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">PrintTokenBasedOnParameters_1</td>
-<td class="address-2"><span id="a803"></span>A803</td>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a803"></span>A803</td>
 <td class="instruction">LD D,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">D</span>=00.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a805"></span>A805</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a806"></span>A806</td>
 <td class="instruction">LD E,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=*<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a807"></span>A807</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a808"></span>A808</td>
 <td class="instruction">LD D,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">D</span>=*<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a809"></span>A809</td>
-<td class="instruction">CALL <a href="A880.html#a887">PrintTextToken</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A880.html#a887">PrintTextToken</a>.</td>
+<td class="instruction">CALL <a href="A887.html">PrintTextToken</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A887.html">PrintTextToken</a> to print the token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -212,7 +195,7 @@ Next: <a href="A80E.html">A80E</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/42987.html">Switch to decimal</a>.</div>
 </footer>

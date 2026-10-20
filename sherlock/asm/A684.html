@@ -32,15 +32,24 @@ Prev: <a href="A679.html">A679</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#a684">Map</a></td>
 <td class="next">
-Next: <a href="A68C.html">A68C</a>
+Next: <a href="A6BB.html">A6BB</a>
 </td>
 </tr>
 </table>
-<div class="description">A684: Fetch Text Token And Return Pointer</div>
+<div class="description">A684: Continue At The Next Token</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Reads the next word from the text pointer at <a href="A59D.html">A59D</a> and uses that address as the record pointer, then returns zero. The time-of-day entries from <a href="A684.html#a68c">ContinueAtTheNextToken_SixInTheMorning</a> return when the period matches, and otherwise skip one token from <a href="A684.html#a6b2">ContinueAtTheNextToken_0</a>.
+</div>
+<div class="paragraph">
+Control code 1A in the table at <a href="A55D.html">JumpTable_ControlCharacters</a>.
+</div>
+<div class="paragraph">
+Used by the routine at <a href="A5C3.html">DispatchTextControlHandler</a>.
+</div>
 </div>
 <table class="output">
 <tr class="asm-output-header">
@@ -48,22 +57,22 @@ Next: <a href="A68C.html">A68C</a>
 </tr>
 <tr>
 <td class="register">IX</td>
-<td class="register-desc">Pointer to token data</td>
+<td class="register-desc">Address of the next word</td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
-<td class="asm-label">FetchTextTokenAndReturnPointer</td>
+<td class="asm-label">ContinueAtTheNextToken</td>
 <td class="address-2"><span id="a684"></span>A684</td>
 <td class="instruction">CALL <a href="A66C.html">FetchNextTextToken</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A66C.html">FetchNextTextToken</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A66C.html">FetchNextTextToken</a> to fetch the next word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a687"></span>A687</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">DE</span> (using the stack).</td>
+<td class="comment-1" rowspan="2">Use that word as the record pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -74,11 +83,204 @@ Next: <a href="A68C.html">A68C</a>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a68a"></span>A68A</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a68b"></span>A68B</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a68c"></span>
+<div class="comments">
+<div class="paragraph">
+Returns when the time period is 6 AM. Any other period skips a token from <a href="A684.html#a6b2">ContinueAtTheNextToken_0</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ContinueAtTheNextToken_SixInTheMorning</td>
+<td class="address-1"><span id="a68c"></span>A68C</td>
+<td class="instruction">CALL <a href="C00C.html">GetTimePeriod</a></td>
+<td class="comment-1" rowspan="3">Return when the time period is 6 AM (05).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a68f"></span>A68F</td>
+<td class="instruction">CP $05</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a691"></span>A691</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a692"></span>A692</td>
+<td class="instruction">JR <a href="A684.html#a6b2">ContinueAtTheNextToken_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A684.html#a6b2">ContinueAtTheNextToken_0</a> for any other period.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a694"></span>
+<div class="comments">
+<div class="paragraph">
+Returns when the time period is morning or midday. Any other period skips a token.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ContinueAtTheNextToken_Morning</td>
+<td class="address-1"><span id="a694"></span>A694</td>
+<td class="instruction">CALL <a href="C00C.html">GetTimePeriod</a></td>
+<td class="comment-1" rowspan="3">Return when the time period is morning or midday (04).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a697"></span>A697</td>
+<td class="instruction">CP $04</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a699"></span>A699</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a69a"></span>A69A</td>
+<td class="instruction">JR <a href="A684.html#a6b2">ContinueAtTheNextToken_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A684.html#a6b2">ContinueAtTheNextToken_0</a> for any other period.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a69c"></span>
+<div class="comments">
+<div class="paragraph">
+Returns when the time period is afternoon. Any other period skips a token.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ContinueAtTheNextToken_Afternoon</td>
+<td class="address-1"><span id="a69c"></span>A69C</td>
+<td class="instruction">CALL <a href="C00C.html">GetTimePeriod</a></td>
+<td class="comment-1" rowspan="3">Return when the time period is afternoon (03).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a69f"></span>A69F</td>
+<td class="instruction">CP $03</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a6a1"></span>A6A1</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a6a2"></span>A6A2</td>
+<td class="instruction">JR <a href="A684.html#a6b2">ContinueAtTheNextToken_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A684.html#a6b2">ContinueAtTheNextToken_0</a> for any other period.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a6a4"></span>
+<div class="comments">
+<div class="paragraph">
+Returns when the time period is 7 PM. Any other period skips a token.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ContinueAtTheNextToken_SevenInTheEvening</td>
+<td class="address-1"><span id="a6a4"></span>A6A4</td>
+<td class="instruction">CALL <a href="C00C.html">GetTimePeriod</a></td>
+<td class="comment-1" rowspan="3">Return when the time period is 7 PM (02).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a6a7"></span>A6A7</td>
+<td class="instruction">CP $02</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a6a9"></span>A6A9</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a6aa"></span>A6AA</td>
+<td class="instruction">JR <a href="A684.html#a6b2">ContinueAtTheNextToken_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A684.html#a6b2">ContinueAtTheNextToken_0</a> for any other period.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a6ac"></span>
+<div class="comments">
+<div class="paragraph">
+Returns when the time period is late at night. Any other period falls through into <a href="A684.html#a6b2">ContinueAtTheNextToken_0</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ContinueAtTheNextToken_LateAtNight</td>
+<td class="address-1"><span id="a6ac"></span>A6AC</td>
+<td class="instruction">CALL <a href="C00C.html">GetTimePeriod</a></td>
+<td class="comment-1" rowspan="3">Return when the time period is late at night (01).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a6af"></span>A6AF</td>
+<td class="instruction">CP $01</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a6b1"></span>A6B1</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a6b2"></span>
+<div class="comments">
+<div class="paragraph">
+Skips one text token and returns zero.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ContinueAtTheNextToken_0</td>
+<td class="address-2"><span id="a6b2"></span>A6B2</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="2">Step on one byte and call <a href="A6BB.html">SkipTextTokenBasedOnType</a> to skip the token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a6b4"></span>A6B4</td>
+<td class="instruction">CALL <a href="A6BB.html">SkipTextTokenBasedOnType</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a6b7"></span>A6B7</td>
+<td class="instruction">DEC IX</td>
+<td class="comment-1" rowspan="1">Step back one byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a6b9"></span>A6B9</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="a6ba"></span>A6BA</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
@@ -90,14 +292,14 @@ Prev: <a href="A679.html">A679</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#a684">Map</a></td>
 <td class="next">
-Next: <a href="A68C.html">A68C</a>
+Next: <a href="A6BB.html">A6BB</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/42628.html">Switch to decimal</a>.</div>
 </footer>

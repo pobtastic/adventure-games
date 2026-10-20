@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at 43540</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="43447.html">43447</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#43540">Map</a></td>
+<td class="next">
+Next: <a href="43633.html">43633</a>
+</td>
+</tr>
+</table>
+<div class="description">43540: Print One Character And Remember The Line</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="43447.html">Print_Character</a>.
+</div>
+<div class="paragraph">
+Turns an upper-case letter into lower case, remembers that a character has been printed on this line, and starts a new line when the character is a carriage return.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="43540"></span>
+<div class="comments">
+<div class="paragraph">
+Convert uppercase letters to lowercase if needed.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_ProcessCharacter</td>
+<td class="address-2"><span id="43540"></span>43540</td>
+<td class="instruction">CP 65</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="43540.html#43550">Print_Character_CheckSpace</a> if the character is below A.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43542"></span>43542</td>
+<td class="instruction">JR C,<a href="43540.html#43550">Print_Character_CheckSpace</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43544"></span>43544</td>
+<td class="instruction">CP 91</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="43540.html#43550">Print_Character_CheckSpace</a> if the character is past Z.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43546"></span>43546</td>
+<td class="instruction">JR NC,<a href="43540.html#43550">Print_Character_CheckSpace</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43548"></span>43548</td>
+<td class="instruction">OR 32</td>
+<td class="comment-1" rowspan="1">Set bit 5 to make the letter lower case.</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_CheckSpace</td>
+<td class="address-2"><span id="43550"></span>43550</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="5">Keep the character and jump to <a href="43540.html#43562">Print_Character_MarkPrintStarted</a> when this line has already started.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43551"></span>43551</td>
+<td class="instruction">LD A,(40997)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43554"></span>43554</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43555"></span>43555</td>
+<td class="instruction">JR NZ,<a href="43540.html#43562">Print_Character_MarkPrintStarted</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43557"></span>43557</td>
+<td class="instruction">POP AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43558"></span>43558</td>
+<td class="instruction">CP 32</td>
+<td class="comment-1" rowspan="2">Return if the character is a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43560"></span>43560</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43561"></span>43561</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="1">Keep the character and set the print position flag at <a href="40997.html">PrintPositionFlag</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="43562"></span>
+<div class="comments">
+<div class="paragraph">
+Mark that we've started printing on this line.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_MarkPrintStarted</td>
+<td class="address-2"><span id="43562"></span>43562</td>
+<td class="instruction">LD A,1</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43564"></span>43564</td>
+<td class="instruction">LD (40997),A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43567"></span>43567</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="43540.html#43579">Print_Character_CheckQuote</a> if the character is not a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43568"></span>43568</td>
+<td class="instruction">PUSH AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43569"></span>43569</td>
+<td class="instruction">CP 13</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43571"></span>43571</td>
+<td class="instruction">JR NZ,<a href="43540.html#43579">Print_Character_CheckQuote</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="43573"></span>
+<div class="comments">
+<div class="paragraph">
+Reset the print position flag for a carriage return.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43573"></span>43573</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Clear *<a href="40997.html">PrintPositionFlag</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43574"></span>43574</td>
+<td class="instruction">LD (40997),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43577"></span>43577</td>
+<td class="instruction">JR <a href="43540.html#43629">Print_Character_Print</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="43540.html#43629">Print_Character_Print</a> to print the character.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="43579"></span>
+<div class="comments">
+<div class="paragraph">
+A quotation mark is printed as a blank, and the picture flag is consulted.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_CheckQuote</td>
+<td class="address-2"><span id="43579"></span>43579</td>
+<td class="instruction">CP 34</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="43540.html#43590">Print_Character_CheckPeriod</a> if the character is not a quotation mark.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43581"></span>43581</td>
+<td class="instruction">JR NZ,<a href="43540.html#43590">Print_Character_CheckPeriod</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43583"></span>43583</td>
+<td class="instruction">LD A,32</td>
+<td class="comment-1" rowspan="1">Take a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43585"></span>43585</td>
+<td class="instruction">CALL <a href="49633.html">CheckTVFlagAndProcess</a></td>
+<td class="comment-1" rowspan="1">Call <a href="49633.html">CheckTVFlagAndProcess</a> to honour the television flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43588"></span>43588</td>
+<td class="instruction">JR <a href="43540.html#43594">Print_Character_SetTokenFormatFlag</a></td>
+<td class="comment-1" rowspan="1">As after a full stop, go to <a href="43540.html#43594">Print_Character_SetTokenFormatFlag</a> to set the flag at <a href="40998.html">TokenFormatFlag</a> so the next letter is a capital.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="43590"></span>
+<div class="comments">
+<div class="paragraph">
+A sentence stop marks the token so the next letter can be printed in capitals.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_CheckPeriod</td>
+<td class="address-2"><span id="43590"></span>43590</td>
+<td class="instruction">CP 46</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="43540.html#43601">Print_Character_CheckLowercase</a> if the character is not a full stop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43592"></span>43592</td>
+<td class="instruction">JR NZ,<a href="43540.html#43601">Print_Character_CheckLowercase</a></td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_SetTokenFormatFlag</td>
+<td class="address-2"><span id="43594"></span>43594</td>
+<td class="instruction">LD A,1</td>
+<td class="comment-1" rowspan="2">Set *<a href="40998.html">TokenFormatFlag</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43596"></span>43596</td>
+<td class="instruction">LD (40998),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43599"></span>43599</td>
+<td class="instruction">JR <a href="43540.html#43629">Print_Character_Print</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="43540.html#43629">Print_Character_Print</a> to print the character.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="43601"></span>
+<div class="comments">
+<div class="paragraph">
+See whether the character byte is a lower-case letter, then see whether the character byte is past the lower-case letters, then read the lowercase Handling Flag.
+</div>
+<div class="paragraph">
+Handle lowercase letters (dictionary word characters).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_CheckLowercase</td>
+<td class="address-2"><span id="43601"></span>43601</td>
+<td class="instruction">CP 97</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="43540.html#43629">Print_Character_Print</a> if the character is below the letter a.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43603"></span>43603</td>
+<td class="instruction">JR C,<a href="43540.html#43629">Print_Character_Print</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43605"></span>43605</td>
+<td class="instruction">CP 123</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="43540.html#43629">Print_Character_Print</a> if the character is at least 123.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43607"></span>43607</td>
+<td class="instruction">JR NC,<a href="43540.html#43629">Print_Character_Print</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43609"></span>43609</td>
+<td class="instruction">LD A,(43089)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="43540.html#43621">Print_Character_ResetTokenFormatFlag</a> if the lowercase handling flag is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43612"></span>43612</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43613"></span>43613</td>
+<td class="instruction">JR NZ,<a href="43540.html#43621">Print_Character_ResetTokenFormatFlag</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43615"></span>43615</td>
+<td class="instruction">LD A,(40998)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="43540.html#43629">Print_Character_Print</a> if the token format flag is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43618"></span>43618</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43619"></span>43619</td>
+<td class="instruction">JR Z,<a href="43540.html#43629">Print_Character_Print</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="43621"></span>
+<div class="comments">
+<div class="paragraph">
+Reset the token format flag before converting to uppercase.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_ResetTokenFormatFlag</td>
+<td class="address-2"><span id="43621"></span>43621</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Reset *<a href="40998.html">TokenFormatFlag</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43622"></span>43622</td>
+<td class="instruction">LD (40998),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43625"></span>43625</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore the character from the stack.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="43626"></span>
+<div class="comments">
+<div class="paragraph">
+Clear bit 5 from the character code (convert to uppercase).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43626"></span>43626</td>
+<td class="instruction">AND %01011111</td>
+<td class="comment-1" rowspan="1">Clear bit 5 so a lowercase letter becomes uppercase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43628"></span>43628</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="1">Keep the character while it is printed.</td>
+</tr>
+<tr>
+<td class="asm-label">Print_Character_Print</td>
+<td class="address-2"><span id="43629"></span>43629</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49633.html">CheckTVFlagAndProcess</a> to check the television flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="43630"></span>43630</td>
+<td class="instruction">JP <a href="49633.html">CheckTVFlagAndProcess</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="43447.html">43447</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#43540">Map</a></td>
+<td class="next">
+Next: <a href="43633.html">43633</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../../asm/AA14.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

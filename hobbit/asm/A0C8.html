@@ -33,207 +33,247 @@ Next: <a href="A124.html">A124</a>
 </td>
 </tr>
 </table>
-<div class="description">A0C8: Routine at A0C8</div>
+<div class="description">A0C8: Exits: To The North There Is</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="962B.html">YouSeeEntry</a>.
+Used by the routine at <a href="965B.html">YouSeeStart</a>.
+</div>
+<div class="paragraph">
+Walks the location's exit triples. For each exit guarded by a visible object it prints "to the &lt;direction&gt; there is". Direction 09 is printed as ABOVE and direction 0A as BELOW.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="address-2"><span id="a0c8"></span>A0C8</td>
-<td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="4">Stash <span class="register">BC</span>, <span class="register">DE</span>, <span class="register">IY</span> and <span class="register">IX</span> on the stack.</td>
+<td class="routine-comment" colspan="5">
+<span id="a0c8"></span>
+<div class="comments">
+<div class="paragraph">
+Point at this location's exits.
+</div>
+</div>
+</td>
 </tr>
 <tr>
+<td class="asm-label">MessageListTheObjects</td>
+<td class="address-2"><span id="a0c8"></span>A0C8</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="5">Point at this location's exits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0c9"></span>A0C9</td>
 <td class="instruction">PUSH DE</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0ca"></span>A0CA</td>
 <td class="instruction">PUSH IY</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0cc"></span>A0CC</td>
 <td class="instruction">PUSH IX</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0ce"></span>A0CE</td>
-<td class="instruction">CALL <a href="A0AE.html">$A0AE</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A0AE.html">A0AE</a>.</td>
+<td class="instruction">CALL <a href="A0AE.html">ExitsPointAtTheList</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0d1"></span>A0D1</td>
 <td class="instruction">ADD IX,BC</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Step <span class="register">IX</span> on by <span class="register">BC</span> to the next exit and point <span class="register">IY</span> at it.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0d3"></span>A0D3</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0d5"></span>A0D5</td>
 <td class="instruction">POP IY</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label">MessageListTheObjects_Loop</td>
 <td class="address-2"><span id="a0d7"></span>A0D7</td>
 <td class="instruction">SUB A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="A0C8.html#a113">MessageListTheObjects_StepToTheNextExit</a> if this exit goes via no object.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0d8"></span>A0D8</td>
 <td class="instruction">CP (IY+$01)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0db"></span>A0DB</td>
-<td class="instruction">JR Z,<a href="A0C8.html#a113">$A113</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A0C8.html#a113">MessageListTheObjects_StepToTheNextExit</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0dd"></span>A0DD</td>
 <td class="instruction">LD A,(IY+$01)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the object this exit goes via.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0e0"></span>A0E0</td>
 <td class="instruction">CALL <a href="9BCA.html">LocateObject</a></td>
-<td class="comment-1" rowspan="1">Call <a href="9BCA.html">LocateObject</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="9BCA.html">LocateObject</a> to locate object.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0e3"></span>A0E3</td>
 <td class="instruction">BIT 7,(IX+$07)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="A0C8.html#a113">MessageListTheObjects_StepToTheNextExit</a> if the object is not visible.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0e7"></span>A0E7</td>
-<td class="instruction">JR Z,<a href="A0C8.html#a113">$A113</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A0C8.html#a113">MessageListTheObjects_StepToTheNextExit</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0e9"></span>A0E9</td>
 <td class="instruction">LD DE,$0008</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Step the pointer on by 08 bytes.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0ec"></span>A0EC</td>
 <td class="instruction">ADD IX,DE</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0ee"></span>A0EE</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Save the name pointer and read this exit's direction.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0f0"></span>A0F0</td>
 <td class="instruction">LD A,(IY+$00)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0f3"></span>A0F3</td>
-<td class="instruction">CALL <a href="A0BA.html">$A0BA</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A0BA.html">A0BA</a>.</td>
+<td class="instruction">CALL <a href="A0BA.html">ExitsTheDirectionWord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A0BA.html">ExitsTheDirectionWord</a> to describe the direction word.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0f6"></span>A0F6</td>
 <td class="instruction">CP $09</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="A0C8.html#a104">MessageListTheObjects_PrintTheLeadIn</a> if the direction is below 09.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0f8"></span>A0F8</td>
-<td class="instruction">JR C,<a href="A0C8.html#a104">$A104</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR C,<a href="A0C8.html#a104">MessageListTheObjects_PrintTheLeadIn</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0fa"></span>A0FA</td>
 <td class="instruction">LD DE,$07B5</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Use the token ABOVE when the direction is 09.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0fd"></span>A0FD</td>
-<td class="instruction">JR Z,<a href="A0C8.html#a10a">$A10A</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="A0C8.html#a10a">MessageListTheObjects_PrintADictionaryToken</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a0ff"></span>A0FF</td>
 <td class="instruction">LD DE,$082B</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Use the token BELOW.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a102"></span>A102</td>
-<td class="instruction">JR <a href="A0C8.html#a10a">$A10A</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR <a href="A0C8.html#a10a">MessageListTheObjects_PrintADictionaryToken</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A0C8.html#a10a">MessageListTheObjects_PrintADictionaryToken</a> to print a dictionary token.</td>
 </tr>
 <tr>
+<td class="asm-label">MessageListTheObjects_PrintTheLeadIn</td>
 <td class="address-2"><span id="a104"></span>A104</td>
 <td class="instruction">LD HL,$AE17</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="AD7D.html#ae17">"to the[0x16]"</a></td>
+<td class="comment-1" rowspan="1">Point at the message "to the[0x16]" (<a href="AD7D.html#ae17">AE17</a>).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a107"></span>A107</td>
-<td class="instruction">CALL <a href="72DD.html">PrintMsg</a></td>
-<td class="comment-1" rowspan="1">Call <a href="72DD.html">PrintMsg</a>.</td>
+<td class="instruction">CALL <a href="72DD.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="72DD.html">PrintMessage</a> to print message.</td>
 </tr>
 <tr>
+<td class="asm-label">MessageListTheObjects_PrintADictionaryToken</td>
 <td class="address-2"><span id="a10a"></span>A10A</td>
 <td class="instruction">CALL <a href="74C1.html">PrintToken</a></td>
-<td class="comment-1" rowspan="1">Call <a href="74C1.html">PrintToken</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="74C1.html">PrintToken</a> to print a dictionary token.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a10d"></span>A10D</td>
 <td class="instruction">LD HL,$B013</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="AD7D.html#b013">"there is[0x00][0x14]"</a></td>
+<td class="comment-1" rowspan="1">Point at the message "there is[0x00][0x14]" (<a href="AD7D.html#b013">B013</a>).</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a110"></span>A110</td>
-<td class="instruction">CALL <a href="72DD.html">PrintMsg</a></td>
-<td class="comment-1" rowspan="1">Call <a href="72DD.html">PrintMsg</a>.</td>
+<td class="instruction">CALL <a href="72DD.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="72DD.html">PrintMessage</a> to print message.</td>
 </tr>
 <tr>
+<td class="asm-label">MessageListTheObjects_StepToTheNextExit</td>
 <td class="address-2"><span id="a113"></span>A113</td>
 <td class="instruction">ADD IY,BC</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Step to the next exit and jump back to <a href="A0C8.html#a0d7">MessageListTheObjects_Loop</a> unless the direction is FF.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a115"></span>A115</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a117"></span>A117</td>
 <td class="instruction">CP (IY+$00)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a11a"></span>A11A</td>
-<td class="instruction">JP NZ,<a href="A0C8.html#a0d7">$A0D7</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP NZ,<a href="A0C8.html#a0d7">MessageListTheObjects_Loop</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a11d"></span>A11D</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="4">Restore <span class="register">IX</span>, <span class="register">IY</span>, <span class="register">DE</span> and <span class="register">BC</span> off the stack.</td>
+<td class="comment-1" rowspan="4">Restore <span class="register">IX</span>, <span class="register">IY</span>, <span class="register">DE</span> and <span class="register">BC</span> from the stack.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a11f"></span>A11F</td>
 <td class="instruction">POP IY</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a121"></span>A121</td>
 <td class="instruction">POP DE</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a122"></span>A122</td>
 <td class="instruction">POP BC</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="a123"></span>A123</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
@@ -253,7 +293,7 @@ Next: <a href="A124.html">A124</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../dec/asm/41160.html">Switch to decimal</a>.</div>
 </footer>

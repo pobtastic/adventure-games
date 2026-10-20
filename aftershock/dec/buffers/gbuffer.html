@@ -33,8 +33,11 @@ gtag('config', 'G-75RERFCHBG');
 <td class="map-g"><span id="25000"></span><a href="../asm/25000.html">25000</a></td>
 <td class="map-length">22</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/25000.html">Game status buffer entry at 61A8</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/25000.html">Table: Room Image Offsets</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Word offsets from <a href="../asm/25000.html">Table_RoomImageOffsets</a> to the room images. <a href="../asm/48085.html">Pointer_RoomImageOffsets</a> points at this table. Entry 0 is unused, and entries 1 to 10 select the ten pictures <a href="../asm/25022.html">Image_YourOffice</a>, <a href="../asm/26502.html">Image_TheSewer</a>, <a href="../asm/27698.html">Image_Rubble</a>, <a href="../asm/29311.html">Image_Alleyway</a>, <a href="../asm/30783.html">Image_ControlRoom</a>, <a href="../asm/32676.html">Image_Wreckage</a>, <a href="../asm/35150.html">Image_Desert</a>, <a href="../asm/35962.html">Image_Home</a>, <a href="../asm/37693.html">Image_Museum</a> and <a href="../asm/39096.html">Image_Stadium</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -64,7 +67,7 @@ A table of delimiter characters used for matching user input in...
 </tr>
 <tr>
 <td class="map-g"><span id="40840"></span><a href="../asm/40840.html">40840</a></td>
-<td class="map-length">330</td>
+<td class="map-length">136</td>
 <td class="map-g-desc">
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/40840.html">Table: Item Locations</a></div>
 <div class="map-entry-desc">
@@ -73,6 +76,66 @@ A table where the index is the item ID, and the value is the room it resides in 
 </div>
 <div class="paragraph">
 When the item is in the players inventory, the room ID changes to 1.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="41096"></span><a href="../asm/41096.html">41096</a></td>
+<td class="map-length">32</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41096.html">Flags: Game States</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+Bit flags tested and changed by <a href="../asm/41416.html">TestFlag</a>, <a href="../asm/41426.html">SetFlag</a> and <a href="../asm/41437.html">ClearFlag</a>. The bit index selects both the byte and the bit inside it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="41128"></span><a href="../asm/41128.html">41128</a></td>
+<td class="map-length">3</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41128.html">Flags: Already Seen Room Images</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+One bit for each entry in <a href="../asm/48019.html">Table_RoomsWithImages</a>. <a href="../asm/41786.html">Handler_RoomExits</a> sets the bit after the picture has been shown so the same room does not draw it again.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="41160"></span><a href="../asm/41160.html">41160</a></td>
+<td class="map-length">1</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41160.html">Flags: Turn-Based Event States</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+One bit per turn-based event. <a href="../asm/41600.html">Handler_GameEvents</a> counts a bit down while it is set, and the script actions <a href="../asm/43850.html">Action_StartTurnEvent</a> and <a href="../asm/43870.html">Action_StopTurnEvent</a> change the bits.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="41161"></span><a href="../asm/41161.html">41161</a></td>
+<td class="map-length">8</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41161.html">Turn-Based Event Counters</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+One counter byte for each bit in <a href="../asm/41160.html">Flags_TurnEvents</a>. <a href="../asm/41600.html">Handler_GameEvents</a> decreases the counter for every active event, and <a href="../asm/43831.html">Action_SetTurnCounter</a> stores a new count.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="41169"></span><a href="../asm/41169.html">41169</a></td>
+<td class="map-length">1</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41169.html">Flags: Event States</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+Bits that <a href="../asm/44221.html">MovePlayerToRoom</a> honours after a move. <a href="../asm/43790.html">Action_SetEventFlag</a> sets a bit and <a href="../asm/43810.html">Action_ClearEventFlag</a> clears one.
 </div>
 </div>
 </td>
@@ -93,17 +156,23 @@ The number of items the player is currently holding.
 <td class="map-g"><span id="41171"></span><a href="../asm/41171.html">41171</a></td>
 <td class="map-length">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41171.html">Game status buffer entry at A0D3</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41171.html">Carrying Limit</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The most items the player may carry. <a href="../asm/44588.html">Handler_CanTakeItem</a> compares it with <a href="../asm/41170.html">Count_InventoryItems</a>. The game starts it from <a href="../asm/48087.html">InitialCarryingLimit</a>, and <a href="../asm/44008.html">Action_SetCarryingLimit</a> can replace it.
+</div>
 </div>
 </td>
 </tr>
 <tr>
 <td class="map-g"><span id="41172"></span><a href="../asm/41172.html">41172</a></td>
-<td class="map-length">50</td>
+<td class="map-length">6</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41172.html">Game status buffer entry at A0D4</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41172.html">Saved State Bytes</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The 6 bytes copied to and from the addresses in <a href="../asm/47865.html">Table_SavedStateAddresses</a> while saving and loading. The count is <a href="../asm/48081.html">Count_SavedStateBytes</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -152,8 +221,11 @@ The room the player starts the game in is room 69:
 <td class="map-g"><span id="41285"></span><a href="../asm/41285.html">41285</a></td>
 <td class="map-length">4</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41285.html">Game status buffer entry at A145</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41285.html">Four Letter Buffer</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The four characters of the word <a href="../asm/42160.html">Handler_UserInput</a> is currently matching. Spare letters are spaces.
+</div>
 </div>
 </td>
 </tr>
@@ -164,7 +236,7 @@ The room the player starts the game in is room 69:
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/41289.html">Table: Directions</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Pointer to the table containing direction messaging.
+Pointer to the table containing direction messaging: <a href="../asm/52552.html">MessagingExits_North</a>, <a href="../asm/52556.html">MessagingExits_South</a>, <a href="../asm/52560.html">MessagingExits_East</a>, <a href="../asm/52563.html">MessagingExits_West</a>, <a href="../asm/52566.html">MessagingExits_Up</a> and <a href="../asm/52569.html">MessagingExits_Down</a>.
 </div>
 </div>
 </td>
@@ -173,8 +245,11 @@ Pointer to the table containing direction messaging.
 <td class="map-g"><span id="42051"></span><a href="../asm/42051.html">42051</a></td>
 <td class="map-length">4</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/42051.html">Game status buffer entry at A443</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/42051.html">Pointer: Command Word</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The address and length of the command-buffer word being tokenised.
+</div>
 </div>
 </td>
 </tr>
@@ -182,8 +257,11 @@ Pointer to the table containing direction messaging.
 <td class="map-g"><span id="42749"></span><a href="../asm/42749.html">42749</a></td>
 <td class="map-length">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/42749.html">Game status buffer entry at A6FD</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/42749.html">Script Condition State</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Working bytes for <a href="../asm/42751.html">Handler_RunScript</a>. The mask collects condition results and the operator selects AND or OR.
+</div>
 </div>
 </td>
 </tr>
@@ -191,8 +269,11 @@ Pointer to the table containing direction messaging.
 <td class="map-g"><span id="42873"></span><a href="../asm/42873.html">42873</a></td>
 <td class="map-length">12</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/42873.html">Game status buffer entry at A779</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/42873.html">Jump Table: Parser Checks</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Parser routines called by <a href="../asm/43300.html">Condition_ParserSucceeds</a> and <a href="../asm/43335.html">Condition_ParserFails</a>. The first entry is unused.
+</div>
 </div>
 </td>
 </tr>
@@ -200,8 +281,11 @@ Pointer to the table containing direction messaging.
 <td class="map-g"><span id="42885"></span><a href="../asm/42885.html">42885</a></td>
 <td class="map-length">60</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/42885.html">Game status buffer entry at A785</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/42885.html">Jump Table: Script Conditions</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Condition routines indexed by the opcodes in a script.
+</div>
 </div>
 </td>
 </tr>
@@ -209,8 +293,11 @@ Pointer to the table containing direction messaging.
 <td class="map-g"><span id="42945"></span><a href="../asm/42945.html">42945</a></td>
 <td class="map-length">68</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/42945.html">Game status buffer entry at A7C1</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/42945.html">Jump Table: Script Actions</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Action routines indexed by the opcodes in a script.
+</div>
 </div>
 </td>
 </tr>
@@ -218,8 +305,11 @@ Pointer to the table containing direction messaging.
 <td class="map-g"><span id="43013"></span><a href="../asm/43013.html">43013</a></td>
 <td class="map-length">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/43013.html">Game status buffer entry at A805</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/43013.html">Script Result</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+<a href="../asm/43013.html">ScriptMatchedItem</a> holds the item ID found by <a href="../asm/43186.html">Condition_GroupItemDiffers</a>. An operand of 255 makes <a href="../asm/42751.html#42866">Handler_RunScript_15</a> substitute it. <a href="../asm/43013.html#43014">ScriptParserResult</a> holds the value returned by the latest parser check.
+</div>
 </div>
 </td>
 </tr>
@@ -245,8 +335,11 @@ Pointer to the table containing direction messaging.
 <td class="map-g"><span id="44408"></span><a href="../asm/44408.html">44408</a></td>
 <td class="map-length">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/44408.html">Table:</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/44408.html">Temporary Room ID</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The room <a href="../asm/44409.html">ChangeRoom</a> is about to enter. The script can test it before the move is committed.
+</div>
 </div>
 </td>
 </tr>
@@ -279,10 +372,25 @@ Pointer to the table containing direction messaging.
 </tr>
 <tr>
 <td class="map-g"><span id="46112"></span><a href="../asm/46112.html">46112</a></td>
-<td class="map-length">126</td>
+<td class="map-length">42</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/46112.html">Game status buffer entry at B420</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/46112.html">Table: Verb Tokens</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The token searched for by <a href="../asm/44284.html">Handler_DispatchVerb</a>. There are <a href="../asm/48075.html">Count_VerbTokens</a> entries.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="46154"></span><a href="../asm/46154.html">46154</a></td>
+<td class="map-length">84</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/46154.html">Jump Table: Verb Scripts</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+The script <a href="../asm/44284.html">Handler_DispatchVerb</a> runs for the matching entry in <a href="../asm/46112.html">Table_VerbTokens</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -382,10 +490,37 @@ A table where the index is the event ID, and the value is the room it resides in
 </tr>
 <tr>
 <td class="map-g"><span id="46833"></span><a href="../asm/46833.html">46833</a></td>
-<td class="map-length">492</td>
+<td class="map-length">3</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/46833.html">Game status buffer entry at B6F1</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/46833.html">Table: Plural Items</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Item IDs that use the plural carrying messages. <a href="../asm/44588.html">Handler_CanTakeItem</a> and <a href="../asm/44638.html">Handler_IsCarryingItem</a> search these 3 bytes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="46836"></span><a href="../asm/46836.html">46836</a></td>
+<td class="map-length">329</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/46836.html">Data: Phrase Tokens</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+Phrase patterns read by <a href="../asm/42459.html">MatchPhraseTokens</a>. <a href="../asm/47165.html">Table_PhrasePointers</a> holds an address for each pattern.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="47165"></span><a href="../asm/47165.html">47165</a></td>
+<td class="map-length">160</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47165.html">Table: Phrase Pointers</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+Addresses of the phrases in <a href="../asm/46836.html">Data_PhraseTokens</a>. <a href="../asm/43257.html">Condition_PhraseMatches</a> and <a href="../asm/43277.html">Condition_PhraseDoesNotMatch</a> index it.
+</div>
 </div>
 </td>
 </tr>
@@ -402,8 +537,11 @@ A table where the index is the event ID, and the value is the room it resides in
 <td class="map-g"><span id="47616"></span><a href="../asm/47616.html">47616</a></td>
 <td class="map-length">4</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47616.html">Game status buffer entry at BA00</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47616.html">Data: Saved Room Byte</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+State byte 3 in <a href="../asm/47865.html">Table_SavedStateAddresses</a>. Saving copies this byte through <a href="../asm/41172.html">SavedStateBytes</a>, and <a href="../asm/43891.html">Action_WriteSavedByte</a> can replace it. The remaining bytes are a room-ID list terminated by 0.
+</div>
 </div>
 </td>
 </tr>
@@ -411,8 +549,11 @@ A table where the index is the event ID, and the value is the room it resides in
 <td class="map-g"><span id="47620"></span><a href="../asm/47620.html">47620</a></td>
 <td class="map-length">73</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47620.html">Game status buffer entry at BA04</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47620.html">Data: Saved Room List</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+State byte 4 in <a href="../asm/47865.html">Table_SavedStateAddresses</a>, followed by room IDs in groups terminated by 0. Only the first byte is copied by the save routine.
+</div>
 </div>
 </td>
 </tr>
@@ -420,8 +561,11 @@ A table where the index is the event ID, and the value is the room it resides in
 <td class="map-g"><span id="47693"></span><a href="../asm/47693.html">47693</a></td>
 <td class="map-length">172</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47693.html">Game status buffer entry at BA4D</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47693.html">Data: Saved Room List 2</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+State byte 5 in <a href="../asm/47865.html">Table_SavedStateAddresses</a>, followed by room IDs in groups terminated by 0. Only the first byte is copied by the save routine.
+</div>
 </div>
 </td>
 </tr>
@@ -429,8 +573,11 @@ A table where the index is the event ID, and the value is the room it resides in
 <td class="map-g"><span id="47865"></span><a href="../asm/47865.html">47865</a></td>
 <td class="map-length">12</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47865.html">Game status buffer entry at BAF9</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47865.html">Table: Saved State Addresses</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Addresses of the six bytes packed into <a href="../asm/41172.html">SavedStateBytes</a>: 47465, 47596, 47610, 47616, 47620 and 47693. Three of them are direction bytes in <a href="../asm/47325.html">Table_RoomMap</a>, so a changed exit survives a save.
+</div>
 </div>
 </td>
 </tr>
@@ -438,8 +585,11 @@ A table where the index is the event ID, and the value is the room it resides in
 <td class="map-g"><span id="47877"></span><a href="../asm/47877.html">47877</a></td>
 <td class="map-length">6</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47877.html">Game status buffer entry at BB05</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47877.html">Initial Saved State Bytes</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Values copied to the addresses in <a href="../asm/47865.html">Table_SavedStateAddresses</a> when a new game starts.
+</div>
 </div>
 </td>
 </tr>
@@ -447,8 +597,11 @@ A table where the index is the event ID, and the value is the room it resides in
 <td class="map-g"><span id="47883"></span><a href="../asm/47883.html">47883</a></td>
 <td class="map-length">136</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47883.html">Game status buffer entry at BB0B</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/47883.html">Table: Initial Item Locations</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Copied over <a href="../asm/40840.html">Table_ItemLocations</a> when a new game starts. The length is <a href="../asm/48071.html">Count_Objects_1</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -468,8 +621,11 @@ See <a href="../asm/41786.html">Handler_RoomExits</a>.
 <td class="map-g"><span id="48038"></span><a href="../asm/48038.html">48038</a></td>
 <td class="map-length">19</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48038.html">Game status buffer entry at BBA6</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48038.html">Table: Room Image Numbers</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The picture passed to <a href="../asm/40807.html">Handler_Images</a> for each entry in <a href="../asm/48019.html">Table_RoomsWithImages</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -477,8 +633,11 @@ See <a href="../asm/41786.html">Handler_RoomExits</a>.
 <td class="map-g"><span id="48057"></span><a href="../asm/48057.html">48057</a></td>
 <td class="map-length">4</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48057.html">Game status buffer entry at BBB9</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48057.html">Jump Table: Turn-Based Events</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Scripts run by <a href="../asm/41600.html">Handler_GameEvents</a> when the matching turn counter reaches zero: 48330 and 48343.
+</div>
 </div>
 </td>
 </tr>
@@ -488,6 +647,9 @@ See <a href="../asm/41786.html">Handler_RoomExits</a>.
 <td class="map-g-desc">
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48061.html">Jump Table: Scenic Events</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Scripts run for the scenic events in <a href="../asm/46778.html">Table_ScenicEventLocations2</a>: <a href="../asm/48356.html">Data_ScenicEventScript1</a>, <a href="../asm/48384.html">Data_ScenicEventScript2</a>, <a href="../asm/48412.html">Data_ScenicEventScript3</a>, <a href="../asm/48421.html">Data_ScenicEventScript4</a> and <a href="../asm/48430.html">Data_ActionScripts</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -519,8 +681,11 @@ The total number of objects in the game.
 <td class="map-g"><span id="48075"></span><a href="../asm/48075.html">48075</a></td>
 <td class="map-length">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48075.html">Game status buffer entry at BBCB</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48075.html">Number Of Verb Tokens</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+The number of entries in <a href="../asm/46112.html">Table_VerbTokens</a> and <a href="../asm/46154.html">JumpTable_VerbScripts</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -549,8 +714,11 @@ The total number of rooms which have related images in the game.
 <td class="map-g"><span id="48081"></span><a href="../asm/48081.html">48081</a></td>
 <td class="map-length">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48081.html">Game status buffer entry at BBD1</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48081.html">Number Of Saved State Bytes</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+How many addresses <a href="../asm/47865.html">Table_SavedStateAddresses</a> holds, and how many bytes <a href="../asm/41172.html">SavedStateBytes</a> packs.
+</div>
 </div>
 </td>
 </tr>
@@ -564,29 +732,38 @@ The total number of rooms which have related images in the game.
 </td>
 </tr>
 <tr>
-<td class="map-g"><span id="48084"></span><a href="../asm/48084.html">48084</a></td>
-<td class="map-length">1</td>
-<td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48084.html">Game status buffer entry at BBD4</a></div>
-<div class="map-entry-desc">
-</div>
-</td>
-</tr>
-<tr>
 <td class="map-g"><span id="48085"></span><a href="../asm/48085.html">48085</a></td>
 <td class="map-length">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48085.html">Game status buffer entry at BBD5</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48085.html">Pointer: Room Image Offsets</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Points at <a href="../asm/25000.html">Table_RoomImageOffsets</a>, the offsets <a href="../asm/40807.html">Handler_Images</a> adds after indexing them.
+</div>
 </div>
 </td>
 </tr>
 <tr>
 <td class="map-g"><span id="48087"></span><a href="../asm/48087.html">48087</a></td>
-<td class="map-length">117</td>
+<td class="map-length">1</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48087.html">Game status buffer entry at BBD7</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48087.html">Initial Carrying Limit</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Copied to <a href="../asm/41171.html">CarryingLimit</a> at the start of a game.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="48088"></span><a href="../asm/48088.html">48088</a></td>
+<td class="map-length">116</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48088.html">Data: Arrival Script</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+Script run by <a href="../asm/44409.html">ChangeRoom</a> before the player enters the new room.
+</div>
 </div>
 </td>
 </tr>
@@ -594,8 +771,11 @@ The total number of rooms which have related images in the game.
 <td class="map-g"><span id="48204"></span><a href="../asm/48204.html">48204</a></td>
 <td class="map-length">152</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48204.html">Game status buffer entry at BC4C</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48204.html">Data: Room Setup Script</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Script run by <a href="../asm/44409.html">ChangeRoom</a> after the new room is current.
+</div>
 </div>
 </td>
 </tr>
@@ -603,8 +783,11 @@ The total number of rooms which have related images in the game.
 <td class="map-g"><span id="48356"></span><a href="../asm/48356.html">48356</a></td>
 <td class="map-length">28</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48356.html">Game status buffer entry at BCE4</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48356.html">Data: Scenic Event Script</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Script for scenic event 0. <a href="../asm/48061.html">JumpTable_ScenicEvents</a> jumps here.
+</div>
 </div>
 </td>
 </tr>
@@ -612,8 +795,11 @@ The total number of rooms which have related images in the game.
 <td class="map-g"><span id="48384"></span><a href="../asm/48384.html">48384</a></td>
 <td class="map-length">28</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48384.html">Game status buffer entry at BD00</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48384.html">Data: Scenic Event Script 2</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Script for scenic event 1.
+</div>
 </div>
 </td>
 </tr>
@@ -621,8 +807,11 @@ The total number of rooms which have related images in the game.
 <td class="map-g"><span id="48412"></span><a href="../asm/48412.html">48412</a></td>
 <td class="map-length">9</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48412.html">Game status buffer entry at BD1C</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48412.html">Data: Scenic Event Script 3</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Script for scenic event 2.
+</div>
 </div>
 </td>
 </tr>
@@ -630,8 +819,11 @@ The total number of rooms which have related images in the game.
 <td class="map-g"><span id="48421"></span><a href="../asm/48421.html">48421</a></td>
 <td class="map-length">9</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48421.html">Game status buffer entry at BD25</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48421.html">Data: Scenic Event Script 4</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Script for scenic event 3.
+</div>
 </div>
 </td>
 </tr>
@@ -639,8 +831,11 @@ The total number of rooms which have related images in the game.
 <td class="map-g"><span id="48430"></span><a href="../asm/48430.html">48430</a></td>
 <td class="map-length">3003</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48430.html">Game status buffer entry at BD2E</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/48430.html">Data: Action Scripts</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Scenic event 4 starts here. The verb scripts addressed from <a href="../asm/46154.html">JumpTable_VerbScripts</a>, and the later action scripts, continue through the rest of this block.
+</div>
 </div>
 </td>
 </tr>
@@ -662,20 +857,11 @@ The total number of rooms which have related images in the game.
 </div>
 </td>
 </tr>
-<tr>
-<td class="map-g"><span id="65344"></span><a href="../asm/65344.html">65344</a></td>
-<td class="map-length">192</td>
-<td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/65344.html">Game status buffer entry at FF40</a></div>
-<div class="map-entry-desc">
-</div>
-</td>
-</tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../../buffers/gbuffer.html">Switch to hexadecimal</a>.</div>
 </footer>

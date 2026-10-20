@@ -25,203 +25,275 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="5DCA.html">5DCA</a>
+Prev: <a href="5ECA.html">5ECA</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#5ecb">Map</a></td>
 <td class="next">
-Next: <a href="5F16.html">5F16</a>
+Next: <a href="5F15.html">5F15</a>
 </td>
 </tr>
 </table>
-<div class="description">5ECB: Routine at 5ECB</div>
+<div class="description">5ECB: Game Loop</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="66C7.html">66C7</a> and <a href="FFE9.html">GameEntryPoint</a>.
+Used by the routines at <a href="685B.html">OfferAnotherGame</a>, <a href="6953.html">Restored</a> and <a href="FFDC.html">StartGame</a>.
+</div>
+<div class="paragraph">
+Runs the adventure. It prepares a new game, describes the room, runs the location scripts, draws the picture, then reads a command and obeys it. A ROM error returns with the stack at <a href="6B41.html">ErrorStack</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="address-2"><span id="5ecb"></span>5ECB</td>
-<td class="instruction">LD HL,$6B41</td>
-<td class="comment-1" rowspan="2">Write <a href="6B41.html">6B41</a> to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3D.html">ERR_SP</a>.</td>
+<td class="routine-comment" colspan="5">
+<span id="5ecb"></span>
+<div class="comments">
+<div class="paragraph">
+Install the word at <a href="6B41.html">ErrorStack</a> as the ROM error handler and give the game its own stack.
+</div>
+</div>
+</td>
 </tr>
 <tr>
+<td class="asm-label">GameLoop</td>
+<td class="address-2"><span id="5ecb"></span>5ECB</td>
+<td class="instruction">LD HL,$6B41</td>
+<td class="comment-1" rowspan="2">Store <a href="6B41.html">ErrorStack</a> in <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3D.html">ERR_SP</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ece"></span>5ECE</td>
 <td class="instruction">LD ($5C3D),HL</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ed1"></span>5ED1</td>
 <td class="instruction">LD SP,$5D84</td>
-<td class="comment-1" rowspan="1"><span class="register">SP</span>=5D84.</td>
+<td class="comment-1" rowspan="1">The stack grows down from <a href="5D84.html">StackTop</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="5ed4"></span>
+<div class="comments">
+<div class="paragraph">
+Start in the first room with an empty inventory.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ed4"></span>5ED4</td>
-<td class="instruction">CALL <a href="600F.html">$600F</a></td>
-<td class="comment-1" rowspan="1">Call <a href="600F.html">600F</a>.</td>
+<td class="instruction">CALL <a href="600F.html">PrepareGame</a></td>
+<td class="comment-1" rowspan="1">Call <a href="600F.html">PrepareGame</a> to prepare a new game.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ed7"></span>5ED7</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Write 00 to *<a href="6058.html#6185">6185</a>.</td>
+<td class="comment-1" rowspan="2">The picture has not been drawn yet.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ed8"></span>5ED8</td>
 <td class="instruction">LD ($6185),A</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5edb"></span>5EDB</td>
-<td class="instruction">CALL <a href="6187.html">$6187</a></td>
-<td class="comment-1" rowspan="1">Call <a href="6187.html">6187</a>.</td>
+<td class="instruction">CALL <a href="6187.html">DescribeLocation</a></td>
+<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="5ede"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="5F21.html">5F21</a>.
+This entry point is used by the routines at <a href="5F21.html">ObeyCommand</a> and <a href="5FAA.html">RefuseCommand</a>.
+</div>
+<div class="paragraph">
+Run the high-priority scripts, and describe the room again if they moved the player.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">GameLoop_Act</td>
 <td class="address-2"><span id="5ede"></span>5EDE</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Write 00 to *<a href="5D8E.html">5D8E</a>.</td>
+<td class="comment-1" rowspan="2">Write 00 to *<a href="5D8E.html">RepeatCounter</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5edf"></span>5EDF</td>
 <td class="instruction">LD ($5D8E),A</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ee2"></span>5EE2</td>
-<td class="instruction">CALL <a href="6058.html">$6058</a></td>
-<td class="comment-1" rowspan="1">Call <a href="6058.html">6058</a>.</td>
+<td class="instruction">CALL <a href="6058.html">RunPriorityScripts</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6058.html">RunPriorityScripts</a> to run the high-priority scripts.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ee5"></span>5EE5</td>
 <td class="instruction">LD A,($5B95)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="5ECB.html#5eee">5EEE</a> if *<a href="5B95.html">5B95</a> is zero.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="5ECB.html#5eee">GameLoop_Draw</a> when the room stayed the same.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ee8"></span>5EE8</td>
 <td class="instruction">OR A</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ee9"></span>5EE9</td>
-<td class="instruction">JR Z,<a href="5ECB.html#5eee">$5EEE</a></td>
+<td class="instruction">JR Z,<a href="5ECB.html#5eee">GameLoop_Draw</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5eeb"></span>5EEB</td>
-<td class="instruction">CALL <a href="6187.html">$6187</a></td>
-<td class="comment-1" rowspan="1">Call <a href="6187.html">6187</a>.</td>
+<td class="instruction">CALL <a href="6187.html">DescribeLocation</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6187.html">DescribeLocation</a> to describe the new room.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="5eee"></span>
+<div class="comments">
+<div class="paragraph">
+Draw the illustration once for this room, then either repeat or ask for a command.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">GameLoop_Draw</td>
 <td class="address-2"><span id="5eee"></span>5EEE</td>
-<td class="instruction">CALL <a href="6B15.html">$6B15</a></td>
-<td class="comment-1" rowspan="1">Call <a href="6B15.html">6B15</a>.</td>
+<td class="instruction">CALL <a href="6B15.html">DrawRoomOnce</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6B15.html">DrawRoomOnce</a> to draw the picture if this room is not already on screen.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ef1"></span>5EF1</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Write 00 to *<a href="5B95.html">5B95</a>.</td>
+<td class="comment-1" rowspan="2">Write 00 to *<a href="5B95.html">RoomChanged</a>.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ef2"></span>5EF2</td>
 <td class="instruction">LD ($5B95),A</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ef5"></span>5EF5</td>
 <td class="instruction">LD A,($5D8E)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="5F21.html#5f46">5F46</a> if *<a href="5D8E.html">5D8E</a> is not zero.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="5F21.html#5f46">ObeyCommand_Repeat</a> while a script asked for another look.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ef8"></span>5EF8</td>
 <td class="instruction">OR A</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5ef9"></span>5EF9</td>
-<td class="instruction">JR NZ,<a href="5F21.html#5f46">$5F46</a></td>
+<td class="instruction">JR NZ,<a href="5F21.html#5f46">ObeyCommand_Repeat</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="5efb"></span>
+<div class="comments">
+<div class="paragraph">
+Read a command. An empty line is a complaint, not an action.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5efb"></span>5EFB</td>
-<td class="instruction">CALL <a href="66C7.html">$66C7</a></td>
-<td class="comment-1" rowspan="1">Call <a href="66C7.html">66C7</a>.</td>
+<td class="instruction">CALL <a href="66C7.html">ReadCommand</a></td>
+<td class="comment-1" rowspan="1">Call <a href="66C7.html">ReadCommand</a> to read the next command from bank 3.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5efe"></span>5EFE</td>
 <td class="instruction">LD A,($5B7F)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="5F21.html">5F21</a> if *<a href="5B7F.html">5B7F</a> is not zero.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="5F21.html">ObeyCommand</a> when a verb was recognised.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5f01"></span>5F01</td>
 <td class="instruction">OR A</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5f02"></span>5F02</td>
-<td class="instruction">JR NZ,<a href="5F21.html">$5F21</a></td>
+<td class="instruction">JR NZ,<a href="5F21.html">ObeyCommand</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5f04"></span>5F04</td>
 <td class="instruction">LD A,($5B80)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="5F21.html">5F21</a> if *<a href="5B80.html">5B80</a> is not zero.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="5F21.html">ObeyCommand</a> when a noun was recognised.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5f07"></span>5F07</td>
 <td class="instruction">OR A</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5f08"></span>5F08</td>
-<td class="instruction">JR NZ,<a href="5F21.html">$5F21</a></td>
+<td class="instruction">JR NZ,<a href="5F21.html">ObeyCommand</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5f0a"></span>5F0A</td>
 <td class="instruction">LD A,$0B</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=0B.</td>
+<td class="comment-1" rowspan="2">Message 0B: that input contained no recognised words.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5f0c"></span>5F0C</td>
-<td class="instruction">CALL <a href="63D4.html">$63D4</a></td>
-<td class="comment-1" rowspan="1">Call <a href="63D4.html">63D4</a>.</td>
+<td class="instruction">CALL <a href="63D4.html">PrintSystemMessage</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5f0f"></span>5F0F</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Write 00 to *<a href="5B85.html">5B85</a>.</td>
+<td class="comment-1" rowspan="2">A failed line does not keep a comma continuation.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5f10"></span>5F10</td>
 <td class="instruction">LD ($5B85),A</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="5f13"></span>5F13</td>
-<td class="instruction">JR <a href="5ECB.html#5ede">$5EDE</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="5ECB.html#5ede">5EDE</a>.</td>
-</tr>
-<tr>
-<td class="address-1"><span id="5f15"></span>5F15</td>
-<td class="instruction">DEFB $00</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR <a href="5ECB.html#5ede">GameLoop_Act</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5ECB.html#5ede">GameLoop_Act</a> for another turn.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="5DCA.html">5DCA</a>
+Prev: <a href="5ECA.html">5ECA</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#5ecb">Map</a></td>
 <td class="next">
-Next: <a href="5F16.html">5F16</a>
+Next: <a href="5F15.html">5F15</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Adventuresoft UK Ltd &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/blizzardpass/">Source code</a>.</div>
 <div><a href="../dec/asm/24267.html">Switch to decimal</a>.</div>
 </footer>

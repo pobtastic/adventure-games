@@ -32,115 +32,368 @@ Prev: <a href="ABF3.html">ABF3</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#ac24">Map</a></td>
 <td class="next">
-Next: <a href="AC41.html">AC41</a>
+Next: <a href="AC8F.html">AC8F</a>
 </td>
 </tr>
 </table>
-<div class="description">AC24: Routine at AC24</div>
+<div class="description">AC24: Clear Co-ordinate Buffer</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="AAB2.html">AAB2</a> and <a href="AB52.html">AB52</a>.
+Used by the routines at <a href="AAD1.html">StartPictureModeScreenIdle</a> and <a href="AB52.html">CopyDisplayIfNeeded</a>.
+</div>
+<div class="paragraph">
+Clears the co-ordinate buffer and marks bits 2, 4 and 5 of <span class="register">E</span>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">ClearCoordinateBuffer</td>
 <td class="address-2"><span id="ac24"></span>AC24</td>
 <td class="instruction">LD HL,$AAA8</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Call <a href="A2AB.html">ClearBuffer</a> to clear buffer.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac27"></span>AC27</td>
 <td class="instruction">LD B,$0A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac29"></span>AC29</td>
 <td class="instruction">CALL <a href="A2AB.html">ClearBuffer</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac2c"></span>AC2C</td>
 <td class="instruction">LD A,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the low byte of the source.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac2d"></span>AC2D</td>
 <td class="instruction">OR $34</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Mark bits 2, 4, 5 on the result.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac2f"></span>AC2F</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store the result in the low byte of the source.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="ac30"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="AC41.html">AC41</a>.
+Saves the text pointer, and a code of 128 clears the fourth flag bit.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">ClearCoordinateBuffer_Loop</td>
 <td class="address-2"><span id="ac30"></span>AC30</td>
-<td class="instruction">CALL <a href="AE7F.html">$AE7F</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="AE7F.html">SaveTextPointer</a></td>
+<td class="comment-1" rowspan="3">Go to <a href="AC24.html#ac41">ClearCoordinateBuffer_TestLowAndHighToken</a> if it is not 80.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac33"></span>AC33</td>
 <td class="instruction">CP $80</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac35"></span>AC35</td>
-<td class="instruction">JR NZ,<a href="AC41.html">$AC41</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="AC24.html#ac41">ClearCoordinateBuffer_TestLowAndHighToken</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac37"></span>AC37</td>
 <td class="instruction">BIT 4,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a> if bit 4 is clear.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac39"></span>AC39</td>
-<td class="instruction">JR Z,<a href="AC24.html#ac3f">$AC3F</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a></td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac3b"></span>AC3B</td>
 <td class="instruction">RES 4,E</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Clear the mark on this character.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac3d"></span>AC3D</td>
-<td class="instruction">JR <a href="AC24.html#ac30">$AC30</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="AC24.html#ac30">ClearCoordinateBuffer_Loop</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="ac3f"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="AC41.html">AC41</a>.
+The condition holds, so the caller continues.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label">ClearCoordinateBuffer_Next</td>
 <td class="address-2"><span id="ac3f"></span>AC3F</td>
 <td class="instruction">SCF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Mark the condition as met.</td>
 </tr>
 <tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="ac40"></span>AC40</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ac41"></span>
+<div class="comments">
+<div class="paragraph">
+Accepts token types 10 and 70 when their flag bits are set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ClearCoordinateBuffer_TestLowAndHighToken</td>
+<td class="address-2"><span id="ac41"></span>AC41</td>
+<td class="instruction">CP $10</td>
+<td class="comment-1" rowspan="2">Jump to <a href="AC24.html#ac49">ClearCoordinateBuffer_AcceptFlaggedToken</a> when the token type is 10.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac43"></span>AC43</td>
+<td class="instruction">JR Z,<a href="AC24.html#ac49">ClearCoordinateBuffer_AcceptFlaggedToken</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac45"></span>AC45</td>
+<td class="instruction">CP $70</td>
+<td class="comment-1" rowspan="2">Jump to <a href="AC24.html#ac65">ClearCoordinateBuffer_TestVocabularyCode</a> when the token type is not 70.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac47"></span>AC47</td>
+<td class="instruction">JR NZ,<a href="AC24.html#ac65">ClearCoordinateBuffer_TestVocabularyCode</a></td>
+</tr>
+<tr>
+<td class="asm-label">ClearCoordinateBuffer_AcceptFlaggedToken</td>
+<td class="address-2"><span id="ac49"></span>AC49</td>
+<td class="instruction">BIT 4,E</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a> if bit 4 is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac4b"></span>AC4B</td>
+<td class="instruction">JR Z,<a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac4d"></span>AC4D</td>
+<td class="instruction">BIT 2,E</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a> if bit 2 is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac4f"></span>AC4F</td>
+<td class="instruction">JR Z,<a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac51"></span>AC51</td>
+<td class="instruction">LD A,($AAA7)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a> if the state byte at <a href="AAA1.html#aaa7">AAA7</a> is at least 03.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac54"></span>AC54</td>
+<td class="instruction">CP $03</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac56"></span>AC56</td>
+<td class="instruction">JR NC,<a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac58"></span>AC58</td>
+<td class="instruction">INC A</td>
+<td class="comment-1" rowspan="3">Count one more at <a href="AAA1.html#aaa7">AAA7</a>, then call <a href="AC8F.html">PointPictureOrigin</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac59"></span>AC59</td>
+<td class="instruction">LD ($AAA7),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac5c"></span>AC5C</td>
+<td class="instruction">CALL <a href="AC8F.html">PointPictureOrigin</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac5f"></span>AC5F</td>
+<td class="instruction">JR NZ,<a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a> to return if <a href="AC8F.html">PointPictureOrigin</a> does not return 00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac61"></span>AC61</td>
+<td class="instruction">RES 5,E</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="AC24.html#ac30">ClearCoordinateBuffer_Loop</a> to check token 10 or 70.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac63"></span>AC63</td>
+<td class="instruction">JR <a href="AC24.html#ac30">ClearCoordinateBuffer_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ac65"></span>
+<div class="comments">
+<div class="paragraph">
+A vocabulary code clears the upper flag bits when the second flag bit is set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ClearCoordinateBuffer_TestVocabularyCode</td>
+<td class="address-2"><span id="ac65"></span>AC65</td>
+<td class="instruction">CP $60</td>
+<td class="comment-1" rowspan="2">Jump to <a href="AC24.html#ac78">ClearCoordinateBuffer_TestCodeKeepsOrdinate</a> when the token type is not 60.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac67"></span>AC67</td>
+<td class="instruction">JR NZ,<a href="AC24.html#ac78">ClearCoordinateBuffer_TestCodeKeepsOrdinate</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac69"></span>AC69</td>
+<td class="instruction">BIT 2,E</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a> if bit 2 is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac6b"></span>AC6B</td>
+<td class="instruction">JR Z,<a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac6d"></span>AC6D</td>
+<td class="instruction">RES 4,E</td>
+<td class="comment-1" rowspan="1">Clear the marker for check token 10 or 70.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac6f"></span>AC6F</td>
+<td class="instruction">RES 5,E</td>
+<td class="comment-1" rowspan="2">Clear bit 5 and call <a href="AC94.html">ReadBytePointer</a> to read the next co-ordinate pair.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac71"></span>AC71</td>
+<td class="instruction">CALL <a href="AC94.html">ReadBytePointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac74"></span>AC74</td>
+<td class="instruction">JR NZ,<a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="AC24.html#ac3f">ClearCoordinateBuffer_Next</a> to return if <a href="AC94.html">ReadBytePointer</a> does not return 00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac76"></span>AC76</td>
+<td class="instruction">JR <a href="AC24.html#ac30">ClearCoordinateBuffer_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="AC24.html#ac30">ClearCoordinateBuffer_Loop</a> to check token 10 or 70.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ac78"></span>
+<div class="comments">
+<div class="paragraph">
+A code of F0 or 50 keeps the co-ordinate bits that this token uses.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ClearCoordinateBuffer_TestCodeKeepsOrdinate</td>
+<td class="address-2"><span id="ac78"></span>AC78</td>
+<td class="instruction">CP $F0</td>
+<td class="comment-1" rowspan="2">Jump to <a href="AC24.html#ac80">ClearCoordinateBuffer_RecordBufferOrdinate</a> when the token type is F0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac7a"></span>AC7A</td>
+<td class="instruction">JR Z,<a href="AC24.html#ac80">ClearCoordinateBuffer_RecordBufferOrdinate</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac7c"></span>AC7C</td>
+<td class="instruction">CP $50</td>
+<td class="comment-1" rowspan="2">Jump to <a href="AC24.html#ac8b">ClearCoordinateBuffer_0</a> when the token type is not 50.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac7e"></span>AC7E</td>
+<td class="instruction">JR NZ,<a href="AC24.html#ac8b">ClearCoordinateBuffer_0</a></td>
+</tr>
+<tr>
+<td class="asm-label">ClearCoordinateBuffer_RecordBufferOrdinate</td>
+<td class="address-2"><span id="ac80"></span>AC80</td>
+<td class="instruction">LD A,E</td>
+<td class="comment-1" rowspan="4">Record the buffer: co-ordinate data.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac81"></span>AC81</td>
+<td class="instruction">AND $CB</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac83"></span>AC83</td>
+<td class="instruction">LD E,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac84"></span>AC84</td>
+<td class="instruction">LD ($AAAC),BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac88"></span>AC88</td>
+<td class="instruction">CALL <a href="AE7F.html">SaveTextPointer</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AE7F.html">SaveTextPointer</a> to remember the text pointer.</td>
+</tr>
+<tr>
+<td class="asm-label">ClearCoordinateBuffer_0</td>
+<td class="address-2"><span id="ac8b"></span>AC8B</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="1">Clear the carry before testing bit 5 of the source.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac8c"></span>AC8C</td>
+<td class="instruction">BIT 5,E</td>
+<td class="comment-1" rowspan="1">See whether bit 5 of the low byte of the source is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ac8e"></span>AC8E</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -150,14 +403,14 @@ Prev: <a href="ABF3.html">ABF3</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#ac24">Map</a></td>
 <td class="next">
-Next: <a href="AC41.html">AC41</a>
+Next: <a href="AC8F.html">AC8F</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/44068.html">Switch to decimal</a>.</div>
 </footer>

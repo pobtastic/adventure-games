@@ -33,169 +33,208 @@ Next: <a href="36982.html">36982</a>
 </td>
 </tr>
 </table>
-<div class="description">36916: Action Talk-To</div>
+<div class="description">36916: Action: Talk To</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Talks to the current character, when they still have something to say. Reached through the action table at <a href="50992.html">ActionTable</a>, dispatched by <a href="38159.html">Turn_RunTheHandlerIfPresent</a>.
+</div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Action_Talkto</td>
+<td class="routine-comment" colspan="5">
+<span id="36916"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, the character says nothing.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_TalkTo</td>
 <td class="address-2"><span id="36916"></span>36916</td>
-<td class="instruction">CALL <a href="40260.html">40260</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="40260.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="40260.html">ConditionSuppressTheMessage</a>. If the message is held back, the character says nothing.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36919"></span>36919</td>
 <td class="instruction">LD A,(46824)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="46810.html#46824">CurrentObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36922"></span>36922</td>
-<td class="instruction">CALL <a href="39557.html">39557</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="39557.html">TableFindASpecialObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="39557.html">TableFindASpecialObject</a> to find the special-object record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36925"></span>36925</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Take zero, and jump to <a href="36916.html#36952">Action_TalkTo_FillTheClaimedSlots</a> if this object has no special-object record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36927"></span>36927</td>
 <td class="instruction">LD A,0</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36929"></span>36929</td>
-<td class="instruction">JR Z,<a href="36916.html#36952">Action_Talkto_0</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="36916.html#36952">Action_TalkTo_FillTheClaimedSlots</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="36931"></span>
+<div class="comments">
+<div class="paragraph">
+Test the talk flag.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36931"></span>36931</td>
 <td class="instruction">LD A,(46841)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="36916.html#36952">Action_TalkTo_FillTheClaimedSlots</a> if *<a href="46810.html#46841">46841</a> is not 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36934"></span>36934</td>
 <td class="instruction">CP 0</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36936"></span>36936</td>
-<td class="instruction">JR NZ,<a href="36916.html#36952">Action_Talkto_0</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="36916.html#36952">Action_TalkTo_FillTheClaimedSlots</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36938"></span>36938</td>
 <td class="instruction">LD A,(IY+6)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read byte 6 of this special-object record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36941"></span>36941</td>
 <td class="instruction">CP 0</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="36916.html#36952">Action_TalkTo_FillTheClaimedSlots</a> if that byte is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36943"></span>36943</td>
-<td class="instruction">JR Z,<a href="36916.html#36952">Action_Talkto_0</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="36916.html#36952">Action_TalkTo_FillTheClaimedSlots</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="36945"></span>
+<div class="comments">
+<div class="paragraph">
+Roll a random number.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36945"></span>36945</td>
-<td class="instruction">CALL <a href="40095.html">GetRandomNum</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="40095.html">GetRandomNumber</a></td>
+<td class="comment-1" rowspan="1">Call <a href="40095.html">GetRandomNumber</a> to roll a number from the limit in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36948"></span>36948</td>
 <td class="instruction">CP 0</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="36916.html#36956">Action_TalkTo_PrintSays</a> if the roll is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36950"></span>36950</td>
-<td class="instruction">JR Z,<a href="36916.html#36956">Action_Talkto_1</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="36916.html#36956">Action_TalkTo_PrintSays</a></td>
 </tr>
 <tr>
-<td class="asm-label">Action_Talkto_0</td>
+<td class="asm-label">Action_TalkTo_FillTheClaimedSlots</td>
 <td class="address-2"><span id="36952"></span>36952</td>
-<td class="instruction">CALL <a href="30673.html#32442">32442</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="32442.html">Inglish_FillTheClaimedSlots</a></td>
+<td class="comment-1" rowspan="1">Call <a href="32442.html">Inglish_FillTheClaimedSlots</a> to give <span class="register">A</span> of the claimed slots to the current object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36955"></span>36955</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Talkto_1</td>
+<td class="asm-label">Action_TalkTo_PrintSays</td>
 <td class="address-2"><span id="36956"></span>36956</td>
 <td class="instruction">LD HL,45539</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="44413.html#45539">"[0x07] says " No "[0x14]"</a></td>
+<td class="comment-1" rowspan="1">Point at the message "[0x07] says " (<a href="44413.html#45539">45539</a>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36959"></span>36959</td>
-<td class="instruction">CALL <a href="29405.html">PrintMsg</a></td>
-<td class="comment-1" rowspan="1">Call <a href="29405.html">PrintMsg</a>.</td>
+<td class="instruction">CALL <a href="29405.html">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="29405.html">PrintMessage</a> to print message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36962"></span>36962</td>
 <td class="instruction">SUB A</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Take zero so <a href="32442.html">Inglish_FillTheClaimedSlots</a> marks the claimed slots free.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36963"></span>36963</td>
-<td class="instruction">JR <a href="36916.html#36952">Action_Talkto_0</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR <a href="36916.html#36952">Action_TalkTo_FillTheClaimedSlots</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="36916.html#36952">Action_TalkTo_FillTheClaimedSlots</a> to free every claimed slot and return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="36965"></span>
+<div class="comments">
+<div class="paragraph">
+If the message is held back, the reply about the open object is skipped.
+</div>
+<div class="paragraph">
+Reached through the action list of <a href="49435.html#50484">29</a> - "Sand" for action 57, dispatched by <a href="39788.html">TriggerAction</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36965"></span>36965</td>
-<td class="instruction">CALL <a href="40260.html">40260</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">CALL <a href="40260.html">ConditionSuppressTheMessage</a></td>
+<td class="comment-1" rowspan="1">Call <a href="40260.html">ConditionSuppressTheMessage</a>. If the message is held back, the reply about the open object is skipped.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36968"></span>36968</td>
 <td class="instruction">LD IX,(46856)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read *<a href="46810.html#46856">46856</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36972"></span>36972</td>
 <td class="instruction">BIT 5,(IX+7)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="37134.html#37143">ActionOpenOrClose_0</a> if the object is not open.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36976"></span>36976</td>
-<td class="instruction">JP Z,<a href="37134.html#37143">37143</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP Z,<a href="37134.html#37143">ActionOpenOrClose_0</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36979"></span>36979</td>
-<td class="instruction">JP <a href="37134.html#37189">37189</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP <a href="37176.html#37189">Action_Close_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="37176.html#37189">Action_Close_0</a> to close the object.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -212,7 +251,7 @@ Next: <a href="36982.html">36982</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../../asm/9034.html">Switch to hexadecimal</a>.</div>
 </footer>

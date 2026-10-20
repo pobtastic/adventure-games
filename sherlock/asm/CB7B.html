@@ -41,6 +41,9 @@ Next: <a href="CBA7.html">CBA7</a>
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Picks a token number from the graphics flag. Pointed at by <a href="C763.html#c7a1">C7A1</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -48,127 +51,116 @@ Next: <a href="CBA7.html">CBA7</a>
 <td class="asm-label">GetDisplayAddressBasedOnFlag</td>
 <td class="address-2"><span id="cb7b"></span>CB7B</td>
 <td class="instruction">LD A,($CB79)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Read the token select flag at <a href="CB79.html">CB79</a> and take the token table at <a href="C463.html#c471">C471</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb7e"></span>CB7E</td>
 <td class="instruction">BIT 7,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb80"></span>CB80</td>
 <td class="instruction">LD HL,$C471</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb83"></span>CB83</td>
-<td class="instruction">JR Z,<a href="CB7B.html#cb88">GetDisplayAddressBasedOnFlag_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="CB7B.html#cb88">GetDisplayAddressBasedOnFlag_Next</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="CB7B.html#cb88">GetDisplayAddressBasedOnFlag_Next</a> if bit 7 of the token select flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb85"></span>CB85</td>
 <td class="instruction">LD HL,$C481</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Take the token table at <a href="C463.html#c481">C481</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">GetDisplayAddressBasedOnFlag_0</td>
+<td class="asm-label">GetDisplayAddressBasedOnFlag_Next</td>
 <td class="address-2"><span id="cb88"></span>CB88</td>
 <td class="instruction">OR $80</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Force a non-zero result so the caller continues.</td>
 </tr>
 <tr>
-<td class="asm-label">GetDisplayAddressBasedOnFlag_1</td>
+<td class="asm-label">GetDisplayAddressBasedOnFlag_Loop</td>
 <td class="address-2"><span id="cb8a"></span>CB8A</td>
 <td class="instruction">LD E,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="6">Read the next token number and repeat from <a href="CB7B.html#cb8a">GetDisplayAddressBasedOnFlag_Loop</a> while this bit of the flag is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb8b"></span>CB8B</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb8c"></span>CB8C</td>
 <td class="instruction">LD D,(HL)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb8d"></span>CB8D</td>
 <td class="instruction">INC HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb8e"></span>CB8E</td>
 <td class="instruction">RRCA</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb8f"></span>CB8F</td>
-<td class="instruction">JR NC,<a href="CB7B.html#cb8a">GetDisplayAddressBasedOnFlag_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="CB7B.html#cb8a">GetDisplayAddressBasedOnFlag_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb91"></span>CB91</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="CB58.html">SelectSherlock</a> if this token word is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb92"></span>CB92</td>
 <td class="instruction">OR E</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb93"></span>CB93</td>
-<td class="instruction">JR Z,<a href="CB43.html#cb58">ProcessDisplayWithLocationCheck_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="CB58.html">SelectSherlock</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb95"></span>CB95</td>
 <td class="instruction">LD A,($CB7A)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Record the room display parameter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb98"></span>CB98</td>
 <td class="instruction">LD ($A034),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb9b"></span>CB9B</td>
 <td class="instruction">LD HL,$6817</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Use the introduction (<a href="680B.html">680B</a>+0C).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cb9e"></span>CB9E</td>
 <td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print this message, then call <a href="A887.html">PrintTextToken</a> to extract token from text.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cba1"></span>CBA1</td>
-<td class="instruction">CALL <a href="A880.html#a887">PrintTextToken</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="A887.html">PrintTextToken</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="cba4"></span>CBA4</td>
 <td class="instruction">JP <a href="A2A2.html">PrintNewline</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="A2A2.html">PrintNewline</a> to print newline.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -185,7 +177,7 @@ Next: <a href="CBA7.html">CBA7</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/52091.html">Switch to decimal</a>.</div>
 </footer>

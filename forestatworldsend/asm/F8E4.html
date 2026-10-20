@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at F8E4</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F8AB.html">F8AB</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f8e4">Map</a></td>
+<td class="next">
+Next: <a href="F916.html">F916</a>
+</td>
+</tr>
+</table>
+<div class="description">F8E4: Action: Unlock</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Unlock a door with the key.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Unlock</td>
+<td class="address-2"><span id="f8e4"></span>F8E4</td>
+<td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
+<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8e7"></span>F8E7</td>
+<td class="instruction">RET C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8e8"></span>F8E8</td>
+<td class="instruction">LD HL,$E92E</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F8E4.html#f913">Action_Unlock_YouCant</a> unless the player named the witch.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8eb"></span>F8EB</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8ee"></span>F8EE</td>
+<td class="instruction">JR NZ,<a href="F8E4.html#f913">Action_Unlock_YouCant</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8f0"></span>F8F0</td>
+<td class="instruction">LD A,$0B</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F8E4.html#f8fd">Action_Unlock_Next</a> when object 0B (the chest) is here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8f2"></span>F8F2</td>
+<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8f5"></span>F8F5</td>
+<td class="instruction">JR Z,<a href="F8E4.html#f8fd">Action_Unlock_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f8f7"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "It is already unlocked.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8f7"></span>F8F7</td>
+<td class="instruction">LD HL,$E36F</td>
+<td class="comment-1" rowspan="2">Print "It is already unlocked." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8fa"></span>F8FA</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Unlock_Next</td>
+<td class="address-2"><span id="f8fd"></span>F8FD</td>
+<td class="instruction">LD A,$10</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F8E4.html#f90a">Action_Unlock_Chest</a> when the player is carrying object 10 (the key).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8ff"></span>F8FF</td>
+<td class="instruction">CALL <a href="C2D2.html">IsObjectCarried</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f902"></span>F902</td>
+<td class="instruction">JR Z,<a href="F8E4.html#f90a">Action_Unlock_Chest</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f904"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "You're not carrying a key.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f904"></span>F904</td>
+<td class="instruction">LD HL,$E387</td>
+<td class="comment-1" rowspan="2">Print "You're not carrying a key." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f907"></span>F907</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Unlock_Chest</td>
+<td class="address-2"><span id="f90a"></span>F90A</td>
+<td class="instruction">LD BC,$0B0C</td>
+<td class="comment-1" rowspan="2">Replace object 0B (the chest) with object 0C (the closed chest).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f90d"></span>F90D</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f910"></span>F910</td>
+<td class="instruction">JP <a href="ED96.html">Response_OK</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="ED96.html">Response_OK</a> to confirm.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Unlock_YouCant</td>
+<td class="address-2"><span id="f913"></span>F913</td>
+<td class="instruction">JP <a href="ED6E.html">Response_YouCant_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Tell the player the command is impossible.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F8AB.html">F8AB</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f8e4">Map</a></td>
+<td class="next">
+Next: <a href="F916.html">F916</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/63716.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -42,7 +42,10 @@ Next: <a href="D4EF.html">D4EF</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="D102.html">ProcessLocationTokenDisplay</a>, <a href="D4A7.html">PrintObjectList</a>, <a href="D526.html">PrintFormattedObjectList</a> and <a href="DD35.html">DD35</a>.
+Used by the routines at <a href="D113.html">DescribeCurrentRoom</a>, <a href="D4A7.html">PrintObjectList</a>, <a href="D526.html">PrintFormattedObjectList</a> and <a href="DE60.html">MeasureGapBetweenTwoPointers_Next</a>.
+</div>
+<div class="paragraph">
+Counts how many objects are inside the current room.
 </div>
 </div>
 <table class="input">
@@ -69,7 +72,7 @@ Used by the routines at <a href="D102.html">ProcessLocationTokenDisplay</a>, <a 
 <td class="asm-label">CountObjectsInLocation</td>
 <td class="address-2"><span id="d4cc"></span>D4CC</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="4">Stash <span class="register">IX</span>, <span class="register">IY</span>, <span class="register">HL</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="4">Save the character record, the schedule entry, the pointer and the count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -108,19 +111,18 @@ Used by the routines at <a href="D102.html">ProcessLocationTokenDisplay</a>, <a 
 <td class="asm-label">CountObjectsInLocation_Loop</td>
 <td class="address-2"><span id="d4d8"></span>D4D8</td>
 <td class="instruction">CALL <a href="D206.html">FetchNextObject</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D206.html">FetchNextObject</a>.</td>
+<td class="comment-1" rowspan="2">Go to <a href="D4CC.html#d4e6">CountObjectsInLocation_End</a> if the next object id is FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4db"></span>D4DB</td>
 <td class="instruction">JR Z,<a href="D4CC.html#d4e6">CountObjectsInLocation_End</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D4CC.html#d4e6">CountObjectsInLocation_End</a> if we've reached the end of the object table (FF).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4dd"></span>D4DD</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1">Restore the location ID from <span class="register">C</span> into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Take the count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -133,7 +135,7 @@ Used by the routines at <a href="D102.html">ProcessLocationTokenDisplay</a>, <a 
 <span id="d4e1"></span>
 <div class="comments">
 <div class="paragraph">
-Skip this object if it doesn't match the criteria (carry flag not set).
+Skip this object if it does not match the location and visibility criteria.
 </div>
 </div>
 </td>
@@ -167,6 +169,16 @@ This object matches the criteria, so count it.
 <td class="comment-1" rowspan="1">Jump back to <a href="D4CC.html#d4d8">CountObjectsInLocation_Loop</a> to check the next object.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="d4e6"></span>
+<div class="comments">
+<div class="paragraph">
+Read the count.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">CountObjectsInLocation_End</td>
 <td class="address-2"><span id="d4e6"></span>D4E6</td>
 <td class="instruction">LD A,B</td>
@@ -176,13 +188,13 @@ This object matches the criteria, so count it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4e7"></span>D4E7</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags based on the count (zero flag set if no objects found).</td>
+<td class="comment-1" rowspan="1">Set the zero flag when the count is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d4e8"></span>D4E8</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="4">Restore <span class="register">BC</span>, <span class="register">HL</span>, <span class="register">IY</span> and <span class="register">IX</span> from the stack.</td>
+<td class="comment-1" rowspan="4">Restore the saved count, the saved pointer, the saved schedule entry and the saved character record from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -220,7 +232,7 @@ Next: <a href="D4EF.html">D4EF</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/54476.html">Switch to decimal</a>.</div>
 </footer>

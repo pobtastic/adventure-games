@@ -28,11 +28,11 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="43136.html">43136</a>
+Prev: <a href="43143.html">43143</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#43311">Map</a></td>
 <td class="next">
-Next: <a href="43355.html">43355</a>
+Next: <a href="43341.html">43341</a>
 </td>
 </tr>
 </table>
@@ -42,7 +42,10 @@ Next: <a href="43355.html">43355</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="43136.html">ExtractTokenFromText</a>.
+Used by the routines at <a href="43143.html">PrintTextToken</a> and <a href="43341.html">43341</a>.
+</div>
+<div class="paragraph">
+Reads the format byte and copies its four data bytes into the buffer, stopping when the type is 15.
 </div>
 </div>
 <table class="input">
@@ -74,7 +77,7 @@ Extract the format type and copy format data to the buffer.
 <td class="asm-label">ProcessTextTokenFormat</td>
 <td class="address-2"><span id="43311"></span>43311</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span> (load the token format byte).</td>
+<td class="comment-1" rowspan="1">Read the format byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -86,7 +89,7 @@ Extract the format type and copy format data to the buffer.
 <td class="asm-label"></td>
 <td class="address-1"><span id="43314"></span>43314</td>
 <td class="instruction">CP 15</td>
-<td class="comment-1" rowspan="2">Return if the format type is 15 (the end marker).</td>
+<td class="comment-1" rowspan="2">Return when the format type is 15.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -129,49 +132,44 @@ Calculate the table offset for this format type (multiply by 4).
 <td class="asm-label"></td>
 <td class="address-1"><span id="43322"></span>43322</td>
 <td class="instruction">LD BC,43100</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=<a href="43100.html">Table_FormatData</a> (load the address of the format data table).</td>
+<td class="comment-1" rowspan="3">Use the format data at <a href="43100.html">Table_FormatData</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43325"></span>43325</td>
 <td class="instruction">ADD HL,BC</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">BC</span> (add the table base to get the format data pointer).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43326"></span>43326</td>
 <td class="instruction">LD B,4</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=4 (set the copy counter to 4 bytes).</td>
 </tr>
 <tr>
 <td class="asm-label">ProcessTextTokenFormat_CopyLoop</td>
 <td class="address-2"><span id="43328"></span>43328</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span> (load a byte from the format data).</td>
+<td class="comment-1" rowspan="4">Store the record's flag byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43329"></span>43329</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one (move to the next byte).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43330"></span>43330</td>
 <td class="instruction">LD (IX+0),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">IX</span>+0 (copy the byte to the buffer).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43333"></span>43333</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one (move to the next buffer position).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43335"></span>43335</td>
 <td class="instruction">DJNZ <a href="43311.html#43328">ProcessTextTokenFormat_CopyLoop</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="43311.html#43328">ProcessTextTokenFormat_CopyLoop</a> until counter is zero.</td>
+<td class="comment-1" rowspan="1">Count the next character of the message and repeat from <a href="43311.html#43328">ProcessTextTokenFormat_CopyLoop</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -185,80 +183,22 @@ Calculate the table offset for this format type (multiply by 4).
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="43341"></span>
-<div class="comments">
-<div class="paragraph">
-Handle nested format processing (recursive call).
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43341"></span>43341</td>
-<td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">IX</span> (the buffer pointer) on the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43343"></span>43343</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> (the text pointer) on the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43344"></span>43344</td>
-<td class="instruction">CALL <a href="43355.html">ProcessFormatDataByte</a></td>
-<td class="comment-1" rowspan="1">Call <a href="43355.html">ProcessFormatDataByte</a> to process the nested format.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43347"></span>43347</td>
-<td class="instruction">EX (SP),HL</td>
-<td class="comment-1" rowspan="1">Exchange the *<span class="register">SP</span> with the <span class="register">HL</span> register (restore the text pointer).</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43348"></span>43348</td>
-<td class="instruction">CALL <a href="43311.html#43311">ProcessTextTokenFormat</a></td>
-<td class="comment-1" rowspan="1">Call <a href="43311.html">ProcessTextTokenFormat</a> to recursively process the format.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43351"></span>43351</td>
-<td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43352"></span>43352</td>
-<td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">IX</span> from the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="43354"></span>43354</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
-</tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="43136.html">43136</a>
+Prev: <a href="43143.html">43143</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#43311">Map</a></td>
 <td class="next">
-Next: <a href="43355.html">43355</a>
+Next: <a href="43341.html">43341</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../../asm/A92F.html">Switch to hexadecimal</a>.</div>
 </footer>

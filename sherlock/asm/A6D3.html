@@ -36,11 +36,20 @@ Next: <a href="A702.html">A702</a>
 </td>
 </tr>
 </table>
-<div class="description">A6D3: Process Text Token Loop</div>
+<div class="description">A6D3: Print A Random Alternative</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Reads how many alternatives follow, picks one at random with <a href="D2A4.html">GetRandomNumber</a>, prints that one through <a href="A5CD.html">ProcessTextCommand</a> and skips the rest.
+</div>
+<div class="paragraph">
+Control code 0A in the table at <a href="A55D.html">JumpTable_ControlCharacters</a>.
+</div>
+<div class="paragraph">
+Used by the routine at <a href="A5C3.html">DispatchTextControlHandler</a>.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -54,105 +63,108 @@ Next: <a href="A702.html">A702</a>
 </td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenLoop</td>
+<td class="asm-label">PrintRandomAlternative</td>
 <td class="address-2"><span id="a6d3"></span>A6D3</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="3">Read how many alternatives follow and keep that count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6d5"></span>A6D5</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+00.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6d8"></span>A6D8</td>
 <td class="instruction">LD ($A6D1),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="A6D1.html">A6D1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6db"></span>A6DB</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">A</span> by one.</td>
+<td class="comment-1" rowspan="2">Pick one of them at random with <a href="D2A4.html">GetRandomNumber</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6dc"></span>A6DC</td>
-<td class="instruction">CALL <a href="D2A4.html">GetCharacterAttributeWithSign</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D2A4.html">GetCharacterAttributeWithSign</a>.</td>
+<td class="instruction">CALL <a href="D2A4.html">GetRandomNumber</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6df"></span>A6DF</td>
 <td class="instruction">INC A</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">A</span> by one.</td>
+<td class="comment-1" rowspan="2">Put that choice back in the range and remember it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6e0"></span>A6E0</td>
 <td class="instruction">LD ($A6D2),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="A6D2.html">A6D2</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6e3"></span>A6E3</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">Step on to the first alternative.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenLoop_0</td>
+<td class="asm-label">PrintRandomAlternative_0</td>
 <td class="address-2"><span id="a6e5"></span>A6E5</td>
 <td class="instruction">LD A,($A6D2)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A6D2.html">A6D2</a>.</td>
+<td class="comment-1" rowspan="2">Read the choice and point <span class="register">HL</span> at the count still left.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6e8"></span>A6E8</td>
 <td class="instruction">LD HL,$A6D1</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="A6D1.html">A6D1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6eb"></span>A6EB</td>
 <td class="instruction">CP (HL)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A6D3.html#a6f5">ProcessTextTokenLoop_1</a> if <span class="register">A</span> is not equal to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="A6D3.html#a6f5">PrintRandomAlternative_Next</a> if the choice differs from the alternatives left.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6ec"></span>A6EC</td>
-<td class="instruction">JR NZ,<a href="A6D3.html#a6f5">ProcessTextTokenLoop_1</a></td>
+<td class="instruction">JR NZ,<a href="A6D3.html#a6f5">PrintRandomAlternative_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6ee"></span>A6EE</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">IX</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Call <a href="A5CD.html">ProcessTextCommand</a> to print this alternative.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6f0"></span>A6F0</td>
 <td class="instruction">CALL <a href="A5CD.html">ProcessTextCommand</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A5CD.html">ProcessTextCommand</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6f3"></span>A6F3</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">IX</span> from the stack.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenLoop_1</td>
+<td class="routine-comment" colspan="5">
+<span id="a6f5"></span>
+<div class="comments">
+<div class="paragraph">
+Skip this alternative.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintRandomAlternative_Next</td>
 <td class="address-2"><span id="a6f5"></span>A6F5</td>
 <td class="instruction">CALL <a href="A6BB.html">SkipTextTokenBasedOnType</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A6BB.html">SkipTextTokenBasedOnType</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A6BB.html">SkipTextTokenBasedOnType</a> to skip this alternative.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6f8"></span>A6F8</td>
 <td class="instruction">LD HL,$A6D1</td>
-<td class="comment-1" rowspan="2">Decrease *<a href="A6D1.html">A6D1</a> by one.</td>
+<td class="comment-1" rowspan="2">Count one fewer alternative.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -162,20 +174,20 @@ Next: <a href="A702.html">A702</a>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6fc"></span>A6FC</td>
-<td class="instruction">JR NZ,<a href="A6D3.html#a6e5">ProcessTextTokenLoop_0</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="A6D3.html#a6e5">ProcessTextTokenLoop_0</a> until *<span class="register">HL</span> is zero.</td>
+<td class="instruction">JR NZ,<a href="A6D3.html#a6e5">PrintRandomAlternative_0</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="A6D3.html#a6e5">PrintRandomAlternative_0</a> until none remain.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a6fe"></span>A6FE</td>
 <td class="instruction">DEC IX</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">Step the record back one byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a700"></span>A700</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -198,7 +210,7 @@ Next: <a href="A702.html">A702</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/42707.html">Switch to decimal</a>.</div>
 </footer>

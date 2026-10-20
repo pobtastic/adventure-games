@@ -28,11 +28,11 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="C249.html">C249</a>
+Prev: <a href="C267.html">C267</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#c271">Map</a></td>
 <td class="next">
-Next: <a href="C29C.html">C29C</a>
+Next: <a href="C28D.html">C28D</a>
 </td>
 </tr>
 </table>
@@ -42,7 +42,10 @@ Next: <a href="C29C.html">C29C</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="C1FC.html">ProcessCharacterInput</a>.
+Used by the routine at <a href="C1FD.html">PrintScreenCharacter</a>.
+</div>
+<div class="paragraph">
+Scrolls the screen up one character row.
 </div>
 </div>
 </td>
@@ -51,7 +54,7 @@ Used by the routine at <a href="C1FC.html">ProcessCharacterInput</a>.
 <td class="asm-label">ScrollScreenUp</td>
 <td class="address-2"><span id="c271"></span>C271</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="4">Keep the caller's registers and point <span class="register">HL</span> at the screen address 5080.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -67,25 +70,24 @@ Used by the routine at <a href="C1FC.html">ProcessCharacterInput</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c274"></span>C274</td>
 <td class="instruction">LD HL,$5080</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=5080 (screen buffer location).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c277"></span>C277</td>
 <td class="instruction">LD DE,$5060</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=5060 (screen buffer location).</td>
+<td class="comment-1" rowspan="1">Take the screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c27a"></span>C27A</td>
 <td class="instruction">LD A,$08</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=08.</td>
+<td class="comment-1" rowspan="1">Use 08.</td>
 </tr>
 <tr>
-<td class="asm-label">ScrollScreenUp_0</td>
+<td class="asm-label">ScrollScreenUp_Loop</td>
 <td class="address-2"><span id="c27c"></span>C27C</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">HL</span> and <span class="register">DE</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Take a length of 80 entries.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -96,19 +98,18 @@ Used by the routine at <a href="C1FC.html">ProcessCharacterInput</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c27e"></span>C27E</td>
 <td class="instruction">LD BC,$0080</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=0080.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c281"></span>C281</td>
 <td class="instruction">LDIR</td>
-<td class="comment-1" rowspan="1">LDIR.</td>
+<td class="comment-1" rowspan="1">Scroll 80 bytes of this screen third down one character row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c283"></span>C283</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="2">Restore <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="6">Jump back to <a href="C271.html#c27c">ScrollScreenUp_Loop</a> while the count is not finished.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -119,110 +120,44 @@ Used by the routine at <a href="C1FC.html">ProcessCharacterInput</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c285"></span>C285</td>
 <td class="instruction">INC H</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">H</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c286"></span>C286</td>
 <td class="instruction">INC D</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">D</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c287"></span>C287</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">A</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c288"></span>C288</td>
-<td class="instruction">JR NZ,<a href="C271.html#c27c">ScrollScreenUp_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C271.html#c27c">ScrollScreenUp_0</a> if <span class="register">A</span> is not equal to 08.</td>
+<td class="instruction">JR NZ,<a href="C271.html#c27c">ScrollScreenUp_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c28a"></span>C28A</td>
 <td class="instruction">LD HL,$50E0</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=50E0 (screen buffer location).</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="c28d"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routine at <a href="C29C.html">ScrollScreenDown</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">ScrollScreenUp_1</td>
-<td class="address-2"><span id="c28d"></span>C28D</td>
-<td class="instruction">LD B,$24</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=24.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="c28f"></span>C28F</td>
-<td class="instruction">LD C,$01</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=01.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="c291"></span>C291</td>
-<td class="instruction">LD A,$20</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=20.</td>
-</tr>
-<tr>
-<td class="asm-label">ScrollScreenUp_2</td>
-<td class="address-2"><span id="c293"></span>C293</td>
-<td class="instruction">CALL <a href="C388.html">PrintCharacter</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C388.html">PrintCharacter</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="c296"></span>C296</td>
-<td class="instruction">DJNZ <a href="C271.html#c293">ScrollScreenUp_2</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="C271.html#c293">ScrollScreenUp_2</a> until counter is zero.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="c298"></span>C298</td>
-<td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="c299"></span>C299</td>
-<td class="instruction">POP DE</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="c29a"></span>C29A</td>
-<td class="instruction">POP HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="c29b"></span>C29B</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the screen address 50E0.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="C249.html">C249</a>
+Prev: <a href="C267.html">C267</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#c271">Map</a></td>
 <td class="next">
-Next: <a href="C29C.html">C29C</a>
+Next: <a href="C28D.html">C28D</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/49777.html">Switch to decimal</a>.</div>
 </footer>

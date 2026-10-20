@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at 51647</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="51606.html">51606</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#51647">Map</a></td>
+<td class="next">
+Next: <a href="51830.html">51830</a>
+</td>
+</tr>
+</table>
+<div class="description">51647: Process Display Record</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="51606.html">ProcessObjectDisplayEntry</a>.
+</div>
+<div class="paragraph">
+<span class="register">HL</span> points at a display record (flags, value, optional handler word, optional five extra bytes). Checks the record against the current object, character and graphics, runs its handler if bit 6 is set, and then either returns the address after the record (bit 7 set) or runs the code that follows it via <a href="51647.html#51812">51812</a>. A non-zero return means the script step succeeded.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecord</td>
+<td class="address-2"><span id="51647"></span>51647</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="3">Point <span class="register">IY</span> at the display record and call <a href="53368.html">CheckObjectVisibility</a> to check whether the object is visible.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51648"></span>51648</td>
+<td class="instruction">POP IY</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51650"></span>51650</td>
+<td class="instruction">CALL <a href="53368.html">CheckObjectVisibility</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51653"></span>51653</td>
+<td class="instruction">JR NC,<a href="51647.html#51667">ProcessDisplayRecord_TestHandler</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="51647.html#51667">ProcessDisplayRecord_TestHandler</a> if <a href="53368.html">CheckObjectVisibility</a> finds the object is not visible.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="51655"></span>
+<div class="comments">
+<div class="paragraph">
+Bit 5 of the record flags is clear?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51655"></span>51655</td>
+<td class="instruction">LD A,(IY+0)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="51647.html#51667">ProcessDisplayRecord_TestHandler</a> if bit 5 of the record flags is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51658"></span>51658</td>
+<td class="instruction">AND 32</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51660"></span>51660</td>
+<td class="instruction">JR Z,<a href="51647.html#51667">ProcessDisplayRecord_TestHandler</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51662"></span>51662</td>
+<td class="instruction">LD HL,52155</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the failure step at <a href="52135.html#52155">52155</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecord_Fail</td>
+<td class="address-2"><span id="51665"></span>51665</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51666"></span>51666</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="51667"></span>
+<div class="comments">
+<div class="paragraph">
+Test the character field, the graphics field and the handler bit.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecord_TestHandler</td>
+<td class="address-2"><span id="51667"></span>51667</td>
+<td class="instruction">CALL <a href="50728.html">TestLowBitsOfCharacter</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="51647.html#51665">ProcessDisplayRecord_Fail</a> if the character test on this record fails.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51670"></span>51670</td>
+<td class="instruction">JR Z,<a href="51647.html#51665">ProcessDisplayRecord_Fail</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51672"></span>51672</td>
+<td class="instruction">CALL <a href="50878.html">TestLowBitsOfGraphics</a></td>
+<td class="comment-1" rowspan="2">Go to <a href="51647.html#51665">ProcessDisplayRecord_Fail</a> if the graphics test on this record fails.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51675"></span>51675</td>
+<td class="instruction">JR Z,<a href="51647.html#51665">ProcessDisplayRecord_Fail</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51677"></span>51677</td>
+<td class="instruction">BIT 6,(IY+0)</td>
+<td class="comment-1" rowspan="2">Skip ahead to <a href="51647.html#51698">ProcessDisplayRecord_TestParser</a> unless bit 6 of the record flags is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51681"></span>51681</td>
+<td class="instruction">JR Z,<a href="51647.html#51698">ProcessDisplayRecord_TestParser</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51683"></span>51683</td>
+<td class="instruction">LD L,(IY+2)</td>
+<td class="comment-1" rowspan="3">Read the handler word at bytes 2/3 of the record and save <span class="register">IY</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51686"></span>51686</td>
+<td class="instruction">LD H,(IY+3)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51689"></span>51689</td>
+<td class="instruction">PUSH IY</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51691"></span>51691</td>
+<td class="instruction">CALL <a href="52020.html">52020</a></td>
+<td class="comment-1" rowspan="1">Run the handler via <a href="52020.html">52020</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51694"></span>51694</td>
+<td class="instruction">POP IY</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">IY</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51696"></span>51696</td>
+<td class="instruction">JR Z,<a href="51647.html#51665">ProcessDisplayRecord_Fail</a></td>
+<td class="comment-1" rowspan="1">Go to <a href="51647.html#51665">ProcessDisplayRecord_Fail</a> if the handler returns zero.</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecord_TestParser</td>
+<td class="address-2"><span id="51698"></span>51698</td>
+<td class="instruction">LD A,(40971)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="51647.html#51707">ProcessDisplayRecord_StoreCount</a> if the parser flag at <a href="40971.html">40971</a> is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51701"></span>51701</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51702"></span>51702</td>
+<td class="instruction">JR NZ,<a href="51647.html#51707">ProcessDisplayRecord_StoreCount</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51704"></span>51704</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51706"></span>51706</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="51707"></span>
+<div class="comments">
+<div class="paragraph">
+Take the high nibble of the record's value byte (1) as the count and store it at <a href="40991.html">CharacterScriptCycles</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecord_StoreCount</td>
+<td class="address-2"><span id="51707"></span>51707</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="2">Save the record pointer and read the value byte (1).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51709"></span>51709</td>
+<td class="instruction">LD A,(IY+1)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51712"></span>51712</td>
+<td class="instruction">RRCA</td>
+<td class="comment-1" rowspan="4">Shift that byte down by four bits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51713"></span>51713</td>
+<td class="instruction">RRCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51714"></span>51714</td>
+<td class="instruction">RRCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51715"></span>51715</td>
+<td class="instruction">RRCA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51716"></span>51716</td>
+<td class="instruction">AND 15</td>
+<td class="comment-1" rowspan="1">Keep the high nibble.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51718"></span>51718</td>
+<td class="instruction">LD L,A</td>
+<td class="comment-1" rowspan="1">Use that nibble as the low byte of the count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51719"></span>51719</td>
+<td class="instruction">LD H,0</td>
+<td class="comment-1" rowspan="1">Clear the high byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51721"></span>51721</td>
+<td class="instruction">LD (40991),HL</td>
+<td class="comment-1" rowspan="1">Store the count at <a href="40991.html">CharacterScriptCycles</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecord_ComputeLength</td>
+<td class="address-1"><span id="51724"></span>51724</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore the record address from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51725"></span>51725</td>
+<td class="instruction">LD DE,2</td>
+<td class="comment-1" rowspan="2">Step over the two-byte header.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51728"></span>51728</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51729"></span>51729</td>
+<td class="instruction">BIT 6,(IY+0)</td>
+<td class="comment-1" rowspan="2">Skip ahead to <a href="51647.html#51736">ProcessDisplayRecord_TestFiveExtraBytes</a> unless bit 6 of the record flags is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51733"></span>51733</td>
+<td class="instruction">JR Z,<a href="51647.html#51736">ProcessDisplayRecord_TestFiveExtraBytes</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51735"></span>51735</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Step over the handler word.</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecord_TestFiveExtraBytes</td>
+<td class="address-2"><span id="51736"></span>51736</td>
+<td class="instruction">LD DE,5</td>
+<td class="comment-1" rowspan="3">Skip ahead to <a href="51647.html#51746">ProcessDisplayRecord_SaveAttributes</a> unless bit 4 of the record flags is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51739"></span>51739</td>
+<td class="instruction">BIT 4,(IY+0)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51743"></span>51743</td>
+<td class="instruction">JR Z,<a href="51647.html#51746">ProcessDisplayRecord_SaveAttributes</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51745"></span>51745</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Step over the five extra bytes.</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecord_SaveAttributes</td>
+<td class="address-2"><span id="51746"></span>51746</td>
+<td class="instruction">LD A,(40970)</td>
+<td class="comment-1" rowspan="2">Read the character attribute and store it in the workspace byte at <a href="50275.html#50321">50321</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51749"></span>51749</td>
+<td class="instruction">LD (50321),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51752"></span>51752</td>
+<td class="instruction">LD IX,(40979)</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the current object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51756"></span>51756</td>
+<td class="instruction">LD A,(IX+15)</td>
+<td class="comment-1" rowspan="3">Read the object's attribute and store it in the workspace byte at <a href="50275.html#50322">50322</a>, then save the address after the record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51759"></span>51759</td>
+<td class="instruction">LD (50322),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51762"></span>51762</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51763"></span>51763</td>
+<td class="instruction">PUSH IY</td>
+<td class="comment-1" rowspan="4">Save the record, store 1 in the parser flag at <a href="40972.html">40972</a>, and call <a href="51830.html">ReadSavedCharacter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51765"></span>51765</td>
+<td class="instruction">LD A,1</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51767"></span>51767</td>
+<td class="instruction">LD (40972),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51770"></span>51770</td>
+<td class="instruction">CALL <a href="51830.html">ReadSavedCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51773"></span>51773</td>
+<td class="instruction">POP IY</td>
+<td class="comment-1" rowspan="2">Restore the pointers from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51775"></span>51775</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51776"></span>51776</td>
+<td class="instruction">BIT 7,(IY+0)</td>
+<td class="comment-1" rowspan="2">And skip ahead to <a href="51647.html#51784">ProcessDisplayRecord_FillLocationLow</a> unless bit 7 of the record flags is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51780"></span>51780</td>
+<td class="instruction">JR Z,<a href="51647.html#51784">ProcessDisplayRecord_FillLocationLow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51782"></span>51782</td>
+<td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set the carry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51783"></span>51783</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return with <span class="register">HL</span> pointing past the record, so the script resumes there.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="51784"></span>
+<div class="comments">
+<div class="paragraph">
+Fill a location byte that is still 255 from the room parameters.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecord_FillLocationLow</td>
+<td class="address-2"><span id="51784"></span>51784</td>
+<td class="instruction">LD A,(40919)</td>
+<td class="comment-1" rowspan="3">Go to <a href="51647.html#51796">ProcessDisplayRecord_FillLocationHigh</a> unless the low byte of <a href="40919.html">LocationValue</a> is 255.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51787"></span>51787</td>
+<td class="instruction">INC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51788"></span>51788</td>
+<td class="instruction">JR NZ,<a href="51647.html#51796">ProcessDisplayRecord_FillLocationHigh</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51790"></span>51790</td>
+<td class="instruction">LD A,(41012)</td>
+<td class="comment-1" rowspan="2">Copy the room display parameter into <a href="40919.html">LocationValue</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51793"></span>51793</td>
+<td class="instruction">LD (40919),A</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecord_FillLocationHigh</td>
+<td class="address-2"><span id="51796"></span>51796</td>
+<td class="instruction">LD A,(40920)</td>
+<td class="comment-1" rowspan="3">Go to <a href="51647.html#51808">ProcessDisplayRecord_RunFollowingCode</a> unless the high byte of <a href="40919.html">LocationValue</a> is 255.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51799"></span>51799</td>
+<td class="instruction">INC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51800"></span>51800</td>
+<td class="instruction">JR NZ,<a href="51647.html#51808">ProcessDisplayRecord_RunFollowingCode</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51802"></span>51802</td>
+<td class="instruction">LD A,(41013)</td>
+<td class="comment-1" rowspan="2">Copy the room graphics parameter into the high byte of <a href="40919.html">LocationValue</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51805"></span>51805</td>
+<td class="instruction">LD (40920),A</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessDisplayRecord_RunFollowingCode</td>
+<td class="address-2"><span id="51808"></span>51808</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="3">Clear the flag at <a href="51886.html">51886</a> and run the code that follows the record (at <span class="register">HL</span>) via <a href="52012.html">RunDisplayRecordCode</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51809"></span>51809</td>
+<td class="instruction">LD (51886),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51812"></span>51812</td>
+<td class="instruction">CALL <a href="52012.html">RunDisplayRecordCode</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51815"></span>51815</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="3">Call <a href="51839.html">ReadCharacterTimetable</a>, saving result and the pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51816"></span>51816</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51817"></span>51817</td>
+<td class="instruction">CALL <a href="51839.html">ReadCharacterTimetable</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51820"></span>51820</td>
+<td class="instruction">LD A,(51886)</td>
+<td class="comment-1" rowspan="3">Call <a href="51887.html">CheckCharacterDisguise</a> if the room flag at <a href="51886.html">51886</a> is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51823"></span>51823</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51824"></span>51824</td>
+<td class="instruction">CALL Z,<a href="51887.html">CheckCharacterDisguise</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51827"></span>51827</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore the pointer from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51828"></span>51828</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="51829"></span>51829</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="51606.html">51606</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#51647">Map</a></td>
+<td class="next">
+Next: <a href="51830.html">51830</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../../asm/C9BF.html">Switch to hexadecimal</a>.</div>
+</footer>
+</body>
+</html>

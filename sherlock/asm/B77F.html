@@ -32,7 +32,7 @@ Prev: <a href="B77E.html">B77E</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#b77f">Map</a></td>
 <td class="next">
-Next: <a href="B91F.html">B91F</a>
+Next: <a href="B83C.html">B83C</a>
 </td>
 </tr>
 </table>
@@ -43,6 +43,9 @@ Next: <a href="B91F.html">B91F</a>
 <div class="details">
 <div class="paragraph">
 Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
+</div>
+<div class="paragraph">
+Walks the text tokens while the display flag is not the end marker.
 </div>
 </div>
 <table class="output">
@@ -60,7 +63,7 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="asm-label">ProcessTextTokenStream</td>
 <td class="address-2"><span id="b77f"></span>B77F</td>
 <td class="instruction">LD A,($B77E)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="B77F.html#b7aa">ProcessTextTokenStream_1</a> if *<a href="B77E.html">B77E</a> is not equal to FF.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="B77F.html#b7aa">ProcessTextTokenStream_BitRecordFlag</a> if the display is not FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -70,19 +73,18 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b784"></span>B784</td>
-<td class="instruction">JR NZ,<a href="B77F.html#b7aa">ProcessTextTokenStream_1</a></td>
+<td class="instruction">JR NZ,<a href="B77F.html#b7aa">ProcessTextTokenStream_BitRecordFlag</a></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenStream_0</td>
+<td class="asm-label">ProcessTextTokenStream_Loop</td>
 <td class="address-2"><span id="b786"></span>B786</td>
 <td class="instruction">LD HL,($B6D6)</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="B6D6.html">B6D6</a>.</td>
+<td class="comment-1" rowspan="4">Return if the pointer at <a href="B6D6.html">B6D6</a> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b789"></span>B789</td>
 <td class="instruction">LD A,L</td>
-<td class="comment-1" rowspan="3">Return if <span class="register">HL</span> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -98,7 +100,7 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b78c"></span>B78C</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Write 00 to *<a href="B77E.html">B77E</a>.</td>
+<td class="comment-1" rowspan="4">Clear the display.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -109,7 +111,6 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b790"></span>B790</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">HL</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -120,43 +121,41 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b793"></span>B793</td>
 <td class="instruction">LD L,(IX-$02)</td>
-<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>-02.</td>
+<td class="comment-1" rowspan="1">Read the low byte saved ahead of this record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b796"></span>B796</td>
 <td class="instruction">LD H,(IX-$01)</td>
-<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>-01.</td>
+<td class="comment-1" rowspan="2">Record the display pointers.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b799"></span>B799</td>
 <td class="instruction">LD ($B6D6),HL</td>
-<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to *<a href="B6D6.html">B6D6</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b79c"></span>B79C</td>
 <td class="instruction">LD L,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>+00.</td>
+<td class="comment-1" rowspan="1">Read the record's flag byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b79f"></span>B79F</td>
 <td class="instruction">LD H,(IX+$01)</td>
-<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>+01.</td>
+<td class="comment-1" rowspan="2">Call <a href="A1C7.html">ProcessMemoryEntry</a> to run memory entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7a2"></span>B7A2</td>
 <td class="instruction">CALL <a href="A1C7.html">ProcessMemoryEntry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A1C7.html">ProcessMemoryEntry</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7a5"></span>B7A5</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="2">Increment <span class="register">HL</span> by two.</td>
+<td class="comment-1" rowspan="4">Step on two bytes and point <span class="register">IX</span> at that address.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -167,7 +166,6 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7a7"></span>B7A7</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">HL</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -175,79 +173,75 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="instruction">POP IX</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenStream_1</td>
+<td class="asm-label">ProcessTextTokenStream_BitRecordFlag</td>
 <td class="address-2"><span id="b7aa"></span>B7AA</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+00.</td>
+<td class="comment-1" rowspan="4">Jump ahead to <a href="B77F.html#b7cd">ProcessTextTokenStream_TestCharacterClass</a> if bit 7 of the record's flag byte is clear, and step through the text token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7ad"></span>B7AD</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7af"></span>B7AF</td>
 <td class="instruction">BIT 7,A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="B77F.html#b7cd">ProcessTextTokenStream_3</a> if  bit 7 of <span class="register">A</span> is not set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7b1"></span>B7B1</td>
-<td class="instruction">JR Z,<a href="B77F.html#b7cd">ProcessTextTokenStream_3</a></td>
+<td class="instruction">JR Z,<a href="B77F.html#b7cd">ProcessTextTokenStream_TestCharacterClass</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7b3"></span>B7B3</td>
 <td class="instruction">LD D,A</td>
-<td class="comment-1" rowspan="1"><span class="register">D</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="3">Keep this token and read the next byte as its parameter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7b4"></span>B7B4</td>
 <td class="instruction">LD E,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=*<span class="register">IX</span>+00.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7b7"></span>B7B7</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7b9"></span>B7B9</td>
 <td class="instruction">AND %01110000</td>
-<td class="comment-1" rowspan="1">Keep only bits 4-6.</td>
+<td class="comment-1" rowspan="1">Keep the token type (bits 4-6) for the checks below.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7bb"></span>B7BB</td>
 <td class="instruction">CP $60</td>
-<td class="comment-1" rowspan="2">Jump to <a href="B77F.html#b7c6">ProcessTextTokenStream_2</a> if <span class="register">A</span> is equal to 60.</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="B77F.html#b7c6">ProcessTextTokenStream_Next</a> if the record flag is 60.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7bd"></span>B7BD</td>
-<td class="instruction">JR Z,<a href="B77F.html#b7c6">ProcessTextTokenStream_2</a></td>
+<td class="instruction">JR Z,<a href="B77F.html#b7c6">ProcessTextTokenStream_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7bf"></span>B7BF</td>
 <td class="instruction">CP $30</td>
-<td class="comment-1" rowspan="2">Jump to <a href="B77F.html#b7c6">ProcessTextTokenStream_2</a> if <span class="register">A</span> is equal to 30.</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="B77F.html#b7c6">ProcessTextTokenStream_Next</a> if the record flag is 30.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7c1"></span>B7C1</td>
-<td class="instruction">JR Z,<a href="B77F.html#b7c6">ProcessTextTokenStream_2</a></td>
+<td class="instruction">JR Z,<a href="B77F.html#b7c6">ProcessTextTokenStream_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7c3"></span>B7C3</td>
 <td class="instruction">CP $20</td>
-<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is not equal to 20.</td>
+<td class="comment-1" rowspan="2">Return if the record flag is not 20.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -255,10 +249,10 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="instruction">RET NZ</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenStream_2</td>
+<td class="asm-label">ProcessTextTokenStream_Next</td>
 <td class="address-2"><span id="b7c6"></span>B7C6</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="2">Write FF to *<a href="B77E.html">B77E</a>.</td>
+<td class="comment-1" rowspan="2">Write FF to the display.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -269,7 +263,7 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7cb"></span>B7CB</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
+<td class="comment-1" rowspan="1">Clear the carry so a blank character ends this token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -278,44 +272,64 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenStream_3</td>
+<td class="routine-comment" colspan="5">
+<span id="b7cd"></span>
+<div class="comments">
+<div class="paragraph">
+Treats a blank as a break and a vocabulary code as a common word.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessTextTokenStream_TestCharacterClass</td>
 <td class="address-2"><span id="b7cd"></span>B7CD</td>
 <td class="instruction">CP $20</td>
-<td class="comment-1" rowspan="2">Jump to <a href="B77F.html#b7f7">ProcessTextTokenStream_6</a> if <span class="register">A</span> is less than 20.</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="B77F.html#b7f7">ProcessTextTokenStream_CommandTwo</a> if the character code is below 20.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7cf"></span>B7CF</td>
-<td class="instruction">JR C,<a href="B77F.html#b7f7">ProcessTextTokenStream_6</a></td>
+<td class="instruction">JR C,<a href="B77F.html#b7f7">ProcessTextTokenStream_CommandTwo</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7d1"></span>B7D1</td>
 <td class="instruction">CP $60</td>
-<td class="comment-1" rowspan="2">Jump to <a href="B77F.html#b7dd">ProcessTextTokenStream_4</a> if <span class="register">A</span> is less than 60.</td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="B77F.html#b7dd">ProcessTextTokenStream_TestKeepBitsCount</a> if the character code is below 60.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7d3"></span>B7D3</td>
-<td class="instruction">JR C,<a href="B77F.html#b7dd">ProcessTextTokenStream_4</a></td>
+<td class="instruction">JR C,<a href="B77F.html#b7dd">ProcessTextTokenStream_TestKeepBitsCount</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b7d5"></span>
+<div class="comments">
+<div class="paragraph">
+Get common word.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7d5"></span>B7D5</td>
 <td class="instruction">CALL <a href="A840.html">GetCommonWord</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A840.html">GetCommonWord</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A840.html">GetCommonWord</a> to look up this common word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7d8"></span>B7D8</td>
-<td class="instruction">OR %00000001</td>
-<td class="comment-1" rowspan="1">Set bit 0.</td>
+<td class="instruction">OR $01</td>
+<td class="comment-1" rowspan="1">Set the found marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7da"></span>B7DA</td>
 <td class="instruction">LD A,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="1">Leave <span class="register">A</span> clear. The flags still show that the word was found.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -324,28 +338,36 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenStream_4</td>
+<td class="routine-comment" colspan="5">
+<span id="b7dd"></span>
+<div class="comments">
+<div class="paragraph">
+Keep the token's low five bits and add one for the letter count.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessTextTokenStream_TestKeepBitsCount</td>
 <td class="address-2"><span id="b7dd"></span>B7DD</td>
 <td class="instruction">AND %00011111</td>
-<td class="comment-1" rowspan="1">Keep only bits 0-4.</td>
+<td class="comment-1" rowspan="1">Take the letter count of this packed word from bits 0-4.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7df"></span>B7DF</td>
 <td class="instruction">INC A</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">A</span> by one.</td>
+<td class="comment-1" rowspan="6">Set <span class="register">B</span> to the token length plus one, point <span class="register">HL</span> at the byte after <span class="register">IX</span>, and clear <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7e0"></span>B7E0</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7e1"></span>B7E1</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=<span class="register">IX</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -356,31 +378,39 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7e4"></span>B7E4</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7e5"></span>B7E5</td>
 <td class="instruction">LD C,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=00.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenStream_5</td>
+<td class="routine-comment" colspan="5">
+<span id="b7e7"></span>
+<div class="comments">
+<div class="paragraph">
+Rotate and extract character code.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessTextTokenStream_0</td>
 <td class="address-2"><span id="b7e7"></span>B7E7</td>
 <td class="instruction">CALL <a href="A990.html">RotateAndExtractCharacterCode</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A990.html">RotateAndExtractCharacterCode</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A990.html">RotateAndExtractCharacterCode</a> to unpack the next letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7ea"></span>B7EA</td>
-<td class="instruction">DJNZ <a href="B77F.html#b7e7">ProcessTextTokenStream_5</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="B77F.html#b7e7">ProcessTextTokenStream_5</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="B77F.html#b7e7">ProcessTextTokenStream_0</a></td>
+<td class="comment-1" rowspan="1">Count the next character of the message and repeat from <a href="B77F.html#b7e7">ProcessTextTokenStream_0</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7ec"></span>B7EC</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2"><span class="register">IX</span>=<span class="register">HL</span> (using the stack).</td>
+<td class="comment-1" rowspan="5">Jump back to <a href="B77F.html#b7aa">ProcessTextTokenStream_BitRecordFlag</a> while the count is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -391,864 +421,221 @@ Used by the routine at <a href="B6FD.html">ProcessLocationDisplay</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7ef"></span>B7EF</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7f0"></span>B7F0</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="B77F.html#b7aa">ProcessTextTokenStream_1</a> if <span class="register">HL</span> is not equal to <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7f1"></span>B7F1</td>
-<td class="instruction">JR NZ,<a href="B77F.html#b7aa">ProcessTextTokenStream_1</a></td>
+<td class="instruction">JR NZ,<a href="B77F.html#b7aa">ProcessTextTokenStream_BitRecordFlag</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7f3"></span>B7F3</td>
 <td class="instruction">DEC IX</td>
-<td class="comment-1" rowspan="1">Decrease <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="2">Step back one byte and continue at <a href="B77F.html#b7aa">ProcessTextTokenStream_BitRecordFlag</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7f5"></span>B7F5</td>
-<td class="instruction">JR <a href="B77F.html#b7aa">ProcessTextTokenStream_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="B77F.html#b7aa">ProcessTextTokenStream_1</a>.</td>
+<td class="instruction">JR <a href="B77F.html#b7aa">ProcessTextTokenStream_BitRecordFlag</a></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenStream_6</td>
+<td class="routine-comment" colspan="5">
+<span id="b7f7"></span>
+<div class="comments">
+<div class="paragraph">
+Command 2 adds the following offset to the text pointer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessTextTokenStream_CommandTwo</td>
 <td class="address-2"><span id="b7f7"></span>B7F7</td>
 <td class="instruction">CP $02</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump ahead to <a href="B77F.html#b807">ProcessTextTokenStream_CommandEleven</a> if the command is not 02.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7f9"></span>B7F9</td>
-<td class="instruction">JR NZ,<a href="B77F.html#b807">ProcessTextTokenStream_8</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="B77F.html#b807">ProcessTextTokenStream_CommandEleven</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7fb"></span>B7FB</td>
 <td class="instruction">LD E,(IX+$00)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Read the flag word and add it to the record pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b7fe"></span>B7FE</td>
 <td class="instruction">LD D,(IX+$01)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b801"></span>B801</td>
 <td class="instruction">ADD IX,DE</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenStream_7</td>
+<td class="asm-label">ProcessTextTokenStream_TestRecordFlagStep</td>
 <td class="address-2"><span id="b803"></span>B803</td>
 <td class="instruction">DEC IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Step back one byte and read the next token from <a href="B77F.html#b7aa">ProcessTextTokenStream_BitRecordFlag</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b805"></span>B805</td>
-<td class="instruction">JR <a href="B77F.html#b7aa">ProcessTextTokenStream_1</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR <a href="B77F.html#b7aa">ProcessTextTokenStream_BitRecordFlag</a></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenStream_8</td>
+<td class="routine-comment" colspan="5">
+<span id="b807"></span>
+<div class="comments">
+<div class="paragraph">
+Command 11 saves the text pointer and adds the following offset.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessTextTokenStream_CommandEleven</td>
 <td class="address-2"><span id="b807"></span>B807</td>
 <td class="instruction">CP $0B</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Go to <a href="B77F.html#b834">ProcessTextTokenStream_TestControlBelowGoes</a> when the text command is not 0B.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b809"></span>B809</td>
-<td class="instruction">JR NZ,<a href="B77F.html#b834">ProcessTextTokenStream_9</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="B77F.html#b834">ProcessTextTokenStream_TestControlBelowGoes</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b80b"></span>B80B</td>
 <td class="instruction">LD E,(IX+$00)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Read the record's flag byte and read the moved marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b80e"></span>B80E</td>
 <td class="instruction">LD D,(IX+$01)</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b811"></span>B811</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b813"></span>B813</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Call <a href="A11C.html">AllocateMemory</a> to allocate 02 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b814"></span>B814</td>
 <td class="instruction">LD A,$02</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b816"></span>B816</td>
 <td class="instruction">CALL <a href="A11C.html">AllocateMemory</a></td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b819"></span>B819</td>
 <td class="instruction">LD (IX+$00),L</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Store the link word at the start of the record and keep it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b81c"></span>B81C</td>
 <td class="instruction">LD (IX+$01),H</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b81f"></span>B81F</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b820"></span>B820</td>
 <td class="instruction">LD HL,($B6D6)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the display pointers.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b823"></span>B823</td>
 <td class="instruction">LD ($B6D6),IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Remember this record at <a href="B6D6.html">B6D6</a> and store the previous pointer's low byte just ahead of it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b827"></span>B827</td>
 <td class="instruction">LD (IX-$02),L</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b82a"></span>B82A</td>
 <td class="instruction">LD (IX-$01),H</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store the high byte of the previous pointer just ahead of this record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b82d"></span>B82D</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b82e"></span>B82E</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Add the offset, copy it into the record, and go to <a href="B77F.html#b803">ProcessTextTokenStream_TestRecordFlagStep</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b82f"></span>B82F</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b830"></span>B830</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b832"></span>B832</td>
-<td class="instruction">JR <a href="B77F.html#b803">ProcessTextTokenStream_7</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JR <a href="B77F.html#b803">ProcessTextTokenStream_TestRecordFlagStep</a></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessTextTokenStream_9</td>
+<td class="routine-comment" colspan="5">
+<span id="b834"></span>
+<div class="comments">
+<div class="paragraph">
+A control below 29 goes back to the main text walk.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessTextTokenStream_TestControlBelowGoes</td>
 <td class="address-2"><span id="b834"></span>B834</td>
 <td class="instruction">CP $1D</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="B77F.html#b7aa">ProcessTextTokenStream_BitRecordFlag</a> if the character is below 1D.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b836"></span>B836</td>
-<td class="instruction">JP C,<a href="B77F.html#b7aa">ProcessTextTokenStream_1</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP C,<a href="B77F.html#b7aa">ProcessTextTokenStream_BitRecordFlag</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b839"></span>B839</td>
-<td class="instruction">JP <a href="B77F.html#b786">ProcessTextTokenStream_0</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="b83c"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routines at <a href="B54A.html">CheckFlagAndSetDisplayParameter</a>, <a href="B6DA.html">ProcessDisplayEntry</a> and <a href="B6F0.html">ProcessDisplayEntryAlternate</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">ProcessTextTokenStream_10</td>
-<td class="address-2"><span id="b83c"></span>B83C</td>
-<td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b83e"></span>B83E</td>
-<td class="instruction">LD B,$03</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessTextTokenStream_11</td>
-<td class="address-2"><span id="b840"></span>B840</td>
-<td class="instruction">LD E,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b841"></span>B841</td>
-<td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b842"></span>B842</td>
-<td class="instruction">LD D,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b843"></span>B843</td>
-<td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b844"></span>B844</td>
-<td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b845"></span>B845</td>
-<td class="instruction">DJNZ <a href="B77F.html#b840">ProcessTextTokenStream_11</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b847"></span>B847</td>
-<td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b848"></span>B848</td>
-<td class="instruction">EX (SP),HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b849"></span>B849</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b84a"></span>B84A</td>
-<td class="instruction">JP (IX)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b84c"></span>B84C</td>
-<td class="instruction">LD HL,($B18A)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b84f"></span>B84F</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b850"></span>B850</td>
-<td class="instruction">LD HL,($B188)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b853"></span>B853</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b854"></span>B854</td>
-<td class="instruction">LD HL,($B186)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b857"></span>B857</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b858"></span>B858</td>
-<td class="instruction">LD HL,($B18C)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b85b"></span>B85B</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b85c"></span>B85C</td>
-<td class="instruction">LD HL,$686A</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b85f"></span>B85F</td>
-<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b862"></span>B862</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b863"></span>B863</td>
-<td class="instruction">JP <a href="C929.html">ProcessObjectDisplayLogic</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b866"></span>B866</td>
-<td class="instruction">NOP</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b867"></span>B867</td>
-<td class="instruction">NOP</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b868"></span>B868</td>
-<td class="instruction">NOP</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b869"></span>B869</td>
-<td class="instruction">NOP</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="b86a"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routine at <a href="DD35.html">DD35</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">ProcessTextTokenStream_12</td>
-<td class="address-2"><span id="b86a"></span>B86A</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b86b"></span>B86B</td>
-<td class="instruction">LD IX,$9FEE</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b86f"></span>B86F</td>
-<td class="instruction">CALL <a href="A0F7.html">FetchObjectPointerFromStack</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b872"></span>B872</td>
-<td class="instruction">JR Z,<a href="B77F.html#b8a8">ProcessTextTokenStream_15</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b874"></span>B874</td>
-<td class="instruction">LD C,(IX+$00)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b877"></span>B877</td>
-<td class="instruction">LD B,(IX+$01)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b87a"></span>B87A</td>
-<td class="instruction">LD ($B868),BC</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b87e"></span>B87E</td>
-<td class="instruction">LD L,(IX-$02)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b881"></span>B881</td>
-<td class="instruction">LD H,(IX-$01)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b884"></span>B884</td>
-<td class="instruction">LD ($9FEC),HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b887"></span>B887</td>
-<td class="instruction">CALL <a href="A1C7.html">ProcessMemoryEntry</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b88a"></span>B88A</td>
-<td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b88b"></span>B88B</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b88c"></span>B88C</td>
-<td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b88d"></span>B88D</td>
-<td class="instruction">JR Z,<a href="B77F.html#b894">ProcessTextTokenStream_13</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b88f"></span>B88F</td>
-<td class="instruction">CALL <a href="B77F.html#b8aa">ProcessTextTokenStream_16</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b892"></span>B892</td>
-<td class="instruction">JR Z,<a href="B77F.html#b8a8">ProcessTextTokenStream_15</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessTextTokenStream_13</td>
-<td class="address-2"><span id="b894"></span>B894</td>
-<td class="instruction">LD BC,($B868)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b898"></span>B898</td>
-<td class="instruction">LD ($A02B),BC</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessTextTokenStream_14</td>
-<td class="address-2"><span id="b89c"></span>B89C</td>
-<td class="instruction">CALL <a href="AE7F.html">$AE7F</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b89f"></span>B89F</td>
-<td class="instruction">CP $C0</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8a1"></span>B8A1</td>
-<td class="instruction">JR NZ,<a href="B77F.html#b89c">ProcessTextTokenStream_14</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8a3"></span>B8A3</td>
-<td class="instruction">LD HL,($A029)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8a6"></span>B8A6</td>
-<td class="instruction">LD (HL),$90</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessTextTokenStream_15</td>
-<td class="address-2"><span id="b8a8"></span>B8A8</td>
-<td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8a9"></span>B8A9</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessTextTokenStream_16</td>
-<td class="address-2"><span id="b8aa"></span>B8AA</td>
-<td class="instruction">LD HL,($B868)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8ad"></span>B8AD</td>
-<td class="instruction">LD ($A02B),HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8b0"></span>B8B0</td>
-<td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8b1"></span>B8B1</td>
-<td class="instruction">LD ($A024),A</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8b4"></span>B8B4</td>
-<td class="instruction">LD HL,($9FF0)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8b7"></span>B8B7</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8b8"></span>B8B8</td>
-<td class="instruction">LD HL,$0000</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8bb"></span>B8BB</td>
-<td class="instruction">LD ($9FF0),HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessTextTokenStream_17</td>
-<td class="address-2"><span id="b8be"></span>B8BE</td>
-<td class="instruction">CALL <a href="AAB2.html">$AAB2</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8c1"></span>B8C1</td>
-<td class="instruction">JR Z,<a href="B77F.html#b8c7">ProcessTextTokenStream_18</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8c3"></span>B8C3</td>
-<td class="instruction">CP $02</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8c5"></span>B8C5</td>
-<td class="instruction">JR NZ,<a href="B77F.html#b904">ProcessTextTokenStream_19</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessTextTokenStream_18</td>
-<td class="address-2"><span id="b8c7"></span>B8C7</td>
-<td class="instruction">LD HL,($A02B)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8ca"></span>B8CA</td>
-<td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8cb"></span>B8CB</td>
-<td class="instruction">AND $F0</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8cd"></span>B8CD</td>
-<td class="instruction">CP $C0</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8cf"></span>B8CF</td>
-<td class="instruction">JR NZ,<a href="B77F.html#b8be">ProcessTextTokenStream_17</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8d1"></span>B8D1</td>
-<td class="instruction">LD (HL),$90</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8d3"></span>B8D3</td>
-<td class="instruction">LD A,$08</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8d5"></span>B8D5</td>
-<td class="instruction">CALL <a href="A11C.html">AllocateMemory</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8d8"></span>B8D8</td>
-<td class="instruction">LD HL,($9FEE)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8db"></span>B8DB</td>
-<td class="instruction">LD ($9FEE),IX</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8df"></span>B8DF</td>
-<td class="instruction">LD (IX-$02),L</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8e2"></span>B8E2</td>
-<td class="instruction">LD (IX-$01),H</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8e5"></span>B8E5</td>
-<td class="instruction">LD HL,($9FF0)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8e8"></span>B8E8</td>
-<td class="instruction">LD (IX+$05),L</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8eb"></span>B8EB</td>
-<td class="instruction">LD (IX+$06),H</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8ee"></span>B8EE</td>
-<td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8ef"></span>B8EF</td>
-<td class="instruction">LD ($9FF0),HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8f2"></span>B8F2</td>
-<td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8f3"></span>B8F3</td>
-<td class="instruction">LD (IX+$01),A</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8f6"></span>B8F6</td>
-<td class="instruction">LD A,($A034)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8f9"></span>B8F9</td>
-<td class="instruction">LD (IX+$00),A</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8fc"></span>B8FC</td>
-<td class="instruction">LD A,($A024)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b8ff"></span>B8FF</td>
-<td class="instruction">LD (IX+$07),A</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b902"></span>B902</td>
-<td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b903"></span>B903</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">ProcessTextTokenStream_19</td>
-<td class="address-2"><span id="b904"></span>B904</td>
-<td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b905"></span>B905</td>
-<td class="instruction">CALL $D87D</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b908"></span>B908</td>
-<td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b909"></span>B909</td>
-<td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b90a"></span>B90A</td>
-<td class="instruction">LD ($9FF0),HL</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b90d"></span>B90D</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="b90e"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routine at <a href="B936.html">ProcessScriptDisplay</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">ProcessTextTokenStream_20</td>
-<td class="address-2"><span id="b90e"></span>B90E</td>
-<td class="instruction">CALL <a href="B91F.html">CheckObjectInA036</a></td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b911"></span>B911</td>
-<td class="instruction">LD ($B866),IX</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b915"></span>B915</td>
-<td class="instruction">LD E,(IX+$05)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b918"></span>B918</td>
-<td class="instruction">LD D,(IX+$06)</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b91b"></span>B91B</td>
-<td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b91c"></span>B91C</td>
-<td class="instruction">POP IY</td>
-<td class="comment-1" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="b91e"></span>B91E</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="instruction">JP <a href="B77F.html#b786">ProcessTextTokenStream_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="B77F.html#b786">ProcessTextTokenStream_Loop</a> to read the display pointers and take the low byte of the display pointers.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -1258,14 +645,14 @@ Prev: <a href="B77E.html">B77E</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#b77f">Map</a></td>
 <td class="next">
-Next: <a href="B91F.html">B91F</a>
+Next: <a href="B83C.html">B83C</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/46975.html">Switch to decimal</a>.</div>
 </footer>

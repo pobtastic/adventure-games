@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at B200</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B1F9.html">B1F9</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b200">Map</a></td>
+<td class="next">
+Next: <a href="B237.html">B237</a>
+</td>
+</tr>
+</table>
+<div class="description">B200: Handler: User Input</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="B364.html">HandlerUnknownWord</a> and <a href="E9A1.html">GameLoop</a>.
+</div>
+<div class="paragraph">
+Read a command, tokenise it, and reject words the game does not know.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerUserInput</td>
+<td class="address-2"><span id="b200"></span>B200</td>
+<td class="instruction">CALL <a href="AC03.html">SetDefaultScreenPosition</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AC03.html">SetDefaultScreenPosition</a> to park the cursor on the default line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b203"></span>B203</td>
+<td class="instruction">LD HL,$AEFC</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the command buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b206"></span>B206</td>
+<td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="2">Fill the command buffer with spaces.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b208"></span>B208</td>
+<td class="instruction">LD B,$32</td>
+</tr>
+<tr>
+<td class="asm-label">HandlerUserInput_Loop</td>
+<td class="address-2"><span id="b20a"></span>B20A</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Store <span class="register">A</span> at the buffer pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b20b"></span>B20B</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> to the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b20c"></span>B20C</td>
+<td class="instruction">DJNZ <a href="B200.html#b20a">HandlerUserInput_Loop</a></td>
+<td class="comment-1" rowspan="1">Count down <span class="register">B</span> and repeat from <a href="B200.html#b20a">HandlerUserInput_Loop</a> until the count is exhausted.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b20e"></span>B20E</td>
+<td class="instruction">CALL <a href="ACEA.html">PrintInputPrompt</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ACEA.html">PrintInputPrompt</a> to print the input prompt.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b211"></span>B211</td>
+<td class="instruction">LD HL,$AEFC</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the command buffer.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b214"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="B237.html">HandlerUserPressedDELETE</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_UserInput_ReadKey</td>
+<td class="address-2"><span id="b214"></span>B214</td>
+<td class="instruction">CALL <a href="ABE1.html">GetUserInput</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ABE1.html">GetUserInput</a> to read the player's key.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b217"></span>B217</td>
+<td class="instruction">CP $0C</td>
+<td class="comment-1" rowspan="2">Branch to <a href="B237.html">HandlerUserPressedDELETE</a> when the player pressed DELETE.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b219"></span>B219</td>
+<td class="instruction">JR Z,<a href="B237.html">HandlerUserPressedDELETE</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b21b"></span>B21B</td>
+<td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Branch to <a href="B24E.html">HandlerUserPressedENTER</a> when the player pressed ENTER.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b21d"></span>B21D</td>
+<td class="instruction">JR Z,<a href="B24E.html">HandlerUserPressedENTER</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b21f"></span>B21F</td>
+<td class="instruction">CP $20</td>
+<td class="comment-1" rowspan="2">Branch to <a href="B200.html#b214">Handler_UserInput_ReadKey</a> unless the player pressed SPACE.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b221"></span>B221</td>
+<td class="instruction">JR C,<a href="B200.html#b214">Handler_UserInput_ReadKey</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b223"></span>B223</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1">Move the buffer position into <span class="register">DE</span> so it can be checked against the end of the command buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b224"></span>B224</td>
+<td class="instruction">LD HL,$AF2D</td>
+<td class="comment-1" rowspan="5">Ignore a space once the command fills the buffer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b227"></span>B227</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b228"></span>B228</td>
+<td class="instruction">SBC HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b22a"></span>B22A</td>
+<td class="instruction">EX DE,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b22b"></span>B22B</td>
+<td class="instruction">JR Z,<a href="B200.html#b214">Handler_UserInput_ReadKey</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b22d"></span>B22D</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Store <span class="register">A</span> at the buffer pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b22e"></span>B22E</td>
+<td class="instruction">CALL <a href="AC1A.html">SwitchToNormalScreenOutput</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AC1A.html">SwitchToNormalScreenOutput</a> to switch to the normal screen output.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b231"></span>B231</td>
+<td class="instruction">CALL <a href="AC47.html">PrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AC47.html">PrintCharacter</a> to print the character.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b234"></span>B234</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> to the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b235"></span>B235</td>
+<td class="instruction">JR <a href="B200.html#b214">Handler_UserInput_ReadKey</a></td>
+<td class="comment-1" rowspan="1">Read the next key at <a href="B200.html#b214">Handler_UserInput_ReadKey</a>.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="B1F9.html">B1F9</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#b200">Map</a></td>
+<td class="next">
+Next: <a href="B237.html">B237</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../dec/asm/45568.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

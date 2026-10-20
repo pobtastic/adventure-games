@@ -25,7 +25,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="8D9D.html">8D9D</a>
+Prev: <a href="8F3B.html">8F3B</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#8fad">Map</a></td>
 <td class="next">
@@ -33,11 +33,14 @@ Next: <a href="8FCD.html">8FCD</a>
 </td>
 </tr>
 </table>
-<div class="description">8FAD: Action Run</div>
+<div class="description">8FAD: Action: Run</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Runs in the commanded direction until the way is blocked. Reached through the action table at <a href="C730.html">ActionTable</a>, dispatched by <a href="950F.html">Turn_RunTheHandlerIfPresent</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -45,103 +48,108 @@ Next: <a href="8FCD.html">8FCD</a>
 <td class="asm-label">Action_Run</td>
 <td class="address-2"><span id="8fad"></span>8FAD</td>
 <td class="instruction">LD A,$0A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Roll a random number below 0A.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="8faf"></span>
+<div class="comments">
+<div class="paragraph">
+Roll a random number.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8faf"></span>8FAF</td>
-<td class="instruction">CALL <a href="9C9F.html">GetRandomNum</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="9C9F.html">GetRandomNumber</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9C9F.html">GetRandomNumber</a> to roll a number from the limit in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fb2"></span>8FB2</td>
 <td class="instruction">CP $00</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="8FAD.html">Action_Run</a> when the roll is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fb4"></span>8FB4</td>
 <td class="instruction">JR Z,<a href="8FAD.html#8fad">Action_Run</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">Action_Run_0</td>
+<td class="asm-label">Action_Run_Loop</td>
 <td class="address-2"><span id="8fb6"></span>8FB6</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fb7"></span>8FB7</td>
-<td class="instruction">CALL <a href="9F08.html">$9F08</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="9F08.html">TableFindAnExitInADirection</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9F08.html">TableFindAnExitInADirection</a> to find an exit in the direction in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fba"></span>8FBA</td>
 <td class="instruction">CP B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="8FAD.html#8fc7">Action_Run_StartTheMove</a> if this exit's direction is the one being sought.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fbb"></span>8FBB</td>
-<td class="instruction">JR Z,<a href="8FAD.html#8fc7">Action_Run_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="8FAD.html#8fc7">Action_Run_StartTheMove</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fbd"></span>8FBD</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Try the next direction and jump back to <a href="8FAD.html#8fb6">Action_Run_Loop</a> while it is below 0A.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fbe"></span>8FBE</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fbf"></span>8FBF</td>
 <td class="instruction">CP $0A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fc1"></span>8FC1</td>
-<td class="instruction">JR C,<a href="8FAD.html#8fb6">Action_Run_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR C,<a href="8FAD.html#8fb6">Action_Run_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fc3"></span>8FC3</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the direction back to 01.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fc5"></span>8FC5</td>
-<td class="instruction">JR <a href="8FAD.html#8fb6">Action_Run_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="8FAD.html#8fb6">Action_Run_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="8FAD.html#8fb6">Action_Run_Loop</a> to find an exit in the direction in <span class="register">A</span>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Run_1</td>
+<td class="asm-label">Action_Run_StartTheMove</td>
 <td class="address-2"><span id="8fc7"></span>8FC7</td>
 <td class="instruction">LD ($B6E7),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Update *<a href="B6DA.html#b6e7">CurrentAction</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8fca"></span>8FCA</td>
-<td class="instruction">JP <a href="8D9D.html">Action_Dir</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP <a href="8D9D.html">Action_Direction</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="8D9D.html">Action_Direction</a> to move.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="8D9D.html">8D9D</a>
+Prev: <a href="8F3B.html">8F3B</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#8fad">Map</a></td>
 <td class="next">
@@ -152,7 +160,7 @@ Next: <a href="8FCD.html">8FCD</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
 <div><a href="../dec/asm/36781.html">Switch to decimal</a>.</div>
 </footer>

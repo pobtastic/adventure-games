@@ -32,7 +32,7 @@ Prev: <a href="E686.html">E686</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#e691">Map</a></td>
 <td class="next">
-Next: <a href="E6BC.html">E6BC</a>
+Next: <a href="E6E6.html">E6E6</a>
 </td>
 </tr>
 </table>
@@ -44,128 +44,271 @@ Next: <a href="E6BC.html">E6BC</a>
 <div class="paragraph">
 Used by the routine at <a href="9D13.html">CharacterAction_Watson</a>.
 </div>
+<div class="paragraph">
+Follows the character link for this attribute, and stops when the link runs out.
+</div>
 </div>
 </td>
 </tr>
 <tr>
 <td class="asm-label">ProcessCharacterAttribute</td>
 <td class="address-2"><span id="e691"></span>E691</td>
-<td class="instruction">CALL <a href="E686.html">$E686</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="E686.html">RejectLowCharacterAttribute</a></td>
+<td class="comment-1" rowspan="2">Return if the character attribute is below 32.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e694"></span>E694</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e695"></span>
+<div class="comments">
+<div class="paragraph">
+Get character attribute.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e695"></span>E695</td>
 <td class="instruction">CALL <a href="D29D.html">GetCharacterAttribute</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="D29D.html">GetCharacterAttribute</a> to read the character's attribute.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e698"></span>E698</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Use the get character attribute result as the count.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessCharacterAttribute_0</td>
+<td class="asm-label">ProcessCharacterAttribute_Loop</td>
 <td class="address-2"><span id="e699"></span>E699</td>
 <td class="instruction">LD IX,$9FF6</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point at the object display link.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessCharacterAttribute_1</td>
+<td class="asm-label">ProcessCharacterAttribute_CountCharacterRepeat</td>
 <td class="address-2"><span id="e69d"></span>E69D</td>
-<td class="instruction">DJNZ <a href="E691.html#e6a6">ProcessCharacterAttribute_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="E691.html#e6a6">ProcessCharacterAttribute_Next</a></td>
+<td class="comment-1" rowspan="1">Count the next character and repeat from <a href="E691.html#e6a6">ProcessCharacterAttribute_Next</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e69f"></span>E69F</td>
 <td class="instruction">CALL <a href="A0F7.html">FetchObjectPointerFromStack</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="E691.html#e699">ProcessCharacterAttribute_Loop</a> while the object pointer is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e6a2"></span>E6A2</td>
-<td class="instruction">JR Z,<a href="E691.html#e699">ProcessCharacterAttribute_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="E691.html#e699">ProcessCharacterAttribute_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e6a4"></span>E6A4</td>
-<td class="instruction">JR <a href="E691.html#e69d">ProcessCharacterAttribute_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="E691.html#e69d">ProcessCharacterAttribute_CountCharacterRepeat</a></td>
+<td class="comment-1" rowspan="1">Try the next object from <a href="E691.html#e69d">ProcessCharacterAttribute_CountCharacterRepeat</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">ProcessCharacterAttribute_2</td>
+<td class="routine-comment" colspan="5">
+<span id="e6a6"></span>
+<div class="comments">
+<div class="paragraph">
+Compare this object pointer with the list head.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessCharacterAttribute_Next</td>
 <td class="address-2"><span id="e6a6"></span>E6A6</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Point <span class="register">HL</span> at the object display link and <span class="register">DE</span> at <a href="9FEE.html#9ff0">9FF0</a>+06 and clear the carry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e6a8"></span>E6A8</td>
 <td class="instruction">POP HL</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e6a9"></span>E6A9</td>
 <td class="instruction">LD DE,$9FF6</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e6ac"></span>E6AC</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e6ad"></span>E6AD</td>
 <td class="instruction">SBC HL,DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">See whether this object pointer is <a href="9FEE.html#9ff0">9FF0</a>+06.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e6af"></span>E6AF</td>
-<td class="instruction">JR Z,<a href="E691.html#e6b9">ProcessCharacterAttribute_3</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR Z,<a href="E691.html#e6b9">ProcessCharacterAttribute_TestActionSucceeded</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="E691.html#e6b9">ProcessCharacterAttribute_TestActionSucceeded</a> if the two pointers meet.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e6b1"></span>E6B1</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Take the police message, then call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print the police message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e6b3"></span>E6B3</td>
 <td class="instruction">LD HL,$6F80</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e6b6"></span>E6B6</td>
 <td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">ProcessCharacterAttribute_3</td>
+<td class="asm-label">ProcessCharacterAttribute_TestActionSucceeded</td>
 <td class="address-2"><span id="e6b9"></span>E6B9</td>
-<td class="instruction">OR $01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="e6bb"></span>E6BB</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e6bc"></span>
+<div class="comments">
+<div class="paragraph">
+Named from the script commands at <a href="F1D6.html#f326">F326</a> and <a href="F3A2.html#f3bc">F3BC</a>.
+</div>
+<div class="paragraph">
+Individual script handlers. Each one ends by returning success or by bailing out through <a href="DBF7.html#dc15">ParseInputNumber_ReturnZero</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6bc"></span>E6BC</td>
+<td class="instruction">DEFB $0D,$0C</td>
+<td class="comment-1" rowspan="1">Display record read by <a href="C9BF.html">ProcessDisplayRecord</a>: flags 0D value 0C.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e6be"></span>
+<div class="comments">
+<div class="paragraph">
+Run by <a href="C9BF.html#ca64">CA64</a> after the display record at <a href="E691.html#e6bc">E6BC</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ProcessCharacterAttribute_TestCount</td>
+<td class="address-1"><span id="e6be"></span>E6BE</td>
+<td class="instruction">LD A,($A035)</td>
+<td class="comment-1" rowspan="3">Go to <a href="E691.html#e6e3">ProcessCharacterAttribute_Succeeded</a> if no object carries this id.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6c1"></span>E6C1</td>
+<td class="instruction">CALL <a href="E619.html">ScanObjects</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6c4"></span>E6C4</td>
+<td class="instruction">JR Z,<a href="E691.html#e6e3">ProcessCharacterAttribute_Succeeded</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6c6"></span>E6C6</td>
+<td class="instruction">LD E,(IX+$09)</td>
+<td class="comment-1" rowspan="2">Read the low byte of the text pointer and read the high byte of the text pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6c9"></span>E6C9</td>
+<td class="instruction">LD D,(IX+$0A)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6cc"></span>E6CC</td>
+<td class="instruction">LD HL,$6BB7</td>
+<td class="comment-1" rowspan="1">Take the character busy message.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="e6cf"></span>
+<div class="comments">
+<div class="paragraph">
+Print text and handle control characters.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6cf"></span>E6CF</td>
+<td class="instruction">CALL <a href="A59F.html">PrintTextAndHandleControlCharacters</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A59F.html">PrintTextAndHandleControlCharacters</a> to print this message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6d2"></span>E6D2</td>
+<td class="instruction">LD HL,$0000</td>
+<td class="comment-1" rowspan="4">Call <a href="A419.html">ShiftTextPointer</a> to handle the picture for this message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6d5"></span>E6D5</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6d6"></span>E6D6</td>
+<td class="instruction">SBC HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6d8"></span>E6D8</td>
+<td class="instruction">CALL <a href="A419.html">ShiftTextPointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6db"></span>E6DB</td>
+<td class="instruction">LD A,$22</td>
+<td class="comment-1" rowspan="3">Print a quotation mark and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6dd"></span>E6DD</td>
+<td class="instruction">CALL <a href="A9B7.html">Print_Character</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6e0"></span>E6E0</td>
+<td class="instruction">CALL <a href="A2A2.html">PrintNewline</a></td>
+</tr>
+<tr>
+<td class="asm-label">ProcessCharacterAttribute_Succeeded</td>
+<td class="address-2"><span id="e6e3"></span>E6E3</td>
+<td class="instruction">OR %00000001</td>
+<td class="comment-1" rowspan="1">Reset the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e6e5"></span>E6E5</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -175,14 +318,14 @@ Prev: <a href="E686.html">E686</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#e691">Map</a></td>
 <td class="next">
-Next: <a href="E6BC.html">E6BC</a>
+Next: <a href="E6E6.html">E6E6</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/59025.html">Switch to decimal</a>.</div>
 </footer>

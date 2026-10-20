@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>The Hobbit: Routine at 8E85</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="8D9D.html">8D9D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#8e85">Map</a></td>
+<td class="next">
+Next: <a href="8ED2.html">8ED2</a>
+</td>
+</tr>
+</table>
+<div class="description">8E85: Action: Check The Object Flags</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="8D9D.html">Action_Direction</a> and <a href="8F3B.html">Action_LeaveIfTheWayIsOpen</a>.
+</div>
+<div class="paragraph">
+Checks the object's attributes and volume against the move volume at <a href="8D99.html#8d9c">ActionMoveVolume</a> and the current location at <a href="8D99.html#8d9b">ActionLocationID</a> before a move is allowed.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_CheckTheObjectFlags</td>
+<td class="address-2"><span id="8e85"></span>8E85</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="8E85.html#8ea7">Action_CheckTheObjectFlags_ReadTheLocation</a> if <span class="register">A</span> is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e86"></span>8E86</td>
+<td class="instruction">JR Z,<a href="8E85.html#8ea7">Action_CheckTheObjectFlags_ReadTheLocation</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="8e88"></span>
+<div class="comments">
+<div class="paragraph">
+Find the object's record.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e88"></span>8E88</td>
+<td class="instruction">CALL <a href="9BCA.html">LocateObject</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9BCA.html">LocateObject</a> to locate object.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e8b"></span>8E8B</td>
+<td class="instruction">LD A,(IX+$07)</td>
+<td class="comment-1" rowspan="1">Read the attribute flags from the object record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e8e"></span>8E8E</td>
+<td class="instruction">AND $28</td>
+<td class="comment-1" rowspan="1">Keep bits 3, 5.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e90"></span>8E90</td>
+<td class="instruction">JR Z,<a href="8E85.html#8ece">Action_CheckTheObjectFlags_ReturnFlagValueOne</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="8E85.html#8ece">Action_CheckTheObjectFlags_ReturnFlagValueOne</a> when the object is neither broken nor open.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="8e92"></span>
+<div class="comments">
+<div class="paragraph">
+Test whose turn it is.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e92"></span>8E92</td>
+<td class="instruction">LD A,($B6EA)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="8E85.html#8e9e">Action_CheckTheObjectFlags_ReadTheMoveVolume</a> if *<a href="B6DA.html#b6ea">CurrentCharacter</a> is not zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e95"></span>8E95</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e96"></span>8E96</td>
+<td class="instruction">JR NZ,<a href="8E85.html#8e9e">Action_CheckTheObjectFlags_ReadTheMoveVolume</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e98"></span>8E98</td>
+<td class="instruction">BIT 7,(IX+$04)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="8E85.html#8ece">Action_CheckTheObjectFlags_ReturnFlagValueOne</a> if bit 7 of the object's second flag is set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8e9c"></span>8E9C</td>
+<td class="instruction">JR NZ,<a href="8E85.html#8ece">Action_CheckTheObjectFlags_ReturnFlagValueOne</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_CheckTheObjectFlags_ReadTheMoveVolume</td>
+<td class="address-2"><span id="8e9e"></span>8E9E</td>
+<td class="instruction">LD A,($8D9C)</td>
+<td class="comment-1" rowspan="1">Read the move volume.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ea1"></span>8EA1</td>
+<td class="instruction">LD B,(IX+$02)</td>
+<td class="comment-1" rowspan="1">Read the volume from the object record.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ea4"></span>8EA4</td>
+<td class="instruction">SUB B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="8E85.html#8eca">Action_CheckTheObjectFlags_ReturnFlagValueTwo</a> if the move volume is not below the object's volume.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ea5"></span>8EA5</td>
+<td class="instruction">JR NC,<a href="8E85.html#8eca">Action_CheckTheObjectFlags_ReturnFlagValueTwo</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_CheckTheObjectFlags_ReadTheLocation</td>
+<td class="address-2"><span id="8ea7"></span>8EA7</td>
+<td class="instruction">LD A,($8D9B)</td>
+<td class="comment-1" rowspan="1">Read the current location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8eaa"></span>8EAA</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Copy the result into <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="8eab"></span>
+<div class="comments">
+<div class="paragraph">
+Find the location's record.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8eab"></span>8EAB</td>
+<td class="instruction">CALL <a href="9BB1.html">LocateLocation</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9BB1.html">LocateLocation</a> to locate location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8eae"></span>8EAE</td>
+<td class="instruction">LD ($8D99),IX</td>
+<td class="comment-1" rowspan="4">Save the location record pointer at <a href="8D99.html">ActionLocationData</a>, and jump to <a href="8E85.html#8ec4">Action_CheckTheObjectFlags_ReturnZero</a> if this location's volume byte is FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8eb2"></span>8EB2</td>
+<td class="instruction">LD A,$FF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8eb4"></span>8EB4</td>
+<td class="instruction">CP (IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8eb7"></span>8EB7</td>
+<td class="instruction">JR Z,<a href="8E85.html#8ec4">Action_CheckTheObjectFlags_ReturnZero</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8eb9"></span>8EB9</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="1">Use the current location again.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8eba"></span>8EBA</td>
+<td class="instruction">CALL <a href="9C41.html">TableFindAnExit</a></td>
+<td class="comment-1" rowspan="1">Call <a href="9C41.html">TableFindAnExit</a> to find an exit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ebd"></span>8EBD</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="4">Jump to <a href="8E85.html#8ec6">Action_CheckTheObjectFlags_ReturnFlagValueThree</a> if the move volume is not below the current location.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ebe"></span>8EBE</td>
+<td class="instruction">LD A,($8D9C)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ec1"></span>8EC1</td>
+<td class="instruction">SUB C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ec2"></span>8EC2</td>
+<td class="instruction">JR NC,<a href="8E85.html#8ec6">Action_CheckTheObjectFlags_ReturnFlagValueThree</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_CheckTheObjectFlags_ReturnZero</td>
+<td class="address-2"><span id="8ec4"></span>8EC4</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Return zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ec5"></span>8EC5</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_CheckTheObjectFlags_ReturnFlagValueThree</td>
+<td class="address-2"><span id="8ec6"></span>8EC6</td>
+<td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="1">The flag value to return is 03.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ec8"></span>8EC8</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="1">Set the flags from 03. The zero flag is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ec9"></span>8EC9</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_CheckTheObjectFlags_ReturnFlagValueTwo</td>
+<td class="address-2"><span id="8eca"></span>8ECA</td>
+<td class="instruction">LD A,$02</td>
+<td class="comment-1" rowspan="1">The flag value to return is 02.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ecc"></span>8ECC</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="1">Set the flags from 02. The zero flag is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ecd"></span>8ECD</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_CheckTheObjectFlags_ReturnFlagValueOne</td>
+<td class="address-2"><span id="8ece"></span>8ECE</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="1">The flag value to return is 01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ed0"></span>8ED0</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="1">Set the flags from 01. The zero flag is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8ed1"></span>8ED1</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="8D9D.html">8D9D</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#8e85">Map</a></td>
+<td class="next">
+Next: <a href="8ED2.html">8ED2</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1982 Melbourne House &copy; 2024 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/hobbit/">Source code</a>.</div>
+<div><a href="../dec/asm/36485.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

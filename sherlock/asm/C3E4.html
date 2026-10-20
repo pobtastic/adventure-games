@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sherlock: Routine at C3E4</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<link rel="stylesheet" type="text/css" href="../sherlock.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C388.html">C388</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c3e4">Map</a></td>
+<td class="next">
+Next: <a href="C403.html">C403</a>
+</td>
+</tr>
+</table>
+<div class="description">C3E4: Redraw The Screen When Input Is Waiting</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="C316.html">UpdateScreenDisplay</a>.
+</div>
+<div class="paragraph">
+Returns at once when the input flag is clear. Otherwise it redraws the screen before the next key is taken.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="address-2"><span id="c3e4"></span>C3E4</td>
+<td class="instruction">LD A,($A008)</td>
+<td class="comment-1" rowspan="3">Return if the input is zero.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3e7"></span>C3E7</td>
+<td class="instruction">AND A</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3e8"></span>C3E8</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3e9"></span>C3E9</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="5">Keep the text position and point at the top row, with eight pixel lines to redraw.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3ea"></span>C3EA</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3eb"></span>C3EB</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3ec"></span>C3EC</td>
+<td class="instruction">LD HL,$4000</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3ef"></span>C3EF</td>
+<td class="instruction">LD B,$08</td>
+</tr>
+<tr>
+<td class="address-2"><span id="c3f1"></span>C3F1</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="6">Keep the count and the row, call <a href="C403.html">SetPrinterMotorSpeed</a>, then step <span class="register">H</span> to the next pixel row.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3f2"></span>C3F2</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3f3"></span>C3F3</td>
+<td class="instruction">CALL <a href="C403.html">SetPrinterMotorSpeed</a></td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3f6"></span>C3F6</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3f7"></span>C3F7</td>
+<td class="instruction">INC H</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3f8"></span>C3F8</td>
+<td class="instruction">POP BC</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3f9"></span>C3F9</td>
+<td class="instruction">DJNZ <a href="C3E4.html#c3f1">$C3F1</a></td>
+<td class="comment-1" rowspan="1">Count the next pixel row and repeat from <a href="C3E4.html#c3f1">C3F1</a>.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3fb"></span>C3FB</td>
+<td class="instruction">LD A,$04</td>
+<td class="comment-1" rowspan="1">Take 04.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3fd"></span>C3FD</td>
+<td class="instruction">OUT ($FB),A</td>
+<td class="comment-1" rowspan="1">Stop the ZX Printer motor (port FB).</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c3ff"></span>C3FF</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="3">Restore the saved count, the saved source and the saved pointer from the stack.</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c400"></span>C400</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c401"></span>C401</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="address-1"><span id="c402"></span>C402</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="C388.html">C388</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#c3e4">Map</a></td>
+<td class="next">
+Next: <a href="C403.html">C403</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
+<div><a href="../dec/asm/50148.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at F8AB</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F869.html">F869</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f8ab">Map</a></td>
+<td class="next">
+Next: <a href="F8E4.html">F8E4</a>
+</td>
+</tr>
+</table>
+<div class="description">F8AB: Action: Row</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Row the boat, if the player is in it and has the oars.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Row</td>
+<td class="address-2"><span id="f8ab"></span>F8AB</td>
+<td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
+<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8ae"></span>F8AE</td>
+<td class="instruction">RET C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8af"></span>F8AF</td>
+<td class="instruction">LD HL,$E925</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F8AB.html#f8e1">Action_Row_YouCant</a> unless the player named crossing the river.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8b2"></span>F8B2</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8b5"></span>F8B5</td>
+<td class="instruction">JR NZ,<a href="F8AB.html#f8e1">Action_Row_YouCant</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8b7"></span>F8B7</td>
+<td class="instruction">LD A,($BA9B)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F8AB.html#f8c4">Action_Row_Next</a> when the player is in room 1D (In the Boat).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8ba"></span>F8BA</td>
+<td class="instruction">CP $1D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8bc"></span>F8BC</td>
+<td class="instruction">JR Z,<a href="F8AB.html#f8c4">Action_Row_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f8be"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "You're not in the boat.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8be"></span>F8BE</td>
+<td class="instruction">LD HL,$DE33</td>
+<td class="comment-1" rowspan="2">Print "You're not in the boat." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8c1"></span>F8C1</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Row_Next</td>
+<td class="address-2"><span id="f8c4"></span>F8C4</td>
+<td class="instruction">LD A,$1D</td>
+<td class="comment-1" rowspan="2">Call <a href="C2BE.html">GetObjectLocation</a> to fetch where the boat is.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8c6"></span>F8C6</td>
+<td class="instruction">CALL <a href="C2BE.html">GetObjectLocation</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8c9"></span>F8C9</td>
+<td class="instruction">CP $1A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F8AB.html#f8d5">Action_Row_WesternBank</a> unless the boat is in room 1A (The Western Bank of a Broad River).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8cb"></span>F8CB</td>
+<td class="instruction">JR NZ,<a href="F8AB.html#f8d5">Action_Row_WesternBank</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8cd"></span>F8CD</td>
+<td class="instruction">LD BC,$1D1B</td>
+<td class="comment-1" rowspan="2">Put object 1D (the boat) in room 1B (The Eastern Bank of a Broad River).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8d0"></span>F8D0</td>
+<td class="instruction">CALL <a href="BF55.html">UpdateObjectLocation</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8d3"></span>F8D3</td>
+<td class="instruction">JR <a href="F8AB.html#f8db">Action_Row_Across</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F8AB.html#f8db">Action_Row_Across</a> to say the boat has crossed.</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Row_WesternBank</td>
+<td class="address-2"><span id="f8d5"></span>F8D5</td>
+<td class="instruction">LD BC,$1D1A</td>
+<td class="comment-1" rowspan="2">Put object 1D (the boat) in room 1A (The Western Bank of a Broad River).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8d8"></span>F8D8</td>
+<td class="instruction">CALL <a href="BF55.html">UpdateObjectLocation</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f8db"></span>
+<div class="comments">
+<div class="paragraph">
+Reply with "You row across tothe opposite bank.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Row_Across</td>
+<td class="address-2"><span id="f8db"></span>F8DB</td>
+<td class="instruction">LD HL,$E34A</td>
+<td class="comment-1" rowspan="2">Print "You row across tothe opposite bank." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f8de"></span>F8DE</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+</tr>
+<tr>
+<td class="asm-label">Action_Row_YouCant</td>
+<td class="address-2"><span id="f8e1"></span>F8E1</td>
+<td class="instruction">JP <a href="ED6E.html">Response_YouCant_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Tell the player the command is impossible.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="F869.html">F869</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#f8ab">Map</a></td>
+<td class="next">
+Next: <a href="F8E4.html">F8E4</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/63659.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

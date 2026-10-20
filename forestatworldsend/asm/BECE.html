@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forest At World's End: Routine at BECE</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="BEBF.html">BEBF</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#bece">Map</a></td>
+<td class="next">
+Next: <a href="BF41.html">BF41</a>
+</td>
+</tr>
+</table>
+<div class="description">BECE: Handler: Turn-Based Events</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="EB10.html">GameLoop</a>.
+</div>
+<div class="paragraph">
+Count down the timed threats and, when one expires, run its handler.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_TurnBasedEvents</td>
+<td class="address-2"><span id="bece"></span>BECE</td>
+<td class="instruction">LD A,($BA36)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="BECE.html#bf00">Handler_TurnBasedEvents_Scenic</a> when the event mask is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bed1"></span>BED1</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bed2"></span>BED2</td>
+<td class="instruction">JR Z,<a href="BECE.html#bf00">Handler_TurnBasedEvents_Scenic</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bed4"></span>BED4</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="4">Count the eight event bits, and skip a threat whose bit is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bed5"></span>BED5</td>
+<td class="instruction">LD B,$08</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_TurnBasedEvents_Loop</td>
+<td class="address-2"><span id="bed7"></span>BED7</td>
+<td class="instruction">SRL C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bed9"></span>BED9</td>
+<td class="instruction">JR NC,<a href="BECE.html#befe">Handler_TurnBasedEvents_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bedb"></span>BEDB</td>
+<td class="instruction">LD DE,$0000</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=0000.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bede"></span>BEDE</td>
+<td class="instruction">LD HL,$BA37</td>
+<td class="comment-1" rowspan="7">Count this threat's timer down. Leave it alone while time remains.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bee1"></span>BEE1</td>
+<td class="instruction">LD A,$08</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bee3"></span>BEE3</td>
+<td class="instruction">SUB B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bee4"></span>BEE4</td>
+<td class="instruction">LD E,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bee5"></span>BEE5</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bee6"></span>BEE6</td>
+<td class="instruction">DEC (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bee7"></span>BEE7</td>
+<td class="instruction">JR NZ,<a href="BECE.html#befe">Handler_TurnBasedEvents_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bee9"></span>BEE9</td>
+<td class="instruction">LD IX,($BADE)</td>
+<td class="comment-1" rowspan="5">Take this threat's handler.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="beed"></span>BEED</td>
+<td class="instruction">SLA E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="beef"></span>BEEF</td>
+<td class="instruction">ADD IX,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bef1"></span>BEF1</td>
+<td class="instruction">LD L,(IX+$00)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bef4"></span>BEF4</td>
+<td class="instruction">LD H,(IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bef7"></span>BEF7</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="4">Keep the bit scan safe, return here, and jump to that handler.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bef8"></span>BEF8</td>
+<td class="instruction">LD DE,$BEFD</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="befb"></span>BEFB</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="befc"></span>BEFC</td>
+<td class="instruction">JP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="befd"></span>BEFD</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1">Restore the bit scan from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_TurnBasedEvents_Next</td>
+<td class="address-2"><span id="befe"></span>BEFE</td>
+<td class="instruction">DJNZ <a href="BECE.html#bed7">Handler_TurnBasedEvents_Loop</a></td>
+<td class="comment-1" rowspan="1">Repeat from <a href="BECE.html#bed7">Handler_TurnBasedEvents_Loop</a> for the remaining event bits.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_TurnBasedEvents_Scenic</td>
+<td class="address-2"><span id="bf00"></span>BF00</td>
+<td class="instruction">NOP</td>
+<td class="comment-1" rowspan="5">Start at the scenic list. Jump to <a href="BECE.html#bf40">Handler_TurnBasedEvents_Return</a> when the scenic count is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf01"></span>BF01</td>
+<td class="instruction">LD HL,$BA48</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf04"></span>BF04</td>
+<td class="instruction">LD A,($BB00)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf07"></span>BF07</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf08"></span>BF08</td>
+<td class="instruction">JR Z,<a href="BECE.html#bf40">Handler_TurnBasedEvents_Return</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf0a"></span>BF0A</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="2">Start at the first scenic entry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf0b"></span>BF0B</td>
+<td class="instruction">JR <a href="BECE.html#bf0e">Handler_TurnBasedEvents_ScenicSlot</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_TurnBasedEvents_ScenicAdvance</td>
+<td class="address-2"><span id="bf0d"></span>BF0D</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance to the next scenic entry.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_TurnBasedEvents_ScenicSlot</td>
+<td class="address-2"><span id="bf0e"></span>BF0E</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="BECE.html#bf3e">Handler_TurnBasedEvents_ScenicNext</a> when this scenic slot is empty.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf0f"></span>BF0F</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf10"></span>BF10</td>
+<td class="instruction">JR Z,<a href="BECE.html#bf3e">Handler_TurnBasedEvents_ScenicNext</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf12"></span>BF12</td>
+<td class="instruction">LD A,($BA9B)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="BECE.html#bf3e">Handler_TurnBasedEvents_ScenicNext</a> when this event is already in the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf15"></span>BF15</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf16"></span>BF16</td>
+<td class="instruction">JR Z,<a href="BECE.html#bf3e">Handler_TurnBasedEvents_ScenicNext</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf18"></span>BF18</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="7">Call <a href="C0C3.html">GetTableEntry</a> to fetch this event's room list.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf19"></span>BF19</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf1a"></span>BF1A</td>
+<td class="instruction">LD A,($BB00)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf1d"></span>BF1D</td>
+<td class="instruction">SUB B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf1e"></span>BF1E</td>
+<td class="instruction">LD E,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf1f"></span>BF1F</td>
+<td class="instruction">LD IX,$BA9C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf23"></span>BF23</td>
+<td class="instruction">CALL <a href="C0C3.html">GetTableEntry</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf26"></span>BF26</td>
+<td class="instruction">LD A,($5C78)</td>
+<td class="comment-1" rowspan="6">Use the frame counter as a step count and start at the first room in the list.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf29"></span>BF29</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf2a"></span>BF2A</td>
+<td class="instruction">LD A,$FF</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_TurnBasedEvents_RoomWalk</td>
+<td class="address-2"><span id="bf2c"></span>BF2C</td>
+<td class="instruction">LD L,(IX+$00)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf2f"></span>BF2F</td>
+<td class="instruction">LD H,(IX+$01)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf32"></span>BF32</td>
+<td class="instruction">JR <a href="BECE.html#bf35">Handler_TurnBasedEvents_RoomCheck</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_TurnBasedEvents_RoomStep</td>
+<td class="address-2"><span id="bf34"></span>BF34</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step to the next room in the list.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_TurnBasedEvents_RoomCheck</td>
+<td class="address-2"><span id="bf35"></span>BF35</td>
+<td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="BECE.html#bf2c">Handler_TurnBasedEvents_RoomWalk</a> when the end marker matches.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf36"></span>BF36</td>
+<td class="instruction">JR Z,<a href="BECE.html#bf2c">Handler_TurnBasedEvents_RoomWalk</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf38"></span>BF38</td>
+<td class="instruction">DJNZ <a href="BECE.html#bf34">Handler_TurnBasedEvents_RoomStep</a></td>
+<td class="comment-1" rowspan="1">Repeat from <a href="BECE.html#bf34">Handler_TurnBasedEvents_RoomStep</a> until the step count runs out.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf3a"></span>BF3A</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Take the room the walk landed on.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf3b"></span>BF3B</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore the scenic counter and scenic entry pointer from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf3c"></span>BF3C</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="bf3d"></span>BF3D</td>
+<td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Store that room back in this scenic slot.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_TurnBasedEvents_ScenicNext</td>
+<td class="address-2"><span id="bf3e"></span>BF3E</td>
+<td class="instruction">DJNZ <a href="BECE.html#bf0d">Handler_TurnBasedEvents_ScenicAdvance</a></td>
+<td class="comment-1" rowspan="1">Repeat from <a href="BECE.html#bf0d">Handler_TurnBasedEvents_ScenicAdvance</a> for the remaining scenic events.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_TurnBasedEvents_Return</td>
+<td class="address-2"><span id="bf40"></span>BF40</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="BEBF.html">BEBF</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#bece">Map</a></td>
+<td class="next">
+Next: <a href="BF41.html">BF41</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
+<div><a href="../dec/asm/48846.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

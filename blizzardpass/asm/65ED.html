@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blizzard Pass: Routine at 65ED</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="655E.html">655E</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#65ed">Map</a></td>
+<td class="next">
+Next: <a href="6618.html">6618</a>
+</td>
+</tr>
+</table>
+<div class="description">65ED: Clear Rows Under Picture</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="6187.html">DescribeLocation</a> and <a href="662D.html">WaitForKey</a>.
+</div>
+<div class="paragraph">
+Blanks the pixel rows down to the bottom of the text window. Pictures on start at row 0C, under the illustration. Pictures off start at row 0.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ClearLowerRows</td>
+<td class="address-2"><span id="65ed"></span>65ED</td>
+<td class="instruction">LD A,($66D6)</td>
+<td class="comment-1" rowspan="3">Pictures off start clearing at row 0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="65f0"></span>65F0</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="65f1"></span>65F1</td>
+<td class="instruction">JR Z,<a href="65ED.html#65f5">ClearLower_Adjust</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="65f3"></span>65F3</td>
+<td class="instruction">LD A,$0C</td>
+<td class="comment-1" rowspan="1">Pictures on start at row 0C.</td>
+</tr>
+<tr>
+<td class="asm-label">ClearLower_Adjust</td>
+<td class="address-2"><span id="65f5"></span>65F5</td>
+<td class="instruction">DEC A</td>
+<td class="comment-1" rowspan="1">Pictures off arrive here with zero, so this wraps to FF.</td>
+</tr>
+<tr>
+<td class="asm-label">ClearLower_Row</td>
+<td class="address-2"><span id="65f6"></span>65F6</td>
+<td class="instruction">INC A</td>
+<td class="comment-1" rowspan="1">The increment restores row 0, or restores 0C when pictures are on.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="65f7"></span>65F7</td>
+<td class="instruction">LD HL,$5B97</td>
+<td class="comment-1" rowspan="4">Stop when this row reaches the bottom row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="65fa"></span>65FA</td>
+<td class="instruction">LD B,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="65fb"></span>65FB</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="65fc"></span>65FC</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="65fd"></span>65FD</td>
+<td class="instruction">CALL <a href="5F16.html">RowAddress</a></td>
+<td class="comment-1" rowspan="3">Address of this character row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6600"></span>6600</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6601"></span>6601</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6602"></span>6602</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="2">Eight pixel rows, filled from the next byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6603"></span>6603</td>
+<td class="instruction">LD B,$08</td>
+</tr>
+<tr>
+<td class="asm-label">ClearLower_Pixel</td>
+<td class="address-2"><span id="6605"></span>6605</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="3">Save the row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6606"></span>6606</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6607"></span>6607</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6608"></span>6608</td>
+<td class="instruction">LD BC,$001F</td>
+<td class="comment-1" rowspan="3">Blank the rest of the pixel row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="660b"></span>660B</td>
+<td class="instruction">LD (HL),$00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="660d"></span>660D</td>
+<td class="instruction">LDIR</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="660f"></span>660F</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="3">Restore the row from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6610"></span>6610</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6611"></span>6611</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6612"></span>6612</td>
+<td class="instruction">INC D</td>
+<td class="comment-1" rowspan="2">The next pixel row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6613"></span>6613</td>
+<td class="instruction">INC H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6614"></span>6614</td>
+<td class="instruction">DJNZ <a href="65ED.html#6605">ClearLower_Pixel</a></td>
+<td class="comment-1" rowspan="1">All eight.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6616"></span>6616</td>
+<td class="instruction">JR <a href="65ED.html#65f6">ClearLower_Row</a></td>
+<td class="comment-1" rowspan="1">The next character row.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="655E.html">655E</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#65ed">Map</a></td>
+<td class="next">
+Next: <a href="6618.html">6618</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1986 Adventuresoft UK Ltd &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/blizzardpass/">Source code</a>.</div>
+<div><a href="../dec/asm/26093.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

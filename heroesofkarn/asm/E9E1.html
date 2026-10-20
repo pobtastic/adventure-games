@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heroes of Karn: Routine at E9E1</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="E9D3.html">E9D3</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#e9e1">Map</a></td>
+<td class="next">
+Next: <a href="EA70.html">EA70</a>
+</td>
+</tr>
+</table>
+<div class="description">E9E1: Handler: Change Room</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="EA75.html">Handler_ShowNewRoom</a>, <a href="F7F8.html">Action_Down</a>, <a href="FB67.html">Action_Pour</a> and <a href="FBA9.html">GameStart</a>.
+</div>
+<div class="paragraph">
+Change room, with the special cases for the gates and the cottage.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ChangeRoom</td>
+<td class="address-2"><span id="e9e1"></span>E9E1</td>
+<td class="instruction">CP $37</td>
+<td class="comment-1" rowspan="2">See whether the player is moving into the Hall of the Phoenix.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9e3"></span>E9E3</td>
+<td class="instruction">JR NZ,<a href="E9E1.html#e9f8">Handler_ChangeRoom_0</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9e5"></span>E9E5</td>
+<td class="instruction">LD HL,$AE76</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the room-change flags.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9e8"></span>E9E8</td>
+<td class="instruction">BIT 0,(HL)</td>
+<td class="comment-1" rowspan="1">See whether the Hall of the Phoenix is safe to enter.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9ea"></span>E9EA</td>
+<td class="instruction">JR NZ,<a href="E9E1.html#e9f8">Handler_ChangeRoom_0</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="E9E1.html#e9f8">Handler_ChangeRoom_0</a> if the zero flag is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9ec"></span>E9EC</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="3">Return via the "You are dead." message.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9ed"></span>E9ED</td>
+<td class="instruction">LD HL,$E9B5</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9f0"></span>E9F0</td>
+<td class="instruction">EX (SP),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9f1"></span>E9F1</td>
+<td class="instruction">LD HL,$D04C</td>
+<td class="comment-1" rowspan="2">Print "The scorching flames of thefiregate have incinerated you." and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9f4"></span>E9F4</td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9f7"></span>E9F7</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ChangeRoom_0</td>
+<td class="address-2"><span id="e9f8"></span>E9F8</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1">Remember the room being moved to.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9f9"></span>E9F9</td>
+<td class="instruction">LD A,($AECD)</td>
+<td class="comment-1" rowspan="1">Read the current room into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9fc"></span>E9FC</td>
+<td class="instruction">CP $37</td>
+<td class="comment-1" rowspan="2">See whether the player is leaving the Hall of the Phoenix.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9fe"></span>E9FE</td>
+<td class="instruction">JR NZ,<a href="E9E1.html#ea36">Handler_ChangeRoom_2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea00"></span>EA00</td>
+<td class="instruction">LD HL,$AE76</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the room-change flags.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea03"></span>EA03</td>
+<td class="instruction">BIT 1,(HL)</td>
+<td class="comment-1" rowspan="1">See whether the ashes have already become a phoenix.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea05"></span>EA05</td>
+<td class="instruction">JR NZ,<a href="E9E1.html#ea36">Handler_ChangeRoom_2</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="E9E1.html#ea36">Handler_ChangeRoom_2</a> if the zero flag is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea07"></span>EA07</td>
+<td class="instruction">LD A,$3F</td>
+<td class="comment-1" rowspan="3">See whether the move is into the Hall of Black Magic.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea09"></span>EA09</td>
+<td class="instruction">CP C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea0a"></span>EA0A</td>
+<td class="instruction">JR NZ,<a href="E9E1.html#ea23">Handler_ChangeRoom_1</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea0c"></span>EA0C</td>
+<td class="instruction">LD BC,$8182</td>
+<td class="comment-1" rowspan="2">Turn the hot ashes into a phoenix.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea0f"></span>EA0F</td>
+<td class="instruction">CALL <a href="B613.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea12"></span>EA12</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Close the south exit from the Hall of the Phoenix.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea13"></span>EA13</td>
+<td class="instruction">LD ($E931),A</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ChangeRoom_AshesBurst</td>
+<td class="address-1"><span id="ea16"></span>EA16</td>
+<td class="instruction">LD HL,$D087</td>
+<td class="comment-1" rowspan="2">Print "Suddenly,the ashes burst intoflames...." and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea19"></span>EA19</td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ChangeRoom_PhoenixAppears</td>
+<td class="address-1"><span id="ea1c"></span>EA1C</td>
+<td class="instruction">LD HL,$D0B0</td>
+<td class="comment-1" rowspan="2">Pause, print "A phoenix emerges from the fireand blocks your path." and scroll.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea1f"></span>EA1F</td>
+<td class="instruction">CALL <a href="B776.html">PausePrintStringAndScroll</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea22"></span>EA22</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ChangeRoom_1</td>
+<td class="address-2"><span id="ea23"></span>EA23</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="1">Take the destination room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea24"></span>EA24</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="1">Remember the destination room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea25"></span>EA25</td>
+<td class="instruction">LD A,$82</td>
+<td class="comment-1" rowspan="2">Remove the phoenix.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea27"></span>EA27</td>
+<td class="instruction">CALL <a href="B5D5.html">HandlerDestroyItemEvent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea2a"></span>EA2A</td>
+<td class="instruction">LD A,$81</td>
+<td class="comment-1" rowspan="2">Leave the hot ashes in this room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea2c"></span>EA2C</td>
+<td class="instruction">CALL <a href="B5DC.html">HandlerUpdateItemEventForTheCurrentRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea2f"></span>EA2F</td>
+<td class="instruction">LD A,$3F</td>
+<td class="comment-1" rowspan="2">Open the south exit from the Hall of the Phoenix into the Hall of Black Magic.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea31"></span>EA31</td>
+<td class="instruction">LD ($E931),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea34"></span>EA34</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore the destination room from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea35"></span>EA35</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1">Put the destination room back.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ChangeRoom_2</td>
+<td class="address-2"><span id="ea36"></span>EA36</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="1">Hand the destination room to the move.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea37"></span>EA37</td>
+<td class="instruction">CALL <a href="B714.html">Handler_SetCurrentRoom</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B714.html">Handler_SetCurrentRoom</a> to move the player into the room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea3a"></span>EA3A</td>
+<td class="instruction">LD A,($AECD)</td>
+<td class="comment-1" rowspan="1">Read the current room into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea3d"></span>EA3D</td>
+<td class="instruction">CP $02</td>
+<td class="comment-1" rowspan="2">See whether the player is inside the ruined cottage.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea3f"></span>EA3F</td>
+<td class="instruction">JR NZ,<a href="EA75.html">Handler_ShowNewRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea41"></span>EA41</td>
+<td class="instruction">LD A,($AE91)</td>
+<td class="comment-1" rowspan="1">Read the event-state flags into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea44"></span>EA44</td>
+<td class="instruction">CP $0F</td>
+<td class="comment-1" rowspan="2">See whether the cottage tasks are finished.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea46"></span>EA46</td>
+<td class="instruction">JR NZ,<a href="EA75.html">Handler_ShowNewRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea48"></span>EA48</td>
+<td class="instruction">LD HL,$EA70</td>
+<td class="comment-1" rowspan="3">Count how many of the five gems are here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea4b"></span>EA4B</td>
+<td class="instruction">LD B,$05</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea4d"></span>EA4D</td>
+<td class="instruction">LD C,$00</td>
+</tr>
+<tr>
+<td class="asm-label">Cottage_CountGem</td>
+<td class="address-2"><span id="ea4f"></span>EA4F</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the next gem.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea50"></span>EA50</td>
+<td class="instruction">CALL <a href="B560.html">Get_ObjectLocation</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B560.html">Get_ObjectLocation</a> to find where the object is.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea53"></span>EA53</td>
+<td class="instruction">JR NZ,<a href="E9E1.html#ea56">Handler_ChangeRoom_3</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="E9E1.html#ea56">Handler_ChangeRoom_3</a> if the zero flag is clear.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea55"></span>EA55</td>
+<td class="instruction">INC C</td>
+<td class="comment-1" rowspan="1">Count a gem that is here.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ChangeRoom_3</td>
+<td class="address-2"><span id="ea56"></span>EA56</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move on to the next gem.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea57"></span>EA57</td>
+<td class="instruction">DJNZ <a href="E9E1.html#ea4f">Cottage_CountGem</a></td>
+<td class="comment-1" rowspan="1">Step down <span class="register">B</span> by one and jump to <a href="E9E1.html#ea4f">Cottage_CountGem</a> until it is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea59"></span>EA59</td>
+<td class="instruction">LD A,$05</td>
+<td class="comment-1" rowspan="3">See whether all five gems are here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea5b"></span>EA5B</td>
+<td class="instruction">CP C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea5c"></span>EA5C</td>
+<td class="instruction">JR NZ,<a href="EA75.html">Handler_ShowNewRoom</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea5e"></span>EA5E</td>
+<td class="instruction">LD HL,$E504</td>
+<td class="comment-1" rowspan="2">Check the list of treasures at E504.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea61"></span>EA61</td>
+<td class="instruction">CALL <a href="B5EC.html">CheckActiveScenicEvents</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea64"></span>EA64</td>
+<td class="instruction">JR NZ,<a href="EA75.html">Handler_ShowNewRoom</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EA75.html">Handler_ShowNewRoom</a> if none of the items listed at E504 is here or carried.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea66"></span>EA66</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">HL</span>, <span class="register">HL</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea67"></span>EA67</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea68"></span>EA68</td>
+<td class="instruction">LD A,$04</td>
+<td class="comment-1" rowspan="3">Score four points and finish the game.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea6a"></span>EA6A</td>
+<td class="instruction">CALL <a href="B78F.html">AddToScore</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea6d"></span>EA6D</td>
+<td class="instruction">JP <a href="E9D3.html">GameComplete</a></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="E9D3.html">E9D3</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#e9e1">Map</a></td>
+<td class="next">
+Next: <a href="EA70.html">EA70</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
+<div><a href="../dec/asm/59873.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

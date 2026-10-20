@@ -42,7 +42,10 @@ Next: <a href="D0D0.html">D0D0</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="A2E4.html">ProcessObjectDisplay</a>, <a href="C996.html">ProcessObjectDisplayEntry</a> and <a href="D1B2.html">ProcessObjectDisplayWithCheck</a>.
+Used by the routines at <a href="A2E4.html">ProcessObjectDisplay</a>, <a href="C9BF.html">ProcessDisplayRecord</a> and <a href="D1B2.html">ProcessObjectDisplayWithCheck</a>.
+</div>
+<div class="paragraph">
+Sets the carry when the current character is visible and a matching object is found. Returns with the carry clear when the character is not visible.
 </div>
 </div>
 <table class="output">
@@ -60,7 +63,7 @@ Used by the routines at <a href="A2E4.html">ProcessObjectDisplay</a>, <a href="C
 <td class="asm-label">CheckObjectVisibility</td>
 <td class="address-2"><span id="d078"></span>D078</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="3">Stash <span class="register">IX</span>, <span class="register">IY</span> and <span class="register">BC</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Save the character record, the schedule entry and the count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -76,13 +79,13 @@ Used by the routines at <a href="A2E4.html">ProcessObjectDisplay</a>, <a href="C
 <td class="asm-label"></td>
 <td class="address-1"><span id="d07d"></span>D07D</td>
 <td class="instruction">LD IX,($A017)</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="A017.html">CurrentCharacterData</a>.</td>
+<td class="comment-1" rowspan="1">Read the current character record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d081"></span>D081</td>
 <td class="instruction">LD A,(IX+$04)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+04.</td>
+<td class="comment-1" rowspan="1">Read the attribute type.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -93,60 +96,67 @@ Used by the routines at <a href="A2E4.html">ProcessObjectDisplay</a>, <a href="C
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d086"></span>D086</td>
-<td class="instruction">JR Z,<a href="D078.html#d0c6">CheckObjectVisibility_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D078.html#d0c6">CheckObjectVisibility_2</a> if ?? is equal to 00.</td>
+<td class="instruction">JR Z,<a href="D078.html#d0c6">CheckObjectVisibility_TestObjectVisibility</a></td>
+<td class="comment-1" rowspan="1">Skip the object when bit 7 is clear, so it is not visible.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d088"></span>D088</td>
 <td class="instruction">CALL <a href="C86E.html">CheckObjectMother</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C86E.html">CheckObjectMother</a>.</td>
+<td class="comment-1" rowspan="3">Go to <a href="D078.html#d09e">CheckObjectVisibility_Next</a> unless <a href="C86E.html">CheckObjectMother</a> returned FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d08b"></span>D08B</td>
 <td class="instruction">INC A</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">A</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d08c"></span>D08C</td>
-<td class="instruction">JR NZ,<a href="D078.html#d09e">CheckObjectVisibility_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D078.html#d09e">CheckObjectVisibility_0</a> if <span class="register">A</span> is not equal to 00.</td>
+<td class="instruction">JR NZ,<a href="D078.html#d09e">CheckObjectVisibility_Next</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="d08e"></span>
+<div class="comments">
+<div class="paragraph">
+Fetch current character location.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d08e"></span>D08E</td>
 <td class="instruction">CALL <a href="D33C.html">FetchCurrentCharacterLocation</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D33C.html">FetchCurrentCharacterLocation</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="D33C.html">FetchCurrentCharacterLocation</a> to read where the current character is.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d091"></span>D091</td>
 <td class="instruction">BIT 7,(IX+$00)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="D078.html#d0c6">CheckObjectVisibility_2</a> if bit 7 of *<span class="register">IX</span>+00 is set.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="D078.html#d0c6">CheckObjectVisibility_TestObjectVisibility</a> if a marker on the record's flag byte is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d095"></span>D095</td>
-<td class="instruction">JR NZ,<a href="D078.html#d0c6">CheckObjectVisibility_2</a></td>
+<td class="instruction">JR NZ,<a href="D078.html#d0c6">CheckObjectVisibility_TestObjectVisibility</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d097"></span>D097</td>
 <td class="instruction">CALL <a href="C00C.html">GetTimePeriod</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C00C.html">GetTimePeriod</a>.</td>
+<td class="comment-1" rowspan="3">Go to <a href="D078.html#d0c6">CheckObjectVisibility_TestObjectVisibility</a> if it is not 01.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d09a"></span>D09A</td>
 <td class="instruction">CP $01</td>
-<td class="comment-1" rowspan="2">Jump to <a href="D078.html#d0c6">CheckObjectVisibility_2</a> if the time-period code is anything other than late night/ evening (8 PM - 5 AM).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d09c"></span>D09C</td>
-<td class="instruction">JR NZ,<a href="D078.html#d0c6">CheckObjectVisibility_2</a></td>
+<td class="instruction">JR NZ,<a href="D078.html#d0c6">CheckObjectVisibility_TestObjectVisibility</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -159,28 +169,27 @@ It's late night/ evening (8 PM - 5 AM).
 </td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectVisibility_0</td>
+<td class="asm-label">CheckObjectVisibility_Next</td>
 <td class="address-2"><span id="d09e"></span>D09E</td>
 <td class="instruction">LD IX,$8B6F</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="8B6F.html">Table_Objects</a>.</td>
+<td class="comment-1" rowspan="1">Use the objects at <a href="8B6F.html">Table_Objects</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectVisibility_1</td>
+<td class="asm-label">CheckObjectVisibility_Loop</td>
 <td class="address-2"><span id="d0a2"></span>D0A2</td>
 <td class="instruction">CALL <a href="D206.html">FetchNextObject</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D206.html">FetchNextObject</a>.</td>
+<td class="comment-1" rowspan="2">Go to <a href="D078.html#d0c9">CheckObjectVisibility_ConditionHoldsCaller</a> if the next object id is FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0a5"></span>D0A5</td>
-<td class="instruction">JR Z,<a href="D078.html#d0c9">CheckObjectVisibility_3</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D078.html#d0c9">CheckObjectVisibility_3</a> if <span class="register">A</span> is equal to 01.</td>
+<td class="instruction">JR Z,<a href="D078.html#d0c9">CheckObjectVisibility_ConditionHoldsCaller</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0a7"></span>D0A7</td>
 <td class="instruction">LD A,(IY+$00)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="D078.html#d0a2">CheckObjectVisibility_1</a> if *<span class="register">IY</span>+00 is not equal to 01.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="D078.html#d0a2">CheckObjectVisibility_Loop</a> if the character id is not 01.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -190,37 +199,35 @@ It's late night/ evening (8 PM - 5 AM).
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0ac"></span>D0AC</td>
-<td class="instruction">JR NZ,<a href="D078.html#d0a2">CheckObjectVisibility_1</a></td>
+<td class="instruction">JR NZ,<a href="D078.html#d0a2">CheckObjectVisibility_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0ae"></span>D0AE</td>
 <td class="instruction">LD A,(IY+$05)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IY</span>+05.</td>
+<td class="comment-1" rowspan="1">Read the schedule entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0b1"></span>D0B1</td>
 <td class="instruction">XOR %10110111</td>
-<td class="comment-1" rowspan="1">Flip bits 0-2, 4-5, 7.</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="D078.html#d0a2">CheckObjectVisibility_Loop</a> unless bits 2 and 4 of the schedule entry are set and bits 3 and 6 are clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0b3"></span>D0B3</td>
 <td class="instruction">AND %01011100</td>
-<td class="comment-1" rowspan="1">Keep only bits 2-4, 6.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0b5"></span>D0B5</td>
-<td class="instruction">JR NZ,<a href="D078.html#d0a2">CheckObjectVisibility_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D078.html#d0a2">CheckObjectVisibility_1</a> if <span class="register">A</span> is not equal to 01.</td>
+<td class="instruction">JR NZ,<a href="D078.html#d0a2">CheckObjectVisibility_Loop</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0b7"></span>D0B7</td>
 <td class="instruction">LD A,(IY+$04)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IY</span>+04.</td>
+<td class="comment-1" rowspan="1">Read the schedule entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -231,50 +238,57 @@ It's late night/ evening (8 PM - 5 AM).
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0bc"></span>D0BC</td>
-<td class="instruction">JR Z,<a href="D078.html#d0a2">CheckObjectVisibility_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D078.html#d0a2">CheckObjectVisibility_1</a> if <span class="register">A</span> is equal to 01.</td>
+<td class="instruction">JR Z,<a href="D078.html#d0a2">CheckObjectVisibility_Loop</a></td>
+<td class="comment-1" rowspan="1">Go back and test the next object when bit 7 is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0be"></span>D0BE</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+00.</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="D078.html#d0a2">CheckObjectVisibility_Loop</a> while the object is not in this location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0c1"></span>D0C1</td>
 <td class="instruction">CALL <a href="C821.html">CheckObjectLocationMatch</a></td>
-<td class="comment-1" rowspan="1">Call <a href="C821.html">CheckObjectLocationMatch</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0c4"></span>D0C4</td>
-<td class="instruction">JR Z,<a href="D078.html#d0a2">CheckObjectVisibility_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D078.html#d0a2">CheckObjectVisibility_1</a> if <span class="register">A</span> is equal to 01.</td>
+<td class="instruction">JR Z,<a href="D078.html#d0a2">CheckObjectVisibility_Loop</a></td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectVisibility_2</td>
+<td class="asm-label">CheckObjectVisibility_TestObjectVisibility</td>
 <td class="address-2"><span id="d0c6"></span>D0C6</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Set flags.</td>
+<td class="comment-1" rowspan="2">Clear the carry and jump ahead to <a href="D078.html#d0ca">CheckObjectVisibility_BringSavedCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="d0c7"></span>D0C7</td>
-<td class="instruction">JR <a href="D078.html#d0ca">CheckObjectVisibility_4</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="D078.html#d0ca">CheckObjectVisibility_4</a>.</td>
+<td class="instruction">JR <a href="D078.html#d0ca">CheckObjectVisibility_BringSavedCount</a></td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectVisibility_3</td>
+<td class="routine-comment" colspan="5">
+<span id="d0c9"></span>
+<div class="comments">
+<div class="paragraph">
+The condition holds, so the caller continues.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CheckObjectVisibility_ConditionHoldsCaller</td>
 <td class="address-2"><span id="d0c9"></span>D0C9</td>
 <td class="instruction">SCF</td>
-<td class="comment-1" rowspan="1">Set the carry flag.</td>
+<td class="comment-1" rowspan="1">Set the carry.</td>
 </tr>
 <tr>
-<td class="asm-label">CheckObjectVisibility_4</td>
+<td class="asm-label">CheckObjectVisibility_BringSavedCount</td>
 <td class="address-2"><span id="d0ca"></span>D0CA</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">IY</span> and <span class="register">IX</span> from the stack.</td>
+<td class="comment-1" rowspan="3">Restore the saved count, the saved schedule entry and the saved character record from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -307,7 +321,7 @@ Next: <a href="D0D0.html">D0D0</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/53368.html">Switch to decimal</a>.</div>
 </footer>

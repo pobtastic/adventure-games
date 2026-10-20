@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Message From Andromeda: Routine at 8D2A</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="8D16.html">8D16</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#8d2a">Map</a></td>
+<td class="next">
+Next: <a href="8D85.html">8D85</a>
+</td>
+</tr>
+</table>
+<div class="description">8D2A: Game Loop</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="8D85.html">HandlerMatchVerb</a> and <a href="F8AF.html">GameStart</a>.
+</div>
+<div class="paragraph">
+Run the scenic check, read a command and dispatch it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">GameLoop</td>
+<td class="address-2"><span id="8d2a"></span>8D2A</td>
+<td class="instruction">CALL <a href="6557.html">HandlerTurnBasedEvents</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6557.html">HandlerTurnBasedEvents</a> to turn-based events.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d2d"></span>8D2D</td>
+<td class="instruction">LD HL,$6224</td>
+<td class="comment-1" rowspan="1">Check the scenic-event rooms.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d30"></span>8D30</td>
+<td class="instruction">LD BC,$0008</td>
+<td class="comment-1" rowspan="1">There are eight scenic rooms to check.</td>
+</tr>
+<tr>
+<td class="asm-label">GameLoop_Loop1</td>
+<td class="address-2"><span id="8d33"></span>8D33</td>
+<td class="instruction">LD A,($6223)</td>
+<td class="comment-1" rowspan="1">Fetch the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d36"></span>8D36</td>
+<td class="instruction">CPIR</td>
+<td class="comment-1" rowspan="1">See whether the player is standing in this scenic room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d38"></span>8D38</td>
+<td class="instruction">JR NZ,<a href="8D2A.html#8d55">GameLoop_Step1</a></td>
+<td class="comment-1" rowspan="1">The player is not in this scenic room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d3a"></span>8D3A</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Keep the scenic search while the warning is printed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d3b"></span>8D3B</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d3c"></span>8D3C</td>
+<td class="instruction">LD HL,$7851</td>
+<td class="comment-1" rowspan="2">Print An alien soldier has appeared.He fires a plasma gun at you..</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d3f"></span>8D3F</td>
+<td class="instruction">CALL <a href="64E9.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d42"></span>8D42</td>
+<td class="instruction">LD A,$14</td>
+<td class="comment-1" rowspan="1">The plasma shell has one chance in 14 of hitting.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d44"></span>8D44</td>
+<td class="instruction">CALL <a href="65D6.html">GenerateRandomNumber</a></td>
+<td class="comment-1" rowspan="1">Call <a href="65D6.html">GenerateRandomNumber</a> to generate random number.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d47"></span>8D47</td>
+<td class="instruction">JR Z,<a href="8DAD.html">HandlerPlasmaShell</a></td>
+<td class="comment-1" rowspan="1">The shell hits when that draw comes up zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d49"></span>8D49</td>
+<td class="instruction">LD HL,$788F</td>
+<td class="comment-1" rowspan="2">Print But he missed..</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d4c"></span>8D4C</td>
+<td class="instruction">CALL <a href="64E9.html">PrintStringAndANewline</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d4f"></span>8D4F</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore the scenic-room search.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d50"></span>8D50</td>
+<td class="instruction">POP HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d51"></span>8D51</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">See whether another scenic room is still to be checked.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d52"></span>8D52</td>
+<td class="instruction">OR C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d53"></span>8D53</td>
+<td class="instruction">JR NZ,<a href="8D2A.html#8d33">GameLoop_Loop1</a></td>
+<td class="comment-1" rowspan="1">Check the next scenic room.</td>
+</tr>
+<tr>
+<td class="asm-label">GameLoop_Step1</td>
+<td class="address-2"><span id="8d55"></span>8D55</td>
+<td class="instruction">CALL <a href="6604.html">Handler_UserInput</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6604.html">Handler_UserInput</a> to read another command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d58"></span>8D58</td>
+<td class="instruction">LD A,($6291)</td>
+<td class="comment-1" rowspan="1">Fetch the first word of the command.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d5b"></span>8D5B</td>
+<td class="instruction">CP $59</td>
+<td class="comment-1" rowspan="2">Jump to <a href="8D2A.html#8d65">GameLoop_Step3</a> when Y (59) was not pressed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d5d"></span>8D5D</td>
+<td class="instruction">JR NZ,<a href="8D2A.html#8d65">GameLoop_Step3</a></td>
+</tr>
+<tr>
+<td class="asm-label">GameLoop_Step2</td>
+<td class="address-1"><span id="8d5f"></span>8D5F</td>
+<td class="instruction">LD HL,$997F</td>
+<td class="comment-1" rowspan="2">Continue at <a href="8D85.html#8da8">HandlerMatchVerb_Step2</a> to run Action: Type.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d62"></span>8D62</td>
+<td class="instruction">JP <a href="8D85.html#8da8">HandlerMatchVerb_Step2</a></td>
+</tr>
+<tr>
+<td class="asm-label">GameLoop_Step3</td>
+<td class="address-2"><span id="8d65"></span>8D65</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Start the synonym scan with a clear result.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d66"></span>8D66</td>
+<td class="instruction">LD HL,$6291</td>
+<td class="comment-1" rowspan="1">Check the command's word tokens for a noun.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d69"></span>8D69</td>
+<td class="instruction">LD B,$0A</td>
+<td class="comment-1" rowspan="1">A command has at most 0A word tokens.</td>
+</tr>
+<tr>
+<td class="asm-label">GameLoop_Loop2</td>
+<td class="address-2"><span id="8d6b"></span>8D6B</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Read the next word token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d6c"></span>8D6C</td>
+<td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="2">Jump to <a href="8D85.html">HandlerMatchVerb</a> when the command has no more words (FF).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d6e"></span>8D6E</td>
+<td class="instruction">JR Z,<a href="8D85.html">HandlerMatchVerb</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d70"></span>8D70</td>
+<td class="instruction">EXX</td>
+<td class="comment-1" rowspan="4">Look that token up in the noun list without losing the token pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d71"></span>8D71</td>
+<td class="instruction">LD HL,$8868</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d74"></span>8D74</td>
+<td class="instruction">LD BC,($62C8)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d78"></span>8D78</td>
+<td class="instruction">CPIR</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d7a"></span>8D7A</td>
+<td class="instruction">JR NZ,<a href="8D2A.html#8d81">GameLoop_Step4</a></td>
+<td class="comment-1" rowspan="1">This token is not a noun, so try the next word.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d7c"></span>8D7C</td>
+<td class="instruction">CALL <a href="68A4.html">Parser_ResolvePhrase</a></td>
+<td class="comment-1" rowspan="1">Call <a href="68A4.html">Parser_ResolvePhrase</a> to resolve phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d7f"></span>8D7F</td>
+<td class="instruction">JR C,<a href="8D2A.html#8d2a">GameLoop</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="8D2A.html">GameLoop</a> when the carry flag is set.</td>
+</tr>
+<tr>
+<td class="asm-label">GameLoop_Step4</td>
+<td class="address-2"><span id="8d81"></span>8D81</td>
+<td class="instruction">EXX</td>
+<td class="comment-1" rowspan="1">Bring the token pointer back.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d82"></span>8D82</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move on to the next word token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="8d83"></span>8D83</td>
+<td class="instruction">DJNZ <a href="8D2A.html#8d6b">GameLoop_Loop2</a></td>
+<td class="comment-1" rowspan="1">Repeat for the remaining words of the command.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="8D16.html">8D16</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#8d2a">Map</a></td>
+<td class="next">
+Next: <a href="8D85.html">8D85</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Interceptor Software UK &copy; 2025 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
+<div><a href="../dec/asm/36138.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

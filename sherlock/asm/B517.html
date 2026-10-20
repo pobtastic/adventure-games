@@ -44,6 +44,9 @@ Next: <a href="B549.html">B549</a>
 <div class="paragraph">
 Used by the routine at <a href="B4FD.html">CheckFlagAndSetDisplay_ProcessPointer</a>.
 </div>
+<div class="paragraph">
+Returns when the display flag at <a href="A01C.html">A01C</a> is zero. Otherwise walks the character's objects and returns non-zero when one matches the room display parameter.
+</div>
 </div>
 </td>
 </tr>
@@ -51,7 +54,7 @@ Used by the routine at <a href="B4FD.html">CheckFlagAndSetDisplay_ProcessPointer
 <td class="asm-label">CheckFlagAndSetDisplay_CheckObjects</td>
 <td class="address-2"><span id="b517"></span>B517</td>
 <td class="instruction">LD A,($A01C)</td>
-<td class="comment-1" rowspan="3">Check if objects need processing and return if none.</td>
+<td class="comment-1" rowspan="3">Return if the display flag (<a href="A01C.html">A01C</a>) is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -67,7 +70,7 @@ Used by the routine at <a href="B4FD.html">CheckFlagAndSetDisplay_ProcessPointer
 <td class="asm-label"></td>
 <td class="address-1"><span id="b51c"></span>B51C</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="3">Stash <span class="register">IY</span>, <span class="register">DE</span> and <span class="register">IX</span> on the stack.</td>
+<td class="comment-1" rowspan="3">Keep the character record.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -82,31 +85,32 @@ Used by the routine at <a href="B4FD.html">CheckFlagAndSetDisplay_ProcessPointer
 <tr>
 <td class="asm-label">CheckFlagAndSetDisplay_ObjectLoop</td>
 <td class="address-2"><span id="b521"></span>B521</td>
-<td class="instruction">CALL <a href="AEA9.html">$AEA9</a></td>
-<td class="comment-1" rowspan="1">Call <a href="AEA9.html">AEA9</a> (get next object).</td>
+<td class="instruction">CALL <a href="AEA9.html">FollowCharacterLink</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AEA9.html">FollowCharacterLink</a> to follow the character link.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b524"></span>B524</td>
-<td class="instruction">BIT 6,(IY+%00000001)</td>
-<td class="comment-1" rowspan="2">Check bit 6 of object attribute and jump to <a href="B517.html#b543">CheckFlagAndSetDisplay_RestoreAndReturn</a> if object doesn't need special handling.</td>
+<td class="instruction">BIT 6,(IY+$01)</td>
+<td class="comment-1" rowspan="1">See whether bit 6 of the schedule entry is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b528"></span>B528</td>
 <td class="instruction">JR Z,<a href="B517.html#b543">CheckFlagAndSetDisplay_RestoreAndReturn</a></td>
+<td class="comment-1" rowspan="1">Jump ahead to <a href="B517.html#b543">CheckFlagAndSetDisplay_RestoreAndReturn</a> if bit 6 of the schedule entry is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b52a"></span>B52A</td>
 <td class="instruction">CALL <a href="D04F.html">AdjustObjectTableForSum</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D04F.html">AdjustObjectTableForSum</a> (adjust object table for sum).</td>
+<td class="comment-1" rowspan="1">Call <a href="D04F.html">AdjustObjectTableForSum</a> to adjust the object table for this room.</td>
 </tr>
 <tr>
 <td class="asm-label">CheckFlagAndSetDisplay_ProcessObject</td>
 <td class="address-2"><span id="b52d"></span>B52D</td>
 <td class="instruction">PUSH IY</td>
-<td class="comment-1" rowspan="2">Stash <span class="register">IY</span> on the stack and restore into <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="4">Point <span class="register">HL</span> at byte 08 of the record (<span class="register">IY</span>+08).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -117,7 +121,6 @@ Used by the routine at <a href="B4FD.html">CheckFlagAndSetDisplay_ProcessPointer
 <td class="asm-label"></td>
 <td class="address-1"><span id="b530"></span>B530</td>
 <td class="instruction">LD DE,$0008</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>+=0008 (move to next object).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -128,13 +131,13 @@ Used by the routine at <a href="B4FD.html">CheckFlagAndSetDisplay_ProcessPointer
 <td class="asm-label"></td>
 <td class="address-1"><span id="b534"></span>B534</td>
 <td class="instruction">CALL <a href="D36A.html">ProcessObjectEntry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="D36A.html">ProcessObjectEntry</a> (process object entry).</td>
+<td class="comment-1" rowspan="1">Call <a href="D36A.html">ProcessObjectEntry</a> to check the next object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b537"></span>B537</td>
 <td class="instruction">CP $FF</td>
-<td class="comment-1" rowspan="2">Compare with FF and jump to <a href="B517.html#b521">CheckFlagAndSetDisplay_ObjectLoop</a> if end of objects.</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="B517.html#b521">CheckFlagAndSetDisplay_ObjectLoop</a> if the entry is the end marker.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -145,7 +148,7 @@ Used by the routine at <a href="B4FD.html">CheckFlagAndSetDisplay_ProcessPointer
 <td class="asm-label"></td>
 <td class="address-1"><span id="b53b"></span>B53B</td>
 <td class="instruction">LD HL,$A034</td>
-<td class="comment-1" rowspan="2"><span class="register">HL</span>=<a href="A034.html">RoomDisplayParameter</a> and compare with room parameter.</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="B517.html#b52d">CheckFlagAndSetDisplay_ProcessObject</a> while the object is not in the room on screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -156,18 +159,18 @@ Used by the routine at <a href="B4FD.html">CheckFlagAndSetDisplay_ProcessPointer
 <td class="asm-label"></td>
 <td class="address-1"><span id="b53f"></span>B53F</td>
 <td class="instruction">JR NZ,<a href="B517.html#b52d">CheckFlagAndSetDisplay_ProcessObject</a></td>
-<td class="comment-1" rowspan="2">Jump to <a href="B517.html#b52d">CheckFlagAndSetDisplay_ProcessObject</a> if object doesn't match room, otherwise set bit 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b541"></span>B541</td>
 <td class="instruction">OR $01</td>
+<td class="comment-1" rowspan="1">Clear the zero flag to report that an object in the room on screen was found.</td>
 </tr>
 <tr>
 <td class="asm-label">CheckFlagAndSetDisplay_RestoreAndReturn</td>
 <td class="address-2"><span id="b543"></span>B543</td>
 <td class="instruction">POP IX</td>
-<td class="comment-1" rowspan="3">Restore <span class="register">IX</span>, <span class="register">DE</span> and <span class="register">IY</span> from the stack.</td>
+<td class="comment-1" rowspan="3">Restore the saved character record, the saved source and the saved schedule entry from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -200,7 +203,7 @@ Next: <a href="B549.html">B549</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Melbourne House &copy; 2025 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 9.6.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/sherlock/">Source code</a>.</div>
 <div><a href="../dec/asm/46359.html">Switch to decimal</a>.</div>
 </footer>
