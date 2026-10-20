@@ -38,6 +38,9 @@ aftershock:
 .PHONY: blizzardpass
 blizzardpass:
 	if [ ! -f BlizzardPass.z80 ]; then tap2sna.py @blizzardpass.t2s; fi
+	sna2skool.py -H --ini ListRefs=2 -c sources/blizzardpass/bank3.ctl -p 3 -s 49152 -e 65536 BlizzardPass.z80 > sources/blizzardpass/bank3.skool
+	sna2skool.py -H --ini ListRefs=2 -c sources/blizzardpass/bank6.ctl -p 6 -s 49152 -e 65536 BlizzardPass.z80 > sources/blizzardpass/bank6.skool
+	sna2skool.py -H --ini ListRefs=2 -c sources/blizzardpass/bank7.ctl -p 7 -s 49152 -e 65536 BlizzardPass.z80 > sources/blizzardpass/bank7.skool
 	sna2skool.py -H --ini ListRefs=2 -c sources/blizzardpass/blizzardpass.ctl BlizzardPass.z80 > sources/blizzardpass/blizzardpass.skool
 	@python -c "import art; art.tprint('Blizzard Pass')"
 	skool2html.py $(OPTIONS) -H -c Config/GameDir=adventure-games/blizzardpass --var pub=2 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/blizzardpass/blizzardpass.skool sources/blizzardpass/blizzardpass.ref
@@ -61,13 +64,7 @@ heroesofkarn:
 
 .PHONY: hobbit
 hobbit:
-	@if [ ! -f HobbitThe.z80 ]; then \
-		for i in 1 2 3; do \
-			tap2sna.py @hobbit.t2s && break; \
-			echo "tap2sna failed (attempt $$i), retrying in 10s..."; sleep 10; \
-		done; \
-		[ -f HobbitThe.z80 ] || { echo "Failed to create HobbitThe.z80"; exit 1; }; \
-	fi
+	if [ ! -f HobbitThe.z80 ]; then tap2sna.py @hobbit.t2s; fi
 	sna2skool.py -H --ini ListRefs=2 -c sources/hobbit/hobbit.ctl HobbitThe.z80 > sources/hobbit/hobbit.skool
 	@python -c "import art; art.tprint('The Hobbit')"
 	skool2html.py $(OPTIONS) -H -c Config/GameDir=adventure-games/hobbit --var pub=2 -c Config/InitModule=$(SKOOLKIT_HOME)/tools:publish sources/hobbit/hobbit.skool sources/hobbit/hobbit.ref

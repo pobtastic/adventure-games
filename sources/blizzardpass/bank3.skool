@@ -1,0 +1,534 @@
+@org=$C000
+
+; Read Command
+;
+; Pages in over the picture data while a command is being read. It
+; prints the prompt, edits a line in the command buffer, and turns the words
+; into a verb and a noun. A comma saves the rest of the line for the next
+; turn. IT and THEM reuse the previous noun.
+;
+; .
+;
+; Forget the previous noun, the scroll count and the three counters.
+@label=ReadCommand
+c$C000 XOR A          ; {Clear the noun.
+ $C001 LD L,A         ;
+ $C002 LD H,A         ;
+ $C003 LD ($5B80),A   ; }
+ $C006 LD ($655C),A   ; Clear the scroll count.
+ $C009 LD ($5B81),HL  ; {Clear counters 1 to 3 and the word count.
+ $C00C LD ($5B83),A   ;
+ $C00F LD ($5B8B),A   ; }
+ $C012 INC A          ; {The first word uses slot 1.
+ $C013 LD ($5B86),A   ; }
+; A comma on the previous line left more words to read.
+ $C016 LD A,($5B85)   ; {No continuation means a fresh prompt.
+ $C019 OR A           ;
+ $C01A JR Z,$C02E     ; }
+ $C01C LD A,$1B       ; {Message #N$1B is a space, printed before the leftover
+ $C01E CALL $63D4     ; words.}
+@label=ReadCommand_Wait
+*$C021 LD A,($5C04)   ; {Wait until the key is not a space.
+ $C024 CP $20         ;
+ $C026 JR Z,$C021     ; }
+ $C028 LD HL,($5B8C)  ; {Resume at the saved pointer.
+ $C02B JP $C0B2       ; }
+; Ask for a new line.
+@label=ReadCommand_Prompt
+*$C02E LD A,$0D       ; {Print ENTER.
+ $C030 CALL $6394     ; }
+ $C033 LD A,$3E       ; {Print '>'.
+ $C035 CALL $6394     ; }
+ $C038 LD A,$20       ; {Print a space.
+ $C03A CALL $6394     ; }
+ $C03D XOR A          ; {The buffer is empty, and the new-key flag is clear.
+ $C03E LD ($5B8E),A   ;
+ $C041 RES 5,(IY+$01) ; }
+ $C045 LD HL,$5B00    ;
+; Read one key. DELETE rubs out, ENTER finishes the line, and letters
+; are stored in capitals.
+@label=ReadCommand_Key
+*$C048 CALL $662D     ; Call #R$662D for one key.
+ $C04B CP $0C         ; {DELETE is #N$0C and ENTER is #N$0D.
+ $C04D JR Z,$C055     ;
+ $C04F CP $0D         ;
+ $C051 JR Z,$C091     ; }
+ $C053 JR $C06D       ; Any other key is stored.
+@label=ReadCommand_Delete
+*$C055 PUSH AF        ; {An empty buffer ignores DELETE.
+ $C056 LD A,($5B8E)   ;
+ $C059 OR A           ;
+ $C05A JR Z,$C06A     ; }
+ $C05C POP AF         ; {Rub the character out.
+ $C05D CALL $6394     ; }
+ $C060 DEC HL         ; {Shorten the line.
+ $C061 LD A,($5B8E)   ;
+ $C064 DEC A          ;
+ $C065 LD ($5B8E),A   ; }
+ $C068 JR $C048       ; Read another key.
+@label=ReadCommand_Ignore
+*$C06A POP AF         ; {Drop the ignored DELETE and read another key.
+ $C06B JR $C048       ; }
+@label=ReadCommand_Store
+*$C06D PUSH AF        ; {A full buffer (#N$5E characters) rejects the key.
+ $C06E LD A,($5B8E)   ;
+ $C071 CP $5E         ;
+ $C073 JR Z,$C06A     ; }
+ $C075 POP AF         ; {A control or a graphic is rejected.
+ $C076 CP $20         ;
+ $C078 JR C,$C048     ; }
+ $C07A CP $61         ; {Lower case is folded to capitals.
+ $C07C JR C,$C080     ;
+ $C07E SUB $20        ; }
+@label=ReadCommand_Fold
+*$C080 CP $5B         ; {A character above 'Z' is rejected.
+ $C082 JR NC,$C048    ; }
+ $C084 LD (HL),A      ; {Store the capital and echo it.
+ $C085 CALL $6394     ; }
+ $C088 INC HL         ; {Advance the pointer and count the character.
+ $C089 PUSH HL        ;
+ $C08A LD HL,$5B8E    ;
+ $C08D INC (HL)       ; }
+ $C08E POP HL         ; Restore the buffer pointer from the stack.
+ $C08F JR $C048       ; Read another key.
+; ENTER ends the line. A line with no words reprints the prompt.
+@label=ReadCommand_Enter
+*$C091 LD (HL),A      ; {Store ENTER and echo it.
+ $C092 CALL $6394     ; }
+ $C095 XOR A          ; {An empty line clears the verb.
+ $C096 LD ($5B7F),A   ; }
+ $C099 LD HL,$5B00    ; {The first character of the buffer decides.
+ $C09C LD A,(HL)      ;
+ $C09D CP $0D         ; }
+ $C09F JP Z,$C02E     ; ENTER reprints the prompt.
+ $C0A2 JR $C0B2       ; A line with words is parsed.
+; Move to the next word. A comma, or a noise word after a real word,
+; saves the rest of the line.
+@label=ReadCommand_Skip
+*$C0A4 CALL $C1A6     ; Call #R$C1A6 to skip to a space, a comma or ENTER.
+ $C0A7 CP $0D         ; {ENTER finishes the command.
+ $C0A9 JR NZ,$C0AE    ;
+ $C0AB JP $C173       ; }
+@label=ReadCommand_NotEnter
+*$C0AE CP $2C         ; {A comma keeps the rest of the line.
+ $C0B0 JR Z,$C0D1     ; }
+; Copy up to four characters, padding with spaces, then look the word
+; up.
+@label=ReadCommand_Copy
+*$C0B2 LD B,$04       ; {Four spaces will pad a short word.
+ $C0B4 LD DE,$5B7B    ; }
+@label=ReadCommand_Pad
+*$C0B7 LD A,$20       ; {Write one pad space.
+ $C0B9 LD (DE),A      ;
+ $C0BA INC DE         ;
+ $C0BB DJNZ $C0B7     ; }
+ $C0BD LD DE,$5B7B    ; {The copy starts at the first character of #R$5B7B.
+ $C0C0 LD B,$00       ; }
+@label=ReadCommand_Word
+*$C0C2 LD A,(HL)      ; {A comma ends the copy.
+ $C0C3 CP $2C         ;
+ $C0C5 JR NZ,$C0DA    ; }
+ $C0C7 XOR A          ; {Characters already copied are looked up.
+ $C0C8 CP B           ;
+ $C0C9 JR NZ,$C0EE    ; }
+ $C0CB LD A,($5B8B)   ; {No words yet means keep scanning.
+ $C0CE OR A           ;
+ $C0CF JR Z,$C0A4     ; }
+@label=ReadCommand_Comma
+*$C0D1 LD A,$01       ; {A comma after a word saves the rest of the line.
+ $C0D3 LD ($5B85),A   ;
+ $C0D6 LD ($5B8C),HL  ; }
+ $C0D9 RET            ; Return.
+@label=ReadCommand_Break
+*$C0DA CP $20         ; {A space or ENTER ends the word.
+ $C0DC JR Z,$C0EE     ;
+ $C0DE CP $0D         ;
+ $C0E0 JR Z,$C0EE     ; }
+ $C0E2 LD A,$04       ; {A fifth character is not stored.
+ $C0E4 CP B           ;
+ $C0E5 JR Z,$C0EE     ; }
+ $C0E7 LD A,(HL)      ; {Store one character of the word.
+ $C0E8 LD (DE),A      ; }
+ $C0E9 INC HL         ; {Advance to the next character.
+ $C0EA INC DE         ;
+ $C0EB INC B          ;
+ $C0EC JR $C0C2       ; }
+@label=ReadCommand_Lookup
+*$C0EE CALL $C181     ; Call #R$C181 to look the four characters up.
+ $C0F1 CP $FF         ; {An unknown word (#N$FF) is skipped.
+ $C0F3 JR Z,$C0A4     ; }
+ $C0F5 OR A           ; {A real word is kept.
+ $C0F6 JR NZ,$C104    ; }
+ $C0F8 LD A,($5B8B)   ; {A noise word (id 0) before any real word is skipped.
+ $C0FB OR A           ;
+ $C0FC JR Z,$C0A4     ; }
+ $C0FE LD A,$01       ; {After a real word, a noise word keeps the rest of the
+ $C100 LD ($5B85),A   ; line.}
+ $C103 RET            ; Return.
+; The first word below id #N$55 is the verb. IT and THEM substitute the
+; previous noun. POLISH, SKIN and BRIDGE are rewritten to internal verbs
+; #N($2C), #N$2B and #N$31. Later words are the noun, then extra words.
+@label=ReadCommand_Keep
+*$C104 PUSH AF        ; {Count this word.
+ $C105 LD A,($5B8B)   ;
+ $C108 INC A          ;
+ $C109 LD ($5B8B),A   ; }
+ $C10C CP $03         ; {A third word is stored as an extra, not as the noun.
+ $C10E JR NC,$C14C    ; }
+ $C110 CP $20         ; {A word count of #N$20 is stored as an extra too.
+ $C112 JR Z,$C16B     ; }
+ $C114 POP AF         ; {An id below #N$55 is the verb.
+ $C115 CP $55         ;
+ $C117 JR NC,$C11F    ; }
+@label=ReadCommand_Verb
+*$C119 LD ($5B7F),A   ; Store it as the verb.
+ $C11C JP $C0A4       ; Take the next word.
+@label=ReadCommand_It
+*$C11F CP $80         ; {IT and THEM (#N$80) reuse the previous noun.
+ $C121 JR NZ,$C126    ;
+ $C123 LD A,($5B9D)   ; }
+@label=ReadCommand_Held
+*$C126 LD B,A         ; {Keep the id while the verb is tested.
+ $C127 LD A,($5B7F)   ; }
+ $C12A OR A           ; {A verb already chosen means this word is the noun.
+ $C12B LD A,B         ;
+ $C12C JR NZ,$C143    ; }
+@label=ReadCommand_Rewrite
+ $C12E CP $AF         ; {POLISH (#N$AF) becomes verb #N$2C.
+ $C130 LD A,$2C       ;
+ $C132 JR Z,$C119     ; }
+ $C134 LD A,B         ; {SKIN (#N$F9) becomes verb #N$2B.
+ $C135 CP $F9         ;
+ $C137 LD A,$2B       ;
+ $C139 JR Z,$C119     ; }
+ $C13B LD A,B         ; {BRIDGE (#N$86) becomes verb #N$31.
+ $C13C CP $86         ;
+ $C13E LD A,$31       ;
+ $C140 JR Z,$C119     ; }
+ $C142 LD A,B         ; Restore the id when none of those matched.
+@label=ReadCommand_Noun
+*$C143 LD ($5B80),A   ; {Store the noun and remember it for IT and THEM.
+ $C146 LD ($5B9D),A   ; }
+ $C149 JP $C0A4       ; Take the next word.
+@label=ReadCommand_Extra
+*$C14C LD A,($5B86)   ; {The next spare slot is one higher.
+ $C14F INC A          ;
+ $C150 LD ($5B86),A   ;
+ $C153 LD C,A         ; }
+ $C154 CP $05         ; {A fifth word is ignored.
+ $C156 JR C,$C15C     ; }
+ $C158 POP AF         ; {Drop the id and take the next word.
+ $C159 JP $C0A4       ; }
+@label=ReadCommand_Slot
+*$C15C LD B,$00       ; {The slot is an offset from the verb byte.
+ $C15E LD IX,$5B7F    ;
+ $C162 ADD IX,BC      ; }
+ $C164 POP AF         ; {Write the id into that slot.
+ $C165 LD (IX+$00),A  ; }
+ $C168 JP $C0A4       ; Take the next word.
+@label=ReadCommand_Overflow
+*$C16B PUSH AF        ; {Bring the word count back under #N$20.
+ $C16C LD A,($5B8B)   ; }
+ $C16F DEC A          ; {Use the previous count as the slot.
+ $C170 LD C,A         ;
+ $C171 JR $C15C       ; }
+@label=ReadCommand_Done
+*$C173 LD A,($5B8B)   ; {No recognised word clears the verb.
+ $C176 OR A           ;
+ $C177 JR NZ,$C17C    ;
+ $C179 LD ($5B7F),A   ; }
+@label=ReadCommand_Clear
+*$C17C XOR A          ; {Clear the continuation.
+ $C17D LD ($5B85),A   ; }
+ $C180 RET            ; Return.
+; Compare the four characters with every vocabulary entry.
+@label=MatchWord
+*$C181 LD ($5B8C),HL  ; Remember where the line had reached.
+ $C184 LD HL,$A71F    ; The vocabulary starts at #R$A720, one byte after the
+                      ; lead-in.
+@label=MatchWord_Next
+*$C187 INC HL         ; {The next entry's four characters are compared with
+ $C188 LD DE,$5B7B    ; #R$5B7B.
+ $C18B LD BC,$0400    ; }
+@label=MatchWord_Character
+*$C18E LD A,(DE)      ; {Count a matching character.
+ $C18F CP (HL)        ;
+ $C190 JR NZ,$C193    ;
+ $C192 INC C          ; }
+@label=MatchWord_Miss
+*$C193 INC HL         ; {The next character of the entry.
+ $C194 INC DE         ; }
+ $C195 DJNZ $C18E     ; Four characters have been compared.
+ $C197 LD A,(HL)      ; {#N$FF ends the table.
+ $C198 CP $FF         ;
+ $C19A JR Z,$C1A2     ; }
+ $C19C LD A,$04       ; {Four matches return that entry's token.
+ $C19E CP C           ;
+ $C19F JR NZ,$C187    ; }
+ $C1A1 LD A,(HL)      ; The token byte is the id.
+@label=MatchWord_Done
+*$C1A2 LD HL,($5B8C)  ; Restore the line pointer.
+ $C1A5 RET            ; Return.
+@label=SkipToBreak
+*$C1A6 LD A,(HL)      ; {A space ends the skip.
+ $C1A7 INC HL         ;
+ $C1A8 CP $20         ;
+ $C1AA RET Z          ; }
+ $C1AB CP $2C         ; {A comma ends the skip.
+ $C1AD RET Z          ; }
+ $C1AE CP $0D         ; ENTER is tested next.
+ $C1B0 JR NZ,$C1A6    ; Any other character is passed.
+ $C1B2 RET            ; Return.
+
+; Location Text Under Parser
+;
+; The rest of this bank is the same location text as bank 6. The parser
+; occupies the first #N$01B3 bytes, so this fragment begins in the middle of
+; the first description. Messages end at #N$7E.
+@label=LocationTextUnderParser
+t$C1B3 DEFM "ed in cloud. At one point however the cliff is nowhere near as st"
+ $C1F4 DEFM "eep and a fair way up a single window is cut into the cliff, look"
+ $C235 DEFM "ing out across the snows~you are lost in a blizzard, almost blind"
+ $C276 DEFM "ed by the driving snows. The howling icy wind sends huge clouds o"
+ $C2B7 DEFM "f snow whistling across the plain totally obscuring your view~you"
+ $C2F8 DEFM " are hanging onto a fairly precipitous cliff, beside a rocky wind"
+ $C339 DEFM "ow. Far below you can see the pass which seems to sway backwards "
+ $C37A DEFM "and forwards as the icy wind tries to tear you away from the clif"
+ $C3BB DEFM "f and lashes you with huge clouds of blinding snow. ~you are in a"
+ $C3FC DEFM " small stonewalled chamber. Light streams in through a somewhat v"
+ $C43D DEFM "andalised window, to the north is another darker chamber only par"
+ $C47E DEFM "tially lit from the window, while to the south through a doorway "
+ $C4BF DEFM "cloaked in deep shadow you can see a dark passage~you are in a da"
+ $C500 DEFM "rk gloomy room, light from the window to the south dimly illumina"
+ $C541 DEFM "tes one wall. To the south is another much brighter chamber~empty"
+ $C582 DEFM "~you are following a dark passage which leads north into a bright"
+ $C5C3 DEFM "y lit room and south towards a T junction. The thick dust on the "
+ $C604 DEFM "floor shows that you are the only person to have come this way fo"
+ $C645 DEFM "r a long time~you are walking along a long and fairly wide stonew"
+ $C686 DEFM "alled passage leading east and west through the mountain. To the "
+ $C6C7 DEFM "north through a doorway the feeble light of the rock reveals a sm"
+ $C708 DEFM "all room~empty~you are in a low secret passage that leads southwa"
+ $C749 DEFM "rds to some kind of dark pillared room. The north wall has niches"
+ $C78A DEFM " cut into it to allow you to climb through the hole in the roof w"
+ $C7CB DEFM "hich leads up past the statue~you are in a dark rather gloomy tem"
+ $C80C DEFM "ple. Huge pillars hold up the roof of this vast chamber and cast "
+ $C84D DEFM "strange shadows that seem to dance around you as you move around."
+ $C88E DEFM " The centre of the temple is a flat platform with a now broken al"
+ $C8CF DEFM "tar as it's centrepiece~you are in a large dark room, passages le"
+ $C910 DEFM "ad east and west. A set of crumbling stone steps leads steeply do"
+ $C951 DEFM "wnwards plunging into the shadows~you are in a short section of e"
+ $C992 DEFM "ast west corridor. To the west the corridor leads to a huge hall,"
+ $C9D3 DEFM " while to the north through a doorway is a small dimly lit room~y"
+ $CA14 DEFM "ou are in a small rather dirty room which appears to have been a "
+ $CA55 DEFM "store room of some kind. Through a doorway to the south is a corr"
+ $CA96 DEFM "idor~you are in a huge pillared hall deep within the mountain. Hu"
+ $CAD7 DEFM "ge ornately carved pillars support the millions of tons of rock a"
+ $CB18 DEFM "bove me. Sinister and rather ugly gargoyles protrude from the pil"
+ $CB59 DEFM "lars gazing centrally towards a mass of mystical symbols which ar"
+ $CB9A DEFM "e engraved all over the floor~you are on a landing with steep sta"
+ $CBDB DEFM "irs leading both upwards and down. Below at the foot of the desce"
+ $CC1C DEFM "nding stairs you can see a dark hall and in the faint light from "
+ $CC5D DEFM "the rock you can just make out several zombie guards~you are in a"
+ $CC9E DEFM " shattered hall. Huge scorch marks and strange burns appear to in"
+ $CCDF DEFM "dicate a tremendous amount of powerful sorcery was used in here, "
+ $CD20 DEFM "indeed sufficient to blow huge chunks out of the wall~you are in "
+ $CD61 DEFM "a low narrow corridor. To the south is a small chamber while to t"
+ $CDA2 DEFM "he east the passage opens up into a large cave~you are in what ap"
+ $CDE3 DEFM "pears to have been a large rest chamber of some sort. There is a "
+ $CE24 DEFM "great deal of dried blood on the floor here, and several more mar"
+ $CE65 DEFM "ks that seem to indicate the use of sorcery~you are in a dark cav"
+ $CEA6 DEFM "e with earth walls and a rather low ceiling. The earth gives way "
+ $CEE7 DEFM "to stone in both of the passages leading out of the cave~you are "
+ $CF28 DEFM "in a shadowy east west corridor that links two caves~you are in a"
+ $CF69 DEFM " beautiful limestone cave. Multi coloured stalactites hang from t"
+ $CFAA DEFM "he roof forming amazing patterns of brilliant colour. The floor i"
+ $CFEB DEFM "s similarly decorated with a huge variety of stalagmites~you are "
+ $D02C DEFM "in an old laboratory for sorcerous experiments.Almost everything "
+ $D06D DEFM "to indicate this has been taken leaving only marks in the dust~yo"
+ $D0AE DEFM "u are in a low passageway. Mould covers the walls and floor, maki"
+ $D0EF DEFM "ng it slippery and quite treacherous. To the north is a beautiful"
+ $D130 DEFM " cave while to the south the mould seems to get even thicker~you "
+ $D171 DEFM "are in a dark chamber, which smells of old blood and rotting fles"
+ $D1B2 DEFM "h. Marks on the floor reveal where old torture equipment one stoo"
+ $D1F3 DEFM "d~you are in a low arched dungeon corridor. The air is dank and m"
+ $D234 DEFM "usty and an air of gloom and evil hangs around it. Rooms to the s"
+ $D275 DEFM "outh and west appear equally unpleasant and sinister. A dark pass"
+ $D2B6 DEFM "ageway leads northwards ~you are in a large messy chamber. Severa"
+ $D2F7 DEFM "l wooden gallows are set across the damp ceiling and beneath them"
+ $D338 DEFM " pools of blood indicate they were not merely decorations. A low "
+ $D379 DEFM "archway leads out into an unpleasant looking corridor ~you are in"
+ $D3BA DEFM " a cold and bare stone cell, scratches on the walls mark where pr"
+ $D3FB DEFM "isoners have left their last futile marks on the walls ~you are i"
+ $D43C DEFM "n a small robing room which appears to have been unused for quite"
+ $D47D DEFM " a while. To the south a dark corridor leads east and west into d"
+ $D4BE DEFM "arkness~you are in a charnel smelling crypt. Dark drapes hang bet"
+ $D4FF DEFM "ween the pillars that make up the walls. The whole room has an at"
+ $D540 DEFM "mosphere of waiting malignant evil and an oppressive silence that"
+ $D581 DEFM " makes you jump at the slightest draught in the still, cold air~y"
+ $D5C2 DEFM "ou are in a small chamber with two high arched exits leading nort"
+ $D603 DEFM "h and south~you are in a dusty bare library. Hundreds of worm eat"
+ $D644 DEFM "en bookcases stand devoid of all books, their shelves laden only "
+ $D685 DEFM "with dust. A high archway leads out~you are in a large cavern. Hu"
+ $D6C6 DEFM "ge stalgmites have grown up almost to the ceiling, in places actu"
+ $D707 DEFM "ally merging with the multicoloured stalactites above. A small lo"
+ $D748 DEFM "w walled well occupies the centre of the cave ~you are standing a"
+ $D789 DEFM "t the bottom of a small dried up well. The walls are (fortunately"
+ $D7CA DEFM ") rough enough to make climbing out only slightly harder than fal"
+ $D80B DEFM "ling in ~you are in a massive pillared hall decorated with the sh"
+ $D84C DEFM "ields of ancient and long forgotten heroes. Exits between the pil"
+ $D88D DEFM "lars lead into several different caves ~you are in a huge cavern."
+ $D8CE DEFM " The walls glow and pulse with an intense red light, reflected up"
+ $D90F DEFM " from a river of lava which flows sluggishly westwards at the sou"
+ $D950 DEFM "th end of the cavern. Huge explosions of lava regularly light up "
+ $D991 DEFM "the cavern to an extent that the light is almost blinding, accomp"
+ $D9D2 DEFM "anied by almost deafening explosions. A path leads down almost su"
+ $DA13 DEFM "icidally close to the lava river~you are in the musty chamber con"
+ $DA54 DEFM "cealed down the well. The chamber is cold and damp, perhaps as a "
+ $DA95 DEFM "result of this~you are in a big cave. The rough rocky walls are i"
+ $DAD6 DEFM "nscribed with deep angular runic writings, which appear totally i"
+ $DB17 DEFM "ncomprehensible to you~you are on a narrow sloping path running u"
+ $DB58 DEFM "ncomfortably close to the lava. Huge explosions of lava send blas"
+ $DB99 DEFM "ts of intense scorching heat across the path. The path leads east"
+ $DBDA DEFM "wards but the intense red glow and heat haze prevents you from se"
+ $DC1B DEFM "eing where to~you are at the end of the path. The lava is some di"
+ $DC5C DEFM "stance away from you here but even so the intense red glow still "
+ $DC9D DEFM "lights up the chamber and the heat is scarcely bearable~you are o"
+ $DCDE DEFM "n a ledge in a huge fissure. The fissure is so wide that the far "
+ $DD1F DEFM "wall is hidden in darkness. Looking down (a rather bad idea) you "
+ $DD60 DEFM "can see that it is just about possible to climb the horrendous di"
+ $DDA1 DEFM "stance down to the floor of the fissure~you are at the bottom of "
+ $DDE2 DEFM "the fissure. Precipitous rocky walls reach upwards hanging over y"
+ $DE23 DEFM "ou as if about to crush you. The walls vanish beyond your light w"
+ $DE64 DEFM "ithout any sign of a break~you are in a narrow crack, off one sid"
+ $DEA5 DEFM "e of the fissure. The walls lean in at crazy angles making it har"
+ $DEE6 DEFM "d to get through ~you are in an ornate gallery which overlooks a "
+ $DF27 DEFM "wide stone guardroom. A set of steps curve steeply down into the "
+ $DF68 DEFM "guardroom. A hole in one wall leads back to the fissure ~you are "
+ $DFA9 DEFM "in a large guardroom. A set of stone steps curve steeply up to a "
+ $DFEA DEFM "gallery above. To the west is another guardroom although your dim"
+ $E02B DEFM " light reveals the presence of some zombie warriors~you are in a "
+ $E06C DEFM "large guardroom. A set of stairs leads up and down. To the east y"
+ $E0AD DEFM "ou can see a large guardroom while to the south you can see what "
+ $E0EE DEFM "appears to be a large lake~you are in a wide passageway. To the e"
+ $E12F DEFM "ast is a cave lit by a flickering red glow. To the north is a lar"
+ $E170 DEFM "ge cave. To the west is a guardroom~you are in a fissure standing"
+ $E1B1 DEFM " on a terrifyingly narrow ledge. Above you on the opposite side i"
+ $E1F2 DEFM "s another ledge ~you are in a huge cavern, at the western end. So"
+ $E233 DEFM "me steep rough-hewn steps lead down into a canyon at one end of t"
+ $E274 DEFM "he cave and at the bottom faint light flickers off water~you are "
+ $E2B5 DEFM "in a large rocky and very uneven cave. A smooth path has been cut"
+ $E2F6 DEFM " across the floor permitting easy walking. The whole cave is fill"
+ $E337 DEFM "ed with a thundering roar which reaches deep into your mind. A hu"
+ $E378 DEFM "ge, deep and steep walled channel ~you are in a large rocky caver"
+ $E3B9 DEFM "n. From this vantage point at the eastern end you can gaze almost"
+ $E3FA DEFM " the full length of the cave, although the far wall fades into sh"
+ $E43B DEFM "adows~you are in the hall of fire. The very walls are tinged with"
+ $E47C DEFM " a fiery radiance, as if the rock itself is burning. A red pentac"
+ $E4BD DEFM "le is near one wall beside a picture carved in the wall. A lever "
+ $E4FE DEFM "on one wall is beside a huge metal drawbridge that is ~you are at"
+ $E53F DEFM " the bottom of a narrow canyon looking across a stream to the far"
+ $E580 DEFM " bank. Narrow steps wind steeply upwards behind you~you are in a "
+ $E5C1 DEFM "rocky canyon beside a deep blue stream. A narrow crack leads east"
+ $E602 DEFM "wards into a gloomy shadowed cave~you are on a wide ledge looking"
+ $E643 DEFM " down on a pool of bubbling lava below. There is another ledge on"
+ $E684 DEFM " the other side ~you are in a large cave. The cave echoes to the "
+ $E6C5 DEFM "dripping of water from its cold damp roof, thickly coated in alga"
+ $E706 DEFM "e and mosses~you are in a ornate pillared hall. The stunning fan "
+ $E747 DEFM "vaulted roof would decorate any catherdral as would the huge pill"
+ $E788 DEFM "ars that support it~you are in a magnificent throne hall. The wal"
+ $E7C9 DEFM "ls and roof are carved and painted into stunning otherworldy scen"
+ $E80A DEFM "es of mystical beasts and magical forms. Dark curtains cover the "
+ $E84B DEFM "walls~you are in a small stonewalled room with a~you are in a tre"
+ $E88C DEFM "asure storage room. The high ceiling ensures that no thief will e"
+ $E8CD DEFM "ver escape without help. There is a broken grille in the ceiling,"
+ $E90E DEFM " far beyond your despairing reach~you are in a low rough passage "
+ $E94F DEFM "which winds around and is clearly only an escape route of some fo"
+ $E990 DEFM "rm. A crude sign hanging on the wall reads in a rather crude and "
+ $E9D1 DEFM "untidy hand 'DANGER STORM GIANTS CAN SERIOUSLY DAMAGE YOUR ELF~yo"
+ $EA12 DEFM "u are in a huge glittering cave. Millions of tiny crystals on the"
+ $EA53 DEFM " wall scintilate with rainbows of colours baffling your eyes and "
+ $EA94 DEFM "mind with a stunning mass of changing colour. A set of huge steps"
+ $EAD5 DEFM " lead upwards out of the cave but only a giant could hope to clim"
+ $EB16 DEFM "b them ~you are in the smelly pit which once contained the slime."
+ $EB57 DEFM " The horrible charnel rotting smell is so strong that you can sca"
+ $EB98 DEFM "rcely keep your stomach under control ~you have ceased to exist~y"
+ $EBD9 DEFM "ou are on a ledge looking across a huge pit of flaming lava to an"
+ $EC1A DEFM "other ledge on the other side~you are in a sinister temple. Hideo"
+ $EC5B DEFM "us shapes seem to reach out of nothingness towards you and vanish"
+ $EC9C DEFM " as immaterial shadows. The whole room radiates a crushing sense "
+ $ECDD DEFM "of power filling you with awe and dread. A huge fire burns at an "
+ $ED1E DEFM "end of the temple, seemingly without a source~you are standing in"
+ $ED5F DEFM " a circular workroom. The only exit is a doorway, through which t"
+ $EDA0 DEFM "he temple fire casts its flickering glow across the room~you are "
+ $EDE1 DEFM "outside The Gate Of Sorcerors. It's mighty pillars tower up betwe"
+ $EE22 DEFM "en you, shielding you from the worst of the snow that is falling "
+ $EE63 DEFM "and from some of the icy winds. The ancient arched gateway betwee"
+ $EEA4 DEFM "n the pillars is barred by a huge portcullis~you are standing on "
+ $EEE5 DEFM "the edge of a deep crevasse looking down into darkness. Heavy sno"
+ $EF26 DEFM "w is falling all around you partially hiding the distant mountain"
+ $EF67 DEFM "s in clouds of whiteness~you are at the bottom of the crevasse. D"
+ $EFA8 DEFM "aylight, and a great deal of snow, comes through the top of the c"
+ $EFE9 DEFM "revasse. A single man made passage leads east into a strange temp"
+ $F02A DEFM "le~you are in the temple of the elements surrounded by decoration"
+ $F06B DEFM "s depicting earth, air, fire and water in balance. This strange i"
+ $F0AC DEFM "cy place gives off a feeling of unbalance and growing evil~empty~"
+ $F0ED DEFM "you are in a glittering ice cave. The floor is covered in deep sn"
+ $F12E DEFM "ow. The cavemouth is blocked by snow from the avalanche~you are w"
+ $F16F DEFM "alking down the pass as it runs north south through the mountains"
+ $F1B0 DEFM ". There is a small cavemouth here~you are trudging along a gloomy"
+ $F1F1 DEFM " narrow pass pelted with snow while the icy wind feels like dagge"
+ $F232 DEFM "rs stabbing into your unprotected flesh ~you are trudging along t"
+ $F273 DEFM "he pass. The wind here whips around in a circular pattern almost "
+ $F2B4 DEFM "veiling a narrow ravine leading eastwards ~you are on a path clim"
+ $F2F5 DEFM "bing up a narrow ravine towards the crumbling remains of a snow s"
+ $F336 DEFM "hrouded temple~you are in the snowy ruins of an ancient temple. T"
+ $F377 DEFM "he view from here is stunning and very picturesque but the lashin"
+ $F3B8 DEFM "g snow and icy wind are enough to persuade you from some sightsee"
+ $F3F9 DEFM "ing~you are trudging down the pass. The towering mountains, their"
+ $F43A DEFM " heads cloaked in snow seem to leer down on you as your feet crun"
+ $F47B DEFM "ch into the fresh, deep and rather cold snow ~you are at the sout"
+ $F4BC DEFM "hern end of the pass. The snow gives way rapidly to a pleasant au"
+ $F4FD DEFM "tumn sun, its gentle beams filling the whole vista with a shimmer"
+ $F53E DEFM "ing beautiful golden hue ~you are in a green and fair valley amid"
+ $F57F DEFM "st the gently murmuring oaks. The sun shines gently through the t"
+ $F5C0 DEFM "rees sending dancing golden beams rippling across the shadowy gra"
+ $F601 DEFM "ss while midges dance between the branches~you are standing on a "
+ $F642 DEFM "crumbling humpbacked bridge looking over the side down onto a wid"
+ $F683 DEFM "e shallow stream. The sun sparkles gently off the ripples as the "
+ $F6C4 DEFM "stream passes across pebbles and rocks and the fish swim between "
+ $F705 DEFM "them~you are standing on a square of grass in the centre of the v"
+ $F746 DEFM "illage. Your cottage stands to the east surrounded by gently sway"
+ $F787 DEFM "ing trees~you are in the villages small arched church. A gentle b"
+ $F7C8 DEFM "reeze blows into the church disturbing the dust which dances in t"
+ $F809 DEFM "he sunbeams that shine faintly through the windows~you are in you"
+ $F84A DEFM "r cottage, home and safe at last~you are in the woods. The great "
+ $F88B DEFM "trees cast green shadows across the flowers and undergrowth as th"
+ $F8CC DEFM "ey sway peacfully in the wind~you are in a secluded clearing besi"
+ $F90D DEFM "de a waterfall which sprays cool water gently over you~you are in"
+ $F94E DEFM " an untilled field beside a gently burbling stream~you are in the"
+ $F98F DEFM " woods listening to the trees as they rustle in the wind~you are "
+ $F9D0 DEFM "in the woods, walking amongst the huge trunks watching the birds "
+ $FA11 DEFM "as they flit from branch to branch filling the air with their liv"
+ $FA52 DEFM "ely chirping calls~you are in a shady clearing surrounded by prou"
+ $FA93 DEFM "d and mighty oaks. The sun comes in low casting deep long shadows"
+ $FAD4 DEFM " across the grass ~you are in a grassy clearing beside a crystal "
+ $FB15 DEFM "pool that reflects the swaying trees above~you are in a glitterin"
+ $FB56 DEFM "g hall made entirely of ice. Multi hued icicles hang from the cei"
+ $FB97 DEFM "ling and the hall seems to be gradually melting!~you are in a mag"
+ $FBD8 DEFM "icians research room surrounded by a clutter of useless equipment"
+ $FC19 DEFM ". This room is also entirely ice, and to judge from the damp equi"
+ $FC5A DEFM "pment the roof has melted quite considerably~you are in a huge ic"
+ $FC9B DEFM "e hall forming the centre of the ice palace. Huge pillars hold up"
+ $FCDC DEFM " the roof although small amounts of water now trickles down them~"
+ $FD1D DEFM "you are in an icy throne hall covered with many ornate carvings o"
+ $FD5E DEFM "f icy wastes. A huge crystal throne of pure ice dominates one wal"
+ $FD9F DEFM "l. A wizard lies dead on the floor, horror in his dead lifeless f"
+ $FDE0 DEFM "ace~you are in the royal bedroom. The bed appears to have melted."
+ $FE21 DEFM " There is a large cupboard on the south wall. The cupboard is ~yo"
+ $FE62 DEFM "u are in a secret room. The thick stone walls are damp and the ro"
+ $FEA3 DEFM "om smells musty and unpleasant~you are in the priests room deep b"
+ $FEE4 DEFM "eneath the temple. The crumbling masonry was once carved with hid"
+ $FF25 DEFM "eous creatures whose incomplete carvings are still enough to make"
+ $FF66 DEFM " you shudder and look away~you are in a maze of catacombs~you are"
+ $FFA7 DEFM " in a maze of catacombs~you are in a maze of catacombs~you are in"
+ $FFE8 DEFM " a maze of catacombs~you"

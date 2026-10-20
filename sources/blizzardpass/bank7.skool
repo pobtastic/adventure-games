@@ -1,0 +1,51 @@
+@org=$C000
+
+; Unused Bank 7
+;
+; Not the picture bytecode, and not the bank paged at #N$C000 in the
+; resting snapshot or during play. That window is bank 0: port #N$7FFD holds
+; #N($10), and the game's saved page value at #N$66D7 is #N$10. The page
+; routine at #N$66BD ORs #N$10 and writes the port, and it is only ever asked
+; for banks 0, 3 and 6. The BASIC loader does OUT 32765,23 so that LOAD runs
+; with this bank visible, but the copier then writes the adventure into banks
+; 6, 3 and 0 and pages bank 0 back. Nothing is copied here, so the body is
+; zero.
+@label=UnusedBank7
+s$C000 DEFS $3F18
+
+; BASIC Residue In Bank 7
+;
+; 128 BASIC had already left its character set and a few words at the
+; top of this bank while it was paged at #N$C000. They survive because the
+; game never writes bank 7 after that OUT. The same addresses in bank 0 hold
+; a different fragment plus the start-up routine. This copy is not game code.
+@label=Bank7Residue
+b$FF18 DEFB $F3,$0D,$CE,$0B,$E3,$50,$CE,$0B
+ $FF20 DEFB $E4,$50,$1D,$17,$DC,$0A,$CE,$0B
+ $FF28 DEFB $E7,$50,$1A,$17,$DC,$0A,$D7,$18
+ $FF30 DEFB $38,$00,$DB,$02,$7C,$38,$F1,$5D
+ $FF38 DEFB $4D,$00,$7A,$55,$86,$00,$79,$55
+ $FF40 DEFB $8C,$08,$5C,$0E,$00,$47,$C0,$57
+ $FF48 DEFB $71,$0E,$F3,$0D,$21,$17,$C6,$1E
+ $FF50 DEFB $CA,$5E,$76,$1B,$03,$13,$00,$3E
+ $FF58 DEFB $00,$3C,$42,$42,$7E,$42,$42,$00
+ $FF60 DEFB $00,$7C,$42,$7C,$42,$42,$7C,$00
+ $FF68 DEFB $00,$3C,$42,$40,$40,$42,$3C,$00
+ $FF70 DEFB $00,$78,$44,$42,$42,$44,$78,$00
+ $FF78 DEFB $00,$7E,$40,$7C,$40,$40,$7E,$00
+ $FF80 DEFB $00,$7E,$40,$7C,$40,$40,$40,$00
+ $FF88 DEFB $00,$3C,$42,$40,$4E,$42,$3C,$00
+ $FF90 DEFB $00,$42,$42,$7E,$42,$42,$42,$00
+ $FF98 DEFB $00,$3E,$08,$08,$08,$08,$3E,$00
+ $FFA0 DEFB $00,$02,$02,$02,$42,$42,$3C,$00
+ $FFA8 DEFB $00,$44,$48,$70,$48,$44,$42,$00
+ $FFB0 DEFB $00,$40,$40,$40,$40,$40,$7E,$00
+ $FFB8 DEFB $00,$42,$66,$5A,$42,$42,$42,$00
+ $FFC0 DEFB $00,$42,$62,$52,$4A,$46,$42,$00
+ $FFC8 DEFB $00,$3C,$42,$42,$42,$42,$3C,$00
+ $FFD0 DEFB $00,$7C,$42,$42,$7C,$40,$40,$00
+ $FFD8 DEFB $00,$3C,$42,$42,$52,$4A,$3C,$00
+ $FFE0 DEFB $00,$7C,$42,$42,$7C,$44,$42,$00
+ $FFE8 DEFB $00,$3C,$40,$3C,$02,$42,$3C,$00
+ $FFF0 DEFB $00,$FE,$10,$10,$10,$10,$10,$00
+ $FFF8 DEFB $00,$42,$42,$42,$42,$42,$3C,$00

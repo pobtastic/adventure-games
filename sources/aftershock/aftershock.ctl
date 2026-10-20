@@ -2,100 +2,292 @@
 ; NOTE: Disassembly is Work-In-Progress.
 ; Label naming is loosely based on Action_ActionName_SubAction e.g. Print_HighScore_Loop.
 
-> $4000 @rom
 > $4000 @start
-> $4000 @expand=#DEF(#POKE #LINK:Pokes)
-> $4000 @expand=#DEF(#FACT #LINK:Facts)
+@ $4000 org=$4000
+> $4000 @rom
+> $4000 @expand=#DEF(#POKE()(anchor,text) #LINK(Pokes#$anchor)($text))
+> $4000 @expand=#DEF(#FACT()(anchor,text) #LINK(Facts#$anchor)($text))
+> $4000 @expand=#DEF1(#MESSAGE(addr) #STR${addr:04X},$08($b==$FF))
+> $4000 @expand=#DEF(#ROOM(id) #IF($01<$id<=$59)(#HTML(&#10;)#SIM(start=$A305,stop=$A313,ix=$AE7D,de=$id)#HTML(&#10;)#R(#OFFSET({sim[HL]}))(#MAP({sim[HL]})(#HTML(&#10;)UNKNOWN,0040:North Street,0041:Columbus Avenue,0042:Darwin Street,0043:The Lion Enclosure,0044:The Monkey Cage,0045:The Elephant House,0046:Livingstone Square,0047:Legion Parade,0048:Parkview Road,0049:The Zoo Entrance,0050:The Park Area,0051:The Insect House,0052:Jessop Street,0053:Clarence Square,0054:The Reptile House,0055:The Circus Tent,0056:The Bear Cage,0057:The Roof Of An Apartment Block,0058:The Parapet,0059:The Roof Of The Old Building,0060:Cook Street,0061:Cook Street Underground Station,0062:Byron Square Underground Station,0063:Byron Square,0064:Virgil Close,0065:A Corridor,0066:The Kitchen,0067:Scott Street,0068:The Storm Drain,0069:Shakespeare Avenue,0070:Burns Road,0071:An Apartment Block,0072:The West Wing,0073:The Western End Of The Dining Room,0074:The Eastern End Of The Dining Room,0075:The East Wing,0076:Royal Street,0077:Manor Drive,0078:Waste Ground,0079:The Filling Station,0080:East Street,0081:Castle Road,0082:The Desert Road,0083:The Gatehouse,0084:The Hallway Of A Derelict House,0085:An Overgrown Garden,0086:Kings Close,0087:South Way,0088:The Western Office,0089:A Corridor (Offices To West),0090:The Reception Area,0091:A Corridor (Offices To East),0092:The Eastern Office,0093:South Way,0094:The Control Room,0095:The Maintenance Area,0096:Cactus Drive,0097:The Reactor Service Corridor,0098:The Reactor Room,0099:A Corridor (Maintenance Access),0100:The Storage Yard,0101:Congratulations!!!,0102:The Office Roof,0103:The Top Of The Lift Shaft,0104:The Stairs,0105:The Stairwell,0106:On Top Of A Lift,0107:Your Office,0108:The Main Office,0109:The Lift,0110:The Bottom Of The Lift Shaft,0111:An Alley,0112:The Washroom,0113:The Utility Room,0114:The Basement,0115:The Service Tunnel,0116:The Service Tunnel (Eastern End),0117:The Sewer,0118:Inside the Kiosk)),#HTML(&#10;)N/A))
+> $4000 @expand=#DEF(#ITEM(id) #MAP($id)(#HTML(&#10;)N/A,001:"A diamond",007:"Some fruit",008:"Some meat",110:"Fire protects the western exit"))
+> $4000 @expand=#DEF(#OBJECT(id) #MAP($id)(#HTML(&#10;)N/A,00:Plate,01:Diamond,02:Bodies,03:Tanker,04:Oil,05:Lions,06:Cage,07:Monkey,08:Fruit,09:Meat,10:Shop,11:Television,12:Gate,13:Bin,14:Bottle,15:Insects,16:Car,17:Stick,18:Statue,19:Alligator,20:Tent,21:Bear,22:Elephant,23:Ramp,24:Parapet,25:Roof,26:Stairs,27:Nail,28:Cap,29:Trumpet,30:Adverts,31:Tunnel,32:Water,33:Graffiti,34:Ticket,35:Ladder,36:Doll,37:Garden,38:Soldiers,39:Looters,40:Rubble,41:Kiosk,42:Petrol,43:Desert,44:Tumbleweed,45:Horse,46:Swing,47:Beam,48:Door,49:Trees,50:Weeds,51:Wall,52:Chasm,53:Key,54:Desk,55:Chair,56:Display,57:Siren,58:Button,59:Valve,60:Wires,61:Pipe,62:Screwdriver,63:Fire,64:Lift,65:Pen,66:Radio,67:Panel,68:Ceiling,69:Basin,70:Mirror,71:Workbench,72:Pickaxe,73:Torch,74:Tissues,75:Isolator,76:Cables,77:Handle,78:Shaft,79:Sluice,80:Sweets,81:Ambulance,82:Truck,83:Geese,84:Buns,85:Woman))
+> $4000 @expand=#DEF(#TOKEN(id) #MAP($id)(#HTML(&#10;)UNKNOWN,000:"H#RAW(,)HELP",001:"I#RAW(,)INVE",002:"L#RAW(,)LOOK",003:"Q#RAW(,)QUIT",004:"N#RAW(,)NORT",005:"S#RAW(,)SOUT",006:"E#RAW(,)EAST",007:"W#RAW(,)WEST",008:"U#RAW(,)UP",009:"D#RAW(,)DOWN",010:"LOAD",011:"SAVE",012:"EXAM#RAW(,)SEAR",013:"SCOR",014:"TAKE",015:"DROP#RAW(,)LAY",016:"GIVE",017:"THRO",018:"FILL",019:"EMPT#RAW(,)DRAI",020:"HIT#RAW(,)STRI#RAW(,)JAB#RAW(,)POKE",021:"JUMP#RAW(,)LEAP",022:"CLIM",023:"SLID",024:"READ",025:"DRIN",026:"KILL#RAW(,)ATTA",027:"ENTE",028:"SUPP#RAW(,)BRAC",029:"OPEN",030:"CLOS#RAW(,)SHUT",031:"STAR",032:"PRES",033:"FIT#RAW(,)CONN",034:"DRIV",035:"REMO",036:"SWIT",037:"WEAR",038:"EAT",039:"FUCK",040:"UNLO",041:"LUBR",042:"xxxx",043:"xxxx",044:"PLAT#RAW(,)NAME",045:"DIAM",046:"BODY#RAW(,)BODI",047:"TANK",048:"OIL",049:"LION#RAW(,)CUBS",050:"CAGE",051:"MONK#RAW(,)CHIM",052:"FRUI",053:"MEAT",054:"SHOP#RAW(,)STOR",055:"TELE#RAW(,)TV",056:"GATE",057:"BIN",058:"BOTT",059:"INSE",060:"CAR#RAW(,)CARS#RAW(,)ENGI",061:"STIC",062:"STAT",063:"REPT#RAW(,)ALLI",064:"TENT",065:"BEAR",066:"ELEP",067:"RAMP",068:"PARA#RAW(,)COLL",069:"ROOF",070:"STAI",071:"NAIL",072:"CAP",073:"TRUM",074:"ADVE",075:"TUNN",076:"WATE",077:"GRAF",078:"TICK",079:"LADD",080:"DOLL",081:"GARD",082:"SOLD",083:"LOOT",084:"RUBB",085:"KIOS",086:"PETR#RAW(,)FUME",087:"DESE",088:"TUMB",089:"HORS",090:"SWIN",091:"BEAM",092:"DOOR",093:"TREE",094:"WEED",095:"WALL",096:"CHAS",097:"KEY",098:"DESK",099:"CHAI",100:"DISP",101:"SIRE",102:"BUTT",103:"VALV",104:"WIRE",105:"PIPE",106:"SCRE",107:"FIRE",108:"LIFT",109:"PEN",110:"RADI",111:"PANE",112:"CEIL",113:"BASI",114:"MIRR",115:"WORK#RAW(,)BENC",116:"PICK",117:"TORC",118:"TISS",119:"ISOL",120:"CABL",121:"HAND",122:"SHAF",123:"SLUI#RAW(,)MECH",124:"SWEE",125:"AMBU",126:"TRUC",127:"GEES",128:"BUN#RAW(,)BUNS",129:"WOMA",130:"xxxx",131:"xxxx",132:"xxxx",133:"WITH#RAW(,)USIN",134:"BRAS",135:"TO#RAW(,)AT#RAW(,)ONTO#RAW(,)ON",136:"LITT",137:"WOOD",138:"CIRC",139:"BROW",140:"IRON",141:"ACRO#RAW(,)OVER",142:"RUST",143:"RAG",144:"IN#RAW(,)INTO",145:"OUT",146:"OF",147:"NEAR#RAW(,)BY",148:"RED",149:"BLUE",150:"OFF",151:"FROM",253:Separator,254:Terminator))
+> $4000 @expand=#DEF(#OFFSET(id) #LET(addr=$CA2B+$id*$02)#LET(offset=#PEEK({addr})+#PEEK({addr}+$01)*$100)#EVAL($C8E9+{offset}))
+> $4000 @expand=#IF({asm})(#DEF(#DECODE(value)))
+> $4000 @expand=#IF({asm})(#DEF(#DECODESTR(addr)))
+> $4000 @expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon){link}))
+> $4000 @expand=#IF({asm})(#DEF(#WARLORD(addr)(link=Warlord){link}))
+> $4000 @expand=#IF({asm})(#DEF(#COLOUR(id)))
+> $4000 @expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
 > $4000 @set-handle-unsupported-macros=1
 b $4000 Loading Screen
-D $4000 #UDGTABLE { =h After Shock Loading Screen. } { #SCR$02(loading) } UDGTABLE#
+D $4000 #UDGTABLE
+. { =h After Shock Loading Screen. }
+. { #SCR$02(loading) }
+. UDGTABLE#
 @ $4000 label=Loading
   $4000,$1800,$20 Pixels.
   $5800,$0300,$20 Attributes.
 
-g $61A8
+g $61A8 Table: Room Image Offsets
+@ $61A8 label=Table_RoomImageOffsets
+D $61A8 Word offsets from #R$61A8 to the room images. #R$BBD5 points at this
+. table. Entry #N$00 is unused, and entries #N$01 to #N$0A select the ten
+. pictures #FOR($01,$0A)||n|#R($61A8+#PEEK($61A8+n*$02)+#PEEK($61A8+n*$02+$01)*$100)|, | and ||.
 W $61A8,$02 #R($61A8+#PEEK(#PC)+#PEEK(#PC+$01)*$100).
 L $61A8,$02,$0B
 
 b $61BE Graphics: Your Office
 @ $61BE label=Image_YourOffice
-D $61BE #SIM(start=$9E0B,stop=$9E18) #PUSHS #UDGTABLE
+D $61BE #SIM(start=$9E0B,stop=$9E18) #PUSHS
+. #UDGTABLE
 . { =h Your Office }
 . { #SIM(start=$9F67,stop=$9F7F,a=$01)#SCR$02{$00,$00,$200,$100}(your-office) }
-. UDGTABLE# #POPS
-  $61BE
+. UDGTABLE#
+. #POPS
+D $61BE Mask data used by #R$9F28. Each bit stands for one screen byte (#N$08
+. pixels). When a bit is clear, the routine skips that screen byte so those
+. #N$08 pixels stay blank.
+  $61BE,$0200 Mask data.
+
+b $63BE Graphics: Your Office (Pixels)
+@ $63BE label=Image_YourOffice_Pixels
+D $63BE Pixel data used by #R$9F28.
+  $63BE,$02E2 Pixel data.
+
+b $66A0 Graphics: Your Office (Attributes)
+@ $66A0 label=Image_YourOffice_Attributes
+D $66A0 #HTML(Attribute pairs expanded by #R$9F28. A count of #N$00 means
+. #N$0100 cells (the #R$9F5D <code>DJNZ</code> loop).)
+B $66A0,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #IF(#PEEK(#PC+$01))(#N(#PEEK(#PC+$01)),#N$0100) cells.
+L $66A0,$02,$73
 
 b $6786 Graphics: The Sewer
 @ $6786 label=Image_TheSewer
-D $6786 #PUSHS #UDGTABLE
+D $6786 #PUSHS
+. #UDGTABLE
 . { =h Your Sewer }
 . { #SIM(start=$9F67,stop=$9F7F,a=$02)#SCR$02{$00,$00,$200,$100}(the-sewer) }
-. UDGTABLE# #POPS
-  $6786
+. UDGTABLE#
+. #POPS
+D $6786 Mask data used by #R$9F28. Each bit stands for one screen byte (#N$08
+. pixels). When a bit is clear, the routine skips that screen byte so those
+. #N$08 pixels stay blank.
+  $6786,$0200 Mask data.
+
+b $6986 Graphics: The Sewer (Pixels)
+@ $6986 label=Image_TheSewer_Pixels
+D $6986 Pixel data used by #R$9F28.
+  $6986,$0278 Pixel data.
+
+b $6BFE Graphics: The Sewer (Attributes)
+@ $6BFE label=Image_TheSewer_Attributes
+D $6BFE #HTML(Attribute pairs expanded by #R$9F28. A count of #N$00 means
+. #N$0100 cells (the #R$9F5D <code>DJNZ</code> loop). The first pair here uses that
+. zero count.)
+B $6BFE,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #IF(#PEEK(#PC+$01))(#N(#PEEK(#PC+$01)),#N$0100) cells.
+L $6BFE,$02,$1A
 
 b $6C32 Graphics: Rubble
 @ $6C32 label=Image_Rubble
-D $6C32 #PUSHS #UDGTABLE
+D $6C32 #PUSHS
+. #UDGTABLE
 . { =h Rubble }
 . { #SIM(start=$9F67,stop=$9F7F,a=$03)#SCR$02{$00,$00,$200,$100}(rubble) }
-. UDGTABLE# #POPS
-  $6C32
+. UDGTABLE#
+. #POPS
+D $6C32 Mask data used by #R$9F28. Each bit stands for one screen byte (#N$08
+. pixels). When a bit is clear, the routine skips that screen byte so those
+. #N$08 pixels stay blank.
+  $6C32,$0200 Mask data.
+
+b $6E32 Graphics: Rubble (Pixels)
+@ $6E32 label=Image_Rubble_Pixels
+D $6E32 Pixel data used by #R$9F28.
+  $6E32,$035D Pixel data.
+
+b $718F Graphics: Rubble (Attributes)
+@ $718F label=Image_Rubble_Attributes
+D $718F #HTML(Attribute pairs expanded by #R$9F28. A count of #N$00 means
+. #N$0100 cells (the #R$9F5D <code>DJNZ</code> loop).)
+B $718F,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #IF(#PEEK(#PC+$01))(#N(#PEEK(#PC+$01)),#N$0100) cells.
+L $718F,$02,$78
 
 b $727F Graphics: Alleyway
 @ $727F label=Image_Alleyway
-D $727F #PUSHS #UDGTABLE
+D $727F #PUSHS
+. #UDGTABLE
 . { =h Alleyway }
 . { #SIM(start=$9F67,stop=$9F7F,a=$04)#SCR$02{$00,$00,$200,$100}(alleyway) }
-. UDGTABLE# #POPS
-  $727F
+. UDGTABLE#
+. #POPS
+D $727F Mask data used by #R$9F28. Each bit stands for one screen byte (#N$08
+. pixels). When a bit is clear, the routine skips that screen byte so those
+. #N$08 pixels stay blank.
+  $727F,$0200 Mask data.
+
+b $747F Graphics: Alleyway (Pixels)
+@ $747F label=Image_Alleyway_Pixels
+D $747F Pixel data used by #R$9F28.
+  $747F,$02D8 Pixel data.
+
+b $7757 Graphics: Alleyway (Attributes)
+@ $7757 label=Image_Alleyway_Attributes
+D $7757 #HTML(Attribute pairs expanded by #R$9F28. A count of #N$00 means
+. #N$0100 cells (the #R$9F5D <code>DJNZ</code> loop).)
+B $7757,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #IF(#PEEK(#PC+$01))(#N(#PEEK(#PC+$01)),#N$0100) cells.
+L $7757,$02,$74
 
 b $783F Graphics: Control Room
 @ $783F label=Image_ControlRoom
-D $783F #PUSHS #UDGTABLE
+D $783F #PUSHS
+. #UDGTABLE
 . { =h Control Room }
 . { #SIM(start=$9F67,stop=$9F7F,a=$05)#SCR$02{$00,$00,$200,$100}(control-room) }
-. UDGTABLE# #POPS
-  $783F
+. UDGTABLE#
+. #POPS
+D $783F Mask data used by #R$9F28. Each bit stands for one screen byte (#N$08
+. pixels). When a bit is clear, the routine skips that screen byte so those
+. #N$08 pixels stay blank.
+  $783F,$0200 Mask data.
+
+b $7A3F Graphics: Control Room (Pixels)
+@ $7A3F label=Image_ControlRoom_Pixels
+D $7A3F Pixel data used by #R$9F28.
+  $7A3F,$04A1 Pixel data.
+
+b $7EE0 Graphics: Control Room (Attributes)
+@ $7EE0 label=Image_ControlRoom_Attributes
+D $7EE0 #HTML(Attribute pairs expanded by #R$9F28. A count of #N$00 means
+. #N$0100 cells (the #R$9F5D <code>DJNZ</code> loop).)
+B $7EE0,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #IF(#PEEK(#PC+$01))(#N(#PEEK(#PC+$01)),#N$0100) cells.
+L $7EE0,$02,$62
 
 b $7FA4 Graphics: Wreckage
 @ $7FA4 label=Image_Wreckage
-D $7FA4 #PUSHS #UDGTABLE
+D $7FA4 #PUSHS
+. #UDGTABLE
 . { =h Wreckage }
 . { #SIM(start=$9F67,stop=$9F7F,a=$06)#SCR$02{$00,$00,$200,$100}(wreckage) }
-. UDGTABLE# #POPS
-  $7FA4
+. UDGTABLE#
+. #POPS
+D $7FA4 Mask data used by #R$9F28. Each bit stands for one screen byte (#N$08
+. pixels). When a bit is clear, the routine skips that screen byte so those
+. #N$08 pixels stay blank.
+  $7FA4,$0200 Mask data.
+
+b $81A4 Graphics: Wreckage (Pixels)
+@ $81A4 label=Image_Wreckage_Pixels
+D $81A4 Pixel data used by #R$9F28.
+  $81A4,$068C Pixel data.
+
+b $8830 Graphics: Wreckage (Attributes)
+@ $8830 label=Image_Wreckage_Attributes
+D $8830 #HTML(Attribute pairs expanded by #R$9F28. A count of #N$00 means
+. #N$0100 cells (the #R$9F5D <code>DJNZ</code> loop).)
+B $8830,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #IF(#PEEK(#PC+$01))(#N(#PEEK(#PC+$01)),#N$0100) cells.
+L $8830,$02,$8F
 
 b $894E Graphics: Desert
 @ $894E label=Image_Desert
-D $894E #PUSHS #UDGTABLE
+D $894E #PUSHS
+. #UDGTABLE
 . { =h Desert }
 . { #SIM(start=$9F67,stop=$9F7F,a=$07)#SCR$02{$00,$00,$200,$100}(desert) }
-. UDGTABLE# #POPS
-  $894E
+. UDGTABLE#
+. #POPS
+D $894E Mask data used by #R$9F28. Each bit stands for one screen byte (#N$08
+. pixels). When a bit is clear, the routine skips that screen byte so those
+. #N$08 pixels stay blank.
+  $894E,$0200 Mask data.
+
+b $8B4E Graphics: Desert (Pixels)
+@ $8B4E label=Image_Desert_Pixels
+D $8B4E Pixel data used by #R$9F28.
+  $8B4E,$00D8 Pixel data.
+
+b $8C26 Graphics: Desert (Attributes)
+@ $8C26 label=Image_Desert_Attributes
+D $8C26 #HTML(Attribute pairs expanded by #R$9F28. A count of #N$00 means
+. #N$0100 cells (the #R$9F5D <code>DJNZ</code> loop). The first pair here uses that
+. zero count.)
+B $8C26,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #IF(#PEEK(#PC+$01))(#N(#PEEK(#PC+$01)),#N$0100) cells.
+L $8C26,$02,$2A
 
 b $8C7A Graphics: Home
 @ $8C7A label=Image_Home
-D $8C7A #PUSHS #UDGTABLE
+D $8C7A #PUSHS
+. #UDGTABLE
 . { =h Home }
 . { #SIM(start=$9F67,stop=$9F7F,a=$08)#SCR$02{$00,$00,$200,$100}(home) }
-. UDGTABLE# #POPS
-  $8C7A
+. UDGTABLE#
+. #POPS
+D $8C7A Mask data used by #R$9F28. Each bit stands for one screen byte (#N$08
+. pixels). When a bit is clear, the routine skips that screen byte so those
+. #N$08 pixels stay blank.
+  $8C7A,$0200 Mask data.
+
+b $8E7A Graphics: Home (Pixels)
+@ $8E7A label=Image_Home_Pixels
+D $8E7A Pixel data used by #R$9F28.
+  $8E7A,$03AD Pixel data.
+
+b $9227 Graphics: Home (Attributes)
+@ $9227 label=Image_Home_Attributes
+D $9227 #HTML(Attribute pairs expanded by #R$9F28. A count of #N$00 means
+. #N$0100 cells (the #R$9F5D <code>DJNZ</code> loop).)
+B $9227,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #IF(#PEEK(#PC+$01))(#N(#PEEK(#PC+$01)),#N$0100) cells.
+L $9227,$02,$8B
 
 b $933D Graphics: Museum
 @ $933D label=Image_Museum
-D $933D #PUSHS #UDGTABLE
+D $933D #PUSHS
+. #UDGTABLE
 . { =h Museum }
 . { #SIM(start=$9F67,stop=$9F7F,a=$09)#SCR$02{$00,$00,$200,$100}(museum) }
-. UDGTABLE# #POPS
-  $933D
+. UDGTABLE#
+. #POPS
+D $933D Mask data used by #R$9F28. Each bit stands for one screen byte (#N$08
+. pixels). When a bit is clear, the routine skips that screen byte so those
+. #N$08 pixels stay blank.
+  $933D,$0200 Mask data.
+
+b $953D Graphics: Museum (Pixels)
+@ $953D label=Image_Museum_Pixels
+D $953D Pixel data used by #R$9F28.
+  $953D,$0289 Pixel data.
+
+b $97C6 Graphics: Museum (Attributes)
+@ $97C6 label=Image_Museum_Attributes
+D $97C6 #HTML(Attribute pairs expanded by #R$9F28. A count of #N$00 means
+. #N$0100 cells (the #R$9F5D <code>DJNZ</code> loop).)
+B $97C6,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #IF(#PEEK(#PC+$01))(#N(#PEEK(#PC+$01)),#N$0100) cells.
+L $97C6,$02,$79
 
 b $98B8 Graphics: Stadium
 @ $98B8 label=Image_Stadium
-D $98B8 #PUSHS #UDGTABLE
+D $98B8 #PUSHS
+. #UDGTABLE
 . { =h Stadium }
 . { #SIM(start=$9F67,stop=$9F7F,a=$0A)#SCR$02{$00,$00,$200,$100}(stadium) }
-. UDGTABLE# #POPS
-  $98B8
+. UDGTABLE#
+. #POPS
+D $98B8 Mask data used by #R$9F28. Each bit stands for one screen byte (#N$08
+. pixels). When a bit is clear, the routine skips that screen byte so those
+. #N$08 pixels stay blank.
+  $98B8,$0200 Mask data.
+
+b $9AB8 Graphics: Stadium (Pixels)
+@ $9AB8 label=Image_Stadium_Pixels
+D $9AB8 Pixel data used by #R$9F28.
+  $9AB8,$028E Pixel data.
+
+b $9D46 Graphics: Stadium (Attributes)
+@ $9D46 label=Image_Stadium_Attributes
+D $9D46 #HTML(Attribute pairs expanded by #R$9F28. A count of #N$00 means
+. #N$0100 cells (the #R$9F5D <code>DJNZ</code> loop).)
+B $9D46,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #IF(#PEEK(#PC+$01))(#N(#PEEK(#PC+$01)),#N$0100) cells.
+L $9D46,$02,$43
 
 c $9DCC Game Entry Point Alias
   $9DCC,$02 Jump to #R$9DD7.
@@ -113,7 +305,7 @@ g $9DD2 Table: Vocabulary For "THE"
 @ $9DD2 label=Table_Vocabulary_The
 D $9DD2 "Vocabulary Table" used for matching and removing "THE" from user
 . input.
-T $9DD2,$04 "#STR$9DD2,$08($b==$FF)".
+T $9DD2,$04 "#MESSAGE$9DD2".
 B $9DD6,$01 Terminator.
 
 c $9DD7 Game Entry Point
@@ -123,13 +315,13 @@ E $9DD7 View the equivalent code in;
 . { #JEWELS$BA50 }
 . { #WARLORD$A531 }
 . LIST#
-  $9DD7,$05 #HTML(Set CAPS LOCK on, using bit 3 of *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C6A.html">FLAGS2</a>).
-  $9DDC,$05 #HTML(Set keyboard mode "L", using bit 3 of *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3B.html">FLAGS</a>.)
-  $9DE1,$04 #HTML(Write #N$00 to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C41.html">MODE</a>.)
-  $9DE5,$05 #HTML(Set current output channel to <em>normal</em> screen output using <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/1601.html">CHAN_OPEN</a> with stream #N$02.)
-  $9DEA,$05 #HTML(Reset printing to the lower screen, using bit 0 of *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3C.html">TV_FLAG</a>.)
-  $9DEF,$04 #HTML(Write #N$00 to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C6B.html">DF_SZ</a>.)
-  $9DF3,$05 #HTML(Write #N$FF to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C8C.html">SCR_CT</a>.)
+  $9DD7,$05 Set CAPS LOCK on, using bit 3 of *#SKOOLKID$5C6A(FLAGS2).
+  $9DDC,$05 Set keyboard mode "L", using bit 3 of *#SKOOLKID$5C3B(FLAGS).
+  $9DE1,$04 Write #N$00 to *#SKOOLKID$5C41(MODE).
+  $9DE5,$05 Set the current output channel to the main screen using #SKOOLKID$1601(CHAN_OPEN) with stream #N$02.
+  $9DEA,$05 Reset printing to the lower screen, using bit 0 of *#SKOOLKID$5C3C(TV_FLAG).
+  $9DEF,$04 Write #N$00 to *#SKOOLKID$5C6B(DF_SZ).
+  $9DF3,$05 Write #N$FF to *#SKOOLKID$5C8C(SCR_CT).
   $9DF8,$03 Jump to #R$ADA1.
 
 c $9DFB Get User Input
@@ -140,12 +332,12 @@ E $9DFB View the equivalent code in;
 . { #WARLORD$A53E }
 . LIST#
 R $9DFB O:A The keypress value
-  $9DFB,$03 #HTML(#REGa=*<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3B.html">FLAGS</a>.)
+  $9DFB,$03 #REGa=*#SKOOLKID$5C3B(FLAGS).
   $9DFE,$04 Jump back to #R$9DFB until a new key is pressed.
   $9E02,$02 Reset the "new key has been pressed" flag in #REGa.
-  $9E04,$03 #HTML(Write it back to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3B.html">FLAGS</a>.)
+  $9E04,$03 Write it back to *#SKOOLKID$5C3B(FLAGS).
 N $9E07 Fetch the keypress.
-  $9E07,$03 #HTML(#REGa=*<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C08.html">LAST_K</a>.)
+  $9E07,$03 #REGa=*#SKOOLKID$5C08(LAST_K).
   $9E0A,$01 Return.
 
 c $9E0B Clear Lines
@@ -156,7 +348,7 @@ E $9E0B View the equivalent code in;
 . { #WARLORD$A555 }
 . LIST#
   $9E0B,$04 Stash #REGhl, #REGde, #REGbc and #REGaf on the stack.
-  $9E0F,$05 #HTML(Clear #N$18 lines from the bottom of the screen using <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0E44.html">CL_LINE</a>.)
+  $9E0F,$05 Clear #N$18 lines from the bottom of the screen using #SKOOLKID$0E44(CL_LINE).
   $9E14,$04 Restore #REGaf, #REGbc, #REGde and #REGhl from the stack.
   $9E18,$01 Return.
 
@@ -169,7 +361,7 @@ E $9E19 View the equivalent code in;
 . LIST#
   $9E19,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $9E1C,$03 #REGbc=#N($0021,$04,$04).
-  $9E1F,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/0DD9.html">CL_SET</a>.)
+  $9E1F,$03 Call #SKOOLKID$0DD9(CL_SET).
   $9E22,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $9E25,$01 Return.
 
@@ -182,60 +374,59 @@ E $9E26 View the equivalent code in;
 . LIST#
 R $A5A4 A The character to print
   $9E26,$01 Stash the character to print on the stack.
-  $9E27,$05 #HTML(Write #N$FF to *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C8C.html">SCR_CT</a>.)
+  $9E27,$05 Write #N$FF to *#SKOOLKID$5C8C(SCR_CT).
   $9E2C,$01 Restore the character to print from the stack.
-  $9E2D,$01 #HTML(Print to the screen using <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0010.html">PRINT_A_1</a>.)
+  $9E2D,$01 Print to the screen using #SKOOLKID$0010(PRINT_A_1).
   $9E2E,$01 Return.
 
 c $9E2F Pause Loop
 @ $9E2F label=Pause_Loop
-D $9E2F Pauses a given number of HALT loops.
+D $9E2F #HTML(Pauses a given number of <code>HALT</code> loops.)
 E $9E2F View the equivalent code in;
 . #LIST
 . { #JEWELS$BB51 }
 . { #WARLORD$A5C2 }
 . LIST#
-R $9E2F B Number of HALT commands to use
-  $9E2F,$01 Halt operation (suspend CPU until the next interrupt).
-  $9E30,$02 Decrease counter by one and loop back to #R$9E2F until counter is zero.
+R $9E2F B #HTML(Number of <code>HALT</code> commands to use)
+  $9E2F,$01 #HTML(Wait for the next interrupt (<code>HALT</code>).)
+  $9E30,$02 Decrease the pause counter and loop back to #R$9E2F until the wait is over.
   $9E32,$01 Return.
 
 t $9E33 Messaging: "Press REC & PLAY On Tape... Then Press Any Key"
 @ $9E33 label=Messaging_Saving
-  $9E33,$2F "#STR$9E33,$08($b==$FF)".
+  $9E33,$2F "#MESSAGE$9E33".
 B $9E62,$01 Terminator.
 
 t $9E63 Messaging: "Saving Complete...Stop Tape"
 @ $9E63 label=Messaging_StopTapeSavingComplete
-  $9E63,$1C "#STR$9E63,$08($b==$FF)".
+  $9E63,$1C "#MESSAGE$9E63".
 B $9E7F,$01 Terminator.
 
 c $9E80 Save Game
 @ $9E80 label=SaveGame
   $9E80,$05 Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
   $9E85,$03 #REGa=*#R$BBD1.
-  $9E88,$01 Set the bits from #REGa.
-  $9E89,$02 Jump to #R$9EA4 if ?? is equal to #REGa.
+N $9E88 Skip packing the save when there are no state bytes.
+  $9E88,$03 Jump to #R$9EA4 if there are no saved state bytes.
   $9E8B,$01 #REGb=#REGa.
   $9E8C,$04 #REGix=#R$BAF9.
   $9E90,$03 #REGde=#R$A0D4.
   $9E93,$02 Jump to #R$9E9A.
-
-  $9E95,$04 Increment #REGix by two.
-  $9E99,$01 Increment #REGde by one.
+  $9E95,$04 Move #REGix on to the next saved-state address.
+  $9E99,$01 Move #REGde on to the next packed state byte.
   $9E9A,$03 #REGl=*#REGix+#N$00.
   $9E9D,$03 #REGh=*#REGix+#N$01.
   $9EA0,$01 #REGa=*#REGhl.
-  $9EA1,$01 Write #REGa to *#REGde.
-  $9EA2,$02 Decrease counter by one and loop back to #R$9E95 until counter is zero.
-N $9EA4 Print "#STR$9E33,$08($b==$FF)".
+  $9EA1,$01 Store that state byte in the packed save buffer.
+  $9EA2,$02 Decrease the pack counter and loop back to #R$9E95 until every state byte is packed.
+N $9EA4 Print "#MESSAGE$9E33".
   $9EA4,$03 #REGhl=#R$9E33.
   $9EA7,$03 Call #R$A275.
   $9EAA,$03 Call #R$9DFB.
   $9EAD,$04 #REGix=#R$9F88.
   $9EB1,$03 #REGde=#N$0181.
   $9EB4,$02 #REGa=#N$FF.
-  $9EB6,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/04C2.html">SA_BYTES</a>.)
+  $9EB6,$03 Call #SKOOLKID$04C2(SA_BYTES).
   $9EB9,$03 #REGhl=#R$9E63.
   $9EBC,$03 Call #R$A275.
   $9EBF,$05 Restore #REGbc, #REGde, #REGhl and #REGix from the stack.
@@ -243,24 +434,39 @@ N $9EA4 Print "#STR$9E33,$08($b==$FF)".
 
 t $9EC5 Messaging: "LOADING...Start Tape"
 @ $9EC5 label=Messaging_LoadingPressPlay
-  $9EC5,$15 "#STR$9EC5,$08($b==$FF)".
+  $9EC5,$15 "#MESSAGE$9EC5".
 B $9EDA,$01 Terminator.
 
 c $9EDB Load From Tape
 @ $9EDB label=LoadTape
   $9EDB,$05 Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
-N $9EE0 Print "#STR$9EC5,$08($b==$FF)".
+N $9EE0 Print "#MESSAGE$9EC5".
   $9EE0,$03 #REGhl=#R$9EC5.
   $9EE3,$03 Call #R$A275.
   $9EE6,$04 Load the starting address into #REGix at #R$9F88.
   $9EEA,$03 Set the block length in #REGde to #N$0181 bytes.
   $9EED,$02 Set #REGa to #N$FF which indicates this is a data block.
   $9EEF,$01 Set the carry flag to indicate this is loading.
-  $9EF0,$03 #HTML(Call <a rel="noopener nofollow" href="https://skoolkid.github.io/rom/asm/0556.html">LD_BYTES</a>.)
-  $9EF3,$02 Jump to #R$9EFD if the carry flag is not set.
+  $9EF0,$03 Call #SKOOLKID$0556(LD_BYTES).
+  $9EF3,$02 Jump to #R$9EFD if the block loaded without error (carry flag set).
 N $9EF5 Print "#DECODESTR$CD8F".
   $9EF5,$03 #REGhl=#R(#OFFSET($0013)).
-
+N $9EF8 The tape load failed.
+  $9EF8,$05 Print "#DECODESTR$CD8F" and leave the game state unchanged.
+N $9EFD There is nothing to unpack when no state bytes were saved.
+  $9EFD,$06 Jump to #R$9F21 if there are no saved state bytes.
+N $9F03 Write the packed bytes at #R$A0D4 back through the addresses in
+. #R$BAF9.
+  $9F03,$08 The addresses are listed in #R$BAF9 and the copies sit at #R$A0D4.
+  $9F0B,$02 Start with the first address.
+@ $9F0D label=RestoreState_Loop
+N $9F0D The next saved address.
+  $9F0D,$05 Advance to the next saved address.
+  $9F12,$08 Write that byte back into the game.
+  $9F1A,$02 Repeat until every saved byte is restored.
+N $9F1C Describe the room the save returned to.
+  $9F1C,$02 Show the room as the player last saw it.
+  $9F1E,$03 Call #R$A33A.
 @ $9F21 label=LoadTape_Return
   $9F21,$05 Restore #REGbc, #REGde, #REGhl and #REGix from the stack.
   $9F26,$01 Return.
@@ -272,7 +478,34 @@ c $9F27 Just Return
 c $9F28 Print Room Image
 @ $9F28 label=Print_RoomImage
 R $9F28 IX Pointer to room image data
-  $9F28,$03 #REGhl=#REGix (using the stack).
+  $9F28,$03 Copy the room-image pointer from #REGix into #REGhl.
+N $9F2B Step over the #N$0200 mask bytes and aim at the display file.
+  $9F2B,$07 The pixel data follows the mask.
+N $9F32 Expand each mask byte. Each bit stands for one screen byte (#N$08
+. pixels).
+  $9F32,$03 #N$0200 mask bytes cover the screen, eight screen bytes at a time.
+@ $9F35 label=PixelControl_Loop
+  $9F35,$06 Take the next mask byte.
+@ $9F3B label=PixelBit_Loop
+N $9F3B A set bit copies the next pixel byte onto the screen. When the bit is
+. clear, #REGde still advances but nothing is written, so those #N$08 pixels
+. stay blank.
+  $9F3B,$04 Jump to #R$9F42 if the mask bit is clear (skip that screen byte).
+  $9F3F,$03 Copy the next pixel byte onto the screen.
+  $9F42,$01 Move along the screen.
+  $9F43,$04 This mask byte's eight screen bytes are done.
+  $9F47,$02 Restore the mask-byte counter from the stack and decrease it.
+  $9F49,$04 Another mask byte remains.
+N $9F4D The bytes that follow are the attribute stream.
+  $9F4D,$03 Copy the attribute-stream pointer from #REGhl into #REGix.
+N $9F50 Paint attributes from #N$5800 until the display ends at #N$5A00.
+  $9F50,$03 Start at the attribute file.
+@ $9F53 label=Attribute_Loop
+  $9F53,$0A The colour, and how many cells it covers (#N$00 means #N$0100).
+  $9F5D,$04 #HTML(Paint that many cells (#REGb=#N$00 runs the <code>DJNZ</code> loop #N$0100 times).)
+  $9F61,$05 Continue until the attribute file is full.
+N $9F66 The picture is on screen.
+  $9F66,$01 Return.
 
 c $9F67 Handler: Room Images
 @ $9F67 label=Handler_Images
@@ -281,7 +514,7 @@ c $9F67 Handler: Room Images
   $9F6D,$04 #REGix=*#R$BBD5.
   $9F71,$03 Call #R$A305.
   $9F74,$05 #REGhl+=*#R$BBD5.
-  $9F79,$03 #REGix=#REGhl (using the stack).
+  $9F79,$03 Copy the room-image address from #REGhl into #REGix.
   $9F7C,$03 Call #R$9F28.
   $9F7F,$03 Call #R$9DFB.
   $9F82,$05 Restore #REGbc, #REGde, #REGhl and #REGix from the stack.
@@ -297,19 +530,67 @@ E $9F88 View the equivalent code in #JEWELS$BBF0.
 B $9F88,$01 Item #N(#PC-$9F88) #ITEM(#PC-$9F88) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $9F88,$01,$88
 
+u $A010 Unused
+
+g $A088 Flags: Game States
+@ $A088 label=Flags_GameStates
+D $A088 Bit flags tested and changed by #R$A1C8, #R$A1D2 and #R$A1DD. The bit
+. index selects both the byte and the bit inside it.
+B $A088,$01 Flag byte #N(#PC-$A088).
+L $A088,$01,$20
+
+g $A0A8 Flags: Already Seen Room Images
+@ $A0A8 label=Flags_SeenRoomImages
+D $A0A8 One bit for each entry in #R$BB93. #R$A33A sets the bit after the
+. picture has been shown so the same room does not draw it again.
+B $A0A8,$01 Seen-image bits #N((#PC-$A0A8)*$08) to #N((#PC-$A0A8)*$08+$07).
+L $A0A8,$01,$03
+
+u $A0AB Unused
+
+g $A0C8 Flags: Turn-Based Event States
+@ $A0C8 label=Flags_TurnEvents
+D $A0C8 One bit per turn-based event. #R$A280 counts a bit down while it is
+. set, and the script actions #R$AB4A and #R$AB5E change the bits.
+B $A0C8,$01
+
+g $A0C9 Turn-Based Event Counters
+@ $A0C9 label=TurnEventCounters
+D $A0C9 One counter byte for each bit in #R$A0C8. #R$A280 decreases the
+. counter for every active event, and #R$AB37 stores a new count.
+B $A0C9,$01 Counter for event bit #N(#PC-$A0C9).
+L $A0C9,$01,$08
+
+g $A0D1 Flags: Event States
+@ $A0D1 label=Flags_EventStates
+D $A0D1 Bits that #R$ACBD honours after a move. #R$AB0E sets a bit and #R$AB22
+. clears one.
+B $A0D1,$01
+
 g $A0D2 Number Of Items In The Players Inventory
 @ $A0D2 label=Count_InventoryItems
 D $A0D2 The number of items the player is currently holding.
 B $A0D2,$01
 
-g $A0D3
-B $A0D3,$01
+g $A0D3 Carrying Limit
+@ $A0D3 label=CarryingLimit
+D $A0D3 The most items the player may carry. #R$AE2C compares it with #R$A0D2.
+. The game starts it from #R$BBD7, and #R$ABE8 can replace it.
+B $A0D3,$01 #N(#PEEK(#PC)).
 
-g $A0D4
+g $A0D4 Saved State Bytes
+@ $A0D4 label=SavedStateBytes
+D $A0D4 The #N$06 bytes copied to and from the addresses in #R$BAF9 while
+. saving and loading. The count is #R$BBD1.
+B $A0D4,$01 Saved state byte #N(#PC-$A0D4).
+L $A0D4,$01,$06
+
+u $A0DA Unused
 
 g $A106 Current Room ID
 @ $A106 label=CurrentRoom
-D $A106 The room the player starts the game in is room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+D $A106 The room the player starts the game in is room #N(#PEEK(#PC)):
+. #ROOM(#PEEK(#PC)).
 B $A106,$01 Current room ID.
 
 g $A107 Score
@@ -326,98 +607,162 @@ g $A13B User Input: Word Tokens
 B $A13B,$01
 L $A13B,$01,$0A
 
-g $A145
+g $A145 Four Letter Buffer
+@ $A145 label=FourLetterBuffer
+D $A145 The four characters of the word #R$A4B0 is currently matching. Spare
+. letters are spaces.
 B $A145,$01
 L $A145,$01,$04
 
 g $A149 Table: Directions
 @ $A149 label=Table_Directions
-D $A149 Pointer to the table containing direction messaging.
-W $A149,$02 #R(#OFFSET($0008)) "#DECODESTR$CD48".
-W $A14B,$02 #R(#OFFSET($0009)) "#DECODESTR$CD4C".
-W $A14D,$02 #R(#OFFSET($000A)) "#DECODESTR$CD50".
-W $A14F,$02 #R(#OFFSET($000B)) "#DECODESTR$CD53".
-W $A151,$02 #R(#OFFSET($000C)) "#DECODESTR$CD56".
-W $A153,$02 #R(#OFFSET($000D)) "#DECODESTR$CD59".
+D $A149 Pointer to the table containing direction messaging:
+. #FOR($08,$0D)||n|#R(#OFFSET(n))|, | and ||.
+W $A149,$02 #R(#OFFSET(#PEEK(#PC)+#PEEK(#PC+$01)*$100)) "#DECODESTR($C8E9+#PEEK($CA2B+(#PEEK(#PC)+#PEEK(#PC+$01)*$100)*$02)+#PEEK($CA2B+(#PEEK(#PC)+#PEEK(#PC+$01)*$100)*$02+$01)*$100)".
+L $A149,$02,$06
 
-c $A155
+c $A155 Calculate Bit Address
+@ $A155 label=CalculateBitAddress
+D $A155 Divides the bit index in #REGhl by #N$08.
+D $A155 The byte offset is left in #REGhl and the bit number in #REGc.
+R $A155 HL Bit index
+R $A155 O:HL Byte offset
+R $A155 O:C Bit number within the byte
   $A155,$01 Stash #REGaf on the stack.
-  $A156,$01 #REGa=#REGl.
-  $A157,$02,b$01 Keep only bits 0-2.
-  $A159,$01 #REGc=#REGa.
-  $A15A,$02 #REGb=#N$03.
-  $A15C,$02 Shift #REGh right.
-  $A15E,$02 Rotate #REGl right.
-  $A160,$02 Decrease counter by one and loop back to #R$A15C until counter is zero.
+  $A156,$04,$01,b$02,$01 Keep the bit number within the byte (bits 0-2 of the bit index) in #REGc.
+  $A15A,$08 Divide the bit index in #REGhl by eight (three passes, counted in #REGb) to give the offset of the byte holding the flag.
   $A162,$01 Restore #REGaf from the stack.
   $A163,$01 Return.
-  $A164,$02 Shift #REGh right.
-  $A166,$02 Rotate #REGl right.
-  $A168,$02 Shift #REGh right.
-  $A16A,$02 Rotate #REGl right.
+
+c $A164 Divide Word By Four
+@ $A164 label=DivideWordByFour
+D $A164 Divides #REGhl by four. Nothing in the game calls or jumps here and no
+. table holds its address, so it looks like leftover code (compare #R$A155 just
+. above, which divides a bit index by eight).
+R $A164 HL Word to divide
+R $A164 O:HL The word divided by four
+  $A164,$08 Divide #REGhl by four, dropping the remainder.
   $A16C,$01 Return.
 
-c $A16D
+c $A16D Multiply Words
+@ $A16D label=MultiplyWords
+D $A16D Multiplies the word in #REGhl by the word in #REGde. #R$A41C uses it to multiply the current room number by #N$06 to find that room's record in #R$B8DD.
+R $A16D HL Multiplicand
+R $A16D DE Multiplier
+R $A16D O:HL Product
   $A16D,$01 Stash #REGbc on the stack.
   $A16E,$02 #REGb=#N$10.
   $A170,$01 #REGa=#REGh.
   $A171,$01 #REGc=#REGl.
   $A172,$03 #REGhl=#N($0000,$04,$04).
   $A175,$01 #REGhl+=#REGhl.
-  $A176,$01 Set flags.
+N $A176 For each bit of the multiplier, shift it into the carry and add the
+. multiplicand when that bit is set.
+  $A176,$09 Fold the next multiplier bit into the product.
+  $A17F,$01 Restore #REGbc from the stack, leaving the product in #REGhl.
+  $A180,$01 Return.
 
+c $A181 Divide Words
+@ $A181 label=DivideWords
+D $A181 Divides the word in #REGhl by the word in #REGde. Nothing in the game
+. calls it.
+R $A181 HL Dividend
+R $A181 DE Divisor
+R $A181 O:HL Quotient
+R $A181 O:DE Remainder
+N $A181 Nothing in the game divides one word by another.
+  $A181,$04 Hold the dividend.
+  $A185,$06 The remainder starts at zero, for sixteen bits.
+@ $A18B label=DivideWords_NextBit
+N $A18B Try the next bit of the dividend.
+  $A18B,$05 Bring that bit into the remainder.
+  $A190,$04 See whether the divisor fits.
+  $A194,$05 The quotient gains a bit, and the next bit follows.
+@ $A199 label=DivideWords_Restore
+N $A199 The divisor did not fit.
+  $A199,$06 Put the remainder back.
+  $A19F,$05 Try the next bit.
+N $A1A4 Nothing in the game uses this quotient.
+  $A1A4,$03 Nothing in the game uses this quotient.
+  $A1A7,$02 Restore #REGaf and #REGbc from the stack.
+  $A1A9,$01 Return.
 
-c $A1B4
+c $A1AA Negate Word
+@ $A1AA label=NegateWord
+D $A1AA Negates the word in #REGhl. Nothing in the game calls it.
+R $A1AA HL Word to negate
+R $A1AA O:HL The negated word
+N $A1AA Negate the word in #REGhl. Nothing in the game calls this.
+  $A1AA,$08 Nothing in the game uses this negated word.
+  $A1B2,$01 Restore #REGde from the stack.
+  $A1B3,$01 Return.
+
+c $A1B4 Build Flag Mask
+@ $A1B4 label=BuildFlagMask
+D $A1B4 Turns a bit index into the flag address and the bit mask used by
+. #R$A1C8, #R$A1D2 and #R$A1DD.
+R $A1B4 A Bit index
+R $A1B4 HL Flag base address
+R $A1B4 O:HL Address of the flag byte
+R $A1B4 O:A Bit mask
   $A1B4,$02 Stash #REGde and #REGbc on the stack.
-  $A1B6,$01 Exchange the #REGde and #REGhl registers.
-  $A1B7,$01 #REGl=#REGa.
-  $A1B8,$02 #REGh=#N$00.
-  $A1BA,$03 Call #R$A155.
-  $A1BD,$01 #REGhl+=#REGde.
-  $A1BE,$01 #REGb=#REGc.
-  $A1BF,$01 Increment #REGb by one.
-  $A1C0,$01 #REGa=#N$00.
-  $A1C1,$01 Set the carry flag.
-  $A1C2,$01 RLA.
-  $A1C3,$02 Decrease counter by one and loop back to #R$A1C2 until counter is zero.
+  $A1B6,$01 Switch the flag table base into #REGde so #REGhl can hold the bit index.
+  $A1B7,$03 Put the bit index into #REGhl.
+  $A1BA,$03 Call #R$A155 to split the bit index into a byte offset (#REGhl) and a bit number (#REGc).
+  $A1BD,$01 Point #REGhl at the flag byte holding this bit.
+  $A1BE,$01 Use the bit number as the rotate count.
+  $A1BF,$01 Count one extra rotate so the mask lands on this bit.
+  $A1C0,$01 Start the mask with no bits set.
+  $A1C1,$01 Seed a single set bit for the mask.
+  $A1C2,$01 Build the mask for this flag bit.
+  $A1C3,$02 Keep rotating until the set bit reaches this flag's position.
   $A1C5,$02 Restore #REGbc and #REGde from the stack.
   $A1C7,$01 Return.
 
-c $A1C8
+c $A1C8 Test Flag
+@ $A1C8 label=TestFlag
+D $A1C8 Tests one bit of the flags at #R$A088.
+R $A1C8 A Bit index
+R $A1C8 O:F The zero flag is set when the bit is clear
+R $A1C8 O:A The flag byte merged with the bit mask
   $A1C8,$01 Stash #REGhl on the stack.
-  $A1C9,$03 #REGhl=#R$A088.
-  $A1CC,$03 Call #R$A1B4.
-  $A1CF,$01 Merge the bits from *#REGhl.
+  $A1C9,$03 Use the game state flags at #R$A088.
+  $A1CC,$03 Call #R$A1B4 to find the flag byte and the mask for this flag.
+  $A1CF,$01 Test the flag; the zero flag is set when it is clear.
   $A1D0,$01 Restore #REGhl from the stack.
   $A1D1,$01 Return.
 
-c $A1D2
+c $A1D2 Set Flag
+@ $A1D2 label=SetFlag
+D $A1D2 Sets one bit of the flags at #R$A088.
+R $A1D2 A Bit index
   $A1D2,$01 Stash #REGhl on the stack.
-  $A1D3,$03 #REGhl=#R$A088.
-  $A1D6,$03 Call #R$A1B4.
-  $A1D9,$01 Set the bits from *#REGhl.
-  $A1DA,$01 Write #REGa to *#REGhl.
+  $A1D3,$03 Use the game state flags at #R$A088.
+  $A1D6,$03 Call #R$A1B4 to find the flag byte and the mask for this flag.
+  $A1D9,$02 Set this flag in its flag byte.
   $A1DB,$01 Restore #REGhl from the stack.
   $A1DC,$01 Return.
 
-c $A1DD
+c $A1DD Clear Flag
+@ $A1DD label=ClearFlag
+D $A1DD Clears one bit of the flags at #R$A088.
+R $A1DD A Bit index
   $A1DD,$01 Stash #REGhl on the stack.
-  $A1DE,$03 #REGhl=#R$A088.
-  $A1E1,$03 Call #R$A1B4.
-  $A1E4,$01 Invert the bits in #REGa.
-  $A1E5,$01 Merge the bits from *#REGhl.
-  $A1E6,$01 Write #REGa to *#REGhl.
+  $A1DE,$03 Use the game state flags at #R$A088.
+  $A1E1,$03 Call #R$A1B4 to find the flag byte and the mask for this flag.
+  $A1E4,$01 Flip the mask so the matching flag bit can be cleared.
+  $A1E5,$02 Clear this flag in its flag byte.
   $A1E7,$01 Restore #REGhl from the stack.
   $A1E8,$01 Return.
 
 t $A1E9 Messaging: "> "
 @ $A1E9 label=Messaging_Prompt
-  $A1E9,$03 "#STR$A1E9,$08($b==$FF)".
+  $A1E9,$03 "#MESSAGE$A1E9".
   $A1EC,$01 Terminator.
 
 c $A1ED Print Input Prompt
 @ $A1ED label=PrintPrompt
-N $A1ED Print "#STR$A1E9,$08($b==$FF)".
+N $A1ED Print "#MESSAGE$A1E9".
   $A1ED,$03 #REGhl=#R$A1E9.
   $A1F0,$03 Call #R$A267.
   $A1F3,$01 Return.
@@ -440,7 +785,7 @@ R $A1F4 HL Messaging string ID
   $A219,$04 Jump to #R$A21F if #REGa is not equal to #N$7E.
   $A21D,$02 #REGa=#N$0D.
   $A21F,$03 Call #R$9E26.
-  $A222,$01 Increment #REGhl by one.
+  $A222,$01 Move #REGhl on to the next compressed character.
   $A223,$01 #REGa=*#REGhl.
   $A224,$04 Jump to #R$A20E if #REGa is not equal to #N$5F.
   $A228,$06 Restore #REGaf, #REGbc, #REGde, #REGhl and #REGix from the stack.
@@ -454,7 +799,7 @@ R $A1F4 HL Messaging string ID
   $A23C,$02 #REGb=#N$02.
 
   $A23E,$02 Jump to #R$A241.
-  $A240,$01 Increment #REGhl by one.
+  $A240,$01 Move #REGhl on to the next dictionary character.
   $A241,$01 #REGa=*#REGhl.
   $A242,$04 Jump to #R$A24B if #REGa is less than #N$60.
   $A246,$03 Call #R$A22F.
@@ -463,7 +808,7 @@ R $A1F4 HL Messaging string ID
   $A24D,$04 Jump to #R$A253 if #REGa is not equal to #N$7E.
   $A251,$02 #REGa=#N$0D.
   $A253,$03 Call #R$9E26.
-  $A256,$02 Decrease counter by one and loop back to #R$A240 until counter is zero.
+  $A256,$02 Decrease the dictionary-character counter and loop back to #R$A240 until both bytes are done.
   $A258,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $A25B,$01 Return.
 
@@ -523,7 +868,65 @@ N $A279 Force a newline to be "printed".
   $A27E,$01 Restore the character to print from the stack.
   $A27F,$01 Return.
 
-c $A280
+c $A280 Handler: Process Game Events
+@ $A280 label=Handler_GameEvents
+D $A280 Counts down the turn-based events in #R$A0C8 and, when a counter
+. reaches zero, runs the handler from #R$BBB9.
+D $A280 Then relocates any scenic event that is not already in the current
+. room, picking the new room from the group at #R$B6BF.
+N $A280 A turn-based event runs only while its bit in #R$A0C8 is set.
+  $A280,$06 Leave the events alone when none are armed.
+N $A286 Eight turn-based events share the flag byte.
+  $A286,$03 Start with the first turn-based event.
+@ $A289 label=TurnEvent_NextBit
+N $A289 This event is not running.
+  $A289,$04 Skip an event that is not armed.
+N $A28D Count down this event. It fires when the counter at #R$A0C9 reaches
+. zero.
+  $A28D,$0E Leave the event for a later turn when the counter is still
+. running.
+N $A29B The counter has expired, so run this event's script from #R$BBB9.
+  $A29B,$07 The scripts are listed at #R$BBB9.
+  $A2A2,$04 This is the event whose counter expired.
+  $A2A6,$06 Read that script's address.
+  $A2AC,$03 Copy the script address from #REGhl into #REGix.
+  $A2AF,$03 Run that script.
+  $A2B2,$03 Restore the event counter and event pointer from the stack.
+N $A2B5 Test the next turn-based event.
+  $A2B5,$02 Every armed event is considered once per turn.
+N $A2B7 Scenic events live in #R$B6BA.
+  $A2B7,$09 There is nothing to move when no scenic event is active.
+  $A2C0,$03 Visit each scenic event in turn.
+@ $A2C3 label=ScenicEvent_Next
+N $A2C3 Room #N$00 means this scenic item is inactive.
+  $A2C3,$01 The next scenic item.
+@ $A2C4 label=ScenicEvent_Item
+  $A2C4,$02 Its item id.
+  $A2C6,$03 Call #R$A62C to read where this item is.
+  $A2C9,$01 Restore the event-list pointer from the stack.
+  $A2CA,$03 An inactive item is left where it is.
+N $A2CD An event that is already in the player's room stays there.
+  $A2CD,$07 Skip an event whose room is #R$A106.
+N $A2D4 Each scenic event has a room group in #R$B6BF.
+  $A2D4,$04 The scenic scan waits while a room is chosen.
+  $A2D8,$05 Which event's group this is.
+  $A2DD,$04 The room groups are listed at #R$B6BF.
+  $A2E1,$03 This event's room group.
+N $A2E4 The refresh register picks how far to walk into the room group.
+. #N$FF ends the group and the walk wraps.
+  $A2E4,$0D Choose a room from this event's group.
+@ $A2F1 label=ScenicRoom_Next
+N $A2F1 Walk the room group. #N$FF restarts it, and the refresh count chooses
+. where to stop. Then move the scenic item there.
+  $A2F1,$06 #N$FF restarts the group. Otherwise step to the next room.
+  $A2F7,$01 Fetch the destination room into #REGc.
+  $A2F8,$01 Restore the scenic-event pointer from the stack.
+  $A2F9,$02 Fetch the item ID into #REGb and stash the pointer again.
+  $A2FB,$03 Call #R$A663.
+  $A2FE,$04 Restore the scenic scan from the stack.
+N $A302 Move on to the next scenic event.
+  $A302,$02 Every scenic event is considered once.
+  $A304,$01 Return.
 
 c $A305 Get Table Entry
 @ $A305 label=GetTableEntry
@@ -591,26 +994,20 @@ N $A345 The version of the game being played DOES have graphics, so continue.
 . table.
 N $A353 The current room does have an image associated with it.
   $A353,$06 Calculate the index of the current room in the table.
-  $A359,$01 #REGa=#N$00.
-  $A35A,$01 Set the bits from #REGe.
-  $A35B,$02 Jump to #R$A36B if #REGc is not equal to #REGe.
-  $A35D,$03 #REGhl=#R$A0A8.
-  $A360,$01 #REGa=#REGb.
-  $A361,$03 Call #R$A1B4.
-  $A364,$01 #REGc=#REGa.
-  $A365,$01 Merge the bits from *#REGhl.
-  $A366,$02 Jump to #R$A379 if #REGc is not equal to *#REGhl.
-  $A368,$01 #REGa=*#REGhl.
-  $A369,$01 Set the bits from #REGc.
-  $A36A,$01 Write #REGa to *#REGhl.
-  $A36B,$03 Call #R$9E0B.
-  $A36E,$03 #REGhl=#R$BBA6.
-  $A371,$01 #REGe=#REGb.
-  $A372,$02 #REGd=#N$00.
-  $A374,$01 #REGhl+=#REGde.
-  $A375,$01 #REGa=*#REGhl.
-  $A376,$03 Call #R$9F67.
-  $A379,$03 Call #R$9E0B.
+  $A359,$01 Clear #REGa so the next instruction tests the picture request in #REGe.
+N $A35A A non-zero picture request shows the image even when the player has
+. seen it.
+  $A35A,$03 Show the picture even when the player has seen this room.
+  $A35D,$03 Use the already-seen room image flags at #R$A0A8.
+  $A360,$04 Call #R$A1B4 with this room's index to find its seen bit.
+  $A364,$01 Keep the mask for this room in #REGc.
+  $A365,$01 Test whether this room's picture has already been shown.
+  $A366,$02 Jump to #R$A379 if this room's picture has already been shown.
+  $A368,$03 Mark this room's picture as shown, so it isn't drawn again on the next visit.
+  $A36B,$03 Call #R$9E0B to clear the text lines.
+  $A36E,$08 Look up this room's image number in #R$BBA6.
+  $A376,$03 Call #R$9F67 to draw the room image.
+  $A379,$03 Call #R$9E0B to clear the text lines.
   $A37C,$03 Call #R$9E19.
   $A37F,$03 Call #R$A42F.
   $A382,$03 Call #R$A41C.
@@ -722,7 +1119,9 @@ R $A41C O:HL Pointer to the room data
   $A42D,$01 Restore #REGde from the stack.
   $A42E,$01 Return.
 
-c $A42F
+c $A42F Print Room Description
+@ $A42F label=PrintRoomDescription
+D $A42F Prints a newline and the compressed description of the current room.
   $A42F,$02 #REGa=#N$0D.
   $A431,$03 Call #R$9E26.
   $A434,$03 #REGa=*#R$A106.
@@ -732,28 +1131,33 @@ c $A42F
   $A43F,$03 Call #R$A25C.
   $A442,$01 Return.
 
-g $A443
+g $A443 Pointer: Command Word
+@ $A443 label=Pointer_CommandWord
+D $A443 The address and length of the command-buffer word being tokenised.
+W $A443,$02 Address of the current word in #R$A109.
+@ $A445 label=CommandWordLength
+W $A445,$02 Length of that word.
 
 t $A447 Messaging: "SPACE<BS><BS>SPACE<BS>"
 @ $A447 label=Messaging_SpaceBackspaceBackspaceSpaceBackspace
 D $A447 Used by the routine at #R$A4B0.
-  $A447,$03 "#STR$A447,$08($b==$FF)".
+  $A447,$03 "#MESSAGE$A447".
 N $A44A Messaging: "SPACE<BS>"
 @ $A44A label=Messaging_SpaceBackspace
 D $A44A Used by the routine at #R$A4B0?
-  $A44A,$02 "#STR$A44A,$08($b==$FF)".
+  $A44A,$02 "#MESSAGE$A44A".
 B $A44C,$01 Terminator.
 
 t $A44D Messaging: "_<BS>"
 @ $A44D label=Messaging_UnderscoreBackspace
 D $A44D Used by the routine at #R$A450.
-  $A44D,$02 "#STR$A44D,$08($b==$FF)".
+  $A44D,$02 "#MESSAGE$A44D".
 B $A44F,$01 Terminator.
 
 c $A450 Print Cursor
 @ $A450 label=Print_Cursor
   $A450,$01 Stash #REGhl on the stack.
-N $A451 Print "#STR$A44D,$08($b==$FF)".
+N $A451 Print "#MESSAGE$A44D".
   $A451,$03 #REGhl=#R$A44D.
   $A454,$03 Call #R$A267.
   $A457,$01 Restore #REGhl from the stack.
@@ -791,6 +1195,25 @@ c $A479 Handler: Match Item
 @ $A479 label=Handler_MatchItem
 R $A479 O:F The carry flag is set to indicate that an item was found
   $A479,$05 Stash #REGhl, #REGde, #REGbc and #REGix on the stack.
+N $A47E Search the vocabulary from the address written into this instruction, which starts as #R$B0ED.
+  $A47E,$07 A comma separates synonyms and #N$FF ends the table.
+@ $A485 label=MatchItem_NextWord
+N $A485 Step to the next synonym. Each comma advances the token number.
+  $A485,$0D Skip a comma and keep the token number of the word before it.
+@ $A492 label=MatchItem_Word
+N $A492 The vocabulary is exhausted.
+  $A492,$05 Jump to #R$A4AA if the word is the #N$FF terminator.
+N $A497 Compare the four-letter buffer at #R$A145 with this word.
+  $A497,$06 Four letters, starting at #R$A145.
+@ $A49D label=MatchItem_Letter
+  $A49D,$06 This letter does not match, so try the next synonym.
+  $A4A3,$05 The next letter of both words.
+N $A4A8 The word matched, so return its token with the carry set.
+  $A4A8,$02 The token number is the count of commas passed on the way.
+@ $A4AA label=MatchItem_Return
+N $A4AA Hand back the registers the search borrowed.
+  $A4AA,$05 Restore #REGix, #REGbc, #REGde and #REGhl from the stack.
+  $A4AF,$01 Return.
 
 c $A4B0 Handler: User Input
 @ $A4B0 label=Handler_UserInput
@@ -852,7 +1275,7 @@ N $A4F2 Clear down the user input tokens.
   $A4F5,$02 Set a counter in #REGb for all #N$0A user input tokens.
 @ $A4F7 label=EmptyUserInputTokens_Loop
   $A4F7,$02 Write a termination byte (#N$FF) to *#REGhl.
-  $A4F9,$01 Increment #REGhl by one.
+  $A4F9,$01 Move #REGhl on to the next user input token.
   $A4FA,$02 Decrease the user input tokens counter by one and loop back to
 . #R$A4F7 until all the tokens have been set to termination bytes (#N$FF).
 N $A4FC Set up pointers for the command buffer, the user input tokens and the
@@ -865,8 +1288,57 @@ N $A507 Print "#DECODESTR$CD0B".
   $A507,$03 #REGhl=#R(#OFFSET($0001)).
   $A50A,$03 Call #R$A25C.
   $A50D,$03 Jump to #R$A4B0.
+@ $A510 label=TokeniseWord
+N $A510 Copy up to four letters of the current word into #R$A145.
+  $A510,$03 The command scan waits.
+  $A513,$06 The word starts at the address in #R$A443, and lands in #R$A145.
+  $A519,$03 Four letters is the most a word contributes.
+  $A51C,$07 A shorter word copies only as many letters as #R$A445 holds.
+  $A523,$02 Copy those letters into #R$A145.
+  $A525,$03 Restore #REGbc, #REGde and #REGhl from the stack.
+N $A528 Ignore a leading "THE" from #R$9DD2, then search the main vocabulary
+. at #R$B0ED.
+  $A528,$07 Point the search at "THE" in #R$9DD2.
+  $A52F,$03 Call #R$A479.
+  $A532,$06 The next search uses the main vocabulary at #R$B0ED.
+  $A538,$01 Restore the command-buffer pointer from the stack.
+  $A539,$02 Jump to #R$A551 if "THE" was matched.
+N $A53B The word is in the vocabulary.
+  $A53B,$05 Jump to #R$A549 if the word matched.
+N $A540 The word is not in the vocabulary.
+  $A540,$09 Print "#DECODESTR$CD16" and read the command again.
 @ $A549 label=StoreTokenAndContinue
+N $A549 Store the token and stop after #N$0A tokens.
+  $A549,$08 The token buffer at #R$A13B holds the words understood so far.
 @ $A551 label=EmptyFourLetterBuffer
+N $A551 Clear the four-letter buffer to spaces before the next word.
+  $A551,$0C Clear the four-letter buffer to spaces so a short word cannot match the previous one's tail.
+  $A55D,$02 Restore #REGbc and #REGhl from the stack.
+N $A55F Find the next word. ENTER finishes the command, and #R$A459 marks a
+. gap between words.
+  $A55F,$03 Start at this character.
+@ $A562 label=SkipDelimiter
+  $A562,$01 The next character.
+  $A563,$05 ENTER finishes the command.
+  $A568,$03 Call #R$A459.
+  $A56B,$02 Skip the gap and keep looking.
+N $A56D Remember where this word starts and how long it is, then tokenise
+. it.
+  $A56D,$06 Remember where this word starts.
+@ $A573 label=MeasureWord
+  $A573,$02 Count this letter.
+  $A575,$05 ENTER ends the word.
+  $A57A,$03 Call #R$A459.
+  $A57D,$02 A gap has not been reached yet.
+@ $A57F label=MeasureWord_Store
+  $A57F,$04 Store the length at #R$A445.
+  $A583,$01 The word is ready to tokenise.
+N $A584 Tokenise the word that was just measured.
+  $A584,$01 Restore the command-scan pointer from the stack.
+  $A585,$03 Jump to #R$A510 if another word was found.
+N $A588 Nothing was understood.
+  $A588,$08 Jump to #R$A507 if no token was stored.
+  $A590,$01 Return.
 
 c $A591 Parser: Validate Item
 @ $A591 label=Parser_ValidateItem
@@ -884,7 +1356,7 @@ R $A591 O:F The carry flag is set when the item isn't present
   $A59F,$01 Restore #REGde from the stack.
   $A5A0,$02 Jump to #R$A5A3.
 @ $A5A2 label=ValidateItem_Loop
-  $A5A2,$01 Increment #REGhl by one.
+  $A5A2,$01 Move #REGhl on to the next item ID in the room/ inventory list.
 @ $A5A3 label=ValidateItem
   $A5A3,$05 Jump to #R$A5AE if *#REGhl is equal to #N$FF.
   $A5A8,$03 Call #R$A5C6.
@@ -901,7 +1373,7 @@ N $A5B4 Print the object name.
 N $A5BE Print "#DECODESTR$CD66".
   $A5BE,$03 #REGhl=#R(#OFFSET($000F)).
   $A5C1,$03 Call #R$A25C.
-  $A5C4,$01 Set the carry flag.
+  $A5C4,$01 Set the carry flag; the referenced item is not here.
   $A5C5,$01 Return.
 
 c $A5C6 Validate If Item Is Present
@@ -975,7 +1447,7 @@ N $A5FC The current variant doesn't match, so skip to the next one.
   $A606,$02 Jump to #R$A5DE.
 N $A608 The input doesn't match any patterns.
 @ $A608 label=MatchPhraseTokens_Return
-  $A608,$01 Clear the Z flag.
+  $A608,$01 Clear the zero flag; no phrase variant matched.
   $A609,$01 Return.
 
 c $A60A Parser: Count Item References
@@ -1014,9 +1486,9 @@ N $A625 This token does point to a game item, so increase the item counter.
 
 c $A62C Item Locator
 @ $A62C label=ItemLocator
-D $A62C Given an item ID, this routine returns the byte stored for its location
-. (#N$00 for when an item/ event is disabled, #N$01 for when an item is in the
-. players inventory, or pass back the room ID).
+D $A62C Given an item ID, this routine returns the byte stored for its
+. location (#N$00 for when an item/ event is disabled, #N$01 for when an item
+. is in the players inventory, or pass back the room ID).
 E $A62C View the equivalent code in;
 . #LIST
 . { #JEWELS$C3D0 }
@@ -1044,7 +1516,7 @@ N $A635 The #R$A62C routine returns with #REGa containing the room ID of the
 . requested object, #N$00 for when the item is disabled or #N$01 for the
 . players inventory.
   $A635,$03 Call #R$A62C.
-  $A638,$02 Compare #REGa with #N$01 (inventory).
+  $A638,$02 Set the zero flag if that location is the inventory (#N$01).
   $A63A,$01 Return.
 
 c $A63B Handler: Destroy Item/ Event
@@ -1066,8 +1538,8 @@ N $A63B Set the item ID and location (which will be #N$00 to deactivate it).
 c $A642 Handler: Update Item/ Event For The Current Room
 @ $A642 label=Handler_UpdateItemEventCurrentRoom
 D $A642 Updates a given item/ event ID so it appears in the current room. Used
-. for example, when an item is dropped (so it changes from being #N$01 - in the
-. players inventory, to the current room ID).
+. for example, when an item is dropped (so it changes from being #N$01 - in
+. the players inventory, to the current room ID).
 E $A642 View the equivalent code in;
 . #LIST
 . { #JEWELS$C3F1 }
@@ -1075,7 +1547,7 @@ E $A642 View the equivalent code in;
 . LIST#
 R $A642 A Item/ event ID
   $A642,$01 Load the item/ event ID into #REGb.
-  $A643,$04 Load #REGc with *#R$A106.
+  $A643,$04 Fetch the current room ID from *#R$A106 into #REGc.
   $A647,$03 Call #R$A663.
   $A64A,$01 Return.
 
@@ -1097,8 +1569,8 @@ c $A652 Check Active Scenic Events
 @ $A652 label=CheckActiveScenicEvents
 E $A652 View the equivalent code in #JEWELS$C401.
 R $A652 HL Pointer to scenic data
-R $A652 O:A
-R $A652 O:F The Z flag is set then there are no matching scenic events
+R $A652 O:A The listed item that is here, or #N$FF if there is none
+R $A652 O:F The zero flag is set when an item on the list is here or carried
   $A652,$02 Jump to #R$A655.
 @ $A654 label=ActiveScenicEvents_Loop
   $A654,$01 Move to the next event ID.
@@ -1109,7 +1581,7 @@ R $A652 O:F The Z flag is set then there are no matching scenic events
   $A65F,$01 #REGa=*#REGhl.
   $A660,$01 Return.
 @ $A661 label=NoActiveScenicEvents
-  $A661,$01 Set Z flag.
+  $A661,$01 Clear the zero flag (#REGa holds the #N$FF end marker) to report that nothing on the list is here.
   $A662,$01 Return.
 
 c $A663 Handler: Update Item Location
@@ -1131,7 +1603,7 @@ C $A66E,$02 Jump to #R$A672.
 @ $A670 label=FindIndexOfItemFromItemGroupPresent_Loop
 N $A670 Move past the termination byte in the item group.
 C $A670,$01 Increment the index counter in #REGb by one.
-C $A671,$01 Increment #REGhl by one.
+C $A671,$01 Move #REGhl past the termination byte.
 @ $A672 label=Call_CheckItemGroupPresent
 C $A672,$03 Call #R$A652.
 C $A675,$02 Jump back to #R$A670 until an item from the item group is matched.
@@ -1176,7 +1648,7 @@ R $A68C A Item ID
 R $A68C O:F Z flag is set if the item is in the current room
 N $A68C Fetch the room ID of the requested item using the table at #R$9F88.
   $A68C,$03 Call #R$A62C.
-  $A68F,$04 Compare the room ID with *#R$A106.
+  $A68F,$04 Set the zero flag if that location is the current room in *#R$A106.
   $A693,$01 Return.
 
 c $A694 Check Room Objects
@@ -1203,7 +1675,7 @@ R $A694 O:A #N$00 or #N$01 if objects are found or not
   $A6A9,$02 Jump to #R$A69B if there are more objects to check.
 N $A6AB Set the "successful" output.
   $A6AB,$02 Set #REGa to #N$01 to indicate that objects were found.
-  $A6AD,$01 Set flags.
+  $A6AD,$01 The room has objects in it.
   $A6AE,$01 Return.
 N $A6AF Set the "failure" output.
 @ $A6AF label=NoRoomObjectsFound
@@ -1223,18 +1695,20 @@ R $A6B1 O:F Z is unset if the object is valid, unset when invalid
   $A6B3,$01 Adjust the object counter.
   $A6B4,$03 #REGa=*#R$BBC7.
   $A6B7,$02 Calculate the index and store the result in #REGe.
-  $A6B9,$02
+N $A6B9 Find the object's name in #R$AFDD.
+  $A6B9,$02 Find the object's name in #R$AFDD.
   $A6BB,$04 #REGix=#R$AFDD.
   $A6BF,$03 Call #R$A305.
-  $A6C2,$02
+N $A6C2 The object's name can now be printed.
+  $A6C2,$02 Restore #REGix from the stack.
   $A6C4,$01 Restore the object counter from the stack.
   $A6C5,$04 Jump to #R$A6CC if the object is invalid.
   $A6C9,$01 Restore the object type from the stack.
-  $A6CA,$01 Clear the Z flag.
+  $A6CA,$01 Clear the zero flag; the object name is valid.
   $A6CB,$01 Return.
 @ $A6CC label=InvalidObject
   $A6CC,$01 Restore #REGaf from the stack.
-  $A6CD,$01 Set the Z flag.
+  $A6CD,$01 Set the zero flag; the object name is invalid.
   $A6CE,$01 Return.
 
 c $A6CF Response: "You're Not Carrying Anything"
@@ -1285,59 +1759,64 @@ N $A6F6 Print "#DECODESTR$CE44".
   $A6F9,$03 Call #R$A25C.
   $A6FC,$01 Return.
 
-g $A6FD
-B $A6FD,$02,$01
+g $A6FD Script Condition State
+@ $A6FD label=ScriptConditionMask
+D $A6FD Working bytes for #R$A6FF. The mask collects condition results and the
+. operator selects AND or OR.
+B $A6FD,$01 Condition mask.
+@ $A6FE label=ScriptConditionOperator
+B $A6FE,$01 #N$FF selects AND and #N$FE selects OR.
 
-c $A6FF
+c $A6FF Handler: Run Script
+@ $A6FF label=Handler_RunScript
+D $A6FF Executes the bytecode at #REGix.
+D $A6FF Each instruction is a condition from #R$A785 followed by an action
+. from #R$A7C1. A condition that fails skips its action.
+D $A6FF #N$FE selects OR for the next condition and #N$FF selects AND.
+D $A6FF #N$FF ends the instruction and starts another one.
+R $A6FF IX Pointer to the script bytecode
   $A6FF,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $A702,$03 #REGhl=#R$A6FD.
-  $A705,$02 Write #N$40 to *#REGhl.
-  $A707,$01 Increment #REGhl by one.
-  $A708,$02 Write #N$FF to *#REGhl.
+  $A705,$02 Start the condition mask at #N$40 (only the zero flag set, meaning the conditions hold).
+  $A707,$01 Move #REGhl on to the condition operator.
+  $A708,$02 Start with the AND operator (#N$FF).
   $A70A,$03 #REGe=*#REGix+#N$00.
   $A70D,$02 Stash #REGix on the stack.
   $A70F,$04 #REGix=#R$A785.
   $A713,$03 Call #R$A305.
   $A716,$02 Restore #REGix from the stack.
   $A718,$01 Jump to *#REGhl.
-  $A719,$02 Increment #REGix by one.
-  $A71B,$02 Increment #REGix by one.
-  $A71D,$02 Increment #REGix by one.
-  $A71F,$02 Increment #REGix by one.
-  $A721,$02 #REGbc=#REGaf (using the stack).
-  $A723,$05 Compare *#R$A6FE with #N$FE...
+  $A719,$08 Move #REGix past the four bytes of that condition.
+  $A721,$02 Copy the result flags of this condition into #REGc (bit 6 is its zero flag).
+  $A723,$05 See whether the current operator in *#R$A6FE is OR (#N$FE).
   $A728,$03 #REGa=*#R$A6FD.
   $A72B,$02 Jump to #R$A730 if *#R$A6FE is not equal to #N$FE.
-  $A72D,$01 Set the bits from #REGc.
+  $A72D,$01 #HTML(The script operator is "or", so this check passes if either condition held (<code>OR C</code>).)
   $A72E,$02 Jump to #R$A731.
-  $A730,$01 Merge the bits from #REGc.
-  $A731,$03 Write #REGa to *#R$A6FD.
+  $A730,$01 #HTML(Otherwise both conditions must hold (<code>AND C</code>).)
+  $A731,$03 Store the combined condition result.
   $A734,$03 #REGa=*#REGix+#N$00.
   $A737,$04 Jump to #R$A744 if #REGa is less than #N$FE.
-  $A73B,$03 Write #REGa to *#R$A6FE.
-  $A73E,$02 Increment #REGix by one.
+  $A73B,$03 Store the new operator.
+  $A73E,$02 Move #REGix on to the next script byte.
   $A740,$02 Jump to #R$A70A.
 
-  $A742,$02 Increment #REGix by one.
+  $A742,$02 Move #REGix on to the action code.
   $A744,$03 #REGe=*#REGix+#N$00.
   $A747,$02 Stash #REGix on the stack.
   $A749,$04 #REGix=#R$A7C1.
   $A74D,$03 Call #R$A305.
   $A750,$02 Restore #REGix from the stack.
-  $A752,$04 #REGc=*#R$A6FD.
-  $A756,$02 #REGaf=#REGbc (using the stack).
+  $A752,$06 Pass the condition mask to the action as its flags, so the zero flag says whether the conditions hold.
   $A758,$01 Jump to *#REGhl.
 
-  $A759,$02 Increment #REGix by one.
-  $A75B,$02 Increment #REGix by one.
-  $A75D,$02 Increment #REGix by one.
-  $A75F,$02 Increment #REGix by one.
+  $A759,$08 Move #REGix past the four bytes of that action.
   $A761,$03 #REGa=*#REGix+#N$00.
   $A764,$04 Jump to #R$A742 if #REGa is equal to #N$FF.
   $A768,$02 Jump to #R$A702.
   $A76A,$02 Jump to #R$A770 if #REGa is not equal to #N$FF.
   $A76C,$02 #REGa=#N$01.
-  $A76E,$01 Set flags.
+  $A76E,$01 The condition does not hold.
   $A76F,$01 Return.
   $A770,$01 #REGa=#N$00.
   $A771,$01 Return.
@@ -1345,59 +1824,464 @@ c $A6FF
   $A775,$03 #REGa=*#R$A805.
   $A778,$01 Return.
 
-g $A779
-W $A779,$02
+g $A779 Jump Table: Parser Checks
+@ $A779 label=JumpTable_ParserChecks
+D $A779 Parser routines called by #R$A924 and #R$A947. The first entry is
+. unused.
+W $A779,$02 Check #N((#PC-$A779)/$02).
 L $A779,$02,$06
 
-g $A785
-W $A785,$02
+g $A785 Jump Table: Script Conditions
+@ $A785 label=JumpTable_ScriptConditions
+D $A785 Condition routines indexed by the opcodes in a script.
+W $A785,$02 Condition #N((#PC-$A785)/$02).
 L $A785,$02,$1E
 
-g $A7C1
-W $A7C1,$02
+g $A7C1 Jump Table: Script Actions
+@ $A7C1 label=JumpTable_ScriptActions
+D $A7C1 Action routines indexed by the opcodes in a script.
+W $A7C1,$02 Action #N((#PC-$A7C1)/$02).
 L $A7C1,$02,$22
 
-g $A805
+g $A805 Script Result
+@ $A805 label=ScriptMatchedItem
+D $A805 #R$A805 holds the item ID found by #R$A8B2. An operand of #N$FF makes
+. #R$A772 substitute it. #R$A806 holds the value returned by the latest parser
+. check.
+B $A805,$01 Matched item ID.
+@ $A806 label=ScriptParserResult
+B $A806,$01 Parser result.
 
-c $A807
-c $A80B
-c $A817
-c $A826
-c $A832
-c $A841
-c $A84D
-c $A856
-c $A862
-c $A871
-c $A883
-c $A88F
-c $A898
-c $A8B2
-c $A8CF
-c $A8D8
-c $A8E4
-c $A8ED
-c $A8F9
-c $A90D
-c $A924
-c $A947
-c $A96A
-c $A973
-c $A97F
-c $A990
-c $A9A4
-c $A9B0
+c $A807 Condition: Always Succeeds
+@ $A807 label=Condition_AlwaysSucceeds
+D $A807 The condition succeeds without reading an operand.
+R $A807 O:F The zero flag is set
+N $A807 The condition always succeeds, with no operand.
+  $A807,$04 Resume the script at #R$A71F.
+
+c $A80B Condition: Item Is Present
+@ $A80B label=Condition_ItemIsPresent
+D $A80B Succeeds when the item operand is in the current room or the
+. inventory.
+R $A80B O:F The zero flag is set when the item is present
+N $A80B Is the item in the current room or the inventory? #N$FF stands for
+. the matched item.
+  $A80B,$03 The operand names the item.
+  $A80E,$03 #N$FF stands for the matched item.
+  $A811,$03 Call #R$A5C6.
+  $A814,$03 Resume the script.
+
+c $A817 Condition: Item Is Absent
+@ $A817 label=Condition_ItemIsAbsent
+D $A817 Succeeds when the item operand is not in the current room or the
+. inventory.
+R $A817 O:F The zero flag is set when the item is absent
+N $A817 Invert the presence test so the condition succeeds when the item is
+. absent.
+  $A817,$03 The operand names the item.
+  $A81A,$03 #N$FF stands for the matched item.
+  $A81D,$03 Call #R$A5C6 to check whether the matched item is here.
+  $A820,$03 Succeed when the item is absent.
+  $A823,$03 Resume the script.
+
+c $A826 Condition: Item Is Carried
+@ $A826 label=Condition_ItemIsCarried
+D $A826 Succeeds when the item operand is in the inventory.
+R $A826 O:F The zero flag is set when the item is carried
+N $A826 Is the item in the inventory? #N$FF stands for the matched item.
+  $A826,$03 The operand names the item.
+  $A829,$03 #N$FF stands for the matched item.
+  $A82C,$03 Call #R$A635.
+  $A82F,$03 Resume the script.
+
+c $A832 Condition: Item Is Not Carried
+@ $A832 label=Condition_ItemIsNotCarried
+D $A832 Succeeds when the item operand is not in the inventory.
+R $A832 O:F The zero flag is set when the item is not carried
+N $A832 Invert the carrying test so the condition succeeds when the item is
+. not held.
+  $A832,$03 The operand names the item.
+  $A835,$03 #N$FF stands for the matched item.
+  $A838,$03 Call #R$A635.
+  $A83B,$03 Succeed when the item is not held.
+  $A83E,$03 Resume the script.
+
+c $A841 Condition: Item Is Here
+@ $A841 label=Condition_ItemIsHere
+D $A841 Succeeds when the item operand is in the current room.
+R $A841 O:F The zero flag is set when the item is here
+N $A841 Is the item in the current room? #N$FF stands for the matched item.
+  $A841,$03 The operand names the item.
+  $A844,$03 #N$FF stands for the matched item.
+  $A847,$03 Call #R$A68C.
+  $A84A,$03 Resume the script.
+
+c $A84D Condition: In Room
+@ $A84D label=Condition_InRoom
+D $A84D Succeeds when #R$A106 is the room operand.
+R $A84D O:F The zero flag is set when the rooms match
+N $A84D Is the player in the room operand?
+  $A84D,$09 The condition succeeds when #R$A106 is that room.
+
+c $A856 Condition: Not In Room
+@ $A856 label=Condition_NotInRoom
+D $A856 Succeeds when #R$A106 is not the room operand.
+R $A856 O:F The zero flag is set when the rooms differ
+N $A856 Invert the room test so the condition succeeds anywhere else.
+  $A856,$0C The condition succeeds when #R$A106 is not the room operand.
+
+c $A862 Condition: Item Location Equals
+@ $A862 label=Condition_ItemLocationEquals
+D $A862 Succeeds when the item operand is in the room given by the second
+. operand.
+R $A862 O:F The zero flag is set when the location matches
+N $A862 Is the item in the room given by the second operand?
+  $A862,$03 The operand names the item.
+  $A865,$03 #N$FF stands for the matched item.
+  $A868,$03 Call #R$A62C to read the item's room.
+  $A86B,$03 Is the item in the room operand?
+  $A86E,$03 Resume the script.
+
+c $A871 Condition: Item Location Differs
+@ $A871 label=Condition_ItemLocationDiffers
+D $A871 Succeeds when the item operand is not in the room given by the second
+. operand.
+R $A871 O:F The zero flag is set when the location differs
+N $A871 Invert the location test so the condition succeeds when the item is
+. somewhere else.
+  $A871,$03 The operand names the item.
+  $A874,$03 #N$FF stands for the matched item.
+  $A877,$03 Call #R$A62C.
+  $A87A,$03 Is the item in the room operand?
+  $A87D,$03 Succeed when it is somewhere else.
+  $A880,$03 Resume the script.
+
+c $A883 Condition: Flag Is Set
+@ $A883 label=Condition_FlagIsSet
+D $A883 Succeeds when the flag bit operand is set in #R$A088.
+R $A883 O:F The zero flag is set when the bit is set
+N $A883 The flag test reports a clear bit, so invert it. The condition
+. succeeds when the flag operand is set.
+  $A883,$03 The operand selects the flag.
+  $A886,$03 Call #R$A1C8.
+  $A889,$03 Succeed when that flag is set.
+  $A88C,$03 Resume the script.
+
+c $A88F Condition: Flag Is Clear
+@ $A88F label=Condition_FlagIsClear
+D $A88F Succeeds when the flag bit operand is clear in #R$A088.
+R $A88F O:F The zero flag is set when the bit is clear
+N $A88F Is the flag operand clear?
+  $A88F,$03 The operand selects the flag.
+  $A892,$03 Call #R$A1C8.
+  $A895,$03 Resume the script.
+
+c $A898 Condition: Group Item Equals
+@ $A898 label=Condition_GroupItemEquals
+D $A898 Succeeds when the active item in the group operand equals the second
+. operand.
+R $A898 O:F The zero flag is set when the item matches
+N $A898 Does the active item in this group equal the second operand? #R$A652
+. returns with the zero flag set, so the early exit is never taken.
+  $A898,$09 The operand selects a group from #R$B60E.
+  $A8A1,$03 That group's list.
+  $A8A4,$02 Restore the script pointer from the stack.
+  $A8A6,$03 Call #R$A652.
+  $A8A9,$03 The active-item check always continues.
+  $A8AC,$03 The active item is the second operand.
+  $A8AF,$03 Resume the script.
+
+c $A8B2 Condition: Group Item Differs
+@ $A8B2 label=Condition_GroupItemDiffers
+D $A8B2 Succeeds when the active item in the group operand is not the second
+. operand.
+D $A8B2 Stores the active item ID at #R$A805.
+R $A8B2 O:F The zero flag is set when the item differs
+N $A8B2 Remember the group's active item at #R$A805, and succeed when it is
+. not the second operand.
+  $A8B2,$09 The operand selects a group from #R$B60E.
+  $A8BB,$03 That group's list.
+  $A8BE,$02 Restore the script pointer from the stack.
+  $A8C0,$03 Call #R$A652.
+  $A8C3,$03 Remember the active item at #R$A805.
+  $A8C6,$03 It is not the second operand.
+  $A8C9,$03 The condition succeeds when the items differ.
+  $A8CC,$03 Resume the script.
+
+c $A8CF Condition: Inventory Count Equals
+@ $A8CF label=Condition_InventoryCountEquals
+D $A8CF Succeeds when #R$A0D2 equals the operand.
+R $A8CF O:F The zero flag is set when the counts match
+N $A8CF Does the player hold the given number of items?
+  $A8CF,$09 The condition succeeds when #R$A0D2 equals the operand.
+
+c $A8D8 Condition: Inventory Count Differs
+@ $A8D8 label=Condition_InventoryCountDiffers
+D $A8D8 Succeeds when #R$A0D2 is not the operand.
+R $A8D8 O:F The zero flag is set when the counts differ
+N $A8D8 Succeed when the inventory count is not the operand.
+  $A8D8,$0C The condition succeeds when #R$A0D2 differs from the operand.
+
+c $A8E4 Condition: Marked Room Equals
+@ $A8E4 label=Condition_MarkedRoomEquals
+D $A8E4 Succeeds when #R$AD78 equals the room operand.
+R $A8E4 O:F The zero flag is set when the rooms match
+N $A8E4 Is the marked room the room operand?
+  $A8E4,$09 The condition succeeds when #R$AD78 equals the operand.
+
+c $A8ED Condition: Marked Room Differs
+@ $A8ED label=Condition_MarkedRoomDiffers
+D $A8ED Succeeds when #R$AD78 is not the room operand.
+R $A8ED O:F The zero flag is set when the rooms differ
+N $A8ED Succeed when the marked room is somewhere else.
+  $A8ED,$0C The condition succeeds when #R$AD78 differs from the operand.
+
+c $A8F9 Condition: Phrase Matches
+@ $A8F9 label=Condition_PhraseMatches
+D $A8F9 Succeeds when the player input matches the phrase at #R$B83D indexed
+. by the operand.
+R $A8F9 O:F The zero flag is set when the phrase matches
+N $A8F9 Does the player's command match the phrase selected from #R$B83D?
+  $A8F9,$09 The operand selects a phrase from #R$B83D.
+  $A902,$03 That phrase.
+  $A905,$03 Call #R$A5DB.
+  $A908,$02 Restore the script pointer from the stack.
+  $A90A,$03 Resume the script.
+
+c $A90D Condition: Phrase Does Not Match
+@ $A90D label=Condition_PhraseDoesNotMatch
+D $A90D Succeeds when the player input does not match the indexed phrase.
+R $A90D O:F The zero flag is set when the phrase does not match
+N $A90D Invert the phrase test so the condition succeeds when the command
+. does not match.
+  $A90D,$09 The operand selects a phrase from #R$B83D.
+  $A916,$03 That phrase.
+  $A919,$03 Call #R$A5DB.
+  $A91C,$02 Restore the script pointer from the stack.
+  $A91E,$03 Succeed when the command does not match.
+  $A921,$03 Resume the script.
+
+c $A924 Condition: Parser Succeeds
+@ $A924 label=Condition_ParserSucceeds
+D $A924 Calls the parser check indexed in #R$A779 and succeeds when it returns
+. with the carry clear.
+D $A924 Stores #REGa at #R$A806.
+R $A924 O:F The zero flag is set when the check succeeds
+N $A924 Run the parser check selected from #R$A779. It returns to #R$A935,
+. its result is stored at #R$A806, and the condition succeeds when the carry
+. is clear.
+  $A924,$09 The operand selects a check from #R$A779.
+  $A92D,$03 That check.
+  $A930,$05 Run that check. It returns here.
+@ $A935 label=ParserSucceeds_Return
+  $A935,$02 Restore the script pointer from the stack.
+  $A937,$03 Remember the check's result at #R$A806.
+  $A93A,$02 The check failed.
+  $A93C,$04 The parser check passed.
+@ $A940 label=ParserSucceeds_Failed
+  $A940,$07 The parser check failed.
+
+c $A947 Condition: Parser Fails
+@ $A947 label=Condition_ParserFails
+D $A947 Calls the parser check indexed in #R$A779 and succeeds when it returns
+. with the carry set.
+D $A947 Stores #REGa at #R$A806.
+R $A947 O:F The zero flag is set when the check fails
+N $A947 Run the parser check selected from #R$A779. It returns to #R$A958,
+. its result is stored at #R$A806, and the condition succeeds when the carry
+. is set.
+  $A947,$09 The operand selects a check from #R$A779.
+  $A950,$03 That check.
+  $A953,$05 Run that check. It returns here.
+@ $A958 label=ParserFails_Return
+  $A958,$02 Restore the script pointer from the stack.
+  $A95A,$03 Remember the check's result at #R$A806.
+  $A95D,$02 The check passed.
+  $A95F,$04 The parser check failed, so this condition succeeds.
+@ $A963 label=ParserFails_Passed
+  $A963,$07 The parser check passed, so this condition does not.
+
+c $A96A Condition: Parser Result Equals
+@ $A96A label=Condition_ParserResultEquals
+D $A96A Succeeds when #R$A806 equals the operand.
+R $A96A O:F The zero flag is set when the values match
+N $A96A Does the saved parser result equal the operand?
+  $A96A,$09 The condition succeeds when #R$A806 equals the operand.
+
+c $A973 Condition: Parser Result Differs
+@ $A973 label=Condition_ParserResultDiffers
+D $A973 Succeeds when #R$A806 is not the operand.
+R $A973 O:F The zero flag is set when the values differ
+N $A973 Succeed when the saved parser result is not the operand.
+  $A973,$0C The condition succeeds when #R$A806 differs from the operand.
+
+c $A97F Condition: Room Pair Matches
+@ $A97F label=Condition_RoomPairMatches
+D $A97F Succeeds when #R$A106 is the first operand and #R$AD78 is the second.
+R $A97F O:F The zero flag is set when both rooms match
+N $A97F Succeed only when the player is in the first room and the marked
+. room is the second.
+  $A97F,$08 The player is in the first room.
+  $A987,$06 The marked room is the second.
+@ $A98D label=RoomPairMatches_Done
+  $A98D,$03 Resume the script.
+
+c $A990 Condition: Room Pair Differs
+@ $A990 label=Condition_RoomPairDiffers
+D $A990 Succeeds unless #R$A106 is the first operand and #R$AD78 is the
+. second.
+R $A990 O:F The zero flag is set unless both rooms match
+N $A990 Succeed unless the player is in the first room and the marked room
+. is the second.
+  $A990,$08 The player is in the first room.
+  $A998,$06 The marked room is the second.
+@ $A99E label=RoomPairDiffers_Invert
+  $A99E,$03 Succeed unless both rooms match.
+  $A9A1,$03 Resume the script.
+
+c $A9A4 Condition: Can Take Item
+@ $A9A4 label=Condition_CanTakeItem
+D $A9A4 Succeeds when #R$AE2C allows the item operand to be taken.
+R $A9A4 O:F The zero flag is set when the item can be taken
+N $A9A4 Can the player take the item operand?
+  $A9A4,$03 The operand names the item.
+  $A9A7,$03 #N$FF stands for the matched item.
+  $A9AA,$03 Call #R$AE2C.
+  $A9AD,$03 Resume the script.
+
+c $A9B0 Condition: Cannot Take Item
+@ $A9B0 label=Condition_CannotTakeItem
+D $A9B0 Succeeds when #R$AE2C rejects the item operand.
+R $A9B0 O:F The zero flag is set when the item cannot be taken
+N $A9B0 Invert the take test so the condition succeeds when the item cannot
+. be taken.
+  $A9B0,$03 The operand names the item.
+  $A9B3,$03 #N$FF stands for the matched item.
+  $A9B6,$03 Call #R$AE2C.
+  $A9B9,$03 Succeed when the item cannot be taken.
+  $A9BC,$03 Resume the script.
 C $A9BF
-c $A9CB
-c $A9DA
-c $A9E9
-c $AA00
-c $AA08
-c $AA17
-c $AA26
-c $AA39
-c $AA48
-c $AA5F
+
+c $A9BF Condition: Is Carrying For Drop
+@ $A9BF label=Condition_IsCarryingForDrop
+D $A9BF Succeeds when #R$AE5E confirms the item operand is carried.
+R $A9BF O:F The zero flag is set when the item is carried
+N $A9BF Is the player carrying the item operand, as a drop requires?
+  $A9BF,$03 The operand names the item.
+  $A9C2,$03 #N$FF stands for the matched item.
+  $A9C5,$03 Call #R$AE5E.
+  $A9C8,$03 Resume the script.
+
+c $A9CB Condition: Is Not Carrying For Drop
+@ $A9CB label=Condition_IsNotCarryingForDrop
+D $A9CB Succeeds when #R$AE5E rejects the item operand.
+R $A9CB O:F The zero flag is set when the item is not carried
+N $A9CB Invert the drop test so the condition succeeds when the item is not
+. carried.
+  $A9CB,$03 The operand names the item.
+  $A9CE,$03 #N$FF stands for the matched item.
+  $A9D1,$03 Call #R$AE5E.
+  $A9D4,$03 Succeed when the item is not carried.
+  $A9D7,$03 Resume the script.
+
+c $A9DA Action: Jump To Script
+@ $A9DA label=Action_JumpToScript
+D $A9DA Continues execution at the script address in the operand when the
+. condition succeeded.
+N $A9DA When the condition succeeded, continue at the script address in the
+. operand.
+  $A9DA,$09 Continue at the script named by the operand.
+  $A9E3,$03 Copy the script address from #REGhl into #REGix.
+  $A9E6,$03 Jump to #R$A761.
+
+c $A9E9 Action: Call Script
+@ $A9E9 label=Action_CallScript
+D $A9E9 Runs the script addressed by the operand, then returns to the
+. instruction after this one.
+N $A9E9 When the condition succeeded, run the operand script and come back
+. to the next instruction.
+  $A9E9,$03 Leave this action alone.
+  $A9EC,$06 The script named by the operand.
+  $A9F2,$08 Come back to the next action afterwards.
+  $A9FA,$03 Copy the called script address from #REGhl into #REGix.
+  $A9FD,$03 Jump to #R$A761.
+
+c $AA00 Action: Return From Script
+@ $AA00 label=Action_ReturnFromScript
+D $AA00 Restores the script pointer saved by #R$A9E9.
+N $AA00 When the condition succeeded, resume the script that #R$A9E9 saved.
+  $AA00,$03 Jump to #R$A75F if the condition failed.
+  $AA03,$02 Restore the saved script pointer from the stack.
+  $AA05,$03 Jump to #R$A761.
+
+c $AA08 Action: Print Message
+@ $AA08 label=Action_PrintMessage
+D $AA08 Prints the compressed message addressed by the operand.
+N $AA08 When the condition succeeded, print the message addressed by the
+. operand.
+  $AA08,$03 Leave the message unprinted.
+  $AA0B,$06 The message addressed by the operand.
+  $AA11,$03 Call #R$A1F4.
+  $AA14,$03 Resume the script.
+
+c $AA17 Action: Print Message And Newline
+@ $AA17 label=Action_PrintMessageAndNewline
+D $AA17 Prints the compressed message addressed by the operand, then a
+. newline.
+N $AA17 When the condition succeeded, print the message addressed by the
+. operand and start a new line.
+  $AA17,$03 Leave the message unprinted.
+  $AA1A,$06 The message addressed by the operand.
+  $AA20,$03 Call #R$A25C.
+  $AA23,$03 Resume the script.
+
+c $AA26 Action: Place Item
+@ $AA26 label=Action_PlaceItem
+D $AA26 Moves the item operand to the room given by the second operand.
+N $AA26 When the condition succeeded, put the item operand in the room given
+. by the second operand. #N$FF stands for the matched item.
+  $AA26,$03 Leave the item where it is.
+  $AA29,$03 The operand names the item.
+  $AA2C,$03 #N$FF stands for the matched item.
+  $AA2F,$04 The item, and the room it moves to.
+  $AA33,$03 Call #R$A663.
+  $AA36,$03 Resume the script.
+
+c $AA39 Action: Bring Item Here
+@ $AA39 label=Action_BringItemHere
+D $AA39 Moves the item operand into the current room.
+N $AA39 When the condition succeeded, bring the item operand into the
+. current room.
+  $AA39,$03 Leave the item where it is.
+  $AA3C,$03 The operand names the item.
+  $AA3F,$03 #N$FF stands for the matched item.
+  $AA42,$03 Call #R$A642.
+  $AA45,$03 Resume the script.
+
+c $AA48 Action: Transform Item
+@ $AA48 label=Action_TransformItem
+D $AA48 Replaces the first item operand with the second, in the same room.
+N $AA48 When the condition succeeded, replace the first item operand with
+. the second, in the same room.
+  $AA48,$03 Leave both items as they are.
+  $AA4B,$03 The first operand names the item.
+  $AA4E,$03 #N$FF stands for the matched item.
+  $AA51,$01 The item being replaced.
+  $AA52,$03 The second operand names the replacement.
+  $AA55,$03 #N$FF stands for the matched item.
+  $AA58,$01 The item that replaces it.
+  $AA59,$03 Call #R$A679.
+  $AA5C,$03 Resume the script.
+
+c $AA5F Action: Destroy Item
+@ $AA5F label=Action_DestroyItem
+D $AA5F Removes the item operand from the game.
+N $AA5F When the condition succeeded, remove the item operand from the game.
+  $AA5F,$03 Leave the item in the game.
+  $AA62,$03 The operand names the item.
+  $AA65,$03 #N$FF stands for the matched item.
+  $AA68,$03 Call #R$A63B.
+  $AA6B,$03 Resume the script.
 
 c $AA6E Handler: Pick Up Item
 @ $AA6E label=Handler_PickUpItem
@@ -1405,7 +2289,7 @@ E $AA6E View the equivalent code in;
 . #LIST
 . { #WARLORD$EDA6 }
 . LIST#
-  $AA6E,$03 Jump to #R$A75D if ?? is not equal to #N$00.
+  $AA6E,$03 The item stays where it is.
   $AA71,$03 #REGa=*#REGix+#N$01.
   $AA74,$03 Call #R$A772.
 N $AA77 Call #R$A663 using the item ID, to change the location to #N$01 (to the
@@ -1426,7 +2310,7 @@ E $AA8A View the equivalent code in;
 . #LIST
 . { #WARLORD$EDB8 }
 . LIST#
-  $AA8A,$03 Jump to #R$A75D if ?? is not equal to #N$00.
+  $AA8A,$03 The item stays in the inventory.
   $AA8D,$03 #REGa=*#REGix+#N$01.
   $AA90,$03 Call #R$A772.
 N $AA93 The item is in the players inventory, so move its location to the
@@ -1441,29 +2325,233 @@ N $AA9F Print "#DECODESTR$CDE5".
   $AAA2,$03 Call #R$A25C.
   $AAA5,$03 Jump to #R$A75D.
 
-c $AAA8
-c $AAB4
-c $AAC0
-c $AACC
-c $AAD8
-c $AAE4
-c $AAF3
-c $AAFA
-c $AB04
-c $AB0E
-c $AB22
-c $AB37
-c $AB4A
-c $AB5E
-c $AB73
-c $AB8B
-c $AB94
-c $AB9D
-c $ABA8
-c $ABB1
-c $ABBD
-c $ABDF
-c $ABE8
+c $AAA8 Action: Go To Room
+@ $AAA8 label=Action_GoToRoom
+D $AAA8 Moves the player to the room operand.
+N $AAA8 When the condition succeeded, move the player to the room operand.
+  $AAA8,$03 The player stays in this room.
+  $AAAB,$03 The operand names the destination.
+  $AAAE,$03 Call #R$AD79.
+  $AAB1,$03 Resume the script.
+
+c $AAB4 Action: Set Flag
+@ $AAB4 label=Action_SetFlag
+D $AAB4 Sets the flag bit operand in #R$A088.
+N $AAB4 When the condition succeeded, set the flag bit operand.
+  $AAB4,$03 Leave that flag clear.
+  $AAB7,$03 The operand selects the flag.
+  $AABA,$03 Call #R$A1D2.
+  $AABD,$03 Resume the script.
+
+c $AAC0 Action: Clear Flag
+@ $AAC0 label=Action_ClearFlag
+D $AAC0 Clears the flag bit operand in #R$A088.
+N $AAC0 When the condition succeeded, clear the flag bit operand.
+  $AAC0,$03 Leave that flag set.
+  $AAC3,$03 The operand selects the flag.
+  $AAC6,$03 Call #R$A1DD.
+  $AAC9,$03 Resume the script.
+
+c $AACC Action: Add To Score
+@ $AACC label=Action_AddToScore
+D $AACC Adds the operand to the score at #R$A107.
+N $AACC When the condition succeeded, add the operand to the score.
+  $AACC,$03 Leave the score unchanged.
+  $AACF,$03 The operand is the points to add.
+  $AAD2,$03 Call #R$AD34.
+  $AAD5,$03 Resume the script.
+
+c $AAD8 Action: Pause
+@ $AAD8 label=Action_Pause
+D $AAD8 Waits for the operand number of interrupts.
+N $AAD8 When the condition succeeded, wait for the operand number of frames.
+  $AAD8,$03 Do not wait.
+  $AADB,$03 The operand is how many frames to wait.
+  $AADE,$03 Call #R$9E2F.
+  $AAE1,$03 Resume the script.
+
+c $AAE4 Action: Mark Scenic Event
+@ $AAE4 label=Action_MarkScenicEvent
+D $AAE4 Marks the scenic event operand as already triggered.
+N $AAE4 When the condition succeeded, mark the scenic event operand as
+. already triggered.
+  $AAE4,$03 Leave that scenic event untriggered.
+  $AAE7,$03 The operand names the scenic event.
+  $AAEA,$03 #N$FF stands for the matched item.
+  $AAED,$03 Call #R$A64B.
+  $AAF0,$03 Resume the script.
+
+c $AAF3 Action: End Script
+@ $AAF3 label=Action_EndScript
+D $AAF3 Restores the registers saved by #R$A6FF and returns to its caller.
+N $AAF3 This is not the end of the script.
+  $AAF3,$03 The script keeps running.
+N $AAF6 The script is finished.
+  $AAF6,$03 Restore #REGbc, #REGde and #REGhl from the stack.
+  $AAF9,$01 Return.
+
+c $AAFA Action: Increment Inventory
+@ $AAFA label=Action_IncrementInventory
+D $AAFA Increases #R$A0D2 by one.
+N $AAFA When the condition succeeded, the player has gained an item.
+  $AAFA,$0A Add one to the inventory count at #R$A0D2.
+
+c $AB04 Action: Decrement Inventory
+@ $AB04 label=Action_DecrementInventory
+D $AB04 Decreases #R$A0D2 by one.
+N $AB04 When the condition succeeded, the player has lost an item.
+  $AB04,$0A Remove one from the inventory count at #R$A0D2.
+
+c $AB0E Action: Set Event Flag
+@ $AB0E label=Action_SetEventFlag
+D $AB0E Sets the bit operand in #R$A0D1.
+N $AB0E When the condition succeeded, set the operand bit in #R$A0D1 so the
+. matching event follows the player.
+  $AB0E,$03 That event does not start following the player.
+  $AB11,$06 The operand selects which event.
+@ $AB17 label=BuildEventMask
+  $AB17,$03 Build the mask for that event.
+  $AB1A,$05 That event now follows the player.
+  $AB1F,$03 Resume the script.
+
+c $AB22 Action: Clear Event Flag
+@ $AB22 label=Action_ClearEventFlag
+D $AB22 Clears the bit operand in #R$A0D1.
+N $AB22 When the condition succeeded, clear the operand bit in #R$A0D1.
+  $AB22,$03 That event keeps following the player.
+  $AB25,$06 The operand selects which event.
+@ $AB2B label=ClearEventMask
+  $AB2B,$03 Build the mask for that event.
+  $AB2E,$06 That event no longer follows the player.
+  $AB34,$03 Resume the script.
+
+c $AB37 Action: Set Turn Counter
+@ $AB37 label=Action_SetTurnCounter
+D $AB37 Writes the second operand into the turn counter selected by the first
+. operand.
+N $AB37 When the condition succeeded, store the second operand in the turn
+. counter selected by the first.
+  $AB37,$03 Leave the turn counters alone.
+  $AB3A,$09 The counter selected by the first operand.
+  $AB43,$04 That counter now holds the second operand.
+  $AB47,$03 Resume the script.
+
+c $AB4A Action: Start Turn Event
+@ $AB4A label=Action_StartTurnEvent
+D $AB4A Sets the bit operand in #R$A0C8, which arms that turn-based event.
+N $AB4A When the condition succeeded, arm the turn-based event selected by
+. the operand.
+  $AB4A,$03 Leave that turn-based event disarmed.
+  $AB4D,$06 The operand selects which event.
+@ $AB53 label=StartTurnEvent_Mask
+  $AB53,$03 Build the mask for that event.
+  $AB56,$05 That turn-based event is now armed.
+  $AB5B,$03 Resume the script.
+
+c $AB5E Action: Stop Turn Event
+@ $AB5E label=Action_StopTurnEvent
+D $AB5E Clears the bit operand in #R$A0C8.
+N $AB5E When the condition succeeded, disarm the turn-based event selected
+. by the operand.
+  $AB5E,$03 Leave that turn-based event armed.
+  $AB61,$06 The operand selects which event.
+@ $AB67 label=StopTurnEvent_Mask
+  $AB67,$03 Build the mask for that event.
+  $AB6A,$06 That turn-based event is now disarmed.
+  $AB70,$03 Resume the script.
+
+c $AB73 Action: Write Saved Byte
+@ $AB73 label=Action_WriteSavedByte
+D $AB73 Writes the second operand through the state-byte pointer selected from
+. #R$BAF9.
+N $AB73 When the condition succeeded, write the second operand through the
+. address selected from #R$BAF9.
+  $AB73,$03 Leave the saved bytes alone.
+  $AB76,$05 The first operand selects a saved byte.
+  $AB7B,$03 The second operand is the new value.
+  $AB7E,$05 Look up its address in #R$BAF9.
+  $AB83,$04 That address.
+  $AB87,$01 Write the new value there.
+  $AB88,$03 Resume the script.
+
+c $AB8B Action: Load Game
+@ $AB8B label=Action_LoadGame
+D $AB8B Loads a saved position from tape.
+N $AB8B When the condition succeeded, load a saved position from tape.
+  $AB8B,$03 Leave the saved position alone.
+  $AB8E,$03 Call #R$9EDB.
+  $AB91,$03 Resume the script.
+
+c $AB94 Action: Save Game
+@ $AB94 label=Action_SaveGame
+D $AB94 Saves the current position to tape.
+N $AB94 When the condition succeeded, save the current position to tape.
+  $AB94,$03 Leave the position unsaved.
+  $AB97,$03 Call #R$9E80.
+  $AB9A,$03 Resume the script.
+
+c $AB9D Action: Describe Room
+@ $AB9D label=Action_DescribeRoom
+D $AB9D Prints the current room, including its picture when the room has one.
+N $AB9D When the condition succeeded, describe the current room and force
+. its picture.
+  $AB9D,$03 Leave the room undescribed.
+  $ABA0,$02 Force its picture.
+  $ABA2,$03 Call #R$A33A.
+  $ABA5,$03 Resume the script.
+
+c $ABA8 Action: List Inventory
+@ $ABA8 label=Action_ListInventory
+D $ABA8 Prints the inventory, or the empty-inventory message.
+N $ABA8 When the condition succeeded, list what the player is carrying.
+  $ABA8,$03 Leave the inventory unlisted.
+  $ABAB,$03 Call #R$A6CF.
+  $ABAE,$03 Resume the script.
+
+c $ABB1 Action: Move Player
+@ $ABB1 label=Action_MovePlayer
+D $ABB1 Moves the player in the direction given by the operand.
+N $ABB1 When the condition succeeded, move in the direction given by the
+. operand.
+  $ABB1,$03 The player stays in this room.
+  $ABB4,$03 The operand names the direction.
+  $ABB7,$03 Call #R$A6E8.
+  $ABBA,$03 Resume the script.
+
+c $ABBD Action: Offer Save
+@ $ABBD label=Action_OfferSave
+D $ABBD Prints the score, asks whether to save, and sets flag bit #N$02.
+N $ABBD Do not offer to save.
+  $ABBD,$03 Do not offer to save.
+N $ABC0 Show the score, then ask "#DECODESTR$CDB0".
+  $ABC0,$03 Show the score.
+  $ABC3,$03 Ask whether to save.
+  $ABC6,$03 Call #R$A25C.
+@ $ABC9 label=SavePrompt_Loop
+N $ABC9 N declines the save and Y writes the position to tape.
+  $ABC9,$03 Read the answer.
+  $ABCC,$04 N declines the save.
+  $ABD0,$04 Anything but Y asks again.
+  $ABD4,$03 Write the position to tape.
+N $ABD7 Remember that the offer was made by setting flag bit #N$02, then
+. resume the script.
+  $ABD7,$02 Flag bit #N$02 records the offer.
+  $ABD9,$03 Call #R$A1D2.
+  $ABDC,$03 Resume the script.
+
+c $ABDF Action: Print Score
+@ $ABDF label=Action_PrintScore
+D $ABDF Prints the score.
+N $ABDF When the condition succeeded, print the score.
+  $ABDF,$03 Leave the score unprinted.
+  $ABE2,$03 Call #R$AD43.
+  $ABE5,$03 Resume the script.
+
+c $ABE8 Action: Set Carrying Limit
+@ $ABE8 label=Action_SetCarryingLimit
+D $ABE8 Writes the operand to #R$A0D3.
+N $ABE8 When the condition succeeded, change how much the player can carry.
+  $ABE8,$0C The player can now carry that many items.
 
 c $ABF4 Parser: Validate No Direct Object
 @ $ABF4 label=Parser_ValidateNoDirectObject
@@ -1486,8 +2574,8 @@ N $ABFA Print "#DECODESTR$CDD1".
 c $AC02 Parser: Validate Direct Object
 @ $AC02 label=Parser_ValidateDirectObject
 D $AC02 In most adventure games, the structure for a command is "verb + direct
-. object". This is usually how the player interacts with the game world.
-. The verb describes the action, and the direct object is what the action is
+. object". This is usually how the player interacts with the game world. The
+. verb describes the action, and the direct object is what the action is
 . performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
 . object "SHOE".
 E $AC02 View the equivalent code in;
@@ -1548,7 +2636,7 @@ N $AC27 Any references are invalid.
 N $AC27 Print "#DECODESTR$CDD1".
   $AC27,$03 #REGhl=#R(#OFFSET($0018)).
   $AC2A,$03 Call #R$A25C.
-  $AC2D,$01 Set the carry flag.
+  $AC2D,$01 Set the carry flag; the command is malformed.
   $AC2E,$01 Return.
 
 c $AC2F Parser: Validate Two Direct Objects
@@ -1565,32 +2653,28 @@ R $AC2F O:F The carry flag is set when the command is malformed
 N $AC33 #REGa now contains the count of the number of valid direct objects.
   $AC33,$04 Jump to #R$AC3F if the number of valid direct objects in the user
 . input is not #N$01.
-N $AC37 There is only one valid direct objects in the user input and the
+N $AC37 There is only one valid direct object in the user input and the
 . command needs two...
-N $AC37 Print "#DECODESTR$CDC1".
-  $AC37,$03 #REGhl=#R(#OFFSET($0017)).
-  $AC3A,$03 Call #R$A25C.
-  $AC3D,$01 Set the carry flag.
+  $AC37,$06 Call #R$A25C to print "#DECODESTR$CDC1" and start a new line.
+  $AC3D,$01 Set the carry flag; the command needs another object.
   $AC3E,$01 Return.
 N $AC3F There are two or more valid direct objects in the user input.
 @ $AC3F label=ValidateTwoDirectObjects
   $AC3F,$04 Jump to #R$AC45 if the number of valid direct objects in the user
 . input is greater than or equal to #N$03.
-  $AC43,$01 Set zero flag.
+  $AC43,$01 #HTML(Clear the carry flag (<code>AND A</code>) to signal that both objects were accepted.)
   $AC44,$01 Return.
 N $AC45 There are more than two valid direct objects in the user input.
 @ $AC45 label=ValidateTwoDirectObjects_TooMany
-N $AC45 Print "#DECODESTR$CDD1".
-  $AC45,$03 #REGhl=#R(#OFFSET($0018)).
-  $AC48,$03 Call #R$A25C.
-  $AC4B,$01 Set the carry flag.
+  $AC45,$06 Call #R$A25C to print "#DECODESTR$CDD1" and start a new line.
+  $AC4B,$01 Set the carry flag; there are too many objects.
   $AC4C,$01 Return.
 
 c $AC4D Parser: Validate Any Direct Object
 @ $AC4D label=Parser_ValidateAnyDirectObject
 D $AC4D In most adventure games, the structure for a command is "verb + direct
-. object". This is usually how the player interacts with the game world.
-. The verb describes the action, and the direct object is what the action is
+. object". This is usually how the player interacts with the game world. The
+. verb describes the action, and the direct object is what the action is
 . performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
 . object "SHOE".
 E $AC4D View the equivalent code in;
@@ -1673,7 +2757,7 @@ E $AC88 View the equivalent code in;
   $AC8E,$03 #REGhl=#R$B6BA.
   $AC91,$02 Jump to #R$AC94.
 @ $AC93 label=Handler_ScenicEvents_Loop
-  $AC93,$01 Increment #REGhl by one.
+  $AC93,$01 Move #REGhl on to the next scenic event room ID.
 @ $AC94 label=ScenicEvents_Process
   $AC94,$01 #REGa=*#REGhl.
   $AC95,$03 Call #R$A5C6.
@@ -1688,7 +2772,7 @@ N $ACA1 Calculate the event index and get the event handler.
   $ACA6,$04 Load #REGix with #R$BBBD which contains a pointer to the scenic
 . event rountines jump table.
   $ACAA,$03 Call #R$A305.
-  $ACAD,$03 #REGix=#REGhl (using the stack).
+  $ACAD,$03 Copy the scenic-event script address from #REGhl into #REGix.
   $ACB0,$03 Call #R$A6FF.
 N $ACB3 This is the return point after the handler has finished executing.
 @ $ACB3 label=ScenicEvents_PostProcessing
@@ -1709,8 +2793,78 @@ E $ACBD View the equivalent code in;
 . LIST#
   $ACBD,$01 Load the destination room ID into #REGc.
   $ACBE,$06 Jump to #R$ACDB if *#R$BBCF is zero.
+N $ACC4 Scenic events that are present come with the player to the
+. destination room.
+  $ACC4,$06 The scenic items are listed at #R$B6BA.
+@ $ACCA label=ScenicItem_Advance
+  $ACCA,$01 The next scenic item.
+@ $ACCB label=ScenicItem_Next
+  $ACCB,$01 Its item id.
+  $ACCC,$03 Call #R$A5C6.
+  $ACCF,$02 It is not coming with the player.
+  $ACD1,$03 This scenic item, and the destination room.
+  $ACD4,$03 Call #R$A663.
+  $ACD7,$02 Restore the scenic scan from the stack.
+@ $ACD9 label=ScenicItem_Count
+  $ACD9,$02 On to the next scenic item.
+N $ACDB The destination room is now the current room.
+  $ACDB,$08 Remember it at #R$A106 and read the event flags.
+N $ACE3 No event flag is set, so the move is finished.
+  $ACE3,$01 Return.
+N $ACE4 For each set bit in #R$A0D1, bring the corresponding byte from
+. #R$B6F4 into the room.
+  $ACE4,$08 Eight event bits, and the items at #R$B6F4.
+@ $ACEC label=EventFlag_Advance
+  $ACEC,$01 The next event.
+@ $ACED label=EventFlag_Next
+  $ACED,$04 This event is not following the player.
+  $ACF1,$03 This event's item.
+  $ACF4,$03 Call #R$A642.
+  $ACF7,$02 Restore the event scan from the stack.
+@ $ACF9 label=EventFlag_Count
+  $ACF9,$02 The remaining event bits.
+N $ACFB The move is complete.
+  $ACFB,$01 Return.
 
-c $ACFC
+c $ACFC Handler: Dispatch Verb
+@ $ACFC label=Handler_DispatchVerb
+D $ACFC Finds the first input token in #R$B420 and runs the matching script
+. from #R$B44A. Prints the rephrase message when the token is unknown.
+N $ACFC Look up the first token in the verb list at #R$B420.
+  $ACFC,$0E Jump to #R$AD11 when the verb is known.
+N $AD0A The verb is not one this game understands.
+  $AD0A,$06 Print "#DECODESTR$CDD1".
+  $AD10,$01 Return.
+N $AD11 Run the verb script from #R$B44A.
+  $AD11,$06 This verb's place in #R$B44A.
+  $AD17,$04 The verb scripts are listed at #R$B44A.
+  $AD1B,$03 This verb's script.
+  $AD1E,$03 Restore the verb script address into #REGix from the stack.
+  $AD21,$03 Run that script.
+  $AD24,$01 Return.
+
+c $AD25 Generate Random Number
+@ $AD25 label=GenerateRandomNumber
+D $AD25 Returns a number from #N$00 up to, but not including, #REGa.
+D $AD25 The refresh register chooses how far to walk around that range.
+D $AD25 Nothing in the game calls it.
+R $AD25 A Exclusive upper bound
+R $AD25 O:A The generated number
+@ $AD2B label=Random_Mix
+N $AD25 Mix the refresh register into a number below the limit in #REGa.
+. Nothing in the game calls this.
+  $AD25,$0D Walk around the range until the refresh count runs out.
+  $AD32,$01 Restore #REGbc from the stack.
+  $AD33,$01 Return.
+
+c $AD34 Add To Score
+@ $AD34 label=AddToScore
+D $AD34 Adds #REGa to the BCD score at #R$A107.
+R $AD34 A Points to add
+N $AD34 Add the points in #REGa to the BCD score at #R$A107.
+  $AD34,$0D Add the points in #REGa to the BCD score at #R$A107.
+  $AD41,$01 Restore #REGhl from the stack.
+  $AD42,$01 Return.
 
 c $AD43 Print Scoring
 @ $AD43 label=Print_Scoring
@@ -1724,16 +2878,15 @@ N $AD4C So don't show "058%" - instead show "58%".
 N $AD4C This particular check is for the first character "1" to see if the
 . score is printing "100%".
   $AD4C,$01 Take the first scoring byte and store it in #REGa.
-M $AD4D,$04 Keep only bits 0-3 and jump to #R$AD56 if the result of this is
-. zero.
-  $AD4D,$02,b$01 Keep only bits 0-3.
-  $AD4F,$02 Jump to #R$AD56 if the result is equal to #N$00.
+M $AD4D,$04 Keep the hundreds digit and jump to #R$AD56 if it is zero.
+  $AD4D,$02,b$01 Keep the hundreds digit in bits 0-3.
+  $AD4F,$02 Jump to #R$AD56 if there is no hundreds digit to print.
   $AD51,$05 Convert the number to ASCII by adding #N$30 and call #R$9E26.
 @ $AD56 label=Scoring_SecondDigit
   $AD56,$01 Load the second scoring byte into #REGa.
-M $AD57,$04 Keep only bits 4-7 and jump to #R$AD60 if the result is non-zero.
-  $AD57,$02,b$01 Keep only bits 4-7.
-  $AD59,$02 Jump to #R$AD60 if the result is not equal to #N$00.
+M $AD57,$04 Keep the tens digit and jump to #R$AD60 if it is non-zero.
+  $AD57,$02,b$01 Keep the tens digit in bits 4-7.
+  $AD59,$02 Jump to #R$AD60 if there is a tens digit to print.
 N $AD5B The "tens" digit is zero, so check the "hundreds" digit again to avoid
 . printing "05%" - instead show only "5%".
   $AD5B,$01 Load the first scoring byte into #REGa again.
@@ -1747,14 +2900,17 @@ N $AD5F A "hundreds" digit was printed, so force a "0" to be printed.
 N $AD69 Lastly, always print the "units".
 @ $AD69 label=Scoring_ThirdDigit
   $AD69,$01 Load the second scoring byte into #REGa.
-  $AD6A,$02,b$01 Keep only bits 0-3.
+  $AD6A,$02,b$01 Keep the units digit in bits 0-3.
   $AD6C,$05 Convert the number to ASCII by adding #N$30 and call #R$9E26.
 N $AD71 Print "#DECODESTR$CE6E".
   $AD71,$03 #REGhl=#R(#OFFSET($0025)).
   $AD74,$03 Call #R$A25C.
   $AD77,$01 Return.
 
-g $AD78 Table:
+g $AD78 Temporary Room ID
+@ $AD78 label=TemporaryRoom
+D $AD78 The room #R$AD79 is about to enter. The script can test it before the
+. move is committed.
 B $AD78,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 
 c $AD79 Change Room
@@ -1766,7 +2922,7 @@ R $AD79 A Destination room ID
   $AD82,$03 Call #R$A6FF.
   $AD85,$02 #REGa=#N$00.
   $AD87,$03 Call #R$A1C8.
-  $AD8A,$02 Jump to #R$AD9E if ?? is not equal to #N$00.
+  $AD8A,$02 Do not enter the room when the player is dead.
   $AD8C,$03 Restore the destination room ID from *#R$AD78.
   $AD8F,$03 Call #R$ACBD.
   $AD92,$02 #REGe=#N$00.
@@ -1781,9 +2937,8 @@ c $ADA1 Game Start
   $ADA1,$03 #REGhl=#R$9F88.
   $ADA4,$03 #REGbc=#N($0181,$04,$04).
   $ADA7,$02 Write #N$00 to *#REGhl.
-  $ADA9,$01 Increment #REGhl by one.
-  $ADAA,$01 Decrease #REGbc by one.
-  $ADAB,$04 Jump to #R$ADA7 until #REGbc is zero.
+  $ADA9,$01 Move #REGhl on to the next byte to clear.
+  $ADAA,$05 Count down the #N($0181,$04,$04) bytes and loop back to #R$ADA7 until all are cleared.
   $ADAF,$0C Copy #N($0088,$04,$04) bytes of data (count is via *#R$BBC7) from
 . #R$BB0B to #R$9F88.
   $ADBB,$06 Write *#R$BBD7 to *#R$A0D3.
@@ -1793,10 +2948,10 @@ c $ADA1 Game Start
   $ADCC,$03 #REGl=*#REGix+#N$00.
   $ADCF,$03 #REGh=*#REGix+#N$01.
   $ADD2,$01 #REGa=*#REGde.
-  $ADD3,$01 Write #REGa to *#REGhl.
-  $ADD4,$04 Increment #REGix by two.
-  $ADD8,$01 Increment #REGde by one.
-  $ADD9,$02 Decrease counter by one and loop back to #R$ADCC until counter is zero.
+  $ADD3,$01 Write that initial-state byte through the address from #R$BAF9.
+  $ADD4,$04 Move #REGix on to the next initial-state address.
+  $ADD8,$01 Move #REGde on to the next initial-state byte.
+  $ADD9,$02 Decrease the init counter and loop back to #R$ADCC until every saved-state address is primed.
   $ADDB,$03 Call #R$9F27.
   $ADDE,$06 Write *#R$BBD3 to *#R$A106.
   $ADE4,$03 Call #R$AD79.
@@ -1804,13 +2959,13 @@ c $ADA1 Game Start
   $ADEA,$03 Call #R$AC88.
   $ADED,$02 #REGa=#N$00.
   $ADEF,$03 Call #R$A1C8.
-  $ADF2,$02 Jump to #R$AE0D if #REGde is not equal to #REGc.
+  $ADF2,$02 End the game when the player is dead.
   $ADF4,$02 #REGa=#N$01.
   $ADF6,$03 Call #R$A1C8.
-  $ADF9,$02 Jump to #R$AE13 if #REGde is not equal to #REGc.
+  $ADF9,$02 End the game and show the score.
   $ADFB,$02 #REGa=#N$02.
   $ADFD,$03 Call #R$A1C8.
-  $AE00,$02 Jump to #R$AE16 if #REGde is not equal to #REGc.
+  $AE00,$02 End the game and ask for another one.
   $AE02,$03 Call #R$A4B0.
   $AE05,$03 Call #R$AC60.
   $AE08,$03 Call #R$ACFC if #REGc is greater than #N$02.
@@ -1837,34 +2992,63 @@ N $AE24 The player wants another go...
 N $AE29 Just loop round for any other input.
   $AE29,$03 Jump to #R$AE1C.
 
-c $AE2C
+c $AE2C Handler: Can Take Item
+@ $AE2C label=Handler_CanTakeItem
+D $AE2C Rejects a take when the item is already carried or the inventory is
+. full.
+D $AE2C Plural items in #R$B6F1 use the "them" message.
+R $AE2C A Item ID
+R $AE2C O:A #N$00 when the item can be taken, otherwise #N$01
+R $AE2C O:F The zero flag is set when the item can be taken
   $AE2C,$03 Call #R$A635.
-  $AE2F,$02 Jump to #R$AE48 if ?? is not equal to #N$00.
+  $AE2F,$02 Jump to #R$AE48 when it is not in the inventory.
 N $AE31 Print "#DECODESTR$CDEA".
   $AE31,$03 #REGhl=#R(#OFFSET($001B)).
   $AE34,$03 #REGbc=#N($0003,$04,$04).
-  $AE37,$01 #REGa=#N$00.
-  $AE38,$01 Set the bits from #REGc.
-  $AE39,$02 Jump to #R$AE55 if ?? is equal to #REGc.
+N $AE37 Skip the plural-item search when the list length in #REGc is zero.
+  $AE37,$04 Jump to #R$AE55 when the plural list is empty.
   $AE3B,$01 Stash #REGhl on the stack.
   $AE3C,$03 #REGhl=#R$B6F1.
   $AE3F,$01 #REGa=#REGe.
-  $AE40,$02 CPIR.
+  $AE40,$02 Search the plural-item list.
   $AE42,$01 Restore #REGhl from the stack.
-  $AE43,$02 Jump to #R$AE55 if ?? is not equal to #REGc.
-  $AE45,$01 Increment #REGhl by one.
+  $AE43,$02 Jump to #R$AE55 when this item is singular.
+  $AE45,$01 Move #REGhl on to the plural article string.
   $AE46,$02 Jump to #R$AE55.
 N $AE48 Print "#DECODESTR$CE20".
   $AE48,$03 #REGhl=#R(#OFFSET($001F)).
   $AE4B,$0A Jump to #R$AE5C if *#R$A0D2 is less than *#R$A0D3.
   $AE55,$03 Call #R$A25C.
   $AE58,$02 #REGa=#N$01.
-  $AE5A,$01 Set flags.
+  $AE5A,$01 The take is rejected.
   $AE5B,$01 Return.
   $AE5C,$01 #REGa=#N$00.
   $AE5D,$01 Return.
 
-c $AE5E
+c $AE5E Handler: Is Carrying Item
+@ $AE5E label=Handler_IsCarryingItem
+D $AE5E Rejects a drop when the item is not carried.
+D $AE5E Plural items in #R$B6F1 use the "them" message.
+R $AE5E A Item ID
+R $AE5E O:A #N$00 when the item is carried, otherwise #N$01
+R $AE5E O:F The zero flag is set when the item is carried
+N $AE5E The drop is valid when the item is already being carried.
+  $AE5E,$03 Call #R$A635.
+N $AE61 The item is being carried.
+  $AE61,$01 Return.
+N $AE62 Tell the player the item is not carried. A plural form from #R$B6F1
+. is used when the item is one of those three.
+  $AE62,$03 The message for a singular item.
+  $AE65,$05 Three items can take the plural message.
+  $AE6A,$02 No plural list, so keep the singular wording.
+  $AE6C,$06 Search the plural-item list.
+  $AE72,$01 Restore the message pointer from the stack.
+  $AE73,$02 Jump to #R$AE76 when this item is singular.
+  $AE75,$01 This item is plural, so use the next message.
+  $AE76,$03 Call #R$A25C.
+  $AE79,$03 The drop is rejected.
+N $AE7C The drop is rejected.
+  $AE7C,$01 Return.
 
 g $AE7D Table: Room Descriptions
 @ $AE7D label=Table_RoomDescriptions
@@ -1978,9 +3162,17 @@ L $B3FE,$04,$02
 L $B40F,$04,$04
 B $B41F,$01 Terminator.
 
-g $B420
+g $B420 Table: Verb Tokens
+@ $B420 label=Table_VerbTokens
+D $B420 The token searched for by #R$ACFC. There are #R$BBCB entries.
+B $B420,$01 Verb index #N(#PC-$B420) matches token #N(#PEEK(#PC)).
+L $B420,$01,$2A
 
-g $B49E Pointer: Token Item List Table
+g $B44A Jump Table: Verb Scripts
+@ $B44A label=JumpTable_VerbScripts
+D $B44A The script #R$ACFC runs for the matching entry in #R$B420.
+W $B44A,$02 Script for verb index #N((#PC-$B44A)/$02).
+L $B44A,$02,$2A
 g $B49E Table: Token Item List
 @ $B49E label=Table_TokenItemList
 D $B49E A list of all tokens which relate to items.
@@ -2001,8 +3193,8 @@ L $B4F4,$01,$11A
 g $B60E Table: Item Grouping
 @ $B60E label=Table_ItemGrouping
 D $B60E Items may have several item IDs which relate to a single item, this
-. table groups the items together to assist the parser with knowing that tokens
-. refer to the same thing.
+. table groups the items together to assist the parser with knowing that
+. tokens refer to the same thing.
 .
 . Some examples are:
 . #TABLE(default,centre,centre,centre)
@@ -2026,7 +3218,23 @@ D $B6BA A table where the index is the event ID, and the value is the room it
 B $B6BA,$01 Event #N(#PC-$B6BA) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $B6BA,$01,$05
 
-g $B6F1
+g $B6F1 Table: Plural Items
+@ $B6F1 label=Table_PluralItems
+D $B6F1 Item IDs that use the plural carrying messages. #R$AE2C and #R$AE5E
+. search these #N$03 bytes.
+B $B6F1,$01 Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
+L $B6F1,$01,$03
+
+g $B6F4 Data: Phrase Tokens
+@ $B6F4 label=Data_PhraseTokens
+D $B6F4 Phrase patterns read by #R$A5DB. #R$B83D holds an address for each
+. pattern.
+
+g $B83D Table: Phrase Pointers
+@ $B83D label=Table_PhrasePointers
+D $B83D Addresses of the phrases in #R$B6F4. #R$A8F9 and #R$A90D index it.
+W $B83D,$02 Phrase #N((#PC-$B83D)/$02) at #N(#PEEK(#PC)+#PEEK(#PC+$01)*$100).
+L $B83D,$02,$50
 
 g $B8DD Table: Room Map
 @ $B8DD label=Table_RoomMap
@@ -2039,18 +3247,42 @@ B $B8E1,$01 #IF(#PEEK(#PC)>$00)(Up to room: R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC
 B $B8E2,$01 #IF(#PEEK(#PC)>$00)(Down to room: R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
 L $B8DD,$06,$2F
 
-g $BA00
-g $BA04
-g $BA4D
+g $BA00 Data: Saved Room Byte
+@ $BA00 label=Data_SavedRoomByte
+D $BA00 State byte #N$03 in #R$BAF9. Saving copies this byte through #R$A0D4,
+. and #R$AB73 can replace it. The remaining bytes are a room-ID list
+. terminated by #N$00.
 
-g $BAF9
-W $BAF9,$02
+g $BA04 Data: Saved Room List
+@ $BA04 label=Data_SavedRoomList
+D $BA04 State byte #N$04 in #R$BAF9, followed by room IDs in groups terminated
+. by #N$00. Only the first byte is copied by the save routine.
+
+g $BA4D Data: Saved Room List 2
+@ $BA4D label=Data_SavedRoomList2
+D $BA4D State byte #N$05 in #R$BAF9, followed by room IDs in groups terminated
+. by #N$00. Only the first byte is copied by the save routine.
+
+g $BAF9 Table: Saved State Addresses
+@ $BAF9 label=Table_SavedStateAddresses
+D $BAF9 Addresses of the six bytes packed into #R$A0D4:
+. #FOR($00,$05)||n|#N(#PEEK($BAF9+n*$02)+#PEEK($BAF9+n*$02+$01)*$100)|, | and ||.
+. Three of them are direction bytes in #R$B8DD, so a changed exit survives a
+. save.
+W $BAF9,$02 State byte #N((#PC-$BAF9)/$02) at #N(#PEEK(#PC)+#PEEK(#PC+$01)*$100).
 L $BAF9,$02,$06,$02
 
-g $BB05
+g $BB05 Initial Saved State Bytes
+@ $BB05 label=InitialSavedStateBytes
+D $BB05 Values copied to the addresses in #R$BAF9 when a new game starts.
+B $BB05,$01 Initial value of state byte #N(#PC-$BB05).
+L $BB05,$01,$06
 
-g $BB0B
-B $BB0B
+g $BB0B Table: Initial Item Locations
+@ $BB0B label=Table_InitialItemLocations
+D $BB0B Copied over #R$9F88 when a new game starts. The length is #R$BBC7.
+B $BB0B,$01 Item #N(#PC-$BB0B) #ITEM(#PC-$BB0B) starts in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+L $BB0B,$01,$88
 
 g $BB93 Table: Rooms With Images
 @ $BB93 label=Table_RoomsWithImages
@@ -2058,16 +3290,23 @@ D $BB93 See #R$A33A.
 B $BB93,$01 Location Slot: #N(#PC-$BB93) - room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $BB93,$01,$13
 
-g $BBA6
-B $BBA6,$01 #N(#PC-$BBA6): #N(#PEEK(#PC)).
+g $BBA6 Table: Room Image Numbers
+@ $BBA6 label=Table_RoomImageNumbers
+D $BBA6 The picture passed to #R$9F67 for each entry in #R$BB93.
+B $BBA6,$01 Slot #N(#PC-$BBA6) uses image #N(#PEEK(#PC)).
 L $BBA6,$01,$13
 
-g $BBB9
-W $BBB9,$02
+g $BBB9 Jump Table: Turn-Based Events
+@ $BBB9 label=JumpTable_TurnEvents
+D $BBB9 Scripts run by #R$A280 when the matching turn counter reaches zero:
+. #FOR($00,$01)||n|#N(#PEEK($BBB9+n*$02)+#PEEK($BBB9+n*$02+$01)*$100)| and ||.
+W $BBB9,$02 Event bit #N((#PC-$BBB9)/$02).
 L $BBB9,$02,$02
 
 g $BBBD Jump Table: Scenic Events
 @ $BBBD label=JumpTable_ScenicEvents
+D $BBBD Scripts run for the scenic events in #R$B6BA:
+. #FOR($00,$04)||n|#R(#PEEK($BBBD+n*$02)+#PEEK($BBBD+n*$02+$01)*$100)|, | and ||.
 W $BBBD,$02 Event #N((#PC-$BBBD)/$02).
 L $BBBD,$02,$05
 
@@ -2081,7 +3320,10 @@ g $BBC9 Number Of Objects
 D $BBC9 The total number of objects in the game.
 W $BBC9,$02
 
-g $BBCB
+g $BBCB Number Of Verb Tokens
+@ $BBCB label=Count_VerbTokens
+D $BBCB The number of entries in #R$B420 and #R$B44A.
+W $BBCB,$02
 
 g $BBCD Number Of Rooms With Images
 @ $BBCD label=Count_RoomsWithImages
@@ -2093,29 +3335,56 @@ g $BBCF Number Of Scenic Events
 E $BBCF The total number of scenic events in the game, see Table_ScenicEventLocations.
 W $BBCF,$02
 
-g $BBD1
-B $BBD1,$01
+g $BBD1 Number Of Saved State Bytes
+@ $BBD1 label=Count_SavedStateBytes
+D $BBD1 How many addresses #R$BAF9 holds, and how many bytes #R$A0D4 packs.
+W $BBD1,$02
 
 g $BBD3 Starting Room
 @ $BBD3 label=StartingRoom
 B $BBD3,$01
 
-g $BBD4
-B $BBD4,$01
+u $BBD4 Unused
 
-g $BBD5
-W $BBD5,$02
+g $BBD5 Pointer: Room Image Offsets
+@ $BBD5 label=Pointer_RoomImageOffsets
+D $BBD5 Points at #R$61A8, the offsets #R$9F67 adds after indexing them.
+W $BBD5,$02 #R$61A8.
 
-g $BBD7
-B $BBD7,$01
+g $BBD7 Initial Carrying Limit
+@ $BBD7 label=InitialCarryingLimit
+D $BBD7 Copied to #R$A0D3 at the start of a game.
+B $BBD7,$01 #N(#PEEK(#PC)).
 
-g $BC4C
+g $BBD8 Data: Arrival Script
+@ $BBD8 label=Data_ArrivalScript
+D $BBD8 Script run by #R$AD79 before the player enters the new room.
 
-g $BCE4
-g $BD00
-g $BD1C
-g $BD25
-g $BD2E
+g $BC4C Data: Room Setup Script
+@ $BC4C label=Data_RoomSetupScript
+D $BC4C Script run by #R$AD79 after the new room is current.
+
+g $BCE4 Data: Scenic Event Script
+@ $BCE4 label=Data_ScenicEventScript1
+D $BCE4 Script for scenic event #N$00. #R$BBBD jumps here.
+
+g $BD00 Data: Scenic Event Script 2
+@ $BD00 label=Data_ScenicEventScript2
+D $BD00 Script for scenic event #N$01.
+
+g $BD1C Data: Scenic Event Script 3
+@ $BD1C label=Data_ScenicEventScript3
+D $BD1C Script for scenic event #N$02.
+
+g $BD25 Data: Scenic Event Script 4
+@ $BD25 label=Data_ScenicEventScript4
+D $BD25 Script for scenic event #N$03.
+
+g $BD2E Data: Action Scripts
+@ $BD2E label=Data_ActionScripts
+D $BD2E Scenic event #N$04 starts here. The verb scripts addressed from
+. #R$B44A, and the later action scripts, continue through the rest of this
+. block.
 
 g $CA2B Table: Messaging Offsets
 @ $CA2B label=Table_MessagingOffsets
@@ -4672,5 +5941,4 @@ B $FF1D,$01 Terminator.
 
 u $FF1E
 
-g $FF40
-
+u $FF40 Unused

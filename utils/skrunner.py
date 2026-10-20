@@ -6,7 +6,7 @@ ADVENTUREGAMES_HOME = os.path.dirname(os.path.dirname(os.path.abspath(__file__))
 
 AFTERSHOCK_SKOOL = '{}/sources/aftershock/aftershock.skool'.format(ADVENTUREGAMES_HOME)
 BLIZZARDPASS_SKOOL = '{}/sources/blizzardpass/blizzardpass.skool'.format(ADVENTUREGAMES_HOME)
-FORESTATWORLDSEND_SKOOL = '{}/sources/blizzardpass/forestatworldsend.skool'.format(ADVENTUREGAMES_HOME)
+FORESTATWORLDSEND_SKOOL = '{}/sources/forestatworldsend/forestatworldsend.skool'.format(ADVENTUREGAMES_HOME)
 HEROESOFKHAN_SKOOL = '{}/sources/heroesofkarn/heroesofkarn.skool'.format(ADVENTUREGAMES_HOME)
 HOBBIT_SKOOL = '{}/sources/hobbit/hobbit.skool'.format(ADVENTUREGAMES_HOME)
 JEWELSOFBABYLON_SKOOL = '{}/sources/jewelsofbabylon/jewelsofbabylon.skool'.format(ADVENTUREGAMES_HOME)

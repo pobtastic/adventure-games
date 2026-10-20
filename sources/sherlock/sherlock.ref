@@ -872,31 +872,6 @@ GameIndex=The complete<>RAM disassembly (work in progress)
     14:MISC_14,
     20:MISC_14))
 
-#DEF(#COLOUR(id)
-  #LET(ink=$id&$07)#IF({ink}>=$00)(INK:
-    #MAP({ink})(
-      UNKNOWN,
-      0:BLACK,
-      1:BLUE,
-      2:RED,
-      3:MAGENTA,
-      4:GREEN,
-      5:CYAN,
-      6:YELLOW,
-      7:WHITE)),
-  #LET(paper=$id>>$03&$07)#IF({paper}>=$00)(PAPER:
-    #MAP({paper})(
-      UNKNOWN,
-      0:BLACK,
-      1:BLUE,
-      2:RED,
-      3:MAGENTA,
-      4:GREEN,
-      5:CYAN,
-      6:YELLOW,
-      7:WHITE))
-  #LET(bright=$id&$40)#IF({bright}>$00)((BRIGHT))
-  #LET(flash=$id&$80)#IF({flash}>$00)(FLASH: ON))
 
 #DEF(#INK(id)
   #LET(bright=$id&$40)
@@ -912,3 +887,37 @@ GameIndex=The complete<>RAM disassembly (work in progress)
       5:CYAN,
       6:YELLOW,
       7:WHITE))#IF({bright}>$00)( (BRIGHT))#IF({flash}>$00)( (FLASH: ON)))
+
+#DEF(#WORDCFG
+  Word configuration:
+  #TABLE(default,centre,centre)
+  { =h Type | #WORDTYPES(#PEEK(#PC)) }
+  { =h Flection | #N(#PEEK(#PC)&$0F) }
+  { =h Synonym | #IF((#PEEK(#PC+$01)&$80)>>$07)(YES,NO) }
+  { =h Letters From Previous | #N((#PEEK(#PC+$01)&$70)>>$04) }
+  { =h Length | #N(#PEEK(#PC+$01)&$0F) }
+  TABLE#)
+
+#DEF(#ATTRIBUTES
+  Attributes:
+  #TABLE(default,centre,centre,centre,centre,centre,centre,centre,centre)
+  { =h Visible | =h Animal | =h Open | =h Gives Light | =h Broken | =h Full | =h Fluid | =h Locked }
+  { #FOR($07,$00,-$01)(x,#IF(#PEEK(#PC)&$01<<x)(yes,no), | ) }
+  TABLE#)
+
+#DEF(#EXITS(n)
+  #TABLE(default,centre,centre,centre)
+  { =h Direction | =h Via | =h Destination }
+  #FOR($00,$n-$01)(i,{ #MOVEMENT(#PC+$03*i) })
+  TABLE#)
+
+#DEF(#PICTURE(addr)(fname,title)
+  #PUSHS
+  #UDGTABLE
+  { =h $title }
+  { #POKES$$6FFE,$$8E#POKES$$6FFF,$$F4#SIM(start=$$C10F,stop=$$F48E,sp=$$6FFE)#SIM(start=$$F3C2,stop=$$F48E,hl=$addr,sp=$$6FFE)#SCR$$02{$$0100,$$00,$$0100,$$0102}($fname) }
+  UDGTABLE#
+  #POPS)
+
+#DEF(#BITPACKED(n)
+  Bit-packed letter#IF($n>$01)(s) (#EVAL($n) letter#IF($n>$01)(s), 5 bits each):)

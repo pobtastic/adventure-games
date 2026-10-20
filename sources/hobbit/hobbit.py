@@ -326,7 +326,7 @@ class HobbitHtmlWriter(HtmlWriter):
             return end, "invalid ID"
         address += 1
         target = self.snapshot[address] + self.snapshot[address + 1] * 0x100
-        anchor = '#{}'.format(target)
+        anchor = '#' + self.asm_anchor(target)
         target += 0x08
         href = self._asm_relpath(cwd, 0xC11B, '') + anchor
         if self.base == BASE_16:
@@ -404,7 +404,7 @@ class HobbitHtmlWriter(HtmlWriter):
             base_letter &= 0x8F
         elif base_letter & (1 << 7):
             base_letter &= 0x7F
-            suffix = '+$80 (escape character)'
+            suffix = '+#N($80,$02,$01,$01)($) (escape character)'
         elif base_letter & (1 << 6):
             base_letter -= 0x60
             suffix = '(PREPOSITION?)'
