@@ -1,11 +1,11 @@
-; Copyright Melbourne House 1984, 2025 ArcadeGeek LTD. NOTE: Disassembly is 
+; Copyright Melbourne House 1984, 2026 ArcadeGeek LTD. NOTE: Disassembly is 
 ; Work-In-Progress. Label naming is loosely based on Action_ActionName_SubAction 
 ; e.g. Print_HighScore_Loop.
 
 > $4000 @start
 > $4000 @expand=#IF({asm})(#DEF(#HOBBIT(addr)(link=The Hobbit)$link))
 > $4000 @set-handle-unsupported-macros=1
-> $4000 @expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
+> $4000 @expand=#DEF1(#SKOOLKID(addr,anchor=0)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html#IF({anchor})(#CHR(35)#IF({{mode[base]}}==16)(#EVAL({anchor},16,4),#EVAL({anchor})))">){name}#HTML(</a>))
 > $4000 @rom
 > $4000 @expand=#DEF(#TOKENPTR #TOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC)))
 > $4000 @expand=#DEF(#TEXTPTR "#TEXTTOKEN(#PEEK(#PC+$01)*$100+#PEEK(#PC))")
@@ -65,7 +65,7 @@ D $5B30 Loads the game header and the code block it names, and resets the Spectr
 . load fails or the header is not a code file.
 . Called from the loader bytes at #R$5B10 and #R$5B18.
 N $5B30 Read the game header from tape.
-  $5B30,$09 Point #REGix at the tape header (#R$5B1E), request #N$11 bytes, and ask the
+  $5B30,$09 Point #REGix at the tape header (#R$5B1E), request #N($0011,$04,$04) bytes, and ask the
 . ROM routine to load rather than verify.
   $5B39,$03 Call #R$5B8B to load the next tape block.
 N $5B3C Give up unless the header loaded.
@@ -85,7 +85,7 @@ N $5B62 Loads the loading-screen header and then the screen at #N$4000, and rese
 . Spectrum if either load fails.
 @ $5B62 label=TapeLoader_Screen
 N $5B62 Read a tape header for the loading screen.
-  $5B62,$09 Point #REGix at the tape header (#R$5B1E), request #N$11 bytes, and ask the
+  $5B62,$09 Point #REGix at the tape header (#R$5B1E), request #N($0011,$04,$04) bytes, and ask the
 . ROM routine to load rather than verify.
   $5B6B,$03 Call #R$5B8B to load the next tape block.
 N $5B6E Give up unless that header loaded.
@@ -114,7 +114,7 @@ N $5B8F Show a white border while the tape runs.
   $5B8F,$04 Set a white border (#INK7) and raise the MIC bit on port #N$FE.
 N $5B93 Enter the ROM loader and come back to #R$5B9A.
   $5B93,$04 Push #R$5B9A as the return address.
-  $5B97,$03 Jump into #SKOOLKID$0556(LD_BYTES) at #N$0562.
+  $5B97,$03 Jump into #SKOOLKID$0556,$0562(LD_BYTES) at #N$0562.
 N $5B9A The ROM loader returns here. Restore the border.
 @ $5B9A label=TapeLoader_AfterBytes
   $5B9A,$05 Set the border to #INK$07, saving flags the ROM loader returned.
@@ -7121,6 +7121,7 @@ B $9E6A,$02 Display record read by #R$C9BF: flags #N$00, value #N$00.
 c $9E6C Test The Police Flag
 @ $9E6C label=TestPoliceFlag
 D $9E6C Returns when the police flag is set, otherwise takes the character-busy message.
+E $9E6C Continue on to #R$9E74.
 N $9E6C Run by #R$CA64 after the display record at #R$9E6A, from the show-message command at #R$E932.
   $9E6C,$05 Return if the police flag is set.
   $9E71,$03 Use the character busy (#R$6929+#N$11).
@@ -7204,11 +7205,13 @@ c $9ED1 Character Action: Gardener
 D $9ED1 Scheduled behaviour for Gardener.
 . Reached through the character-action table at #R$9C85, dispatched by #R$9C84.
 R $9ED1 HL Pointer to gardener state
+E $9ED1 Continue on to #R$9ED4.
   $9ED1,$03 Use the character state: gardener at #R$9ED0.
 
 c $9ED4 Read The Character Being Processed
 @ $9ED4 label=ReadCharacterBeingProcessed
 D $9ED4 Starts the gardener's walk with an empty step count.
+E $9ED4 Continue on to #R$9ED7.
   $9ED4,$03 Move through the record for gardener.
 
 c $9ED7 Read The Character Being Processed
@@ -7319,7 +7322,7 @@ W $9FDB,$02
 
 g $9FDD Current Time Ticker
 @ $9FDD label=CurrentTime_Ticker
-D $9FDD Holds a value between #N($0000,$04,$04) to #N$FFFF, and just keeps
+D $9FDD Holds a value between #N$00 to #N($FFFF), and just keeps
 . incrementing all throughout the game.
 . Read by #R$A064, #R$B0AC and #R$BFD9.
 W $9FDD,$02
@@ -7600,6 +7603,7 @@ c $A040 Game Entry Point
 @ $A040 label=GameEntryPoint
 D $A040 Starts a game: clears the parser, asks whether pictures are wanted, then runs each
 . character from the timetable.
+E $A040 Continue on to #R$A064.
   $A040,$08 Clear the parser workspace and the initialised flag.
 N $A048 Draw decorative line.
   $A048,$03 Call #R$C14A to draw the decorative line.
@@ -7683,6 +7687,7 @@ c $A0E7 Load Or Save The Game
 @ $A0E7 label=LoadOrSaveGame
 D $A0E7 Loads the game unless the parameter is #N$02, which saves it instead.
 R $A0E7 A #N$02 saves the game. Any other value loads it
+E $A0E7 Continue on to #R$A0EB.
   $A0E7,$04 Go to #R$A0F1 if it is #N$02.
 
 c $A0EB Load The Game
@@ -7736,7 +7741,7 @@ D $A11C Grows the workspace at #R$9FE3 by the size asked for, plus a three-byte 
   $A124,$05 Start the free-space search and read the list at #R$9FE3.
   $A129,$04 Point #REGiy at the free-space list (#R$9FE3).
 @ $A12D label=AllocateMemory_Loop
-  $A12D,$04 Jump ahead to #R$A160 if the pointer is #N($0000,$04,$04).
+  $A12D,$04 Jump ahead to #R$A160 if the pointer is #N$00.
   $A131,$08 Jump ahead to #R$A13D when the high byte of this free block is set.
   $A139,$04 Jump ahead to #R$A157 if the first value is below the second.
 @ $A13D label=AllocateMemory_Next
@@ -8028,6 +8033,7 @@ D $A360 Clears #R$A35E if it holds the current character, then runs #R$A37D with
 c $A37D Process Object Display
 @ $A37D label=ProcessObject_Display
 D $A37D Clears the object-processing flag, reads this object's attributes, and prints the tokens the display bits select.
+E $A37D Continue on to #R$A414.
   $A37D,$04 Clear the object processing source flag.
   $A381,$06 Call #R$A2B1 to calculate object table offset.
   $A387,$07 Call #R$A2BD to extract object attributes.
@@ -8083,7 +8089,7 @@ D $A419 Clear the top bit of the pointer, then scale the pointer down to the nex
   $A420,$02 Rotate the bit from #REGh into #REGl, finishing the shift of #REGhl.
   $A422,$05 Print a space.
   $A427,$06 Take #N($00F0,$04,$04) as the unit #R$A476 subtracts from #REGhl.
-  $A42D,$03 Jump ahead to #R$A442 if #REGhl was below #N($00F0,$04,$04).
+  $A42D,$03 Jump ahead to #R$A442 if #REGhl was below #N$F0.
   $A430,$06 Keep the count in #REGb and print character #N$60 through #R$A9B7.
   $A436,$07 Call #R$A490 to print the count, then jump ahead to #R$A467 if the remainder in #REGhl is zero.
   $A43D,$05 Print a space.
@@ -8171,6 +8177,7 @@ R $A4BC O:HL Pointer to the object attribute byte
 c $A4CD Compare Location Data
 @ $A4CD label=CompareLocationData
 D $A4CD Compares the two room records from the exit field onward and reports whether they match.
+E $A4CD Continue on to #R$A4E0.
   $A4CD,$08 Save #REGde, #REGhl and #REGiy, then point #REGhl six bytes further on
 . (#N($0006,$04,$04)).
   $A4D5,$05 Call #R$A51B to read the script position.
@@ -8247,6 +8254,7 @@ W $A59D,$02
 
 c $A59F Print Text And Handle Control Characters
 @ $A59F label=PrintTextAndHandleControlCharacters
+E $A59F Continue on to #R$A5C3.
 E $A59F View the equivalent code in;
 . #LIST
 . { #HOBBIT$72DD }
@@ -8284,6 +8292,7 @@ N $A5C7 Keep on looping through until all of the text has been printed.
 c $A5CD Process Text Command
 @ $A5CD label=ProcessTextCommand
 R $A5CD IX Pointer to text data
+E $A5CD Continue on to #R$A5EA.
 D $A5CD Reads the next text byte. A command keeps its parameter, and any other byte is printed
 . as text.
   $A5CD,$07 Jump ahead to #R$A5F2 if bit 7 of the record's flag byte is clear.
@@ -8372,6 +8381,7 @@ N $A643 Puts #N$30 in #REGd so #R$A64A prints a full stop and a new line.
 
 c $A647 Print Character With Time Period
 @ $A647 label=PrintCharacterWithTimePeriod
+E $A647 Continue on to #R$A64A.
 E $A647 View the equivalent code in;
 . #LIST
 . { #HOBBIT$7348 }
@@ -8597,6 +8607,7 @@ D $A711 Fetches the next token and calls #R$BF1C with that token as the record, 
 
 c $A720 Clear The Object Source
 @ $A720 label=ClearTheObjectSource
+E $A720 Continue on to #R$A724.
 E $A720 View the equivalent code in;
 . #LIST
 . { #HOBBIT$73A3 }
@@ -8761,7 +8772,7 @@ E $A793 View the equivalent code in;
 . { #HOBBIT$740C }
 . LIST#
 D $A793 Saves the current character, clears the object source flag, and continues at
-. #R$A798. That entry runs #R$A82F, then returns token #N$0485, or token #N($007A,$04,$04)
+. #R$A798. That entry runs #R$A82F, then returns token #N($0485), or token #N$7A
 . when the character id is zero.
 .
 . Control code #N$10 in the table at #R$A55D.
@@ -8884,6 +8895,7 @@ R $A7EB D Token parameter
 
 c $A80E Process Text Token With Attributes
 @ $A80E label=ProcessTextTokenWithAttributes
+E $A80E Continue on to #R$A815.
 E $A80E View the equivalent code in;
 . #LIST
 . { #HOBBIT$7478 }
@@ -8976,6 +8988,7 @@ L $A85C,$04,$09
 
 c $A880 Extract Token From Text
 @ $A880 label=ExtractTokenFromText
+E $A880 Continue on to #R$A887.
 E $A880 View the equivalent code in;
 . #LIST
 . { #HOBBIT$74BA }
@@ -9313,12 +9326,14 @@ B $AAAC,$06
 c $AAB2 Prepare Character For Display
 @ $AAB2 label=PrepareCharacterForDisplay
 D $AAB2 Clears the parser and gets the character ready for the picture.
+E $AAB2 Continue on to #R$AABD.
   $AAB2,$07 Clear the parser and clear the pictures-enabled byte at #R$A012.
   $AAB9,$02 Mark this display column as unused.
   $AABB,$02 Point the display row at the top of the screen buffer.
 
 c $AABD Force The Display Marker On
 D $AABD Forces the display marker on before the character record is built.
+E $AABD Continue on to #R$AAC4.
   $AABD,$01 Read the low byte of the source.
   $AABE,$02 Mark bits 0, 1, 2, 6, 7 on the result.
   $AAC0,$01 Store the result in the low byte of the source.
@@ -9327,12 +9342,14 @@ D $AABD Forces the display marker on before the character record is built.
 c $AAC4 Choose The Display Path From The Initialised Flag
 D $AAC4 Reads the initialised flag. When the game has been initialised it selects the
 . alternate display path and clears the extra display marker.
+E $AAC4 Continue on to #R$AAD1.
   $AAC4,$06 Jump to #R$AAD1 if the initialised flag is zero.
   $AACA,$07 Write #N$01 to the command mode at #R$A024 and clear bit 3 of the source.
 
 c $AAD1 Start Picture Mode When The Screen Is Idle
 @ $AAD1 label=StartPictureModeScreenIdle
 D $AAD1 When nothing is on screen, clears the picture buffer and selects picture mode.
+E $AAD1 Continue on to #R$AB4C.
   $AAD1,$07 Save #REGde and jump to #R$AB11 if the command mode at #R$A024 is set.
   $AAD8,$03 Clear the state byte at #R$AAA7.
   $AADB,$07 Read the word at #R$A02B, save it and call #R$AC24 to clear the co-ordinate buffer.
@@ -9342,7 +9359,7 @@ D $AAD1 When nothing is on screen, clears the picture buffer and selects picture
   $AAEF,$01 Restore the saved pointer from the stack.
   $AAF0,$03 Copy the character record from #REGiy into #REGhl.
   $AAF3,$07 Point #REGhl at the co-ordinates #N($0018,$04,$04) bytes into the character record, and #REGde at the buffer at #R$AAAC.
-  $AAFA,$06 Swap the pointers, take #N$06 bytes and copy them.
+  $AAFA,$06 Swap the pointers, take #N($0006,$04,$04) bytes and copy them.
   $AB00,$03 Read the word at #R$A029.
   $AB03,$05 Store it in the word at #R$A02B and jump ahead to #R$AB11 to check display mode.
 
@@ -9374,6 +9391,7 @@ N $AB47 See whether bit 3 of the low byte of the source is set, then read the po
 c $AB4C Read Object Processing Flag
 @ $AB4C label=ReadObjectProcessingFlag
 D $AB4C Copies the word at #R$A029 into the word at #R$A02B while the character is prepared for display.
+E $AB4C Continue on to #R$AB52.
   $AB4C,$06 Copy the word at #R$A029 into the word at #R$A02B.
 
 c $AB52 Copy Display If Needed
@@ -9565,7 +9583,7 @@ R $ACA6 E Flags (bits 6 and 7 indicate which display data set to copy)
 R $ACA6 O:A Bit 0 is set if data was copied
   $ACA6,$04 Jump ahead to #R$ACB2 if bit 6 is clear.
   $ACAA,$02 Clear the marker.
-  $ACAC,$06 Keep #REGde, take offset #N$04, and join the copy at #R$ACBB.
+  $ACAC,$06 Keep #REGde, take offset #N($0004,$04,$04), and join the copy at #R$ACBB.
 
 N $ACB2 Bit 7 selects the second display block.
 @ $ACB2 label=CopyDisplayDataToDisplayBuffer_Next
@@ -9574,7 +9592,7 @@ N $ACB2 Bit 7 selects the second display block.
   $ACB5,$06 Clear bit 7 and take offset #N($000E,$04,$04), keeping #REGde.
 @ $ACBB label=CopyDisplayDataToDisplayBuffer_AddOffset
   $ACBB,$08 Use the buffer: co-ordinate header (#R$AAA8).
-  $ACC3,$06 Take a length of #N$0A entries and copy these bytes across.
+  $ACC3,$06 Take a length of #N($000A,$04,$04) entries and copy these bytes across.
   $ACC9,$02,b$01 Reset the zero flag.
   $ACCB,$01 Return.
 
@@ -9599,13 +9617,14 @@ R $ACCC E Flags (bit 3 is reset)
 
 c $ACFB Apply The Saved Clause
 @ $ACFB label=ApplySavedClause
-D $ACFB When the command mode at #R$A024 is #N$02 and bit 6 of #REGe is clear, copies six bytes from offset #N$08 of the clause record to offset #N$18 and returns to the scan at #R$AB4C. Once the game has started, any other case sets bit 3 of #REGe and returns to that scan. Before the game has started it restores the saved word as class #N$B0, unlinks the clause record, and falls into #R$AD57.
+D $ACFB When the command mode at #R$A024 is #N$02 and bit 6 of #REGe is clear, copies six bytes from offset #N$08 of the clause record to offset #N$18 and returns to the scan at #R$AB4C. Once the game has started, any other case sets bit 3 of #REGe and returns to that scan. Before the game has started it restores the saved word as class #N($B0), unlinks the clause record, and falls into #R$AD57.
+E $ACFB Continue on to #R$AD57.
   $ACFB,$07 Jump to #R$AD23 if the command mode at #R$A024 is not #N$02.
   $AD02,$05 Jump back to #R$AB4C while bit 6 is present.
   $AD07,$08 Set the mark on this character
-  $AD0F,$08 Point #REGhl at byte #N$08 of the record (#REGiy+#N$08), save it and take
+  $AD0F,$08 Point #REGhl at byte #N($0008,$04,$04) of the record (#REGiy+#N$08), save it and take
 . #N($0010,$04,$04).
-  $AD17,$08 Add #N($0010,$04,$04), so #REGhl points at byte #N$18, and copy #N$06 bytes from byte
+  $AD17,$08 Add #N($10), so #REGhl points at byte #N($18), and copy #N($0006,$04,$04) bytes from byte
 . #N$08.
   $AD1F,$04 Switch back to the saved registers and resume the object scan at #R$AB4C.
 
@@ -9670,14 +9689,14 @@ N $ADB8 Starts this walk at the saved clause list.
 N $ADE4 Steps to the next clause record.
   $ADE4,$03 Call #R$AEB6 to step to the next clause record.
   $ADE7,$07 Jump to #R$AE11 if the command mode at #R$A024 is not #N$02.
-  $ADEE,$08 Point #REGhl at byte #N$18 of the record (#REGiy+#N$18) and save it.
+  $ADEE,$08 Point #REGhl at byte #N($0018,$04,$04) of the record (#REGiy+#N$18) and save it.
   $ADF6,$03 Take a length of #N$06 and clear the merge.
 @ $ADF9 label=MatchWordAgainstEarlierClause_TestCountFinished
   $ADF9,$05 Jump back to #R$ADF9 while the count is not finished.
   $ADFE,$01 Restore the saved pointer from the stack.
   $ADFF,$03 Go to #R$AE11 when any of the six bytes just merged is set.
   $AE02,$08 Swap the pointers and point #REGhl at #REGix, with #N($0018,$04,$04) ready to add.
-  $AE0A,$07 Point #REGhl at byte #N$18 of the record (#REGix+#N$18) and copy #N$06 bytes.
+  $AE0A,$07 Point #REGhl at byte #N$18 of the record (#REGix+#N$18) and copy #N($0006,$04,$04) bytes.
 @ $AE11 label=MatchWordAgainstEarlierClause_ClauseMarker
   $AE11,$03 Read the byte at #REGiy+#N$01.
   $AE14,$08 Call #R$AEF1 if the link word is zero.
@@ -9770,6 +9789,7 @@ D $AEB6 Counts down #REGb and follows the clause list, skipping records whose bi
 c $AEC5 Step Through The Saved Clause List
 @ $AEC5 label=StepThroughSavedClauseList
 D $AEC5 Counts down #REGb and continues at #R$AEC6, which walks the saved clause list until the pointer meets #R$9FF0+#N$02 or bit 6 is clear.
+E $AEC5 Continue on to #R$AEC6.
   $AEC5,$01 Count down one.
 
 c $AEC6 Walk The Saved Clause List
@@ -9795,6 +9815,7 @@ D $AEEA Starts a character search with no current record, then joins the list wa
 
 c $AEF1 Merge Character Flags
 @ $AEF1 label=MergeCharacterFlags
+E $AEF1 Continue on to #R$AF27.
 E $AEF1 View the equivalent code in;
 . #LIST
 . { #HOBBIT$78B7 }
@@ -9808,16 +9829,16 @@ D $AEF1 Copies the id, script marker and attribute bytes from the character reco
   $AF07,$03 Merge the object attribute into the result.
   $AF0A,$01 Return when this character has no attribute.
   $AF0B,$06 Return if copying this display entry did not match.
-  $AF11,$08 Switch register sets and point #REGhl at byte #N$12 of the record at #REGiy.
+  $AF11,$08 Switch register sets and point #REGhl at byte #N($0012,$04,$04) of the record at #REGiy.
   $AF19,$06 Take the graphics: baker street and move the pointer on by the length.
-  $AF1F,$03 Take a length of #N$06 bytes.
-  $AF22,$05 Copy the bytes and take an offset of #N$04.
+  $AF1F,$03 Take a length of #N($0006,$04,$04) bytes.
+  $AF22,$05 Copy the bytes and take an offset of #N($0004,$04,$04).
 
 c $AF27 Read The Schedule Field
 D $AF27 Sets the copy length from the script position, using two bytes when that position is empty.
   $AF27,$03 Call #R$AF52 to set the copy length to #N$0A.
   $AF2A,$06 Test whether the word at #REGiy+#N$02-#N$03 is zero.
-  $AF30,$03 Take a length of #N$02 bytes.
+  $AF30,$03 Take a length of #N($0002,$04,$04) bytes.
 N $AF33 Set copy length 2.
   $AF33,$03 Call #R$AF56 to set the copy length to #N$02 if the link word is zero.
   $AF36,$01 Switch back to the values saved for the caller.
@@ -9854,6 +9875,7 @@ D $AF52 Chooses a length of #N$0A bytes and copies them from the character recor
 
 c $AF56 Set Copy Length #N$02
 @ $AF56 label=SetCopyLengthTwo
+E $AF56 Continue on to #R$AF58.
 E $AF56 View the equivalent code in;
 . #LIST
 . { #HOBBIT$7903 }
@@ -9965,6 +9987,7 @@ c $B00B Clear The Display Lines
 @ $B00B label=ClearTheDisplayLines
 D $B00B Clears the display lines when the flag test passes, then returns zero.
 . Reached through the standard command table at #R$AF6B, dispatched by #R$AFE0.
+E $B00B Continue on to #R$B012.
   $B00B,$06 Call #R$AFE1 to test the flag bit, then call #R$A296 to clear the display lines.
   $B011,$01 Start from zero.
 
@@ -10042,7 +10065,7 @@ D $B0AC Initialises character timing data by resetting the time ticker, setting 
   $B0AC,$06 Reset #R$9FDD to zero.
   $B0B2,$04 Point to #R$9860.
   $B0B6,$06 Set the character's timer to zero.
-  $B0BC,$04 Write #N($0001,$04,$04) to *#R$A01F.
+  $B0BC,$04 Write #N$01 to *#R$A01F.
   $B0C0,$04 Record the startup flag.
   $B0C4,$01 Clear the carry so an idle character timer returns as not yet running.
   $B0C5,$01 Return.
@@ -10100,8 +10123,8 @@ N $B118 Mark another picture enabled and initialise the character.
 @ $B118 label=ProcessCharacterData_PicturesEnabledPointer
   $B118,$07 Call #R$AE6A to initialise character data structure.
 @ $B11F label=ProcessCharacterData_LengthCharacters
-  $B11F,$08 Point #REGhl #N$18 bytes past #REGiy and restore #REGde.
-  $B127,$06 Swap the pointers, copy #N$06 bytes.
+  $B11F,$08 Point #REGhl #N($0018,$04,$04) bytes past #REGiy and restore #REGde.
+  $B127,$06 Swap the pointers, copy #N($0006,$04,$04) bytes.
   $B12D,$01 Restore #REGde from the stack.
 
 N $B12E Read the low byte of the source, then mark bits 0, 1, 2, 6, 7 on the result,
@@ -10195,14 +10218,14 @@ D $B191 Clears the room parameters and the display buffer, then looks for a room
 @ $B1AB label=InitialiseDisplayBuffer_Next
   $B1AB,$08 Use the object runtime table (#R$8259).
   $B1B3,$04 Jump ahead to #R$B1BF if the two pointers meet.
-  $B1B7,$03 Take a length of #N$08 entries.
+  $B1B7,$03 Take a length of #N($0008,$04,$04) entries.
 @ $B1BA label=InitialiseDisplayBuffer_Loop
   $B1BA,$05 Count one more record and go back to #R$B1BA until the pointer reaches the base.
 @ $B1BF label=InitialiseDisplayBuffer_RecordSavedCharacter
   $B1BF,$07 Store this record count as the saved character and keep the object pointer at #R$B18C+#N$02.
   $B1C6,$04 Go to #R$B1DD if it is not #N$2E.
   $B1CA,$08 Test bit 0 of the display flag at #R$B16D and take #R$9FEE+#N$14.
-  $B1D2,$08 Point #REGde at the display data pointer at #R$B172 and take #N$06 bytes. Skip the swap when bit 0 of the display flag is clear.
+  $B1D2,$08 Point #REGde at the display data pointer at #R$B172 and take #N($0006,$04,$04) bytes. Skip the swap when bit 0 of the display flag is clear.
   $B1DA,$01 Swap the two pointers.
 @ $B1DB label=InitialiseDisplayBuffer_CopyTheseBytes
   $B1DB,$02 Copy these bytes across.
@@ -10413,7 +10436,7 @@ D $B39D Stores the result in the display, then clears the mark on this character
   $B3CF,$05 Take #N$06 and call #R$B483 to copy the character into the display.
   $B3D4,$05 Take #N$10 and call #R$B483 to copy the character into the display.
   $B3D9,$07 Clear the byte at #R$A02E and point #REGhl at #R$B17E+#N$08.
-  $B3E0,$03 Take a length of #N$08 entries.
+  $B3E0,$03 Take a length of #N($0008,$04,$04) entries.
   $B3E3,$04 Use the object runtime table (#R$8259).
 @ $B3E7 label=ProcessDisplayPointer_Loop
   $B3E7,$04 Use the character record as the schedule entry.
@@ -10433,6 +10456,7 @@ N $B3FD Restores the character, swaps the display pointers, and leaves a non-zer
 
 c $B405 Swap The Object Display Pointers
 @ $B405 label=SwapObjectDisplayPointers
+E $B405 Continue on to #R$B468.
 E $B405 View the equivalent code in;
 . #LIST
 . { #HOBBIT$7C23 }
@@ -10472,7 +10496,7 @@ c $B468 Copy Six Display Bytes
 @ $B468 label=CopySixDisplayBytes
 D $B468 Copies six display bytes and reports failure when every copied byte is zero.
   $B468,$08 Save the count, take #N$00 as its high byte, and point #REGhl at the record.
-  $B470,$07 Add the offset, copy #N$06 bytes and clear #REGa.
+  $B470,$07 Add the offset, copy #N($0006,$04,$04) bytes and clear #REGa.
   $B477,$02 Count the #N$06 copied bytes.
 @ $B479 label=CopySixDisplayBytes_TestCopied
   $B479,$04 Step back one byte, or that byte into #REGa, and repeat from #R$B479 for all
@@ -10591,7 +10615,7 @@ D $B517 Returns when the display flag at #R$A01C is zero. Otherwise walks the ch
   $B528,$02 Jump ahead to #R$B543 if bit 6 of the schedule entry is clear.
   $B52A,$03 Call #R$D04F to adjust the object table for this room.
 @ $B52D label=CheckFlagAndSetDisplay_ProcessObject
-  $B52D,$07 Point #REGhl at byte #N$08 of the record (#REGiy+#N$08).
+  $B52D,$07 Point #REGhl at byte #N($0008,$04,$04) of the record (#REGiy+#N$08).
   $B534,$03 Call #R$D36A to check the next object.
   $B537,$04 Jump back to #R$B521 if the entry is the end marker.
   $B53B,$06 Jump back to #R$B52D while the object is not in the room on screen.
@@ -10721,7 +10745,7 @@ D $B633 #HTML(Plants the <code>JR NZ</code> opcode for the two tests at #R$B645 
 . modified by #R$B635.
   $B65A,$03 Clear the pointer.
 @ $B65D label=SelectJumpIfNotZero_ReturnWithPointers
-  $B65D,$01 Leave the location pointer (or #N($0000,$04,$04) when bit 5 is clear) on the stack in place of the address saved there.
+  $B65D,$01 Leave the location pointer (or #N$00 when bit 5 is clear) on the stack in place of the address saved there.
   $B65E,$01 Return to the caller (its address is now in #REGhl), leaving the location pointer and the handler address on the stack.
   $B65F,$07 Jump to #R$B671 if the display mode is #N$05.
   $B666,$04 Jump to #R$B671 when the display mode is #N$06.
@@ -10767,6 +10791,7 @@ W $B6D8,$02 Read by #R$B6FD.
 c $B6DA Process Display Entry
 @ $B6DA label=ProcessDisplayEntry
 D $B6DA Builds the display entry, and returns at once when that entry is empty.
+E $B6DA Continue on to #R$B6E5.
   $B6DA,$04 Return if there is no location display text.
   $B6DE,$01 Restore the saved source from the stack.
   $B6DF,$03 Call #R$B83C.
@@ -11074,7 +11099,7 @@ D $B9CA Reads the saved character record and copies the link ahead of it into th
   $B9D7,$05 Store the high byte of the link at offset #N$06 and keep #REGix.
   $B9DC,$04 Copy the memory-link record from #REGiy into #REGix.
   $B9E0,$05 Call #R$A1C7 to follow this memory link.
-  $B9E5,$04 Jump ahead to #R$B9F5 if the pointer is #N($0000,$04,$04).
+  $B9E5,$04 Jump ahead to #R$B9F5 if the pointer is #N$00.
   $B9E9,$09 Point #REGiy at #REGhl and jump to #R$B9CE if bit 6 of #REGiy+#N$01 is set.
   $B9F2,$02,b$01 Reset the zero flag.
   $B9F4,$01 Return.
@@ -11214,7 +11239,7 @@ D $BB46 Records the result in #R$BA60, sets the byte at #R$BA61, and copies thre
   $BB46,$07 Set the byte at #R$BA61, keeping #REGa.
   $BB4D,$03 Store it in the workspace byte at #R$BA60.
   $BB50,$06 Point #REGhl at #R$BA13+#N$06 and #REGde at #R$BA62.
-  $BB56,$03 Take a length of #N$03 bytes.
+  $BB56,$03 Take a length of #N($0003,$04,$04) bytes.
   $BB59,$02 Copy the counted bytes.
   $BB5B,$01 Return.
 
@@ -11426,6 +11451,7 @@ D $BD4B Starts the object scan at the action separator.
 c $BD51 Search Object Table
 @ $BD51 label=SearchObjectTable
 D $BD51 Starts the object scan at the character table.
+E $BD51 Continue on to #R$BD55.
   $BD51,$04 Use the character pairs (#R$994D+#N$18).
 
 c $BD55 Read The Record Flag
@@ -11455,17 +11481,17 @@ D $BD69 Compares the saved object's moved marker, flag byte and room with this r
 c $BD7E Calculate Object Pointer Offset
 @ $BD7E label=CalculateObjectPointerOffset
 D $BD7E Points #REGhl at byte #N$18 of the record, or at the object display link when bit 7 is set.
-  $BD7E,$07 Point #REGhl at byte #N$18 of the record (#REGiy+#N$18).
+  $BD7E,$07 Point #REGhl at byte #N($0018,$04,$04) of the record (#REGiy+#N$18).
   $BD85,$06 Jump to #R$BD8E if a marker on the schedule entry is clear.
   $BD8B,$03 Take the object display link.
 @ $BD8E label=CalculateObjectPointerOffset_Next
   $BD8E,$06 Jump to #R$BD97 if a marker on the schedule entry is clear.
   $BD94,$03 Take the alternate display link.
 @ $BD97 label=CalculateObjectPointerOffset_DisplayDataPointer
-  $BD97,$08 Copy #N$06 bytes from the display data at #R$B172.
-  $BD9F,$07 Point #REGhl at byte #N$08 of the record (#REGiy+#N$08).
+  $BD97,$08 Copy #N($0006,$04,$04) bytes from the display data at #R$B172.
+  $BD9F,$07 Point #REGhl at byte #N($0008,$04,$04) of the record (#REGiy+#N$08).
   $BDA6,$03 Take the display mode flag.
-  $BDA9,$08 Copy #N$06 bytes and read #REGiy+#N$00 into #REGl.
+  $BDA9,$08 Copy #N($0006,$04,$04) bytes and read #REGiy+#N$00 into #REGl.
   $BDB1,$06 Keep the low nibble of #REGiy+#N$01 in #REGh.
   $BDB7,$03 Record the display pointer.
   $BDBA,$07 Call #R$BDC2 to store the character record.
@@ -11514,7 +11540,7 @@ D $BE22 Looks the object up and copies either its picture link or the alternate 
   $BE2F,$02 Jump ahead to #R$BE34 if the special-description flag is present.
   $BE31,$03 Take the alternate display link.
 @ $BE34 label=UseObjectDisplayLink_Length
-  $BE34,$03 Take a length of #N$06.
+  $BE34,$03 Take a length of #N($0006,$04,$04).
   $BE37,$02 Copy the counted bytes.
   $BE39,$01 Return.
 
@@ -11627,7 +11653,7 @@ N $BF2D Print text token.
   $BF36,$06 Call #R$D3E8 to check object has special description.
   $BF3C,$01 Return.
 
-N $BF3D Expand token #N($005D,$04,$04).
+N $BF3D Expand token #N$5D.
 @ $BF3D label=ProcessTextTokenEntry_Next
   $BF3D,$06 Take token #N($005D,$04,$04) and call #R$A887 to expand it.
   $BF43,$02 Jump back to #R$BF30 for the next character.
@@ -11672,6 +11698,7 @@ N $BF9C Now the date bar has been updated, set up printing it to the screen.
 c $BFA4 Convert Number To ASCII
 @ $BFA4 label=ConvertNumberToASCII
 D $BFA4 Turns the number into digits the print routine can use.
+E $BFA4 Continue on to #R$BFAA.
   $BFA4,$03 Call #R$BFAA to store the record flag.
   $BFA7,$03 Turn the number into a character.
 
@@ -11822,6 +11849,7 @@ B $C03F,$01 Return.
 c $C040 Save Game
 @ $C040 label=SaveGame
 D $C040 Stores the current game so it can be restored later.
+E $C040 Continue on to #R$C089.
   $C040,$06 Print the message at #N$09A2 and wait for a key.
   $C046,$08 Record the tape header: saved game.
   $C04E,$07 Use the tape header: saved game (#R$C0FE).
@@ -11974,7 +12002,7 @@ N $C179 Skip to the next pattern.
   $C17F,$01 The count, and step to the next row.
   $C180,$02 Count the next attribute and repeat from #R$C168.
 N $C182 Now colour the line BRIGHT WHITE.
-  $C182,$0D Take the attributes, take a length of #N$1F attributes and copy these bytes
+  $C182,$0D Take the attributes, take a length of #N($001F,$04,$04) attributes and copy these bytes
 . across.
   $C18F,$01 Return.
 
@@ -12076,12 +12104,14 @@ B $C1FB,$01
 c $C1FC Process Character Input
 @ $C1FC label=ProcessCharacterInput
 R $C1FC A Character code
+E $C1FC Continue on to #R$C1FD.
 D $C1FC Restores the character code the caller had saved.
   $C1FC,$01 Restore saved character id for the caller.
 
 c $C1FD Read The Pointer At The Storage Decorative
 @ $C1FD label=PrintScreenCharacter
 D $C1FD Prints one character at the current column, and starts a new line on ENTER.
+E $C1FD Continue on to #R$C22D.
   $C1FD,$03 Keep the character.
   $C200,$04 Read the print column.
   $C204,$09 Read the screen position at #R$C1F6 and jump to #R$C214 if the character is not a new line.
@@ -12143,11 +12173,12 @@ D $C267 Steps the print column back by one cell and wraps when the column underf
 c $C271 Scroll Screen Up
 @ $C271 label=ScrollScreenUp
 D $C271 Scrolls the screen up one character row.
+E $C271 Continue on to #R$C28D.
   $C271,$06 Keep the caller's registers and point #REGhl at the screen address #N$5080.
   $C277,$03 Take the screen.
   $C27A,$02 Use #N$08.
 @ $C27C label=ScrollScreenUp_Loop
-  $C27C,$05 Take a length of #N$80 entries.
+  $C27C,$05 Take a length of #N($0080,$04,$04) entries.
   $C281,$02 Scroll #N$80 bytes of this screen third down one character row.
   $C283,$07 Jump back to #R$C27C while the count is not finished.
   $C28A,$03 Point #REGhl at the screen address #N$50E0.
@@ -12169,7 +12200,7 @@ D $C29C Scrolls the screen down one character row.
   $C2A2,$03 Take the screen.
   $C2A5,$02 Use #N$08.
 @ $C2A7 label=ScrollScreenDown_Loop
-  $C2A7,$05 Take a length of #N$80 entries.
+  $C2A7,$05 Take a length of #N($0080,$04,$04) entries.
   $C2AC,$02 Scroll #N$80 bytes of this screen third up one character row.
   $C2AE,$07 Jump back to #R$C2A7 while the count is not finished.
   $C2B5,$05 Jump back to #R$C28D to scroll screen up.
@@ -12225,7 +12256,7 @@ R $C316 C Column count
   $C31D,$06 Save the registers and point #REGhl at the second character row of the screen
 . (#N$4020).
   $C323,$03 Point the row copy at the top of the screen.
-  $C326,$03 Take a length of #N$11 entries.
+  $C326,$03 Take a length of #N($0011,$04,$04) entries.
   $C329,$08 Go to #R$C333 with #REGa=#N$20 if the flag at #R$C128 is zero (otherwise use #N$10).
   $C331,$02 Use #N$10 for the display.
 @ $C333 label=UpdateScreenDisplay_Loop
@@ -12342,7 +12373,7 @@ D $C403 The game's copy of the ROM #SKOOLKID$0EF4(COPY_LINE) code: writes #N$02 
   $C40B,$01 Keep the motor value just sent in #REGd.
   $C40C,$04 Read port #N$FB and return if the ZX Printer is busy.
   $C410,$02 Go back to #R$C40C while the ZX Printer is not ready.
-  $C412,$03 Jump to #SKOOLKID$0EF4(COPY_LINE) at #N$0F12.
+  $C412,$03 Jump to #SKOOLKID$0EF4,$0F12(COPY_LINE) at #N$0F12.
 
 c $C415 Wait For Keypress
 @ $C415 label=WaitForKeypress_Loop
@@ -12489,6 +12520,7 @@ N $C54E Bit 1 of the object attribute value is set?
 c $C55A Record The Result In The Room Graphics
 @ $C55A label=RecordResultRoomGraphics
 D $C55A Goes to #R$C929 when the graphics parameter is not accepted.
+E $C55A Continue on to #R$C560.
   $C55A,$06 Go to #R$C929 if the graphics parameter is not accepted.
 
 c $C560 Record The Result In The Room Graphics
@@ -12518,6 +12550,7 @@ c $C583 Look Up The Display Record For The Moved Marker
 @ $C583 label=LookUpDisplayRecordForMovedMarker
 D $C583 Turns the moved marker into an index and reads the display record address
 . from #R$9FAB.
+E $C583 Continue on to #R$C591.
   $C583,$08 Keep bits 0-6 of the marker as the index and point #REGhl at #R$9FAB.
   $C58B,$06 Add twice the index and read the display record address into #REGhl.
 
@@ -12575,6 +12608,7 @@ D $C5FC Returns if the saved marker is clear. Otherwise accepts a graphics param
 c $C60D Record The Result In The Room Graphics
 @ $C60D label=RecordResultRoomGraphics_ClearHighByte
 D $C60D Goes to #R$C989 when the set graphics parameter is not accepted.
+E $C60D Continue on to #R$C613.
   $C60D,$06 Go to #R$C989 if the set graphics parameter is not accepted.
 
 c $C613 Record The Result In The Room Graphics
@@ -12705,6 +12739,7 @@ N $C719 Read the room graphics parameter and keep it for the picture.
 c $C74E Read The Object Attribute
 @ $C74E label=ReadObjectAttribute_LooksObjectFolds
 D $C74E Looks the object up and folds its attribute into the two-bit count.
+E $C74E Continue on to #R$C763.
   $C74E,$04 Call #R$D237 to look up that object.
   $C752,$03 Read the object's attribute into #REGc.
   $C755,$09 Shift #REGb down by two bits, keep the low two, put #REGl in #REGd and call #R$C763.
@@ -13163,6 +13198,7 @@ c $CB2C Run Display Record Code
 @ $CB2C label=RunDisplayRecordCode
 D $CB2C Restores #REGix/#REGiy from #R$CB28/#R$CB2A, runs the code at #REGhl via
 . #R$CB40, then saves #REGix/#REGiy again (falls through to #R$CB34).
+E $CB2C Continue on to #R$CB34.
   $CB2C,$08 Bring #REGix and #REGiy back from #R$CB28 and #R$CB2A.
 
 c $CB34 Run Handler Keeping Pointers
@@ -13183,11 +13219,12 @@ c $CB43 Process Display With Location Check
 @ $CB43 label=ProcessDisplayWithLocationCheck
 D $CB43 Asks whether the character is here, and clears the character being processed when the answer is
 . no.
+E $CB43 Continue on to #R$CB58.
   $CB43,$05 Call #R$DC6C to check character id.
   $CB48,$02 Jump ahead to #R$CB65 to return if the character is not zero, one, or Sherlock.
   $CB4A,$04 Clear the current character.
   $CB4E,$06 Jump to #R$CB5F if the parser is zero.
-  $CB54,$04 Jump ahead to #R$CB67 if the pointer is not #N($0000,$04,$04).
+  $CB54,$04 Jump ahead to #R$CB67 if the pointer is not #N$00.
 
 c $CB58 Select Sherlock After Clearing The Parser
 @ $CB58 label=SelectSherlock
@@ -13318,6 +13355,7 @@ D $CC29 Finds the character being processed, and stores that record together wit
 c $CC37 Process Character Action
 @ $CC37 label=ProcessCharacterAction
 R $CC37 A Character ID
+E $CC37 Continue on to #R$CC5A.
 D $CC37 Clears the script command counter at #R$CC0B, then runs #R$CC0E.
   $CC37,$05 Save the character id and clear the script command counter at #R$CC0B.
   $CC3C,$04 Call #R$CC0E to find character.
@@ -13350,6 +13388,7 @@ c $CC78 Script Interpreter
 D $CC78 Runs the current character's script from the timetable entry at #R$9FDB, one command at
 . a time, until the script ends or yields.
 R $CC78 A Character ID
+E $CC78 Continue on to #R$CC82.
   $CC78,$03 Call #R$CC5A to read this character's timetable.
   $CC7B,$07 Read the currently processed character timetable pointer, then call #R$D008 to get
 . script pointer from timetable.
@@ -13455,6 +13494,7 @@ c $CD8B Terminate Character Script
 @ $CD8B label=TerminateCharacterScript
 D $CD8B Ends this character's script by storing a one-cycle delay at #R$A01F and clearing the
 . script state.
+E $CD8B Continue on to #R$CD91.
 N $CD8B Set script completion flag.
   $CD8B,$06 Write #N($0001,$04,$04) to *#R$A01F.
 
@@ -13531,6 +13571,7 @@ N $CE47 Process room display parameter.
 c $CE4F Clear Room Display Parameters
 @ $CE4F label=ClearRoomDisplayParameters
 D $CE4F Writes #N$FF over the room display parameters.
+E $CE4F Continue on to #R$CE57.
   $CE4F,$08 Write #N$FF to #LIST { *#R$A034 } { *#R$A035 } LIST#.
 
 c $CE57 Read The Character's Room
@@ -13626,12 +13667,14 @@ c $CEFE Advance Script Pointer By Command Size
 D $CEFE Advances the script pointer past a command byte by the appropriate number of bytes based on the command type. Different command types have different data sizes, so the pointer must be advanced accordingly.
 R $CEFE A Command byte
 R $CEFE O:HL Updated script pointer
+E $CEFE Continue on to #R$CF03.
 N $CEFE Extended commands (bit 7 set) require an extra 2-byte advance before the normal command type advance.
   $CEFE,$05 If bit 7 of the command is set, call #R$CF40 to step past its two-byte address.
 
 c $CF03 Advance By Command Type
 @ $CF03 label=AdvanceByCommandType
 D $CF03 Advances the script pointer by the size of this command type.
+E $CF03 Continue on to #R$CF40.
   $CF03,$02,b$01 Extract the command type (bits 0-3).
 N $CF05 Route to the appropriate handler based on command type to advance the script pointer by the correct number of bytes.
   $CF05,$04 Jump ahead to #R$CF41 if the command is #N$0F.
@@ -13667,6 +13710,7 @@ c $CF43 Clear Script Command Flags
 @ $CF43 label=ClearScriptCommandFlags
 D $CF43 Clears flag bytes in a script command based on the command type and flag bits. Different command types require clearing different numbers of flag bytes to mark them as processed.
 R $CF43 IX Pointer to script command data
+E $CF43 Continue on to #R$CF73.
   $CF43,$03 Read the command flag byte.
 N $CF46 Clear the first flag byte if certain flag bits are set, indicating those conditions have been processed.
   $CF46,$05 If bit 7 of the command is set, call #R$CF73 to clear one flag byte.
@@ -13690,6 +13734,7 @@ N $CF52 Route to the appropriate handler based on command type to clear the requ
 c $CF73 Clear The Record Flag
 @ $CF73 label=ClearScriptCommandFlags_ClearFirst
 D $CF73 Clear the record flag, then step to the next field of the character record
+E $CF73 Continue on to #R$CF79.
   $CF73,$04 Clear the first flag byte.
   $CF77,$02 Step to the next flag byte of the script command.
 
@@ -13726,6 +13771,7 @@ c $CFB6 Find Character Script Entry
 D $CFB6 Searches through the character script entry list to find an entry matching the current character ID. Returns the entry pointer if found, otherwise returns #N$00.
 R $CFB6 O:IX Character script entry pointer (if found)
 R $CFB6 O:A #N$00 if not found, bit 0 set if found
+E $CFB6 Continue on to #R$CFB9.
   $CFB6,$03 Read the current character.
 
 c $CFB9 Walk The Character Script Entries
@@ -13909,6 +13955,7 @@ N $D102 Process location token.
 c $D113 Describe The Current Room
 @ $D113 label=DescribeCurrentRoom
 D $D113 Looks the current room up, prints its name and lists the objects that are here.
+E $D113 Continue on to #R$D178.
   $D113,$04 Use the room as the count, then call #R$D224 to look up this room.
   $D117,$04 Call #R$A277 with the room in #REGa.
   $D11B,$0A Keep the registers, read the current character and call #R$C863 to read that character's room.
@@ -13949,6 +13996,7 @@ D $D178 Turns the count into a direction name and prints it.
 c $D182 Print The Set Message
 @ $D182 label=PrintSetMessage
 D $D182 Prints the message when an address is set.
+E $D182 Continue on to #R$D187.
   $D182,$05 If a message address is set, go to #R$A59F to print it.
 
 c $D187 Print The Location Text
@@ -14121,6 +14169,7 @@ D $D26C Looks up the object named by the room display parameter and restores the
 c $D275 Check Character ID Range
 @ $D275 label=CheckCharacterIDRange
 D $D275 Points #REGhl at the character being processed and falls through into #R$D278, which sets the carry for #N$FF, #N$FE or a matched id.
+E $D275 Continue on to #R$D278.
   $D275,$03 Take the character being processed.
 
 c $D278 Test For The End Marker
@@ -14215,6 +14264,7 @@ D $D2ED Starts the attribute count at one and joins #R$D2F5.
 
 c $D2F2 Get Object Attribute Value
 @ $D2F2 label=GetObjectAttributeValue
+E $D2F2 Continue on to #R$D2F5.
 E $D2F2 View the equivalent code in;
 . #LIST
 . { #HOBBIT$9CED }
@@ -14288,6 +14338,7 @@ R $D349 IX Table to search
 
 c $D34E Search Three-Byte Length Table
 @ $D34E label=SearchThreeByteTable
+E $D34E Continue on to #R$D351.
 E $D34E View the equivalent code in;
 . #LIST
 . { #HOBBIT$9DBD }
@@ -14401,6 +14452,7 @@ D $D3E8 Reads the object's description word through #R$A7D0 and clears #R$A7EA u
 
 c $D405 Check Object Attribute With Flag
 @ $D405 label=CheckObjectAttributeWithFlag
+E $D405 Continue on to #R$D416.
 E $D405 View the equivalent code in;
 . #LIST
 . { #HOBBIT$9ED6 }
@@ -14412,6 +14464,7 @@ D $D405 Reads the object's attribute word and prints the attribute text selected
 
 c $D416 Read The Schedule Field
 D $D416 Reads the schedule pair and clears its top bit.
+E $D416 Continue on to #R$D427.
   $D416,$08 Read the schedule pair and clear its top bit.
   $D41E,$09 Call #R$A815 if bit 7 of the schedule entry is clear.
 
@@ -14456,6 +14509,7 @@ D $D46C Selects field 1 and searches for an object whose field matches #REGb.
 
 c $D471 Find Object By Field Two
 @ $D471 label=FindObjectByFieldTwo
+E $D471 Continue on to #R$D474.
 E $D471 View the equivalent code in;
 . #LIST
 . { #HOBBIT$9F2D }
@@ -14652,6 +14706,7 @@ N $D578 No nested objects found - restore registers and return.
 c $D57C Find Next Matching Object
 @ $D57C label=FindNextMatchingObject
 D $D57C Hands the registers saved by the search back to the caller.
+E $D57C Continue on to #R$D57D.
   $D57C,$01 Restore the caller's registers.
 
 c $D57D Find The Next Matching Object
@@ -14743,6 +14798,7 @@ N $D5EF Fetch location data pointer.
 
 c $D5FB Get Direction Token
 @ $D5FB label=GetDirectionToken
+E $D5FB Continue on to #R$D607.
 E $D5FB View the equivalent code in;
 . #LIST
 . { #HOBBIT$A0BA }
@@ -15370,6 +15426,7 @@ N $DB30 Accept "AM" or "PM": "A" has already set bit 6 of #REGb, and "P" sets bi
 c $DB56 Test For A Full Stop
 @ $DB56 label=TestFullStop_TestReturnsCharacterSentence
 D $DB56 Returns at once when the character is a sentence stop.
+E $DB56 Continue on to #R$DB59.
   $DB56,$03 Return if the input is #N$2E.
 
 c $DB59 Test For A Comma
@@ -15582,12 +15639,14 @@ c $DD07 Read Matched Character Room
 @ $DD07 label=MatchedCharacterRoom
 D $DD07 Reads the room stored on the character that matched the search.
 . Run by #R$CA64 after the display record at #R$DD03.
+E $DD07 Continue on to #R$DD0B.
   $DD07,$03 Read the room stored on the matched character.
   $DD0A,$01 Keep that room beside the character id.
 
 c $DD0B Compare Current Character
 @ $DD0B label=CompareCurrentCharacter
 D $DD0B Reads the character the command is about.
+E $DD0B Continue on to #R$DD0E.
   $DD0B,$03 Read the character being processed.
 
 c $DD0E Match The Character And Store Its Room
@@ -15717,7 +15776,7 @@ c $DE48 Scale The High Byte By Sixty
 D $DE48 Returns the low byte plus sixty times the high byte. When the high byte is #N$0C, only
 . the low byte is kept.
   $DE48,$07 Clear the pointer.
-  $DE4F,$03 Take sixty (#N$3C), the scale for the high byte.
+  $DE4F,$03 Take sixty (#N($003C,$04,$04)), the scale for the high byte.
   $DE52,$05 Go to #R$DE5A when the high byte is #N$0C, so only the low byte is kept.
 @ $DE57 label=ScaleHighByteBySixty_Hour
   $DE57,$03 Add sixty to #REGhl once per hour in #REGb.
@@ -17881,7 +17940,7 @@ B $F48E,$02
 c $F490 Drawing Fill
 @ $F490 label=DrawingFill
 D $F490 Flood-fills from the pen and stores the ink at #R$F60B.
-  $F490,$08 Store the ink, save the pen and the picture pointer, and push the #N$B0 end marker.
+  $F490,$08 Store the ink, save the pen and the picture pointer, and push the #N($00B0,$04,$04) end marker.
   $F498,$04 Save the end marker and read the pixel under the pen.
   $F49C,$02 Go to #R$F4A5 if the pixel under the pen is already set.
   $F49E,$05 Step the pen left and try that pixel again until the left edge.

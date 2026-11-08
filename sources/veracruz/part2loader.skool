@@ -1,0 +1,73 @@
+@start
+@remote=main:$4000
+@remote=main:$C350
+@remote=main:$FB00
+@remote=main:$FCA0
+@remote=main:$FD0E
+
+; BASIC Loader
+;
+; The BASIC program "Vera Cruz" on the part 2 tape. It autostarts at line
+; 10.
+; .
+; #LIST { Line 20 loads the first CODE block at #N($C350,$04,$04): a copy
+; of #R$C350@main(DrawPicture) followed by the title card picture. } {
+; Line 30 draws the title card (picture #N$01) straight onto the screen;
+; see #R$4000@main(Loading). } { Line 40 prints "Second Part" over it. } {
+; Lines 50-80 load the main code block at #N($C350,$04,$04), then the code
+; blocks at #N($FB00,$04,$04) (see #R$FB00@main(DisplayFrame)),
+; #N($FCA0,$04,$04) (see #R$FCA0@main(ScrollWindow)) and #N($FD0E,$04,$04)
+; (see #R$FD0E@main(PrintString)). } { Line 100 loads the game itself,
+; which is written in BASIC. } LIST#
+@label=BasicLoader
+b$5CCB DEFB $00,$0A,$5C,$00,$F4,$32,$33,$36 ; {Line 10: POKE 23659,2: CLEAR 49999: PAPER 7: BRIGHT 1: POKE
+ $5CD3 DEFB $35,$39,$0E,$00,$00,$6B,$5C,$00 ; 23624,BIN 01111111: INK 7: CLS
+ $5CDB DEFB $2C,$32,$0E,$00,$00,$02,$00,$00 ;
+ $5CE3 DEFB $3A,$FD,$34,$39,$39,$39,$39,$0E ;
+ $5CEB DEFB $00,$00,$4F,$C3,$00,$3A,$DA,$37 ;
+ $5CF3 DEFB $0E,$00,$00,$07,$00,$00,$3A,$DC ;
+ $5CFB DEFB $31,$0E,$00,$00,$01,$00,$00,$3A ;
+ $5D03 DEFB $F4,$32,$33,$36,$32,$34,$0E,$00 ;
+ $5D0B DEFB $00,$48,$5C,$00,$2C,$C4,$30,$31 ;
+ $5D13 DEFB $31,$31,$31,$31,$31,$31,$0E,$00 ;
+ $5D1B DEFB $00,$7F,$00,$00,$3A,$D9,$37,$0E ;
+ $5D23 DEFB $00,$00,$07,$00,$00,$3A,$FB,$0D ; }
+ $5D2B DEFB $00,$14,$05,$00,$EF,$22,$22,$AF ; {Line 20: LOAD ""CODE
+ $5D33 DEFB $0D                             ; }
+ $5D34 DEFB $00,$1E,$23,$00,$F4,$35,$30,$30 ; {Line 30: POKE 50002,1: RANDOMIZE
+ $5D3C DEFB $30,$32,$0E,$00,$00,$52,$C3,$00 ; USR 50000
+ $5D44 DEFB $2C,$31,$0E,$00,$00,$01,$00,$00 ;
+ $5D4C DEFB $3A,$F9,$C0,$35,$30,$30,$30,$30 ;
+ $5D54 DEFB $0E,$00,$00,$50,$C3,$00,$0D     ; }
+ $5D5B DEFB $00,$28,$32,$00,$F5,$AC,$34,$0E ; {Line 40: PRINT AT 4,3; INK 2;
+ $5D63 DEFB $00,$00,$04,$00,$00,$2C,$33,$0E ; BRIGHT 1;"Second Part"
+ $5D6B DEFB $00,$00,$03,$00,$00,$3B,$D9,$32 ;
+ $5D73 DEFB $0E,$00,$00,$02,$00,$00,$3B,$DC ;
+ $5D7B DEFB $31,$0E,$00,$00,$01,$00,$00,$3B ;
+ $5D83 DEFB $22,$53,$65,$63,$6F,$6E,$64,$20 ;
+ $5D8B DEFB $50,$61,$72,$74,$22,$0D         ; }
+ $5D91 DEFB $00,$32,$18,$00,$F5,$AC,$30,$0E ; {Line 50: PRINT AT 0,0;: LOAD
+ $5D99 DEFB $00,$00,$00,$00,$00,$2C,$30,$0E ; ""CODE
+ $5DA1 DEFB $00,$00,$00,$00,$00,$3B,$3A,$EF ;
+ $5DA9 DEFB $22,$22,$AF,$0D                 ; }
+ $5DAD DEFB $00,$3C,$18,$00,$F5,$AC,$30,$0E ; {Line 60: PRINT AT 0,0;: LOAD
+ $5DB5 DEFB $00,$00,$00,$00,$00,$2C,$30,$0E ; ""CODE
+ $5DBD DEFB $00,$00,$00,$00,$00,$3B,$3A,$EF ;
+ $5DC5 DEFB $22,$22,$AF,$0D                 ; }
+ $5DC9 DEFB $00,$46,$18,$00,$F5,$AC,$30,$0E ; {Line 70: PRINT AT 0,0;: LOAD
+ $5DD1 DEFB $00,$00,$00,$00,$00,$2C,$30,$0E ; ""CODE
+ $5DD9 DEFB $00,$00,$00,$00,$00,$3B,$3A,$EF ;
+ $5DE1 DEFB $22,$22,$AF,$0D                 ; }
+ $5DE5 DEFB $00,$50,$18,$00,$F5,$AC,$30,$0E ; {Line 80: PRINT AT 0,0;: LOAD
+ $5DED DEFB $00,$00,$00,$00,$00,$2C,$30,$0E ; ""CODE
+ $5DF5 DEFB $00,$00,$00,$00,$00,$3B,$3A,$EF ;
+ $5DFD DEFB $22,$22,$AF,$0D                 ; }
+ $5E01 DEFB $00,$5A,$16,$00,$F4,$32,$33,$36 ; {Line 90: POKE 23689,25
+ $5E09 DEFB $38,$39,$0E,$00,$00,$89,$5C,$00 ;
+ $5E11 DEFB $2C,$32,$35,$0E,$00,$00,$19,$00 ;
+ $5E19 DEFB $00,$0D                         ; }
+ $5E1B DEFB $00,$64,$17,$00,$F5,$AC,$30,$0E ; {Line 100: PRINT AT 0,0;: LOAD ""
+ $5E23 DEFB $00,$00,$00,$00,$00,$2C,$30,$0E ;
+ $5E2B DEFB $00,$00,$00,$00,$00,$3B,$3A,$EF ;
+ $5E33 DEFB $22,$22,$0D                     ; }
+

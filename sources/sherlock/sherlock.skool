@@ -289,7 +289,7 @@ g$5B2F DEFB $01
 ;
 ; Read the game header from tape.
 @label=TapeLoader_Game
-c$5B30 LD IX,$5B1E   ; {Point #REGix at the tape header (#R$5B1E), request #N$11 bytes, and ask the
+c$5B30 LD IX,$5B1E   ; {Point #REGix at the tape header (#R$5B1E), request #N($0011,$04,$04) bytes, and ask the
  $5B34 LD DE,$0011   ; ROM routine to load rather than verify.
  $5B37 XOR A         ;
  $5B38 SCF           ; }
@@ -319,7 +319,7 @@ c$5B30 LD IX,$5B1E   ; {Point #REGix at the tape header (#R$5B1E), request #N$11
 ; .
 ; Read a tape header for the loading screen.
 @label=TapeLoader_Screen
- $5B62 LD IX,$5B1E   ; {Point #REGix at the tape header (#R$5B1E), request #N$11 bytes, and ask the
+ $5B62 LD IX,$5B1E   ; {Point #REGix at the tape header (#R$5B1E), request #N($0011,$04,$04) bytes, and ask the
  $5B66 LD DE,$0011   ; ROM routine to load rather than verify.
  $5B69 XOR A         ;
  $5B6A SCF           ; }
@@ -10516,7 +10516,7 @@ g$9FDB DEFW $0000
 
 ; Current Time Ticker
 ;
-; Holds a value between #N($0000,$04,$04) to #N$FFFF, and just keeps
+; Holds a value between #N$00 to #N($FFFF), and just keeps
 ; incrementing all throughout the game.
 ; Read by #R$A064, #R$B0AC and #R$BFD9.
 @label=CurrentTime_Ticker
@@ -11077,8 +11077,8 @@ c$A11C PUSH IY       ; {Add #N$03 to the total.
  $A126 LD HL,($9FE3) ; #R$9FE3.}
  $A129 LD IY,$9FE3   ; Point #REGiy at the free-space list (#R$9FE3).
 @label=AllocateMemory_Loop
-*$A12D LD A,L        ; {Jump ahead to #R$A160 if the pointer is
- $A12E OR H          ; #N($0000,$04,$04).
+*$A12D LD A,L        ; {Jump ahead to #R$A160 if the pointer is #N$00.
+ $A12E OR H          ;
  $A12F JR Z,$A160    ; }
  $A131 LD E,(HL)     ; {Jump ahead to #R$A13D when the high byte of this free
  $A132 INC HL        ; block is set.
@@ -11723,8 +11723,8 @@ c$A419 PUSH BC       ; {Save #REGbc and rescale the text pointer.
  $A424 CALL $A9B7    ; }
  $A427 LD DE,$00F0   ; {Take #N($00F0,$04,$04) as the unit #R$A476 subtracts
  $A42A CALL $A476    ; from #REGhl.}
- $A42D AND A         ; {Jump ahead to #R$A442 if #REGhl was below
- $A42E JR Z,$A442    ; #N($00F0,$04,$04).}
+ $A42D AND A         ; {Jump ahead to #R$A442 if #REGhl was below #N$F0.
+ $A42E JR Z,$A442    ; }
  $A430 LD B,A        ; {Keep the count in #REGb and print character #N$60
  $A431 LD A,$60      ; through #R$A9B7.
  $A433 CALL $A9B7    ; }
@@ -12752,7 +12752,7 @@ c$A78E LD A,($A034)  ; {Read the room display parameter and jump to #R$A783.
 ; Describe This Character
 ;
 ; Saves the current character, clears the object source flag, and continues at
-; #R$A798. That entry runs #R$A82F, then returns token #N$0485, or token #N($007A,$04,$04)
+; #R$A798. That entry runs #R$A82F, then returns token #N($0485), or token #N$7A
 ; when the character id is zero.
 ; .
 ; Control code #N$10 in the table at #R$A55D.
@@ -13735,8 +13735,8 @@ c$AAD1 PUSH DE       ; {Save #REGde and jump to #R$AB11 if the command mode at
  $AAF3 LD DE,$0018   ; {Point #REGhl at the co-ordinates #N($0018,$04,$04)
  $AAF6 ADD HL,DE     ; bytes into the character record, and #REGde at the
  $AAF7 LD DE,$AAAC   ; buffer at #R$AAAC.}
- $AAFA EX DE,HL      ; {Swap the pointers, take #N$06 bytes and copy them.
- $AAFB LD BC,$0006   ;
+ $AAFA EX DE,HL      ; {Swap the pointers, take #N($0006,$04,$04) bytes and
+ $AAFB LD BC,$0006   ; copy them.
  $AAFE LDIR          ; }
  $AB00 LD HL,($A029) ; Read the word at #R$A029.
  $AB03 LD ($A02B),HL ; {Store it in the word at #R$A02B and jump ahead to
@@ -14073,8 +14073,8 @@ c$AC94 LD HL,$AAAE   ; Use the buffer: co-ordinate data (#R$AAAC+#N$02).
 c$ACA6 BIT 6,E       ; {Jump ahead to #R$ACB2 if bit 6 is clear.
  $ACA8 JR Z,$ACB2    ; }
  $ACAA RES 6,E       ; Clear the marker.
- $ACAC PUSH DE       ; {Keep #REGde, take offset #N$04, and join the copy at
- $ACAD LD DE,$0004   ; #R$ACBB.
+ $ACAC PUSH DE       ; {Keep #REGde, take offset #N($0004,$04,$04), and join
+ $ACAD LD DE,$0004   ; the copy at #R$ACBB.
  $ACB0 JR $ACBB      ; }
 ; Bit 7 selects the second display block.
 @label=CopyDisplayDataToDisplayBuffer_Next
@@ -14089,8 +14089,8 @@ c$ACA6 BIT 6,E       ; {Jump ahead to #R$ACB2 if bit 6 is clear.
  $ACBE ADD HL,DE     ;
  $ACBF LD DE,$AAA8   ;
  $ACC2 EX DE,HL      ; }
- $ACC3 LD BC,$000A   ; {Take a length of #N$0A entries and copy these bytes
- $ACC6 LDIR          ; across.
+ $ACC3 LD BC,$000A   ; {Take a length of #N($000A,$04,$04) entries and copy
+ $ACC6 LDIR          ; these bytes across.
  $ACC8 POP DE        ; }
  $ACC9 OR %00000001  ; Reset the zero flag.
  $ACCB RET           ; Return.
@@ -14142,7 +14142,7 @@ c$ACCC RES 3,E        ; {Run text token and save state.
 ; six bytes from offset #N$08 of the clause record to offset #N$18 and returns
 ; to the scan at #R$AB4C. Once the game has started, any other case sets bit 3
 ; of #REGe and returns to that scan. Before the game has started it restores
-; the saved word as class #N$B0, unlinks the clause record, and falls into
+; the saved word as class #N($B0), unlinks the clause record, and falls into
 ; #R$AD57.
 @label=ApplySavedClause
 c$ACFB LD A,($A024)  ; {Jump to #R$AD23 if the command mode at #R$A024 is not
@@ -14155,11 +14155,11 @@ c$ACFB LD A,($A024)  ; {Jump to #R$AD23 if the command mode at #R$A024 is not
  $AD0B PUSH IY       ;
  $AD0D EXX           ;
  $AD0E POP HL        ; }
- $AD0F LD DE,$0008   ; {Point #REGhl at byte #N$08 of the record (#REGiy+#N$08), save it and take
+ $AD0F LD DE,$0008   ; {Point #REGhl at byte #N($0008,$04,$04) of the record (#REGiy+#N$08), save it and take
  $AD12 ADD HL,DE     ; #N($0010,$04,$04).
  $AD13 PUSH HL       ;
  $AD14 LD DE,$0010   ; }
- $AD17 ADD HL,DE     ; {Add #N($0010,$04,$04), so #REGhl points at byte #N$18, and copy #N$06 bytes from byte
+ $AD17 ADD HL,DE     ; {Add #N($10), so #REGhl points at byte #N($18), and copy #N($0006,$04,$04) bytes from byte
  $AD18 POP DE        ; #N$08.
  $AD19 EX DE,HL      ;
  $AD1A LD BC,$0006   ;
@@ -14277,8 +14277,8 @@ c$AD57 LD A,($A01A)  ; {Read the parser count, count down one and point #REGhl
  $ADE7 LD A,($A024)  ; {Jump to #R$AE11 if the command mode at #R$A024 is not
  $ADEA CP $02        ; #N$02.
  $ADEC JR NZ,$AE11   ; }
- $ADEE PUSH IY       ; {Point #REGhl at byte #N$18 of the record (#REGiy+#N$18)
- $ADF0 POP HL        ; and save it.
+ $ADEE PUSH IY       ; {Point #REGhl at byte #N($0018,$04,$04) of the record
+ $ADF0 POP HL        ; (#REGiy+#N$18) and save it.
  $ADF1 LD DE,$0018   ;
  $ADF4 ADD HL,DE     ;
  $ADF5 PUSH HL       ; }
@@ -14298,7 +14298,7 @@ c$AD57 LD A,($A01A)  ; {Read the parser count, count down one and point #REGhl
  $AE06 PUSH BC       ;
  $AE07 LD BC,$0018   ; }
  $AE0A ADD HL,BC     ; {Point #REGhl at byte #N$18 of the record (#REGix+#N$18)
- $AE0B LD BC,$0006   ; and copy #N$06 bytes.
+ $AE0B LD BC,$0006   ; and copy #N($0006,$04,$04) bytes.
  $AE0E LDIR          ;
  $AE10 POP BC        ; }
 @label=MatchWordAgainstEarlierClause_ClauseMarker
@@ -14531,8 +14531,8 @@ c$AEF1 EXX           ; {Read the moved marker.
  $AF0B LD A,$0E      ; {Return if copying this display entry did not match.
  $AF0D CALL $AF38    ;
  $AF10 RET NZ        ; }
- $AF11 EXX           ; {Switch register sets and point #REGhl at byte #N$12 of
- $AF12 PUSH IY       ; the record at #REGiy.
+ $AF11 EXX           ; {Switch register sets and point #REGhl at byte
+ $AF12 PUSH IY       ; #N($0012,$04,$04) of the record at #REGiy.
  $AF14 POP HL        ;
  $AF15 LD DE,$0012   ;
  $AF18 ADD HL,DE     ; }
@@ -14540,8 +14540,8 @@ c$AEF1 EXX           ; {Read the moved marker.
  $AF1A LD DE,$FFF6   ; by the length.
  $AF1D ADD HL,DE     ;
  $AF1E POP DE        ; }
- $AF1F LD BC,$0006   ; Take a length of #N$06 bytes.
- $AF22 LDIR          ; {Copy the bytes and take an offset of #N$04.
+ $AF1F LD BC,$0006   ; Take a length of #N($0006,$04,$04) bytes.
+ $AF22 LDIR          ; {Copy the bytes and take an offset of #N($0004,$04,$04).
  $AF24 LD DE,$0004   ; }
 ; View the equivalent code in;
 ; #LIST
@@ -14557,7 +14557,7 @@ c$AEF1 EXX           ; {Read the moved marker.
 c$AF27 CALL $AF52    ; Call #R$AF52 to set the copy length to #N$0A.
  $AF2A LD A,(IY+$02) ; {Test whether the word at #REGiy+#N$02-#N$03 is zero.
  $AF2D OR (IY+$03)   ; }
- $AF30 LD DE,$0002   ; Take a length of #N$02 bytes.
+ $AF30 LD DE,$0002   ; Take a length of #N($0002,$04,$04) bytes.
 ; Set copy length 2.
  $AF33 CALL Z,$AF56  ; Call #R$AF56 to set the copy length to #N$02 if the link
                      ; word is zero.
@@ -14955,7 +14955,7 @@ c$B0AC LD HL,$0000   ; {Reset #R$9FDD to zero.
  $B0B2 LD IX,$9860   ; Point to #R$9860.
  $B0B6 LD (IX+$06),L ; {Set the character's timer to zero.
  $B0B9 LD (IX+$07),H ; }
- $B0BC INC HL        ; {Write #N($0001,$04,$04) to *#R$A01F.
+ $B0BC INC HL        ; {Write #N$01 to *#R$A01F.
  $B0BD LD ($A01F),HL ; }
  $B0C0 LD A,L        ; {Record the startup flag.
  $B0C1 LD ($A0DA),A  ; }
@@ -15046,12 +15046,12 @@ c$B0FD LD BC,$0008   ; {Jump ahead to #R$B107 if bit 3 is present.
  $B11B INC (HL)      ;
  $B11C CALL $AE6A    ; }
 @label=ProcessCharacterData_LengthCharacters
-*$B11F PUSH IY       ; {Point #REGhl #N$18 bytes past #REGiy and restore
- $B121 POP HL        ; #REGde.
+*$B11F PUSH IY       ; {Point #REGhl #N($0018,$04,$04) bytes past #REGiy and
+ $B121 POP HL        ; restore #REGde.
  $B122 LD BC,$0018   ;
  $B125 ADD HL,BC     ;
  $B126 POP DE        ; }
- $B127 EX DE,HL      ; {Swap the pointers, copy #N$06 bytes.
+ $B127 EX DE,HL      ; {Swap the pointers, copy #N($0006,$04,$04) bytes.
  $B128 LD BC,$0006   ;
  $B12B LDIR          ; }
  $B12D POP DE        ; Restore #REGde from the stack.
@@ -15192,7 +15192,7 @@ c$B191 LD A,$FF      ; {Write #N$FF to the room graphics parameter and write #N$
  $B1B0 LD DE,$8259   ; }
  $B1B3 SBC HL,DE     ; {Jump ahead to #R$B1BF if the two pointers meet.
  $B1B5 JR Z,$B1BF    ; }
- $B1B7 LD DE,$0008   ; Take a length of #N$08 entries.
+ $B1B7 LD DE,$0008   ; Take a length of #N($0008,$04,$04) entries.
 @label=InitialiseDisplayBuffer_Loop
 *$B1BA INC A         ; {Count one more record and go back to #R$B1BA until the
  $B1BB SBC HL,DE     ; pointer reaches the base.
@@ -15206,8 +15206,8 @@ c$B191 LD A,$FF      ; {Write #N$FF to the room graphics parameter and write #N$
  $B1CD BIT 0,(HL)    ; #R$9FEE+#N$14.
  $B1CF LD HL,$A002   ; }
  $B1D2 LD DE,$B172   ; {Point #REGde at the display data pointer at #R$B172 and
- $B1D5 LD BC,$0006   ; take #N$06 bytes. Skip the swap when bit 0 of the
- $B1D8 JR Z,$B1DB    ; display flag is clear.}
+ $B1D5 LD BC,$0006   ; take #N($0006,$04,$04) bytes. Skip the swap when bit 0
+ $B1D8 JR Z,$B1DB    ; of the display flag is clear.}
  $B1DA EX DE,HL      ; Swap the two pointers.
 @label=InitialiseDisplayBuffer_CopyTheseBytes
 *$B1DB LDIR          ; Copy these bytes across.
@@ -15544,7 +15544,7 @@ c$B39D PUSH IY       ; {Read the word at #REGiy+#N$00-#N$01 into #REGhl,
  $B3D9 XOR A         ; {Clear the byte at #R$A02E and point #REGhl at
  $B3DA LD ($A02E),A  ; #R$B17E+#N$08.
  $B3DD LD HL,$B186   ; }
- $B3E0 LD DE,$0008   ; Take a length of #N$08 entries.
+ $B3E0 LD DE,$0008   ; Take a length of #N($0008,$04,$04) entries.
  $B3E3 LD IX,$8259   ; Use the object runtime table (#R$8259).
 @label=ProcessDisplayPointer_Loop
 *$B3E7 PUSH IX       ; {Use the character record as the schedule entry.
@@ -15648,8 +15648,8 @@ c$B468 PUSH BC       ; {Save the count, take #N$00 as its high byte, and point
  $B46C PUSH HL       ;
  $B46D PUSH IY       ;
  $B46F POP HL        ; }
- $B470 ADD HL,BC     ; {Add the offset, copy #N$06 bytes and clear #REGa.
- $B471 LD BC,$0006   ;
+ $B470 ADD HL,BC     ; {Add the offset, copy #N($0006,$04,$04) bytes and clear
+ $B471 LD BC,$0006   ; #REGa.
  $B474 LDIR          ;
  $B476 XOR A         ; }
  $B477 LD B,$06      ; Count the #N$06 copied bytes.
@@ -15820,7 +15820,7 @@ c$B517 LD A,($A01C)   ; {Return if the display flag (#R$A01C) is zero.
                       ; clear.
  $B52A CALL $D04F     ; Call #R$D04F to adjust the object table for this room.
 @label=CheckFlagAndSetDisplay_ProcessObject
-*$B52D PUSH IY        ; {Point #REGhl at byte #N$08 of the record
+*$B52D PUSH IY        ; {Point #REGhl at byte #N($0008,$04,$04) of the record
  $B52F POP HL         ; (#REGiy+#N$08).
  $B530 LD DE,$0008    ;
  $B533 ADD HL,DE      ; }
@@ -16035,9 +16035,9 @@ c$B633 LD A,$20       ; #HTML(Use the <code>JR NZ</code> opcode (#N$20).)
  $B658 JR NZ,$B65D    ; modified by #R$B635.}
  $B65A LD HL,$0000    ; Clear the pointer.
 @label=SelectJumpIfNotZero_ReturnWithPointers
-*$B65D EX (SP),HL     ; Leave the location pointer (or #N($0000,$04,$04) when
-                      ; bit 5 is clear) on the stack in place of the address
-                      ; saved there.
+*$B65D EX (SP),HL     ; Leave the location pointer (or #N$00 when bit 5 is
+                      ; clear) on the stack in place of the address saved
+                      ; there.
  $B65E JP (HL)        ; Return to the caller (its address is now in #REGhl),
                       ; leaving the location pointer and the handler address on
                       ; the stack.
@@ -16640,8 +16640,8 @@ c$B9CA LD IX,($B866)  ; Read the saved character record.
  $B9DE POP IX         ; }
  $B9E0 CALL $A1C7     ; {Call #R$A1C7 to follow this memory link.
  $B9E3 POP IX         ; }
- $B9E5 LD A,L         ; {Jump ahead to #R$B9F5 if the pointer is
- $B9E6 OR H           ; #N($0000,$04,$04).
+ $B9E5 LD A,L         ; {Jump ahead to #R$B9F5 if the pointer is #N$00.
+ $B9E6 OR H           ;
  $B9E7 JR Z,$B9F5     ; }
  $B9E9 PUSH HL        ; {Point #REGiy at #REGhl and jump to #R$B9CE if bit 6 of
  $B9EA POP IY         ; #REGiy+#N$01 is set.
@@ -16876,7 +16876,7 @@ c$BB46 PUSH AF       ; {Set the byte at #R$BA61, keeping #REGa.
  $BB4D LD ($BA60),A  ; Store it in the workspace byte at #R$BA60.
  $BB50 LD HL,$BA19   ; {Point #REGhl at #R$BA13+#N$06 and #REGde at #R$BA62.
  $BB53 LD DE,$BA62   ; }
- $BB56 LD BC,$0003   ; Take a length of #N$03 bytes.
+ $BB56 LD BC,$0003   ; Take a length of #N($0003,$04,$04) bytes.
  $BB59 LDIR          ; Copy the counted bytes.
  $BB5B RET           ; Return.
 
@@ -17257,7 +17257,7 @@ c$BD69 LD A,($BA1A)  ; Read the saved object's moved marker.
 ; Points #REGhl at byte #N$18 of the record, or at the object display link when
 ; bit 7 is set.
 @label=CalculateObjectPointerOffset
-c$BD7E PUSH IY        ; {Point #REGhl at byte #N$18 of the record
+c$BD7E PUSH IY        ; {Point #REGhl at byte #N($0018,$04,$04) of the record
  $BD80 POP HL         ; (#REGiy+#N$18).
  $BD81 LD DE,$0018    ;
  $BD84 ADD HL,DE      ; }
@@ -17269,16 +17269,16 @@ c$BD7E PUSH IY        ; {Point #REGhl at byte #N$18 of the record
  $BD92 JR Z,$BD97     ; clear.}
  $BD94 LD HL,$9FFC    ; Take the alternate display link.
 @label=CalculateObjectPointerOffset_DisplayDataPointer
-*$BD97 LD DE,$B172    ; {Copy #N$06 bytes from the display data at #R$B172.
- $BD9A LD BC,$0006    ;
+*$BD97 LD DE,$B172    ; {Copy #N($0006,$04,$04) bytes from the display data at
+ $BD9A LD BC,$0006    ; #R$B172.
  $BD9D LDIR           ; }
- $BD9F PUSH IY        ; {Point #REGhl at byte #N$08 of the record
+ $BD9F PUSH IY        ; {Point #REGhl at byte #N($0008,$04,$04) of the record
  $BDA1 POP HL         ; (#REGiy+#N$08).
  $BDA2 LD DE,$0008    ;
  $BDA5 ADD HL,DE      ; }
  $BDA6 LD DE,$B178    ; Take the display mode flag.
- $BDA9 LD BC,$0006    ; {Copy #N$06 bytes and read #REGiy+#N$00 into #REGl.
- $BDAC LDIR           ;
+ $BDA9 LD BC,$0006    ; {Copy #N($0006,$04,$04) bytes and read #REGiy+#N$00
+ $BDAC LDIR           ; into #REGl.
  $BDAE LD L,(IY+$00)  ; }
  $BDB1 LD A,(IY+$01)  ; {Keep the low nibble of #REGiy+#N$01 in #REGh.
  $BDB4 AND $0F        ;
@@ -17367,7 +17367,7 @@ c$BE22 CALL $D237     ; Call #R$D237 to look that object up.
                       ; is present.
  $BE31 LD DE,$9FFC    ; Take the alternate display link.
 @label=UseObjectDisplayLink_Length
-*$BE34 LD BC,$0006    ; Take a length of #N$06.
+*$BE34 LD BC,$0006    ; Take a length of #N($0006,$04,$04).
  $BE37 LDIR           ; Copy the counted bytes.
  $BE39 RET            ; Return.
 ; This entry point is used by the routine at #R$BDC2.
@@ -17559,7 +17559,7 @@ c$BF1C LD A,(IX+$00) ; {Read the record flag, then call #R$A4BC to point to
  $BF37 POP IY        ;
  $BF39 CALL $D3E8    ; }
  $BF3C RET           ; Return.
-; Expand token #N($005D,$04,$04).
+; Expand token #N$5D.
 @label=ProcessTextTokenEntry_Next
 *$BF3D LD DE,$005D   ; {Take token #N($005D,$04,$04) and call #R$A887 to expand
  $BF40 CALL $A887    ; it.}
@@ -18078,7 +18078,7 @@ c$C14A CALL $C10F    ; Call #R$C10F to clear the screen.
  $C17F INC H         ; The count, and step to the next row.
  $C180 DJNZ $C168    ; Count the next attribute and repeat from #R$C168.
 ; Now colour the line BRIGHT WHITE.
- $C182 LD HL,$5A40   ; {Take the attributes, take a length of #N$1F attributes and copy these bytes
+ $C182 LD HL,$5A40   ; {Take the attributes, take a length of #N($001F,$04,$04) attributes and copy these bytes
  $C185 LD DE,$5A41   ; across.
  $C188 LD BC,$001F   ;
  $C18B LD (HL),$78   ;
@@ -18348,7 +18348,7 @@ c$C271 PUSH HL       ; {Keep the caller's registers and point #REGhl at the
  $C277 LD DE,$5060   ; Take the screen.
  $C27A LD A,$08      ; Use #N$08.
 @label=ScrollScreenUp_Loop
-*$C27C PUSH HL       ; {Take a length of #N$80 entries.
+*$C27C PUSH HL       ; {Take a length of #N($0080,$04,$04) entries.
  $C27D PUSH DE       ;
  $C27E LD BC,$0080   ; }
  $C281 LDIR          ; Scroll #N$80 bytes of this screen third down one
@@ -18390,7 +18390,7 @@ c$C29C PUSH HL       ; {Keep the caller's registers and point #REGhl at the
  $C2A2 LD DE,$50FF   ; Take the screen.
  $C2A5 LD A,$08      ; Use #N$08.
 @label=ScrollScreenDown_Loop
-*$C2A7 PUSH HL       ; {Take a length of #N$80 entries.
+*$C2A7 PUSH HL       ; {Take a length of #N($0080,$04,$04) entries.
  $C2A8 PUSH DE       ;
  $C2A9 LD BC,$0080   ; }
  $C2AC LDDR          ; Scroll #N$80 bytes of this screen third up one character
@@ -18493,7 +18493,7 @@ c$C316 LD A,($C128)  ; {Call #R$C3E4 if the screen flags is zero.
  $C31F PUSH DE       ;
  $C320 LD HL,$4020   ; }
  $C323 LD DE,$4000   ; Point the row copy at the top of the screen.
- $C326 LD BC,$0011   ; Take a length of #N$11 entries.
+ $C326 LD BC,$0011   ; Take a length of #N($0011,$04,$04) entries.
  $C329 LD A,($C128)  ; {Go to #R$C333 with #REGa=#N$20 if the flag at #R$C128
  $C32C AND A         ; is zero (otherwise use #N$10).
  $C32D LD A,$20      ;
@@ -20122,8 +20122,8 @@ c$CB43 PUSH HL       ; {Call #R$DC6C to check character id.
  $CB4E LD A,($A00B)  ; {Jump to #R$CB5F if the parser is zero.
  $CB51 AND A         ;
  $CB52 JR Z,$CB5F    ; }
- $CB54 LD A,L        ; {Jump ahead to #R$CB67 if the pointer is not
- $CB55 OR H          ; #N($0000,$04,$04).
+ $CB54 LD A,L        ; {Jump ahead to #R$CB67 if the pointer is not #N$00.
+ $CB55 OR H          ;
  $CB56 JR NZ,$CB67   ; }
 
 ; Select Sherlock After Clearing The Parser
@@ -24285,7 +24285,8 @@ c$DE48 PUSH DE       ; {Clear the pointer.
  $DE4A LD C,L        ;
  $DE4B LD B,H        ;
  $DE4C LD HL,$0000   ; }
- $DE4F LD DE,$003C   ; Take sixty (#N$3C), the scale for the high byte.
+ $DE4F LD DE,$003C   ; Take sixty (#N($003C,$04,$04)), the scale for the high
+                     ; byte.
  $DE52 LD A,B        ; {Go to #R$DE5A when the high byte is #N$0C, so only the
  $DE53 CP $0C        ; low byte is kept.
  $DE55 JR Z,$DE5A    ; }
@@ -27267,7 +27268,7 @@ g$F48E DEFB $00,$00
 ; Flood-fills from the pen and stores the ink at #R$F60B.
 @label=DrawingFill
 c$F490 LD ($F60B),A  ; {Store the ink, save the pen and the picture pointer,
- $F493 PUSH DE       ; and push the #N$B0 end marker.
+ $F493 PUSH DE       ; and push the #N($00B0,$04,$04) end marker.
  $F494 PUSH HL       ;
  $F495 LD HL,$00B0   ; }
  $F498 PUSH HL       ; {Save the end marker and read the pixel under the pen.

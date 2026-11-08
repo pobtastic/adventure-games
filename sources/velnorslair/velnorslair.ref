@@ -1,0 +1,66 @@
+; Copyright 2026 Paul Maddern (paul@arcadegeek.co.uk)
+
+;
+; SkoolKit ref file for Velnor's Lair
+;
+; To build the HTML disassembly, run these commands:
+;   tap2sna.py @velnorslair.t2s
+;   sna2skool.py -H --ini ListRefs=2 -c sources/velnorslair/velnorslair.ctl VelnorsLair.z80 > sources/velnorslair/velnorslair.skool
+;   skool2html.py -H sources/velnorslair/velnorslair.skool -T dark -T wide -toOa
+;
+; To regenerate the skool from the ctl (byte-identical):
+;   sna2skool.py -H --ini ListRefs=2 -c sources/velnorslair/velnorslair.ctl VelnorsLair.z80 > sources/velnorslair/velnorslair.skool
+;
+; Opening screen image (images/scr/opening.png), captured with:
+;   trace.py -S 0x1F3D --stats VelnorsLair.z80 VelnorsLair-opening.z80
+; (ROM PAUSE at $1F3D after 23498986 T-states). See opening-capture.txt.
+
+[Config]
+Expand=#INCLUDE(Expand)
+RefFiles=../analytics.ref;../bases.ref;changelog.ref;facts.ref;pokes.ref
+HtmlWriterClass=sources:linking.AdventureGamesHtmlWriter
+GameDir=adventure-games/velnorslair
+
+[skool2ctl]
+ListRefs=2
+
+[Game]
+Game=Velnor's Lair
+Logo=#PUSHS #OPENINGPOKES #SCR$02,$00,$00,$20,$18,$4000,$5800(/images/logo) #POPS
+Copyright=&copy; 1983 Neptune Computing<br />&copy; 2026 ArcadeGeek LTD.
+Repository=https://github.com/pobtastic/adventure-games/tree/main/sources/velnorslair/
+Canonical=https://skoolkit.arcadegeek.co.uk/adventure-games/velnorslair/
+GameIndexUrl=https://skoolkit.arcadegeek.co.uk/adventure-games/velnorslair/
+OgImage=https://skoolkit.arcadegeek.co.uk/adventure-games/velnorslair/images/logo.png
+LinkInternalOperands=1
+AddressAnchor={address#IF({base}==16)(:04x)}
+
+[PageHeaders]
+GameIndex=The complete<>RAM disassembly (work in progress)
+
+[Expand]
+#DEF(#COLOUR(id)
+  #LET(ink=$id&$07)#IF({ink}>=$00)(INK:
+    #MAP({ink})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE)),
+  #LET(paper=$id>>$03&$07)#IF({paper}>=$00)(PAPER:
+    #MAP({paper})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE))
+  #LET(bright=$id&$40)#IF({bright}>$00)((BRIGHT))
+  #LET(flash=$id&$80)#IF({flash}>$00)(FLASH: ON))

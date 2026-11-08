@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Copyright 2026 Paul Maddern (paul@arcadegeek.co.uk)
 """Generate skoolkit code for Hobbit location graphic data.
 
 Produces structured annotations grouping bytes by instruction (move, draw line,

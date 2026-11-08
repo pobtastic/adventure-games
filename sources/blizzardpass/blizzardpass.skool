@@ -1,11 +1,13 @@
 @start=$FFE9
 @expand=#DEF(#COLOUR(id) #LET(ink=$id&$07)#IF({ink}>=$00)(INK:#HTML(&#10;)#MAP({ink})(#HTML(&#10;)UNKNOWN,0:BLACK,1:BLUE,2:RED,3:MAGENTA,4:GREEN,5:CYAN,6:YELLOW,7:WHITE)),#HTML(&#10;)#LET(paper=$id>>$03&$07)#IF({paper}>=$00)(PAPER:#HTML(&#10;)#MAP({paper})(#HTML(&#10;)UNKNOWN,0:BLACK,1:BLUE,2:RED,3:MAGENTA,4:GREEN,5:CYAN,6:YELLOW,7:WHITE))#HTML(&#10;)#LET(bright=$id&$40)#IF({bright}>$00)((BRIGHT))#HTML(&#10;)#LET(flash=$id&$80)#IF({flash}>$00)(FLASH: ON))
-@expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
+@expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html">){name}#HTML(</a>))
 @expand=#DEF(#FAIL Jump to #R$6753 to reject this bytecode condition.)
 @expand=#DEF1(#PAGE(bank) page RAM bank #N({bank}) in at #N($C000), keeping the 48K ROM)
 @expand=#DEF1(#NOWHERE(addr) #IF(#PEEK({addr})==$FC)(nowhere)#IF(#PEEK({addr})!=$FC)(room #N(#PEEK({addr}))))
 @expand=#DEF(#LOCATIONS #BANK6#MESSAGE($C000)#BANK0)
 @expand=#DEF1(#MESSAGE(addr)#STR{addr},$08($b==$5E||$b==$7E))
+@expand=#DEF1(#BUILDICT #LET(dict[]=(0))#LET(d=$B1BC)#FOR$00,$FF||q|#LET(dict[q]={{d}})#WHILE((#PEEK({{d}})&$80)==0)(#LET(d={{d}}+1))#LET(d={{d}}+1)||)
+@expand=#DEF1(#TOKENS(n) #FOR($00,{n}-1)||x|#R({{dict[#PEEK(#PC+x)]}})(#N(#PEEK(#PC+x)))|, ||)
 @expand=#DEF(#RECORDLINKS Found by #R$6E43 and drawn by #R$6E53.)
 @expand=#DEF(#FACT()(anchor,text) #LINK(Facts#$anchor)($text))
 @expand=#DEF(#PICTURE(room)(fname,title) #SIM(start=$$66C1,stop=$$66C5,a=$$00,bc=$$7FFD)#PUSHS #UDGTABLE { =h $title } { #SIM(start=$$600F,stop=$$6051,sp=$$5D84)#POKES$$5D87,$room#SIM(start=$$6DFA,stop=$$6E38,sp=$$5D84)#SCR$$02,$$00,$$00,$$20,$$0C($fname) } UDGTABLE# #POPS)
@@ -708,21 +710,21 @@ g$5ECA DEFB $3E
 @label=GameLoop
 c$5ECB LD HL,$6B41   ; {Store #R$6B41 in #SKOOLKID$5C3D(ERR_SP).
  $5ECE LD ($5C3D),HL ; }
- $5ED1 LD SP,$5D84   ; The stack grows down from #R$5D84.
+ $5ED1 LD SP,$5D84   ; #REGsp=#R$5D84.
 ; Start in the first room with an empty inventory.
  $5ED4 CALL $600F    ; Call #R$600F to prepare a new game.
- $5ED7 XOR A         ; {The picture has not been drawn yet.
+ $5ED7 XOR A         ; {Clear *#R$6185.
  $5ED8 LD ($6185),A  ; }
- $5EDB CALL $6187    ;
+ $5EDB CALL $6187    ; Call #R$6187 to describe the first room.
 ; This entry point is used by the routines at #R$5F21 and #R$5FAA.
 ; .
 ; Run the high-priority scripts, and describe the room again if they
 ; moved the player.
 @label=GameLoop_Act
-*$5EDE XOR A         ; {Write #N$00 to *#R$5D8E.
+*$5EDE XOR A         ; {Clear *#R$5D8E.
  $5EDF LD ($5D8E),A  ; }
  $5EE2 CALL $6058    ; Call #R$6058 to run the high-priority scripts.
- $5EE5 LD A,($5B95)  ; {Jump to #R$5EEE when the room stayed the same.
+ $5EE5 LD A,($5B95)  ; {Jump to #R$5EEE if *#R$5B95 is unset.
  $5EE8 OR A          ;
  $5EE9 JR Z,$5EEE    ; }
  $5EEB CALL $6187    ; Call #R$6187 to describe the new room.
@@ -731,22 +733,22 @@ c$5ECB LD HL,$6B41   ; {Store #R$6B41 in #SKOOLKID$5C3D(ERR_SP).
 @label=GameLoop_Draw
 *$5EEE CALL $6B15    ; Call #R$6B15 to draw the picture if this room is not already on
                      ; screen.
- $5EF1 XOR A         ; {Write #N$00 to *#R$5B95.
+ $5EF1 XOR A         ; {Clear *#R$5B95.
  $5EF2 LD ($5B95),A  ; }
- $5EF5 LD A,($5D8E)  ; {Jump to #R$5F46 while a script asked for another look.
+ $5EF5 LD A,($5D8E)  ; {Jump to #R$5F46 if *#R$5D8E is set.
  $5EF8 OR A          ;
  $5EF9 JR NZ,$5F46   ; }
 ; Read a command. An empty line is a complaint, not an action.
  $5EFB CALL $66C7    ; Call #R$66C7 to read the next command from bank 3.
- $5EFE LD A,($5B7F)  ; {Jump to #R$5F21 when a verb was recognised.
+ $5EFE LD A,($5B7F)  ; {Jump to #R$5F21 if *#R$5B7F is set.
  $5F01 OR A          ;
  $5F02 JR NZ,$5F21   ; }
- $5F04 LD A,($5B80)  ; {Jump to #R$5F21 when a noun was recognised.
+ $5F04 LD A,($5B80)  ; {Jump to #R$5F21 if *#R$5B80 is set.
  $5F07 OR A          ;
  $5F08 JR NZ,$5F21   ; }
- $5F0A LD A,$0B      ; {Message #N$0B: that input contained no recognised
- $5F0C CALL $63D4    ; words.}
- $5F0F XOR A         ; {A failed line does not keep a comma continuation.
+ $5F0A LD A,$0B      ; {Call #R$63D4 with message #R$7E65(#N$0B):
+ $5F0C CALL $63D4    ; "that input contained no recognised words".}
+ $5F0F XOR A         ; {Clear *#R$5B85.
  $5F10 LD ($5B85),A  ; }
  $5F13 JR $5EDE      ; Jump to #R$5EDE for another turn.
 
@@ -763,14 +765,14 @@ g$5F15 DEFB $00
 ; .
 ; Turns a character row in #REGa into the display address of that row.
 ;
-; O:DE Display address of character row #REGa.
+; O:DE Display address of character row #REGa
 @label=RowAddress
 c$5F16 LD L,A        ; {Double the row number.
  $5F17 LD H,$00      ;
  $5F19 ADD HL,HL     ; }
  $5F1A LD DE,$5BD0   ; {Add the screen-row table at #R$5BD0.
  $5F1D ADD HL,DE     ; }
- $5F1E JP $2AF0      ; Enter #SKOOLKID$2AEE(DE (DE+1)) at #N$2AF0 to load the row address
+ $5F1E JP $2AF0      ; Enter #SKOOLKID$2AEE(DE_DE_1) at #N$2AF0 to load the row address
                      ; into #REGde.
 
 ; Obey Command
@@ -863,26 +865,28 @@ t$5F8F DEFM "That will not absorb water."
 ; that way, any other verb is beyond the game, and a blank verb produces the
 ; longer refusal.
 @label=RefuseCommand
-c$5FAA XOR A         ; {Drop any comma continuation.
+c$5FAA XOR A         ; {Clear *#R$5B85.
  $5FAB LD ($5B85),A  ; }
- $5FAE LD A,($5B7F)  ; {A blank verb is not a direction.
+ $5FAE LD A,($5B7F)  ; {Jump to #R$5FBC if *#R$5B7F is unset.
  $5FB1 OR A          ;
  $5FB2 JR Z,$5FBC    ; }
- $5FB4 CP $0B        ; {Verbs #N$01 to #N$0A are the directions that use
- $5FB6 JR NC,$5FBC   ; message #N$18.}
- $5FB8 LD A,$18      ;
- $5FBA JR $5FC4      ;
+ $5FB4 CP $0B        ; {Jump to #R$5FBC if the verb is not a direction.
+ $5FB6 JR NC,$5FBC   ; }
+ $5FB8 LD A,$18      ; {Jump to #R$5FC4 with message #R$7F24(#N$18): "you can't go
+ $5FBA JR $5FC4      ; that way".}
+; A recognised verb that is not a direction, or no verb at all.
 @label=RefuseCommand_Verb
-*$5FBC LD A,($5B7F)  ; {Some other verb selects message #N$0C: it's beyond my power to do
- $5FBF OR A          ; that.
- $5FC0 JR Z,$5FCA    ;
- $5FC2 LD A,$0C      ; }
+*$5FBC LD A,($5B7F)  ; {Jump to #R$5FCA if *#R$5B7F is unset.
+ $5FBF OR A          ;
+ $5FC0 JR Z,$5FCA    ; }
+ $5FC2 LD A,$0C      ; Message #R$7E7E(#N$0C): "it's beyond my power to do
+                     ; that".
 @label=RefuseCommand_Print
 *$5FC4 CALL $63D4    ; Call #R$63D4 to print the chosen refusal.
  $5FC7 JP $5EDE      ; Jump to #R$5EDE for another turn.
 @label=RefuseCommand_None
-*$5FCA LD A,$20      ; Message #N$20: I don't understand that verb.
- $5FCC JR $5FC4      ;
+*$5FCA LD A,$20      ; {Jump to #R$5FC4 with message #R$7F79(#N$20): "I don't
+ $5FCC JR $5FC4      ; understand that verb".}
 
 ; Find Room In Exit Table
 ;
@@ -891,7 +895,7 @@ c$5FAA XOR A         ; {Drop any comma continuation.
 ; Looks through #R$AB67 for the current room. The room is stored as
 ; itself plus #N$80.
 ;
-; O:HL The matching room key, or the end of a full sweep of the table.
+; O:HL The matching room key, or the end of a full sweep of the table
 @label=FindExits
 c$5FCE LD A,($5D87)  ; {The search key is the room plus #N$80.
  $5FD1 ADD A,$80     ;
@@ -1207,7 +1211,7 @@ c$6141 PUSH DE       ; {Take the saved line pointer.
 ; Accepts a script line whose verb and noun match the command. #N$7E
 ; matches any word. The high-priority table matches every line.
 ;
-; O:HL Zero at the end of the table, otherwise the first condition or action.
+; O:HL Zero at the end of the table, otherwise the first condition or action
 @label=MatchCommand
 c$6155 LD A,(HL)     ; {The end marker #N$7F is not a verb.
  $6156 CP $7F        ;
@@ -1805,7 +1809,7 @@ c$63FC CP $0C        ; {DELETE prints a space and then rubs it out.
 ;
 ; .
 ;
-; The ROM character set lives at #SKOOLKID$3D00(Character set).
+; The ROM character set lives at #SKOOLKID$3D00(CHARSET).
 ; Subtracting #N$0100 makes the character code times 8 land on its glyph.
 @label=PlotGlyph
 c$6483 LD DE,($5B87) ; {Keep the screen address. The font is the ROM character set minus
@@ -1933,8 +1937,8 @@ c$6483 LD DE,($5B87) ; {Keep the screen address. The font is the ROM character s
  $652B LD A,(DE)     ; {Shift the glyph right by two.
  $652C SRL A         ;
  $652E SRL A         ; }
- $6530 OR (HL)       ; {OR it into the screen byte.
- $6531 LD (HL),A     ; }
+ $6530 OR (HL)       ; {#HTML(Merge the shifted glyph into the screen byte with
+ $6531 LD (HL),A     ; <code>OR</code>.)}
  $6532 INC H         ; {The next pixel row, then the shared advance.
  $6533 INC DE        ;
  $6534 DJNZ $6527    ;
@@ -1973,9 +1977,10 @@ c$654B LD A,($5B89)  ; {Call #R$5F16 to find the row.
 ; Key Repeat Timer
 ;
 ; How long to wait before scrolling, measured against the ROM frame
-; counter. The cursor keys store #N($0000,$04,$04), #N$0190 or #N($00C8,$04,$04) here.
+; counter. The cursor keys store #N($00), #N$0190 or #N$C8 here.
 @label=RepeatTimer
 w$655A DEFW $00C8    ; Delay.
+@label=RowsScrolled
  $655C DEFW $0000    ; Rows already scrolled.
 
 ; Scroll Text Window
@@ -2004,8 +2009,8 @@ c$655E LD A,($5B97)  ; {The bottom row.
 *$6572 LD A,($5C04)  ; {A key releases the pause.
  $6575 CP $FF        ;
  $6577 JR NZ,$6582   ; }
- $6579 CALL $0052    ; {Call the RET at the end of #SKOOLKID$0038(MASKABLE INTERRUPT) and
- $657C LD A,($5C79)  ; scroll once the frame counter has moved.
+ $6579 CALL $0052    ; {#HTML(Call the <code>RET</code> at the end of
+ $657C LD A,($5C79)  ; #SKOOLKID$0038(MASK_INT) and scroll once the frame counter has moved.)
  $657F OR A          ;
  $6580 JR Z,$6572    ; }
 @label=ScrollWindow_Row
@@ -2024,7 +2029,7 @@ c$655E LD A,($5B97)  ; {The bottom row.
 *$6595 PUSH HL       ; {Save the row pair.
  $6596 PUSH BC       ;
  $6597 PUSH DE       ; }
- $6598 LD BC,$0020   ; {Copy one pixel row, #N$20 bytes.
+ $6598 LD BC,$0020   ; {Copy one pixel row, #N($0020,$04,$04) bytes.
  $659B LDIR          ; }
  $659D POP DE        ; {Restore the row pair from the stack.
  $659E POP BC        ;
@@ -2144,14 +2149,14 @@ c$6618 LD HL,$4000   ; {Point at the pixel display.
 ; characters the printer uses as terminators, and treats EDIT as the picture
 ; switch. The cursor keys change how long a scroll waits.
 ;
-; O:A The key, with letters as typed.
+; O:A The key, with letters as typed
 ;
-; Bit 5 of #SKOOLKID$5C3B(FLAGS) is set by the maskable interrupt when
-; a new key is ready. Calling the RET at the end of that routine lets one
-; interrupt through.
+; #HTML(Bit 5 of #SKOOLKID$5C3B(FLAGS) is set by the maskable interrupt when
+; a new key is ready. Calling the <code>RET</code> at the end of that routine lets one
+; interrupt through.)
 @label=WaitForKey
-c$662D CALL $0052     ; {Call the RET at the end of #SKOOLKID$0038(MASKABLE INTERRUPT),
- $6630 SET 3,(IY+$30) ; then wait for bit 5 of #SKOOLKID$5C3B(FLAGS).
+c$662D CALL $0052     ; {#HTML(Call the <code>RET</code> at the end of #SKOOLKID$0038(MASK_INT),
+ $6630 SET 3,(IY+$30) ; then wait for bit 5 of #SKOOLKID$5C3B(FLAGS).)
  $6634 BIT 5,(IY+$01) ; }
  $6638 JR Z,$662D     ;
  $663A RES 5,(IY+$01) ;
@@ -2256,14 +2261,14 @@ c$66BD PUSH BC       ; {Save what the caller passed in, since #REGbc is needed
 ; Pages the parser in bank 3 over #N($C000), calls it, then pages bank 0
 ; back so the picture data is visible again.
 @label=ReadCommand
-c$66C7 LD A,$03      ; {#PAGE$03.
+c$66C7 LD A,$03      ; {Call #R$66BA using #PAGE$03.
  $66C9 CALL $66BA    ; }
- $66CC CALL $C000    ; Call the parser at the top of bank 3.
- $66CF PUSH AF       ; {#PAGE$00 and return with the parser's flags.
- $66D0 XOR A         ;
- $66D1 CALL $66BA    ;
- $66D4 POP AF        ; }
- $66D5 RET           ;
+ $66CC CALL $C000    ; Call #R$C000@bank3(ReadCommand).
+ $66CF PUSH AF       ; Stash #REGaf on the stack.
+ $66D0 XOR A         ; {Call #R$66BA using #PAGE$00.
+ $66D1 CALL $66BA    ; }
+ $66D4 POP AF        ; Restore #REGaf from the stack.
+ $66D5 RET           ; Return.
 
 ; Pictures On
 ;
@@ -2304,6 +2309,8 @@ c$66D8 PUSH AF       ; {Save #REGaf and point at the attribute file.
 ; Condition: Room Is Parameter
 ;
 ; Passes when the current room is the parameter in #REGb.
+;
+; B Room number
 @label=RoomIs
 c$66EB LD A,($5D87)  ; {#FAIL
  $66EE CP B          ;
@@ -2313,6 +2320,8 @@ c$66EB LD A,($5D87)  ; {#FAIL
 ; Condition: Room Is Not Parameter
 ;
 ; Passes when the current room is not the parameter in #REGb.
+;
+; B Room number
 @label=RoomIsNot
 c$66F2 LD A,($5D87)  ; {#FAIL
  $66F5 CP B          ;
@@ -2322,6 +2331,8 @@ c$66F2 LD A,($5D87)  ; {#FAIL
 ; Condition: Room Above Parameter
 ;
 ; Passes when the current room is higher than the parameter in #REGb.
+;
+; B Room number
 @label=RoomAbove
 c$66F9 LD A,($5D87)  ; Compare the room with the parameter.
  $66FC CP B          ; {#FAIL
@@ -2332,6 +2343,8 @@ c$66F9 LD A,($5D87)  ; Compare the room with the parameter.
 ; Condition: Room Below Parameter
 ;
 ; Passes when the current room is lower than the parameter in #REGb.
+;
+; B Room number
 @label=RoomBelow
 c$6702 LD A,($5D87)  ; {#FAIL
  $6705 CP B          ;
@@ -2341,6 +2354,8 @@ c$6702 LD A,($5D87)  ; {#FAIL
 ; Condition: Carrying, Wearing Or Here
 ;
 ; Passes when the object is carried, worn, or in this room.
+;
+; C Object location
 @label=HoldingOrHere
 c$6709 LD A,($5D89)  ; {Pass when the object is the one being carried.
  $670C CP C          ;
@@ -2356,6 +2371,8 @@ c$6709 LD A,($5D89)  ; {Pass when the object is the one being carried.
 ; Condition: Not Carrying, Wearing Or Here
 ;
 ; Passes when the object is neither carried, nor worn, nor in this room.
+;
+; C Object location
 @label=NotHoldingOrHere
 c$671A LD A,($5D89)  ; {#FAIL when the object is carried.
  $671D CP C          ;
@@ -2371,6 +2388,8 @@ c$671A LD A,($5D89)  ; {#FAIL when the object is carried.
 ; Condition: Object Is Somewhere
 ;
 ; Passes when the object's location is not #N$FC.
+;
+; C Object location
 @label=Somewhere
 c$672D LD A,$FC      ; {#FAIL
  $672F CP C          ;
@@ -2380,6 +2399,8 @@ c$672D LD A,$FC      ; {#FAIL
 ; Condition: Object Is Nowhere
 ;
 ; Passes when the object's location is #N$FC.
+;
+; C Object location
 @label=Nowhere
 c$6733 LD A,$FC      ; {#FAIL
  $6735 CP C          ;
@@ -2389,6 +2410,8 @@ c$6733 LD A,$FC      ; {#FAIL
 ; Condition: Object Is Carried
 ;
 ; Passes when the object is the one being carried.
+;
+; C Object location
 @label=IsCarried
 c$6739 LD A,($5D89)  ; {#FAIL
  $673C CP C          ;
@@ -2398,6 +2421,8 @@ c$6739 LD A,($5D89)  ; {#FAIL
 ; Condition: Object Is Worn
 ;
 ; Passes when the object is the one being worn.
+;
+; C Object location
 @label=IsWorn
 c$6740 LD A,($5D8A)  ; {#FAIL
  $6743 CP C          ;
@@ -2407,6 +2432,8 @@ c$6740 LD A,($5D8A)  ; {#FAIL
 ; Condition: Object Is Not Worn
 ;
 ; Passes when the object is not being worn.
+;
+; C Object location
 @label=IsNotWorn
 c$6747 LD A,($5D8A)  ; {#FAIL
  $674A CP C          ;
@@ -2416,6 +2443,8 @@ c$6747 LD A,($5D8A)  ; {#FAIL
 ; Condition: Object Is Not Carried
 ;
 ; Passes when the object is not being carried.
+;
+; C Object location
 @label=IsNotCarried
 c$674E LD A,($5D89)  ; {#FAIL
  $6751 CP C          ;
@@ -2437,6 +2466,8 @@ c$6753 LD A,$01      ; {Write #N$01 to *#R$5ECA.
 ; Condition: Counter #N$01 Equals Parameter
 ;
 ; Passes when counter 1 equals the parameter.
+;
+; B Value
 @label=Counter1Is
 c$6759 LD A,($5B81)  ; {#FAIL
  $675C CP B          ;
@@ -2446,6 +2477,8 @@ c$6759 LD A,($5B81)  ; {#FAIL
 ; Condition: Counter #N$02 Equals Parameter
 ;
 ; Passes when counter 2 equals the parameter.
+;
+; B Value
 @label=Counter2Is
 c$6760 LD A,($5B82)  ; {#FAIL
  $6763 CP B          ;
@@ -2455,6 +2488,8 @@ c$6760 LD A,($5B82)  ; {#FAIL
 ; Condition: Counter #N$03 Equals Parameter
 ;
 ; Passes when counter 3 equals the parameter.
+;
+; B Value
 @label=Counter3Is
 c$6767 LD A,($5B83)  ; {#FAIL
  $676A CP B          ;
@@ -2472,6 +2507,8 @@ t$676E DEFM "ADVENTURE"
 ;
 ; Passes when a value stirred from the frame counter and the signature
 ; comes out below the parameter.
+;
+; B Threshold
 @label=RandomTest
 c$6777 LD A,($676E)  ; {Plant the signature over the address read next.
  $677A LD ($6783),A  ; }
@@ -2503,6 +2540,8 @@ c$6777 LD A,($676E)  ; {Plant the signature over the address read next.
 ; Condition: Flag Is Zero
 ;
 ; Passes when the flag byte selected by the parameter is zero.
+;
+; B Flag number
 @label=FlagZero
 c$67A1 CALL $67FF    ; Call #R$67FF to point at the flag.
  $67A4 LD A,(HL)     ; {Pass when the flag is zero.
@@ -2513,6 +2552,8 @@ c$67A1 CALL $67FF    ; Call #R$67FF to point at the flag.
 ; Condition: Flag Is Not Zero
 ;
 ; Passes when the flag byte selected by the parameter is not zero.
+;
+; B Flag number
 @label=FlagNotZero
 c$67A9 CALL $67FF    ; Call #R$67FF to point at the flag.
  $67AC LD A,(HL)     ; {Pass when the flag is not zero.
@@ -2523,6 +2564,9 @@ c$67A9 CALL $67FF    ; Call #R$67FF to point at the flag.
 ; Condition: Flag Equals Parameter
 ;
 ; Passes when the selected flag equals #REGa.
+;
+; A Value
+; B Flag number
 @label=FlagEquals
 c$67B1 CALL $67FF    ; {#FAIL
  $67B4 CP (HL)       ;
@@ -2532,6 +2576,9 @@ c$67B1 CALL $67FF    ; {#FAIL
 ; Condition: Flag Differs From Parameter
 ;
 ; Passes when the selected flag differs from #REGa.
+;
+; A Value
+; B Flag number
 @label=FlagDiffers
 c$67B8 CALL $67FF    ; {#FAIL
  $67BB CP (HL)       ;
@@ -2541,6 +2588,9 @@ c$67B8 CALL $67FF    ; {#FAIL
 ; Condition: Flag Below Parameter
 ;
 ; Passes when the selected flag is below #REGa.
+;
+; A Value
+; B Flag number
 @label=FlagBelow
 c$67BF CALL $67FF    ; {#FAIL
  $67C2 CP (HL)       ;
@@ -2553,7 +2603,8 @@ c$67BF CALL $67FF    ; {#FAIL
 ; #R$67CB is also the first word of the condition table, so condition 0 does
 ; not have a routine of its own.
 ;
-; .
+; A Value
+; B Flag number
 ;
 ; The remaining condition routines are
 ; #FOR$67CD,$67FD,$02||a|#N(#PEEK(a)+$100*#PEEK(a+$01))|, | and ||.
@@ -2607,7 +2658,8 @@ w$67CD DEFW $66EB    ; Routine #N(#PEEK(#PC)+$100*#PEEK(#PC+$01)).
 ; Returns the address of flag byte #REGb. The flag bytes begin at the
 ; current room.
 ;
-; O:HL Flag byte #REGb.
+;   B Flag number
+; O:HL Flag byte #REGb
 @label=FlagAddress
 c$67FF LD HL,$5D87   ; The flag bytes begin at the current room.
 ; This entry point is used by the routine at #R$6807.
@@ -2624,7 +2676,8 @@ c$67FF LD HL,$5D87   ; The flag bytes begin at the current room.
 ; .
 ; Returns the address of object #REGb's location byte.
 ;
-; O:HL Location of object #REGb.
+;   B Object number
+; O:HL Location of object #REGb
 @label=ObjectAddress
 c$6807 LD HL,$5DCA   ; {Count #REGb bytes on from #R$5DCA, sharing the addition
  $680A JR $6802      ; in #R$67FF.}
@@ -2699,8 +2752,8 @@ c$685B CALL $6187    ; Call #R$6187 to describe the ending.
 ;
 ; Used by the routine at #R$685B.
 ; .
-; The answer N to 'play again' executes RST #N($00), which restarts the
-; Spectrum.
+; #HTML(The answer N to 'play again' executes
+; <code>RST #N$00</code>, which restarts the Spectrum.)
 @label=ResetMachine
 c$6878 RST $00       ;
 
@@ -2732,7 +2785,7 @@ c$687F LD A,$14      ; {Fall into the wait.
 ; Spins while the second key slot of #SKOOLKID$5C00(KSTATE) is
 ; #N($FF), which is the value it holds when nothing is pressed.
 ;
-; O:A The key state.
+; O:A The key state
 @label=WaitKeyDown
 c$6884 PUSH HL       ; {Save the registers around the wait.
  $6885 PUSH BC       ;
@@ -2749,6 +2802,8 @@ c$6884 PUSH HL       ; {Save the registers around the wait.
 ; Action: Move To Room
 ;
 ; Makes the parameter the current room and marks the room as changed.
+;
+; B Room number
 @label=MoveToRoom
 c$6892 LD A,B        ; {Store the room, then jump to #R$696C to mark it
  $6893 LD ($5D87),A  ; changed.
@@ -2757,6 +2812,8 @@ c$6892 LD A,B        ; {Store the room, then jump to #R$696C to mark it
 ; Action: Wait
 ;
 ; Pauses for B times #N$32 halted frames.
+;
+; B Count
 @label=WaitAWhile
 c$6899 LD A,$32      ; #N$32 frames, once for each count in #REGb.
 @label=WaitAWhile_Frame
@@ -2769,6 +2826,8 @@ c$6899 LD A,$32      ; #N$32 frames, once for each count in #REGb.
 ; Action: Move To Object
 ;
 ; Makes the object's location the current room.
+;
+; B Object number
 @label=MoveToObject
 c$68A2 LD C,B        ; {Point at object #REGb's location byte.
  $68A3 LD B,$00      ;
@@ -2783,6 +2842,9 @@ c$68A2 LD C,B        ; {Point at object #REGb's location byte.
 ; Picks the object up. It must be in the room, not already carried, and
 ; not worn. The carried id is written into the object's own location slot and
 ; the carried count increases.
+;
+; B Object number
+; C Object location
 @label=GetObject
 c$68B0 LD A,($5D89)  ; {Already carried is message #N$15.
  $68B3 CP C          ;
@@ -2818,6 +2880,9 @@ c$68B0 LD A,($5D89)  ; {Already carried is message #N$15.
 ;
 ; Puts a carried or worn object down in the current room. Message #N$17
 ; says you don't have it.
+;
+; B Object number
+; C Object location
 @label=DropObject
 c$68E4 LD A,($5D8A)  ; {An object that is worn is put down without changing the carried
  $68E7 CP C          ; count.
@@ -2842,7 +2907,7 @@ c$68E4 LD A,($5D8A)  ; {An object that is worn is put down without changing the 
 ; SAVE block named with marker #N$2A. The ROM returns to #R$6914.
 @label=SaveGame
 c$6902 CALL $687F    ; Call #R$687F to wait for a key.
- $6905 LD IX,$5D87   ; {Jump into #SKOOLKID$04C2(SA-BYTES) at #N$04C5 so #REGhl is the
+ $6905 LD IX,$5D87   ; {Jump into #SKOOLKID$04C2(SA_BYTES) at #N$04C5 so #REGhl is the
  $6909 LD DE,$0141   ; return address #R$6914.
  $690C LD HL,$6914   ;
  $690F LD A,$2A      ; }
@@ -2891,7 +2956,7 @@ c$6924 LD A,$1A      ; {Remember the pointer and select message #N$1A.
  $694B DI            ; }
  $694C LD A,$0F      ; {Border yellow.
  $694E OUT ($FE),A   ; }
- $6950 JP $0561      ; Jump into #SKOOLKID$0556(LD-BYTES) at #N$0561.
+ $6950 JP $0561      ; Jump into #SKOOLKID$0556(LD_BYTES) at #N$0561.
 
 ; Return From Loading
 ;
@@ -2908,6 +2973,8 @@ c$6953 EI            ; {Jump to #R$5ECB when the load failed, otherwise join
 ;
 ; Puts the object nowhere by storing #N($FC), then marks the room
 ; changed.
+;
+; B Object number
 @label=RemoveObject
 c$695D CALL $6807    ; {Fall into the room-changed handler.
  $6960 LD A,$FC      ;
@@ -2917,6 +2984,8 @@ c$695D CALL $6807    ; {Fall into the room-changed handler.
 ; Action: Put Object Here
 ;
 ; Stores the current room as the object's location.
+;
+; B Object number
 @label=PutObjectHere
 c$6965 CALL $6807    ; {Fall into the room-changed handler.
  $6968 LD A,($5D87)  ;
@@ -2986,6 +3055,10 @@ c$696C LD A,$01      ; {The room has changed.
 ;
 ; Exchanges the locations of the object in the parameter and the object
 ; addressed by #REGa, then marks the room changed.
+;
+; A Second object
+; B First object
+; C First object location
 @label=SwapObjects
 c$69BF CALL $6807    ; {Point at the first object's location.
  $69C2 PUSH HL       ; }
@@ -3001,6 +3074,9 @@ c$69BF CALL $6807    ; {Point at the first object's location.
 ; Action: Swap Flags
 ;
 ; Exchanges flag #REGb with the flag addressed by #REGa.
+;
+; A Second flag
+; B First flag
 @label=SwapFlags
 c$69CD CALL $67FF    ; {Point at flag #REGb.
  $69D0 PUSH HL       ; }
@@ -3016,6 +3092,8 @@ c$69CD CALL $67FF    ; {Point at flag #REGb.
 ; Action: Set Flag On
 ;
 ; Writes #N$FF to flag #REGb.
+;
+; B Flag number
 @label=SetFlagOn
 c$69DB CALL $67FF    ; {Return.
  $69DE LD A,$FF      ;
@@ -3025,6 +3103,8 @@ c$69DB CALL $67FF    ; {Return.
 ; Action: Clear Flag
 ;
 ; Writes zero to flag #REGb.
+;
+; B Flag number
 @label=ClearFlag
 c$69E2 CALL $67FF    ; {Return.
  $69E5 XOR A         ;
@@ -3035,6 +3115,9 @@ c$69E2 CALL $67FF    ; {Return.
 ;
 ; Replaces the command with verb #REGb and noun #REGa, and forgets that a script
 ; line has already matched so the new command can be tried.
+;
+; A Noun
+; B Verb
 @label=ForceCommand
 c$69E8 LD ($5B80),A  ; {#REGa becomes the noun and #REGb becomes the verb.
  $69EB LD A,B        ;
@@ -3046,6 +3129,9 @@ c$69E8 LD ($5B80),A  ; {#REGa becomes the noun and #REGb becomes the verb.
 ; Action: Add To Flag
 ;
 ; Adds #REGa to flag #REGb, sticking at #N$FF instead of wrapping.
+;
+; A Amount
+; B Flag number
 @label=AddToFlag
 c$69F4 CALL $67FF    ; {Point at flag #REGb and add #REGa.
  $69F7 ADD A,(HL)    ; }
@@ -3058,6 +3144,9 @@ c$69F4 CALL $67FF    ; {Point at flag #REGb and add #REGa.
 ; Action: Subtract From Flag
 ;
 ; Subtracts #REGa from flag #REGb, sticking at zero.
+;
+; A Amount
+; B Flag number
 @label=SubtractFromFlag
 c$69FE CALL $67FF    ; {Point at flag #REGb. #REGa is the amount to subtract.
  $6A01 LD ($5B94),A  ; }
@@ -3076,6 +3165,9 @@ c$69FE CALL $67FF    ; {Point at flag #REGb. #REGa is the amount to subtract.
 ; Action: Set Flag
 ;
 ; Writes #REGa into flag #REGb.
+;
+; A Value
+; B Flag number
 @label=SetFlag
 c$6A11 CALL $67FF    ; {Return.
  $6A14 LD (HL),A     ;
@@ -3086,6 +3178,9 @@ c$6A11 CALL $67FF    ; {Return.
 ; Writes a new location for the object. A value of 1 for an object
 ; numbered #N$46 or higher is stored as zero. If the new location is the
 ; current room, the room is marked changed.
+;
+; A New location
+; B Object number
 @label=SetObjectLocation
 c$6A16 CALL $6807    ; {Point at the object's location. C is the new one.
  $6A19 LD C,A        ; }
@@ -3108,6 +3203,9 @@ c$6A16 CALL $6807    ; {Point at the object's location. C is the new one.
 ; Action: Copy Object Location
 ;
 ; Gives the object in #REGb the same location as the object addressed by #REGa.
+;
+; A Source object
+; B Destination object
 @label=CopyObjectLocation
 c$6A2F CALL $6807    ; {Point at object #REGb.
  $6A32 PUSH HL       ;
@@ -3120,19 +3218,21 @@ c$6A2F CALL $6807    ; {Point at object #REGb.
 
 ; Action: Print Flag
 ;
-; Prints flag #REGb as a decimal number followed by a space. The conversion
-; goes through the DAA instruction, so the flag is treated as two decimal
-; digits.
+; #HTML(Prints flag #REGb as a decimal number followed by a space. The conversion
+; goes through the <code>DAA</code> instruction, so the flag is treated as two decimal
+; digits.)
+;
+; B Flag number
 @label=PrintFlag
 c$6A3C CALL $67FF    ; {Read flag #REGb. Zero prints as a single 0.
  $6A3F LD A,(HL)     ;
  $6A40 OR A          ;
  $6A41 JR Z,$6A49    ; }
- $6A43 LD B,A        ; {Count that value through DAA.
+ $6A43 LD B,A        ; {#HTML(Count that value through <code>DAA</code>.)
  $6A44 XOR A         ; }
 @label=PrintFlag_Tens
-*$6A45 INC A         ; {Each pass through DAA builds one decimal step.
- $6A46 DAA           ;
+*$6A45 INC A         ; {#HTML(Each pass through <code>DAA</code> builds one
+ $6A46 DAA           ; decimal step.)
  $6A47 DJNZ $6A45    ; }
 @label=PrintFlag_High
 *$6A49 PUSH AF       ; {The high digit is the tens.
@@ -3186,6 +3286,9 @@ g$6A81 DEFB $53,$00
 ; Wears the object. It must be carried and in this room, and it must not
 ; already be worn. The worn id replaces the object's location and the carried
 ; count drops.
+;
+; B Object number
+; C Object location
 @label=WearObject
 c$6A83 CALL $6807    ; {Point at the object. Already worn is refused.
  $6A86 LD A,($5D8A)  ;
@@ -3216,6 +3319,9 @@ c$6A83 CALL $6807    ; {Point at the object. Already worn is refused.
 ;
 ; Stops wearing the object and carries it instead. Message #N$1C says
 ; you are not wearing it.
+;
+; B Object number
+; C Object location
 @label=RemoveWorn
 c$6AAD CALL $6807    ; Point at the object's location.
  $6AB0 LD A,($5D8A)  ; {Not worn continues to the refusal.
@@ -3238,6 +3344,9 @@ c$6AAD CALL $6807    ; Point at the object's location.
 ; beeper. The key click uses #REGa equal to #N$1E. Action 0 of the bytecode jumps
 ; straight to the same ROM routine, whose address is the operand of the jump
 ; below.
+;
+; A Duration
+; B Pitch
 @label=Beep
 c$6AC4 AND A         ; {Duration #REGa is the low byte of #REGhl, and #REGb is
  $6AC5 LD L,A        ; the pitch.
@@ -3249,7 +3358,7 @@ c$6AC4 AND A         ; {Duration #REGa is the low byte of #REGhl, and #REGb is
  $6ACC RL D          ; }
  $6ACE LD E,A        ; {Save that pitch.
  $6ACF PUSH DE       ; }
- $6AD0 CALL $30A9    ; Call #SKOOLKID$30A9(HL=HL*DE) to scale the duration by
+ $6AD0 CALL $30A9    ; Call #SKOOLKID$30A9(HL_HLxDE) to scale the duration by
                      ; the pitch.
  $6AD3 POP DE        ; Restore the pitch for the beeper from the stack.
  $6AD4 JP $03B5      ; Jump to #SKOOLKID$03B5(BEEPER).
@@ -4178,10 +4287,10 @@ c$718B LD HL,$7188   ;
 ;
 ; Used by the routine at #R$6E7F.
 ; .
-; Opcode #N$F8 names an object. The following shape is drawn only when
+; #HTML[Opcode #N$F8 names an object. The following shape is drawn only when
 ; that object is in the current room, and the object id is planted in the low
-; address byte (#N$5F11) of LD (#R$5B85),A at #R$5ECB(#N$5F10). When the object
-; is absent that byte is cleared again.
+; address byte (#N$5F11) of <code>LD (#R$5B85),#REGa</code> at
+; #R$5ECB(#N$5F10). When the object is absent that byte is cleared again.]
 @label=ShapeIfPresent
 c$7213 INC IX        ;
  $7215 LD A,(IX+$00) ;
@@ -4822,71 +4931,1083 @@ t$75CE DEFM "w",$CD,$AF,"e9Bliz_ P",$D1,$BD,"I",$BB,"D",$DD,$CF,$C0,$DD,"9Hawkw"
 
 ; System Messages
 ;
-; The stock replies, 172 of them, each ending at #N$5E (stay on the
-; line) or #N$7E (start a new line). Directions #N$01 to #N$0A are the compass
-; points. Message #N$0B is the unrecognised-word reply, #N$10 is the inventory
-; heading, #N$12 asks whether to play again, and #N$19 is the darkness line.
+; #BUILDICT The stock replies, 172 of them, each ending at #N$5E (stay on the
+; line) or #N$7E (start a new line). Each byte is a token into #R$B1BC.
+; Directions #N$01 to #N$0A are the compass points. Message #N$0B is the
+; unrecognised-word reply, #N$10 is the inventory heading, #N$12 asks
+; whether to play again, and #N$19 is the darkness line.
+;
+; .
+;
+; ". You can see".
 @label=SystemMessages
-t$7E26 DEFM $BB,"Y",$13," ",$BA," ~ n",$BF,$D6,$BC,"~",$CA,"|",$BC,"~",$EF,$90,$BC,"~ w",$92,$BC,"~ ",$F2,$BC,"~#",$BC,"~ n",$BF,$D6,$EF,$90,$BC,"~ n",$BF,$D6," w",$92,$BC,"~",$CA,"|",$EF,$90,$BC,"~",$CA,"| w",$92,$BC,"~t",$60
- $7E67 DEFM $C4,"put",$89,"n}",$83,"no ",$C3,"cogn",$D9,$83,"w",$BF,"d",$B8,$5E,$CC,"'s",$8D,"y",$C2,"d m",$D0,"p",$FB,$C8,"9",$DB,$85,"a",$AD,$5E,$BB,"Y",$13," go~w",$60,$DB,$1C,"w",$C9,"t9",$DB," ",$97," ~y",$C6,"'"
- $7EA8 DEFM $8B,"c",$BE,"ry6t",$D2," mu",$D5,$BB,$5E,$01,"c",$BE,"ry",$84,$18,"fol",$A7,$84,": ",$5E,$94,"h6",$C0," ",$88,$BB,$5E,"g",$DE,"e'",$BD,$97," o",$8C,$BB,$DB,$1C,"w",$C9,"t9",$F5,"a",$D0,$DA,"a",$99,"(Y/N) "
- $7EE9 DEFM "?~Ok",$BB,"~p",$C3,"s",$B9,"n",$D0,"key9c",$C2,"t",$C4,"u",$8A,$5E,"J",$D4,$8F,"dy",$12,"i",$AD,$5E,"s",$BF,"ry",$BC,"I d",$C2,"'",$D3,$BA," ",$CC,$9B,"r",$8A,$5E,"Jd",$C2,"'t",$12,"i",$AD,$5E,"y",$13,"'",$D3,"go"
- $7F2A DEFM $F4,$60,$9D,$BB,$5E,"I2d",$BE,"k",$BB,"Y",$13,$94,$CA,"e",$8A,"~",$DB,$1C,"w",$C9,"t9r",$92,$BF,"e",$87,"sav",$83,"g",$DE,$C5,"?~ ",$5E,$01,$94," wea3i",$AD,$5E,$01,"wea3i",$AD,$5E," (w",$BF,"n)",$BC
- $7F6B DEFM "~No",$9B,"lp ",$C0,$85,$D9,$91,$DA,$8A,$5E,"I d",$C2,"'",$D3,$E2,"d",$C8,$CE,$93,$F4,$60,$8C,"b ",$5E,$1E,$97,$AE,"lt",$BD,"t",$D7,"n",$84,$15,$C1,"h",$93,"full8slush",$BB,$5E,$10,"t",$D2," n",$BE,$CB,"w"
- $7FAC DEFM "9squeeze",$85,"r",$C6,$F6,$BB,$5E,$A1,$8B,"a",$8B,"h",$E2,"d",$C3,"ds8l",$CC,"tl",$C5,$E9,$A2,"s",$03,"r",$A8," ",$BE,$80," ",$CC,$BD,$E3,"m",$BB,$5E,$1E,"lush",$AE,"lt",$B9,$9D,$BB,$5E,$1E,"lush f"
- $7FED DEFM $C3,"ez",$9E,$E9,$A2,$84,$18,"r",$A8," ",$BE,$80,$18,"w",$95,$FB,"{",$D5," f",$88,$B9,$9D,$BB,$5E,$10,"m",$B6,"t",$83,$B7,"r",$E2,"n",$C8,$B8,$5E,$B5,"w",$C2,"'t",$CA,$E8,"f",$AD,$5E,"Y",$C6,$12,"f",$80,$CA,$EA,"e",$D6,$84,$BB,$5E,"7f",$BF,$F1,"f"
- $802E DEFM "i",$CD,"d",$91,"opsQ",$BB,$5E,"g",$A7,"6r",$E2,$EE,$07,$CB,"d ",$8F,"d 'Seek",$85,$C3,$C5,"p",$FB,$C8," $\"ga",$0C,$CB,"d8p",$FB,$C8," if",$85,"a2wh",$C0,$1C,$BA,"k'",$BB,$5E,"no m"
- $806F DEFM "o",$8B,"w",$9F,$89,"m",$C5,"o",$FA,$18,"]",$BB,$5E,$10,$97," ",$8C,"y",$CA,"h",$C4,"y",$BB,$5E,"7",$CB,"d d",$CB,"p",$BD,$0D,$1F,$E7,$11,"f",$BF,$F1,"fi",$CD,"d v",$C9,$D9,"he",$B8,$5E,$D1,$1C,$9A,"n",$18,"co",$FA,$19,$F6,$B3," ",$E6,"i"
- $80B0 DEFM "mb",$BD,$C6,"t!",$5E,"7fi",$C8,$F1,$9B,$C0," d",$E3,$E5,"s",$1C,"b",$A2,$BB,$5E,$C6,$D5,$BC,$10,"t",$D2," ",$F9,"t9",$F9,"ld!",$5E,$1E,"w",$BF,"d",$CA,"l",$8E,$BD,"sm",$D2,$D6,$98,$C6,"t",$02,"$",$BB,$5E,$10,"m",$DA,$CF,$D4,$BB,$5E
- $80F1 DEFM $1E,$E8,$CD,"d",$F7,$CB,"t",$E0,"tsQ",$16,"7w",$BF,$CE,$02,"hea",$AD,$5E,"7",$F6,$B3,$F4,$D7,"n\"du",$CE,$E7,$11,"sw",$BF,"d",$91,$E3,"ke",$B8,$5E,"7",$F6,$B3,"<",$96,"s6y",$C6,$BB,$5E,"7",$F6,$B3,$F4,$9C,"s",$1C,"ap",$BE
- $8132 DEFM "t",$1B,"beg",$C4,"\"ea",$AD,$5E,$B7,$10,"wr",$CC,"t",$AC,"'Op",$AC,$94," l",$92," f",$B3," ",$E2,$DC,$E1,$CA,"l",$F8,$85,"ee'",$BB,$5E,$99,$DE,$C2,"gs",$17,"r",$E2,$EE,"<",$C1,"p",$CF,"t",$D7,"+",$C1,"m",$B1,$C4,"s",$8E,$87
- $8173 DEFM "p",$86,$DA,"r",$DE,"{",$D5,$E7,$EC,$9C,"\"be",$91,"o",$EC,"6",$C1,$DC,"m",$C2,$16,$C0,"t",$A2,"6",$E8,"m",$BB,$5E,"7d",$BE,"k figu",$C3,$85,$CB,"ws",$1C,$C6,"t",$02,"libr",$BE,"y",$BB,$5E,"7",$1F," ",$9A,"ns",$1B,"Jt"
- $81B4 DEFM "umb",$C7,"#",$BB,$5E,"-weap",$C2,$B9,$8B,"hav6no",$EF,$FA,$E0,"t!",$5E,$C3,"d9",$C3,"d",$BC,"wa",$E5,"9wa",$E5,",",$85,"u",$BD,"K",$E7,$9D,$16,"cav",$C5,$E4,"&",$BB,"Seek",$18,"s",$BF,"c",$C8,$BF
- $81F5 DEFM $BD,"d",$D2,"m",$BC,"n",$9C,$18,$C2,"c",$C5,"we",$D3,$F5,"ac",$B0,$94,$E7,$1D,$BB,"Seek",$18,$E8,"dd",$AC,$9D,$03,"d",$E2,$EB,$C2,$B8,"H*ac",$CB,"s",$11,"p",$CC,"8fi",$8B,"b",$AA,"g",$14,$C1,"s",$F1,"ptr",$8A,"Ar",$C9
- $8236 DEFM "u",$BD,"l",$90,$B2,"za....",$5E,$10,"t",$D2,$9B,"avy",$BB,$5E,"Jd",$CB,"p",$18,"b",$B3,"d",$C8,$BB,$5E,"Jfe",$CD,$91,"r",$C2,"g",$C8,$BB,$5E,"7b",$B3,"d",$C8,$CA,$F5,$C0,$A6,$11,"ogr",$8A,$5E,"w",$60,$C0," ?",$5E,"7"
- $8277 DEFM "og",$8B,$DC,"c",$8E,"\"",$C3,$DC,"sign -he",$E1," ....",$5E,$1E,"t",$C3,"ng",$D6,$CA,"p",$CD,"l ",$D8,"d",$B8,$5E,$10,"t",$D2," f",$BE,$BB,$5E,"7p",$9F,$BE," f",$88,"s#",$85,"e",$0A,$F4,$FD,$84,$18,"sn"
- $82B8 DEFM $FD,"e",$B2,$D6," i",$AD,$5E,"J",$CB,"ll",$18,"p",$9F,$BE,$E7,"c",$CB,"ss",$85,"e",$0A,$BC,"but",$82,$DB,"6so w",$FD,"e",$87,"gig",$C9,"t",$CF,$CA,"n",$FD,$C5,"t",$60,"wa",$BD,"sl",$A3,"6",$E2,"d",$C8,"ne",$C0,"h!"
- $82F9 DEFM $5E,$10,"l",$A8,$DD,$BB,$5E,$10,"f",$D7,"ry",$B2,$D6,$DF,$DA,"g",$D0,"p",$A8,$F0,"s",$1B,$99,"tru",$D6," l",$D2,"k",$BD,"ra",$A1,"r",$CA,$9F,"y",$BB,$5E,"y",$C6,$12,"no",$CA,"u",$CC,"abl",$C5,"key",$BB,$5E,"Jf",$95," ",$94,"h"
- $833A DEFM $84,$BB,$5E,"7wi",$8B,"a",$EC,$9C,$BD,$E4,$12,"t",$E3,"g",$EB,"@a&",$82,"b",$D7,"y",$84,$1C,$D4,"iv",$8A,$5E,"7",$DB,$BF," l",$D2,"k",$BD,$8C,$D0,"we",$FD,$BB,$5E,"7v",$DE,"p",$F3,"*try6",$E4," k",$A3,$E7,$9D,$16,"7g"
- $837B DEFM $BE,"l",$CF,$BB,$5E,"7v",$DE,"pi",$8B,"s",$C4,"k",$BD,$E8,$BD,"tee",$D6,$15,"y",$C6,$BC,"w",$60,$C1,"pa",$C4,$03,"n",$E0,"k!",$5E,"a",$05,"a",$EC,$9C,$BD,"ba",$A1,"d",$82,"s",$E8,"mme3mult",$CF,"ol",$C6,"@l",$B4
- $83BC DEFM $AD,"H",$C5,"s",$F8,$BD,"'f",$C7,$C5,"if y",$13,$7F,$18,"h",$B4,$B2,"_",$02,"m",$B6,"}",$BD,"h",$D1,$8D,$AF,$C5,"ev",$FC,$BB,"W",$60,"l",$CC,"t",$C7,$9B,"lp I c",$B1,"o",$FA,$C8,$1C,"i",$BD,"b",$D7,"i",$DD,$03,"ca",$E5,"'",$BB
- $83FD DEFM "H",$C5,"v",$C9,$D9,"h",$9E,$19,$E6,$C6,"d8smok",$8A,$5E,$1E,"n",$FD,$C5,"b",$CC,$EE,"Q",$BB,"I2po",$D9,$C2,$C6,$B8,"S",$EA,$C5,"d",$F8,$BD,$94,"h6e",$8C," ",$BA,"m\"go r",$B4,"t..",$BB,$5E,"he'",$BD,$E4
- $843E DEFM "t",$88,$D0,"BATTY!!!!",$5E,"7r",$9A," ",$DB,$EE,"n'",$D3,"c",$BE,"r",$D0,"f",$BE," ",$D8,$C6,$F6,$BB,$5E,$10,"t",$D2,$CA,"li",$EC,"y9",$E6,"imb",$BB,$5E,"t",$04,$94,"h6he",$8B,"y",$13,$F4,"i",$C5,$B5,"t",$D2
- $847F DEFM $BC,"a",$BD,$10,$CE,"i",$FA,$1B,"qu",$CC,$C5,"sli",$EC,$C8,"y",$BB,"(THE ROPE THAT IS!)",$5E,"Jl",$D2,"p",$18,"r",$9A," ",$D8,"d",$85,"r",$C6,$F6,$18,"r",$84,$BB,$5E,"7r",$9A,",",$1B,$A1,$05
- $84C0 DEFM "f>",$0D,$1F,$BB,$5E,"73",$AF,$9E,$C6,"t",$02,"]",$BB,$5E,$10,"f",$90,$D8,$DD,$BB,$5E,$1E,$81,$F4,$C6,$D5,$EE,"Q",$1B,"w",$CC,"h",$99,"s",$E0,$C2,"d",$BD,$01,"co",$E5,"@",$19,"m",$D1,"s8s",$81,$BB,$5E,$B5,"w",$C2,"'",$D3,$9A,"n",$BB,$5E,$10,"f"
- $8501 DEFM "ull",$BB,$5E,$1E,$81," k",$9F,$11,"gi",$C9,$AD,$5E,$10,$A4,"ty",$BB,$5E,"tuck",$DD,$03,"l",$C4,$84,$02,$ED,"x<",$C1,$FF,$CD,"l",$BB,$5E,"7z",$EA,"bi",$C5,"gu\\ ",$E3,"p",$AE,"9pi",$E0,"e",$B8,$5E,"7h",$BE,"p"
- $8542 DEFM " c",$E3,$9E,"'T",$E8,"ef,",$85,"ief'5 gi",$C9,$D3,"w",$FD,$9E,$F2,$1B,$DC,"c",$8E,"\"squ",$D1,"hQ",$AB,"RY READING YOUR FAIRY TALES "
- $8583 DEFM "IN FUTURE!",$BB,$5E,"7bucke2t",$D2," w",$8E,"9f",$CC,"#",$85,"e",$06,$BB,$5E,"7",$F5,$C9,"k f",$88,$BD,$C4,$0D,$96,"nn",$CD,$8D,"h",$95," m",$8A,$5E,$1E,$8E,"s",$02,$96,"nn",$CD," l",$D2
- $85C4 DEFM "k we",$FD," ",$C0," X",$D8,"d",$BB,$5E,"t",$04,$C1,"sm>ex",$F5,"osi",$C2,$BB,$5E,"7d",$DE,$DF,$8F,"k",$BD,$93,$18,"Z f",$A7,$BD,$C2,"c",$C5,$DA,"a",$C4,$BB,$5E,$1E,$8E,"s",$02,$96,"nn",$CD,"&",$82,$93,$18,"Z",$91,$BE
- $8605 DEFM "t\"r",$D9,"e",$8D,"h",$95," ",$CC,",{",$C7,$18,"Z",$03,$96,"nn",$CD," dra",$C4,$B9,$9D,$BB,$5E,"s",$81,$CA,"pr",$F8,$BD,"e",$8C,"ywh",$C8,$8A,$5E,$10,$C1,"p",$CF,"t",$D7,"+wav",$9E,"b",$8F,"k6",$C2,$87,"mo",$C2,"l"
- $8646 DEFM $B5,"sh",$BF,$8A,$5E,$1E,"oap",$DF,$8F,"k",$BD,$F2,$18,"oi",$98,"s",$81,$1B,$CC,$89,"llaps",$9E,"b",$A2," ",$C4,$0D,"pi",$AD,$5E,"7",$F5,$C9,"k",$DF,$D7,"n",$BD,$F2,$03,"he",$C0,$02,"Z",$BB,$5E,"t",$04,$C1,"hu",$A0,"ex",$F5
- $8687 DEFM "osi",$B7,"d",$A3,$03,"m",$B6,"}{",$D5,$82,"t",$D7,"n",$EF,"x",$F5,"o",$DC,"s",$1B,"ex",$F5,"od6m",$B6,"}",$B9,$8B,"no",$17,"mo",$CE,$9B,$D4,$D6,$D0,$F5,"a",$F1,"9b",$C5,$C4,$BB,$5E,"7Z<r",$D9,"6f",$90,$8D,"h",$95,$18
- $86C8 DEFM "d",$DE,$BB,$5E,$01,"f",$C3,"ez",$84,$BB,$5E,"y",$C6,$12,"f",$CB,"z",$D8,"9",$DC,$C0,"h",$BB,$5E,$01,"b",$D7,"i",$83,"d",$A3,$03,"[",$BB,$5E,$1E,$97,$BD,$E4,$EC,$C7,$7F,"w",$BE,"d ",$93,$0B,"av",$D4,$C9,$D5,"e",$89,"m",$9E,"c",$D1,"c",$E1,$84,"#",$18
- $8709 DEFM "K5 [",$DF,$D7,"ie",$11,"y",$F0,"i",$BB,$5E,$1E,$97,$BD,$E4,$EC,$C7,$7F,"w",$BE,"d ",$93,$0B,"av",$D4,$C9,$D5,"e",$89,"m",$9E,"c",$D1,"c",$E1,$84,"#",$18,"K",$BB,$5E,"7y",$F0,"i",$7F,"cib",$98,"p",$C3,"v",$86,"s",$AE,$16,$86,$C8,$84
- $874A DEFM $18,"cav",$8A,$5E,"7y",$F0,"i",$F4,$9C,"s",$AE,"9pi",$E0,"e",$B8,$5E,"Js",$C4,"k d",$A3," ",$C4,$0D,"[",$1B,"so",$B7,"f",$C3,"eze9",$DC,$C0,"h",$F4,"ra",$EC,$83,"h",$CD,"p",$C7,"ssly",$03,"[",$BB,$5E,$D1,$1C,"d"
- $878B DEFM "ig",$18,"y",$F0,"i",$CA,"udd",$D8,"e",$98,"sm",$D1,"h",$9E,$CC,$BD,$9D," ",$C6,"t",$02,"[",$BB,$5E,$C2,"e",$02,"$s<l",$D2,"se",$1B,$BA,"m\"co",$8C," ",$B1,$9A,"n",$84,$BB,$5E,$1E,"t",$C2,$9E,"snaps",$15,"se",$8C
- $87CC DEFM $A5,"pi",$E0,"e",$B8,$5E,$D1,$1C,"s",$E8,"f",$17,"pi",$E0,$EE,$85,"e",$D0,"f",$88,"#",$18,$F9,$C7,$1C,$E2,"co",$8C,$BB,$5E,"Jf",$88,"....",$5E,$B5,$DB,$EE,"n'",$D3,"c",$C0,$D5," ",$B7,$C9,"y",$D6,$84,$BB,$5E,"no",$9B,"'s",$87,"f"
- $880D DEFM $E3,$D8,"d(",$93,$9B,"'",$B9,"lso",$DF,"igg",$C8,$85,$C9,$1C,$BE,"e!)",$5E,"7",$CD,"f",$CA,$F8,$BD,"'W",$C5,"ne",$83,"-h",$CD,"p",$CA,$EA,"eXmu",$CE,$CA,"l",$F8,$18,$97,$EF,"v",$FC," h",$B4,$B2,"_",$02,"m",$B6,"}s"
- $884E DEFM $8D,"fo",$8B,"h",$C5,"d",$92,$CB,"y",$BD,"u",$BD,$88,"'",$BB,$5E,$10,"w",$F0,",",$89,"ld",$1B,"g",$D8,$C8,$88,"y{t",$D9,"h",$82,"col",$C6,"r!",$5E,"Xgu",$BE,"d",$91,"eps",$7F,"w",$BE,"d",$1B,"s",$F8,$BD,"'Y",$13,$94,$F7,$D1
- $888F DEFM $11,$CB,$E1,"<",$E6,"os",$DD,$7F,$EF,"v",$FC," ha",$BD,$86,"e",$C3,"d",$18,"m",$B6,"}",$BD,"w",$C5,"c",$C9,$94," ",$C7,"tQ",$15,$C6,"r v",$88,"ey'",$BB,$5E,"7gu\\ r",$E2," o",$FA,$CA,"c",$8F,"m6'YETI"
- $88D0 DEFM " YETI'",$BB,$5E,"soQ'",$8B,"fe",$CD,"6su",$CF,"id",$A5,$E4,"da",$D0,$BE,"e",$1C,"?",$5E,"J",$EB,$D3,"o",$FA,$18,$96,$F3,$BB,$5E,"J",$EB,$D3,"o",$FA,$18,$E9,$C0,$8A,$5E,"7",$A9,"f<",$E9,$A2,$DD,$1B,"l",$D2,"k",$BD,$ED
- $8911 DEFM $D6,$85,$C4,$1B,"we",$FD,$BB,$5E,"y",$13,"'",$D3,$8F,$D5,$BB,$5E,"7",$A9,"f",$CA,"hudd",$C8,"s",$1B,$C1,"pi",$E0,$C5,"f",$88,"s",$16,"7c",$86,$C3,"Vv6",$C1,$F9,"l",$8A,$5E,"7p",$E3,$92,$CA,$F8,$BD,"W",$C5,"ne",$83,"-h",$CD,"p"
- $8952 DEFM $CA,$EA,"eXmu",$CE,$CA,"l",$F8,$18,$97,$EF,"v",$FC," h",$B4,$B2,"_",$02,"m",$B6,"}s",$8D,"fo",$8B,"h",$C5,"sl",$F8,$BD,"u",$BD,$88,$BC,"I c",$B1,$C2,$98,"gi",$E5,$1C,$D6,"i",$BD,"b",$C7,"s",$BD,$FF,$CD,"l ",$D1,$9B,"lp",$DF
- $8993 DEFM "u",$D3,$10,"a",$91,$BE,$AD,$5E,$01,$DC,$E1,$BC,"sla",$99,"by",$18,"s",$BF,"c",$C8,"y",$02,"ev",$FC,$B2,"_",$BC,"w",$F9,$EF,"v",$AC,$97," glo",$C0,$BD,"o",$8C," -c",$BF,"ps",$C5,$D1,$9B,$F7,$C3,"p",$BE,"e\"d",$92,$CB,$D0,"-"
- $89D4 DEFM "v",$9F,$DA,$8A,$5E,$01,"sea",$C7,"d",$82,$E9,"y",$CE,$D4,",",$7F," >e",$A6,"n",$CC,"y",$BC,">y",$13," ",$DB,"<w",$C0,$D5," ",$D1,$85,"e",$05,"p",$C3,"p",$BE,"e\"d",$92,$CB,$D0,"-v",$9F,$DA,$8A,$5E,"7",$DC,"m",$B7,"t",$E3,"e\"",$C0
- $8A15 DEFM "t",$A2,"Q",$BC,"bu2",$CE,"o",$EC,$14,"7p",$86,$DA,"r",$DE,$BB,$5E,"Y",$C6,$85,$C4,"k (",$D6,$D9,"<qu",$92,"i",$C2,"ab",$C7,")",$85,"e",$C3,"f",$BF,"e",$1C,$BE,"e,",$91,$9F," ",$B5,$BA,"m",$BD,$E4,$12,"w",$BF,"k",$DD,"!",$5E,$C1,"]"
- $8A56 DEFM "8",$CF,$C5,"a",$EC,$9C,"s",$82,"fr",$C2,"t8y",$C6,$BB,$5E,$B5,"h",$D1,$87,"beautiful",$F4,$C2,$8A,$5E,"7fi",$C3,"b>ex",$F5,"o",$DC,"s",$07,$CF,"e",$AE,"lt6",$B5,"a",$9D,"(",$93," ",$C9,"noy6",$A1
- $8A97 DEFM $05,"s",$EA,"ewh",$C0,"!)",$BB,$5E,"....",$93,$F7,$CB,"mpt",$98,"m",$CD,"t",$B9,"ga",$C4,$BB,$5E,$C1,"gu",$CE,"8w",$95,$DF,$A7,$B8,$5E,"7l",$B4,$D3,"b",$B6,"c",$9E,"b",$A2,$02,"pol",$D9,"h",$83,"s",$E8,$CD,"d",$1B,"t"
- $8AD8 DEFM $A4,$BF,$BE,"i",$98,"bl",$95,$11,"wi_",$BB,$5E,$A1,$05,$C3,$CD,$BD,"b",$A2," ",$E6,"ut",$D5,"6",$C0," h",$D9,$9B,$E1,$BB,$5E,$A1,$05,"c",$90,"s",$87,$FF,$CD,"l",$BB,$5E,$A1,$05,$99,"Xf",$C4,$A5,$C0,"t",$A4,"t",$CA,"umm",$C2,$BD,$E8,$BD
- $8B19 DEFM $DC,"m",$B7,"m",$90,$C8,"!",$5E,$A1,$05,$C3,$CD,$BD,"b",$A2," ",$E6,"ut",$D5,"6",$C0," h",$D9,$9B,$E1,$BB,$5E,$A1,$05,"di",$EE,",",$1B,">",$E8,$BD,"s",$BF,"c",$C8,"y<",$E2,"d",$C2,$8A,$5E,$A1,$05,"s",$F8,$BD,"'BE NOT!'",$1B
- $8B5A DEFM $01,$94,"!",$5E,$A1,$05,"po",$C4,"t",$B9,"t",$AE,$1B,"ut",$A6,"s",$87,"h",$8E,$C6,$BD,"c",$D7,"s",$8A,$5E,"J",$CE,$93,$07,$E9,$C0,$8A,$5E,"J",$CE,$93,$07,$96,$F3,$BB,$5E,$FF,$BE,"ksVp",$16,"7wi_",$BB,$5E,$B7,$10,"wr",$CC,"t",$AC,"s"
- $8B9B DEFM "l",$F8,$C8,"8s",$BF,"c",$C8,$BF,"s(IS THIS A HINT ?)",$5E,$0E,"h",$8E,$C6,$BD,"lau",$F6,$85,"e",$05,"rub",$BD,$C6,$D3,"p",$BE,"t8-p",$86,$DA,"r",$DE,"!",$5E,$1E,"lush",$AE
- $8BDC DEFM "lts",$5E,"y",$C6,$12,"sco@~y",$C6,$12,"sco@100% ",$93,$12,$AF,"p",$C7,"t",$DD,$18,$86,"i",$8B,$E1,"v",$86,"u",$C3,",",$89,"ngr",$C0,"ul",$C0,"i",$C2,"s",$5E,"y",$C6,$12,$AF,"p",$C7,"t",$83,"~%",$02,$E1
- $8C1D DEFM "v",$86,$D7,$B0,$93,$12,$C3,"t",$D7,"n",$83,"safe",$98,"h",$EA,"e",$5E,$B5,"l",$D2,"k",$B9,$BD,"if",$1C,"c",$B3,"d",$F7,"ush ",$CC,$5E,$94," ",$D8,$C6,$F6,"<",$C3,"f",$C7,"ct",$DD,"..",$BB,$5E,$10,"p",$F9,$FF,"h",$BF,$EE,"c",$86,$BB
- $8C5E DEFM $5E,"J",$BA," ",$94,"h6",$FF,$E0,"i",$D4,"                              ",$5E,$CC,"Vks",$5E,"B",$C5,"mo",$8B,$FF,$E0,"if",$CF,$5E,"S",$EA,"e",$7F,"m8e"
- $8C9F DEFM $C7,"ctr",$CF,$D4,$89,"nt",$CB,"l",$5E,"An",$EF,"x",$F5,"osiv",$C5,$FF,$CD,"l",$5E,"O",$EC,"os",$CC,"+",$C1,"c",$D7,"se",$5E,"See",$18,"c",$D1,"s",$F0,"t",$C5,$ED,"x",$7F," ",$DC,"ta",$FC,"s8h",$C4,"t",$CA,"he",$F0
- $8CE0 DEFM "s",$5E
- $8CE2 DEFM "===="
+t$7E26 DEFB $BB,$59,$13,$20,$BA,$20         ; #TOKENS$06
+ $7E2C DEFB $7E                             ; Terminator.
+; " north,".
+@label=SystemMessage_01
+ $7E2D DEFB $20,$6E,$BF,$D6,$BC             ; #TOKENS$05
+ $7E32 DEFB $7E                             ; Terminator.
+; " south,".
+@label=SystemMessage_02
+ $7E33 DEFB $CA,$7C,$BC                     ; #TOKENS$03
+ $7E36 DEFB $7E                             ; Terminator.
+; " east,".
+@label=SystemMessage_03
+ $7E37 DEFB $EF,$90,$BC                     ; #TOKENS$03
+ $7E3A DEFB $7E                             ; Terminator.
+; " west,".
+@label=SystemMessage_04
+ $7E3B DEFB $20,$77,$92,$BC                 ; #TOKENS$04
+ $7E3F DEFB $7E                             ; Terminator.
+; " up,".
+@label=SystemMessage_05
+ $7E40 DEFB $20,$F2,$BC                     ; #TOKENS$03
+ $7E43 DEFB $7E                             ; Terminator.
+; " down,".
+@label=SystemMessage_06
+ $7E44 DEFB $23,$BC                         ; #TOKENS$02
+ $7E46 DEFB $7E                             ; Terminator.
+; " north east,".
+@label=SystemMessage_07
+ $7E47 DEFB $20,$6E,$BF,$D6,$EF,$90,$BC     ; #TOKENS$07
+ $7E4E DEFB $7E                             ; Terminator.
+; " north west,".
+@label=SystemMessage_08
+ $7E4F DEFB $20,$6E,$BF,$D6,$20,$77,$92,$BC ; #TOKENS$08
+ $7E57 DEFB $7E                             ; Terminator.
+; " south east,".
+@label=SystemMessage_09
+ $7E58 DEFB $CA,$7C,$EF,$90,$BC             ; #TOKENS$05
+ $7E5D DEFB $7E                             ; Terminator.
+; " south west,".
+@label=SystemMessage_0A
+ $7E5E DEFB $CA,$7C,$20,$77,$92,$BC         ; #TOKENS$06
+ $7E64 DEFB $7E                             ; Terminator.
+; "that input contained no recognised words.".
+@label=SystemMessage_0B
+ $7E65 DEFB $74,$60,$C4,$70,$75,$74,$89,$6E ; {#TOKENS$18
+ $7E6D DEFB $7D,$83,$6E,$6F,$20,$C3,$63,$6F ;
+ $7E75 DEFB $67,$6E,$D9,$83,$77,$BF,$64,$B8 ; }
+ $7E7D DEFB $5E                             ; Terminator.
+; "it's beyond my power to do that.".
+@label=SystemMessage_0C
+ $7E7E DEFB $CC,$27,$73,$8D,$79,$C2,$64,$20 ; {#TOKENS$12
+ $7E86 DEFB $6D,$D0,$70,$FB,$C8,$39,$DB,$85 ;
+ $7E8E DEFB $61,$AD                         ; }
+ $7E90 DEFB $5E                             ; Terminator.
+; ". You can go".
+@label=SystemMessage_0D
+ $7E91 DEFB $BB,$59,$13,$20,$67,$6F         ; #TOKENS$06
+ $7E97 DEFB $7E                             ; Terminator.
+; "what do you want to do now".
+@label=SystemMessage_0E
+ $7E98 DEFB $77,$60,$DB,$1C,$77,$C9,$74,$39 ; {#TOKENS$0C
+ $7EA0 DEFB $DB,$20,$97,$20                 ; }
+ $7EA4 DEFB $7E                             ; Terminator.
+; "you're carrying too much.".
+@label=SystemMessage_0F
+ $7EA5 DEFB $79,$C6,$27,$8B,$63,$BE,$72,$79 ; {#TOKENS$10
+ $7EAD DEFB $36,$74,$D2,$20,$6D,$75,$D5,$BB ; }
+ $7EB5 DEFB $5E                             ; Terminator.
+; "you are carrying the following:".
+@label=SystemMessage_10
+ $7EB6 DEFB $01,$63,$BE,$72,$79,$84,$18,$66 ; {#TOKENS$0E
+ $7EBE DEFB $6F,$6C,$A7,$84,$3A,$20         ; }
+ $7EC4 DEFB $5E                             ; Terminator.
+; "nothing at all.".
+@label=SystemMessage_11
+ $7EC5 DEFB $94,$68,$36,$C0,$20,$88,$BB     ; #TOKENS$07
+ $7ECC DEFB $5E                             ; Terminator.
+; "game's now over. do you want to play again (Y/N) ?".
+@label=SystemMessage_12
+ $7ECD DEFB $67,$DE,$65,$27,$BD,$97,$20,$6F ; {#TOKENS$1D
+ $7ED5 DEFB $8C,$BB,$DB,$1C,$77,$C9,$74,$39 ;
+ $7EDD DEFB $F5,$61,$D0,$DA,$61,$99,$28,$59 ;
+ $7EE5 DEFB $2F,$4E,$29,$20,$3F             ; }
+ $7EEA DEFB $7E                             ; Terminator.
+; "Ok.".
+@label=SystemMessage_13
+ $7EEB DEFB $4F,$6B,$BB                     ; #TOKENS$03
+ $7EEE DEFB $7E                             ; Terminator.
+; "press any key to continue.".
+@label=SystemMessage_14
+ $7EEF DEFB $70,$C3,$73,$B9,$6E,$D0,$6B,$65 ; {#TOKENS$10
+ $7EF7 DEFB $79,$39,$63,$C2,$74,$C4,$75,$8A ; }
+ $7EFF DEFB $5E                             ; Terminator.
+; "you already have it.".
+@label=SystemMessage_15
+ $7F00 DEFB $4A,$D4,$8F,$64,$79,$12,$69,$AD ; #TOKENS$08
+ $7F08 DEFB $5E                             ; Terminator.
+; "sorry, I don't see it here.".
+@label=SystemMessage_16
+ $7F09 DEFB $73,$BF,$72,$79,$BC,$49,$20,$64 ; {#TOKENS$11
+ $7F11 DEFB $C2,$27,$D3,$BA,$20,$CC,$9B,$72 ;
+ $7F19 DEFB $8A                             ; }
+ $7F1A DEFB $5E                             ; Terminator.
+; "you don't have it.".
+@label=SystemMessage_17
+ $7F1B DEFB $4A,$64,$C2,$27,$74,$12,$69,$AD ; #TOKENS$08
+ $7F23 DEFB $5E                             ; Terminator.
+; "you can't go that way.".
+@label=SystemMessage_18
+ $7F24 DEFB $79,$13,$27,$D3,$67,$6F,$F4,$60 ; {#TOKENS$0A
+ $7F2C DEFB $9D,$BB                         ; }
+ $7F2E DEFB $5E                             ; Terminator.
+; "It is dark. You cannot see.".
+@label=SystemMessage_19
+ $7F2F DEFB $49,$32,$64,$BE,$6B,$BB,$59,$13 ; {#TOKENS$0C
+ $7F37 DEFB $94,$CA,$65,$8A                 ; }
+ $7F3B DEFB $7E                             ; Terminator.
+; "do you want to restore a saved game ?".
+@label=SystemMessage_1A
+ $7F3C DEFB $DB,$1C,$77,$C9,$74,$39,$72,$92 ; {#TOKENS$13
+ $7F44 DEFB $BF,$65,$87,$73,$61,$76,$83,$67 ;
+ $7F4C DEFB $DE,$C5,$3F                     ; }
+ $7F4F DEFB $7E                             ; Terminator.
+; "".
+@label=SystemMessage_1B
+ $7F50 DEFB $20                             ; #TOKENS$01
+ $7F51 DEFB $5E                             ; Terminator.
+; "you are not wearing it.".
+@label=SystemMessage_1C
+ $7F52 DEFB $01,$94,$20,$77,$65,$61,$33,$69 ; {#TOKENS$09
+ $7F5A DEFB $AD                             ; }
+ $7F5B DEFB $5E                             ; Terminator.
+; "you are wearing it.".
+@label=SystemMessage_1D
+ $7F5C DEFB $01,$77,$65,$61,$33,$69,$AD     ; #TOKENS$07
+ $7F63 DEFB $5E                             ; Terminator.
+; " (worn),".
+@label=SystemMessage_1E
+ $7F64 DEFB $20,$28,$77,$BF,$6E,$29,$BC     ; #TOKENS$07
+ $7F6B DEFB $7E                             ; Terminator.
+; "No help at this stage.".
+@label=SystemMessage_1F
+ $7F6C DEFB $4E,$6F,$9B,$6C,$70,$20,$C0,$85 ; {#TOKENS$0C
+ $7F74 DEFB $D9,$91,$DA,$8A                 ; }
+ $7F78 DEFB $5E                             ; Terminator.
+; "I don't understand that verb".
+@label=SystemMessage_20
+ $7F79 DEFB $49,$20,$64,$C2,$27,$D3,$E2,$64 ; {#TOKENS$10
+ $7F81 DEFB $C8,$CE,$93,$F4,$60,$8C,$62,$20 ; }
+ $7F89 DEFB $5E                             ; Terminator.
+; "the snow melts turning into a handfull of slush.".
+@label=SystemMessage_21
+ $7F8A DEFB $1E,$97,$AE,$6C,$74,$BD,$74,$D7 ; {#TOKENS$19
+ $7F92 DEFB $6E,$84,$15,$C1,$68,$93,$66,$75 ;
+ $7F9A DEFB $6C,$6C,$38,$73,$6C,$75,$73,$68 ;
+ $7FA2 DEFB $BB                             ; }
+ $7FA3 DEFB $5E                             ; Terminator.
+; "it is too narrow to squeeze through.".
+@label=SystemMessage_22
+ $7FA4 DEFB $10,$74,$D2,$20,$6E,$BE,$CB,$77 ; {#TOKENS$15
+ $7FAC DEFB $39,$73,$71,$75,$65,$65,$7A,$65 ;
+ $7FB4 DEFB $85,$72,$C6,$F6,$BB             ; }
+ $7FB9 DEFB $5E                             ; Terminator.
+; "there are hundreds of little cracks in the rock around its rim.".
+@label=SystemMessage_23
+ $7FBA DEFB $A1,$8B,$61,$8B,$68,$E2,$64,$C3 ; {#TOKENS$1F
+ $7FC2 DEFB $64,$73,$38,$6C,$CC,$74,$6C,$C5 ;
+ $7FCA DEFB $E9,$A2,$73,$03,$72,$A8,$20,$BE ;
+ $7FD2 DEFB $80,$20,$CC,$BD,$E3,$6D,$BB     ; }
+ $7FD9 DEFB $5E                             ; Terminator.
+; "the slush melts away.".
+@label=SystemMessage_24
+ $7FDA DEFB $1E,$6C,$75,$73,$68,$AE,$6C,$74 ; {#TOKENS$0B
+ $7FE2 DEFB $B9,$9D,$BB                     ; }
+ $7FE5 DEFB $5E                             ; Terminator.
+; "the slush freezes cracking the rock around the window which falls
+; away.".
+@label=SystemMessage_25
+ $7FE6 DEFB $1E,$6C,$75,$73,$68,$20,$66,$C3 ; {#TOKENS$20
+ $7FEE DEFB $65,$7A,$9E,$E9,$A2,$84,$18,$72 ;
+ $7FF6 DEFB $A8,$20,$BE,$80,$18,$77,$95,$FB ;
+ $7FFE DEFB $7B,$D5,$20,$66,$88,$B9,$9D,$BB ; }
+ $8006 DEFB $5E                             ; Terminator.
+; "it is mounted on runners.".
+@label=SystemMessage_26
+ $8007 DEFB $10,$6D,$B6,$74,$83,$B7,$72,$E2 ; {#TOKENS$0B
+ $800F DEFB $6E,$C8,$B8                     ; }
+ $8012 DEFB $5E                             ; Terminator.
+; "it won't shift.".
+@label=SystemMessage_27
+ $8013 DEFB $B5,$77,$C2,$27,$74,$CA,$E8,$66 ; {#TOKENS$09
+ $801B DEFB $AD                             ; }
+ $801C DEFB $5E                             ; Terminator.
+; "You have found something.".
+@label=SystemMessage_28
+ $801D DEFB $59,$C6,$12,$66,$80,$CA,$EA,$65 ; {#TOKENS$0B
+ $8025 DEFB $D6,$84,$BB                     ; }
+ $8028 DEFB $5E                             ; Terminator.
+; "the forcefield stops you.".
+@label=SystemMessage_29
+ $8029 DEFB $37,$66,$BF,$F1,$66,$69,$CD,$64 ; {#TOKENS$0E
+ $8031 DEFB $91,$6F,$70,$73,$51,$BB         ; }
+ $8037 DEFB $5E                             ; Terminator.
+; "glowing runes on the rod read 'Seek three power stones to gain the rod
+; of power if that is what you seek'.".
+@label=SystemMessage_2A
+ $8038 DEFB $67,$A7,$36,$72,$E2,$EE,$07,$CB ; {#TOKENS$32
+ $8040 DEFB $64,$20,$8F,$64,$20,$27,$53,$65 ;
+ $8048 DEFB $65,$6B,$85,$C3,$C5,$70,$FB,$C8 ;
+ $8050 DEFB $20,$24,$22,$67,$61,$0C,$CB,$64 ;
+ $8058 DEFB $38,$70,$FB,$C8,$20,$69,$66,$85 ;
+ $8060 DEFB $61,$32,$77,$68,$C0,$1C,$BA,$6B ;
+ $8068 DEFB $27,$BB                         ; }
+ $806A DEFB $5E                             ; Terminator.
+; "no more will come off the wall.".
+@label=SystemMessage_2B
+ $806B DEFB $6E,$6F,$20,$6D,$6F,$8B,$77,$9F ; {#TOKENS$10
+ $8073 DEFB $89,$6D,$C5,$6F,$FA,$18,$5D,$BB ; }
+ $807B DEFB $5E                             ; Terminator.
+; "it is now very shiny.".
+@label=SystemMessage_2C
+ $807C DEFB $10,$97,$20,$8C,$79,$CA,$68,$C4 ; {#TOKENS$0A
+ $8084 DEFB $79,$BB                         ; }
+ $8086 DEFB $5E                             ; Terminator.
+; "the rod drops to the floor as the forcefield vanishes.".
+@label=SystemMessage_2D
+ $8087 DEFB $37,$CB,$64,$20,$64,$CB,$70,$BD ; {#TOKENS$1A
+ $808F DEFB $0D,$1F,$E7,$11,$66,$BF,$F1,$66 ;
+ $8097 DEFB $69,$CD,$64,$20,$76,$C9,$D9,$68 ;
+ $809F DEFB $65,$B8                         ; }
+ $80A1 DEFB $5E                             ; Terminator.
+; "as you open the coffin a ghoul climbs out!".
+@label=SystemMessage_2E
+ $80A2 DEFB $D1,$1C,$9A,$6E,$18,$63,$6F,$FA ; {#TOKENS$14
+ $80AA DEFB $19,$F6,$B3,$20,$E6,$69,$6D,$62 ;
+ $80B2 DEFB $BD,$C6,$74,$21                 ; }
+ $80B6 DEFB $5E                             ; Terminator.
+; "the fierce heat drives you back.".
+@label=SystemMessage_2F
+ $80B7 DEFB $37,$66,$69,$C8,$F1,$9B,$C0,$20 ; {#TOKENS$10
+ $80BF DEFB $64,$E3,$E5,$73,$1C,$62,$A2,$BB ; }
+ $80C7 DEFB $5E                             ; Terminator.
+; "ouch, it is too hot to hold!".
+@label=SystemMessage_30
+ $80C8 DEFB $C6,$D5,$BC,$10,$74,$D2,$20,$F9 ; {#TOKENS$0E
+ $80D0 DEFB $74,$39,$F9,$6C,$64,$21         ; }
+ $80D6 DEFB $5E                             ; Terminator.
+; "the sword slides smoothly out of the stone.".
+@label=SystemMessage_31
+ $80D7 DEFB $1E,$77,$BF,$64,$CA,$6C,$8E,$BD ; {#TOKENS$12
+ $80DF DEFB $73,$6D,$D2,$D6,$98,$C6,$74,$02 ;
+ $80E7 DEFB $24,$BB                         ; }
+ $80E9 DEFB $5E                             ; Terminator.
+; "it is magical.".
+@label=SystemMessage_32
+ $80EA DEFB $10,$6D,$DA,$CF,$D4,$BB         ; #TOKENS$06
+ $80F0 DEFB $5E                             ; Terminator.
+; "the shield protects you from the worst of the heat.".
+@label=SystemMessage_33
+ $80F1 DEFB $1E,$E8,$CD,$64,$F7,$CB,$74,$E0 ; {#TOKENS$15
+ $80F9 DEFB $74,$73,$51,$16,$37,$77,$BF,$CE ;
+ $8101 DEFB $02,$68,$65,$61,$AD             ; }
+ $8106 DEFB $5E                             ; Terminator.
+; "the ghoul turns to dust as the sword strikes.".
+@label=SystemMessage_34
+ $8107 DEFB $37,$F6,$B3,$F4,$D7,$6E,$22,$64 ; {#TOKENS$15
+ $810F DEFB $75,$CE,$E7,$11,$73,$77,$BF,$64 ;
+ $8117 DEFB $91,$E3,$6B,$65,$B8             ; }
+ $811C DEFB $5E                             ; Terminator.
+; "the ghoul is chasing you.".
+@label=SystemMessage_35
+ $811D DEFB $37,$F6,$B3,$3C,$96,$73,$36,$79 ; {#TOKENS$0A
+ $8125 DEFB $C6,$BB                         ; }
+ $8127 DEFB $5E                             ; Terminator.
+; "the ghoul tears you apart and begins to eat.".
+@label=SystemMessage_36
+ $8128 DEFB $37,$F6,$B3,$F4,$9C,$73,$1C,$61 ; {#TOKENS$14
+ $8130 DEFB $70,$BE,$74,$1B,$62,$65,$67,$C4 ;
+ $8138 DEFB $22,$65,$61,$AD                 ; }
+ $813C DEFB $5E                             ; Terminator.
+; "on it is written 'Open not lest foul undead slay thee'.".
+@label=SystemMessage_37
+ $813D DEFB $B7,$10,$77,$72,$CC,$74,$AC,$27 ; {#TOKENS$1E
+ $8145 DEFB $4F,$70,$AC,$94,$20,$6C,$92,$20 ;
+ $814D DEFB $66,$B3,$20,$E2,$DC,$E1,$CA,$6C ;
+ $8155 DEFB $F8,$85,$65,$65,$27,$BB         ; }
+ $815B DEFB $5E                             ; Terminator.
+; "in amongst the runes is a picture of a man inside a pentagram which
+; appears to be stopping a demon from attacking him.".
+@label=SystemMessage_38
+ $815C DEFB $99,$DE,$C2,$67,$73,$17,$72,$E2 ; {#TOKENS$34
+ $8164 DEFB $EE,$3C,$C1,$70,$CF,$74,$D7,$2B ;
+ $816C DEFB $C1,$6D,$B1,$C4,$73,$8E,$87,$70 ;
+ $8174 DEFB $86,$DA,$72,$DE,$7B,$D5,$E7,$EC ;
+ $817C DEFB $9C,$22,$62,$65,$91,$6F,$EC,$36 ;
+ $8184 DEFB $C1,$DC,$6D,$C2,$16,$C0,$74,$A2 ;
+ $818C DEFB $36,$E8,$6D,$BB                 ; }
+ $8190 DEFB $5E                             ; Terminator.
+; "the dark figure throws you out of the library.".
+@label=SystemMessage_39
+ $8191 DEFB $37,$64,$BE,$6B,$20,$66,$69,$67 ; {#TOKENS$19
+ $8199 DEFB $75,$C3,$85,$CB,$77,$73,$1C,$C6 ;
+ $81A1 DEFB $74,$02,$6C,$69,$62,$72,$BE,$79 ;
+ $81A9 DEFB $BB                             ; }
+ $81AA DEFB $5E                             ; Terminator.
+; "the floor opens and you tumble down.".
+@label=SystemMessage_3A
+ $81AB DEFB $37,$1F,$20,$9A,$6E,$73,$1B,$4A ; {#TOKENS$0F
+ $81B3 DEFB $74,$75,$6D,$62,$C7,$23,$BB     ; }
+ $81BA DEFB $5E                             ; Terminator.
+; "your weapons are having no effect!".
+@label=SystemMessage_3B
+ $81BB DEFB $2D,$77,$65,$61,$70,$C2,$B9,$8B ; {#TOKENS$13
+ $81C3 DEFB $68,$61,$76,$36,$6E,$6F,$EF,$FA ;
+ $81CB DEFB $E0,$74,$21                     ; }
+ $81CE DEFB $5E                             ; Terminator.
+; "red to red, wave to wave, thus pass away from cave to cave. Seek the
+; sorcerors doom, near the once wet place, not a room. Seek the hidden way in
+; the dungeons. He is across the pit of fire bridged by a sceptre. Aranus last
+; wiza....".
+@label=SystemMessage_3C
+ $81CF DEFB $C3,$64,$39,$C3,$64,$BC,$77,$61 ; {#TOKENS$72
+ $81D7 DEFB $E5,$39,$77,$61,$E5,$2C,$85,$75 ;
+ $81DF DEFB $BD,$4B,$E7,$9D,$16,$63,$61,$76 ;
+ $81E7 DEFB $C5,$E4,$26,$BB,$53,$65,$65,$6B ;
+ $81EF DEFB $18,$73,$BF,$63,$C8,$BF,$BD,$64 ;
+ $81F7 DEFB $D2,$6D,$BC,$6E,$9C,$18,$C2,$63 ;
+ $81FF DEFB $C5,$77,$65,$D3,$F5,$61,$63,$B0 ;
+ $8207 DEFB $94,$E7,$1D,$BB,$53,$65,$65,$6B ;
+ $820F DEFB $18,$E8,$64,$64,$AC,$9D,$03,$64 ;
+ $8217 DEFB $E2,$EB,$C2,$B8,$48,$2A,$61,$63 ;
+ $821F DEFB $CB,$73,$11,$70,$CC,$38,$66,$69 ;
+ $8227 DEFB $8B,$62,$AA,$67,$14,$C1,$73,$F1 ;
+ $822F DEFB $70,$74,$72,$8A,$41,$72,$C9,$75 ;
+ $8237 DEFB $BD,$6C,$90,$B2,$7A,$61,$2E,$2E ;
+ $823F DEFB $2E,$2E                         ; }
+ $8241 DEFB $5E                             ; Terminator.
+; "it is too heavy.".
+@label=SystemMessage_3D
+ $8242 DEFB $10,$74,$D2,$9B,$61,$76,$79,$BB ; #TOKENS$08
+ $824A DEFB $5E                             ; Terminator.
+; "you drop the boulder.".
+@label=SystemMessage_3E
+ $824B DEFB $4A,$64,$CB,$70,$18,$62,$B3,$64 ; {#TOKENS$0A
+ $8253 DEFB $C8,$BB                         ; }
+ $8255 DEFB $5E                             ; Terminator.
+; "you feel stronger.".
+@label=SystemMessage_3F
+ $8256 DEFB $4A,$66,$65,$CD,$91,$72,$C2,$67 ; {#TOKENS$0A
+ $825E DEFB $C8,$BB                         ; }
+ $8260 DEFB $5E                             ; Terminator.
+; "the boulder splatters the ogre.".
+@label=SystemMessage_40
+ $8261 DEFB $37,$62,$B3,$64,$C8,$CA,$F5,$C0 ; {#TOKENS$0E
+ $8269 DEFB $A6,$11,$6F,$67,$72,$8A         ; }
+ $826F DEFB $5E                             ; Terminator.
+; "what at ?".
+@label=SystemMessage_41
+ $8270 DEFB $77,$60,$C0,$20,$3F             ; #TOKENS$05
+ $8275 DEFB $5E                             ; Terminator.
+; "the ogre decides to redesign your head ....".
+@label=SystemMessage_42
+ $8276 DEFB $37,$6F,$67,$8B,$DC,$63,$8E,$22 ; {#TOKENS$18
+ $827E DEFB $C3,$DC,$73,$69,$67,$6E,$20,$2D ;
+ $8286 DEFB $68,$65,$E1,$20,$2E,$2E,$2E,$2E ; }
+ $828E DEFB $5E                             ; Terminator.
+; "the strength spell ends.".
+@label=SystemMessage_43
+ $828F DEFB $1E,$74,$C3,$6E,$67,$D6,$CA,$70 ; {#TOKENS$0E
+ $8297 DEFB $CD,$6C,$20,$D8,$64,$B8         ; }
+ $829D DEFB $5E                             ; Terminator.
+; "it is too far.".
+@label=SystemMessage_44
+ $829E DEFB $10,$74,$D2,$20,$66,$BE,$BB     ; #TOKENS$07
+ $82A5 DEFB $5E                             ; Terminator.
+; "the pillar falls down the fissure taking the snake with it.".
+@label=SystemMessage_45
+ $82A6 DEFB $37,$70,$9F,$BE,$20,$66,$88,$73 ; {#TOKENS$19
+ $82AE DEFB $23,$85,$65,$0A,$F4,$FD,$84,$18 ;
+ $82B6 DEFB $73,$6E,$FD,$65,$B2,$D6,$20,$69 ;
+ $82BE DEFB $AD                             ; }
+ $82BF DEFB $5E                             ; Terminator.
+; "you roll the pillar across the fissure, but in doing so wake a
+; gigantic snake that was sleeping underneath!".
+@label=SystemMessage_46
+ $82C0 DEFB $4A,$CB,$6C,$6C,$18,$70,$9F,$BE ; {#TOKENS$39
+ $82C8 DEFB $E7,$63,$CB,$73,$73,$85,$65,$0A ;
+ $82D0 DEFB $BC,$62,$75,$74,$82,$DB,$36,$73 ;
+ $82D8 DEFB $6F,$20,$77,$FD,$65,$87,$67,$69 ;
+ $82E0 DEFB $67,$C9,$74,$CF,$CA,$6E,$FD,$C5 ;
+ $82E8 DEFB $74,$60,$77,$61,$BD,$73,$6C,$A3 ;
+ $82F0 DEFB $36,$E2,$64,$C8,$6E,$65,$C0,$68 ;
+ $82F8 DEFB $21                             ; }
+ $82F9 DEFB $5E                             ; Terminator.
+; "it is locked.".
+@label=SystemMessage_47
+ $82FA DEFB $10,$6C,$A8,$DD,$BB             ; #TOKENS$05
+ $82FF DEFB $5E                             ; Terminator.
+; "it is furry with baggy pockets and in truth looks rather silly.".
+@label=SystemMessage_48
+ $8300 DEFB $10,$66,$D7,$72,$79,$B2,$D6,$DF ; {#TOKENS$22
+ $8308 DEFB $DA,$67,$D0,$70,$A8,$F0,$73,$1B ;
+ $8310 DEFB $99,$74,$72,$75,$D6,$20,$6C,$D2 ;
+ $8318 DEFB $6B,$BD,$72,$61,$A1,$72,$CA,$9F ;
+ $8320 DEFB $79,$BB                         ; }
+ $8322 DEFB $5E                             ; Terminator.
+; "you have no suitable key.".
+@label=SystemMessage_49
+ $8323 DEFB $79,$C6,$12,$6E,$6F,$CA,$75,$CC ; {#TOKENS$10
+ $832B DEFB $61,$62,$6C,$C5,$6B,$65,$79,$BB ; }
+ $8333 DEFB $5E                             ; Terminator.
+; "you find nothing.".
+@label=SystemMessage_4A
+ $8334 DEFB $4A,$66,$95,$20,$94,$68,$84,$BB ; #TOKENS$08
+ $833C DEFB $5E                             ; Terminator.
+; "the wire appears to have triggered a cave in burying you alive.".
+@label=SystemMessage_4B
+ $833D DEFB $37,$77,$69,$8B,$61,$EC,$9C,$BD ; {#TOKENS$1B
+ $8345 DEFB $E4,$12,$74,$E3,$67,$EB,$40,$61 ;
+ $834D DEFB $26,$82,$62,$D7,$79,$84,$1C,$D4 ;
+ $8355 DEFB $69,$76,$8A                     ; }
+ $8358 DEFB $5E                             ; Terminator.
+; "the door looks very weak.".
+@label=SystemMessage_4C
+ $8359 DEFB $37,$DB,$BF,$20,$6C,$D2,$6B,$BD ; {#TOKENS$0E
+ $8361 DEFB $8C,$D0,$77,$65,$FD,$BB         ; }
+ $8367 DEFB $5E                             ; Terminator.
+; "the vampire is trying to keep away from the garlic.".
+@label=SystemMessage_4D
+ $8368 DEFB $37,$76,$DE,$70,$F3,$2A,$74,$72 ; {#TOKENS$17
+ $8370 DEFB $79,$36,$E4,$20,$6B,$A3,$E7,$9D ;
+ $8378 DEFB $16,$37,$67,$BE,$6C,$CF,$BB     ; }
+ $837F DEFB $5E                             ; Terminator.
+; "the vampire sinks his teeth into you, what a pain in the neck!".
+@label=SystemMessage_4E
+ $8380 DEFB $37,$76,$DE,$70,$69,$8B,$73,$C4 ; {#TOKENS$1F
+ $8388 DEFB $6B,$BD,$E8,$BD,$74,$65,$65,$D6 ;
+ $8390 DEFB $15,$79,$C6,$BC,$77,$60,$C1,$70 ;
+ $8398 DEFB $61,$C4,$03,$6E,$E0,$6B,$21     ; }
+ $839F DEFB $5E                             ; Terminator.
+; "a wizard appears bathed in shimmering multicoloured light. He says
+; 'flee if you can for the high wizard of the mountains has become evil. What
+; little help I can offer you is buried in the cave'. He vanishes in a cloud of
+; smoke.".
+@label=SystemMessage_4F
+ $83A0 DEFB $61,$05,$61,$EC,$9C,$BD,$62,$61 ; {#TOKENS$6E
+ $83A8 DEFB $A1,$64,$82,$73,$E8,$6D,$6D,$65 ;
+ $83B0 DEFB $33,$6D,$75,$6C,$74,$CF,$6F,$6C ;
+ $83B8 DEFB $C6,$40,$6C,$B4,$AD,$48,$C5,$73 ;
+ $83C0 DEFB $F8,$BD,$27,$66,$C7,$C5,$69,$66 ;
+ $83C8 DEFB $20,$79,$13,$7F,$18,$68,$B4,$B2 ;
+ $83D0 DEFB $5F,$02,$6D,$B6,$7D,$BD,$68,$D1 ;
+ $83D8 DEFB $8D,$AF,$C5,$65,$76,$FC,$BB,$57 ;
+ $83E0 DEFB $60,$6C,$CC,$74,$C7,$9B,$6C,$70 ;
+ $83E8 DEFB $20,$49,$20,$63,$B1,$6F,$FA,$C8 ;
+ $83F0 DEFB $1C,$69,$BD,$62,$D7,$69,$DD,$03 ;
+ $83F8 DEFB $63,$61,$E5,$27,$BB,$48,$C5,$76 ;
+ $8400 DEFB $C9,$D9,$68,$9E,$19,$E6,$C6,$64 ;
+ $8408 DEFB $38,$73,$6D,$6F,$6B,$8A         ; }
+ $840E DEFB $5E                             ; Terminator.
+; "the snake bites you. It is poisonous. Some days nothing ever seems to
+; go right...".
+@label=SystemMessage_50
+ $840F DEFB $1E,$6E,$FD,$C5,$62,$CC,$EE,$51 ; {#TOKENS$29
+ $8417 DEFB $BB,$49,$32,$70,$6F,$D9,$C2,$C6 ;
+ $841F DEFB $B8,$53,$EA,$C5,$64,$F8,$BD,$94 ;
+ $8427 DEFB $68,$36,$65,$8C,$20,$BA,$6D,$22 ;
+ $842F DEFB $67,$6F,$20,$72,$B4,$74,$2E,$2E ;
+ $8437 DEFB $BB                             ; }
+ $8438 DEFB $5E                             ; Terminator.
+; "he's totally BATTY!!!!".
+@label=SystemMessage_51
+ $8439 DEFB $68,$65,$27,$BD,$E4,$74,$88,$D0 ; {#TOKENS$11
+ $8441 DEFB $42,$41,$54,$54,$59,$21,$21,$21 ;
+ $8449 DEFB $21                             ; }
+ $844A DEFB $5E                             ; Terminator.
+; "the rope doesn't carry far enough.".
+@label=SystemMessage_52
+ $844B DEFB $37,$72,$9A,$20,$DB,$EE,$6E,$27 ; {#TOKENS$14
+ $8453 DEFB $D3,$63,$BE,$72,$D0,$66,$BE,$20 ;
+ $845B DEFB $D8,$C6,$F6,$BB                 ; }
+ $845F DEFB $5E                             ; Terminator.
+; "it is too slippy to climb.".
+@label=SystemMessage_53
+ $8460 DEFB $10,$74,$D2,$CA,$6C,$69,$EC,$79 ; {#TOKENS$0E
+ $8468 DEFB $39,$E6,$69,$6D,$62,$BB         ; }
+ $846E DEFB $5E                             ; Terminator.
+; "there is nothing here you can tie it too, as it is stiff and quite
+; slippery. (THE ROPE THAT IS!)".
+@label=SystemMessage_54
+ $846F DEFB $74,$04,$94,$68,$36,$68,$65,$8B ; {#TOKENS$36
+ $8477 DEFB $79,$13,$F4,$69,$C5,$B5,$74,$D2 ;
+ $847F DEFB $BC,$61,$BD,$10,$CE,$69,$FA,$1B ;
+ $8487 DEFB $71,$75,$CC,$C5,$73,$6C,$69,$EC ;
+ $848F DEFB $C8,$79,$BB,$28,$54,$48,$45,$20 ;
+ $8497 DEFB $52,$4F,$50,$45,$20,$54,$48,$41 ;
+ $849F DEFB $54,$20,$49,$53,$21,$29         ; }
+ $84A5 DEFB $5E                             ; Terminator.
+; "you loop the rope end through the ring.".
+@label=SystemMessage_55
+ $84A6 DEFB $4A,$6C,$D2,$70,$18,$72,$9A,$20 ; {#TOKENS$12
+ $84AE DEFB $D8,$64,$85,$72,$C6,$F6,$18,$72 ;
+ $84B6 DEFB $84,$BB                         ; }
+ $84B8 DEFB $5E                             ; Terminator.
+; "the rope, and the wizard fall to the floor.".
+@label=SystemMessage_56
+ $84B9 DEFB $37,$72,$9A,$2C,$1B,$A1,$05,$66 ; {#TOKENS$0C
+ $84C1 DEFB $3E,$0D,$1F,$BB                 ; }
+ $84C5 DEFB $5E                             ; Terminator.
+; "the ring comes out of the wall.".
+@label=SystemMessage_57
+ $84C6 DEFB $37,$33,$AF,$9E,$C6,$74,$02,$5D ; {#TOKENS$09
+ $84CE DEFB $BB                             ; }
+ $84CF DEFB $5E                             ; Terminator.
+; "it is fastened.".
+@label=SystemMessage_58
+ $84D0 DEFB $10,$66,$90,$D8,$DD,$BB         ; #TOKENS$06
+ $84D6 DEFB $5E                             ; Terminator.
+; "the slime touches you and within seconds you are covered in a mass of
+; slime.".
+@label=SystemMessage_59
+ $84D7 DEFB $1E,$81,$F4,$C6,$D5,$EE,$51,$1B ; {#TOKENS$1E
+ $84DF DEFB $77,$CC,$68,$99,$73,$E0,$C2,$64 ;
+ $84E7 DEFB $BD,$01,$63,$6F,$E5,$40,$19,$6D ;
+ $84EF DEFB $D1,$73,$38,$73,$81,$BB         ; }
+ $84F5 DEFB $5E                             ; Terminator.
+; "it won't open.".
+@label=SystemMessage_5A
+ $84F6 DEFB $B5,$77,$C2,$27,$D3,$9A,$6E,$BB ; #TOKENS$08
+ $84FE DEFB $5E                             ; Terminator.
+; "it is full.".
+@label=SystemMessage_5B
+ $84FF DEFB $10,$66,$75,$6C,$6C,$BB         ; #TOKENS$06
+ $8505 DEFB $5E                             ; Terminator.
+; "the slime kills the giant.".
+@label=SystemMessage_5C
+ $8506 DEFB $1E,$81,$20,$6B,$9F,$11,$67,$69 ; {#TOKENS$0A
+ $850E DEFB $C9,$AD                         ; }
+ $8510 DEFB $5E                             ; Terminator.
+; "it is empty.".
+@label=SystemMessage_5D
+ $8511 DEFB $10,$A4,$74,$79,$BB             ; #TOKENS$05
+ $8516 DEFB $5E                             ; Terminator.
+; "tucked in the lining of the box is a spell.".
+@label=SystemMessage_5E
+ $8517 DEFB $74,$75,$63,$6B,$DD,$03,$6C,$C4 ; {#TOKENS$12
+ $851F DEFB $84,$02,$ED,$78,$3C,$C1,$FF,$CD ;
+ $8527 DEFB $6C,$BB                         ; }
+ $8529 DEFB $5E                             ; Terminator.
+; "the zombie guards rip me to pieces.".
+@label=SystemMessage_5F
+ $852A DEFB $37,$7A,$EA,$62,$69,$C5,$67,$75 ; {#TOKENS$13
+ $8532 DEFB $5C,$20,$E3,$70,$AE,$39,$70,$69 ;
+ $853A DEFB $E0,$65,$B8                     ; }
+ $853D DEFB $5E                             ; Terminator.
+; "the harp cries 'Thief, thief'. The giant wakes up and decides to
+; squash you. TRY READING YOUR FAIRY TALES IN FUTURE!.".
+@label=SystemMessage_60
+ $853E DEFB $37,$68,$BE,$70,$20,$63,$E3,$9E ; {#TOKENS$50
+ $8546 DEFB $27,$54,$E8,$65,$66,$2C,$85,$69 ;
+ $854E DEFB $65,$66,$27,$35,$20,$67,$69,$C9 ;
+ $8556 DEFB $D3,$77,$FD,$9E,$F2,$1B,$DC,$63 ;
+ $855E DEFB $8E,$22,$73,$71,$75,$D1,$68,$51 ;
+ $8566 DEFB $AB,$52,$59,$20,$52,$45,$41,$44 ;
+ $856E DEFB $49,$4E,$47,$20,$59,$4F,$55,$52 ;
+ $8576 DEFB $20,$46,$41,$49,$52,$59,$20,$54 ;
+ $857E DEFB $41,$4C,$45,$53,$20,$49,$4E,$20 ;
+ $8586 DEFB $46,$55,$54,$55,$52,$45,$21,$BB ; }
+ $858E DEFB $5E                             ; Terminator.
+; "the bucket is too wide to fit down the passage.".
+@label=SystemMessage_61
+ $858F DEFB $37,$62,$75,$63,$6B,$65,$32,$74 ; {#TOKENS$14
+ $8597 DEFB $D2,$20,$77,$8E,$39,$66,$CC,$23 ;
+ $859F DEFB $85,$65,$06,$BB                 ; }
+ $85A3 DEFB $5E                             ; Terminator.
+; "the plank falls into the channel behind me.".
+@label=SystemMessage_62
+ $85A4 DEFB $37,$F5,$C9,$6B,$20,$66,$88,$BD ; {#TOKENS$14
+ $85AC DEFB $C4,$0D,$96,$6E,$6E,$CD,$8D,$68 ;
+ $85B4 DEFB $95,$20,$6D,$8A                 ; }
+ $85B8 DEFB $5E                             ; Terminator.
+; "the sides of the channel look weak at one end.".
+@label=SystemMessage_63
+ $85B9 DEFB $1E,$8E,$73,$02,$96,$6E,$6E,$CD ; {#TOKENS$17
+ $85C1 DEFB $20,$6C,$D2,$6B,$20,$77,$65,$FD ;
+ $85C9 DEFB $20,$C0,$20,$58,$D8,$64,$BB     ; }
+ $85D0 DEFB $5E                             ; Terminator.
+; "there is a small explosion.".
+@label=SystemMessage_64
+ $85D1 DEFB $74,$04,$C1,$73,$6D,$3E,$65,$78 ; {#TOKENS$0E
+ $85D9 DEFB $F5,$6F,$73,$69,$C2,$BB         ; }
+ $85DF DEFB $5E                             ; Terminator.
+; "the dam breaks and the lava flows once again.".
+@label=SystemMessage_65
+ $85E0 DEFB $37,$64,$DE,$DF,$8F,$6B,$BD,$93 ; {#TOKENS$15
+ $85E8 DEFB $18,$5A,$20,$66,$A7,$BD,$C2,$63 ;
+ $85F0 DEFB $C5,$DA,$61,$C4,$BB             ; }
+ $85F5 DEFB $5E                             ; Terminator.
+; "the sides of the channel cave in and the lava starts to rise behind
+; it, while the lava in the channel drains away.".
+@label=SystemMessage_66
+ $85F6 DEFB $1E,$8E,$73,$02,$96,$6E,$6E,$CD ; {#TOKENS$2B
+ $85FE DEFB $26,$82,$93,$18,$5A,$91,$BE,$74 ;
+ $8606 DEFB $22,$72,$D9,$65,$8D,$68,$95,$20 ;
+ $860E DEFB $CC,$2C,$7B,$C7,$18,$5A,$03,$96 ;
+ $8616 DEFB $6E,$6E,$CD,$20,$64,$72,$61,$C4 ;
+ $861E DEFB $B9,$9D,$BB                     ; }
+ $8621 DEFB $5E                             ; Terminator.
+; "slime sprays everywhere.".
+@label=SystemMessage_67
+ $8622 DEFB $73,$81,$CA,$70,$72,$F8,$BD,$65 ; {#TOKENS$0E
+ $862A DEFB $8C,$79,$77,$68,$C8,$8A         ; }
+ $8630 DEFB $5E                             ; Terminator.
+; "it is a picture of waves breaking on a moonlit shore.".
+@label=SystemMessage_68
+ $8631 DEFB $10,$C1,$70,$CF,$74,$D7,$2B,$77 ; {#TOKENS$1A
+ $8639 DEFB $61,$76,$9E,$62,$8F,$6B,$36,$C2 ;
+ $8641 DEFB $87,$6D,$6F,$C2,$6C,$B5,$73,$68 ;
+ $8649 DEFB $BF,$8A                         ; }
+ $864B DEFB $5E                             ; Terminator.
+; "the soap breaks up the oily slime and it collapses back into the pit.".
+@label=SystemMessage_69
+ $864C DEFB $1E,$6F,$61,$70,$DF,$8F,$6B,$BD ; {#TOKENS$20
+ $8654 DEFB $F2,$18,$6F,$69,$98,$73,$81,$1B ;
+ $865C DEFB $CC,$89,$6C,$6C,$61,$70,$73,$9E ;
+ $8664 DEFB $62,$A2,$20,$C4,$0D,$70,$69,$AD ; }
+ $866C DEFB $5E                             ; Terminator.
+; "the plank burns up in the heat of the lava.".
+@label=SystemMessage_6A
+ $866D DEFB $37,$F5,$C9,$6B,$DF,$D7,$6E,$BD ; {#TOKENS$10
+ $8675 DEFB $F2,$03,$68,$65,$C0,$02,$5A,$BB ; }
+ $867D DEFB $5E                             ; Terminator.
+; "there is a huge explosion deep in the mountain which in turn explodes
+; and exploding mountains are not the most healthy place to be in.".
+@label=SystemMessage_6B
+ $867E DEFB $74,$04,$C1,$68,$75,$A0,$65,$78 ; {#TOKENS$3D
+ $8686 DEFB $F5,$6F,$73,$69,$B7,$64,$A3,$03 ;
+ $868E DEFB $6D,$B6,$7D,$7B,$D5,$82,$74,$D7 ;
+ $8696 DEFB $6E,$EF,$78,$F5,$6F,$DC,$73,$1B ;
+ $869E DEFB $65,$78,$F5,$6F,$64,$36,$6D,$B6 ;
+ $86A6 DEFB $7D,$B9,$8B,$6E,$6F,$17,$6D,$6F ;
+ $86AE DEFB $CE,$9B,$D4,$D6,$D0,$F5,$61,$F1 ;
+ $86B6 DEFB $39,$62,$C5,$C4,$BB             ; }
+ $86BB DEFB $5E                             ; Terminator.
+; "the lava is rising fast behind the dam.".
+@label=SystemMessage_6C
+ $86BC DEFB $37,$5A,$3C,$72,$D9,$36,$66,$90 ; {#TOKENS$0F
+ $86C4 DEFB $8D,$68,$95,$18,$64,$DE,$BB     ; }
+ $86CB DEFB $5E                             ; Terminator.
+; "you are freezing.".
+@label=SystemMessage_6D
+ $86CC DEFB $01,$66,$C3,$65,$7A,$84,$BB     ; #TOKENS$07
+ $86D3 DEFB $5E                             ; Terminator.
+; "you have frozen to death.".
+@label=SystemMessage_6E
+ $86D4 DEFB $79,$C6,$12,$66,$CB,$7A,$D8,$39 ; {#TOKENS$0C
+ $86DC DEFB $DC,$C0,$68,$BB                 ; }
+ $86E0 DEFB $5E                             ; Terminator.
+; "you are buried deep in the snow.".
+@label=SystemMessage_6F
+ $86E1 DEFB $01,$62,$D7,$69,$83,$64,$A3,$03 ; {#TOKENS$0A
+ $86E9 DEFB $5B,$BB                         ; }
+ $86EB DEFB $5E                             ; Terminator.
+; "the snows topple forward and a huge avalanche comes cascading down the
+; pass. The snow buries the yeti.".
+@label=SystemMessage_70
+ $86EC DEFB $1E,$97,$BD,$E4,$EC,$C7,$7F,$77 ; {#TOKENS$2A
+ $86F4 DEFB $BE,$64,$20,$93,$0B,$61,$76,$D4 ;
+ $86FC DEFB $C9,$D5,$65,$89,$6D,$9E,$63,$D1 ;
+ $8704 DEFB $63,$E1,$84,$23,$18,$4B,$35,$20 ;
+ $870C DEFB $5B,$DF,$D7,$69,$65,$11,$79,$F0 ;
+ $8714 DEFB $69,$BB                         ; }
+ $8716 DEFB $5E                             ; Terminator.
+; "the snows topple forward and a huge avalanche comes cascading down the
+; pass.".
+@label=SystemMessage_71
+ $8717 DEFB $1E,$97,$BD,$E4,$EC,$C7,$7F,$77 ; {#TOKENS$1F
+ $871F DEFB $BE,$64,$20,$93,$0B,$61,$76,$D4 ;
+ $8727 DEFB $C9,$D5,$65,$89,$6D,$9E,$63,$D1 ;
+ $872F DEFB $63,$E1,$84,$23,$18,$4B,$BB     ; }
+ $8736 DEFB $5E                             ; Terminator.
+; "the yeti forcibly prevents me from entering the cave.".
+@label=SystemMessage_72
+ $8737 DEFB $37,$79,$F0,$69,$7F,$63,$69,$62 ; {#TOKENS$18
+ $873F DEFB $98,$70,$C3,$76,$86,$73,$AE,$16 ;
+ $8747 DEFB $86,$C8,$84,$18,$63,$61,$76,$8A ; }
+ $874F DEFB $5E                             ; Terminator.
+; "the yeti tears me to pieces.".
+@label=SystemMessage_73
+ $8750 DEFB $37,$79,$F0,$69,$F4,$9C,$73,$AE ; {#TOKENS$0E
+ $8758 DEFB $39,$70,$69,$E0,$65,$B8         ; }
+ $875E DEFB $5E                             ; Terminator.
+; "you sink deep into the snow and soon freeze to death trapped
+; helplessly in the snow.".
+@label=SystemMessage_74
+ $875F DEFB $4A,$73,$C4,$6B,$20,$64,$A3,$20 ; {#TOKENS$28
+ $8767 DEFB $C4,$0D,$5B,$1B,$73,$6F,$B7,$66 ;
+ $876F DEFB $C3,$65,$7A,$65,$39,$DC,$C0,$68 ;
+ $8777 DEFB $F4,$72,$61,$EC,$83,$68,$CD,$70 ;
+ $877F DEFB $C7,$73,$73,$6C,$79,$03,$5B,$BB ; }
+ $8787 DEFB $5E                             ; Terminator.
+; "as you dig the yeti suddenely smashes its way out of the snow.".
+@label=SystemMessage_75
+ $8788 DEFB $D1,$1C,$64,$69,$67,$18,$79,$F0 ; {#TOKENS$1E
+ $8790 DEFB $69,$CA,$75,$64,$64,$D8,$65,$98 ;
+ $8798 DEFB $73,$6D,$D1,$68,$9E,$CC,$BD,$9D ;
+ $87A0 DEFB $20,$C6,$74,$02,$5B,$BB         ; }
+ $87A6 DEFB $5E                             ; Terminator.
+; "one of the stones is loose and seems to cover an opening.".
+@label=SystemMessage_76
+ $87A7 DEFB $C2,$65,$02,$24,$73,$3C,$6C,$D2 ; {#TOKENS$17
+ $87AF DEFB $73,$65,$1B,$BA,$6D,$22,$63,$6F ;
+ $87B7 DEFB $8C,$20,$B1,$9A,$6E,$84,$BB     ; }
+ $87BE DEFB $5E                             ; Terminator.
+; "the stones snaps into several pieces.".
+@label=SystemMessage_77
+ $87BF DEFB $1E,$74,$C2,$9E,$73,$6E,$61,$70 ; {#TOKENS$13
+ $87C7 DEFB $73,$15,$73,$65,$8C,$A5,$70,$69 ;
+ $87CF DEFB $E0,$65,$B8                     ; }
+ $87D2 DEFB $5E                             ; Terminator.
+; "as you shift the pieces they fall down the hole you uncover.".
+@label=SystemMessage_78
+ $87D3 DEFB $D1,$1C,$73,$E8,$66,$17,$70,$69 ; {#TOKENS$19
+ $87DB DEFB $E0,$EE,$85,$65,$D0,$66,$88,$23 ;
+ $87E3 DEFB $18,$F9,$C7,$1C,$E2,$63,$6F,$8C ;
+ $87EB DEFB $BB                             ; }
+ $87EC DEFB $5E                             ; Terminator.
+; "you fall....".
+@label=SystemMessage_79
+ $87ED DEFB $4A,$66,$88,$2E,$2E,$2E,$2E     ; #TOKENS$07
+ $87F4 DEFB $5E                             ; Terminator.
+; "it doesn't catch on anything.".
+@label=SystemMessage_7A
+ $87F5 DEFB $B5,$DB,$EE,$6E,$27,$D3,$63,$C0 ; {#TOKENS$10
+ $87FD DEFB $D5,$20,$B7,$C9,$79,$D6,$84,$BB ; }
+ $8805 DEFB $5E                             ; Terminator.
+; "no he's a friend(and he's also bigger than you are!)".
+@label=SystemMessage_7B
+ $8806 DEFB $6E,$6F,$9B,$27,$73,$87,$66,$E3 ; {#TOKENS$1E
+ $880E DEFB $D8,$64,$28,$93,$9B,$27,$B9,$6C ;
+ $8816 DEFB $73,$6F,$DF,$69,$67,$67,$C8,$85 ;
+ $881E DEFB $C9,$1C,$BE,$65,$21,$29         ; }
+ $8824 DEFB $5E                             ; Terminator.
+; "the elf says 'We need your help someone must slay the now evil high
+; wizard of the mountains before he destroys us all'.".
+@label=SystemMessage_7C
+ $8825 DEFB $37,$CD,$66,$CA,$F8,$BD,$27,$57 ; {#TOKENS$39
+ $882D DEFB $C5,$6E,$65,$83,$2D,$68,$CD,$70 ;
+ $8835 DEFB $CA,$EA,$65,$58,$6D,$75,$CE,$CA ;
+ $883D DEFB $6C,$F8,$18,$97,$EF,$76,$FC,$20 ;
+ $8845 DEFB $68,$B4,$B2,$5F,$02,$6D,$B6,$7D ;
+ $884D DEFB $73,$8D,$66,$6F,$8B,$68,$C5,$64 ;
+ $8855 DEFB $92,$CB,$79,$BD,$75,$BD,$88,$27 ;
+ $885D DEFB $BB                             ; }
+ $885E DEFB $5E                             ; Terminator.
+; "it is wet, cold and generally whitish in colour!".
+@label=SystemMessage_7D
+ $885F DEFB $10,$77,$F0,$2C,$89,$6C,$64,$1B ; {#TOKENS$18
+ $8867 DEFB $67,$D8,$C8,$88,$79,$7B,$74,$D9 ;
+ $886F DEFB $68,$82,$63,$6F,$6C,$C6,$72,$21 ; }
+ $8877 DEFB $5E                             ; Terminator.
+; "one guard steps forward and says 'You cannot pass the road is closed
+; for evil has entered the mountains we cannot let you into our valley'.".
+@label=SystemMessage_7E
+ $8878 DEFB $58,$67,$75,$BE,$64,$91,$65,$70 ; {#TOKENS$43
+ $8880 DEFB $73,$7F,$77,$BE,$64,$1B,$73,$F8 ;
+ $8888 DEFB $BD,$27,$59,$13,$94,$F7,$D1,$11 ;
+ $8890 DEFB $CB,$E1,$3C,$E6,$6F,$73,$DD,$7F ;
+ $8898 DEFB $EF,$76,$FC,$20,$68,$61,$BD,$86 ;
+ $88A0 DEFB $65,$C3,$64,$18,$6D,$B6,$7D,$BD ;
+ $88A8 DEFB $77,$C5,$63,$C9,$94,$20,$C7,$74 ;
+ $88B0 DEFB $51,$15,$C6,$72,$20,$76,$88,$65 ;
+ $88B8 DEFB $79,$27,$BB                     ; }
+ $88BB DEFB $5E                             ; Terminator.
+; "the guards run off screaming 'YETI YETI'.".
+@label=SystemMessage_7F
+ $88BC DEFB $37,$67,$75,$5C,$20,$72,$E2,$20 ; {#TOKENS$1B
+ $88C4 DEFB $6F,$FA,$CA,$63,$8F,$6D,$36,$27 ;
+ $88CC DEFB $59,$45,$54,$49,$20,$59,$45,$54 ;
+ $88D4 DEFB $49,$27,$BB                     ; }
+ $88D7 DEFB $5E                             ; Terminator.
+; "so you're feeling suicidal today are you ?".
+@label=SystemMessage_80
+ $88D8 DEFB $73,$6F,$51,$27,$8B,$66,$65,$CD ; {#TOKENS$17
+ $88E0 DEFB $36,$73,$75,$CF,$69,$64,$A5,$E4 ;
+ $88E8 DEFB $64,$61,$D0,$BE,$65,$1C,$3F     ; }
+ $88EF DEFB $5E                             ; Terminator.
+; "you get off the chair.".
+@label=SystemMessage_81
+ $88F0 DEFB $4A,$EB,$D3,$6F,$FA,$18,$96,$F3 ; {#TOKENS$09
+ $88F8 DEFB $BB                             ; }
+ $88F9 DEFB $5E                             ; Terminator.
+; "you get off the crate.".
+@label=SystemMessage_82
+ $88FA DEFB $4A,$EB,$D3,$6F,$FA,$18,$E9,$C0 ; {#TOKENS$09
+ $8902 DEFB $8A                             ; }
+ $8903 DEFB $5E                             ; Terminator.
+; "the roof is cracked and looks both thin and weak.".
+@label=SystemMessage_83
+ $8904 DEFB $37,$A9,$66,$3C,$E9,$A2,$DD,$1B ; {#TOKENS$15
+ $890C DEFB $6C,$D2,$6B,$BD,$ED,$D6,$85,$C4 ;
+ $8914 DEFB $1B,$77,$65,$FD,$BB             ; }
+ $8919 DEFB $5E                             ; Terminator.
+; "you can't reach.".
+@label=SystemMessage_84
+ $891A DEFB $79,$13,$27,$D3,$8F,$D5,$BB     ; #TOKENS$07
+ $8921 DEFB $5E                             ; Terminator.
+; "the roof shudders and a piece falls from the centre leaving a hole.".
+@label=SystemMessage_85
+ $8922 DEFB $37,$A9,$66,$CA,$68,$75,$64,$64 ; {#TOKENS$1F
+ $892A DEFB $C8,$73,$1B,$C1,$70,$69,$E0,$C5 ;
+ $8932 DEFB $66,$88,$73,$16,$37,$63,$86,$C3 ;
+ $893A DEFB $56,$76,$36,$C1,$F9,$6C,$8A     ; }
+ $8941 DEFB $5E                             ; Terminator.
+; "the priest says We need your help someone must slay the now evil high
+; wizard of the mountains before he slays us all, I can only give you this
+; bless spell as help but it is a start.".
+@label=SystemMessage_86
+ $8942 DEFB $37,$70,$E3,$92,$CA,$F8,$BD,$57 ; {#TOKENS$58
+ $894A DEFB $C5,$6E,$65,$83,$2D,$68,$CD,$70 ;
+ $8952 DEFB $CA,$EA,$65,$58,$6D,$75,$CE,$CA ;
+ $895A DEFB $6C,$F8,$18,$97,$EF,$76,$FC,$20 ;
+ $8962 DEFB $68,$B4,$B2,$5F,$02,$6D,$B6,$7D ;
+ $896A DEFB $73,$8D,$66,$6F,$8B,$68,$C5,$73 ;
+ $8972 DEFB $6C,$F8,$BD,$75,$BD,$88,$BC,$49 ;
+ $897A DEFB $20,$63,$B1,$C2,$98,$67,$69,$E5 ;
+ $8982 DEFB $1C,$D6,$69,$BD,$62,$C7,$73,$BD ;
+ $898A DEFB $FF,$CD,$6C,$20,$D1,$9B,$6C,$70 ;
+ $8992 DEFB $DF,$75,$D3,$10,$61,$91,$BE,$AD ; }
+ $899A DEFB $5E                             ; Terminator.
+; "you are dead, slain by the sorcery of the evil wizard, who even now
+; gloats over your corpse as he prepares to destroy your village.".
+@label=SystemMessage_87
+ $899B DEFB $01,$DC,$E1,$BC,$73,$6C,$61,$99 ; {#TOKENS$3D
+ $89A3 DEFB $62,$79,$18,$73,$BF,$63,$C8,$79 ;
+ $89AB DEFB $02,$65,$76,$FC,$B2,$5F,$BC,$77 ;
+ $89B3 DEFB $F9,$EF,$76,$AC,$97,$20,$67,$6C ;
+ $89BB DEFB $6F,$C0,$BD,$6F,$8C,$20,$2D,$63 ;
+ $89C3 DEFB $BF,$70,$73,$C5,$D1,$9B,$F7,$C3 ;
+ $89CB DEFB $70,$BE,$65,$22,$64,$92,$CB,$D0 ;
+ $89D3 DEFB $2D,$76,$9F,$DA,$8A             ; }
+ $89D8 DEFB $5E                             ; Terminator.
+; "you are sealed in crystal, for all eternity, all you can do is watch
+; as the wizard prepares to destroy your village.".
+@label=SystemMessage_88
+ $89D9 DEFB $01,$73,$65,$61,$C7,$64,$82,$E9 ; {#TOKENS$32
+ $89E1 DEFB $79,$CE,$D4,$2C,$7F,$20,$3E,$65 ;
+ $89E9 DEFB $A6,$6E,$CC,$79,$BC,$3E,$79,$13 ;
+ $89F1 DEFB $20,$DB,$3C,$77,$C0,$D5,$20,$D1 ;
+ $89F9 DEFB $85,$65,$05,$70,$C3,$70,$BE,$65 ;
+ $8A01 DEFB $22,$64,$92,$CB,$D0,$2D,$76,$9F ;
+ $8A09 DEFB $DA,$8A                         ; }
+ $8A0B DEFB $5E                             ; Terminator.
+; "the demon tries to attack you, but is stopped by the pentagram.".
+@label=SystemMessage_89
+ $8A0C DEFB $37,$DC,$6D,$B7,$74,$E3,$65,$22 ; {#TOKENS$1B
+ $8A14 DEFB $C0,$74,$A2,$51,$BC,$62,$75,$32 ;
+ $8A1C DEFB $CE,$6F,$EC,$14,$37,$70,$86,$DA ;
+ $8A24 DEFB $72,$DE,$BB                     ; }
+ $8A27 DEFB $5E                             ; Terminator.
+; "You think (this is questionable) therefore you are, still it seems to
+; have worked!".
+@label=SystemMessage_8A
+ $8A28 DEFB $59,$C6,$85,$C4,$6B,$20,$28,$D6 ; {#TOKENS$2B
+ $8A30 DEFB $D9,$3C,$71,$75,$92,$69,$C2,$61 ;
+ $8A38 DEFB $62,$C7,$29,$85,$65,$C3,$66,$BF ;
+ $8A40 DEFB $65,$1C,$BE,$65,$2C,$91,$9F,$20 ;
+ $8A48 DEFB $B5,$BA,$6D,$BD,$E4,$12,$77,$BF ;
+ $8A50 DEFB $6B,$DD,$21                     ; }
+ $8A53 DEFB $5E                             ; Terminator.
+; "a wall of ice appears in front of you.".
+@label=SystemMessage_8B
+ $8A54 DEFB $C1,$5D,$38,$CF,$C5,$61,$EC,$9C ; {#TOKENS$12
+ $8A5C DEFB $73,$82,$66,$72,$C2,$74,$38,$79 ;
+ $8A64 DEFB $C6,$BB                         ; }
+ $8A66 DEFB $5E                             ; Terminator.
+; "it has a beautiful tone.".
+@label=SystemMessage_8C
+ $8A67 DEFB $B5,$68,$D1,$87,$62,$65,$61,$75 ; {#TOKENS$10
+ $8A6F DEFB $74,$69,$66,$75,$6C,$F4,$C2,$8A ; }
+ $8A77 DEFB $5E                             ; Terminator.
+; "the fireball explodes on the ice melting it away(and annoying the
+; wizard somewhat!).".
+@label=SystemMessage_8D
+ $8A78 DEFB $37,$66,$69,$C3,$62,$3E,$65,$78 ; {#TOKENS$29
+ $8A80 DEFB $F5,$6F,$DC,$73,$07,$CF,$65,$AE ;
+ $8A88 DEFB $6C,$74,$36,$B5,$61,$9D,$28,$93 ;
+ $8A90 DEFB $20,$C9,$6E,$6F,$79,$36,$A1,$05 ;
+ $8A98 DEFB $73,$EA,$65,$77,$68,$C0,$21,$29 ;
+ $8AA0 DEFB $BB                             ; }
+ $8AA1 DEFB $5E                             ; Terminator.
+; "....and promptly melts again.".
+@label=SystemMessage_8E
+ $8AA2 DEFB $2E,$2E,$2E,$2E,$93,$F7,$CB,$6D ; {#TOKENS$13
+ $8AAA DEFB $70,$74,$98,$6D,$CD,$74,$B9,$67 ;
+ $8AB2 DEFB $61,$C4,$BB                     ; }
+ $8AB5 DEFB $5E                             ; Terminator.
+; "a gust of wind blows.".
+@label=SystemMessage_8F
+ $8AB6 DEFB $C1,$67,$75,$CE,$38,$77,$95,$DF ; {#TOKENS$0A
+ $8ABE DEFB $A7,$B8                         ; }
+ $8AC0 DEFB $5E                             ; Terminator.
+; "the light bounces back of the polished shield and temporarily blinds
+; the wizard.".
+@label=SystemMessage_90
+ $8AC1 DEFB $37,$6C,$B4,$D3,$62,$B6,$63,$9E ; {#TOKENS$24
+ $8AC9 DEFB $62,$A2,$02,$70,$6F,$6C,$D9,$68 ;
+ $8AD1 DEFB $83,$73,$E8,$CD,$64,$1B,$74,$A4 ;
+ $8AD9 DEFB $BF,$BE,$69,$98,$62,$6C,$95,$11 ;
+ $8AE1 DEFB $77,$69,$5F,$BB                 ; }
+ $8AE5 DEFB $5E                             ; Terminator.
+; "the wizard reels back clutching at his head.".
+@label=SystemMessage_91
+ $8AE6 DEFB $A1,$05,$C3,$CD,$BD,$62,$A2,$20 ; {#TOKENS$14
+ $8AEE DEFB $E6,$75,$74,$D5,$36,$C0,$20,$68 ;
+ $8AF6 DEFB $D9,$9B,$E1,$BB                 ; }
+ $8AFA DEFB $5E                             ; Terminator.
+; "the wizard casts a spell.".
+@label=SystemMessage_92
+ $8AFB DEFB $A1,$05,$63,$90,$73,$87,$FF,$CD ; {#TOKENS$0A
+ $8B03 DEFB $6C,$BB                         ; }
+ $8B05 DEFB $5E                             ; Terminator.
+; "the wizard in one final attempt summons his demon master!".
+@label=SystemMessage_93
+ $8B06 DEFB $A1,$05,$99,$58,$66,$C4,$A5,$C0 ; {#TOKENS$1A
+ $8B0E DEFB $74,$A4,$74,$CA,$75,$6D,$6D,$C2 ;
+ $8B16 DEFB $BD,$E8,$BD,$DC,$6D,$B7,$6D,$90 ;
+ $8B1E DEFB $C8,$21                         ; }
+ $8B20 DEFB $5E                             ; Terminator.
+; "the wizard reels back clutching at his head.".
+@label=SystemMessage_94
+ $8B21 DEFB $A1,$05,$C3,$CD,$BD,$62,$A2,$20 ; {#TOKENS$14
+ $8B29 DEFB $E6,$75,$74,$D5,$36,$C0,$20,$68 ;
+ $8B31 DEFB $D9,$9B,$E1,$BB                 ; }
+ $8B35 DEFB $5E                             ; Terminator.
+; "the wizard dies, and all his sorcery is undone.".
+@label=SystemMessage_95
+ $8B36 DEFB $A1,$05,$64,$69,$EE,$2C,$1B,$3E ; {#TOKENS$14
+ $8B3E DEFB $E8,$BD,$73,$BF,$63,$C8,$79,$3C ;
+ $8B46 DEFB $E2,$64,$C2,$8A                 ; }
+ $8B4A DEFB $5E                             ; Terminator.
+; "the wizard says 'BE NOT!' and you are not!".
+@label=SystemMessage_96
+ $8B4B DEFB $A1,$05,$73,$F8,$BD,$27,$42,$45 ; {#TOKENS$12
+ $8B53 DEFB $20,$4E,$4F,$54,$21,$27,$1B,$01 ;
+ $8B5B DEFB $94,$21                         ; }
+ $8B5D DEFB $5E                             ; Terminator.
+; "the wizard points at me and utters a hideous curse.".
+@label=SystemMessage_97
+ $8B5E DEFB $A1,$05,$70,$6F,$C4,$74,$B9,$74 ; {#TOKENS$17
+ $8B66 DEFB $AE,$1B,$75,$74,$A6,$73,$87,$68 ;
+ $8B6E DEFB $8E,$C6,$BD,$63,$D7,$73,$8A     ; }
+ $8B75 DEFB $5E                             ; Terminator.
+; "you stand on the crate.".
+@label=SystemMessage_98
+ $8B76 DEFB $4A,$CE,$93,$07,$E9,$C0,$8A     ; #TOKENS$07
+ $8B7D DEFB $5E                             ; Terminator.
+; "you stand on the chair.".
+@label=SystemMessage_99
+ $8B7E DEFB $4A,$CE,$93,$07,$96,$F3,$BB     ; #TOKENS$07
+ $8B85 DEFB $5E                             ; Terminator.
+; "sparks leap from the wizard.".
+@label=SystemMessage_9A
+ $8B86 DEFB $FF,$BE,$6B,$73,$56,$70,$16,$37 ; {#TOKENS$0C
+ $8B8E DEFB $77,$69,$5F,$BB                 ; }
+ $8B92 DEFB $5E                             ; Terminator.
+; "on it is written slayer of sorcerors(IS THIS A HINT ?)".
+@label=SystemMessage_9B
+ $8B93 DEFB $B7,$10,$77,$72,$CC,$74,$AC,$73 ; {#TOKENS$24
+ $8B9B DEFB $6C,$F8,$C8,$38,$73,$BF,$63,$C8 ;
+ $8BA3 DEFB $BF,$73,$28,$49,$53,$20,$54,$48 ;
+ $8BAB DEFB $49,$53,$20,$41,$20,$48,$49,$4E ;
+ $8BB3 DEFB $54,$20,$3F,$29                 ; }
+ $8BB7 DEFB $5E                             ; Terminator.
+; "with a hideous laugh the wizard rubs out part of your pentagram!".
+@label=SystemMessage_9C
+ $8BB8 DEFB $0E,$68,$8E,$C6,$BD,$6C,$61,$75 ; {#TOKENS$1D
+ $8BC0 DEFB $F6,$85,$65,$05,$72,$75,$62,$BD ;
+ $8BC8 DEFB $C6,$D3,$70,$BE,$74,$38,$2D,$70 ;
+ $8BD0 DEFB $86,$DA,$72,$DE,$21             ; }
+ $8BD5 DEFB $5E                             ; Terminator.
+; "the slush melts".
+@label=SystemMessage_9D
+ $8BD6 DEFB $1E,$6C,$75,$73,$68,$AE,$6C,$74 ; {#TOKENS$09
+ $8BDE DEFB $73                             ; }
+ $8BDF DEFB $5E                             ; Terminator.
+; "you have scored".
+@label=SystemMessage_9E
+ $8BE0 DEFB $79,$C6,$12,$73,$63,$6F,$40     ; #TOKENS$07
+ $8BE7 DEFB $7E                             ; Terminator.
+; "you have scored 100% and have completed the entire adventure,
+; congratulations".
+@label=SystemMessage_9F
+ $8BE8 DEFB $79,$C6,$12,$73,$63,$6F,$40,$31 ; {#TOKENS$28
+ $8BF0 DEFB $30,$30,$25,$20,$93,$12,$AF,$70 ;
+ $8BF8 DEFB $C7,$74,$DD,$18,$86,$69,$8B,$E1 ;
+ $8C00 DEFB $76,$86,$75,$C3,$2C,$89,$6E,$67 ;
+ $8C08 DEFB $72,$C0,$75,$6C,$C0,$69,$C2,$73 ; }
+ $8C10 DEFB $5E                             ; Terminator.
+; "you have completed".
+@label=SystemMessage_A0
+ $8C11 DEFB $79,$C6,$12,$AF,$70,$C7,$74,$83 ; #TOKENS$08
+ $8C19 DEFB $7E                             ; Terminator.
+; "% of the adventure, and have returned safely home".
+@label=SystemMessage_A1
+ $8C1A DEFB $25,$02,$E1,$76,$86,$D7,$B0,$93 ; {#TOKENS$16
+ $8C22 DEFB $12,$C3,$74,$D7,$6E,$83,$73,$61 ;
+ $8C2A DEFB $66,$65,$98,$68,$EA,$65         ; }
+ $8C30 DEFB $5E                             ; Terminator.
+; "it looks as if you could push it".
+@label=SystemMessage_A2
+ $8C31 DEFB $B5,$6C,$D2,$6B,$B9,$BD,$69,$66 ; {#TOKENS$12
+ $8C39 DEFB $1C,$63,$B3,$64,$F7,$75,$73,$68 ;
+ $8C41 DEFB $20,$CC                         ; }
+ $8C43 DEFB $5E                             ; Terminator.
+; "not enough is reflected...".
+@label=SystemMessage_A3
+ $8C44 DEFB $94,$20,$D8,$C6,$F6,$3C,$C3,$66 ; {#TOKENS$0F
+ $8C4C DEFB $C7,$63,$74,$DD,$2E,$2E,$BB     ; }
+ $8C53 DEFB $5E                             ; Terminator.
+; "it is phosphorescent.".
+@label=SystemMessage_A4
+ $8C54 DEFB $10,$70,$F9,$FF,$68,$BF,$EE,$63 ; {#TOKENS$0A
+ $8C5C DEFB $86,$BB                         ; }
+ $8C5E DEFB $5E                             ; Terminator.
+; "you see nothing special".
+@label=SystemMessage_A5
+ $8C5F DEFB $4A,$BA,$20,$94,$68,$36,$FF,$E0 ; {#TOKENS$28
+ $8C67 DEFB $69,$D4,$20,$20,$20,$20,$20,$20 ;
+ $8C6F DEFB $20,$20,$20,$20,$20,$20,$20,$20 ;
+ $8C77 DEFB $20,$20,$20,$20,$20,$20,$20,$20 ;
+ $8C7F DEFB $20,$20,$20,$20,$20,$20,$20,$20 ; }
+ $8C87 DEFB $5E                             ; Terminator.
+; "it leaks".
+@label=SystemMessage_A6
+ $8C88 DEFB $CC,$56,$6B,$73                 ; #TOKENS$04
+ $8C8C DEFB $5E                             ; Terminator.
+; "Be more specific".
+@label=SystemMessage_A7
+ $8C8D DEFB $42,$C5,$6D,$6F,$8B,$FF,$E0,$69 ; {#TOKENS$0A
+ $8C95 DEFB $66,$CF                         ; }
+ $8C97 DEFB $5E                             ; Terminator.
+; "Some form of electrical control".
+@label=SystemMessage_A8
+ $8C98 DEFB $53,$EA,$65,$7F,$6D,$38,$65,$C7 ; {#TOKENS$12
+ $8CA0 DEFB $63,$74,$72,$CF,$D4,$89,$6E,$74 ;
+ $8CA8 DEFB $CB,$6C                         ; }
+ $8CAA DEFB $5E                             ; Terminator.
+; "An explosive spell".
+@label=SystemMessage_A9
+ $8CAB DEFB $41,$6E,$EF,$78,$F5,$6F,$73,$69 ; {#TOKENS$0D
+ $8CB3 DEFB $76,$C5,$FF,$CD,$6C             ; }
+ $8CB8 DEFB $5E                             ; Terminator.
+; "Opposite of a curse".
+@label=SystemMessage_AA
+ $8CB9 DEFB $4F,$EC,$6F,$73,$CC,$2B,$C1,$63 ; {#TOKENS$0B
+ $8CC1 DEFB $D7,$73,$65                     ; }
+ $8CC4 DEFB $5E                             ; Terminator.
+; "See the cassette box for details of hint sheets".
+@label=SystemMessage_AB
+ $8CC5 DEFB $53,$65,$65,$18,$63,$D1,$73,$F0 ; {#TOKENS$1C
+ $8CCD DEFB $74,$C5,$ED,$78,$7F,$20,$DC,$74 ;
+ $8CD5 DEFB $61,$FC,$73,$38,$68,$C4,$74,$CA ;
+ $8CDD DEFB $68,$65,$F0,$73                 ; }
+ $8CE1 DEFB $5E                             ; Terminator.
+; Unused bytes after the last terminator.
+ $8CE2 DEFB $3D,$3D,$3D,$3D
 
 ; Object Text
 ;
@@ -6084,19 +7205,967 @@ s$AFAE DEFS $020E
 ; its last letter. The first word is empty: its only byte is #N$80. Later
 ; words include the letters of the alphabet, so a token in that range is
 ; printed as itself.
+;
+; .
+;
+; "#STR(#PC)".
 @label=Dictionary
-t$B1BC DEFM $80,"you are",$A0," of the",$A0," in the",$A0,"here is",$A0," wizard",$A0," passag",$E5," on the",$A0," beside",$A0
- $B1FD DEFM " spell,",$A0," fissur",$E5," a huge",$A0,"in the",$A0,"to the",$A0,"with a",$A0,"in a ",$F3,"it is",$A0,"s the",$A0," h"
- $B23E DEFM "ave",$A0,"ou ca",$EE,"ed by",$A0," into",$A0," from",$A0,"t the",$A0," the",$A0,"in a",$A0,$9A," and",$A0," you",$A0," roo",$ED,"the ",$F3
- $B27F DEFM "floo",$F2,$A0,$A1,"s to",$A0," dow",$EE,"ston",$E5,$A5," cav",$E5,$A7,$A8,$A9,"e is",$A0,"e of",$A0,$AC,"your",$A0,$AE,$AF,$B0,$B1,"t is",$A0,"ring",$A0,$B4,". T"
- $B2C0 DEFM "h",$E5,"ing",$A0,"the",$A0," of",$A0," to",$A0,$BA,". A",$A0," is",$A0,$BD,"all",$A0,$BF,"red",$A0,$C1,$C2,$C3,$C4,$C5,$C6,$C7,$C8,$C9,"you",$A0,"pas",$F3,$CC,$CD,$CE,$CF,$D0," yo",$F5,$D2,$D3
- $B301 DEFM $D4,$D5," le",$E1,$D7,"one",$A0,$D9,"lav",$E1,"sno",$F7,"ard",$F3,"wal",$EC,$DE,"zar",$E4,"hat",$A0,$E1,$E2,$E3,$E4,$E5,$E6,$E7,$E8,$E9,$EA,$EB,$EC,$ED,$EE,$EF,$F0,$F1,$F2,$F3,$F4,$F5,$F6,$F7,$F8,$F9,$FA," w"
- $B342 DEFM "h",$E9,"out",$E8,"tai",$EE,$FE," fo",$F2,"oun",$E4,"lim",$E5," in",$A0,"ed",$A0,"in",$E7," t",$E8,"en",$F4," a",$A0,"al",$EC," c",$EF,"e.",$A0,"re",$A0,"ve",$F2," b",$E5,"id",$E5,"re"
- $B383 DEFM $E1,"as",$F4," s",$F4,"es",$F4,"an",$E4,"no",$F4,"in",$E4,"ch",$E1,"no",$F7,"ly",$A0,"in",$A0,"op",$E5," h",$E5,"ea",$F2,"wa",$F9,"es",$A0,"il",$EC,"ge",$A0,"th",$E5,"ac",$EB,"ee",$F0,"em",$F0,"a"
- $B3C4 DEFM "l",$A0,"te",$F2,"lo",$F7,"oc",$EB,"ro",$EF,"ri",$E4,". ",$D4,"en",$A0,"t.",$A0," m",$E5,"co",$ED,"e,",$A0,"an",$A0," w",$E9,"ou",$EC,"ig",$E8,"it",$A0,"ou",$EE,"on",$A0,"s.",$A0,"s ",$E1,"se",$E5
- $B405 DEFM ".",$A0,",",$A0,"s",$A0,"a",$F2,"o",$F2,"a",$F4,"a",$A0,"o",$EE,"r",$E5,"i",$EE,"e",$A0,"o",$F5,"l",$E5,"e",$F2,"a",$EE," ",$F3,"r",$EF,"i",$F4,"e",$EC,"s",$F4,"i",$E3,"y",$A0,"a",$F3,"o",$EF,"t",$A0,"a",$EC,"c",$E8,"t",$E8,"u",$F2,"e",$EE,"i",$F3,"a",$E7,"d"
- $B446 DEFM $EF,"d",$E5,"e",$E4,"a",$ED," ",$E2,"e",$E3,"a",$E4,"u",$EE,"r",$E9,"t",$EF,"v",$E5,"c",$EC," ",$E1,"h",$E9,"c",$F2,"o",$ED,"g",$E5,"p",$F0,"b",$EF,"e",$F3," ",$E5,"e",$F4,"c",$E5,"u",$F0,"i",$F2," ",$F4,"p",$EC,"g",$E8," ",$F0,"a",$F9,"h",$EF,"f",$E6,"o",$F7
- $B487 DEFM "i",$EC,"a",$EB,$FE,"s",$F0
+t$B1BC DEFM $80       ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_01
+ $B1BD DEFM "you are"
+ $B1C4 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_02
+ $B1C5 DEFM " of the"
+ $B1CC DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_03
+ $B1CD DEFM " in the"
+ $B1D4 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_04
+ $B1D5 DEFM "here is"
+ $B1DC DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_05
+ $B1DD DEFM " wizard"
+ $B1E4 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_06
+ $B1E5 DEFM " passag"
+ $B1EC DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_07
+ $B1ED DEFM " on the"
+ $B1F4 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_08
+ $B1F5 DEFM " beside"
+ $B1FC DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_09
+ $B1FD DEFM " spell,"
+ $B204 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_0A
+ $B205 DEFM " fissur"
+ $B20C DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_0B
+ $B20D DEFM " a huge"
+ $B214 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_0C
+ $B215 DEFM "in the"
+ $B21B DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_0D
+ $B21C DEFM "to the"
+ $B222 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_0E
+ $B223 DEFM "with a"
+ $B229 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_0F
+ $B22A DEFM "in a "
+ $B22F DEFM "s"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_10
+ $B230 DEFM "it is"
+ $B235 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_11
+ $B236 DEFM "s the"
+ $B23B DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_12
+ $B23C DEFM " have"
+ $B241 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_13
+ $B242 DEFM "ou ca"
+ $B247 DEFM "n"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_14
+ $B248 DEFM "ed by"
+ $B24D DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_15
+ $B24E DEFM " into"
+ $B253 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_16
+ $B254 DEFM " from"
+ $B259 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_17
+ $B25A DEFM "t the"
+ $B25F DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_18
+ $B260 DEFM " the"
+ $B264 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_19
+ $B265 DEFM "in a"
+ $B269 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_1A
+ $B26A DEFM $9A       ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_1B
+ $B26B DEFM " and"
+ $B26F DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_1C
+ $B270 DEFM " you"
+ $B274 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_1D
+ $B275 DEFM " roo"
+ $B279 DEFM "m"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_1E
+ $B27A DEFM "the "
+ $B27E DEFM "s"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_1F
+ $B27F DEFM "floo"
+ $B283 DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_20
+ $B284 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_21
+ $B285 DEFM "!"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_22
+ $B286 DEFM "s to"
+ $B28A DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_23
+ $B28B DEFM " dow"
+ $B28F DEFM "n"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_24
+ $B290 DEFM "ston"
+ $B294 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_25
+ $B295 DEFM "%"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_26
+ $B296 DEFM " cav"
+ $B29A DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_27
+ $B29B DEFM "'"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_28
+ $B29C DEFM "("+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_29
+ $B29D DEFM ")"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_2A
+ $B29E DEFM "e is"
+ $B2A2 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_2B
+ $B2A3 DEFM "e of"
+ $B2A7 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_2C
+ $B2A8 DEFM ","+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_2D
+ $B2A9 DEFM "your"
+ $B2AD DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_2E
+ $B2AE DEFM "."+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_2F
+ $B2AF DEFM "/"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_30
+ $B2B0 DEFM "0"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_31
+ $B2B1 DEFM "1"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_32
+ $B2B2 DEFM "t is"
+ $B2B6 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_33
+ $B2B7 DEFM "ring"
+ $B2BB DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_34
+ $B2BC DEFM "4"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_35
+ $B2BD DEFM ". Th"
+ $B2C1 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_36
+ $B2C2 DEFM "ing"
+ $B2C5 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_37
+ $B2C6 DEFM "the"
+ $B2C9 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_38
+ $B2CA DEFM " of"
+ $B2CD DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_39
+ $B2CE DEFM " to"
+ $B2D1 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_3A
+ $B2D2 DEFM ":"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_3B
+ $B2D3 DEFM ". A"
+ $B2D6 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_3C
+ $B2D7 DEFM " is"
+ $B2DA DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_3D
+ $B2DB DEFM "="+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_3E
+ $B2DC DEFM "all"
+ $B2DF DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_3F
+ $B2E0 DEFM "?"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_40
+ $B2E1 DEFM "red"
+ $B2E4 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_41
+ $B2E5 DEFM "A"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_42
+ $B2E6 DEFM "B"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_43
+ $B2E7 DEFM "C"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_44
+ $B2E8 DEFM "D"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_45
+ $B2E9 DEFM "E"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_46
+ $B2EA DEFM "F"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_47
+ $B2EB DEFM "G"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_48
+ $B2EC DEFM "H"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_49
+ $B2ED DEFM "I"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_4A
+ $B2EE DEFM "you"
+ $B2F1 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_4B
+ $B2F2 DEFM "pas"
+ $B2F5 DEFM "s"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_4C
+ $B2F6 DEFM "L"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_4D
+ $B2F7 DEFM "M"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_4E
+ $B2F8 DEFM "N"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_4F
+ $B2F9 DEFM "O"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_50
+ $B2FA DEFM "P"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_51
+ $B2FB DEFM " yo"
+ $B2FE DEFM "u"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_52
+ $B2FF DEFM "R"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_53
+ $B300 DEFM "S"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_54
+ $B301 DEFM "T"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_55
+ $B302 DEFM "U"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_56
+ $B303 DEFM " le"
+ $B306 DEFM "a"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_57
+ $B307 DEFM "W"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_58
+ $B308 DEFM "one"
+ $B30B DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_59
+ $B30C DEFM "Y"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_5A
+ $B30D DEFM "lav"
+ $B310 DEFM "a"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_5B
+ $B311 DEFM "sno"
+ $B314 DEFM "w"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_5C
+ $B315 DEFM "ard"
+ $B318 DEFM "s"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_5D
+ $B319 DEFM "wal"
+ $B31C DEFM "l"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_5E
+ $B31D DEFM $DE       ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_5F
+ $B31E DEFM "zar"
+ $B321 DEFM "d"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_60
+ $B322 DEFM "hat"
+ $B325 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_61
+ $B326 DEFM "a"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_62
+ $B327 DEFM "b"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_63
+ $B328 DEFM "c"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_64
+ $B329 DEFM "d"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_65
+ $B32A DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_66
+ $B32B DEFM "f"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_67
+ $B32C DEFM "g"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_68
+ $B32D DEFM "h"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_69
+ $B32E DEFM "i"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_6A
+ $B32F DEFM "j"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_6B
+ $B330 DEFM "k"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_6C
+ $B331 DEFM "l"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_6D
+ $B332 DEFM "m"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_6E
+ $B333 DEFM "n"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_6F
+ $B334 DEFM "o"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_70
+ $B335 DEFM "p"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_71
+ $B336 DEFM "q"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_72
+ $B337 DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_73
+ $B338 DEFM "s"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_74
+ $B339 DEFM "t"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_75
+ $B33A DEFM "u"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_76
+ $B33B DEFM "v"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_77
+ $B33C DEFM "w"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_78
+ $B33D DEFM "x"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_79
+ $B33E DEFM "y"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_7A
+ $B33F DEFM "z"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_7B
+ $B340 DEFM " wh"
+ $B343 DEFM "i"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_7C
+ $B344 DEFM "out"
+ $B347 DEFM "h"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_7D
+ $B348 DEFM "tai"
+ $B34B DEFM "n"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_7E
+ $B34C DEFM "~"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_7F
+ $B34D DEFM " fo"
+ $B350 DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_80
+ $B351 DEFM "oun"
+ $B354 DEFM "d"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_81
+ $B355 DEFM "lim"
+ $B358 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_82
+ $B359 DEFM " in"
+ $B35C DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_83
+ $B35D DEFM "ed"
+ $B35F DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_84
+ $B360 DEFM "in"
+ $B362 DEFM "g"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_85
+ $B363 DEFM " t"
+ $B365 DEFM "h"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_86
+ $B366 DEFM "en"
+ $B368 DEFM "t"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_87
+ $B369 DEFM " a"
+ $B36B DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_88
+ $B36C DEFM "al"
+ $B36E DEFM "l"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_89
+ $B36F DEFM " c"
+ $B371 DEFM "o"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_8A
+ $B372 DEFM "e."
+ $B374 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_8B
+ $B375 DEFM "re"
+ $B377 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_8C
+ $B378 DEFM "ve"
+ $B37A DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_8D
+ $B37B DEFM " b"
+ $B37D DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_8E
+ $B37E DEFM "id"
+ $B380 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_8F
+ $B381 DEFM "re"
+ $B383 DEFM "a"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_90
+ $B384 DEFM "as"
+ $B386 DEFM "t"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_91
+ $B387 DEFM " s"
+ $B389 DEFM "t"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_92
+ $B38A DEFM "es"
+ $B38C DEFM "t"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_93
+ $B38D DEFM "an"
+ $B38F DEFM "d"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_94
+ $B390 DEFM "no"
+ $B392 DEFM "t"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_95
+ $B393 DEFM "in"
+ $B395 DEFM "d"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_96
+ $B396 DEFM "ch"
+ $B398 DEFM "a"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_97
+ $B399 DEFM "no"
+ $B39B DEFM "w"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_98
+ $B39C DEFM "ly"
+ $B39E DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_99
+ $B39F DEFM "in"
+ $B3A1 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_9A
+ $B3A2 DEFM "op"
+ $B3A4 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_9B
+ $B3A5 DEFM " h"
+ $B3A7 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_9C
+ $B3A8 DEFM "ea"
+ $B3AA DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_9D
+ $B3AB DEFM "wa"
+ $B3AD DEFM "y"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_9E
+ $B3AE DEFM "es"
+ $B3B0 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_9F
+ $B3B1 DEFM "il"
+ $B3B3 DEFM "l"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_A0
+ $B3B4 DEFM "ge"
+ $B3B6 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_A1
+ $B3B7 DEFM "th"
+ $B3B9 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_A2
+ $B3BA DEFM "ac"
+ $B3BC DEFM "k"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_A3
+ $B3BD DEFM "ee"
+ $B3BF DEFM "p"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_A4
+ $B3C0 DEFM "em"
+ $B3C2 DEFM "p"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_A5
+ $B3C3 DEFM "al"
+ $B3C5 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_A6
+ $B3C6 DEFM "te"
+ $B3C8 DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_A7
+ $B3C9 DEFM "lo"
+ $B3CB DEFM "w"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_A8
+ $B3CC DEFM "oc"
+ $B3CE DEFM "k"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_A9
+ $B3CF DEFM "ro"
+ $B3D1 DEFM "o"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_AA
+ $B3D2 DEFM "ri"
+ $B3D4 DEFM "d"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_AB
+ $B3D5 DEFM ". "
+ $B3D7 DEFM "T"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_AC
+ $B3D8 DEFM "en"
+ $B3DA DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_AD
+ $B3DB DEFM "t."
+ $B3DD DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_AE
+ $B3DE DEFM " m"
+ $B3E0 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_AF
+ $B3E1 DEFM "co"
+ $B3E3 DEFM "m"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_B0
+ $B3E4 DEFM "e,"
+ $B3E6 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_B1
+ $B3E7 DEFM "an"
+ $B3E9 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_B2
+ $B3EA DEFM " w"
+ $B3EC DEFM "i"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_B3
+ $B3ED DEFM "ou"
+ $B3EF DEFM "l"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_B4
+ $B3F0 DEFM "ig"
+ $B3F2 DEFM "h"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_B5
+ $B3F3 DEFM "it"
+ $B3F5 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_B6
+ $B3F6 DEFM "ou"
+ $B3F8 DEFM "n"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_B7
+ $B3F9 DEFM "on"
+ $B3FB DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_B8
+ $B3FC DEFM "s."
+ $B3FE DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_B9
+ $B3FF DEFM "s "
+ $B401 DEFM "a"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_BA
+ $B402 DEFM "se"
+ $B404 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_BB
+ $B405 DEFM "."
+ $B406 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_BC
+ $B407 DEFM ","
+ $B408 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_BD
+ $B409 DEFM "s"
+ $B40A DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_BE
+ $B40B DEFM "a"
+ $B40C DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_BF
+ $B40D DEFM "o"
+ $B40E DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_C0
+ $B40F DEFM "a"
+ $B410 DEFM "t"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_C1
+ $B411 DEFM "a"
+ $B412 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_C2
+ $B413 DEFM "o"
+ $B414 DEFM "n"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_C3
+ $B415 DEFM "r"
+ $B416 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_C4
+ $B417 DEFM "i"
+ $B418 DEFM "n"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_C5
+ $B419 DEFM "e"
+ $B41A DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_C6
+ $B41B DEFM "o"
+ $B41C DEFM "u"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_C7
+ $B41D DEFM "l"
+ $B41E DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_C8
+ $B41F DEFM "e"
+ $B420 DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_C9
+ $B421 DEFM "a"
+ $B422 DEFM "n"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_CA
+ $B423 DEFM " "
+ $B424 DEFM "s"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_CB
+ $B425 DEFM "r"
+ $B426 DEFM "o"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_CC
+ $B427 DEFM "i"
+ $B428 DEFM "t"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_CD
+ $B429 DEFM "e"
+ $B42A DEFM "l"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_CE
+ $B42B DEFM "s"
+ $B42C DEFM "t"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_CF
+ $B42D DEFM "i"
+ $B42E DEFM "c"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_D0
+ $B42F DEFM "y"
+ $B430 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_D1
+ $B431 DEFM "a"
+ $B432 DEFM "s"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_D2
+ $B433 DEFM "o"
+ $B434 DEFM "o"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_D3
+ $B435 DEFM "t"
+ $B436 DEFM " "+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_D4
+ $B437 DEFM "a"
+ $B438 DEFM "l"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_D5
+ $B439 DEFM "c"
+ $B43A DEFM "h"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_D6
+ $B43B DEFM "t"
+ $B43C DEFM "h"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_D7
+ $B43D DEFM "u"
+ $B43E DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_D8
+ $B43F DEFM "e"
+ $B440 DEFM "n"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_D9
+ $B441 DEFM "i"
+ $B442 DEFM "s"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_DA
+ $B443 DEFM "a"
+ $B444 DEFM "g"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_DB
+ $B445 DEFM "d"
+ $B446 DEFM "o"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_DC
+ $B447 DEFM "d"
+ $B448 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_DD
+ $B449 DEFM "e"
+ $B44A DEFM "d"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_DE
+ $B44B DEFM "a"
+ $B44C DEFM "m"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_DF
+ $B44D DEFM " "
+ $B44E DEFM "b"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_E0
+ $B44F DEFM "e"
+ $B450 DEFM "c"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_E1
+ $B451 DEFM "a"
+ $B452 DEFM "d"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_E2
+ $B453 DEFM "u"
+ $B454 DEFM "n"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_E3
+ $B455 DEFM "r"
+ $B456 DEFM "i"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_E4
+ $B457 DEFM "t"
+ $B458 DEFM "o"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_E5
+ $B459 DEFM "v"
+ $B45A DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_E6
+ $B45B DEFM "c"
+ $B45C DEFM "l"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_E7
+ $B45D DEFM " "
+ $B45E DEFM "a"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_E8
+ $B45F DEFM "h"
+ $B460 DEFM "i"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_E9
+ $B461 DEFM "c"
+ $B462 DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_EA
+ $B463 DEFM "o"
+ $B464 DEFM "m"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_EB
+ $B465 DEFM "g"
+ $B466 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_EC
+ $B467 DEFM "p"
+ $B468 DEFM "p"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_ED
+ $B469 DEFM "b"
+ $B46A DEFM "o"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_EE
+ $B46B DEFM "e"
+ $B46C DEFM "s"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_EF
+ $B46D DEFM " "
+ $B46E DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_F0
+ $B46F DEFM "e"
+ $B470 DEFM "t"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_F1
+ $B471 DEFM "c"
+ $B472 DEFM "e"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_F2
+ $B473 DEFM "u"
+ $B474 DEFM "p"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_F3
+ $B475 DEFM "i"
+ $B476 DEFM "r"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_F4
+ $B477 DEFM " "
+ $B478 DEFM "t"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_F5
+ $B479 DEFM "p"
+ $B47A DEFM "l"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_F6
+ $B47B DEFM "g"
+ $B47C DEFM "h"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_F7
+ $B47D DEFM " "
+ $B47E DEFM "p"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_F8
+ $B47F DEFM "a"
+ $B480 DEFM "y"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_F9
+ $B481 DEFM "h"
+ $B482 DEFM "o"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_FA
+ $B483 DEFM "f"
+ $B484 DEFM "f"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_FB
+ $B485 DEFM "o"
+ $B486 DEFM "w"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_FC
+ $B487 DEFM "i"
+ $B488 DEFM "l"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_FD
+ $B489 DEFM "a"
+ $B48A DEFM "k"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_FE
+ $B48B DEFM "~"+$80   ; Terminator.
+; "#STR(#PC)".
+@label=Dictionary_FF
+ $B48C DEFM "s"
+ $B48D DEFM "p"+$80   ; Terminator.
 
 ; Unused Gap Before World Tables
 ;
@@ -6475,13 +8544,19 @@ b$B748 DEFB $FC,$FC,$FC,$FC,$FC,$FC,$FC
 ; everything.
 @label=AssemblerSource_Leftovers
 t$B74F DEFM $E7,"RD A,(DE)",$0D           ; The end of the line before, "...RD
-                                          ; A,(DE)".
- $B75A DEFM $04,"B",$0B,"CP (HL)",$0D     ; Line 1090: CP (HL).
- $B765 DEFM $04,"L",$0F,"JR Z,found ",$0D ; Line 1100: JR Z,found.
- $B774 DEFM $04,"V",$0A,"INC DE",$0D      ; Line 1110: INC DE.
- $B77E DEFM $04,$60,$0A,"LD A,E",$0D      ; Line 1120: LD A,E.
- $B788 DEFM $04,"j",$0A,"CP mem",$0D      ; Line 1130: CP mem.
- $B792 DEFM $04,"t",$0F,"JR "             ; Line 1140, cut off after "JR ".
+                                          ; #REGa,(#REGde)".
+ $B75A DEFM $04,"B",$0B,"CP (HL)",$0D     ; #HTML[Line 1090: <code>CP
+                                          ; (#REGhl)</code>.]
+ $B765 DEFM $04,"L",$0F,"JR Z,found ",$0D ; #HTML(Line 1100: <code>JR
+                                          ; Z,found</code>.)
+ $B774 DEFM $04,"V",$0A,"INC DE",$0D      ; #HTML(Line 1110: <code>INC
+                                          ; #REGde</code>.)
+ $B77E DEFM $04,$60,$0A,"LD A,E",$0D      ; #HTML(Line 1120: <code>LD
+                                          ; #REGa,#REGe</code>.)
+ $B788 DEFM $04,"j",$0A,"CP mem",$0D      ; #HTML(Line 1130: <code>CP
+                                          ; mem</code>.)
+ $B792 DEFM $04,"t",$0F,"JR "             ; #HTML(Line 1140, cut off after
+                                          ; "<code>JR</code> ".)
 
 ; Per-Room Picture Records
 ;
@@ -9538,7 +11613,7 @@ c$FFDC LD IX,$5B00   ; {Load into #R$5B00.
  $FFE0 LD DE,$0100   ;
  $FFE3 LD A,$00      ;
  $FFE5 SCF           ; }
- $FFE6 CALL $0556    ; Call #SKOOLKID$0556(LD-BYTES).
+ $FFE6 CALL $0556    ; Call #SKOOLKID$0556(LD_BYTES).
 @label=GameEntry
  $FFE9 CALL $5ECB    ; Call #R$5ECB to run the adventure.
 

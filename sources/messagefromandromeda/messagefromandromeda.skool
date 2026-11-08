@@ -4,9 +4,14 @@
 @expand=#DEF(#FACT()(anchor,text) #LINK(Facts#$anchor)($text))
 @expand=#DEF(#MESSAGE(addr) #STR$addr,$08($b==$FF))
 @expand=#IF({asm})(#DEF(#PICTURE()(title,fname,attr=0)))
-@expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
+@expand=#IF({asm})(#DEF(#FOREST(addr)(link=Forest At Worlds End)$link))
+@expand=#IF({asm})(#DEF(#HEROES(addr)(link=Heroes Of Karn)$link))
+@expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon)$link))
+@expand=#IF({asm})(#DEF(#SHOCK(addr)(link=After Shock)$link))
+@expand=#IF({asm})(#DEF(#WARLORD(addr)(link=Warlord)$link))
+@expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html">){name}#HTML(</a>))
 @set-handle-unsupported-macros=1
-@expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
+@expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html">){name}#HTML(</a>))
 
 @org=$4000
 ; Loading Screen
@@ -703,7 +708,6 @@ i$5C00 DEFB $FF
  $5CCE DEFB $00
  $5CCF DEFB $EA
 
-
 ; Tape Loader
 ;
 ; Load the screen, then the game image. The length check keeps
@@ -735,6 +739,10 @@ c$5CD0 LD IX,$4000   ; {Load the screen from tape into the display file.
 @nowarn
 *$5CFA LD IX,$61A8   ; {Load the pictures and the code as one block at #R$61A8.
  $5CFE LD DE,$98F4   ; }
+; View the equivalent code in;
+; #LIST
+; { #FOREST$5B00 }
+; LIST#
 
 ; Tape Loading
 ;
@@ -746,6 +754,10 @@ c$5D01 LD A,$45      ; Load the data-block marker #N$45.
  $5D03 SCF           ; Set the carry flag so the ROM loads this block.
  $5D04 CALL $0802    ; Call #SKOOLKID$0802(LD_BLOCK).
  $5D07 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$5B1B }
+; LIST#
 
 ; BASIC Loader
 ;
@@ -2424,6 +2436,13 @@ g$646D DEFW $635A    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
 c$6479 LD HL,$6445   ; {Print #MESSAGE$6445.
  $647C CALL $64E9    ; }
  $647F RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BDBE }
+; { #HEROES$B1E4 }
+; { #JEWELS$BFEE }
+; { #WARLORD$AAEE }
+; LIST#
 
 ; Response: "Please Be More Specific"
 ;
@@ -2434,6 +2453,13 @@ c$6479 LD HL,$6445   ; {Print #MESSAGE$6445.
 c$6480 LD HL,$642C   ; {Print #MESSAGE$642C.
  $6483 CALL $64E9    ; }
  $6486 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BDC5 }
+; { #HEROES$B1EB }
+; { #JEWELS$BFF5 }
+; { #WARLORD$AAF5 }
+; LIST#
 
 ; Response: "You Can't"
 ;
@@ -2444,6 +2470,13 @@ c$6480 LD HL,$642C   ; {Print #MESSAGE$642C.
 c$6487 LD HL,$645B   ; {Print #MESSAGE$645B.
  $648A CALL $64E9    ; }
  $648D RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BDCC }
+; { #HEROES$B1F2 }
+; { #JEWELS$BFFC }
+; { #WARLORD$AAFC }
+; LIST#
 
 ; Response: "O.K."
 ;
@@ -2454,6 +2487,13 @@ c$6487 LD HL,$645B   ; {Print #MESSAGE$645B.
 c$648E LD HL,$6466   ; {Print #MESSAGE$6466.
  $6491 CALL $64E9    ; }
  $6494 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BDD3 }
+; { #HEROES$B1F9 }
+; { #JEWELS$C003 }
+; { #WARLORD$AB03 }
+; LIST#
 
 ; Get User Input
 ;
@@ -2473,6 +2513,14 @@ c$6495 LD A,($5C3B)  ; Read the key-state flags from #SKOOLKID$5C3B(FLAGS).
 ; Fetch the keypress.
  $64A1 LD A,($5C08)  ; Read the key from #SKOOLKID$5C08(LAST_K).
  $64A4 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$9DFB }
+; { #FOREST$BDDA }
+; { #HEROES$ABE1 }
+; { #JEWELS$BA5D }
+; { #WARLORD$A53E }
+; LIST#
 
 ; Clear Screen
 ;
@@ -2483,6 +2531,13 @@ c$6495 LD A,($5C3B)  ; Read the key-state flags from #SKOOLKID$5C3B(FLAGS).
 c$64A5 CALL $64CE    ; Call #R$64CE to switch to the normal screen output.
  $64A8 CALL $0D6B    ; Call #SKOOLKID$0D6B(CLS).
  $64AB RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BDEA }
+; { #HEROES$ABF1 }
+; { #JEWELS$BA6D }
+; { #WARLORD$A54E }
+; LIST#
 
 ; Clear Lines
 ;
@@ -2495,6 +2550,13 @@ c$64AC CALL $64CE    ; Call #R$64CE to switch to the normal screen output.
  $64B2 LD B,A        ; bottom of the screen using #SKOOLKID$0E44(CL_LINE).
  $64B3 CALL $0E44    ; }
  $64B6 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BDF1 }
+; { #HEROES$ABF8 }
+; { #JEWELS$BA74 }
+; { #WARLORD$A555 }
+; LIST#
 
 ; Set Default Screen Position
 ;
@@ -2506,6 +2568,13 @@ c$64B7 CALL $64CE    ; Call #R$64CE to switch to the normal screen output.
  $64BA LD BC,$0321   ; {Place the cursor at row #N($03), column #N$21.
  $64BD CALL $0DD9    ; }
  $64C0 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BDFC }
+; { #HEROES$AC03 }
+; { #JEWELS$BA7F }
+; { #WARLORD$A560 }
+; LIST#
 
 ; Set Screen Position
 ;
@@ -2521,6 +2590,13 @@ c$64C1 CALL $64CE    ; Call #R$64CE to switch to the normal screen output.
  $64C8 LD C,$21      ;
  $64CA CALL $0DD9    ; }
  $64CD RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BE06 }
+; { #HEROES$AC0D }
+; { #JEWELS$BA89 }
+; { #WARLORD$A56A }
+; LIST#
 
 ; Switch To Normal Screen Output
 ;
@@ -2540,6 +2616,13 @@ c$64CE PUSH HL       ; {Keep the caller's registers while the screen channel is
  $64D9 POP DE        ;
  $64DA POP HL        ; }
  $64DB RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BE13 }
+; { #HEROES$AC1A }
+; { #JEWELS$BA96 }
+; { #WARLORD$A577 }
+; LIST#
 
 ; Print String
 ;
@@ -2558,6 +2641,13 @@ c$64DC CALL $64CE    ; Call #R$64CE to switch to the normal screen output.
  $64E3 RET Z         ;
  $64E4 CALL $64F2    ;
  $64E7 JR $64DF      ; }
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BE21 }
+; { #HEROES$AC28 }
+; { #JEWELS$BAA4 }
+; { #WARLORD$A585 }
+; LIST#
 
 ; Print String And A Newline
 ;
@@ -2576,6 +2666,15 @@ c$64E9 CALL $64DC    ; Call #R$64DC to print the message.
  $64EC LD A,$0D      ; Print a newline after the message.
  $64EE CALL $64F2    ; Call #R$64F2 to print the character.
  $64F1 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A25C(After Shock (compressed)) }
+; { #SHOCK$A275(After Shock (plain)) }
+; { #FOREST$BE2E }
+; { #HEROES$AC35 }
+; { #JEWELS$BAB1 }
+; { #WARLORD$A592 }
+; LIST#
 
 ; Print Character
 ;
@@ -2609,6 +2708,13 @@ c$64F2 PUSH AF       ; Preserve the character to print.
 ; Print the character.
  $650E RST $10       ; Print the character with #SKOOLKID$0010(PRINT_A_1).
  $650F RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BE37 }
+; { #HEROES$AC47 }
+; { #JEWELS$BAC3 }
+; { #WARLORD$A5A4 }
+; LIST#
 
 ; Scroll Screen
 ;
@@ -2621,6 +2727,13 @@ c$6510 EXX           ; {Scroll the text area and home the cursor, preserving the
  $6514 CALL $64B7    ;
  $6517 EXX           ; }
  $6518 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BE55 }
+; { #HEROES$AC3E }
+; { #JEWELS$BABA }
+; { #WARLORD$A59B }
+; LIST#
 
 ; Print Room Graphic
 ;
@@ -2668,6 +2781,12 @@ c$6535 LD DE,$5800   ; {Copy the #N$0200 attribute bytes onto the screen.
  $653B LD BC,$0200   ;
  $653E LDIR          ; }
  $6540 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BEAC }
+; { #HEROES$AD54 }
+; { #JEWELS$BB2F }
+; LIST#
 
 ; Print Room Image
 ;
@@ -2681,6 +2800,12 @@ c$6535 LD DE,$5800   ; {Copy the #N$0200 attribute bytes onto the screen.
 c$6541 CALL $6519    ; Call #R$6519 to expand the room picture.
  $6544 CALL $6535    ; Call #R$6535 to colour the room picture.
  $6547 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BEB8 }
+; { #HEROES$AD60 }
+; { #JEWELS$BB3B }
+; LIST#
 
 ; Paint Room Image
 ;
@@ -2701,6 +2826,12 @@ c$6548 LD BC,$0200   ; {Point #REGhl at the attribute file and count #N$0200
  $6553 OR C          ;
  $6554 JR NZ,$654F   ; }
  $6556 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BEBF }
+; { #HEROES$AD67 }
+; { #JEWELS$BB42 }
+; LIST#
 
 ; Handler: Turn-Based Events
 ;
@@ -2798,6 +2929,14 @@ c$658A LD A,($6222)  ; Fetch the scenic-event flags.
 c$65D2 HALT          ; Wait for the next frame.
  $65D3 DJNZ $65D2    ; Wait out the remaining frames.
  $65D5 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$9E2F }
+; { #FOREST$BF41 }
+; { #HEROES$AC65 }
+; { #JEWELS$BB51 }
+; { #WARLORD$A5C2 }
+; LIST#
 
 ; Generate Random Number
 ;
@@ -2822,6 +2961,14 @@ c$65D6 PUSH BC       ; {Take the frame counter as a countdown, limited by the
  $65E3 DEC A         ; Step the result back one more.
  $65E4 POP BC        ; Restore the registers the caller needs from the stack.
  $65E5 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$AD25 }
+; { #FOREST$BF45 }
+; { #HEROES$B77F }
+; { #JEWELS$C582 }
+; { #WARLORD$B08A }
+; LIST#
 
 ; Handler: Update Object Location
 ;
@@ -2844,6 +2991,11 @@ c$65E6 BIT 7,B       ; {An ordinary object is stored in the location table.
  $65F7 ADD HL,DE     ;
  $65F8 LD (HL),C     ; }
  $65F9 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BF55 }
+; { #JEWELS$C412 }
+; LIST#
 
 ; Is Object Present?
 ;
@@ -2855,6 +3007,10 @@ c$65FA LD BC,($62C4) ; Fetch the number of objects.
  $65FE LD HL,$61AB   ; The ordinary objects are kept in the location table.
  $6601 CPIR          ; Search the object locations for anything in this room.
  $6603 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BF69 }
+; LIST#
 
 ; Handler: User Input
 ;
@@ -2927,6 +3083,12 @@ c$6604 CALL $64B7    ; Call #R$64B7 to park the cursor at the default position.
  $6662 DJNZ $6660    ; }
  $6664 LD HL,$625F   ; {Up to #N$0A words of the command are accepted.
  $6667 LD C,$0A      ; }
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BF73 }
+; { #HEROES$B200 }
+; { #JEWELS$C00A }
+; LIST#
 
 ; Parser: Match Input Word
 ;
@@ -3080,6 +3242,12 @@ c$6669 LD DE,$629E   ; The typed word is held as four letters.
  $673D LD HL,$646B   ; {Print #MESSAGE$646B.
  $6740 CALL $64E9    ; }
  $6743 JR $6751      ; Continue at #R$6751 to ask for another command.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BFD8 }
+; { #HEROES$B24E }
+; { #JEWELS$C058 }
+; LIST#
 
 ; Handler: Unknown Word
 ;
@@ -3096,6 +3264,11 @@ c$6745 LD A,($6291)  ; Fetch the first word of the command.
 ; This entry point is used by the routine at #R$6669.
 @label=Handler_UnknownWord_Step1
 *$6751 JP $6604      ; Jump to #R$6604 to read another command.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$C0B4 }
+; { #HEROES$B364 }
+; LIST#
 
 ; Get Table Entry
 ;
@@ -3115,6 +3288,14 @@ c$6754 LD D,$00      ; {Look up the address stored at this index.
  $675C LD L,(IX+$00) ;
  $675F LD H,(IX+$01) ; }
  $6762 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A305 }
+; { #FOREST$C0C3 }
+; { #HEROES$B3F1 }
+; { #JEWELS$C1F0 }
+; { #WARLORD$AB88 }
+; LIST#
 
 ; Print Objects
 ;
@@ -3146,6 +3327,14 @@ c$6763 LD HL,$61AB   ; Point at the object locations.
  $6786 LD A,E        ; }
  $6787 JR NZ,$676A   ; List the next object that is in this room.
  $6789 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A314 }
+; { #FOREST$C0D2 }
+; { #HEROES$B400 }
+; { #JEWELS$C1FF }
+; { #WARLORD$AB97 }
+; LIST#
 
 ; Handler: Display Room
 ;
@@ -3305,6 +3494,13 @@ c$678A PUSH DE       ; Remember whether the caller asked for the picture.
  $688B LD A,($6223)  ; Fetch the current room.
  $688E CALL $6763    ; Call #R$6763 to list the objects here.
  $6891 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$C0F9 }
+; { #HEROES$B46B }
+; { #JEWELS$C26A }
+; { #WARLORD$AC02 }
+; LIST#
 
 ; Get Room Pointer
 ;
@@ -3320,6 +3516,10 @@ c$6892 LD A,($6223)  ; Fetch the current room.
  $689E LD DE,($62C2) ;
  $68A2 ADD HL,DE     ; }
  $68A3 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$C201 }
+; LIST#
 
 ; Parser: Resolve Phrase
 ;
@@ -3366,6 +3566,14 @@ c$68A4 INC BC        ; The search stops one byte past the matching noun.
  $68DB CALL $64E9    ; }
  $68DE SCF           ; Set the carry flag to reject the command.
  $68DF RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A591 }
+; { #FOREST$C213 }
+; { #HEROES$B52B }
+; { #JEWELS$C32A }
+; { #WARLORD$AE36 }
+; LIST#
 
 ; Is Object In The Current Room?
 ;
@@ -3401,6 +3609,14 @@ c$68E0 PUSH HL       ; {Keep the caller's registers while the location is
 *$68FD POP DE        ; {Restore the registers the caller needs from the stack.
  $68FE POP HL        ; }
  $68FF RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A5C6 }
+; { #FOREST$C24F }
+; { #HEROES$B560 }
+; { #JEWELS$C35F }
+; { #WARLORD$AE6B }
+; LIST#
 
 ; Parser: Advance To Separator
 ;
@@ -3451,6 +3667,14 @@ c$6900 EX DE,HL      ; Hold the phrase while the command tokens are checked.
 @label=Parser_AdvanceToSeparator_Step4
 *$692D OR A          ; Set flags from #REGa.
  $692E RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A5DB }
+; { #FOREST$C26F }
+; { #HEROES$B575 }
+; { #JEWELS$C37F }
+; { #WARLORD$AE80 }
+; LIST#
 
 ; Parser: Find Phrase
 ;
@@ -3480,6 +3704,14 @@ c$692F LD HL,$6291   ; Check the command's word tokens for a noun.
 *$694C XOR A         ; {Set the zero flag when the command named no noun.
  $694D OR E          ; }
  $694E RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A60A }
+; { #FOREST$C29E }
+; { #HEROES$B5A4 }
+; { #JEWELS$C3AE }
+; { #WARLORD$AEAF }
+; LIST#
 
 ; Get Object Location
 ;
@@ -3496,6 +3728,14 @@ c$694F LD E,A        ; {Read where this object is.
  $6955 ADD HL,DE     ;
  $6956 LD A,(HL)     ; }
  $6957 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A62C }
+; { #FOREST$C2BE }
+; { #HEROES$B5C6 }
+; { #JEWELS$C3D0 }
+; { #WARLORD$AED1 }
+; LIST#
 
 ; Is Object Carried?
 ;
@@ -3507,6 +3747,10 @@ c$694F LD E,A        ; {Read where this object is.
 c$6958 CALL $694F    ; Call #R$694F to read the object's location.
  $695B CP $01        ; Compare with #N$01.
  $695D RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$C2D2 }
+; LIST#
 
 ; Handler: Toggle Scenic Flag
 ;
@@ -3545,6 +3789,14 @@ c$6972 LD A,($6292)  ; Fetch the second word of the command.
  $6978 CALL $6479    ; Call #R$6479 to ask the player to rephrase the command.
  $697B SCF           ; Set the carry flag to reject the command.
  $697C RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$ABF4 }
+; { #FOREST$C2FE }
+; { #HEROES$B665 }
+; { #JEWELS$C470 }
+; { #WARLORD$AF70 }
+; LIST#
 
 ; Parser: Validate Direct Object
 ;
@@ -3566,6 +3818,14 @@ c$697D LD A,($6292)  ; Fetch the second word of the command.
  $698D CALL $6479    ; Call #R$6479 to ask the player to rephrase the command.
  $6990 SCF           ; Set the carry flag to reject the command.
  $6991 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$AC02 }
+; { #FOREST$C309 }
+; { #HEROES$B670 }
+; { #JEWELS$C47B }
+; { #WARLORD$AF7B }
+; LIST#
 
 ; Parser: Match Or Rephrase
 ;
@@ -3582,6 +3842,14 @@ c$6992 LD A,($6292)  ; Fetch the second word of the command.
  $699C CALL $6479    ; Call #R$6479 to ask the player to rephrase the command.
  $699F SCF           ; Set the carry flag to reject the command.
  $69A0 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$AC1D }
+; { #FOREST$C31E }
+; { #HEROES$B685 }
+; { #JEWELS$C490 }
+; { #WARLORD$AF90 }
+; LIST#
 
 ; Save Game
 ;
@@ -3611,12 +3879,20 @@ c$69A1 LD A,($62DC)  ; Fetch how many locations the save file stores.
  $69C3 CALL $64E9    ; }
  $69C6 CALL $6495    ; Call #R$6495 to wait for a keypress.
  $69C9 LD IX,$61AB   ; The save starts at the object locations.
- $69CD LD DE,$00B4   ; {Save #N$B4 bytes from the object locations as a data
- $69D0 LD A,$FF      ; block.}
+ $69CD LD DE,$00B4   ; {Save #N($00B4,$04,$04) bytes from the object locations
+ $69D0 LD A,$FF      ; as a data block.}
  $69D2 CALL $04C2    ; Call #SKOOLKID$04C2(SA_BYTES).
  $69D5 LD HL,$63F5   ; {Print #MESSAGE$63F5.
  $69D8 CALL $64E9    ; }
  $69DB RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$9E80 }
+; { #FOREST$C345 }
+; { #HEROES$AC6D }
+; { #JEWELS$BB59 }
+; { #WARLORD$A5CA }
+; LIST#
 
 ; Load From Tape
 ;
@@ -3627,8 +3903,8 @@ c$69A1 LD A,($62DC)  ; Fetch how many locations the save file stores.
 c$69DC LD HL,$63B2   ; {Print #MESSAGE$63B2.
  $69DF CALL $64E9    ; }
  $69E2 LD IX,$61AB   ; The loaded game is written over the object locations.
- $69E6 LD DE,$00B4   ; {Load a data block of #N$B4 bytes over the object
- $69E9 LD A,$FF      ; locations.}
+ $69E6 LD DE,$00B4   ; {Load a data block of #N($00B4,$04,$04) bytes over the
+ $69E9 LD A,$FF      ; object locations.}
  $69EB SCF           ; Ask the ROM to load the block rather than verify it.
  $69EC CALL $0556    ; Call #SKOOLKID$0556(LD_BYTES).
  $69EF JR C,$69F8    ; Restore the saved bytes when the tape block has loaded.
@@ -3656,6 +3932,14 @@ c$69DC LD HL,$63B2   ; {Print #MESSAGE$63B2.
  $6A16 LD E,$00      ; Show the room picture even if it has been seen before.
  $6A18 CALL $678A    ; Call #R$678A to display the room.
  $6A1B RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$9EDB }
+; { #FOREST$C380 }
+; { #HEROES$ACA8 }
+; { #JEWELS$BB94 }
+; { #WARLORD$A605 }
+; LIST#
 
 ; Print Input Prompt
 ;
@@ -3679,6 +3963,13 @@ c$6A1C LD HL,$5080   ; The prompt is drawn in the prompt cell.
 *$6A31 LD HL,$62E0   ; {Print #MESSAGE$62E0 on the same line.
  $6A34 CALL $64DC    ; }
  $6A37 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$C3C0 }
+; { #HEROES$ACEA }
+; { #JEWELS$BBD4 }
+; { #WARLORD$A647 }
+; LIST#
 
 ; Messaging: "A Knife"
 @label=Messaging_AKnife
@@ -4876,6 +5167,14 @@ g$84E6 DEFW $6A38    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $8562 DEFW $70DA    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $8564 DEFW $7114    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $8566 DEFW $7141    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$AFDD }
+; { #FOREST$D3B8 }
+; { #HEROES$CD58 }
+; { #JEWELS$D34E }
+; { #WARLORD$C732 }
+; LIST#
 
 ; Table: Room Descriptions
 ;
@@ -4946,6 +5245,14 @@ g$8568 DEFW $0000    ; Unused.
  $85E2 DEFW $75AD    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $85E4 DEFW $75C1    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $85E6 DEFW $75D4    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$AE7D }
+; { #FOREST$D44C }
+; { #HEROES$CE66 }
+; { #JEWELS$D3EC }
+; { #WARLORD$C8B0 }
+; LIST#
 
 ; Table: Nouns
 ;
@@ -6347,6 +6654,13 @@ c$8D85 LD HL,$891C   ; Point at the list of verb word numbers.
 *$8DA8 LD DE,$8D2A   ; {Run the verb, then return to the game loop.
  $8DAB PUSH DE       ;
  $8DAC JP (HL)       ; }
+; View the equivalent code in;
+; #LIST
+; { #FOREST$C463 }
+; { #HEROES$B753 }
+; { #JEWELS$C556 }
+; { #WARLORD$B05E }
+; LIST#
 
 ; Handler: Plasma Shell
 ;
@@ -6365,6 +6679,14 @@ c$8DAD LD HL,$789E   ; {Print #MESSAGE$789E.
 @label=GameOver
 c$8DB3 LD HL,$638C   ; {Print #MESSAGE$638C.
  $8DB6 CALL $64E9    ; }
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$AE0D }
+; { #FOREST$EB23 }
+; { #HEROES$E9B5 }
+; { #JEWELS$EDD7 }
+; { #WARLORD$E9B2 }
+; LIST#
 
 ; Handler: Ask To Play Again
 ;
@@ -6381,6 +6703,10 @@ c$8DB9 LD HL,$639A   ; {Print #MESSAGE$639A.
  $8DC7 CP $59        ; {Jump back to #R$61A8 when Y (#N$59) was pressed.
  $8DC9 JP Z,$61A8    ; }
  $8DCC JR $8DBF      ; Continue at #R$8DBF until the player presses Y or N.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$E9BB }
+; LIST#
 
 ; Game Complete
 ;
@@ -6393,6 +6719,12 @@ c$8DCE CALL $64A5    ; Call #R$64A5 to clear the screen.
  $8DD4 LD HL,$8333   ; {Print "#MESSAGE$8333" and start a new line.
  $8DD7 CALL $64E9    ; }
  $8DDA JR $8DB9      ; Jump to #R$8DB9 to ask to play again.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$EB3E }
+; { #HEROES$E9D3 }
+; { #JEWELS$EDF2 }
+; LIST#
 
 ; Handler: Android Attack
 ;
@@ -6450,6 +6782,10 @@ c$8E0F CALL $64E9    ; Call #R$64E9 to print the message and start a new line.
  $8E13 POP HL        ; dead.
  $8E14 POP HL        ; }
  $8E15 JP $8DB3      ; Jump to #R$8DB3 to game over.
+; View the equivalent code in;
+; #LIST
+; { #JEWELS$EE9B }
+; LIST#
 
 ; Move Player To Room
 ;
@@ -6529,7 +6865,7 @@ c$8E8D CALL $6972    ; {Return if the command names an object: the player is
 @label=ActionHelp_Step1
 @nowarn
  $8E94 LD HL,$8EBC   ; Point at the rooms that have a hint of their own.
- $8E97 LD BC,$0008   ; #N$08 rooms have a hint of their own.
+ $8E97 LD BC,$0008   ; #N($0008,$04,$04) rooms have a hint of their own.
  $8E9A CPIR          ; Find this room among the rooms that have a hint.
 @label=ActionHelp_Loop1
 *$8E9C JR NZ,$8EAA   ; This room has no hint of its own.
@@ -6578,6 +6914,14 @@ c$8EC4 CALL $6972    ; {Return if the command names an object: the player is
  $8ED4 LD A,$01      ; Carried objects are stored in location #N$01.
  $8ED6 CALL $6763    ; Call #R$6763 to list the objects here.
  $8ED9 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A6CF }
+; { #FOREST$EDE8 }
+; { #HEROES$F756 }
+; { #JEWELS$F12E }
+; { #WARLORD$F824 }
+; LIST#
 
 ; Action: Look
 ;
@@ -6588,6 +6932,13 @@ c$8EDA CALL $6972    ; {Return if the command names an object: the player is
  $8EDE LD E,$01      ; Redraw the room and show its picture again.
  $8EE0 CALL $678A    ; Call #R$678A to display the room.
  $8EE3 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$EE05 }
+; { #HEROES$F773 }
+; { #JEWELS$F14B }
+; { #WARLORD$F841 }
+; LIST#
 
 ; Action: North
 ;
@@ -6646,6 +6997,13 @@ c$8EF8 LD C,$05      ; Select the down exit.
 *$8F0C LD HL,$7831   ; {Print #MESSAGE$7831.
  $8F0F CALL $64E9    ; }
  $8F12 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$EE23 }
+; { #HEROES$F7F8 }
+; { #JEWELS$F169 }
+; { #WARLORD$F8DD }
+; LIST#
 
 ; Action: Examine
 ;
@@ -6728,6 +7086,11 @@ c$8FA1 CALL $6972    ; {Return if the command names an object: the player is
  $8FA4 RET C         ; told to rephrase it.}
  $8FA5 CALL $69DC    ; Call #R$69DC to load the game.
  $8FA8 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$EE81 }
+; { #JEWELS$F236 }
+; LIST#
 
 ; Action: Save
 ;
@@ -6739,6 +7102,13 @@ c$8FA9 CALL $6972    ; {Return if the command names an object: the player is
  $8FAC RET C         ; told to rephrase it.}
  $8FAD CALL $69A1    ; Call #R$69A1 to save the game.
  $8FB0 RET           ; Return.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$EE89 }
+; { #HEROES$F7BC }
+; { #JEWELS$F23E }
+; { #WARLORD$F8A1 }
+; LIST#
 
 ; Action: Quit
 ;
@@ -6758,6 +7128,13 @@ c$8FB1 CALL $6972    ; {Return if the command names an object: the player is
 @label=ActionQuit_Step1
 *$8FC9 POP HL        ; The player is leaving this game.
  $8FCA JP $8DB9      ; Jump to #R$8DB9 to ask to play again.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$EE91 }
+; { #HEROES$F7C4 }
+; { #JEWELS$F246 }
+; { #WARLORD$F8A9 }
+; LIST#
 
 ; Action: Take
 ;
@@ -7016,7 +7393,7 @@ c$9198 CALL $697D    ; {Return if the command does not name a single object.
 @label=ActionDrop_Step1
 @nowarn
  $91B1 LD HL,$9010   ; The objects called "them" are listed at #R$9010.
- $91B4 LD BC,$0004   ; #N$04 objects are spoken of as "them".
+ $91B4 LD BC,$0004   ; #N($0004,$04,$04) objects are spoken of as "them".
  $91B7 CPIR          ; Search the list of objects that are called "them".
  $91B9 JR Z,$91C0    ; A plural object uses the wording for "them".
  $91BB LD HL,$7A38   ; {Print "#MESSAGE$7A38" and start a new line.
@@ -18093,6 +18470,10 @@ c$F8AF LD HL,$5C6A   ; The keyboard flags are #SKOOLKID$5C6A(FLAGS2).
  $F8E2 LD A,$02      ; {Move the player to #MESSAGE$7160 (#N$02).
  $F8E4 CALL $8E18    ; }
  $F8E7 JP $8D2A      ; Jump to #R$8D2A to read the next command.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$F964 }
+; LIST#
 
 ; Default Game State
 ;
@@ -18455,6 +18836,13 @@ g$FA20 DEFW $8E8D    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $FA62 DEFW $9A2E    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $FA64 DEFW $9A36    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $FA66 DEFW $9A41    ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
+; View the equivalent code in;
+; #LIST
+; { #FOREST$FB0D }
+; { #HEROES$FD63 }
+; { #JEWELS$FF3A }
+; { #WARLORD$FE89 }
+; LIST#
 
 ; Jump Table: Room Images
 ;

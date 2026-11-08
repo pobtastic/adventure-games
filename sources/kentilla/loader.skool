@@ -1,0 +1,523 @@
+@start
+@remote=main:$4000
+@remote=main:$E9B6
+@expand=#DEF1(#SKOOLKID(addr,anchor=0)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html#IF({anchor})(#CHR(35)#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({anchor})))">){name}#HTML(</a>))
+
+; BASIC Bootstrap
+;
+; #HTML(The short BASIC program "KENTILLA" that starts the Micromega
+; tape. It autostarts at line 1. The REM on line 1 holds the stage-1 machine
+; code; line 3 CLEARs just below the loader (#R$E9B6) and enters it with
+; <code>RANDOMIZE USR</code> #R$5CD0; line 4 is the ordinary ROM
+; <code>LOAD "" CODE</code> that later replaces the stage-2 loader with the
+; final support block at #R$E9B6@main(SupportCode).)
+; .
+; #LIST
+; { Line 1: REM containing the bootstrap at #R$5CD0, its custom load routine
+; at #R$5CFC, a header workspace at #R$5D96, and the loader messages. }
+; { Line 2: <code>POKE 0,0</code> — an intentional no-op in ROM. }
+; { Line 3: black INK/PAPER/BORDER, CLS, CLEAR just below the loader
+; (#R$E9B6), then <code>RANDOMIZE USR</code> #R$5CD0. }
+; { Line 4: <code>LOAD "" CODE</code> for the final #N($164A,$04,$04)-byte
+; support block. }
+; LIST#
+@label=BasicBootstrap
+b$5CCB DEFB $00,$01,$3A,$01,$EA ; Line 1 header and REM token.
+
+; Bootstrap Entry Point
+;
+; #HTML(Stage-1 loader kept inside the line-1 REM. It reads a 17-byte
+; custom header into #R$5D96, pulls the stage-2 length and address from that
+; header, loads #N($0258,$04,$04) bytes to #N($E9B6,$04,$04), then jumps
+; there.)
+@label=BootstrapEntry
+c$5CD0 LD IX,$5D96   ;
+ $5CD4 LD DE,$0011   ;
+ $5CD7 XOR A         ;
+ $5CD8 SCF           ;
+ $5CD9 CALL $5CFC    ;
+ $5CDC JP NC,$5D89   ;
+ $5CDF LD A,($5C47)  ;
+ $5CE2 CP $06        ;
+ $5CE4 JP NZ,$0000   ;
+ $5CE7 LD DE,($5D96) ;
+ $5CEB LD IX,($5D98) ;
+ $5CEF LD A,$FF      ;
+ $5CF1 SCF           ;
+ $5CF2 CALL $5CFC    ;
+ $5CF5 JP NC,$5D89   ;
+ $5CF8 EI            ;
+ $5CF9 JP $E9B6      ;
+
+; Custom Load Routine
+;
+; Used by the routine at #R$5CD0.
+; .
+; #HTML(Custom edge sampler used by the bootstrap. It still calls the
+; ROM edge routines at #N($05E3,$04,$04) / #N($05E7,$04,$04), but with
+; Micromega timing thresholds rather than the standard ROM pilot. On error it
+; restores the border from #SKOOLKID$5C48(BORDCR) and prints "ATTEMPTED
+; BREAK!" or "TAPE LOADING ERROR".)
+@label=CustomLoad
+c$5CFC INC D         ;
+ $5CFD EX AF,AF'     ;
+ $5CFE DEC D         ;
+ $5CFF DI            ;
+ $5D00 LD A,$0F      ;
+ $5D02 OUT ($FE),A   ;
+ $5D04 LD HL,$5DAC   ;
+ $5D07 PUSH HL       ;
+ $5D08 IN A,($FE)    ;
+ $5D0A RRA           ;
+ $5D0B AND $20       ;
+ $5D0D OR $02        ;
+ $5D0F LD C,A        ;
+ $5D10 CP A          ;
+*$5D11 RET NZ        ;
+*$5D12 CALL $05E7    ;
+ $5D15 JR NC,$5D11   ;
+ $5D17 LD HL,$0415   ;
+*$5D1A DJNZ $5D1A    ;
+ $5D1C DEC HL        ;
+ $5D1D LD A,H        ;
+ $5D1E OR L          ;
+ $5D1F JR NZ,$5D1A   ;
+ $5D21 CALL $05E3    ;
+ $5D24 JR NC,$5D11   ;
+*$5D26 LD B,$9C      ;
+ $5D28 CALL $05E3    ;
+ $5D2B JR NC,$5D11   ;
+ $5D2D LD A,$A6      ;
+ $5D2F CP B          ;
+ $5D30 JR NC,$5D12   ;
+ $5D32 INC H         ;
+ $5D33 JR NZ,$5D26   ;
+*$5D35 LD B,$C9      ;
+ $5D37 CALL $05E7    ;
+ $5D3A JR NC,$5D11   ;
+ $5D3C LD A,B        ;
+ $5D3D CP $D4        ;
+ $5D3F JR NC,$5D35   ;
+ $5D41 CALL $05E7    ;
+ $5D44 RET NC        ;
+ $5D45 LD A,C        ;
+ $5D46 XOR $03       ;
+ $5D48 LD C,A        ;
+ $5D49 LD H,$00      ;
+ $5D4B LD B,$B0      ;
+ $5D4D JR $5D6E      ;
+*$5D4F EX AF,AF'     ;
+ $5D50 JR NZ,$5D59   ;
+ $5D52 JR NC,$5D63   ;
+ $5D54 LD (IX+$00),L ;
+ $5D57 JR $5D68      ;
+*$5D59 RL C          ;
+ $5D5B XOR L         ;
+ $5D5C RET NZ        ;
+ $5D5D LD A,C        ;
+ $5D5E RRA           ;
+ $5D5F LD C,A        ;
+ $5D60 INC DE        ;
+ $5D61 JR $5D6A      ;
+*$5D63 LD A,(IX+$00) ;
+ $5D66 XOR L         ;
+ $5D67 RET NZ        ;
+*$5D68 INC IX        ;
+*$5D6A DEC DE        ;
+ $5D6B EX AF,AF'     ;
+ $5D6C LD B,$B2      ;
+*$5D6E LD L,$01      ;
+*$5D70 CALL $05E3    ;
+ $5D73 RET NC        ;
+ $5D74 LD A,$CB      ;
+ $5D76 CP B          ;
+ $5D77 RL L          ;
+ $5D79 LD B,$B0      ;
+ $5D7B JP NC,$5D70   ;
+ $5D7E LD A,H        ;
+ $5D7F XOR L         ;
+ $5D80 LD H,A        ;
+ $5D81 LD A,D        ;
+ $5D82 OR E          ;
+ $5D83 JR NZ,$5D4F   ;
+ $5D85 LD A,H        ;
+ $5D86 CP $01        ;
+ $5D88 RET           ;
+; This entry point is used by the routine at #R$5CD0.
+*$5D89 LD A,$01      ;
+ $5D8B CALL $1601    ;
+ $5D8E LD B,$19      ;
+ $5D90 LD DE,$5DEA   ;
+ $5D93 JP $5DC9      ;
+
+; Stage-2 Header Workspace
+;
+; #HTML(Seventeen bytes read from the tape's special header for the
+; stage-2 loader. After a successful header read this holds the length
+; #N($0258,$04,$04) and destination #N($E9B6,$04,$04).)
+@label=Stage2Header
+b$5D96 DEFB $58,$02,$B6,$E9,$20,$4B,$4E,$20
+ $5D9E DEFB $4C,$4F,$20,$58,$02,$B6,$E9,$00
+ $5DA6 DEFB $80
+
+; Bootstrap Tail And Messages
+;
+; #HTML(Border restore, the "ATTEMPTED BREAK!" / "TAPE LOADING ERROR"
+; messages, and the remainder of the line-1 REM through its trailing
+; <code>ENTER</code>.)
+@label=BootstrapTailAndMessages
+b$5DA7 DEFB $00,$00,$00,$00,$01,$F5,$3A,$48
+ $5DAF DEFB $5C,$E6,$38,$0F,$0F,$0F,$D3,$FE
+ $5DB7 DEFB $3E,$7F,$DB,$FE,$1F,$FB,$38,$12
+ $5DBF DEFB $3E,$01,$CD,$01,$16,$06,$17,$11
+ $5DC7 DEFB $D3,$5D,$1A,$D7,$13,$10,$FB,$C3
+ $5DCF DEFB $CE,$5D,$F1,$C9,$16,$01,$07,$12
+ $5DD7 DEFB $01,$20,$41,$54,$54,$45,$4D,$50
+ $5DDF DEFB $54,$45,$44,$20,$42,$52,$45,$41
+ $5DE7 DEFB $4B,$21,$20,$16,$01,$06,$12,$01
+ $5DEF DEFB $20,$54,$41,$50,$45,$20,$4C,$4F
+ $5DF7 DEFB $41,$44,$49,$4E,$47,$20,$45,$52
+ $5DFF DEFB $52,$4F,$52,$20,$00,$30,$30,$30
+ $5E07 DEFB $30,$0D
+
+; BASIC Lines 2 To 4
+@label=BasicLines2To4
+b$5E09 DEFB $00,$02,$11,$00,$F4,$30,$0E,$00 ; {Line 2: POKE 0,0
+ $5E11 DEFB $00,$00,$00,$00,$2C,$30,$0E,$00 ;
+ $5E19 DEFB $00,$00,$00,$00,$0D             ; }
+ $5E1E DEFB $00,$03,$FF,$00,$D9,$30,$0E,$00 ; {Line 3: INK 0: PAPER 0: BORDER 0: CLS: CLEAR just
+ $5E26 DEFB $00,$00,$00,$00,$3A,$DA,$30,$0E ; below the loader (#R$E9B6): RANDOMIZE USR #R$5CD0
+ $5E2E DEFB $00,$00,$00,$00,$00,$3A,$E7,$30 ;
+ $5E36 DEFB $0E,$00,$00,$00,$00,$00,$3A,$FB ;
+ $5E3E DEFB $3A,$FD,$35,$39,$38,$32,$39,$10 ;
+ $5E46 DEFB $00,$0E,$00,$00,$B5,$E9,$00,$3A ;
+ $5E4E DEFB $F9,$C0,$32,$33,$37,$36,$30,$10 ;
+ $5E56 DEFB $07,$0E,$00,$00,$D0,$5C,$00,$0D ; }
+ $5E5E DEFB $00,$04,$05,$00,$EF,$22,$22,$AF ; {Line 4: LOAD ""CODE
+ $5E66 DEFB $0D                             ; }
+
+i$5E67
+
+; Micromega Loader
+;
+; Used by the routine at #R$5CD0.
+; .
+; #HTML(Stage-2 Micromega 1.1 loader. It first checksums itself, then
+; reads a 16-byte custom header that names destination #N($4000,$04,$04),
+; total length #N($A81D,$04,$04) and #N($0C) overlapping chunks. Each of the
+; twelve main chunks carries #N($0DB6,$04,$04) tape bytes but only advances
+; the destination by #N($0DAC,$04,$04), so the last ten bytes of one chunk
+; overlap the next. A short final chunk finishes the #N($A81D,$04,$04)-byte
+; main image at #R$4000@main(Loading)..#N($E81C,$04,$04), which overwrites
+; the REM bootstrap. Control then returns to BASIC so line 4 can ROM-load the
+; final support block on top of this loader.)
+; .
+; #HTML(While the chunks load, #R$E9F4 alternates two timing-parameter
+; sets and #R$EA15 patches them into the sampler at #R$EAAE.)
+@label=MicromegaLoader
+c$E9B6 LD HL,$0000   ;
+ $E9B9 LD ($E9E5),HL ;
+ $E9BC LD HL,$E9E9   ;
+ $E9BF LD ($E9E3),HL ;
+*$E9C2 LD A,(HL)     ;
+ $E9C3 LD E,A        ;
+ $E9C4 LD D,$00      ;
+ $E9C6 LD HL,($E9E5) ;
+ $E9C9 ADD HL,DE     ;
+ $E9CA LD ($E9E5),HL ;
+ $E9CD LD HL,($E9E3) ;
+ $E9D0 LD DE,$EBE6   ;
+ $E9D3 SCF           ;
+ $E9D4 CCF           ;
+ $E9D5 SBC HL,DE     ;
+ $E9D7 JP Z,$EA2E    ;
+ $E9DA LD HL,($E9E3) ;
+ $E9DD INC HL        ;
+ $E9DE LD ($E9E3),HL ;
+ $E9E1 JR $E9C2      ;
+
+; Loader Checksum And Timing Data
+;
+; #HTML(Stored checksum word, running-total workspace, and the two
+; timing-parameter tables used by #R$E9F4.)
+@label=LoaderChecksumAndTiming
+b$E9E3 DEFB $00,$00,$00,$00,$BD,$EF,$00,$16
+ $E9EB DEFB $B0,$B2,$CB,$B0,$15,$C2,$C4,$D8
+ $E9F3 DEFB $C2
+
+; Timing Switch
+;
+; Used by the routine at #R$EA2E.
+; .
+; #HTML(Chooses which of the two timing-parameter sets to copy next.)
+@label=TimingSwitch
+c$E9F4 LD A,($E9E9)  ;
+ $E9F7 CP $00        ;
+ $E9F9 JP Z,$EA07    ;
+ $E9FC XOR A         ;
+ $E9FD LD ($E9E9),A  ;
+ $EA00 LD HL,$E9EF   ;
+ $EA03 CALL $EA15    ;
+ $EA06 RET           ;
+; This entry point is used by the routine at #R$EA2E.
+*$EA07 LD HL,$E9EA   ;
+ $EA0A CALL $EA15    ;
+ $EA0D LD A,($E9E9)  ;
+ $EA10 INC A         ;
+ $EA11 LD ($E9E9),A  ;
+ $EA14 RET           ;
+
+; Timing Patch Copier
+;
+; Used by the routine at #R$E9F4.
+; .
+; #HTML(Copies the selected timing parameters into the sampler.)
+@label=TimingPatchCopier
+c$EA15 LD A,(HL)     ;
+ $EA16 LD ($EB51),A  ;
+ $EA19 INC HL        ;
+ $EA1A LD A,(HL)     ;
+ $EA1B LD ($EB0F),A  ;
+ $EA1E INC HL        ;
+ $EA1F LD A,(HL)     ;
+ $EA20 LD ($EB30),A  ;
+ $EA23 INC HL        ;
+ $EA24 LD A,(HL)     ;
+ $EA25 LD ($EB38),A  ;
+ $EA28 INC HL        ;
+ $EA29 LD A,(HL)     ;
+ $EA2A LD ($EB3D),A  ;
+ $EA2D RET           ;
+
+; Loading Controller
+;
+; Used by the routine at #R$E9B6.
+; .
+; #HTML(Reads the 16-byte main-image header into #R$EB70, then loads the
+; twelve overlapping chunks and the final short block.)
+@label=LoadingController
+c$EA2E CALL $EA07    ;
+ $EA31 LD IX,$EB70   ;
+ $EA35 LD DE,$0010   ;
+ $EA38 XOR A         ;
+ $EA39 SCF           ;
+ $EA3A CALL $EAAE    ;
+ $EA3D JP NC,$0000   ;
+ $EA40 LD A,$01      ;
+ $EA42 LD ($E9E9),A  ;
+ $EA45 CALL $E9F4    ;
+ $EA48 LD IX,($EB7D) ;
+ $EA4C LD ($EB84),IX ;
+ $EA50 XOR A         ;
+ $EA51 LD ($EB86),A  ;
+ $EA54 LD A,($EB7F)  ;
+ $EA57 LD B,A        ;
+*$EA58 PUSH BC       ;
+ $EA59 CALL $EB96    ;
+ $EA5C LD DE,$0DB6   ;
+ $EA5F LD IX,($EB84) ;
+ $EA63 LD A,$FF      ;
+ $EA65 SCF           ;
+ $EA66 CALL $EAAE    ;
+ $EA69 JP NC,$0000   ;
+ $EA6C CALL $E9F4    ;
+ $EA6F EI            ;
+ $EA70 LD HL,($EB84) ;
+ $EA73 LD DE,$0DAC   ;
+ $EA76 ADD HL,DE     ;
+ $EA77 LD ($EB84),HL ;
+ $EA7A POP BC        ;
+ $EA7B DJNZ $EA58    ;
+ $EA7D LD A,($EB86)  ;
+ $EA80 DEC A         ;
+ $EA81 LD ($EB86),A  ;
+ $EA84 CALL $EB96    ;
+ $EA87 LD IX,$EB70   ;
+ $EA8B LD DE,$0010   ;
+ $EA8E XOR A         ;
+ $EA8F SCF           ;
+ $EA90 CALL $EAAE    ;
+ $EA93 JP NC,$0000   ;
+ $EA96 CALL $E9F4    ;
+ $EA99 CALL $EB96    ;
+ $EA9C LD IX,($EB84) ;
+ $EAA0 LD DE,($EB7B) ;
+ $EAA4 LD A,$FF      ;
+ $EAA6 SCF           ;
+ $EAA7 CALL $EAAE    ;
+ $EAAA JP NC,$0000   ;
+ $EAAD RET           ;
+
+; Tape Sampler
+;
+; Used by the routine at #R$EA2E.
+; .
+; #HTML(Custom turbo sampler. It also compares the loader's additive
+; checksum against the stored value near #R$E9E3.)
+@label=TapeSampler
+c$EAAE PUSH DE       ;
+ $EAAF PUSH AF       ;
+ $EAB0 LD HL,($E9E7) ;
+ $EAB3 LD DE,($E9E5) ;
+ $EAB7 SCF           ;
+ $EAB8 CCF           ;
+ $EAB9 SBC HL,DE     ;
+ $EABB JP NZ,$0000   ;
+ $EABE POP AF        ;
+ $EABF POP DE        ;
+ $EAC0 INC D         ;
+ $EAC1 EX AF,AF'     ;
+ $EAC2 DEC D         ;
+ $EAC3 DI            ;
+ $EAC4 LD A,$00      ;
+ $EAC6 OUT ($FE),A   ;
+ $EAC8 LD HL,$053F   ;
+ $EACB IN A,($FE)    ;
+ $EACD RRA           ;
+ $EACE AND $20       ;
+ $EAD0 OR $02        ;
+ $EAD2 LD C,A        ;
+ $EAD3 CP A          ;
+*$EAD4 RET NZ        ;
+*$EAD5 CALL $EB50    ;
+ $EAD8 JR NC,$EAD4   ;
+ $EADA LD HL,$0415   ;
+*$EADD DJNZ $EADD    ;
+ $EADF DEC HL        ;
+ $EAE0 LD A,H        ;
+ $EAE1 OR L          ;
+ $EAE2 JR NZ,$EADD   ;
+ $EAE4 CALL $EB4C    ;
+ $EAE7 JR NC,$EAD4   ;
+*$EAE9 LD B,$9C      ;
+ $EAEB CALL $EB4C    ;
+ $EAEE JR NC,$EAD4   ;
+ $EAF0 LD A,$A6      ;
+ $EAF2 CP B          ;
+ $EAF3 JR NC,$EAD5   ;
+ $EAF5 INC H         ;
+ $EAF6 JR NZ,$EAE9   ;
+*$EAF8 LD B,$C9      ;
+ $EAFA CALL $EB50    ;
+ $EAFD JR NC,$EAD4   ;
+ $EAFF LD A,B        ;
+ $EB00 CP $D4        ;
+ $EB02 JR NC,$EAF8   ;
+ $EB04 CALL $EB50    ;
+ $EB07 RET NC        ;
+ $EB08 LD A,C        ;
+ $EB09 XOR $03       ;
+ $EB0B LD C,A        ;
+ $EB0C LD H,$00      ;
+ $EB0E LD B,$B0      ;
+ $EB10 JR $EB31      ;
+*$EB12 EX AF,AF'     ;
+ $EB13 JR NZ,$EB1C   ;
+ $EB15 JR NC,$EB26   ;
+ $EB17 LD (IX+$00),L ;
+ $EB1A JR $EB2B      ;
+*$EB1C RL C          ;
+ $EB1E XOR L         ;
+ $EB1F RET NZ        ;
+ $EB20 LD A,C        ;
+ $EB21 RRA           ;
+ $EB22 LD C,A        ;
+ $EB23 INC DE        ;
+ $EB24 JR $EB2D      ;
+*$EB26 LD A,(IX+$00) ;
+ $EB29 XOR L         ;
+ $EB2A RET NZ        ;
+*$EB2B INC IX        ;
+*$EB2D DEC DE        ;
+ $EB2E EX AF,AF'     ;
+ $EB2F LD B,$B2      ;
+*$EB31 LD L,$01      ;
+*$EB33 CALL $EB4C    ;
+ $EB36 RET NC        ;
+ $EB37 LD A,$CB      ;
+ $EB39 CP B          ;
+ $EB3A RL L          ;
+ $EB3C LD B,$B0      ;
+ $EB3E JP NC,$EB33   ;
+ $EB41 LD A,H        ;
+ $EB42 XOR L         ;
+ $EB43 LD H,A        ;
+ $EB44 LD A,D        ;
+ $EB45 OR E          ;
+ $EB46 JR NZ,$EB12   ;
+ $EB48 LD A,H        ;
+ $EB49 CP $01        ;
+ $EB4B RET           ;
+
+; Edge Routines
+;
+; Used by the routine at #R$EAAE.
+; .
+; #HTML(Local edge-sampling helpers used by #R$EAAE.)
+@label=EdgeRoutines
+c$EB4C CALL $EB50    ;
+ $EB4F RET NC        ;
+; This entry point is used by the routine at #R$EAAE.
+*$EB50 LD A,$16      ;
+*$EB52 DEC A         ;
+ $EB53 JR NZ,$EB52   ;
+ $EB55 AND A         ;
+*$EB56 INC B         ;
+ $EB57 RET Z         ;
+ $EB58 LD A,$FF      ;
+ $EB5A IN A,($FE)    ;
+ $EB5C RRA           ;
+ $EB5D RET NC        ;
+ $EB5E XOR C         ;
+ $EB5F AND $20       ;
+ $EB61 JR Z,$EB56    ;
+ $EB63 LD A,C        ;
+ $EB64 CPL           ;
+ $EB65 LD C,A        ;
+ $EB66 LD A,$00      ;
+ $EB68 AND $07       ;
+ $EB6A OR $08        ;
+ $EB6C OUT ($FE),A   ;
+ $EB6E SCF           ;
+ $EB6F RET           ;
+
+; Main Image Header Workspace
+;
+; #HTML(Sixteen-byte custom header for the main image: destination,
+; length, chunk count and progress fields.)
+@label=MainImageHeader
+b$EB70 DEFB $C9,$00,$00,$00,$00,$00,$00,$00
+ $EB78 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $EB80 DEFB $00,$00,$00,$00,$00,$00,$00,$16
+ $EB88 DEFB $00,$00,$4C,$6F,$61,$64,$69,$6E
+ $EB90 DEFB $67,$3A,$2D,$16,$01,$00
+
+; Progress Output
+;
+; Used by the routine at #R$EA2E.
+; .
+; #HTML(Prints load progress while the overlapping chunks arrive.)
+@label=ProgressOutput
+b$EB96 DEFB $3E,$01,$CD,$01,$16,$01,$0F,$00
+ $EB9E DEFB $11,$87,$EB,$CD,$3D,$20,$01,$0A
+ $EBA6 DEFB $00,$11,$71,$EB,$CD,$3D,$20,$3E
+ $EBAE DEFB $20,$D7,$3E,$20,$D7,$3A,$86,$EB
+ $EBB6 DEFB $F5,$CD,$C6,$EB,$F1,$CD,$D8,$EB
+ $EBBE DEFB $3A,$86,$EB,$3C,$32,$86,$EB,$C9
+ $EBC6 DEFB $CB,$3F,$CB,$3F,$CB,$3F,$CB,$3F
+ $EBCE DEFB $FE,$0A,$38,$02,$C6,$07,$C6,$30
+ $EBD6 DEFB $D7,$C9,$E6,$0F,$18,$F2
+
+; Loader Data And Padding
+;
+; #HTML(Remaining data and padding through the end of the 600-byte
+; stage-2 block.)
+@label=LoaderDataAndPadding
+b$EBDC DEFB $F2,$00,$00,$00,$00,$00,$00,$00
+ $EBE4 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $EBEC DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $EBF4 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $EBFC DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $EC04 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $EC0C DEFB $00,$00
+

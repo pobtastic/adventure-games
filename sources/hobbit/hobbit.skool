@@ -4192,11 +4192,11 @@ c$6C00 DI            ; Disable interrupts.
  $6C0C LD HL,$BA8A   ; {Copies #N($05D9,$04) bytes from #R$BA8A to #R$FA15.
  $6C0F LD BC,$05D9   ;
  $6C12 LDIR          ; }
- $6C14 LD DE,$5F00   ; {Copies #N$1D bytes from #R$B6EB to #R$5F00.
+ $6C14 LD DE,$5F00   ; {Copies #N($001D,$04,$04) bytes from #R$B6EB to #R$5F00.
  $6C17 LD HL,$B6EB   ;
  $6C1A LD BC,$001D   ;
  $6C1D LDIR          ; }
- $6C1F LD HL,$CA84   ; {Copies #N$BF bytes from #R$CA84 to #R$5F1D.
+ $6C1F LD HL,$CA84   ; {Copies #N($00BF,$04,$04) bytes from #R$CA84 to #R$5F1D.
  $6C22 LD BC,$00BF   ;
  $6C25 LDIR          ; }
 ; This entry point is used by the routines at #R$82F7, #R$8498 and #R$90D2.
@@ -4223,12 +4223,12 @@ c$6C00 DI            ; Disable interrupts.
  $6C4A LD DE,$BA8A   ; {Copies #N($05D9,$04) bytes from #R$FA15 to #R$BA8A.
  $6C4D LD BC,$05D9   ;
  $6C50 LDIR          ; }
- $6C52 LD HL,$5F00   ; {Copies #N$1D bytes from #R$5F00 to #R$B6EB.
+ $6C52 LD HL,$5F00   ; {Copies #N($001D,$04,$04) bytes from #R$5F00 to #R$B6EB.
  $6C55 LD DE,$B6EB   ;
  $6C58 LD BC,$001D   ;
  $6C5B LDIR          ; }
- $6C5D LD DE,$CA84   ; {Copies #N$BF bytes from #R$5F1D back to #R$CA84.
- $6C60 LD BC,$00BF   ;
+ $6C5D LD DE,$CA84   ; {Copies #N($00BF,$04,$04) bytes from #R$5F1D back to
+ $6C60 LD BC,$00BF   ; #R$CA84.
  $6C63 LDIR          ; }
  $6C65 XOR A         ; {Set the border colour to #INK$00.
  $6C66 OUT ($FE),A   ; }
@@ -4237,9 +4237,10 @@ c$6C00 DI            ; Disable interrupts.
 @label=Restart_Keypress
 *$6C6D XOR A         ; {Read from the keyboard port.
  $6C6E IN A,($FE)    ; }
- $6C70 AND %00011111 ; Keep bits 0-4, one for each key in the half-row. XOR A
-                     ; then IN A,(#N$FE) reads every half-row at once, and a
-                     ; pressed key reads as a reset bit.
+ $6C70 AND %00011111 ; #HTML[Keep bits 0-4, one for each key in the half-row.
+                     ; <code>XOR #REGa</code> then <code>IN
+                     ; #REGa,(#N$FE)</code> reads every half-row at once, and a
+                     ; pressed key reads as a reset bit.]
  $6C72 CP $1F        ; {Loop back to #R$6C6D until any key has been pressed.
  $6C74 JR Z,$6C6D    ; }
  $6C76 LD A,$7F      ; {Read from the keyboard port.
@@ -4336,7 +4337,7 @@ c$6CEC LD A,$11      ; {Write #N$11 to #R$B716.
  $6D01 INC HL        ; {Jump back to #R$6CFD if the front of the line is not
  $6D02 CP $0D        ; #N$0D.
  $6D04 JR NZ,$6CFD   ; }
- $6D06 LD HL,$6FF4   ; {Copies #N$05 bytes from #R$6FF4 to #R$6FF9.
+ $6D06 LD HL,$6FF4   ; {Copies #N($0005,$04,$04) bytes from #R$6FF4 to #R$6FF9.
  $6D09 LD DE,$6FF9   ;
  $6D0C LD BC,$0005   ;
  $6D0F LDIR          ; }
@@ -5082,8 +5083,8 @@ c$712B LD A,$01      ; {Mark a class token as due.
  $716B XOR A         ; message-suppressed flag is zero.
  $716C CP B          ;
  $716D CALL Z,$74C1  ; }
- $7170 PUSH HL       ; {Keep the pointer those prints returned, and step #N$06
- $7171 LD DE,$0006   ; bytes, the length of an object name.
+ $7170 PUSH HL       ; {Keep the pointer those prints returned, and step
+ $7171 LD DE,$0006   ; #N($0006,$04,$04) bytes, the length of an object name.
  $7174 ADD HL,DE     ; }
  $7175 CALL $74BA    ; Print the action's name.
  $7178 CALL $95ED    ; Test whether the location is lit.
@@ -5166,7 +5167,7 @@ c$71E2 PUSH DE       ; {Find the object's record.
  $71E5 CALL $9BCA    ; }
  $71E8 PUSH IX       ; {Take that record's address.
  $71EA POP HL        ; }
- $71EB LD DE,$0008   ; {Step #N$08 bytes to the object's name.
+ $71EB LD DE,$0008   ; {Step #N($0008,$04,$04) bytes to the object's name.
  $71EE ADD HL,DE     ; }
  $71EF POP IX        ; {Restore #REGix and #REGde from the stack.
  $71F1 POP DE        ; }
@@ -5196,7 +5197,7 @@ c$71F3 PUSH DE       ; {Compare the first pair.
  $7209 LD A,$00      ; {Jump to #R$7229 with zero when the third pair matches.
  $720B JR Z,$7229    ; }
 @label=Inglish_MatchClausePairs_Shift
-*$720D POP IY        ; {Move the parser pointer on #N$04 bytes.
+*$720D POP IY        ; {Move the parser pointer on #N($0004,$04,$04) bytes.
  $720F POP HL        ;
  $7210 PUSH HL       ;
  $7211 PUSH IY       ;
@@ -6383,7 +6384,8 @@ c$75FA BIT 1,E        ; {Jump to #R$7614 if bit 1 of the grammar flag is clear.
  $76CF OR (IX+$0F)    ; {Jump back to #R$76AC if bytes #N$0E and #N$0F of this
  $76D2 JR Z,$76AC     ; record are both zero.}
  $76D4 EXX            ; Switch to the saved registers for this phrase.
- $76D5 LD DE,$000E    ; The copy starts #N$0E bytes into the record.
+ $76D5 LD DE,$000E    ; The copy starts #N($000E,$04,$04) bytes into the
+                      ; record.
  $76D8 CALL $78EA     ; Call #R$78EA to copy the grammar bytes into the clause.
  $76DB JP $76AC       ; Jump back to #R$76AC to read the next word.
 @label=InglishMatchOneWord_ReadTheLineReadFlag
@@ -6694,8 +6696,8 @@ c$782B BIT 6,E       ; {Jump to #R$7850 if bit 6 of the grammar flag is set.
 ; reports no match.
 @label=Inglish_CopyTenGrammarBytes
 c$7838 RES 7,E       ; Clear the flags so bit 7 is off.
- $783A PUSH DE       ; {The ten grammar bytes start #N$0E bytes into the
- $783B LD DE,$000E   ; record.}
+ $783A PUSH DE       ; {The ten grammar bytes start #N($000E,$04,$04) bytes
+ $783B LD DE,$000E   ; into the record.}
 ; This entry point is used by the routine at #R$7850.
 @label=Inglish_CopyTenGrammarBytes_PointAtTheClause
 *$783E PUSH BC       ; {Save #REGbc and point #REGhl at the clause plus the
@@ -6719,8 +6721,8 @@ c$7838 RES 7,E       ; Clear the flags so bit 7 is off.
 ; ten-byte copy.
 @label=Inglish_CopyFourGrammarBytes
 c$7850 RES 6,E       ; Clear the flags so bit 6 is off.
- $7852 PUSH DE       ; {The copy starts #N$04 bytes into the record.
- $7853 LD DE,$0004   ; }
+ $7852 PUSH DE       ; {The copy starts #N($0004,$04,$04) bytes into the
+ $7853 LD DE,$0004   ; record.}
  $7856 JR $783E      ; Jump back to #R$783E to copy the ten grammar bytes.
 
 ; Inglish: Clear The Matcher Phase
@@ -6827,7 +6829,7 @@ c$789F PUSH DE       ; {Step back one #N$18-byte parser record.
 ; Steps through clause records of #N$18 bytes, skipping any whose location has bit 6 set,
 ; and returns the caller's pointer.
 @label=Inglish_SkipAMarkedLocation
-c$78A5 PUSH DE        ; {Each clause record is #N$18 bytes.
+c$78A5 PUSH DE        ; {Each clause record is #N($0018,$04,$04) bytes.
  $78A6 LD DE,$0018    ; }
 ; This entry point is used by the routine at #R$789F.
 @label=Inglish_SkipAMarkedLocation_CopyTheParserPointer
@@ -6849,8 +6851,8 @@ c$78A5 PUSH DE        ; {Each clause record is #N$18 bytes.
 @label=Inglish_CopyTwoBytesFromTheOtherClause
 c$78B7 EXX           ; Switch to the saved registers for this phrase.
  $78B8 LD A,(IX+$01) ; Read byte 1 of the other clause record.
- $78BB AND $7F       ; {OR it, with bit 7 clear, into the clause byte at offset
- $78BD OR (IY+$01)   ; 1.}
+ $78BB AND $7F       ; {Merge it, with bit 7 clear, into the clause byte at
+ $78BD OR (IY+$01)   ; offset 1.}
  $78C0 LD (IY+$01),A ; Update the clause byte at offset 1.
  $78C3 LD A,(IX+$00) ; Read byte 0 of the other clause record.
  $78C6 LD (IY+$00),A ; Update the clause byte at offset 0.
@@ -6861,7 +6863,7 @@ c$78B7 EXX           ; Switch to the saved registers for this phrase.
  $78D1 BIT 7,E       ; {Return if bit 7 of the grammar flag is clear.
  $78D3 RET Z         ; }
  $78D4 EXX           ; Switch to the saved registers for this phrase.
- $78D5 PUSH IY       ; {Step the pointer on by #N$12 bytes.
+ $78D5 PUSH IY       ; {Step the pointer on by #N($0012,$04,$04) bytes.
  $78D7 POP HL        ;
  $78D8 LD DE,$0012   ;
  $78DB ADD HL,DE     ; }
@@ -6871,7 +6873,7 @@ c$78B7 EXX           ; Switch to the saved registers for this phrase.
  $78E1 POP DE        ; {Copy the prepared bytes.
  $78E2 LD BC,$0006   ;
  $78E5 LDIR          ; }
- $78E7 LD DE,$0004   ; The copy starts #N$04 bytes into the clause.
+ $78E7 LD DE,$0004   ; The copy starts #N($0004,$04,$04) bytes into the clause.
 ; This entry point is used by the routine at #R$75FA.
 *$78EA CALL $78FF    ; Call #R$78FF to copy the ten grammar bytes.
  $78ED LD A,(IY+$02) ; Read the clause byte at offset 2.
@@ -7092,7 +7094,7 @@ c$79B6 LD A,$FF      ; {Write #N$FF to *#R$B6E9 and *#R$B6E8.
  $79CA LD DE,$AB53   ;
  $79CD SBC HL,DE     ; }
  $79CF JR Z,$79D9    ; Jump to #R$79D9 if the pointer is the action table.
- $79D1 LD DE,$0008   ; Each action record is #N$08 bytes.
+ $79D1 LD DE,$0008   ; Each action record is #N($0008,$04,$04) bytes.
 @label=Inglish_ScoreTheCurrentAction_CountOnFromOne
 *$79D4 INC A         ; Count on from #N$01.
  $79D5 SBC HL,DE     ; Take #N$08 off the offset.
@@ -7205,7 +7207,7 @@ c$7A73 PUSH IY        ; {Step back one #N$18-byte parser record.
 @label=Inglish_SearchThePreviousSlot_TestTheNextObject
 *$7A86 PUSH IY        ; {Use the parser workspace from here on.
  $7A88 POP HL         ; }
- $7A89 LD DE,$0008    ; {Step the pointer on by #N$08 bytes.
+ $7A89 LD DE,$0008    ; {Step the pointer on by #N($0008,$04,$04) bytes.
  $7A8C ADD HL,DE      ; }
  $7A8D CALL $9DD9     ; Call #R$9DD9 to test whether the object is in the same
                       ; place as the player.
@@ -7461,14 +7463,14 @@ c$7B9E PUSH IY       ; {Read the low byte of the pointer in the clause.
  $7BD1 XOR A         ; {Clear *#R$B6DF.
  $7BD2 LD ($B6DF),A  ; }
  $7BD5 LD HL,$7958   ; Point #REGhl at the saved text pointer.
- $7BD8 LD DE,$0008   ; Each action record is #N$08 bytes.
+ $7BD8 LD DE,$0008   ; Each action record is #N($0008,$04,$04) bytes.
  $7BDB LD IX,$AB53   ; Point #REGix at the action table.
 @label=Inglish_SaveTheClauseWindow_UseTheActionTable
 *$7BDF PUSH IX       ; {Use the action table as the parser pointer.
  $7BE1 POP IY        ; }
  $7BE3 CALL $71F3    ; Call #R$71F3 to match clause pairs.
  $7BE6 JR Z,$7C1B    ; Jump to #R$7C1B if #R$71F3 returned zero.
- $7BE8 ADD IX,DE     ; Add #N($0008,$04,$04) onto the action table.
+ $7BE8 ADD IX,DE     ; Add #N$08 onto the action table.
  $7BEA LD A,(IX+$01) ; Read the high byte of this action's token.
  $7BED OR (IX+$00)   ; {Jump back to #R$7BDF if this action's token is not
  $7BF0 JR NZ,$7BDF   ; zero.}
@@ -7564,8 +7566,8 @@ c$7C23 AND A         ; {Jump to #R$7C34 if the match result is zero.
  $7C76 LD DE,$7942   ; Point #REGde at the first copy window.
  $7C79 LD HL,$793D   ; Point #REGhl at the match buffer.
  $7C7C CALL $7C91    ; Call #R$7C91 to score the swapped clause.
- $7C7F LD A,C        ; {Copy #N$06 bytes from the first copy window to #R$B6E0.
- $7C80 LD HL,$7942   ;
+ $7C7F LD A,C        ; {Copy #N($0006,$04,$04) bytes from the first copy window
+ $7C80 LD HL,$7942   ; to #R$B6E0.
  $7C83 LD DE,$B6E0   ;
  $7C86 LD BC,$0006   ;
  $7C89 LDIR          ; }
@@ -7573,24 +7575,24 @@ c$7C23 AND A         ; {Jump to #R$7C34 if the match result is zero.
  $7C8E LD HL,$793E   ; Point #REGhl at the second match buffer.
 *$7C91 PUSH BC       ; {Save #REGbc and keep #REGa in #REGc.
  $7C92 LD C,A        ; }
- $7C93 LD B,$00      ; Start the character count at zero.
- $7C95 PUSH HL       ; {Add #N($0006,$04,$04) to the second match buffer.
- $7C96 PUSH IY       ;
+ $7C93 LD B,$00      ; Make #REGbc the score byte, as an offset.
+ $7C95 PUSH HL       ; {Keep the match buffer pointer, and point #REGhl at the
+ $7C96 PUSH IY       ; clause byte that the score byte selects from #REGiy.
  $7C98 POP HL        ;
  $7C99 ADD HL,BC     ; }
- $7C9A LD BC,$0006   ; {Copy the prepared bytes.
- $7C9D LDIR          ; }
- $7C9F XOR A         ; Start the six-byte zero test with A clear.
+ $7C9A LD BC,$0006   ; {Copy #N($0006,$04,$04) bytes from there to the copy
+ $7C9D LDIR          ; window at #REGde.}
+ $7C9F XOR A         ; Start the six-byte zero test with #REGa clear.
  $7CA0 LD B,$06      ; Count #N$06 passes.
 @label=Inglish_ScoreTheSwappedClause_TestTheMatchBytes
-*$7CA2 DEC HL        ; Step back one byte through the second match buffer.
+*$7CA2 DEC HL        ; Step back one byte through the six bytes just copied.
  $7CA3 OR (HL)       ; Fold this byte into the test. All six bytes are zero
                      ; when Z stays set.
  $7CA4 DJNZ $7CA2    ; Loop back to #R$7CA2 until #N$06 runs out.
  $7CA6 POP HL        ; {Return if the six copied bytes are all zero.
  $7CA7 POP BC        ;
  $7CA8 RET Z         ; }
- $7CA9 SET 0,(HL)    ; Mark the second match buffer so bit 0 is on.
+ $7CA9 SET 0,(HL)    ; Mark the buffer passed in #REGhl so bit 0 is on.
  $7CAB RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
@@ -7616,7 +7618,8 @@ c$7CAC XOR A         ; {Return when the count in #REGb is zero.
  $7CBA LD A,(IY+$01) ; Read the next clause byte.
  $7CBD LD (HL),A     ; Store it in the second match buffer.
  $7CBE DEC HL        ; Step back one byte through the second match buffer.
- $7CBF OR (IY+$00)   ; OR it with the clause byte just read.
+ $7CBF OR (IY+$00)   ; Combine it with the previous clause byte so the zero
+                     ; flag shows whether both are zero.
  $7CC2 POP IY        ; {Return if both clause bytes are zero.
  $7CC4 RET Z         ; }
  $7CC5 DEC B         ; Drop one from the character count.
@@ -7887,7 +7890,8 @@ c$7D74 LD ($B71A),A  ; Update *#R$B71A.
  $7E2E XOR A         ; Return zero.
  $7E2F RET           ; Return.
 @label=Inglish_CopyTheParserSlot_PlantJumpIfNotZero
-*$7E30 CALL $7E7C    ; Call #R$7E7C to plant JR NZ and read the two fields.
+*$7E30 CALL $7E7C    ; #HTML(Call #R$7E7C to plant <code>JR NZ</code> and read
+                     ; the two fields.)
  $7E33 LD HL,($7958) ; Read the pointer stored in the saved text pointer.
  $7E36 PUSH HL       ; {Point #REGhl at "[0x0b] D[0x01][0x01][0x14]".
  $7E37 LD HL,$ADE1   ; }
@@ -7901,13 +7905,14 @@ c$7D74 LD ($B71A),A  ; Update *#R$B71A.
  $7E4A JP $7D90      ; Jump to #R$7D90 to open the message gate and print the
                      ; prompt.
 @label=Inglish_CopyTheParserSlot_PlantJumpIfZero
-*$7E4D CALL $7E78    ; Call #R$7E78 to plant JR Z and read the two fields.
+*$7E4D CALL $7E78    ; #HTML(Call #R$7E78 to plant <code>JR Z</code> and read
+                     ; the two fields.)
  $7E50 LD HL,$0000   ; Start from a clear pointer.
  $7E53 PUSH HL       ; {Read *#R$B6E8.
  $7E54 LD A,($B6E8)  ; }
  $7E57 CALL $71E2    ; Call #R$71E2 to address the object name.
- $7E5A PUSH HL       ; {Call #R$7E7C to plant JR NZ and read the two fields.
- $7E5B CALL $7E7C    ; }
+ $7E5A PUSH HL       ; {#HTML(Call #R$7E7C to plant <code>JR NZ</code> and read
+ $7E5B CALL $7E7C    ; the two fields.)}
  $7E5E LD HL,($7958) ; Read the pointer stored in the saved text pointer.
  $7E61 PUSH HL       ; {Point #REGhl at "[0x0b]
  $7E62 LD HL,$ADE7   ; Eat[0x01][0x01][0x00][0x01][0x01][0x01][0x14]".}
@@ -7921,28 +7926,28 @@ c$7D74 LD ($B71A),A  ; Update *#R$B71A.
  $7E75 JP $7D90      ; Jump to #R$7D90 to open the message gate and print the
                      ; prompt.
 
-; Inglish: Plant JR Z
+; #HTML(Inglish: Plant #IF({asm})(JR Z,<code>JR Z</code>))
 ;
 ; Used by the routine at #R$7D74.
 ; .
-; Plants the JR Z opcode at #R$7E92 and #R$7EA1, then reads two words from the
-; action entry. Each word is kept when its bit is clear.
+; #HTML(Plants the <code>JR Z</code> opcode at #R$7E92 and #R$7EA1, then reads
+; two words from the action entry. Each word is kept when its bit is clear.)
 @label=Inglish_PlantJumpRelativeIfZero
-c$7E78 LD A,$28      ; Take the JR Z opcode.
+c$7E78 LD A,$28      ; #HTML(Take the <code>JR Z</code> opcode.)
  $7E7A JR $7E7E      ; Jump to #R$7E7E to plant that opcode.
 ; View the equivalent code in;
 ; #LIST
 ; { #SHERLOCK$B62F }
 ; LIST#
 
-; Inglish: Plant JR NZ
+; #HTML(Inglish: Plant #IF({asm})(JR NZ,<code>JR NZ</code>))
 ;
 ; Used by the routine at #R$7D74.
 ; .
-; Plants the JR NZ opcode at #R$7E92 and #R$7EA1, then reads two words from the
-; action entry. Each word is kept when its bit is set.
+; #HTML(Plants the <code>JR NZ</code> opcode at #R$7E92 and #R$7EA1, then reads
+; two words from the action entry. Each word is kept when its bit is set.)
 @label=Inglish_PlantJumpRelativeIfNonZero
-c$7E7C LD A,$20       ; Take the JR NZ opcode.
+c$7E7C LD A,$20       ; #HTML(Take the <code>JR NZ</code> opcode.)
 ; This entry point is used by the routine at #R$7E78.
 @label=Inglish_PlantJumpRelativeIfNonZero_PlantTheOpcode
 *$7E7E LD ($7E92),A   ; Plant the opcode at #R$7E92.
@@ -7952,18 +7957,18 @@ c$7E7C LD A,$20       ; Take the JR NZ opcode.
                       ; action.
  $7E8B LD H,(IX+$05)  ; Read the high byte of the word at offset 4 of this
                       ; action.
- $7E8E BIT 7,(IX+$07) ; {Test bit 7 of byte 7 of this action; the jump planted
- $7E92 JR NZ,$7E97    ; at #R$7E92 by #R$7E78 as JR Z or #R$7E7C as JR NZ goes
-                      ; to #R$7E97.}
+ $7E8E BIT 7,(IX+$07) ; {#HTML(Test bit 7 of byte 7 of this action; the jump
+ $7E92 JR NZ,$7E97    ; planted at #R$7E92 by #R$7E78 as <code>JR Z</code> or
+                      ; #R$7E7C as <code>JR NZ</code> goes to #R$7E97.)}
  $7E94 LD HL,$0000    ; Start from a clear pointer.
 @label=Inglish_PlantJumpRelativeIfNonZero_ReadActionWord
 *$7E97 EX (SP),HL     ; Swap #REGhl with the address on the stack.
  $7E98 PUSH HL        ; {Save the word just read, and read the low byte at
  $7E99 LD L,(IX+$02)  ; offset 2 of this action.}
  $7E9C LD H,(IX+$03)  ; Read the high byte at offset 2 of this action.
- $7E9F BIT 5,H        ; {Test bit 5 of that high byte; the jump planted at
- $7EA1 JR NZ,$7EA6    ; #R$7EA1 by #R$7E78 as JR Z or #R$7E7C as JR NZ goes to
-                      ; #R$7EA6.}
+ $7E9F BIT 5,H        ; {#HTML(Test bit 5 of that high byte; the jump planted
+ $7EA1 JR NZ,$7EA6    ; at #R$7EA1 by #R$7E78 as <code>JR Z</code> or #R$7E7C
+                      ; as <code>JR NZ</code> goes to #R$7EA6.)}
  $7EA3 LD HL,$0000    ; Start from a clear pointer.
 @label=Inglish_PlantJumpRelativeIfNonZero_CallTheHandler
 *$7EA6 EX (SP),HL     ; Swap #REGhl with the address on the stack.
@@ -8008,7 +8013,7 @@ c$7EBA PUSH BC         ; {Save #REGbc, #REGix and #REGde, and keep #REGa in
  $7EC9 LD C,A          ; Copy the result into #REGc.
  $7ECA LD IX,$B71F     ; Point #REGix one #N$19-byte slot before the first
                        ; character slot at #R$B738.
- $7ECE LD DE,$0019     ; Each slot is #N$19 bytes.
+ $7ECE LD DE,$0019     ; Each slot is #N($0019,$04,$04) bytes.
  $7ED1 XOR A           ; {Jump to #R$7EE6 if there are no slots to fill.
  $7ED2 CP B            ;
  $7ED3 JR Z,$7EE6      ; }
@@ -8046,7 +8051,8 @@ c$7EBA PUSH BC         ; {Save #REGbc, #REGix and #REGde, and keep #REGa in
 ; and the slot id is whose turn it is.
 @label=Inglish_FindThisCharacterSlot
 c$7EFF LD HL,$B738   ; Point at the first character slot at #R$B738.
- $7F02 LD DE,$0019   ; Each character slot at #R$B738 is #N$19 bytes.
+ $7F02 LD DE,$0019   ; Each character slot at #R$B738 is #N($0019,$04,$04)
+                     ; bytes.
  $7F05 LD A,($B6EA)  ; Read *#R$B6EA.
  $7F08 LD B,$08      ; Count #N$08 passes.
 @label=Inglish_FindThisCharacterSlot_TestThisSlot
@@ -8135,7 +8141,8 @@ c$7F60 PUSH HL       ; {Save #REGhl, #REGde and #REGbc, and point #REGhl at the
  $7F61 PUSH DE       ; first character slot at #R$B738.
  $7F62 PUSH BC       ;
  $7F63 LD HL,$B738   ; }
- $7F66 LD DE,$0019   ; Each character slot at #R$B738 is #N$19 bytes.
+ $7F66 LD DE,$0019   ; Each character slot at #R$B738 is #N($0019,$04,$04)
+                     ; bytes.
  $7F69 LD B,$08      ; Count #N$08 passes.
 @label=Inglish_WalkTheCharacterSlots_ClearThisSlot
 *$7F6B CP (HL)       ; {Jump to #R$7F70 unless this slot holds the character in
@@ -8340,7 +8347,7 @@ c$7FA7 PUSH IY       ; {Save the picture registers and clear the window when
  $806E RET           ; Return.
  $806F DEFB $00,$00  ;
 *$8071 LD ($824E),A  ; Store the result at #R$824E.
- $8074 PUSH DE       ; {Allow #N$80 steps of this flood fill.
+ $8074 PUSH DE       ; {Allow #N($0080,$04,$04) steps of this flood fill.
  $8075 PUSH HL       ;
  $8076 LD HL,$0080   ;
  $8079 PUSH HL       ; }
@@ -8441,12 +8448,12 @@ c$80EE PUSH HL       ; {Call #R$81DE to turn the pen into a screen address.
 ; .
 ; Moves the screen address up one character row.
 @label=Drawing_StepUpOneRow
-c$80F5 PUSH AF       ; {One screen row is #N$20 bytes.
+c$80F5 PUSH AF       ; {One screen row is #N($0020,$04,$04) bytes.
  $80F6 PUSH DE       ;
  $80F7 LD DE,$0020   ; }
  $80FA AND A         ; Clear carry before stepping the screen address back one
                      ; row.
- $80FB SBC HL,DE     ; See how far the pointer is past #N($0020,$04,$04).
+ $80FB SBC HL,DE     ; See how far the pointer is past #N$20.
  $80FD LD A,H        ; {Jump to #R$8103 if the screen address is not in row
  $80FE CP $57        ; #N$57.
  $8100 JR NZ,$8103   ; }
@@ -8858,8 +8865,8 @@ c$8251 LD HL,$8271   ; Point at the special-key table.
  $8262 JR NZ,$8257   ; }
  $8264 JP $75A0      ; Jump to #R$75A0 when no special key matched.
 @label=Command_MatchASpecialKey_JumpToTheHandler
-*$8267 LD DE,$0019   ; {The handler word sits #N$19 bytes after the matched
- $826A ADD HL,DE     ; pair.}
+*$8267 LD DE,$0019   ; {The handler word sits #N($0019,$04,$04) bytes after the
+ $826A ADD HL,DE     ; matched pair.}
  $826B LD E,(HL)     ; Read the low byte of that handler.
  $826C INC HL        ; Step on to its high byte.
  $826D LD D,(HL)     ; Read the high byte of the handler.
@@ -9005,8 +9012,8 @@ c$82F7 JP Z,$7838      ; Jump back to #R$7838 if bit 7 of the grammar flag is
  $8335 LD B,A          ; Use the difference as the record count in #REGb.
 @label=Command_FollowTheGrammarFlag_PointAtTheSlots
 *$8336 LD IX,$B738     ; Point at the first character slot at #R$B738.
- $833A PUSH DE         ; {Each character slot at #R$B738 is #N$19 bytes.
- $833B PUSH BC         ;
+ $833A PUSH DE         ; {Each character slot at #R$B738 is #N($0019,$04,$04)
+ $833B PUSH BC         ; bytes.
  $833C LD DE,$0019     ; }
  $833F LD B,$08        ; Count #N$08 passes.
 @label=Command_FollowTheGrammarFlag_SkipAUsedSlot
@@ -9215,9 +9222,10 @@ c$842E LD A,$2F      ; Start the quotient digit one below '0'.
 @label=Wait_ForKey
 *$8441 XOR A         ; {Read from the keyboard port.
  $8442 IN A,($FE)    ; }
- $8444 AND %00011111 ; Keep bits 0-4, one for each key in the half-row. XOR A
-                     ; then IN A,(#N$FE) reads every half-row at once, and a
-                     ; pressed key reads as a reset bit.
+ $8444 AND %00011111 ; #HTML[Keep bits 0-4, one for each key in the half-row.
+                     ; <code>XOR #REGa</code> then <code>IN
+                     ; #REGa,(#N$FE)</code> reads every half-row at once, and a
+                     ; pressed key reads as a reset bit.]
  $8446 CP $1F        ; {Loop back to #R$8441 while a key is being pressed.
  $8448 JR NZ,$8441   ; }
  $844A LD A,$07      ; {Set the border to #N$07 (white).
@@ -9235,7 +9243,7 @@ c$8451 PUSH IX       ; {Set the load as a "data block".
  $8454 LD A,$FF      ;
  $8456 SCF           ; Set carry so the ROM loads the saved-game header.
  $8457 LD IX,$B6EB   ; Set the start address to #R$B6EB.
- $845B LD DE,$001D   ; Set the block length to #N$1D bytes.
+ $845B LD DE,$001D   ; Set the block length to #N($001D,$04,$04) bytes.
  $845E CALL $8498    ; Call #R$8498 to read the save block.
 ; Load "objects".
  $8461 LD A,$FF      ; Set the load as a "data block".
@@ -9247,7 +9255,7 @@ c$8451 PUSH IX       ; {Set the load as a "data block".
  $846E LD A,$FF      ; Set the load as a "data block".
  $8470 SCF           ; Set carry so the ROM loads the object handlers.
  $8471 LD IX,$CA84   ; Set the start address to #R$CA84.
- $8475 LD DE,$00BF   ; Set the block length to #N$BF bytes.
+ $8475 LD DE,$00BF   ; Set the block length to #N($00BF,$04,$04) bytes.
  $8478 CALL $8498    ; Call #R$8498 to read the save block.
 ; Load "locations".
  $847B LD A,$FF      ; Set the load as a "data block".
@@ -9284,9 +9292,10 @@ c$8498 CALL $0556    ; Call #SKOOLKID$0556(LD_BYTES).
 @label=LoadBlock_Loop
 *$84A7 XOR A         ; {Read from the keyboard port.
  $84A8 IN A,($FE)    ; }
- $84AA AND %00011111 ; Keep bits 0-4, one for each key in the half-row. XOR A
-                     ; then IN A,(#N$FE) reads every half-row at once, and a
-                     ; pressed key reads as a reset bit.
+ $84AA AND %00011111 ; #HTML[Keep bits 0-4, one for each key in the half-row.
+                     ; <code>XOR #REGa</code> then <code>IN
+                     ; #REGa,(#N$FE)</code> reads every half-row at once, and a
+                     ; pressed key reads as a reset bit.]
  $84AC CP $1F        ; {Loop back to #R$84A7 until any key has been pressed.
  $84AE JR Z,$84A7    ; }
  $84B0 JP $6C27      ; Jump back to #R$6C27 to restart the game.
@@ -9300,7 +9309,7 @@ c$8498 CALL $0556    ; Call #SKOOLKID$0556(LD_BYTES).
 ; DE Source
 ; HL Target
 @label=ThreeByteCopy
-c$84B3 LD BC,$0003   ; The copy length is #N$03.
+c$84B3 LD BC,$0003   ; The copy length is #N($0003,$04,$04).
  $84B6 LDIR          ; Copy three bytes of data from #REGde to #REGhl.
  $84B8 RET           ; Return.
 
@@ -9312,17 +9321,19 @@ c$84B3 LD BC,$0003   ; The copy length is #N$03.
 @label=DebounceAnyKey
 c$84B9 XOR A         ; {Read from the keyboard port.
  $84BA IN A,($FE)    ; }
- $84BC AND %00011111 ; Keep bits 0-4, one for each key in the half-row. XOR A
-                     ; then IN A,(#N$FE) reads every half-row at once, and a
-                     ; pressed key reads as a reset bit.
+ $84BC AND %00011111 ; #HTML[Keep bits 0-4, one for each key in the half-row.
+                     ; <code>XOR #REGa</code> then <code>IN
+                     ; #REGa,(#N$FE)</code> reads every half-row at once, and a
+                     ; pressed key reads as a reset bit.]
  $84BE CP $1F        ; {Loop back to #R$84B9 if a key is being pressed.
  $84C0 JR NZ,$84B9   ; }
 @label=Normal_AnyKey
 *$84C2 XOR A         ; {Read from the keyboard port.
  $84C3 IN A,($FE)    ; }
- $84C5 AND %00011111 ; Keep bits 0-4, one for each key in the half-row. XOR A
-                     ; then IN A,(#N$FE) reads every half-row at once, and a
-                     ; pressed key reads as a reset bit.
+ $84C5 AND %00011111 ; #HTML[Keep bits 0-4, one for each key in the half-row.
+                     ; <code>XOR #REGa</code> then <code>IN
+                     ; #REGa,(#N$FE)</code> reads every half-row at once, and a
+                     ; pressed key reads as a reset bit.]
  $84C7 CP $1F        ; {Loop back to #R$84C2 until any key has been pressed.
  $84C9 JR Z,$84C2    ; }
  $84CB RET           ; Return.
@@ -9346,7 +9357,7 @@ c$84CC PUSH IX       ; {Save #REGix and #REGde, then call #R$84B3 with #REGde
 ; Save "flags".
  $84E6 LD A,$FF      ; Set the save as a "data block".
  $84E8 LD IX,$B6EB   ; Set the start address to #R$B6EB.
- $84EC LD DE,$001D   ; Set the block length to #N$1D bytes.
+ $84EC LD DE,$001D   ; Set the block length to #N($001D,$04,$04) bytes.
  $84EF CALL $04C2    ; Call #SKOOLKID$04C2(SA_BYTES).
 ; Save "objects".
  $84F2 LD A,$FF      ; Set the save as a "data block".
@@ -9356,7 +9367,7 @@ c$84CC PUSH IX       ; {Save #REGix and #REGde, then call #R$84B3 with #REGde
 ; Save...
  $84FE LD A,$FF      ; Set the save as a "data block".
  $8500 LD IX,$CA84   ; Set the start address to #R$CA84.
- $8504 LD DE,$00BF   ; Set the block length to #N$BF bytes.
+ $8504 LD DE,$00BF   ; Set the block length to #N($00BF,$04,$04) bytes.
  $8507 CALL $04C2    ; Call #SKOOLKID$04C2(SA_BYTES).
 ; Save "locations".
  $850A LD A,$FF      ; Set the save as a "data block".
@@ -9371,7 +9382,7 @@ c$84CC PUSH IX       ; {Save #REGix and #REGde, then call #R$84B3 with #REGde
  $851F LD A,$FF      ; Set the load as a "data block".
  $8521 AND A         ; Clear carry so the ROM verifies the flags.
  $8522 LD IX,$B6EB   ; Set the start address to #R$B6EB.
- $8526 LD DE,$001D   ; Set the block length to #N$1D bytes.
+ $8526 LD DE,$001D   ; Set the block length to #N($001D,$04,$04) bytes.
  $8529 CALL $855A    ; Call #R$855A to verify the block.
 ; Verify "objects".
  $852C LD A,$FF      ; Set the load as a "data block".
@@ -9383,7 +9394,7 @@ c$84CC PUSH IX       ; {Save #REGix and #REGde, then call #R$84B3 with #REGde
  $8539 LD A,$FF      ; Set the load as a "data block".
  $853B AND A         ; Clear carry so the ROM verifies the object handlers.
  $853C LD IX,$CA84   ; Set the start address to #R$CA84.
- $8540 LD DE,$00BF   ; Set the block length to #N$BF bytes.
+ $8540 LD DE,$00BF   ; Set the block length to #N($00BF,$04,$04) bytes.
  $8543 CALL $855A    ; Call #R$855A to verify the block.
 ; Verify "locations".
  $8546 LD A,$FF      ; Set the load as a "data block".
@@ -9422,9 +9433,10 @@ c$855A CALL $0556    ; Call #SKOOLKID$0556(LD_BYTES).
 @label=VerifyBlock_WaitForKey
 *$8569 XOR A         ; {Read from the keyboard port.
  $856A IN A,($FE)    ; }
- $856C AND %00011111 ; Keep bits 0-4, one for each key in the half-row. XOR A
-                     ; then IN A,(#N$FE) reads every half-row at once, and a
-                     ; pressed key reads as a reset bit.
+ $856C AND %00011111 ; #HTML[Keep bits 0-4, one for each key in the half-row.
+                     ; <code>XOR #REGa</code> then <code>IN
+                     ; #REGa,(#N$FE)</code> reads every half-row at once, and a
+                     ; pressed key reads as a reset bit.]
  $856E CP $1F        ; {Loop back to #R$8569 until any key has been pressed.
  $8570 JR Z,$8569    ; }
  $8572 POP DE        ; {Jump back to #R$8553 to dispatch a control.
@@ -9991,7 +10003,7 @@ c$87C9 PUSH AF       ; {Save #REGaf, #REGbc, #REGde and #REGhl, and put #REGa
  $87ED CPL           ; Invert the mask so the new pixels replace the old ones.
  $87EE AND (HL)      ; Merge the mask with the existing data in the screen
                      ; buffer.
- $87EF OR C          ; OR the font graphic data.
+ $87EF OR C          ; Combine the font pixels with the masked screen byte.
  $87F0 LD (HL),A     ; Copy the processed font graphic data to the screen.
  $87F1 POP BC        ; {Jump to #R$880E if the count in #REGc is zero.
  $87F2 DEC C         ;
@@ -11122,19 +11134,19 @@ c$8B93 PUSH HL       ; {Save #REGhl, #REGix and #REGbc and call #R$8B78 to
  $8B94 PUSH IX       ; pause.
  $8B96 PUSH BC       ;
  $8B97 CALL $8B78    ; }
- $8B9A LD ($8B89),BC ; Write #N($0000,$04,$04) to #R$8B89.
+ $8B9A LD ($8B89),BC ; Write #N$00 to #R$8B89.
  $8B9E LD HL,$8B8B   ; Point #REGhl at #R$8B8B.
  $8BA1 LD IX,$8B81   ; Point #REGix at #R$8B81.
  $8BA5 LD BC,$FEFE   ; Read the keyboard from port #N$FEFE.
 @label=GetKey_Loop
 *$8BA8 IN A,(C)      ; Read from the keyboard port.
  $8BAA AND %00011111 ; Keep the selected bits.
- $8BAC OR (IX+$00)   ; OR against what #REGix is pointing to.
+ $8BAC OR (IX+$00)   ; Merge this half-row into the running key mask at #REGix.
  $8BAF PUSH AF       ; {Save the row and complement it.
  $8BB0 CPL           ; }
- $8BB1 AND (HL)      ; {Keep the keys that are pressed now but were up in the
- $8BB2 CPL           ; previous scan at #REGhl. The second CPL leaves the flags
-                     ; alone.}
+ $8BB1 AND (HL)      ; {#HTML(Keep the keys that are pressed now but were up in
+ $8BB2 CPL           ; the previous scan at #REGhl. The second <code>CPL</code>
+                     ; leaves the flags alone.)}
  $8BB3 JR Z,$8BBC    ; Jump to #R$8BBC if no key in this half-row has been
                      ; newly pressed.
  $8BB5 LD ($8B89),BC ; Store #REGbc at #R$8B89.
@@ -11149,8 +11161,8 @@ c$8B93 PUSH HL       ; {Save #REGhl, #REGix and #REGbc and call #R$8B78 to
                      ; read.
  $8BC5 LD BC,($8B89) ; Bring #REGbc back from #R$8B89.
 ; No newly pressed key was stored.
- $8BC9 LD A,B        ; {If #REGbc is #N($0000,$04,$04), return #N$00 through
- $8BCA OR C          ; #R$8BF6.
+ $8BC9 LD A,B        ; {If #REGbc is #N($00), return #N$00 through #R$8BF6.
+ $8BCA OR C          ;
  $8BCB JR Z,$8BF6    ; }
  $8BCD LD A,$FB      ; Start the key index at #N$FB (that is -5).
 @label=GetKey_CountTheRows
@@ -11326,7 +11338,7 @@ c$8CA6 CALL $8C9B      ; Call #R$8C9B to refuse the verb when the object is not
  $8CCE LD (IX+$10),$00 ; Clear the object's location.
  $8CD2 LD HL,$B142     ; Point at the message "[0x00]
                        ; evaporate(s|d|ing|es)[0x15]" (#R$B142).
- $8CD5 LD DE,$0008     ; {Step the pointer on by #N$08 bytes.
+ $8CD5 LD DE,$0008     ; {Step the pointer on by #N($0008,$04,$04) bytes.
  $8CD8 ADD IX,DE       ; }
  $8CDA PUSH IX         ; {Save the name pointer and call #R$72DD to print the
  $8CDC CALL $72DD      ; message.}
@@ -12039,9 +12051,10 @@ c$90D2 SUB A         ; Clear the character whose turn it is.
 @label=YouAreDead_WaitForKey
 *$90DF XOR A         ; {Read from the keyboard port.
  $90E0 IN A,($FE)    ; }
- $90E2 AND %00011111 ; Keep bits 0-4, one for each key in the half-row. XOR A
-                     ; then IN A,(#N$FE) reads every half-row at once, and a
-                     ; pressed key reads as a reset bit.
+ $90E2 AND %00011111 ; #HTML[Keep bits 0-4, one for each key in the half-row.
+                     ; <code>XOR #REGa</code> then <code>IN
+                     ; #REGa,(#N$FE)</code> reads every half-row at once, and a
+                     ; pressed key reads as a reset bit.]
  $90E4 CP $1F        ; {Loop back to #R$90DF until any key has been pressed.
  $90E6 JR Z,$90DF    ; }
  $90E8 JP $6C27      ; Jump back to #R$6C27 to restart the game.
@@ -12578,16 +12591,16 @@ c$93DA CALL $9D44      ; Call #R$9D44. If the message is held back, the object
 ;
 ; Used by the routine at #R$A302.
 ; .
-; Locks the current object with the second object as the key. An object that is already
-; locked or is open is refused. #R$9488 is set up to SET bit 0.
+; #HTML(Locks the current object with the second object as the key. An object that is already
+; locked or is open is refused. #R$9488 is set up to <code>SET</code> bit 0.)
 @label=Action_Lock
 c$946D CALL $A1F9     ; Call #R$A1F9 to read the object's lock flag.
  $9470 JP NZ,$A16C    ; Jump to #R$A16C if the object is already locked or is
                       ; open.
- $9473 LD A,$C6       ; Use #N($C6), the SET 0 operation.
+ $9473 LD A,$C6       ; #HTML(Use #N($C6), the <code>SET 0</code> operation.)
 ; This entry point is used by the routine at #R$948D.
 ; .
-; #R$948D joins here with RES 0 to unlock the object.
+; #HTML(#R$948D joins here with <code>RES 0</code> to unlock the object.)
 @label=Action_Lock_TestTheKey
 *$9475 LD ($948B),A   ; Plant the operation at byte #N$948B of #R$9488.
  $9478 LD IY,($B70A)  ; Read *#R$B70A.
@@ -12597,16 +12610,16 @@ c$946D CALL $A1F9     ; Call #R$A1F9 to read the object's lock flag.
 ; If the message is held back, the object is not locked or unlocked.
  $9485 CALL $9D44     ; Call #R$9D44. If the message is held back, the object
                       ; is not locked or unlocked.
- $9488 SET 0,(IX+$07) ; Lock the object (SET 0), or unlock it when #R$948D has
-                      ; planted RES 0.
+ $9488 SET 0,(IX+$07) ; #HTML(Lock the object (<code>SET 0</code>), or unlock
+                      ; it when #R$948D has planted <code>RES 0</code>.)
  $948C RET            ; Return.
 
 ; Action: Unlock
 ;
 ; Used by the routine at #R$A302.
 ; .
-; Unlocks the current object. An object that is not locked, or is open, is refused;
-; otherwise #R$9488 is set up to RES bit 0 and the key is tested at #R$9475.
+; #HTML(Unlocks the current object. An object that is not locked, or is open, is refused;
+; otherwise #R$9488 is set up to <code>RES</code> bit 0 and the key is tested at #R$9475.)
 @label=Action_Unlock
 c$948D LD IX,($B708)   ; Read *#R$B708.
  $9491 BIT 0,(IX+$07)  ; {Take zero, and jump to #R$A16C if the object is not
@@ -12614,7 +12627,7 @@ c$948D LD IX,($B708)   ; Read *#R$B708.
  $9497 JP Z,$A16C      ; }
  $949A CALL $A204      ; Call #R$A204 to test whether the object is open.
  $949D JP NZ,$A16C     ; Jump to #R$A16C if the object is open.
- $94A0 LD A,$86        ; Use #N($86), the RES 0 operation.
+ $94A0 LD A,$86        ; #HTML(Use #N($86), the <code>RES 0</code> operation.)
  $94A2 JR $9475        ; Jump back to #R$9475 to plant it and unlock the
                        ; object.
 ; Refuse the verb when the object is not carried.
@@ -12854,7 +12867,8 @@ c$95ED LD A,($B6EA)   ; {Return if #R$B6EA is not zero.
  $9613 POP IY         ; {Jump to #R$9620 if #R$9E34 did not find that object
  $9615 JR Z,$9620     ; here.}
  $9617 LD A,($C30C)   ; Read that object's attributes.
- $961A XOR $F7        ; XOR #EVAL($F7,$02,$08).
+ $961A XOR $F7        ; #HTML(Toggle every attribute bit except bit 3 (broken),
+                      ; ready for the <code>AND #N$1C</code> light/full test.)
  $961C AND $1C        ; {Jump to #R$9628 if that object gives light, is not
  $961E JR Z,$9628     ; broken and is full.}
 ; The below handle the two responses for "light" and "dark" using the carry
@@ -12972,7 +12986,8 @@ c$9686 JP NZ,$72DD   ; Jump to #R$72DD to print the location description if its
                      ; flag).
 ; This entry point is used by the routine at #R$96A8.
 @label=YouSeePrint_PrintTheLocationName
-*$9689 LD DE,$0002   ; The location name starts #N$02 bytes into the record.
+*$9689 LD DE,$0002   ; The location name starts #N($0002,$04,$04) bytes into
+                     ; the record.
  $968C PUSH IY       ; {Point #REGiy at the name, #N$02 bytes into the record.
  $968E PUSH IX       ;
  $9690 POP IY        ;
@@ -12998,9 +13013,10 @@ c$9686 JP NZ,$72DD   ; Jump to #R$72DD to print the location description if its
 @label=Turn_WaitForAKey
 c$969A XOR A         ; {Read from the keyboard port.
  $969B IN A,($FE)    ; }
- $969D AND %00011111 ; Keep bits 0-4, one for each key in the half-row. XOR A
-                     ; then IN A,(#N$FE) reads every half-row at once, and a
-                     ; pressed key reads as a reset bit.
+ $969D AND %00011111 ; #HTML[Keep bits 0-4, one for each key in the half-row.
+                     ; <code>XOR #REGa</code> then <code>IN
+                     ; #REGa,(#N$FE)</code> reads every half-row at once, and a
+                     ; pressed key reads as a reset bit.]
  $969F CP $1F        ; {Loop back to #R$969A until any key has been pressed.
  $96A1 JR Z,$969A    ; }
  $96A3 LD A,$07      ; {Set the border to white.
@@ -13074,7 +13090,7 @@ c$96B3 PUSH HL       ; {Save #REGhl, #REGix, #REGiy, #REGbc and #REGde, then
 ; Run the handler for this action.
  $9710 CALL $9B6C    ; Call #R$9B6C to call the handler stored for this action.
 @label=TurnAdvanceTheOtherCharacters_StepToTheNext
-*$9713 LD DE,$0007   ; {Step the pointer on by #N$07 bytes.
+*$9713 LD DE,$0007   ; {Step the pointer on by #N($0007,$04,$04) bytes.
  $9716 ADD IY,DE     ; }
  $9718 JP $96CF      ; Jump back to #R$96CF to try the next object.
 @label=TurnAdvanceTheOtherCharacters_SetTheDayAndReturn
@@ -13199,11 +13215,12 @@ c$97AD SUB A         ; Clear the character, the scratch flag and the talk flag.
  $97C2 INC A         ; Add one, making the roll #N$01-#N$04.
  $97C3 LD B,A        ; Copy the result into #REGb.
  $97C4 LD IY,$C808   ; Point #REGiy at #R$C808.
- $97C8 LD DE,$0006   ; Each entry is #N$06 bytes.
+ $97C8 LD DE,$0006   ; Each entry is #N($0006,$04,$04) bytes.
 @label=Turn_ResetToThePlayer_StepToTheNextExtraExit
 *$97CB ADD IY,DE     ; Step #REGiy on to the next #N$06-byte entry.
  $97CD DJNZ $97CB    ; Loop back to #R$97CB until the roll in #REGb runs out.
- $97CF LD ($A7D1),IY ; Plant this extra-exit entry in the LD IY at #R$A7CF.
+ $97CF LD ($A7D1),IY ; #HTML(Plant this extra-exit entry in the <code>LD
+                     ; #REGiy</code> at #R$A7CF.)
  $97D3 LD L,(IY+$01) ; Read the low byte of this extra exit's direction token.
  $97D6 LD H,(IY+$02) ; Read the high byte of this extra exit's direction token.
  $97D9 LD B,$03      ; Count #N$03 passes.
@@ -13328,7 +13345,7 @@ c$97FF PUSH BC       ; {Read *#R$B6FA.
  $9888 CP $06        ;
  $988A JR Z,$9901    ; }
  $988C LD A,(HL)     ; Read the next script byte.
- $988D LD DE,$0004   ; The next field is #N$04 bytes on.
+ $988D LD DE,$0004   ; The next field is #N($0004,$04,$04) bytes on.
  $9890 PUSH HL       ; {Point #REGix at this script byte.
  $9891 POP IX        ; }
  $9893 AND $0F       ; {Jump to #R$98CB if the low nibble of the script byte is
@@ -13395,7 +13412,7 @@ c$97FF PUSH BC       ; {Read *#R$B6FA.
                      ; roll.
 ; This entry point is used by the routines at #R$9918 and #R$9B16.
 @label=Turn_GateTheMessage_StepThePointerOnBySevenBytes
-*$9901 LD DE,$0007   ; {Step the pointer on by #N$07 bytes.
+*$9901 LD DE,$0007   ; {Step the pointer on by #N($0007,$04,$04) bytes.
  $9904 ADD IY,DE     ; }
  $9906 JP $9815      ; Jump back to #R$9815 to try the next special object.
 @label=Turn_GateTheMessage_ClearTheCharacterWhoseTurn
@@ -13465,7 +13482,7 @@ c$9918 ADD HL,DE       ; {Step #REGhl on, and jump to #R$9921 if bit 4 of this
  $9972 JR $9901        ; Jump back to #R$9901 to clear *#R$980B.
 ; This entry point is used by the routine at #R$97FF.
 @label=Turn_StepTheScriptPointer_StepTwoBytes
-*$9974 LD DE,$0002     ; Step the script pointer by #N$02 bytes.
+*$9974 LD DE,$0002     ; Step the script pointer by #N($0002,$04,$04) bytes.
  $9977 CALL $9918      ; Call #R$9918 to step the script pointer past this
                        ; entry and store it on the special-object record.
  $997A LD A,(IX+$01)   ; Read the next byte of this script.
@@ -13641,15 +13658,14 @@ c$9A85 PUSH DE       ; {Keep the id being sought.
  $9A86 PUSH BC       ;
  $9A87 LD B,A        ; }
  $9A88 LD HL,$CACB   ; Point #REGhl at the special-object records.
- $9A8B LD DE,$0007   ; Each special-object entry is #N$07 bytes.
+ $9A8B LD DE,$0007   ; Each special-object entry is #N($0007,$04,$04) bytes.
 @label=TableFindASpecialObject_Loop
 *$9A8E LD A,(HL)     ; {If the current pointer matches our key jump to #R$9A9A.
  $9A8F CP B          ;
  $9A90 JR Z,$9A9A    ; }
  $9A92 CP $FF        ; {Jump to #R$9A9A at the end of the special-object
  $9A94 JR Z,$9A9A    ; records.}
- $9A96 ADD HL,DE     ; Increase the pointer address by #N($0007,$04,$04) (using
-                     ; #REGde).
+ $9A96 ADD HL,DE     ; Increase the pointer address by #N$07 (using #REGde).
  $9A97 JP $9A8E      ; Jump back to #R$9A8E for the next special-object record.
 @label=TableFindASpecialObject_PointAtTheRecord
 *$9A9A POP BC        ; {Restore #REGbc and #REGde from the stack, and copy the
@@ -13720,7 +13736,7 @@ c$9ACD CP $FF        ; {Return if the object id is #N$FF.
  $9AF1 LD A,B        ; }
 ; Find the object's record.
  $9AF2 CALL $9BCA    ; Call #R$9BCA to locate object.
- $9AF5 PUSH DE       ; {Step the pointer on by #N$08 bytes.
+ $9AF5 PUSH DE       ; {Step the pointer on by #N($0008,$04,$04) bytes.
  $9AF6 LD DE,$0008   ;
  $9AF9 ADD IX,DE     ; }
  $9AFB POP DE        ; {Restore #REGde from the stack, save the name pointer,
@@ -14498,8 +14514,9 @@ c$9DD9 PUSH BC       ; {Read *#R$B70C.
 *$9DFE CP E          ; {Jump back to #R$9DE8 unless this object's kind (#N$01
  $9DFF JR NZ,$9DE8   ; for a live animal, else #N$00) matches the filter.}
 @label=ConditionSamePlaceAsThePlayer_PointAtTheName
-*$9E01 LD BC,$0008   ; Start at the object's name, #N$08 bytes into the record.
- $9E04 PUSH IY       ; {Add #N($0008,$04,$04) onto the current object record.
+*$9E01 LD BC,$0008   ; Start at the object's name, #N($0008,$04,$04) bytes into
+                     ; the record.
+ $9E04 PUSH IY       ; {Add #N$08 onto the current object record.
  $9E06 ADD IY,BC     ; }
  $9E08 CALL $71F3    ; Call #R$71F3 to match clause pairs.
  $9E0B POP IY        ; {Jump back to #R$9DE8 if #R$71F3 did not match the name.
@@ -14682,7 +14699,7 @@ c$9EA0 PUSH IY       ; {Set #REGde to #N($0002,$04,$04), the offset of a
 ; .
 ; Prints the name of an object.
 @label=MessageNameAnObject
-c$9EC7 PUSH IY       ; {Step the pointer on by #N$08 bytes.
+c$9EC7 PUSH IY       ; {Step the pointer on by #N($0008,$04,$04) bytes.
  $9EC9 PUSH DE       ;
  $9ECA LD DE,$0008   ;
  $9ECD ADD IY,DE     ; }
@@ -14787,7 +14804,8 @@ c$9F2D PUSH AF       ; {Search on the destination byte (offset #N$02).
  $9F2E LD A,$02      ; }
 ; This entry point is used by the routine at #R$9F25.
 @label=ExitsFindTheExitToALocation_PatchTheOffset
-*$9F30 LD ($9F42),A  ; Patch the offset of the LD A,(IX+n) at #R$9F40.
+*$9F30 LD ($9F42),A  ; #HTML[Patch the offset of the <code>LD
+                     ; #REGa,(#REGix+n)</code> at #R$9F40.]
  $9F33 POP AF        ; {Restore #REGa from the stack, save #REGbc and #REGiy,
  $9F34 PUSH BC       ; and keep the id being sought in #REGb.
  $9F35 PUSH IY       ;
@@ -15088,9 +15106,9 @@ c$A09D LD HL,$AFCA   ; Point #REGhl at #R$AFCA.
 ; Find the location's record.
 @label=ExitsPointAtTheList
 c$A0AE CALL $9BB1    ; Call #R$9BB1 to locate location.
- $A0B1 LD BC,$0007   ; {Step #REGix on by #N$07 bytes, to the exit list.
- $A0B4 ADD IX,BC     ; }
- $A0B6 LD BC,$0003   ; One exit is #N$03 bytes.
+ $A0B1 LD BC,$0007   ; {Step #REGix on by #N($0007,$04,$04) bytes, to the exit
+ $A0B4 ADD IX,BC     ; list.}
+ $A0B6 LD BC,$0003   ; One exit is #N($0003,$04,$04) bytes.
  $A0B9 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
@@ -15150,7 +15168,7 @@ c$A0C8 PUSH BC        ; {Point at this location's exits.
  $A0E0 CALL $9BCA     ; Call #R$9BCA to locate object.
  $A0E3 BIT 7,(IX+$07) ; {Jump to #R$A113 if the object is not visible.
  $A0E7 JR Z,$A113     ; }
- $A0E9 LD DE,$0008    ; {Step the pointer on by #N$08 bytes.
+ $A0E9 LD DE,$0008    ; {Step the pointer on by #N($0008,$04,$04) bytes.
  $A0EC ADD IX,DE      ; }
  $A0EE PUSH IX        ; {Save the name pointer and read this exit's direction.
  $A0F0 LD A,(IY+$00)  ; }
@@ -15762,7 +15780,7 @@ c$A448 LD IX,($B708)  ; Read *#R$B708.
  $A44C BIT 3,(IX+$07) ; {Return if the object is not broken.
  $A450 RET Z          ; }
  $A451 RES 3,(IX+$07) ; Mark the object not broken.
- $A455 LD DE,$0006    ; Each capture entry is #N$06 bytes.
+ $A455 LD DE,$0006    ; Each capture entry is #N($0006,$04,$04) bytes.
 @nowarn
  $A458 LD IY,$A49C    ; Point #REGiy at the capture table.
  $A45C LD A,($B6E8)   ; Read *#R$B6E8.
@@ -16473,8 +16491,8 @@ c$A86E LD A,$64      ; Take the roll limit #N$64.
  $A8FD CALL $7F1A    ; Call #R$7F1A to save the clause and act.
  $A900 JR Z,$A915    ; Jump to #R$A915 when #R$7F1A returns with the zero flag
                      ; set.
- $A902 LD BC,$0018   ; Search #N$18 bytes of the clause slot for the riddle
-                     ; answer.
+ $A902 LD BC,$0018   ; Search #N($0018,$04,$04) bytes of the clause slot for
+                     ; the riddle answer.
  $A905 LD DE,($B6EE) ; Read *#R$B6EE.
  $A909 LD A,(DE)     ; Read the first byte of the riddle answer.
 @label=Event_ARandomHalf_SearchForTheRiddleAnswer

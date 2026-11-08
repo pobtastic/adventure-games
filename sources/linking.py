@@ -1,4 +1,4 @@
-# Copyright 2025 Paul Maddern
+# Copyright 2026 Paul Maddern (paul@arcadegeek.co.uk)
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -68,6 +68,14 @@ class AdventureGamesHtmlWriter(HtmlWriter):
 		href = self._asm_relpath(cwd, address, code_id, True)
 		return end, self.format_link(f"/adventure-games/hobbit/{self._type}/{href}", link_text)
 
+	def expand_kentilla(self, text, index, cwd):
+		# #KENTILLAaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "Kentilla"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/kentilla/{self._type}/{href}", link_text)
+
 	def expand_andromeda(self, text, index, cwd):
 		# #ANDROMEDAaddress[#anchor][(link text)]
 		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
@@ -83,6 +91,62 @@ class AdventureGamesHtmlWriter(HtmlWriter):
 			link_text = "Sherlock"
 		href = self._asm_relpath(cwd, address, code_id, True)
 		return end, self.format_link(f"/adventure-games/sherlock/{self._type}/{href}", link_text)
+
+	def expand_sidewalk(self, text, index, cwd):
+		# #SIDEWALKaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "Sidewalk"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/sidewalk/{self._type}/{href}", link_text)
+
+	def expand_sidney(self, text, index, cwd):
+		# #SIDNEYaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "The Sidney Affair"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/sidneyaffair/{self._type}/{href}", link_text)
+
+	def expand_sidneytwo(self, text, index, cwd):
+		# #SIDNEYTWOaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "The Sidney Affair: Side 2"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/sidneyaffair/side2/{self._type}/{href}", link_text)
+
+	def expand_inheritance(self, text, index, cwd):
+		# #INHERITANCEaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "The Inheritance: Panic in Las Vegas"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/theinheritancepanicinlasvegas/part1/{self._type}/{href}", link_text)
+
+	def expand_velnor(self, text, index, cwd):
+		# #VELNORaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "Velnor's Lair"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/velnorslair/{self._type}/{href}", link_text)
+
+	def expand_veracruz(self, text, index, cwd):
+		# #VERACRUZaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "Vera Cruz"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/veracruz/{self._type}/{href}", link_text)
+
+	def expand_veracruztwo(self, text, index, cwd):
+		# #VERACRUZTWOaddress[#anchor][(link text)]
+		end, addr_str, address, code_id, anchor, link_text = parse_r(self.fields, text, index)
+		if not link_text:
+			link_text = "Vera Cruz: Part 2"
+		href = self._asm_relpath(cwd, address, code_id, True)
+		return end, self.format_link(f"/adventure-games/veracruz/part2/{self._type}/{href}", link_text)
 
 	def expand_warlord(self, text, index, cwd):
 		# #WARLORDaddress[#anchor][(link text)]

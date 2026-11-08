@@ -1,4 +1,4 @@
-; Copyright Adventuresoft UK Ltd 1986, 2025 ArcadeGeek LTD.
+; Copyright Adventuresoft UK Ltd 1986, 2026 ArcadeGeek LTD.
 ; NOTE: Disassembly is Work-In-Progress.
 ; Label naming is loosely based on Action_ActionName_SubAction e.g. Print_HighScore_Loop.
 ; Alan Cox's Ashminster engine: a four-letter verb and noun, object locations
@@ -17,12 +17,14 @@
 > $4000 @start=$FFE9
 @ $4000 org=$4000
 > $4000 @expand=#DEF(#COLOUR(id) #LET(ink=$id&$07)#IF({ink}>=$00)(INK:#HTML(&#10;)#MAP({ink})(#HTML(&#10;)UNKNOWN,0:BLACK,1:BLUE,2:RED,3:MAGENTA,4:GREEN,5:CYAN,6:YELLOW,7:WHITE)),#HTML(&#10;)#LET(paper=$id>>$03&$07)#IF({paper}>=$00)(PAPER:#HTML(&#10;)#MAP({paper})(#HTML(&#10;)UNKNOWN,0:BLACK,1:BLUE,2:RED,3:MAGENTA,4:GREEN,5:CYAN,6:YELLOW,7:WHITE))#HTML(&#10;)#LET(bright=$id&$40)#IF({bright}>$00)((BRIGHT))#HTML(&#10;)#LET(flash=$id&$80)#IF({flash}>$00)(FLASH: ON))
-> $4000 @expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
+> $4000 @expand=#DEF1(#SKOOLKID(addr,anchor=0)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html#IF({anchor})(#CHR(35)#IF({{mode[base]}}==16)(#EVAL({anchor},16,4),#EVAL({anchor})))">){name}#HTML(</a>))
 > $4000 @expand=#DEF(#FAIL Jump to #R$6753 to reject this bytecode condition.)
 > $4000 @expand=#DEF1(#PAGE(bank) page RAM bank #N({bank}) in at #N($C000), keeping the 48K ROM)
 > $4000 @expand=#DEF1(#NOWHERE(addr) #IF(#PEEK({addr})==$FC)(nowhere)#IF(#PEEK({addr})!=$FC)(room #N(#PEEK({addr}))))
 > $4000 @expand=#DEF(#LOCATIONS #BANK6#MESSAGE($C000)#BANK0)
 > $4000 @expand=#DEF1(#MESSAGE(addr)#STR{addr},$08($b==$5E||$b==$7E))
+> $4000 @expand=#DEF1(#BUILDICT #LET(dict[]=(0))#LET(d=$B1BC)#FOR$00,$FF||q|#LET(dict[q]={{d}})#WHILE((#PEEK({{d}})&$80)==0)(#LET(d={{d}}+1))#LET(d={{d}}+1)||)
+> $4000 @expand=#DEF1(#TOKENS(n) #FOR($00,{n}-1)||x|#R({{dict[#PEEK(#PC+x)]}})(#N(#PEEK(#PC+x)))|, ||)
 > $4000 @expand=#DEF(#RECORDLINKS Found by #R$6E43 and drawn by #R$6E53.)
 > $4000 @expand=#DEF(#FACT()(anchor,text) #LINK(Facts#$anchor)($text))
 > $4000 @expand=#DEF(#PICTURE(room)(fname,title) #SIM(start=$$66C1,stop=$$66C5,a=$$00,bc=$$7FFD)#PUSHS #UDGTABLE { =h $title } { #SIM(start=$$600F,stop=$$6051,sp=$$5D84)#POKES$$5D87,$room#SIM(start=$$6DFA,stop=$$6E38,sp=$$5D84)#SCR$$02,$$00,$$00,$$20,$$0C($fname) } UDGTABLE# #POPS)
@@ -282,30 +284,32 @@ D $5ECB Runs the adventure. It prepares a new game, describes the room, runs
 N $5ECB Install the word at #R$6B41 as the ROM error handler and give the game
 . its own stack.
   $5ECB,$06 Store #R$6B41 in #SKOOLKID$5C3D(ERR_SP).
-  $5ED1,$03 The stack grows down from #R$5D84.
+  $5ED1,$03 #REGsp=#R$5D84.
 N $5ED4 Start in the first room with an empty inventory.
   $5ED4,$03 Call #R$600F to prepare a new game.
-  $5ED7,$04 The picture has not been drawn yet.
+  $5ED7,$04 Clear *#R$6185.
+  $5EDB,$03 Call #R$6187 to describe the first room.
 @ $5EDE label=GameLoop_Act
 N $5EDE Run the high-priority scripts, and describe the room again if they
 . moved the player.
-  $5EDE,$04 Write #N$00 to *#R$5D8E.
+  $5EDE,$04 Clear *#R$5D8E.
   $5EE2,$03 Call #R$6058 to run the high-priority scripts.
-  $5EE5,$06 Jump to #R$5EEE when the room stayed the same.
+  $5EE5,$06 Jump to #R$5EEE if *#R$5B95 is unset.
   $5EEB,$03 Call #R$6187 to describe the new room.
 @ $5EEE label=GameLoop_Draw
 N $5EEE Draw the illustration once for this room, then either repeat or ask
 . for a command.
   $5EEE,$03 Call #R$6B15 to draw the picture if this room is not already on
 . screen.
-  $5EF1,$04 Write #N$00 to *#R$5B95.
-  $5EF5,$06 Jump to #R$5F46 while a script asked for another look.
+  $5EF1,$04 Clear *#R$5B95.
+  $5EF5,$06 Jump to #R$5F46 if *#R$5D8E is set.
 N $5EFB Read a command. An empty line is a complaint, not an action.
   $5EFB,$03 Call #R$66C7 to read the next command from bank 3.
-  $5EFE,$06 Jump to #R$5F21 when a verb was recognised.
-  $5F04,$06 Jump to #R$5F21 when a noun was recognised.
-  $5F0A,$05 Message #N$0B: that input contained no recognised words.
-  $5F0F,$04 A failed line does not keep a comma continuation.
+  $5EFE,$06 Jump to #R$5F21 if *#R$5B7F is set.
+  $5F04,$06 Jump to #R$5F21 if *#R$5B80 is set.
+  $5F0A,$05 Call #R$63D4 with message #R$7E65(#N$0B):
+. "that input contained no recognised words".
+  $5F0F,$04 Clear *#R$5B85.
   $5F13,$02 Jump to #R$5EDE for another turn.
 
 g $5F15 Pictured Object
@@ -316,10 +320,10 @@ D $5F15 The room-change scan compares a picture record with this byte. Nothing
 c $5F16 Character Row Address
 @ $5F16 label=RowAddress
 D $5F16 Turns a character row in #REGa into the display address of that row.
-R $5F16 O:DE Display address of character row #REGa.
+R $5F16 O:DE Display address of character row #REGa
   $5F16,$04 Double the row number.
   $5F1A,$04 Add the screen-row table at #R$5BD0.
-  $5F1E,$03 Enter #SKOOLKID$2AEE(DE (DE+1)) at #N$2AF0 to load the row address
+  $5F1E,$03 Enter #SKOOLKID$2AEE,$2AF0(DE_DE_1) at #N$2AF0 to load the row address
 . into #REGde.
 
 c $5F21 Obey Command
@@ -370,23 +374,27 @@ c $5FAA Refuse Command
 D $5FAA The scripts did not handle the command. A direction says you cannot go
 . that way, any other verb is beyond the game, and a blank verb produces the
 . longer refusal.
-  $5FAA,$04 Drop any comma continuation.
-  $5FAE,$06 A blank verb is not a direction.
-  $5FB4,$04 Verbs #N$01 to #N$0A are the directions that use message #N$18.
+  $5FAA,$04 Clear *#R$5B85.
+  $5FAE,$06 Jump to #R$5FBC if *#R$5B7F is unset.
+  $5FB4,$04 Jump to #R$5FBC if the verb is not a direction.
+  $5FB8,$04 Jump to #R$5FC4 with message #R$7F24(#N$18): "you can't go
+. that way".
 @ $5FBC label=RefuseCommand_Verb
-  $5FBC,$08 Some other verb selects message #N$0C: it's beyond my power to do
-. that.
-@ $5FCA label=RefuseCommand_None
-  $5FCA,$02 Message #N$20: I don't understand that verb.
+N $5FBC A recognised verb that is not a direction, or no verb at all.
+  $5FBC,$06 Jump to #R$5FCA if *#R$5B7F is unset.
+  $5FC2,$02 Message #R$7E7E(#N$0C): "it's beyond my power to do that".
 @ $5FC4 label=RefuseCommand_Print
   $5FC4,$03 Call #R$63D4 to print the chosen refusal.
   $5FC7,$03 Jump to #R$5EDE for another turn.
+@ $5FCA label=RefuseCommand_None
+  $5FCA,$04 Jump to #R$5FC4 with message #R$7F79(#N$20): "I don't
+. understand that verb".
 
 c $5FCE Find Room In Exit Table
 @ $5FCE label=FindExits
 D $5FCE Looks through #R$AB67 for the current room. The room is stored as
 . itself plus #N$80.
-R $5FCE O:HL The matching room key, or the end of a full sweep of the table.
+R $5FCE O:HL The matching room key, or the end of a full sweep of the table
   $5FCE,$08 The search key is the room plus #N$80.
   $5FD6,$04 Nothing has matched yet.
 @ $5FE0 label=FindExits_Scan
@@ -539,6 +547,7 @@ c $6141 Skip Failed Line
 @ $6141 label=SkipLine
 D $6141 Drops the remaining conditions and actions of a line that has already
 . failed.
+E $6141 Continue on to #R$6155.
   $6141,$02 Take the saved line pointer.
 @ $6143 label=SkipLine_Conditions
   $6143,$04 Bit 7 ends the conditions.
@@ -553,7 +562,7 @@ c $6155 Match Verb And Noun
 @ $6155 label=MatchCommand
 D $6155 Accepts a script line whose verb and noun match the command. #N$7E
 . matches any word. The high-priority table matches every line.
-R $6155 O:HL Zero at the end of the table, otherwise the first condition or action.
+R $6155 O:HL Zero at the end of the table, otherwise the first condition or action
   $6155,$05 The end marker #N$7F is not a verb.
   $615A,$03 It returns a zero pointer.
   $615D,$01 Return.
@@ -707,6 +716,7 @@ c $62F2 Capitalise After A Full Stop
 @ $62F2 label=Capitalise
 D $62F2 After a full stop, a letter is forced to capitals. A space is handled
 . by #R$6B2B so a terminator cannot split a word.
+E $62F2 Continue on to #R$6319.
   $62F2,$02 Keep the character while the last one is inspected.
   $62F4,$07 A preceding full stop capitalises the next letter.
   $62FB,$07 A character below #N$40 is not a letter.
@@ -853,7 +863,7 @@ c $6483 Plot Glyph
 D $6483 Draws character A at the print position, using the ROM font. The eight
 . bytes are shifted into whichever pixel column the cursor occupies inside its
 . display byte, then ORed into the screen.
-N $6483 The ROM character set lives at #SKOOLKID$3D00(Character set).
+N $6483 The ROM character set lives at #SKOOLKID$3D00(CHARSET).
 . Subtracting #N$0100 makes the character code times 8 land on its glyph.
   $6483,$07 Keep the screen address. The font is the ROM character set minus
 . #N$0100.
@@ -921,7 +931,7 @@ N $64CB The column within the byte chooses how the shifted glyph is merged
 @ $6527 label=PlotGlyph_Top
   $6527,$04 Keep the top two pixels already on screen.
   $652B,$05 Shift the glyph right by two.
-  $6530,$02 OR it into the screen byte.
+  $6530,$02 #HTML(Merge the shifted glyph into the screen byte with <code>OR</code>.)
   $6532,$06 The next pixel row, then the shared advance.
 @ $6538 label=PlotGlyph_Advance
 N $6538 The next character moves one column right. Column #N$29 is the margin,
@@ -943,8 +953,9 @@ D $654B Moves the cursor to the left of the row in #R$5B89.
 w $655A Key Repeat Timer
 @ $655A label=RepeatTimer
 D $655A How long to wait before scrolling, measured against the ROM frame
-. counter. The cursor keys store #N($0000,$04,$04), #N$0190 or #N($00C8,$04,$04) here.
+. counter. The cursor keys store #N($00), #N$0190 or #N$C8 here.
   $655A,$02 Delay.
+@ $655C label=RowsScrolled
   $655C,$02 Rows already scrolled.
 
 c $655E Scroll Text Window
@@ -960,8 +971,8 @@ N $655E A short delay, taken from #R$655A, lets the player read before the
 . #SKOOLKID$5C78(FRAMES).
 @ $6572 label=ScrollWindow_Wait
   $6572,$07 A key releases the pause.
-  $6579,$09 Call the RET at the end of #SKOOLKID$0038(MASKABLE INTERRUPT) and
-. scroll once the frame counter has moved.
+  $6579,$09 #HTML(Call the <code>RET</code> at the end of
+. #SKOOLKID$0038(MASK_INT) and scroll once the frame counter has moved.)
 @ $6582 label=ScrollWindow_Row
   $6582,$04 Count this scroll.
   $6586,$03 The bottom row is the first one to move.
@@ -973,7 +984,7 @@ N $655E A short delay, taken from #R$655A, lets the player read before the
   $6593,$02 Eight pixel rows.
 @ $6595 label=ScrollWindow_Pixels
   $6595,$03 Save the row pair.
-  $6598,$05 Copy one pixel row, #N$20 bytes.
+  $6598,$05 Copy one pixel row, #N($0020,$04,$04) bytes.
   $659D,$03 Restore the row pair from the stack.
   $65A0,$02 The next pixel row.
   $65A2,$02 All eight pixel rows.
@@ -1042,12 +1053,12 @@ c $662D Wait For Key
 D $662D Waits until the interrupt routine has seen a new key, ignores the
 . characters the printer uses as terminators, and treats EDIT as the picture
 . switch. The cursor keys change how long a scroll waits.
-R $662D O:A The key, with letters as typed.
-N $662D Bit 5 of #SKOOLKID$5C3B(FLAGS) is set by the maskable interrupt when
-. a new key is ready. Calling the RET at the end of that routine lets one
-. interrupt through.
-  $662D,$0B Call the RET at the end of #SKOOLKID$0038(MASKABLE INTERRUPT),
-. then wait for bit 5 of #SKOOLKID$5C3B(FLAGS).
+R $662D O:A The key, with letters as typed
+N $662D #HTML(Bit 5 of #SKOOLKID$5C3B(FLAGS) is set by the maskable interrupt when
+. a new key is ready. Calling the <code>RET</code> at the end of that routine lets one
+. interrupt through.)
+  $662D,$0B #HTML(Call the <code>RET</code> at the end of #SKOOLKID$0038(MASK_INT),
+. then wait for bit 5 of #SKOOLKID$5C3B(FLAGS).)
   $663E,$08 Stir #REGr into the signature byte at #R$676E.
   $6646,$0A Read that stirred byte back.
   $6650,$06 Mix #REGr in again.
@@ -1083,6 +1094,7 @@ N $6694 EDIT toggles the picture. The illustration attributes are cleared when
 c $66BA Remember Paged Bank
 @ $66BA label=RememberBank
 D $66BA Stores A in #R$66D7 and pages that RAM bank in.
+E $66BA Continue on to #R$66BD.
   $66BA,$03 Fall through.
 
 c $66BD Page RAM Bank
@@ -1100,9 +1112,12 @@ c $66C7 Read Command
 @ $66C7 label=ReadCommand
 D $66C7 Pages the parser in bank 3 over #N($C000), calls it, then pages bank 0
 . back so the picture data is visible again.
-  $66C7,$05 #PAGE$03.
-  $66CC,$03 Call the parser at the top of bank 3.
-  $66CF,$06 #PAGE$00 and return with the parser's flags.
+  $66C7,$05 Call #R$66BA using #PAGE$03.
+  $66CC,$03 Call #R$C000@bank3(ReadCommand).
+  $66CF,$01 Stash #REGaf on the stack.
+  $66D0,$04 Call #R$66BA using #PAGE$00.
+  $66D4,$01 Restore #REGaf from the stack.
+  $66D5,$01 Return.
 
 g $66D6 Pictures On
 @ $66D6 label=PicturesOn
@@ -1129,18 +1144,21 @@ D $66D8 Paints the top twelve character rows black ink on white paper, which
 c $66EB Condition: Room Is Parameter
 @ $66EB label=RoomIs
 D $66EB Passes when the current room is the parameter in #REGb.
+R $66EB B Room number
   $66EB,$06 #FAIL
   $66F1,$01 Return.
 
 c $66F2 Condition: Room Is Not Parameter
 @ $66F2 label=RoomIsNot
 D $66F2 Passes when the current room is not the parameter in #REGb.
+R $66F2 B Room number
   $66F2,$06 #FAIL
   $66F8,$01 Return.
 
 c $66F9 Condition: Room Above Parameter
 @ $66F9 label=RoomAbove
 D $66F9 Passes when the current room is higher than the parameter in #REGb.
+R $66F9 B Room number
   $66F9,$03 Compare the room with the parameter.
   $66FC,$05 #FAIL
   $6701,$01 Return.
@@ -1148,12 +1166,14 @@ D $66F9 Passes when the current room is higher than the parameter in #REGb.
 c $6702 Condition: Room Below Parameter
 @ $6702 label=RoomBelow
 D $6702 Passes when the current room is lower than the parameter in #REGb.
+R $6702 B Room number
   $6702,$06 #FAIL
   $6708,$01 Return.
 
 c $6709 Condition: Carrying, Wearing Or Here
 @ $6709 label=HoldingOrHere
 D $6709 Passes when the object is carried, worn, or in this room.
+R $6709 C Object location
   $6709,$05 Pass when the object is the one being carried.
   $670E,$05 Pass when it is the one being worn.
   $6713,$04 The current room must be the object's location.
@@ -1163,6 +1183,7 @@ D $6709 Passes when the object is carried, worn, or in this room.
 c $671A Condition: Not Carrying, Wearing Or Here
 @ $671A label=NotHoldingOrHere
 D $671A Passes when the object is neither carried, nor worn, nor in this room.
+R $671A C Object location
   $671A,$06 #FAIL when the object is carried.
   $6720,$06 #FAIL when it is worn.
   $6726,$06 #FAIL when it is in this room.
@@ -1171,31 +1192,38 @@ D $671A Passes when the object is neither carried, nor worn, nor in this room.
 c $672D Condition: Object Is Somewhere
 @ $672D label=Somewhere
 D $672D Passes when the object's location is not #N$FC.
+R $672D C Object location
   $672D,$06 #FAIL
 
 c $6733 Condition: Object Is Nowhere
 @ $6733 label=Nowhere
 D $6733 Passes when the object's location is #N$FC.
+R $6733 C Object location
   $6733,$06 #FAIL
 
 c $6739 Condition: Object Is Carried
 @ $6739 label=IsCarried
 D $6739 Passes when the object is the one being carried.
+R $6739 C Object location
   $6739,$07 #FAIL
 
 c $6740 Condition: Object Is Worn
 @ $6740 label=IsWorn
 D $6740 Passes when the object is the one being worn.
+R $6740 C Object location
   $6740,$07 #FAIL
 
 c $6747 Condition: Object Is Not Worn
 @ $6747 label=IsNotWorn
 D $6747 Passes when the object is not being worn.
+R $6747 C Object location
   $6747,$07 #FAIL
 
 c $674E Condition: Object Is Not Carried
 @ $674E label=IsNotCarried
 D $674E Passes when the object is not being carried.
+R $674E C Object location
+E $674E Continue on to #R$6753.
   $674E,$05 #FAIL
 
 c $6753 Condition: Reject
@@ -1208,16 +1236,19 @@ D $6753 Marks the current script line as failed so its actions are not
 c $6759 Condition: Counter #N$01 Equals Parameter
 @ $6759 label=Counter1Is
 D $6759 Passes when counter 1 equals the parameter.
+R $6759 B Value
   $6759,$07 #FAIL
 
 c $6760 Condition: Counter #N$02 Equals Parameter
 @ $6760 label=Counter2Is
 D $6760 Passes when counter 2 equals the parameter.
+R $6760 B Value
   $6760,$07 #FAIL
 
 c $6767 Condition: Counter #N$03 Equals Parameter
 @ $6767 label=Counter3Is
 D $6767 Passes when counter 3 equals the parameter.
+R $6767 B Value
   $6767,$07 #FAIL
 
 t $676E Adventure Signature
@@ -1230,6 +1261,7 @@ c $6777 Condition: Random
 @ $6777 label=RandomTest
 D $6777 Passes when a value stirred from the frame counter and the signature
 . comes out below the parameter.
+R $6777 B Threshold
   $6777,$06 Plant the signature over the address read next.
   $677D,$07 Read through that stirred address.
   $6784,$03 Widen the stirred byte.
@@ -1244,6 +1276,7 @@ D $6777 Passes when a value stirred from the frame counter and the signature
 c $67A1 Condition: Flag Is Zero
 @ $67A1 label=FlagZero
 D $67A1 Passes when the flag byte selected by the parameter is zero.
+R $67A1 B Flag number
   $67A1,$03 Call #R$67FF to point at the flag.
   $67A4,$03 Pass when the flag is zero.
   $67A7,$02 #FAIL
@@ -1251,6 +1284,7 @@ D $67A1 Passes when the flag byte selected by the parameter is zero.
 c $67A9 Condition: Flag Is Not Zero
 @ $67A9 label=FlagNotZero
 D $67A9 Passes when the flag byte selected by the parameter is not zero.
+R $67A9 B Flag number
   $67A9,$03 Call #R$67FF to point at the flag.
   $67AC,$03 Pass when the flag is not zero.
   $67AF,$02 #FAIL
@@ -1258,16 +1292,22 @@ D $67A9 Passes when the flag byte selected by the parameter is not zero.
 c $67B1 Condition: Flag Equals Parameter
 @ $67B1 label=FlagEquals
 D $67B1 Passes when the selected flag equals #REGa.
+R $67B1 A Value
+R $67B1 B Flag number
   $67B1,$07 #FAIL
 
 c $67B8 Condition: Flag Differs From Parameter
 @ $67B8 label=FlagDiffers
 D $67B8 Passes when the selected flag differs from #REGa.
+R $67B8 A Value
+R $67B8 B Flag number
   $67B8,$07 #FAIL
 
 c $67BF Condition: Flag Below Parameter
 @ $67BF label=FlagBelow
 D $67BF Passes when the selected flag is below #REGa.
+R $67BF A Value
+R $67BF B Flag number
   $67BF,$07 #FAIL
 
 c $67C6 Condition: Flag Not Below Parameter
@@ -1275,6 +1315,8 @@ c $67C6 Condition: Flag Not Below Parameter
 D $67C6 Passes when the selected flag is not below #REGa. The failing jump at
 . #R$67CB is also the first word of the condition table, so condition 0 does
 . not have a routine of its own.
+R $67C6 A Value
+R $67C6 B Flag number
 N $67C6 The remaining condition routines are
 . #FOR$67CD,$67FD,$02||a|#N(#PEEK(a)+$100*#PEEK(a+$01))|, | and ||.
   $67C6,$05 Call #R$67FF to address the flag.
@@ -1293,7 +1335,8 @@ c $67FF Address Flag
 @ $67FF label=FlagAddress
 D $67FF Returns the address of flag byte #REGb. The flag bytes begin at the
 . current room.
-R $67FF O:HL Flag byte #REGb.
+R $67FF B Flag number
+R $67FF O:HL Flag byte #REGb
   $67FF,$03 The flag bytes begin at the current room.
 @ $6802 label=FlagAddress_Add
   $6802,$04 Add the parameter in #REGb.
@@ -1302,7 +1345,8 @@ R $67FF O:HL Flag byte #REGb.
 c $6807 Address Object
 @ $6807 label=ObjectAddress
 D $6807 Returns the address of object #REGb's location byte.
-R $6807 O:HL Location of object #REGb.
+R $6807 B Object number
+R $6807 O:HL Location of object #REGb
   $6807,$05 Count #REGb bytes on from #R$5DCA, sharing the addition in #R$67FF.
 
 c $680C Action: Inventory
@@ -1347,8 +1391,8 @@ D $685B Prints message #N($12), the game is over, and asks Y or N. Y starts
 
 c $6878 Reset Machine
 @ $6878 label=ResetMachine
-D $6878 The answer N to 'play again' executes RST #N($00), which restarts the
-. Spectrum.
+D $6878 #HTML(The answer N to 'play again' executes
+. <code>RST #N$00</code>, which restarts the Spectrum.)
 
 c $6879 Action: Reject Line
 @ $6879 label=RejectLine
@@ -1361,13 +1405,14 @@ c $687F Action: Press Any Key
 @ $687F label=PressAnyKey
 D $687F Prints message #N($14), press any key to continue, and waits until a
 . key is down.
+E $687F Continue on to #R$6884.
   $687F,$05 Fall into the wait.
 
 c $6884 Wait For Key Down
 @ $6884 label=WaitKeyDown
 D $6884 Spins while the second key slot of #SKOOLKID$5C00(KSTATE) is
 . #N($FF), which is the value it holds when nothing is pressed.
-R $6884 O:A The key state.
+R $6884 O:A The key state
 @ $6887 label=WaitKeyDown_Spin
   $6884,$03 Save the registers around the wait.
   $6887,$07 Spin while the second key slot of #SKOOLKID$5C00(KSTATE) is #N$FF.
@@ -1377,11 +1422,13 @@ R $6884 O:A The key state.
 c $6892 Action: Move To Room
 @ $6892 label=MoveToRoom
 D $6892 Makes the parameter the current room and marks the room as changed.
+R $6892 B Room number
   $6892,$07 Store the room, then jump to #R$696C to mark it changed.
 
 c $6899 Action: Wait
 @ $6899 label=WaitAWhile
 D $6899 Pauses for B times #N$32 halted frames.
+R $6899 B Count
 @ $689B label=WaitAWhile_Frame
   $6899,$02 #N$32 frames, once for each count in #REGb.
   $689B,$04 Halt for one frame.
@@ -1390,6 +1437,7 @@ D $6899 Pauses for B times #N$32 halted frames.
 c $68A2 Action: Move To Object
 @ $68A2 label=MoveToObject
 D $68A2 Makes the object's location the current room.
+R $68A2 B Object number
   $68A2,$07 Point at object #REGb's location byte.
   $68A9,$04 That location becomes the current room.
   $68AD,$03 Jump to #R$696C so the new room is described.
@@ -1399,6 +1447,8 @@ c $68B0 Action: Get
 D $68B0 Picks the object up. It must be in the room, not already carried, and
 . not worn. The carried id is written into the object's own location slot and
 . the carried count increases.
+R $68B0 B Object number
+R $68B0 C Object location
   $68B0,$08 Already carried is message #N$15.
 @ $68B8 label=GetObject_Refuse
   $68B8,$0A Print the refusal, drop any comma continuation, and reject the
@@ -1418,6 +1468,8 @@ c $68E4 Action: Drop
 @ $68E4 label=DropObject
 D $68E4 Puts a carried or worn object down in the current room. Message #N$17
 . says you don't have it.
+R $68E4 B Object number
+R $68E4 C Object location
   $68E4,$06 An object that is worn is put down without changing the carried
 . count.
   $68EA,$06 An object that is carried is counted down.
@@ -1433,7 +1485,7 @@ c $6902 Action: Save
 D $6902 Asks for a key, then writes #N$0141 bytes from the room state as a
 . SAVE block named with marker #N$2A. The ROM returns to #R$6914.
   $6902,$03 Call #R$687F to wait for a key.
-  $6905,$0C Jump into #SKOOLKID$04C2(SA-BYTES) at #N$04C5 so #REGhl is the
+  $6905,$0C Jump into #SKOOLKID$04C2,$04C5(SA_BYTES) at #N$04C5 so #REGhl is the
 . return address #R$6914.
 
 c $6914 Return From Saving
@@ -1463,7 +1515,7 @@ D $6924 Asks message #N($1A), do you want to restore a saved game. N returns. Y
   $6948,$04 The loader wants interrupts off, and the border dance around the
 . alternate accumulator.
   $694C,$04 Border yellow.
-  $6950,$03 Jump into #SKOOLKID$0556(LD-BYTES) at #N$0561.
+  $6950,$03 Jump into #SKOOLKID$0556,$0561(LD_BYTES) at #N$0561.
 
 c $6953 Return From Loading
 @ $6953 label=Restored
@@ -1475,11 +1527,14 @@ c $695D Action: Remove Object
 @ $695D label=RemoveObject
 D $695D Puts the object nowhere by storing #N($FC), then marks the room
 . changed.
+R $695D B Object number
   $695D,$08 Fall into the room-changed handler.
 
 c $6965 Action: Put Object Here
 @ $6965 label=PutObjectHere
 D $6965 Stores the current room as the object's location.
+R $6965 B Object number
+E $6965 Continue on to #R$696C.
   $6965,$07 Fall into the room-changed handler.
 
 c $696C Action: Room Changed
@@ -1518,6 +1573,9 @@ c $69BF Action: Swap Objects
 @ $69BF label=SwapObjects
 D $69BF Exchanges the locations of the object in the parameter and the object
 . addressed by #REGa, then marks the room changed.
+R $69BF A Second object
+R $69BF B First object
+R $69BF C First object location
   $69BF,$04 Point at the first object's location.
   $69C3,$04 Point at the second object.
   $69C7,$04 Exchange the two location bytes.
@@ -1526,6 +1584,8 @@ D $69BF Exchanges the locations of the object in the parameter and the object
 c $69CD Action: Swap Flags
 @ $69CD label=SwapFlags
 D $69CD Exchanges flag #REGb with the flag addressed by #REGa.
+R $69CD A Second flag
+R $69CD B First flag
   $69CD,$04 Point at flag #REGb.
   $69D1,$05 Point at the flag selected by #REGa.
   $69D6,$04 Exchange the two flag bytes.
@@ -1534,17 +1594,21 @@ D $69CD Exchanges flag #REGb with the flag addressed by #REGa.
 c $69DB Action: Set Flag On
 @ $69DB label=SetFlagOn
 D $69DB Writes #N$FF to flag #REGb.
+R $69DB B Flag number
   $69DB,$06 Return.
 
 c $69E2 Action: Clear Flag
 @ $69E2 label=ClearFlag
 D $69E2 Writes zero to flag #REGb.
+R $69E2 B Flag number
   $69E2,$06 Return.
 
 c $69E8 Action: Force Verb And Noun
 @ $69E8 label=ForceCommand
 D $69E8 Replaces the command with verb #REGb and noun #REGa, and forgets that a script
 . line has already matched so the new command can be tried.
+R $69E8 A Noun
+R $69E8 B Verb
   $69E8,$07 #REGa becomes the noun and #REGb becomes the verb.
   $69EF,$04 Forget that a script line has already matched, so the new command
 . can be tried.
@@ -1553,6 +1617,8 @@ D $69E8 Replaces the command with verb #REGb and noun #REGa, and forgets that a 
 c $69F4 Action: Add To Flag
 @ $69F4 label=AddToFlag
 D $69F4 Adds #REGa to flag #REGb, sticking at #N$FF instead of wrapping.
+R $69F4 A Amount
+R $69F4 B Flag number
   $69F4,$04 Point at flag #REGb and add #REGa.
   $69F8,$04 The sum sticks at #N$FF.
 @ $69FC label=AddFlag_Store
@@ -1562,6 +1628,8 @@ D $69F4 Adds #REGa to flag #REGb, sticking at #N$FF instead of wrapping.
 c $69FE Action: Subtract From Flag
 @ $69FE label=SubtractFromFlag
 D $69FE Subtracts #REGa from flag #REGb, sticking at zero.
+R $69FE A Amount
+R $69FE B Flag number
   $69FE,$06 Point at flag #REGb. #REGa is the amount to subtract.
   $6A04,$05 The flag minus the amount, via the scratch byte.
   $6A09,$05 The result sticks at zero.
@@ -1572,6 +1640,8 @@ D $69FE Subtracts #REGa from flag #REGb, sticking at zero.
 c $6A11 Action: Set Flag
 @ $6A11 label=SetFlag
 D $6A11 Writes #REGa into flag #REGb.
+R $6A11 A Value
+R $6A11 B Flag number
   $6A11,$05 Return.
 
 c $6A16 Action: Set Object Location
@@ -1579,6 +1649,8 @@ c $6A16 Action: Set Object Location
 D $6A16 Writes a new location for the object. A value of 1 for an object
 . numbered #N$46 or higher is stored as zero. If the new location is the
 . current room, the room is marked changed.
+R $6A16 A New location
+R $6A16 B Object number
   $6A16,$04 Point at the object's location. C is the new one.
   $6A1A,$05 An index below #N$46 is stored as given.
   $6A1F,$07 Location 1 on an object numbered #N$46 or above is stored as 0.
@@ -1591,6 +1663,8 @@ D $6A16 Writes a new location for the object. A value of 1 for an object
 c $6A2F Action: Copy Object Location
 @ $6A2F label=CopyObjectLocation
 D $6A2F Gives the object in #REGb the same location as the object addressed by #REGa.
+R $6A2F A Source object
+R $6A2F B Destination object
   $6A2F,$05 Point at object #REGb.
   $6A34,$05 Read object #REGa's location.
   $6A39,$01 Copy that location onto object #REGb.
@@ -1598,13 +1672,14 @@ D $6A2F Gives the object in #REGb the same location as the object addressed by #
 
 c $6A3C Action: Print Flag
 @ $6A3C label=PrintFlag
-D $6A3C Prints flag #REGb as a decimal number followed by a space. The conversion
-. goes through the DAA instruction, so the flag is treated as two decimal
-. digits.
+D $6A3C #HTML(Prints flag #REGb as a decimal number followed by a space. The conversion
+. goes through the <code>DAA</code> instruction, so the flag is treated as two decimal
+. digits.)
+R $6A3C B Flag number
   $6A3C,$07 Read flag #REGb. Zero prints as a single 0.
-  $6A43,$02 Count that value through DAA.
+  $6A43,$02 #HTML(Count that value through <code>DAA</code>.)
 @ $6A45 label=PrintFlag_Tens
-  $6A45,$04 Each pass through DAA builds one decimal step.
+  $6A45,$04 #HTML(Each pass through <code>DAA</code> builds one decimal step.)
 @ $6A49 label=PrintFlag_High
   $6A49,$04 The high digit is the tens.
   $6A4D,$08 Shift the tens digit down.
@@ -1637,6 +1712,8 @@ c $6A83 Action: Wear
 D $6A83 Wears the object. It must be carried and in this room, and it must not
 . already be worn. The worn id replaces the object's location and the carried
 . count drops.
+R $6A83 B Object number
+R $6A83 C Object location
   $6A83,$09 Point at the object. Already worn is refused.
   $6A8C,$05 Message #N$1D: you are wearing it.
 @ $6A91 label=WearObject_Held
@@ -1653,6 +1730,8 @@ c $6AAD Action: Take Object Off
 @ $6AAD label=RemoveWorn
 D $6AAD Stops wearing the object and carries it instead. Message #N$1C says
 . you are not wearing it.
+R $6AAD B Object number
+R $6AAD C Object location
   $6AAD,$03 Point at the object's location.
   $6AB0,$06 Not worn continues to the refusal.
   $6AB6,$05 Message #N$1C: you are not wearing it.
@@ -1667,11 +1746,13 @@ D $6AC4 Turns #REGa and #REGb into a duration and a pitch and hands them to the 
 . beeper. The key click uses #REGa equal to #N$1E. Action 0 of the bytecode jumps
 . straight to the same ROM routine, whose address is the operand of the jump
 . below.
+R $6AC4 A Duration
+R $6AC4 B Pitch
   $6AC4,$03 Duration #REGa is the low byte of #REGhl, and #REGb is the pitch.
   $6AC7,$03 The high byte of the duration, and #REGd, start at zero.
   $6ACA,$04 Shift the pitch two places, keeping the overflow in #REGd.
   $6ACE,$02 Save that pitch.
-  $6AD0,$03 Call #SKOOLKID$30A9(HL=HL*DE) to scale the duration by the pitch.
+  $6AD0,$03 Call #SKOOLKID$30A9(HL_HLxDE) to scale the duration by the pitch.
   $6AD3,$01 Restore the pitch for the beeper from the stack.
   $6AD4,$03 Jump to #SKOOLKID$03B5(BEEPER).
 
@@ -1757,11 +1838,13 @@ c $6E39 Draw Room Picture
 @ $6E39 label=DrawRoomPicture
 D $6E39 Returns at once in the dark or in room 0. Otherwise finds this room's
 . picture record and interprets it.
+E $6E39 Continue on to #R$6E43.
 
 c $6E43 Find Room Picture Record
 @ $6E43 label=FindPictureRecord
 D $6E43 Walks #R$B798, whose records are separated by #N($FF), until it reaches
 . the current room. Rooms from #N$60 up run on into bank 0 at #R$C000.
+E $6E43 Continue on to #R$6E53.
 
 c $6E53 Interpret Picture Record
 @ $6E53 label=PictureRecord
@@ -1775,6 +1858,7 @@ c $6E7F Dispatch Picture Opcode
 @ $6E7F label=DispatchShape
 D $6E7F Opcodes #N$F8 to #N$EE jump to their own drawers. A smaller byte is a
 . shape plotted by the routine below.
+E $6E7F Continue on to #R$6EC1.
 
 c $6EC1 Plot Shape
 @ $6EC1 label=PlotShape
@@ -1791,6 +1875,7 @@ c $6EEF Change Colour In Ink And Paper
 D $6EEF Changes colour #REGc to colour #REGl across the saved attribute buffer,
 . first in the ink bits and then, with both colours moved up three bits, in
 . the paper bits.
+E $6EEF Continue on to #R$6F0A.
 
 c $6F0A Change Matching Colour Bits
 @ $6F0A label=ChangeMatchingColourBits
@@ -1811,6 +1896,7 @@ c $6F57 Address Picture Byte
 @ $6F57 label=PictureAddress
 D $6F57 Turns a character row into a pointer inside the attribute buffer,
 . using the same row table as the text printer.
+E $6F57 Continue on to #R$6F6C.
 
 c $6F6C Read Shape Byte
 @ $6F6C label=ReadShapeByte
@@ -1838,10 +1924,10 @@ D $718B Looks the shape number up in the picture font that follows this
 
 c $7213 Draw Shape When Object Is Here
 @ $7213 label=ShapeIfPresent
-D $7213 Opcode #N$F8 names an object. The following shape is drawn only when
+D $7213 #HTML[Opcode #N$F8 names an object. The following shape is drawn only when
 . that object is in the current room, and the object id is planted in the low
-. address byte (#N$5F11) of LD (#R$5B85),A at #R$5ECB(#N$5F10). When the object
-. is absent that byte is cleared again.
+. address byte (#N$5F11) of <code>LD (#R$5B85),#REGa</code> at
+. #R$5ECB(#N$5F10). When the object is absent that byte is cleared again.]
 
 c $728C Patch Shift Immediate
 @ $728C label=PatchShift
@@ -1940,11 +2026,729 @@ N $784C Room #N($1E), "A Sinister Foreboding Crypt". The game spells it
 
 t $7E26 System Messages
 @ $7E26 label=SystemMessages
-D $7E26 The stock replies, 172 of them, each ending at #N$5E (stay on the
-. line) or #N$7E (start a new line). Directions #N$01 to #N$0A are the compass
-. points. Message #N$0B is the unrecognised-word reply, #N$10 is the inventory
-. heading, #N$12 asks whether to play again, and #N$19 is the darkness line.
-  $7E26,$EBC
+D $7E26 #BUILDICT The stock replies, 172 of them, each ending at #N$5E (stay on the
+. line) or #N$7E (start a new line). Each byte is a token into #R$B1BC.
+. Directions #N$01 to #N$0A are the compass points. Message #N$0B is the
+. unrecognised-word reply, #N$10 is the inventory heading, #N$12 asks
+. whether to play again, and #N$19 is the darkness line.
+N $7E26 ". You can see".
+B $7E26,$06 #TOKENS$06
+B $7E2C,$01 Terminator.
+@ $7E2D label=SystemMessage_01
+N $7E2D " north,".
+B $7E2D,$05 #TOKENS$05
+B $7E32,$01 Terminator.
+@ $7E33 label=SystemMessage_02
+N $7E33 " south,".
+B $7E33,$03 #TOKENS$03
+B $7E36,$01 Terminator.
+@ $7E37 label=SystemMessage_03
+N $7E37 " east,".
+B $7E37,$03 #TOKENS$03
+B $7E3A,$01 Terminator.
+@ $7E3B label=SystemMessage_04
+N $7E3B " west,".
+B $7E3B,$04 #TOKENS$04
+B $7E3F,$01 Terminator.
+@ $7E40 label=SystemMessage_05
+N $7E40 " up,".
+B $7E40,$03 #TOKENS$03
+B $7E43,$01 Terminator.
+@ $7E44 label=SystemMessage_06
+N $7E44 " down,".
+B $7E44,$02 #TOKENS$02
+B $7E46,$01 Terminator.
+@ $7E47 label=SystemMessage_07
+N $7E47 " north east,".
+B $7E47,$07 #TOKENS$07
+B $7E4E,$01 Terminator.
+@ $7E4F label=SystemMessage_08
+N $7E4F " north west,".
+B $7E4F,$08 #TOKENS$08
+B $7E57,$01 Terminator.
+@ $7E58 label=SystemMessage_09
+N $7E58 " south east,".
+B $7E58,$05 #TOKENS$05
+B $7E5D,$01 Terminator.
+@ $7E5E label=SystemMessage_0A
+N $7E5E " south west,".
+B $7E5E,$06 #TOKENS$06
+B $7E64,$01 Terminator.
+@ $7E65 label=SystemMessage_0B
+N $7E65 "that input contained no recognised words.".
+B $7E65,$18 #TOKENS$18
+B $7E7D,$01 Terminator.
+@ $7E7E label=SystemMessage_0C
+N $7E7E "it's beyond my power to do that.".
+B $7E7E,$12 #TOKENS$12
+B $7E90,$01 Terminator.
+@ $7E91 label=SystemMessage_0D
+N $7E91 ". You can go".
+B $7E91,$06 #TOKENS$06
+B $7E97,$01 Terminator.
+@ $7E98 label=SystemMessage_0E
+N $7E98 "what do you want to do now".
+B $7E98,$0C #TOKENS$0C
+B $7EA4,$01 Terminator.
+@ $7EA5 label=SystemMessage_0F
+N $7EA5 "you're carrying too much.".
+B $7EA5,$10 #TOKENS$10
+B $7EB5,$01 Terminator.
+@ $7EB6 label=SystemMessage_10
+N $7EB6 "you are carrying the following:".
+B $7EB6,$0E #TOKENS$0E
+B $7EC4,$01 Terminator.
+@ $7EC5 label=SystemMessage_11
+N $7EC5 "nothing at all.".
+B $7EC5,$07 #TOKENS$07
+B $7ECC,$01 Terminator.
+@ $7ECD label=SystemMessage_12
+N $7ECD "game's now over. do you want to play again (Y/N) ?".
+B $7ECD,$1D #TOKENS$1D
+B $7EEA,$01 Terminator.
+@ $7EEB label=SystemMessage_13
+N $7EEB "Ok.".
+B $7EEB,$03 #TOKENS$03
+B $7EEE,$01 Terminator.
+@ $7EEF label=SystemMessage_14
+N $7EEF "press any key to continue.".
+B $7EEF,$10 #TOKENS$10
+B $7EFF,$01 Terminator.
+@ $7F00 label=SystemMessage_15
+N $7F00 "you already have it.".
+B $7F00,$08 #TOKENS$08
+B $7F08,$01 Terminator.
+@ $7F09 label=SystemMessage_16
+N $7F09 "sorry, I don't see it here.".
+B $7F09,$11 #TOKENS$11
+B $7F1A,$01 Terminator.
+@ $7F1B label=SystemMessage_17
+N $7F1B "you don't have it.".
+B $7F1B,$08 #TOKENS$08
+B $7F23,$01 Terminator.
+@ $7F24 label=SystemMessage_18
+N $7F24 "you can't go that way.".
+B $7F24,$0A #TOKENS$0A
+B $7F2E,$01 Terminator.
+@ $7F2F label=SystemMessage_19
+N $7F2F "It is dark. You cannot see.".
+B $7F2F,$0C #TOKENS$0C
+B $7F3B,$01 Terminator.
+@ $7F3C label=SystemMessage_1A
+N $7F3C "do you want to restore a saved game ?".
+B $7F3C,$13 #TOKENS$13
+B $7F4F,$01 Terminator.
+@ $7F50 label=SystemMessage_1B
+N $7F50 "".
+B $7F50,$01 #TOKENS$01
+B $7F51,$01 Terminator.
+@ $7F52 label=SystemMessage_1C
+N $7F52 "you are not wearing it.".
+B $7F52,$09 #TOKENS$09
+B $7F5B,$01 Terminator.
+@ $7F5C label=SystemMessage_1D
+N $7F5C "you are wearing it.".
+B $7F5C,$07 #TOKENS$07
+B $7F63,$01 Terminator.
+@ $7F64 label=SystemMessage_1E
+N $7F64 " (worn),".
+B $7F64,$07 #TOKENS$07
+B $7F6B,$01 Terminator.
+@ $7F6C label=SystemMessage_1F
+N $7F6C "No help at this stage.".
+B $7F6C,$0C #TOKENS$0C
+B $7F78,$01 Terminator.
+@ $7F79 label=SystemMessage_20
+N $7F79 "I don't understand that verb".
+B $7F79,$10 #TOKENS$10
+B $7F89,$01 Terminator.
+@ $7F8A label=SystemMessage_21
+N $7F8A "the snow melts turning into a handfull of slush.".
+B $7F8A,$19 #TOKENS$19
+B $7FA3,$01 Terminator.
+@ $7FA4 label=SystemMessage_22
+N $7FA4 "it is too narrow to squeeze through.".
+B $7FA4,$15 #TOKENS$15
+B $7FB9,$01 Terminator.
+@ $7FBA label=SystemMessage_23
+N $7FBA "there are hundreds of little cracks in the rock around its rim.".
+B $7FBA,$1F #TOKENS$1F
+B $7FD9,$01 Terminator.
+@ $7FDA label=SystemMessage_24
+N $7FDA "the slush melts away.".
+B $7FDA,$0B #TOKENS$0B
+B $7FE5,$01 Terminator.
+@ $7FE6 label=SystemMessage_25
+N $7FE6 "the slush freezes cracking the rock around the window which falls
+. away.".
+B $7FE6,$20 #TOKENS$20
+B $8006,$01 Terminator.
+@ $8007 label=SystemMessage_26
+N $8007 "it is mounted on runners.".
+B $8007,$0B #TOKENS$0B
+B $8012,$01 Terminator.
+@ $8013 label=SystemMessage_27
+N $8013 "it won't shift.".
+B $8013,$09 #TOKENS$09
+B $801C,$01 Terminator.
+@ $801D label=SystemMessage_28
+N $801D "You have found something.".
+B $801D,$0B #TOKENS$0B
+B $8028,$01 Terminator.
+@ $8029 label=SystemMessage_29
+N $8029 "the forcefield stops you.".
+B $8029,$0E #TOKENS$0E
+B $8037,$01 Terminator.
+@ $8038 label=SystemMessage_2A
+N $8038 "glowing runes on the rod read 'Seek three power stones to gain the rod
+. of power if that is what you seek'.".
+B $8038,$32 #TOKENS$32
+B $806A,$01 Terminator.
+@ $806B label=SystemMessage_2B
+N $806B "no more will come off the wall.".
+B $806B,$10 #TOKENS$10
+B $807B,$01 Terminator.
+@ $807C label=SystemMessage_2C
+N $807C "it is now very shiny.".
+B $807C,$0A #TOKENS$0A
+B $8086,$01 Terminator.
+@ $8087 label=SystemMessage_2D
+N $8087 "the rod drops to the floor as the forcefield vanishes.".
+B $8087,$1A #TOKENS$1A
+B $80A1,$01 Terminator.
+@ $80A2 label=SystemMessage_2E
+N $80A2 "as you open the coffin a ghoul climbs out!".
+B $80A2,$14 #TOKENS$14
+B $80B6,$01 Terminator.
+@ $80B7 label=SystemMessage_2F
+N $80B7 "the fierce heat drives you back.".
+B $80B7,$10 #TOKENS$10
+B $80C7,$01 Terminator.
+@ $80C8 label=SystemMessage_30
+N $80C8 "ouch, it is too hot to hold!".
+B $80C8,$0E #TOKENS$0E
+B $80D6,$01 Terminator.
+@ $80D7 label=SystemMessage_31
+N $80D7 "the sword slides smoothly out of the stone.".
+B $80D7,$12 #TOKENS$12
+B $80E9,$01 Terminator.
+@ $80EA label=SystemMessage_32
+N $80EA "it is magical.".
+B $80EA,$06 #TOKENS$06
+B $80F0,$01 Terminator.
+@ $80F1 label=SystemMessage_33
+N $80F1 "the shield protects you from the worst of the heat.".
+B $80F1,$15 #TOKENS$15
+B $8106,$01 Terminator.
+@ $8107 label=SystemMessage_34
+N $8107 "the ghoul turns to dust as the sword strikes.".
+B $8107,$15 #TOKENS$15
+B $811C,$01 Terminator.
+@ $811D label=SystemMessage_35
+N $811D "the ghoul is chasing you.".
+B $811D,$0A #TOKENS$0A
+B $8127,$01 Terminator.
+@ $8128 label=SystemMessage_36
+N $8128 "the ghoul tears you apart and begins to eat.".
+B $8128,$14 #TOKENS$14
+B $813C,$01 Terminator.
+@ $813D label=SystemMessage_37
+N $813D "on it is written 'Open not lest foul undead slay thee'.".
+B $813D,$1E #TOKENS$1E
+B $815B,$01 Terminator.
+@ $815C label=SystemMessage_38
+N $815C "in amongst the runes is a picture of a man inside a pentagram which
+. appears to be stopping a demon from attacking him.".
+B $815C,$34 #TOKENS$34
+B $8190,$01 Terminator.
+@ $8191 label=SystemMessage_39
+N $8191 "the dark figure throws you out of the library.".
+B $8191,$19 #TOKENS$19
+B $81AA,$01 Terminator.
+@ $81AB label=SystemMessage_3A
+N $81AB "the floor opens and you tumble down.".
+B $81AB,$0F #TOKENS$0F
+B $81BA,$01 Terminator.
+@ $81BB label=SystemMessage_3B
+N $81BB "your weapons are having no effect!".
+B $81BB,$13 #TOKENS$13
+B $81CE,$01 Terminator.
+@ $81CF label=SystemMessage_3C
+N $81CF "red to red, wave to wave, thus pass away from cave to cave. Seek the
+. sorcerors doom, near the once wet place, not a room. Seek the hidden way in
+. the dungeons. He is across the pit of fire bridged by a sceptre. Aranus last
+. wiza....".
+B $81CF,$72 #TOKENS$72
+B $8241,$01 Terminator.
+@ $8242 label=SystemMessage_3D
+N $8242 "it is too heavy.".
+B $8242,$08 #TOKENS$08
+B $824A,$01 Terminator.
+@ $824B label=SystemMessage_3E
+N $824B "you drop the boulder.".
+B $824B,$0A #TOKENS$0A
+B $8255,$01 Terminator.
+@ $8256 label=SystemMessage_3F
+N $8256 "you feel stronger.".
+B $8256,$0A #TOKENS$0A
+B $8260,$01 Terminator.
+@ $8261 label=SystemMessage_40
+N $8261 "the boulder splatters the ogre.".
+B $8261,$0E #TOKENS$0E
+B $826F,$01 Terminator.
+@ $8270 label=SystemMessage_41
+N $8270 "what at ?".
+B $8270,$05 #TOKENS$05
+B $8275,$01 Terminator.
+@ $8276 label=SystemMessage_42
+N $8276 "the ogre decides to redesign your head ....".
+B $8276,$18 #TOKENS$18
+B $828E,$01 Terminator.
+@ $828F label=SystemMessage_43
+N $828F "the strength spell ends.".
+B $828F,$0E #TOKENS$0E
+B $829D,$01 Terminator.
+@ $829E label=SystemMessage_44
+N $829E "it is too far.".
+B $829E,$07 #TOKENS$07
+B $82A5,$01 Terminator.
+@ $82A6 label=SystemMessage_45
+N $82A6 "the pillar falls down the fissure taking the snake with it.".
+B $82A6,$19 #TOKENS$19
+B $82BF,$01 Terminator.
+@ $82C0 label=SystemMessage_46
+N $82C0 "you roll the pillar across the fissure, but in doing so wake a
+. gigantic snake that was sleeping underneath!".
+B $82C0,$39 #TOKENS$39
+B $82F9,$01 Terminator.
+@ $82FA label=SystemMessage_47
+N $82FA "it is locked.".
+B $82FA,$05 #TOKENS$05
+B $82FF,$01 Terminator.
+@ $8300 label=SystemMessage_48
+N $8300 "it is furry with baggy pockets and in truth looks rather silly.".
+B $8300,$22 #TOKENS$22
+B $8322,$01 Terminator.
+@ $8323 label=SystemMessage_49
+N $8323 "you have no suitable key.".
+B $8323,$10 #TOKENS$10
+B $8333,$01 Terminator.
+@ $8334 label=SystemMessage_4A
+N $8334 "you find nothing.".
+B $8334,$08 #TOKENS$08
+B $833C,$01 Terminator.
+@ $833D label=SystemMessage_4B
+N $833D "the wire appears to have triggered a cave in burying you alive.".
+B $833D,$1B #TOKENS$1B
+B $8358,$01 Terminator.
+@ $8359 label=SystemMessage_4C
+N $8359 "the door looks very weak.".
+B $8359,$0E #TOKENS$0E
+B $8367,$01 Terminator.
+@ $8368 label=SystemMessage_4D
+N $8368 "the vampire is trying to keep away from the garlic.".
+B $8368,$17 #TOKENS$17
+B $837F,$01 Terminator.
+@ $8380 label=SystemMessage_4E
+N $8380 "the vampire sinks his teeth into you, what a pain in the neck!".
+B $8380,$1F #TOKENS$1F
+B $839F,$01 Terminator.
+@ $83A0 label=SystemMessage_4F
+N $83A0 "a wizard appears bathed in shimmering multicoloured light. He says
+. 'flee if you can for the high wizard of the mountains has become evil. What
+. little help I can offer you is buried in the cave'. He vanishes in a cloud of
+. smoke.".
+B $83A0,$6E #TOKENS$6E
+B $840E,$01 Terminator.
+@ $840F label=SystemMessage_50
+N $840F "the snake bites you. It is poisonous. Some days nothing ever seems to
+. go right...".
+B $840F,$29 #TOKENS$29
+B $8438,$01 Terminator.
+@ $8439 label=SystemMessage_51
+N $8439 "he's totally BATTY!!!!".
+B $8439,$11 #TOKENS$11
+B $844A,$01 Terminator.
+@ $844B label=SystemMessage_52
+N $844B "the rope doesn't carry far enough.".
+B $844B,$14 #TOKENS$14
+B $845F,$01 Terminator.
+@ $8460 label=SystemMessage_53
+N $8460 "it is too slippy to climb.".
+B $8460,$0E #TOKENS$0E
+B $846E,$01 Terminator.
+@ $846F label=SystemMessage_54
+N $846F "there is nothing here you can tie it too, as it is stiff and quite
+. slippery. (THE ROPE THAT IS!)".
+B $846F,$36 #TOKENS$36
+B $84A5,$01 Terminator.
+@ $84A6 label=SystemMessage_55
+N $84A6 "you loop the rope end through the ring.".
+B $84A6,$12 #TOKENS$12
+B $84B8,$01 Terminator.
+@ $84B9 label=SystemMessage_56
+N $84B9 "the rope, and the wizard fall to the floor.".
+B $84B9,$0C #TOKENS$0C
+B $84C5,$01 Terminator.
+@ $84C6 label=SystemMessage_57
+N $84C6 "the ring comes out of the wall.".
+B $84C6,$09 #TOKENS$09
+B $84CF,$01 Terminator.
+@ $84D0 label=SystemMessage_58
+N $84D0 "it is fastened.".
+B $84D0,$06 #TOKENS$06
+B $84D6,$01 Terminator.
+@ $84D7 label=SystemMessage_59
+N $84D7 "the slime touches you and within seconds you are covered in a mass of
+. slime.".
+B $84D7,$1E #TOKENS$1E
+B $84F5,$01 Terminator.
+@ $84F6 label=SystemMessage_5A
+N $84F6 "it won't open.".
+B $84F6,$08 #TOKENS$08
+B $84FE,$01 Terminator.
+@ $84FF label=SystemMessage_5B
+N $84FF "it is full.".
+B $84FF,$06 #TOKENS$06
+B $8505,$01 Terminator.
+@ $8506 label=SystemMessage_5C
+N $8506 "the slime kills the giant.".
+B $8506,$0A #TOKENS$0A
+B $8510,$01 Terminator.
+@ $8511 label=SystemMessage_5D
+N $8511 "it is empty.".
+B $8511,$05 #TOKENS$05
+B $8516,$01 Terminator.
+@ $8517 label=SystemMessage_5E
+N $8517 "tucked in the lining of the box is a spell.".
+B $8517,$12 #TOKENS$12
+B $8529,$01 Terminator.
+@ $852A label=SystemMessage_5F
+N $852A "the zombie guards rip me to pieces.".
+B $852A,$13 #TOKENS$13
+B $853D,$01 Terminator.
+@ $853E label=SystemMessage_60
+N $853E "the harp cries 'Thief, thief'. The giant wakes up and decides to
+. squash you. TRY READING YOUR FAIRY TALES IN FUTURE!.".
+B $853E,$50 #TOKENS$50
+B $858E,$01 Terminator.
+@ $858F label=SystemMessage_61
+N $858F "the bucket is too wide to fit down the passage.".
+B $858F,$14 #TOKENS$14
+B $85A3,$01 Terminator.
+@ $85A4 label=SystemMessage_62
+N $85A4 "the plank falls into the channel behind me.".
+B $85A4,$14 #TOKENS$14
+B $85B8,$01 Terminator.
+@ $85B9 label=SystemMessage_63
+N $85B9 "the sides of the channel look weak at one end.".
+B $85B9,$17 #TOKENS$17
+B $85D0,$01 Terminator.
+@ $85D1 label=SystemMessage_64
+N $85D1 "there is a small explosion.".
+B $85D1,$0E #TOKENS$0E
+B $85DF,$01 Terminator.
+@ $85E0 label=SystemMessage_65
+N $85E0 "the dam breaks and the lava flows once again.".
+B $85E0,$15 #TOKENS$15
+B $85F5,$01 Terminator.
+@ $85F6 label=SystemMessage_66
+N $85F6 "the sides of the channel cave in and the lava starts to rise behind
+. it, while the lava in the channel drains away.".
+B $85F6,$2B #TOKENS$2B
+B $8621,$01 Terminator.
+@ $8622 label=SystemMessage_67
+N $8622 "slime sprays everywhere.".
+B $8622,$0E #TOKENS$0E
+B $8630,$01 Terminator.
+@ $8631 label=SystemMessage_68
+N $8631 "it is a picture of waves breaking on a moonlit shore.".
+B $8631,$1A #TOKENS$1A
+B $864B,$01 Terminator.
+@ $864C label=SystemMessage_69
+N $864C "the soap breaks up the oily slime and it collapses back into the pit.".
+B $864C,$20 #TOKENS$20
+B $866C,$01 Terminator.
+@ $866D label=SystemMessage_6A
+N $866D "the plank burns up in the heat of the lava.".
+B $866D,$10 #TOKENS$10
+B $867D,$01 Terminator.
+@ $867E label=SystemMessage_6B
+N $867E "there is a huge explosion deep in the mountain which in turn explodes
+. and exploding mountains are not the most healthy place to be in.".
+B $867E,$3D #TOKENS$3D
+B $86BB,$01 Terminator.
+@ $86BC label=SystemMessage_6C
+N $86BC "the lava is rising fast behind the dam.".
+B $86BC,$0F #TOKENS$0F
+B $86CB,$01 Terminator.
+@ $86CC label=SystemMessage_6D
+N $86CC "you are freezing.".
+B $86CC,$07 #TOKENS$07
+B $86D3,$01 Terminator.
+@ $86D4 label=SystemMessage_6E
+N $86D4 "you have frozen to death.".
+B $86D4,$0C #TOKENS$0C
+B $86E0,$01 Terminator.
+@ $86E1 label=SystemMessage_6F
+N $86E1 "you are buried deep in the snow.".
+B $86E1,$0A #TOKENS$0A
+B $86EB,$01 Terminator.
+@ $86EC label=SystemMessage_70
+N $86EC "the snows topple forward and a huge avalanche comes cascading down the
+. pass. The snow buries the yeti.".
+B $86EC,$2A #TOKENS$2A
+B $8716,$01 Terminator.
+@ $8717 label=SystemMessage_71
+N $8717 "the snows topple forward and a huge avalanche comes cascading down the
+. pass.".
+B $8717,$1F #TOKENS$1F
+B $8736,$01 Terminator.
+@ $8737 label=SystemMessage_72
+N $8737 "the yeti forcibly prevents me from entering the cave.".
+B $8737,$18 #TOKENS$18
+B $874F,$01 Terminator.
+@ $8750 label=SystemMessage_73
+N $8750 "the yeti tears me to pieces.".
+B $8750,$0E #TOKENS$0E
+B $875E,$01 Terminator.
+@ $875F label=SystemMessage_74
+N $875F "you sink deep into the snow and soon freeze to death trapped
+. helplessly in the snow.".
+B $875F,$28 #TOKENS$28
+B $8787,$01 Terminator.
+@ $8788 label=SystemMessage_75
+N $8788 "as you dig the yeti suddenely smashes its way out of the snow.".
+B $8788,$1E #TOKENS$1E
+B $87A6,$01 Terminator.
+@ $87A7 label=SystemMessage_76
+N $87A7 "one of the stones is loose and seems to cover an opening.".
+B $87A7,$17 #TOKENS$17
+B $87BE,$01 Terminator.
+@ $87BF label=SystemMessage_77
+N $87BF "the stones snaps into several pieces.".
+B $87BF,$13 #TOKENS$13
+B $87D2,$01 Terminator.
+@ $87D3 label=SystemMessage_78
+N $87D3 "as you shift the pieces they fall down the hole you uncover.".
+B $87D3,$19 #TOKENS$19
+B $87EC,$01 Terminator.
+@ $87ED label=SystemMessage_79
+N $87ED "you fall....".
+B $87ED,$07 #TOKENS$07
+B $87F4,$01 Terminator.
+@ $87F5 label=SystemMessage_7A
+N $87F5 "it doesn't catch on anything.".
+B $87F5,$10 #TOKENS$10
+B $8805,$01 Terminator.
+@ $8806 label=SystemMessage_7B
+N $8806 "no he's a friend(and he's also bigger than you are!)".
+B $8806,$1E #TOKENS$1E
+B $8824,$01 Terminator.
+@ $8825 label=SystemMessage_7C
+N $8825 "the elf says 'We need your help someone must slay the now evil high
+. wizard of the mountains before he destroys us all'.".
+B $8825,$39 #TOKENS$39
+B $885E,$01 Terminator.
+@ $885F label=SystemMessage_7D
+N $885F "it is wet, cold and generally whitish in colour!".
+B $885F,$18 #TOKENS$18
+B $8877,$01 Terminator.
+@ $8878 label=SystemMessage_7E
+N $8878 "one guard steps forward and says 'You cannot pass the road is closed
+. for evil has entered the mountains we cannot let you into our valley'.".
+B $8878,$43 #TOKENS$43
+B $88BB,$01 Terminator.
+@ $88BC label=SystemMessage_7F
+N $88BC "the guards run off screaming 'YETI YETI'.".
+B $88BC,$1B #TOKENS$1B
+B $88D7,$01 Terminator.
+@ $88D8 label=SystemMessage_80
+N $88D8 "so you're feeling suicidal today are you ?".
+B $88D8,$17 #TOKENS$17
+B $88EF,$01 Terminator.
+@ $88F0 label=SystemMessage_81
+N $88F0 "you get off the chair.".
+B $88F0,$09 #TOKENS$09
+B $88F9,$01 Terminator.
+@ $88FA label=SystemMessage_82
+N $88FA "you get off the crate.".
+B $88FA,$09 #TOKENS$09
+B $8903,$01 Terminator.
+@ $8904 label=SystemMessage_83
+N $8904 "the roof is cracked and looks both thin and weak.".
+B $8904,$15 #TOKENS$15
+B $8919,$01 Terminator.
+@ $891A label=SystemMessage_84
+N $891A "you can't reach.".
+B $891A,$07 #TOKENS$07
+B $8921,$01 Terminator.
+@ $8922 label=SystemMessage_85
+N $8922 "the roof shudders and a piece falls from the centre leaving a hole.".
+B $8922,$1F #TOKENS$1F
+B $8941,$01 Terminator.
+@ $8942 label=SystemMessage_86
+N $8942 "the priest says We need your help someone must slay the now evil high
+. wizard of the mountains before he slays us all, I can only give you this
+. bless spell as help but it is a start.".
+B $8942,$58 #TOKENS$58
+B $899A,$01 Terminator.
+@ $899B label=SystemMessage_87
+N $899B "you are dead, slain by the sorcery of the evil wizard, who even now
+. gloats over your corpse as he prepares to destroy your village.".
+B $899B,$3D #TOKENS$3D
+B $89D8,$01 Terminator.
+@ $89D9 label=SystemMessage_88
+N $89D9 "you are sealed in crystal, for all eternity, all you can do is watch
+. as the wizard prepares to destroy your village.".
+B $89D9,$32 #TOKENS$32
+B $8A0B,$01 Terminator.
+@ $8A0C label=SystemMessage_89
+N $8A0C "the demon tries to attack you, but is stopped by the pentagram.".
+B $8A0C,$1B #TOKENS$1B
+B $8A27,$01 Terminator.
+@ $8A28 label=SystemMessage_8A
+N $8A28 "You think (this is questionable) therefore you are, still it seems to
+. have worked!".
+B $8A28,$2B #TOKENS$2B
+B $8A53,$01 Terminator.
+@ $8A54 label=SystemMessage_8B
+N $8A54 "a wall of ice appears in front of you.".
+B $8A54,$12 #TOKENS$12
+B $8A66,$01 Terminator.
+@ $8A67 label=SystemMessage_8C
+N $8A67 "it has a beautiful tone.".
+B $8A67,$10 #TOKENS$10
+B $8A77,$01 Terminator.
+@ $8A78 label=SystemMessage_8D
+N $8A78 "the fireball explodes on the ice melting it away(and annoying the
+. wizard somewhat!).".
+B $8A78,$29 #TOKENS$29
+B $8AA1,$01 Terminator.
+@ $8AA2 label=SystemMessage_8E
+N $8AA2 "....and promptly melts again.".
+B $8AA2,$13 #TOKENS$13
+B $8AB5,$01 Terminator.
+@ $8AB6 label=SystemMessage_8F
+N $8AB6 "a gust of wind blows.".
+B $8AB6,$0A #TOKENS$0A
+B $8AC0,$01 Terminator.
+@ $8AC1 label=SystemMessage_90
+N $8AC1 "the light bounces back of the polished shield and temporarily blinds
+. the wizard.".
+B $8AC1,$24 #TOKENS$24
+B $8AE5,$01 Terminator.
+@ $8AE6 label=SystemMessage_91
+N $8AE6 "the wizard reels back clutching at his head.".
+B $8AE6,$14 #TOKENS$14
+B $8AFA,$01 Terminator.
+@ $8AFB label=SystemMessage_92
+N $8AFB "the wizard casts a spell.".
+B $8AFB,$0A #TOKENS$0A
+B $8B05,$01 Terminator.
+@ $8B06 label=SystemMessage_93
+N $8B06 "the wizard in one final attempt summons his demon master!".
+B $8B06,$1A #TOKENS$1A
+B $8B20,$01 Terminator.
+@ $8B21 label=SystemMessage_94
+N $8B21 "the wizard reels back clutching at his head.".
+B $8B21,$14 #TOKENS$14
+B $8B35,$01 Terminator.
+@ $8B36 label=SystemMessage_95
+N $8B36 "the wizard dies, and all his sorcery is undone.".
+B $8B36,$14 #TOKENS$14
+B $8B4A,$01 Terminator.
+@ $8B4B label=SystemMessage_96
+N $8B4B "the wizard says 'BE NOT!' and you are not!".
+B $8B4B,$12 #TOKENS$12
+B $8B5D,$01 Terminator.
+@ $8B5E label=SystemMessage_97
+N $8B5E "the wizard points at me and utters a hideous curse.".
+B $8B5E,$17 #TOKENS$17
+B $8B75,$01 Terminator.
+@ $8B76 label=SystemMessage_98
+N $8B76 "you stand on the crate.".
+B $8B76,$07 #TOKENS$07
+B $8B7D,$01 Terminator.
+@ $8B7E label=SystemMessage_99
+N $8B7E "you stand on the chair.".
+B $8B7E,$07 #TOKENS$07
+B $8B85,$01 Terminator.
+@ $8B86 label=SystemMessage_9A
+N $8B86 "sparks leap from the wizard.".
+B $8B86,$0C #TOKENS$0C
+B $8B92,$01 Terminator.
+@ $8B93 label=SystemMessage_9B
+N $8B93 "on it is written slayer of sorcerors(IS THIS A HINT ?)".
+B $8B93,$24 #TOKENS$24
+B $8BB7,$01 Terminator.
+@ $8BB8 label=SystemMessage_9C
+N $8BB8 "with a hideous laugh the wizard rubs out part of your pentagram!".
+B $8BB8,$1D #TOKENS$1D
+B $8BD5,$01 Terminator.
+@ $8BD6 label=SystemMessage_9D
+N $8BD6 "the slush melts".
+B $8BD6,$09 #TOKENS$09
+B $8BDF,$01 Terminator.
+@ $8BE0 label=SystemMessage_9E
+N $8BE0 "you have scored".
+B $8BE0,$07 #TOKENS$07
+B $8BE7,$01 Terminator.
+@ $8BE8 label=SystemMessage_9F
+N $8BE8 "you have scored 100% and have completed the entire adventure,
+. congratulations".
+B $8BE8,$28 #TOKENS$28
+B $8C10,$01 Terminator.
+@ $8C11 label=SystemMessage_A0
+N $8C11 "you have completed".
+B $8C11,$08 #TOKENS$08
+B $8C19,$01 Terminator.
+@ $8C1A label=SystemMessage_A1
+N $8C1A "% of the adventure, and have returned safely home".
+B $8C1A,$16 #TOKENS$16
+B $8C30,$01 Terminator.
+@ $8C31 label=SystemMessage_A2
+N $8C31 "it looks as if you could push it".
+B $8C31,$12 #TOKENS$12
+B $8C43,$01 Terminator.
+@ $8C44 label=SystemMessage_A3
+N $8C44 "not enough is reflected...".
+B $8C44,$0F #TOKENS$0F
+B $8C53,$01 Terminator.
+@ $8C54 label=SystemMessage_A4
+N $8C54 "it is phosphorescent.".
+B $8C54,$0A #TOKENS$0A
+B $8C5E,$01 Terminator.
+@ $8C5F label=SystemMessage_A5
+N $8C5F "you see nothing special".
+B $8C5F,$28 #TOKENS$28
+B $8C87,$01 Terminator.
+@ $8C88 label=SystemMessage_A6
+N $8C88 "it leaks".
+B $8C88,$04 #TOKENS$04
+B $8C8C,$01 Terminator.
+@ $8C8D label=SystemMessage_A7
+N $8C8D "Be more specific".
+B $8C8D,$0A #TOKENS$0A
+B $8C97,$01 Terminator.
+@ $8C98 label=SystemMessage_A8
+N $8C98 "Some form of electrical control".
+B $8C98,$12 #TOKENS$12
+B $8CAA,$01 Terminator.
+@ $8CAB label=SystemMessage_A9
+N $8CAB "An explosive spell".
+B $8CAB,$0D #TOKENS$0D
+B $8CB8,$01 Terminator.
+@ $8CB9 label=SystemMessage_AA
+N $8CB9 "Opposite of a curse".
+B $8CB9,$0B #TOKENS$0B
+B $8CC4,$01 Terminator.
+@ $8CC5 label=SystemMessage_AB
+N $8CC5 "See the cassette box for details of hint sheets".
+B $8CC5,$1C #TOKENS$1C
+B $8CE1,$01 Terminator.
+N $8CE2 Unused bytes after the last terminator.
+B $8CE2,$04
 
 t $8CE6 Object Text
 @ $8CE6 label=ObjectText
@@ -2025,7 +2829,963 @@ D $B1BC 256 words used by the message printer. A word ends with bit 7 set on
 . its last letter. The first word is empty: its only byte is #N$80. Later
 . words include the letters of the alphabet, so a token in that range is
 . printed as itself.
-  $B1BC,$2D2
+N $B1BC "#STR(#PC)".
+  $B1BC,$01,c$01 Terminator.
+@ $B1BD label=Dictionary_01
+N $B1BD "#STR(#PC)".
+  $B1BD,$07
+  $B1C4,$01,c$01 Terminator.
+@ $B1C5 label=Dictionary_02
+N $B1C5 "#STR(#PC)".
+  $B1C5,$07
+  $B1CC,$01,c$01 Terminator.
+@ $B1CD label=Dictionary_03
+N $B1CD "#STR(#PC)".
+  $B1CD,$07
+  $B1D4,$01,c$01 Terminator.
+@ $B1D5 label=Dictionary_04
+N $B1D5 "#STR(#PC)".
+  $B1D5,$07
+  $B1DC,$01,c$01 Terminator.
+@ $B1DD label=Dictionary_05
+N $B1DD "#STR(#PC)".
+  $B1DD,$07
+  $B1E4,$01,c$01 Terminator.
+@ $B1E5 label=Dictionary_06
+N $B1E5 "#STR(#PC)".
+  $B1E5,$07
+  $B1EC,$01,c$01 Terminator.
+@ $B1ED label=Dictionary_07
+N $B1ED "#STR(#PC)".
+  $B1ED,$07
+  $B1F4,$01,c$01 Terminator.
+@ $B1F5 label=Dictionary_08
+N $B1F5 "#STR(#PC)".
+  $B1F5,$07
+  $B1FC,$01,c$01 Terminator.
+@ $B1FD label=Dictionary_09
+N $B1FD "#STR(#PC)".
+  $B1FD,$07
+  $B204,$01,c$01 Terminator.
+@ $B205 label=Dictionary_0A
+N $B205 "#STR(#PC)".
+  $B205,$07
+  $B20C,$01,c$01 Terminator.
+@ $B20D label=Dictionary_0B
+N $B20D "#STR(#PC)".
+  $B20D,$07
+  $B214,$01,c$01 Terminator.
+@ $B215 label=Dictionary_0C
+N $B215 "#STR(#PC)".
+  $B215,$06
+  $B21B,$01,c$01 Terminator.
+@ $B21C label=Dictionary_0D
+N $B21C "#STR(#PC)".
+  $B21C,$06
+  $B222,$01,c$01 Terminator.
+@ $B223 label=Dictionary_0E
+N $B223 "#STR(#PC)".
+  $B223,$06
+  $B229,$01,c$01 Terminator.
+@ $B22A label=Dictionary_0F
+N $B22A "#STR(#PC)".
+  $B22A,$05
+  $B22F,$01,c$01 Terminator.
+@ $B230 label=Dictionary_10
+N $B230 "#STR(#PC)".
+  $B230,$05
+  $B235,$01,c$01 Terminator.
+@ $B236 label=Dictionary_11
+N $B236 "#STR(#PC)".
+  $B236,$05
+  $B23B,$01,c$01 Terminator.
+@ $B23C label=Dictionary_12
+N $B23C "#STR(#PC)".
+  $B23C,$05
+  $B241,$01,c$01 Terminator.
+@ $B242 label=Dictionary_13
+N $B242 "#STR(#PC)".
+  $B242,$05
+  $B247,$01,c$01 Terminator.
+@ $B248 label=Dictionary_14
+N $B248 "#STR(#PC)".
+  $B248,$05
+  $B24D,$01,c$01 Terminator.
+@ $B24E label=Dictionary_15
+N $B24E "#STR(#PC)".
+  $B24E,$05
+  $B253,$01,c$01 Terminator.
+@ $B254 label=Dictionary_16
+N $B254 "#STR(#PC)".
+  $B254,$05
+  $B259,$01,c$01 Terminator.
+@ $B25A label=Dictionary_17
+N $B25A "#STR(#PC)".
+  $B25A,$05
+  $B25F,$01,c$01 Terminator.
+@ $B260 label=Dictionary_18
+N $B260 "#STR(#PC)".
+  $B260,$04
+  $B264,$01,c$01 Terminator.
+@ $B265 label=Dictionary_19
+N $B265 "#STR(#PC)".
+  $B265,$04
+  $B269,$01,c$01 Terminator.
+@ $B26A label=Dictionary_1A
+N $B26A "#STR(#PC)".
+  $B26A,$01,c$01 Terminator.
+@ $B26B label=Dictionary_1B
+N $B26B "#STR(#PC)".
+  $B26B,$04
+  $B26F,$01,c$01 Terminator.
+@ $B270 label=Dictionary_1C
+N $B270 "#STR(#PC)".
+  $B270,$04
+  $B274,$01,c$01 Terminator.
+@ $B275 label=Dictionary_1D
+N $B275 "#STR(#PC)".
+  $B275,$04
+  $B279,$01,c$01 Terminator.
+@ $B27A label=Dictionary_1E
+N $B27A "#STR(#PC)".
+  $B27A,$04
+  $B27E,$01,c$01 Terminator.
+@ $B27F label=Dictionary_1F
+N $B27F "#STR(#PC)".
+  $B27F,$04
+  $B283,$01,c$01 Terminator.
+@ $B284 label=Dictionary_20
+N $B284 "#STR(#PC)".
+  $B284,$01,c$01 Terminator.
+@ $B285 label=Dictionary_21
+N $B285 "#STR(#PC)".
+  $B285,$01,c$01 Terminator.
+@ $B286 label=Dictionary_22
+N $B286 "#STR(#PC)".
+  $B286,$04
+  $B28A,$01,c$01 Terminator.
+@ $B28B label=Dictionary_23
+N $B28B "#STR(#PC)".
+  $B28B,$04
+  $B28F,$01,c$01 Terminator.
+@ $B290 label=Dictionary_24
+N $B290 "#STR(#PC)".
+  $B290,$04
+  $B294,$01,c$01 Terminator.
+@ $B295 label=Dictionary_25
+N $B295 "#STR(#PC)".
+  $B295,$01,c$01 Terminator.
+@ $B296 label=Dictionary_26
+N $B296 "#STR(#PC)".
+  $B296,$04
+  $B29A,$01,c$01 Terminator.
+@ $B29B label=Dictionary_27
+N $B29B "#STR(#PC)".
+  $B29B,$01,c$01 Terminator.
+@ $B29C label=Dictionary_28
+N $B29C "#STR(#PC)".
+  $B29C,$01,c$01 Terminator.
+@ $B29D label=Dictionary_29
+N $B29D "#STR(#PC)".
+  $B29D,$01,c$01 Terminator.
+@ $B29E label=Dictionary_2A
+N $B29E "#STR(#PC)".
+  $B29E,$04
+  $B2A2,$01,c$01 Terminator.
+@ $B2A3 label=Dictionary_2B
+N $B2A3 "#STR(#PC)".
+  $B2A3,$04
+  $B2A7,$01,c$01 Terminator.
+@ $B2A8 label=Dictionary_2C
+N $B2A8 "#STR(#PC)".
+  $B2A8,$01,c$01 Terminator.
+@ $B2A9 label=Dictionary_2D
+N $B2A9 "#STR(#PC)".
+  $B2A9,$04
+  $B2AD,$01,c$01 Terminator.
+@ $B2AE label=Dictionary_2E
+N $B2AE "#STR(#PC)".
+  $B2AE,$01,c$01 Terminator.
+@ $B2AF label=Dictionary_2F
+N $B2AF "#STR(#PC)".
+  $B2AF,$01,c$01 Terminator.
+@ $B2B0 label=Dictionary_30
+N $B2B0 "#STR(#PC)".
+  $B2B0,$01,c$01 Terminator.
+@ $B2B1 label=Dictionary_31
+N $B2B1 "#STR(#PC)".
+  $B2B1,$01,c$01 Terminator.
+@ $B2B2 label=Dictionary_32
+N $B2B2 "#STR(#PC)".
+  $B2B2,$04
+  $B2B6,$01,c$01 Terminator.
+@ $B2B7 label=Dictionary_33
+N $B2B7 "#STR(#PC)".
+  $B2B7,$04
+  $B2BB,$01,c$01 Terminator.
+@ $B2BC label=Dictionary_34
+N $B2BC "#STR(#PC)".
+  $B2BC,$01,c$01 Terminator.
+@ $B2BD label=Dictionary_35
+N $B2BD "#STR(#PC)".
+  $B2BD,$04
+  $B2C1,$01,c$01 Terminator.
+@ $B2C2 label=Dictionary_36
+N $B2C2 "#STR(#PC)".
+  $B2C2,$03
+  $B2C5,$01,c$01 Terminator.
+@ $B2C6 label=Dictionary_37
+N $B2C6 "#STR(#PC)".
+  $B2C6,$03
+  $B2C9,$01,c$01 Terminator.
+@ $B2CA label=Dictionary_38
+N $B2CA "#STR(#PC)".
+  $B2CA,$03
+  $B2CD,$01,c$01 Terminator.
+@ $B2CE label=Dictionary_39
+N $B2CE "#STR(#PC)".
+  $B2CE,$03
+  $B2D1,$01,c$01 Terminator.
+@ $B2D2 label=Dictionary_3A
+N $B2D2 "#STR(#PC)".
+  $B2D2,$01,c$01 Terminator.
+@ $B2D3 label=Dictionary_3B
+N $B2D3 "#STR(#PC)".
+  $B2D3,$03
+  $B2D6,$01,c$01 Terminator.
+@ $B2D7 label=Dictionary_3C
+N $B2D7 "#STR(#PC)".
+  $B2D7,$03
+  $B2DA,$01,c$01 Terminator.
+@ $B2DB label=Dictionary_3D
+N $B2DB "#STR(#PC)".
+  $B2DB,$01,c$01 Terminator.
+@ $B2DC label=Dictionary_3E
+N $B2DC "#STR(#PC)".
+  $B2DC,$03
+  $B2DF,$01,c$01 Terminator.
+@ $B2E0 label=Dictionary_3F
+N $B2E0 "#STR(#PC)".
+  $B2E0,$01,c$01 Terminator.
+@ $B2E1 label=Dictionary_40
+N $B2E1 "#STR(#PC)".
+  $B2E1,$03
+  $B2E4,$01,c$01 Terminator.
+@ $B2E5 label=Dictionary_41
+N $B2E5 "#STR(#PC)".
+  $B2E5,$01,c$01 Terminator.
+@ $B2E6 label=Dictionary_42
+N $B2E6 "#STR(#PC)".
+  $B2E6,$01,c$01 Terminator.
+@ $B2E7 label=Dictionary_43
+N $B2E7 "#STR(#PC)".
+  $B2E7,$01,c$01 Terminator.
+@ $B2E8 label=Dictionary_44
+N $B2E8 "#STR(#PC)".
+  $B2E8,$01,c$01 Terminator.
+@ $B2E9 label=Dictionary_45
+N $B2E9 "#STR(#PC)".
+  $B2E9,$01,c$01 Terminator.
+@ $B2EA label=Dictionary_46
+N $B2EA "#STR(#PC)".
+  $B2EA,$01,c$01 Terminator.
+@ $B2EB label=Dictionary_47
+N $B2EB "#STR(#PC)".
+  $B2EB,$01,c$01 Terminator.
+@ $B2EC label=Dictionary_48
+N $B2EC "#STR(#PC)".
+  $B2EC,$01,c$01 Terminator.
+@ $B2ED label=Dictionary_49
+N $B2ED "#STR(#PC)".
+  $B2ED,$01,c$01 Terminator.
+@ $B2EE label=Dictionary_4A
+N $B2EE "#STR(#PC)".
+  $B2EE,$03
+  $B2F1,$01,c$01 Terminator.
+@ $B2F2 label=Dictionary_4B
+N $B2F2 "#STR(#PC)".
+  $B2F2,$03
+  $B2F5,$01,c$01 Terminator.
+@ $B2F6 label=Dictionary_4C
+N $B2F6 "#STR(#PC)".
+  $B2F6,$01,c$01 Terminator.
+@ $B2F7 label=Dictionary_4D
+N $B2F7 "#STR(#PC)".
+  $B2F7,$01,c$01 Terminator.
+@ $B2F8 label=Dictionary_4E
+N $B2F8 "#STR(#PC)".
+  $B2F8,$01,c$01 Terminator.
+@ $B2F9 label=Dictionary_4F
+N $B2F9 "#STR(#PC)".
+  $B2F9,$01,c$01 Terminator.
+@ $B2FA label=Dictionary_50
+N $B2FA "#STR(#PC)".
+  $B2FA,$01,c$01 Terminator.
+@ $B2FB label=Dictionary_51
+N $B2FB "#STR(#PC)".
+  $B2FB,$03
+  $B2FE,$01,c$01 Terminator.
+@ $B2FF label=Dictionary_52
+N $B2FF "#STR(#PC)".
+  $B2FF,$01,c$01 Terminator.
+@ $B300 label=Dictionary_53
+N $B300 "#STR(#PC)".
+  $B300,$01,c$01 Terminator.
+@ $B301 label=Dictionary_54
+N $B301 "#STR(#PC)".
+  $B301,$01,c$01 Terminator.
+@ $B302 label=Dictionary_55
+N $B302 "#STR(#PC)".
+  $B302,$01,c$01 Terminator.
+@ $B303 label=Dictionary_56
+N $B303 "#STR(#PC)".
+  $B303,$03
+  $B306,$01,c$01 Terminator.
+@ $B307 label=Dictionary_57
+N $B307 "#STR(#PC)".
+  $B307,$01,c$01 Terminator.
+@ $B308 label=Dictionary_58
+N $B308 "#STR(#PC)".
+  $B308,$03
+  $B30B,$01,c$01 Terminator.
+@ $B30C label=Dictionary_59
+N $B30C "#STR(#PC)".
+  $B30C,$01,c$01 Terminator.
+@ $B30D label=Dictionary_5A
+N $B30D "#STR(#PC)".
+  $B30D,$03
+  $B310,$01,c$01 Terminator.
+@ $B311 label=Dictionary_5B
+N $B311 "#STR(#PC)".
+  $B311,$03
+  $B314,$01,c$01 Terminator.
+@ $B315 label=Dictionary_5C
+N $B315 "#STR(#PC)".
+  $B315,$03
+  $B318,$01,c$01 Terminator.
+@ $B319 label=Dictionary_5D
+N $B319 "#STR(#PC)".
+  $B319,$03
+  $B31C,$01,c$01 Terminator.
+@ $B31D label=Dictionary_5E
+N $B31D "#STR(#PC)".
+  $B31D,$01,c$01 Terminator.
+@ $B31E label=Dictionary_5F
+N $B31E "#STR(#PC)".
+  $B31E,$03
+  $B321,$01,c$01 Terminator.
+@ $B322 label=Dictionary_60
+N $B322 "#STR(#PC)".
+  $B322,$03
+  $B325,$01,c$01 Terminator.
+@ $B326 label=Dictionary_61
+N $B326 "#STR(#PC)".
+  $B326,$01,c$01 Terminator.
+@ $B327 label=Dictionary_62
+N $B327 "#STR(#PC)".
+  $B327,$01,c$01 Terminator.
+@ $B328 label=Dictionary_63
+N $B328 "#STR(#PC)".
+  $B328,$01,c$01 Terminator.
+@ $B329 label=Dictionary_64
+N $B329 "#STR(#PC)".
+  $B329,$01,c$01 Terminator.
+@ $B32A label=Dictionary_65
+N $B32A "#STR(#PC)".
+  $B32A,$01,c$01 Terminator.
+@ $B32B label=Dictionary_66
+N $B32B "#STR(#PC)".
+  $B32B,$01,c$01 Terminator.
+@ $B32C label=Dictionary_67
+N $B32C "#STR(#PC)".
+  $B32C,$01,c$01 Terminator.
+@ $B32D label=Dictionary_68
+N $B32D "#STR(#PC)".
+  $B32D,$01,c$01 Terminator.
+@ $B32E label=Dictionary_69
+N $B32E "#STR(#PC)".
+  $B32E,$01,c$01 Terminator.
+@ $B32F label=Dictionary_6A
+N $B32F "#STR(#PC)".
+  $B32F,$01,c$01 Terminator.
+@ $B330 label=Dictionary_6B
+N $B330 "#STR(#PC)".
+  $B330,$01,c$01 Terminator.
+@ $B331 label=Dictionary_6C
+N $B331 "#STR(#PC)".
+  $B331,$01,c$01 Terminator.
+@ $B332 label=Dictionary_6D
+N $B332 "#STR(#PC)".
+  $B332,$01,c$01 Terminator.
+@ $B333 label=Dictionary_6E
+N $B333 "#STR(#PC)".
+  $B333,$01,c$01 Terminator.
+@ $B334 label=Dictionary_6F
+N $B334 "#STR(#PC)".
+  $B334,$01,c$01 Terminator.
+@ $B335 label=Dictionary_70
+N $B335 "#STR(#PC)".
+  $B335,$01,c$01 Terminator.
+@ $B336 label=Dictionary_71
+N $B336 "#STR(#PC)".
+  $B336,$01,c$01 Terminator.
+@ $B337 label=Dictionary_72
+N $B337 "#STR(#PC)".
+  $B337,$01,c$01 Terminator.
+@ $B338 label=Dictionary_73
+N $B338 "#STR(#PC)".
+  $B338,$01,c$01 Terminator.
+@ $B339 label=Dictionary_74
+N $B339 "#STR(#PC)".
+  $B339,$01,c$01 Terminator.
+@ $B33A label=Dictionary_75
+N $B33A "#STR(#PC)".
+  $B33A,$01,c$01 Terminator.
+@ $B33B label=Dictionary_76
+N $B33B "#STR(#PC)".
+  $B33B,$01,c$01 Terminator.
+@ $B33C label=Dictionary_77
+N $B33C "#STR(#PC)".
+  $B33C,$01,c$01 Terminator.
+@ $B33D label=Dictionary_78
+N $B33D "#STR(#PC)".
+  $B33D,$01,c$01 Terminator.
+@ $B33E label=Dictionary_79
+N $B33E "#STR(#PC)".
+  $B33E,$01,c$01 Terminator.
+@ $B33F label=Dictionary_7A
+N $B33F "#STR(#PC)".
+  $B33F,$01,c$01 Terminator.
+@ $B340 label=Dictionary_7B
+N $B340 "#STR(#PC)".
+  $B340,$03
+  $B343,$01,c$01 Terminator.
+@ $B344 label=Dictionary_7C
+N $B344 "#STR(#PC)".
+  $B344,$03
+  $B347,$01,c$01 Terminator.
+@ $B348 label=Dictionary_7D
+N $B348 "#STR(#PC)".
+  $B348,$03
+  $B34B,$01,c$01 Terminator.
+@ $B34C label=Dictionary_7E
+N $B34C "#STR(#PC)".
+  $B34C,$01,c$01 Terminator.
+@ $B34D label=Dictionary_7F
+N $B34D "#STR(#PC)".
+  $B34D,$03
+  $B350,$01,c$01 Terminator.
+@ $B351 label=Dictionary_80
+N $B351 "#STR(#PC)".
+  $B351,$03
+  $B354,$01,c$01 Terminator.
+@ $B355 label=Dictionary_81
+N $B355 "#STR(#PC)".
+  $B355,$03
+  $B358,$01,c$01 Terminator.
+@ $B359 label=Dictionary_82
+N $B359 "#STR(#PC)".
+  $B359,$03
+  $B35C,$01,c$01 Terminator.
+@ $B35D label=Dictionary_83
+N $B35D "#STR(#PC)".
+  $B35D,$02
+  $B35F,$01,c$01 Terminator.
+@ $B360 label=Dictionary_84
+N $B360 "#STR(#PC)".
+  $B360,$02
+  $B362,$01,c$01 Terminator.
+@ $B363 label=Dictionary_85
+N $B363 "#STR(#PC)".
+  $B363,$02
+  $B365,$01,c$01 Terminator.
+@ $B366 label=Dictionary_86
+N $B366 "#STR(#PC)".
+  $B366,$02
+  $B368,$01,c$01 Terminator.
+@ $B369 label=Dictionary_87
+N $B369 "#STR(#PC)".
+  $B369,$02
+  $B36B,$01,c$01 Terminator.
+@ $B36C label=Dictionary_88
+N $B36C "#STR(#PC)".
+  $B36C,$02
+  $B36E,$01,c$01 Terminator.
+@ $B36F label=Dictionary_89
+N $B36F "#STR(#PC)".
+  $B36F,$02
+  $B371,$01,c$01 Terminator.
+@ $B372 label=Dictionary_8A
+N $B372 "#STR(#PC)".
+  $B372,$02
+  $B374,$01,c$01 Terminator.
+@ $B375 label=Dictionary_8B
+N $B375 "#STR(#PC)".
+  $B375,$02
+  $B377,$01,c$01 Terminator.
+@ $B378 label=Dictionary_8C
+N $B378 "#STR(#PC)".
+  $B378,$02
+  $B37A,$01,c$01 Terminator.
+@ $B37B label=Dictionary_8D
+N $B37B "#STR(#PC)".
+  $B37B,$02
+  $B37D,$01,c$01 Terminator.
+@ $B37E label=Dictionary_8E
+N $B37E "#STR(#PC)".
+  $B37E,$02
+  $B380,$01,c$01 Terminator.
+@ $B381 label=Dictionary_8F
+N $B381 "#STR(#PC)".
+  $B381,$02
+  $B383,$01,c$01 Terminator.
+@ $B384 label=Dictionary_90
+N $B384 "#STR(#PC)".
+  $B384,$02
+  $B386,$01,c$01 Terminator.
+@ $B387 label=Dictionary_91
+N $B387 "#STR(#PC)".
+  $B387,$02
+  $B389,$01,c$01 Terminator.
+@ $B38A label=Dictionary_92
+N $B38A "#STR(#PC)".
+  $B38A,$02
+  $B38C,$01,c$01 Terminator.
+@ $B38D label=Dictionary_93
+N $B38D "#STR(#PC)".
+  $B38D,$02
+  $B38F,$01,c$01 Terminator.
+@ $B390 label=Dictionary_94
+N $B390 "#STR(#PC)".
+  $B390,$02
+  $B392,$01,c$01 Terminator.
+@ $B393 label=Dictionary_95
+N $B393 "#STR(#PC)".
+  $B393,$02
+  $B395,$01,c$01 Terminator.
+@ $B396 label=Dictionary_96
+N $B396 "#STR(#PC)".
+  $B396,$02
+  $B398,$01,c$01 Terminator.
+@ $B399 label=Dictionary_97
+N $B399 "#STR(#PC)".
+  $B399,$02
+  $B39B,$01,c$01 Terminator.
+@ $B39C label=Dictionary_98
+N $B39C "#STR(#PC)".
+  $B39C,$02
+  $B39E,$01,c$01 Terminator.
+@ $B39F label=Dictionary_99
+N $B39F "#STR(#PC)".
+  $B39F,$02
+  $B3A1,$01,c$01 Terminator.
+@ $B3A2 label=Dictionary_9A
+N $B3A2 "#STR(#PC)".
+  $B3A2,$02
+  $B3A4,$01,c$01 Terminator.
+@ $B3A5 label=Dictionary_9B
+N $B3A5 "#STR(#PC)".
+  $B3A5,$02
+  $B3A7,$01,c$01 Terminator.
+@ $B3A8 label=Dictionary_9C
+N $B3A8 "#STR(#PC)".
+  $B3A8,$02
+  $B3AA,$01,c$01 Terminator.
+@ $B3AB label=Dictionary_9D
+N $B3AB "#STR(#PC)".
+  $B3AB,$02
+  $B3AD,$01,c$01 Terminator.
+@ $B3AE label=Dictionary_9E
+N $B3AE "#STR(#PC)".
+  $B3AE,$02
+  $B3B0,$01,c$01 Terminator.
+@ $B3B1 label=Dictionary_9F
+N $B3B1 "#STR(#PC)".
+  $B3B1,$02
+  $B3B3,$01,c$01 Terminator.
+@ $B3B4 label=Dictionary_A0
+N $B3B4 "#STR(#PC)".
+  $B3B4,$02
+  $B3B6,$01,c$01 Terminator.
+@ $B3B7 label=Dictionary_A1
+N $B3B7 "#STR(#PC)".
+  $B3B7,$02
+  $B3B9,$01,c$01 Terminator.
+@ $B3BA label=Dictionary_A2
+N $B3BA "#STR(#PC)".
+  $B3BA,$02
+  $B3BC,$01,c$01 Terminator.
+@ $B3BD label=Dictionary_A3
+N $B3BD "#STR(#PC)".
+  $B3BD,$02
+  $B3BF,$01,c$01 Terminator.
+@ $B3C0 label=Dictionary_A4
+N $B3C0 "#STR(#PC)".
+  $B3C0,$02
+  $B3C2,$01,c$01 Terminator.
+@ $B3C3 label=Dictionary_A5
+N $B3C3 "#STR(#PC)".
+  $B3C3,$02
+  $B3C5,$01,c$01 Terminator.
+@ $B3C6 label=Dictionary_A6
+N $B3C6 "#STR(#PC)".
+  $B3C6,$02
+  $B3C8,$01,c$01 Terminator.
+@ $B3C9 label=Dictionary_A7
+N $B3C9 "#STR(#PC)".
+  $B3C9,$02
+  $B3CB,$01,c$01 Terminator.
+@ $B3CC label=Dictionary_A8
+N $B3CC "#STR(#PC)".
+  $B3CC,$02
+  $B3CE,$01,c$01 Terminator.
+@ $B3CF label=Dictionary_A9
+N $B3CF "#STR(#PC)".
+  $B3CF,$02
+  $B3D1,$01,c$01 Terminator.
+@ $B3D2 label=Dictionary_AA
+N $B3D2 "#STR(#PC)".
+  $B3D2,$02
+  $B3D4,$01,c$01 Terminator.
+@ $B3D5 label=Dictionary_AB
+N $B3D5 "#STR(#PC)".
+  $B3D5,$02
+  $B3D7,$01,c$01 Terminator.
+@ $B3D8 label=Dictionary_AC
+N $B3D8 "#STR(#PC)".
+  $B3D8,$02
+  $B3DA,$01,c$01 Terminator.
+@ $B3DB label=Dictionary_AD
+N $B3DB "#STR(#PC)".
+  $B3DB,$02
+  $B3DD,$01,c$01 Terminator.
+@ $B3DE label=Dictionary_AE
+N $B3DE "#STR(#PC)".
+  $B3DE,$02
+  $B3E0,$01,c$01 Terminator.
+@ $B3E1 label=Dictionary_AF
+N $B3E1 "#STR(#PC)".
+  $B3E1,$02
+  $B3E3,$01,c$01 Terminator.
+@ $B3E4 label=Dictionary_B0
+N $B3E4 "#STR(#PC)".
+  $B3E4,$02
+  $B3E6,$01,c$01 Terminator.
+@ $B3E7 label=Dictionary_B1
+N $B3E7 "#STR(#PC)".
+  $B3E7,$02
+  $B3E9,$01,c$01 Terminator.
+@ $B3EA label=Dictionary_B2
+N $B3EA "#STR(#PC)".
+  $B3EA,$02
+  $B3EC,$01,c$01 Terminator.
+@ $B3ED label=Dictionary_B3
+N $B3ED "#STR(#PC)".
+  $B3ED,$02
+  $B3EF,$01,c$01 Terminator.
+@ $B3F0 label=Dictionary_B4
+N $B3F0 "#STR(#PC)".
+  $B3F0,$02
+  $B3F2,$01,c$01 Terminator.
+@ $B3F3 label=Dictionary_B5
+N $B3F3 "#STR(#PC)".
+  $B3F3,$02
+  $B3F5,$01,c$01 Terminator.
+@ $B3F6 label=Dictionary_B6
+N $B3F6 "#STR(#PC)".
+  $B3F6,$02
+  $B3F8,$01,c$01 Terminator.
+@ $B3F9 label=Dictionary_B7
+N $B3F9 "#STR(#PC)".
+  $B3F9,$02
+  $B3FB,$01,c$01 Terminator.
+@ $B3FC label=Dictionary_B8
+N $B3FC "#STR(#PC)".
+  $B3FC,$02
+  $B3FE,$01,c$01 Terminator.
+@ $B3FF label=Dictionary_B9
+N $B3FF "#STR(#PC)".
+  $B3FF,$02
+  $B401,$01,c$01 Terminator.
+@ $B402 label=Dictionary_BA
+N $B402 "#STR(#PC)".
+  $B402,$02
+  $B404,$01,c$01 Terminator.
+@ $B405 label=Dictionary_BB
+N $B405 "#STR(#PC)".
+  $B405,$01
+  $B406,$01,c$01 Terminator.
+@ $B407 label=Dictionary_BC
+N $B407 "#STR(#PC)".
+  $B407,$01
+  $B408,$01,c$01 Terminator.
+@ $B409 label=Dictionary_BD
+N $B409 "#STR(#PC)".
+  $B409,$01
+  $B40A,$01,c$01 Terminator.
+@ $B40B label=Dictionary_BE
+N $B40B "#STR(#PC)".
+  $B40B,$01
+  $B40C,$01,c$01 Terminator.
+@ $B40D label=Dictionary_BF
+N $B40D "#STR(#PC)".
+  $B40D,$01
+  $B40E,$01,c$01 Terminator.
+@ $B40F label=Dictionary_C0
+N $B40F "#STR(#PC)".
+  $B40F,$01
+  $B410,$01,c$01 Terminator.
+@ $B411 label=Dictionary_C1
+N $B411 "#STR(#PC)".
+  $B411,$01
+  $B412,$01,c$01 Terminator.
+@ $B413 label=Dictionary_C2
+N $B413 "#STR(#PC)".
+  $B413,$01
+  $B414,$01,c$01 Terminator.
+@ $B415 label=Dictionary_C3
+N $B415 "#STR(#PC)".
+  $B415,$01
+  $B416,$01,c$01 Terminator.
+@ $B417 label=Dictionary_C4
+N $B417 "#STR(#PC)".
+  $B417,$01
+  $B418,$01,c$01 Terminator.
+@ $B419 label=Dictionary_C5
+N $B419 "#STR(#PC)".
+  $B419,$01
+  $B41A,$01,c$01 Terminator.
+@ $B41B label=Dictionary_C6
+N $B41B "#STR(#PC)".
+  $B41B,$01
+  $B41C,$01,c$01 Terminator.
+@ $B41D label=Dictionary_C7
+N $B41D "#STR(#PC)".
+  $B41D,$01
+  $B41E,$01,c$01 Terminator.
+@ $B41F label=Dictionary_C8
+N $B41F "#STR(#PC)".
+  $B41F,$01
+  $B420,$01,c$01 Terminator.
+@ $B421 label=Dictionary_C9
+N $B421 "#STR(#PC)".
+  $B421,$01
+  $B422,$01,c$01 Terminator.
+@ $B423 label=Dictionary_CA
+N $B423 "#STR(#PC)".
+  $B423,$01
+  $B424,$01,c$01 Terminator.
+@ $B425 label=Dictionary_CB
+N $B425 "#STR(#PC)".
+  $B425,$01
+  $B426,$01,c$01 Terminator.
+@ $B427 label=Dictionary_CC
+N $B427 "#STR(#PC)".
+  $B427,$01
+  $B428,$01,c$01 Terminator.
+@ $B429 label=Dictionary_CD
+N $B429 "#STR(#PC)".
+  $B429,$01
+  $B42A,$01,c$01 Terminator.
+@ $B42B label=Dictionary_CE
+N $B42B "#STR(#PC)".
+  $B42B,$01
+  $B42C,$01,c$01 Terminator.
+@ $B42D label=Dictionary_CF
+N $B42D "#STR(#PC)".
+  $B42D,$01
+  $B42E,$01,c$01 Terminator.
+@ $B42F label=Dictionary_D0
+N $B42F "#STR(#PC)".
+  $B42F,$01
+  $B430,$01,c$01 Terminator.
+@ $B431 label=Dictionary_D1
+N $B431 "#STR(#PC)".
+  $B431,$01
+  $B432,$01,c$01 Terminator.
+@ $B433 label=Dictionary_D2
+N $B433 "#STR(#PC)".
+  $B433,$01
+  $B434,$01,c$01 Terminator.
+@ $B435 label=Dictionary_D3
+N $B435 "#STR(#PC)".
+  $B435,$01
+  $B436,$01,c$01 Terminator.
+@ $B437 label=Dictionary_D4
+N $B437 "#STR(#PC)".
+  $B437,$01
+  $B438,$01,c$01 Terminator.
+@ $B439 label=Dictionary_D5
+N $B439 "#STR(#PC)".
+  $B439,$01
+  $B43A,$01,c$01 Terminator.
+@ $B43B label=Dictionary_D6
+N $B43B "#STR(#PC)".
+  $B43B,$01
+  $B43C,$01,c$01 Terminator.
+@ $B43D label=Dictionary_D7
+N $B43D "#STR(#PC)".
+  $B43D,$01
+  $B43E,$01,c$01 Terminator.
+@ $B43F label=Dictionary_D8
+N $B43F "#STR(#PC)".
+  $B43F,$01
+  $B440,$01,c$01 Terminator.
+@ $B441 label=Dictionary_D9
+N $B441 "#STR(#PC)".
+  $B441,$01
+  $B442,$01,c$01 Terminator.
+@ $B443 label=Dictionary_DA
+N $B443 "#STR(#PC)".
+  $B443,$01
+  $B444,$01,c$01 Terminator.
+@ $B445 label=Dictionary_DB
+N $B445 "#STR(#PC)".
+  $B445,$01
+  $B446,$01,c$01 Terminator.
+@ $B447 label=Dictionary_DC
+N $B447 "#STR(#PC)".
+  $B447,$01
+  $B448,$01,c$01 Terminator.
+@ $B449 label=Dictionary_DD
+N $B449 "#STR(#PC)".
+  $B449,$01
+  $B44A,$01,c$01 Terminator.
+@ $B44B label=Dictionary_DE
+N $B44B "#STR(#PC)".
+  $B44B,$01
+  $B44C,$01,c$01 Terminator.
+@ $B44D label=Dictionary_DF
+N $B44D "#STR(#PC)".
+  $B44D,$01
+  $B44E,$01,c$01 Terminator.
+@ $B44F label=Dictionary_E0
+N $B44F "#STR(#PC)".
+  $B44F,$01
+  $B450,$01,c$01 Terminator.
+@ $B451 label=Dictionary_E1
+N $B451 "#STR(#PC)".
+  $B451,$01
+  $B452,$01,c$01 Terminator.
+@ $B453 label=Dictionary_E2
+N $B453 "#STR(#PC)".
+  $B453,$01
+  $B454,$01,c$01 Terminator.
+@ $B455 label=Dictionary_E3
+N $B455 "#STR(#PC)".
+  $B455,$01
+  $B456,$01,c$01 Terminator.
+@ $B457 label=Dictionary_E4
+N $B457 "#STR(#PC)".
+  $B457,$01
+  $B458,$01,c$01 Terminator.
+@ $B459 label=Dictionary_E5
+N $B459 "#STR(#PC)".
+  $B459,$01
+  $B45A,$01,c$01 Terminator.
+@ $B45B label=Dictionary_E6
+N $B45B "#STR(#PC)".
+  $B45B,$01
+  $B45C,$01,c$01 Terminator.
+@ $B45D label=Dictionary_E7
+N $B45D "#STR(#PC)".
+  $B45D,$01
+  $B45E,$01,c$01 Terminator.
+@ $B45F label=Dictionary_E8
+N $B45F "#STR(#PC)".
+  $B45F,$01
+  $B460,$01,c$01 Terminator.
+@ $B461 label=Dictionary_E9
+N $B461 "#STR(#PC)".
+  $B461,$01
+  $B462,$01,c$01 Terminator.
+@ $B463 label=Dictionary_EA
+N $B463 "#STR(#PC)".
+  $B463,$01
+  $B464,$01,c$01 Terminator.
+@ $B465 label=Dictionary_EB
+N $B465 "#STR(#PC)".
+  $B465,$01
+  $B466,$01,c$01 Terminator.
+@ $B467 label=Dictionary_EC
+N $B467 "#STR(#PC)".
+  $B467,$01
+  $B468,$01,c$01 Terminator.
+@ $B469 label=Dictionary_ED
+N $B469 "#STR(#PC)".
+  $B469,$01
+  $B46A,$01,c$01 Terminator.
+@ $B46B label=Dictionary_EE
+N $B46B "#STR(#PC)".
+  $B46B,$01
+  $B46C,$01,c$01 Terminator.
+@ $B46D label=Dictionary_EF
+N $B46D "#STR(#PC)".
+  $B46D,$01
+  $B46E,$01,c$01 Terminator.
+@ $B46F label=Dictionary_F0
+N $B46F "#STR(#PC)".
+  $B46F,$01
+  $B470,$01,c$01 Terminator.
+@ $B471 label=Dictionary_F1
+N $B471 "#STR(#PC)".
+  $B471,$01
+  $B472,$01,c$01 Terminator.
+@ $B473 label=Dictionary_F2
+N $B473 "#STR(#PC)".
+  $B473,$01
+  $B474,$01,c$01 Terminator.
+@ $B475 label=Dictionary_F3
+N $B475 "#STR(#PC)".
+  $B475,$01
+  $B476,$01,c$01 Terminator.
+@ $B477 label=Dictionary_F4
+N $B477 "#STR(#PC)".
+  $B477,$01
+  $B478,$01,c$01 Terminator.
+@ $B479 label=Dictionary_F5
+N $B479 "#STR(#PC)".
+  $B479,$01
+  $B47A,$01,c$01 Terminator.
+@ $B47B label=Dictionary_F6
+N $B47B "#STR(#PC)".
+  $B47B,$01
+  $B47C,$01,c$01 Terminator.
+@ $B47D label=Dictionary_F7
+N $B47D "#STR(#PC)".
+  $B47D,$01
+  $B47E,$01,c$01 Terminator.
+@ $B47F label=Dictionary_F8
+N $B47F "#STR(#PC)".
+  $B47F,$01
+  $B480,$01,c$01 Terminator.
+@ $B481 label=Dictionary_F9
+N $B481 "#STR(#PC)".
+  $B481,$01
+  $B482,$01,c$01 Terminator.
+@ $B483 label=Dictionary_FA
+N $B483 "#STR(#PC)".
+  $B483,$01
+  $B484,$01,c$01 Terminator.
+@ $B485 label=Dictionary_FB
+N $B485 "#STR(#PC)".
+  $B485,$01
+  $B486,$01,c$01 Terminator.
+@ $B487 label=Dictionary_FC
+N $B487 "#STR(#PC)".
+  $B487,$01
+  $B488,$01,c$01 Terminator.
+@ $B489 label=Dictionary_FD
+N $B489 "#STR(#PC)".
+  $B489,$01
+  $B48A,$01,c$01 Terminator.
+@ $B48B label=Dictionary_FE
+N $B48B "#STR(#PC)".
+  $B48B,$01,c$01 Terminator.
+@ $B48C label=Dictionary_FF
+N $B48C "#STR(#PC)".
+  $B48C,$01
+  $B48D,$01,c$01 Terminator.
 
 s $B48E Unused Gap Before World Tables
 @ $B48E label=UnusedBeforeWorld
@@ -2071,13 +3831,13 @@ D $B74F Part of the game's assembler source that happened to be in memory when
 . because the #N$FD at #R$B79C lands there, so #R$6A68 also writes the
 . current room to #R$5DCA(#N$5EBE), a slot no object uses, when dropping
 . everything.
-  $B74F,$0B The end of the line before, "...RD A,(DE)".
-  $B75A,$0B Line 1090: CP (HL).
-  $B765,$0F Line 1100: JR Z,found.
-  $B774,$0A Line 1110: INC DE.
-  $B77E,$0A Line 1120: LD A,E.
-  $B788,$0A Line 1130: CP mem.
-  $B792,$06 Line 1140, cut off after "JR ".
+  $B74F,$0B The end of the line before, "...RD #REGa,(#REGde)".
+  $B75A,$0B #HTML[Line 1090: <code>CP (#REGhl)</code>.]
+  $B765,$0F #HTML(Line 1100: <code>JR Z,found</code>.)
+  $B774,$0A #HTML(Line 1110: <code>INC #REGde</code>.)
+  $B77E,$0A #HTML(Line 1120: <code>LD #REGa,#REGe</code>.)
+  $B788,$0A #HTML(Line 1130: <code>CP mem</code>.)
+  $B792,$06 #HTML(Line 1140, cut off after "<code>JR</code> ".)
 
 b $B798 Per-Room Picture Records
 @ $B798 label=RoomRecords
@@ -2878,7 +4638,7 @@ D $FFDC The last loader block. It loads #N$0100 bytes over the command buffer
 @ $FFE9 label=GameEntry
 N $FFDC The #N$0100 bytes are a headerless block, flagged by the carry.
   $FFDC,$0A Load into #R$5B00.
-  $FFE6,$03 Call #SKOOLKID$0556(LD-BYTES).
+  $FFE6,$03 Call #SKOOLKID$0556(LD_BYTES).
   $FFE9,$03 Call #R$5ECB to run the adventure.
 
 b $FFEC Bytes After Entry

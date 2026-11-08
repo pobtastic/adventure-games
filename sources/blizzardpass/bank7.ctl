@@ -1,3 +1,4 @@
+; Copyright Adventuresoft UK Ltd 1986, 2026 ArcadeGeek LTD.
 > $C000 @org=$C000
 
 s $C000 Unused Bank 7

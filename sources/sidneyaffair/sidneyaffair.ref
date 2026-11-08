@@ -1,0 +1,65 @@
+; Copyright 2026 Paul Maddern (paul@arcadegeek.co.uk)
+
+;
+; SkoolKit ref file for The Sidney Affair
+;
+; To build the HTML disassembly, run these commands:
+;   tap2sna.py @sidneyaffair-side1.t2s
+;   tap2sna.py @sidneyaffair-side2.t2s
+;   sna2skool.py -H -c sources/sidneyaffair/sidneyaffair.ctl SidneyAffairSide1.z80 > sources/sidneyaffair/sidneyaffair.skool
+;   skool2html.py -H sources/sidneyaffair/sidneyaffair.skool -T dark -T wide -toOa
+
+[Config]
+Expand=#INCLUDE(Expand)
+RefFiles=../analytics.ref;../bases.ref;changelog.ref;pokes.ref
+HtmlWriterClass=sources:linking.AdventureGamesHtmlWriter
+GameDir=adventure-games/sidneyaffair
+
+[skool2ctl]
+ListRefs=2
+
+[Game]
+Game=The Sidney Affair
+Logo=#SCR$02,$00,$00,$09,$04,$4000,$5800(/images/logo)
+Copyright=&copy; 1987 Infogrames<br />&copy; 2026 ArcadeGeek LTD.
+Repository=https://github.com/pobtastic/adventure-games/tree/main/sources/sidneyaffair/
+Canonical=https://skoolkit.arcadegeek.co.uk/adventure-games/sidneyaffair/
+GameIndexUrl=https://skoolkit.arcadegeek.co.uk/adventure-games/sidneyaffair/
+OgImage=https://skoolkit.arcadegeek.co.uk/adventure-games/sidneyaffair/images/logo.png
+LinkInternalOperands=1
+AddressAnchor={address#IF({base}==16)(:04x)}
+
+[Titles]
+loader-Index=Loading Code
+
+[OtherCode:loader]
+
+[PageHeaders]
+GameIndex=The complete<>RAM disassembly (work in progress)
+
+[Expand]
+#DEF(#COLOUR(id)
+  #LET(ink=$id&$07)#IF({ink}>=$00)(INK:
+    #MAP({ink})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE)),
+  #LET(paper=$id>>$03&$07)#IF({paper}>=$00)(PAPER:
+    #MAP({paper})(
+      UNKNOWN,
+      0:BLACK,
+      1:BLUE,
+      2:RED,
+      3:MAGENTA,
+      4:GREEN,
+      5:CYAN,
+      6:YELLOW,
+      7:WHITE))
+  #LET(bright=$id&$40)#IF({bright}>$00)((BRIGHT))
+  #LET(flash=$id&$80)#IF({flash}>$00)(FLASH: ON))

@@ -1,4 +1,4 @@
-; Copyright Interceptor Software UK 1986, 2025 ArcadeGeek LTD.
+; Copyright Interceptor Software UK 1986, 2026 ArcadeGeek LTD.
 ; NOTE: Disassembly is Work-In-Progress.
 ; Label naming is loosely based on Action_ActionName_SubAction e.g. Print_HighScore_Loop.
 
@@ -18,7 +18,7 @@
 > $4000 @expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon)$link))
 > $4000 @expand=#IF({asm})(#DEF(#WARLORD(addr)(link=Warlord)$link))
 > $4000 @expand=#IF({asm})(#DEF(#COLOUR(id)))
-> $4000 @expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
+> $4000 @expand=#DEF1(#SKOOLKID(addr,anchor=0)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html#IF({anchor})(#CHR(35)#IF({{mode[base]}}==16)(#EVAL({anchor},16,4),#EVAL({anchor})))">){name}#HTML(</a>))
 > $4000 @expand=#IF({asm})(#DEF(#ANDROMEDA(addr)(link=Message From Andromeda)$link))
 > $4000 @expand=#IF({asm})(#DEF(#FOREST(addr)(link=Forest At Worlds End)$link))
 > $4000 @expand=#IF({asm})(#DEF(#HEROES(addr)(link=Heroes Of Karn)$link))
@@ -331,10 +331,10 @@ c $9DFB Get User Input
 @ $9DFB label=GetUserInput
 E $9DFB View the equivalent code in;
 . #LIST
-. { #HEROES$ABE1 }
-. { #ANDROMEDA$6495 }
 . { #FOREST$BDDA }
+. { #HEROES$ABE1 }
 . { #JEWELS$BA5D }
+. { #ANDROMEDA$6495 }
 . { #WARLORD$A53E }
 . LIST#
 R $9DFB O:A The keypress value
@@ -389,10 +389,10 @@ c $9E2F Pause Loop
 @ $9E2F label=Pause_Loop
 E $9E2F View the equivalent code in;
 . #LIST
-. { #HEROES$AC65 }
-. { #ANDROMEDA$65D2 }
 . { #FOREST$BF41 }
+. { #HEROES$AC65 }
 . { #JEWELS$BB51 }
+. { #ANDROMEDA$65D2 }
 . { #WARLORD$A5C2 }
 . LIST#
 D $9E2F #HTML(Pauses a given number of <code>HALT</code> loops.)
@@ -415,10 +415,10 @@ c $9E80 Save Game
 @ $9E80 label=SaveGame
 E $9E80 View the equivalent code in;
 . #LIST
-. { #HEROES$AC6D }
-. { #ANDROMEDA$69A1 }
 . { #FOREST$C345 }
+. { #HEROES$AC6D }
 . { #JEWELS$BB59 }
+. { #ANDROMEDA$69A1 }
 . { #WARLORD$A5CA }
 . LIST#
   $9E80,$05 Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
@@ -458,10 +458,10 @@ c $9EDB Load From Tape
 @ $9EDB label=LoadTape
 E $9EDB View the equivalent code in;
 . #LIST
-. { #HEROES$ACA8 }
-. { #ANDROMEDA$69DC }
 . { #FOREST$C380 }
+. { #HEROES$ACA8 }
 . { #JEWELS$BB94 }
+. { #ANDROMEDA$69DC }
 . { #WARLORD$A605 }
 . LIST#
   $9EDB,$05 Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
@@ -850,10 +850,10 @@ c $A25C Print Compressed String And A Newline
 @ $A25C label=PrintCompressedStringAndNewline
 E $A25C View the equivalent code in;
 . #LIST
-. { #HEROES$AC35 }
-. { #ANDROMEDA$64E9 }
 . { #FOREST$BE2E }
+. { #HEROES$AC35 }
 . { #JEWELS$BAB1 }
+. { #ANDROMEDA$64E9 }
 . { #WARLORD$A592 }
 . LIST#
 D $A25C Shortcut print routine which prints a newline after it's done.
@@ -893,10 +893,10 @@ c $A275 Print String And A Newline
 @ $A275 label=PrintStringAndNewline
 E $A275 View the equivalent code in;
 . #LIST
-. { #HEROES$AC35 }
-. { #ANDROMEDA$64E9 }
 . { #FOREST$BE2E }
+. { #HEROES$AC35 }
 . { #JEWELS$BAB1 }
+. { #ANDROMEDA$64E9 }
 . { #WARLORD$A592 }
 . LIST#
 D $A275 Shortcut print routine which prints a newline after it's done.
@@ -977,10 +977,10 @@ c $A305 Get Table Entry
 @ $A305 label=GetTableEntry
 E $A305 View the equivalent code in;
 . #LIST
-. { #HEROES$B3F1 }
-. { #ANDROMEDA$6754 }
 . { #FOREST$C0C3 }
+. { #HEROES$B3F1 }
 . { #JEWELS$C1F0 }
+. { #ANDROMEDA$6754 }
 . { #WARLORD$AB88 }
 . LIST#
 D $A305 Retrieves an address from a table using a given index.
@@ -997,10 +997,10 @@ c $A314 Print Objects
 @ $A314 label=PrintObjects
 E $A314 View the equivalent code in;
 . #LIST
-. { #HEROES$B400 }
-. { #ANDROMEDA$6763 }
 . { #FOREST$C0D2 }
+. { #HEROES$B400 }
 . { #JEWELS$C1FF }
+. { #ANDROMEDA$6763 }
 . { #WARLORD$AB97 }
 . LIST#
 R $A314 A #N$01 for inventory items, or room number for room objects
@@ -1417,10 +1417,10 @@ c $A591 Parser: Validate Item
 @ $A591 label=Parser_ValidateItem
 E $A591 View the equivalent code in;
 . #LIST
-. { #HEROES$B52B }
-. { #ANDROMEDA$68A4 }
 . { #FOREST$C213 }
+. { #HEROES$B52B }
 . { #JEWELS$C32A }
+. { #ANDROMEDA$68A4 }
 . { #WARLORD$AE36 }
 . LIST#
 R $A591 BC The position in the user input token of the object
@@ -1456,10 +1456,10 @@ c $A5C6 Validate If Item Is Present
 @ $A5C6 label=ValidateItemPresent
 E $A5C6 View the equivalent code in;
 . #LIST
-. { #HEROES$B560 }
-. { #ANDROMEDA$68E0 }
 . { #FOREST$C24F }
+. { #HEROES$B560 }
 . { #JEWELS$C35F }
+. { #ANDROMEDA$68E0 }
 . { #WARLORD$AE6B }
 . LIST#
 R $A5C6 A Object ID
@@ -1481,10 +1481,10 @@ c $A5DB Match Phrase Tokens
 @ $A5DB label=MatchPhraseTokens
 E $A5DB View the equivalent code in;
 . #LIST
-. { #HEROES$B575 }
-. { #ANDROMEDA$6900 }
 . { #FOREST$C26F }
+. { #HEROES$B575 }
 . { #JEWELS$C37F }
+. { #ANDROMEDA$6900 }
 . { #WARLORD$AE80 }
 . LIST#
 D $A5DB Matches phrase patterns with multiple variations against user input
@@ -1536,10 +1536,10 @@ c $A60A Parser: Count Item References
 @ $A60A label=Parser_CountItems
 E $A60A View the equivalent code in;
 . #LIST
-. { #HEROES$B5A4 }
-. { #ANDROMEDA$692F }
 . { #FOREST$C29E }
+. { #HEROES$B5A4 }
 . { #JEWELS$C3AE }
+. { #ANDROMEDA$692F }
 . { #WARLORD$AEAF }
 . LIST#
 D $A60A Count how many tokens in the user input refer to game items.
@@ -1573,10 +1573,10 @@ c $A62C Item Locator
 @ $A62C label=ItemLocator
 E $A62C View the equivalent code in;
 . #LIST
-. { #HEROES$B5C6 }
-. { #ANDROMEDA$694F }
 . { #FOREST$C2BE }
+. { #HEROES$B5C6 }
 . { #JEWELS$C3D0 }
+. { #ANDROMEDA$694F }
 . { #WARLORD$AED1 }
 . LIST#
 D $A62C Given an item ID, this routine returns the byte stored for its
@@ -1612,8 +1612,8 @@ c $A63B Handler: Destroy Item/ Event
 @ $A63B label=Handler_DestroyItemEvent
 E $A63B View the equivalent code in;
 . #LIST
-. { #HEROES$B5D5 }
 . { #FOREST$C2D8 }
+. { #HEROES$B5D5 }
 . { #JEWELS$C3EA }
 . { #WARLORD$AEE0 }
 . LIST#
@@ -1630,8 +1630,8 @@ c $A642 Handler: Update Item/ Event For The Current Room
 @ $A642 label=Handler_UpdateItemEventCurrentRoom
 E $A642 View the equivalent code in;
 . #LIST
-. { #HEROES$B5DC }
 . { #FOREST$C2DF }
+. { #HEROES$B5DC }
 . { #JEWELS$C3F1 }
 . { #WARLORD$AEE7 }
 . LIST#
@@ -1718,8 +1718,8 @@ c $A679 Transform Item
 @ $A679 label=TransformItem
 E $A679 View the equivalent code in;
 . #LIST
-. { #HEROES$B613 }
 . { #FOREST$C48F }
+. { #HEROES$B613 }
 . { #JEWELS$C426 }
 . { #WARLORD$AF1E }
 . LIST#
@@ -1827,10 +1827,10 @@ c $A6CF Response: "You're Not Carrying Anything"
 @ $A6CF label=Response_YoureNotCarryingAnything
 E $A6CF View the equivalent code in;
 . #LIST
-. { #HEROES$F756 }
-. { #ANDROMEDA$8EC4 }
 . { #FOREST$EDE8 }
+. { #HEROES$F756 }
 . { #JEWELS$F12E }
+. { #ANDROMEDA$8EC4 }
 . { #WARLORD$F824 }
 . LIST#
   $A6CF,$06 Jump to #R$A6DC if *#R$A0D2 is not #N$00.
@@ -1886,25 +1886,25 @@ N $A6F6 Print "#DECODESTR$CE44".
 
 g $A6FD Script Condition State
 @ $A6FD label=ScriptConditionMask
-D $A6FD Working bytes for #R$A6FF. The mask collects condition results and the
-. operator selects AND or OR.
+D $A6FD #HTML(Working bytes for #R$A6FF. The mask collects condition results and the
+. operator selects <code>AND</code> or <code>OR</code>.)
 B $A6FD,$01 Condition mask.
 @ $A6FE label=ScriptConditionOperator
-B $A6FE,$01 #N$FF selects AND and #N$FE selects OR.
+B $A6FE,$01 #HTML(#N$FF selects <code>AND</code> and #N$FE selects <code>OR</code>.)
 
 c $A6FF Handler: Run Script
 @ $A6FF label=Handler_RunScript
 D $A6FF Executes the bytecode at #REGix.
 D $A6FF Each instruction is a condition from #R$A785 followed by an action
 . from #R$A7C1. A condition that fails skips its action.
-D $A6FF #N$FE selects OR for the next condition and #N$FF selects AND.
+D $A6FF #HTML(#N$FE selects <code>OR</code> for the next condition and #N$FF selects <code>AND</code>.)
 D $A6FF #N$FF ends the instruction and starts another one.
 R $A6FF IX Pointer to the script bytecode
   $A6FF,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $A702,$03 #REGhl=#R$A6FD.
   $A705,$02 Start the condition mask at #N$40 (only the zero flag set, meaning the conditions hold).
   $A707,$01 Move #REGhl on to the condition operator.
-  $A708,$02 Start with the AND operator (#N$FF).
+  $A708,$02 #HTML(Start with the <code>AND</code> operator (#N$FF).)
   $A70A,$03 #REGe=*#REGix+#N$00.
   $A70D,$02 Stash #REGix on the stack.
   $A70F,$04 #REGix=#R$A785.
@@ -1913,7 +1913,7 @@ R $A6FF IX Pointer to the script bytecode
   $A718,$01 Jump to *#REGhl.
   $A719,$08 Move #REGix past the four bytes of that condition.
   $A721,$02 Copy the result flags of this condition into #REGc (bit 6 is its zero flag).
-  $A723,$05 See whether the current operator in *#R$A6FE is OR (#N$FE).
+  $A723,$05 #HTML(See whether the current operator in *#R$A6FE is <code>OR</code> (#N$FE).)
   $A728,$03 #REGa=*#R$A6FD.
   $A72B,$02 Jump to #R$A730 if *#R$A6FE is not equal to #N$FE.
   $A72D,$01 #HTML(The script operator is "or", so this check passes if either condition held (<code>OR C</code>).)
@@ -2683,10 +2683,10 @@ c $ABF4 Parser: Validate No Direct Object
 @ $ABF4 label=Parser_ValidateNoDirectObject
 E $ABF4 View the equivalent code in;
 . #LIST
-. { #HEROES$B665 }
-. { #ANDROMEDA$6972 }
 . { #FOREST$C2FE }
+. { #HEROES$B665 }
 . { #JEWELS$C470 }
+. { #ANDROMEDA$6972 }
 . { #WARLORD$AF70 }
 . LIST#
 D $ABF4 The opposite of #R$AC02, checks that there's no direct object.
@@ -2704,10 +2704,10 @@ c $AC02 Parser: Validate Direct Object
 @ $AC02 label=Parser_ValidateDirectObject
 E $AC02 View the equivalent code in;
 . #LIST
-. { #HEROES$B670 }
-. { #ANDROMEDA$697D }
 . { #FOREST$C309 }
+. { #HEROES$B670 }
 . { #JEWELS$C47B }
+. { #ANDROMEDA$697D }
 . { #WARLORD$AF7B }
 . LIST#
 D $AC02 In most adventure games, the structure for a command is "verb + direct
@@ -2747,10 +2747,10 @@ c $AC1D Parser: Validate Input Tokens
 @ $AC1D label=Parser_ValidateInputTokens
 E $AC1D View the equivalent code in;
 . #LIST
-. { #HEROES$B685 }
-. { #ANDROMEDA$6992 }
 . { #FOREST$C31E }
+. { #HEROES$B685 }
 . { #JEWELS$C490 }
+. { #ANDROMEDA$6992 }
 . { #WARLORD$AF90 }
 . LIST#
 R $AC1D O:A The number of references to items in the user input tokens
@@ -2778,8 +2778,8 @@ c $AC2F Parser: Validate Two Direct Objects
 @ $AC2F label=Parser_ValidateTwoDirectObjects
 E $AC2F View the equivalent code in;
 . #LIST
-. { #HEROES$B694 }
 . { #FOREST$C32D }
+. { #HEROES$B694 }
 . { #JEWELS$C49F }
 . { #WARLORD$AF9F }
 . LIST#
@@ -2987,10 +2987,10 @@ c $AD25 Generate Random Number
 @ $AD25 label=GenerateRandomNumber
 E $AD25 View the equivalent code in;
 . #LIST
-. { #HEROES$B77F }
-. { #ANDROMEDA$65D6 }
 . { #FOREST$BF45 }
+. { #HEROES$B77F }
 . { #JEWELS$C582 }
+. { #ANDROMEDA$65D6 }
 . { #WARLORD$B08A }
 . LIST#
 D $AD25 Returns a number from #N$00 up to, but not including, #REGa.
@@ -3133,10 +3133,10 @@ c $AE0D Game Over
 @ $AE0D label=GameOver
 E $AE0D View the equivalent code in;
 . #LIST
-. { #HEROES$E9B5 }
-. { #ANDROMEDA$8DB3 }
 . { #FOREST$EB23 }
+. { #HEROES$E9B5 }
 . { #JEWELS$EDD7 }
+. { #ANDROMEDA$8DB3 }
 . { #WARLORD$E9B2 }
 . LIST#
 N $AE0D Print "#DECODESTR$CD6B".
@@ -3220,10 +3220,10 @@ g $AE7D Table: Room Descriptions
 @ $AE7D label=Table_RoomDescriptions
 E $AE7D View the equivalent code in;
 . #LIST
-. { #HEROES$CE66 }
-. { #ANDROMEDA$8568 }
 . { #FOREST$D44C }
+. { #HEROES$CE66 }
 . { #JEWELS$D3EC }
+. { #ANDROMEDA$8568 }
 . { #WARLORD$C8B0 }
 . LIST#
 W $AE7D,$02 Unused (denotes when an item is "inactive").
@@ -3247,10 +3247,10 @@ g $AFDD Table: Item Descriptions
 @ $AFDD label=Table_ItemDescriptions
 E $AFDD View the equivalent code in;
 . #LIST
-. { #HEROES$CD58 }
-. { #ANDROMEDA$84E6 }
 . { #FOREST$D3B8 }
+. { #HEROES$CD58 }
 . { #JEWELS$D34E }
+. { #ANDROMEDA$84E6 }
 . { #WARLORD$C732 }
 . LIST#
 W $AFDD,$02 Item #N((#PC-$AFDD)/$02):

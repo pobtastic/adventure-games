@@ -1,0 +1,55 @@
+@start
+@remote=main:$4000
+@remote=main:$8000
+@remote=main:$FB09
+@remote=main:$FF57
+
+; BASIC Loader
+;
+; The BASIC program "SIDNEY" on the side 1 tape. It autostarts at line
+; 10.
+; .
+; #LIST { Line 20 loads the first CODE block at #N($8000,$04,$04): a copy
+; of #R$8000@main(DrawPicture) followed by the title card picture. } {
+; Line 30 draws the title card (picture #N$01) straight onto the screen;
+; see #R$4000@main(Loading). } { Line 60 loads the main code block at
+; #N($8000,$04,$04). } { Line 80 loads the code block at #N($FB00,$04,$04)
+; (see #R$FB09@main(DisplayFrame)). } { Line 120 loads the game itself,
+; which is written in BASIC. } LIST#
+@label=BasicLoader
+b$5CCB DEFB $00,$0A,$50,$00,$FD,$33,$32,$37 ; {Line 10: CLEAR 32767: BORDER 7: PAPER 7: BRIGHT 0: POKE
+ $5CD3 DEFB $36,$37,$0E,$00,$00,$FF,$7F,$00 ; 23624,BIN 00111111: INK 7: CLS
+ $5CDB DEFB $3A,$E7,$37,$0E,$00,$00,$07,$00 ;
+ $5CE3 DEFB $00,$3A,$DA,$37,$0E,$00,$00,$07 ;
+ $5CEB DEFB $00,$00,$3A,$DC,$30,$0E,$00,$00 ;
+ $5CF3 DEFB $00,$00,$00,$3A,$F4,$32,$33,$36 ;
+ $5CFB DEFB $32,$34,$0E,$00,$00,$48,$5C,$00 ;
+ $5D03 DEFB $2C,$C4,$30,$30,$31,$31,$31,$31 ;
+ $5D0B DEFB $31,$31,$0E,$00,$00,$3F,$00,$00 ;
+ $5D13 DEFB $3A,$D9,$37,$0E,$00,$00,$07,$00 ;
+ $5D1B DEFB $00,$3A,$FB,$0D                 ; }
+ $5D1F DEFB $00,$14,$05,$00,$EF,$22,$22,$AF ; {Line 20: LOAD ""CODE
+ $5D27 DEFB $0D                             ; }
+ $5D28 DEFB $00,$1E,$2C,$00,$F4,$33,$32,$37 ; {Line 30: POKE 32770,1: RANDOMIZE
+ $5D30 DEFB $37,$30,$0E,$00,$00,$02,$80,$00 ; USR 32768: BRIGHT 1
+ $5D38 DEFB $2C,$31,$0E,$00,$00,$01,$00,$00 ;
+ $5D40 DEFB $3A,$F9,$C0,$33,$32,$37,$36,$38 ;
+ $5D48 DEFB $0E,$00,$00,$00,$80,$00,$3A,$DC ;
+ $5D50 DEFB $31,$0E,$00,$00,$01,$00,$00,$0D ; }
+ $5D58 DEFB $00,$3C,$18,$00,$F5,$AC,$30,$0E ; {Line 60: PRINT AT 0,0;: LOAD
+ $5D60 DEFB $00,$00,$00,$00,$00,$2C,$30,$0E ; ""CODE
+ $5D68 DEFB $00,$00,$00,$00,$00,$3B,$3A,$EF ;
+ $5D70 DEFB $22,$22,$AF,$0D                 ; }
+ $5D74 DEFB $00,$50,$18,$00,$F5,$AC,$30,$0E ; {Line 80: PRINT AT 0,0;: LOAD
+ $5D7C DEFB $00,$00,$00,$00,$00,$2C,$30,$0E ; ""CODE
+ $5D84 DEFB $00,$00,$00,$00,$00,$3B,$3A,$EF ;
+ $5D8C DEFB $22,$22,$AF,$0D                 ; }
+ $5D90 DEFB $00,$6E,$16,$00,$F4,$32,$33,$36 ; {Line 110: POKE 23689,25
+ $5D98 DEFB $38,$39,$0E,$00,$00,$89,$5C,$00 ;
+ $5DA0 DEFB $2C,$32,$35,$0E,$00,$00,$19,$00 ;
+ $5DA8 DEFB $00,$0D                         ; }
+ $5DAA DEFB $00,$78,$18,$00,$F5,$AC,$30,$0E ; {Line 120: PRINT AT 0,0;: LOAD
+ $5DB2 DEFB $00,$00,$00,$00,$00,$2C,$30,$0E ; ""CODE
+ $5DBA DEFB $00,$00,$00,$00,$00,$3B,$3A,$EF ;
+ $5DC2 DEFB $22,$22,$AF,$0D                 ; }
+

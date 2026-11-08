@@ -1,4 +1,4 @@
-; Copyright Interceptor Software UK 1985, 2025 ArcadeGeek LTD.
+; Copyright Interceptor Software UK 1985, 2026 ArcadeGeek LTD.
 ; NOTE: Disassembly is Work-In-Progress.
 ; Label naming is loosely based on Action_ActionName_SubAction e.g. Print_HighScore_Loop.
 
@@ -11,9 +11,13 @@
 > $4000 @expand=#DEF(#OBJECT(id) #MAP($id)(&#10;N/A,00:Roman,01:Fomorian,02:Boar,03:Rats,04:Hare,05:Trap,06:Pool,07:Salt,08:Pot,09:Acorns,10:Urn,11:Torc,12:Raven,13:Helmet,14:Food,15:Iron,16:Monolith,17:Fissure,18:Warrior,19:Demons,20:Hut,21:Vase,22:Cavern,23:Sword,24:Meat,25:Trader,26:Woman,27:Wolves,28:Bear,29:Guard,30:Druid,31:Amulet,32:Ring,33:Pig,34:Rope,35:Ox,36:Skull,37:Shield,38:Fire,39:Pit,40:Ladder,41:Straw,42:Staff,43:Body,44:Cloak,45:Silver,46:Platform,47:Water,48:Lug,49:Danu,50:Minerva,51:Chariot,52:Slab,53:Groove,54:Lake,55:Hillfort,56:Broch))
 > $4000 @expand=#DEF(#TOKEN(id) #MAP($id)(&#10;UNKNOWN,000:"xxxx",001:"I#RAW(,)INVE",002:"L#RAW(,)LOOK",003:"SCOR",004:"EXAM",005:"LOAD",006:"SAVE",007:"QUIT",008:"N#RAW(,)NORT",009:"S#RAW(,)SOUT",010:"E#RAW(,)EAST",011:"W#RAW(,)WEST",012:"U#RAW(,)UP",013:"D#RAW(,)DOWN",014:"TAKE#RAW(,)GET",015:"DROP",016:"THRO",017:"KILL#RAW(,)ATTA#RAW(,)HIT#RAW(,)STRIK",018:"FREE#RAW(,)RELE#RAW(,)UNTI",019:"GIVE",020:"JUMP",021:"CLIM",022:"ENTE",023:"WEAR",024:"SWIM",025:"FUCK#RAW(,)SCRE#RAW(,)RAPE#RAW(,)STUF",026:"GO",027:"CAPT",028:"PLAC#RAW(,)LEAN#RAW(,)LAY",029:"BUY#RAW(,)PURC",030:"STEP",031:"xxxx",032:"DRIN",033:"EAT",034:"SLEE#RAW(,)REST",035:"xxxx",036:"xxxx",037:"ROMA",038:"FOMO",039:"BOAR",040:"RATS",041:"HARE",042:"TRAP",043:"POOL",044:"SALT",045:"POT",046:"ACOR",047:"URN",048:"SLAB",049:"RAVE",050:"HELM",051:"FOOD",052:"IRON",053:"MONO",054:"FISS",055:"WARR",056:"DEMO",057:"HUT",058:"VASE",059:"CAVE",060:"SWOR",061:"MEAT",062:"TRAD",063:"WOMA",064:"WOLV",065:"BEAR",066:"GUAR",067:"DRUI",068:"AMUL#RAW(,)TALI",069:"RING",070:"PIG",071:"ROPE",072:"OX",073:"GROO",074:"SHIE",075:"FIRE#RAW(,)FLAM",076:"LAKE",077:"LADD",078:"STRA",079:"STAF",080:"BODY",081:"CLOA",082:"SILV",083:"PLAT",084:"WATE",085:"LUG",086:"DANU",087:"MINE",088:"CHAR",089:"PIT",090:"TORC",091:"SKUL",092:"HILL",093:"BROC",094:"xxxx",095:"xxxx",096:"AT",097:"FROM",098:"AGAI",099:"WILD",100:"BRON",101:"CLAY",102:"CRYS",103:"PILE",104:"OF",105:"STON",106:"YOUN",107:"WHIT",108:"WITH#RAW(,)USIN",109:"TO",110:"ON#RAW(,)ONTO",111:"IN#RAW(,)INTO",112:"HUMA",113:"OAK",114:"ARME",115:"DEEP",116:"OUT",253:Separator,254:Terminator))
 > $4000 @expand=#DEF(#INK(id) #LET(bright=$id&$40)&#10;#LET(flash=$id&$80)&#10;#LET(ink=$id&$07)#IF({ink}>=$00)(&#10;#MAP({ink})(&#10;UNKNOWN,0:BLACK,1:BLUE,2:RED,3:MAGENTA,4:GREEN,5:CYAN,6:YELLOW,7:WHITE))#IF({bright}>$00)( (BRIGHT))#IF({flash}>$00)( (FLASH: ON)))
-> $4000 @expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon){link}))
+> $4000 @expand=#IF({asm})(#DEF(#ANDROMEDA(addr)(link=Message From Andromeda)$link))
+> $4000 @expand=#IF({asm})(#DEF(#FOREST(addr)(link=Forest At Worlds End)$link))
+> $4000 @expand=#IF({asm})(#DEF(#HEROES(addr)(link=Heroes Of Karn)$link))
+> $4000 @expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon)$link))
+> $4000 @expand=#IF({asm})(#DEF(#SHOCK(addr)(link=After Shock)$link))
 > $4000 @expand=#IF({asm})(#DEF(#COLOUR(id)))
-> $4000 @expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
+> $4000 @expand=#DEF1(#SKOOLKID(addr,anchor=0)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html#IF({anchor})(#CHR(35)#IF({{mode[base]}}==16)(#EVAL({anchor},16,4),#EVAL({anchor})))">){name}#HTML(</a>))
 > $4000 @set-handle-unsupported-macros=1
 b $4000 Loading Screen
 D $4000 #UDGTABLE
@@ -27,7 +31,11 @@ D $4000 #UDGTABLE
 
 c $5B00 Tape Loader
 @ $5B00 label=TapeLoader
-E $5B00 View the equivalent code in #JEWELS$5B00.
+E $5B00 View the equivalent code in;
+. #LIST
+. { #HEROES$5B00 }
+. { #JEWELS$5B00 }
+. LIST#
 N $5B00 Load the first block: screen data.
   $5B00,$04 #REGix=#R$4000(#N$4000).
   $5B04,$03 #REGde=#N$1B00.
@@ -51,7 +59,7 @@ N $5B21 Tape loading routine.
   $5B24,$01 Restore #REGd to its original value.
   $5B25,$01 Disable interrupts.
   $5B26,$04 Set the border to #INK$0F.
-  $5B2A,$03 Call #SKOOLKID$0556(LD_BYTES) at #N$0562.
+  $5B2A,$03 Call #SKOOLKID$0556,$0562(LD_BYTES) at #N$0562.
   $5B2D,$01 Stash #REGaf on the stack.
   $5B2E,$03 #REGa=*#SKOOLKID$5C48(BORDCR).
   $5B31,$02,b$01 Keep only bits 3-5.
@@ -354,14 +362,26 @@ L $A4F7,$02,$1D
 
 c $A531 Game Entry Point
 @ $A531 label=GameEntryPoint
-E $A531 View the equivalent code in #JEWELS$BA50.
+E $A531 View the equivalent code in;
+. #LIST
+. { #SHOCK$9DD7 }
+. { #HEROES$ABD4 }
+. { #JEWELS$BA50 }
+. LIST#
   $A531,$05 Set CAPS LOCK on, using bit 3 of *#SKOOLKID$5C6A(FLAGS2).
   $A536,$05 Write #N$18 to *#R$A82E.
   $A53B,$03 Jump to #R$B14A.
 
 c $A53E Get User Input
 @ $A53E label=GetUserInput
-E $A53E View the equivalent code in #JEWELS$BA5D.
+E $A53E View the equivalent code in;
+. #LIST
+. { #SHOCK$9DFB }
+. { #FOREST$BDDA }
+. { #HEROES$ABE1 }
+. { #JEWELS$BA5D }
+. { #ANDROMEDA$6495 }
+. LIST#
 R $A53E O:A The keypress value
   $A53E,$03 #REGa=*#SKOOLKID$5C3B(FLAGS).
   $A541,$04 Jump back to #R$A53E until a new key is pressed.
@@ -373,14 +393,27 @@ N $A54A Fetch the keypress.
 
 c $A54E Clear Screen
 @ $A54E label=ClearScreen
-E $A54E View the equivalent code in #JEWELS$BA6D.
+E $A54E View the equivalent code in;
+. #LIST
+. { #FOREST$BDEA }
+. { #HEROES$ABF1 }
+. { #JEWELS$BA6D }
+. { #ANDROMEDA$64A5 }
+. LIST#
   $A54E,$03 Call #R$A577.
   $A551,$03 Call #SKOOLKID$0D6B(CLS).
   $A554,$01 Return.
 
 c $A555 Clear Lines
 @ $A555 label=ClearLines
-E $A555 View the equivalent code in #JEWELS$BA74.
+E $A555 View the equivalent code in;
+. #LIST
+. { #SHOCK$9E0B }
+. { #FOREST$BDF1 }
+. { #HEROES$ABF8 }
+. { #JEWELS$BA74 }
+. { #ANDROMEDA$64AC }
+. LIST#
   $A555,$03 Call #R$A577.
   $A558,$07 Clear the number of lines held by *#R$A82E from the bottom of the
 . screen using #SKOOLKID$0E44(CL_LINE).
@@ -388,7 +421,14 @@ E $A555 View the equivalent code in #JEWELS$BA74.
 
 c $A560 Set Default Screen Position
 @ $A560 label=SetDefaultScreenPosition
-E $A560 View the equivalent code in #JEWELS$BA7F.
+E $A560 View the equivalent code in;
+. #LIST
+. { #SHOCK$9E19 }
+. { #FOREST$BDFC }
+. { #HEROES$AC03 }
+. { #JEWELS$BA7F }
+. { #ANDROMEDA$64B7 }
+. LIST#
   $A560,$03 Call #R$A577.
   $A563,$03 #REGbc=#N($0321,$04,$04).
   $A566,$03 Call #SKOOLKID$0DD9(CL_SET).
@@ -396,7 +436,13 @@ E $A560 View the equivalent code in #JEWELS$BA7F.
 
 c $A56A Set Screen Position
 @ $A56A label=SetScreenPosition
-E $A56A View the equivalent code in #JEWELS$BA89.
+E $A56A View the equivalent code in;
+. #LIST
+. { #FOREST$BE06 }
+. { #HEROES$AC0D }
+. { #JEWELS$BA89 }
+. { #ANDROMEDA$64C1 }
+. LIST#
   $A56A,$03 Call #R$A577.
   $A56D,$04 #REGb=*#R$A82E.
   $A571,$05 Call #SKOOLKID$0DD9(CL_SET) with column number #N$21.
@@ -404,7 +450,13 @@ E $A56A View the equivalent code in #JEWELS$BA89.
 
 c $A577 Switch To Normal Screen Output
 @ $A577 label=SwitchNormalScreenOutput
-E $A577 View the equivalent code in #JEWELS$BA96.
+E $A577 View the equivalent code in;
+. #LIST
+. { #FOREST$BE13 }
+. { #HEROES$AC1A }
+. { #JEWELS$BA96 }
+. { #ANDROMEDA$64CE }
+. LIST#
   $A577,$04 Stash #REGhl, #REGde, #REGbc and #REGaf on the stack.
   $A57B,$05 Set the current output channel to the main screen (stream #N$02)
 . using #SKOOLKID$1601(CHAN_OPEN).
@@ -413,9 +465,16 @@ E $A577 View the equivalent code in #JEWELS$BA96.
 
 c $A585 Print String
 @ $A585 label=PrintString
+E $A585 View the equivalent code in;
+. #LIST
+. { #SHOCK$A267 }
+. { #FOREST$BE21 }
+. { #HEROES$AC28 }
+. { #JEWELS$BAA4 }
+. { #ANDROMEDA$64DC }
+. LIST#
 D $A585 Standard printing loop, which prints the fetched character byte and
 . loops until the termination byte is reached (#N$FF).
-E $A585 View the equivalent code in #JEWELS$BAA4.
 R $A585 HL Pointer to string to be printed
   $A585,$03 Call #R$A577.
 N $A588 Just keep looping and printing the fetched character until the
@@ -430,8 +489,16 @@ N $A588 Just keep looping and printing the fetched character until the
 
 c $A592 Print String And A Newline
 @ $A592 label=PrintStringAndNewline
+E $A592 View the equivalent code in;
+. #LIST
+. { #SHOCK$A25C(After Shock (compressed)) }
+. { #SHOCK$A275(After Shock (plain)) }
+. { #FOREST$BE2E }
+. { #HEROES$AC35 }
+. { #JEWELS$BAB1 }
+. { #ANDROMEDA$64E9 }
+. LIST#
 D $A592 Shortcut print routine which prints a newline after it's done.
-E $A592 View the equivalent code in #JEWELS$BAB1.
   $A592,$03 Call #R$A585.
 N $A595 Force a newline to be "printed".
   $A595,$02 Load a "newline" character into #REGa (#N$0D).
@@ -440,8 +507,14 @@ N $A595 Force a newline to be "printed".
 
 c $A59B Scroll Screen
 @ $A59B label=ScrollScreen
+E $A59B View the equivalent code in;
+. #LIST
+. { #FOREST$BE55 }
+. { #HEROES$AC3E }
+. { #JEWELS$BABA }
+. { #ANDROMEDA$6510 }
+. LIST#
 D $A59B Scrolls the screen up and then resets the print position.
-E $A59B View the equivalent code in #JEWELS$BABA.
   $A59B,$01 Switch to the shadow registers.
 N $A59C Scroll the screen up.
   $A59C,$03 Call #SKOOLKID$0DFE(CL_SC_ALL).
@@ -452,7 +525,14 @@ N $A59F Reset the print position.
 
 c $A5A4 Print Character
 @ $A5A4 label=PrintCharacter
-E $A5A4 View the equivalent code in #JEWELS$BAC3.
+E $A5A4 View the equivalent code in;
+. #LIST
+. { #SHOCK$9E26 }
+. { #FOREST$BE37 }
+. { #HEROES$AC47 }
+. { #JEWELS$BAC3 }
+. { #ANDROMEDA$64F2 }
+. LIST#
 R $A5A4 A The character to print
   $A5A4,$01 Stash the character to print on the stack.
   $A5A5,$07 Jump to #R$A5BF if the line byte of #SKOOLKID$5C88(S_POSN) (#N$5C89) is not equal to #N$03.
@@ -475,8 +555,15 @@ N $A5BF Actions printing #REGa to the screen.
 
 c $A5C2 Pause Loop
 @ $A5C2 label=Pause_Loop
+E $A5C2 View the equivalent code in;
+. #LIST
+. { #SHOCK$9E2F }
+. { #FOREST$BF41 }
+. { #HEROES$AC65 }
+. { #JEWELS$BB51 }
+. { #ANDROMEDA$65D2 }
+. LIST#
 D $A5C2 #HTML(Pauses a given number of <code>HALT</code> loops.)
-E $A5C2 View the equivalent code in #JEWELS$BB51.
 R $A5C2 B #HTML(Number of <code>HALT</code> commands to use)
   $A5C2,$01 Halt operation (suspend CPU until the next interrupt).
   $A5C3,$02 Decrease counter by one and loop back to #R$A5C2 until counter is zero.
@@ -484,14 +571,25 @@ R $A5C2 B #HTML(Number of <code>HALT</code> commands to use)
 
 c $A5C6 Fetch Frames
 @ $A5C6 label=FetchFrames
-E $A5C6 View the equivalent code in #JEWELS$BB55.
+E $A5C6 View the equivalent code in;
+. #LIST
+. { #HEROES$AC69 }
+. { #JEWELS$BB55 }
+. LIST#
 R $A5C6 O:A The first byte of the #SKOOLKID$5C78(FRAMES) variable.
   $A5C6,$03 #REGa=*#SKOOLKID$5C78(FRAMES).
   $A5C9,$01 Return.
 
 c $A5CA Save Game
 @ $A5CA label=SaveGame
-E $A5CA View the equivalent code in #JEWELS$BB59.
+E $A5CA View the equivalent code in;
+. #LIST
+. { #SHOCK$9E80 }
+. { #FOREST$C345 }
+. { #HEROES$AC6D }
+. { #JEWELS$BB59 }
+. { #ANDROMEDA$69A1 }
+. LIST#
   $A5CA,$03 #REGa=*#R$A7F0.
   $A5CD,$03 Jump to #R$A5E9 if #REGa is zero.
   $A5D0,$01 #REGb=#REGa.
@@ -520,7 +618,14 @@ N $A5FE Print "#STR$A986,$08($b==$FF)".
 
 c $A605 Load From Tape
 @ $A605 label=LoadTape
-E $A605 View the equivalent code in #JEWELS$BB94.
+E $A605 View the equivalent code in;
+. #LIST
+. { #SHOCK$9EDB }
+. { #FOREST$C380 }
+. { #HEROES$ACA8 }
+. { #JEWELS$BB94 }
+. { #ANDROMEDA$69DC }
+. LIST#
 N $A605 Print "#STR$A915,$08($b==$FF)".
   $A605,$03 #REGhl=#R$A915.
   $A608,$03 Call #R$A592.
@@ -558,7 +663,13 @@ N $A61A Print "#STR$A92A,$08($b==$FF)".
 
 c $A647 Print Input Prompt
 @ $A647 label=PrintInputPrompt
-E $A647 View the equivalent code in #JEWELS$BBD4.
+E $A647 View the equivalent code in;
+. #LIST
+. { #FOREST$C3C0 }
+. { #HEROES$ACEA }
+. { #JEWELS$BBD4 }
+. { #ANDROMEDA$6A1C }
+. LIST#
   $A647,$03 #REGhl=#N$5080 (screen buffer location).
   $A64A,$03 Set the increment in #REGde for the next screen line.
   $A64D,$02 #REGb=#N$08.
@@ -596,6 +707,12 @@ B $A66B,$01 Terminator.
 
 g $A66C Table: Item/ Event Locations
 @ $A66C label=Table_ItemEventLocations
+E $A66C View the equivalent code in;
+. #LIST
+. { #SHOCK$9F88 }
+. { #HEROES$AD76 }
+. { #JEWELS$BBF0 }
+. LIST#
 D $A66C A table where the index is the item/ event ID, and the value is the
 . room it resides in (#N$00 for "currently inactive").
 D $A66C When the item is in the players inventory, the room ID changes to
@@ -844,31 +961,32 @@ W $A7E4,$02 #R$E4E6.
 g $A7E6 Number Of Object
 @ $A7E6 label=Count_Objects
 D $A7E6 The total number of objects in the game.
-W $A7E6,$02 #N$86.
+W $A7E6,$02
 
 g $A7E8 Number Of Items
 @ $A7E8 label=Count_Items
 D $A7E8 The total number of items in the game.
-W $A7E8,$02 #N$39.
+W $A7E8,$02
 
 g $A7EA Number Of Verb Tokens
 @ $A7EA label=Count_VerbTokens
 D $A7EA The total number of verb word tokens the game has. See #R$E489.
-W $A7EA,$02 #N$21.
+W $A7EA,$02
 
 g $A7EC Number Of Rooms With Images
 @ $A7EC label=Count_RoomsWithImages
 D $A7EC The total number of rooms which have related images in the game.
-W $A7EC,$02 #N$0B.
+W $A7EC,$02
 
 g $A7EE Number Of Scenic Events
 @ $A7EE label=Count_ScenicEvents
-E $A7EE The total number of scenic events in the game, see #R$E4E6.
-W $A7EE,$02 #N$11.
+D $A7EE The total number of scenic events in the game. See #R$E4E6.
+W $A7EE,$02
 
 g $A7F0 Number Of "Configurable Exits"
 @ $A7F0 label=Count_ConfigurableExits
-W $A7F0,$02 #N$0B.
+D $A7F0 The total number of configurable exits in the game. See #R$E978.
+W $A7F0,$02
 
 g $A7F2 Command Buffer
 @ $A7F2 label=CommandBuffer
@@ -884,7 +1002,11 @@ L $A824,$01,$0A
 
 g $A82E Line Number
 @ $A82E label=LineNumber
-E $A82E View the equivalent code in #JEWELS$BD70.
+E $A82E View the equivalent code in;
+. #LIST
+. { #HEROES$AF38 }
+. { #JEWELS$BD70 }
+. LIST#
 B $A82E,$01 Printing line.
 
 g $A82F Four Letter Buffer
@@ -1127,7 +1249,13 @@ W $AAEC,$02 "#STR$A8D6,$08($b==$FF)".
 
 c $AAEE Response: "Please Rephrase That"
 @ $AAEE label=Response_PleaseRephraseThat
-E $AAEE View the equivalent code in #JEWELS$BFEE.
+E $AAEE View the equivalent code in;
+. #LIST
+. { #FOREST$BDBE }
+. { #HEROES$B1E4 }
+. { #JEWELS$BFEE }
+. { #ANDROMEDA$6479 }
+. LIST#
 N $AAEE Print "#STR$A9D6,$08($b==$FF)".
   $AAEE,$03 #REGhl=#R$A9D6.
   $AAF1,$03 Call #R$A592.
@@ -1135,7 +1263,13 @@ N $AAEE Print "#STR$A9D6,$08($b==$FF)".
 
 c $AAF5 Response: "Please Be More Specific"
 @ $AAF5 label=Response_PleaseBeMoreSpecific
-E $AAF5 View the equivalent code in #JEWELS$BFF5.
+E $AAF5 View the equivalent code in;
+. #LIST
+. { #FOREST$BDC5 }
+. { #HEROES$B1EB }
+. { #JEWELS$BFF5 }
+. { #ANDROMEDA$6480 }
+. LIST#
 N $AAF5 Print "#STR$A9BD,$08($b==$FF)".
   $AAF5,$03 #REGhl=#R$A9BD.
   $AAF8,$03 Call #R$A592.
@@ -1143,7 +1277,13 @@ N $AAF5 Print "#STR$A9BD,$08($b==$FF)".
 
 c $AAFC Response: "You Can't"
 @ $AAFC label=Response_YouCant
-E $AAFC View the equivalent code in #JEWELS$BFFC.
+E $AAFC View the equivalent code in;
+. #LIST
+. { #FOREST$BDCC }
+. { #HEROES$B1F2 }
+. { #JEWELS$BFFC }
+. { #ANDROMEDA$6487 }
+. LIST#
 N $AAFC Print "#STR$A9EC,$08($b==$FF)".
   $AAFC,$03 #REGhl=#R$A9EC.
   $AAFF,$03 Call #R$A592.
@@ -1151,7 +1291,13 @@ N $AAFC Print "#STR$A9EC,$08($b==$FF)".
 
 c $AB03 Response: "O.K"
 @ $AB03 label=Response_OK
-E $AB03 View the equivalent code in #JEWELS$C003.
+E $AB03 View the equivalent code in;
+. #LIST
+. { #FOREST$BDD3 }
+. { #HEROES$B1F9 }
+. { #JEWELS$C003 }
+. { #ANDROMEDA$648E }
+. LIST#
 N $AB03 Print "#STR$A9F7,$08($b==$FF)".
   $AB03,$03 #REGhl=#R$A9F7.
   $AB06,$03 Call #R$A592.
@@ -1159,6 +1305,13 @@ N $AB03 Print "#STR$A9F7,$08($b==$FF)".
 
 c $AB0A Process Game Events
 @ $AB0A label=GameEventsProcessor
+E $AB0A View the equivalent code in;
+. #LIST
+. { #SHOCK$A280 }
+. { #FOREST$BECE }
+. { #HEROES$B373 }
+. { #JEWELS$C17D }
+. LIST#
 D $AB0A This routine manages two types of in-game events:
 . #HTML(<dl><dt>1. Turn-Based Events</dt>
 . <dd>These are timer-based hazards that count down with each game turn. When a
@@ -1178,7 +1331,6 @@ D $AB0A This routine manages two types of in-game events:
 . { Scenic events don't repeatedly trigger in the same room }
 . { The game world feels dynamic with events occurring in different locations }
 . LIST#
-E $AB0A View the equivalent code in #JEWELS$C17D.
 N $AB0A First process the turn-based events (if any are active).
   $AB0A,$03 Load *#R$A77E into #REGa.
   $AB0D,$03 Jump to #R$AB3C if no turn-based events are currently active.
@@ -1275,8 +1427,15 @@ N $AB87 All done, now return.
 
 c $AB88 Get Table Entry
 @ $AB88 label=GetTableEntry
+E $AB88 View the equivalent code in;
+. #LIST
+. { #SHOCK$A305 }
+. { #FOREST$C0C3 }
+. { #HEROES$B3F1 }
+. { #JEWELS$C1F0 }
+. { #ANDROMEDA$6754 }
+. LIST#
 D $AB88 Retrieves an address from a table using a given index.
-E $AB88 View the equivalent code in #JEWELS$C1F0.
 R $AB88 E Index of item
 R $AB88 IX Base table address
 R $AB88 O:HL Address from the relevant table entry
@@ -1288,7 +1447,14 @@ R $AB88 O:IX Address of the table entry
 
 c $AB97 Print Objects
 @ $AB97 label=PrintObjects
-E $AB97 View the equivalent code in #JEWELS$C1FF.
+E $AB97 View the equivalent code in;
+. #LIST
+. { #SHOCK$A314 }
+. { #FOREST$C0D2 }
+. { #HEROES$B400 }
+. { #JEWELS$C1FF }
+. { #ANDROMEDA$6763 }
+. LIST#
 R $AB97 A #N$01 for inventory items, or room number for room objects
   $AB97,$03 #REGhl=#R$A66C.
   $AB9A,$04 #REGbc=*#R$A7E6.
@@ -1311,9 +1477,13 @@ R $AB97 A #N$01 for inventory items, or room number for room objects
 
 c $ABB6 Handler: Display Room Image
 @ $ABB6 label=Handler_DisplayRoomImage
+E $ABB6 View the equivalent code in;
+. #LIST
+. { #HEROES$B41F }
+. { #JEWELS$C21E }
+. LIST#
 D $ABB6 Determines if the current room has an image relating to it, and if it
 . does - it jumps to the routine to display it.
-E $ABB6 View the equivalent code in #JEWELS$C21E.
 R $ABB6 E #N$01 If the image should be displayed, #N$00 if it should be skipped
 N $ABB6 The game can also load without any graphics at all, so bail if there's
 . nothing needed to do here.
@@ -1381,8 +1551,15 @@ N $ABF0 Finally! Display the room image.
 
 c $AC02 Handler: Display Room Exits
 @ $AC02 label=Handler_RoomExits
+E $AC02 View the equivalent code in;
+. #LIST
+. { #SHOCK$A33A }
+. { #FOREST$C0F9 }
+. { #HEROES$B46B }
+. { #JEWELS$C26A }
+. { #ANDROMEDA$678A }
+. LIST#
 D $AC02 Handles displaying the exits available for the current room.
-E $AC02 View the equivalent code in #JEWELS$C26A.
   $AC02,$03 Call #R$A54E.
   $AC05,$05 Set up the printing position.
   $AC0A,$03 Call #R$AC9A which loads #REGhl with the room data pointer.
@@ -1477,7 +1654,12 @@ N $AC93 Print the objects at this location.
 
 c $AC9A Get Room Pointer
 @ $AC9A label=GetRoomPointer
-E $AC9A View the equivalent code in #JEWELS$C302.
+E $AC9A View the equivalent code in;
+. #LIST
+. { #SHOCK$A41C }
+. { #HEROES$B503 }
+. { #JEWELS$C302 }
+. LIST#
 R $AC9A O:HL Pointer to the room data
 M $AC9A,$06 Load the *#R$A7C3 into #REGde.
   $AC9A,$04 #REGe=*#R$A7C3.
@@ -1489,7 +1671,12 @@ M $AC9A,$06 Load the *#R$A7C3 into #REGde.
 
 c $ACAD Print Room Description
 @ $ACAD label=Print_RoomDescription
-E $ACAD View the equivalent code in #JEWELS$C315.
+E $ACAD View the equivalent code in;
+. #LIST
+. { #SHOCK$A42F }
+. { #HEROES$B516 }
+. { #JEWELS$C315 }
+. LIST#
 R $ACAD A Line number to begin printing
   $ACAD,$03 Write #REGa to *#R$A82E.
   $ACB0,$03 Call #R$A56A.
@@ -1526,6 +1713,10 @@ B $ACCE,$01 Terminator.
 
 c $ACCF Print Cursor
 @ $ACCF label=Print_Cursor
+E $ACCF View the equivalent code in;
+. #LIST
+. { #SHOCK$A450 }
+. LIST#
   $ACCF,$01 Stash #REGhl on the stack.
 N $ACD0 Print "#STR$ACCC,$08($b==$FF)".
   $ACD0,$03 #REGhl=#R$ACCC.
@@ -1535,6 +1726,10 @@ N $ACD0 Print "#STR$ACCC,$08($b==$FF)".
 
 c $ACD8 Is Character A Delimiter
 @ $ACD8 label=IsDelimiter
+E $ACD8 View the equivalent code in;
+. #LIST
+. { #SHOCK$A459 }
+. LIST#
 R $ACD8 O:F The zero flag is set if a delimiter is found
   $ACD8,$02 Stash #REGhl and #REGbc on the stack.
   $ACDA,$03 #REGhl=#R$A663.
@@ -1546,6 +1741,10 @@ R $ACD8 O:F The zero flag is set if a delimiter is found
 
 c $ACE6 Print User Input To Screen
 @ $ACE6 label=Print_UserInputToScreen
+E $ACE6 View the equivalent code in;
+. #LIST
+. { #SHOCK$A467 }
+. LIST#
 R $ACE6 A User input keypress
 R $ACE6 HL Pointer to the command buffer
   $ACE6,$01 Stash the user input keypress on the stack.
@@ -1564,6 +1763,10 @@ N $ACF7 Print the user input keypress to the screen.
 
 c $ACFB Handler: Match Item
 @ $ACFB label=Handler_MatchItem
+E $ACFB View the equivalent code in;
+. #LIST
+. { #SHOCK$A479 }
+. LIST#
 R $ACFB O:F The carry flag is set to indicate that an item was found
   $ACFB,$05 Stash #REGhl, #REGde, #REGbc and #REGix on the stack.
   $AD00,$03 #REGhl=*#R$A7C6.
@@ -1593,9 +1796,13 @@ R $ACFB O:F The carry flag is set to indicate that an item was found
 
 c $AD32 Handler: User Input
 @ $AD32 label=Handler_UserInput
+E $AD32 View the equivalent code in;
+. #LIST
+. { #SHOCK$A4B0 }
+. { #JEWELS$C00A }
+. LIST#
 D $AD32 Handles keyboard input, tokenises commands and validates the
 . vocabulary.
-E $AD32 View the equivalent code in #JEWELS$C00A.
 N $AD32 Reset the screen position to defaults.
   $AD32,$03 Call #R$A560.
   $AD35,$03 Call #R$A647.
@@ -1747,7 +1954,7 @@ N $AE07 Skip delimiter characters to find the next word.
   $AE10,$02 Jump to #R$AE07 if the character is a delimiter.
 N $AE12 The character is not a delimiter.
   $AE12,$03 Store the starting address of this new word in *#R$ACC2.
-  $AE15,$03 Initialise #REGde to #N$00 to count the number of
+  $AE15,$03 Initialise #REGde to #N($0000,$04,$04) to count the number of
 . letters in the word.
 N $AE18 Just keep looping and moving across the command buffer until we hit a
 . delimiter or an "ENTER" character.
@@ -1773,7 +1980,14 @@ N $AE2D Check to see if any of the user input tokens have been populated, and
 
 c $AE36 Parser: Validate Item
 @ $AE36 label=Parser_ValidateItem
-E $AE36 View the equivalent code in #JEWELS$C32A.
+E $AE36 View the equivalent code in;
+. #LIST
+. { #SHOCK$A591 }
+. { #FOREST$C213 }
+. { #HEROES$B52B }
+. { #JEWELS$C32A }
+. { #ANDROMEDA$68A4 }
+. LIST#
 R $AE36 BC The position in the user input token of the object
 R $AE36 O:F The carry flag is set when the item isn't present
   $AE36,$01 Adjust the counter for the sum.
@@ -1805,7 +2019,14 @@ N $AE63 Print "#STR$A8E8,$08($b==$FF)".
 
 c $AE6B Validate If Item Is Present
 @ $AE6B label=ValidateItemPresent
-E $AE6B View the equivalent code in #JEWELS$C35F.
+E $AE6B View the equivalent code in;
+. #LIST
+. { #SHOCK$A5C6 }
+. { #FOREST$C24F }
+. { #HEROES$B560 }
+. { #JEWELS$C35F }
+. { #ANDROMEDA$68E0 }
+. LIST#
 R $AE6B A Object ID
 R $AE6B F Z flag set if the object is available
   $AE6B,$02 Stash #REGhl and #REGde on the stack.
@@ -1823,9 +2044,16 @@ N $AE7D Housekeeping; restore #REGde and #REGhl to their previous values.
 
 c $AE80 Match Phrase Tokens
 @ $AE80 label=MatchPhraseTokens
+E $AE80 View the equivalent code in;
+. #LIST
+. { #SHOCK$A5DB }
+. { #FOREST$C26F }
+. { #HEROES$B575 }
+. { #JEWELS$C37F }
+. { #ANDROMEDA$6900 }
+. LIST#
 D $AE80 Matches phrase patterns with multiple variations against user input
 . tokens.
-E $AE80 View the equivalent code in #JEWELS$C37F.
 R $AE80 HL A pointer to phrase token data
 R $AE80 O:F The Z flag is set if the input matches any pattern
   $AE80,$01 Switch the phrase token pointer to #REGde.
@@ -1871,8 +2099,15 @@ N $AEAD The input doesn't match any patterns.
 
 c $AEAF Parser: Count Item References
 @ $AEAF label=Parser_CountItems
+E $AEAF View the equivalent code in;
+. #LIST
+. { #SHOCK$A60A }
+. { #FOREST$C29E }
+. { #HEROES$B5A4 }
+. { #JEWELS$C3AE }
+. { #ANDROMEDA$692F }
+. LIST#
 D $AEAF Count how many tokens in the user input refer to game items.
-E $AEAF View the equivalent code in #JEWELS$C3AE.
 R $AEAF O:A The number of references to items in the user input tokens
 R $AEAF O:F The Z flag is set when there are no items present in the input
   $AEAF,$03 Set a pointer to #R$A824 in #REGhl.
@@ -1901,10 +2136,17 @@ N $AECA This token does point to a game item, so increase the item counter.
 
 c $AED1 Item Locator
 @ $AED1 label=ItemLocator
+E $AED1 View the equivalent code in;
+. #LIST
+. { #SHOCK$A62C }
+. { #FOREST$C2BE }
+. { #HEROES$B5C6 }
+. { #JEWELS$C3D0 }
+. { #ANDROMEDA$694F }
+. LIST#
 D $AED1 Given an item ID, this routine returns the byte stored for its location
 . (#N$00 for when an item/ event is disabled, #N$01 for when an item is in the
 . players inventory, or pass back the room ID).
-E $AED1 View the equivalent code in #JEWELS$C3D0.
 R $AED1 A Item ID
 R $AED1 O:A Either a room ID, #N$01 for the players inventory, or #N$00 for when the item is disabled
 N $AED1 Create an offset in #REGde.
@@ -1915,8 +2157,13 @@ N $AED1 Create an offset in #REGde.
 
 c $AEDA Is Object In Inventory?
 @ $AEDA label=CheckObjectInInventory
+E $AEDA View the equivalent code in;
+. #LIST
+. { #SHOCK$A635 }
+. { #HEROES$B5CF }
+. { #JEWELS$C3E4 }
+. LIST#
 D $AEDA Checks if a given item is in the players inventory or not.
-E $AEDA View the equivalent code in #JEWELS$C3E4.
 R $AEDA A Object ID
 R $AEDA O:F The zero flag is set if the item is in the players inventory
 N $AEDA The #R$AED1 routine returns with #REGa containing the room ID of the
@@ -1928,9 +2175,15 @@ N $AEDA The #R$AED1 routine returns with #REGa containing the room ID of the
 
 c $AEE0 Handler: Destroy Item/ Event
 @ $AEE0 label=Handler_DestroyItemEvent
+E $AEE0 View the equivalent code in;
+. #LIST
+. { #SHOCK$A63B }
+. { #FOREST$C2D8 }
+. { #HEROES$B5D5 }
+. { #JEWELS$C3EA }
+. LIST#
 D $AEE0 Updates a given item/ event ID so it's then "inactive" (has a location
 . ID of #N$00).
-E $AEE0 View the equivalent code in #JEWELS$C3EA.
 R $AEE0 A Item/ event ID
 N $AEE0 Set the item ID and location (which will be #N$00 to deactivate it).
   $AEE0,$01 Load the item/ event ID into #REGb.
@@ -1940,10 +2193,16 @@ N $AEE0 Set the item ID and location (which will be #N$00 to deactivate it).
 
 c $AEE7 Handler: Update Item/ Event For The Current Room
 @ $AEE7 label=Handler_UpdateItemEventCurrentRoom
+E $AEE7 View the equivalent code in;
+. #LIST
+. { #SHOCK$A642 }
+. { #FOREST$C2DF }
+. { #HEROES$B5DC }
+. { #JEWELS$C3F1 }
+. LIST#
 D $AEE7 Updates a given item/ event ID so it appears in the current room. Used
 . for example, when an item is dropped (so it changes from being #N$01 - in the
 . players inventory, to the current room ID).
-E $AEE7 View the equivalent code in #JEWELS$C3F1.
 R $AEE7 A Item/ event ID
   $AEE7,$01 Load the item/ event ID into #REGb.
   $AEE8,$04 Load #REGc with *#R$A7C3.
@@ -1952,7 +2211,12 @@ R $AEE7 A Item/ event ID
 
 c $AEF0 Send Scenic Event Away
 @ $AEF0 label=ScenicEventTriggered
-E $AEF0 View the equivalent code in #JEWELS$C3FA.
+E $AEF0 View the equivalent code in;
+. #LIST
+. { #SHOCK$A64B }
+. { #HEROES$B5E5 }
+. { #JEWELS$C3FA }
+. LIST#
 R $AEF0 A Scenic event ID (+#N$80)
   $AEF0,$01 Copy the scenic event ID into #REGb.
   $AEF1,$02 Set #REGc to #N($FF), which means the scenic event is switched on
@@ -1985,6 +2249,11 @@ N $AF06 Got to the end and didn't locate the item anywhere.
 
 c $AF08 Handler: Update Item Location
 @ $AF08 label=Handler_UpdateItemLocation
+E $AF08 View the equivalent code in;
+. #LIST
+. { #SHOCK$A663 }
+. { #HEROES$B5FD }
+. LIST#
 R $AF08 B Item ID
 R $AF08 C Room ID
   $AF08,$03 #REGhl=#R$A66C.
@@ -2012,6 +2281,13 @@ C $AF1D,$01 Return.
 
 c $AF1E Transform Item
 @ $AF1E label=TransformItem
+E $AF1E View the equivalent code in;
+. #LIST
+. { #SHOCK$A679 }
+. { #FOREST$C48F }
+. { #HEROES$B613 }
+. { #JEWELS$C426 }
+. LIST#
 R $AF1E B From item ID
 R $AF1E C To item ID
 D $AF1E Rather than use item properties, the game just has separate objects
@@ -2025,7 +2301,6 @@ D $AF1E Rather than use item properties, the game just has separate objects
 . TABLE#
 . When the helmet is worn by the player; item #N$1F is destroyed and replaced
 . with item #N$20.
-E $AF1E View the equivalent code in #JEWELS$C426.
   $AF1E,$04 Call #R$AED1 with the source item ID.
 N $AF22 #REGa now contains the location of the source ID.
   $AF22,$02 Stash the item IDs and source item room ID on the stack.
@@ -2039,6 +2314,11 @@ N $AF2B Activate the destination item in the same room.
 
 c $AF31 Check Item In Current Room
 @ $AF31 label=CheckItemInCurrentRoom
+E $AF31 View the equivalent code in;
+. #LIST
+. { #SHOCK$A68C }
+. { #HEROES$B626 }
+. LIST#
 R $AF31 A Item ID
 R $AF31 O:F Z flag is set if the item is in the current room
 N $AF31 Fetch the room ID of the requested item using the table at #R$A66C.
@@ -2048,7 +2328,12 @@ N $AF31 Fetch the room ID of the requested item using the table at #R$A66C.
 
 c $AF39 Check Room Objects
 @ $AF39 label=CheckRoomObjects
-E $AF39 View the equivalent code in #JEWELS$C439.
+E $AF39 View the equivalent code in;
+. #LIST
+. { #SHOCK$A694 }
+. { #HEROES$B62E }
+. { #JEWELS$C439 }
+. LIST#
 R $AF39 A Room number
 R $AF39 O:A #N$00 when a visible object is here; otherwise non-zero (#N($01), or the room number when nothing is in the room)
 R $AF39 O:F Z is set when a visible object was found
@@ -2076,7 +2361,12 @@ N $AF54 A visible object was found.
 
 c $AF56 Validate Object
 @ $AF56 label=ValidateObject
-E $AF56 View the equivalent code in #JEWELS$C456.
+E $AF56 View the equivalent code in;
+. #LIST
+. { #SHOCK$A6B1 }
+. { #HEROES$B64B }
+. { #JEWELS$C456 }
+. LIST#
 R $AF56 BC Object counter
 R $AF56 O:F Z is unset if the object is valid, set when invalid
   $AF56,$02 Stash #REGaf and #REGbc on the stack.
@@ -2097,8 +2387,15 @@ R $AF56 O:F Z is unset if the object is valid, set when invalid
 
 c $AF70 Parser: Validate No Direct Object
 @ $AF70 label=Parser_ValidateNoDirectObject
+E $AF70 View the equivalent code in;
+. #LIST
+. { #SHOCK$ABF4 }
+. { #FOREST$C2FE }
+. { #HEROES$B665 }
+. { #JEWELS$C470 }
+. { #ANDROMEDA$6972 }
+. LIST#
 D $AF70 The opposite of #R$AF7B, checks that there's no direct object.
-E $AF70 View the equivalent code in #JEWELS$C470.
 R $AF70 O:F The Z flag is set when there's no direct object present
 R $AF70 O:F The carry flag is set when there's a second token set
   $AF70,$06 Return if the second token (*#R$A825) is the terminator
@@ -2110,12 +2407,19 @@ N $AF76 Print "#STR$A9D6,$08($b==$FF)".
 
 c $AF7B Parser: Validate Direct Object
 @ $AF7B label=Parser_ValidateDirectObject
+E $AF7B View the equivalent code in;
+. #LIST
+. { #SHOCK$AC02 }
+. { #FOREST$C309 }
+. { #HEROES$B670 }
+. { #JEWELS$C47B }
+. { #ANDROMEDA$697D }
+. LIST#
 D $AF7B In most adventure games, the structure for a command is "verb + direct
 . object". This is usually how the player interacts with the game world.
 . The verb describes the action, and the direct object is what the action is
 . performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
 . object "SHOE".
-E $AF7B View the equivalent code in #JEWELS$C47B.
 R $AF7B O:A The number of references to items in the user input tokens
 R $AF7B O:F The carry flag is set when the command is malformed
 N $AF7B The first token is the verb, so target the second token for the direct
@@ -2144,7 +2448,14 @@ N $AF8B Print "#STR$A9D6,$08($b==$FF)".
 
 c $AF90 Parser: Validate Input Tokens
 @ $AF90 label=Parser_ValidateInputTokens
-E $AF90 View the equivalent code in #JEWELS$C490.
+E $AF90 View the equivalent code in;
+. #LIST
+. { #SHOCK$AC1D }
+. { #FOREST$C31E }
+. { #HEROES$B685 }
+. { #JEWELS$C490 }
+. { #ANDROMEDA$6992 }
+. LIST#
 R $AF90 O:A The number of references to items in the user input tokens
 R $AF90 O:F The zero flag is set when there is only a verb present
 R $AF90 O:F The zero flag is unset when there is at least one valid direct object
@@ -2167,7 +2478,13 @@ N $AF9A Print "#STR$A9D6,$08($b==$FF)".
 
 c $AF9F Parser: Validate Two Direct Objects
 @ $AF9F label=Parser_ValidateTwoDirectObjects
-E $AF9F View the equivalent code in #JEWELS$C49F.
+E $AF9F View the equivalent code in;
+. #LIST
+. { #SHOCK$AC2F }
+. { #FOREST$C32D }
+. { #HEROES$B694 }
+. { #JEWELS$C49F }
+. LIST#
 R $AF9F O:F The carry flag is set when the command is malformed
   $AF9F,$03 Call #R$AF7B.
   $AFA2,$01 Return if there is no direct object in the user input (so the
@@ -2196,12 +2513,17 @@ N $AFB2 Print "#STR$A9D6,$08($b==$FF)".
 
 c $AFB7 Parser: Validate Any Direct Object
 @ $AFB7 label=Parser_ValidateAnyDirectObject
+E $AFB7 View the equivalent code in;
+. #LIST
+. { #SHOCK$AC4D }
+. { #HEROES$B6AC }
+. { #JEWELS$C4B7 }
+. LIST#
 D $AFB7 In most adventure games, the structure for a command is "verb + direct
 . object". This is usually how the player interacts with the game world.
 . The verb describes the action, and the direct object is what the action is
 . performed on. For example; "TAKE SHOE" uses the verb "TAKE" on the direct
 . object "SHOE".
-E $AFB7 View the equivalent code in #JEWELS$C4B7.
 R $AFB7 O:A The number of valid direct objects in the user input tokens
 R $AFB7 O:F The carry flag is set when the command is malformed
 R $AFB7 O:F The zero flag is set when there are no valid direct objects present in the input tokens
@@ -2226,7 +2548,13 @@ N $AFC3 The user input tokens have a direct object, return how many are in the
 
 c $AFC7 Parser: Process Item
 @ $AFC7 label=Parser_ProcessItem
-E $AFC7 View the equivalent code in #JEWELS$C4C7.
+E $AFC7 View the equivalent code in;
+. #LIST
+. { #SHOCK$AC60 }
+. { #FOREST$C3DC }
+. { #HEROES$B6BC }
+. { #JEWELS$C4C7 }
+. LIST#
   $AFC7,$03 #REGhl=#R$A824.
   $AFCA,$02 Set a counter of #N$0A in #REGb of the maximum number of tokens
 . available in the user input.
@@ -2251,9 +2579,13 @@ E $AFC7 View the equivalent code in #JEWELS$C4C7.
 
 c $AFEB Handler: Scenic Events
 @ $AFEB label=Handler_ScenicEvents
+E $AFEB View the equivalent code in;
+. #LIST
+. { #SHOCK$AC88 }
+. { #JEWELS$C4EB }
+. LIST#
 D $AFEB Handles checking if a scenic event should occur .. and also, handles
 . jumping to the correct related scenic event routine to action it.
-E $AFEB View the equivalent code in #JEWELS$C4EB.
   $AFEB,$03 #REGa=*#R$A7EE.
   $AFEE,$02 Return if *#R$A7EE is zero.
   $AFF0,$01 #REGb=#REGa.
@@ -2288,8 +2620,13 @@ N $B015 This is the return point after the handler has finished executing.
 
 c $B01F Move Player To Room
 @ $B01F label=MovePlayerToRoom
+E $B01F View the equivalent code in;
+. #LIST
+. { #SHOCK$ACBD }
+. { #HEROES$B714 }
+. { #JEWELS$C520 }
+. LIST#
 R $B01F A Destination room ID
-E $B01F View the equivalent code in #JEWELS$C520.
   $B01F,$01 Load the destination room ID into #REGc.
   $B020,$06 Jump to #R$B03D if *#R$A7EE is zero.
   $B026,$01 #REGb=#R$A7EE.
@@ -2331,7 +2668,13 @@ N $B03D Sets the destination room ID as the new current room ID.
 
 c $B05E Handler: Match Verb
 @ $B05E label=Handler_MatchVerb
-E $B05E View the equivalent code in #JEWELS$C556.
+E $B05E View the equivalent code in;
+. #LIST
+. { #FOREST$C463 }
+. { #HEROES$B753 }
+. { #JEWELS$C556 }
+. { #ANDROMEDA$8D85 }
+. LIST#
   $B05E,$03 Load #REGhl with *#R$A7E0.
   $B061,$04 Set the length of the table from *#R$A7EA into #REGbc.
   $B065,$05 Search *#R$A7E0 for *#R$A824.
@@ -2356,15 +2699,27 @@ M $B073,$06 Calculate the index using *#R$A7EA-#REGc-#N($01), and store the
 
 c $B081 Pause, Print String And Scroll
 @ $B081 label=PausePrintStringAndScroll
+E $B081 View the equivalent code in;
+. #LIST
+. { #FOREST$C486 }
+. { #HEROES$B776 }
+. { #JEWELS$C579 }
+. LIST#
 D $B081 For dramatic effect! Used when an event occurs.
-E $B081 View the equivalent code in #JEWELS$C579.
   $B081,$05 #HTML(Call #R$A5C2 using #N$19 <code>HALT</code> loops (for a short pause).)
   $B086,$03 Call #R$A592.
   $B089,$01 Return.
 
 c $B08A Generate Random Number
 @ $B08A label=GenerateRandomNumber
-E $B08A View the equivalent code in #JEWELS$C582.
+E $B08A View the equivalent code in;
+. #LIST
+. { #SHOCK$AD25 }
+. { #FOREST$BF45 }
+. { #HEROES$B77F }
+. { #JEWELS$C582 }
+. { #ANDROMEDA$65D6 }
+. LIST#
 R $B08A A Maximum value of generated number
   $B08A,$01 Stash #REGbc on the stack.
   $B08B,$01 Store the maximum number in #REGc.
@@ -2384,6 +2739,11 @@ R $B08A A Maximum value of generated number
 
 c $B09A Add To Score
 @ $B09A label=AddToScore
+E $B09A View the equivalent code in;
+. #LIST
+. { #SHOCK$AD34 }
+. { #HEROES$B78F }
+. LIST#
 R $B09A A Points to add
   $B09A,$01 Stash #REGhl on the stack.
   $B09B,$03 Load *#R$A7C4 into #REGhl.
@@ -2400,6 +2760,11 @@ N $B0A3 If there was carry, increment the high byte.
 
 c $B0A9 Print Scoring
 @ $B0A9 label=Print_Scoring
+E $B0A9 View the equivalent code in;
+. #LIST
+. { #SHOCK$AD43 }
+. { #HEROES$B79E }
+. LIST#
 D $B0A9 Prints the players score as a percentage.
 N $B0A9 Print "#STR$AACE,$08($b==$FF)".
   $B0A9,$03 #REGhl=#R$AACE.
@@ -2473,6 +2838,10 @@ N $B0FF Nothing matched, so move to the next set of pointers.
 
 c $B10B Print Room Image
 @ $B10B label=Print_RoomImage
+E $B10B View the equivalent code in;
+. #LIST
+. { #SHOCK$9F28 }
+. LIST#
 R $B10B IX Pointer to room image data
   $B10B,$03 #REGhl=#REGix (using the stack).
   $B10E,$04 Add #N$0200 to the image data to skip the header.
@@ -2513,7 +2882,10 @@ N $B144 Keep looping back until the end of the attribute buffer is reached.
 
 c $B14A Game Start Alias
 @ $B14A label=GameStart_Alias
-E $B14A View the equivalent code in #JEWELS$C592.
+E $B14A View the equivalent code in;
+. #LIST
+. { #JEWELS$C592 }
+. LIST#
   $B14A,$03 Jump to #R$FCCE.
 
 t $B14D Messaging: "The Roman"
@@ -3558,19 +3930,38 @@ B $C731,$01 Terminator.
 
 g $C732 Table: Item Descriptions
 @ $C732 label=Table_ItemDescriptions
-E $C732 View the equivalent code in #JEWELS$D34E.
+E $C732 View the equivalent code in;
+. #LIST
+. { #SHOCK$AFDD }
+. { #FOREST$D3B8 }
+. { #HEROES$CD58 }
+. { #JEWELS$D34E }
+. { #ANDROMEDA$84E6 }
+. LIST#
 W $C732,$02 Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
 L $C732,$02,$86
 
 g $C83E Table: Object Noun Phrases
 @ $C83E label=Table_ObjectNounPhrases
-E $C83E View the equivalent code in #JEWELS$D4C6.
+E $C83E View the equivalent code in;
+. #LIST
+. { #SHOCK$AF31 }
+. { #HEROES$CEEA }
+. { #JEWELS$D4C6 }
+. LIST#
 W $C83E,$02 Object #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)): #OBJECT((#PC-$C83E)/$02).
 L $C83E,$02,$39
 
 g $C8B0 Table: Room Descriptions
 @ $C8B0 label=Table_RoomDescriptions
-E $C8B0 View the equivalent code in #JEWELS$D3EC.
+E $C8B0 View the equivalent code in;
+. #LIST
+. { #SHOCK$AE7D }
+. { #FOREST$D44C }
+. { #HEROES$CE66 }
+. { #JEWELS$D3EC }
+. { #ANDROMEDA$8568 }
+. LIST#
 W $C8B0,$02 Unused (denotes when an item is "inactive").
 W $C8B2,$02 Unused (denotes when an item is in the players inventory).
 W $C8B4,$02 Room #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C8B0)/$02)).
@@ -4198,8 +4589,12 @@ B $E307,$01 Terminator.
 
 g $E308 Table: Token Item List
 @ $E308 label=Table_TokenItemList
+E $E308 View the equivalent code in;
+. #LIST
+. { #SHOCK$B49E }
+. { #JEWELS$E83E }
+. LIST#
 D $E308 A list of all tokens which relate to items.
-E $E308 View the equivalent code in #JEWELS$E83E.
 B $E308,$01 Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
 L $E308,$01,$39
 
@@ -4573,6 +4968,12 @@ N $E993 The room ID was found in the table, so jump to the appropriate action.
 
 c $E99F Game Loop
 @ $E99F label=GameLoop
+E $E99F View the equivalent code in;
+. #LIST
+. { #FOREST$EB10 }
+. { #HEROES$E9A1 }
+. { #JEWELS$EDC4 }
+. LIST#
   $E99F,$03 Call #R$AB0A.
   $E9A2,$03 Call #R$AFEB.
   $E9A5,$03 Call #R$AD32.
@@ -4583,6 +4984,14 @@ c $E99F Game Loop
 
 c $E9B2 Game Over
 @ $E9B2 label=GameOver
+E $E9B2 View the equivalent code in;
+. #LIST
+. { #SHOCK$AE0D }
+. { #FOREST$EB23 }
+. { #HEROES$E9B5 }
+. { #JEWELS$EDD7 }
+. { #ANDROMEDA$8DB3 }
+. LIST#
 N $E9B2 Print "#STR$A8EF,$08($b==$FF)".
   $E9B2,$03 #REGhl=#R$A8EF.
   $E9B5,$03 Call #R$A592.
@@ -5089,6 +5498,12 @@ B $ED6C,$01 Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
 
 c $ED6D Print String And A Newline
 @ $ED6D label=PrintStringAndNewline_Duplicate
+E $ED6D View the equivalent code in;
+. #LIST
+. { #FOREST$ED66 }
+. { #HEROES$EA9E }
+. { #JEWELS$F03A }
+. LIST#
   $ED6D,$03 Call #R$A592.
   $ED70,$01 Return.
 
@@ -5113,7 +5528,7 @@ N $ED81 Check if the item is referring to as an "it" or a "them".
   $ED81,$03 Load #R$ED6C into #REGhl.
   $ED84,$01 Load the item ID into #REGa.
   $ED85,$03 Set the count of the number of items in the table
-. (#N$01).
+. (#N($0001,$04,$04)).
   $ED88,$02 Search for the item ID in the table.
   $ED8A,$02 Jump to #R$ED92 if the item ID is in the plurals table.
 N $ED8C The item is singular.
@@ -5139,6 +5554,11 @@ N $EDA0 Print "#STR$AA21,$08($b==$FF)".
 
 c $EDA6 Handler: Pick Up Item
 @ $EDA6 label=Handler_PickUpItem
+E $EDA6 View the equivalent code in;
+. #LIST
+. { #SHOCK$AA6E }
+. { #FOREST$EEED }
+. LIST#
 R $EDA6 B Item ID
   $EDA6,$05 Call #R$AF08 using the item ID passed in #REGb, to change the
 . location to #N$01 (to the players inventory).
@@ -5157,6 +5577,10 @@ R $EDB2 A Item ID
 
 c $EDB8 Handler: Drop Item
 @ $EDB8 label=Handler_DropItem
+E $EDB8 View the equivalent code in;
+. #LIST
+. { #SHOCK$AA8A }
+. LIST#
 R $EDB8 A Item ID
   $EDB8,$03 Call #R$AEDA.
 N $EDBB Print "#STR$AA9B,$08($b==$FF)".
@@ -6517,7 +6941,7 @@ R $F620 F The zero flag is set if the word was found
   $F620,$03 Set a pointer in #REGhl to #R$A825 (the second token in the user
 . input tokens table).
   $F623,$03 Set a counter in #REGbc for the length of the rest of the user
-. input tokens table (#N$09 bytes).
+. input tokens table (#N($0009,$04,$04) bytes).
   $F626,$02 #REGa=#TOKEN$3C.
   $F628,$02 Search for the word "SWORD" in the table.
   $F62A,$01 Return.
@@ -6596,7 +7020,7 @@ N $F69F The player wants to kill the Fomorian, check which version of the
   $F69F,$06 Call #R$AEF7 with #R$E348.
 N $F6A5 Is the Fomorian already dead?
   $F6A5,$03 #REGhl=#R$FC8A.
-  $F6A8,$03 Set a counter in #REGbc of the length of the table #N$03.
+  $F6A8,$03 Set a counter in #REGbc of the length of the table #N($0003,$04,$04).
   $F6AB,$02 Search for the version of the Fomorian found in the table of dead
 . Fomorian item IDs.
 N $F6AD Print "#STR$CDE8,$08($b==$FF)" if the Fomorian is already dead..
@@ -6813,6 +7237,14 @@ N $F81E Print "#STR$CE6C,$08($b==$FF)".
 
 c $F824 Action: Inventory
 @ $F824 label=Action_Inventory
+E $F824 View the equivalent code in;
+. #LIST
+. { #SHOCK$A6CF }
+. { #FOREST$EDE8 }
+. { #HEROES$F756 }
+. { #JEWELS$F12E }
+. { #ANDROMEDA$8EC4 }
+. LIST#
   $F824,$03 Call #R$AF70.
 N $F827 The "INVENTORY" command can only be called on its own.
   $F827,$01 Return if there's any token set in #R$A825.
@@ -6830,6 +7262,13 @@ N $F835 Print "#STR$AA3B,$08($b==$FF)".
 
 c $F841 Action: Look
 @ $F841 label=Action_Look
+E $F841 View the equivalent code in;
+. #LIST
+. { #FOREST$EE05 }
+. { #HEROES$F773 }
+. { #JEWELS$F14B }
+. { #ANDROMEDA$8EDA }
+. LIST#
   $F841,$03 Call #R$AF70.
 N $F844 The "LOOK" command can only be called on its own.
   $F844,$01 Return if there's any token set in #R$A825.
@@ -6839,6 +7278,10 @@ N $F844 The "LOOK" command can only be called on its own.
 
 c $F84B Action: Score
 @ $F84B label=Action_Score
+E $F84B View the equivalent code in;
+. #LIST
+. { #HEROES$F77D }
+. LIST#
   $F84B,$03 Call #R$AF70.
 N $F84E The "SCORE" command can only be called on its own.
   $F84E,$01 Return if there's any token set in #R$A825.
@@ -6847,6 +7290,10 @@ N $F84E The "SCORE" command can only be called on its own.
 
 c $F853 Action: Examine
 @ $F853 label=Action_Examine
+E $F853 View the equivalent code in;
+. #LIST
+. { #HEROES$F785 }
+. LIST#
   $F853,$03 Call #R$AF7B.
   $F856,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -6886,6 +7333,13 @@ N $F895 The "LOAD" command can only be called on its own.
 
 c $F8A1 Action: Save
 @ $F8A1 label=Action_Save
+E $F8A1 View the equivalent code in;
+. #LIST
+. { #FOREST$EE89 }
+. { #HEROES$F7BC }
+. { #JEWELS$F23E }
+. { #ANDROMEDA$8FA9 }
+. LIST#
   $F8A1,$03 Call #R$AF70.
 N $F8A4 The "SAVE" command can only be called on its own.
   $F8A4,$01 Return if there's any token set in #R$A825.
@@ -6894,6 +7348,13 @@ N $F8A4 The "SAVE" command can only be called on its own.
 
 c $F8A9 Action: Quit
 @ $F8A9 label=Action_Quit
+E $F8A9 View the equivalent code in;
+. #LIST
+. { #FOREST$EE91 }
+. { #HEROES$F7C4 }
+. { #JEWELS$F246 }
+. { #ANDROMEDA$8FB1 }
+. LIST#
   $F8A9,$03 Call #R$AF70.
 N $F8AC The "QUIT" command can only be called on its own.
   $F8AC,$01 Return if there's any token set in #R$A825.
@@ -6944,10 +7405,22 @@ c $F8D9 Action: Up
 c $F8DD Action: Down
 @ $F8DD label=Action_Down
 E $F8DD Continue on to #R$F8DF.
+E $F8DD View the equivalent code in;
+. #LIST
+. { #FOREST$EE23 }
+. { #HEROES$F7F8 }
+. { #JEWELS$F169 }
+. { #ANDROMEDA$8EF8 }
+. LIST#
   $F8DD,$02 #REGc=#N$05.
 
 c $F8DF Move Player
 @ $F8DF label=MovePlayer
+E $F8DF View the equivalent code in;
+. #LIST
+. { #SHOCK$A6E8 }
+. { #JEWELS$F16B }
+. LIST#
 D $F8DF The data in #R$E714 is stored in a particular order for each room:
 . #TABLE(default,centre,centre)
 . { =h Offset | =h Exit To Room }
@@ -7022,6 +7495,10 @@ L $F96D,$02,$04,$02
 
 c $F975 Action: Drop
 @ $F975 label=Action_Drop
+E $F975 View the equivalent code in;
+. #LIST
+. { #HEROES$F8D0 }
+. LIST#
   $F975,$03 Call #R$AF7B.
   $F978,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7133,6 +7610,10 @@ L $FA87,$02,$05,$02
 
 c $FA91 Action: Drink
 @ $FA91 label=Action_Drink
+E $FA91 View the equivalent code in;
+. #LIST
+. { #HEROES$FAA5 }
+. LIST#
   $FA91,$03 Call #R$AF7B.
   $FA94,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7224,6 +7705,10 @@ L $FB4B,$02,$09,$02
 
 c $FB5D Action: Wear
 @ $FB5D label=Action_Wear
+E $FB5D View the equivalent code in;
+. #LIST
+. { #JEWELS$FBD5 }
+. LIST#
   $FB5D,$03 Call #R$AF7B.
   $FB60,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7300,6 +7785,10 @@ L $FBDA,$02,$02,$02
 
 c $FBDE Action: Capture
 @ $FBDE label=Action_Capture
+E $FBDE View the equivalent code in;
+. #LIST
+. { #HEROES$FA72 }
+. LIST#
   $FBDE,$03 Call #R$AF7B.
   $FBE1,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7446,6 +7935,11 @@ L $FCCB,$01,$03,$02
 
 c $FCCE Game Start
 @ $FCCE label=GameStart
+E $FCCE View the equivalent code in;
+. #LIST
+. { #HEROES$FBA9 }
+. { #JEWELS$FD82 }
+. LIST#
   $FCCE,$0B Copy #N$0186 bytes from #R$FD02 to #R$A66C.
 N $FCD9 Remove a bunch of room exits (as actions in the game will open them
 . back up).
@@ -7528,6 +8022,13 @@ B $FE88,$01 Unused.
 
 g $FE89 Jump Table: Verbs
 @ $FE89 label=JumpTable_Verbs
+E $FE89 View the equivalent code in;
+. #LIST
+. { #FOREST$FB0D }
+. { #HEROES$FD63 }
+. { #JEWELS$FF3A }
+. { #ANDROMEDA$FA20 }
+. LIST#
 D $FE89 A jump table of verb routines, the ordering here is from #R$E489.
 .
 . Used by the routine at #R$B05E.
@@ -7560,6 +8061,10 @@ L $FEFC,$02,$0B
 
 c $FF12 Handler: Room Images
 @ $FF12 label=DisplayImage_WoodedVale
+E $FF12 View the equivalent code in;
+. #LIST
+. { #JEWELS$FEFA }
+. LIST#
 N $FF12 Displays the image for The Wooded Vale.
 N $FF12 #PUSHS
 . #UDGTABLE
