@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Kentilla: Routine at EEF1</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Kentilla: Routine at EEF1. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:title" content="Kentilla: Routine at EEF1" />
+<meta property="og:description" content="Kentilla: Routine at EEF1. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:site_name" content="ArcadeGeek" />
+<meta property="og:type" content="article" />
+<link rel="canonical" href="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EEF1.html" />
+<meta property="og:url" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EEF1.html" />
+<meta property="og:image" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@graph": [
+{
+"@type": "WebSite",
+"@id": "https://skoolkit.arcadegeek.co.uk/#website",
+"name": "ArcadeGeek",
+"url": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "TechArticle",
+"headline": "Kentilla: Routine at EEF1",
+"name": "Kentilla: Routine at EEF1",
+"description": "Kentilla: Routine at EEF1. Complete ZX Spectrum RAM disassembly.",
+"inLanguage": "en",
+"isPartOf": {"@id": "https://skoolkit.arcadegeek.co.uk/#website"},
+"author": {
+"@type": "Organization",
+"name": "ArcadeGeek",
+"url": "https://www.arcadegeek.co.uk/"
+},
+"about": {
+"@type": "VideoGame",
+"name": "Kentilla",
+"gamePlatform": "ZX Spectrum"
+}
+,"url": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EEF1.html"
+,"image": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png"
+},
+{
+"@type": "BreadcrumbList",
+"itemListElement": [
+{
+"@type": "ListItem",
+"position": 1,
+"name": "ArcadeGeek",
+"item": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "ListItem",
+"position": 2,
+"name": "Adventure game disassemblies",
+"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/"
+},
+{
+"@type": "ListItem",
+"position": 3,
+"name": "Kentilla"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/"
+}
+,{
+"@type": "ListItem",
+"position": 4,
+"name": "Routine at EEF1"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EEF1.html"
+}
+]
+}
+]
+}
+</script>
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="EEE7.html">EEE7</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#eef1">Map</a></td>
+<td class="next">
+Next: <a href="EF82.html">EF82</a>
+</td>
+</tr>
+</table>
+<div class="description">EEF1: Print Message</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="EF92.html">CallSubMessage</a> and <a href="EFA4.html">SubMessageSelect</a>.
+</div>
+<div class="paragraph">
+Walks a message script pointed to by <span class="register">HL</span>. Most bytes are literal character codes passed to <a href="EF82.html">ClipAndPrintCharacter</a>; values below 20 are control codes:
+</div>
+<div class="paragraph">
+<table class="default">
+<tr>
+<th colspan="1" rowspan="1">Code</th>
+<th colspan="1" rowspan="1">Action</th>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">00-17</td>
+<td class="centre" colspan="1" rowspan="1">Set row, then column (also <a href="5B00.html">PrintLeftMarginColumn</a>)</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">18</td>
+<td class="centre" colspan="1" rowspan="1">Set attribute at <a href="5BF5.html">PrintState</a></td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">19</td>
+<td class="centre" colspan="1" rowspan="1">Set flags at <a href="5BF5.html#5bf6">PrintState_Flags</a></td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">1A</td>
+<td class="centre" colspan="1" rowspan="1">End of script (return)</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">1B</td>
+<td class="centre" colspan="1" rowspan="1">Repeat current character</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">1C</td>
+<td class="centre" colspan="1" rowspan="1">Fill a box of spaces</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">1D</td>
+<td class="centre" colspan="1" rowspan="1">New line from <a href="5B00.html">PrintLeftMarginColumn</a></td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">1E</td>
+<td class="centre" colspan="1" rowspan="1">Add to column; advance row</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">1F</td>
+<td class="centre" colspan="1" rowspan="1">Call sub-script via <a href="EF92.html">CallSubMessage</a></td>
+</tr>
+</table>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eef1"></span>
+<div class="comments">
+<div class="paragraph">
+Dispatch the next script byte to a control handler, or print it as a literal character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage</td>
+<td class="address-2"><span id="eef1"></span>EEF1</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="2">Fetch the next script byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eef2"></span>EEF2</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eef3"></span>
+<div class="comments">
+<div class="paragraph">
+Codes 00-17 set the print row and column.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eef3"></span>EEF3</td>
+<td class="instruction">CP $18</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EEF1.html#ef17">PrintMessage_SetPosition</a> if <span class="register">A</span> is less than 18.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eef5"></span>EEF5</td>
+<td class="instruction">JR C,<a href="EEF1.html#ef17">PrintMessage_SetPosition</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eef7"></span>
+<div class="comments">
+<div class="paragraph">
+Code 18 sets the print attribute.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eef7"></span>EEF7</td>
+<td class="instruction">JR Z,<a href="EEF1.html#ef24">PrintMessage_SetAttribute</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EEF1.html#ef24">PrintMessage_SetAttribute</a> if <span class="register">A</span> is 18.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eef9"></span>
+<div class="comments">
+<div class="paragraph">
+Code 1A ends the script.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eef9"></span>EEF9</td>
+<td class="instruction">CP $1A</td>
+<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with 1A.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eefb"></span>EEFB</td>
+<td class="instruction">RET Z</td>
+<td class="comment-1" rowspan="1">Return if this is the end-of-script code.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eefc"></span>
+<div class="comments">
+<div class="paragraph">
+Code 19 sets the print flags.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eefc"></span>EEFC</td>
+<td class="instruction">JR C,<a href="EEF1.html#ef2b">PrintMessage_SetFlags</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EEF1.html#ef2b">PrintMessage_SetFlags</a> if <span class="register">A</span> is less than 1A.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eefe"></span>
+<div class="comments">
+<div class="paragraph">
+Code 1B repeats the current character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eefe"></span>EEFE</td>
+<td class="instruction">CP $1C</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EEF1.html#ef32">PrintMessage_Repeat</a> if <span class="register">A</span> is less than 1C.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef00"></span>EF00</td>
+<td class="instruction">JR C,<a href="EEF1.html#ef32">PrintMessage_Repeat</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ef02"></span>
+<div class="comments">
+<div class="paragraph">
+Code 1C fills a box of spaces.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef02"></span>EF02</td>
+<td class="instruction">JR Z,<a href="EEF1.html#ef3c">PrintMessage_FillBox</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EEF1.html#ef3c">PrintMessage_FillBox</a> if <span class="register">A</span> is 1C.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ef04"></span>
+<div class="comments">
+<div class="paragraph">
+Code 1D starts a new line from the left margin.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef04"></span>EF04</td>
+<td class="instruction">CP $1E</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EEF1.html#ef67">PrintMessage_NewLine</a> if <span class="register">A</span> is less than 1E.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef06"></span>EF06</td>
+<td class="instruction">JR C,<a href="EEF1.html#ef67">PrintMessage_NewLine</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ef08"></span>
+<div class="comments">
+<div class="paragraph">
+Code 1E adds to the column, then advances the row.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef08"></span>EF08</td>
+<td class="instruction">JR Z,<a href="EEF1.html#ef77">PrintMessage_AddColumn</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EEF1.html#ef77">PrintMessage_AddColumn</a> if <span class="register">A</span> is 1E.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ef0a"></span>
+<div class="comments">
+<div class="paragraph">
+Code 1F calls a location-art sub-script.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef0a"></span>EF0A</td>
+<td class="instruction">CP $1F</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EF92.html">CallSubMessage</a> if <span class="register">A</span> is 1F.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef0c"></span>EF0C</td>
+<td class="instruction">JP Z,<a href="EF92.html">CallSubMessage</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ef0f"></span>
+<div class="comments">
+<div class="paragraph">
+Literal character: store it and print via <a href="EF82.html">ClipAndPrintCharacter</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef0f"></span>EF0F</td>
+<td class="instruction">LD ($5BF9),A</td>
+<td class="comment-1" rowspan="2">Store the character in *<a href="5BF5.html#5bf9">PrintState_Character</a> and print it.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef12"></span>EF12</td>
+<td class="instruction">CALL <a href="EF82.html">ClipAndPrintCharacter</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef15"></span>EF15</td>
+<td class="instruction">JR <a href="EEF1.html#eef1">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EEF1.html">PrintMessage</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage_SetPosition</td>
+<td class="address-2"><span id="ef17"></span>EF17</td>
+<td class="instruction">LD ($5BF8),A</td>
+<td class="comment-1" rowspan="3">Store the new row and column in the print state.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef1a"></span>EF1A</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef1b"></span>EF1B</td>
+<td class="instruction">LD ($5BF7),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef1e"></span>EF1E</td>
+<td class="instruction">LD ($5B00),A</td>
+<td class="comment-1" rowspan="3">Remember the left margin at <a href="5B00.html">PrintLeftMarginColumn</a> and continue.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef21"></span>EF21</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef22"></span>EF22</td>
+<td class="instruction">JR <a href="EEF1.html#eef1">PrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage_SetAttribute</td>
+<td class="address-2"><span id="ef24"></span>EF24</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="4">Store the next script byte as the print attribute.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef25"></span>EF25</td>
+<td class="instruction">LD ($5BF5),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef28"></span>EF28</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef29"></span>EF29</td>
+<td class="instruction">JR <a href="EEF1.html#eef1">PrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage_SetFlags</td>
+<td class="address-2"><span id="ef2b"></span>EF2B</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="4">Store the next script byte as the print flags.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef2c"></span>EF2C</td>
+<td class="instruction">LD ($5BF6),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef2f"></span>EF2F</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef30"></span>EF30</td>
+<td class="instruction">JR <a href="EEF1.html#eef1">PrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage_Repeat</td>
+<td class="address-2"><span id="ef32"></span>EF32</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="2">Load the repeat count from the script.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef33"></span>EF33</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage_Repeat_Loop</td>
+<td class="address-2"><span id="ef34"></span>EF34</td>
+<td class="instruction">CALL <a href="EF82.html">ClipAndPrintCharacter</a></td>
+<td class="comment-1" rowspan="2">Print the current character that many times.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef37"></span>EF37</td>
+<td class="instruction">DJNZ <a href="EEF1.html#ef34">PrintMessage_Repeat_Loop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef39"></span>EF39</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Advance the script and continue.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef3a"></span>EF3A</td>
+<td class="instruction">JR <a href="EEF1.html#eef1">PrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage_FillBox</td>
+<td class="address-2"><span id="ef3c"></span>EF3C</td>
+<td class="instruction">LD B,(HL)</td>
+<td class="comment-1" rowspan="4">Set the fill character to a space and load the row count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef3d"></span>EF3D</td>
+<td class="instruction">LD A,$20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef3f"></span>EF3F</td>
+<td class="instruction">LD ($5BF9),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef42"></span>EF42</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef43"></span>EF43</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="5">Store the fill attribute and start row from the script.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef44"></span>EF44</td>
+<td class="instruction">LD ($5BF5),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef47"></span>EF47</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef48"></span>EF48</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef49"></span>EF49</td>
+<td class="instruction">LD ($5BF8),A</td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage_FillBox_Row</td>
+<td class="address-2"><span id="ef4c"></span>EF4C</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="4">Begin a row of 14 spaces from column 06.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef4d"></span>EF4D</td>
+<td class="instruction">LD B,$14</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef4f"></span>EF4F</td>
+<td class="instruction">LD A,$06</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef51"></span>EF51</td>
+<td class="instruction">LD ($5BF7),A</td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage_FillBox_Column</td>
+<td class="address-2"><span id="ef54"></span>EF54</td>
+<td class="instruction">CALL <a href="EF82.html">ClipAndPrintCharacter</a></td>
+<td class="comment-1" rowspan="2">Print one row of spaces.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef57"></span>EF57</td>
+<td class="instruction">DJNZ <a href="EEF1.html#ef54">PrintMessage_FillBox_Column</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef59"></span>EF59</td>
+<td class="instruction">LD A,($5BF8)</td>
+<td class="comment-1" rowspan="5">Advance the print row and loop until the box is filled.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef5c"></span>EF5C</td>
+<td class="instruction">INC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef5d"></span>EF5D</td>
+<td class="instruction">LD ($5BF8),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef60"></span>EF60</td>
+<td class="instruction">POP BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef61"></span>EF61</td>
+<td class="instruction">DJNZ <a href="EEF1.html#ef4c">PrintMessage_FillBox_Row</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef63"></span>EF63</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Advance the script and continue.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef64"></span>EF64</td>
+<td class="instruction">JP <a href="EEF1.html#eef1">PrintMessage</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage_NewLine</td>
+<td class="address-2"><span id="ef67"></span>EF67</td>
+<td class="instruction">LD A,($5B00)</td>
+<td class="comment-1" rowspan="2">Restore the column from the left-margin copy at <a href="5B00.html">PrintLeftMarginColumn</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef6a"></span>EF6A</td>
+<td class="instruction">LD ($5BF7),A</td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage_AdvanceRow</td>
+<td class="address-2"><span id="ef6d"></span>EF6D</td>
+<td class="instruction">LD A,($5BF8)</td>
+<td class="comment-1" rowspan="3">Advance the print row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef70"></span>EF70</td>
+<td class="instruction">INC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef71"></span>EF71</td>
+<td class="instruction">LD ($5BF8),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef74"></span>EF74</td>
+<td class="instruction">JP <a href="EEF1.html#eef1">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EEF1.html">PrintMessage</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintMessage_AddColumn</td>
+<td class="address-2"><span id="ef77"></span>EF77</td>
+<td class="instruction">LD B,(HL)</td>
+<td class="comment-1" rowspan="5">Add the next script byte to the left-margin column.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef78"></span>EF78</td>
+<td class="instruction">LD A,($5B00)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef7b"></span>EF7B</td>
+<td class="instruction">ADD A,B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef7c"></span>EF7C</td>
+<td class="instruction">LD ($5BF7),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef7f"></span>EF7F</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ef80"></span>EF80</td>
+<td class="instruction">JR <a href="EEF1.html#ef6d">PrintMessage_AdvanceRow</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EEF1.html#ef6d">PrintMessage_AdvanceRow</a> to advance the row.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="EEE7.html">EEE7</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#eef1">Map</a></td>
+<td class="next">
+Next: <a href="EF82.html">EF82</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Micromega<br />&copy; 2026 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/kentilla/">Source code</a>.</div>
+<div><a href="../dec/asm/61169.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

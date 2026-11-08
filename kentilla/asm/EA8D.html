@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Kentilla: Routine at EA8D</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Kentilla: Routine at EA8D. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:title" content="Kentilla: Routine at EA8D" />
+<meta property="og:description" content="Kentilla: Routine at EA8D. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:site_name" content="ArcadeGeek" />
+<meta property="og:type" content="article" />
+<link rel="canonical" href="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EA8D.html" />
+<meta property="og:url" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EA8D.html" />
+<meta property="og:image" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@graph": [
+{
+"@type": "WebSite",
+"@id": "https://skoolkit.arcadegeek.co.uk/#website",
+"name": "ArcadeGeek",
+"url": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "TechArticle",
+"headline": "Kentilla: Routine at EA8D",
+"name": "Kentilla: Routine at EA8D",
+"description": "Kentilla: Routine at EA8D. Complete ZX Spectrum RAM disassembly.",
+"inLanguage": "en",
+"isPartOf": {"@id": "https://skoolkit.arcadegeek.co.uk/#website"},
+"author": {
+"@type": "Organization",
+"name": "ArcadeGeek",
+"url": "https://www.arcadegeek.co.uk/"
+},
+"about": {
+"@type": "VideoGame",
+"name": "Kentilla",
+"gamePlatform": "ZX Spectrum"
+}
+,"url": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EA8D.html"
+,"image": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png"
+},
+{
+"@type": "BreadcrumbList",
+"itemListElement": [
+{
+"@type": "ListItem",
+"position": 1,
+"name": "ArcadeGeek",
+"item": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "ListItem",
+"position": 2,
+"name": "Adventure game disassemblies",
+"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/"
+},
+{
+"@type": "ListItem",
+"position": 3,
+"name": "Kentilla"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/"
+}
+,{
+"@type": "ListItem",
+"position": 4,
+"name": "Routine at EA8D"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EA8D.html"
+}
+]
+}
+]
+}
+</script>
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="EA60.html">EA60</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#ea8d">Map</a></td>
+<td class="next">
+Next: <a href="EB3E.html">EB3E</a>
+</td>
+</tr>
+</table>
+<div class="description">EA8D: Print Character</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="EB51.html">InputLine</a>, <a href="ECC0.html">InputLine_Redraw</a>, <a href="EF82.html">ClipAndPrintCharacter</a> and <a href="F0E6.html">SubmitInputLine</a>.
+</div>
+<div class="paragraph">
+Plots one character glyph into the display file. Callers set up <a href="5BF5.html">PrintState</a> first.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter</td>
+<td class="address-2"><span id="ea8d"></span>EA8D</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="4">Stash the flags, counters, screen pointer and glyph pointer on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea8e"></span>EA8E</td>
+<td class="instruction">PUSH BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea8f"></span>EA8F</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea90"></span>EA90</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ea91"></span>
+<div class="comments">
+<div class="paragraph">
+Pick the plot opcode written into <a href="EA8D.html#eaf1">PrintCharacter_PlotOpcode</a>: AE (<code>XOR (HL)</code>) or B6 (<code>OR (HL)</code>) from bit 2 of the flags.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea91"></span>EA91</td>
+<td class="instruction">LD A,($5BF6)</td>
+<td class="comment-1" rowspan="2">Fetch *<a href="5BF5.html#5bf6">PrintState_Flags</a> and test bit 2.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea94"></span>EA94</td>
+<td class="instruction">BIT 2,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea96"></span>EA96</td>
+<td class="instruction">LD A,$AE</td>
+<td class="comment-1" rowspan="2">Prefer AE (XOR) unless bit 2 was set.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea98"></span>EA98</td>
+<td class="instruction">JR Z,<a href="EA8D.html#ea9c">PrintCharacter_SetPlotOpcode</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea9a"></span>EA9A</td>
+<td class="instruction">LD A,$B6</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=B6 (OR).</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_SetPlotOpcode</td>
+<td class="address-2"><span id="ea9c"></span>EA9C</td>
+<td class="instruction">LD ($EAF1),A</td>
+<td class="comment-1" rowspan="1">Patch that opcode into <a href="EA8D.html#eaf1">PrintCharacter_PlotOpcode</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ea9f"></span>
+<div class="comments">
+<div class="paragraph">
+Point <span class="register">HL</span> at the 8-byte glyph. Codes below 8F use <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C36.html">CHARS</a>; 90 and above were meant to index <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C7B.html">UDG</a>, but the unconditional jump at <a href="EA8D.html#eaa4">PrintCharacter_ForceChars</a> always takes the <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C36.html">CHARS</a> path.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ea9f"></span>EA9F</td>
+<td class="instruction">LD A,($5BF9)</td>
+<td class="comment-1" rowspan="2">Fetch *<a href="5BF5.html#5bf9">PrintState_Character</a> and compare it with 8F.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaa2"></span>EAA2</td>
+<td class="instruction">CP $8F</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_ForceChars</td>
+<td class="address-1"><span id="eaa4"></span>EAA4</td>
+<td class="instruction">JR <a href="EA8D.html#eab6">PrintCharacter_CharsGlyph</a></td>
+<td class="comment-1" rowspan="1">Always take the <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C36.html">CHARS</a> path at <a href="EA8D.html#eab6">PrintCharacter_CharsGlyph</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eaa6"></span>
+<div class="comments">
+<div class="paragraph">
+Unreachable <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C7B.html">UDG</a> path (left in the binary after <a href="EA8D.html#eaa4">PrintCharacter_ForceChars</a>).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaa6"></span>EAA6</td>
+<td class="instruction">JR C,<a href="EA8D.html#eab6">PrintCharacter_CharsGlyph</a></td>
+<td class="comment-1" rowspan="9">Scale the UDG index and point <span class="register">HL</span> at <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C7B.html">UDG</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaa8"></span>EAA8</td>
+<td class="instruction">SUB $90</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaaa"></span>EAAA</td>
+<td class="instruction">ADD A,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaab"></span>EAAB</td>
+<td class="instruction">ADD A,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaac"></span>EAAC</td>
+<td class="instruction">ADD A,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaad"></span>EAAD</td>
+<td class="instruction">LD E,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaae"></span>EAAE</td>
+<td class="instruction">LD D,$00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eab0"></span>EAB0</td>
+<td class="instruction">LD HL,($5C7B)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eab3"></span>EAB3</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eab4"></span>EAB4</td>
+<td class="instruction">JR <a href="EA8D.html#eac1">PrintCharacter_ScreenAddress</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EA8D.html#eac1">PrintCharacter_ScreenAddress</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_CharsGlyph</td>
+<td class="address-2"><span id="eab6"></span>EAB6</td>
+<td class="instruction">LD DE,($5C36)</td>
+<td class="comment-1" rowspan="7">Point <span class="register">HL</span> at glyph *<a href="5BF5.html#5bf9">PrintState_Character</a> in <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C36.html">CHARS</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaba"></span>EABA</td>
+<td class="instruction">LD L,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eabb"></span>EABB</td>
+<td class="instruction">LD H,$00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eabd"></span>EABD</td>
+<td class="instruction">ADD HL,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eabe"></span>EABE</td>
+<td class="instruction">ADD HL,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eabf"></span>EABF</td>
+<td class="instruction">ADD HL,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eac0"></span>EAC0</td>
+<td class="instruction">ADD HL,DE</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eac1"></span>
+<div class="comments">
+<div class="paragraph">
+Convert row/column at <a href="5BF5.html#5bf7">PrintState_Column</a> into a display-file address in <span class="register">DE</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_ScreenAddress</td>
+<td class="address-2"><span id="eac1"></span>EAC1</td>
+<td class="instruction">LD DE,$4000</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=4000.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eac4"></span>EAC4</td>
+<td class="instruction">LD BC,($5BF7)</td>
+<td class="comment-1" rowspan="1"><span class="register">BC</span>=*<a href="5BF5.html#5bf7">PrintState_Column</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eac8"></span>EAC8</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EA8D.html#eb39">PrintCharacter_Exit</a> if the column is out of range.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eac9"></span>EAC9</td>
+<td class="instruction">CP $20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eacb"></span>EACB</td>
+<td class="instruction">JR NC,<a href="EA8D.html#eb39">PrintCharacter_Exit</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eacd"></span>EACD</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EA8D.html#eb39">PrintCharacter_Exit</a> if the row is out of range.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eace"></span>EACE</td>
+<td class="instruction">CP $18</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ead0"></span>EAD0</td>
+<td class="instruction">JR NC,<a href="EA8D.html#eb39">PrintCharacter_Exit</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_RowThirds</td>
+<td class="address-2"><span id="ead2"></span>EAD2</td>
+<td class="instruction">CP $08</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EA8D.html#eae0">PrintCharacter_ColumnOffset</a> if this row is already in the current third.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ead4"></span>EAD4</td>
+<td class="instruction">JR C,<a href="EA8D.html#eae0">PrintCharacter_ColumnOffset</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ead6"></span>EAD6</td>
+<td class="instruction">SUB $08</td>
+<td class="comment-1" rowspan="7">Move <span class="register">D</span> down one screen third and try again.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ead8"></span>EAD8</td>
+<td class="instruction">PUSH AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ead9"></span>EAD9</td>
+<td class="instruction">LD A,D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eada"></span>EADA</td>
+<td class="instruction">ADD A,$08</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eadc"></span>EADC</td>
+<td class="instruction">LD D,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eadd"></span>EADD</td>
+<td class="instruction">POP AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eade"></span>EADE</td>
+<td class="instruction">JR <a href="EA8D.html#ead2">PrintCharacter_RowThirds</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_ColumnOffset</td>
+<td class="address-2"><span id="eae0"></span>EAE0</td>
+<td class="instruction">ADD A,A</td>
+<td class="comment-1" rowspan="7">Fold the row remainder and column into <span class="register">E</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eae1"></span>EAE1</td>
+<td class="instruction">ADD A,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eae2"></span>EAE2</td>
+<td class="instruction">ADD A,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eae3"></span>EAE3</td>
+<td class="instruction">ADD A,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eae4"></span>EAE4</td>
+<td class="instruction">ADD A,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eae5"></span>EAE5</td>
+<td class="instruction">ADD A,C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eae6"></span>EAE6</td>
+<td class="instruction">LD E,A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eae7"></span>
+<div class="comments">
+<div class="paragraph">
+Copy or XOR the 8 glyph rows into the display file.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eae7"></span>EAE7</td>
+<td class="instruction">LD A,($5BF6)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EA8D.html#eaf9">PrintCharacter_CopyLoop</a> if bit 0 of *<a href="5BF5.html#5bf6">PrintState_Flags</a> clears XOR mode.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaea"></span>EAEA</td>
+<td class="instruction">AND $01</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaec"></span>EAEC</td>
+<td class="instruction">JR Z,<a href="EA8D.html#eaf9">PrintCharacter_CopyLoop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaee"></span>EAEE</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="1"><span class="register">B</span>=08.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_XorLoop</td>
+<td class="address-2"><span id="eaf0"></span>EAF0</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="6">Plot one glyph row with the patched XOR/OR at <a href="EA8D.html#eaf1">PrintCharacter_PlotOpcode</a> and move down a pixel line.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_PlotOpcode</td>
+<td class="address-1"><span id="eaf1"></span>EAF1</td>
+<td class="instruction">XOR (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaf2"></span>EAF2</td>
+<td class="instruction">LD (DE),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaf3"></span>EAF3</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaf4"></span>EAF4</td>
+<td class="instruction">INC D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaf5"></span>EAF5</td>
+<td class="instruction">DJNZ <a href="EA8D.html#eaf0">PrintCharacter_XorLoop</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaf7"></span>EAF7</td>
+<td class="instruction">JR <a href="EA8D.html#eb01">PrintCharacter_Attributes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EA8D.html#eb01">PrintCharacter_Attributes</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_CopyLoop</td>
+<td class="address-2"><span id="eaf9"></span>EAF9</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="1"><span class="register">B</span>=08.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_CopyLoop_Body</td>
+<td class="address-2"><span id="eafb"></span>EAFB</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="5">Copy one glyph row into the display file and move down a pixel line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eafc"></span>EAFC</td>
+<td class="instruction">LD (DE),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eafd"></span>EAFD</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eafe"></span>EAFE</td>
+<td class="instruction">INC D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eaff"></span>EAFF</td>
+<td class="instruction">DJNZ <a href="EA8D.html#eafb">PrintCharacter_CopyLoop_Body</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eb01"></span>
+<div class="comments">
+<div class="paragraph">
+Unless bit 1 of the flags is set, write the attribute from <a href="5BF5.html">PrintState</a> into the matching attribute-file cell.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_Attributes</td>
+<td class="address-2"><span id="eb01"></span>EB01</td>
+<td class="instruction">LD A,($5BF6)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EA8D.html#eb28">PrintCharacter_AdvanceCursor</a> if bit 1 of *<a href="5BF5.html#5bf6">PrintState_Flags</a> skips attributes.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb04"></span>EB04</td>
+<td class="instruction">AND $02</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb06"></span>EB06</td>
+<td class="instruction">JR NZ,<a href="EA8D.html#eb28">PrintCharacter_AdvanceCursor</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb08"></span>EB08</td>
+<td class="instruction">LD A,($5BF5)</td>
+<td class="comment-1" rowspan="5">Point <span class="register">HL</span> at the attribute-file cell for *<a href="5BF5.html#5bf7">PrintState_Column</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb0b"></span>EB0B</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb0c"></span>EB0C</td>
+<td class="instruction">LD DE,($5BF7)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb10"></span>EB10</td>
+<td class="instruction">LD H,$58</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb12"></span>EB12</td>
+<td class="instruction">LD A,D</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_AttrRow</td>
+<td class="address-2"><span id="eb13"></span>EB13</td>
+<td class="instruction">SUB $08</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EA8D.html#eb19">PrintCharacter_AttrNextThird</a> if another attribute third remains.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb15"></span>EB15</td>
+<td class="instruction">JR NC,<a href="EA8D.html#eb19">PrintCharacter_AttrNextThird</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb17"></span>EB17</td>
+<td class="instruction">JR <a href="EA8D.html#eb1c">PrintCharacter_AttrColumn</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EA8D.html#eb1c">PrintCharacter_AttrColumn</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_AttrNextThird</td>
+<td class="address-2"><span id="eb19"></span>EB19</td>
+<td class="instruction">INC H</td>
+<td class="comment-1" rowspan="2">Step <span class="register">H</span> to the next attribute third and retry.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb1a"></span>EB1A</td>
+<td class="instruction">JR <a href="EA8D.html#eb13">PrintCharacter_AttrRow</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_AttrColumn</td>
+<td class="address-2"><span id="eb1c"></span>EB1C</td>
+<td class="instruction">ADD A,$08</td>
+<td class="comment-1" rowspan="4">Restore the row remainder and load the column.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb1e"></span>EB1E</td>
+<td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb1f"></span>EB1F</td>
+<td class="instruction">LD A,E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb20"></span>EB20</td>
+<td class="instruction">JR Z,<a href="EA8D.html#eb26">PrintCharacter_WriteAttr</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_0</td>
+<td class="address-2"><span id="eb22"></span>EB22</td>
+<td class="instruction">ADD A,$20</td>
+<td class="comment-1" rowspan="2">Add 20 per remaining row to reach the cell.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb24"></span>EB24</td>
+<td class="instruction">DJNZ <a href="EA8D.html#eb22">PrintCharacter_0</a></td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_WriteAttr</td>
+<td class="address-2"><span id="eb26"></span>EB26</td>
+<td class="instruction">LD L,A</td>
+<td class="comment-1" rowspan="2">Write *<a href="5BF5.html">PrintState</a> into that attribute-file cell.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb27"></span>EB27</td>
+<td class="instruction">LD (HL),C</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="eb28"></span>
+<div class="comments">
+<div class="paragraph">
+Advance the cursor: move to the next column, or wrap to the next row.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_AdvanceCursor</td>
+<td class="address-2"><span id="eb28"></span>EB28</td>
+<td class="instruction">LD DE,($5BF7)</td>
+<td class="comment-1" rowspan="5">Advance the column; jump to <a href="EA8D.html#eb35">PrintCharacter_StoreCursor</a> if still on this row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb2c"></span>EB2C</td>
+<td class="instruction">INC E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb2d"></span>EB2D</td>
+<td class="instruction">LD A,E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb2e"></span>EB2E</td>
+<td class="instruction">CP $20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb30"></span>EB30</td>
+<td class="instruction">JR NZ,<a href="EA8D.html#eb35">PrintCharacter_StoreCursor</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb32"></span>EB32</td>
+<td class="instruction">LD E,$00</td>
+<td class="comment-1" rowspan="2">Wrap to column 00 on the next row.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb34"></span>EB34</td>
+<td class="instruction">INC D</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_StoreCursor</td>
+<td class="address-2"><span id="eb35"></span>EB35</td>
+<td class="instruction">LD ($5BF7),DE</td>
+<td class="comment-1" rowspan="1">Store the updated cursor back in *<a href="5BF5.html#5bf7">PrintState_Column</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCharacter_Exit</td>
+<td class="address-2"><span id="eb39"></span>EB39</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="4">Restore the glyph pointer, screen pointer, counters and flags from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb3a"></span>EB3A</td>
+<td class="instruction">POP DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb3b"></span>EB3B</td>
+<td class="instruction">POP BC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb3c"></span>EB3C</td>
+<td class="instruction">POP AF</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eb3d"></span>EB3D</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="EA60.html">EA60</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#ea8d">Map</a></td>
+<td class="next">
+Next: <a href="EB3E.html">EB3E</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Micromega<br />&copy; 2026 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/kentilla/">Source code</a>.</div>
+<div><a href="../dec/asm/60045.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>The Sidney Affair: Routine at FB09</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="The Sidney Affair: Routine at FB09. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:title" content="The Sidney Affair: Routine at FB09" />
+<meta property="og:description" content="The Sidney Affair: Routine at FB09. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:site_name" content="ArcadeGeek" />
+<meta property="og:type" content="article" />
+<link rel="canonical" href="https://skoolkit.arcadegeek.co.uk/adventure-games/sidneyaffair/asm/FB09.html" />
+<meta property="og:url" content="https://skoolkit.arcadegeek.co.uk/adventure-games/sidneyaffair/asm/FB09.html" />
+<meta property="og:image" content="https://skoolkit.arcadegeek.co.uk/adventure-games/sidneyaffair/images/logo.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@graph": [
+{
+"@type": "WebSite",
+"@id": "https://skoolkit.arcadegeek.co.uk/#website",
+"name": "ArcadeGeek",
+"url": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "TechArticle",
+"headline": "The Sidney Affair: Routine at FB09",
+"name": "The Sidney Affair: Routine at FB09",
+"description": "The Sidney Affair: Routine at FB09. Complete ZX Spectrum RAM disassembly.",
+"inLanguage": "en",
+"isPartOf": {"@id": "https://skoolkit.arcadegeek.co.uk/#website"},
+"author": {
+"@type": "Organization",
+"name": "ArcadeGeek",
+"url": "https://www.arcadegeek.co.uk/"
+},
+"about": {
+"@type": "VideoGame",
+"name": "The Sidney Affair",
+"gamePlatform": "ZX Spectrum"
+}
+,"url": "https://skoolkit.arcadegeek.co.uk/adventure-games/sidneyaffair/asm/FB09.html"
+,"image": "https://skoolkit.arcadegeek.co.uk/adventure-games/sidneyaffair/images/logo.png"
+},
+{
+"@type": "BreadcrumbList",
+"itemListElement": [
+{
+"@type": "ListItem",
+"position": 1,
+"name": "ArcadeGeek",
+"item": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "ListItem",
+"position": 2,
+"name": "Adventure game disassemblies",
+"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/"
+},
+{
+"@type": "ListItem",
+"position": 3,
+"name": "The Sidney Affair"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/sidneyaffair/"
+}
+,{
+"@type": "ListItem",
+"position": 4,
+"name": "Routine at FB09"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/sidneyaffair/asm/FB09.html"
+}
+]
+}
+]
+}
+</script>
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FB00.html">FB00</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fb09">Map</a></td>
+<td class="next">
+Next: <a href="FBB9.html">FBB9</a>
+</td>
+</tr>
+</table>
+<div class="description">FB09: Display Frame</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Copies one frame of the picture held in the buffer at <a href="E000.html">PictureBuffer</a> to the screen: first the pixel rows, then the attributes from <a href="E000.html#f800">PictureBuffer_Attributes</a>. Called by BASIC as "ins" (FB09) with the frame number POKEd into <a href="FB00.html#fb02">DisplayFrame_Number</a>.
+</div>
+<div class="paragraph">
+The routine works out the frame's row and column in the sheet from *<a href="FB00.html#fb02">DisplayFrame_Number</a> and *<a href="FB00.html#fb03">DisplayFrame_PerRow</a>, converts those to byte offsets with <a href="FBB9.html">DisplayFrame_CalculateOffset</a>, and copies *<a href="FB00.html#fb05">DisplayFrame_Height</a> character rows of *<a href="FB00.html#fb08">DisplayFrame_LineWidth</a> bytes from the buffer to the screen at *<a href="FB00.html#fb06">DisplayFrame_Column</a> / *<a href="FB00.html#fb07">DisplayFrame_Row</a>. It then copies the matching attributes from the buffer (offset by 1800) to the attribute file.
+</div>
+<div class="paragraph">
+The values in the snapshot describe rows of 04 frames of 08 by 0A characters, copied to column 19 row 03 after line 60.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">DisplayFrame</td>
+<td class="address-2"><span id="fb09"></span>FB09</td>
+<td class="instruction">DI</td>
+<td class="comment-1" rowspan="1">Disable interrupts.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb0a"></span>FB0A</td>
+<td class="instruction">LD ($FF76),SP</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb0e"></span>FB0E</td>
+<td class="instruction">LD SP,$FFBE</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb11"></span>FB11</td>
+<td class="instruction">LD A,($FB03)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb14"></span>FB14</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb15"></span>FB15</td>
+<td class="instruction">LD C,$01</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb17"></span>FB17</td>
+<td class="instruction">LD A,($FB02)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb1a"></span>FB1A</td>
+<td class="instruction">DEC A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">DisplayFrame_0</td>
+<td class="address-2"><span id="fb1b"></span>FB1B</td>
+<td class="instruction">CP B</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb1c"></span>FB1C</td>
+<td class="instruction">JR C,<a href="FB09.html#fb22">DisplayFrame_1</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb1e"></span>FB1E</td>
+<td class="instruction">SUB B</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb1f"></span>FB1F</td>
+<td class="instruction">INC C</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb20"></span>FB20</td>
+<td class="instruction">JR <a href="FB09.html#fb1b">DisplayFrame_0</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">DisplayFrame_1</td>
+<td class="address-2"><span id="fb22"></span>FB22</td>
+<td class="instruction">INC A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb23"></span>FB23</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb24"></span>FB24</td>
+<td class="instruction">LD HL,$FB04</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb27"></span>FB27</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb28"></span>FB28</td>
+<td class="instruction">DEC B</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb29"></span>FB29</td>
+<td class="instruction">JR Z,<a href="FB09.html#fb2e">DisplayFrame_3</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">DisplayFrame_2</td>
+<td class="address-2"><span id="fb2b"></span>FB2B</td>
+<td class="instruction">ADD A,(HL)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb2c"></span>FB2C</td>
+<td class="instruction">DJNZ <a href="FB09.html#fb2b">DisplayFrame_2</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">DisplayFrame_3</td>
+<td class="address-2"><span id="fb2e"></span>FB2E</td>
+<td class="instruction">LD B,C</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb2f"></span>FB2F</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb30"></span>FB30</td>
+<td class="instruction">LD HL,$FB05</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb33"></span>FB33</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb34"></span>FB34</td>
+<td class="instruction">DEC B</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb35"></span>FB35</td>
+<td class="instruction">JR Z,<a href="FB09.html#fb3a">DisplayFrame_5</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">DisplayFrame_4</td>
+<td class="address-2"><span id="fb37"></span>FB37</td>
+<td class="instruction">ADD A,(HL)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb38"></span>FB38</td>
+<td class="instruction">DJNZ <a href="FB09.html#fb37">DisplayFrame_4</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">DisplayFrame_5</td>
+<td class="address-2"><span id="fb3a"></span>FB3A</td>
+<td class="instruction">LD L,A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb3b"></span>FB3B</td>
+<td class="instruction">CALL <a href="FBB9.html">DisplayFrame_CalculateOffset</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb3e"></span>FB3E</td>
+<td class="instruction">LD ($FBC5),HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb41"></span>FB41</td>
+<td class="instruction">SLA H</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb43"></span>FB43</td>
+<td class="instruction">SLA H</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb45"></span>FB45</td>
+<td class="instruction">SLA H</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb47"></span>FB47</td>
+<td class="instruction">LD BC,($FB00)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb4b"></span>FB4B</td>
+<td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb4c"></span>FB4C</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb4d"></span>FB4D</td>
+<td class="instruction">LD A,($FB07)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb50"></span>FB50</td>
+<td class="instruction">LD L,A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb51"></span>FB51</td>
+<td class="instruction">LD A,($FB06)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb54"></span>FB54</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb55"></span>FB55</td>
+<td class="instruction">CALL <a href="FBB9.html">DisplayFrame_CalculateOffset</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb58"></span>FB58</td>
+<td class="instruction">LD ($FBC3),HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb5b"></span>FB5B</td>
+<td class="instruction">SLA H</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb5d"></span>FB5D</td>
+<td class="instruction">SLA H</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb5f"></span>FB5F</td>
+<td class="instruction">SLA H</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb61"></span>FB61</td>
+<td class="instruction">LD BC,$4000</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb64"></span>FB64</td>
+<td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb65"></span>FB65</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb66"></span>FB66</td>
+<td class="instruction">LD A,($FB05)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb69"></span>FB69</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">DisplayFrame_6</td>
+<td class="address-2"><span id="fb6a"></span>FB6A</td>
+<td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb6b"></span>FB6B</td>
+<td class="instruction">LD B,$00</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">DisplayFrame_7</td>
+<td class="address-2"><span id="fb6d"></span>FB6D</td>
+<td class="instruction">LD A,($FB08)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb70"></span>FB70</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb71"></span>FB71</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb72"></span>FB72</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb73"></span>FB73</td>
+<td class="instruction">LDIR</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb75"></span>FB75</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb76"></span>FB76</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb77"></span>FB77</td>
+<td class="instruction">CALL <a href="FC5B.html">ScrollWindow_NextLine</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb7a"></span>FB7A</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb7b"></span>FB7B</td>
+<td class="instruction">CALL <a href="FC5B.html">ScrollWindow_NextLine</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb7e"></span>FB7E</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb7f"></span>FB7F</td>
+<td class="instruction">JR NZ,<a href="FB09.html#fb6d">DisplayFrame_7</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb81"></span>FB81</td>
+<td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb82"></span>FB82</td>
+<td class="instruction">DJNZ <a href="FB09.html#fb6a">DisplayFrame_6</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb84"></span>FB84</td>
+<td class="instruction">LD HL,($FBC5)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb87"></span>FB87</td>
+<td class="instruction">LD BC,($FB00)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb8b"></span>FB8B</td>
+<td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb8c"></span>FB8C</td>
+<td class="instruction">LD BC,$1800</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb8f"></span>FB8F</td>
+<td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb90"></span>FB90</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb91"></span>FB91</td>
+<td class="instruction">LD HL,($FBC3)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb94"></span>FB94</td>
+<td class="instruction">LD BC,$5800</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb97"></span>FB97</td>
+<td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb98"></span>FB98</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb99"></span>FB99</td>
+<td class="instruction">LD A,($FB05)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb9c"></span>FB9C</td>
+<td class="instruction">LD IYl,A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fb9e"></span>FB9E</td>
+<td class="instruction">LD B,$00</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">DisplayFrame_8</td>
+<td class="address-2"><span id="fba0"></span>FBA0</td>
+<td class="instruction">LD A,($FB08)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fba3"></span>FBA3</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fba4"></span>FBA4</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fba5"></span>FBA5</td>
+<td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fba6"></span>FBA6</td>
+<td class="instruction">LDIR</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fba8"></span>FBA8</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fba9"></span>FBA9</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbaa"></span>FBAA</td>
+<td class="instruction">LD C,$20</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbac"></span>FBAC</td>
+<td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbad"></span>FBAD</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbae"></span>FBAE</td>
+<td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbaf"></span>FBAF</td>
+<td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbb0"></span>FBB0</td>
+<td class="instruction">DEC IYl</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbb2"></span>FBB2</td>
+<td class="instruction">JR NZ,<a href="FB09.html#fba0">DisplayFrame_8</a></td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbb4"></span>FBB4</td>
+<td class="instruction">LD SP,($FF76)</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="fbb8"></span>FBB8</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1"></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="FB00.html">FB00</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#fb09">Map</a></td>
+<td class="next">
+Next: <a href="FBB9.html">FBB9</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1987 Infogrames<br />&copy; 2026 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/sidneyaffair/">Source code</a>.</div>
+<div><a href="../dec/asm/64265.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

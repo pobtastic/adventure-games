@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Kentilla: Routine at EDAF</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Kentilla: Routine at EDAF. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:title" content="Kentilla: Routine at EDAF" />
+<meta property="og:description" content="Kentilla: Routine at EDAF. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:site_name" content="ArcadeGeek" />
+<meta property="og:type" content="article" />
+<link rel="canonical" href="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EDAF.html" />
+<meta property="og:url" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EDAF.html" />
+<meta property="og:image" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@graph": [
+{
+"@type": "WebSite",
+"@id": "https://skoolkit.arcadegeek.co.uk/#website",
+"name": "ArcadeGeek",
+"url": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "TechArticle",
+"headline": "Kentilla: Routine at EDAF",
+"name": "Kentilla: Routine at EDAF",
+"description": "Kentilla: Routine at EDAF. Complete ZX Spectrum RAM disassembly.",
+"inLanguage": "en",
+"isPartOf": {"@id": "https://skoolkit.arcadegeek.co.uk/#website"},
+"author": {
+"@type": "Organization",
+"name": "ArcadeGeek",
+"url": "https://www.arcadegeek.co.uk/"
+},
+"about": {
+"@type": "VideoGame",
+"name": "Kentilla",
+"gamePlatform": "ZX Spectrum"
+}
+,"url": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EDAF.html"
+,"image": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png"
+},
+{
+"@type": "BreadcrumbList",
+"itemListElement": [
+{
+"@type": "ListItem",
+"position": 1,
+"name": "ArcadeGeek",
+"item": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "ListItem",
+"position": 2,
+"name": "Adventure game disassemblies",
+"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/"
+},
+{
+"@type": "ListItem",
+"position": 3,
+"name": "Kentilla"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/"
+}
+,{
+"@type": "ListItem",
+"position": 4,
+"name": "Routine at EDAF"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/EDAF.html"
+}
+]
+}
+]
+}
+</script>
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="ED8A.html">ED8A</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#edaf">Map</a></td>
+<td class="next">
+Next: <a href="EDEE.html">EDEE</a>
+</td>
+</tr>
+</table>
+<div class="description">EDAF: Advance Input Pointer</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="EA60.html">JumpTable</a> and <a href="F14C.html">ScanInputSpaces</a>.
+</div>
+<div class="paragraph">
+Jump-table target <a href="EA60.html#ea6c">JumpTable_AdvanceInputPointer</a>: advance <a href="5BA0.html#5ba7">InputBuffer_TokenStart</a> / <a href="5BA0.html#5ba9">InputBuffer_NextToken</a> through <a href="5BAE.html">InputBuffer</a>. Skips a leading <code>THE</code> via <a href="FBA4.html">Token_THE</a>, then leaves <a href="5BA0.html#5bac">ParserState_TokenDelimiter</a> holding the delimiter that ended the token.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">AdvanceInputPointer</td>
+<td class="address-2"><span id="edaf"></span>EDAF</td>
+<td class="instruction">LD HL,($5BA7)</td>
+<td class="comment-1" rowspan="3">Fetch the current token and compare it with end-of-line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edb2"></span>EDB2</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edb3"></span>EDB3</td>
+<td class="instruction">CP $0D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edb5"></span>EDB5</td>
+<td class="instruction">RET Z</td>
+<td class="comment-1" rowspan="1">Return if the current token is already at end-of-line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edb6"></span>EDB6</td>
+<td class="instruction">LD HL,($5BA9)</td>
+<td class="comment-1" rowspan="5">Promote <a href="5BA0.html#5ba9">InputBuffer_NextToken</a> to <a href="5BA0.html#5ba7">InputBuffer_TokenStart</a> and test for an empty token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edb9"></span>EDB9</td>
+<td class="instruction">LD ($5BA7),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edbc"></span>EDBC</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edbd"></span>EDBD</td>
+<td class="instruction">LD ($5BAB),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edc0"></span>EDC0</td>
+<td class="instruction">CP $0D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edc2"></span>EDC2</td>
+<td class="instruction">RET Z</td>
+<td class="comment-1" rowspan="1">Return if that token is empty.</td>
+</tr>
+<tr>
+<td class="asm-label">AdvanceInputPointer_Scan</td>
+<td class="address-2"><span id="edc3"></span>EDC3</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="4">Jump to <a href="EDAF.html#edd7">AdvanceInputPointer_Store</a> at end-of-line or a quote.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edc4"></span>EDC4</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edc5"></span>EDC5</td>
+<td class="instruction">CP $0D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edc7"></span>EDC7</td>
+<td class="instruction">JR Z,<a href="EDAF.html#edd7">AdvanceInputPointer_Store</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edc9"></span>EDC9</td>
+<td class="instruction">CP $22</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDAF.html#edd7">AdvanceInputPointer_Store</a> on a quote.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edcb"></span>EDCB</td>
+<td class="instruction">JR Z,<a href="EDAF.html#edd7">AdvanceInputPointer_Store</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edcd"></span>EDCD</td>
+<td class="instruction">CP $20</td>
+<td class="comment-1" rowspan="2">Keep scanning until a space.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edcf"></span>EDCF</td>
+<td class="instruction">JR NZ,<a href="EDAF.html#edc3">AdvanceInputPointer_Scan</a></td>
+</tr>
+<tr>
+<td class="asm-label">AdvanceInputPointer_SkipSpaces</td>
+<td class="address-2"><span id="edd1"></span>EDD1</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="4">Skip any run of spaces.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edd2"></span>EDD2</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edd3"></span>EDD3</td>
+<td class="instruction">CP $20</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edd5"></span>EDD5</td>
+<td class="instruction">JR Z,<a href="EDAF.html#edd1">AdvanceInputPointer_SkipSpaces</a></td>
+</tr>
+<tr>
+<td class="asm-label">AdvanceInputPointer_Store</td>
+<td class="address-2"><span id="edd7"></span>EDD7</td>
+<td class="instruction">LD ($5BAC),A</td>
+<td class="comment-1" rowspan="4">Store the delimiter and next-token pointer; require 03 matching characters for "THE".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edda"></span>EDDA</td>
+<td class="instruction">LD ($5BA9),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eddd"></span>EDDD</td>
+<td class="instruction">LD A,$03</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eddf"></span>EDDF</td>
+<td class="instruction">LD ($5BA4),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ede2"></span>EDE2</td>
+<td class="instruction">LD HL,($5BA7)</td>
+<td class="comment-1" rowspan="4">Skip a leading "THE" via <a href="FBA4.html">Token_THE</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ede5"></span>EDE5</td>
+<td class="instruction">LD DE,$FBA4</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ede8"></span>EDE8</td>
+<td class="instruction">CALL <a href="ED8A.html">CompareTokenToWord</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edeb"></span>EDEB</td>
+<td class="instruction">JR NC,<a href="EDAF.html#edaf">AdvanceInputPointer</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eded"></span>EDED</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return if "THE" was not skipped.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="ED8A.html">ED8A</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#edaf">Map</a></td>
+<td class="next">
+Next: <a href="EDEE.html">EDEE</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Micromega<br />&copy; 2026 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/kentilla/">Source code</a>.</div>
+<div><a href="../dec/asm/60847.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

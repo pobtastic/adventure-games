@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Kentilla: Routine at ED8A</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Kentilla: Routine at ED8A. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:title" content="Kentilla: Routine at ED8A" />
+<meta property="og:description" content="Kentilla: Routine at ED8A. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:site_name" content="ArcadeGeek" />
+<meta property="og:type" content="article" />
+<link rel="canonical" href="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/ED8A.html" />
+<meta property="og:url" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/ED8A.html" />
+<meta property="og:image" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@graph": [
+{
+"@type": "WebSite",
+"@id": "https://skoolkit.arcadegeek.co.uk/#website",
+"name": "ArcadeGeek",
+"url": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "TechArticle",
+"headline": "Kentilla: Routine at ED8A",
+"name": "Kentilla: Routine at ED8A",
+"description": "Kentilla: Routine at ED8A. Complete ZX Spectrum RAM disassembly.",
+"inLanguage": "en",
+"isPartOf": {"@id": "https://skoolkit.arcadegeek.co.uk/#website"},
+"author": {
+"@type": "Organization",
+"name": "ArcadeGeek",
+"url": "https://www.arcadegeek.co.uk/"
+},
+"about": {
+"@type": "VideoGame",
+"name": "Kentilla",
+"gamePlatform": "ZX Spectrum"
+}
+,"url": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/ED8A.html"
+,"image": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png"
+},
+{
+"@type": "BreadcrumbList",
+"itemListElement": [
+{
+"@type": "ListItem",
+"position": 1,
+"name": "ArcadeGeek",
+"item": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "ListItem",
+"position": 2,
+"name": "Adventure game disassemblies",
+"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/"
+},
+{
+"@type": "ListItem",
+"position": 3,
+"name": "Kentilla"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/"
+}
+,{
+"@type": "ListItem",
+"position": 4,
+"name": "Routine at ED8A"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/asm/ED8A.html"
+}
+]
+}
+]
+}
+</script>
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="ED7E.html">ED7E</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#ed8a">Map</a></td>
+<td class="next">
+Next: <a href="EDAF.html">EDAF</a>
+</td>
+</tr>
+</table>
+<div class="description">ED8A: Compare Token To Vocabulary Word</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routines at <a href="ED2D.html">SearchVocabulary_Verbs</a>, <a href="EDAF.html">AdvanceInputPointer</a>, <a href="EDEE.html">MatchTokenInBasicList</a> and <a href="EE60.html">BasicHelper</a>.
+</div>
+<div class="paragraph">
+Compare the token at <span class="register">DE</span> to the table word at <span class="register">HL</span>. Counts token characters until space, quote or control, requires at least *<a href="5BA0.html#5ba4">ParserState_MatchLength</a> characters, then matches that many bytes. Returns with carry reset on a match, set on a miss.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CompareTokenToWord</td>
+<td class="address-2"><span id="ed8a"></span>ED8A</td>
+<td class="instruction">LD B,$00</td>
+<td class="comment-1" rowspan="2">Clear the length counter and stash the token pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ed8c"></span>ED8C</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label">CompareTokenToWord_Count</td>
+<td class="address-2"><span id="ed8d"></span>ED8D</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED8A.html#ed9a">CompareTokenToWord_CheckLength</a> if *<span class="register">DE</span> is a control character (&lt; 21).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ed8e"></span>ED8E</td>
+<td class="instruction">CP $21</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ed90"></span>ED90</td>
+<td class="instruction">JR C,<a href="ED8A.html#ed9a">CompareTokenToWord_CheckLength</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ed92"></span>ED92</td>
+<td class="instruction">CP $22</td>
+<td class="comment-1" rowspan="2">Jump to <a href="ED8A.html#ed9a">CompareTokenToWord_CheckLength</a> if *<span class="register">DE</span> is a quote.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ed94"></span>ED94</td>
+<td class="instruction">JR Z,<a href="ED8A.html#ed9a">CompareTokenToWord_CheckLength</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ed96"></span>ED96</td>
+<td class="instruction">INC B</td>
+<td class="comment-1" rowspan="3">Count this character and keep scanning the token.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ed97"></span>ED97</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ed98"></span>ED98</td>
+<td class="instruction">JR <a href="ED8A.html#ed8d">CompareTokenToWord_Count</a></td>
+</tr>
+<tr>
+<td class="asm-label">CompareTokenToWord_CheckLength</td>
+<td class="address-2"><span id="ed9a"></span>ED9A</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="6">Restore the token pointer; jump to <a href="ED8A.html#edad">CompareTokenToWord_Miss</a> if it is too short.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ed9b"></span>ED9B</td>
+<td class="instruction">LD A,($5BA4)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ed9e"></span>ED9E</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="ed9f"></span>ED9F</td>
+<td class="instruction">LD A,B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eda0"></span>EDA0</td>
+<td class="instruction">CP C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eda1"></span>EDA1</td>
+<td class="instruction">JR C,<a href="ED8A.html#edad">CompareTokenToWord_Miss</a></td>
+</tr>
+<tr>
+<td class="asm-label">CompareTokenToWord_Match</td>
+<td class="address-2"><span id="eda3"></span>EDA3</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED8A.html#edad">CompareTokenToWord_Miss</a> if the next characters differ.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eda4"></span>EDA4</td>
+<td class="instruction">CP (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eda5"></span>EDA5</td>
+<td class="instruction">JR NZ,<a href="ED8A.html#edad">CompareTokenToWord_Miss</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eda7"></span>EDA7</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="3">Advance both pointers and keep matching.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eda8"></span>EDA8</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="eda9"></span>EDA9</td>
+<td class="instruction">DJNZ <a href="ED8A.html#eda3">CompareTokenToWord_Match</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edab"></span>EDAB</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="1">Clear carry on a full match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edac"></span>EDAC</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="asm-label">CompareTokenToWord_Miss</td>
+<td class="address-2"><span id="edad"></span>EDAD</td>
+<td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set carry on a miss.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="edae"></span>EDAE</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="ED7E.html">ED7E</a>
+</td>
+<td class="up">Up: <a href="../maps/all.html#ed8a">Map</a></td>
+<td class="next">
+Next: <a href="EDAF.html">EDAF</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Micromega<br />&copy; 2026 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/kentilla/">Source code</a>.</div>
+<div><a href="../dec/asm/60810.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

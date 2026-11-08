@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Kentilla: Routine at E9B6</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Kentilla: Routine at E9B6. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:title" content="Kentilla: Routine at E9B6" />
+<meta property="og:description" content="Kentilla: Routine at E9B6. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:site_name" content="ArcadeGeek" />
+<meta property="og:type" content="article" />
+<link rel="canonical" href="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/loader/E9B6.html" />
+<meta property="og:url" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/loader/E9B6.html" />
+<meta property="og:image" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@graph": [
+{
+"@type": "WebSite",
+"@id": "https://skoolkit.arcadegeek.co.uk/#website",
+"name": "ArcadeGeek",
+"url": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "TechArticle",
+"headline": "Kentilla: Routine at E9B6",
+"name": "Kentilla: Routine at E9B6",
+"description": "Kentilla: Routine at E9B6. Complete ZX Spectrum RAM disassembly.",
+"inLanguage": "en",
+"isPartOf": {"@id": "https://skoolkit.arcadegeek.co.uk/#website"},
+"author": {
+"@type": "Organization",
+"name": "ArcadeGeek",
+"url": "https://www.arcadegeek.co.uk/"
+},
+"about": {
+"@type": "VideoGame",
+"name": "Kentilla",
+"gamePlatform": "ZX Spectrum"
+}
+,"url": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/loader/E9B6.html"
+,"image": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png"
+},
+{
+"@type": "BreadcrumbList",
+"itemListElement": [
+{
+"@type": "ListItem",
+"position": 1,
+"name": "ArcadeGeek",
+"item": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "ListItem",
+"position": 2,
+"name": "Adventure game disassemblies",
+"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/"
+},
+{
+"@type": "ListItem",
+"position": 3,
+"name": "Kentilla"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/"
+}
+,{
+"@type": "ListItem",
+"position": 4,
+"name": "Routine at E9B6"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/loader/E9B6.html"
+}
+]
+}
+]
+}
+</script>
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="loader-Asm-c">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">Routines</td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="5E09.html">5E09</a>
+</td>
+<td class="up">Up: <a href="loader.html#e9b6">Map</a></td>
+<td class="next">
+Next: <a href="E9E3.html">E9E3</a>
+</td>
+</tr>
+</table>
+<div class="description">E9B6: Micromega Loader</div>
+<table class="disassembly">
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="details">
+<div class="paragraph">
+Used by the routine at <a href="5CD0.html">BootstrapEntry</a>.
+</div>
+<div class="paragraph">
+Stage-2 Micromega 1.1 loader. It first checksums itself, then reads a 16-byte custom header that names destination 4000, total length A81D and 0C overlapping chunks. Each of the twelve main chunks carries 0DB6 tape bytes but only advances the destination by 0DAC, so the last ten bytes of one chunk overlap the next. A short final chunk finishes the A81D-byte main image at <a href="../asm/4000.html">Loading</a>..E81C, which overwrites the REM bootstrap. Control then returns to BASIC so line 4 can ROM-load the final support block on top of this loader.
+</div>
+<div class="paragraph">
+While the chunks load, <a href="E9F4.html">TimingSwitch</a> alternates two timing-parameter sets and <a href="EA15.html">TimingPatchCopier</a> patches them into the sampler at <a href="EAAE.html">TapeSampler</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MicromegaLoader</td>
+<td class="address-2"><span id="e9b6"></span>E9B6</td>
+<td class="instruction">LD HL,$0000</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9b9"></span>E9B9</td>
+<td class="instruction">LD ($E9E5),HL</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9bc"></span>E9BC</td>
+<td class="instruction">LD HL,$E9E9</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9bf"></span>E9BF</td>
+<td class="instruction">LD ($E9E3),HL</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label">MicromegaLoader_0</td>
+<td class="address-2"><span id="e9c2"></span>E9C2</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9c3"></span>E9C3</td>
+<td class="instruction">LD E,A</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9c4"></span>E9C4</td>
+<td class="instruction">LD D,$00</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9c6"></span>E9C6</td>
+<td class="instruction">LD HL,($E9E5)</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9c9"></span>E9C9</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9ca"></span>E9CA</td>
+<td class="instruction">LD ($E9E5),HL</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9cd"></span>E9CD</td>
+<td class="instruction">LD HL,($E9E3)</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9d0"></span>E9D0</td>
+<td class="instruction">LD DE,$EBE6</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9d3"></span>E9D3</td>
+<td class="instruction">SCF</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9d4"></span>E9D4</td>
+<td class="instruction">CCF</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9d5"></span>E9D5</td>
+<td class="instruction">SBC HL,DE</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9d7"></span>E9D7</td>
+<td class="instruction">JP Z,<a href="EA2E.html">LoadingController</a></td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9da"></span>E9DA</td>
+<td class="instruction">LD HL,($E9E3)</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9dd"></span>E9DD</td>
+<td class="instruction">INC HL</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9de"></span>E9DE</td>
+<td class="instruction">LD ($E9E3),HL</td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="e9e1"></span>E9E1</td>
+<td class="instruction">JR <a href="E9B6.html#e9c2">MicromegaLoader_0</a></td>
+<td class="comment-0" rowspan="1"></td>
+</tr>
+</table>
+<table class="asm-navigation">
+<tr>
+<td class="prev">
+Prev: <a href="5E09.html">5E09</a>
+</td>
+<td class="up">Up: <a href="loader.html#e9b6">Map</a></td>
+<td class="next">
+Next: <a href="E9E3.html">E9E3</a>
+</td>
+</tr>
+</table>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Micromega<br />&copy; 2026 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/kentilla/">Source code</a>.</div>
+<div><a href="../dec/loader/E9B6.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>
