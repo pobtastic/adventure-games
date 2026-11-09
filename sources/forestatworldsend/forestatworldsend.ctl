@@ -10,6 +10,8 @@
 > $4000 @expand=#DEF(#POKE()(anchor,text) #LINK(Pokes#$anchor)($text))
 > $4000 @expand=#DEF(#FACT()(anchor,text) #LINK(Facts#$anchor)($text))
 > $4000 @expand=#DEF(#MESSAGE(addr) #STR$addr,$08($b==$FF))
+> $4000 @expand=#DEF(#ROOM(id) #IF($id>$01)(#HTML(&#10;)#SIM(start=$C0C3,stop=$C0D1,ix=$D44C,de=$id)#HTML(&#10;)#R({sim[HL]})(#MAP({sim[HL]})(#HTML(&#10;)UNKNOWN,51924:Inside the Farmhouse,51946:At a large Farmhouse,51995:On a long Farm Track,52061:The Great Valley,52107:The Vale of Shadows,52211:In the Forest,52244:The Leafy Glade,52308:The Woodman's Clearing,52332:At the Woodman's Hut,52354:Inside the Woodman's Hut,52419:A Burned out Farm,52438:An overgrown Fruit Grove,52510:On a Forest Path,52528:The Western Edge of a Chasm,52557:The Eastern Edge of a Chasm,52586:The Brink of a Precipice,52635:The Old Well,52677:The Wooded Vale,52694:The Western Bank,52729:The Eastern Bank,52764:The Swamp,52813:In the Boat,52826:The Pit of Oozing Slime,52851:On an Open Plain,52893:On a High Plateau,52939:On Marshy Ground,52957:The Enchanted Wood,53001:On a Rocky Outcrop,53021:The Forest of Sighs,53061:In a tangle of,53099:At the Bottom of the Precipice,53804:Marl's Gateway,53131:In Wildmoor Woods,53150:In the Forest of Night,53217:At the Witch's Hovel,53260:Inside the Witch's Hovel,53286:A Rock Wall,53299:The Plain of Marl,53344:At the Blacksmith's Forge,53371:Inside the Forge,53389:At the Base of a Volcano,53444:On a Narrow Ledge on the,53490:The Cavern of Silence,53513:The Top of the Volcano,53567:Inside the Volcano,53645:In a Rock Passage,53691:In the Great Hall of Zarn,53718:In a High Tower,53758:The Dungeon)),#HTML(&#10;)N/A))
+> $4000 @expand=#DEF(#ITEM(id) #MAP($id)(#HTML(&#10;)N/A,0:"Some food",1:"The well is completely dry",2:"A silver coin",3:"A bow",4:"Some arrows",5:"It looks too steep to climb",6:"A pair of oars",7:"A ring",8:"A rope",9:"A horn",10:"A sword",11:"A chest",12:"A closed chest",13:"An open chest containing the Crystals of Vulcan",14:"An empty chest",15:"The Crystals of Vulcan",16:"A key",17:"It seems too wide to jump across",18:"It seems too wide to jump across",19:"The body of a dead elf",20:"The body of a dead elf",21:"The body of a dead elf",22:"A dragon. It is watching you",23:"A dead dragon",24:"A dead flying lizard",25:"A dead flying lizard",26:"A dead flying lizard",27:"Some dead wolves",28:"The body of a wood nymph",29:"A rowing boat",30:"A monster from the slime",31:"SPARE",32:"The current is very strong",33:"The current is very strong",34:"A projection of rock hangs over the lip of the volcano",35:"A projection of rock with a rope tied to it. The rope dangles down into the volc",36:"The once beautiful buildings#RAW(,) are now in ruins",37:"The blacksmith. He says:- 'I have been instructed to make a mighty sword for you",38:"The blacksmith",39:"The body of the blacksmith",40:"The flames from the furnace inside",41:"Some demons are attacking you. They scream and jab at you with vicious tridents",42:"The Wizard#RAW(,)Zarn. He prepares to cast a spell over you",43:"The body of the Wizard",44:"The Princess#RAW(,)Mara",45:"The body of the Princess",46:"The Witch",47:"The Old Man. He lays down a bow and some arrows. He says:- 'These are tipped wit",48:"SPARE",49:"SPARE",50:"SPARE",51:"A glowing rock",52:"A dead warrior",53:"An open door",54:"A closed door",55:"An open door",56:"A closed door",57:"An open door",58:"A closed door",59:"An open door",60:"A closed door",61:"An open door",62:"A closed door",63:"An open door",64:"A closed door",65:"A giant spider. It advances toward you",66:"The body of a giant spider",67:"A ring#RAW(,)which you are wearing",68:"A log",69:"A log#RAW(,)bridging the chasm",70:"A log#RAW(,)bridging the chasm",71:"SPARE",72:"You are seriously injured",73:"You are sweating profusely. Gripping the rope is difficult"))
 > $4000 @expand=#IF({asm})(#DEF(#ANDROMEDA(addr)(link=Message From Andromeda)$link))
 > $4000 @expand=#IF({asm})(#DEF(#HEROES(addr)(link=Heroes Of Karn)$link))
 > $4000 @expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon)$link))
@@ -31,7 +33,9 @@ c $5B00 Tape Loader
 E $5B00 View the equivalent code in;
 . #LIST
 . { #HEROES$5B00 }
+. { #JEWELS$5B00 }
 . { #ANDROMEDA$5CD0 }
+. { #WARLORD$5B00 }
 . LIST#
 D $5B00 Load the picture, the room graphics and the game from tape, then start.
 N $5B00 Load the picture.
@@ -40,25 +44,18 @@ N $5B00 Load the picture.
 N $5B0A Load the room graphics.
   $5B0A,$07 Load #N$581D bytes of the room graphics to #R$61A8.
   $5B11,$03 Call #R$5B1B to load the room graphics.
-N $5B14 Load the game, then fall into the loader.
-@ $5B14 nowarn
+N $5B14 Load the game.
   $5B14,$07 Load #N$41C8 bytes of the game to #R$B9C5.
-
-c $5B1B Tape Loading
+N $5B1B The picture and room graphics loads call here; the game load
+. falls into it, so its return ends the loader.
 @ $5B1B label=TapeLoading
-E $5B1B View the equivalent code in;
-. #LIST
-. { #ANDROMEDA$5D01 }
-. LIST#
-D $5B1B Load one tape block into the address and length set up by the caller.
-N $5B1B Load the next block from tape.
   $5B1B,$02 This is a data block (#N$45).
   $5B1D,$01 Set the carry flag to indicate "loading".
   $5B1E,$03 Call #SKOOLKID$0802(LD_BLOCK).
   $5B21,$01 Return.
 
-u $5B22 Unused
-D $5B22 Padding between the tape loader and the system variables.
+u $5B22
+S $5B22,$DE
 
 i $5C00
 B $5C00,$5A8
@@ -165,26 +162,321 @@ D $AE7A #PUSHS
 
 c $B9C5 Game Entry Point
 @ $B9C5 label=GameEntryPoint
+E $B9C5 View the equivalent code in;
+. #LIST
+. { #SHOCK$9DD7 }
+. { #HEROES$ABD4 }
+. { #JEWELS$BA50 }
+. { #ANDROMEDA$61A8 }
+. { #WARLORD$A531 }
+. LIST#
 D $B9C5 Enter the game by jumping to the initialisation routine.
   $B9C5,$03 Jump to #R$F964 to start a new game.
 
-b $B9C8 Game State
-@ $B9C8 label=GameState
+g $B9C8 Table: Item Locations
+@ $B9C8 label=Table_ItemLocations
+E $B9C8 View the equivalent code in;
+. #LIST
+. { #SHOCK$9F88 }
+. { #HEROES$AD76 }
+. { #JEWELS$BBF0 }
+. { #ANDROMEDA$61AB }
+. { #WARLORD$A66C }
+. LIST#
 D $B9C8 Workspace filled from #R$F992 by the routine at #R$F964.
 . Object locations occupy the #N$4A bytes at #R$B9C8. The current room
 . is *#R$BA9B. Pointers to the message, exit and handler tables follow.
-B $B9C8,$01
-L $B9C8,$01,$13C
+B $B9C8,$01 Item #N(#PC-$B9C8) #ITEM(#PC-$B9C8) in room #N(#PEEK(#PC)):
+. #ROOM(#PEEK(#PC)).
+L $B9C8,$01,$4A
 
-b $BB04 Input Buffer
-@ $BB04 label=InputBuffer
-D $BB04 The line being typed, the parsed tokens, and the eight-byte
-. picture expansion buffer at #R$BB45.
-B $BB04,$01
-L $BB04,$01,$51
+u $BA12
+S $BA12,$1A
+
+g $BA2C Flags: Display State
+@ $BA2C label=Flag_DisplayState
+D $BA2C Bit 0 is set when the long room description was just shown, so
+. #R$C0F9 waits for a key before listing exits and objects.
+B $BA2C,$01
+
+u $BA2D
+S $BA2D,$03
+
+g $BA30 Table: Already Seen Room Images
+@ $BA30 label=Table_RoomImagesAlreadySeen
+D $BA30 Corresponds to whether the player has already seen the image for
+. the following rooms:
+.
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Room ID | =h Room Name }
+. #FOR$E806,$E80D,,1(n,{ #N(n-$E806) | #N(#PEEKn) | #ROOM(#PEEKn) })
+. TABLE#
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Room ID | =h Room Name }
+. #FOR$E80E,$E811,,1(n,{ #N(n-$E80E) | #N(#PEEKn) | #ROOM(#PEEKn) })
+. #FOR$04,$07,,1(n,{ #Nn | N/A | N/A })
+. TABLE#
+D $BA30 #R$C0F9 tests and sets the bit for the current room. The bit
+. number is the room's place in #R$E806.
+B $BA30,b,$01
+B $BA31,b,$01
+
+u $BA32
+S $BA32,$04
+
+g $BA36 Flags: Turn-Based Event States
+@ $BA36 label=Flag_TurnBasedEventState
+D $BA36 Holds a single byte, where each bit relates to a turn-based event as
+. follows:
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Relating To }
+. { #N$00 | Wood nymph }
+. { #N$01 | Spider }
+. { #N$02 | Slime monster }
+. { #N$03 | Demons }
+. { #N$04 | Wizard }
+. TABLE#
+. When the bit is set, this starts a turn counter (see #R$BA37).
+B $BA36,$01
+
+g $BA37 Turn-Based Event Counters
+D $BA37 One countdown per bit of *#R$BA36. #R$BECE decrements a set
+. counter each turn and runs the handler from #R$BADE when it hits zero.
+N $BA37 Arm the wood nymph for the next turn (#R$EC3D writes #N$01).
+@ $BA37 label=Counter_WoodNymph
+N $BA38 Arm the giant spider for six turns (#R$ECD5).
+@ $BA38 label=Counter_Spider
+N $BA39 Arm the slime monster for six turns (#R$ECE6).
+@ $BA39 label=Counter_SlimeMonster
+N $BA3A Arm the demons for six turns (#R$ECF7).
+@ $BA3A label=Counter_Demons
+N $BA3B Arm Zarn for six turns (#R$ED08).
+@ $BA3B label=Counter_Wizard
+N $BA3C Unused.
+@ $BA3C label=Counter_Unused_0
+N $BA3D Unused.
+@ $BA3D label=Counter_Unused_1
+N $BA3E Unused.
+@ $BA3E label=Counter_Unused_2
+B $BA37,$08,$01
+
+g $BA3F Flag: Princess Following
+@ $BA3F label=Flag_PrincessFollowing
+D $BA3F Only bit 0 is used. When it is set, Princess Mara (#ITEM$2C, the
+. first byte of #R$BA40) follows the player from room to room. #R$C42F
+. moves the item for each set bit into the room the player just entered.
+. Bits 1-7 are never set.
+B $BA3F,$01
+
+g $BA40 Table: Following Items
+@ $BA40 label=Table_FollowingItems
+D $BA40 Each bit of *#R$BA3F makes the item at the same position here
+. follow the player when the room changes. Default bit 0 holds #ITEM$2C
+. (Princess Mara).
+B $BA40,$01 Bit 0: item #N(#PEEK(#PC)), #ITEM(#PEEK(#PC)).
+B $BA41,$07 Bits 1-7: not used by this game.
+
+g $BA48 Table: Scenic Event Locations
+@ $BA48 label=Table_ScenicEventLocations
+D $BA48 Where each of the #N$0D scenic events is (the count is at #R$BB00).
+. #TABLE(default,centre,centre)
+. { =h Byte | =h Meaning }
+. { #N$00 | Not in play }
+. { Other | The room the event is in }
+. TABLE#
+. Populated by #R$F964. See #R$BECE, #R$C3FA and #R$C42F for usage.
+B $BA48,$01 Event #N(#PC-$BA48).
+L $BA48,$01,$0D
+
+u $BA55
+S $BA55,$13
+
+g $BA68 Number Of Items In The Players Inventory
+@ $BA68 label=Count_InventoryItems
+D $BA68 The number of items the player is currently holding.
+B $BA68,$01
+
+g $BA69 Load/ Save Buffer
+@ $BA69 label=LoadSaveBuffer
+D $BA69 When #R$C380(loading) or #R$C345(saving), this buffer is used for
+. storing #R$EB02 - which are then copied to/ from the table itself.
+B $BA69,$32,$08
+
+g $BA9B Current Room ID
+@ $BA9B label=CurrentRoom
+D $BA9B The room the player starts the game in is room #N(#PEEK(#PC)):
+. #ROOM(#PEEK(#PC)).
+B $BA9B,$01 Current room ID.
+
+g $BA9C Table: Scenic Event Rooms
+@ $BA9C label=Table_ScenicEventRooms
+D $BA9C Pointer to the table containing groups of room IDs that an event
+. could occur in.
+W $BA9C,$02 Event #N((#PC-$BA9C)/$02).
+L $BA9C,$02,$0D
+
+u $BAB6
+S $BAB6,$26
+
+g $BADC Pointer: Vocabulary Table
+@ $BADC label=Pointer_Vocabulary
+D $BADC Pointer to the table containing the game vocabulary.
+W $BADC,$02
+
+g $BADE Pointer: Turn-Based Events Jump Table
+@ $BADE label=Pointer_TurnBasedEvents_Jump
+D $BADE Pointer to the jump table containing turn-based events.
+W $BADE,$02
+
+g $BAE0 Pointer: Room Map Table
+@ $BAE0 label=Pointer_RoomMap
+D $BAE0 Pointer to the table containing the relationships between rooms.
+W $BAE0,$02
+
+g $BAE2 Pointer: Item Description Table
+@ $BAE2 label=Pointer_ItemDescriptions
+D $BAE2 Pointer to the table containing item descriptions.
+W $BAE2,$02
+
+g $BAE4 Pointer: Rooms With Images Table
+@ $BAE4 label=Pointer_RoomsWithImages
+D $BAE4 Pointer to the table containing all the rooms which have an image
+. to display.
+W $BAE4,$02
+
+g $BAE6 Pointer: Room Image Jump Table
+@ $BAE6 label=Pointer_RoomImage
+D $BAE6 Pointer to the jump table for displaying an image relating to a
+. room.
+W $BAE6,$02
+
+g $BAE8 Pointer: Room Description Table
+@ $BAE8 label=Pointer_RoomDescriptions
+D $BAE8 Pointer to the table containing room descriptions.
+W $BAE8,$02
+
+g $BAEA Pointer: Item Grouping Table
+@ $BAEA label=Pointer_ItemGroupingTable
+W $BAEA,$02
+
+g $BAEC Pointer: Object Noun Phrases
+@ $BAEC label=Pointer_ObjectNounPhrases
+W $BAEC,$02
+
+g $BAEE Pointer: Object List Table
+@ $BAEE label=Pointer_ObjectList
+W $BAEE,$02
+
+g $BAF0 Pointer: Verbs Jump Table
+@ $BAF0 label=Pointer_JumpTable_Verbs
+W $BAF0,$02
+
+g $BAF2 Pointer: Configurable Exits Table
+@ $BAF2 label=Pointer_ConfigurableExits
+W $BAF2,$02
+
+g $BAF4 Pointer: Scenic Events Jump Table
+@ $BAF4 label=Pointer_JumpTable_ScenicEvents
+W $BAF4,$02
+
+g $BAF6 Pointer: Verb Word Tokens Table
+@ $BAF6 label=Pointer_VerbWordTokens
+W $BAF6,$02
+
+g $BAF8 Number Of Items
+@ $BAF8 label=Count_Items
+E $BAF8 View the equivalent code in;
+. #LIST
+. { #SHOCK$BBC7 }
+. { #JEWELS$BD28 }
+. { #WARLORD$A7E8 }
+. LIST#
+D $BAF8 The total number of items in the game.
+W $BAF8,$02
+
+g $BAFA Number Of Objects
+@ $BAFA label=Count_Objects
+E $BAFA View the equivalent code in;
+. #LIST
+. { #SHOCK$BBC9 }
+. { #JEWELS$BD2A }
+. { #ANDROMEDA$62C4 }
+. LIST#
+D $BAFA The total number of objects in the game.
+W $BAFA,$02
+
+g $BAFC Number Of Verb Tokens
+@ $BAFC label=Count_VerbTokens
+D $BAFC The total number of verb word tokens the game has.
+W $BAFC,$02
+
+g $BAFE Number Of Rooms With Images
+@ $BAFE label=Count_RoomsWithImages
+D $BAFE The total number of rooms which have related images in the game.
+W $BAFE,$02
+
+g $BB00 Number Of Scenic Events
+@ $BB00 label=Count_ScenicEvents
+E $BB00 View the equivalent code in;
+. #LIST
+. { #SHOCK$BBCF }
+. { #JEWELS$BD30 }
+. { #WARLORD$A7EE }
+. LIST#
+D $BB00 The total number of scenic events in the game, see #R$BA48.
+W $BB00,$02
+
+g $BB02 Number Of "Configurable Exits"
+@ $BB02 label=Count_ConfigurableExits
+W $BB02,$02
+
+g $BB04 Command Buffer
+@ $BB04 label=CommandBuffer
+D $BB04 The line being typed and the parsed tokens.
+B $BB04,$32
+
+g $BB36 User Input: Word Tokens
+@ $BB36 label=UserInput_Token_1
+@ $BB37 label=UserInput_Token_2
+B $BB36,$01 The first word, which should be the verb.
+B $BB37,$09,$09 The words after the verb.
+
+g $BB40 Line Number
+@ $BB40 label=LineNumber
+E $BB40 View the equivalent code in;
+. #LIST
+. { #HEROES$AF38 }
+. { #JEWELS$BD70 }
+. { #ANDROMEDA$629B }
+. { #WARLORD$A82E }
+. LIST#
+B $BB40,$01
+
+g $BB41 Four Letter Buffer
+@ $BB41 label=FourLetterBuffer
+B $BB41,$04
+
+g $BB45 Graphics: Room Image Row
+@ $BB45 label=RoomImageRow
+B $BB45,$08
+
+g $BB4D Temporary Storage Table Pointer
+@ $BB4D label=TempStore_TablePointer
+W $BB4D,$02
+
+g $BB4F Temporary Storage Table Index
+@ $BB4F label=TempStore_TableIndex
+W $BB4F,$02
+
+g $BB51 Temporary Storage Word Count
+@ $BB51 label=TempStore_WordCount
+W $BB51,$02
+
+u $BB53
+S $BB53,$02
 
 t $BB55 Messaging: "> "
-@ $BB55 label=Messaging_Message
+@ $BB55 label=Messaging_Prompt
   $BB55,$02 "#MESSAGE$BB55".
 B $BB57,$01 Terminator.
 
@@ -195,7 +487,7 @@ D $BB58 Rubs out the input prompt.
 B $BB5B,$01 Terminator.
 
 t $BB5C Messaging: "THE"
-@ $BB5C label=Messaging_THE
+@ $BB5C label=Messaging_The
   $BB5C,$04 "#MESSAGE$BB5C".
 B $BB60,$01 Terminator.
 
@@ -430,8 +722,8 @@ D $BDCC Tell the player the command is impossible.
   $BDCC,$06 Print "#MESSAGE$BCD0".
   $BDD2,$01 Return.
 
-c $BDD3 Response: "O.K"
-@ $BDD3 label=Response_Ok
+c $BDD3 Response: "O.K."
+@ $BDD3 label=Response_OK
 E $BDD3 View the equivalent code in;
 . #LIST
 . { #HEROES$B1F9 }
@@ -455,7 +747,8 @@ E $BDDA View the equivalent code in;
 . LIST#
 D $BDDA Wait for a new keypress.
 R $BDDA O:A The keypress value
-  $BDDA,$07 Read *#SKOOLKID$5C3B(FLAGS) and jump back to #R$BDDA until a new key is pressed.
+  $BDDA,$07 Read *#SKOOLKID$5C3B(FLAGS) and jump back to #R$BDDA until a new key
+. is pressed.
   $BDE1,$02 Reset the "new key has been pressed" flag.
   $BDE3,$03 Write it back to *#SKOOLKID$5C3B(FLAGS).
 N $BDE6 Fetch the keypress.
@@ -480,6 +773,7 @@ c $BDF1 Clear Lines
 @ $BDF1 label=ClearLines
 E $BDF1 View the equivalent code in;
 . #LIST
+. { #SHOCK$9E0B }
 . { #HEROES$ABF8 }
 . { #JEWELS$BA74 }
 . { #ANDROMEDA$64AC }
@@ -488,13 +782,15 @@ E $BDF1 View the equivalent code in;
 D $BDF1 Clear the picture lines, using the line count stored at #R$BB40.
 R $BDF1 B Line count from *#R$BB40
   $BDF1,$03 Call #R$BE13 to select the screen channel.
-  $BDF4,$07 Clear the number of lines held by *#R$BB40 from the bottom of the screen using #SKOOLKID$0E44(CL_LINE).
+  $BDF4,$07 Clear the number of lines held by *#R$BB40 from the bottom of the
+. screen using #SKOOLKID$0E44(CL_LINE).
   $BDFB,$01 Return.
 
 c $BDFC Set Default Screen Position
 @ $BDFC label=SetDefaultScreenPosition
 E $BDFC View the equivalent code in;
 . #LIST
+. { #SHOCK$9E19 }
 . { #HEROES$AC03 }
 . { #JEWELS$BA7F }
 . { #ANDROMEDA$64B7 }
@@ -523,7 +819,7 @@ R $BE06 A Line number to start printing at
   $BE12,$01 Return.
 
 c $BE13 Switch To Normal Screen Output
-@ $BE13 label=SwitchToNormalScreenOutput
+@ $BE13 label=SwitchNormalScreenOutput
 E $BE13 View the equivalent code in;
 . #LIST
 . { #HEROES$AC1A }
@@ -532,7 +828,9 @@ E $BE13 View the equivalent code in;
 . { #WARLORD$A577 }
 . LIST#
 D $BE13 Open the upper screen channel without disturbing the registers.
-  $BE13,$09 Save the registers and open the upper screen with #SKOOLKID$1601(CHAN_OPEN) on stream #N$02.
+  $BE13,$04 Stash #REGhl, #REGde, #REGbc and #REGaf on the stack.
+  $BE17,$05 Set the current output channel to the main screen (stream #N$02)
+. using #SKOOLKID$1601(CHAN_OPEN).
   $BE1C,$04 Restore #REGaf, #REGbc, #REGde and #REGhl from the stack.
   $BE20,$01 Return.
 
@@ -540,6 +838,7 @@ c $BE21 Print String
 @ $BE21 label=PrintString
 E $BE21 View the equivalent code in;
 . #LIST
+. { #SHOCK$A267 }
 . { #HEROES$AC28 }
 . { #JEWELS$BAA4 }
 . { #ANDROMEDA$64DC }
@@ -557,11 +856,10 @@ N $BE29 Print this character.
   $BE2C,$02 Jump back to #R$BE24 for the next character.
 
 c $BE2E Print String And A Newline
-@ $BE2E label=PrintStringAndANewline
+@ $BE2E label=PrintStringAndNewline
 E $BE2E View the equivalent code in;
 . #LIST
-. { #SHOCK$A25C(After Shock (compressed)) }
-. { #SHOCK$A275(After Shock (plain)) }
+. { #SHOCK$A275 }
 . { #HEROES$AC35 }
 . { #JEWELS$BAB1 }
 . { #ANDROMEDA$64E9 }
@@ -580,15 +878,18 @@ c $BE37 Print Character
 @ $BE37 label=PrintCharacter
 E $BE37 View the equivalent code in;
 . #LIST
+. { #SHOCK$9E26 }
 . { #HEROES$AC47 }
 . { #JEWELS$BAC3 }
 . { #ANDROMEDA$64F2 }
 . { #WARLORD$A5A4 }
 . LIST#
-D $BE37 Print one character, scrolling the text window when the cursor reaches its edge.
+D $BE37 Print one character, scrolling the text window when the cursor reaches
+. its edge.
 R $BE37 A Character to print
   $BE37,$01 Keep the character safe on the stack.
-  $BE38,$07 Jump to #R$BE52 if the line byte of #SKOOLKID$5C88(S_POSN) (#N$5C89) is not row #N$03.
+  $BE38,$07 Jump to #R$BE52 if the line byte of #SKOOLKID$5C88(S_POSN) (#N$5C89)
+. is not row #N$03.
   $BE3F,$02 Restore the character from the stack, leaving a copy.
   $BE41,$04 Jump to #R$BE4A if this is not a newline (#N$0D).
 N $BE45 A newline scrolls the text window and prints nothing.
@@ -596,10 +897,10 @@ N $BE45 A newline scrolls the text window and prints nothing.
   $BE48,$01 Discard the character from the stack.
   $BE49,$01 Return.
 N $BE4A Check the column.
-@ $BE4A label=PrintCharacter_CheckColumn
+@ $BE4A label=CheckColumnPosition
   $BE4A,$08 Call #R$BE55 if *#SKOOLKID$5C88(S_POSN) is column #N$01.
 N $BE52 Print the character.
-@ $BE52 label=PrintCharacter_Direct
+@ $BE52 label=PrintCharacterDirect
   $BE52,$01 Restore the character from the stack.
   $BE53,$01 Print it with #SKOOLKID$0010(PRINT_A_1).
   $BE54,$01 Return.
@@ -628,6 +929,7 @@ E $BE5E View the equivalent code in;
 . #LIST
 . { #HEROES$AD06 }
 . { #JEWELS$BAE1 }
+. { #ANDROMEDA$6519 }
 . LIST#
 D $BE5E Unpack a room picture into the display, drawing it in the paper colour.
 R $BE5E IX Pointer to room image data
@@ -654,7 +956,8 @@ N $BE67 Draw the picture in the paper colour.
 @ $BE86 label=Print_RoomGraphic_NextByte
   $BE86,$01 Advance to the next byte of the scanline.
 @ $BE87 label=Print_RoomGraphic_ShiftBit
-  $BE87,$02 Take the next control bit; a set bit means this scanline byte comes from the picture data.
+  $BE87,$02 Take the next control bit; a set bit means this scanline byte comes
+. from the picture data.
   $BE89,$02 Jump to #R$BE92 when that bit is reset, so the byte is blank.
   $BE8B,$05 Read the next picture byte and advance through the picture.
   $BE90,$02 Jump to #R$BE93 to store the picture byte.
@@ -662,7 +965,8 @@ N $BE67 Draw the picture in the paper colour.
   $BE92,$01 Use a blank byte.
 @ $BE93 label=Print_RoomGraphic_StoreByte
   $BE93,$01 Store the byte in the scanline buffer.
-  $BE94,$02 Repeat from #R$BE86 until the eight bits of this control byte are used.
+  $BE94,$02 Repeat from #R$BE86 until the eight bits of this control byte are
+. used.
   $BE96,$03 Take the finished scanline (#R$BB45).
   $BE99,$03 Call #SKOOLKID$0B03(PO_FETCH).
   $BE9C,$03 Call #SKOOLKID$0B24,$0B7F(PR_ALL).
@@ -692,9 +996,11 @@ c $BEB8 Print Room Image
 @ $BEB8 label=Print_RoomImage
 E $BEB8 View the equivalent code in;
 . #LIST
+. { #SHOCK$9F28 }
 . { #HEROES$AD60 }
 . { #JEWELS$BB3B }
 . { #ANDROMEDA$6541 }
+. { #WARLORD$B10B }
 . LIST#
 D $BEB8 Draw a room picture and then its colours.
 R $BEB8 IX Pointer to room image data
@@ -729,20 +1035,25 @@ E $BECE View the equivalent code in;
 . { #WARLORD$AB0A }
 . LIST#
 D $BECE Count down the timed threats and, when one expires, run its handler.
+N $BECE First process the turn-based events (if any are active).
   $BECE,$06 Jump to #R$BF00 when the event mask is zero.
   $BED4,$07 Count the eight event bits, and skip a threat whose bit is clear.
 @ $BED7 label=Handler_TurnBasedEvents_Loop
-  $BEDB,$03 #REGde=#N($0000,$04,$04).
+  $BEDB,$03 Clear the offset used while counting this threat down.
   $BEDE,$0B Count this threat's timer down. Leave it alone while time
 . remains.
   $BEE9,$0E Take this threat's handler.
-  $BEF7,$06 Keep the bit scan safe, return here, and jump to that handler.
+  $BEF7,$01 Keep the bit scan safe on the stack.
+  $BEF8,$04 Push #R$BEFD so the next return resumes here.
+  $BEFC,$01 Jump to that handler.
   $BEFD,$01 Restore the bit scan from the stack.
 @ $BEFE label=Handler_TurnBasedEvents_Next
-  $BEFE,$02 Repeat from #R$BED7 for the remaining event bits.
+N $BEFE Test the next turn-based event.
+  $BEFE,$02 Decrease the event bit counter by one and loop back to #R$BED7
+. until all eight events have been considered.
+N $BF00 Process scenic events.
 @ $BF00 label=Handler_TurnBasedEvents_Scenic
-  $BF00,$0A Start at the scenic list. Jump to #R$BF40 when the scenic count is
-. zero.
+  $BF00,$0A Jump to #R$BF40 when the scenic count is zero.
   $BF0A,$03 Start at the first scenic entry.
 @ $BF0D label=Handler_TurnBasedEvents_ScenicAdvance
   $BF0D,$01 Advance to the next scenic entry.
@@ -750,19 +1061,27 @@ D $BECE Count down the timed threats and, when one expires, run its handler.
   $BF0E,$04 Jump to #R$BF3E when this scenic slot is empty.
   $BF12,$06 Jump to #R$BF3E when this event is already in the current room.
   $BF18,$0E Call #R$C0C3 to fetch this event's room list.
-  $BF26,$0E Use the frame counter as a step count and start at the first room in
-. the list.
+  $BF26,$06 Use the frame counter as a step count and set the group
+. terminator in #REGa.
+N $BF2C Walk the room group. #N$FF restarts it, and the frame count chooses
+. where to stop.
 @ $BF2C label=Handler_TurnBasedEvents_RoomWalk
+  $BF2C,$06 Point #REGhl at the start of this room group.
+  $BF32,$02 Jump to #R$BF35.
 @ $BF34 label=Handler_TurnBasedEvents_RoomStep
   $BF34,$01 Step to the next room in the list.
 @ $BF35 label=Handler_TurnBasedEvents_RoomCheck
   $BF35,$03 Jump back to #R$BF2C when the end marker matches.
-  $BF38,$02 Repeat from #R$BF34 until the step count runs out.
+  $BF38,$02 Decrease the step counter by one and loop back to #R$BF34 until
+. the counter is zero.
   $BF3A,$01 Take the room the walk landed on.
   $BF3B,$02 Restore the scenic counter and scenic entry pointer from the stack.
   $BF3D,$01 Store that room back in this scenic slot.
 @ $BF3E label=Handler_TurnBasedEvents_ScenicNext
-  $BF3E,$02 Repeat from #R$BF0D for the remaining scenic events.
+N $BF3E Move on to the next scenic event.
+  $BF3E,$02 Decrease the scenic event counter by one and loop back to
+. #R$BF0D until every scenic event has been considered.
+N $BF40 All done, now return.
 @ $BF40 label=Handler_TurnBasedEvents_Return
   $BF40,$01 Return.
 
@@ -794,10 +1113,11 @@ E $BF45 View the equivalent code in;
 . LIST#
 D $BF45 Return a number between #N$00 and the limit passed in.
 R $BF45 O:A A random number derived from *#SKOOLKID$5C78(FRAMES)
-  $BF45,$07 Save the limit and take the low byte of *#SKOOLKID$5C78(FRAMES) as the scramble.
+  $BF45,$07 Save the limit and take the low byte of *#SKOOLKID$5C78(FRAMES) as
+. the scramble.
 @ $BF4C label=GenerateRandomNumber_Loop
   $BF4C,$04 Step the result down, wrapping to the limit when it passes zero.
-@ $BF50 label=GenerateRandomNumber_Repeat
+@ $BF50 label=GenerateRandomNumber_Next
   $BF50,$02 Repeat that step once for each frame count.
   $BF52,$01 Step the result down once more, so the range starts at zero.
   $BF53,$01 Restore the saved limit from the stack.
@@ -835,9 +1155,11 @@ c $BF73 Handler: User Input
 @ $BF73 label=Handler_UserInput
 E $BF73 View the equivalent code in;
 . #LIST
+. { #SHOCK$A4B0 }
 . { #HEROES$B200 }
 . { #JEWELS$C00A }
 . { #ANDROMEDA$6604 }
+. { #WARLORD$AD32 }
 . LIST#
 D $BF73 Read a line of text, then turn it into vocabulary tokens.
 N $BF73 Reset the cursor to the top of the text window.
@@ -845,7 +1167,7 @@ N $BF73 Reset the cursor to the top of the text window.
 N $BF76 Clear the command buffer.
   $BF76,$03 Start at the command buffer (#R$BB04).
   $BF79,$04 Prepare a space (#N$20) and a counter of #N$32 bytes.
-@ $BF7D label=UserInput_Clear
+@ $BF7D label=EmptyCommandBuffer_Loop
   $BF7D,$04 Write spaces through the whole command buffer.
 N $BF81 Print the "&gt;" prompt.
   $BF81,$03 Call #R$C3C0.
@@ -854,21 +1176,30 @@ N $BF84 Collect keypresses.
 N $BF87 Wait for the next key.
 @ $BF87 label=UserInput_Loop
   $BF87,$03 Call #R$BDDA.
-N $BF8A DELETE rubs out a character. ENTER finishes the line. Any other control key
+N $BF8A DELETE rubs out a character. ENTER finishes the line. Any other control
+. key
 . is ignored.
   $BF8A,$04 Jump to #R$BFAA if DELETE was pressed.
   $BF8E,$04 Jump to #R$BFC1 if ENTER was pressed.
   $BF92,$04 Jump back to #R$BF87 when the key is below SPACE.
 N $BF96 Is the command buffer full?
-  $BF96,$0A Jump back to #R$BF87 once the pointer has reached the sentinel at #R$BB35.
+  $BF96,$0A Jump back to #R$BF87 once the pointer has reached the sentinel at
+. #R$BB04(#N$BB35).
 N $BFA0 The key is valid, so store it and print it.
   $BFA0,$01 Write the key into the command buffer.
   $BFA1,$03 Call #R$BE13 to select the screen channel.
   $BFA4,$03 Call #R$BE37 to echo the key.
   $BFA7,$01 Advance to the next space in the buffer.
   $BFA8,$02 Jump back to #R$BF87 for the next key.
+
+c $BFAA Handler: User Pressed "DELETE"
 @ $BFAA label=UserInput_Delete
-N $BFAA The player pressed DELETE.
+E $BFAA View the equivalent code in;
+. #LIST
+. { #HEROES$B237 }
+. { #JEWELS$C041 }
+. LIST#
+D $BFAA The player pressed DELETE.
   $BFAA,$0A Jump back to #R$BF87 when the buffer is still empty.
 N $BFB4 Rub the previous character off the screen.
   $BFB4,$01 Keep the buffer pointer safe.
@@ -876,34 +1207,36 @@ N $BFB4 Rub the previous character off the screen.
   $BFBB,$01 Restore the buffer pointer from the stack.
   $BFBC,$03 Step back one character and blank it.
   $BFBF,$02 Jump back to #R$BF87 for the next key.
-@ $BFC1 label=UserInput_Enter
-N $BFC1 The player pressed ENTER, so close the command and clear the tokens.
-  $BFC1,$01 Store ENTER as the end of the command.
-  $BFC2,$03 Call #R$BE13 to select the screen channel.
-  $BFC5,$03 Call #R$BE37 to echo ENTER.
-  $BFC8,$07 Start at the token buffer (#R$BB36) and prepare the empty marker
-. #N$FF.
-@ $BFCF label=UserInput_ClearTokens
-  $BFCF,$04 Write #N$FF into each of the #N$0A token slots.
-  $BFD3,$05 Start at the command and allow #N$0A words, then fall into the
-. parser.
 
-c $BFD8 Parser: Match Input Word
-@ $BFD8 label=Parser_MatchInputWord
-E $BFD8 View the equivalent code in;
+c $BFC1 Handler: User Pressed "ENTER"
+@ $BFC1 label=UserInput_Enter
+E $BFC1 View the equivalent code in;
 . #LIST
 . { #HEROES$B24E }
 . { #JEWELS$C058 }
 . { #ANDROMEDA$6669 }
 . LIST#
-D $BFD8 Split the command into words and look each one up in the vocabulary.
+D $BFC1 The player pressed ENTER, so close the command and clear the tokens.
+  $BFC1,$01 Store ENTER as the end of the command.
+  $BFC2,$03 Call #R$BE13 to select the screen channel.
+  $BFC5,$03 Call #R$BE37 to echo ENTER.
+  $BFC8,$07 Start at the token buffer (#R$BB36) and prepare the empty marker
+. #N$FF.
+@ $BFCF label=EmptyWordTokenBuffer_Loop
+  $BFCF,$04 Write #N$FF into each of the #N$0A token slots.
+  $BFD3,$05 Start at the command and allow #N$0A words, then fall into the
+. parser.
+@ $BFD8 label=Parser_MatchInputWord
+N $BFD8 Split the command into words and look each one up in the vocabulary.
 N $BFD8 Blank the four-character word buffer.
   $BFD8,$03 Start at the word buffer (#R$BB41).
   $BFDB,$04 Prepare a space and a counter of #N$04 characters.
 @ $BFDF label=MatchInputWord_Clear
   $BFDF,$04 Write spaces through the word buffer.
-  $BFE3,$0B Jump to #R$C0B4 when no token slots remain, or the command has ended.
-N $BFEE Copy the next word, up to #N$04 characters, stopping at a space, a comma or
+  $BFE3,$0B Jump to #R$C0B4 when no token slots remain, or the command has
+. ended.
+N $BFEE Copy the next word, up to #N$04 characters, stopping at a space, a comma
+. or
 . ENTER.
   $BFEE,$05 Copy up to #N$04 characters into the word buffer.
 @ $BFF3 label=MatchInputWord_Copy
@@ -1005,25 +1338,31 @@ E $C0D2 View the equivalent code in;
 . LIST#
 D $C0D2 Print every object in the given place.
   $C0D2,$07 Look up the object locations.
-@ $C0D9 label=PrintObjects_Loop
+N $C0D9 Search for the next object in this place.
+@ $C0D9 label=FindObject_Loop
   $C0D9,$03 Return if the search did not find a match.
   $C0DC,$09 Keep the search and turn the match into an object index.
   $C0E5,$07 Call #R$C0C3 to fetch this object's description.
   $C0EC,$03 Call #R$BE2E to print the description and start a new line.
   $C0EF,$03 Restore the search from the stack.
-  $C0F2,$06 Look for another object here.
+  $C0F2,$06 Jump back to #R$C0D9 until all objects in the table have been
+. checked.
+N $C0F8 All matching objects have been printed.
   $C0F8,$01 Return.
 
 c $C0F9 Handler: Display Room
 @ $C0F9 label=Handler_DisplayRoom
 E $C0F9 View the equivalent code in;
 . #LIST
+. { #SHOCK$A33A }
 . { #HEROES$B46B }
 . { #JEWELS$C26A }
 . { #ANDROMEDA$678A }
 . { #WARLORD$AC02 }
 . LIST#
-D $C0F9 On the first visit, show the picture and the long description, then list what is here and which ways lead out.
+D $C0F9 On the first visit, show the picture and the long description, then list
+. what is here and which ways lead out.
+N $C0F9 Clear the screen, then show the room picture on a first visit.
   $C0F9,$01 Keep #REGde safe on the stack.
   $C0FA,$03 Call #R$BDEA to clear the screen.
   $C0FD,$01 Restore #REGde from the stack.
@@ -1043,8 +1382,8 @@ D $C0F9 On the first visit, show the picture and the long description, then list
   $C138,$0A Remember that the long description was shown, and set the text row
 . to #N$08.
   $C142,$08 Call #R$C0C3 to fetch this room's picture handler.
-@ $C14A nowarn
   $C14A,$05 Return to #R$C14F afterwards and jump to that handler.
+N $C14F Print the room description and work out the exits.
 @ $C14F label=Handler_DisplayRoom_PrintDescription
   $C14F,$03 Call #R$BE06 to move the cursor to the text line stored at #R$BB40.
   $C152,$05 Set the text row to #N($18), under the picture.
@@ -1052,6 +1391,7 @@ D $C0F9 On the first visit, show the picture and the long description, then list
   $C162,$03 Call #R$BE2E to print the room description and start a new line.
   $C165,$07 Skip the key-wait unless the long description was just shown.
   $C16C,$05 Clear that flag and wait for a key.
+N $C171 Count the number of exits in the room data.
 @ $C171 label=Handler_DisplayRoom_ListExits
   $C171,$03 Call #R$C201 to fetch this room's six exits.
   $C174,$0E Count how many of the six exits leave this room.
@@ -1070,7 +1410,8 @@ D $C0F9 On the first visit, show the picture and the long description, then list
   $C1AC,$06 Print "#MESSAGE$BBA9".
   $C1B2,$09 Point back at the exits and the direction names.
 @ $C1BB label=Handler_DisplayRoom_NextExit
-  $C1BB,$09 Exchange the exit list back into #REGhl and step to the next open way out.
+  $C1BB,$09 Exchange the exit list back into #REGhl and step to the next open
+. way out.
 @ $C1BC label=Handler_DisplayRoom_StepExit
 @ $C1C1 label=Handler_DisplayRoom_ExitOpen
   $C1C4,$0A Call #R$BE21 to print the direction name.
@@ -1083,18 +1424,24 @@ D $C0F9 On the first visit, show the picture and the long description, then list
   $C1E4,$03 Jump back to #R$C1BB for the next exit.
 @ $C1E7 label=Handler_DisplayRoom_FullStop
   $C1E7,$06 Print "#MESSAGE$BCF9".
+N $C1ED Are there any objects here?
 @ $C1ED label=Handler_DisplayRoom_ListObjects
   $C1ED,$07 Call #R$BF69 to see whether this room holds anything. Return when it
 . does not.
   $C1F4,$06 Print "#MESSAGE$BB96".
   $C1FA,$06 Call #R$C0D2 to list what is in this room.
+N $C200 The exits and objects for this room are done.
   $C200,$01 Return.
 
 c $C201 Get Room Pointer
 @ $C201 label=GetRoomPointer
 E $C201 View the equivalent code in;
 . #LIST
+. { #SHOCK$A41C }
+. { #HEROES$B503 }
+. { #JEWELS$C302 }
 . { #ANDROMEDA$6892 }
+. { #WARLORD$AC9A }
 . LIST#
 D $C201 Fetch the six exit bytes for the current room.
   $C201,$06 Fetch the current room into #REGde.
@@ -1134,8 +1481,8 @@ D $C213 Turn a matched word into an object name, or say it cannot be seen.
   $C24D,$01 Set the carry flag to reject the command.
   $C24E,$01 Return.
 
-c $C24F Is Object In The Current Room?
-@ $C24F label=IsObjectInCurrentRoom
+c $C24F Validate If Item Is Present
+@ $C24F label=ValidateItemPresent
 E $C24F View the equivalent code in;
 . #LIST
 . { #SHOCK$A5C6 }
@@ -1144,17 +1491,30 @@ E $C24F View the equivalent code in;
 . { #ANDROMEDA$68E0 }
 . { #WARLORD$AE6B }
 . LIST#
-D $C24F Set the zero flag when this object is in this room or in the scenic list.
-R $C24F A Object number
-R $C24F O:F Zero flag set when the object is in the current room
-  $C24F,$09 Jump to #R$C25D when this is a scenic entry rather than an object.
-  $C258,$05 Use the object locations and join the room test.
-@ $C25D label=IsObjectInCurrentRoom_Next
-  $C25D,$05 Clear the scenic marker and use the scenic list.
-@ $C262 label=IsObjectInCurrentRoom_Compare
-  $C262,$07 Jump to #R$C26C when the object is in the current room.
-  $C269,$03 Treat a carried object as present.
-@ $C26C label=IsObjectInCurrentRoom_Found
+D $C24F Set the zero flag when this object is in this room or in the scenic
+. list.
+R $C24F A Object ID
+R $C24F O:F Z flag set if the object is available
+  $C24F,$02 Stash #REGhl and #REGde on the stack.
+  $C251,$03 Store the object ID in #REGde.
+  $C254,$04 Jump to #R$C25D if this is a scenic object.
+N $C258 Else check the regular objects.
+  $C258,$03 #REGhl=#R$B9C8.
+  $C25B,$02 Jump to #R$C262.
+N $C25D Prepare object ID for use.
+@ $C25D label=Objects_UseScenicTable
+  $C25D,$02 Clear the scenic flag.
+  $C25F,$03 #REGhl=#R$BA48.
+N $C262 Both object types continue from here.
+@ $C262 label=Objects_CheckLocation
+  $C262,$01 Add the object ID to the object/ event locations table.
+  $C263,$06 Jump to #R$C26C if the object/ event table states that it's located
+. in *#R$BA9B(the current room). Note also sets/ unsets the Z flag accordingly.
+N $C269 Check the players inventory, as an object can still be used if it's
+. being held.
+  $C269,$03 Lastly, set the Z flag if the item is in the players inventory.
+@ $C26C label=Handler_Objects_Return
+N $C26C Housekeeping; restore #REGde and #REGhl to their previous values.
   $C26C,$02 Restore #REGde and #REGhl from the stack.
   $C26E,$01 Return.
 
@@ -1168,7 +1528,8 @@ E $C26F View the equivalent code in;
 . { #ANDROMEDA$6900 }
 . { #WARLORD$AE80 }
 . LIST#
-D $C26F Walk a phrase from the word list. The zero flag is set when the typed words match it.
+D $C26F Walk a phrase from the word list. The zero flag is set when the typed
+. words match it.
   $C26F,$03 Hand the typed tokens to the phrase walk.
 @ $C272 label=Parser_AdvanceToSeparator_Loop
   $C272,$01 Advance to the next byte.
@@ -1300,7 +1661,8 @@ E $C2FE View the equivalent code in;
 . { #ANDROMEDA$6972 }
 . { #WARLORD$AF70 }
 . LIST#
-D $C2FE Set the carry flag, after asking for a rephrase, when a direct object was typed.
+D $C2FE Set the carry flag, after asking for a rephrase, when a direct object
+. was typed.
   $C2FE,$06 Return if the end-of-list marker was pressed.
 N $C304 The command must not name an object.
   $C304,$03 Call #R$BDBE.
@@ -1323,7 +1685,7 @@ N $C310 The command names no object.
   $C310,$03 Call #R$BDC5.
   $C313,$01 Set the carry flag to reject the command.
   $C314,$01 Return.
-@ $C315 label=Parser_ValidateDirectObject_Next
+@ $C315 label=DirectObject_Process
   $C315,$04 Call #R$C29E to count the nouns, and return when one was named.
 N $C319 The named object is not valid for this command.
   $C319,$03 Call #R$BDBE.
@@ -1348,8 +1710,8 @@ N $C328 The phrase does not match.
   $C32B,$01 Set the carry flag to reject the command.
   $C32C,$01 Return.
 
-c $C32D Parser: Validate Input Tokens
-@ $C32D label=Parser_ValidateInputTokens
+c $C32D Parser: Validate Two Direct Objects
+@ $C32D label=Parser_ValidateTwoDirectObjects
 E $C32D View the equivalent code in;
 . #LIST
 . { #SHOCK$AC2F }
@@ -1358,18 +1720,20 @@ E $C32D View the equivalent code in;
 . { #WARLORD$AF9F }
 . LIST#
 D $C32D Accept a command that names one or two objects, and reject the rest.
+R $C32D O:F The carry flag is set when the command is malformed
   $C32D,$04 Return if the words after the verb are not valid for this command.
-  $C331,$04 Jump to #R$C33A unless the carried location matches.
+  $C331,$04 Jump to #R$C33A unless exactly one object was named.
 N $C335 Only one object was named.
   $C335,$03 Call #R$BDC5.
   $C338,$01 Set the carry flag to reject the command.
   $C339,$01 Return.
-@ $C33A label=Parser_ValidateInputTokens_Next
-  $C33A,$04 Jump to #R$C340 when the value #N$03 succeeded.
-  $C33E,$01 Clear the carry flag; the input tokens are valid.
+N $C33A There are two or more valid direct objects in the user input.
+@ $C33A label=ValidateTwoDirectObjects
+  $C33A,$04 Jump to #R$C340 when three or more objects were named.
+  $C33E,$01 Clear the carry flag; exactly two objects were named.
   $C33F,$01 Return.
-@ $C340 label=Parser_ValidateInputTokens_Rephrase
 N $C340 Too many objects were named.
+@ $C340 label=ValidateTwoDirectObjects_TooMany
   $C340,$03 Call #R$BDBE.
   $C343,$01 Set the carry flag to reject the command.
   $C344,$01 Return.
@@ -1385,25 +1749,29 @@ E $C345 View the equivalent code in;
 . { #WARLORD$A5CA }
 . LIST#
 D $C345 Ask for a tape and write the game state out.
-  $C345,$06 Jump to #R$C364 when *#R$BB02 is zero, so there is no flag state to copy.
-  $C34B,$0A Take the flag addresses and the save area.
+  $C345,$06 Jump to #R$C364 when *#R$BB02 is zero, so there are no configurable
+. exits to pack.
+  $C34B,$0A Take the exit addresses and the save area.
+N $C355 Move on to the next configurable-exit address.
 @ $C355 label=SaveGame_Copy
-  $C355,$05 Step to the next flag address and the next save byte.
+  $C355,$05 Move #REGix on to the next exit address and #REGde on to the next
+. packed exit byte.
 @ $C35A label=SaveGame_StoreFlag
-  $C35A,$0A Copy that flag into the save area and repeat until every flag is
-. stored.
+  $C35A,$0A Fetch the exit address from *#REGix into #REGhl, copy the exit byte
+. into the packed save buffer, and repeat until every exit byte is packed.
 N $C364 Print "#MESSAGE$BC48".
 @ $C364 label=SaveGame_PrintSaving
   $C364,$09 Print "#MESSAGE$BC48" and wait for a key.
-  $C36D,$09 Point the save at the game state (#R$B9C8) for #N$013C bytes, marked as a
-. data block.
+  $C36D,$04 Load the starting address into #REGix at #R$B9C8.
+  $C371,$03 Set the block length in #REGde to #N$013C bytes.
+  $C374,$02 Set #REGa to #N$FF which indicates this is a data block.
   $C376,$03 Call #SKOOLKID$04C2(SA_BYTES).
 N $C379 Print "#MESSAGE$BC6A".
   $C379,$06 Print "#MESSAGE$BC6A".
   $C37F,$01 Return.
 
 c $C380 Load From Tape
-@ $C380 label=LoadFromTape
+@ $C380 label=LoadTape
 E $C380 View the equivalent code in;
 . #LIST
 . { #SHOCK$9EDB }
@@ -1415,20 +1783,27 @@ E $C380 View the equivalent code in;
 D $C380 Ask for a tape and read a previously saved game state back in.
 N $C380 Print "#MESSAGE$BC27".
   $C380,$06 Print "#MESSAGE$BC27".
-  $C386,$07 Point the load at the game state (#R$B9C8) for #N$013C bytes.
-  $C38D,$03 Mark it as a data block and set the carry flag for "loading".
+  $C386,$04 Load the starting address into #REGix at #R$B9C8.
+  $C38A,$03 Set the block length in #REGde to #N$013C bytes.
+  $C38D,$02 Set #REGa to #N$FF which indicates this is a data block.
+  $C38F,$01 Set the carry flag to indicate this is loading.
   $C390,$03 Call #SKOOLKID$0556(LD_BYTES).
   $C393,$02 Jump to #R$C39C when the load succeeded.
 N $C395 Print "#MESSAGE$BC3C".
   $C395,$06 Print "#MESSAGE$BC3C".
   $C39B,$01 Return.
-@ $C39C label=LoadFromTape_Success
-  $C39C,$05 Return when *#R$BB02 is zero, so there is no flag state to restore.
-  $C3A1,$0A Take the flag addresses and the saved bytes.
-@ $C3AB label=LoadFromTape_Restore
-  $C3AB,$05 Step to the next flag address and the next saved byte.
-@ $C3B0 label=LoadFromTape_StoreFlag
-  $C3B0,$0A Write that saved byte back and repeat until every flag is restored.
+N $C39C There is nothing to unpack when no configurable exits were saved.
+@ $C39C label=LoadTape_Success
+  $C39C,$05 Return when *#R$BB02 is zero, so there are no configurable exits to
+. unpack.
+  $C3A1,$0A Take the exit addresses and the packed exit bytes.
+N $C3AB The next saved exit address.
+@ $C3AB label=LoadTape_Restore
+  $C3AB,$05 Move #REGix on to the next exit address and #REGde on to the next
+. packed exit byte.
+@ $C3B0 label=LoadTape_StoreFlag
+  $C3B0,$0A Fetch the exit address from *#REGix into #REGhl, write that packed
+. exit byte back into the game, and repeat until every exit byte is restored.
   $C3BA,$05 Call #R$C0F9 to show the restored room.
   $C3BF,$01 Return.
 
@@ -1441,14 +1816,15 @@ E $C3C0 View the equivalent code in;
 . { #ANDROMEDA$6A1C }
 . { #WARLORD$A647 }
 . LIST#
-D $C3C0 Start a new line when the text window is not empty, then print the prompt.
+D $C3C0 Start a new line when the text window is not empty, then print the
+. prompt.
   $C3C0,$08 Scan eight rows from the top of the screen.
   $C3C8,$01 Start with no text found.
-@ $C3C9 label=PrintInputPrompt_Collect
+@ $C3C9 label=PrintInputPrompt_Loop
   $C3C9,$04 Collect whether any of those rows already holds text.
   $C3CD,$03 Jump to #R$C3D5 when the text window is still empty.
   $C3D0,$05 Print a newline so the prompt starts on a fresh line.
-@ $C3D5 label=PrintInputPrompt_Print
+@ $C3D5 label=PrintPrompt
   $C3D5,$06 Print "#MESSAGE$BB55".
   $C3DB,$01 Return.
 
@@ -1465,7 +1841,8 @@ D $C3DC Check each typed token against the noun list and resolve its phrase.
 @ $C3E1 label=Parser_MatchVocabulary_Loop
   $C3E1,$04 Return if the end-of-list marker was pressed.
   $C3E5,$0C Jump to #R$C3F5 if the search did not find a match.
-  $C3F1,$04 Call #R$C213 to resolve the phrase and complain if it is not understood,
+  $C3F1,$04 Call #R$C213 to resolve the phrase and complain if it is not
+. understood,
 . and return if the comparison failed.
 @ $C3F5 label=Parser_MatchVocabulary_Next
   $C3F5,$04 Repeat from #R$C3E1 for the remaining tokens.
@@ -1475,45 +1852,53 @@ c $C3FA Handler: Scenic Events
 @ $C3FA label=Handler_ScenicEvents
 E $C3FA View the equivalent code in;
 . #LIST
+. { #SHOCK$AC88 }
+. { #HEROES$B6E0 }
 . { #JEWELS$C4EB }
+. { #ANDROMEDA$658A }
+. { #WARLORD$AFEB }
 . LIST#
 D $C3FA If this room has a scenic event, run it.
   $C3FA,$07 Start at the scenic list.
 @ $C401 label=Handler_ScenicEvents_Loop
-  $C401,$07 Read the current room. Jump to #R$C42E if the search did not find a match.
+  $C401,$07 Read the current room. Jump to #R$C42E if the search did not find a
+. match.
   $C408,$0F Save the scenic search and turn the match into a handler index.
   $C417,$07 Call #R$C0C3 to fetch this room's scenic handler.
-@ $C41E nowarn
   $C41E,$05 Return to #R$C423 afterwards and jump to that handler.
   $C423,$0B Restore the scenic search and repeat while entries remain.
-@ $C42E label=Handler_ScenicEvents_Next
+@ $C42E label=ScenicEvents_Return
   $C42E,$01 Return.
 
 c $C42F Move Player To Room
 @ $C42F label=MovePlayerToRoom
 E $C42F View the equivalent code in;
 . #LIST
+. { #SHOCK$ACBD }
 . { #JEWELS$C520 }
+. { #ANDROMEDA$8E18 }
+. { #WARLORD$B01F }
 . LIST#
-D $C42F Move the player to the given room and retarget any scenic events that watched the old room.
+D $C42F Move the player to the given room and retarget any scenic events that
+. watched the old room.
   $C42F,$0D Read the current room and the scenic list. Jump to #R$C43D to
 . continue.
-@ $C43C label=MovePlayerToRoom_Loop
+@ $C43C label=FindScenicEvents_Loop
   $C43C,$01 Step to the next scenic entry.
-@ $C43D label=MovePlayerToRoom_Next
+@ $C43D label=FindScenicEvents
   $C43D,$03 Jump to #R$C441 unless this scenic entry watched the old room.
   $C440,$01 Retarget this scenic entry to the new room.
-@ $C441 label=MovePlayerToRoom_ScenicNext
+@ $C441 label=FindScenicEvents_Next
   $C441,$02 Repeat from #R$C43C for the remaining scenic entries.
   $C443,$0A Remember the new room. Return when no event bits are set.
   $C44D,$08 Take the eight event bits and the objects they summon.
-@ $C455 label=MovePlayerToRoom_EventAdvance
+@ $C455 label=FollowingItems_Loop
   $C455,$01 Step to the next event object.
-@ $C456 label=MovePlayerToRoom_EventBit
+@ $C456 label=FollowingItems_CheckBit
   $C456,$04 Skip this object when its event bit is clear.
   $C45A,$05 Call #R$C2DF to move that event's object into this room.
   $C45F,$01 Switch back to the event scan.
-@ $C460 label=MovePlayerToRoom_EventNext
+@ $C460 label=FollowingItems_Next
   $C460,$02 Repeat from #R$C455 for the remaining event bits.
 @ $C462 label=MovePlayerToRoom_Return
   $C462,$01 Return.
@@ -1527,11 +1912,12 @@ E $C463 View the equivalent code in;
 . { #ANDROMEDA$8D85 }
 . { #WARLORD$B05E }
 . LIST#
-D $C463 Jump to the handler for the first vocabulary token, or admit the verb is unknown.
+D $C463 Jump to the handler for the first vocabulary token, or admit the verb is
+. unknown.
   $C463,$0E Jump to #R$C478 if the search found a match.
   $C471,$06 Print "#MESSAGE$BB61".
   $C477,$01 Return.
-@ $C478 label=Handler_MatchVerb_Next
+@ $C478 label=VerbMatched
   $C478,$0D Call #R$C0C3 to look up the verb's handler.
   $C485,$01 Jump to that handler.
 
@@ -2929,7 +3315,8 @@ D $E934 Six direction bytes for each room, in the order used by #R$C201:
 . north, south, east, west, up, down. #N$00 means no exit. Some of
 . these bytes are rewritten when a door opens or an event moves the
 . player.
-B $E934,$01 Direction #N((#PC-$E934)%$06) of room #N((#PC-$E934)/$06): #N(#PEEK(#PC)).
+B $E934,$01 Direction #N((#PC-$E934)%$06) of room #N((#PC-$E934)/$06):
+. #N(#PEEK(#PC)).
 L $E934,$01,$1CE
 
 g $EB02 Table: Flags To Clear
@@ -2944,6 +3331,7 @@ E $EB10 View the equivalent code in;
 . #LIST
 . { #HEROES$E9A1 }
 . { #JEWELS$EDC4 }
+. { #ANDROMEDA$8D2A }
 . { #WARLORD$E99F }
 . LIST#
 D $EB10 One turn: threats, local events, a command, then the matching verb.
@@ -2973,9 +3361,9 @@ D $EB23 Tell the player they are dead and ask whether to play again.
 N $EB23 Tell the player they are dead.
   $EB23,$06 Print "#MESSAGE$BC01".
 N $EB29 Ask whether to play again.
-@ $EB29 label=GameOver_WantAnother
+@ $EB29 label=WantAnotherGameInput
   $EB29,$06 Print "#MESSAGE$BC0F".
-@ $EB2F label=GameOver_Ask
+@ $EB2F label=WantAnotherGameInput_Loop
   $EB2F,$03 Call #R$BDDA to wait for the player's answer.
   $EB32,$05 Jump to #SKOOLKID$0000(START) if the player pressed "N".
   $EB37,$05 Jump to #R$B9C5 to play again if the player pressed "Y".
@@ -3000,186 +3388,320 @@ N $EB44 Print "#MESSAGE$D53A".
 c $EB4C Events: Wood Nymph
 @ $EB4C label=Events_WoodNymph
 D $EB4C The wood nymph appears, heals the player and then leaves.
-  $EB4C,$0B Clear the nymph's event and return unless she is here.
-  $EB57,$05 Destroy object #N$8A (the wood nymph).
-  $EB5C,$05 Move object #N$07 (the ring) into the current room.
-  $EB61,$06 Print "#MESSAGE$D644".
+N $EB4C Make the wood nymph inactive.
+  $EB4C,$03 #REGhl=#R$BA36.
+  $EB4F,$02 Reset bit 0 of *#REGhl.
+  $EB51,$05 Call #R$C24F with #N$8A.
+  $EB56,$01 Return if #N$8A is not in the current room.
+  $EB57,$05 Call #R$C2D8 with #N$8A.
+  $EB5C,$05 Call #R$C2DF with item #N$07: #ITEM$07.
+N $EB61 Print "#MESSAGE$D644".
+  $EB61,$03 #REGhl=#R$D644.
+  $EB64,$03 Call #R$BE2E.
   $EB67,$01 Return.
 
 c $EB68 Fatal Events: Spider
 @ $EB68 label=Events_Spider
 D $EB68 The spider kills the player when they are still in her room.
-  $EB68,$0B Clear the spider's event and return unless she is here.
-  $EB73,$05 Print "#MESSAGE$D686" to announce the death.
+N $EB68 Make the spider inactive.
+  $EB68,$03 #REGhl=#R$BA36.
+  $EB6B,$02 Reset bit 1 of *#REGhl.
+  $EB6D,$05 Call #R$C24F with item #N$41: #ITEM$41.
+  $EB72,$01 Return if #ITEM$41 is not in the current room.
+N $EB73 Print "#MESSAGE$D686".
+  $EB73,$03 #REGhl=#R$D686.
+  $EB76,$02 Jump to #R$EBA6.
 
 c $EB78 Fatal Events: Slime Monster
 @ $EB78 label=Events_SlimeMonster
 D $EB78 The slime monster kills the player when they are still in the pit.
-  $EB78,$0B Clear the slime's event and return unless it is here.
-  $EB83,$05 Print "#MESSAGE$D6B6" to announce the death.
+N $EB78 Make the slime monster inactive.
+  $EB78,$03 #REGhl=#R$BA36.
+  $EB7B,$02 Reset bit 2 of *#REGhl.
+  $EB7D,$05 Call #R$C24F with item #N$1E: #ITEM$1E.
+  $EB82,$01 Return if #ITEM$1E is not in the current room.
+N $EB83 Print "#MESSAGE$D6B6".
+  $EB83,$03 #REGhl=#R$D6B6.
+  $EB86,$02 Jump to #R$EBA6.
 
 c $EB88 Fatal Events: Demons
 @ $EB88 label=Events_Demons
 D $EB88 The demons kill the player if the fight is still going on.
-  $EB88,$0B Clear the demons' event and return unless they are here.
-  $EB93,$05 Print "#MESSAGE$D6E0" to announce the death.
+N $EB88 Make the demons inactive.
+  $EB88,$03 #REGhl=#R$BA36.
+  $EB8B,$02 Reset bit 3 of *#REGhl.
+  $EB8D,$05 Call #R$C24F with item #N$29: #ITEM$29.
+  $EB92,$01 Return if #ITEM$29 is not in the current room.
+N $EB93 Print "#MESSAGE$D6E0".
+  $EB93,$03 #REGhl=#R$D6E0.
+  $EB96,$02 Jump to #R$EBA6.
 
 c $EB98 Fatal Events: Wizard
 @ $EB98 label=Events_Wizard
 D $EB98 Zarn kills the player, and the game ends at once.
-  $EB98,$0B Clear Zarn's event and return unless he is here.
-  $EBA3,$03 Print "#MESSAGE$D716".
+N $EB98 Make Zarn inactive.
+  $EB98,$03 #REGhl=#R$BA36.
+  $EB9B,$02 Reset bit 4 of *#REGhl.
+  $EB9D,$05 Call #R$C24F with item #N$2A: #ITEM$2A.
+  $EBA2,$01 Return if #ITEM$2A is not in the current room.
+N $EBA3 Print "#MESSAGE$D716".
+  $EBA3,$03 #REGhl=#R$D716.
 @ $EBA6 label=Events_AnnounceDeath
-  $EBA6,$03 Print the death message and start a new line.
-  $EBA9,$03 Discard the return addresses on the stack.
-  $EBAC,$03 Jump back to #R$EB23 to end the game.
+  $EBA6,$03 Call #R$BE2E.
+  $EBA9,$01 Restore #REGhl from the stack.
+  $EBAA,$01 Restore #REGhl from the stack.
+  $EBAB,$01 Restore #REGhl from the stack.
+  $EBAC,$03 Jump to #R$EB23.
 
 c $EBAF Events: Elf
 @ $EBAF label=Events_Elf
 D $EBAF An elf attacks. Sometimes the blow is fatal.
-  $EBAF,$06 Print "#MESSAGE$D753".
-  $EBB5,$07 Jump to #R$EBC5 unless a roll of #N$0F comes up zero.
-@ $EBBC nowarn
-  $EBBC,$09 Make the blow fatal and print "#MESSAGE$D795".
+N $EBAF Print "#MESSAGE$D753".
+  $EBAF,$03 #REGhl=#R$D753.
+  $EBB2,$03 Call #R$BE2E.
+  $EBB5,$02 #REGa=#N$0F.
+  $EBB7,$03 Call #R$BF45.
+  $EBBA,$02 Jump to #R$EBC5 if the blow is not fatal.
+  $EBBC,$04 Switch #R$EB23 onto the stack so the next return actions a "game
+. over".
+N $EBC0 Print "#MESSAGE$D795".
+  $EBC0,$03 #REGhl=#R$D795.
+  $EBC3,$02 Jump to #R$EBC8.
+N $EBC5 Print "#MESSAGE$D768".
 @ $EBC5 label=Events_Elf_Next
-  $EBC5,$03 The blow only glances, with "#MESSAGE$D768".
+  $EBC5,$03 #REGhl=#R$D768.
 @ $EBC8 label=Events_Elf_Print
-  $EBC8,$03 Call #R$C486 to pause, then print that message and start a new line.
+  $EBC8,$03 Call #R$C486.
   $EBCB,$01 Return.
 
 c $EBCC Events: Flying Lizard
 @ $EBCC label=Events_FlyingLizard
 D $EBCC A flying lizard attacks. Sometimes the blow is fatal.
-  $EBCC,$06 Print "#MESSAGE$D7D1".
-  $EBD2,$07 Jump to #R$EBE2 unless a roll of #N$0F comes up zero.
-@ $EBD9 nowarn
-  $EBD9,$09 Make the blow fatal and print "#MESSAGE$D823".
+N $EBCC Print "#MESSAGE$D7D1".
+  $EBCC,$03 #REGhl=#R$D7D1.
+  $EBCF,$03 Call #R$BE2E.
+  $EBD2,$02 #REGa=#N$0F.
+  $EBD4,$03 Call #R$BF45.
+  $EBD7,$02 Jump to #R$EBE2 if the blow is not fatal.
+  $EBD9,$04 Switch #R$EB23 onto the stack so the next return actions a "game
+. over".
+N $EBDD Print "#MESSAGE$D823".
+  $EBDD,$03 #REGhl=#R$D823.
+  $EBE0,$02 Jump to #R$EBE5.
+N $EBE2 Print "#MESSAGE$D7EF".
 @ $EBE2 label=Events_FlyingLizard_Next
-  $EBE2,$03 The blow only glances, with "#MESSAGE$D7EF".
+  $EBE2,$03 #REGhl=#R$D7EF.
 @ $EBE5 label=Events_FlyingLizard_Print
-  $EBE5,$03 Call #R$C486 to pause, then print that message and start a new line.
+  $EBE5,$03 Call #R$C486.
   $EBE8,$01 Return.
 
 c $EBE9 Events: Centaur
 @ $EBE9 label=Events_Centaur
 D $EBE9 A centaur appears and is placed in the current room.
-  $EBE9,$06 Print "#MESSAGE$D84D".
-  $EBEF,$05 Destroy object #N$86 (the centaur).
-  $EBF4,$06 Print "#MESSAGE$D861".
+N $EBE9 Print "#MESSAGE$D84D".
+  $EBE9,$03 #REGhl=#R$D84D.
+  $EBEC,$03 Call #R$BE2E.
+  $EBEF,$05 Call #R$C2D8 with #N$86.
+N $EBF4 Print "#MESSAGE$D861".
+  $EBF4,$03 #REGhl=#R$D861.
+  $EBF7,$03 Call #R$C486.
   $EBFA,$01 Return.
 
 c $EBFB Events: Old Man
 @ $EBFB label=Events_OldMan
 D $EBFB The old man appears, speaks, and is placed in the current room.
-  $EBFB,$06 Print "#MESSAGE$D87F".
-  $EC01,$06 Print "#MESSAGE$D895".
-  $EC07,$06 Print "#MESSAGE$D93D".
-  $EC0D,$05 Destroy object #N$87 (the old man).
+N $EBFB Print "#MESSAGE$D87F".
+  $EBFB,$03 #REGhl=#R$D87F.
+  $EBFE,$03 Call #R$BE2E.
+N $EC01 Print "#MESSAGE$D895".
+  $EC01,$03 #REGhl=#R$D895.
+  $EC04,$03 Call #R$C486.
+N $EC07 Print "#MESSAGE$D93D".
+  $EC07,$03 #REGhl=#R$D93D.
+  $EC0A,$03 Call #R$BE2E.
+  $EC0D,$05 Call #R$C2D8 with #N$87.
   $EC12,$01 Return.
 
 c $EC13 Events: Old Man's Quest
 @ $EC13 label=Events_OldMansQuest
 D $EC13 The old man returns with his quest and is placed in the current room.
-  $EC13,$06 Print "#MESSAGE$D87F".
-  $EC19,$06 Print "#MESSAGE$D8C9".
-  $EC1F,$06 Print "#MESSAGE$D93D".
-  $EC25,$05 Destroy object #N$88 (the old man's quest).
+N $EC13 Print "#MESSAGE$D87F".
+  $EC13,$03 #REGhl=#R$D87F.
+  $EC16,$03 Call #R$BE2E.
+N $EC19 Print "#MESSAGE$D8C9".
+  $EC19,$03 #REGhl=#R$D8C9.
+  $EC1C,$03 Call #R$C486.
+N $EC1F Print "#MESSAGE$D93D".
+  $EC1F,$03 #REGhl=#R$D93D.
+  $EC22,$03 Call #R$BE2E.
+  $EC25,$05 Call #R$C2D8 with #N$88.
   $EC2A,$01 Return.
 
 c $EC2B Events: Wood Nymph's Glimpse
 @ $EC2B label=Events_WoodNymphsGlimpse
 D $EC2B The player glimpses the wood nymph, who is then placed nearby.
-  $EC2B,$06 Print "#MESSAGE$D953".
-  $EC31,$06 Print "#MESSAGE$D9A1".
-  $EC37,$05 Destroy object #N$89 (the nymph's glimpse).
+N $EC2B Print "#MESSAGE$D953".
+  $EC2B,$03 #REGhl=#R$D953.
+  $EC2E,$03 Call #R$BE2E.
+N $EC31 Print "#MESSAGE$D9A1".
+  $EC31,$03 #REGhl=#R$D9A1.
+  $EC34,$03 Call #R$C486.
+  $EC37,$05 Call #R$C2D8 with #N$89.
   $EC3C,$01 Return.
 
 c $EC3D Events: Wood Nymph Heals
 @ $EC3D label=Events_WoodNymphHeals
 D $EC3D The wood nymph appears, heals the injury and arms the nymph event again.
-  $EC3D,$06 Print "#MESSAGE$D9D0".
-  $EC43,$06 Print "#MESSAGE$D9E7".
-  $EC49,$06 Print "#MESSAGE$DA29".
-  $EC4F,$05 Destroy object #N$48 (the injury).
-  $EC54,$0A Arm the wood nymph for the next turn.
+N $EC3D Print "#MESSAGE$D9D0".
+  $EC3D,$03 #REGhl=#R$D9D0.
+  $EC40,$03 Call #R$BE2E.
+N $EC43 Print "#MESSAGE$D9E7".
+  $EC43,$03 #REGhl=#R$D9E7.
+  $EC46,$03 Call #R$C486.
+N $EC49 Print "#MESSAGE$DA29".
+  $EC49,$03 #REGhl=#R$DA29.
+  $EC4C,$03 Call #R$C486.
+  $EC4F,$05 Call #R$C2D8 with item #N$48: #ITEM$48.
+N $EC54 Arm the wood nymph for the next turn.
+  $EC54,$02 #REGa=#N$01.
+  $EC56,$03 Write #REGa to *#R$BA37.
+  $EC59,$03 #REGhl=#R$BA36.
+  $EC5C,$02 Set bit 0 of *#REGhl.
   $EC5E,$01 Return.
 
 c $EC5F Events: Wolves
 @ $EC5F label=Events_Wolves
 D $EC5F Wolves attack. The bow drives them off; otherwise the player dies.
-  $EC5F,$06 Print "#MESSAGE$DA61".
-  $EC65,$07 Jump to #R$EC73 if the player is not carrying object #N$03 (the bow).
-  $EC6C,$07 Jump to #R$EC7E when the player is carrying object #N$04 (the arrows).
+N $EC5F Print "#MESSAGE$DA61".
+  $EC5F,$03 #REGhl=#R$DA61.
+  $EC62,$03 Call #R$BE2E.
+  $EC65,$05 Call #R$C2D2 with item #N$03: #ITEM$03.
+  $EC6A,$02 Jump to #R$EC73 if #ITEM$03 isn't held.
+  $EC6C,$05 Call #R$C2D2 with item #N$04: #ITEM$04.
+  $EC71,$02 Jump to #R$EC7E if #ITEM$04 is held.
+N $EC73 Print "#MESSAGE$DA7C".
 @ $EC73 label=Events_Wolves_Next
-  $EC73,$06 Print "#MESSAGE$DA7C".
-@ $EC79 nowarn
-  $EC79,$04 Switch #R$EB23 onto the stack.
+  $EC73,$03 #REGhl=#R$DA7C.
+  $EC76,$03 Call #R$C486.
+  $EC79,$04 Switch #R$EB23 onto the stack so the next return actions a "game
+. over".
   $EC7D,$01 Return.
+N $EC7E Print "#MESSAGE$DAB2".
 @ $EC7E label=Events_Wolves_FightOff
-  $EC7E,$06 Print "#MESSAGE$DAB2".
-  $EC84,$05 Move object #N$48 (the injury) into the current room.
-  $EC89,$05 Destroy object #N$8B (the wolves).
-  $EC8E,$05 Move object #N$1B (the dead wolves) into the current room.
-  $EC93,$05 Remove object #N$8A (the wood nymph) from the game.
+  $EC7E,$03 #REGhl=#R$DAB2.
+  $EC81,$03 Call #R$C486.
+  $EC84,$05 Call #R$C2DF with item #N$48: #ITEM$48.
+  $EC89,$05 Call #R$C2D8 with #N$8B.
+  $EC8E,$05 Call #R$C2DF with item #N$1B: #ITEM$1B.
+  $EC93,$05 Call #R$C2E8 with #N$8A.
   $EC98,$01 Return.
 
 c $EC99 Events: Korl Warrior
 @ $EC99 label=Events_KorlWarrior
 D $EC99 A Korl warrior attacks. Sometimes the blow is fatal.
-  $EC99,$06 Print "#MESSAGE$DB03".
-  $EC9F,$07 Jump to #R$ECAF unless a roll of #N$14 comes up zero.
-@ $ECA6 nowarn
-  $ECA6,$09 Make the blow fatal and print "#MESSAGE$D795".
+N $EC99 Print "#MESSAGE$DB03".
+  $EC99,$03 #REGhl=#R$DB03.
+  $EC9C,$03 Call #R$BE2E.
+  $EC9F,$02 #REGa=#N$14.
+  $ECA1,$03 Call #R$BF45.
+  $ECA4,$02 Jump to #R$ECAF if the blow is not fatal.
+  $ECA6,$04 Switch #R$EB23 onto the stack so the next return actions a "game
+. over".
+N $ECAA Print "#MESSAGE$D795".
+  $ECAA,$03 #REGhl=#R$D795.
+  $ECAD,$02 Jump to #R$ECB2.
+N $ECAF Print "#MESSAGE$D768".
 @ $ECAF label=Events_KorlWarrior_Next
-  $ECAF,$03 The blow only glances, with "#MESSAGE$D768".
+  $ECAF,$03 #REGhl=#R$D768.
 @ $ECB2 label=Events_KorlWarrior_Print
-  $ECB2,$03 Call #R$C486 to pause, then print that message and start a new line.
+  $ECB2,$03 Call #R$C486.
   $ECB5,$01 Return.
 
 c $ECB6 Handler: Injury Check
 @ $ECB6 label=Handler_InjuryCheck
-D $ECB6 Refuse the move while the player is badly hurt. Otherwise change rooms and arm the local dangers.
-  $ECB6,$08 Call #R$C24F to test whether the injury is in this room. Jump to
-. #R$ECC5 when the player is not too badly hurt.
-  $ECBE,$06 Print "#MESSAGE$DB38".
+D $ECB6 Refuse the move while the player is badly hurt. Otherwise change rooms
+. and arm the local dangers.
+  $ECB6,$01 #REGc=#REGa.
+  $ECB7,$05 Call #R$C24F with item #N$48: #ITEM$48.
+  $ECBC,$02 Jump to #R$ECC5 if #ITEM$48 is not in the current room.
+N $ECBE Print "#MESSAGE$DB38".
+  $ECBE,$03 #REGhl=#R$DB38.
+  $ECC1,$03 Call #R$BE2E.
   $ECC4,$01 Return.
+N $ECC5 Move into the requested room and arm local dangers.
 @ $ECC5 label=Handler_InjuryCheck_Next
-  $ECC5,$04 Call #R$C42F to move the player into that room.
-  $ECC9,$05 Call #R$C0F9 to describe the current room.
-  $ECCE,$07 Jump to #R$ECDF if object #N$41 (the giant spider) is not here.
-  $ECD5,$0A Arm the giant spider for six turns.
+  $ECC5,$01 #REGa=#REGc.
+  $ECC6,$03 Call #R$C42F.
+  $ECC9,$02 #REGe=#N$00.
+  $ECCB,$03 Call #R$C0F9.
+  $ECCE,$07 Jump to #R$ECDF if #R$C24F reports that #ITEM$41 isn't in the
+. current room.
+N $ECD5 Arm the giant spider for six turns.
+  $ECD5,$03 #REGhl=#R$BA36.
+  $ECD8,$02 Set bit 1 of *#REGhl.
+  $ECDA,$02 #REGa=#N$06.
+  $ECDC,$03 Write #REGa to *#R$BA38.
+N $ECDF Is the slime monster here?
 @ $ECDF label=Handler_InjuryCheck_SlimeMonster
-  $ECDF,$07 Jump to #R$ECF0 if object #N$1E (the slime monster) is not here.
-  $ECE6,$0A Arm the slime monster for six turns.
+  $ECDF,$07 Jump to #R$ECF0 if #R$C24F reports that #ITEM$1E isn't in the
+. current room.
+N $ECE6 Arm the slime monster for six turns.
+  $ECE6,$03 #REGhl=#R$BA36.
+  $ECE9,$02 Set bit 2 of *#REGhl.
+  $ECEB,$02 #REGa=#N$06.
+  $ECED,$03 Write #REGa to *#R$BA39.
+N $ECF0 Are the demons here?
 @ $ECF0 label=Handler_InjuryCheck_Demons
-  $ECF0,$07 Jump to #R$ED01 if object #N$29 (the demons) is not here.
-  $ECF7,$0A Arm the demons for six turns.
+  $ECF0,$07 Jump to #R$ED01 if #R$C24F reports that #ITEM$29 isn't in the
+. current room.
+N $ECF7 Arm the demons for six turns.
+  $ECF7,$03 #REGhl=#R$BA36.
+  $ECFA,$02 Set bit 3 of *#REGhl.
+  $ECFC,$02 #REGa=#N$06.
+  $ECFE,$03 Write #REGa to *#R$BA3A.
+N $ED01 Is Zarn here?
 @ $ED01 label=Handler_InjuryCheck_Zarn
-  $ED01,$07 Jump to #R$ED12 if object #N$2A (Zarn) is not here.
-  $ED08,$0A Arm Zarn for six turns.
+  $ED01,$07 Jump to #R$ED12 if #R$C24F reports that #ITEM$2A isn't in the
+. current room.
+N $ED08 Arm Zarn for six turns.
+  $ED08,$03 #REGhl=#R$BA36.
+  $ED0B,$02 Set bit 4 of *#REGhl.
+  $ED0D,$02 #REGa=#N$06.
+  $ED0F,$03 Write #REGa to *#R$BA3B.
+N $ED12 Is the witch here?
 @ $ED12 label=Handler_InjuryCheck_Witch
-  $ED12,$07 Jump to #R$ED37 if object #N$2E (the witch) is not here.
-  $ED19,$07 Jump to #R$ED2C when the player is carrying object #N$43 (the ring being
-. worn).
-  $ED20,$06 Print "#MESSAGE$DB63".
-@ $ED27 nowarn
-  $ED26,$01 Discard the return address on the stack.
-  $ED27,$04 Switch #R$EB23 onto the stack so the player dies.
+  $ED12,$07 Jump to #R$ED37 if #R$C24F reports that #ITEM$2E isn't in the
+. current room.
+  $ED19,$07 Jump to #R$ED2C if #ITEM$43 is held.
+N $ED20 Print "#MESSAGE$DB63".
+  $ED20,$03 #REGhl=#R$DB63.
+  $ED23,$03 Call #R$BE2E.
+  $ED26,$01 Restore #REGhl from the stack.
+  $ED27,$04 Switch #R$EB23 onto the stack so the next return actions a "game
+. over".
   $ED2B,$01 Return.
+N $ED2C Print "#MESSAGE$DBDE".
 @ $ED2C label=Handler_InjuryCheck_WitchSeesRing
-  $ED2C,$06 Print "#MESSAGE$DBDE".
-  $ED32,$05 Destroy object #N$2E (the witch).
+  $ED2C,$03 #REGhl=#R$DBDE.
+  $ED2F,$03 Call #R$BE2E.
+  $ED32,$05 Call #R$C2D8 with item #N$2E: #ITEM$2E.
+N $ED37 Is the old man here?
 @ $ED37 label=Handler_InjuryCheck_OldMan
-  $ED37,$07 Jump to #R$ED53 if object #N$2F (the old man) is not here.
-  $ED3E,$05 Destroy object #N$2F (the old man).
-  $ED43,$05 Move object #N$03 (the bow) into the current room.
-  $ED48,$05 Move object #N$04 (the arrows) into the current room.
-  $ED4D,$06 Print "#MESSAGE$D93D".
+  $ED37,$07 Jump to #R$ED53 if #R$C24F reports that #ITEM$2F isn't in the
+. current room.
+  $ED3E,$05 Call #R$C2D8 with item #N$2F: #ITEM$2F.
+  $ED43,$05 Call #R$C2DF with item #N$03: #ITEM$03.
+  $ED48,$05 Call #R$C2DF with item #N$04: #ITEM$04.
+N $ED4D Print "#MESSAGE$D93D".
+  $ED4D,$03 #REGhl=#R$D93D.
+  $ED50,$03 Call #R$C486.
+N $ED53 Has the player brought Mara to the Great Valley?
 @ $ED53 label=Handler_InjuryCheck_GreatValley
-  $ED53,$07 Jump to #R$ED65 unless the player is in room #N$05 (The Great Valley).
-  $ED5A,$07 Jump to #R$ED65 if object #N$2C (Princess Mara) is not here.
-  $ED61,$01 Discard the return address on the stack.
-  $ED62,$03 Jump back to #R$EB3E to announce the win.
+  $ED53,$07 Jump to #R$ED65 if *#R$BA9B isn't room #N$05: "#ROOM$05".
+  $ED5A,$07 Jump to #R$ED65 if #R$C24F reports that #ITEM$2C isn't in the
+. current room.
+  $ED61,$01 Restore #REGhl from the stack.
+  $ED62,$03 Jump to #R$EB3E.
 @ $ED65 label=Handler_InjuryCheck_Return
   $ED65,$01 Return.
 
@@ -3197,125 +3719,197 @@ D $ED66 Print the given message and go back to the game loop.
 
 c $ED6A Pause And Print Response
 @ $ED6A label=PauseAndPrintResponse
+E $ED6A View the equivalent code in;
+. #LIST
+. { #HEROES$EAA2 }
+. { #JEWELS$F03E }
+. LIST#
 D $ED6A Pause, print the given message and go back to the game loop.
-  $ED6A,$03 Call #R$C486 to pause, then print the message and start a new line.
+  $ED6A,$03 Call #R$C486.
   $ED6D,$01 Return.
 
 c $ED6E Response: "You Can't"
 @ $ED6E label=Response_YouCant_GameLoop
-D $ED6E Print "You Can't" and return to the caller.
-N $ED6E Reply with "#MESSAGE$BCD0".
-  $ED6E,$05 Print "#MESSAGE$BCD0" and return to the game loop.
+E $ED6E View the equivalent code in;
+. #LIST
+. { #HEROES$EAE2 }
+. { #JEWELS$F06F }
+. LIST#
+N $ED6E Print "#MESSAGE$BCD0".
+  $ED6E,$03 #REGhl=#R$BCD0.
+  $ED71,$02 Jump to #R$ED66.
 
 c $ED73 Response: "One At A Time, Please"
 @ $ED73 label=Response_OneAtATimePlease
-D $ED73 Print "One At A Time, Please" and return to the caller.
-N $ED73 Reply with "#MESSAGE$BD52".
-  $ED73,$05 Print "#MESSAGE$BD52" and return to the game loop.
+E $ED73 View the equivalent code in;
+. #LIST
+. { #JEWELS$F060 }
+. LIST#
+N $ED73 Print "#MESSAGE$BD52".
+  $ED73,$03 #REGhl=#R$BD52.
+  $ED76,$02 Jump to #R$ED66.
 
 c $ED78 Response: "I Don't See The Point"
 @ $ED78 label=Response_IDontSeeThePoint
-D $ED78 Print "I Don't See The Point" and return to the caller.
-N $ED78 Reply with "#MESSAGE$BD68".
-  $ED78,$05 Print "#MESSAGE$BD68" and return to the game loop.
+E $ED78 View the equivalent code in;
+. #LIST
+. { #HEROES$EFE2 }
+. { #JEWELS$F065 }
+. { #WARLORD$EDF9 }
+. LIST#
+N $ED78 Print "#MESSAGE$BD68".
+  $ED78,$03 #REGhl=#R$BD68.
+  $ED7B,$02 Jump to #R$ED66.
 
 c $ED7D Response: "Please Rephrase That"
 @ $ED7D label=Response_PleaseRephraseThat_GameLoop
-D $ED7D Print "Please Rephrase That" and return to the caller.
-N $ED7D Reply with "#MESSAGE$BCBA".
-  $ED7D,$05 Print "#MESSAGE$BCBA" and return to the game loop.
+E $ED7D View the equivalent code in;
+. #LIST
+. { #JEWELS$F074 }
+. LIST#
+N $ED7D Print "#MESSAGE$BCBA".
+  $ED7D,$03 #REGhl=#R$BCBA.
+  $ED80,$02 Jump to #R$ED66.
 
 c $ED82 Response: "He's Already Dead"
 @ $ED82 label=Response_HesAlreadyDead
-D $ED82 Print "He's Already Dead" and return to the caller.
-N $ED82 Reply with "#MESSAGE$DE97".
-  $ED82,$05 Print "#MESSAGE$DE97" and return to the game loop.
+N $ED82 Print "#MESSAGE$DE97".
+  $ED82,$03 #REGhl=#R$DE97.
+  $ED85,$02 Jump to #R$ED66.
 
 c $ED87 Response: "She's Already Dead"
 @ $ED87 label=Response_ShesAlreadyDead
-D $ED87 Print "She's Already Dead" and return to the caller.
-N $ED87 Reply with "#MESSAGE$DEAA".
-  $ED87,$05 Print "#MESSAGE$DEAA" and return to the game loop.
+N $ED87 Print "#MESSAGE$DEAA".
+  $ED87,$03 #REGhl=#R$DEAA.
+  $ED8A,$02 Jump to #R$ED66.
 
 c $ED8C Response: "It's Already Dead"
 @ $ED8C label=Response_ItsAlreadyDead
-D $ED8C Print "It's Already Dead" and return to the caller.
-N $ED8C Reply with "#MESSAGE$DEBE".
-  $ED8C,$05 Print "#MESSAGE$DEBE" and return to the game loop.
+N $ED8C Print "#MESSAGE$DEBE".
+  $ED8C,$03 #REGhl=#R$DEBE.
+  $ED8F,$02 Jump to #R$ED66.
 
 c $ED91 Response: "Don't Be Ridiculous"
 @ $ED91 label=Response_DontBeRidiculous
-D $ED91 Print "Don't Be Ridiculous" and return to the caller.
-N $ED91 Reply with "#MESSAGE$E139".
-  $ED91,$05 Print "#MESSAGE$E139" and return to the game loop.
+E $ED91 View the equivalent code in;
+. #LIST
+. { #HEROES$F205 }
+. { #JEWELS$F092 }
+. { #WARLORD$EE05 }
+. LIST#
+N $ED91 Print "#MESSAGE$E139".
+  $ED91,$03 #REGhl=#R$E139.
+  $ED94,$02 Jump to #R$ED66.
 
 c $ED96 Response: "O.K."
-@ $ED96 label=Response_OK
-D $ED96 Print "O.K." and return to the caller.
-N $ED96 Reply with "#MESSAGE$BCDB".
-  $ED96,$05 Print "#MESSAGE$BCDB" and return to the game loop.
+@ $ED96 label=Response_OK_GameLoop
+E $ED96 View the equivalent code in;
+. #LIST
+. { #HEROES$EAE8 }
+. { #JEWELS$F06A }
+. LIST#
+N $ED96 Print "#MESSAGE$BCDB".
+  $ED96,$03 #REGhl=#R$BCDB.
+  $ED99,$02 Jump to #R$ED66.
 
 c $ED9B Response: "You're Inside Already"
 @ $ED9B label=Response_YoureInsideAlready
-D $ED9B Print "You're Inside Already" and return to the caller.
-N $ED9B Reply with "#MESSAGE$E19A".
-  $ED9B,$05 Print "#MESSAGE$E19A" and return to the game loop.
+N $ED9B Print "#MESSAGE$E19A".
+  $ED9B,$03 #REGhl=#R$E19A.
+  $ED9E,$02 Jump to #R$ED66.
 
 c $EDA0 Response: "Please Rephrase That"
 @ $EDA0 label=Response_PleaseRephraseThat_EnterTheBoat
-D $EDA0 Print "Please Rephrase That" and return to the caller.
-N $EDA0 Reply with "#MESSAGE$BCBA".
-  $EDA0,$05 Print "#MESSAGE$BCBA" and return to the game loop.
+N $EDA0 Print "#MESSAGE$BCBA".
+  $EDA0,$03 #REGhl=#R$BCBA.
+  $EDA3,$02 Jump to #R$ED66.
 
 c $EDA5 Response: "It Has No Apparent Effect"
 @ $EDA5 label=Response_ItHasNoApparentEffect
-D $EDA5 Print "It Has No Apparent Effect" and return to the caller.
-N $EDA5 Reply with "#MESSAGE$E1CC".
-  $EDA5,$05 Print "#MESSAGE$E1CC" and return to the game loop.
+E $EDA5 View the equivalent code in;
+. #LIST
+. { #JEWELS$F097 }
+. LIST#
+N $EDA5 Print "#MESSAGE$E1CC".
+  $EDA5,$03 #REGhl=#R$E1CC.
+  $EDA8,$02 Jump to #R$ED66.
 
 c $EDAA Response: "Don't Be Disgusting"
 @ $EDAA label=Response_DontBeDisgusting
-D $EDAA Print "Don't Be Disgusting" and return to the caller.
-N $EDAA Reply with "#MESSAGE$E30A".
-  $EDAA,$05 Print "#MESSAGE$E30A" and return to the game loop.
+N $EDAA Print "#MESSAGE$E30A".
+  $EDAA,$03 #REGhl=#R$E30A.
+  $EDAD,$02 Jump to #R$ED66.
 
 c $EDAF Response: "You're Not Carrying Anything"
 @ $EDAF label=Response_YoureNotCarryingAnything
-D $EDAF Print "You're Not Carrying Anything" and return to the caller.
-N $EDAF Reply with "#MESSAGE$BD94".
-  $EDAF,$05 Print "#MESSAGE$BD94" and return to the game loop.
+E $EDAF View the equivalent code in;
+. #LIST
+. { #SHOCK$A6CF }
+. { #HEROES$EAB8 }
+. { #JEWELS$F04C }
+. { #WARLORD$EE17 }
+. LIST#
+N $EDAF Print "#MESSAGE$BD94".
+  $EDAF,$03 #REGhl=#R$BD94.
+  $EDB2,$02 Jump to #R$ED66.
 
 c $EDB4 Response: "You Can't. It's Locked"
 @ $EDB4 label=Response_YouCantItsLocked
-D $EDB4 Print "You Can't. It's Locked" and return to the caller.
-N $EDB4 Reply with "#MESSAGE$E497".
-  $EDB4,$05 Print "#MESSAGE$E497" and return to the game loop.
+N $EDB4 Print "#MESSAGE$E497".
+  $EDB4,$03 #REGhl=#R$E497.
+  $EDB7,$02 Jump to #R$ED66.
 
 c $EDB9 Response: "It's Already Open"
 @ $EDB9 label=Response_ItsAlreadyOpen
-D $EDB9 Print "It's Already Open" and return to the caller.
-N $EDB9 Reply with "#MESSAGE$E172".
-  $EDB9,$05 Print "#MESSAGE$E172" and return to the game loop.
+E $EDB9 View the equivalent code in;
+. #LIST
+. { #JEWELS$F088 }
+. LIST#
+N $EDB9 Print "#MESSAGE$E172".
+  $EDB9,$03 #REGhl=#R$E172.
+  $EDBC,$02 Jump to #R$ED66.
 
 c $EDBE Response: "It's Already Closed"
 @ $EDBE label=Response_ItsAlreadyClosed
-D $EDBE Print "It's Already Closed" and return to the caller.
-N $EDBE Reply with "#MESSAGE$E185".
-  $EDBE,$05 Print "#MESSAGE$E185" and return to the game loop.
+E $EDBE View the equivalent code in;
+. #LIST
+. { #JEWELS$F08D }
+. LIST#
+N $EDBE Print "#MESSAGE$E185".
+  $EDBE,$03 #REGhl=#R$E185.
+  $EDC1,$02 Jump to #R$ED66.
 
 c $EDC3 Action: Help
 @ $EDC3 label=Action_Help
+E $EDC3 View the equivalent code in;
+. #LIST
+. { #HEROES$F715 }
+. { #JEWELS$F09C }
+. { #ANDROMEDA$8E8D }
+. LIST#
 D $EDC3 Explain how badly hurt the player is, if at all.
-  $EDC3,$04 Return if the words after the verb are not valid for this command.
-  $EDC7,$07 Jump to #R$EDE2 if object #N$48 (the injury) is not here.
-  $EDCE,$07 Jump to #R$EDE2 when object #N$8A (the wood nymph) is here.
-  $EDD5,$05 Call #R$C2BE to fetch where the wood nymph is.
-  $EDDA,$03 Jump to #R$EDE2 when the injury is not in play.
-  $EDDD,$05 Print "#MESSAGE$DC4F" to say help is on the way.
-@ $EDE2 label=Action_Help_Next
-  $EDE2,$03 The player is not hurt, so say "#MESSAGE$DC35".
+  $EDC3,$03 Call #R$C2FE.
+N $EDC6 The "HELP" command can only be called on its own.
+  $EDC6,$01 Return if there's any token set in #R$BB37.
+N $EDC7 Does the player want help with their injury?
+  $EDC7,$07 Jump to #R$EDE2 if #R$C24F reports the player isn't in the room
+. where you're #ITEM$48.
+N $EDCE Is the wood nymph already here?
+  $EDCE,$07 Jump to #R$EDE2 if #R$C24F reports that #N$8A is in the same
+. room as the player.
+N $EDD5 Is the wood nymph still in play?
+  $EDD5,$05 Call #R$C2BE with #N$8A.
+  $EDDA,$03 Jump to #R$EDE2 if the wood nymph is not in play.
+N $EDDD Help is on the way.
+N $EDDD Print "#MESSAGE$DC4F".
+  $EDDD,$03 #REGhl=#R$DC4F.
+  $EDE0,$02 Jump to #R$EDE5.
+N $EDE2 There's no more help available...
+@ $EDE2 label=Action_Help_GiveUp
+N $EDE2 Print "#MESSAGE$DC35".
+  $EDE2,$03 #REGhl=#R$DC35.
 @ $EDE5 label=Action_Help_Reply
-  $EDE5,$03 Return through the shared reply at #R$ED66.
+  $EDE5,$03 Jump to #R$ED66.
 
 c $EDE8 Action: Inventory
 @ $EDE8 label=Action_Inventory
@@ -3328,12 +3922,19 @@ E $EDE8 View the equivalent code in;
 . { #WARLORD$F824 }
 . LIST#
 D $EDE8 List everything the player is carrying.
-  $EDE8,$04 Return if the words after the verb are not valid for this command.
-  $EDEC,$07 Jump back to #R$EDAF when the number of objects carried is zero.
-  $EDF3,$03 Call #R$BDEA to clear the screen.
-  $EDF6,$03 Call #R$BE06 to move the cursor to the text line stored at #R$BB40.
-  $EDF9,$06 Print "#MESSAGE$BD1F".
-  $EDFF,$05 Call #R$C0D2 to list what is being carried.
+  $EDE8,$03 Call #R$C2FE.
+N $EDEB The "INVENTORY" command can only be called on its own.
+  $EDEB,$01 Return if there's any token set in #R$BB37.
+  $EDEC,$07 Jump to #R$EDAF if *#R$BA68 is zero (the player isn't holding any
+. items).
+N $EDF3 Clear the screen and display the players inventory.
+  $EDF3,$03 Call #R$BDEA.
+  $EDF6,$03 Call #R$BE06.
+N $EDF9 Print "#MESSAGE$BD1F".
+  $EDF9,$03 #REGhl=#R$BD1F.
+  $EDFC,$03 Call #R$BE2E.
+  $EDFF,$05 Call #R$C0D2 with a room ID of #N$01 which is the players
+. inventory.
   $EE04,$01 Return.
 
 c $EE05 Action: Look
@@ -3346,37 +3947,82 @@ E $EE05 View the equivalent code in;
 . { #WARLORD$F841 }
 . LIST#
 D $EE05 Describe the room again, including the long text.
-  $EE05,$04 Return if the words after the verb are not valid for this command.
-  $EE09,$05 Call #R$C0F9 to describe the current room.
+  $EE05,$03 Call #R$C2FE.
+N $EE08 The "LOOK" command can only be called on its own.
+  $EE08,$01 Return if there's any token set in #R$BB37.
+  $EE09,$05 Call #R$C0F9 with #REGe set to #N$01 (which will force any room
+. images to be re-displayed).
   $EE0E,$01 Return.
 
 c $EE0F Action: North
 @ $EE0F label=Action_North
+E $EE0F View the equivalent code in;
+. #LIST
+. { #HEROES$F7E4 }
+. { #JEWELS$F155 }
+. { #ANDROMEDA$8EE4 }
+. { #WARLORD$F8C9 }
+. LIST#
 D $EE0F Try to leave to the north.
-  $EE0F,$04 Choose the north exit and join the movement routine at #R$EE25.
+  $EE0F,$02 Set #REGc to "NORTH" (#N$00).
+  $EE11,$02 Jump to #R$EE25.
 
 c $EE13 Action: South
 @ $EE13 label=Action_South
+E $EE13 View the equivalent code in;
+. #LIST
+. { #HEROES$F7E8 }
+. { #JEWELS$F159 }
+. { #ANDROMEDA$8EE8 }
+. { #WARLORD$F8CD }
+. LIST#
 D $EE13 Try to leave to the south.
-  $EE13,$04 Choose the south exit and join the movement routine at #R$EE25.
+  $EE13,$02 Set #REGc to "SOUTH" (#N$01).
+  $EE15,$02 Jump to #R$EE25.
 
 c $EE17 Action: East
 @ $EE17 label=Action_East
+E $EE17 View the equivalent code in;
+. #LIST
+. { #HEROES$F7EC }
+. { #JEWELS$F15D }
+. { #ANDROMEDA$8EEC }
+. { #WARLORD$F8D1 }
+. LIST#
 D $EE17 Try to leave to the east.
-  $EE17,$04 Choose the east exit and join the movement routine at #R$EE25.
+  $EE17,$02 Set #REGc to "EAST" (#N$02).
+  $EE19,$02 Jump to #R$EE25.
 
 c $EE1B Action: West
 @ $EE1B label=Action_West
+E $EE1B View the equivalent code in;
+. #LIST
+. { #HEROES$F7F0 }
+. { #JEWELS$F161 }
+. { #ANDROMEDA$8EF0 }
+. { #WARLORD$F8D5 }
+. LIST#
 D $EE1B Try to leave to the west.
-  $EE1B,$04 Choose the west exit and join the movement routine at #R$EE25.
+  $EE1B,$02 Set #REGc to "WEST" (#N$03).
+  $EE1D,$02 Jump to #R$EE25.
 
 c $EE1F Action: Up
 @ $EE1F label=Action_Up
+E $EE1F View the equivalent code in;
+. #LIST
+. { #HEROES$F7F4 }
+. { #JEWELS$F165 }
+. { #ANDROMEDA$8EF4 }
+. { #WARLORD$F8D9 }
+. LIST#
 D $EE1F Try to leave upwards.
-  $EE1F,$04 Choose the up exit and join the movement routine at #R$EE25.
+  $EE1F,$02 Set #REGc to "UP" (#N$04).
+  $EE21,$02 Jump to #R$EE25.
 
 c $EE23 Action: Down
 @ $EE23 label=Action_Down
+E $EE23 Continue on to #R$EE25.
+D $EE23 Try to leave downwards.
 E $EE23 View the equivalent code in;
 . #LIST
 . { #HEROES$F7F8 }
@@ -3384,50 +4030,91 @@ E $EE23 View the equivalent code in;
 . { #ANDROMEDA$8EF8 }
 . { #WARLORD$F8DD }
 . LIST#
-D $EE23 Try to leave downwards.
-  $EE23,$02 Choose the down exit and join the movement routine.
-@ $EE25 label=Action_TryExit
-  $EE25,$04 Call #R$C2FE to reject the command when a direct object was typed. Return
-. if the comparison failed.
-  $EE29,$05 Call #R$C201 to fetch this room's six exits.
-  $EE2E,$05 Jump to #R$EE37 when that way out is closed.
-  $EE33,$03 Call #R$ECB6 to enter that room, unless the player is too badly hurt.
+  $EE23,$02 Set #REGc to "DOWN" (#N$05).
+
+c $EE25 Move Player
+@ $EE25 label=MovePlayer
+E $EE25 View the equivalent code in;
+. #LIST
+. { #SHOCK$A6E8 }
+. { #HEROES$F7FA }
+. { #JEWELS$F16B }
+. { #WARLORD$F8DF }
+. LIST#
+R $EE25 C Requested direction where: #TABLE { #N$00 | NORTH } { #N$01 | SOUTH } { #N$02 | EAST } { #N$03 | WEST } { #N$04 | UP } { #N$05 | DOWN } TABLE#
+  $EE25,$03 Call #R$C2FE.
+N $EE28 All "MOVE" commands can only be called on their own; you can't type
+. "NORTH TO BEACH" or "UP LADDER".
+  $EE28,$01 Return if there's any token set in #R$BB37.
+  $EE29,$02 Set #REGb to #N($00), so that #REGbc now holds the direction
+. number.
+  $EE2B,$03 Call #R$C201.
+  $EE2E,$01 #REGhl+=#REGbc.
+  $EE2F,$01 #REGa=*#REGhl.
+  $EE30,$03 Jump to #R$EE37 if #REGa is zero.
+  $EE33,$03 Call #R$ECB6.
   $EE36,$01 Return.
-@ $EE37 label=Action_Down_Next
-N $EE37 Reply with "#MESSAGE$BD32".
-  $EE37,$06 Print "#MESSAGE$BD32" and return to the game loop.
+N $EE37 Nothing else is valid.
+N $EE37 Print "#MESSAGE$BD32".
+@ $EE37 label=MovePlayer_Invalid
+  $EE37,$03 #REGhl=#R$BD32.
+  $EE3A,$03 Jump to #R$ED66.
 
 c $EE3D Action: Examine
 @ $EE3D label=Action_Examine
+E $EE3D View the equivalent code in;
+. #LIST
+. { #HEROES$F785 }
+. { #JEWELS$F19D }
+. { #ANDROMEDA$8F13 }
+. { #WARLORD$F853 }
+. LIST#
 D $EE3D Describe the single object the player named.
-  $EE3D,$04 Return if the words after the verb are not valid for this command.
-  $EE41,$05 Jump back to #R$ED73 unless the carried location matches.
-  $EE46,$08 Jump to #R$EE54 unless the player named Mara's body.
-N $EE4E Reply with "#MESSAGE$DCB7".
-  $EE4E,$06 Print "#MESSAGE$DCB7" and return to the game loop.
-@ $EE54 label=Action_Examine_Next
-  $EE54,$08 Jump to #R$EE69 unless the player named the witch.
-  $EE5C,$07 Jump to #R$EE69 if object #N$0B (the chest) is not here.
-N $EE63 Reply with "#MESSAGE$DCF0".
-  $EE63,$06 Print "#MESSAGE$DCF0" and return to the game loop.
-@ $EE69 label=Action_Examine_WitchClosedChest
-  $EE69,$08 Jump to #R$EE7E unless the player named the witch.
-  $EE71,$07 Jump to #R$EE7E if object #N$0C (the closed chest) is not here.
-N $EE78 Reply with "#MESSAGE$DC7B".
-  $EE78,$06 Print "#MESSAGE$DC7B" and return to the game loop.
-@ $EE7E label=Action_Examine_NoPoint
-  $EE7E,$03 Jump back to #R$ED78 to say there is no point.
+  $EE3D,$03 Call #R$C309.
+  $EE40,$01 Return if the direct object is malformed.
+  $EE41,$05 Jump to #R$ED73 if #REGa is not equal to #N$01.
+N $EE46 Was the player trying to examine ... Mara's body?
+  $EE46,$06 Call #R$C26F with #R$E812.
+  $EE4C,$02 Jump to #R$EE54 if the token isn't for Mara's body.
+N $EE4E Print "#MESSAGE$DCB7".
+  $EE4E,$03 #REGhl=#R$DCB7.
+  $EE51,$03 Jump to #R$ED66.
+N $EE54 Was the player trying to examine ... the witch?
+@ $EE54 label=Examine_CheckWitch
+  $EE54,$06 Call #R$C26F with #R$E814.
+  $EE5A,$02 Jump to #R$EE69 if the token isn't for the witch.
+  $EE5C,$07 Jump to #R$EE69 if #R$C24F reports that #ITEM$0B isn't in the
+. current room.
+N $EE63 Print "#MESSAGE$DCF0".
+  $EE63,$03 #REGhl=#R$DCF0.
+  $EE66,$03 Jump to #R$ED66.
+N $EE69 Was the player trying to examine ... the witch (closed chest)?
+@ $EE69 label=Examine_CheckWitchClosedChest
+  $EE69,$06 Call #R$C26F with #R$E814.
+  $EE6F,$02 Jump to #R$EE7E if the token isn't for the witch.
+  $EE71,$07 Jump to #R$EE7E if #R$C24F reports that #ITEM$0C isn't in the
+. current room.
+N $EE78 Print "#MESSAGE$DC7B".
+  $EE78,$03 #REGhl=#R$DC7B.
+  $EE7B,$03 Jump to #R$ED66.
+N $EE7E Nothing else is valid.
+@ $EE7E label=Examine_Invalid
+  $EE7E,$03 Jump to #R$ED78.
 
 c $EE81 Action: Load
 @ $EE81 label=Action_Load
 E $EE81 View the equivalent code in;
 . #LIST
+. { #HEROES$F7AC }
 . { #JEWELS$F236 }
 . { #ANDROMEDA$8FA1 }
+. { #WARLORD$F892 }
 . LIST#
 D $EE81 Load a saved position from tape.
-  $EE81,$04 Return if the words after the verb are not valid for this command.
-  $EE85,$03 Call #R$C380 to load a saved game from tape.
+  $EE81,$03 Call #R$C2FE.
+N $EE84 The "LOAD" command can only be called on its own.
+  $EE84,$01 Return if there's any token set in #R$BB37.
+  $EE85,$03 Call #R$C380.
   $EE88,$01 Return.
 
 c $EE89 Action: Save
@@ -3440,8 +4127,10 @@ E $EE89 View the equivalent code in;
 . { #WARLORD$F8A1 }
 . LIST#
 D $EE89 Save the position to tape.
-  $EE89,$04 Return if the words after the verb are not valid for this command.
-  $EE8D,$03 Call #R$C345 to save the game to tape.
+  $EE89,$03 Call #R$C2FE.
+N $EE8C The "SAVE" command can only be called on its own.
+  $EE8C,$01 Return if there's any token set in #R$BB37.
+  $EE8D,$03 Call #R$C345.
   $EE90,$01 Return.
 
 c $EE91 Action: Quit
@@ -3454,845 +4143,1259 @@ E $EE91 View the equivalent code in;
 . { #WARLORD$F8A9 }
 . LIST#
 D $EE91 Ask whether to abandon the game and, if so, offer to save it.
-  $EE91,$04 Return if the words after the verb are not valid for this command.
-  $EE95,$06 Print "#MESSAGE$BC85".
-@ $EE9B label=Action_Quit_Loop
-  $EE9B,$03 Call #R$BDDA to wait for a keypress.
-  $EE9E,$04 Jump to #R$EEA9 if "N" was pressed.
-  $EEA2,$04 Jump back to #R$EE9B if "Y" was not pressed.
-  $EEA6,$03 Call #R$C345 to save the game to tape.
-@ $EEA9 label=Action_Quit_Next
-@ $EEA9 nowarn
-  $EEA9,$04 Switch #R$EB29 onto the stack.
+  $EE91,$03 Call #R$C2FE.
+N $EE94 The "QUIT" command can only be called on its own.
+  $EE94,$01 Return if there's any token set in #R$BB37.
+N $EE95 Print "#MESSAGE$BC85".
+  $EE95,$03 #REGhl=#R$BC85.
+  $EE98,$03 Call #R$BE2E.
+@ $EE9B label=WantToSave_Loop
+  $EE9B,$03 Call #R$BDDA.
+N $EE9E The player just wants to quit.
+  $EE9E,$04 #HTML(Jump to #R$EEA9 if the keypress is "<code>#CHR$4E</code>".)
+  $EEA2,$04 #HTML(Jump back to #R$EE9B if the keypress is anything other than
+. "<code>#CHR$59</code>".)
+N $EEA6 The player does want to save before quitting...
+  $EEA6,$03 Call #R$C345.
+N $EEA9 Jump to asking if the player "wants another game?"
+@ $EEA9 label=QuitGame
+  $EEA9,$04 Switch #R$EB29 onto the stack so the next return action is asking
+. if the player would "Want another game? Y/N.".
   $EEAD,$01 Return.
 
 c $EEAE Action: Take
 @ $EEAE label=Action_Take
-D $EEAE Pick up the single object the player named.
-  $EEAE,$04 Return if the words after the verb are not valid for this command.
-  $EEB2,$05 Jump back to #R$ED7D unless the carried location matches.
-  $EEB7,$03 Jump to #R$EEFC to take the named object.
-
-c $EEBA Handler: Already Carrying
-@ $EEBA label=Handler_AlreadyCarrying
-D $EEBA Refuse when that object is already being carried.
-  $EEBA,$05 Jump to #R$EEDD when the object is not being carried.
-  $EEBF,$01 Discard the return address on the stack.
-
-c $EEC0 Handler: Print Carrying
-@ $EEC0 label=Handler_PrintCarrying
-E $EEC0 View the equivalent code in;
+E $EEAE View the equivalent code in;
 . #LIST
-. { #HEROES$EAFA }
+. { #HEROES$F80D }
+. { #JEWELS$F263 }
+. { #ANDROMEDA$8FCD }
+. { #WARLORD$F956 }
 . LIST#
-D $EEC0 Finish the sentence "You're already carrying" with "it" or "them".
-  $EEC0,$06 Print "#MESSAGE$BCE0".
-  $EEC6,$04 Point at the plural-object list with this object.
+D $EEAE Pick up the single object the player named.
+  $EEAE,$03 Call #R$C309.
+  $EEB1,$01 Return if the direct object is malformed.
+  $EEB2,$05 Jump to #R$ED7D if #REGa is not equal to #N$01.
+N $EEB7 Start by calling the chain of items to check...
+  $EEB7,$03 Jump to #R$EEFC.
+
+c $EEBA Take: Is Player Holding Item
+@ $EEBA label=Take_IsPlayerHoldingItem
+E $EEBA View the equivalent code in;
+. #LIST
+. { #JEWELS$F26A }
+. { #ANDROMEDA$8FE2 }
+. LIST#
+D $EEBA Refuse the take when the object is already carried or the inventory is
+. full; otherwise return so the caller can take it.
+R $EEBA A Object ID
+R $EEBA O:B The object ID (when returning so the take may proceed)
+  $EEBA,$03 Call #R$C2D2.
+N $EEBD Refuse when that object is already being carried.
+  $EEBD,$02 Jump to #R$EEDD if the item is not being held.
+  $EEBF,$01 Restore #REGhl from the stack.
+N $EEC0 Finish the sentence "You're already carrying" with "it" or "them".
+N $EEC0 Print "#MESSAGE$BCE0".
+  $EEC0,$03 #REGhl=#R$BCE0.
+  $EEC3,$03 Call #R$BE21.
+  $EEC6,$03 #REGhl=#R$EEEB.
+  $EEC9,$01 Copy the object ID back into #REGa.
   $EECA,$03 #REGbc=#N($0002,$04,$04).
-  $EECD,$04 Jump to #R$EED7 if the search found a match.
-N $EED1 Reply with "#MESSAGE$BCFB".
-  $EED1,$06 Print "#MESSAGE$BCFB" and return to the game loop.
-@ $EED7 label=Handler_PrintCarrying_Next
-N $EED7 Reply with "#MESSAGE$BCFF".
-  $EED7,$06 Print "#MESSAGE$BCFF" and return to the game loop.
+  $EECD,$02 Search for the item ID among the plural items.
+  $EECF,$02 Jump to #R$EED7 if the item is plural.
+N $EED1 Print "#MESSAGE$BCFB".
+  $EED1,$03 #REGhl=#R$BCFB.
+  $EED4,$03 Jump to #R$ED66.
+N $EED7 Print "#MESSAGE$BCFF".
+@ $EED7 label=Take_AlreadyCarrying_Them
+  $EED7,$03 #REGhl=#R$BCFF.
+  $EEDA,$03 Jump to #R$ED66.
+N $EEDD Refuse the object when the player is already holding #N$06 things.
+@ $EEDD label=Take_InventoryFull
+  $EEDD,$05 Compare *#R$BA68 with #N$06.
+  $EEE2,$01 #REGb=#REGe.
+  $EEE3,$01 Return if *#R$BA68 is not equal to #N$06.
+  $EEE4,$01 Restore #REGhl from the stack.
+N $EEE5 Print "#MESSAGE$BD05".
+  $EEE5,$03 #REGhl=#R$BD05.
+  $EEE8,$03 Jump to #R$ED66.
 
-c $EEDD Handler: Inventory Full
-@ $EEDD label=Handler_InventoryFull
-D $EEDD Refuse the object when the player is already holding #N$06 things.
-  $EEDD,$07 Return unless a full inventory of #N$06 things matches.
-  $EEE4,$01 Discard the return address on the stack.
-  $EEE5,$06 Print "#MESSAGE$BD05" and return to the game loop.
+b $EEEB Table: Items Which Are Plural
+@ $EEEB label=Table_ItemsWhichArePlural
+E $EEEB View the equivalent code in;
+. #LIST
+. { #JEWELS$F29B }
+. { #ANDROMEDA$9010 }
+. LIST#
+D $EEEB All the items in the game which are plural; used by #R$EEC6 and
+. #R$F050.
+B $EEEB,$01 Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
+L $EEEB,$01,$02,$02
 
-b $EEEB List: Plural Objects
-@ $EEEB label=List_PluralObjects
-D $EEEB Object numbers that take the plural response "them".
-B $EEEB,$01 Object #N(#PEEK(#PC)).
-L $EEEB,$01,$02
-
-c $EEED Handler: Pick Up Item
-@ $EEED label=Handler_PickUpItem
+c $EEED Take Item
+@ $EEED label=TakeItem
 E $EEED View the equivalent code in;
 . #LIST
-. { #SHOCK$AA6E }
-. { #WARLORD$EDA6 }
+. { #JEWELS$F29C }
+. { #ANDROMEDA$9014 }
 . LIST#
-D $EEED Mark the object as carried, count it, and acknowledge.
-  $EEED,$05 Call #R$BF55 to mark the object as carried.
-  $EEF2,$0A Count one more thing carried, then print "#MESSAGE$BCDB" and
-. return to the game loop.
+D $EEED Places the item in the player's inventory and acknowledges success.
+  $EEED,$02 Load #REGc with #N$01 which indicates the item will be in the
+. players inventory.
+  $EEEF,$03 Call #R$BF55.
+  $EEF2,$04 Increment *#R$BA68 by one.
+N $EEF6 Print "#MESSAGE$BCDB".
+  $EEF6,$03 #REGhl=#R$BCDB.
+  $EEF9,$03 Jump to #R$ED66.
+c $EEFC Take: Mara's Body
+@ $EEFC label=Validate_Take_MarasBody
+D $EEFC Was the player trying to take Mara's body (the sword)?
+  $EEFC,$06 Call #R$C26F with #R$E812.
+  $EF02,$02 Jump to #R$EF14 if the token isn't for Mara's body.
+  $EF04,$05 Call #R$EEBA with item #N$0A: #ITEM$0A.
+  $EF09,$06 Call #R$BF55 to place #ITEM$33 in room #N$3E: "#ROOM$3E".
+  $EF0F,$05 #REGb=#N$0A; jump to #R$EEED.
 
-c $EEFC Action: Examine Item
-@ $EEFC label=Action_ExamineItem
-D $EEFC Describe, and sometimes change, the one thing the player is examining.
-  $EEFC,$08 Jump to #R$EF14 unless the player named Mara's body.
-  $EF04,$05 Stop if object #N$0A (the sword) is already carried, or if the player is
-. holding #N$06 things.
-  $EF09,$06 Put object #N$33 (the glowing rock) in room #N$3E (A Rock Wall).
-  $EF0F,$05 Jump back to #R$EEED to pick the object up.
-@ $EF14 label=Action_ExamineItem_Next
-  $EF14,$08 Jump to #R$EF28 unless the player named the witch.
-  $EF1C,$06 Call #R$C2EF to skip to the object named by this phrase.
-  $EF22,$03 Call #R$EEBA to stop if that object is already carried, or if six things
-. are already held.
-  $EF25,$03 Jump back to #R$EEED to pick the object up.
-@ $EF28 label=Action_ExamineItem_RopeOverhang
-  $EF28,$08 Jump to #R$EF38 unless the player named the rope on the overhang.
-  $EF30,$05 Stop if object #N$00 (the food) is already carried, or if the player is
-. holding #N$06 things.
-  $EF35,$03 Jump back to #R$EEED to pick the object up.
-@ $EF38 label=Action_ExamineItem_SilverCoin
-  $EF38,$08 Jump to #R$EF48 unless the player named the blacksmith.
-  $EF40,$05 Stop if object #N$02 (the silver coin) is already carried, or if the
-. player is holding #N$06 things.
-  $EF45,$03 Jump back to #R$EEED to pick the object up.
-@ $EF48 label=Action_ExamineItem_Bow
-  $EF48,$08 Jump to #R$EF58 unless the player named the blacksmith.
-  $EF50,$05 Stop if object #N$03 (the bow) is already carried, or if the player is
-. holding #N$06 things.
-  $EF55,$03 Jump back to #R$EEED to pick the object up.
-@ $EF58 label=Action_ExamineItem_Arrows
-  $EF58,$08 Jump to #R$EF68 unless the player named the dead blacksmith.
-  $EF60,$05 Stop if object #N$04 (the arrows) is already carried, or if the player is
-. holding #N$06 things.
-  $EF65,$03 Jump back to #R$EEED to pick the object up.
-@ $EF68 label=Action_ExamineItem_Furnace
-  $EF68,$08 Jump to #R$EF7C unless the player named the furnace.
-  $EF70,$06 Call #R$C2EF to skip to the object named by this phrase.
-  $EF76,$03 Call #R$EEBA to stop if that object is already carried, or if six things
-. are already held.
-  $EF79,$03 Jump back to #R$EEED to pick the object up.
-@ $EF7C label=Action_ExamineItem_Continue
-  $EF7C,$02 Carry on with the next object.
-@ $EF7E label=Action_ExamineItem_Zarn
-  $EF7E,$08 Jump to #R$EFAD unless the player named Zarn.
-  $EF86,$05 Stop if object #N$44 (the log) is already carried, or if the player is
-. holding #N$06 things.
-  $EF8B,$05 Destroy object #N$45 (the log bridge).
-  $EF90,$05 Destroy object #N$46 (the log bridge).
-  $EF95,$06 Put object #N$11 (the chasm) in room #N$15 (The Western Edge of a Chasm).
-  $EF9B,$06 Put object #N$12 (the chasm) in room #N$16 (The Eastern Edge of a Chasm).
-  $EFA1,$0C Jump back to #R$EEED to pick the object up.
-@ $EFAD label=Action_ExamineItem_PrincessMara
-  $EFAD,$08 Jump to #R$EFBD unless the player named Princess Mara.
-  $EFB5,$05 Stop if object #N$09 (the horn) is already carried, or if the player is
-. holding #N$06 things.
-  $EFBA,$03 Jump back to #R$EEED to pick the object up.
-@ $EFBD label=Action_ExamineItem_OldMan
-  $EFBD,$08 Jump to #R$EFE8 unless the player named the old man.
-  $EFC5,$06 Call #R$C2EF to skip to the object named by this phrase.
-  $EFCB,$05 Jump to #R$EFD5 when the object is not being carried.
-  $EFD0,$05 Jump back to #R$EEC0 to finish the carrying sentence.
-@ $EFD5 label=Action_ExamineItem_TakeChest
-  $EFD5,$03 Call #R$EEDD to refuse the object when six things are already carried.
-  $EFD8,$05 Jump to #R$EFE3 when the value #N$0F matches.
-  $EFDD,$06 Replace object #N$0D (the open chest) with object #N$0E (the empty chest).
-@ $EFE3 label=Action_ExamineItem_PickUp
-  $EFE3,$05 Jump back to #R$EEED to pick the object up.
-@ $EFE8 label=Action_ExamineItem_Key
-  $EFE8,$08 Jump to #R$EFF8 unless the player named the key.
-  $EFF0,$05 Stop if object #N$10 (the key) is already carried, or if the player is
-. holding #N$06 things.
-  $EFF5,$03 Jump back to #R$EEED to pick the object up.
-@ $EFF8 label=Action_ExamineItem_DeadSpider
-  $EFF8,$08 Jump to #R$F006 unless the player named the dead spider.
-N $F000 Reply with "#MESSAGE$DC63".
-  $F000,$06 Print "#MESSAGE$DC63" and return to the game loop.
-@ $F006 label=Action_ExamineItem_TakeRingOff
-  $F006,$08 Jump to #R$F011 unless the player named taking the ring off.
-  $F00E,$03 Jump back to #R$ED7D to ask for a rephrase.
-@ $F011 label=Action_ExamineItem_Demons
-  $F011,$08 Jump to #R$F037 unless the player named the demons.
-  $F019,$07 Jump to #R$F037 when the player is in room #N$48 (Inside the Volcano).
-  $F020,$05 Stop if object #N$08 (the rope) is already carried, or if the player is
-. holding #N$06 things.
-  $F025,$07 Jump to #R$F032 if object #N$23 (the rope on the overhang) is not here.
-  $F02C,$06 Replace object #N$23 (the rope on the overhang) with object #N$22 (the
-. rock overhang).
-@ $F032 label=Action_ExamineItem_TakeRope
-  $F032,$05 Jump back to #R$EEED to pick the object up.
-@ $F037 label=Action_ExamineItem_YouCant
-  $F037,$03 Tell the player the command is impossible.
+c $EF14 Take: Witch
+@ $EF14 label=Validate_Take_Witch
+D $EF14 Was the player trying to take ... the witch?
+  $EF14,$06 Call #R$C26F with #R$E814.
+  $EF1A,$02 Jump to #R$EF28 if the token isn't for the witch.
+  $EF1C,$06 Call #R$C2EF with #R$E6FF.
+  $EF22,$03 Call #R$EEBA.
+  $EF25,$03 Jump to #R$EEED.
+
+c $EF28 Take: Food
+@ $EF28 label=Validate_Take_Food
+D $EF28 Was the player trying to take ... the food?
+  $EF28,$06 Call #R$C26F with #R$E816.
+  $EF2E,$02 Jump to #R$EF38 if the token isn't for the food.
+  $EF30,$05 Call #R$EEBA with item #N$00: #ITEM$00.
+  $EF35,$03 Jump to #R$EEED.
+
+c $EF38 Take: Silver Coin
+@ $EF38 label=Validate_Take_SilverCoin
+D $EF38 Was the player trying to take ... the silver coin?
+  $EF38,$06 Call #R$C26F with #R$E818.
+  $EF3E,$02 Jump to #R$EF48 if the token isn't for the silver coin.
+  $EF40,$05 Call #R$EEBA with item #N$02: #ITEM$02.
+  $EF45,$03 Jump to #R$EEED.
+
+c $EF48 Take: Bow
+@ $EF48 label=Validate_Take_Bow
+D $EF48 Was the player trying to take ... the bow?
+  $EF48,$06 Call #R$C26F with #R$E81D.
+  $EF4E,$02 Jump to #R$EF58 if the token isn't for the bow.
+  $EF50,$05 Call #R$EEBA with item #N$03: #ITEM$03.
+  $EF55,$03 Jump to #R$EEED.
+
+c $EF58 Take: Arrows
+@ $EF58 label=Validate_Take_Arrows
+D $EF58 Was the player trying to take ... the arrows?
+  $EF58,$06 Call #R$C26F with #R$E81F.
+  $EF5E,$02 Jump to #R$EF68 if the token isn't for the arrows.
+  $EF60,$05 Call #R$EEBA with item #N$04: #ITEM$04.
+  $EF65,$03 Jump to #R$EEED.
+
+c $EF68 Take: Furnace
+@ $EF68 label=Validate_Take_Furnace
+D $EF68 Was the player trying to take ... the furnace?
+  $EF68,$06 Call #R$C26F with #R$E821.
+  $EF6E,$02 Jump to #R$EF7C if the token isn't for the furnace.
+  $EF70,$06 Call #R$C2EF with #R$E6EF.
+  $EF76,$03 Call #R$EEBA.
+  $EF79,$03 Jump to #R$EEED.
+N $EF7C Continue the take validation chain.
+@ $EF7C label=Validate_Take_Continue
+  $EF7C,$02 Jump to #R$EF7E.
+
+c $EF7E Take: Log
+@ $EF7E label=Validate_Take_Log
+D $EF7E Was the player trying to take ... the log?
+  $EF7E,$06 Call #R$C26F with #R$E825.
+  $EF84,$02 Jump to #R$EFAD if the token isn't for the log.
+  $EF86,$05 Call #R$EEBA with item #N$44: #ITEM$44.
+  $EF8B,$05 Call #R$C2D8 with item #N$45: #ITEM$45.
+  $EF90,$05 Call #R$C2D8 with item #N$46: #ITEM$46.
+  $EF95,$06 Call #R$BF55 to place #ITEM$11 in room #N$15: "#ROOM$15".
+  $EF9B,$06 Call #R$BF55 to place #ITEM$12 in room #N$16: "#ROOM$16".
+N $EFA1 This action changes the map:
+  $EFA1,$04 Write #N$00 to *#R$E9B4 to remove access to #ROOM$16 from #ROOM$15.
+  $EFA5,$03 Write #N$00 to *#R$E9BB to remove access to #ROOM$15 from #ROOM$16.
+  $EFA8,$02 Load #REGb with #ITEM$44.
+  $EFAA,$03 Jump to #R$EEED.
+
+c $EFAD Take: Horn
+@ $EFAD label=Validate_Take_Horn
+D $EFAD Was the player trying to take ... the horn?
+  $EFAD,$06 Call #R$C26F with #R$E827.
+  $EFB3,$02 Jump to #R$EFBD if the token isn't for the horn.
+  $EFB5,$05 Call #R$EEBA with item #N$09: #ITEM$09.
+  $EFBA,$03 Jump to #R$EEED.
+
+c $EFBD Take: Open Chest
+@ $EFBD label=Validate_Take_OpenChest
+D $EFBD Was the player trying to take ... the open chest?
+  $EFBD,$06 Call #R$C26F with #R$E829.
+  $EFC3,$02 Jump to #R$EFE8 if the token isn't for the open chest.
+  $EFC5,$06 Call #R$C2EF with #R$E706.
+  $EFCB,$05 Call #R$C2D2; jump to #R$EFD5 if not held.
+  $EFD0,$05 #REGe=#N$0F; jump to #R$EEC0.
+N $EFD5 The player is not holding the open chest, so open it before picking
+. it up.
+@ $EFD5 label=Validate_Take_OpenChest_NotHeld
+  $EFD5,$03 Call #R$EEDD.
+  $EFD8,$05 Jump to #R$EFE3 if #REGe is #N$0F.
+  $EFDD,$06 Call #R$C48F to transform #ITEM$0D into #ITEM$0E.
+N $EFE3 Pick up the open chest.
+@ $EFE3 label=Validate_Take_OpenChest_PickUp
+  $EFE3,$05 #REGb=#N$0F; jump to #R$EEED.
+
+c $EFE8 Take: Key
+@ $EFE8 label=Validate_Take_Key
+E $EFE8 View the equivalent code in;
+. #LIST
+. { #JEWELS$F423 }
+. { #ANDROMEDA$910A }
+. LIST#
+D $EFE8 Was the player trying to take ... the key?
+  $EFE8,$06 Call #R$C26F with #R$E82F.
+  $EFEE,$02 Jump to #R$EFF8 if the token isn't for the key.
+  $EFF0,$05 Call #R$EEBA with item #N$10: #ITEM$10.
+  $EFF5,$03 Jump to #R$EEED.
+
+c $EFF8 Take: Dead Spider
+@ $EFF8 label=Validate_Take_DeadSpider
+D $EFF8 Was the player trying to take ... the dead spider?
+  $EFF8,$06 Call #R$C26F with #R$E831.
+  $EFFE,$02 Jump to #R$F006 if the token isn't for the dead spider.
+N $F000 Print "#MESSAGE$DC63".
+  $F000,$03 #REGhl=#R$DC63.
+  $F003,$03 Jump to #R$ED66.
+
+c $F006 Take: Ring Off
+@ $F006 label=Validate_Take_RingOff
+D $F006 Was the player trying to take the ring off?
+  $F006,$06 Call #R$C26F with #R$E833.
+  $F00C,$02 Jump to #R$F011 if the token isn't for taking the ring off.
+  $F00E,$03 Jump to #R$ED7D.
+
+c $F011 Take: Rope
+@ $F011 label=Validate_Take_Rope
+D $F011 Was the player trying to take ... the rope?
+  $F011,$06 Call #R$C26F with #R$E823.
+  $F017,$02 Jump to #R$F037 if the token isn't for the rope.
+  $F019,$07 Jump to #R$F037 if *#R$BA9B is room #N$48: "#ROOM$48".
+  $F020,$05 Call #R$EEBA with item #N$08: #ITEM$08.
+  $F025,$07 Jump to #R$F032 if #R$C24F reports that #ITEM$23 isn't in the
+. current room.
+  $F02C,$06 Call #R$C48F to transform #ITEM$23 into #ITEM$22.
+N $F032 Pick up the rope.
+@ $F032 label=Validate_Take_Rope_PickUp
+  $F032,$05 #REGb=#N$08; jump to #R$EEED.
+N $F037 Nothing else is valid.
+@ $F037 label=Take_YouCant
+  $F037,$03 Jump to #R$ED6E.
+
 
 c $F03A Action: Drop
 @ $F03A label=Action_Drop
+E $F03A View the equivalent code in;
+. #LIST
+. { #HEROES$F8D0 }
+. { #ANDROMEDA$9198 }
+. { #WARLORD$F975 }
+. LIST#
 D $F03A Drop one of the objects the player named.
-  $F03A,$04 Return if the words after the verb are not valid for this command.
-  $F03E,$04 Jump to #R$F079 if the value #N$03 failed.
-  $F042,$03 Jump back to #R$ED7D to ask for a rephrase.
-
-c $F045 Handler: Not Carrying It
-@ $F045 label=Handler_NotCarryingIt
-D $F045 Put the object in this room, with special cases for the log, the chest and the ring.
-  $F045,$05 Jump to #R$F067 when the object is being carried.
-  $F04A,$06 Print "#MESSAGE$BD7F".
-  $F050,$04 Point at the plural-object list with this object.
+  $F03A,$03 Call #R$C309.
+  $F03D,$01 Return if the direct object is malformed.
+N $F03E Start by calling the chain of items to check...
+  $F03E,$04 Jump to #R$F079 if #REGa is less than #N$03.
+  $F042,$03 Jump to #R$ED7D.
+N $F045 Check if the player is holding the requested item?
+@ $F045 label=Drop_IsPlayerHoldingItem
+  $F045,$03 Call #R$C2D2.
+  $F048,$02 Jump to #R$F067 if the player is holding the requested item.
+N $F04A Print "#MESSAGE$BD7F".
+  $F04A,$03 #REGhl=#R$BD7F.
+  $F04D,$03 Call #R$BE21.
+  $F050,$01 Copy the object ID back into #REGa.
+  $F051,$03 #REGhl=#R$EEEB.
   $F054,$03 #REGbc=#N($0002,$04,$04).
-  $F057,$04 Jump to #R$F061 if the search found a match.
-N $F05B Reply with "#MESSAGE$BCFB".
-  $F05B,$06 Print "#MESSAGE$BCFB" and return to the game loop.
-@ $F061 label=Handler_NotCarryingIt_Next
-N $F061 Reply with "#MESSAGE$BCFF".
-  $F061,$06 Print "#MESSAGE$BCFF" and return to the game loop.
-@ $F067 label=Handler_NotCarryingIt_DropHere
-  $F067,$08 Call #R$BF55 to drop the object in this room.
-  $F06F,$0A Count one fewer thing carried, then print "#MESSAGE$BCDB" and
-. return to the game loop.
-@ $F079 label=Handler_NotCarryingIt_MarasBody
-  $F079,$08 Jump to #R$F08B unless the player named Mara's body.
-  $F081,$05 Destroy object #N$33 (the glowing rock).
-  $F086,$05 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F08B label=Handler_NotCarryingIt_Witch
-  $F08B,$08 Jump to #R$F09C unless the player named the witch.
-  $F093,$06 Call #R$C2EF to skip to the object named by this phrase.
-  $F099,$03 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F09C label=Handler_NotCarryingIt_RopeOverhang
-  $F09C,$08 Jump to #R$F0A9 unless the player named the rope on the overhang.
-  $F0A4,$05 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F0A9 label=Handler_NotCarryingIt_BlacksmithCoin
-  $F0A9,$08 Jump to #R$F0B6 unless the player named the blacksmith.
-  $F0B1,$05 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F0B6 label=Handler_NotCarryingIt_BlacksmithBow
-  $F0B6,$08 Jump to #R$F0C3 unless the player named the blacksmith.
-  $F0BE,$05 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F0C3 label=Handler_NotCarryingIt_DeadBlacksmith
-  $F0C3,$08 Jump to #R$F0D0 unless the player named the dead blacksmith.
-  $F0CB,$05 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F0D0 label=Handler_NotCarryingIt_Furnace
-  $F0D0,$08 Jump to #R$F0EA unless the player named the furnace.
-  $F0D8,$07 Jump to #R$F0E5 if the player is not carrying object #N$43 (the ring being
-. worn).
-  $F0DF,$06 Replace object #N$43 (the ring being worn) with object #N$07 (the ring).
-@ $F0E5 label=Handler_NotCarryingIt_DropRing
-  $F0E5,$05 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F0EA label=Handler_NotCarryingIt_Demons
-  $F0EA,$08 Jump to #R$F0F7 unless the player named the demons.
-  $F0F2,$05 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F0F7 label=Handler_NotCarryingIt_Zarn
-  $F0F7,$08 Jump to #R$F104 unless the player named Zarn.
-  $F0FF,$05 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F104 label=Handler_NotCarryingIt_Log
-  $F104,$08 Jump to #R$F14F unless the player named Zarn.
-  $F10C,$07 Jump to #R$F119 when object #N$44 (the log) is here.
-N $F113 Reply with "#MESSAGE$DC8B".
-  $F113,$06 Print "#MESSAGE$DC8B" and return to the game loop.
-@ $F119 label=Handler_NotCarryingIt_CarryingLog
-  $F119,$07 Jump to #R$F124 if the player is not carrying object #N$44 (the log).
-  $F120,$04 Count one fewer thing carried.
-@ $F124 label=Handler_NotCarryingIt_PlaceBridge
-  $F124,$05 Destroy object #N$44 (the log).
-  $F129,$06 Put object #N$45 (the log bridge) in room #N$15 (The Western Edge of a
-. Chasm).
-  $F12F,$06 Put object #N$46 (the log bridge) in room #N$16 (The Eastern Edge of a
-. Chasm).
-  $F135,$05 Destroy object #N$11 (the chasm).
-  $F13A,$05 Destroy object #N$12 (the chasm).
-  $F13F,$0A Open the log bridge across the chasm, both ways.
-  $F149,$06 Print "#MESSAGE$DCFE" and return to the game loop.
-@ $F14F label=Handler_NotCarryingIt_PrincessMara
-  $F14F,$08 Jump to #R$F15C unless the player named Princess Mara.
-  $F157,$05 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F15C label=Handler_NotCarryingIt_OldMan
-  $F15C,$08 Jump to #R$F180 unless the player named the old man.
-  $F164,$07 Jump to #R$F17B if the player is not carrying object #N$0D (the open
-. chest).
-  $F16B,$06 Put object #N$0F (the Crystals of Vulcan) in the player's inventory.
-  $F171,$06 Replace object #N$0D (the open chest) with object #N$0E (the empty chest).
-  $F177,$04 Count one more thing carried.
-@ $F17B label=Handler_NotCarryingIt_DropChest
-  $F17B,$05 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F180 label=Handler_NotCarryingIt_Key
-  $F180,$08 Jump to #R$F18D unless the player named the key.
-  $F188,$05 Jump back to #R$F045 to drop it in the ordinary way.
-@ $F18D label=Handler_NotCarryingIt_YouCant
-  $F18D,$03 Tell the player the command is impossible.
+  $F057,$02 Search for the item ID among the plural items.
+  $F059,$02 Jump to #R$F061 if the item is plural.
+N $F05B Print "#MESSAGE$BCFB".
+  $F05B,$03 #REGhl=#R$BCFB.
+  $F05E,$03 Jump to #R$ED66.
+N $F061 Print "#MESSAGE$BCFF".
+@ $F061 label=Drop_NotCarrying_Them
+  $F061,$03 #REGhl=#R$BCFF.
+  $F064,$03 Jump to #R$ED66.
+N $F067 The player has the item in their inventory so drop it.
+@ $F067 label=DropItem
+  $F067,$01 Copy the item ID into #REGb.
+  $F068,$04 #REGc=*#R$BA9B.
+N $F06C Alter the items location from the players inventory to the current room
+. ID.
+  $F06C,$03 Call #R$BF55.
+  $F06F,$04 Decrease *#R$BA68 by one.
+N $F073 Print "#MESSAGE$BCDB".
+  $F073,$03 #REGhl=#R$BCDB.
+  $F076,$03 Jump to #R$ED66.
+N $F079 Was the player trying to drop Mara's body (the sword)?
+@ $F079 label=Validate_Drop_MarasBody
+  $F079,$06 Call #R$C26F with #R$E812.
+  $F07F,$02 Jump to #R$F08B if the token isn't for Mara's body.
+  $F081,$05 Call #R$C2D8 with item #N$33: #ITEM$33.
+  $F086,$05 #REGa=#N$0A; jump to #R$F045.
+N $F08B Was the player trying to drop ... the witch?
+@ $F08B label=Validate_Drop_Witch
+  $F08B,$06 Call #R$C26F with #R$E814.
+  $F091,$02 Jump to #R$F09C if the token isn't for the witch.
+  $F093,$06 Call #R$C2EF with #R$E6FF.
+  $F099,$03 Jump to #R$F045.
+N $F09C Was the player trying to drop ... the food?
+@ $F09C label=Validate_Drop_Food
+  $F09C,$06 Call #R$C26F with #R$E816.
+  $F0A2,$02 Jump to #R$F0A9 if the token isn't for the food.
+  $F0A4,$05 #REGa=#N$00; jump to #R$F045.
+N $F0A9 Was the player trying to drop ... the silver coin?
+@ $F0A9 label=Validate_Drop_SilverCoin
+  $F0A9,$06 Call #R$C26F with #R$E818.
+  $F0AF,$02 Jump to #R$F0B6 if the token isn't for the silver coin.
+  $F0B1,$05 #REGa=#N$02; jump to #R$F045.
+N $F0B6 Was the player trying to drop ... the bow?
+@ $F0B6 label=Validate_Drop_Bow
+  $F0B6,$06 Call #R$C26F with #R$E81D.
+  $F0BC,$02 Jump to #R$F0C3 if the token isn't for the bow.
+  $F0BE,$05 #REGa=#N$03; jump to #R$F045.
+N $F0C3 Was the player trying to drop ... the arrows?
+@ $F0C3 label=Validate_Drop_Arrows
+  $F0C3,$06 Call #R$C26F with #R$E81F.
+  $F0C9,$02 Jump to #R$F0D0 if the token isn't for the arrows.
+  $F0CB,$05 #REGa=#N$04; jump to #R$F045.
+N $F0D0 Was the player trying to drop ... the furnace (worn ring)?
+@ $F0D0 label=Validate_Drop_Furnace
+  $F0D0,$06 Call #R$C26F with #R$E821.
+  $F0D6,$02 Jump to #R$F0EA if the token isn't for the furnace.
+  $F0D8,$05 Call #R$C2D2 with item #N$43: #ITEM$43.
+  $F0DD,$02 Jump to #R$F0E5 if #ITEM$43 isn't held.
+  $F0DF,$06 Call #R$C48F to transform #ITEM$43 into #ITEM$07.
+@ $F0E5 label=Validate_Drop_Furnace_Ring
+  $F0E5,$05 #REGa=#N$07; jump to #R$F045.
+N $F0EA Was the player trying to drop ... the rope?
+@ $F0EA label=Validate_Drop_Rope
+  $F0EA,$06 Call #R$C26F with #R$E823.
+  $F0F0,$02 Jump to #R$F0F7 if the token isn't for the rope.
+  $F0F2,$05 #REGa=#N$08; jump to #R$F045.
+N $F0F7 Was the player trying to drop ... the log?
+@ $F0F7 label=Validate_Drop_LogToken
+  $F0F7,$06 Call #R$C26F with #R$E825.
+  $F0FD,$02 Jump to #R$F104 if the token isn't for the log.
+  $F0FF,$05 #REGa=#N$44; jump to #R$F045.
+N $F104 Was the player trying to drop the log to bridge the chasm?
+@ $F104 label=Validate_Drop_LogBridge
+  $F104,$06 Call #R$C26F with #R$E839.
+  $F10A,$02 Jump to #R$F14F if the token isn't for bridging the chasm.
+  $F10C,$07 Jump to #R$F119 if #R$C24F reports that #ITEM$44 is in the current
+. room.
+N $F113 Print "#MESSAGE$DC8B".
+  $F113,$03 #REGhl=#R$DC8B.
+  $F116,$03 Jump to #R$ED66.
+@ $F119 label=Validate_Drop_LogBridge_Held
+  $F119,$05 Call #R$C2D2 with item #N$44: #ITEM$44.
+  $F11E,$02 Jump to #R$F124 if #ITEM$44 isn't held.
+  $F120,$04 Decrease *#R$BA68 by one.
+@ $F124 label=Validate_Drop_LogBridge_Place
+  $F124,$05 Call #R$C2D8 with item #N$44: #ITEM$44.
+  $F129,$06 Call #R$BF55 to place #ITEM$45 in room #N$15: "#ROOM$15".
+  $F12F,$06 Call #R$BF55 to place #ITEM$46 in room #N$16: "#ROOM$16".
+  $F135,$05 Call #R$C2D8 with item #N$11: #ITEM$11.
+  $F13A,$05 Call #R$C2D8 with item #N$12: #ITEM$12.
+N $F13F This action changes the map:
+  $F13F,$05 Write #N$16 to *#R$E9B4 to open up eastbound access to #ROOM$16
+. from #ROOM$15.
+  $F144,$05 Write #N$15 to *#R$E9BB to open up westbound access to #ROOM$15
+. from #ROOM$16.
+N $F149 Print "#MESSAGE$DCFE".
+  $F149,$03 #REGhl=#R$DCFE.
+  $F14C,$03 Jump to #R$ED66.
+N $F14F Was the player trying to drop ... the horn?
+@ $F14F label=Validate_Drop_Horn
+  $F14F,$06 Call #R$C26F with #R$E827.
+  $F155,$02 Jump to #R$F15C if the token isn't for the horn.
+  $F157,$05 #REGa=#N$09; jump to #R$F045.
+N $F15C Was the player trying to drop ... the open chest?
+@ $F15C label=Validate_Drop_OpenChest
+  $F15C,$06 Call #R$C26F with #R$E829.
+  $F162,$02 Jump to #R$F180 if the token isn't for the open chest.
+  $F164,$05 Call #R$C2D2 with item #N$0D: #ITEM$0D.
+  $F169,$02 Jump to #R$F17B if #ITEM$0D isn't held.
+  $F16B,$06 Call #R$BF55 to place #ITEM$0F in the inventory (#N$01).
+  $F171,$06 Call #R$C48F to transform #ITEM$0D into #ITEM$0E.
+  $F177,$04 Increment *#R$BA68 by one.
+@ $F17B label=Validate_Drop_OpenChest_Drop
+  $F17B,$05 #REGa=#N$0F; jump to #R$F045.
+N $F180 Was the player trying to drop ... the key?
+@ $F180 label=Validate_Drop_Key
+  $F180,$06 Call #R$C26F with #R$E82F.
+  $F186,$02 Jump to #R$F18D if the token isn't for the key.
+  $F188,$05 #REGa=#N$10; jump to #R$F045.
+N $F18D Nothing else is valid.
+@ $F18D label=Drop_YouCant
+  $F18D,$03 Jump to #R$ED6E.
 
 c $F190 Action: Climb
 @ $F190 label=Action_Climb
+E $F190 View the equivalent code in;
+. #LIST
+. { #JEWELS$F946 }
+. { #WARLORD$FADD }
+. LIST#
 D $F190 Climb the rope, the volcano or down into the boat.
-  $F190,$04 Return if the words after the verb are not valid for this command.
-  $F194,$08 Jump to #R$F1B2 unless the player named the rope.
-  $F19C,$08 Jump to #R$ED6E unless the player is in room #N$47 (The Top of the
-. Volcano).
-  $F1A4,$08 Jump to #R$ED6E if object #N$23 (the rope on the overhang) is not here.
-  $F1AC,$05 Try to enter room #N$48 (Inside the Volcano).
+  $F190,$03 Call #R$C309.
+  $F193,$01 Return if the direct object is malformed.
+N $F194 Was the player trying to climb ... the rope?
+  $F194,$06 Call #R$C26F with #R$E83D.
+  $F19A,$02 Jump to #R$F1B2 if the token isn't for the rope.
+N $F19C The player is attempting to climb the rope into the volcano.
+  $F19C,$08 Jump to #R$ED6E if *#R$BA9B isn't room #N$47: "#ROOM$47".
+  $F1A4,$08 Jump to #R$ED6E if #ITEM$23 isn't in the current room.
+  $F1AC,$05 Call #R$ECB6 with room #N$48: "#ROOM$48".
   $F1B1,$01 Return.
-@ $F1B2 label=Action_Climb_Next
-  $F1B2,$08 Jump to #R$F1C8 unless the player named the ring.
-  $F1BA,$08 Jump to #R$ED6E unless the player is in room #N$48 (Inside the Volcano).
-  $F1C2,$05 Try to enter room #N$47 (The Top of the Volcano).
+N $F1B2 Was the player trying to climb ... out of the volcano?
+@ $F1B2 label=Climb_CheckOutOfVolcano
+  $F1B2,$06 Call #R$C26F with #R$E840.
+  $F1B8,$02 Jump to #R$F1C8 if the token isn't for climbing out.
+N $F1BA The player is attempting to climb out of the volcano.
+  $F1BA,$08 Jump to #R$ED6E if *#R$BA9B isn't room #N$48: "#ROOM$48".
+  $F1C2,$05 Call #R$ECB6 with room #N$47: "#ROOM$47".
   $F1C7,$01 Return.
-@ $F1C8 label=Action_Climb_WearRing
-  $F1C8,$08 Jump to #R$F1DA unless the player named the ring.
-@ $F1D0 nowarn
-  $F1D0,$0A Print "#MESSAGE$DDE6" and end the game.
-@ $F1DA label=Action_Climb_IntoBoat
-  $F1DA,$08 Jump to #R$F1F5 unless the player named getting into the boat.
-  $F1E2,$07 Jump to #R$F1EF when object #N$1D (the boat) is here.
-N $F1E9 Reply with "#MESSAGE$DC9A".
-  $F1E9,$06 Print "#MESSAGE$DC9A" and return to the game loop.
-@ $F1EF label=Action_Climb_EnterBoat
-  $F1EF,$05 Try to enter room #N$1D (In the Boat).
+N $F1C8 Was the player trying to climb ... the volcano wall?
+@ $F1C8 label=Climb_CheckVolcanoWall
+  $F1C8,$06 Call #R$C26F with #R$E855.
+  $F1CE,$02 Jump to #R$F1DA if the token isn't for the volcano wall.
+N $F1D0 The climb fails and ends the game.
+  $F1D0,$04 Switch #R$EB23 onto the stack.
+N $F1D4 Print "#MESSAGE$DDE6".
+  $F1D4,$03 #REGhl=#R$DDE6.
+  $F1D7,$03 Jump to #R$ED66.
+N $F1DA Was the player trying to climb ... into the boat?
+@ $F1DA label=Climb_CheckIntoBoat
+  $F1DA,$06 Call #R$C26F with #R$E85B.
+  $F1E0,$02 Jump to #R$F1F5 if the token isn't for getting into the boat.
+  $F1E2,$07 Jump to #R$F1EF if #R$C24F reports that #ITEM$1D is in the current
+. room.
+N $F1E9 Print "#MESSAGE$DC9A".
+  $F1E9,$03 #REGhl=#R$DC9A.
+  $F1EC,$03 Jump to #R$ED66.
+@ $F1EF label=Climb_EnterBoat
+  $F1EF,$05 Call #R$ECB6 with room #N$1D: "#ROOM$1D".
   $F1F4,$01 Return.
-@ $F1F5 label=Action_Climb_OutOfBoat
-  $F1F5,$08 Jump to #R$F213 unless the player named getting out of the boat.
-  $F1FD,$07 Jump to #R$F20A when the player is in room #N$1D (In the Boat).
-N $F204 Reply with "#MESSAGE$DE33".
-  $F204,$06 Print "#MESSAGE$DE33" and return to the game loop.
-@ $F20A label=Action_Climb_LeaveBoat
-  $F20A,$05 Call #R$C2BE to fetch where the boat is.
-  $F20F,$03 Call #R$ECB6 to enter where the boat is, unless the player is too badly hurt.
+N $F1F5 Was the player trying to climb ... out of the boat?
+@ $F1F5 label=Climb_CheckOutOfBoat
+  $F1F5,$06 Call #R$C26F with #R$E86B.
+  $F1FB,$02 Jump to #R$F213 if the token isn't for getting out of the boat.
+  $F1FD,$07 Jump to #R$F20A if *#R$BA9B is room #N$1D: "#ROOM$1D".
+N $F204 Print "#MESSAGE$DE33".
+  $F204,$03 #REGhl=#R$DE33.
+  $F207,$03 Jump to #R$ED66.
+@ $F20A label=Climb_LeaveBoat
+  $F20A,$05 #REGa=#N$1D; call #R$C2BE.
+  $F20F,$03 Call #R$ECB6.
   $F212,$01 Return.
-@ $F213 label=Action_Climb_YouCant
-  $F213,$03 Tell the player the command is impossible.
+N $F213 Nothing else is valid.
+@ $F213 label=Climb_YouCant
+  $F213,$03 Jump to #R$ED6E.
 
 c $F216 Action: Give
 @ $F216 label=Action_Give
+E $F216 View the equivalent code in;
+. #LIST
+. { #HEROES$F972 }
+. { #JEWELS$F7AB }
+. { #ANDROMEDA$941B }
+. { #WARLORD$F9B3 }
+. LIST#
 D $F216 Give the chest or the crystals to the blacksmith.
-  $F216,$04 Return if the words after the verb are not valid for this command.
-  $F21A,$08 Jump to #R$F26A unless the player named the old man.
-  $F222,$07 Jump to #R$F22F when object #N$25 (the blacksmith) is here.
-N $F229 Reply with "#MESSAGE$DD38".
-  $F229,$06 Print "#MESSAGE$DD38" and return to the game loop.
-@ $F22F label=Action_Give_Next
-  $F22F,$07 Jump to #R$F23E if object #N$0D (the open chest) is not here.
-  $F236,$06 Replace object #N$0D (the open chest) with object #N$0E (the empty chest).
-  $F23C,$02 Jump to #R$F249 to hand the crystals over.
-@ $F23E label=Action_Give_CheckCrystals
-  $F23E,$07 Jump to #R$F249 if the player is not carrying object #N$0F (the Crystals
-. of Vulcan).
-  $F245,$04 Count one fewer thing carried.
-@ $F249 label=Action_Give_HandOver
-  $F249,$05 Destroy object #N$0F (the Crystals of Vulcan).
-  $F24E,$06 Replace object #N$25 (the blacksmith) with object #N$26 (the blacksmith).
-  $F254,$05 Destroy object #N$88 (the old man's quest).
-  $F259,$05 Move object #N$0A (the sword) into the current room.
-  $F25E,$06 Print "#MESSAGE$DD4D".
-N $F264 Reply with "#MESSAGE$DD84".
-  $F264,$06 Print "#MESSAGE$DD84" and return to the game loop.
-@ $F26A label=Action_Give_YouCant
-  $F26A,$03 Tell the player the command is impossible.
+  $F216,$03 Call #R$C32D.
+  $F219,$01 Return if the direct object is malformed.
+N $F21A Was the player trying to give ... to the old man / blacksmith?
+  $F21A,$06 Call #R$C26F with #R$E843.
+  $F220,$02 Jump to #R$F26A if the token isn't for the old man.
+  $F222,$07 Jump to #R$F22F if #R$C24F reports that #ITEM$25 is in the current
+. room.
+N $F229 Print "#MESSAGE$DD38".
+  $F229,$03 #REGhl=#R$DD38.
+  $F22C,$03 Jump to #R$ED66.
+@ $F22F label=Give_CheckOpenChest
+  $F22F,$07 Jump to #R$F23E if #R$C24F reports that #ITEM$0D isn't in the
+. current room.
+  $F236,$06 Call #R$C48F to transform #ITEM$0D into #ITEM$0E.
+  $F23C,$02 Jump to #R$F249.
+@ $F23E label=Give_CheckCrystals
+  $F23E,$05 Call #R$C2D2 with item #N$0F: #ITEM$0F.
+  $F243,$02 Jump to #R$F249 if #ITEM$0F isn't held.
+  $F245,$04 Decrease *#R$BA68 by one.
+@ $F249 label=Give_HandOver
+  $F249,$05 Call #R$C2D8 with item #N$0F: #ITEM$0F.
+  $F24E,$06 Call #R$C48F to transform #ITEM$25 into #ITEM$26.
+  $F254,$05 Call #R$C2D8 with #N$88.
+  $F259,$05 Call #R$C2DF with item #N$0A: #ITEM$0A.
+N $F25E Print "#MESSAGE$DD4D".
+  $F25E,$03 #REGhl=#R$DD4D.
+  $F261,$03 Call #R$BE2E.
+N $F264 Print "#MESSAGE$DD84".
+  $F264,$03 #REGhl=#R$DD84.
+  $F267,$03 Jump to #R$ED6A.
+N $F26A Nothing else is valid.
+@ $F26A label=Give_YouCant
+  $F26A,$03 Jump to #R$ED6E.
 
 c $F26D Action: Eat
 @ $F26D label=Action_Eat
+E $F26D View the equivalent code in;
+. #LIST
+. { #JEWELS$F999 }
+. { #ANDROMEDA$9469 }
+. { #WARLORD$FBC3 }
+. LIST#
 D $F26D Eat the food, if it is being carried.
-  $F26D,$04 Return if the words after the verb are not valid for this command.
-  $F271,$08 Jump to #R$F284 unless the player named the rope on the overhang.
-  $F279,$07 Jump to #R$F284 if the player is not carrying object #N$00 (the food).
-  $F280,$04 Count one fewer thing carried.
-@ $F284 label=Action_Eat_Next
-  $F284,$05 Destroy object #N$00 (the food).
-N $F289 Reply with "#MESSAGE$DE4B".
-  $F289,$06 Print "#MESSAGE$DE4B" and return to the game loop.
+  $F26D,$03 Call #R$C309.
+  $F270,$01 Return if the direct object is malformed.
+N $F271 Was the player trying to eat ... the food?
+  $F271,$06 Call #R$C26F with #R$E816.
+  $F277,$02 Jump to #R$F284 if the token isn't for the food.
+  $F279,$05 Call #R$C2D2 with item #N$00: #ITEM$00.
+  $F27E,$02 Jump to #R$F284 if #ITEM$00 isn't held.
+  $F280,$04 Decrease *#R$BA68 by one.
+@ $F284 label=Eat_Consume
+  $F284,$05 Call #R$C2D8 with item #N$00: #ITEM$00.
+N $F289 Print "#MESSAGE$DE4B".
+  $F289,$03 #REGhl=#R$DE4B.
+  $F28C,$03 Jump to #R$ED66.
 
 c $F28F Response: "You Can't"
 @ $F28F label=Response_YouCantJump
-D $F28F Tell the player the command is impossible.
-  $F28F,$03 Tell the player the command is impossible.
+  $F28F,$03 Jump to #R$ED6E.
 
 c $F292 Action: Drink
 @ $F292 label=Action_Drink
+E $F292 View the equivalent code in;
+. #LIST
+. { #HEROES$FAA5 }
+. { #JEWELS$F9E4 }
+. { #ANDROMEDA$98AB }
+. { #WARLORD$FA91 }
+. LIST#
 D $F292 Drinking does nothing useful here.
-  $F292,$04 Return if the words after the verb are not valid for this command.
-  $F296,$08 Jump to #R$F2A4 unless the player named the ruins.
-N $F29E Reply with "#MESSAGE$DE71".
-  $F29E,$06 Print "#MESSAGE$DE71" and return to the game loop.
-@ $F2A4 label=Action_Drink_Next
-  $F2A4,$03 Tell the player the command is impossible.
+  $F292,$03 Call #R$C309.
+  $F295,$01 Return if the direct object is malformed.
+N $F296 Was the player trying to drink ...?
+  $F296,$06 Call #R$C26F with #R$E87B.
+  $F29C,$02 Jump to #R$F2A4 if the token isn't for drinking.
+N $F29E Print "#MESSAGE$DE71".
+  $F29E,$03 #REGhl=#R$DE71.
+  $F2A1,$03 Jump to #R$ED66.
+N $F2A4 Nothing else is valid.
+@ $F2A4 label=Drink_YouCant
+  $F2A4,$03 Jump to #R$ED6E.
 
 c $F2A7 Action: Kill
 @ $F2A7 label=Action_Kill
+E $F2A7 View the equivalent code in;
+. #LIST
+. { #HEROES$FA72 }
+. { #JEWELS$F851 }
+. { #ANDROMEDA$952B }
+. { #WARLORD$FC4B }
+. LIST#
 D $F2A7 Fight the opponent the player named.
-  $F2A7,$04 Return if the words after the verb are not valid for this command.
-  $F2AB,$03 Jump to #R$F30B to fight the named opponent.
-
-c $F2AE Handler: Check Weapon
-@ $F2AE label=Handler_CheckWeapon
-D $F2AE Require the bow, and an arrow, before combat continues.
-  $F2AE,$07 Jump to #R$F2C0 if the player is not carrying object #N$03 (the bow).
-  $F2B5,$06 Return when the player is carrying object #N$04 (the arrows).
-  $F2BB,$05 Print "#MESSAGE$DED1" to say the arrows are missing.
-@ $F2C0 label=Handler_CheckWeapon_Next
-  $F2C0,$03 The bow is missing, so say "#MESSAGE$DF29".
-@ $F2C3 label=Handler_CheckWeapon_Reply
-  $F2C3,$01 Discard the return address on the stack.
-  $F2C4,$03 Jump back to #R$ED66 to print that reply and return to the game loop.
-
-c $F2C7 Handler: Require Sword
-@ $F2C7 label=Handler_RequireSword
-D $F2C7 Require the sword before combat continues.
-  $F2C7,$06 Return when the player is carrying object #N$0A (the sword).
-  $F2CD,$03 Print "#MESSAGE$DF72".
-  $F2D0,$01 Discard the return address on the stack.
-  $F2D1,$03 Jump back to #R$ED66 to return to the game loop.
-
-c $F2D4 Handler: Announce Arrow
-@ $F2D4 label=Handler_AnnounceArrow
-D $F2D4 Tell the player an arrow has been loosed.
-  $F2D4,$06 Print "#MESSAGE$DEE5" and start a new line.
-
-c $F2DA Handler: Resolve Attack
-@ $F2DA label=Handler_ResolveAttack
-D $F2DA Print the attack, then sometimes announce that it missed.
-  $F2DA,$04 The sword swings, with "#MESSAGE$DF5C".
-@ $F2DE label=Handler_ResolveAttack_Print
-  $F2DE,$03 Print that message and start a new line.
-  $F2E1,$01 Restore the miss flag from the stack.
-  $F2E2,$02 Return when this attack cannot miss.
-  $F2E4,$04 Call #R$BF45 to roll the miss chance, and return when the blow lands.
-  $F2E8,$03 The blow missed. Print "#MESSAGE$DEF9".
-  $F2EB,$01 Discard the return address on the stack.
-  $F2EC,$03 Jump back to #R$ED6A to return to the game loop.
-
-c $F2EF Handler: Apply Combat Result
-@ $F2EF label=Handler_ApplyCombatResult
-D $F2EF Replace a defeated creature with its body.
-  $F2EF,$0D Call #R$C48F to turn the defeated creature into its corpse.
+  $F2A7,$03 Call #R$C32D.
+  $F2AA,$01 Return if the direct object is malformed.
+  $F2AB,$03 Jump to #R$F30B.
+N $F2AE Does the player hold the bow and some arrows?
+@ $F2AE label=Kill_CheckBowAndArrows
+  $F2AE,$05 Call #R$C2D2 with item #N$03: #ITEM$03.
+  $F2B3,$02 Jump to #R$F2C0 if #ITEM$03 isn't held.
+  $F2B5,$05 Call #R$C2D2 with item #N$04: #ITEM$04.
+  $F2BA,$01 Return if #ITEM$04 is held.
+N $F2BB Print "#MESSAGE$DED1".
+  $F2BB,$03 #REGhl=#R$DED1.
+  $F2BE,$02 Jump to #R$F2C3.
+N $F2C0 Print "#MESSAGE$DF29".
+@ $F2C0 label=Kill_NoBow
+  $F2C0,$03 #REGhl=#R$DF29.
+@ $F2C3 label=Kill_WeaponReply
+  $F2C3,$01 Restore #REGde from the stack.
+  $F2C4,$03 Jump to #R$ED66.
+N $F2C7 Does the player hold the sword?
+@ $F2C7 label=Kill_CheckSword
+  $F2C7,$05 Call #R$C2D2 with item #N$0A: #ITEM$0A.
+  $F2CC,$01 Return if #ITEM$0A is held.
+N $F2CD Print "#MESSAGE$DF72".
+  $F2CD,$03 #REGhl=#R$DF72.
+  $F2D0,$01 Restore #REGde from the stack.
+  $F2D1,$03 Jump to #R$ED66.
+N $F2D4 Print "#MESSAGE$DEE5".
+@ $F2D4 label=Kill_AnnounceArrow
+  $F2D4,$01 Stash #REGaf on the stack.
+  $F2D5,$03 #REGhl=#R$DEE5.
+  $F2D8,$02 Jump to #R$F2DE.
+N $F2DA Print "#MESSAGE$DF5C".
+@ $F2DA label=Kill_ResolveAttack
+  $F2DA,$01 Stash #REGaf on the stack.
+  $F2DB,$03 #REGhl=#R$DF5C.
+@ $F2DE label=Kill_ResolveAttack_Print
+  $F2DE,$03 Call #R$BE2E.
+  $F2E1,$01 Restore #REGaf from the stack.
+  $F2E2,$02 Return if this attack cannot miss.
+  $F2E4,$03 Call #R$BF45.
+  $F2E7,$01 Return if the blow lands.
+N $F2E8 Print "#MESSAGE$DEF9".
+  $F2E8,$03 #REGhl=#R$DEF9.
+  $F2EB,$01 Restore #REGde from the stack.
+  $F2EC,$03 Jump to #R$ED6A.
+N $F2EF Turn the defeated scenic event into its corpse.
+@ $F2EF label=Kill_ApplyCombatResult
+  $F2EF,$0D Call #R$C48F to turn the defeated scenic event into its corpse.
   $F2FC,$01 Return.
-
-c $F2FD Handler: Apply Second Combat Result
-@ $F2FD label=Handler_ApplySecondCombatResult
-D $F2FD Replace a second defeated creature with its body.
-  $F2FD,$0D Call #R$C48F to turn the second defeated creature into its corpse.
+N $F2FD Turn the second defeated scenic event into its corpse.
+@ $F2FD label=Kill_ApplySecondCombatResult
+  $F2FD,$0D Call #R$C48F to turn the second defeated scenic event into its
+. corpse.
   $F30A,$01 Return.
-
-c $F30B Handler: Fight Opponent
-@ $F30B label=Handler_FightOpponent
-D $F30B Fight whichever opponent the player named.
+N $F30B Was the player trying to kill ... the elf with the sword?
+@ $F30B label=Validate_Kill_ElfSword
   $F30B,$08 Jump to #R$F344 unless the player named the elf with the sword.
   $F313,$06 Call #R$C2EF to skip to the object named by this phrase.
   $F319,$05 Jump back to #R$ED82 when the named opponent is already dead.
-  $F31E,$06 Call #R$F2C7 to make sure the player is holding the sword.
-  $F324,$05 Call #R$F2DA to resolve the attack on the named opponent.
-  $F329,$03 Call #R$F2EF to turn the defeated opponent into its corpse.
+  $F31E,$06 Call #R$F2C7.
+  $F324,$05 Call #R$F2DA.
+  $F329,$03 Call #R$F2EF.
   $F32C,$07 Jump to #R$F338 unless the value #N$82 matches.
   $F333,$05 Remove object #N$86 (the centaur) from the game.
-@ $F338 label=Handler_FightOpponent_Next
+@ $F338 label=Kill_ElfSword_Done
   $F338,$06 Print "#MESSAGE$DF44".
-N $F33E Reply with "#MESSAGE$DFA3".
-  $F33E,$06 Print "#MESSAGE$DFA3" and return to the game loop.
-@ $F344 label=Handler_FightOpponent_ElfBow
+N $F33E Print "#MESSAGE$DFA3".
+  $F33E,$03 #REGhl=#R$DFA3.
+  $F341,$03 Jump to #R$ED66.
+N $F344 Was the player trying to kill ... the elf with the bow?
+@ $F344 label=Validate_Kill_ElfBow
   $F344,$08 Jump to #R$F37D unless the player named the elf with the bow.
   $F34C,$06 Call #R$C2EF to skip to the object named by this phrase.
   $F352,$05 Jump back to #R$ED82 when the named opponent is already dead.
-  $F357,$06 Call #R$F2AE to make sure the player is holding the bow and some arrows.
-  $F35D,$05 Call #R$F2D4 to announce the arrow.
-  $F362,$03 Call #R$F2EF to turn the defeated opponent into its corpse.
+  $F357,$06 Call #R$F2AE.
+  $F35D,$05 Call #R$F2D4.
+  $F362,$03 Call #R$F2EF.
   $F365,$07 Jump to #R$F371 unless the value #N$82 matches.
   $F36C,$05 Remove object #N$86 (the centaur) from the game.
-@ $F371 label=Handler_FightOpponent_PerfectShot
+@ $F371 label=Kill_ElfBow_Done
   $F371,$06 Print "#MESSAGE$DF0E".
-N $F377 Reply with "#MESSAGE$DFA3".
-  $F377,$06 Print "#MESSAGE$DFA3" and return to the game loop.
-@ $F37D label=Handler_FightOpponent_WarriorSword
+N $F377 Print "#MESSAGE$DFA3".
+  $F377,$03 #REGhl=#R$DFA3.
+  $F37A,$03 Jump to #R$ED66.
+N $F37D Was the player trying to kill ... the warrior with the sword?
+@ $F37D label=Validate_Kill_WarriorSword
   $F37D,$08 Jump to #R$F3AA unless the player named the dead warrior.
   $F385,$06 Call #R$C2EF to skip to the object named by this phrase.
   $F38B,$05 Jump back to #R$ED8C when the named opponent is already dead.
-  $F390,$06 Call #R$F2C7 to make sure the player is holding the sword.
-  $F396,$05 Call #R$F2DA to resolve the attack on the named opponent.
-  $F39B,$03 Call #R$F2FD to turn the second defeated opponent into its corpse.
+  $F390,$06 Call #R$F2C7.
+  $F396,$05 Call #R$F2DA.
+  $F39B,$03 Call #R$F2FD.
   $F39E,$06 Print "#MESSAGE$DF44".
-N $F3A4 Reply with "#MESSAGE$DFB4".
-  $F3A4,$06 Print "#MESSAGE$DFB4" and return to the game loop.
-@ $F3AA label=Handler_FightOpponent_WarriorBow
+N $F3A4 Print "#MESSAGE$DFB4".
+  $F3A4,$03 #REGhl=#R$DFB4.
+  $F3A7,$03 Jump to #R$ED66.
+N $F3AA Was the player trying to kill ... the warrior with the bow?
+@ $F3AA label=Validate_Kill_WarriorBow
   $F3AA,$08 Jump to #R$F3D7 unless the player named the dead warrior.
   $F3B2,$06 Call #R$C2EF to skip to the object named by this phrase.
   $F3B8,$05 Jump back to #R$ED8C when the named opponent is already dead.
-  $F3BD,$06 Call #R$F2AE to make sure the player is holding the bow and some arrows.
-  $F3C3,$05 Call #R$F2D4 to announce the arrow.
-  $F3C8,$03 Call #R$F2FD to turn the second defeated opponent into its corpse.
+  $F3BD,$06 Call #R$F2AE.
+  $F3C3,$05 Call #R$F2D4.
+  $F3C8,$03 Call #R$F2FD.
   $F3CB,$06 Print "#MESSAGE$DF0E".
-N $F3D1 Reply with "#MESSAGE$DFB4".
-  $F3D1,$06 Print "#MESSAGE$DFB4" and return to the game loop.
-@ $F3D7 label=Handler_FightOpponent_MonsterBow
+N $F3D1 Print "#MESSAGE$DFB4".
+  $F3D1,$03 #REGhl=#R$DFB4.
+  $F3D4,$03 Jump to #R$ED66.
+N $F3D7 Was the player trying to kill ... the slime monster with the bow?
+@ $F3D7 label=Validate_Kill_MonsterBow
   $F3D7,$08 Jump to #R$F3F8 unless the player named the monster with the bow.
-  $F3DF,$03 Call #R$F2AE to make sure the player is holding the bow and some arrows.
-  $F3E2,$05 Call #R$F2D4 to announce the arrow.
-  $F3E7,$05 Destroy object #N$1E (the slime monster).
+  $F3DF,$03 Call #R$F2AE.
+  $F3E2,$05 Call #R$F2D4.
+  $F3E7,$05 Destroy #ITEM$1E.
   $F3EC,$06 Print "#MESSAGE$DF0E".
-N $F3F2 Reply with "#MESSAGE$E009".
-  $F3F2,$06 Print "#MESSAGE$E009" and return to the game loop.
-@ $F3F8 label=Handler_FightOpponent_GlowingRock
+N $F3F2 Print "#MESSAGE$E009".
+  $F3F2,$03 #REGhl=#R$E009.
+  $F3F5,$03 Jump to #R$ED66.
+N $F3F8 Was the player trying to kill ... the dragon?
+@ $F3F8 label=Validate_Kill_Dragon
   $F3F8,$08 Jump to #R$F41B unless the player named the glowing rock.
-  $F400,$08 Jump to #R$ED8C if object #N$16 (the dragon) is not here.
-  $F408,$03 Call #R$F2AE to make sure the player is holding the bow and some arrows.
-  $F40B,$04 Call #R$F2D4 to announce the arrow.
-  $F40F,$06 Replace object #N$16 (the dragon) with object #N$17 (the dead dragon).
-N $F415 Reply with "#MESSAGE$DFE0".
-  $F415,$06 Print "#MESSAGE$DFE0" and return to the game loop.
-@ $F41B label=Handler_FightOpponent_ClosedDoor
+  $F400,$08 Jump to #R$ED8C if #ITEM$16 is not here.
+  $F408,$03 Call #R$F2AE.
+  $F40B,$04 Call #R$F2D4.
+  $F40F,$06 Call #R$C48F to transform #ITEM$16 into #ITEM$17.
+N $F415 Print "#MESSAGE$DFE0".
+  $F415,$03 #REGhl=#R$DFE0.
+  $F418,$03 Jump to #R$ED6A.
+N $F41B Was the player trying to kill ... the wood nymph?
+@ $F41B label=Validate_Kill_WoodNymph
   $F41B,$08 Jump to #R$F443 unless the player named a closed door.
   $F423,$08 Jump to #R$ED87 if object #N$8A (the wood nymph) is not here.
-  $F42B,$03 Call #R$F2AE to make sure the player is holding the bow and some arrows.
-  $F42E,$04 Call #R$F2D4 to announce the arrow.
-  $F432,$06 Replace object #N$8A (the wood nymph) with object #N$1C (the dead wood
-. nymph).
+  $F42B,$03 Call #R$F2AE.
+  $F42E,$04 Call #R$F2D4.
+  $F432,$06 Call #R$C48F to transform #N$8A into #ITEM$1C.
   $F438,$05 Destroy object #N$89 (the nymph's glimpse).
-N $F43D Reply with "#MESSAGE$DFF4".
-  $F43D,$06 Print "#MESSAGE$DFF4" and return to the game loop.
-@ $F443 label=Handler_FightOpponent_LogBridgeSword
+N $F43D Print "#MESSAGE$DFF4".
+  $F43D,$03 #REGhl=#R$DFF4.
+  $F440,$03 Jump to #R$ED6A.
+N $F443 Was the player trying to kill ... the demons with the sword?
+@ $F443 label=Validate_Kill_DemonsSword
   $F443,$08 Jump to #R$F463 unless the player named the log bridge.
-  $F44B,$03 Call #R$F2C7 to make sure the player is holding the sword.
-  $F44E,$05 Call #R$F2DA to resolve the attack on the named opponent.
-  $F453,$05 Destroy object #N$29 (the demons).
-  $F458,$0B Open the way east, then pause and print "#MESSAGE$E041" and
-. return to the game loop.
-@ $F463 label=Handler_FightOpponent_LogBridgeBow
+  $F44B,$03 Call #R$F2C7.
+  $F44E,$05 Call #R$F2DA.
+  $F453,$05 Destroy #ITEM$29.
+N $F458 This action changes the map:
+  $F458,$05 Write #N$49 to *#R$EADA to open up eastbound access to #ROOM$49
+. from #ROOM$46.
+N $F45D Print "#MESSAGE$E041".
+  $F45D,$03 #REGhl=#R$E041.
+  $F460,$03 Jump to #R$ED6A.
+N $F463 Was the player trying to kill ... the demons with the bow?
+@ $F463 label=Validate_Kill_DemonsBow
   $F463,$08 Jump to #R$F474 unless the player named the log bridge.
-  $F46B,$03 Call #R$F2AE to make sure the player is holding the bow and some arrows.
-N $F46E Reply with "#MESSAGE$E06F".
-  $F46E,$06 Print "#MESSAGE$E06F" and return to the game loop.
-@ $F474 label=Handler_FightOpponent_RingWornSword
+  $F46B,$03 Call #R$F2AE.
+N $F46E Print "#MESSAGE$E06F".
+  $F46E,$03 #REGhl=#R$E06F.
+  $F471,$03 Jump to #R$ED66.
+N $F474 Was the player trying to kill ... the blacksmith with the sword?
+@ $F474 label=Validate_Kill_BlacksmithSword
   $F474,$08 Jump to #R$F49D unless the player named the ring being worn.
-  $F47C,$08 Jump to #R$ED82 when object #N$27 (the dead blacksmith) is here.
-  $F484,$03 Call #R$F2C7 to make sure the player is holding the sword.
-  $F487,$04 Call #R$F2DA to resolve the attack on the named opponent.
-
-c $F48B Handler: Kill The Warrior
-@ $F48B label=Handler_KillTheWarrior
-D $F48B Fight the Korl warrior.
+  $F47C,$08 Jump to #R$ED82 when #ITEM$27 is here.
+  $F484,$03 Call #R$F2C7.
+  $F487,$04 Call #R$F2DA.
+@ $F48B label=Kill_BlacksmithBody
+N $F48B Fight the Korl warrior.
   $F48B,$06 Call #R$C2EF to skip to the object named by this phrase.
   $F491,$06 Call #R$C48F to turn the warrior into the dead blacksmith.
-N $F497 Reply with "#MESSAGE$E086".
-  $F497,$06 Print "#MESSAGE$E086" and return to the game loop.
-@ $F49D label=Handler_KillTheWarrior_RingWornBow
+N $F497 Print "#MESSAGE$E086".
+  $F497,$03 #REGhl=#R$E086.
+  $F49A,$03 Jump to #R$ED6A.
+N $F49D Was the player trying to kill ... the blacksmith with the bow?
+@ $F49D label=Validate_Kill_BlacksmithBow
   $F49D,$08 Jump to #R$F4B7 unless the player named the ring being worn.
-  $F4A5,$08 Jump to #R$ED82 when object #N$27 (the dead blacksmith) is here.
-  $F4AD,$03 Call #R$F2AE to make sure the player is holding the bow and some arrows.
-  $F4B0,$04 Call #R$F2D4 to announce the arrow.
+  $F4A5,$08 Jump to #R$ED82 when #ITEM$27 is here.
+  $F4AD,$03 Call #R$F2AE.
+  $F4B0,$04 Call #R$F2D4.
   $F4B4,$03 Jump back to #R$F48B to finish off the warrior.
-@ $F4B7 label=Handler_KillTheWarrior_Next
+N $F4B7 Was the player trying to kill ... Zarn with the sword?
+@ $F4B7 label=Validate_Kill_ZarnSword
   $F4B7,$08 Jump to #R$F4E6 unless the player named the log bridge.
-  $F4BF,$08 Jump to #R$ED82 if object #N$2A (Zarn) is not here.
-  $F4C7,$03 Call #R$F2C7 to make sure the player is holding the sword.
-  $F4CA,$05 Call #R$F2DA to resolve the attack on the named opponent.
-  $F4CF,$06 Replace object #N$2A (Zarn) with object #N$2B (Zarn's body).
+  $F4BF,$08 Jump to #R$ED82 if #ITEM$2A is not here.
+  $F4C7,$03 Call #R$F2C7.
+  $F4CA,$05 Call #R$F2DA.
+  $F4CF,$06 Call #R$C48F to transform #ITEM$2A into #ITEM$2B.
   $F4D5,$0B Arm Princess Mara's arrival, then pause and print "#MESSAGE$DF44"
 . and start a new line.
-N $F4E0 Reply with "#MESSAGE$E09B".
-  $F4E0,$06 Print "#MESSAGE$E09B" and return to the game loop.
-@ $F4E6 label=Handler_KillTheWarrior_LogBridgeBow
+N $F4E0 Print "#MESSAGE$E09B".
+  $F4E0,$03 #REGhl=#R$E09B.
+  $F4E3,$03 Jump to #R$ED66.
+N $F4E6 Was the player trying to kill ... Zarn with the bow?
+@ $F4E6 label=Validate_Kill_ZarnBow
   $F4E6,$08 Jump to #R$F4FF unless the player named the log bridge.
-  $F4EE,$08 Jump to #R$ED82 if object #N$2A (Zarn) is not here.
-  $F4F6,$03 Call #R$F2AE to make sure the player is holding the bow and some arrows.
-N $F4F9 Reply with "#MESSAGE$E06F".
-  $F4F9,$06 Print "#MESSAGE$E06F" and return to the game loop.
-@ $F4FF label=Handler_KillTheWarrior_PrincessSword
+  $F4EE,$08 Jump to #R$ED82 if #ITEM$2A is not here.
+  $F4F6,$03 Call #R$F2AE.
+N $F4F9 Print "#MESSAGE$E06F".
+  $F4F9,$03 #REGhl=#R$E06F.
+  $F4FC,$03 Jump to #R$ED66.
+N $F4FF Was the player trying to kill ... Princess Mara with the sword?
+@ $F4FF label=Validate_Kill_PrincessSword
   $F4FF,$08 Jump to #R$F527 unless the player named the princess with the sword.
-  $F507,$08 Jump to #R$ED87 if object #N$2C (Princess Mara) is not here.
-  $F50F,$03 Call #R$F2C7 to make sure the player is holding the sword.
-  $F512,$04 Call #R$F2DA to resolve the attack on the named opponent.
-
-c $F516 Handler: Kill The Witch
-@ $F516 label=Handler_KillTheWitch
-D $F516 Fight the witch.
-  $F516,$06 Replace object #N$2C (Princess Mara) with object #N$2D (Mara's body).
+  $F507,$08 Jump to #R$ED87 if #ITEM$2C is not here.
+  $F50F,$03 Call #R$F2C7.
+  $F512,$04 Call #R$F2DA.
+@ $F516 label=Kill_PrincessBody
+N $F516 Fight the witch.
+  $F516,$06 Call #R$C48F to transform #ITEM$2C into #ITEM$2D.
   $F51C,$0B Stop Princess Mara appearing, then pause and print "#MESSAGE$DFF4"
 . and return to the game loop.
-@ $F527 label=Handler_KillTheWitch_PrincessBow
+N $F527 Was the player trying to kill ... Princess Mara with the bow?
+@ $F527 label=Validate_Kill_PrincessBow
   $F527,$08 Jump to #R$F541 unless the player named the princess with the bow.
-  $F52F,$08 Jump to #R$ED87 if object #N$2C (Princess Mara) is not here.
-  $F537,$03 Call #R$F2AE to make sure the player is holding the bow and some arrows.
-  $F53A,$04 Call #R$F2D4 to announce the arrow.
+  $F52F,$08 Jump to #R$ED87 if #ITEM$2C is not here.
+  $F537,$03 Call #R$F2AE.
+  $F53A,$04 Call #R$F2D4.
   $F53E,$03 Jump back to #R$F516 to finish off the witch.
-@ $F541 label=Handler_KillTheWitch_Next
+N $F541 Was the player trying to kill ... the warrior with the sword?
+@ $F541 label=Validate_Kill_WarriorSword2
   $F541,$08 Jump to #R$F56B unless the player named the warrior with the sword.
   $F549,$08 Jump to #R$ED82 if object #N$8C is not here.
-  $F551,$03 Call #R$F2C7 to make sure the player is holding the sword.
-  $F554,$05 Call #R$F2DA to resolve the attack on the named opponent.
+  $F551,$03 Call #R$F2C7.
+  $F554,$05 Call #R$F2DA.
   $F559,$03 The sword lands, with "#MESSAGE$DF44".
-
-c $F55C Handler: Kill The Blacksmith
-@ $F55C label=Handler_KillTheBlacksmith
-D $F55C Fight the blacksmith.
+@ $F55C label=Kill_WarriorBody
+N $F55C Fight the blacksmith.
   $F55C,$03 Call #R$C486 to pause, then print that message and start a new line.
-  $F55F,$06 Replace object #N$8C with object #N$34 (the dead warrior).
-N $F565 Reply with "#MESSAGE$E086".
-  $F565,$06 Print "#MESSAGE$E086" and return to the game loop.
-@ $F56B label=Handler_KillTheBlacksmith_WarriorBow
+  $F55F,$06 Call #R$C48F to transform #N$8C into #ITEM$34.
+N $F565 Print "#MESSAGE$E086".
+  $F565,$03 #REGhl=#R$E086.
+  $F568,$03 Jump to #R$ED66.
+N $F56B Was the player trying to kill ... the warrior with the bow?
+@ $F56B label=Validate_Kill_WarriorBow2
   $F56B,$08 Jump to #R$F589 unless the player named the warrior with the bow.
   $F573,$08 Jump to #R$ED82 if object #N$8C is not here.
-  $F57B,$03 Call #R$F2AE to make sure the player is holding the bow and some arrows.
-  $F57E,$05 Call #R$F2D4 to announce the arrow.
+  $F57B,$03 Call #R$F2AE.
+  $F57E,$05 Call #R$F2D4.
   $F583,$06 Print "#MESSAGE$DF0E" and strike the blacksmith.
-@ $F589 label=Handler_KillTheBlacksmith_Next
+N $F589 Was the player trying to kill ... the giant spider with the bow?
+@ $F589 label=Validate_Kill_SpiderBow
   $F589,$08 Jump to #R$F5B3 unless the player named the spider with the bow.
-  $F591,$08 Jump to #R$ED8C if object #N$41 (the giant spider) is not here.
-  $F599,$03 Call #R$F2AE to make sure the player is holding the bow and some arrows.
-  $F59C,$05 Call #R$F2D4 to announce the arrow.
-  $F5A1,$06 Replace object #N$41 (the giant spider) with object #N$42 (the dead
-. spider).
+  $F591,$08 Jump to #R$ED8C if #ITEM$41 is not here.
+  $F599,$03 Call #R$F2AE.
+  $F59C,$05 Call #R$F2D4.
+  $F5A1,$06 Call #R$C48F to transform #ITEM$41 into #ITEM$42.
   $F5A7,$06 Print "#MESSAGE$DF0E".
-N $F5AD Reply with "#MESSAGE$DFE0".
-  $F5AD,$06 Print "#MESSAGE$DFE0" and return to the game loop.
-@ $F5B3 label=Handler_KillTheBlacksmith_YouCant
-  $F5B3,$03 Tell the player the command is impossible.
-
+N $F5AD Print "#MESSAGE$DFE0".
+  $F5AD,$03 #REGhl=#R$DFE0.
+  $F5B0,$03 Jump to #R$ED66.
+N $F5B3 Nothing else is valid.
+@ $F5B3 label=Kill_YouCant
+  $F5B3,$03 Jump to #R$ED6E.
 c $F5B6 Action: Kiss
 @ $F5B6 label=Action_Kiss
+E $F5B6 View the equivalent code in;
+. #LIST
+. { #HEROES$F989 }
+. LIST#
 D $F5B6 Kiss Princess Mara, if she is here and still alive.
-  $F5B6,$04 Return if the words after the verb are not valid for this command.
-  $F5BA,$02 Jump to #R$F5C8 to kiss Princess Mara.
-
-c $F5BC Response: "It's Too Late"
-@ $F5BC label=Response_ItsTooLate
-D $F5BC Say that it is too late.
-N $F5BC Reply with "#MESSAGE$E14E".
-  $F5BC,$06 Print "#MESSAGE$E14E" and return to the game loop.
-
-c $F5C2 Handler: Kiss The Princess
-@ $F5C2 label=Handler_KissThePrincess
-D $F5C2 Kiss Mara. She is saved only in the Great Hall, and only while the player lives.
-N $F5C2 Reply with "#MESSAGE$E113".
-  $F5C2,$06 Print "#MESSAGE$E113" and return to the game loop.
-@ $F5C8 label=Handler_KissThePrincess_Princess
-  $F5C8,$08 Jump to #R$F5DB unless the player named the princess.
-  $F5D0,$08 Jump to #R$F5BC if object #N$2C (Princess Mara) is not here.
-  $F5D8,$03 Jump back to #R$F5C2 to kiss her.
-@ $F5DB label=Handler_KissThePrincess_Next
-  $F5DB,$08 Jump to #R$F5EE unless the player named a closed door.
-  $F5E3,$08 Jump to #R$F5BC when object #N$1C (the dead wood nymph) is here.
-  $F5EB,$03 Jump back to #R$F5C2 to kiss her.
-@ $F5EE label=Handler_KissThePrincess_Refuse
-  $F5EE,$03 Jump back to #R$ED91 to refuse.
+  $F5B6,$03 Call #R$C309.
+  $F5B9,$01 Return if the direct object is malformed.
+  $F5BA,$02 Jump to #R$F5C8.
+N $F5BC Print "#MESSAGE$E14E".
+@ $F5BC label=Kiss_TooLate
+  $F5BC,$03 #REGhl=#R$E14E.
+  $F5BF,$03 Jump to #R$ED66.
+N $F5C2 Print "#MESSAGE$E113".
+@ $F5C2 label=Kiss_Success
+  $F5C2,$03 #REGhl=#R$E113.
+  $F5C5,$03 Jump to #R$ED66.
+N $F5C8 Was the player trying to kiss ... the princess?
+@ $F5C8 label=Validate_Kiss_Princess
+  $F5C8,$06 Call #R$C26F with #R$E8E3.
+  $F5CE,$02 Jump to #R$F5DB if the token isn't for the princess.
+  $F5D0,$08 Jump to #R$F5BC if #R$C24F reports that #ITEM$2C isn't in the
+. current room.
+  $F5D8,$03 Jump to #R$F5C2.
+N $F5DB Was the player trying to kiss ... a closed door?
+@ $F5DB label=Validate_Kiss_ClosedDoor
+  $F5DB,$06 Call #R$C26F with #R$E8E5.
+  $F5E1,$02 Jump to #R$F5EE if the token isn't for a closed door.
+  $F5E3,$08 Jump to #R$F5BC if #R$C24F reports that #ITEM$1C is in the
+. current room.
+  $F5EB,$03 Jump to #R$F5C2.
+N $F5EE Nothing else is valid.
+@ $F5EE label=Kiss_YouCant
+  $F5EE,$03 Jump to #R$ED91.
 
 c $F5F1 Action: Open
 @ $F5F1 label=Action_Open
+E $F5F1 View the equivalent code in;
+. #LIST
+. { #HEROES$F9DC }
+. { #JEWELS$FA3C }
+. { #ANDROMEDA$96E7 }
+. LIST#
 D $F5F1 Open the named door, gate or chest.
-  $F5F1,$04 Return if the words after the verb are not valid for this command.
-  $F5F5,$09 Jump to #R$F665 unless the player named the door.
-  $F5FE,$06 Call #R$C2EF to skip to the object named by this phrase.
-  $F604,$04 Jump to #R$F60E when the named door is closed.
-N $F608 Reply with "#MESSAGE$E172".
-  $F608,$06 Print "#MESSAGE$E172" and return to the game loop.
-@ $F60E label=Action_Open_Next
-  $F60E,$07 Jump to #R$F619 when the player is in room #N$02 (Inside the Farmhouse).
-  $F615,$04 Jump to #R$F62D unless the player is in room #N$03 (At a large Farmhouse).
-@ $F619 label=Action_Open_Farmhouse
-  $F619,$06 Replace object #N$36 (a closed door) with object #N$35 (an open door).
-  $F61F,$06 Replace object #N$38 with object #N$37.
-  $F625,$08 Jump back to #R$ED96 to confirm.
-@ $F62D label=Action_Open_WoodmansHutCheck
-  $F62D,$04 Jump to #R$F635 when the player is in room #N$0F (At the Woodman's Hut).
-  $F631,$04 Jump to #R$F649 unless the player is in room #N$10 (Inside the Woodman's
-. Hut).
-@ $F635 label=Action_Open_WoodmansHut
-  $F635,$06 Replace object #N$3A with object #N$39.
-  $F63B,$06 Replace object #N$3C with object #N$3B.
-  $F641,$08 Jump back to #R$ED96 to confirm.
-@ $F649 label=Action_Open_WitchsHovelCheck
-  $F649,$04 Jump to #R$F651 when the player is in room #N$3C (At the Witch's Hovel).
-  $F64D,$04 Jump to #R$F665 unless the player is in room #N$3D (Inside the Witch's
-. Hovel).
-@ $F651 label=Action_Open_WitchsHovel
-  $F651,$06 Replace object #N$3E with object #N$3D.
-  $F657,$06 Replace object #N$40 with object #N$3F.
-  $F65D,$08 Jump back to #R$ED96 to confirm.
-
-c $F665 Handler: Open The Chest
-@ $F665 label=Handler_OpenTheChest
-D $F665 Open the chest when the player has already found it.
-  $F665,$08 Jump to #R$F689 unless the player named the witch.
-  $F66D,$08 Jump to #R$EDB4 when object #N$0B (the chest) is here.
-  $F675,$08 Jump to #R$EDB9 if object #N$0C (the closed chest) is not here.
-  $F67D,$06 Replace object #N$0C (the closed chest) with object #N$0D (the open
-. chest).
-N $F683 Reply with "#MESSAGE$D608".
-  $F683,$06 Print "#MESSAGE$D608" and return to the game loop.
-@ $F689 label=Handler_OpenTheChest_Next
-  $F689,$03 Tell the player the command is impossible.
+  $F5F1,$03 Call #R$C309.
+  $F5F4,$01 Return if the direct object is malformed.
+N $F5F5 Was the player trying to open ... the door?
+  $F5F5,$06 Call #R$C26F with #R$E8EA.
+  $F5FB,$03 Jump to #R$F665 if the token isn't for the door.
+  $F5FE,$06 Call #R$C2EF with #R$E797.
+  $F604,$04 Jump to #R$F60E if the named door is closed.
+N $F608 Print "#MESSAGE$E172".
+  $F608,$03 #REGhl=#R$E172.
+  $F60B,$03 Jump to #R$ED66.
+N $F60E Which door is the player opening?
+@ $F60E label=Open_CheckRoom
+  $F60E,$07 Jump to #R$F619 if *#R$BA9B is room #N$02: "#ROOM$02".
+  $F615,$04 Jump to #R$F62D if *#R$BA9B isn't room #N$03: "#ROOM$03".
+N $F619 Change the farmhouse door states!
+@ $F619 label=Open_Farmhouse
+  $F619,$06 Call #R$C48F to transform #ITEM$36 into #ITEM$35.
+  $F61F,$06 Call #R$C48F to transform #ITEM$38 into #ITEM$37.
+N $F625 This action changes the map:
+  $F625,$05 Write #N$03 to *#R$E941 to open up southbound access to #ROOM$03
+. from #ROOM$02.
+  $F62A,$03 Jump to #R$ED96.
+N $F62D Is the player at the Woodman's Hut?
+@ $F62D label=Open_CheckWoodmansHut
+  $F62D,$04 Jump to #R$F635 if *#R$BA9B is room #N$0F: "#ROOM$0F".
+  $F631,$04 Jump to #R$F649 if *#R$BA9B isn't room #N$10: "#ROOM$10".
+N $F635 Change the Woodman's Hut door states!
+@ $F635 label=Open_WoodmansHut
+  $F635,$06 Call #R$C48F to transform #ITEM$3A into #ITEM$39.
+  $F63B,$06 Call #R$C48F to transform #ITEM$3C into #ITEM$3B.
+N $F641 This action changes the map:
+  $F641,$05 Write #N$0F to *#R$E996 to open up eastbound access to #ROOM$0F
+. from #ROOM$10.
+  $F646,$03 Jump to #R$ED96.
+N $F649 Is the player at the Witch's Hovel?
+@ $F649 label=Open_CheckWitchsHovel
+  $F649,$04 Jump to #R$F651 if *#R$BA9B is room #N$3C: "#ROOM$3C".
+  $F64D,$04 Jump to #R$F665 if *#R$BA9B isn't room #N$3D: "#ROOM$3D".
+N $F651 Change the Witch's Hovel door states!
+@ $F651 label=Open_WitchsHovel
+  $F651,$06 Call #R$C48F to transform #ITEM$3E into #ITEM$3D.
+  $F657,$06 Call #R$C48F to transform #ITEM$40 into #ITEM$3F.
+N $F65D This action changes the map:
+  $F65D,$05 Write #N$3C to *#R$EAA4 to open up eastbound access to #ROOM$3C
+. from #ROOM$3D.
+  $F662,$03 Jump to #R$ED96.
+N $F665 Was the player trying to open ... the chest?
+@ $F665 label=Validate_Open_Chest
+  $F665,$06 Call #R$C26F with #R$E814.
+  $F66B,$02 Jump to #R$F689 if the token isn't for the chest.
+  $F66D,$08 Jump to #R$EDB4 if #R$C24F reports that #ITEM$0B is in the
+. current room.
+  $F675,$08 Jump to #R$EDB9 if #R$C24F reports that #ITEM$0C isn't in the
+. current room.
+  $F67D,$06 Call #R$C48F to transform #ITEM$0C into #ITEM$0D.
+N $F683 Print "#MESSAGE$D608".
+  $F683,$03 #REGhl=#R$D608.
+  $F686,$03 Jump to #R$ED66.
+N $F689 Nothing else is valid.
+@ $F689 label=Open_YouCant
+  $F689,$03 Jump to #R$ED6E.
 
 c $F68C Action: Close
 @ $F68C label=Action_Close
+E $F68C View the equivalent code in;
+. #LIST
+. { #HEROES$F9E3 }
+. { #JEWELS$FAA8 }
+. { #ANDROMEDA$975A }
+. LIST#
 D $F68C Close the named door, gate or chest.
-  $F68C,$04 Return if the words after the verb are not valid for this command.
-  $F690,$09 Jump to #R$F6FD unless the player named the door.
-  $F699,$06 Call #R$C2EF to skip to the object named by this phrase.
-  $F69F,$04 Jump to #R$F6A9 when the named door is open.
-N $F6A3 Reply with "#MESSAGE$E185".
-  $F6A3,$06 Print "#MESSAGE$E185" and return to the game loop.
-@ $F6A9 label=Action_Close_Next
-  $F6A9,$07 Jump to #R$F6B4 when the player is in room #N$02 (Inside the Farmhouse).
-  $F6B0,$04 Jump to #R$F6C7 unless the player is in room #N$03 (At a large Farmhouse).
-@ $F6B4 label=Action_Close_Farmhouse
-  $F6B4,$06 Replace object #N$35 (an open door) with object #N$36 (a closed door).
-  $F6BA,$06 Replace object #N$37 with object #N$38.
-  $F6C0,$07 Jump back to #R$ED96 to confirm.
-@ $F6C7 label=Action_Close_WoodmansHutCheck
-  $F6C7,$04 Jump to #R$F6CF when the player is in room #N$0F (At the Woodman's Hut).
-  $F6CB,$04 Jump to #R$F6E2 unless the player is in room #N$10 (Inside the Woodman's
-. Hut).
-@ $F6CF label=Action_Close_WoodmansHut
-  $F6CF,$06 Replace object #N$39 with object #N$3A.
-  $F6D5,$06 Replace object #N$3B with object #N$3C.
-  $F6DB,$07 Jump back to #R$ED96 to confirm.
-@ $F6E2 label=Action_Close_WitchsHovelCheck
-  $F6E2,$04 Jump to #R$F6EA when the player is in room #N$3C (At the Witch's Hovel).
-  $F6E6,$04 Jump to #R$F6FD unless the player is in room #N$3D (Inside the Witch's
-. Hovel).
-@ $F6EA label=Action_Close_WitchsHovel
-  $F6EA,$06 Replace object #N$3D with object #N$3E.
-  $F6F0,$06 Replace object #N$3F with object #N$40.
-  $F6F6,$07 Jump back to #R$ED96 to confirm.
-
-c $F6FD Handler: Close The Chest
-@ $F6FD label=Handler_CloseTheChest
-D $F6FD Close the chest.
-  $F6FD,$08 Jump to #R$F718 unless the player named the witch.
-  $F705,$08 Jump to #R$EDBE when object #N$0B (the chest) is here.
-  $F70D,$08 Jump to #R$EDBE when object #N$0C (the closed chest) is here.
-  $F715,$03 Jump back to #R$ED78 to say there is no point.
-@ $F718 label=Handler_CloseTheChest_Next
-  $F718,$03 Tell the player the command is impossible.
+  $F68C,$03 Call #R$C309.
+  $F68F,$01 Return if the direct object is malformed.
+N $F690 Was the player trying to close ... the door?
+  $F690,$06 Call #R$C26F with #R$E8EA.
+  $F696,$03 Jump to #R$F6FD if the token isn't for the door.
+  $F699,$06 Call #R$C2EF with #R$E797.
+  $F69F,$04 Jump to #R$F6A9 if the named door is open.
+N $F6A3 Print "#MESSAGE$E185".
+  $F6A3,$03 #REGhl=#R$E185.
+  $F6A6,$03 Jump to #R$ED66.
+N $F6A9 Which door is the player closing?
+@ $F6A9 label=Close_CheckRoom
+  $F6A9,$07 Jump to #R$F6B4 if *#R$BA9B is room #N$02: "#ROOM$02".
+  $F6B0,$04 Jump to #R$F6C7 if *#R$BA9B isn't room #N$03: "#ROOM$03".
+N $F6B4 Change the farmhouse door states!
+@ $F6B4 label=Close_Farmhouse
+  $F6B4,$06 Call #R$C48F to transform #ITEM$35 into #ITEM$36.
+  $F6BA,$06 Call #R$C48F to transform #ITEM$37 into #ITEM$38.
+N $F6C0 This action changes the map:
+  $F6C0,$04 Write #N$00 to *#R$E941 to close off southbound access to #ROOM$03
+. from #ROOM$02.
+  $F6C4,$03 Jump to #R$ED96.
+N $F6C7 Is the player at the Woodman's Hut?
+@ $F6C7 label=Close_CheckWoodmansHut
+  $F6C7,$04 Jump to #R$F6CF if *#R$BA9B is room #N$0F: "#ROOM$0F".
+  $F6CB,$04 Jump to #R$F6E2 if *#R$BA9B isn't room #N$10: "#ROOM$10".
+N $F6CF Change the Woodman's Hut door states!
+@ $F6CF label=Close_WoodmansHut
+  $F6CF,$06 Call #R$C48F to transform #ITEM$39 into #ITEM$3A.
+  $F6D5,$06 Call #R$C48F to transform #ITEM$3B into #ITEM$3C.
+N $F6DB This action changes the map:
+  $F6DB,$04 Write #N$00 to *#R$E996 to close off eastbound access to #ROOM$0F
+. from #ROOM$10.
+  $F6DF,$03 Jump to #R$ED96.
+N $F6E2 Is the player at the Witch's Hovel?
+@ $F6E2 label=Close_CheckWitchsHovel
+  $F6E2,$04 Jump to #R$F6EA if *#R$BA9B is room #N$3C: "#ROOM$3C".
+  $F6E6,$04 Jump to #R$F6FD if *#R$BA9B isn't room #N$3D: "#ROOM$3D".
+N $F6EA Change the Witch's Hovel door states!
+@ $F6EA label=Close_WitchsHovel
+  $F6EA,$06 Call #R$C48F to transform #ITEM$3D into #ITEM$3E.
+  $F6F0,$06 Call #R$C48F to transform #ITEM$3F into #ITEM$40.
+N $F6F6 This action changes the map:
+  $F6F6,$04 Write #N$00 to *#R$EAA4 to close off eastbound access to #ROOM$3C
+. from #ROOM$3D.
+  $F6FA,$03 Jump to #R$ED96.
+N $F6FD Was the player trying to close ... the chest?
+@ $F6FD label=Validate_Close_Chest
+  $F6FD,$06 Call #R$C26F with #R$E814.
+  $F703,$02 Jump to #R$F718 if the token isn't for the chest.
+  $F705,$08 Jump to #R$EDBE if #R$C24F reports that #ITEM$0B is in the
+. current room.
+  $F70D,$08 Jump to #R$EDBE if #R$C24F reports that #ITEM$0C is in the
+. current room.
+  $F715,$03 Jump to #R$ED78.
+N $F718 Nothing else is valid.
+@ $F718 label=Close_YouCant
+  $F718,$03 Jump to #R$ED6E.
 
 c $F71B Action: Enter
 @ $F71B label=Action_Enter
+E $F71B View the equivalent code in;
+. #LIST
+. { #JEWELS$FC61 }
+. { #ANDROMEDA$93A1 }
+. { #WARLORD$FB21 }
+. LIST#
 D $F71B Go into the farmhouse, the hut, the forge, the hovel or the boat.
-  $F71B,$04 Return if the words after the verb are not valid for this command.
-  $F71F,$08 Jump to #R$F73D unless the player named the giant spider.
-  $F727,$08 Jump to #R$ED9B unless the player is in room #N$03 (At a large Farmhouse).
-  $F72F,$08 Jump to #R$ED6E if object #N$35 (an open door) is not here.
-  $F737,$05 Try to enter room #N$02 (Inside the Farmhouse).
+  $F71B,$03 Call #R$C309.
+  $F71E,$01 Return if the direct object is malformed.
+N $F71F Was the player trying to enter ... the farmhouse?
+  $F71F,$06 Call #R$C26F with #R$E8EC.
+  $F725,$02 Jump to #R$F73D if the token isn't for the farmhouse.
+N $F727 The player is attempting to enter the farmhouse.
+  $F727,$08 Jump to #R$ED9B if *#R$BA9B isn't room #N$03: "#ROOM$03".
+  $F72F,$08 Jump to #R$ED6E if #ITEM$35 isn't in the current room.
+  $F737,$05 Call #R$ECB6 with room #N$02: "#ROOM$02".
   $F73C,$01 Return.
-@ $F73D label=Action_Enter_Next
-  $F73D,$08 Jump to #R$F75B unless the player named the hut.
-  $F745,$08 Jump to #R$ED9B unless the player is in room #N$0F (At the Woodman's Hut).
-  $F74D,$08 Jump to #R$ED6E if object #N$39 is not here.
-  $F755,$05 Try to enter room #N$10 (Inside the Woodman's Hut).
+N $F73D Was the player trying to enter ... the hut?
+@ $F73D label=Enter_CheckHut
+  $F73D,$06 Call #R$C26F with #R$E8EE.
+  $F743,$02 Jump to #R$F75B if the token isn't for the hut.
+N $F745 The player is attempting to enter the hut.
+  $F745,$08 Jump to #R$ED9B if *#R$BA9B isn't room #N$0F: "#ROOM$0F".
+  $F74D,$08 Jump to #R$ED6E if #ITEM$39 isn't in the current room.
+  $F755,$05 Call #R$ECB6 with room #N$10: "#ROOM$10".
   $F75A,$01 Return.
-@ $F75B label=Action_Enter_Hovel
-  $F75B,$08 Jump to #R$F779 unless the player named the hovel.
-  $F763,$08 Jump to #R$ED9B unless the player is in room #N$3C (At the Witch's Hovel).
-  $F76B,$08 Jump to #R$ED6E if object #N$3D is not here.
-  $F773,$05 Try to enter room #N$3D (Inside the Witch's Hovel).
+N $F75B Was the player trying to enter ... the hovel?
+@ $F75B label=Enter_CheckHovel
+  $F75B,$06 Call #R$C26F with #R$E8F0.
+  $F761,$02 Jump to #R$F779 if the token isn't for the hovel.
+N $F763 The player is attempting to enter the hovel.
+  $F763,$08 Jump to #R$ED9B if *#R$BA9B isn't room #N$3C: "#ROOM$3C".
+  $F76B,$08 Jump to #R$ED6E if #ITEM$3D isn't in the current room.
+  $F773,$05 Call #R$ECB6 with room #N$3D: "#ROOM$3D".
   $F778,$01 Return.
-@ $F779 label=Action_Enter_Log
-  $F779,$08 Jump to #R$F78F unless the player named the log.
-  $F781,$08 Jump to #R$ED9B unless the player is in room #N$42 (At the Blacksmith's
-. Forge).
-  $F789,$05 Try to enter room #N$43 (Inside the Forge).
+N $F779 Was the player trying to enter ... the forge?
+@ $F779 label=Enter_CheckForge
+  $F779,$06 Call #R$C26F with #R$E8F2.
+  $F77F,$02 Jump to #R$F78F if the token isn't for the forge.
+N $F781 The player is attempting to enter the forge.
+  $F781,$08 Jump to #R$ED9B if *#R$BA9B isn't room #N$42: "#ROOM$42".
+  $F789,$05 Call #R$ECB6 with room #N$43: "#ROOM$43".
   $F78E,$01 Return.
-@ $F78F label=Action_Enter_Boat
-  $F78F,$08 Jump to #R$F79A unless the player named the boat.
-  $F797,$03 Jump back to #R$EDA0 to ask for a rephrase.
-@ $F79A label=Action_Enter_YouCant
-  $F79A,$03 Tell the player the command is impossible.
+N $F78F Was the player trying to enter ... the boat?
+@ $F78F label=Enter_CheckBoat
+  $F78F,$06 Call #R$C26F with #R$E8F4.
+  $F795,$02 Jump to #R$F79A if the token isn't for the boat.
+N $F797 Either way, it's a bad outcome.
+  $F797,$03 Jump to #R$EDA0 if the token is for the boat.
+N $F79A Nothing else is able to be entered, so provide a generic response.
+@ $F79A label=Enter_YouCant
+  $F79A,$03 Jump to #R$ED6E.
 
 c $F79D Action: Wear
 @ $F79D label=Action_Wear
+E $F79D View the equivalent code in;
+. #LIST
+. { #JEWELS$FBD5 }
+. { #ANDROMEDA$9861 }
+. { #WARLORD$FB5D }
+. LIST#
 D $F79D Wear the ring.
-  $F79D,$04 Return if the words after the verb are not valid for this command.
-  $F7A1,$08 Jump to #R$F7BF unless the player named the furnace.
-  $F7A9,$07 Jump to #R$F7B6 if the player is not carrying object #N$43 (the ring being
-. worn).
-N $F7B0 Reply with "#MESSAGE$E1B1".
-  $F7B0,$06 Print "#MESSAGE$E1B1" and return to the game loop.
-@ $F7B6 label=Action_Wear_Next
-  $F7B6,$06 Replace object #N$07 (the ring) with object #N$43 (the ring being worn).
-  $F7BC,$03 Jump back to #R$ED96 to confirm.
-@ $F7BF label=Action_Wear_YouCant
-  $F7BF,$03 Tell the player the command is impossible.
+  $F79D,$03 Call #R$C309.
+  $F7A0,$01 Return if the direct object is malformed.
+N $F7A1 Was the player trying to wear ... the ring?
+  $F7A1,$06 Call #R$C26F with #R$E821.
+  $F7A7,$02 Jump to #R$F7BF if the token isn't for the ring.
+  $F7A9,$07 Jump to #R$F7B6 if #ITEM$43 isn't held.
+N $F7B0 Print "#MESSAGE$E1B1".
+  $F7B0,$03 #REGhl=#R$E1B1.
+  $F7B3,$03 Jump to #R$ED66.
+N $F7B6 Change the ring state!
+@ $F7B6 label=Wear_Ring
+  $F7B6,$06 Call #R$C48F to transform #ITEM$07 into #ITEM$43.
+  $F7BC,$03 Jump to #R$ED96.
+N $F7BF Nothing else is valid.
+@ $F7BF label=Wear_YouCant
+  $F7BF,$03 Jump to #R$ED6E.
 
 c $F7C2 Action: Touch
 @ $F7C2 label=Action_Touch
+E $F7C2 View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$99DD }
+. LIST#
 D $F7C2 Touch the glowing rock and open the way east.
-  $F7C2,$04 Return if the words after the verb are not valid for this command.
-  $F7C6,$08 Jump to #R$F7E8 unless the player named the glowing rock.
-  $F7CE,$08 Jump to #R$EDA5 if object #N$33 (the glowing rock) is not here.
-  $F7D6,$07 Jump back to #R$EDA5 when the rock wall already has a way east.
-  $F7DD,$0B Open the way east and print "#MESSAGE$E1E7" and return to the
-. game loop.
-@ $F7E8 label=Action_Touch_Next
-  $F7E8,$03 Jump back to #R$EDA5 to say it has no effect.
+  $F7C2,$03 Call #R$C309.
+  $F7C5,$01 Return if the direct object is malformed.
+N $F7C6 Was the player trying to touch ... the glowing rock?
+  $F7C6,$06 Call #R$C26F with #R$E8F9.
+  $F7CC,$02 Jump to #R$F7E8 if the token isn't for the glowing rock.
+  $F7CE,$08 Jump to #R$EDA5 if #R$C24F reports that #ITEM$33 isn't in the
+. current room.
+  $F7D6,$07 Jump to #R$EDA5 if *#R$EAAA is not equal to #N$00.
+N $F7DD This action changes the map:
+N $F7DD Open the way east.
+  $F7DD,$05 Write #N$46 to *#R$EAAA to open up eastbound access to #ROOM$46
+. from #ROOM$3E.
+N $F7E2 Print "#MESSAGE$E1E7".
+  $F7E2,$03 #REGhl=#R$E1E7.
+  $F7E5,$03 Jump to #R$ED66.
+N $F7E8 Nothing else is valid.
+@ $F7E8 label=Touch_YouCant
+  $F7E8,$03 Jump to #R$EDA5.
 
 c $F7EB Action: Swim
 @ $F7EB label=Action_Swim
+E $F7EB View the equivalent code in;
+. #LIST
+. { #JEWELS$FD7C }
+. { #ANDROMEDA$947C }
+. { #WARLORD$FC8D }
+. LIST#
 D $F7EB Swimming is fatal.
-  $F7EB,$04 Return if the words after the verb are not valid for this command.
-  $F7EF,$08 Jump to #R$F801 unless the player named the river.
-@ $F7F7 nowarn
-  $F7F7,$0A Print "#MESSAGE$E21C" and end the game.
-@ $F801 label=Action_Swim_Next
-  $F801,$03 Jump back to #R$ED91 to refuse.
+  $F7EB,$03 Call #R$C309.
+  $F7EE,$01 Return if the direct object is malformed.
+N $F7EF Was the player trying to swim ... the river?
+  $F7EF,$06 Call #R$C26F with #R$E8FE.
+  $F7F5,$02 Jump to #R$F801 if the token isn't for the river.
+  $F7F7,$04 Switch #R$EB23 onto the stack so the next return actions a "game
+. over".
+N $F7FB Print "#MESSAGE$E21C".
+  $F7FB,$03 #REGhl=#R$E21C.
+  $F7FE,$03 Jump to #R$ED66.
+N $F801 Nothing else is valid.
+@ $F801 label=Swim_YouCant
+  $F801,$03 Jump to #R$ED91.
 
 c $F804 Action: Jump
 @ $F804 label=Action_Jump
+E $F804 View the equivalent code in;
+. #LIST
+. { #WARLORD$FAAD }
+. LIST#
 D $F804 Jump the chasm, which cannot be done.
-  $F804,$04 Return if the words after the verb are not valid for this command.
-  $F808,$08 Jump to #R$F81A unless the player named the chasm.
-@ $F810 nowarn
-  $F810,$0A Print "#MESSAGE$E27A" and end the game.
-@ $F81A label=Action_Jump_Next
-  $F81A,$03 Jump back to #R$ED78 to say there is no point.
+  $F804,$03 Call #R$C309.
+  $F807,$01 Return if the direct object is malformed.
+N $F808 Was the player trying to jump ... the chasm?
+  $F808,$06 Call #R$C26F with #R$E906.
+  $F80E,$02 Jump to #R$F81A if the token isn't for the chasm.
+  $F810,$04 Switch #R$EB23 onto the stack so the next return actions a "game
+. over".
+N $F814 Print "#MESSAGE$E27A".
+  $F814,$03 #REGhl=#R$E27A.
+  $F817,$03 Jump to #R$ED66.
+N $F81A Nothing else is valid.
+@ $F81A label=Jump_YouCant
+  $F81A,$03 Jump to #R$ED78.
 
 c $F81D Action: Kick
 @ $F81D label=Action_Kick
+E $F81D View the equivalent code in;
+. #LIST
+. { #JEWELS$FD6D }
+. LIST#
 D $F81D Kicking has no effect.
-  $F81D,$04 Return if the words after the verb are not valid for this command.
-  $F821,$03 Jump back to #R$EDA5 to say it has no effect.
+  $F81D,$03 Call #R$C309.
+  $F820,$01 Return if the direct object is malformed.
+  $F821,$03 Jump to #R$EDA5.
 
 c $F824 Action: Tie
 @ $F824 label=Action_Tie
 D $F824 Tie the rope to the rock above the volcano.
-  $F824,$04 Return if the words after the verb are not valid for this command.
-  $F828,$08 Jump to #R$F866 unless the player named the demons.
-  $F830,$07 Jump to #R$F83D if object #N$23 (the rope on the overhang) is not here.
-N $F837 Reply with "#MESSAGE$E2F0".
-  $F837,$06 Print "#MESSAGE$E2F0" and return to the game loop.
-@ $F83D label=Action_Tie_Next
-  $F83D,$08 Jump to #R$ED78 unless the player is in room #N$47 (The Top of the
-. Volcano).
-  $F845,$07 Jump to #R$F855 if the player is not carrying object #N$08 (the rope).
-  $F84C,$09 Count one fewer thing carried and put the rope down here.
-@ $F855 label=Action_Tie_DestroyRope
-  $F855,$05 Destroy object #N$08 (the rope).
-  $F85A,$06 Replace object #N$22 (the rock overhang) with object #N$23 (the rope on
-. the overhang).
-N $F860 Reply with "#MESSAGE$E2C2".
-  $F860,$06 Print "#MESSAGE$E2C2" and return to the game loop.
-@ $F866 label=Action_Tie_YouCant
-  $F866,$03 Tell the player the command is impossible.
+  $F824,$03 Call #R$C32D.
+  $F827,$01 Return if the direct object is malformed.
+N $F828 Was the player trying to tie ... the rope to the overhang?
+  $F828,$06 Call #R$C26F with #R$E90B.
+  $F82E,$02 Jump to #R$F866 if the token isn't for the overhang.
+  $F830,$07 Jump to #R$F83D if #R$C24F reports that #ITEM$23 isn't in the
+. current room.
+N $F837 Print "#MESSAGE$E2F0".
+  $F837,$03 #REGhl=#R$E2F0.
+  $F83A,$03 Jump to #R$ED66.
+N $F83D Is the player at the top of the volcano?
+@ $F83D label=Tie_CheckRoom
+  $F83D,$08 Jump to #R$ED78 if *#R$BA9B isn't room #N$47: "#ROOM$47".
+  $F845,$07 Jump to #R$F855 if #ITEM$08 isn't held.
+  $F84C,$04 Decrease *#R$BA68 by one.
+  $F850,$05 Call #R$C2DF with item #N$08: #ITEM$08.
+N $F855 Destroy the carried rope and attach it to the overhang.
+@ $F855 label=Tie_AttachRope
+  $F855,$05 Call #R$C2D8 with item #N$08: #ITEM$08.
+  $F85A,$06 Call #R$C48F to transform #ITEM$22 into #ITEM$23.
+N $F860 Print "#MESSAGE$E2C2".
+  $F860,$03 #REGhl=#R$E2C2.
+  $F863,$03 Jump to #R$ED66.
+N $F866 Nothing else is valid.
+@ $F866 label=Tie_YouCant
+  $F866,$03 Jump to #R$ED6E.
 
 c $F869 Action: Swearing
 @ $F869 label=Action_Swearing
+E $F869 View the equivalent code in;
+. #LIST
+. { #JEWELS$FB83 }
+. { #WARLORD$FBB9 }
+. LIST#
 D $F869 Swearing has no effect.
-  $F869,$04 Return if the words after the verb are not valid for this command.
-  $F86D,$08 Jump to #R$F88D unless the player named the princess.
-  $F875,$08 Jump to #R$EDAA if object #N$2C (Princess Mara) is not here.
-  $F87D,$0A Take Princess Mara out of play.
-N $F887 Reply with "#MESSAGE$E31F".
-  $F887,$06 Print "#MESSAGE$E31F" and return to the game loop.
-@ $F88D label=Action_Swearing_Next
-  $F88D,$08 Jump to #R$F8A8 unless the player named a closed door.
-  $F895,$08 Jump to #R$EDAA when object #N$1C (the dead wood nymph) is here.
-  $F89D,$05 Destroy object #N$8A (the wood nymph).
-N $F8A2 Reply with "#MESSAGE$E31F".
-  $F8A2,$06 Print "#MESSAGE$E31F" and return to the game loop.
-@ $F8A8 label=Action_Swearing_Refuse
-  $F8A8,$03 Jump back to #R$EDAA to object.
+  $F869,$03 Call #R$C309.
+  $F86C,$01 Return if the direct object is malformed.
+N $F86D Was the player swearing at ... the princess?
+  $F86D,$06 Call #R$C26F with #R$E8E3.
+  $F873,$02 Jump to #R$F88D if the token isn't for the princess.
+  $F875,$08 Jump to #R$EDAA if #R$C24F reports that #ITEM$2C isn't in the
+. current room.
+  $F87D,$03 #REGhl=#R$BA3F.
+  $F880,$02 Reset bit 0 of *#REGhl.
+  $F882,$05 Call #R$C2D8 with item #N$2C: #ITEM$2C.
+N $F887 Print "#MESSAGE$E31F".
+  $F887,$03 #REGhl=#R$E31F.
+  $F88A,$03 Jump to #R$ED66.
+N $F88D Was the player swearing at ... a closed door?
+@ $F88D label=Validate_Swearing_ClosedDoor
+  $F88D,$06 Call #R$C26F with #R$E8E5.
+  $F893,$02 Jump to #R$F8A8 if the token isn't for a closed door.
+  $F895,$08 Jump to #R$EDAA if #R$C24F reports that #ITEM$1C is in the
+. current room.
+  $F89D,$05 Call #R$C2D8 with #N$8A.
+N $F8A2 Print "#MESSAGE$E31F".
+  $F8A2,$03 #REGhl=#R$E31F.
+  $F8A5,$03 Jump to #R$ED66.
+N $F8A8 Nothing else is valid.
+@ $F8A8 label=Swearing_YouCant
+  $F8A8,$03 Jump to #R$EDAA.
 
 c $F8AB Action: Row
 @ $F8AB label=Action_Row
+E $F8AB View the equivalent code in;
+. #LIST
+. { #JEWELS$FD02 }
+. LIST#
 D $F8AB Row the boat, if the player is in it and has the oars.
-  $F8AB,$04 Return if the words after the verb are not valid for this command.
-  $F8AF,$08 Jump to #R$F8E1 unless the player named crossing the river.
-  $F8B7,$07 Jump to #R$F8C4 when the player is in room #N$1D (In the Boat).
-N $F8BE Reply with "#MESSAGE$DE33".
-  $F8BE,$06 Print "#MESSAGE$DE33" and return to the game loop.
-@ $F8C4 label=Action_Row_Next
-  $F8C4,$05 Call #R$C2BE to fetch where the boat is.
-  $F8C9,$04 Jump to #R$F8D5 unless the boat is in room #N$1A (The Western Bank of a
-. Broad River).
-  $F8CD,$06 Put object #N$1D (the boat) in room #N$1B (The Eastern Bank of a Broad
-. River).
-  $F8D3,$02 Jump to #R$F8DB to say the boat has crossed.
-@ $F8D5 label=Action_Row_WesternBank
-  $F8D5,$06 Put object #N$1D (the boat) in room #N$1A (The Western Bank of a Broad
-. River).
-@ $F8DB label=Action_Row_Across
-N $F8DB Reply with "#MESSAGE$E34A".
-  $F8DB,$06 Print "#MESSAGE$E34A" and return to the game loop.
-@ $F8E1 label=Action_Row_YouCant
-  $F8E1,$03 Tell the player the command is impossible.
+  $F8AB,$03 Call #R$C309.
+  $F8AE,$01 Return if the direct object is malformed.
+N $F8AF Was the player trying to row ... across the river?
+  $F8AF,$06 Call #R$C26F with #R$E925.
+  $F8B5,$02 Jump to #R$F8E1 if the token isn't for crossing the river.
+  $F8B7,$07 Jump to #R$F8C4 if *#R$BA9B is room #N$1D: "#ROOM$1D".
+N $F8BE Print "#MESSAGE$DE33".
+  $F8BE,$03 #REGhl=#R$DE33.
+  $F8C1,$03 Jump to #R$ED66.
+N $F8C4 Where is the boat?
+@ $F8C4 label=Row_CheckBoat
+  $F8C4,$05 Call #R$C2BE with item #N$1D: #ITEM$1D.
+  $F8C9,$04 Jump to #R$F8D5 if the boat isn't in room #N$1A: "#ROOM$1A".
+  $F8CD,$06 Call #R$BF55 to move #ITEM$1D to room #N$1B: "#ROOM$1B".
+  $F8D3,$02 Jump to #R$F8DB.
+N $F8D5 Move the boat to the western bank.
+@ $F8D5 label=Row_WesternBank
+  $F8D5,$06 Call #R$BF55 to move #ITEM$1D to room #N$1A: "#ROOM$1A".
+N $F8DB Print "#MESSAGE$E34A".
+@ $F8DB label=Row_Across
+  $F8DB,$03 #REGhl=#R$E34A.
+  $F8DE,$03 Jump to #R$ED66.
+N $F8E1 Nothing else is valid.
+@ $F8E1 label=Row_YouCant
+  $F8E1,$03 Jump to #R$ED6E.
 
 c $F8E4 Action: Unlock
 @ $F8E4 label=Action_Unlock
@@ -4301,55 +5404,77 @@ E $F8E4 View the equivalent code in;
 . { #JEWELS$FCCD }
 . LIST#
 D $F8E4 Unlock a door with the key.
-  $F8E4,$04 Return if the words after the verb are not valid for this command.
-  $F8E8,$08 Jump to #R$F913 unless the player named the witch.
-  $F8F0,$07 Jump to #R$F8FD when object #N$0B (the chest) is here.
-N $F8F7 Reply with "#MESSAGE$E36F".
-  $F8F7,$06 Print "#MESSAGE$E36F" and return to the game loop.
-@ $F8FD label=Action_Unlock_Next
-  $F8FD,$07 Jump to #R$F90A when the player is carrying object #N$10 (the key).
-N $F904 Reply with "#MESSAGE$E387".
-  $F904,$06 Print "#MESSAGE$E387" and return to the game loop.
-@ $F90A label=Action_Unlock_Chest
-  $F90A,$06 Replace object #N$0B (the chest) with object #N$0C (the closed chest).
-  $F910,$03 Jump back to #R$ED96 to confirm.
-@ $F913 label=Action_Unlock_YouCant
-  $F913,$03 Tell the player the command is impossible.
+  $F8E4,$03 Call #R$C309.
+  $F8E7,$01 Return if the direct object is malformed.
+N $F8E8 Was the player trying to unlock ... the chest?
+  $F8E8,$06 Call #R$C26F with #R$E92E.
+  $F8EE,$02 Jump to #R$F913 if the token isn't for the chest.
+  $F8F0,$07 Jump to #R$F8FD if #R$C24F reports that #ITEM$0B is in the
+. current room.
+N $F8F7 Print "#MESSAGE$E36F".
+  $F8F7,$03 #REGhl=#R$E36F.
+  $F8FA,$03 Jump to #R$ED66.
+N $F8FD Does the player hold the key?
+@ $F8FD label=Unlock_CheckKey
+  $F8FD,$07 Jump to #R$F90A if #ITEM$10 is held.
+N $F904 Print "#MESSAGE$E387".
+  $F904,$03 #REGhl=#R$E387.
+  $F907,$03 Jump to #R$ED66.
+N $F90A Change the chest state!
+@ $F90A label=Unlock_Chest
+  $F90A,$06 Call #R$C48F to transform #ITEM$0B into #ITEM$0C.
+  $F910,$03 Jump to #R$ED96.
+N $F913 Nothing else is valid.
+@ $F913 label=Unlock_YouCant
+  $F913,$03 Jump to #R$ED6E.
 
 c $F916 Action: Blow
 @ $F916 label=Action_Blow
 D $F916 Blow the horn.
-  $F916,$04 Return if the words after the verb are not valid for this command.
-  $F91A,$08 Jump to #R$F961 unless the player named Princess Mara.
-  $F922,$07 Jump to #R$F92F when the player is carrying object #N$09 (the horn).
-N $F929 Reply with "#MESSAGE$E3A2".
-  $F929,$06 Print "#MESSAGE$E3A2" and return to the game loop.
-@ $F92F label=Action_Blow_Next
-  $F92F,$07 Jump to #R$F93B when the player is in room #N$17 (The Brink of a
-. Precipice).
-  $F936,$05 Jump back to #R$EDA5 unless the value #N$34 matches.
-@ $F93B label=Action_Blow_FetchDragon
-  $F93B,$05 Call #R$C2BE to fetch where the dragon is.
-  $F940,$04 Jump back to #R$EDA5 when the dragon is not in play.
-  $F944,$07 Jump to #R$F956 unless the player is in room #N$17 (The Brink of a
-. Precipice).
-  $F94B,$05 Call #R$C42F to move the player to the bottom of the precipice.
-N $F950 Reply with "#MESSAGE$E3BD".
-  $F950,$06 Print "#MESSAGE$E3BD" and return to the game loop.
-@ $F956 label=Action_Blow_ToPrecipice
-  $F956,$05 Call #R$C42F to move the player to the brink of the precipice.
-N $F95B Reply with "#MESSAGE$E444".
-  $F95B,$06 Print "#MESSAGE$E444" and return to the game loop.
-@ $F961 label=Action_Blow_NoEffect
-  $F961,$03 Jump back to #R$EDA5 to say it has no effect.
+  $F916,$03 Call #R$C309.
+  $F919,$01 Return if the direct object is malformed.
+N $F91A Was the player trying to blow ... the horn?
+  $F91A,$06 Call #R$C26F with #R$E827.
+  $F920,$02 Jump to #R$F961 if the token isn't for the horn.
+  $F922,$07 Jump to #R$F92F if #ITEM$09 is held.
+N $F929 Print "#MESSAGE$E3A2".
+  $F929,$03 #REGhl=#R$E3A2.
+  $F92C,$03 Jump to #R$ED66.
+N $F92F Where is the player blowing the horn?
+@ $F92F label=Blow_CheckRoom
+  $F92F,$07 Jump to #R$F93B if *#R$BA9B is room #N$17: "#ROOM$17".
+  $F936,$05 Jump to #R$EDA5 if *#R$BA9B isn't room #N$34: "#ROOM$34".
+N $F93B Is the dragon in play?
+@ $F93B label=Blow_FetchDragon
+  $F93B,$05 Call #R$C2BE with item #N$16: #ITEM$16.
+  $F940,$04 Jump to #R$EDA5 if the dragon is not in play.
+  $F944,$07 Jump to #R$F956 if *#R$BA9B isn't room #N$17: "#ROOM$17".
+  $F94B,$05 Call #R$C42F with room #N$34: "#ROOM$34".
+N $F950 Print "#MESSAGE$E3BD".
+  $F950,$03 #REGhl=#R$E3BD.
+  $F953,$03 Jump to #R$ED66.
+N $F956 Move the player to the brink of the precipice.
+@ $F956 label=Blow_ToPrecipice
+  $F956,$05 Call #R$C42F with room #N$17: "#ROOM$17".
+N $F95B Print "#MESSAGE$E444".
+  $F95B,$03 #REGhl=#R$E444.
+  $F95E,$03 Jump to #R$ED66.
+N $F961 Nothing else is valid.
+@ $F961 label=Blow_YouCant
+  $F961,$03 Jump to #R$EDA5.
 
 c $F964 Game Start
 @ $F964 label=GameStart
 E $F964 View the equivalent code in;
 . #LIST
+. { #SHOCK$ADA1 }
+. { #HEROES$FBA9 }
+. { #JEWELS$FD82 }
 . { #ANDROMEDA$F8AF }
+. { #WARLORD$FCCE }
 . LIST#
-D $F964 Turn caps lock on, clear the flags, copy in a fresh game and enter the Great Valley.
+D $F964 Turn caps lock on, clear the flags, copy in a fresh game and enter the
+. Great Valley.
   $F964,$05 Turn CAPS LOCK on, using bit 3 of *#SKOOLKID$5C6A(FLAGS2).
 N $F969 Seal the passages that the player has to open.
   $F969,$0D Seal the farmhouse, the woodman's hut and both sides of the chasm.
@@ -4360,75 +5485,283 @@ N $F97F Install a fresh game.
   $F98C,$03 Call #R$ECB6 to enter the Great Valley.
   $F98F,$03 Jump to #R$EB10 to take the first turn.
 
-b $F992 Default Game State
+g $F992 Table: Item Locations
 @ $F992 label=DefaultGameState
-D $F992 Copied to #R$B9C8 by the routine at #R$F964.
-B $F992,$01
-L $F992,$01,$13C
+@ $F992 label=Default_Table_ItemLocations
+D $F992 The starting values for the game status buffer. #R$F964 copies all
+. #N$013C bytes over #R$B9C8 at the start of every game, so the layout is the
+. same as the entries from #R$B9C8 to #R$BB02.
+D $F992 Starting places for the items. #R$F964 copies this table to #R$B9C8
+. at the start of every game.
+B $F992,$01 Item #N(#PC-$F992) #ITEM(#PC-$F992) in room #N(#PEEK(#PC)):
+. #ROOM(#PEEK(#PC)).
+L $F992,$01,$4A
 
-u $FACE Unused
-D $FACE Padding.
+u $F9DC
+S $F9DC,$1A
 
-c $FACF Handler: Room Image: The Great Valley
-@ $FACF label=Handler_RoomImageTheGreatValley
+g $F9F6 Flags: Display State
+@ $F9F6 label=Default_Flag_DisplayState
+D $F9F6 Copied to #R$BA2C. Bit 0 is clear at the start of every game.
+B $F9F6,$01
+
+u $F9F7
+S $F9F7,$03
+
+g $F9FA Table: Already Seen Room Images
+@ $F9FA label=Default_Table_RoomImagesAlreadySeen
+D $F9FA Copied to #R$BA30. No room picture has been shown yet.
+B $F9FA,b,$01
+B $F9FB,b,$01
+
+u $F9FC
+S $F9FC,$04
+
+g $FA00 Flags: Turn-Based Event States
+@ $FA00 label=Default_Flag_TurnBasedEventState
+D $FA00 Copied to #R$BA36. No turn-based event has started.
+B $FA00,$01
+
+g $FA01 Turn-Based Event Counters
+@ $FA01 label=Default_Counter_WoodNymph
+@ $FA02 label=Default_Counter_Spider
+@ $FA03 label=Default_Counter_SlimeMonster
+@ $FA04 label=Default_Counter_Demons
+@ $FA05 label=Default_Counter_Wizard
+@ $FA06 label=Default_Counter_Unused_0
+@ $FA07 label=Default_Counter_Unused_1
+@ $FA08 label=Default_Counter_Unused_2
+D $FA01 Copied to #R$BA37. One countdown per bit of *#R$BA36.
+B $FA01,$08,$01
+
+g $FA09 Flag: Princess Following
+@ $FA09 label=Default_Flag_PrincessFollowing
+D $FA09 Copied to #R$BA3F. Princess Mara is not following at the start.
+B $FA09,$01
+
+g $FA0A Table: Following Items
+@ $FA0A label=Default_Table_FollowingItems
+D $FA0A Copied to #R$BA40. Default bit 0 holds #ITEM$2C (Princess Mara).
+B $FA0A,$01 Bit 0: item #N(#PEEK(#PC)), #ITEM(#PEEK(#PC)).
+B $FA0B,$07 Bits 1-7: not used by this game.
+
+g $FA12 Table: Scenic Event Locations
+@ $FA12 label=Default_Table_ScenicEventLocations
+D $FA12 Copied to #R$BA48. Where each of the #N$0D scenic events starts.
+B $FA12,$01 Event #N(#PC-$FA12) room #N(#PEEK(#PC)).
+L $FA12,$01,$0D
+
+u $FA1F
+S $FA1F,$13
+
+g $FA32 Number Of Items In The Players Inventory
+@ $FA32 label=Default_Count_InventoryItems
+D $FA32 Copied to #R$BA68. The player starts holding #N(#PEEK(#PC)) item(s).
+B $FA32,$01
+
+g $FA33 Load/ Save Buffer
+@ $FA33 label=Default_LoadSaveBuffer
+D $FA33 Copied to #R$BA69. Initial bytes for the saved-location pointers.
+B $FA33,$32,$08
+
+g $FA65 Current Room ID
+@ $FA65 label=Default_CurrentRoom
+D $FA65 Copied to #R$BA9B. The player starts in room #N(#PEEK(#PC)):
+. #ROOM(#PEEK(#PC)).
+B $FA65,$01
+
+g $FA66 Table: Scenic Event Rooms
+@ $FA66 label=Default_Table_ScenicEventRooms
+D $FA66 Copied to #R$BA9C. Pointers to the room lists for each scenic event.
+W $FA66,$02 Event #N((#PC-$FA66)/$02).
+L $FA66,$02,$0D
+
+u $FA80
+S $FA80,$26
+
+g $FAA6 Pointer: Vocabulary Table
+@ $FAA6 label=Default_Pointer_Vocabulary
+D $FAA6 Copied to #R$BADC. Points at the vocabulary table.
+W $FAA6,$02
+
+g $FAA8 Pointer: Turn-Based Events Jump Table
+@ $FAA8 label=Default_Pointer_TurnBasedEvents_Jump
+D $FAA8 Copied to #R$BADE. Points at the turn-based events jump table.
+W $FAA8,$02
+
+g $FAAA Pointer: Room Map Table
+@ $FAAA label=Default_Pointer_RoomMap
+D $FAAA Copied to #R$BAE0.
+W $FAAA,$02
+
+g $FAAC Pointer: Item Description Table
+@ $FAAC label=Default_Pointer_ItemDescriptions
+D $FAAC Copied to #R$BAE2.
+W $FAAC,$02
+
+g $FAAE Pointer: Rooms With Images Table
+@ $FAAE label=Default_Pointer_RoomsWithImages
+D $FAAE Copied to #R$BAE4.
+W $FAAE,$02
+
+g $FAB0 Pointer: Room Image Jump Table
+@ $FAB0 label=Default_Pointer_RoomImage
+D $FAB0 Copied to #R$BAE6.
+W $FAB0,$02
+
+g $FAB2 Pointer: Room Description Table
+@ $FAB2 label=Default_Pointer_RoomDescriptions
+D $FAB2 Copied to #R$BAE8.
+W $FAB2,$02
+
+g $FAB4 Pointer: Item Grouping Table
+@ $FAB4 label=Default_Pointer_ItemGroupingTable
+D $FAB4 Copied to #R$BAEA.
+W $FAB4,$02
+
+g $FAB6 Pointer: Object Noun Phrases
+@ $FAB6 label=Default_Pointer_ObjectNounPhrases
+D $FAB6 Copied to #R$BAEC.
+W $FAB6,$02
+
+g $FAB8 Pointer: Object List Table
+@ $FAB8 label=Default_Pointer_ObjectList
+D $FAB8 Copied to #R$BAEE.
+W $FAB8,$02
+
+g $FABA Pointer: Verbs Jump Table
+@ $FABA label=Default_Pointer_JumpTable_Verbs
+D $FABA Copied to #R$BAF0.
+W $FABA,$02
+
+g $FABC Pointer: Configurable Exits Table
+@ $FABC label=Default_Pointer_ConfigurableExits
+D $FABC Copied to #R$BAF2.
+W $FABC,$02
+
+g $FABE Pointer: Scenic Events Jump Table
+@ $FABE label=Default_Pointer_JumpTable_ScenicEvents
+D $FABE Copied to #R$BAF4.
+W $FABE,$02
+
+g $FAC0 Pointer: Verb Word Tokens Table
+@ $FAC0 label=Default_Pointer_VerbWordTokens
+D $FAC0 Copied to #R$BAF6.
+W $FAC0,$02
+
+g $FAC2 Number Of Items
+@ $FAC2 label=Default_Count_Items
+D $FAC2 Copied to #R$BAF8.
+W $FAC2,$02
+
+g $FAC4 Number Of Objects
+@ $FAC4 label=Default_Count_Objects
+D $FAC4 Copied to #R$BAFA.
+W $FAC4,$02
+
+g $FAC6 Number Of Verb Tokens
+@ $FAC6 label=Default_Count_VerbTokens
+D $FAC6 Copied to #R$BAFC.
+W $FAC6,$02
+
+g $FAC8 Number Of Rooms With Images
+@ $FAC8 label=Default_Count_RoomsWithImages
+D $FAC8 Copied to #R$BAFE.
+W $FAC8,$02
+
+g $FACA Number Of Scenic Events
+@ $FACA label=Default_Count_ScenicEvents
+D $FACA Copied to #R$BB00.
+W $FACA,$02
+
+g $FACC Number Of "Configurable Exits"
+@ $FACC label=Default_Count_ConfigurableExits
+D $FACC Copied to #R$BB02.
+W $FACC,$02
+
+u $FACE
+S $FACE,$01
+
+c $FACF Handler: Room Images
+@ $FACF label=DisplayImage_GreatValley
+E $FACF View the equivalent code in;
+. #LIST
+. { #HEROES$FDAB }
+. { #JEWELS$FEFA }
+. { #ANDROMEDA$F813 }
+. { #WARLORD$FF12 }
+. LIST#
 D $FACF Draw The Great Valley.
-  $FACF,$04 Start at The Great Valley (#R$61A8).
-  $FAD3,$02 Jump to #R$FB09 to draw it.
-
-c $FAD5 Handler: Room Image: The Woodman's Hut
-@ $FAD5 label=Handler_RoomImageTheWoodmansHut
-D $FAD5 Draw The Woodman's Hut.
-  $FAD5,$04 Start at The Woodman's Hut (#R$69EB).
-  $FAD9,$02 Jump to #R$FB09 to draw it.
-
-c $FADB Handler: Room Image: The Old Well
-@ $FADB label=Handler_RoomImageTheOldWell
-D $FADB Draw The Old Well.
-  $FADB,$04 Start at The Old Well (#R$7482).
-  $FADF,$02 Jump to #R$FB09 to draw it.
-
-c $FAE1 Handler: Room Image: The Volcano
-@ $FAE1 label=Handler_RoomImageTheVolcano
-D $FAE1 Draw The Volcano.
-  $FAE1,$04 Start at The Volcano (#R$7B71).
-  $FAE5,$02 Jump to #R$FB09 to draw it.
-
-c $FAE7 Handler: Room Image: The Witch's Hovel
-@ $FAE7 label=Handler_RoomImageTheWitchsHovel
-D $FAE7 Draw The Witch's Hovel.
-  $FAE7,$04 Start at The Witch's Hovel (#R$835E).
-  $FAEB,$02 Jump to #R$FB09 to draw it.
-
-c $FAED Handler: Room Image: The Burned Out Farm
-@ $FAED label=Handler_RoomImageTheBurnedOutFarm
-D $FAED Draw The Burned Out Farm.
-  $FAED,$04 Start at The Burned Out Farm (#R$8BDA).
-  $FAF1,$02 Jump to #R$FB09 to draw it.
-
-c $FAF3 Handler: Room Image: The Enchanted Wood
-@ $FAF3 label=Handler_RoomImageTheEnchantedWood
-D $FAF3 Draw The Enchanted Wood.
-  $FAF3,$04 Start at The Enchanted Wood (#R$93DB).
-  $FAF7,$02 Jump to #R$FB09 to draw it.
-
-c $FAF9 Handler: Room Image: The Dungeon
-@ $FAF9 label=Handler_RoomImageTheDungeon
-D $FAF9 Draw The Dungeon.
-  $FAF9,$04 Start at The Dungeon (#R$9E7F).
-  $FAFD,$02 Jump to #R$FB09 to draw it.
-
-c $FAFF Handler: Room Image: Marl's Gateway
-@ $FAFF label=Handler_RoomImageMarlsGateway
-D $FAFF Draw Marl's Gateway.
-  $FAFF,$04 Start at Marl's Gateway (#R$A6C9).
-  $FB03,$02 Jump to #R$FB09 to draw it.
-
-c $FB05 Handler: Room Image: The Cavern of Silence
-@ $FB05 label=Handler_RoomImageTheCavernOfSilence
-D $FB05 Draw The Cavern of Silence.
-  $FB05,$04 Start at The Cavern of Silence (#R$AE7A).
-N $FB09 Draw that picture.
-@ $FB09 label=Handler_RoomImageTheCavernOfSilence_Next
+N $FACF Displays the image for the great valley.
+N $FACF #PUSHS #UDGTABLE #POKES$BA9B,$05
+. { #SIM(start=#PC,stop=$FB0C)#SCR$01(game-great-valley) }
+. UDGTABLE# #POPS
+  $FACF,$04 #REGix=#R$61A8.
+  $FAD3,$02 Jump to #R$FB09.
+@ $FAD5 label=DisplayImage_WoodmansHut
+N $FAD5 Displays the image for the woodman's hut.
+N $FAD5 #PUSHS #UDGTABLE #POKES$BA9B,$0F
+. { #SIM(start=#PC,stop=$FB0C)#SCR$01(game-woodmans-hut) }
+. UDGTABLE# #POPS
+  $FAD5,$04 #REGix=#R$69EB.
+  $FAD9,$02 Jump to #R$FB09.
+@ $FADB label=DisplayImage_OldWell
+N $FADB Displays the image for the old well.
+N $FADB #PUSHS #UDGTABLE #POKES$BA9B,$18
+. { #SIM(start=#PC,stop=$FB0C)#SCR$01(game-old-well) }
+. UDGTABLE# #POPS
+  $FADB,$04 #REGix=#R$7482.
+  $FADF,$02 Jump to #R$FB09.
+@ $FAE1 label=DisplayImage_Volcano
+N $FAE1 Displays the image for the volcano.
+N $FAE1 #PUSHS #UDGTABLE #POKES$BA9B,$44
+. { #SIM(start=#PC,stop=$FB0C)#SCR$01(game-volcano) }
+. UDGTABLE# #POPS
+  $FAE1,$04 #REGix=#R$7B71.
+  $FAE5,$02 Jump to #R$FB09.
+@ $FAE7 label=DisplayImage_WitchsHovel
+N $FAE7 Displays the image for the witch's hovel.
+N $FAE7 #PUSHS #UDGTABLE #POKES$BA9B,$3C
+. { #SIM(start=#PC,stop=$FB0C)#SCR$01(game-witchs-hovel) }
+. UDGTABLE# #POPS
+  $FAE7,$04 #REGix=#R$835E.
+  $FAEB,$02 Jump to #R$FB09.
+@ $FAED label=DisplayImage_BurnedOutFarm
+N $FAED Displays the image for the burned out farm.
+N $FAED #PUSHS #UDGTABLE #POKES$BA9B,$11
+. { #SIM(start=#PC,stop=$FB0C)#SCR$01(game-burned-out-farm) }
+. UDGTABLE# #POPS
+  $FAED,$04 #REGix=#R$8BDA.
+  $FAF1,$02 Jump to #R$FB09.
+@ $FAF3 label=DisplayImage_EnchantedWood
+N $FAF3 Displays the image for the enchanted wood.
+N $FAF3 #PUSHS #UDGTABLE #POKES$BA9B,$23
+. { #SIM(start=#PC,stop=$FB0C)#SCR$01(game-enchanted-wood) }
+. UDGTABLE# #POPS
+  $FAF3,$04 #REGix=#R$93DB.
+  $FAF7,$02 Jump to #R$FB09.
+@ $FAF9 label=DisplayImage_Dungeon
+N $FAF9 Displays the image for the dungeon.
+N $FAF9 #PUSHS #UDGTABLE #POKES$BA9B,$4C
+. { #SIM(start=#PC,stop=$FB0C)#SCR$01(game-dungeon) }
+. UDGTABLE# #POPS
+  $FAF9,$04 #REGix=#R$9E7F.
+  $FAFD,$02 Jump to #R$FB09.
+@ $FAFF label=DisplayImage_MarlsGateway
+N $FAFF Displays the image for Marl's gateway.
+N $FAFF #PUSHS #UDGTABLE #POKES$BA9B,$35
+. { #SIM(start=#PC,stop=$FB0C)#SCR$01(game-marls-gateway) }
+. UDGTABLE# #POPS
+  $FAFF,$04 #REGix=#R$A6C9.
+  $FB03,$02 Jump to #R$FB09.
+@ $FB05 label=DisplayImage_CavernOfSilence
+N $FB05 Displays the image for the cavern of silence.
+N $FB05 #PUSHS #UDGTABLE #POKES$BA9B,$46
+. { #SIM(start=#PC,stop=$FB0C)#SCR$01(game-cavern-of-silence) }
+. UDGTABLE# #POPS
+  $FB05,$04 #REGix=#R$AE7A.
+N $FB09 All the image routines use this same routine.
+@ $FB09 label=Handler_Images
   $FB09,$03 Call #R$BEB8.
   $FB0C,$01 Return.
 
@@ -4462,11 +5795,17 @@ L $FB5B,$02,$0D
 
 g $FB75 Jump Table: Room Images
 @ $FB75 label=JumpTable_RoomImages
+E $FB75 View the equivalent code in;
+. #LIST
+. { #HEROES$FDEB }
+. { #JEWELS$FFA8 }
+. { #ANDROMEDA$FA68 }
+. { #WARLORD$FEFC }
+. LIST#
 D $FB75 Handlers that draw the ten location pictures. Three entries share
 . The Enchanted Wood.
 W $FB75,$02 #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
 L $FB75,$02,$0C
 
-u $FB8D Unused
-D $FB8D RAM above the loaded game. A fragment of the character set remains
-. from the loader; the game does not read it.
+u $FB8D
+S $FB8D,$0473

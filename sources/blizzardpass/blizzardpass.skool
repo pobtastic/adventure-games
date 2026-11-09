@@ -1,6 +1,6 @@
 @start=$FFE9
 @expand=#DEF(#COLOUR(id) #LET(ink=$id&$07)#IF({ink}>=$00)(INK:#HTML(&#10;)#MAP({ink})(#HTML(&#10;)UNKNOWN,0:BLACK,1:BLUE,2:RED,3:MAGENTA,4:GREEN,5:CYAN,6:YELLOW,7:WHITE)),#HTML(&#10;)#LET(paper=$id>>$03&$07)#IF({paper}>=$00)(PAPER:#HTML(&#10;)#MAP({paper})(#HTML(&#10;)UNKNOWN,0:BLACK,1:BLUE,2:RED,3:MAGENTA,4:GREEN,5:CYAN,6:YELLOW,7:WHITE))#HTML(&#10;)#LET(bright=$id&$40)#IF({bright}>$00)((BRIGHT))#HTML(&#10;)#LET(flash=$id&$80)#IF({flash}>$00)(FLASH: ON))
-@expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html">){name}#HTML(</a>))
+@expand=#DEF1(#SKOOLKID(addr,anchor=0)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html#IF({anchor})(#CHR(35)#IF({{mode[base]}}==16)(#EVAL({anchor},16,4),#EVAL({anchor})))">){name}#HTML(</a>))
 @expand=#DEF(#FAIL Jump to #R$6753 to reject this bytecode condition.)
 @expand=#DEF1(#PAGE(bank) page RAM bank #N({bank}) in at #N($C000), keeping the 48K ROM)
 @expand=#DEF1(#NOWHERE(addr) #IF(#PEEK({addr})==$FC)(nowhere)#IF(#PEEK({addr})!=$FC)(room #N(#PEEK({addr}))))
@@ -772,7 +772,7 @@ c$5F16 LD L,A        ; {Double the row number.
  $5F19 ADD HL,HL     ; }
  $5F1A LD DE,$5BD0   ; {Add the screen-row table at #R$5BD0.
  $5F1D ADD HL,DE     ; }
- $5F1E JP $2AF0      ; Enter #SKOOLKID$2AEE(DE_DE_1) at #N$2AF0 to load the row address
+ $5F1E JP $2AF0      ; Enter #SKOOLKID$2AEE,$2AF0(DE_DE_1) at #N$2AF0 to load the row address
                      ; into #REGde.
 
 ; Obey Command
@@ -1203,6 +1203,7 @@ c$6141 PUSH DE       ; {Take the saved line pointer.
 *$614E CALL $6133    ; Step past one action.
  $6151 BIT 7,(HL)    ; {Keep going while bit 7 is set.
  $6153 JR NZ,$614E   ; }
+; Continue on to #R$6155.
 
 ; Match Verb And Noun
 ;
@@ -1535,6 +1536,7 @@ c$62F2 PUSH BC       ; {Keep the character while the last one is inspected.
  $6311 CP $20        ; }
  $6313 JP Z,$6B2B    ; A space is finished by #R$6B2B.
  $6316 LD ($5B9B),A  ; Remember this character as the last one printed.
+; Continue on to #R$6319.
 
 ; Collect A Word
 ;
@@ -2237,6 +2239,7 @@ c$662D CALL $0052     ; {#HTML(Call the <code>RET</code> at the end of #SKOOLKID
 ; Stores A in #R$66D7 and pages that RAM bank in.
 @label=RememberBank
 c$66BA LD ($66D7),A  ; Fall through.
+; Continue on to #R$66BD.
 
 ; Page RAM Bank
 ;
@@ -2449,6 +2452,7 @@ c$6747 LD A,($5D8A)  ; {#FAIL
 c$674E LD A,($5D89)  ; {#FAIL
  $6751 CP C          ;
  $6752 RET NZ        ; }
+; Continue on to #R$6753.
 
 ; Condition: Reject
 ;
@@ -2777,6 +2781,7 @@ c$6879 LD A,$01      ; {Write #N$01 to *#R$5ECA.
 @label=PressAnyKey
 c$687F LD A,$14      ; {Fall into the wait.
  $6881 CALL $63D4    ; }
+; Continue on to #R$6884.
 
 ; Wait For Key Down
 ;
@@ -2907,7 +2912,7 @@ c$68E4 LD A,($5D8A)  ; {An object that is worn is put down without changing the 
 ; SAVE block named with marker #N$2A. The ROM returns to #R$6914.
 @label=SaveGame
 c$6902 CALL $687F    ; Call #R$687F to wait for a key.
- $6905 LD IX,$5D87   ; {Jump into #SKOOLKID$04C2(SA_BYTES) at #N$04C5 so #REGhl is the
+ $6905 LD IX,$5D87   ; {Jump into #SKOOLKID$04C2,$04C5(SA_BYTES) at #N$04C5 so #REGhl is the
  $6909 LD DE,$0141   ; return address #R$6914.
  $690C LD HL,$6914   ;
  $690F LD A,$2A      ; }
@@ -2956,7 +2961,7 @@ c$6924 LD A,$1A      ; {Remember the pointer and select message #N$1A.
  $694B DI            ; }
  $694C LD A,$0F      ; {Border yellow.
  $694E OUT ($FE),A   ; }
- $6950 JP $0561      ; Jump into #SKOOLKID$0556(LD_BYTES) at #N$0561.
+ $6950 JP $0561      ; Jump into #SKOOLKID$0556,$0561(LD_BYTES) at #N$0561.
 
 ; Return From Loading
 ;
@@ -2990,6 +2995,7 @@ c$695D CALL $6807    ; {Fall into the room-changed handler.
 c$6965 CALL $6807    ; {Fall into the room-changed handler.
  $6968 LD A,($5D87)  ;
  $696B LD (HL),A     ; }
+; Continue on to #R$696C.
 
 ; Action: Room Changed
 ;
@@ -3661,6 +3667,7 @@ c$6E39 LD A,($5D88)  ;
  $6E3E LD A,($5D87)  ;
  $6E41 OR A          ;
  $6E42 RET Z         ;
+; Continue on to #R$6E43.
 
 ; Find Room Picture Record
 ;
@@ -3676,6 +3683,7 @@ c$6E43 LD IX,$B798   ;
  $6E4D INC IX        ;
  $6E4F JR NZ,$6E4A   ;
  $6E51 DJNZ $6E4A    ;
+; Continue on to #R$6E53.
 
 ; Interpret Picture Record
 ;
@@ -3747,6 +3755,7 @@ c$6E7F LD A,(IX+$00) ;
 ; This entry point is used by the routines at #R$73BE, #R$73C8 and #R$73D2.
 *$6EBD LD ($6EEE),A  ;
  $6EC0 LD A,B        ;
+; Continue on to #R$6EC1.
 
 ; Plot Shape
 ;
@@ -3803,6 +3812,7 @@ c$6EEF LD B,$07      ;
  $6F05 LD L,A        ;
  $6F06 LD B,$38      ;
  $6F08 LD H,$C7      ;
+; Continue on to #R$6F0A.
 
 ; Change Matching Colour Bits
 ;
@@ -3885,6 +3895,7 @@ c$6F57 PUSH HL       ;
  $6F65 XOR A         ;
  $6F66 LD ($5BC8),A  ;
  $6F69 LD ($5BC0),A  ;
+; Continue on to #R$6F6C.
 
 ; Read Shape Byte
 ;

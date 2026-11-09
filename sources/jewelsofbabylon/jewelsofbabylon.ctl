@@ -22,7 +22,8 @@
 > $4000 @set-handle-unsupported-macros=1
 b $4000 Loading Screen
 @ $4000 label=Loading
-D $4000 #UDGTABLE { =h Jewels of Babylon Loading Screen. } { #SCR$02(loading) } UDGTABLE#
+D $4000 #UDGTABLE { =h Jewels of Babylon Loading Screen. } { #SCR$02(loading) }
+. UDGTABLE#
   $4000,$1800,$20 Pixels.
   $5800,$0300,$20 Attributes.
 
@@ -30,9 +31,13 @@ c $5B00 Tape Loader
 @ $5B00 label=TapeLoader
 E $5B00 View the equivalent code in;
 . #LIST
+. { #FOREST$5B00 }
 . { #HEROES$5B00 }
+. { #ANDROMEDA$5CD0 }
 . { #WARLORD$5B00 }
 . LIST#
+D $5B00 Load the screen, the room graphics and the game from tape, then
+. start.
 N $5B00 Load the first block: screen data.
   $5B00,$04 #REGix=#R$4000(#N$4000).
   $5B04,$03 #REGde=#N$1B00.
@@ -56,7 +61,8 @@ N $5B21 Tape loading routine.
   $5B24,$01 Restore #REGd to its original value.
   $5B25,$01 Disable interrupts.
   $5B26,$04 Set the border to #INK$0F.
-  $5B2A,$03 Call #SKOOLKID$0556,$0562(LD_BYTES) at #N$0562; the instructions above
+  $5B2A,$03 Call #SKOOLKID$0556,$0562(LD_BYTES) at #N$0562; the instructions
+. above
 . copy its first part.
   $5B2D,$01 Stash #REGaf on the stack.
   $5B2E,$03 #REGa=*#SKOOLKID$5C48(BORDCR).
@@ -75,8 +81,8 @@ N $5B21 Tape loading routine.
   $5B4E,$01 Call #SKOOLKID$0008(ERROR_1).
 
 u $5B4F Unused
-D $5B4F The remainder of the printer buffer after the tape loader at #R$5B00.
-. The game does not read these bytes.
+D $5B4F Unused. The remainder of the printer buffer after the tape loader at
+. #R$5B00. The game does not read these bytes.
 B $5B4F,$01
 S $5B50,$B0
 
@@ -89,7 +95,8 @@ D $5CCB BASIC left below the game. Line 30 runs the tape loader at #R$5B00 and
 . line 40 runs the game at #R$BA50. Line 20 clears up to #N($607B), the byte
 . before the graphics.
 B $5CCB,$1E Line 10: REM, inverse "BABYLON MAIN BASIC".
-B $5CE9,$96 Line 20: CLEAR 24699: BORDER 0: PAPER 0: INK 0: CLS: PRINT #0; AT 0,0; INK 0; and a row of spaces.
+B $5CE9,$96 Line 20: CLEAR 24699: BORDER 0: PAPER 0: INK 0: CLS: PRINT #0; AT
+. 0,0; INK 0; and a row of spaces.
 B $5D7F,$12 Line 30: RANDOMIZE USR 23296.
 B $5D91,$26 Line 40: INK 6: BRIGHT 1: CLS: RANDOMIZE USR 47696.
 B $5DB7,$3E Line 1000: LET x=((256*PEEK 23654)+PEEK 23653)-23296: PRINT x.
@@ -115,13 +122,14 @@ D $5E32 Bytes from #SKOOLKID$5C61(WORKSP) to #SKOOLKID$5C63(STKBOT). Empty in
 S $5E32,$11
 
 u $5E43 Unused
-D $5E43 Zero bytes from #SKOOLKID$5C63(STKBOT) to the graphics at #R$607C. No
-. game instruction reads them.
+D $5E43 Unused. Zero bytes from #SKOOLKID$5C63(STKBOT) to the graphics at
+. #R$607C. No game instruction reads them.
 S $5E43,$0239
 
 b $607C Graphics: Boat
 @ $607C label=Image_Boat
-D $607C #SIM(start=$5B46,stop=$5B4E) #SIM(start=$BA6D,stop=$BA73) #PUSHS #UDGTABLE
+D $607C #SIM(start=$5B46,stop=$5B4E) #SIM(start=$BA6D,stop=$BA73) #PUSHS
+. #UDGTABLE
 . { =h On Your Boat }
 . { #SIM(start=$BB3B,stop=$BB41,ix=#PC)#SCR$02{$00,$00,$200,$100}(boat) }
 . UDGTABLE# #POPS
@@ -205,9 +213,12 @@ c $BA50 Game Entry Point
 E $BA50 View the equivalent code in;
 . #LIST
 . { #SHOCK$9DD7 }
+. { #FOREST$B9C5 }
 . { #HEROES$ABD4 }
+. { #ANDROMEDA$61A8 }
 . { #WARLORD$A531 }
 . LIST#
+D $BA50 Enter the game by jumping to the initialisation routine.
   $BA50,$05 Set CAPS LOCK on, using bit 3 of *#SKOOLKID$5C6A(FLAGS2).
   $BA55,$05 Write #N$18 to *#R$BD70.
   $BA5A,$03 Jump to #R$C592.
@@ -222,6 +233,7 @@ E $BA5D View the equivalent code in;
 . { #ANDROMEDA$6495 }
 . { #WARLORD$A53E }
 . LIST#
+D $BA5D Wait for a new keypress.
 R $BA5D O:A The keypress value
   $BA5D,$03 #REGa=*#SKOOLKID$5C3B(FLAGS).
   $BA60,$04 Jump back to #R$BA5D until a new key is pressed.
@@ -240,6 +252,7 @@ E $BA6D View the equivalent code in;
 . { #ANDROMEDA$64A5 }
 . { #WARLORD$A54E }
 . LIST#
+D $BA6D Clear the screen and select the text channel.
   $BA6D,$03 Call #R$BA96.
   $BA70,$03 Call #SKOOLKID$0D6B(CLS).
   $BA73,$01 Return.
@@ -254,6 +267,7 @@ E $BA74 View the equivalent code in;
 . { #ANDROMEDA$64AC }
 . { #WARLORD$A555 }
 . LIST#
+D $BA74 Clear the picture lines, using the line count stored at #R$BD70.
   $BA74,$03 Call #R$BA96.
   $BA77,$07 Clear the number of lines held by *#R$BD70 from the bottom of the
 . screen using #SKOOLKID$0E44(CL_LINE).
@@ -269,6 +283,7 @@ E $BA7F View the equivalent code in;
 . { #ANDROMEDA$64B7 }
 . { #WARLORD$A560 }
 . LIST#
+D $BA7F Park the cursor at the top-left of the text window.
   $BA7F,$03 Call #R$BA96.
   $BA82,$03 #REGbc=#N$0321.
   $BA85,$03 Call #SKOOLKID$0DD9(CL_SET).
@@ -283,6 +298,7 @@ E $BA89 View the equivalent code in;
 . { #ANDROMEDA$64C1 }
 . { #WARLORD$A56A }
 . LIST#
+D $BA89 Park the cursor on the text row stored at #R$BD70.
   $BA89,$03 Call #R$BA96.
   $BA8C,$04 #REGb=*#R$BD70.
   $BA90,$05 Call #SKOOLKID$0DD9(CL_SET)
@@ -332,8 +348,7 @@ c $BAB1 Print String And A Newline
 @ $BAB1 label=PrintStringAndNewline
 E $BAB1 View the equivalent code in;
 . #LIST
-. { #SHOCK$A25C(After Shock (compressed)) }
-. { #SHOCK$A275(After Shock (plain)) }
+. { #SHOCK$A275 }
 . { #FOREST$BE2E }
 . { #HEROES$AC35 }
 . { #ANDROMEDA$64E9 }
@@ -374,9 +389,12 @@ E $BAC3 View the equivalent code in;
 . { #ANDROMEDA$64F2 }
 . { #WARLORD$A5A4 }
 . LIST#
+D $BAC3 Print one character, scrolling the screen when the cursor reaches
+. its edge.
 R $BAC3 A The character to print
   $BAC3,$01 Stash the character to print on the stack.
-  $BAC4,$07 Jump to #R$BADE if the line byte of #SKOOLKID$5C88(S_POSN) (#N$5C89) is not equal to #N$03.
+  $BAC4,$07 Jump to #R$BADE if the line byte of #SKOOLKID$5C88(S_POSN) (#N$5C89)
+. is not equal to #N$03.
   $BACB,$02 Load the character to print into #REGa but keep a copy on the
 . stack.
   $BACD,$04 Jump to #R$BAD6 if this isn't a newline character (#N$0D).
@@ -400,13 +418,17 @@ E $BAE1 View the equivalent code in;
 . #LIST
 . { #FOREST$BE5E }
 . { #HEROES$AD06 }
+. { #ANDROMEDA$6519 }
 . LIST#
+D $BAE1 Unpack a room picture into the display, drawing it in the paper
+. colour.
 R $BAE1 IX Pointer to room image data
   $BAE1,$03 Call #R$BA96.
   $BAE4,$03 #REGbc=#N($1821,$04,$04).
   $BAE7,$03 Call #SKOOLKID$0DD9(CL_SET).
 N $BAEA Reset graphic display area.
-  $BAEA,$03 Point #REGhl at #SKOOLKID$5C8F(ATTR_T) which holds the current attribute value.
+  $BAEA,$03 Point #REGhl at #SKOOLKID$5C8F(ATTR_T) which holds the current
+. attribute value.
   $BAED,$01 Fetch the attribute byte.
   $BAEE,$02,b$01 Keep only the PAPER bits 3-5.
   $BAF0,$03 Move the PAPER bits into the INK bits.
@@ -423,15 +445,20 @@ N $BAEA Reset graphic display area.
   $BB02,$03 #REGc=*#REGix+#N$00.
   $BB05,$02 Increment #REGix by one.
   $BB07,$02 Jump to #R$BB0A.
+@ $BB09 label=Print_RoomGraphic_NextByte
   $BB09,$01 Increment #REGhl by one.
+@ $BB0A label=Print_RoomGraphic_ShiftBit
   $BB0A,$02 Shift #REGc right.
   $BB0C,$02 Jump to #R$BB15 if the mask bit was zero (a blank pixel row).
   $BB0E,$03 #REGa=*#REGix+#N$00.
   $BB11,$02 Increment #REGix by one.
   $BB13,$02 Jump to #R$BB16.
+@ $BB15 label=Print_RoomGraphic_BlankByte
   $BB15,$01 #REGa=#N$00.
+@ $BB16 label=Print_RoomGraphic_StoreByte
   $BB16,$01 Write #REGa to *#REGhl.
-  $BB17,$02 Decrease counter by one and loop back to #R$BB09 until counter is zero.
+  $BB17,$02 Decrease counter by one and loop back to #R$BB09 until counter is
+. zero.
   $BB19,$03 #REGde=#R$BD75.
   $BB1C,$03 Call #SKOOLKID$0B03(PO_FETCH).
   $BB1F,$03 Call #SKOOLKID$0B24,$0B7F(PR_ALL).
@@ -450,6 +477,8 @@ E $BB2F View the equivalent code in;
 . { #HEROES$AD54 }
 . { #ANDROMEDA$6535 }
 . LIST#
+D $BB2F Copy the #N$0200 attribute bytes that follow a picture into the
+. screen.
 R $BB2F IX Pointer to the room attribute data
   $BB2F,$03 #REGde=#N$5800 (attribute buffer location).
   $BB32,$03 #REGhl=#REGix (using the stack).
@@ -461,11 +490,15 @@ c $BB3B Print Room Image
 @ $BB3B label=Print_RoomImage
 E $BB3B View the equivalent code in;
 . #LIST
+. { #SHOCK$9F28 }
 . { #FOREST$BEB8 }
 . { #HEROES$AD60 }
 . { #ANDROMEDA$6541 }
+. { #WARLORD$B10B }
 . LIST#
+D $BB3B Draw a room picture and then its colours.
 R $BB3B IX Pointer to room image data
+N $BB3B Draw the picture, then its colours.
   $BB3B,$03 Call #R$BAE1.
   $BB3E,$03 Call #R$BB2F.
   $BB41,$01 Return.
@@ -504,7 +537,8 @@ E $BB51 View the equivalent code in;
 D $BB51 #HTML(Pauses a given number of <code>HALT</code> loops.)
 R $BB51 B #HTML(Number of <code>HALT</code> commands to use)
   $BB51,$01 Halt operation (suspend CPU until the next interrupt).
-  $BB52,$02 Decrease counter by one and loop back to #R$BB51 until counter is zero.
+  $BB52,$02 Decrease counter by one and loop back to #R$BB51 until counter is
+. zero.
   $BB54,$01 Return.
 
 c $BB55 Fetch Frames
@@ -528,25 +562,29 @@ E $BB59 View the equivalent code in;
 . { #ANDROMEDA$69A1 }
 . { #WARLORD$A5CA }
 . LIST#
-  $BB59,$03 #REGa=*#R$BD32.
-  $BB5C,$03 Jump to #R$BB78 if #REGa is zero.
-  $BB5F,$01 #REGb=#REGa.
+D $BB59 Ask for a tape and write the game state out.
+  $BB59,$03 Read the configurable-exit count into #REGa.
+  $BB5C,$03 Jump to #R$BB78 if there are no configurable exits to pack.
+  $BB5F,$01 Copy the configurable-exit count into #REGb.
   $BB60,$04 #REGix=*#R$BD22(#N$BD22).
   $BB64,$03 #REGde=#R$BC99.
   $BB67,$02 Jump to #R$BB6E.
-
-  $BB69,$04 Increment #REGix by two.
-  $BB6D,$01 Increment #REGde by one.
-  $BB6E,$03 #REGl=*#REGix+#N$00.
-  $BB71,$03 #REGh=*#REGix+#N$01.
-  $BB74,$02 Write *#REGhl to *#REGde.
-  $BB76,$02 Decrease counter by one and loop back to #R$BB69 until counter is zero.
+N $BB69 Move on to the next configurable-exit address.
+@ $BB69 label=SaveGame_Copy
+  $BB69,$04 Move #REGix on to the next exit address.
+  $BB6D,$01 Move #REGde on to the next packed exit byte.
+@ $BB6E label=SaveGame_StoreFlag
+  $BB6E,$06 Fetch the exit address from *#REGix into #REGhl.
+  $BB74,$02 Copy the exit byte into the packed save buffer.
+  $BB76,$02 Decrease the pack counter and loop back to #R$BB69 until every
+. exit byte is packed.
 N $BB78 Print "#STR$BE78,$08($b==$FF)".
+@ $BB78 label=SaveGame_PrintSaving
   $BB78,$03 #REGhl=#R$BE78.
   $BB7B,$03 Call #R$BAB1.
   $BB7E,$03 Call #R$BA5D.
-  $BB81,$04 #REGix=#R$BBF0(#N$BBF0).
-  $BB85,$03 #REGde=#N$0144.
+  $BB81,$04 Load the starting address into #REGix at #R$BBF0.
+  $BB85,$03 Set the block length in #REGde to #N$0144 bytes.
   $BB88,$02 Set #REGa to #N$FF which indicates this is a data block.
   $BB8A,$03 Call #SKOOLKID$04C2(SA_BYTES).
 N $BB8D Print "#STR$BE9A,$08($b==$FF)".
@@ -564,6 +602,7 @@ E $BB94 View the equivalent code in;
 . { #ANDROMEDA$69DC }
 . { #WARLORD$A605 }
 . LIST#
+D $BB94 Ask for a tape and read a previously saved game state back in.
 N $BB94 Print "#STR$BE57,$08($b==$FF)".
   $BB94,$03 #REGhl=#R$BE57.
   $BB97,$03 Call #R$BAB1.
@@ -577,22 +616,23 @@ N $BBA9 Print "#STR$BE6C,$08($b==$FF)".
   $BBA9,$03 #REGhl=#R$BE6C.
   $BBAC,$03 Call #R$BAB1.
   $BBAF,$01 Return.
+N $BBB0 There is nothing to unpack when no configurable exits were saved.
 @ $BBB0 label=LoadTape_Success
-  $BBB0,$03 #REGa=*#R$BD32.
-  $BBB3,$02 Return if *#R$BD32 is zero.
-  $BBB5,$01 Copy *#R$BD32 into #REGb.
+  $BBB0,$03 Read the configurable-exit count into #REGa.
+  $BBB3,$02 Return if there are no configurable exits to unpack.
+  $BBB5,$01 Copy the configurable-exit count into #REGb.
   $BBB6,$04 #REGix=*#R$BD22.
   $BBBA,$03 #REGde=#R$BC99.
   $BBBD,$02 Jump to #R$BBC4.
+N $BBBF The next saved exit address.
 @ $BBBF label=LoadTape_WriteLoop
-  $BBBF,$04 Increment #REGix by two.
-  $BBC3,$01 Increment #REGde by one.
+  $BBBF,$04 Move #REGix on to the next exit address.
+  $BBC3,$01 Move #REGde on to the next packed exit byte.
 @ $BBC4 label=LoadTape_Write
-  $BBC4,$03 #REGl=*#REGix+#N$00.
-  $BBC7,$03 #REGh=*#REGix+#N$01.
-  $BBCA,$01 #REGa=*#REGde.
-  $BBCB,$01 Write #REGa to *#REGhl.
-  $BBCC,$02 Decrease counter by one and loop back to #R$BBBF until counter is zero.
+  $BBC4,$06 Fetch the exit address from *#REGix into #REGhl.
+  $BBCA,$02 Write that packed exit byte back into the game.
+  $BBCC,$02 Decrease the unpack counter and loop back to #R$BBBF until every
+. exit byte is restored.
   $BBCE,$02 #REGe=#N$00.
   $BBD0,$03 Call #R$C21E.
   $BBD3,$01 Return.
@@ -606,6 +646,8 @@ E $BBD4 View the equivalent code in;
 . { #ANDROMEDA$6A1C }
 . { #WARLORD$A647 }
 . LIST#
+D $BBD4 Start a new line when the text window is not empty, then print the
+. prompt.
   $BBD4,$03 #REGhl=#N$5080 (screen buffer location).
   $BBD7,$03 Set the increment in #REGde for the next screen line.
   $BBDA,$02 #REGb=#N$08.
@@ -613,7 +655,8 @@ E $BBD4 View the equivalent code in;
 @ $BBDD label=PrintInputPrompt_Loop
   $BBDD,$01 Set the bits from *#REGhl.
   $BBDE,$01 Move down one line.
-  $BBDF,$02 Decrease counter by one and loop back to #R$BBDD until counter is zero.
+  $BBDF,$02 Decrease counter by one and loop back to #R$BBDD until counter is
+. zero.
   $BBE1,$03 Jump to #R$BBE9 if #REGa is zero.
 N $BBE4 Force a newline to be "printed".
   $BBE4,$02 #REGa=#N$0D.
@@ -629,7 +672,9 @@ g $BBF0 Table: Item Locations
 E $BBF0 View the equivalent code in;
 . #LIST
 . { #SHOCK$9F88 }
+. { #FOREST$B9C8 }
 . { #HEROES$AD76 }
+. { #ANDROMEDA$61AB }
 . { #WARLORD$A66C }
 . LIST#
 D $BBF0 Where each of the #N$4F items is (the count is at #R$BD28). The item
@@ -648,13 +693,15 @@ D $BBF0 Where each of the #N$4F items is (the count is at #R$BD28). The item
 .
 . Populated by #R$FD82 and #R$C412. See #R$C1FF, #R$C35F, #R$C3D0 and #R$C439
 . for usage.
-B $BBF0,$01 Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+B $BBF0,$01 Item #N(#PC-$BBF0) #ITEM(#PC-$BBF0) in room #N(#PEEK(#PC)):
+. #ROOM(#PEEK(#PC)).
 L $BBF0,$01,$4F
 
 u $BC3F Unused Item Locations
-D $BC3F Spare bytes in the #N$64-byte item-location table at #R$BBF0. #R$BD28
-. is #N($4F), and no instruction addresses these #N$15 bytes. #R$FD82, #R$BB59
-. and #R$BB94 still copy them with the rest of the #N$0144-byte game state.
+D $BC3F Unused. Spare bytes in the #N$64-byte item-location table at #R$BBF0.
+. #R$BD28 is #N($4F), and no instruction addresses these #N$15 bytes. #R$FD82,
+. #R$BB59 and #R$BB94 still copy them with the rest of the #N$0144-byte game
+. state.
 S $BC3F,$15
 
 g $BC54 Game Flags
@@ -669,13 +716,14 @@ D $BC54 Holds a single byte, where each bit relates to help states as follows:
 B $BC54,$01
 
 u $BC55 Unused Game Flags
-D $BC55 Spare bytes after the flag byte at #R$BC54. The seen-image flags begin
-. at #R$BC5C, and no instruction addresses these #N$07 bytes.
+D $BC55 Unused. Spare bytes after the flag byte at #R$BC54. The seen-image
+. flags begin at #R$BC5C, and no instruction addresses these #N$07 bytes.
 S $BC55,$07
 
 g $BC5C Table: Already Seen Room Images
 @ $BC5C label=Table_RoomImagesAlreadySeen
-D $BC5C Corresponds to whether the player has already seen the image for the following rooms:
+D $BC5C Corresponds to whether the player has already seen the image for the
+. following rooms:
 .
 . #TABLE(default,centre,centre)
 . { =h Bit | =h Room ID | =h Room Name }
@@ -692,9 +740,10 @@ B $BC5C,b,$01
 B $BC5D,b,$01
 
 u $BC5E Unused
-D $BC5E Spare bytes between the seen-image flags and the turn-based event flags
-. at #R$BC66. #R$C21E advances #REGhl only while the image index is at least
-. #N($08), and there are #N$0D images, so the pointer stays inside #R$BC5C.
+D $BC5E Unused. Spare bytes between the seen-image flags and the turn-based
+. event flags at #R$BC66. #R$C21E advances #REGhl only while the image index
+. is at least #N($08), and there are #N$0D images, so the pointer stays inside
+. #R$BC5C.
 S $BC5E,$08
 
 g $BC66 Flags: Turn-Based Event States
@@ -787,9 +836,9 @@ B $BC80,$01 Event #N$88 (the pirate from the beach): #R$EEDF.
 
 u $BC81 Unused Scenic Event Locations
 @ $BC81 label=UnusedScenicEventLocations
-D $BC81 Spare bytes in the #N$20-byte scenic-event location table at #R$BC78.
-. #R$BD30 is #N($09), and the loops from #R$C1B0 and #R$C528 stop after that
-. many bytes.
+D $BC81 Unused. Spare bytes in the #N$20-byte scenic-event location table at
+. #R$BC78. #R$BD30 is #N($09), and the loops from #R$C1B0 and #R$C528 stop
+. after that many bytes.
 S $BC81,$17
 
 g $BC98 Number Of Items In The Players Inventory
@@ -805,7 +854,8 @@ B $BC99,$32,$08
 
 g $BCCB Current Room ID
 @ $BCCB label=CurrentRoom
-D $BCCB The room the player starts the game in is room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
+D $BCCB The room the player starts the game in is room #N(#PEEK(#PC)):
+. #ROOM(#PEEK(#PC)).
 B $BCCB,$01 Current room ID.
 
 g $BCCC Table: Scenic Event Rooms
@@ -817,8 +867,8 @@ L $BCCC,$02,$09
 
 u $BCDE Unused Scenic Event Room Pointers
 @ $BCDE label=UnusedScenicEventRoomPointers
-D $BCDE Spare words in the #N$20-word table at #R$BCCC. #R$BD30 is #N($09), and
-. #R$C1CE indexes only those #N$09 pointers.
+D $BCDE Unused. Spare words in the #N$20-word table at #R$BCCC. #R$BD30 is
+. #N($09), and #R$C1CE indexes only those #N$09 pointers.
 S $BCDE,$2E
 
 g $BD0C Pointer: Vocabulary Table
@@ -887,11 +937,23 @@ W $BD26,$02
 
 g $BD28 Number Of Items
 @ $BD28 label=Count_Items
+E $BD28 View the equivalent code in;
+. #LIST
+. { #SHOCK$BBC7 }
+. { #FOREST$BAF8 }
+. { #WARLORD$A7E8 }
+. LIST#
 D $BD28 The total number of items in the game.
 W $BD28,$02
 
 g $BD2A Number Of Objects
 @ $BD2A label=Count_Objects
+E $BD2A View the equivalent code in;
+. #LIST
+. { #SHOCK$BBC9 }
+. { #FOREST$BAFA }
+. { #ANDROMEDA$62C4 }
+. LIST#
 D $BD2A The total number of objects in the game.
 W $BD2A,$02
 
@@ -907,6 +969,12 @@ W $BD2E,$02
 
 g $BD30 Number Of Scenic Events
 @ $BD30 label=Count_ScenicEvents
+E $BD30 View the equivalent code in;
+. #LIST
+. { #SHOCK$BBCF }
+. { #FOREST$BB00 }
+. { #WARLORD$A7EE }
+. LIST#
 D $BD30 The total number of scenic events in the game, see #R$BC78.
 W $BD30,$02
 
@@ -938,9 +1006,13 @@ g $BD70 Line Number
 @ $BD70 label=LineNumber
 E $BD70 View the equivalent code in;
 . #LIST
+. { #FOREST$BB40 }
 . { #HEROES$AF38 }
+. { #ANDROMEDA$629B }
 . { #WARLORD$A82E }
 . LIST#
+D $BD70 The text and picture row used when clearing lines and parking the
+. cursor.
 B $BD70,$01
 
 g $BD71 Four Letter Buffer
@@ -969,8 +1041,8 @@ g $BD81 Temporary Storage Word Count
 W $BD81,$02
 
 u $BD83 Unused
-D $BD83 Spare bytes between the temporary word count and the message strings.
-. No instruction reads them.
+D $BD83 Unused. Spare bytes between the temporary word count and the message
+. strings. No instruction reads them.
 S $BD83,$02
 
 t $BD85 Messaging: "> "
@@ -1193,6 +1265,7 @@ E $BFEE View the equivalent code in;
 . { #ANDROMEDA$6479 }
 . { #WARLORD$AAEE }
 . LIST#
+D $BFEE Tell the player to rephrase the command.
 N $BFEE Print "#STR$BEEA,$08($b==$FF)".
   $BFEE,$03 #REGhl=#R$BEEA.
   $BFF1,$03 Call #R$BAB1.
@@ -1207,6 +1280,7 @@ E $BFF5 View the equivalent code in;
 . { #ANDROMEDA$6480 }
 . { #WARLORD$AAF5 }
 . LIST#
+D $BFF5 Ask the player to be more specific.
 N $BFF5 Print "#STR$BED1,$08($b==$FF)".
   $BFF5,$03 #REGhl=#R$BED1.
   $BFF8,$03 Call #R$BAB1.
@@ -1221,6 +1295,7 @@ E $BFFC View the equivalent code in;
 . { #ANDROMEDA$6487 }
 . { #WARLORD$AAFC }
 . LIST#
+D $BFFC Tell the player the command is impossible.
 N $BFFC Print "#STR$BF00,$08($b==$FF)".
   $BFFC,$03 #REGhl=#R$BF00.
   $BFFF,$03 Call #R$BAB1.
@@ -1235,6 +1310,7 @@ E $C003 View the equivalent code in;
 . { #ANDROMEDA$648E }
 . { #WARLORD$AB03 }
 . LIST#
+D $C003 Acknowledge the command.
 N $C003 Print "#STR$BF0B,$08($b==$FF)".
   $C003,$03 #REGhl=#R$BF0B.
   $C006,$03 Call #R$BAB1.
@@ -1250,6 +1326,7 @@ E $C00A View the equivalent code in;
 . { #ANDROMEDA$6604 }
 . { #WARLORD$AD32 }
 . LIST#
+D $C00A Read a line of text, then turn it into vocabulary tokens.
 N $C00A Reset the screen position to defaults.
   $C00A,$03 Call #R$BA7F.
 N $C00D Clear down the command buffer which will hold the users input.
@@ -1294,6 +1371,7 @@ c $C041 Handler: User Pressed "DELETE"
 @ $C041 label=UserInput_Delete
 E $C041 View the equivalent code in;
 . #LIST
+. { #FOREST$BFAA }
 . { #HEROES$B237 }
 . LIST#
 D $C041 Handles the user pressing delete.
@@ -1320,7 +1398,7 @@ c $C058 Handler: User Pressed "ENTER"
 @ $C058 label=UserInput_Enter
 E $C058 View the equivalent code in;
 . #LIST
-. { #FOREST$BFD8 }
+. { #FOREST$BFC1 }
 . { #HEROES$B24E }
 . { #ANDROMEDA$6669 }
 . LIST#
@@ -1329,7 +1407,8 @@ D $C058 Parses and tokenises the user's command input when they press ENTER. The
 . vocabulary table, and unrecognised words are reported to the player.
 R $C058 HL Current position in the command buffer
 R $C058 A Which contains #N$0D ("ENTER") at this point.
-  $C058,$01 Write #N$0D to the command buffer at the current position for use as a termination character.
+  $C058,$01 Write #N$0D to the command buffer at the current position for use as
+. a termination character.
 N $C059 Force a newline to be "printed" to the screen.
   $C059,$03 Call #R$BA96.
   $C05C,$03 Call #R$BAC3.
@@ -1338,7 +1417,8 @@ N $C05F Initialise the word token buffer. This buffer will store up to #N$0A
 . the word in the vocabulary table.
   $C05F,$03 #REGhl=#R$BD66.
   $C062,$02 #REGa=#N$FF.
-  $C064,$02 Set a counter in #REGb for the size of the word token buffer (#N$0A bytes).
+  $C064,$02 Set a counter in #REGb for the size of the word token buffer (#N$0A
+. bytes).
 N $C066 Fill the word token buffer with #N$FF (the terminator value) to mark all
 . slots as empty.
 @ $C066 label=EmptyWordTokenBuffer_Loop
@@ -1359,24 +1439,29 @@ N $C074 Clear the word buffer by writing ASCII "SPACE" (#N$20) #N$04 times.
 @ $C076 label=ClearWordBuffer_Loop
   $C076,$01 Write the ASCII space to *#REGde.
   $C077,$01 Increment #REGde by one.
-  $C078,$02 Decrease counter by one and loop back to #R$C076 until counter is zero.
+  $C078,$02 Decrease counter by one and loop back to #R$C076 until counter is
+. zero.
   $C07A,$01 #REGa=#N$00.
   $C07B,$01 #REGa|=#REGc.
   $C07C,$03 Jump to #R$C16E if #REGde is equal to #REGc.
   $C07F,$06 Jump to #R$C16E if *#REGhl is equal to #N$0D.
   $C085,$02 #REGb=#N$04.
   $C087,$03 #REGde=#R$BD71.
-N $C08A Extract the next word from the command buffer. Copy up to #N$04 characters
+N $C08A Extract the next word from the command buffer. Copy up to #N$04
+. characters
 . (the maximum word length) into the word buffer, stopping at a space, comma,
 . or end of input.
 @ $C08A label=CopyWord_Loop
   $C08A,$01 Read the character from *#REGhl and store it in #REGa.
-  $C08B,$04 Jump to #R$C0B6 if this character is a newline (#N($0D), end of input).
-  $C08F,$08 Jump to #R$C0AC if the character is either an ASCII "SPACE" (#N$20) or an ASCII comma (#N$2C).
+  $C08B,$04 Jump to #R$C0B6 if this character is a newline (#N($0D), end of
+. input).
+  $C08F,$08 Jump to #R$C0AC if the character is either an ASCII "SPACE" (#N$20)
+. or an ASCII comma (#N$2C).
   $C097,$01 Write this character to the word buffer at *#REGde.
   $C098,$01 Move to the next character in the command buffer.
   $C099,$01 Move to the next position in the word buffer.
-  $C09A,$02 Decrease counter by one and loop back to #R$C08A until counter is zero.
+  $C09A,$02 Decrease counter by one and loop back to #R$C08A until counter is
+. zero.
 N $C09C If the word was longer than #N$04 characters, skip over the remaining
 . characters until a delimiter (space, comma, or end of input) is found.
 @ $C09C label=SkipRemainingWord_Loop
@@ -1402,10 +1487,12 @@ N $C0B6 Check if the extracted word is "The". If it is, ignore it and continue
   $C0BC,$03 #REGde=#R$BD71.
   $C0BF,$02 #REGb=#N$04.
 @ $C0C1 label=CompareWord_Loop
-  $C0C1,$04 Jump to #R$C0C9 if the characters don't match (the word is not "The").
+  $C0C1,$04 Jump to #R$C0C9 if the characters don't match
+. (the word is not "The").
   $C0C5,$01 Move to the next character in the extracted word.
   $C0C6,$01 Move to the next character in "The".
-  $C0C7,$02 Decrease counter by one and loop back to #R$C0C1 until all #N$04 characters have been compared.
+  $C0C7,$02 Decrease counter by one and loop back to #R$C0C1 until all #N$04
+. characters have been compared.
 @ $C0C9 label=AfterCompareWord
   $C0C9,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $C0CC,$02 Jump to #R$C06F if the words matched (this was "The", so skip it and
@@ -1420,15 +1507,18 @@ N $C0DA Look up the word in the vocabulary table. The vocabulary contains all
   $C0DA,$03 #REGhl=*#R$BD0C.
   $C0DD,$02 #REGc=#N$00.
 @ $C0DF label=VocabularyLookup_Loop
-  $C0DF,$05 Jump to #R$C11C if *#REGhl is equal to #N$FF (end of vocabulary table).
+  $C0DF,$05 Jump to #R$C11C if *#REGhl is equal to #N$FF
+. (end of vocabulary table).
 @ $C0E4 label=CompareVocabularyWord
   $C0E4,$03 #REGde=#R$BD71.
   $C0E7,$02 #REGb=#N$04.
 @ $C0E9 label=CompareVocabularyWord_Loop
-  $C0E9,$04 Jump to #R$C10D if the characters don't match (this vocabulary entry doesn't match the word).
+  $C0E9,$04 Jump to #R$C10D if the characters don't match
+. (this vocabulary entry doesn't match the word).
   $C0ED,$01 Move to the next character in the extracted word.
   $C0EE,$01 Move to the next character in the vocabulary entry.
-  $C0EF,$02 Decrease counter by one and loop back to #R$C0E9 until all #N$04 characters have been compared.
+  $C0EF,$02 Decrease counter by one and loop back to #R$C0E9 until all #N$04
+. characters have been compared.
 N $C0F1 Word matched in vocabulary! Calculate which slot in the token buffer to
 . use (based on how many words have been processed so far) and store the
 . vocabulary index as the token.
@@ -1437,7 +1527,8 @@ N $C0F1 Word matched in vocabulary! Calculate which slot in the token buffer to
   $C0F6,$01 Calculate the token buffer slot index: #REGa-=*#REGhl.
   $C0F7,$02 #REGd=#N$00.
   $C0F9,$01 #REGe=#REGa.
-  $C0FA,$04 Calculate the address of the token buffer slot: #REGhl=#R$BD66+#REGde.
+  $C0FA,$04 Calculate the address of the token buffer slot:
+. #REGhl=#R$BD66+#REGde.
   $C0FE,$01 Store the vocabulary index (#REGc) in the token buffer slot.
   $C0FF,$03 Restore the command buffer position from *#R$BD7D.
   $C102,$04 Restore the word buffer position from *#R$BD7F.
@@ -1449,9 +1540,11 @@ N $C10D Word didn't match this vocabulary entry. Check if there's a synonym
 . (indicated by a comma). If found, try matching against the synonym instead.
   $C10D,$01 #REGe=#REGb.
   $C10E,$02 #REGd=#N$00.
-  $C110,$01 Move the vocabulary pointer past the word that didn't match: #REGhl+=#REGde.
+  $C110,$01 Move the vocabulary pointer past the word that didn't match:
+. #REGhl+=#REGde.
   $C111,$01 Read the character at this position and store it in #REGa.
-  $C112,$04 Jump to #R$C119 if this character is not a comma (#N($2C), meaning no synonym exists).
+  $C112,$04 Jump to #R$C119 if this character is not a comma (#N($2C), meaning
+. no synonym exists).
   $C116,$01 Move past the comma to the synonym.
   $C117,$02 Jump to #R$C0E4 to try matching the synonym.
 
@@ -1470,7 +1563,8 @@ N $C11C All recognised words have been tokenised. Now check if there are any
   $C12B,$03 #REGhl=#R$BD34.
 @ $C12E label=ProcessUnrecognisedWords_Loop
   $C12E,$01 Decrease #REGc by one.
-  $C12F,$02 Jump to #R$C149 if #REGc is equal to #N$0A (no unrecognised words found).
+  $C12F,$02 Jump to #R$C149 if #REGc is equal to #N$0A
+. (no unrecognised words found).
 @ $C131 label=FindUnrecognisedWord_Loop
   $C131,$01 Read the character from *#REGhl and store it in #REGa.
   $C132,$04 Jump to #R$C13D if the character is an ASCII "SPACE" (#N$20).
@@ -1496,7 +1590,8 @@ M $C151,$05 #HTML(Print a double quote character: "<code>#CHR$22</code>".)
   $C153,$03 Call #R$BAC3.
 @ $C156 label=PrintUnrecognisedWord_Loop
   $C156,$01 Read the character from *#REGhl and store it in #REGa.
-  $C157,$04 Jump to #R$C161 if this character is less than #N$21 (a control character, indicating end of word).
+  $C157,$04 Jump to #R$C161 if this character is less than #N$21
+. (a control character, indicating end of word).
   $C15B,$01 Move to the next character in the command buffer.
   $C15C,$03 Call #R$BAC3.
   $C15F,$02 Jump to #R$C156.
@@ -1550,28 +1645,26 @@ D $C17D This routine manages two types of in-game events:
 N $C17D First process the turn-based events (if any are active).
   $C17D,$03 Load *#R$BC66 into #REGa.
   $C180,$03 Jump to #R$C1AF if no turn-based events are currently active.
-N $C183 One of the events has triggered, find which one.
+N $C183 Eight turn-based events share the flag byte.
   $C183,$01 Copy the turn-based event flags into #REGc.
   $C184,$02 Set a counter in #REGb for the number of possible turn-based events
 . (#N$08).
 N $C186 Keep shifting the event flags one-by-one to find which bits are set.
 @ $C186 label=GameEventChecker_Loop
   $C186,$02 Shift #REGc one position left to check the next event flag bit.
-  $C188,$02 Jump to #R$C1AD if this event bit isn't set.
-N $C18A The currently processed turn-based event is active, so process it.
-N $C18A This is: #R$BC67+(#N$08-the current event counter).
+  $C188,$02 Jump to #R$C1AD if this event bit is not set.
+N $C18A Count down this event. It fires when the counter reaches zero.
   $C18A,$0B Calculate the turn-based event index and store it in #REGhl.
   $C195,$01 Decrease the turn-based event counter at *#REGhl by one.
-  $C196,$02 Jump to #R$C1AD if the event turn counter at *#REGhl was still more
-. than zero.
-N $C198 The event turn counter is zero, so activate the event itself.
+  $C196,$02 Jump to #R$C1AD if the counter is still running.
+N $C198 The counter has expired, so run this event's handler.
   $C198,$04 Load *#R$BD0E into #REGix.
   $C19C,$02 Double the index as this table contains addresses.
   $C19E,$02 Add this offset to #REGix to point to the current handler.
   $C1A0,$06 Get the handler address and store it in #REGhl.
   $C1A6,$01 Stash the bit index and event flag byte on the stack.
-  $C1A7,$04 Push #R$C1AC onto the stack so that the next return will go on to
-. continue processing events.
+  $C1A7,$04 Push #R$C1AC onto the stack so the next return resumes event
+. processing.
   $C1AB,$01 Jump to the routine pointed to by *#REGhl to action the current
 . event.
 N $C1AC Once the event handler has run, this is where the routine will resume.
@@ -1579,8 +1672,9 @@ N $C1AC Once the event handler has run, this is where the routine will resume.
   $C1AC,$01 Restore the event bit index counter and event flag byte from the
 . stack.
 @ $C1AD label=GameEventChecker_Next
+N $C1AD Test the next turn-based event.
   $C1AD,$02 Decrease the event bit counter by one and loop back to #R$C186
-. until all the event status bits have been processed.
+. until all eight events have been considered.
 N $C1AF Process scenic events.
 @ $C1AF label=GameScenicEventsProcessor
   $C1AF,$01 No operation.
@@ -1596,8 +1690,9 @@ N $C1BC This is the main scenic event loop.
 @ $C1BD label=GameScenicEventChecker
   $C1BD,$04 Jump to #R$C1ED if the event room is #N$00 (deactivated).
   $C1C1,$06 Jump to #R$C1ED if *#R$BCCB is equal to the event room.
-  $C1C7,$02 Stash the scenic event location pointer and event counter on the stack.
-N $C1C9 This is: #REGe=*#R$BD30-#REGb.
+  $C1C7,$02 Stash the scenic event location pointer and event counter on the
+. stack.
+N $C1C9 Calculate which scenic event's room group this is.
   $C1C9,$05 Calculate the index of the currently processed event.
   $C1CE,$04 Load #R$BCCC into #REGix.
 N $C1D2 The routine at #R$C1F0 is usually used to fetch an address from the
@@ -1617,11 +1712,12 @@ N $C1E3 Use the random number to select a room from the group - this loops
 @ $C1E3 label=GameScenicEvent_CountRooms_Loop
   $C1E3,$01 Move to the next room ID in the group.
 @ $C1E4 label=GameScenicEvent_CountRoomsInGroup
-  $C1E4,$03 Jump to #R$C1DB if the terminator is read from *#REGhl.
+  $C1E4,$03 Jump back to #R$C1DB when the terminator matches.
   $C1E7,$02 Decrease the random counter by one and loop back to #R$C1E3 until
 . the counter is zero.
   $C1E9,$01 Load the current room ID into #REGa.
-  $C1EA,$02 Restore the event counter and scenic event location pointer from the stack.
+  $C1EA,$02 Restore the event counter and scenic event location pointer from the
+. stack.
   $C1EC,$01 Update the scenic event location with the newly selected room.
 @ $C1ED label=GameScenicEventChecker_Next
   $C1ED,$02 Decrease the scenic event counter by one and loop back to #R$C1BC
@@ -1660,9 +1756,11 @@ E $C1FF View the equivalent code in;
 . { #ANDROMEDA$6763 }
 . { #WARLORD$AB97 }
 . LIST#
+D $C1FF Print every object in the given place.
 R $C1FF A #N$01 for inventory items, or room number for room objects
-  $C1FF,$03 #REGhl=#R$BBF0.
-  $C202,$04 #REGbc=*#R$BD28.
+  $C1FF,$03 Point #REGhl at #R$BBF0.
+  $C202,$04 Load the number of items into #REGbc.
+N $C206 Search #R$BBF0 for the next object in this place.
 @ $C206 label=FindObject_Loop
   $C206,$02 Search for matching objects.
   $C208,$01 Return if no objects were found.
@@ -1672,12 +1770,15 @@ R $C1FF A #N$01 for inventory items, or room number for room objects
   $C20F,$02 Temporarily stash the object type and object counter on the stack.
   $C211,$03 Call #R$BAB1.
   $C214,$02 Restore the object counter and object type from the stack.
+N $C216 Move on to the next object in the table.
 @ $C216 label=FindObject_Next
   $C216,$01 Temporarily hold the object type in #REGe.
   $C217,$01 Restore the current place in #R$BBF0 from the stack.
-  $C218,$02 Test if all objects have been checked...
+  $C218,$02 Test if all objects have been checked.
   $C21A,$01 Restore the object type to #REGa.
-  $C21B,$02 Jump to #R$C206 until all objects in the table have been checked.
+  $C21B,$02 Jump back to #R$C206 until all objects in the table have been
+. checked.
+N $C21D All matching objects have been printed.
   $C21D,$01 Return.
 
 c $C21E Handler: Display Room Image
@@ -1855,6 +1956,7 @@ N $C2F5 Print "#STR$BDC6,$08($b==$FF)".
 N $C2FB Print the objects at this location.
   $C2FB,$03 #REGa=*#R$BCCB.
   $C2FE,$03 Call #R$C1FF.
+N $C301 The exits and objects for this room are done.
   $C301,$01 Return.
 
 c $C302 Get Room Pointer
@@ -1862,9 +1964,12 @@ c $C302 Get Room Pointer
 E $C302 View the equivalent code in;
 . #LIST
 . { #SHOCK$A41C }
+. { #FOREST$C201 }
 . { #HEROES$B503 }
+. { #ANDROMEDA$6892 }
 . { #WARLORD$AC9A }
 . LIST#
+D $C302 Fetch the six exit bytes for the current room.
 R $C302 O:HL Pointer to the room data
 M $C302,$06 Load the *#R$BCCB into #REGde.
   $C302,$04 #REGe=*#R$BCCB.
@@ -1947,8 +2052,10 @@ E $C35F View the equivalent code in;
 . { #ANDROMEDA$68E0 }
 . { #WARLORD$AE6B }
 . LIST#
+D $C35F Set the zero flag when this object is in the current room or being
+. carried.
 R $C35F A Object ID
-R $C35F F Z flag set if the object is available
+R $C35F O:F Z flag set if the object is available
   $C35F,$02 Stash #REGhl and #REGde on the stack.
   $C361,$03 Store the object ID in #REGde.
   $C364,$04 Jump to #R$C36D if this is a scenic object.
@@ -2187,6 +2294,7 @@ E $C412 View the equivalent code in;
 . { #FOREST$BF55 }
 . { #ANDROMEDA$65E6 }
 . LIST#
+D $C412 Write a new location for an object, or for a scenic-event room.
 R $C412 B Object/ event ID
 R $C412 C Room ID for the update (can also be #N$00)
   $C412,$04 Jump to #R$C41D if this is a normal object/ event.
@@ -2363,14 +2471,15 @@ c $C490 Parser: Validate Input Tokens
 E $C490 View the equivalent code in;
 . #LIST
 . { #SHOCK$AC1D }
-. { #FOREST$C31E }
+. { #FOREST$C32D }
 . { #HEROES$B685 }
 . { #ANDROMEDA$6992 }
 . { #WARLORD$AF90 }
 . LIST#
 R $C490 O:A The number of references to items in the user input tokens
 R $C490 O:F The zero flag is set when there is only a verb present
-R $C490 O:F The zero flag is unset when there is at least one valid direct object
+R $C490 O:F The zero flag is unset when there is at least one valid direct
+. object
 R $C490 O:F The carry flag is set when the command is malformed
 N $C490 The first token is the verb, so target the second token for the direct
 . object.
@@ -2438,7 +2547,8 @@ D $C4B7 In most adventure games, the structure for a command is "verb + direct
 . object "SHOE".
 R $C4B7 O:A The number of valid direct objects in the user input tokens
 R $C4B7 O:F The carry flag is set when the command is malformed
-R $C4B7 O:F The zero flag is set when there are no valid direct objects present in the input tokens
+R $C4B7 O:F The zero flag is set when there are no valid direct objects present
+. in the input tokens
 N $C4B7 The first token is the verb, so target the second token for the direct
 . object.
   $C4B7,$03 Fetch the #R$BD67(second token from the user input) and store it in
@@ -2474,17 +2584,24 @@ D $C4C7 Checks that every object the command names is here. For each word
 . at #R$EDC4 skips the command.
 N $C4C7 Set up to loop through all word tokens in the token buffer.
   $C4C7,$03 Set a pointer to the word token buffer (#R$BD66) in #REGhl.
-  $C4CA,$02 Set a counter in #REGb for #N$0A tokens (the maximum number of words).
-N $C4CC Check if there are any tokens to process. Return immediately if the first
+  $C4CA,$02 Set a counter in #REGb for #N$0A tokens
+. (the maximum number of words).
+N $C4CC Check if there are any tokens to process. Return immediately if the
+. first
 . token is the terminator (#N$FF), meaning the input was empty.
 @ $C4CC label=ProcessItem_Loop
   $C4CC,$04 Return if the current token is #N$FF (no more tokens to process).
-N $C4D0 Check if this token refers to a game item by searching the object list table.
-  $C4D0,$02 Stash the token pointer and counter on the stack for later restoration.
+N $C4D0 Check if this token refers to a game item by searching the object list
+. table.
+  $C4D0,$02 Stash the token pointer and counter on the stack for later
+. restoration.
   $C4D2,$03 Load the object list table pointer into #REGhl.
-  $C4D5,$04 #HTML(Load the number of objects into #REGbc (for the <code>CPIR</code> search).)
-  $C4D9,$02 Search the object list table to see if the token matches any object ID.
-  $C4DB,$02 Jump to #R$C4E5 if the token doesn't match any object ID (not an item token).
+  $C4D5,$04 #HTML(Load the number of objects into #REGbc
+. (for the <code>CPIR</code> search).)
+  $C4D9,$02 Search the object list table to see if the token matches any object
+. ID.
+  $C4DB,$02 Jump to #R$C4E5 if the token doesn't match any object ID
+. (not an item token).
 N $C4DD The token matches an object ID. Now verify that the item is actually
 . present (in the current room or player's inventory).
   $C4DD,$03 Call #R$C32A to check if the item is present and accessible.
@@ -2507,6 +2624,8 @@ E $C4EB View the equivalent code in;
 . #LIST
 . { #SHOCK$AC88 }
 . { #FOREST$C3FA }
+. { #HEROES$B6E0 }
+. { #ANDROMEDA$658A }
 . { #WARLORD$AFEB }
 . LIST#
 D $C4EB Handles checking if a scenic event should occur ... and also, handles
@@ -2547,6 +2666,7 @@ E $C520 View the equivalent code in;
 . { #SHOCK$ACBD }
 . { #FOREST$C42F }
 . { #HEROES$B714 }
+. { #ANDROMEDA$8E18 }
 . { #WARLORD$B01F }
 . LIST#
 R $C520 A Destination room ID
@@ -2641,7 +2761,8 @@ E $C579 View the equivalent code in;
 . { #WARLORD$B081 }
 . LIST#
 D $C579 For dramatic effect! Used when an event occurs.
-  $C579,$05 #HTML(Call #R$BB51 using #N$19 <code>HALT</code> loops (for a short pause).)
+  $C579,$05 #HTML(Call #R$BB51 using #N$19 <code>HALT</code> loops
+. (for a short pause).)
   $C57E,$03 Call #R$BAB1.
   $C581,$01 Return.
 
@@ -2655,6 +2776,7 @@ E $C582 View the equivalent code in;
 . { #ANDROMEDA$65D6 }
 . { #WARLORD$B08A }
 . LIST#
+D $C582 Return a number between #N$00 and the limit passed in.
 R $C582 A Maximum value of generated number
   $C582,$01 Stash #REGbc on the stack.
   $C583,$01 Store the maximum number in #REGc.
@@ -3481,7 +3603,8 @@ E $D4C6 View the equivalent code in;
 . { #HEROES$CEEA }
 . { #WARLORD$C83E }
 . LIST#
-W $D4C6,$02 Object #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$D4C6)/$02)): #OBJECT((#PC-$D4C6)/$02).
+W $D4C6,$02 Object #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$D4C6)/$02)):
+. #OBJECT((#PC-$D4C6)/$02).
 L $D4C6,$02,$30
 
 t $D526 Messaging: "Congratulations!!<CR>Your Quest Has Been Successful.<CR>You Weigh Anchor And Then Sail<CR>Off Into The Sunset With The<CR>Fabulous Jewels Of Babylon."
@@ -3996,6 +4119,7 @@ B $E61C,$01 Terminator.
 
 t $E61D Table: Vocabulary
 @ $E61D label=Table_Vocabulary
+D $E61D Four-character words. A comma binds synonyms to the same command.
   $E61D,$04 Command #N((#PC-$E61D)/$04): #OBJECT((#PC-$E61D)/$04).
 L $E61D,$04,$08
   $E63D,$09 Command #N((#PC-$E61D)/$04): #OBJECT((#PC-$E61D)/$04).
@@ -4070,7 +4194,8 @@ B $E843,$01 Object #N$05 (any rum): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 B $E844,$01 Object #N$06 (any fruit): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 B $E845,$01 Object #N$07 (a gun): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 B $E846,$01 Object #N$08 (an eyepatch): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
-B $E847,$01 Object #N$09 (any gunpowder): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E847,$01 Object #N$09 (any gunpowder): word #N(#PEEK(#PC)),
+. #TOKEN(#PEEK(#PC)).
 B $E848,$01 Object #N$0A (a keg): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 B $E849,$01 Object #N$0B (a shoe): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 B $E84A,$01 Object #N$0C (a sextant): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
@@ -4084,7 +4209,8 @@ B $E851,$01 Object #N$13 (a spear): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 B $E852,$01 Object #N$14 (a ladder): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 B $E853,$01 Object #N$15 (a boat): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 B $E854,$01 Object #N$16 (any oars): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
-B $E855,$01 Object #N$17 (any cannibals): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E855,$01 Object #N$17 (any cannibals): word #N(#PEEK(#PC)),
+. #TOKEN(#PEEK(#PC)).
 B $E856,$01 Object #N$18 (a pirate): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 B $E857,$01 Object #N$19 (a parrot): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 B $E858,$01 Object #N$1A (a crab): word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
@@ -4169,54 +4295,112 @@ D $E86E For each object in #R$E83E, in the same order: the items it may refer
 . ... here." with the name from #R$D4C6. Many actions also point #REGhl
 . straight at a group and call #R$C401 to find out which of its items is
 . present.
-B $E86E,$03 Object #N$00 (a match): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263 and #R$F4D4.
-B $E871,$04 Object #N$01 (a plank): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))), #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))) or #ITEM(#PEEK(#PC+$02)) (#N(#PEEK(#PC+$02))). Also used directly by #R$F263.
+B $E86E,$03 Object #N$00 (a match): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263 and
+. #R$F4D4.
+B $E871,$04 Object #N$01 (a plank): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))),
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))) or #ITEM(#PEEK(#PC+$02))
+. (#N(#PEEK(#PC+$02))). Also used directly by #R$F263.
 B $E875,$02 Object #N$02 (a coconut): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
-B $E877,$03 Object #N$03 (a rod): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
-B $E87A,$04 Object #N$04 (a bottle): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))), #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))) or #ITEM(#PEEK(#PC+$02)) (#N(#PEEK(#PC+$02))). Also used directly by #R$F19D, #R$F263, #R$F4D4 and #R$F9E4.
-B $E87E,$03 Object #N$05 (any rum): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
+B $E877,$03 Object #N$03 (a rod): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
+B $E87A,$04 Object #N$04 (a bottle): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))),
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))) or #ITEM(#PEEK(#PC+$02))
+. (#N(#PEEK(#PC+$02))). Also used directly by #R$F19D, #R$F263, #R$F4D4 and
+. #R$F9E4.
+B $E87E,$03 Object #N$05 (any rum): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
 B $E881,$02 Object #N$06 (any fruit): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
 B $E883,$02 Object #N$07 (a gun): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
-B $E885,$03 Object #N$08 (an eyepatch): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263 and #R$F4D4.
-B $E888,$03 Object #N$09 (any gunpowder): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263.
-B $E88B,$03 Object #N$0A (a keg): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
+B $E885,$03 Object #N$08 (an eyepatch): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263 and
+. #R$F4D4.
+B $E888,$03 Object #N$09 (any gunpowder): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263.
+B $E88B,$03 Object #N$0A (a keg): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
 B $E88E,$02 Object #N$0B (a shoe): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
 B $E890,$02 Object #N$0C (a sextant): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
-B $E892,$03 Object #N$0D (a watch): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
-B $E895,$03 Object #N$0E (a fish): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263, #R$F4D4 and #R$F999.
+B $E892,$03 Object #N$0D (a watch): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
+B $E895,$03 Object #N$0E (a fish): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263,
+. #R$F4D4 and #R$F999.
 B $E898,$02 Object #N$0F (any jewels): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
 B $E89A,$02 Object #N$10 (a crowbar): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
 B $E89C,$02 Object #N$11 (a key): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
 B $E89E,$02 Object #N$12 (a skull): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
-B $E8A0,$03 Object #N$13 (a spear): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263.
-B $E8A3,$03 Object #N$14 (a ladder): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
-B $E8A6,$05 Object #N$15 (a boat): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))), #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), #ITEM(#PEEK(#PC+$02)) (#N(#PEEK(#PC+$02))) or #ITEM(#PEEK(#PC+$03)) (#N(#PEEK(#PC+$03))).
-B $E8AB,$04 Object #N$16 (any oars): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))), #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))) or #ITEM(#PEEK(#PC+$02)) (#N(#PEEK(#PC+$02))).
-B $E8AF,$03 Object #N$17 (any cannibals): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
-B $E8B2,$0A Object #N$18 (a pirate): a pirate (#N(#PEEK(#PC))), a pirate (#N(#PEEK(#PC+$01))), a pirate (#N(#PEEK(#PC+$02))), the pirate from the beach (#N(#PEEK(#PC+$03))), #ITEM(#PEEK(#PC+$04)) (#N(#PEEK(#PC+$04))), #ITEM(#PEEK(#PC+$05)) (#N(#PEEK(#PC+$05))), #ITEM(#PEEK(#PC+$06)) (#N(#PEEK(#PC+$06))), #ITEM(#PEEK(#PC+$07)) (#N(#PEEK(#PC+$07))) or #ITEM(#PEEK(#PC+$08)) (#N(#PEEK(#PC+$08))). Also used directly by #R$F851.
-B $E8BC,$03 Object #N$19 (a parrot): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263.
+B $E8A0,$03 Object #N$13 (a spear): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263.
+B $E8A3,$03 Object #N$14 (a ladder): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
+B $E8A6,$05 Object #N$15 (a boat): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))),
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), #ITEM(#PEEK(#PC+$02))
+. (#N(#PEEK(#PC+$02))) or #ITEM(#PEEK(#PC+$03)) (#N(#PEEK(#PC+$03))).
+B $E8AB,$04 Object #N$16 (any oars): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))),
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))) or #ITEM(#PEEK(#PC+$02))
+. (#N(#PEEK(#PC+$02))).
+B $E8AF,$03 Object #N$17 (any cannibals): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
+B $E8B2,$0A Object #N$18 (a pirate): a pirate (#N(#PEEK(#PC))), a pirate
+. (#N(#PEEK(#PC+$01))), a pirate (#N(#PEEK(#PC+$02))), the pirate from the beach
+. (#N(#PEEK(#PC+$03))), #ITEM(#PEEK(#PC+$04)) (#N(#PEEK(#PC+$04))),
+. #ITEM(#PEEK(#PC+$05)) (#N(#PEEK(#PC+$05))), #ITEM(#PEEK(#PC+$06))
+. (#N(#PEEK(#PC+$06))), #ITEM(#PEEK(#PC+$07)) (#N(#PEEK(#PC+$07))) or
+. #ITEM(#PEEK(#PC+$08)) (#N(#PEEK(#PC+$08))). Also used directly by #R$F851.
+B $E8BC,$03 Object #N$19 (a parrot): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$F263.
 B $E8BF,$02 Object #N$1A (a crab): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
-B $E8C1,$03 Object #N$1B (a crocodile): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$EE51 and #R$EF54.
+B $E8C1,$03 Object #N$1B (a crocodile): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))). Also used directly by #R$EE51 and
+. #R$EF54.
 B $E8C4,$02 Object #N$1C (a lion): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
 B $E8C6,$02 Object #N$1D (a seagull): the seagull (#N(#PEEK(#PC))).
 B $E8C8,$02 Object #N$1E (an octopus): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
-B $E8CA,$08 Object #N$1F (a door): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))), #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), #ITEM(#PEEK(#PC+$02)) (#N(#PEEK(#PC+$02))), #ITEM(#PEEK(#PC+$03)) (#N(#PEEK(#PC+$03))), #ITEM(#PEEK(#PC+$04)) (#N(#PEEK(#PC+$04))), #ITEM(#PEEK(#PC+$05)) (#N(#PEEK(#PC+$05))) or #ITEM(#PEEK(#PC+$06)) (#N(#PEEK(#PC+$06))). Also used directly by #R$FA3C and #R$FAA8.
+B $E8CA,$08 Object #N$1F (a door): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))),
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), #ITEM(#PEEK(#PC+$02))
+. (#N(#PEEK(#PC+$02))), #ITEM(#PEEK(#PC+$03)) (#N(#PEEK(#PC+$03))),
+. #ITEM(#PEEK(#PC+$04)) (#N(#PEEK(#PC+$04))), #ITEM(#PEEK(#PC+$05))
+. (#N(#PEEK(#PC+$05))) or #ITEM(#PEEK(#PC+$06)) (#N(#PEEK(#PC+$06))). Also used
+. directly by #R$FA3C and #R$FAA8.
 B $E8D2,$02 Object #N$20 (a sailor): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
 B $E8D4,$02 Object #N$21 (a snake): the water snake (#N(#PEEK(#PC))).
 B $E8D6,$02 Object #N$22 (a spider): the spider (#N(#PEEK(#PC))).
-B $E8D8,$04 Object #N$23 (a bridge): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))), #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))) or the bridge at The Bridge (#N(#PEEK(#PC+$02))).
-B $E8DC,$03 Object #N$24 (a boulder): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
-B $E8DF,$03 Object #N$25 (a ring): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
+B $E8D8,$04 Object #N$23 (a bridge): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))),
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))) or the bridge at The Bridge
+. (#N(#PEEK(#PC+$02))).
+B $E8DC,$03 Object #N$24 (a boulder): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
+B $E8DF,$03 Object #N$25 (a ring): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
 B $E8E2,$02 Object #N$26 (a trapdoor): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
-B $E8E4,$05 Object #N$27 (a cave): the cave at The Harbour Beach (#N(#PEEK(#PC))), #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), the cave and its water in The Cave (#N(#PEEK(#PC+$02))) or the cave in The Vast Cavern (#N(#PEEK(#PC+$03))).
-B $E8E9,$04 Object #N$28 (a pit): the pit (#N(#PEEK(#PC))), the pit (#N(#PEEK(#PC+$01))) or the pit (#N(#PEEK(#PC+$02))). Also used directly by #R$F09C.
-B $E8ED,$05 Object #N$29 (a ship): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))), #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), #ITEM(#PEEK(#PC+$02)) (#N(#PEEK(#PC+$02))) or #ITEM(#PEEK(#PC+$03)) (#N(#PEEK(#PC+$03))).
-B $E8F2,$03 Object #N$2A (a hole): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
+B $E8E4,$05 Object #N$27 (a cave): the cave at The Harbour Beach
+. (#N(#PEEK(#PC))), #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), the cave and its
+. water in The Cave (#N(#PEEK(#PC+$02))) or the cave in The Vast Cavern
+. (#N(#PEEK(#PC+$03))).
+B $E8E9,$04 Object #N$28 (a pit): the pit (#N(#PEEK(#PC))), the pit
+. (#N(#PEEK(#PC+$01))) or the pit (#N(#PEEK(#PC+$02))). Also used directly by
+. #R$F09C.
+B $E8ED,$05 Object #N$29 (a ship): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))),
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), #ITEM(#PEEK(#PC+$02))
+. (#N(#PEEK(#PC+$02))) or #ITEM(#PEEK(#PC+$03)) (#N(#PEEK(#PC+$03))).
+B $E8F2,$03 Object #N$2A (a hole): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))) or
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))).
 B $E8F5,$02 Object #N$2B (a deer): the deer (#N(#PEEK(#PC))).
-B $E8F7,$07 Object #N$2C (a body): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))), #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), #ITEM(#PEEK(#PC+$02)) (#N(#PEEK(#PC+$02))), #ITEM(#PEEK(#PC+$03)) (#N(#PEEK(#PC+$03))), #ITEM(#PEEK(#PC+$04)) (#N(#PEEK(#PC+$04))) or #ITEM(#PEEK(#PC+$05)) (#N(#PEEK(#PC+$05))).
+B $E8F7,$07 Object #N$2C (a body): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))),
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), #ITEM(#PEEK(#PC+$02))
+. (#N(#PEEK(#PC+$02))), #ITEM(#PEEK(#PC+$03)) (#N(#PEEK(#PC+$03))),
+. #ITEM(#PEEK(#PC+$04)) (#N(#PEEK(#PC+$04))) or #ITEM(#PEEK(#PC+$05))
+. (#N(#PEEK(#PC+$05))).
 B $E8FE,$02 Object #N$2D (a rat): the rat (#N(#PEEK(#PC))).
 B $E900,$02 Object #N$2E (a stone): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))).
-B $E902,$0B Object #N$2F (any water): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))), #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), #ITEM(#PEEK(#PC+$02)) (#N(#PEEK(#PC+$02))), the sea (#N(#PEEK(#PC+$03))), the water in the rock pool (#N(#PEEK(#PC+$04))), the cave and its water in The Cave (#N(#PEEK(#PC+$05))), the water at the waterfall (#N(#PEEK(#PC+$06))), the pool of water (#N(#PEEK(#PC+$07))), the water in the gulley (#N(#PEEK(#PC+$08))) or the water in the damp passage (#N(#PEEK(#PC+$09))).
+B $E902,$0B Object #N$2F (any water): #ITEM(#PEEK(#PC)) (#N(#PEEK(#PC))),
+. #ITEM(#PEEK(#PC+$01)) (#N(#PEEK(#PC+$01))), #ITEM(#PEEK(#PC+$02))
+. (#N(#PEEK(#PC+$02))), the sea (#N(#PEEK(#PC+$03))), the water in the rock pool
+. (#N(#PEEK(#PC+$04))), the cave and its water in The Cave (#N(#PEEK(#PC+$05))),
+. the water at the waterfall (#N(#PEEK(#PC+$06))), the pool of water
+. (#N(#PEEK(#PC+$07))), the water in the gulley (#N(#PEEK(#PC+$08))) or the
+. water in the damp passage (#N(#PEEK(#PC+$09))).
 
 b $E90D Table: Verb Word Tokens
 @ $E90D label=Table_VerbWordTokens
@@ -4277,15 +4461,28 @@ D $E933 The rooms each scenic event moves between, as lists of room numbers
 . each event uses. Each turn #R$C17D takes every event that is in play and
 . not with the player, steps a random distance round its list (going back to
 . the start at #N$FF) and puts it in the room it lands on (#R$BC78).
-B $E933,$04 Event #N$80 (the seagull): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)) and #N(#PEEK(#PC+$02)) (#ROOM(#PEEK(#PC))).
-B $E937,$04 Event #N$81 (the rat): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)) and #N(#PEEK(#PC+$02)) (#ROOM(#PEEK(#PC)) and #ROOM(#PEEK(#PC+$02))).
-B $E93B,$04 Event #N$82 (the deer): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)) and #N(#PEEK(#PC+$02)) (#ROOM(#PEEK(#PC)) and #ROOM(#PEEK(#PC+$02))).
-B $E93F,$04 Event #N$83 (a pirate): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)) and #N(#PEEK(#PC+$02)) (#ROOM(#PEEK(#PC))).
-B $E943,$04 Event #N$84 (a pirate): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)) and #N(#PEEK(#PC+$02)) (#ROOM(#PEEK(#PC))).
-B $E947,$06 Event #N$85 (a pirate): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)), #N(#PEEK(#PC+$02)), #N(#PEEK(#PC+$03)) and #N(#PEEK(#PC+$04)) (#ROOM(#PEEK(#PC)), #ROOM(#PEEK(#PC+$01)), #ROOM(#PEEK(#PC+$03)) and #ROOM(#PEEK(#PC+$04))).
-B $E94D,$06 Event #N$86 (the water snake): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)), #N(#PEEK(#PC+$02)), #N(#PEEK(#PC+$03)) and #N(#PEEK(#PC+$04)) (#ROOM(#PEEK(#PC))).
-B $E953,$08 Event #N$87 (the spider): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)), #N(#PEEK(#PC+$02)), #N(#PEEK(#PC+$03)), #N(#PEEK(#PC+$04)), #N(#PEEK(#PC+$05)) and #N(#PEEK(#PC+$06)) (#ROOM(#PEEK(#PC))).
-B $E95B,$02 Event #N$88 (the pirate from the beach): room #N(#PEEK(#PC)) (#ROOM(#PEEK(#PC))).
+B $E933,$04 Event #N$80 (the seagull): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01))
+. and #N(#PEEK(#PC+$02)) (#ROOM(#PEEK(#PC))).
+B $E937,$04 Event #N$81 (the rat): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)) and
+. #N(#PEEK(#PC+$02)) (#ROOM(#PEEK(#PC)) and #ROOM(#PEEK(#PC+$02))).
+B $E93B,$04 Event #N$82 (the deer): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)) and
+. #N(#PEEK(#PC+$02)) (#ROOM(#PEEK(#PC)) and #ROOM(#PEEK(#PC+$02))).
+B $E93F,$04 Event #N$83 (a pirate): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)) and
+. #N(#PEEK(#PC+$02)) (#ROOM(#PEEK(#PC))).
+B $E943,$04 Event #N$84 (a pirate): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)) and
+. #N(#PEEK(#PC+$02)) (#ROOM(#PEEK(#PC))).
+B $E947,$06 Event #N$85 (a pirate): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)),
+. #N(#PEEK(#PC+$02)), #N(#PEEK(#PC+$03)) and #N(#PEEK(#PC+$04))
+. (#ROOM(#PEEK(#PC)), #ROOM(#PEEK(#PC+$01)), #ROOM(#PEEK(#PC+$03)) and
+. #ROOM(#PEEK(#PC+$04))).
+B $E94D,$06 Event #N$86 (the water snake): rooms #N(#PEEK(#PC)),
+. #N(#PEEK(#PC+$01)), #N(#PEEK(#PC+$02)), #N(#PEEK(#PC+$03)) and
+. #N(#PEEK(#PC+$04)) (#ROOM(#PEEK(#PC))).
+B $E953,$08 Event #N$87 (the spider): rooms #N(#PEEK(#PC)), #N(#PEEK(#PC+$01)),
+. #N(#PEEK(#PC+$02)), #N(#PEEK(#PC+$03)), #N(#PEEK(#PC+$04)), #N(#PEEK(#PC+$05))
+. and #N(#PEEK(#PC+$06)) (#ROOM(#PEEK(#PC))).
+B $E95B,$02 Event #N$88 (the pirate from the beach): room #N(#PEEK(#PC))
+. (#ROOM(#PEEK(#PC))).
 
 b $E95D Table: Rooms With Images
 @ $E95D label=Table_RoomsWithImages
@@ -4294,19 +4491,32 @@ D $E95D The #N$0D rooms that have a picture (the count is at #R$BD2E).
 . picks the drawing routine in #R$FFA8 and the "already seen" bit in #R$BC5C.
 . A picture is shown the first time the player enters the room, and again
 . whenever they type LOOK.
-B $E95D,$01 Image #N$00: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FEFA; seen flag: bit 0 of #R$BC5C.
-B $E95E,$01 Image #N$01: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF00; seen flag: bit 1 of #R$BC5C.
-B $E95F,$01 Image #N$02: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF00; seen flag: bit 2 of #R$BC5C.
-B $E960,$01 Image #N$03: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF00; seen flag: bit 3 of #R$BC5C.
-B $E961,$01 Image #N$04: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF06; seen flag: bit 4 of #R$BC5C.
-B $E962,$01 Image #N$05: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF0C; seen flag: bit 5 of #R$BC5C.
-B $E963,$01 Image #N$06: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF12; seen flag: bit 6 of #R$BC5C.
-B $E964,$01 Image #N$07: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF18; seen flag: bit 7 of #R$BC5C.
-B $E965,$01 Image #N$08: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF1E; seen flag: bit 0 of #R$BC5C(#N$BC5D).
-B $E966,$01 Image #N$09: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF1E; seen flag: bit 1 of #R$BC5C(#N$BC5D).
-B $E967,$01 Image #N$0A: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF1E; seen flag: bit 2 of #R$BC5C(#N$BC5D).
-B $E968,$01 Image #N$0B: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF24; seen flag: bit 3 of #R$BC5C(#N$BC5D).
-B $E969,$01 Image #N$0C: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by #R$FF2A; seen flag: bit 4 of #R$BC5C(#N$BC5D).
+B $E95D,$01 Image #N$00: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FEFA; seen flag: bit 0 of #R$BC5C.
+B $E95E,$01 Image #N$01: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF00; seen flag: bit 1 of #R$BC5C.
+B $E95F,$01 Image #N$02: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF00; seen flag: bit 2 of #R$BC5C.
+B $E960,$01 Image #N$03: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF00; seen flag: bit 3 of #R$BC5C.
+B $E961,$01 Image #N$04: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF06; seen flag: bit 4 of #R$BC5C.
+B $E962,$01 Image #N$05: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF0C; seen flag: bit 5 of #R$BC5C.
+B $E963,$01 Image #N$06: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF12; seen flag: bit 6 of #R$BC5C.
+B $E964,$01 Image #N$07: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF18; seen flag: bit 7 of #R$BC5C.
+B $E965,$01 Image #N$08: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF1E; seen flag: bit 0 of #R$BC5C(#N$BC5D).
+B $E966,$01 Image #N$09: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF1E; seen flag: bit 1 of #R$BC5C(#N$BC5D).
+B $E967,$01 Image #N$0A: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF1E; seen flag: bit 2 of #R$BC5C(#N$BC5D).
+B $E968,$01 Image #N$0B: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF24; seen flag: bit 3 of #R$BC5C(#N$BC5D).
+B $E969,$01 Image #N$0C: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FF2A; seen flag: bit 4 of #R$BC5C(#N$BC5D).
 
 g $E96A Table: Item Grouping
 @ $E96A label=Table_ItemGrouping
@@ -4339,7 +4549,8 @@ D $E9CA The words an action expects after its verb, as vocabulary numbers
 . the whole of the rest of the command.
 N $E9CA Matches e.g. "bottle".
 B $E9CA,$02 Checked by #R$F19D.
-N $E9CC Matches e.g. "fish", "herring", "red fish", "red herring", "coloured fish",
+N $E9CC Matches e.g. "fish", "herring", "red fish", "red herring",
+. "coloured fish",
 . "coloured herring".
 @ $E9CC label=PhraseTokens_Fish
 B $E9CC,$05 Checked by #R$F19D, #R$F263, #R$F4D4 and #R$F999.
@@ -4401,7 +4612,8 @@ B $EA06,$02 Checked by #R$F263 and #R$F4D4.
 N $EA08 Matches e.g. "parrot", "dead parrot".
 @ $EA08 label=PhraseTokens_Parrot
 B $EA08,$05 Checked by #R$F263 and #R$F4D4.
-N $EA0D Matches e.g. "into boat", "in to boat", "in at boat", "into rowing boat",
+N $EA0D Matches e.g. "into boat", "in to boat", "in at boat",
+. "into rowing boat",
 . "in to rowing boat", "in at rowing boat".
 @ $EA0D label=PhraseTokens_IntoBoat
 B $EA0D,$10 Checked by #R$F481 and #R$F946.
@@ -4548,12 +4760,18 @@ B $EB07,$09 Checked by #R$FD02.
 g $EB10 Table: Room Map
 @ $EB10 label=Table_RoomMap
 N $EB10 Room #N((#PC-$EB10)/$06): #ROOM((#PC-$EB10)/$06).
-B $EB10,$01 #IF(#PEEK(#PC)>$00)(North to room: #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
-B $EB11,$01 #IF(#PEEK(#PC)>$00)(South to room: #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
-B $EB12,$01 #IF(#PEEK(#PC)>$00)(East to room: #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
-B $EB13,$01 #IF(#PEEK(#PC)>$00)(West to room: #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
-B $EB14,$01 #IF(#PEEK(#PC)>$00)(Up to room: #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
-B $EB15,$01 #IF(#PEEK(#PC)>$00)(Down to room: #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $EB10,$01 #IF(#PEEK(#PC)>$00)(North to room:
+. #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $EB11,$01 #IF(#PEEK(#PC)>$00)(South to room:
+. #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $EB12,$01 #IF(#PEEK(#PC)>$00)(East to room:
+. #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $EB13,$01 #IF(#PEEK(#PC)>$00)(West to room:
+. #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $EB14,$01 #IF(#PEEK(#PC)>$00)(Up to room:
+. #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $EB15,$01 #IF(#PEEK(#PC)>$00)(Down to room:
+. #R($EB10+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
 L $EB10,$06,$6D
 
 g $ED9E Table: Configurable Exits
@@ -4586,13 +4804,21 @@ E $EDC4 View the equivalent code in;
 . #LIST
 . { #FOREST$EB10 }
 . { #HEROES$E9A1 }
+. { #ANDROMEDA$8D2A }
 . { #WARLORD$E99F }
 . LIST#
+D $EDC4 One turn: game events, scenic events, a command, then the matching
+. verb.
+N $EDC4 Run any turn-based threats and relocate scenic events.
   $EDC4,$03 Call #R$C17D.
+N $EDC7 Run the room's scenic event.
   $EDC7,$03 Call #R$C4EB.
+N $EDCA Read a command and turn it into vocabulary tokens.
   $EDCA,$03 Call #R$C00A.
+N $EDCD Ensure every named object is present here.
   $EDCD,$03 Call #R$C4C7.
   $EDD0,$02 Jump to #R$EDC4 if the item isn't present.
+N $EDD2 Match the command against the vocabulary.
   $EDD2,$03 Call #R$C556.
   $EDD5,$02 Jump to #R$EDC4.
 
@@ -4606,6 +4832,7 @@ E $EDD7 View the equivalent code in;
 . { #ANDROMEDA$8DB3 }
 . { #WARLORD$E9B2 }
 . LIST#
+D $EDD7 Tell the player they are dead and ask whether to play again.
 N $EDD7 Print "#STR$BE31,$08($b==$FF)".
   $EDD7,$03 #REGhl=#R$BE31.
   $EDDA,$03 Call #R$BAB1.
@@ -4616,7 +4843,8 @@ N $EDDD Print "#STR$BE3F,$08($b==$FF)".
 @ $EDE3 label=WantAnotherGameInput_Loop
   $EDE3,$03 Call #R$BA5D.
 N $EDE6 The player is done with the game, so reset back to BASIC.
-  $EDE6,$05 #HTML(Reset back to BASIC if the keypress is "<code>#CHR$4E</code>".)
+  $EDE6,$05 #HTML(Reset back to BASIC if the keypress is
+. "<code>#CHR$4E</code>".)
 N $EDEB The player wants another go...
   $EDEB,$05 #HTML(Jump to #R$BA50 if the keypress is "<code>#CHR$59</code>".)
 N $EDF0 Just loop round for any other input.
@@ -4630,9 +4858,11 @@ E $EDF2 View the equivalent code in;
 . { #HEROES$E9D3 }
 . { #ANDROMEDA$8DCE }
 . LIST#
-N $EDF8 Print "#STR$D526,$08($b==$FF)".
+D $EDF2 Show the winning text, then ask whether to play again.
+N $EDF2 Clear the screen for the winning text.
   $EDF2,$03 Call #R$BA6D.
   $EDF5,$03 Call #R$BA89.
+N $EDF8 Print "#STR$D526,$08($b==$FF)".
   $EDF8,$03 #REGhl=#R$D526.
   $EDFB,$03 Call #R$BAB1.
   $EDFE,$02 Jump to #R$EDDD.
@@ -4641,7 +4871,7 @@ c $EE00 Fatal Events: Crab
 @ $EE00 label=Event_Crab
 N $EE00 Make the crab inactive.
   $EE00,$05 Reset bit 0 of *#R$BC66 which relates to the crab being active.
-  $EE05,$05 Call #R$C35F using item: #ITEM$29.
+  $EE05,$05 Call #R$C35F with item #N$29: #ITEM$29.
   $EE0A,$01 Return if the crab is not in the current room.
 N $EE0B Print "#STR$D5B0,$08($b==$FF)".
   $EE0B,$03 #REGhl=#R$D5B0.
@@ -4651,7 +4881,7 @@ c $EE11 Fatal Events: Tentacle
 @ $EE11 label=Event_Tentacle
 N $EE11 Make the tentacle inactive.
   $EE11,$05 Reset bit 1 of *#R$BC66 which relates to the tentacle being active.
-  $EE16,$05 Call #R$C35F using item: #ITEM$2B.
+  $EE16,$05 Call #R$C35F with item #N$2B: #ITEM$2B.
   $EE1B,$01 Return if the tentacle is not in the current room.
 N $EE1C Print "#STR$D5F6,$08($b==$FF)".
   $EE1C,$03 #REGhl=#R$D5F6.
@@ -4662,7 +4892,8 @@ c $EE22 Fatal Events: Drunk
 N $EE22 Make the drunkenness inactive.
   $EE22,$05 Reset bit 2 of *#R$BC66 which relates to the player being drunk.
   $EE27,$03 Load *#R$BCCB into #REGa.
-  $EE2A,$03 Set the length of the high places table in #REGbc to #N($0007,$04,$04).
+  $EE2A,$03 Set the length of the high places table in #REGbc to
+. #N($0007,$04,$04).
   $EE2D,$03 Set a pointer in #REGhl at #R$EE39.
   $EE30,$02 Search for the current room in the high places table.
   $EE32,$01 Return if the player is not currently in any rooms in the table.
@@ -4671,9 +4902,11 @@ N $EE33 Print "#STR$D629,$08($b==$FF)".
   $EE33,$03 #REGhl=#R$D629.
   $EE36,$03 Jump to #R$EE9B.
 @ $EE39 label=Table_HighPlaces
-N $EE39 #HTML(The #N$07 high places. If the player is in one of them when the drunk
+N $EE39 #HTML(The #N$07 high places. If the player is in one of them when the
+. drunk
 . counter at #R$BC67(#N$BC69) runs out, they fall over the edge. #R$EE22
-. searches this list with a <code>CPIR</code>, so its length is the #N$07 loaded at
+. searches this list with a <code>CPIR</code>, so its length is the #N$07 loaded
+. at
 . #R$EE2A.)
 B $EE39,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $EE39,$01,$07,$02
@@ -4682,7 +4915,7 @@ c $EE40 Fatal Events: Lion
 @ $EE40 label=Event_Lion
 N $EE40 Make the lion inactive.
   $EE40,$05 Reset bit 3 of *#R$BC66 which relates to the lion being active.
-  $EE45,$05 Call #R$C35F using item: #ITEM$2A.
+  $EE45,$05 Call #R$C35F with item #N$2A: #ITEM$2A.
   $EE4A,$01 Return if the lion is not in the current room.
 N $EE4B Print "#STR$D66E,$08($b==$FF)".
   $EE4B,$03 #REGhl=#R$D66E.
@@ -4703,7 +4936,7 @@ c $EE63 Fatal Events: Cannibals
 @ $EE63 label=Event_Cannibals
 N $EE63 Make the cannibals inactive.
   $EE63,$05 Reset bit 5 of *#R$BC66 which relates to the natives being active.
-  $EE68,$05 Call #R$C35F using item: #ITEM$18.
+  $EE68,$05 Call #R$C35F with item #N$18: #ITEM$18.
   $EE6D,$01 Return if the cannibals are not in the current room.
 N $EE6E Print "#STR$D931,$08($b==$FF)".
   $EE6E,$03 #REGhl=#R$D931.
@@ -4724,7 +4957,7 @@ N $EE84 Print "#STR$DB91,$08($b==$FF)".
   $EE87,$03 Call #R$BAB1.
 N $EE8A The match can no longer be used, so destroy it.
 @ $EE8A label=Event_Match_Return
-  $EE8A,$05 Call #R$C3EA using item: #ITEM$03.
+  $EE8A,$05 Call #R$C3EA with item #N$03: #ITEM$03.
   $EE8F,$01 Return.
 
 c $EE90 Fatal Events: Wave
@@ -4770,8 +5003,7 @@ N $EEBB Print "#STR$D73C,$08($b==$FF)".
 N $EEC1 Print "#STR$D76E,$08($b==$FF)".
   $EEC1,$03 #REGhl=#R$D76E.
   $EEC4,$03 Call #R$C579.
-  $EEC7,$02 #REGa=#N$81 (event ID: #N($81&$7F)).
-  $EEC9,$03 Call #R$C3EA.
+  $EEC7,$05 Call #R$C3EA with #N$81 (event ID: #N($81&$7F)).
   $EECC,$01 Return.
 
 c $EECD Events: Deer
@@ -4783,8 +5015,7 @@ N $EECD Print "#STR$D797,$08($b==$FF)".
 N $EED3 Print "#STR$D7AA,$08($b==$FF)".
   $EED3,$03 #REGhl=#R$D7AA.
   $EED6,$03 Call #R$C579.
-  $EED9,$02 #REGa=#N$82 (event ID: #N($82&$7F)).
-  $EEDB,$03 Call #R$C3EA.
+  $EED9,$05 Call #R$C3EA with #N$82 (event ID: #N($82&$7F)).
   $EEDE,$01 Return.
 
 c $EEDF Events: Pirate
@@ -4843,8 +5074,7 @@ N $EF24 Print "#STR$D88C,$08($b==$FF)".
   $EF24,$03 #REGhl=#R$D88C.
 @ $EF27 label=WaterSnake_Safe_Continue
   $EF27,$01 Stash #REGhl on the stack.
-  $EF28,$02 #REGa=#N$86 (event ID: #N($86&$7F)).
-  $EF2A,$03 Call #R$C3EA.
+  $EF28,$05 Call #R$C3EA with #N$86 (event ID: #N($86&$7F)).
   $EF2D,$01 Restore #REGhl from the stack.
 @ $EF2E label=WaterSnake_PrintAndReturn
   $EF2E,$03 Call #R$C579.
@@ -4867,8 +5097,7 @@ N $EF43 Print "#STR$D922,$08($b==$FF)".
   $EF46,$02 Jump to #R$EF50.
 N $EF48 Handle that the poisonous spider didn't sting you.
 @ $EF48 label=Event_Spider_Safe
-  $EF48,$02 #REGa=#N$87 (event ID: #N($87&$7F)).
-  $EF4A,$03 Call #R$C3EA.
+  $EF48,$05 Call #R$C3EA with #N$87 (event ID: #N($87&$7F)).
 N $EF4D Print "#STR$D8FA,$08($b==$FF)".
   $EF4D,$03 #REGhl=#R$D8FA.
 @ $EF50 label=Event_Spider_PrintAndReturn
@@ -4885,8 +5114,9 @@ R $EF54 A Destination room ID
   $EF64,$05 Reset bit 0 of *#R$BC6F.
   $EF69,$01 Stash #REGaf on the stack.
 N $EF6A Spawn the giant crab in #ROOM$30.
-  $EF6A,$06 Call #R$C412 using item #ITEM$29 to create it in #ROOM$30.
+  $EF6A,$06 Call #R$C412 with item #N$29: #ITEM$29 to create it in #ROOM$30.
   $EF70,$01 Restore #REGaf from the stack.
+N $EF71 This action changes the map:
   $EF71,$05 Write #N$2F to *#R$EC27 to open up westbound access to #ROOM$2F
 . from #ROOM$2E.
   $EF76,$05 Write #N$30 to *#R$EC2A to open up northbound access to #ROOM$30
@@ -4895,18 +5125,19 @@ N $EF6A Spawn the giant crab in #ROOM$30.
   $EF7E,$02 #REGe=#N$00.
   $EF80,$03 Call #R$C21E.
   $EF83,$07 Jump to #R$EFA7 if *#R$BCCB is not room #N$30: "#ROOM$30".
-  $EF8A,$05 Call #R$C35F with #ITEM$29.
+  $EF8A,$05 Call #R$C35F with item #N$29: #ITEM$29.
   $EF8F,$02 Jump to #R$EFA7 if #REGa is not equal to #N$29.
   $EF91,$05 Set bit 0 of *#R$BC6F.
+N $EF96 This action changes the map:
   $EF96,$04 Write #N$00 to *#R$EC27 to remove access to #ROOM$2F from #ROOM$2E.
   $EF9A,$03 Write #N$00 to *#R$EC2A to remove access to #ROOM$30 from #ROOM$2F.
   $EF9D,$05 Set bit 0 of *#R$BC66 which relates to the crab being active.
   $EFA2,$05 Write #N$06 to *#R$BC67.
-  $EFA7,$05 Call #R$C35F with #ITEM$2B.
+  $EFA7,$05 Call #R$C35F with item #N$2B: #ITEM$2B.
   $EFAC,$02 Jump to #R$EFB8 if #ITEM$2B isn't in the current room.
   $EFAE,$05 Set bit 1 of *#R$BC66 which relates to the tentacle being active.
   $EFB3,$05 Write #N$05 to *#R$BC68.
-  $EFB8,$05 Call #R$C35F with #ITEM$2A.
+  $EFB8,$05 Call #R$C35F with item #N$2A: #ITEM$2A.
   $EFBD,$02 Jump to #R$EFC9 if #ITEM$2A isn't in the current room.
   $EFBF,$05 Set bit 3 of *#R$BC66 which relates to the lion being active.
   $EFC4,$05 Write #N$07 to *#R$BC6A.
@@ -4914,12 +5145,12 @@ N $EF6A Spawn the giant crab in #ROOM$30.
   $EFCF,$02 Jump to #R$EFDB if #REGa is not equal to #N$07.
   $EFD1,$05 Set bit 4 of *#R$BC66 which relates to the crocodile being active.
   $EFD6,$05 Write #N$0B to *#R$BC6B.
-  $EFDB,$05 Call #R$C35F with #ITEM$18.
+  $EFDB,$05 Call #R$C35F with item #N$18: #ITEM$18.
   $EFE0,$02 Jump to #R$EFEC if #ITEM$18 isn't in the current room.
   $EFE2,$05 Set bit 5 of *#R$BC66 which relates to the cannibals being active.
   $EFE7,$05 Initialise the turn counter at *#R$BC6C with #N$09.
   $EFEC,$07 Jump to #R$EFFF if *#R$BCCB is not room #N$03: "#ROOM$03".
-  $EFF3,$05 Call #R$C35F with #ITEM$1D.
+  $EFF3,$05 Call #R$C35F with item #N$1D: #ITEM$1D.
   $EFF8,$02 Jump to #R$EFFF if #ITEM$1D isn't in the current room.
   $EFFA,$02 Restore #REGhl and #REGhl from the stack.
   $EFFC,$03 Jump to #R$EDF2.
@@ -4929,7 +5160,7 @@ N $EF6A Spawn the giant crab in #ROOM$30.
   $F00F,$05 Set bit 7 of *#R$BC66 which relates to the wave being active.
   $F014,$05 Write #N$05 to *#R$BC6E.
   $F019,$07 Jump to #R$F039 if *#R$BCCB is not room #N$6C: "#ROOM$6C".
-  $F020,$05 Call #R$C35F with #ITEM$1D.
+  $F020,$05 Call #R$C35F with item #N$1D: #ITEM$1D.
   $F025,$02 Jump to #R$F039 if #ITEM$1D isn't in the current room.
 N $F027 Print "#STR$E5CF,$08($b==$FF)".
   $F027,$03 #REGhl=#R$E5CF.
@@ -4958,6 +5189,11 @@ E $F03A View the equivalent code in;
 
 c $F03E Pause, Print String And Scroll Alias
 @ $F03E label=PausePrintStringAndScroll_Alias
+E $F03E View the equivalent code in;
+. #LIST
+. { #FOREST$ED6A }
+. { #HEROES$EAA2 }
+. LIST#
   $F03E,$03 Call #R$C579.
   $F041,$01 Return.
 
@@ -4969,12 +5205,23 @@ N $F042 Print "#STR$D9F3,$08($b==$FF)".
 
 c $F047 Response: "You Really Don't Need It"
 @ $F047 label=Response_YouReallyDontNeedIt
+E $F047 View the equivalent code in;
+. #LIST
+. { #HEROES$EAB2 }
+. LIST#
 N $F047 Print "#STR$DA0D,$08($b==$FF)".
   $F047,$03 #REGhl=#R$DA0D.
   $F04A,$02 Jump to #R$F03A.
 
 c $F04C Response: "You're Not Carrying Anything"
 @ $F04C label=Response_YoureNotCarryingAnything
+E $F04C View the equivalent code in;
+. #LIST
+. { #SHOCK$A6CF }
+. { #FOREST$EDAF }
+. { #HEROES$EAB8 }
+. { #WARLORD$EE17 }
+. LIST#
 N $F04C Print "#STR$BFC4,$08($b==$FF)".
   $F04C,$03 #REGhl=#R$BFC4.
   $F04F,$02 Jump to #R$F03A.
@@ -4993,36 +5240,65 @@ N $F056 Print "#STR$DA67,$08($b==$FF)".
 
 c $F05B Response: "You Can't Go In That Direction"
 @ $F05B label=Response_YouCantGoInThatDirection
+E $F05B View the equivalent code in;
+. #LIST
+. { #HEROES$EADC }
+. { #WARLORD$EE1D }
+. LIST#
 N $F05B Print "#STR$BF62,$08($b==$FF)".
   $F05B,$03 #REGhl=#R$BF62.
   $F05E,$02 Jump to #R$F03A.
 
 c $F060 Response: "One At A Time, Please"
 @ $F060 label=Response_OneAtATimePlease
+E $F060 View the equivalent code in;
+. #LIST
+. { #FOREST$ED73 }
+. LIST#
 N $F060 Print "#STR$BF82,$08($b==$FF)".
   $F060,$03 #REGhl=#R$BF82.
   $F063,$02 Jump to #R$F03A.
 
 c $F065 Response: "I Don't See The Point"
 @ $F065 label=Response_IDontSeeThePoint
+E $F065 View the equivalent code in;
+. #LIST
+. { #FOREST$ED78 }
+. { #HEROES$EFE2 }
+. { #WARLORD$EDF9 }
+. LIST#
 N $F065 Print "#STR$BF98,$08($b==$FF)".
   $F065,$03 #REGhl=#R$BF98.
   $F068,$02 Jump to #R$F03A.
 
 c $F06A Response: "O.K."
 @ $F06A label=Response_OK_Duplicate
+E $F06A View the equivalent code in;
+. #LIST
+. { #FOREST$ED96 }
+. { #HEROES$EAE8 }
+. LIST#
 N $F06A Print "#STR$BF0B,$08($b==$FF)".
   $F06A,$03 #REGhl=#R$BF0B.
   $F06D,$02 Jump to #R$F03A.
 
 c $F06F Response: "You Can't"
 @ $F06F label=Response_YouCant_Duplicate
+E $F06F View the equivalent code in;
+. #LIST
+. { #FOREST$ED6E }
+. { #HEROES$EAE2 }
+. LIST#
 N $F06F Print "#STR$BF00,$08($b==$FF)".
   $F06F,$03 #REGhl=#R$BF00.
   $F072,$02 Jump to #R$F03A.
 
 c $F074 Response: "Please Rephrase That"
 @ $F074 label=Response_PleaseRephraseThat_Duplicate
+E $F074 View the equivalent code in;
+. #LIST
+. { #FOREST$ED7D }
+. LIST#
 N $F074 Print "#STR$BEEA,$08($b==$FF)".
   $F074,$03 #REGhl=#R$BEEA.
   $F077,$02 Jump to #R$F03A.
@@ -5041,36 +5317,67 @@ N $F07E Print "#STR$E067,$08($b==$FF)".
 
 c $F083 Response: "You Must Be Joking"
 @ $F083 label=Response_YouMustBeJoking
+E $F083 View the equivalent code in;
+. #LIST
+. { #HEROES$F09E }
+. { #WARLORD$EE47 }
+. LIST#
 N $F083 Print "#STR$E224,$08($b==$FF)".
   $F083,$03 #REGhl=#R$E224.
   $F086,$02 Jump to #R$F03A.
 
 c $F088 Response: "It's Already Open"
 @ $F088 label=Response_ItsAlreadyOpen
+E $F088 View the equivalent code in;
+. #LIST
+. { #FOREST$EDB9 }
+. LIST#
 N $F088 Print "#STR$E2C9,$08($b==$FF)".
   $F088,$03 #REGhl=#R$E2C9.
   $F08B,$02 Jump to #R$F03A.
 
 c $F08D Response: "It's Already Closed"
 @ $F08D label=Response_ItsAlreadyClosed
+E $F08D View the equivalent code in;
+. #LIST
+. { #FOREST$EDBE }
+. LIST#
 N $F08D Print "#STR$E2DC,$08($b==$FF)".
   $F08D,$03 #REGhl=#R$E2DC.
   $F090,$02 Jump to #R$F03A.
 
 c $F092 Response: "Don't Be Ridiculous"
 @ $F092 label=Response_DontBeRidiculous
+E $F092 View the equivalent code in;
+. #LIST
+. { #FOREST$ED91 }
+. { #HEROES$F205 }
+. { #WARLORD$EE05 }
+. LIST#
 N $F092 Print "#STR$E4BC,$08($b==$FF)".
   $F092,$03 #REGhl=#R$E4BC.
   $F095,$02 Jump to #R$F03A.
 
 c $F097 Response: "It Has No Apparent Effect"
 @ $F097 label=Response_ItHasNoApparentEffect
+E $F097 View the equivalent code in;
+. #LIST
+. { #FOREST$EDA5 }
+. LIST#
 N $F097 Print "#STR$E5B4,$08($b==$FF)".
   $F097,$03 #REGhl=#R$E5B4.
   $F09A,$02 Jump to #R$F03A.
 
 c $F09C Action: Help
 @ $F09C label=Action_Help
+E $F09C View the equivalent code in;
+. #LIST
+. { #FOREST$EDC3 }
+. { #HEROES$F715 }
+. { #ANDROMEDA$8E8D }
+. LIST#
+D $F09C Offer hints for the cannibals, boulder, crocodile and other local
+. dangers.
   $F09C,$03 Call #R$C470.
 N $F09F The "HELP" command can only be called on its own; you can't type "HELP
 . CROCODILE" or "HELP WITH MATCH".
@@ -5167,6 +5474,7 @@ E $F12E View the equivalent code in;
 . { #ANDROMEDA$8EC4 }
 . { #WARLORD$F824 }
 . LIST#
+D $F12E List everything the player is carrying.
   $F12E,$03 Call #R$C470.
 N $F131 The "INVENTORY" command can only be called on its own.
   $F131,$01 Return if there's any token set in #R$BD67.
@@ -5191,6 +5499,7 @@ E $F14B View the equivalent code in;
 . { #ANDROMEDA$8EDA }
 . { #WARLORD$F841 }
 . LIST#
+D $F14B Describe the room again, including any room image.
   $F14B,$03 Call #R$C470.
 N $F14E The "LOOK" command can only be called on its own.
   $F14E,$01 Return if there's any token set in #R$BD67.
@@ -5200,26 +5509,66 @@ N $F14E The "LOOK" command can only be called on its own.
 
 c $F155 Action: North
 @ $F155 label=Action_North
+E $F155 View the equivalent code in;
+. #LIST
+. { #FOREST$EE0F }
+. { #HEROES$F7E4 }
+. { #ANDROMEDA$8EE4 }
+. { #WARLORD$F8C9 }
+. LIST#
+D $F155 Try to leave to the north.
   $F155,$02 Set #REGc to "NORTH" (#N$00).
   $F157,$02 Jump to #R$F16B.
 
 c $F159 Action: South
 @ $F159 label=Action_South
+E $F159 View the equivalent code in;
+. #LIST
+. { #FOREST$EE13 }
+. { #HEROES$F7E8 }
+. { #ANDROMEDA$8EE8 }
+. { #WARLORD$F8CD }
+. LIST#
+D $F159 Try to leave to the south.
   $F159,$02 Set #REGc to "SOUTH" (#N$01).
   $F15B,$02 Jump to #R$F16B.
 
 c $F15D Action: East
 @ $F15D label=Action_East
+E $F15D View the equivalent code in;
+. #LIST
+. { #FOREST$EE17 }
+. { #HEROES$F7EC }
+. { #ANDROMEDA$8EEC }
+. { #WARLORD$F8D1 }
+. LIST#
+D $F15D Try to leave to the east.
   $F15D,$02 Set #REGc to "EAST" (#N$02).
   $F15F,$02 Jump to #R$F16B.
 
 c $F161 Action: West
 @ $F161 label=Action_West
+E $F161 View the equivalent code in;
+. #LIST
+. { #FOREST$EE1B }
+. { #HEROES$F7F0 }
+. { #ANDROMEDA$8EF0 }
+. { #WARLORD$F8D5 }
+. LIST#
+D $F161 Try to leave to the west.
   $F161,$02 Set #REGc to "WEST" (#N$03).
   $F163,$02 Jump to #R$F16B.
 
 c $F165 Action: Up
 @ $F165 label=Action_Up
+E $F165 View the equivalent code in;
+. #LIST
+. { #FOREST$EE1F }
+. { #HEROES$F7F4 }
+. { #ANDROMEDA$8EF4 }
+. { #WARLORD$F8D9 }
+. LIST#
+D $F165 Try to leave upwards.
   $F165,$02 Set #REGc to "UP" (#N$04).
   $F167,$02 Jump to #R$F16B.
 
@@ -5233,6 +5582,7 @@ E $F169 View the equivalent code in;
 . { #ANDROMEDA$8EF8 }
 . { #WARLORD$F8DD }
 . LIST#
+D $F169 Try to leave downwards.
   $F169,$02 Set #REGc to "DOWN" (#N$05).
 
 c $F16B Move Player
@@ -5240,6 +5590,8 @@ c $F16B Move Player
 E $F16B View the equivalent code in;
 . #LIST
 . { #SHOCK$A6E8 }
+. { #FOREST$EE25 }
+. { #HEROES$F7FA }
 . { #WARLORD$F8DF }
 . LIST#
 R $F16B C Requested direction where: #TABLE { #N$00 | NORTH } { #N$01 | SOUTH } { #N$02 | EAST } { #N$03 | WEST } { #N$04 | UP } { #N$05 | DOWN } TABLE#
@@ -5278,6 +5630,14 @@ N $F19A Print "#STR$BF62,$08($b==$FF)".
 
 c $F19D Action: Examine
 @ $F19D label=Action_Examine
+E $F19D View the equivalent code in;
+. #LIST
+. { #FOREST$EE3D }
+. { #HEROES$F785 }
+. { #ANDROMEDA$8F13 }
+. { #WARLORD$F853 }
+. LIST#
+D $F19D Describe the single object the player named.
   $F19D,$03 Call #R$C47B.
   $F1A0,$01 Return if the direct object is malformed.
   $F1A1,$05 Jump to #R$F060 if #REGa is not equal to #N$01.
@@ -5303,7 +5663,7 @@ N $F1C4 Was the player trying to examine ... the fish?
 N $F1CC The player was trying to examine the fish, it also has "states"
 . similarly to the bottle. Before you examine it for the first time, it's
 . simply #ITEM$1B and afterwards it becomes #ITEM$1C!
-  $F1CC,$05 Call #R$C35F with #ITEM$1B.
+  $F1CC,$05 Call #R$C35F with item #N$1B: #ITEM$1B.
   $F1D1,$02 Jump to #R$F1DF if #ITEM$1B isn't in the current room or players
 . inventory.
 N $F1D3 Change the fish state!
@@ -5363,8 +5723,11 @@ c $F236 Action: Load
 E $F236 View the equivalent code in;
 . #LIST
 . { #FOREST$EE81 }
+. { #HEROES$F7AC }
 . { #ANDROMEDA$8FA1 }
+. { #WARLORD$F892 }
 . LIST#
+D $F236 Load a saved position from tape.
   $F236,$03 Call #R$C470.
 N $F239 The "LOAD" command can only be called on its own.
   $F239,$01 Return if there's any token set in #R$BD67.
@@ -5380,6 +5743,7 @@ E $F23E View the equivalent code in;
 . { #ANDROMEDA$8FA9 }
 . { #WARLORD$F8A1 }
 . LIST#
+D $F23E Save the position to tape.
   $F23E,$03 Call #R$C470.
 N $F241 The "SAVE" command can only be called on its own.
   $F241,$01 Return if there's any token set in #R$BD67.
@@ -5395,6 +5759,7 @@ E $F246 View the equivalent code in;
 . { #ANDROMEDA$8FB1 }
 . { #WARLORD$F8A9 }
 . LIST#
+D $F246 Ask whether to abandon the game and, if so, offer to save it.
   $F246,$03 Call #R$C470.
 N $F249 The "QUIT" command can only be called on its own.
   $F249,$01 Return if there's any token set in #R$BD67.
@@ -5417,224 +5782,334 @@ N $F25E Jump to asking if the player "wants another game?"
 
 c $F263 Action: Take
 @ $F263 label=Action_Take
+E $F263 View the equivalent code in;
+. #LIST
+. { #FOREST$EEAE }
+. { #HEROES$F80D }
+. { #ANDROMEDA$8FCD }
+. { #WARLORD$F956 }
+. LIST#
+D $F263 Pick up the single object the player named.
   $F263,$03 Call #R$C47B.
   $F266,$01 Return if the direct object is malformed.
 N $F267 Start by calling the chain of items to check...
   $F267,$03 Jump to #R$F2A8.
-N $F26A Check if the player is holding the requested item?
+
+c $F26A Take: Is Player Holding Item
 @ $F26A label=Take_IsPlayerHoldingItem
+E $F26A View the equivalent code in;
+. #LIST
+. { #FOREST$EEBA }
+. { #ANDROMEDA$8FE2 }
+. LIST#
+D $F26A Refuse the take when the object is already carried or the inventory is
+. full; otherwise return so the caller can take it.
+R $F26A A Object ID
+R $F26A O:B The object ID (when returning so the take may proceed)
   $F26A,$03 Call #R$C3E4.
-  $F26D,$02 Jump to #R$F28D if #REGa is not equal to #N$59.
+N $F26D Refuse when that object is already being carried.
+  $F26D,$02 Jump to #R$F28D if the item is not being held.
   $F26F,$01 Restore #REGhl from the stack.
+N $F270 Finish the sentence "You're already carrying" with "it" or "them".
 N $F270 Print "#STR$BF10,$08($b==$FF)".
   $F270,$03 #REGhl=#R$BF10.
   $F273,$03 Call #R$BAA4.
   $F276,$03 #REGhl=#R$F29B.
-  $F279,$01 #REGa=#REGe.
+  $F279,$01 Copy the object ID back into #REGa.
   $F27A,$03 #REGbc=#N($0001,$04,$04).
   $F27D,$02 Search #R$F29B for the item ID among the plural items (count
 . #N($0001,$04,$04)) to finish "You're already carrying " with "them." or
 . "it.".
-  $F27F,$02 Jump to #R$F287 if #REGa is equal to #N$59.
+  $F27F,$02 Jump to #R$F287 if the item is plural.
 N $F281 Print "#STR$BF2B,$08($b==$FF)".
   $F281,$03 #REGhl=#R$BF2B.
   $F284,$03 Jump to #R$F03A.
 
 N $F287 Print "#STR$BF2F,$08($b==$FF)".
+@ $F287 label=Take_AlreadyCarrying_Them
   $F287,$03 #REGhl=#R$BF2F.
   $F28A,$03 Jump to #R$F03A.
 
+N $F28D Refuse the object when the player is already holding #N$05 things.
+@ $F28D label=Take_InventoryFull
   $F28D,$05 Compare *#R$BC98 with #N$05...
-  $F292,$01 #REGb=#REGe.
+  $F292,$01 Copy the object ID into #REGb.
   $F293,$01 Return if *#R$BC98 is not equal to #N$05.
   $F294,$01 Restore #REGhl from the stack.
 N $F295 Print "#STR$BF35,$08($b==$FF)".
   $F295,$03 #REGhl=#R$BF35.
   $F298,$03 Jump to #R$F03A.
-N $F29B Table: All the items in the game which are plural.
-N $F29B Which is ... the jewels.
+
+b $F29B Table: Items Which Are Plural
 @ $F29B label=Table_ItemsWhichArePlural
+E $F29B View the equivalent code in;
+. #LIST
+. { #FOREST$EEEB }
+. { #ANDROMEDA$9010 }
+. LIST#
+D $F29B All the items in the game which are plural; used by #R$F27D and
+. #R$F4EC.
+N $F29B Which is ... the jewels.
 B $F29B,$01 Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
-N $F29C The player can take the item.
+
+c $F29C Take Item
 @ $F29C label=TakeItem
+E $F29C View the equivalent code in;
+. #LIST
+. { #FOREST$EEED }
+. { #ANDROMEDA$9014 }
+. LIST#
+D $F29C Places the item in the player's inventory and acknowledges success.
   $F29C,$02 Load #REGc with #N$01 which indicates the item will be in the
 . players inventory.
   $F29E,$03 Call #R$C412.
   $F2A1,$04 Increment *#R$BC98 by one.
   $F2A5,$03 Jump to #R$F06A.
-N $F2A8 Was the player trying to take the bottle of rum?
+c $F2A8 Take: Bottle Of Rum
 @ $F2A8 label=Validate_Take_BottleOfRum
+D $F2A8 Was the player trying to take the bottle of rum?
   $F2A8,$06 Call #R$C37F with #R$E9E7.
   $F2AE,$02 Jump to #R$F2BC if the token isn't for the bottle of rum.
+N $F2B0 Which bottle is present?
   $F2B0,$06 Call #R$C401 with #R$E87A.
+N $F2B6 Pick up the bottle.
   $F2B6,$03 Call #R$F26A.
   $F2B9,$03 Jump to #R$F29C.
-N $F2BC Was the player trying to take the fish?
+
+c $F2BC Take: Fish
 @ $F2BC label=Validate_Take_Fish
+D $F2BC Was the player trying to take the fish?
   $F2BC,$06 Call #R$C37F with #R$E9CC.
   $F2C2,$02 Jump to #R$F2D0 if the token isn't for the fish.
+N $F2C4 Which fish is present?
   $F2C4,$06 Call #R$C401 with #R$E895.
+N $F2CA Pick up the fish.
   $F2CA,$03 Call #R$F26A.
   $F2CD,$03 Jump to #R$F29C.
-N $F2D0 Was the player trying to take the watch?
+
+c $F2D0 Take: Watch
 @ $F2D0 label=Validate_Take_Watch
+D $F2D0 Was the player trying to take the watch?
   $F2D0,$06 Call #R$C37F with #R$E9D1.
   $F2D6,$02 Jump to #R$F2ED if the token isn't for the watch.
-  $F2D8,$05 Call #R$C35F with #ITEM$19.
-  $F2DD,$02 Jump to #R$F2E5 if #ITEM$19 isn't in the current room.
+N $F2D8 Are the distracted natives present?
+  $F2D8,$05 Call #R$C35F with item #N$19: #ITEM$19.
+  $F2DD,$02 Jump to #R$F2E5 if #ITEM$19 isn't present.
+N $F2DF Taking the watch would upset them.
 N $F2DF Print "#STR$DB5F,$08($b==$FF)".
   $F2DF,$03 #REGhl=#R$DB5F.
   $F2E2,$03 Jump to #R$F03A.
-
-  $F2E5,$05 Call #R$F26A with #ITEM$17.
+N $F2E5 Pick up the watch.
+@ $F2E5 label=Validate_Take_Watch_PickUp
+  $F2E5,$05 Call #R$F26A with item #N$17: #ITEM$17.
   $F2EA,$03 Jump to #R$F29C.
-N $F2ED Was the player trying to take the shoe?
+
+c $F2ED Take: Shoe
 @ $F2ED label=Validate_Take_Shoe
+D $F2ED Was the player trying to take the shoe?
   $F2ED,$06 Call #R$C37F with #R$E9D3.
   $F2F3,$02 Jump to #R$F2FD if the token isn't for the shoe.
-  $F2F5,$05 Call #R$F26A with #ITEM$15.
+N $F2F5 Pick up the shoe.
+  $F2F5,$05 Call #R$F26A with item #N$15: #ITEM$15.
   $F2FA,$03 Jump to #R$F29C.
-N $F2FD Was the player trying to take the fruit?
+
+c $F2FD Take: Fruit
 @ $F2FD label=Validate_Take_Fruit
+D $F2FD Was the player trying to take the fruit?
   $F2FD,$06 Call #R$C37F with #R$E9D7.
   $F303,$02 Jump to #R$F30D if the token isn't for the fruit.
-  $F305,$05 Call #R$F26A with #ITEM$0E.
+N $F305 Pick up the fruit.
+  $F305,$05 Call #R$F26A with item #N$0E: #ITEM$0E.
   $F30A,$03 Jump to #R$F29C.
-N $F30D Was the player trying to take the rod?
+
+c $F30D Take: Rod
 @ $F30D label=Validate_Take_Rod
+D $F30D Was the player trying to take the rod?
   $F30D,$06 Call #R$C37F with #R$E9D5.
   $F313,$02 Jump to #R$F347 if the token isn't for the rod.
-  $F315,$05 Call #R$F26A with #ITEM$08.
-  $F31A,$01 #REGa=#REGb.
+N $F315 Is the rod present?
+  $F315,$05 Call #R$F26A with item #N$08: #ITEM$08.
+  $F31A,$01 Copy the object ID back into #REGa.
   $F31B,$03 Call #R$C35F.
-  $F31E,$02 #REGb=#N$08.
-  $F320,$03 Jump to #R$F29C if *#REGhl is equal to #N$08.
+  $F31E,$02 Load #REGb with #ITEM$08.
+  $F320,$03 Jump to #R$F29C if #ITEM$08 is present.
+N $F323 The rod is in the door; pull it out and seal the passage.
   $F323,$06 Call #R$C426 to transform item #N$0A (#ITEM$0A) into item #N$09
 . (#ITEM$09).
   $F329,$06 Call #R$C426 to transform item #N$31 (#ITEM$31) into item #N$32
 . (#ITEM$32).
-  $F32F,$06 Call #R$C412 using item #ITEM$33 to create it in #ROOM$15.
+  $F32F,$06 Call #R$C412 with item #N$33: #ITEM$33 to create it in #ROOM$15.
+N $F335 This action changes the map:
   $F335,$04 Write #N$00 to *#R$EB90 to remove access to #ROOM$6A from #ROOM$15.
   $F339,$03 Write #N$00 to *#R$ED8D to remove access to #ROOM$15 from #ROOM$6A.
-  $F33C,$02 #REGb=#N$08.
-  $F33E,$03 Call #R$F29C.
+  $F33C,$05 Call #R$F29C with item #N$08: #ITEM$08.
+N $F341 The door has closed.
 N $F341 Print "#STR$DB7C,$08($b==$FF)".
   $F341,$03 #REGhl=#R$DB7C.
   $F344,$03 Jump to #R$F03A.
-N $F347 Was the player trying to take the jewels?
+
+c $F347 Take: Jewels
 @ $F347 label=Validate_Take_Jewels
+D $F347 Was the player trying to take the jewels?
   $F347,$06 Call #R$C37F with #R$E9DB.
   $F34D,$02 Jump to #R$F357 if the token isn't for the jewels.
-  $F34F,$05 Call #R$F26A with #ITEM$1D.
+N $F34F Pick up the jewels.
+  $F34F,$05 Call #R$F26A with item #N$1D: #ITEM$1D.
   $F354,$03 Jump to #R$F29C.
-N $F357 Was the player trying to take the match?
+
+c $F357 Take: Match
 @ $F357 label=Validate_Take_Match
+D $F357 Was the player trying to take the match?
   $F357,$06 Call #R$C37F with #R$E9E1.
   $F35D,$02 Jump to #R$F36B if the token isn't for the match.
+N $F35F Which match is present?
   $F35F,$06 Call #R$C401 with #R$E86E.
+N $F365 Pick up the match.
   $F365,$03 Call #R$F26A.
   $F368,$03 Jump to #R$F29C.
-N $F36B Was the player trying to take the plank?
+
+c $F36B Take: Plank
 @ $F36B label=Validate_Take_Plank
+D $F36B Was the player trying to take the plank?
   $F36B,$06 Call #R$C37F with #R$E9E3.
   $F371,$02 Jump to #R$F398 if the token isn't for the plank.
+N $F373 Which plank is present?
   $F373,$06 Call #R$C401 with #R$E871.
   $F379,$03 Call #R$F26A.
-  $F37C,$01 #REGa=#REGb.
-  $F37D,$05 Jump to #R$F29C if #REGa is equal to #N$04.
-  $F382,$02 #REGa=#N$05 (event ID: #N($05&$7F)).
-  $F384,$03 Call #R$C3EA.
-  $F387,$02 #REGa=#N$06 (event ID: #N($06&$7F)).
-  $F389,$03 Call #R$C3EA.
-  $F38C,$02 #REGb=#N$04.
-  $F38E,$07 Write #N$00 to: #LIST { *#R$ED75 } { *#R$ED80 } LIST#
+  $F37C,$01 Copy the object ID back into #REGa.
+  $F37D,$05 Jump to #R$F29C if this is #ITEM$04.
+N $F382 The plank was spanning the pit; pull it up and seal the crossing.
+  $F382,$05 Call #R$C3EA with item #N$05: #ITEM$05.
+  $F387,$05 Call #R$C3EA with item #N$06: #ITEM$06.
+  $F38C,$02 Load #REGb with #ITEM$04.
+N $F38E This action changes the map:
+  $F38E,$04 Write #N$00 to *#R$ED75 to remove access to #ROOM$68 from #ROOM$66.
+  $F392,$03 Write #N$00 to *#R$ED80 to remove access to #ROOM$66 from #ROOM$68.
   $F395,$03 Jump to #R$F29C.
-N $F398 Was the player trying to take the coconut?
+
+c $F398 Take: Coconut
 @ $F398 label=Validate_Take_Coconut
+D $F398 Was the player trying to take the coconut?
   $F398,$06 Call #R$C37F with #R$E9E5.
   $F39E,$02 Jump to #R$F3A8 if the token isn't for the coconut.
-  $F3A0,$05 Call #R$F26A with #ITEM$07.
+N $F3A0 Pick up the coconut.
+  $F3A0,$05 Call #R$F26A with item #N$07: #ITEM$07.
   $F3A5,$03 Jump to #R$F29C.
-N $F3A8 Was the player trying to take the gun?
+
+c $F3A8 Take: Gun
 @ $F3A8 label=Validate_Take_Gun
+D $F3A8 Was the player trying to take the gun?
   $F3A8,$06 Call #R$C37F with #R$E9EF.
   $F3AE,$02 Jump to #R$F3D5 if the token isn't for the gun.
-  $F3B0,$05 Call #R$F26A with #ITEM$0F.
-  $F3B5,$05 Call #R$C35F with #ITEM$27.
-  $F3BA,$02 Jump to #R$F3CB if #ITEM$27 is present in the current room.
-  $F3BC,$02 #REGa=#N$22 (event ID: #N($22&$7F)).
-  $F3BE,$03 Call #R$C3EA.
-  $F3C1,$02 #REGa=#N$88.
-  $F3C3,$03 Call #R$C3FA.
-  $F3C6,$02 #REGb=#N$0F.
+N $F3B0 Pick up the gun.
+  $F3B0,$05 Call #R$F26A with item #N$0F: #ITEM$0F.
+N $F3B5 Is the parrot present?
+  $F3B5,$05 Call #R$C35F with item #N$27: #ITEM$27.
+  $F3BA,$02 Jump to #R$F3CB if #ITEM$27 is present.
+N $F3BC The parrot is gone; take the gun and wake the beach pirate.
+  $F3BC,$05 Call #R$C3EA with item #N$22: #ITEM$22.
+  $F3C1,$05 Call #R$C3FA with #N$88 (the pirate from the beach).
+  $F3C6,$02 Load #REGb with #ITEM$0F.
   $F3C8,$03 Jump to #R$F29C.
-
 N $F3CB Bad luck!
+@ $F3CB label=Validate_Take_Gun_BadLuck
   $F3CB,$04 Switch #R$EDD7 onto the stack so the next return actions a "game
 . over".
 N $F3CF Print "#STR$DBCC,$08($b==$FF)".
   $F3CF,$03 #REGhl=#R$DBCC.
   $F3D2,$03 Jump to #R$F03A.
-N $F3D5 Was the player trying to take the eyepatch?
+
+c $F3D5 Take: Eyepatch
 @ $F3D5 label=Validate_Take_Eyepatch
+D $F3D5 Was the player trying to take the eyepatch?
   $F3D5,$06 Call #R$C37F with #R$E9F1.
   $F3DB,$02 Jump to #R$F3E9 if the token isn't for the eyepatch.
+N $F3DD Which eyepatch is present?
   $F3DD,$06 Call #R$C401 with #R$E885.
+N $F3E3 Pick up the eyepatch.
   $F3E3,$03 Call #R$F26A.
   $F3E6,$03 Jump to #R$F29C.
-N $F3E9 Was the player trying to take the keg of gunpowder?
+
+c $F3E9 Take: Keg Of Gunpowder
 @ $F3E9 label=Validate_Take_KegOfGunpowder
+D $F3E9 Was the player trying to take the keg of gunpowder?
   $F3E9,$06 Call #R$C37F with #R$E9F3.
   $F3EF,$02 Jump to #R$F403 if the token isn't for the keg of gunpowder.
+N $F3F1 Which gunpowder is present?
   $F3F1,$06 Call #R$C401 with #R$E888.
   $F3F7,$03 Call #R$F26A.
-  $F3FA,$01 #REGa=#REGb.
-  $F3FB,$02 Compare #REGa with #N$12.
-  $F3FD,$03 Jump to #R$F29C if #REGa is equal to #N$12.
+  $F3FA,$01 Copy the object ID back into #REGa.
+  $F3FB,$02 Compare #REGa with #ITEM$12.
+  $F3FD,$03 Jump to #R$F29C if this is #ITEM$12.
+N $F400 The keg is in the crocodile's mouth.
   $F400,$03 Jump to #R$F06F.
-N $F403 Was the player trying to take the sextant?
+
+c $F403 Take: Sextant
 @ $F403 label=Validate_Take_Sextant
+D $F403 Was the player trying to take the sextant?
   $F403,$06 Call #R$C37F with #R$E9FB.
   $F409,$02 Jump to #R$F413 if the token isn't for the sextant.
-  $F40B,$05 Call #R$F26A with #ITEM$16.
+N $F40B Pick up the sextant.
+  $F40B,$05 Call #R$F26A with item #N$16: #ITEM$16.
   $F410,$03 Jump to #R$F29C.
-N $F413 Was the player trying to take the crowbar?
+
+c $F413 Take: Crowbar
 @ $F413 label=Validate_Take_Crowbar
+D $F413 Was the player trying to take the crowbar?
   $F413,$06 Call #R$C37F with #R$E9FD.
   $F419,$02 Jump to #R$F423 if the token isn't for the crowbar.
-  $F41B,$05 Call #R$F26A with #ITEM$1E.
+N $F41B Pick up the crowbar.
+  $F41B,$05 Call #R$F26A with item #N$1E: #ITEM$1E.
   $F420,$03 Jump to #R$F29C.
-N $F423 Was the player trying to take the key?
+
+c $F423 Take: Key
 @ $F423 label=Validate_Take_Key
+E $F423 View the equivalent code in;
+. #LIST
+. { #FOREST$EFE8 }
+. { #ANDROMEDA$910A }
+. LIST#
+D $F423 Was the player trying to take the key?
   $F423,$06 Call #R$C37F with #R$E9FF.
   $F429,$02 Jump to #R$F433 if the token isn't for the key.
-  $F42B,$05 Call #R$F26A with #ITEM$1F.
+N $F42B Pick up the key.
+  $F42B,$05 Call #R$F26A with item #N$1F: #ITEM$1F.
   $F430,$03 Jump to #R$F29C.
-N $F433 Was the player trying to take the skull?
+
+c $F433 Take: Skull
 @ $F433 label=Validate_Take_Skull
+D $F433 Was the player trying to take the skull?
   $F433,$06 Call #R$C37F with #R$EA01.
   $F439,$02 Jump to #R$F443 if the token isn't for the skull.
-  $F43B,$05 Call #R$F26A with #ITEM$20.
+N $F43B Pick up the skull.
+  $F43B,$05 Call #R$F26A with item #N$20: #ITEM$20.
   $F440,$03 Jump to #R$F29C.
-N $F443 Was the player trying to take the spear?
+
+c $F443 Take: Spear
 @ $F443 label=Validate_Take_Spear
+D $F443 Was the player trying to take the spear?
   $F443,$06 Call #R$C37F with #R$EA06.
   $F449,$02 Jump to #R$F45D if the token isn't for the spear.
+N $F44B Which spear is present?
   $F44B,$06 Call #R$C401 with #R$E8A0.
   $F451,$03 Call #R$F26A.
-  $F454,$01 #REGa=#REGb.
-  $F455,$02 Compare #REGa with #N$1A.
-  $F457,$03 Jump to #R$F29C if #REGa is equal to #N$1A.
+  $F454,$01 Copy the object ID back into #REGa.
+  $F455,$02 Compare #REGa with #ITEM$1A.
+  $F457,$03 Jump to #R$F29C if this is #ITEM$1A.
+N $F45A The natives still have the spear.
   $F45A,$03 Jump to #R$F06F.
-N $F45D Was the player trying to take the parrot?
+
+c $F45D Take: Parrot
 @ $F45D label=Validate_Take_Parrot
+D $F45D Was the player trying to take the parrot?
   $F45D,$06 Call #R$C37F with #R$EA08.
   $F463,$02 Jump to #R$F47E if the token isn't for the parrot.
+N $F465 Which parrot is present?
   $F465,$06 Call #R$C401 with #R$E8BC.
   $F46B,$03 Call #R$F26A.
-  $F46E,$01 #REGa=#REGb.
-  $F46F,$02 Compare #REGa with #N$28.
-  $F471,$03 Jump to #R$F29C if #REGa is equal to #N$28.
+  $F46E,$01 Copy the object ID back into #REGa.
+  $F46F,$02 Compare #REGa with #ITEM$28.
+  $F471,$03 Jump to #R$F29C if this is #ITEM$28.
 N $F474 Bad luck!
   $F474,$04 Switch #R$EDD7 onto the stack so the next return actions a "game
 . over".
@@ -5644,6 +6119,7 @@ N $F478 Print "#STR$DBCC,$08($b==$FF)".
 N $F47E Nothing else is valid.
 @ $F47E label=Take_Invalid
   $F47E,$03 Jump to #R$F06F.
+
 
 c $F481 Action: Get
 @ $F481 label=Action_Get
@@ -5695,6 +6171,7 @@ N $F4D1 Pivot to "TAKE" as a synonym.
 
 c $F4D4 Action: Drop/ Throw
 @ $F4D4 label=Action_DropThrow
+D $F4D4 Drop or throw one of the objects the player named.
   $F4D4,$03 Call #R$C47B.
   $F4D7,$01 Return if the direct object is malformed.
 N $F4D8 Start by calling the chain of items to check...
@@ -5859,16 +6336,14 @@ N $F61F Was the player trying to drop or throw the plank across the pit?
   $F646,$06 Call #R$C37F with #R$EA2A.
   $F64C,$02 Jump to #R$F659 if the token isn't for dropping/ throwing the spear
 . at the lion.
-  $F64E,$02 #REGa=#N$1A.
-  $F650,$03 Call #R$F635.
+  $F64E,$05 Call #R$F635 with item #N$1A: #ITEM$1A.
 N $F653 Print "#STR$DC4F,$08($b==$FF)".
   $F653,$03 #REGhl=#R$DC4F.
   $F656,$03 Jump to #R$F03A.
   $F659,$06 Call #R$C37F with #R$EA2E.
   $F65F,$02 Jump to #R$F66C if the token isn't for dropping/ throwing the
 . coconut at the lion.
-  $F661,$02 #REGa=#N$07.
-  $F663,$03 Call #R$F635.
+  $F661,$05 Call #R$F635 with item #N$07: #ITEM$07.
 N $F666 Print "#STR$DC82,$08($b==$FF)".
   $F666,$03 #REGhl=#R$DC82.
   $F669,$03 Jump to #R$F03A.
@@ -5876,8 +6351,7 @@ N $F666 Print "#STR$DC82,$08($b==$FF)".
   $F66C,$06 Call #R$C37F with #R$EA32.
   $F672,$02 Jump to #R$F67F if the token isn't for dropping/ throwing the fruit
 . at the lion.
-  $F674,$02 #REGa=#N$0E.
-  $F676,$03 Call #R$F635.
+  $F674,$05 Call #R$F635 with item #N$0E: #ITEM$0E.
 N $F679 Print "#STR$DCED,$08($b==$FF)".
   $F679,$03 #REGhl=#R$DCED.
   $F67C,$03 Jump to #R$F03A.
@@ -5888,34 +6362,34 @@ N $F679 Print "#STR$DCED,$08($b==$FF)".
   $F68D,$03 Call #R$F635.
   $F690,$01 #REGa=#REGe.
   $F691,$03 Call #R$C3EA.
-  $F694,$02 #REGa=#N$2A (event ID: #N($2A&$7F)).
-  $F696,$03 Call #R$C3EA.
-  $F699,$05 Write #N$3C to *#R$EC3F.
+  $F694,$05 Call #R$C3EA with #N$2A (event ID: #N($2A&$7F)).
+N $F699 This action changes the map:
+  $F699,$05 Write #N$3C to *#R$EC3F to open up westbound access to #ROOM$3C
+. from #ROOM$32.
 N $F69E Print "#STR$DD1B,$08($b==$FF)".
   $F69E,$03 #REGhl=#R$DD1B.
   $F6A1,$03 Jump to #R$F03A.
 
   $F6A4,$06 Call #R$C37F with #R$EA3F.
   $F6AA,$02 Jump to #R$F6C2 if the token isn't for the fruit at the parrot.
-  $F6AC,$02 Load #ITEM$0E into #REGa.
-  $F6AE,$03 Call #R$F635.
+  $F6AC,$05 Call #R$F635 with item #N$0E: #ITEM$0E.
   $F6B1,$06 Call #R$C426 to transform item #N$27 (#ITEM$27) into item #N$28
 . (#ITEM$28).
-  $F6B7,$05 Call #R$C3EA with #ITEM$0E (as the parrot ate it).
+  $F6B7,$05 Call #R$C3EA with item #N$0E: #ITEM$0E (as the parrot ate it).
 N $F6BC Print "#STR$DD6C,$08($b==$FF)".
   $F6BC,$03 #REGhl=#R$DD6C.
   $F6BF,$03 Jump to #R$F03A.
 
   $F6C2,$06 Call #R$C37F with #R$EA43.
   $F6C8,$02 Jump to #R$F6FD if the token isn't for the watch at the cannibals.
-  $F6CA,$05 Call #R$C35F with #ITEM$17.
+  $F6CA,$05 Call #R$C35F with item #N$17: #ITEM$17.
   $F6CF,$03 Jump to #R$F079 #ITEM$17 isn't in the current room.
-  $F6D2,$02 Load #ITEM$17 into #REGa.
-  $F6D4,$03 Call #R$F635.
+  $F6D2,$05 Call #R$F635 with item #N$17: #ITEM$17.
   $F6D7,$06 Call #R$C426 to transform item #N$18 (#ITEM$18) into item #N$19
 . (#ITEM$19).
   $F6DD,$06 Call #R$C426 to transform item #N$17 (#ITEM$17) into item #N$1A
 . (#ITEM$1A).
+N $F6E3 This action changes the map:
   $F6E3,$05 Write #N$1D to *#R$EBCD to open up westbound access to #ROOM$1D
 . from #ROOM$1F.
   $F6E8,$05 Write #N$20 to *#R$EBCB to open up southbound access to #ROOM$20
@@ -5930,9 +6404,10 @@ N $F6F7 Print "#STR$DDDD,$08($b==$FF)".
 
   $F6FD,$06 Call #R$C37F with #R$EA47.
   $F703,$02 Jump to #R$F729 if the token isn't for the spear at the octopus.
-  $F705,$05 Call #R$F635 using #ITEM$1A.
-  $F70A,$05 Call #R$C3EA with #ITEM$2B.
-  $F70F,$05 Call #R$C3EA with #ITEM$1A.
+  $F705,$05 Call #R$F635 with item #N$1A: #ITEM$1A.
+  $F70A,$05 Call #R$C3EA with item #N$2B: #ITEM$2B.
+  $F70F,$05 Call #R$C3EA with item #N$1A: #ITEM$1A.
+N $F714 This action changes the map:
   $F714,$05 Write #N$40 to *#R$EC8A to open up northbound access to #ROOM$40
 . from #ROOM$3F.
   $F719,$05 Write #N$41 to *#R$EC8B to open up southbound access to #ROOM$41
@@ -5944,13 +6419,12 @@ N $F723 Print "#STR$DE81,$08($b==$FF)".
 
   $F726,$03 Jump to #R$F03A.
   $F729,$06 Call #R$C37F with #R$EA50.
-  $F72F,$02 Jump to #R$F74F if the token isn't for the gunpowder at the crocodile.
-  $F731,$05 Call #R$C35F with #ITEM$12.
+  $F72F,$02 Jump to #R$F74F if the token isn't for the gunpowder at the
+. crocodile.
+  $F731,$05 Call #R$C35F with item #N$12: #ITEM$12.
   $F736,$03 Jump to #R$F079 if #ITEM$12 isn't in the current room.
-  $F739,$02 #REGa=#N$12.
-  $F73B,$03 Call #R$F635.
-  $F73E,$02 #REGa=#N$12 (event ID: #N($12&$7F)).
-  $F740,$03 Call #R$C3EA.
+  $F739,$05 Call #R$F635 with item #N$12: #ITEM$12.
+  $F73E,$05 Call #R$C3EA with #N$12 (event ID: #N($12&$7F)).
   $F743,$06 Call #R$C426 to transform item #N$13 (#ITEM$13) into item #N$14
 . (#ITEM$14).
 N $F749 Print "#STR$DF15,$08($b==$FF)".
@@ -5963,12 +6437,13 @@ N $F749 Print "#STR$DF15,$08($b==$FF)".
   $F75C,$03 Jump to #R$F06F if *#REGhl is equal to #N$12.
   $F75F,$06 Call #R$C401 with #R$E86E.
   $F765,$03 Call #R$F635.
-  $F768,$05 Call #R$C35F with #ITEM$12.
+  $F768,$05 Call #R$C35F with item #N$12: #ITEM$12.
   $F76D,$03 Jump to #R$F06A if #ITEM$12 is present in the current room.
-  $F770,$05 Call #R$C35F with #ITEM$02.
+  $F770,$05 Call #R$C35F with item #N$02: #ITEM$02.
   $F775,$03 Jump to #R$F06A if #ITEM$02 is present in the current room.
-  $F778,$05 Call #R$C3EA with #ITEM$03.
-  $F77D,$05 Call #R$C3EA with #ITEM$14.
+  $F778,$05 Call #R$C3EA with item #N$03: #ITEM$03.
+  $F77D,$05 Call #R$C3EA with item #N$14: #ITEM$14.
+N $F782 This action changes the map:
   $F782,$05 Write #N$4E to *#R$ECBC to open up eastbound access to #ROOM$4E
 . from #ROOM$47.
 N $F787 Print "#STR$DF8E,$08($b==$FF)".
@@ -5979,13 +6454,21 @@ N $F787 Print "#STR$DF8E,$08($b==$FF)".
   $F793,$02 Jump to #R$F7A8 if the token isn't for the match at the crocodile.
   $F795,$06 Call #R$C401 with #R$E86E.
   $F79B,$03 Call #R$F635.
-  $F79E,$05 Call #R$C35F with #ITEM$14.
+  $F79E,$05 Call #R$C35F with item #N$14: #ITEM$14.
   $F7A3,$02 Jump to #R$F770 if #ITEM$14 is present in the current room.
   $F7A5,$03 Jump to #R$F06A.
   $F7A8,$03 Jump to #R$F065.
 
 c $F7AB Action: Give
 @ $F7AB label=Action_Give
+E $F7AB View the equivalent code in;
+. #LIST
+. { #FOREST$F216 }
+. { #HEROES$F972 }
+. { #ANDROMEDA$941B }
+. { #WARLORD$F9B3 }
+. LIST#
+D $F7AB Hand fruit, fish or the watch to the lion, parrot or cannibals.
   $F7AB,$03 Call #R$C49F.
   $F7AE,$01 Return if the direct object is malformed.
 N $F7AF Was the player trying to lay/ place/ put fruit at the lion?
@@ -6009,16 +6492,17 @@ c $F7D6 Action: Place
   $F7D9,$01 Return if the direct object is malformed.
   $F7DA,$06 Call #R$C37F with #R$EA26.
   $F7E0,$02 Jump to #R$F813 if the token isn't for the plank across the pit.
-  $F7E2,$05 Call #R$C35F with #ITEM$04.
+  $F7E2,$05 Call #R$C35F with item #N$04: #ITEM$04.
   $F7E7,$03 Jump to #R$F079 if #ITEM$04 isn't in the current room.
-  $F7EA,$02 #REGa=#N$04.
-  $F7EC,$03 Call #R$F635.
-  $F7EF,$02 #REGa=#N$04 (event ID: #N($04&$7F)).
-  $F7F1,$03 Call #R$C3EA.
-  $F7F4,$06 Call #R$C412 using item #ITEM$05 to create it in #ROOM$66.
-  $F7FA,$06 Call #R$C412 using item #ITEM$06 to create it in #ROOM$68.
-  $F800,$05 Write #N$68 to *#R$ED75.
-  $F805,$05 Write #N$66 to *#R$ED80.
+  $F7EA,$05 Call #R$F635 with item #N$04: #ITEM$04.
+  $F7EF,$05 Call #R$C3EA with #N$04 (event ID: #N($04&$7F)).
+  $F7F4,$06 Call #R$C412 with item #N$05: #ITEM$05 to create it in #ROOM$66.
+  $F7FA,$06 Call #R$C412 with item #N$06: #ITEM$06 to create it in #ROOM$68.
+N $F800 This action changes the map:
+  $F800,$05 Write #N$68 to *#R$ED75 to open up southbound access to #ROOM$68
+. from #ROOM$66.
+  $F805,$05 Write #N$66 to *#R$ED80 to open up northbound access to #ROOM$66
+. from #ROOM$68.
   $F80A,$03 Call #R$F06A.
 N $F80D Print "#STR$E00C,$08($b==$FF)".
   $F80D,$03 #REGhl=#R$E00C.
@@ -6026,15 +6510,16 @@ N $F80D Print "#STR$E00C,$08($b==$FF)".
 
   $F813,$06 Call #R$C37F with #R$EA70.
   $F819,$02 Jump to #R$F84E if the token isn't for the rod in the hole.
-  $F81B,$05 Call #R$C35F with #ITEM$08.
+  $F81B,$05 Call #R$C35F with item #N$08: #ITEM$08.
   $F820,$03 Jump to #R$F079 if #ITEM$08 isn't in the current room.
-  $F823,$05 Call #R$F635 with #ITEM$08.
-  $F828,$05 Call #R$C3EA with #ITEM$08.
+  $F823,$05 Call #R$F635 with item #N$08: #ITEM$08.
+  $F828,$05 Call #R$C3EA with item #N$08: #ITEM$08.
   $F82D,$06 Call #R$C426 to transform item #N$09 (#ITEM$09) into item #N$0A
 . (#ITEM$0A).
   $F833,$06 Call #R$C426 to transform item #N$32 (#ITEM$32) into item #N$31
 . (#ITEM$31).
-  $F839,$05 Call #R$C3EA with #ITEM$33.
+  $F839,$05 Call #R$C3EA with item #N$33: #ITEM$33.
+N $F83E This action changes the map:
   $F83E,$05 Write #N$6A to *#R$EB90 to open up eastbound access to #ROOM$6A
 . from #ROOM$15.
   $F843,$05 Write #N$15 to *#R$ED8D to open up southbound access to #ROOM$15
@@ -6046,6 +6531,14 @@ N $F848 Print "#STR$E029,$08($b==$FF)".
 
 c $F851 Action: Kill
 @ $F851 label=Action_Kill
+E $F851 View the equivalent code in;
+. #LIST
+. { #FOREST$F2A7 }
+. { #HEROES$FA72 }
+. { #ANDROMEDA$952B }
+. { #WARLORD$FC4B }
+. LIST#
+D $F851 Attack the named creature with a weapon.
   $F851,$03 Call #R$C49F.
   $F854,$01 Return if the direct object is malformed.
 N $F855 Was the player trying to kill ... the octopus with the spear?
@@ -6053,10 +6546,11 @@ N $F855 Was the player trying to kill ... the octopus with the spear?
   $F85B,$02 Jump to #R$F888 if the token isn't for the octopus with the spear.
   $F85D,$05 Call #R$C3E4 with item #N$1A: #ITEM$1A.
   $F862,$03 Jump to #R$F07E if *#REGhl is not equal to #N$1A.
-  $F865,$05 Call #R$C3EA with #ITEM$1A.
-  $F86A,$05 Call #R$C3EA with #ITEM$2B.
+  $F865,$05 Call #R$C3EA with item #N$1A: #ITEM$1A.
+  $F86A,$05 Call #R$C3EA with item #N$2B: #ITEM$2B.
   $F86F,$03 #REGhl=#R$BC98.
   $F872,$01 Decrease *#REGhl by one.
+N $F873 This action changes the map:
   $F873,$05 Write #N$40 to *#R$EC8A to open up northbound access to #ROOM$40
 . from #ROOM$3F.
   $F878,$05 Write #N$41 to *#R$EC8B to open up southbound access to #ROOM$41
@@ -6067,6 +6561,7 @@ N $F882 Print "#STR$DE81,$08($b==$FF)".
   $F882,$03 #REGhl=#R$DE81.
   $F885,$03 Jump to #R$F03A.
 
+N $F888 Was the player trying to kill ... the lion with the spear?
   $F888,$06 Call #R$C37F with #R$EA96.
   $F88E,$02 Jump to #R$F89E if the token isn't for the lion with the spear.
   $F890,$05 Call #R$C3E4 with item #N$1A: #ITEM$1A.
@@ -6075,6 +6570,8 @@ N $F898 Print "#STR$E07F,$08($b==$FF)".
   $F898,$03 #REGhl=#R$E07F.
   $F89B,$03 Jump to #R$F03A.
 
+N $F89E Was the player trying to kill ... the cannibals with the
+. spear?
   $F89E,$06 Call #R$C37F with #R$EA9A.
   $F8A4,$02 Jump to #R$F8B8 if the token isn't for the cannibals with the spear.
   $F8A6,$05 Call #R$C3E4 with item #N$1A: #ITEM$1A.
@@ -6086,6 +6583,7 @@ N $F8B2 Print "#STR$E0B4,$08($b==$FF)".
   $F8B2,$03 #REGhl=#R$E0B4.
   $F8B5,$03 Jump to #R$F03A.
 
+N $F8B8 Was the player trying to kill ... the pirate with the gun?
   $F8B8,$06 Call #R$C37F with #R$EA9E.
   $F8BE,$02 Jump to #R$F90A if the token isn't for the pirate with the gun.
   $F8C0,$05 Call #R$C3E4 with item #N$0F: #ITEM$0F.
@@ -6132,19 +6630,22 @@ B $F905,$01 Event #N$84 (a pirate): item #N(#PEEK(#PC)), #ITEM(#PEEK(#PC)).
 B $F906,$01 Event #N$85 (a pirate): item #N(#PEEK(#PC)), #ITEM(#PEEK(#PC)).
 B $F907,$02 Events #N$86 and #N$87 (the water snake and the spider): not used,
 . as #R$F8C8 only ever finds a pirate.
-B $F909,$01 Event #N$88 (the pirate from the beach): item #N(#PEEK(#PC)), #ITEM(#PEEK(#PC)).
+B $F909,$01 Event #N$88 (the pirate from the beach): item #N(#PEEK(#PC)),
+. #ITEM(#PEEK(#PC)).
+N $F90A Was the player trying to kill ... the parrot with the gun?
   $F90A,$06 Call #R$C37F with #R$EAA2.
   $F910,$02 Jump to #R$F918 if the token isn't for the parrot with the gun.
 N $F912 Print "#STR$E14B,$08($b==$FF)".
   $F912,$03 #REGhl=#R$E14B.
   $F915,$03 Jump to #R$F03A.
+N $F918 Nothing else is valid.
   $F918,$03 Jump to #R$F06F.
 
 c $F91B Action: Shoot
 @ $F91B label=Action_Shoot
   $F91B,$03 Call #R$C47B.
   $F91E,$01 Return if the direct object is malformed.
-  $F91F,$05 Call #R$C3E4 with item: #ITEM$0F.
+  $F91F,$05 Call #R$C3E4 with item #N$0F: #ITEM$0F.
   $F924,$02 Jump to #R$F92C if the player has the gun in their inventory.
 N $F926 Print "#STR$E15E,$08($b==$FF)".
   $F926,$03 #REGhl=#R$E15E.
@@ -6163,34 +6664,53 @@ N $F943 Nothing else is valid.
 
 c $F946 Action: Climb
 @ $F946 label=Action_Climb
+E $F946 View the equivalent code in;
+. #LIST
+. { #FOREST$F190 }
+. { #WARLORD$FADD }
+. LIST#
+D $F946 Climb the ladder, or into and out of the boat.
   $F946,$03 Call #R$C47B.
   $F949,$01 Return if the direct object is malformed.
+N $F94A Was the player trying to climb ... up the ladder?
   $F94A,$06 Call #R$C37F with #R$EAB2.
   $F950,$02 Jump to #R$F960 if the token isn't for up the ladder.
   $F952,$08 Jump to #R$F06F if *#R$BCCB is not room #N$04: "#ROOM$04".
   $F95A,$05 Call #R$EF54 to room #N$03: #ROOM$03.
   $F95F,$01 Return.
 
+N $F960 Was the player trying to climb ... down the ladder?
   $F960,$06 Call #R$C37F with #R$EAB5.
   $F966,$02 Jump to #R$F976 if the token isn't for down the ladder.
   $F968,$08 Jump to #R$F06F if *#R$BCCB is not room #N$03: "#ROOM$03".
   $F970,$05 Call #R$EF54 to room #N$04: #ROOM$04.
   $F975,$01 Return.
 
+N $F976 Was the player trying to climb ... the ladder?
   $F976,$06 Call #R$C37F with #R$EABC.
   $F97C,$02 Jump to #R$F984 if the token isn't for the ladder.
 N $F97E Print "#STR$BED1,$08($b==$FF)".
   $F97E,$03 #REGhl=#R$BED1.
   $F981,$03 Jump to #R$F03A.
 
+N $F984 Was the player trying to climb ... into the boat?
   $F984,$06 Call #R$C37F with #R$EA0D.
   $F98A,$03 Jump to #R$F48D if the token is for into the boat.
+N $F98D Was the player trying to climb ... out of the boat?
   $F98D,$06 Call #R$C37F with #R$EA1D.
   $F993,$03 Jump to #R$F4B4 if the token is for out of the boat.
+N $F996 Nothing else is valid.
   $F996,$03 Jump to #R$F06F.
 
 c $F999 Action: Eat
 @ $F999 label=Action_Eat
+E $F999 View the equivalent code in;
+. #LIST
+. { #FOREST$F26D }
+. { #ANDROMEDA$9469 }
+. { #WARLORD$FBC3 }
+. LIST#
+D $F999 Eat the fish, fruit or coconut.
   $F999,$03 Call #R$C47B.
   $F99C,$01 Return if the direct object is malformed.
   $F99D,$06 Call #R$C37F with #R$E9CC.
@@ -6226,6 +6746,14 @@ N $F9DB Print "#STR$E208,$08($b==$FF)".
 
 c $F9E4 Action: Drink
 @ $F9E4 label=Action_Drink
+E $F9E4 View the equivalent code in;
+. #LIST
+. { #FOREST$F292 }
+. { #HEROES$FAA5 }
+. { #ANDROMEDA$98AB }
+. { #WARLORD$FA91 }
+. LIST#
+D $F9E4 Drink the rum or the fresh water.
   $F9E4,$03 Call #R$C47B.
   $F9E7,$01 Return if the direct object is malformed.
 N $F9E8 Was the player trying to drink the rum?
@@ -6271,8 +6799,10 @@ N $FA2F Print "#STR$E2AC,$08($b==$FF)".
   $FA2F,$03 #REGhl=#R$E2AC.
   $FA32,$03 Jump to #R$F03A.
 @ $FA35 label=Table_RoomsFreshWater
-N $FA35 #HTML(The #N$04 rooms with fresh water. Anywhere else the water (#R$E902) is
-. salty. #R$F9E4 searches this list with a <code>CPIR</code>, so its length is the
+N $FA35 #HTML(The #N$04 rooms with fresh water. Anywhere else the water
+. (#R$E902) is
+. salty. #R$F9E4 searches this list with a <code>CPIR</code>, so its length is
+. the
 . #N$04 loaded at #R$FA22.)
 B $FA35,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $FA35,$01,$04,$02
@@ -6282,6 +6812,13 @@ N $FA39 Nothing else is valid.
 
 c $FA3C Action: Open
 @ $FA3C label=Action_Open
+E $FA3C View the equivalent code in;
+. #LIST
+. { #FOREST$F5F1 }
+. { #HEROES$F9DC }
+. { #ANDROMEDA$96E7 }
+. LIST#
+D $FA3C Open the named door, chest or other container.
   $FA3C,$03 Call #R$C47B.
   $FA3F,$01 Return if the direct object is malformed.
 N $FA40 Was the player trying to open the door?
@@ -6310,6 +6847,7 @@ N $FA6C Change the door states!
 . (#ITEM$2C).
   $FA72,$06 Call #R$C426 to transform item #N$30 (#ITEM$30) into item #N$2F
 . (#ITEM$2F).
+N $FA78 This action changes the map:
 N $FA78 Now the door is opened, this opens up various routes.
   $FA78,$05 Write #N$62 to *#R$ED57 to open up southbound access to #ROOM$62
 . from #ROOM$61.
@@ -6324,7 +6862,7 @@ N $FA8D The player was trying to open the rock door, but is it in the current
 . room with them?
   $FA8D,$07 Jump to #R$FAA5 if *#R$BCCB is not room #N$6A: "#ROOM$6A".
 N $FA94 Is the rock door already open?
-  $FA94,$05 Call #R$C35F with #ITEM$31.
+  $FA94,$05 Call #R$C35F with item #N$31: #ITEM$31.
   $FA99,$03 Jump to #R$F088 if #ITEM$31 is present in the current room.
 N $FA9C The rock door is here, but ...
 N $FA9C Print "#STR$BF00,$08($b==$FF)".
@@ -6338,6 +6876,13 @@ N $FAA5 Nothing else is valid.
 
 c $FAA8 Action: Close
 @ $FAA8 label=Action_Close
+E $FAA8 View the equivalent code in;
+. #LIST
+. { #FOREST$F68C }
+. { #HEROES$F9E3 }
+. { #ANDROMEDA$975A }
+. LIST#
+D $FAA8 Close the named door, chest or other container.
   $FAA8,$03 Call #R$C47B.
   $FAAB,$01 Return if the direct object is malformed.
 N $FAAC Was the player trying to close the door?
@@ -6359,6 +6904,7 @@ N $FACF Change the door states!
 . (#ITEM$2D).
   $FAD5,$06 Call #R$C426 to transform item #N$2F (#ITEM$2F) into item #N$30
 . (#ITEM$30).
+N $FADB This action changes the map:
 N $FADB Now the door is shut, this closes off various routes.
   $FADB,$04 Write #N$00 to *#R$ED57 to close off southbound access to #ROOM$62
 . from #ROOM$61.
@@ -6373,7 +6919,7 @@ N $FAED The player is trying to close the rock door, but is it in the current
 . room with them?
   $FAED,$07 Jump to #R$FB05 if *#R$BCCB is not room #N$6A: "#ROOM$6A".
 N $FAF4 Is the rock door already closed?
-  $FAF4,$05 Call #R$C35F with #ITEM$32.
+  $FAF4,$05 Call #R$C35F with item #N$32: #ITEM$32.
   $FAF9,$03 Jump to #R$F08D if #ITEM$32 is present in the current room.
 N $FAFC Print "#STR$BF00,$08($b==$FF)".
   $FAFC,$03 Call #R$F06F.
@@ -6401,10 +6947,10 @@ N $FB1C Was the player trying to shout/ shout loud?
   $FB22,$02 Jump to #R$FB6E if the token isn't for shouting.
 N $FB24 The player was trying to shout, but are they in the room with the
 . boulder?
-  $FB24,$05 Call #R$C35F with #ITEM$39.
+  $FB24,$05 Call #R$C35F with item #N$39: #ITEM$39.
   $FB29,$03 Jump to #R$F06A if #ITEM$39 isn't in the current room.
 N $FB2C The player is in the room with the boulder, but is the crab also here?
-  $FB2C,$05 Call #R$C35F with #ITEM$29.
+  $FB2C,$05 Call #R$C35F with item #N$29: #ITEM$29.
   $FB31,$02 Jump to #R$FB43 if the crab is in the current room.
 N $FB33 Bad luck!
   $FB33,$04 Switch #R$EDD7 onto the stack so the next return actions a "game
@@ -6423,6 +6969,7 @@ N $FB48 Make the crab inactive.
 N $FB4D Change the boulder state!
   $FB4D,$06 Call #R$C426 to transform item #N$39 (#ITEM$39) into item #N$3A
 . (#ITEM$3A).
+N $FB53 This action changes the map:
 N $FB53 Now the crab is gone, this opens up various routes.
   $FB53,$05 Write #N$2F to *#R$EC27 to open up westbound access to #ROOM$2F
 . from #ROOM$2E.
@@ -6456,6 +7003,12 @@ N $FB80 Nothing else is valid.
 
 c $FB83 Action: Swearing
 @ $FB83 label=Action_Swearing
+E $FB83 View the equivalent code in;
+. #LIST
+. { #FOREST$F869 }
+. { #WARLORD$FBB9 }
+. LIST#
+D $FB83 Swearing has no effect.
   $FB83,$03 Call #R$C47B.
   $FB86,$01 Return if the direct object is malformed.
 N $FB87 Provide an initial full response for when the player swears.
@@ -6492,11 +7045,12 @@ N $FBB1 Was the player trying to pull ... the ring?
   $FBB1,$06 Call #R$C37F with #R$EACB.
   $FBB7,$02 Jump to #R$FBD2 if the token isn't for the ring.
 N $FBB9 The player was trying to pull the ring, but did they do that already?
-  $FBB9,$05 Call #R$C35F with #ITEM$34.
+  $FBB9,$05 Call #R$C35F with item #N$34: #ITEM$34.
   $FBBE,$03 Jump to #R$F065 if the trapdoor is already open.
 N $FBC1 Change the ring/ trapdoor state!
   $FBC1,$06 Call #R$C426 to transform item #N$3B (#ITEM$3B) into item #N$34
 . (#ITEM$34).
+N $FBC7 This action changes the map:
   $FBC7,$05 Write #N$60 to *#R$ED4F to open up downward access to #ROOM$60
 . from #ROOM$5F.
 N $FBCC Print "#STR$E40B,$08($b==$FF)".
@@ -6510,8 +7064,11 @@ c $FBD5 Action: Wear
 @ $FBD5 label=Action_Wear
 E $FBD5 View the equivalent code in;
 . #LIST
+. { #FOREST$F79D }
+. { #ANDROMEDA$9861 }
 . { #WARLORD$FB5D }
 . LIST#
+D $FBD5 Wear the eyepatch.
   $FBD5,$03 Call #R$C47B.
   $FBD8,$01 Return if the direct object is malformed.
   $FBD9,$05 Jump to #R$F074 if #REGa is greater than #N$02.
@@ -6520,7 +7077,7 @@ N $FBDE Was the player trying to wear ... the eyepatch?
   $FBE4,$02 Jump to #R$FC0A if the token isn't for the eyepatch.
 N $FBE6 The player was trying to wear the eyepatch, but are they wearing it
 . already?
-  $FBE6,$05 Call #R$C35F with #ITEM$11.
+  $FBE6,$05 Call #R$C35F with item #N$11: #ITEM$11.
   $FBEB,$02 Jump to #R$FBF3 if #ITEM$11 isn't in the current room.
 N $FBED Print "#STR$E44C,$08($b==$FF)".
   $FBED,$03 #REGhl=#R$E44C.
@@ -6528,7 +7085,7 @@ N $FBED Print "#STR$E44C,$08($b==$FF)".
 N $FBF3 The player was trying to wear the eyepatch, but is it either in the
 . room or in the players inventory?
 @ $FBF3 label=Validate_Wear_Eyepatch
-  $FBF3,$05 Call #R$C3E4 using item #N$10: #ITEM$10.
+  $FBF3,$05 Call #R$C3E4 with item #N$10: #ITEM$10.
   $FBF8,$03 Jump to #R$F07E if the eyepatch is either not in the room or not in
 . the players inventory.
 N $FBFB Change the eyepatch state!
@@ -6554,6 +7111,10 @@ N $FC21 Nothing else is valid.
 
 c $FC24 Action: Light
 @ $FC24 label=Action_Light
+E $FC24 View the equivalent code in;
+. #LIST
+. { #HEROES$FB13 }
+. LIST#
   $FC24,$03 Call #R$C47B.
   $FC27,$01 Return if the direct object is malformed.
   $FC28,$05 Jump to #R$F074 if #REGa is greater than #N$02.
@@ -6563,12 +7124,12 @@ N $FC33 The match is the only item which is light/ strikable.
   $FC33,$02 Jump to #R$FC5E if the token isn't for the match.
 N $FC35 The player definitely wants to light the match ... but is it already
 . lit?
-  $FC35,$05 Call #R$C35F using item: #ITEM$03.
+  $FC35,$05 Call #R$C35F with item #N$03: #ITEM$03.
   $FC3A,$03 Jump to #R$F079 if the lit match is already in the players
 . possession.
 N $FC3D The match isn't already lit, but is it either in the room, or in the
 . players inventory?
-  $FC3D,$05 Call #R$C3E4 using item #N$02: #ITEM$02.
+  $FC3D,$05 Call #R$C3E4 with item #N$02: #ITEM$02.
   $FC42,$03 Jump to #R$F07E if the player is not holding the (unlit) match.
 N $FC45 The player can light the match- so go ahead and do this.
   $FC45,$06 Call #R$C426 to transform item #N$02 (#ITEM$02) into item #N$03
@@ -6587,6 +7148,13 @@ N $FC5E Nothing else is valid.
 
 c $FC61 Action: Enter
 @ $FC61 label=Action_Enter
+E $FC61 View the equivalent code in;
+. #LIST
+. { #FOREST$F71B }
+. { #ANDROMEDA$93A1 }
+. { #WARLORD$FB21 }
+. LIST#
+D $FC61 Go into a cave, hut, cabin or other place that can be entered.
   $FC61,$03 Call #R$C47B.
   $FC64,$01 Return if the direct object is malformed.
   $FC65,$05 Jump to #R$F074 if #REGa is greater than #N$02.
@@ -6650,6 +7218,7 @@ E $FCCD View the equivalent code in;
 . #LIST
 . { #FOREST$F8E4 }
 . LIST#
+D $FCCD Unlock a door with the key.
   $FCCD,$03 Call #R$C47B.
   $FCD0,$01 Return if the direct object is malformed.
 N $FCD1 Was the player trying to unlock the door?
@@ -6659,7 +7228,7 @@ N $FCD9 The player was trying to unlock the door, but is the door even in the
 . current room?
   $FCD9,$08 Jump to #R$F06F if *#R$BCCB is room #N$6A: "#ROOM$6A".
 N $FCE1 It's the correct door, but is it already unlocked?
-  $FCE1,$05 Call #R$C35F with #ITEM$2E.
+  $FCE1,$05 Call #R$C35F with item #N$2E: #ITEM$2E.
   $FCE6,$03 Jump to #R$F079 if #ITEM$2E isn't in the current room.
 N $FCE9 And does the player have the key?
   $FCE9,$05 Call #R$C3E4 with item #N$1F: #ITEM$1F.
@@ -6679,6 +7248,11 @@ N $FCFF Nothing else is valid.
 
 c $FD02 Action: Row
 @ $FD02 label=Action_Row
+E $FD02 View the equivalent code in;
+. #LIST
+. { #FOREST$F8AB }
+. LIST#
+D $FD02 Row the boat between the shore rooms, or out to sea.
   $FD02,$03 Call #R$C4B7.
   $FD05,$01 Return if the direct object is malformed.
   $FD06,$05 Jump to #R$F074 if #REGa is greater than #N$02.
@@ -6694,7 +7268,8 @@ N $FD18 Print "#STR$DC37,$08($b==$FF)".
   $FD1B,$03 Jump to #R$F03A.
 @ $FD1E label=Table_RoomsRowingBoat
 N $FD1E #HTML(The #N$03 rooms where the player is sitting in the rowing boat, so
-. "ROW" makes sense. #R$FD02 searches this list with a <code>CPIR</code>, so its length is
+. "ROW" makes sense. #R$FD02 searches this list with a <code>CPIR</code>, so its
+. length is
 . the #N$03 loaded at #R$FD11.)
 B $FD1E,$01 Room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $FD1E,$01,$03,$02
@@ -6735,6 +7310,11 @@ N $FD67 Player is now lost...
 
 c $FD6D Action: Kick
 @ $FD6D label=Action_Kick
+E $FD6D View the equivalent code in;
+. #LIST
+. { #FOREST$F81D }
+. LIST#
+D $FD6D Kicking has no effect.
   $FD6D,$03 Call #R$C47B.
   $FD70,$01 Return if the direct object is malformed.
   $FD71,$05 Jump to #R$F074 if #REGa is equal to #N$02.
@@ -6744,6 +7324,13 @@ N $FD76 Print "#STR$DB5F,$08($b==$FF)".
 
 c $FD7C Action: Swim
 @ $FD7C label=Action_Swim
+E $FD7C View the equivalent code in;
+. #LIST
+. { #FOREST$F7EB }
+. { #ANDROMEDA$947C }
+. { #WARLORD$FC8D }
+. LIST#
+D $FD7C Swimming has no useful effect.
 N $FD7C Print "#STR$E5A4,$08($b==$FF)".
   $FD7C,$03 #REGhl=#R$E5A4.
   $FD7F,$03 Jump to #R$F03A.
@@ -6752,9 +7339,14 @@ c $FD82 Game Start
 @ $FD82 label=GameStart
 E $FD82 View the equivalent code in;
 . #LIST
+. { #SHOCK$ADA1 }
+. { #FOREST$F964 }
 . { #HEROES$FBA9 }
+. { #ANDROMEDA$F8AF }
 . { #WARLORD$FCCE }
 . LIST#
+D $FD82 Copy in a fresh game state, seal room exits that puzzles reopen,
+. and start by the ladder.
   $FD82,$0B Copy #N$0144 bytes from #R$FDB5 to #R$BBF0.
 N $FD8D Remove a bunch of room exits (as actions in the game will open them
 . back up).
@@ -6834,31 +7426,46 @@ B $FDE7,$01 Item #N$32 (#ITEM$32): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
 B $FDE8,$01 Item #N$33 (#ITEM$33): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
 B $FDE9,$01 Item #N$34 (#ITEM$34): not in play (#N(#PEEK(#PC))).
 B $FDEA,$01 Item #N$35 (#ITEM$35): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDEB,$01 Item #N$36 (no description: never used): not in play (#N(#PEEK(#PC))).
+B $FDEB,$01 Item #N$36 (no description: never used): not in play
+. (#N(#PEEK(#PC))).
 B $FDEC,$01 Item #N$37 (#ITEM$37): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
 B $FDED,$01 Item #N$38 (#ITEM$38): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
 B $FDEE,$01 Item #N$39 (#ITEM$39): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
 B $FDEF,$01 Item #N$3A (#ITEM$3A): not in play (#N(#PEEK(#PC))).
 B $FDF0,$01 Item #N$3B (#ITEM$3B): not in play (#N(#PEEK(#PC))).
 B $FDF1,$01 Item #N$3C (#ITEM$3C): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDF2,$01 Item #N$3D (no description: the cave and its water in The Cave): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDF3,$01 Item #N$3E (no description: the cave in The Vast Cavern): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDF4,$01 Item #N$3F (no description: the pit): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDF5,$01 Item #N$40 (no description: the pit): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDF6,$01 Item #N$41 (no description: the pit): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
+B $FDF2,$01 Item #N$3D (no description: the cave and its water in The Cave):
+. room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
+B $FDF3,$01 Item #N$3E (no description: the cave in The Vast Cavern): room
+. #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
+B $FDF4,$01 Item #N$3F (no description: the pit): room #N(#PEEK(#PC)),
+. #ROOM(#PEEK(#PC)).
+B $FDF5,$01 Item #N$40 (no description: the pit): room #N(#PEEK(#PC)),
+. #ROOM(#PEEK(#PC)).
+B $FDF6,$01 Item #N$41 (no description: the pit): room #N(#PEEK(#PC)),
+. #ROOM(#PEEK(#PC)).
 B $FDF7,$01 Item #N$42 (#ITEM$42): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDF8,$01 Item #N$43 (no description: the sea): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDF9,$01 Item #N$44 (no description: the water in the rock pool): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDFA,$01 Item #N$45 (no description: the water at the waterfall): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDFB,$01 Item #N$46 (no description: the pool of water): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDFC,$01 Item #N$47 (no description: the water in the gulley): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDFD,$01 Item #N$48 (no description: the water in the damp passage): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDFE,$01 Item #N$49 (no description: the cave at The Harbour Beach): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FDFF,$01 Item #N$4A (no description: the marker for the moved stone): not in play (#N(#PEEK(#PC))).
+B $FDF8,$01 Item #N$43 (no description: the sea): room #N(#PEEK(#PC)),
+. #ROOM(#PEEK(#PC)).
+B $FDF9,$01 Item #N$44 (no description: the water in the rock pool): room
+. #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
+B $FDFA,$01 Item #N$45 (no description: the water at the waterfall): room
+. #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
+B $FDFB,$01 Item #N$46 (no description: the pool of water): room #N(#PEEK(#PC)),
+. #ROOM(#PEEK(#PC)).
+B $FDFC,$01 Item #N$47 (no description: the water in the gulley): room
+. #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
+B $FDFD,$01 Item #N$48 (no description: the water in the damp passage): room
+. #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
+B $FDFE,$01 Item #N$49 (no description: the cave at The Harbour Beach): room
+. #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
+B $FDFF,$01 Item #N$4A (no description: the marker for the moved stone): not in
+. play (#N(#PEEK(#PC))).
 B $FE00,$01 Item #N$4B (#ITEM$4B): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
 B $FE01,$01 Item #N$4C (#ITEM$4C): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
 B $FE02,$01 Item #N$4D (#ITEM$4D): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FE03,$01 Item #N$4E (no description: the bridge at The Bridge): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
+B $FE03,$01 Item #N$4E (no description: the bridge at The Bridge): room
+. #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
 B $FE04,$15 Spare item slots (#R$BC3F).
 N $FE19 Flags, pictures and turn-based events.
 B $FE19,$01 Game flags (#R$BC54): none set.
@@ -6868,7 +7475,8 @@ B $FE23,$08 Unused (#R$BC5E).
 B $FE2B,$01 Turn-based events (#R$BC66): none started.
 B $FE2C,$08 Turn-based event counters (#R$BC67).
 B $FE34,$01 Following flags (#R$BC6F): none.
-B $FE35,$01 Following item for bit 0 (#R$BC70): item #N(#PEEK(#PC)), #ITEM(#PEEK(#PC)).
+B $FE35,$01 Following item for bit 0 (#R$BC70): item #N(#PEEK(#PC)),
+. #ITEM(#PEEK(#PC)).
 B $FE36,$07 Following items for bits 1-7.
 N $FE3D Starting places for the scenic events (#R$BC78). Every event in play
 . starts in #ROOM$02 and is moved into its own rooms (#R$E933) by #R$C17D
@@ -6879,9 +7487,11 @@ B $FE3F,$01 Event #N$82 (the deer): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
 B $FE40,$01 Event #N$83 (a pirate): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
 B $FE41,$01 Event #N$84 (a pirate): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
 B $FE42,$01 Event #N$85 (a pirate): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FE43,$01 Event #N$86 (the water snake): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
+B $FE43,$01 Event #N$86 (the water snake): room #N(#PEEK(#PC)),
+. #ROOM(#PEEK(#PC)).
 B $FE44,$01 Event #N$87 (the spider): room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)).
-B $FE45,$01 Event #N$88 (the pirate from the beach): not in play (#N(#PEEK(#PC))) until #R$F3A8 wakes it.
+B $FE45,$01 Event #N$88 (the pirate from the beach): not in play
+. (#N(#PEEK(#PC))) until #R$F3A8 wakes it.
 B $FE46,$17 Spare scenic event slots (#R$BC81).
 N $FE5D Inventory, the load/save buffer and the starting room.
 B $FE5D,$01 Items carried (#R$BC98): #N(#PEEK(#PC)).
@@ -6913,13 +7523,17 @@ W $FEF5,$02 Initial number of scenic events (#R$BD30).
 W $FEF7,$02 Initial number of configurable exits (#R$BD32).
 
 u $FEF9 Unused
-D $FEF9 Spare byte between the default game state and the room-image handlers.
+D $FEF9 Unused. Spare byte between the default game state and the room-image
+. handlers.
 B $FEF9,$01
 
 c $FEFA Handler: Room Images
 @ $FEFA label=DisplayImage_Boat
 E $FEFA View the equivalent code in;
 . #LIST
+. { #FOREST$FACF }
+. { #HEROES$FDAB }
+. { #ANDROMEDA$F813 }
 . { #WARLORD$FF12 }
 . LIST#
 N $FEFA Displays the image for the boat.
@@ -7002,25 +7616,38 @@ E $FF3A View the equivalent code in;
 D $FF3A A jump table of verb routines, the ordering here is from #R$E90D.
 .
 . Used by the routine at #R$C556.
-W $FF3A,$02 Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)): #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
+W $FF3A,$02 Verb word token #N(#PEEK($E90D+(#PC-$FF3A)/$02)):
+. #TOKEN(#PEEK($E90D+(#PC-$FF3A)/$02)).
 L $FF3A,$02,$26
 
 g $FF86 Jump Table: Turn-Based Events
 @ $FF86 label=JumpTable_TurnBasedEvents
+D $FF86 The turn-based event handlers. Later entries are also read as
+. scenic handlers from #R$FF96 by the routine at #R$C17D.
 W $FF86,$02 Event #N((#PC-$FF86)/$02).
 L $FF86,$02,$08
 
 g $FF96 Jump Table: Scenic Events
 @ $FF96 label=JumpTable_ScenicEvents
+D $FF96 Handlers run when the current room matches an entry in #R$BC78.
+. Used by #R$C4EB.
 W $FF96,$02 Event #N((#PC-$FF96)/$02).
 L $FF96,$02,$09
 
 g $FFA8 Jump Table: Room Images
 @ $FFA8 label=JumpTable_RoomImages
+E $FFA8 View the equivalent code in;
+. #LIST
+. { #FOREST$FB75 }
+. { #HEROES$FDEB }
+. { #ANDROMEDA$FA68 }
+. { #WARLORD$FEFC }
+. LIST#
 D $FFA8 See #R$E95D.
 W $FFA8,$02 Location Slot: #N((#PC-$FFA8)/$02).
 L $FFA8,$02,$0D
 
 u $FFC2 Unused
-D $FFC2 Spare bytes from the end of the room-image jump table to #N$FFFF.
+D $FFC2 Unused. Spare bytes from the end of the room-image jump table to
+. #N$FFFF.
 S $FFC2,$3E

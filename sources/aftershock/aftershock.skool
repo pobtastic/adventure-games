@@ -13,7 +13,7 @@
 @expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon)$link))
 @expand=#IF({asm})(#DEF(#WARLORD(addr)(link=Warlord)$link))
 @expand=#IF({asm})(#DEF(#COLOUR(id)))
-@expand=#DEF1(#SKOOLKID(addr)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/#EVAL({addr},16,4).html">){name}#HTML(</a>))
+@expand=#DEF1(#SKOOLKID(addr,anchor=0)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html#IF({anchor})(#CHR(35)#IF({{mode[base]}}==16)(#EVAL({anchor},16,4),#EVAL({anchor})))">){name}#HTML(</a>))
 @expand=#IF({asm})(#DEF(#ANDROMEDA(addr)(link=Message From Andromeda)$link))
 @expand=#IF({asm})(#DEF(#FOREST(addr)(link=Forest At Worlds End)$link))
 @expand=#IF({asm})(#DEF(#HEROES(addr)(link=Heroes Of Karn)$link))
@@ -4409,20 +4409,26 @@ c$9DD7 LD HL,$5C6A   ; {Set CAPS LOCK on, using bit 3 of
  $9DDA SET 3,(HL)    ; *#SKOOLKID$5C6A(FLAGS2).}
  $9DDC LD HL,$5C3B   ; {Set keyboard mode "L", using bit 3 of
  $9DDF SET 3,(HL)    ; *#SKOOLKID$5C3B(FLAGS).}
+; Put the keyboard cursor into its normal (non-extended) mode.
  $9DE1 XOR A         ; {Write #N$00 to *#SKOOLKID$5C41(MODE).
  $9DE2 LD ($5C41),A  ; }
  $9DE5 LD A,$02      ; {Set the current output channel to the main screen using
  $9DE7 CALL $1601    ; #SKOOLKID$1601(CHAN_OPEN) with stream #N$02.}
  $9DEA LD HL,$5C3C   ; {Reset printing to the lower screen, using bit 0 of
  $9DED RES 0,(HL)    ; *#SKOOLKID$5C3C(TV_FLAG).}
+; Collapse the lower screen so printing uses the full display.
  $9DEF XOR A         ; {Write #N$00 to *#SKOOLKID$5C6B(DF_SZ).
  $9DF0 LD ($5C6B),A  ; }
+; Prevent the ROM from pausing with a "scroll?" prompt.
  $9DF3 LD A,$FF      ; {Write #N$FF to *#SKOOLKID$5C8C(SCR_CT).
  $9DF5 LD ($5C8C),A  ; }
  $9DF8 JP $ADA1      ; Jump to #R$ADA1.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$B9C5 }
+; { #HEROES$ABD4 }
 ; { #JEWELS$BA50 }
+; { #ANDROMEDA$61A8 }
 ; { #WARLORD$A531 }
 ; LIST#
 
@@ -4466,7 +4472,10 @@ c$9E0B PUSH HL       ; {Stash #REGhl, #REGde, #REGbc and #REGaf on the stack.
  $9E18 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$BDF1 }
+; { #HEROES$ABF8 }
 ; { #JEWELS$BA74 }
+; { #ANDROMEDA$64AC }
 ; { #WARLORD$A555 }
 ; LIST#
 
@@ -4485,7 +4494,10 @@ c$9E19 PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
  $9E25 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$BDFC }
+; { #HEROES$AC03 }
 ; { #JEWELS$BA7F }
+; { #ANDROMEDA$64B7 }
 ; { #WARLORD$A560 }
 ; LIST#
 
@@ -4493,8 +4505,11 @@ c$9E19 PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
 ;
 ; Used by the routines at #R$A1F4, #R$A25C, #R$A267, #R$A275, #R$A33A, #R$A42F,
 ; #R$A467 and #R$AD43.
+;
+; A The character to print
 @label=PrintCharacter
 c$9E26 PUSH AF       ; Stash the character to print on the stack.
+; Prevent the ROM from pausing with a "scroll?" prompt.
  $9E27 LD A,$FF      ; {Write #N$FF to *#SKOOLKID$5C8C(SCR_CT).
  $9E29 LD ($5C8C),A  ; }
  $9E2C POP AF        ; Restore the character to print from the stack.
@@ -4502,7 +4517,10 @@ c$9E26 PUSH AF       ; Stash the character to print on the stack.
  $9E2E RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$BE37 }
+; { #HEROES$AC47 }
 ; { #JEWELS$BAC3 }
+; { #ANDROMEDA$64F2 }
 ; { #WARLORD$A5A4 }
 ; LIST#
 
@@ -4549,27 +4567,32 @@ c$9E80 PUSH IX       ; {Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
 ; Skip packing the save when there are no state bytes.
  $9E88 OR A          ; {Jump to #R$9EA4 if there are no saved state bytes.
  $9E89 JR Z,$9EA4    ; }
- $9E8B LD B,A        ; #REGb=#REGa.
+ $9E8B LD B,A        ; Set #REGb to the number of state bytes to pack.
  $9E8C LD IX,$BAF9   ; #REGix=#R$BAF9.
  $9E90 LD DE,$A0D4   ; #REGde=#R$A0D4.
  $9E93 JR $9E9A      ; Jump to #R$9E9A.
+; The next saved address.
+@label=SaveGame_Copy
 *$9E95 INC IX        ; {Move #REGix on to the next saved-state address.
  $9E97 INC IX        ; }
  $9E99 INC DE        ; Move #REGde on to the next packed state byte.
-*$9E9A LD L,(IX+$00) ; #REGl=*#REGix+#N$00.
- $9E9D LD H,(IX+$01) ; #REGh=*#REGix+#N$01.
- $9EA0 LD A,(HL)     ; #REGa=*#REGhl.
- $9EA1 LD (DE),A     ; Store that state byte in the packed save buffer.
+@label=SaveGame_StoreFlag
+*$9E9A LD L,(IX+$00) ; {Fetch the state address from *#REGix into #REGhl.
+ $9E9D LD H,(IX+$01) ; }
+ $9EA0 LD A,(HL)     ; {Copy the state byte into the packed save buffer.
+ $9EA1 LD (DE),A     ; }
  $9EA2 DJNZ $9E95    ; Decrease the pack counter and loop back to #R$9E95 until
                      ; every state byte is packed.
 ; Print "#MESSAGE$9E33".
+@label=SaveGame_PrintSaving
 *$9EA4 LD HL,$9E33   ; #REGhl=#R$9E33.
  $9EA7 CALL $A275    ; Call #R$A275.
  $9EAA CALL $9DFB    ; Call #R$9DFB.
  $9EAD LD IX,$9F88   ; #REGix=#R$9F88.
- $9EB1 LD DE,$0181   ; #REGde=#N$0181.
- $9EB4 LD A,$FF      ; #REGa=#N$FF.
+ $9EB1 LD DE,$0181   ; Set the block length in #REGde to #N$0181 bytes.
+ $9EB4 LD A,$FF      ; Set #REGa to #N$FF which indicates this is a data block.
  $9EB6 CALL $04C2    ; Call #SKOOLKID$04C2(SA_BYTES).
+; Print "#MESSAGE$9E63".
  $9EB9 LD HL,$9E63   ; #REGhl=#R$9E63.
  $9EBC CALL $A275    ; Call #R$A275.
  $9EBF POP BC        ; {Restore #REGbc, #REGde, #REGhl and #REGix from the
@@ -4612,9 +4635,10 @@ c$9EDB PUSH IX       ; {Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
 ; Print "#DECODESTR$CD8F".
  $9EF5 LD HL,$0013   ; #REGhl=#R(#OFFSET($0013)).
 ; The tape load failed.
- $9EF8 CALL $A25C    ; {Print "#DECODESTR$CD8F" and leave the game state
- $9EFB JR $9F21      ; unchanged.}
+ $9EF8 CALL $A25C    ; Call #R$A25C.
+ $9EFB JR $9F21      ; Jump to #R$9F21.
 ; There is nothing to unpack when no state bytes were saved.
+@label=LoadTape_Success
 *$9EFD LD A,($BBD1)  ; {Jump to #R$9F21 if there are no saved state bytes.
  $9F00 OR A          ;
  $9F01 JR Z,$9F21    ; }
@@ -4629,6 +4653,7 @@ c$9EDB PUSH IX       ; {Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
 *$9F0D INC IX        ; {Advance to the next saved address.
  $9F0F INC IX        ;
  $9F11 INC DE        ; }
+@label=RestoreState_Write
 *$9F12 LD L,(IX+$00) ; {Write that byte back into the game.
  $9F15 LD H,(IX+$01) ;
  $9F18 LD A,(DE)     ;
@@ -4637,6 +4662,7 @@ c$9EDB PUSH IX       ; {Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
 ; Describe the room the save returned to.
  $9F1C LD E,$00      ; Show the room as the player last saw it.
  $9F1E CALL $A33A    ; Call #R$A33A.
+; Restore the caller's registers and return.
 @label=LoadTape_Return
 *$9F21 POP BC        ; {Restore #REGbc, #REGde, #REGhl and #REGix from the
  $9F22 POP DE        ; stack.
@@ -4664,20 +4690,20 @@ c$9F27 RET           ; Return.
 ;
 ; IX Pointer to room image data
 @label=Print_RoomImage
-c$9F28 PUSH IX       ; {Copy the room-image pointer from #REGix into #REGhl.
- $9F2A POP HL        ; }
+c$9F28 PUSH IX       ; {Copy the room-image pointer from #REGix into #REGhl (using the
+ $9F2A POP HL        ; stack).}
 ; Step over the #N$0200 mask bytes and aim at the display file.
- $9F2B LD DE,$0200   ; {The pixel data follows the mask.
- $9F2E ADD HL,DE     ;
- $9F2F LD DE,$4000   ; }
+ $9F2B LD DE,$0200   ; {Move #REGhl past the #N$0200-byte mask to the pixel
+ $9F2E ADD HL,DE     ; data.}
+ $9F2F LD DE,$4000   ; Set #REGde to the start of the screen buffer (#N$4000).
 ; Expand each mask byte. Each bit stands for one screen byte (#N$08
 ; pixels).
  $9F32 LD BC,$0200   ; #N$0200 mask bytes cover the screen, eight screen bytes
                      ; at a time.
 @label=PixelControl_Loop
-*$9F35 PUSH BC       ; {Take the next mask byte.
- $9F36 LD B,$08      ;
- $9F38 LD C,(IX+$00) ; }
+*$9F35 PUSH BC       ; Stash the mask byte counter on the stack.
+ $9F36 LD B,$08      ; Set #REGb to #N$08 for the #N$08 bits in a byte.
+ $9F38 LD C,(IX+$00) ; Fetch the mask byte from *#REGix into #REGc.
 ; A set bit copies the next pixel byte onto the screen. When the bit is
 ; clear, #REGde still advances but nothing is written, so those #N$08 pixels
 ; stay blank.
@@ -4685,56 +4711,66 @@ c$9F28 PUSH IX       ; {Copy the room-image pointer from #REGix into #REGhl.
 *$9F3B SLA C         ; {Jump to #R$9F42 if the mask bit is clear (skip that
  $9F3D JR NC,$9F42   ; screen byte).}
  $9F3F LD A,(HL)     ; {Copy the next pixel byte onto the screen.
- $9F40 LD (DE),A     ;
- $9F41 INC HL        ; }
+ $9F40 LD (DE),A     ; }
+ $9F41 INC HL        ; Move to the next pixel byte.
+@label=PixelBit_Next
 *$9F42 INC DE        ; Move along the screen.
- $9F43 DJNZ $9F3B    ; {This mask byte's eight screen bytes are done.
- $9F45 INC IX        ; }
- $9F47 POP BC        ; {Restore the mask-byte counter from the stack and
- $9F48 DEC BC        ; decrease it.}
- $9F49 LD A,B        ; {Another mask byte remains.
+ $9F43 DJNZ $9F3B    ; Decrease the bit counter by one and loop back to #R$9F3B until
+                     ; the counter is zero.
+ $9F45 INC IX        ; Move #REGix on to the next mask byte.
+ $9F47 POP BC        ; Restore the mask byte counter from the stack.
+ $9F48 DEC BC        ; Decrease the mask byte counter by one.
+ $9F49 LD A,B        ; {Jump back to #R$9F35 until all the mask bytes are done.
  $9F4A OR C          ;
  $9F4B JR NZ,$9F35   ; }
 ; The bytes that follow are the attribute stream.
- $9F4D PUSH HL       ; {Copy the attribute-stream pointer from #REGhl into
- $9F4E POP IX        ; #REGix.}
+ $9F4D PUSH HL       ; {Copy the attribute-stream pointer from #REGhl into #REGix (using
+ $9F4E POP IX        ; the stack).}
 ; Paint attributes from #N$5800 until the display ends at #N$5A00.
  $9F50 LD HL,$5800   ; Start at the attribute file.
 @label=Attribute_Loop
-*$9F53 LD A,(IX+$00) ; {The colour, and how many cells it covers (#N$00 means
- $9F56 LD B,(IX+$01) ; #N$0100).
- $9F59 INC IX        ;
+*$9F53 LD A,(IX+$00) ; {Fetch the colour into #REGa and the number of cells into #REGb
+ $9F56 LD B,(IX+$01) ; from *#REGix (#N$00 means #N$0100).}
+ $9F59 INC IX        ; {Move #REGix to the next pair.
  $9F5B INC IX        ; }
-*$9F5D LD (HL),A     ; {#HTML(Paint that many cells (#REGb=#N$00 runs the
- $9F5E INC HL        ; <code>DJNZ</code> loop #N$0100 times).)
- $9F5F DJNZ $9F5D    ; }
- $9F61 LD A,H        ; {Continue until the attribute file is full.
+@label=Attribute_Paint
+*$9F5D LD (HL),A     ; Write the colour into this attribute cell.
+ $9F5E INC HL        ; Move along the attribute file.
+ $9F5F DJNZ $9F5D    ; Decrease the counter by one and loop back to #R$9F5D until the
+                     ; counter is zero.
+ $9F61 LD A,H        ; {Jump back to #R$9F53 until the attribute file is full.
  $9F62 CP $5A        ;
  $9F64 JR NZ,$9F53   ; }
-; The picture is on screen.
  $9F66 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$BEB8 }
+; { #HEROES$AD60 }
+; { #JEWELS$BB3B }
+; { #ANDROMEDA$6541 }
 ; { #WARLORD$B10B }
 ; LIST#
 
 ; Handler: Room Images
 ;
 ; Used by the routine at #R$A33A.
+;
+; A Room image number
 @label=Handler_Images
 c$9F67 PUSH IX       ; {Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
  $9F69 PUSH HL       ;
  $9F6A PUSH DE       ;
  $9F6B PUSH BC       ; }
- $9F6C LD E,A        ; #REGe=#REGa.
+ $9F6C LD E,A        ; Copy the room image number from #REGa into #REGe.
  $9F6D LD IX,($BBD5) ; #REGix=*#R$BBD5.
  $9F71 CALL $A305    ; Call #R$A305.
  $9F74 LD DE,($BBD5) ; {#REGhl+=*#R$BBD5.
  $9F78 ADD HL,DE     ; }
- $9F79 PUSH HL       ; {Copy the room-image address from #REGhl into #REGix.
- $9F7A POP IX        ; }
+ $9F79 PUSH HL       ; {Copy the room-image address from #REGhl into #REGix (using the
+ $9F7A POP IX        ; stack).}
  $9F7C CALL $9F28    ; Call #R$9F28.
  $9F7F CALL $9DFB    ; Call #R$9DFB.
+; Restore the registers saved on entry to the routine and return.
  $9F82 POP BC        ; {Restore #REGbc, #REGde, #REGhl and #REGix from the
  $9F83 POP DE        ; stack.
  $9F84 POP HL        ;
@@ -5023,27 +5059,15 @@ g$9F88 DEFB $02      ; Item #N(#PC-$9F88) #ITEM(#PC-$9F88) in room
                      ; #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$B9C8 }
 ; { #HEROES$AD76 }
 ; { #JEWELS$BBF0 }
+; { #ANDROMEDA$61AB }
 ; { #WARLORD$A66C }
 ; LIST#
 
 ; Unused
-u$A010 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A018 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A020 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A028 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A030 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A038 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A040 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A048 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A050 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A058 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A060 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A068 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A070 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A078 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A080 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+u$A010 DEFS $78
 
 ; Flags: Game States
 ;
@@ -5096,10 +5120,7 @@ g$A0A8 DEFB $01      ; Seen-image bits #N((#PC-$A0A8)*$08) to
                      ; #N((#PC-$A0A8)*$08+$07).
 
 ; Unused
-u$A0AB DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A0B3 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A0BB DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A0C3 DEFB $00,$00,$00,$00,$00
+u$A0AB DEFS $1D
 
 ; Flags: Turn-Based Event States
 ;
@@ -5140,7 +5161,7 @@ g$A0D2 DEFB $00
 ; The most items the player may carry. #R$AE2C compares it with #R$A0D2.
 ; The game starts it from #R$BBD7, and #R$ABE8 can replace it.
 @label=CarryingLimit
-g$A0D3 DEFB $05      ; #N(#PEEK(#PC)).
+g$A0D3 DEFB $05      ; The player can hold #N$05 items.
 
 ; Saved State Bytes
 ;
@@ -5155,12 +5176,7 @@ g$A0D4 DEFB $00      ; Saved state byte #N(#PC-$A0D4).
  $A0D9 DEFB $00      ; Saved state byte #N(#PC-$A0D4).
 
 ; Unused
-u$A0DA DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A0E2 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A0EA DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A0F2 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A0FA DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $A102 DEFB $00,$00,$00,$00
+u$A0DA DEFS $2C
 
 ; Current Room ID
 ;
@@ -5241,10 +5257,12 @@ c$A155 PUSH AF       ; Stash #REGaf on the stack.
  $A156 LD A,L        ; {Keep the bit number within the byte (bits 0-2 of the
  $A157 AND %00000111 ; bit index) in #REGc.
  $A159 LD C,A        ; }
- $A15A LD B,$03      ; {Divide the bit index in #REGhl by eight (three passes,
-*$A15C SRL H         ; counted in #REGb) to give the offset of the byte holding
- $A15E RR L          ; the flag.
- $A160 DJNZ $A15C    ; }
+ $A15A LD B,$03      ; Count three right shifts.
+@label=CalculateBitAddress_Loop
+*$A15C SRL H         ; {Shift #REGhl right by one bit.
+ $A15E RR L          ; }
+ $A160 DJNZ $A15C    ; Decrease the counter by one and loop back to #R$A15C until the
+                     ; counter is zero.
  $A162 POP AF        ; Restore #REGaf from the stack.
  $A163 RET           ; Return.
 
@@ -5267,73 +5285,78 @@ c$A164 SRL H         ; {Divide #REGhl by four, dropping the remainder.
 ;
 ; Used by the routine at #R$A41C.
 ; .
-; Multiplies the word in #REGhl by the word in #REGde. #R$A41C uses it to
-; multiply the current room number by #N$06 to find that room's record in
-; #R$B8DD.
+; #REGhl=#REGhl*#REGde. #R$A41C uses it to turn the current room number
+; into an offset of #N$06 bytes per room in #R$B8DD.
 ;
-;   HL Multiplicand
-;   DE Multiplier
-; O:HL Product
+;   HL First number
+;   DE Second number
+; O:HL #REGhl*#REGde
 @label=MultiplyWords
 c$A16D PUSH BC       ; Stash #REGbc on the stack.
- $A16E LD B,$10      ; #REGb=#N$10.
- $A170 LD A,H        ; #REGa=#REGh.
- $A171 LD C,L        ; #REGc=#REGl.
+ $A16E LD B,$10      ; Count #N$10 bits.
+ $A170 LD A,H        ; {Hold the first number in #REGa and #REGc.
+ $A171 LD C,L        ; }
  $A172 LD HL,$0000   ; #REGhl=#N($0000,$04,$04).
-*$A175 ADD HL,HL     ; #REGhl+=#REGhl.
-; For each bit of the multiplier, shift it into the carry and add the
-; multiplicand when that bit is set.
- $A176 AND A         ; {Fold the next multiplier bit into the product.
- $A177 RL C          ;
+@label=MultiplyWords_Loop
+*$A175 ADD HL,HL     ; Shift the running total left by one bit.
+; Test the next bit of the first number. When it is set, add the second
+; number into the total.
+ $A176 AND A         ; {Clear the carry, then shift the next bit of the first number into
+ $A177 RL C          ; it. Jump to #R$A17D when that bit is clear.
  $A179 RLA           ;
- $A17A JR NC,$A17D   ;
- $A17C ADD HL,DE     ;
-*$A17D DJNZ $A175    ; }
- $A17F POP BC        ; Restore #REGbc from the stack, leaving the product in
-                     ; #REGhl.
+ $A17A JR NC,$A17D   ; }
+ $A17C ADD HL,DE     ; Add the second number into the total.
+@label=MultiplyWords_Next
+*$A17D DJNZ $A175    ; Decrease the bit counter by one and loop back to #R$A175 until
+                     ; the counter is zero.
+ $A17F POP BC        ; Restore #REGbc from the stack.
  $A180 RET           ; Return.
 
 ; Divide Words
 ;
-; Divides the word in #REGhl by the word in #REGde. Nothing in the game
-; calls it.
+; #REGhl=#REGhl/#REGde. Nothing in the game calls it.
 ;
-;   HL Dividend
-;   DE Divisor
-; O:HL Quotient
-; O:DE Remainder
+;   HL First number
+;   DE Second number
+; O:HL #REGhl/#REGde
+; O:DE What is left after the division
 ;
 ; Nothing in the game divides one word by another.
 @label=DivideWords
-c$A181 PUSH BC       ; {Hold the dividend.
+c$A181 PUSH BC       ; {Hold the first number.
  $A182 LD B,H        ;
  $A183 LD C,L        ;
  $A184 PUSH AF       ; }
- $A185 LD HL,$0000   ; {The remainder starts at zero, for sixteen bits.
+ $A185 LD HL,$0000   ; {The leftover starts at zero, for sixteen bits.
  $A188 LD A,B        ;
  $A189 LD B,$10      ; }
-; Try the next bit of the dividend.
+; Try the next bit of the first number.
 @label=DivideWords_NextBit
-*$A18B SLA C         ; {Bring that bit into the remainder.
+*$A18B SLA C         ; {Bring that bit into the leftover.
  $A18D RLA           ;
  $A18E ADC HL,HL     ; }
- $A190 SBC HL,DE     ; {See whether the divisor fits.
- $A192 JR C,$A1A1    ; }
-*$A194 INC C         ; {The quotient gains a bit, and the next bit follows.
- $A195 DJNZ $A18B    ;
- $A197 JR $A1A4      ; }
-; The divisor did not fit.
+ $A190 SBC HL,DE     ; Take the second number away from the leftover.
+ $A192 JR C,$A1A1    ; Jump to #R$A1A1 when it does not fit.
+@label=DivideWords_Fits
+*$A194 INC C         ; Keep that bit in the result.
+ $A195 DJNZ $A18B    ; Decrease the bit counter by one and loop back to #R$A18B until
+                     ; the counter is zero.
+ $A197 JR $A1A4      ; Jump to #R$A1A4.
+; The second number did not fit.
 @label=DivideWords_Restore
-*$A199 SLA C         ; {Put the remainder back.
+*$A199 SLA C         ; {Bring the next bit into the leftover.
  $A19B RLA           ;
- $A19C ADC HL,HL     ;
- $A19E ADD HL,DE     ; }
- $A19F JR C,$A194    ; {Try the next bit.
-*$A1A1 DJNZ $A199    ;
- $A1A3 ADD HL,DE     ; }
-; Nothing in the game uses this quotient.
-*$A1A4 EX DE,HL      ; {Nothing in the game uses this quotient.
- $A1A5 LD H,A        ;
+ $A19C ADC HL,HL     ; }
+ $A19E ADD HL,DE     ; Add the second number back.
+ $A19F JR C,$A194    ; Jump to #R$A194 when the leftover is too big for a word.
+@label=DivideWords_Skip
+*$A1A1 DJNZ $A199    ; Decrease the bit counter by one and loop back to #R$A199 until
+                     ; the counter is zero.
+ $A1A3 ADD HL,DE     ; Add the second number back.
+; Nothing in the game uses this result.
+@label=DivideWords_Done
+*$A1A4 EX DE,HL      ; {#REGhl holds the result of the division, and #REGde holds what is
+ $A1A5 LD H,A        ; left.
  $A1A6 LD L,C        ; }
  $A1A7 POP AF        ; {Restore #REGaf and #REGbc from the stack.
  $A1A8 POP BC        ; }
@@ -5341,17 +5364,17 @@ c$A181 PUSH BC       ; {Hold the dividend.
 
 ; Negate Word
 ;
-; Negates the word in #REGhl. Nothing in the game calls it.
+; Unused. Nothing in the game calls this routine.
 ;
 ;   HL Word to negate
-; O:HL The negated word
+; O:HL #-#REGhl
 ;
-; Negate the word in #REGhl. Nothing in the game calls this.
+; #REGhl=-#REGhl.
 @label=NegateWord
-c$A1AA PUSH DE       ; {Nothing in the game uses this negated word.
- $A1AB EX DE,HL      ;
- $A1AC LD HL,$0000   ;
- $A1AF AND A         ;
+u$A1AA PUSH DE       ; Stash #REGde on the stack.
+ $A1AB EX DE,HL      ; Switch the word into #REGde.
+ $A1AC LD HL,$0000   ; #REGhl=#N($0000,$04,$04).
+ $A1AF AND A         ; {#REGhl=#REGhl-#REGde.
  $A1B0 SBC HL,DE     ; }
  $A1B2 POP DE        ; Restore #REGde from the stack.
  $A1B3 RET           ; Return.
@@ -5370,20 +5393,22 @@ c$A1AA PUSH DE       ; {Nothing in the game uses this negated word.
 @label=BuildFlagMask
 c$A1B4 PUSH DE       ; {Stash #REGde and #REGbc on the stack.
  $A1B5 PUSH BC       ; }
- $A1B6 EX DE,HL      ; Switch the flag table base into #REGde so #REGhl can
-                     ; hold the bit index.
+ $A1B6 EX DE,HL      ; Switch the flag table base into #REGde so #REGhl can hold the bit
+                     ; index.
  $A1B7 LD L,A        ; {Put the bit index into #REGhl.
  $A1B8 LD H,$00      ; }
- $A1BA CALL $A155    ; Call #R$A155 to split the bit index into a byte offset
-                     ; (#REGhl) and a bit number (#REGc).
+ $A1BA CALL $A155    ; Call #R$A155 to split the bit index into a byte offset (#REGhl)
+                     ; and a bit number (#REGc).
  $A1BD ADD HL,DE     ; Point #REGhl at the flag byte holding this bit.
  $A1BE LD B,C        ; Use the bit number as the rotate count.
  $A1BF INC B         ; Count one extra rotate so the mask lands on this bit.
  $A1C0 XOR A         ; Start the mask with no bits set.
  $A1C1 SCF           ; Seed a single set bit for the mask.
-*$A1C2 RLA           ; Build the mask for this flag bit.
- $A1C3 DJNZ $A1C2    ; Keep rotating until the set bit reaches this flag's
-                     ; position.
+@label=BuildFlagMask_Loop
+*$A1C2 RLA           ; Rotate the set bit left into the next mask position.
+ $A1C3 DJNZ $A1C2    ; Decrease the counter by one and loop back to #R$A1C2 until the
+                     ; counter is zero.
+; The mask for this flag bit is ready.
  $A1C5 POP BC        ; {Restore #REGbc and #REGde from the stack.
  $A1C6 POP DE        ; }
  $A1C7 RET           ; Return.
@@ -5465,6 +5490,8 @@ c$A1ED LD HL,$A1E9   ; #REGhl=#R$A1E9.
 ; Prints a compressed text string using a dictionary lookup.
 ;
 ; HL Messaging string ID
+;
+; Resolve the messaging string ID into a pointer at #R$C8E9.
 @label=PrintCompressedString
 c$A1F4 PUSH IX       ; {Stash #REGix, #REGhl, #REGde, #REGbc and #REGaf on the
  $A1F6 PUSH HL       ; stack.
@@ -5480,16 +5507,25 @@ c$A1F4 PUSH IX       ; {Stash #REGix, #REGhl, #REGde, #REGbc and #REGaf on the
  $A208 LD DE,$C8E9   ; {#REGhl+=#R$C8E9.
  $A20B ADD HL,DE     ; }
  $A20C JR $A223      ; Jump to #R$A223.
+; Codes below #N$60 are literal characters. Codes from #N$60 upwards
+; index the dictionary at #R$C8EB.
+@label=PrintCompressedString_Process
 *$A20E CP $60        ; {Jump to #R$A217 if #REGa is less than #N$60.
  $A210 JR C,$A217    ; }
  $A212 CALL $A22F    ; Call #R$A22F.
  $A215 JR $A222      ; Jump to #R$A222.
+; Bias the literal into the printable range. #N$7E becomes a newline.
+@label=PrintCompressedString_Literal
 *$A217 ADD A,$20     ; #REGa+=#N$20.
  $A219 CP $7E        ; {Jump to #R$A21F if #REGa is not equal to #N$7E.
  $A21B JR NZ,$A21F   ; }
  $A21D LD A,$0D      ; #REGa=#N$0D.
+@label=PrintCompressedString_PrintChar
 *$A21F CALL $9E26    ; Call #R$9E26.
+@label=PrintCompressedString_Next
 *$A222 INC HL        ; Move #REGhl on to the next compressed character.
+; Fetch the next compressed byte. #N$5F ends the string.
+@label=PrintCompressedString_Loop
 *$A223 LD A,(HL)     ; #REGa=*#REGhl.
  $A224 CP $5F        ; {Jump to #R$A20E if #REGa is not equal to #N$5F.
  $A226 JR NZ,$A20E   ; }
@@ -5499,6 +5535,8 @@ c$A1F4 PUSH IX       ; {Stash #REGix, #REGhl, #REGde, #REGbc and #REGaf on the
  $A22B POP HL        ;
  $A22C POP IX        ; }
  $A22E RET           ; Return.
+; Look up a two-byte dictionary entry and print both characters.
+@label=PrintCompressedString_Dictionary
 *$A22F PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
  $A230 PUSH DE       ;
  $A231 PUSH BC       ; }
@@ -5508,21 +5546,28 @@ c$A1F4 PUSH IX       ; {Stash #REGix, #REGhl, #REGde, #REGbc and #REGaf on the
  $A237 ADD HL,HL     ; Double the offset held in #REGhl.
  $A238 LD DE,$C8EB   ; {#REGhl+=#R$C8EB.
  $A23B ADD HL,DE     ; }
- $A23C LD B,$02      ; #REGb=#N$02.
+ $A23C LD B,$02      ; Count two dictionary bytes.
  $A23E JR $A241      ; Jump to #R$A241.
+@label=PrintCompressedString_DictNext
 *$A240 INC HL        ; Move #REGhl on to the next dictionary character.
+; Dictionary bytes use the same literal-or-dictionary split as the main
+; string.
+@label=PrintCompressedString_DictFetch
 *$A241 LD A,(HL)     ; #REGa=*#REGhl.
  $A242 CP $60        ; {Jump to #R$A24B if #REGa is less than #N$60.
  $A244 JR C,$A24B    ; }
  $A246 CALL $A22F    ; Call #R$A22F.
  $A249 JR $A256      ; Jump to #R$A256.
+@label=PrintCompressedString_DictLiteral
 *$A24B ADD A,$20     ; #REGa+=#N$20.
  $A24D CP $7E        ; {Jump to #R$A253 if #REGa is not equal to #N$7E.
  $A24F JR NZ,$A253   ; }
  $A251 LD A,$0D      ; #REGa=#N$0D.
+@label=PrintCompressedString_DictPrint
 *$A253 CALL $9E26    ; Call #R$9E26.
-*$A256 DJNZ $A240    ; Decrease the dictionary-character counter and loop back
-                     ; to #R$A240 until both bytes are done.
+@label=PrintCompressedString_DictDone
+*$A256 DJNZ $A240    ; Decrease the dictionary-character counter and loop back to
+                     ; #R$A240 until both bytes are done.
  $A258 POP BC        ; {Restore #REGbc, #REGde and #REGhl from the stack.
  $A259 POP DE        ;
  $A25A POP HL        ; }
@@ -5543,14 +5588,6 @@ c$A25C PUSH AF       ; Stash the character to print on the stack.
  $A262 CALL $9E26    ; Call #R$9E26.
  $A265 POP AF        ; Restore the character to print from the stack.
  $A266 RET           ; Return.
-; View the equivalent code in;
-; #LIST
-; { #FOREST$BE2E }
-; { #HEROES$AC35 }
-; { #JEWELS$BAB1 }
-; { #ANDROMEDA$64E9 }
-; { #WARLORD$A592 }
-; LIST#
 
 ; Print String
 ;
@@ -5576,7 +5613,10 @@ c$A267 PUSH AF       ; Push the character to print on the stack.
  $A274 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$BE21 }
+; { #HEROES$AC28 }
 ; { #JEWELS$BAA4 }
+; { #ANDROMEDA$64DC }
 ; { #WARLORD$A585 }
 ; LIST#
 
@@ -5614,22 +5654,22 @@ c$A275 CALL $A267    ; Call #R$A267.
 ;
 ; .
 ;
-; A turn-based event runs only while its bit in #R$A0C8 is set.
+; First process the turn-based events (if any are active).
 @label=Handler_GameEvents
-c$A280 LD A,($A0C8)  ; {Leave the events alone when none are armed.
- $A283 OR A          ;
+c$A280 LD A,($A0C8)  ; {Jump to #R$A2B7 if no turn-based events are currently
+ $A283 OR A          ; active.
  $A284 JR Z,$A2B7    ; }
 ; Eight turn-based events share the flag byte.
  $A286 LD C,A        ; {Start with the first turn-based event.
  $A287 LD B,$08      ; }
-; This event is not running.
+; Keep shifting the event flags one-by-one to find which bits are set.
 @label=TurnEvent_NextBit
-*$A289 SRL C         ; {Skip an event that is not armed.
+*$A289 SRL C         ; {Jump to #R$A2B5 if this event bit is not set.
  $A28B JR NC,$A2B5   ; }
 ; Count down this event. It fires when the counter at #R$A0C9 reaches
 ; zero.
- $A28D LD DE,$0000   ; {Leave the event for a later turn when the counter is still
- $A290 LD HL,$A0C9   ; running.
+ $A28D LD DE,$0000   ; {Jump to #R$A2B5 if the counter is still running.
+ $A290 LD HL,$A0C9   ;
  $A293 LD A,$08      ;
  $A295 SUB B         ;
  $A296 LD E,A        ;
@@ -5640,63 +5680,69 @@ c$A280 LD A,($A0C8)  ; {Leave the events alone when none are armed.
  $A29B PUSH IX       ; {The scripts are listed at #R$BBB9.
  $A29D PUSH BC       ;
  $A29E LD IX,$BBB9   ; }
- $A2A2 SLA E         ; {This is the event whose counter expired.
+ $A2A2 SLA E         ; {Point at this event's script entry.
  $A2A4 ADD IX,DE     ; }
  $A2A6 LD L,(IX+$00) ; {Read that script's address.
  $A2A9 LD H,(IX+$01) ; }
- $A2AC PUSH HL       ; {Copy the script address from #REGhl into #REGix.
- $A2AD POP IX        ; }
+ $A2AC PUSH HL       ; {Copy the script address from #REGhl into #REGix (using the
+ $A2AD POP IX        ; stack).}
  $A2AF CALL $A6FF    ; Run that script.
  $A2B2 POP BC        ; {Restore the event counter and event pointer from the
  $A2B3 POP IX        ; stack.}
 ; Test the next turn-based event.
-*$A2B5 DJNZ $A289    ; Every armed event is considered once per turn.
-; Scenic events live in #R$B6BA.
-*$A2B7 LD HL,$B6BA   ; {There is nothing to move when no scenic event is
- $A2BA LD A,($BBCF)  ; active.
+@label=TurnEvent_Next
+*$A2B5 DJNZ $A289    ; Decrease the event bit counter by one and loop back to #R$A289
+                     ; until all eight events have been considered.
+; Process scenic events.
+@label=ScenicEvents_Start
+*$A2B7 LD HL,$B6BA   ; {Jump to #R$A304 if no scenic event is active.
+ $A2BA LD A,($BBCF)  ;
  $A2BD OR A          ;
  $A2BE JR Z,$A304    ; }
  $A2C0 LD B,A        ; {Visit each scenic event in turn.
  $A2C1 JR $A2C4      ; }
 ; Room #N$00 means this scenic item is inactive.
 @label=ScenicEvent_Next
-*$A2C3 INC HL        ; The next scenic item.
+*$A2C3 INC HL        ; Move on to the next scenic item.
 @label=ScenicEvent_Item
-*$A2C4 LD A,(HL)     ; {Its item id.
+*$A2C4 LD A,(HL)     ; {Fetch this scenic item's ID.
  $A2C5 PUSH HL       ; }
  $A2C6 CALL $A62C    ; Call #R$A62C to read where this item is.
  $A2C9 POP HL        ; Restore the event-list pointer from the stack.
- $A2CA AND A         ; {An inactive item is left where it is.
+ $A2CA AND A         ; {Jump to #R$A302 if the item is inactive.
  $A2CB JR Z,$A302    ; }
 ; An event that is already in the player's room stays there.
- $A2CD LD C,A        ; {Skip an event whose room is #R$A106.
+ $A2CD LD C,A        ; {Jump to #R$A302 if this event's room is *#R$A106.
  $A2CE LD A,($A106)  ;
  $A2D1 CP C          ;
  $A2D2 JR Z,$A302    ; }
 ; Each scenic event has a room group in #R$B6BF.
- $A2D4 PUSH IX       ; {The scenic scan waits while a room is chosen.
+ $A2D4 PUSH IX       ; {Keep the scenic scan while a room is chosen.
  $A2D6 PUSH BC       ;
  $A2D7 PUSH HL       ; }
- $A2D8 LD A,($BBCF)  ; {Which event's group this is.
+ $A2D8 LD A,($BBCF)  ; {Calculate which event's group this is.
  $A2DB SUB B         ;
  $A2DC LD E,A        ; }
  $A2DD LD IX,$B6BF   ; The room groups are listed at #R$B6BF.
- $A2E1 CALL $A305    ; This event's room group.
+ $A2E1 CALL $A305    ; Call #R$A305 to fetch this event's room group.
 ; The refresh register picks how far to walk into the room group.
 ; #N$FF ends the group and the walk wraps.
- $A2E4 LD A,R        ; {Choose a room from this event's group.
- $A2E6 LD B,A        ;
- $A2E7 LD A,$FF      ;
-*$A2E9 LD L,(IX+$00) ;
- $A2EC LD H,(IX+$01) ;
- $A2EF JR $A2F2      ; }
+ $A2E4 LD A,R        ; {Load a step count from the refresh register and set the group
+ $A2E6 LD B,A        ; terminator in #REGa.
+ $A2E7 LD A,$FF      ; }
+@label=ScenicRoom_Reload
+*$A2E9 LD L,(IX+$00) ; {Point #REGhl at the start of this room group.
+ $A2EC LD H,(IX+$01) ; }
+ $A2EF JR $A2F2      ; Jump to #R$A2F2.
 ; Walk the room group. #N$FF restarts it, and the refresh count chooses
 ; where to stop. Then move the scenic item there.
 @label=ScenicRoom_Next
-*$A2F1 INC HL        ; {#N$FF restarts the group. Otherwise step to the next
-*$A2F2 CP (HL)       ; room.
- $A2F3 JR Z,$A2E9    ;
- $A2F5 DJNZ $A2F1    ; }
+*$A2F1 INC HL        ; Move to the next room in the group.
+@label=ScenicRoom_Check
+*$A2F2 CP (HL)       ; {Jump back to #R$A2E9 when the terminator matches.
+ $A2F3 JR Z,$A2E9    ; }
+ $A2F5 DJNZ $A2F1    ; Decrease the step counter by one and loop back to #R$A2F1 until
+                     ; the counter is zero.
  $A2F7 LD C,(HL)     ; Fetch the destination room into #REGc.
  $A2F8 POP HL        ; Restore the scenic-event pointer from the stack.
  $A2F9 LD B,(HL)     ; {Fetch the item ID into #REGb and stash the pointer
@@ -5706,7 +5752,10 @@ c$A280 LD A,($A0C8)  ; {Leave the events alone when none are armed.
  $A2FF POP BC        ;
  $A300 POP IX        ; }
 ; Move on to the next scenic event.
-*$A302 DJNZ $A2C3    ; Every scenic event is considered once.
+@label=ScenicEvent_Done
+*$A302 DJNZ $A2C3    ; Decrease the scenic event counter by one and loop back to
+                     ; #R$A2C3 until every scenic event has been considered.
+@label=Handler_GameEvents_Return
 *$A304 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
@@ -5753,10 +5802,11 @@ c$A314 PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
  $A316 PUSH BC       ; }
  $A317 LD HL,$9F88   ; #REGhl=#R$9F88.
  $A31A LD BC,($BBC7) ; #REGbc=*#R$BBC7.
+; Search #R$9F88 for the next object in this place.
 @label=FindObject_Loop
 *$A31E CPIR          ; Search for matching objects.
  $A320 JR NZ,$A336   ; Jump to #R$A336 if no objects were found.
- $A322 PUSH HL       ; Stash the current place in #R$A66C on the stack.
+ $A322 PUSH HL       ; Stash the current place in #R$9F88 on the stack.
  $A323 CALL $A6B1    ; Call #R$A6B1.
  $A326 JR Z,$A32F    ; Jump to #R$A32F if the object is invalid.
  $A328 PUSH AF       ; {Temporarily stash the object type and object counter on
@@ -5764,14 +5814,16 @@ c$A314 PUSH HL       ; {Stash #REGhl, #REGde and #REGbc on the stack.
  $A32A CALL $A25C    ; Call #R$A25C.
  $A32D POP BC        ; {Restore the object counter and object type from the
  $A32E POP AF        ; stack.}
+; Move on to the next object in the table.
 @label=FindObject_Next
 *$A32F LD E,A        ; Temporarily hold the object type in #REGe.
  $A330 POP HL        ; Restore the current place in #R$9F88 from the stack.
- $A331 LD A,B        ; {Test if all objects have been checked...
+ $A331 LD A,B        ; {Test if all objects have been checked.
  $A332 OR C          ; }
  $A333 LD A,E        ; Restore the object type to #REGa.
- $A334 JR NZ,$A31E   ; Jump to #R$A31E until all objects in the table have been
+ $A334 JR NZ,$A31E   ; Jump back to #R$A31E until all objects in the table have been
                      ; checked.
+; Restore the registers saved on entry to the routine and return.
 @label=PrintObjects_Return
 *$A336 POP BC        ; {Restore #REGbc, #REGde and #REGhl from the stack.
  $A337 POP DE        ;
@@ -5825,9 +5877,10 @@ c$A33A PUSH IX       ; {Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
  $A365 AND (HL)      ; Test whether this room's picture has already been shown.
  $A366 JR NZ,$A379   ; Jump to #R$A379 if this room's picture has already been
                      ; shown.
- $A368 LD A,(HL)     ; {Mark this room's picture as shown, so it isn't drawn
- $A369 OR C          ; again on the next visit.
+ $A368 LD A,(HL)     ; {Mark this room's picture as shown, so it isn't drawn again on the
+ $A369 OR C          ; next visit.
  $A36A LD (HL),A     ; }
+@label=RoomExits_DrawImage
 *$A36B CALL $9E0B    ; Call #R$9E0B to clear the text lines.
  $A36E LD HL,$BBA6   ; {Look up this room's image number in #R$BBA6.
  $A371 LD E,B        ;
@@ -5835,6 +5888,8 @@ c$A33A PUSH IX       ; {Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
  $A374 ADD HL,DE     ;
  $A375 LD A,(HL)     ; }
  $A376 CALL $9F67    ; Call #R$9F67 to draw the room image.
+; Print the room description and work out the exits.
+@label=RoomExits_Describe
 *$A379 CALL $9E0B    ; Call #R$9E0B to clear the text lines.
  $A37C CALL $9E19    ; Call #R$9E19.
  $A37F CALL $A42F    ; Call #R$A42F.
@@ -5949,6 +6004,7 @@ c$A33A PUSH IX       ; {Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
 ; Print the objects at this location.
  $A410 LD A,($A106)  ; #REGa=*#R$A106.
  $A413 CALL $A314    ; Call #R$A314.
+; Restore the registers saved on entry to the routine and return.
 @label=RoomExits_Return
 *$A416 POP BC        ; {Restore #REGbc, #REGde, #REGhl and #REGix from the
  $A417 POP DE        ; stack.
@@ -5957,7 +6013,10 @@ c$A33A PUSH IX       ; {Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
  $A41B RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$C0F9 }
+; { #HEROES$B46B }
 ; { #JEWELS$C26A }
+; { #ANDROMEDA$678A }
 ; { #WARLORD$AC02 }
 ; LIST#
 
@@ -5979,7 +6038,10 @@ c$A41C PUSH DE       ; Stash #REGde on the stack.
  $A42E RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$C201 }
+; { #HEROES$B503 }
 ; { #JEWELS$C302 }
+; { #ANDROMEDA$6892 }
 ; { #WARLORD$AC9A }
 ; LIST#
 
@@ -6261,9 +6323,11 @@ c$A4B0 CALL $A1ED    ; Call #R$A1ED.
  $A53B CALL $A479    ; {Jump to #R$A549 if the word matched.
  $A53E JR C,$A549    ; }
 ; The word is not in the vocabulary.
- $A540 LD HL,$0002   ; {Print "#DECODESTR$CD16" and read the command again.
- $A543 CALL $A25C    ;
- $A546 JP $A4B0      ; }
+; .
+; Print "#DECODESTR$CD16".
+ $A540 LD HL,$0002   ; #REGhl=#R(#OFFSET($0002)).
+ $A543 CALL $A25C    ; Call #R$A25C.
+ $A546 JP $A4B0      ; Jump to #R$A4B0.
 ; Store the token and stop after #N$0A tokens.
 @label=StoreTokenAndContinue
 *$A549 LD (IX+$00),A ; {The token buffer at #R$A13B holds the words understood
@@ -6317,7 +6381,10 @@ c$A4B0 CALL $A1ED    ; Call #R$A1ED.
  $A590 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$BF73 }
+; { #HEROES$B200 }
 ; { #JEWELS$C00A }
+; { #ANDROMEDA$6604 }
 ; { #WARLORD$AD32 }
 ; LIST#
 
@@ -6691,7 +6758,7 @@ c$A663 LD HL,$9F88   ; #REGhl=#R$9F88.
 
 ; Find Index Of Item From Item Group Present
 ;
-; .
+; Unused. Nothing in the game calls this routine.
 ;
 ;   HL Pointer to item group data
 ; O:A The found index
@@ -6845,10 +6912,12 @@ c$A6B1 PUSH AF       ; {Stash #REGaf and #REGbc on the stack.
 ; { #WARLORD$AF56 }
 ; LIST#
 
-; Response: "You're Not Carrying Anything"
+; Action: Inventory
 ;
 ; Used by the routine at #R$ABA8.
-@label=Response_YoureNotCarryingAnything
+; .
+; List everything the player is carrying.
+@label=Action_Inventory
 c$A6CF LD A,($A0D2)  ; {Jump to #R$A6DC if *#R$A0D2 is not #N$00.
  $A6D2 AND A         ;
  $A6D3 JR NZ,$A6DC   ; }
@@ -6911,6 +6980,8 @@ c$A6E8 LD B,$00      ; Initialise #REGb with #N$00 so the movement value is now
  $A6FC RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$EE25 }
+; { #HEROES$F7FA }
 ; { #JEWELS$F16B }
 ; { #WARLORD$F8DF }
 ; LIST#
@@ -8284,8 +8355,10 @@ c$AC2F CALL $AC02    ; Call #R$AC02.
  $AC35 JR NZ,$AC3F   ; input is not #N$01.}
 ; There is only one valid direct object in the user input and the
 ; command needs two...
- $AC37 LD HL,$0017   ; {Call #R$A25C to print "#DECODESTR$CDC1" and start a new
- $AC3A CALL $A25C    ; line.}
+; .
+; Print "#DECODESTR$CDC1".
+ $AC37 LD HL,$0017   ; #REGhl=#R(#OFFSET($0017)).
+ $AC3A CALL $A25C    ; Call #R$A25C.
  $AC3D SCF           ; Set the carry flag; the command needs another object.
  $AC3E RET           ; Return.
 ; There are two or more valid direct objects in the user input.
@@ -8296,9 +8369,11 @@ c$AC2F CALL $AC02    ; Call #R$AC02.
                      ; signal that both objects were accepted.)
  $AC44 RET           ; Return.
 ; There are more than two valid direct objects in the user input.
+; .
+; Print "#DECODESTR$CDD1".
 @label=ValidateTwoDirectObjects_TooMany
-*$AC45 LD HL,$0018   ; {Call #R$A25C to print "#DECODESTR$CDD1" and start a new
- $AC48 CALL $A25C    ; line.}
+*$AC45 LD HL,$0018   ; #REGhl=#R(#OFFSET($0018)).
+ $AC48 CALL $A25C    ; Call #R$A25C.
  $AC4B SCF           ; Set the carry flag; there are too many objects.
  $AC4C RET           ; Return.
 ; View the equivalent code in;
@@ -8441,7 +8516,10 @@ c$AC88 LD A,($BBCF)  ; #REGa=*#R$BBCF.
  $ACBC RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$C3FA }
+; { #HEROES$B6E0 }
 ; { #JEWELS$C4EB }
+; { #ANDROMEDA$658A }
 ; { #WARLORD$AFEB }
 ; LIST#
 
@@ -8504,8 +8582,10 @@ c$ACBD LD C,A        ; Load the destination room ID into #REGc.
  $ACFB RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #FOREST$C42F }
 ; { #HEROES$B714 }
 ; { #JEWELS$C520 }
+; { #ANDROMEDA$8E18 }
 ; { #WARLORD$B01F }
 ; LIST#
 
@@ -8526,8 +8606,10 @@ c$ACFC LD HL,$B420   ; {Jump to #R$AD11 when the verb is known.
  $AD06 CPIR          ;
  $AD08 JR Z,$AD11    ; }
 ; The verb is not one this game understands.
- $AD0A LD HL,$0018   ; {Print "#DECODESTR$CDD1".
- $AD0D CALL $A25C    ; }
+; .
+; Print "#DECODESTR$CDD1".
+ $AD0A LD HL,$0018   ; #REGhl=#R(#OFFSET($0018)).
+ $AD0D CALL $A25C    ; Call #R$A25C.
  $AD10 RET           ; Return.
 ; Run the verb script from #R$B44A.
 *$AD11 LD A,($BBCB)  ; {This verb's place in #R$B44A.
@@ -8741,6 +8823,14 @@ c$ADA1 LD HL,$9F88   ; #REGhl=#R$9F88.
  $AE05 CALL $AC60    ; Call #R$AC60.
  $AE08 CALL NC,$ACFC ; Call #R$ACFC if #REGc is greater than #N$02.
  $AE0B JR $ADE7      ; Jump to #R$ADE7.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$F964 }
+; { #HEROES$FBA9 }
+; { #JEWELS$FD82 }
+; { #ANDROMEDA$F8AF }
+; { #WARLORD$FCCE }
+; LIST#
 
 ; Game Over
 ;
@@ -8806,7 +8896,7 @@ c$AE2C CALL $A635    ; Call #R$A635.
  $AE39 JR Z,$AE55    ; }
  $AE3B PUSH HL       ; Stash #REGhl on the stack.
  $AE3C LD HL,$B6F1   ; #REGhl=#R$B6F1.
- $AE3F LD A,E        ; #REGa=#REGe.
+ $AE3F LD A,E        ; Copy the object ID back into #REGa.
  $AE40 CPIR          ; Search the plural-item list.
  $AE42 POP HL        ; Restore #REGhl from the stack.
  $AE43 JR NZ,$AE55   ; Jump to #R$AE55 when this item is singular.
@@ -12120,17 +12210,29 @@ g$BBBD DEFW $BCE4    ; Event #N((#PC-$BBBD)/$02).
  $BBC3 DEFW $BD25    ; Event #N((#PC-$BBBD)/$02).
  $BBC5 DEFW $BD2E    ; Event #N((#PC-$BBBD)/$02).
 
-; Number Of Object
+; Number Of Items
 ;
-; The total number of objects in the game.
-@label=Count_Objects_1
+; The total number of items in the game. See #R$9F88 and #R$BB0B.
+@label=Count_Items
 g$BBC7 DEFW $0088
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BAF8 }
+; { #JEWELS$BD28 }
+; { #WARLORD$A7E8 }
+; LIST#
 
 ; Number Of Objects
 ;
-; The total number of objects in the game.
-@label=Count_Objects_2
+; The total number of objects in the game. See #R$B49E.
+@label=Count_Objects
 g$BBC9 DEFW $0056
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BAFA }
+; { #JEWELS$BD2A }
+; { #ANDROMEDA$62C4 }
+; LIST#
 
 ; Number Of Verb Tokens
 ;
@@ -12145,10 +12247,16 @@ g$BBCB DEFW $002A
 g$BBCD DEFW $0013
 
 ; Number Of Scenic Events
+;
+; The total number of scenic events in the game, see #R$B6BA.
 @label=Count_ScenicEvents
 g$BBCF DEFW $0005
-; The total number of scenic events in the game, see
-; Table_ScenicEventLocations.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$BB00 }
+; { #JEWELS$BD30 }
+; { #WARLORD$A7EE }
+; LIST#
 
 ; Number Of Saved State Bytes
 ;
@@ -12161,7 +12269,7 @@ g$BBD1 DEFW $0006
 g$BBD3 DEFB $45
 
 ; Unused
-u$BBD4 DEFB $00
+u$BBD4 DEFS $01
 
 ; Pointer: Room Image Offsets
 ;
@@ -12173,7 +12281,7 @@ g$BBD5 DEFW $61A8    ; #R$61A8.
 ;
 ; Copied to #R$A0D3 at the start of a game.
 @label=InitialCarryingLimit
-g$BBD7 DEFB $05      ; #N(#PEEK(#PC)).
+g$BBD7 DEFB $05      ; The player can initially hold #N$05 items.
 
 ; Data: Arrival Script
 ;
@@ -12512,12 +12620,15 @@ g$BD2E DEFB $00,$04,$2B,$01,$FF,$08,$83,$FF
  $C50E DEFB $FF,$11,$13,$48,$00,$3E,$C5,$01
  $C516 DEFB $38,$FE,$01,$54,$04,$55,$01,$FF
  $C51E DEFB $11,$01,$52,$04,$57,$01,$FF,$11
- $C526 DEFB $06,$2F,$07,$39,$38,$FF,$19,$02
- $C52E DEFB $2E,$06,$3D,$07,$53,$54,$FF,$19
- $C536 DEFB $05,$3E,$00,$04,$1A,$00,$FF,$11
- $C53E DEFB $13,$07,$00,$68,$C5,$01,$0C,$FE
- $C546 DEFB $01,$34,$FE,$01,$3B,$04,$55,$01
- $C54E DEFB $FF,$11,$06,$2D,$07,$35,$34,$FF
+ $C526 DEFB $06,$2F,$07,$39,$38,$FF
+; This action changes the map:
+ $C52C DEFB $19,$02,$2E,$06,$3D,$07,$53,$54
+ $C534 DEFB $FF,$19,$05,$3E,$00,$04,$1A,$00
+ $C53C DEFB $FF,$11,$13,$07,$00,$68,$C5,$01
+ $C544 DEFB $0C,$FE,$01,$34,$FE,$01,$3B,$04
+ $C54C DEFB $55,$01,$FF,$11,$06,$2D,$07,$35
+ $C554 DEFB $34,$FF
+; This action changes the map:
  $C556 DEFB $19,$01,$34,$06,$30,$07,$3C,$3B
  $C55E DEFB $FF,$19,$03,$2F,$00,$04,$1A,$00
  $C566 DEFB $FF,$11,$13,$49,$00,$A1,$C5,$01
@@ -12526,113 +12637,117 @@ g$BD2E DEFB $00,$04,$2B,$01,$FF,$08,$83,$FF
  $C57E DEFB $5A,$01,$FF,$11,$0A,$0B,$04,$1A
  $C586 DEFB $00,$FF,$11,$00,$0C,$0B,$FF,$0E
  $C58E DEFB $04,$FF,$07,$7E,$7F,$FF,$07,$21
- $C596 DEFB $22,$FF,$04,$5B,$01,$FF,$19,$00
- $C59E DEFB $18,$FF,$11,$00,$04,$19,$00,$FF
- $C5A6 DEFB $11,$15,$02,$11,$17,$01,$04,$18
- $C5AE DEFB $00,$FF,$11,$13,$48,$00,$DB,$C5
- $C5B6 DEFB $01,$39,$FE,$01,$52,$FE,$01,$53
- $C5BE DEFB $04,$56,$01,$FF,$11,$06,$2F,$07
- $C5C6 DEFB $38,$39,$FF,$19,$02,$00,$06,$3D
- $C5CE DEFB $07,$54,$53,$FF,$19,$05,$00,$00
- $C5D6 DEFB $04,$1A,$00,$FF,$11,$13,$07,$00
- $C5DE DEFB $09,$C6,$01,$3C,$FE,$01,$35,$04
- $C5E6 DEFB $56,$01,$FF,$11,$06,$0B,$04,$19
- $C5EE DEFB $00,$FF,$11,$06,$30,$07,$3B,$3C
- $C5F6 DEFB $FF,$19,$03,$00,$06,$2D,$07,$34
- $C5FE DEFB $35,$FF,$19,$01,$00,$00,$04,$1A
- $C606 DEFB $00,$FF,$11,$13,$49,$00,$22,$C6
- $C60E DEFB $01,$7D,$FE,$01,$7E,$04,$56,$01
- $C616 DEFB $FF,$11,$00,$07,$7F,$7E,$FF,$04
- $C61E DEFB $1A,$00,$FF,$11,$00,$04,$19,$00
- $C626 DEFB $FF,$11,$15,$02,$11,$17,$01,$04
- $C62E DEFB $18,$00,$FF,$11,$13,$0D,$00,$5E
- $C636 DEFB $C6,$02,$45,$FF,$02,$60,$04,$19
- $C63E DEFB $00,$FF,$11,$01,$45,$04,$5C,$01
- $C646 DEFB $FF,$11,$04,$3F,$04,$5D,$01,$FF
- $C64E DEFB $11,$00,$08,$3F,$FF,$13,$FF,$07
- $C656 DEFB $60,$45,$FF,$04,$5E,$01,$FF,$11
- $C65E DEFB $00,$04,$19,$00,$FF,$11,$15,$02
- $C666 DEFB $11,$13,$4A,$00,$90,$C6,$07,$38
- $C66E DEFB $00,$90,$C6,$0A,$1B,$0C,$1C,$FF
- $C676 DEFB $0E,$04,$FF,$0B,$3F,$FF,$11,$01
- $C67E DEFB $4A,$08,$4A,$FF,$04,$60,$01,$FF
- $C686 DEFB $11,$00,$06,$4A,$FF,$04,$5F,$01
- $C68E DEFB $FF,$11,$00,$04,$4D,$01,$FF,$11
- $C696 DEFB $15,$04,$11,$13,$38,$00,$BE,$C6
- $C69E DEFB $02,$7D,$04,$54,$01,$FF,$11,$1D
- $C6A6 DEFB $7C,$11,$0B,$0A,$0C,$0A,$FF,$0E
- $C6AE DEFB $04,$00,$07,$7D,$7E,$FF,$08,$7C
- $C6B6 DEFB $FF,$13,$FF,$04,$1A,$00,$FF,$11
- $C6BE DEFB $13,$22,$FE,$07,$3B,$00,$E5,$C6
- $C6C6 DEFB $02,$4E,$04,$54,$01,$FF,$11,$1D
- $C6CE DEFB $4C,$11,$00,$0C,$1A,$FF,$0E,$04
- $C6D6 DEFB $FF,$07,$4E,$50,$FF,$08,$4C,$FF
- $C6DE DEFB $13,$FF,$04,$1A,$00,$FF,$11,$13
- $C6E6 DEFB $23,$00,$1A,$C7,$01,$51,$04,$54
- $C6EE DEFB $01,$FF,$11,$02,$50,$04,$19,$00
- $C6F6 DEFB $FF,$11,$04,$55,$04,$6E,$01,$FF
- $C6FE DEFB $11,$08,$4A,$38,$04,$61,$01,$FF
- $C706 DEFB $0C,$00,$FF,$11,$00,$07,$50,$51
- $C70E DEFB $FF,$0C,$1B,$FF,$0E,$02,$FF,$04
- $C716 DEFB $1A,$00,$FF,$11,$00,$04,$19,$00
- $C71E DEFB $FF,$11,$15,$04,$11,$13,$1F,$00
- $C726 DEFB $47,$C7,$02,$45,$04,$19,$00,$FF
- $C72E DEFB $11,$02,$42,$04,$23,$00,$FF,$11
- $C736 DEFB $00,$07,$45,$44,$FF,$08,$3F,$FF
- $C73E DEFB $19,$04,$37,$FF,$04,$63,$01,$FF
- $C746 DEFB $11,$00,$04,$19,$00,$FF,$11,$15
- $C74E DEFB $02,$11,$13,$1D,$FF,$13,$4D,$FF
- $C756 DEFB $13,$4F,$00,$7D,$C7,$01,$41,$04
- $C75E DEFB $54,$01,$FF,$11,$07,$31,$04,$19
- $C766 DEFB $00,$FF,$11,$03,$19,$04,$6F,$01
- $C76E DEFB $FF,$11,$00,$07,$40,$43,$FF,$06
- $C776 DEFB $41,$FF,$04,$64,$01,$FF,$11,$13
- $C77E DEFB $2C,$FF,$13,$4E,$00,$A1,$C7,$09
- $C786 DEFB $63,$00,$04,$54,$01,$FF,$11,$02
- $C78E DEFB $71,$04,$53,$01,$FF,$11,$00,$07
- $C796 DEFB $62,$85,$FF,$06,$63,$FF,$04,$1A
- $C79E DEFB $00,$FF,$11,$00,$04,$19,$00,$FF
- $C7A6 DEFB $11,$15,$02,$11,$17,$01,$04,$18
- $C7AE DEFB $00,$FF,$11,$13,$32,$FF,$13,$33
- $C7B6 DEFB $00,$E9,$C7,$0D,$49,$00,$FF,$1D
- $C7BE DEFB $FF,$11,$12,$32,$FF,$03,$6A,$04
- $C7C6 DEFB $54,$01,$FF,$11,$12,$32,$07,$69
- $C7CE DEFB $6A,$FF,$04,$1A,$00,$FF,$11,$12
- $C7D6 DEFB $33,$FF,$03,$69,$04,$65,$01,$FF
- $C7DE DEFB $11,$00,$07,$6A,$69,$FF,$04,$1A
- $C7E6 DEFB $00,$FF,$11,$13,$30,$00,$02,$C8
- $C7EE DEFB $01,$68,$04,$54,$01,$FF,$11,$00
- $C7F6 DEFB $07,$67,$68,$FF,$08,$70,$FF,$04
- $C7FE DEFB $1A,$00,$FF,$11,$00,$04,$19,$00
- $C806 DEFB $FF,$11,$15,$02,$11,$17,$01,$04
- $C80E DEFB $18,$00,$FF,$11,$13,$15,$00,$29
- $C816 DEFB $C8,$03,$20,$04,$3E,$01,$FF,$11
- $C81E DEFB $1C,$1F,$07,$1F,$20,$FF,$04,$1A
- $C826 DEFB $00,$00,$11,$00,$04,$50,$01,$FF
- $C82E DEFB $11,$15,$02,$11,$17,$01,$04,$18
- $C836 DEFB $00,$FF,$11,$13,$02,$00,$4A,$C8
- $C83E DEFB $1C,$07,$08,$07,$FF,$13,$FF,$04
- $C846 DEFB $67,$01,$00,$11,$13,$03,$00,$56
- $C84E DEFB $C8,$1C,$08,$04,$66,$01,$00,$11
- $C856 DEFB $13,$39,$00,$67,$C8,$1C,$80,$08
- $C85E DEFB $80,$FF,$13,$FF,$04,$69,$01,$00
- $C866 DEFB $11,$13,$40,$00,$78,$C8,$1C,$86
- $C86E DEFB $08,$86,$FF,$13,$FF,$04,$68,$01
- $C876 DEFB $00,$11,$00,$04,$50,$01,$FF,$11
- $C87E DEFB $15,$02,$11,$12,$1D,$FE,$12,$4F
- $C886 DEFB $04,$6A,$01,$FF,$11,$00,$04,$6B
- $C88E DEFB $01,$FF,$11,$15,$02,$11,$13,$48
- $C896 DEFB $FF,$13,$4B,$00,$B4,$C8,$02,$52
- $C89E DEFB $04,$6C,$01,$FF,$11,$04,$3F,$04
- $C8A6 DEFB $5D,$01,$FF,$11,$00,$07,$52,$53
- $C8AE DEFB $FF,$04,$1A,$00,$FF,$11,$00,$04
- $C8B6 DEFB $19,$00,$FF,$11,$15,$02,$11,$13
- $C8BE DEFB $49,$FF,$13,$4C,$00,$E3,$C8,$0A
- $C8C6 DEFB $0D,$04,$54,$01,$FF,$11,$04,$0F
- $C8CE DEFB $04,$6D,$01,$FF,$11,$00,$07,$0F
- $C8D6 DEFB $0E,$FF,$0C,$0D,$FF,$0E,$04,$FF
- $C8DE DEFB $04,$1A,$00,$FF,$11,$00,$04,$23
- $C8E6 DEFB $00,$FF,$11
+ $C596 DEFB $22,$FF,$04,$5B,$01,$FF
+; This action changes the map:
+ $C59C DEFB $19,$00,$18,$FF,$11,$00,$04,$19
+ $C5A4 DEFB $00,$FF,$11,$15,$02,$11,$17,$01
+ $C5AC DEFB $04,$18,$00,$FF,$11,$13,$48,$00
+ $C5B4 DEFB $DB,$C5,$01,$39,$FE,$01,$52,$FE
+ $C5BC DEFB $01,$53,$04,$56,$01,$FF,$11,$06
+ $C5C4 DEFB $2F,$07,$38,$39,$FF
+; This action changes the map:
+ $C5C9 DEFB $19,$02,$00,$06,$3D,$07,$54,$53
+ $C5D1 DEFB $FF,$19,$05,$00,$00,$04,$1A,$00
+ $C5D9 DEFB $FF,$11,$13,$07,$00,$09,$C6,$01
+ $C5E1 DEFB $3C,$FE,$01,$35,$04,$56,$01,$FF
+ $C5E9 DEFB $11,$06,$0B,$04,$19,$00,$FF,$11
+ $C5F1 DEFB $06,$30,$07,$3B,$3C,$FF,$19,$03
+ $C5F9 DEFB $00,$06,$2D,$07,$34,$35,$FF
+; This action changes the map:
+ $C600 DEFB $19,$01,$00,$00,$04,$1A,$00,$FF
+ $C608 DEFB $11,$13,$49,$00,$22,$C6,$01,$7D
+ $C610 DEFB $FE,$01,$7E,$04,$56,$01,$FF,$11
+ $C618 DEFB $00,$07,$7F,$7E,$FF,$04,$1A,$00
+ $C620 DEFB $FF,$11,$00,$04,$19,$00,$FF,$11
+ $C628 DEFB $15,$02,$11,$17,$01,$04,$18,$00
+ $C630 DEFB $FF,$11,$13,$0D,$00,$5E,$C6,$02
+ $C638 DEFB $45,$FF,$02,$60,$04,$19,$00,$FF
+ $C640 DEFB $11,$01,$45,$04,$5C,$01,$FF,$11
+ $C648 DEFB $04,$3F,$04,$5D,$01,$FF,$11,$00
+ $C650 DEFB $08,$3F,$FF,$13,$FF,$07,$60,$45
+ $C658 DEFB $FF,$04,$5E,$01,$FF,$11,$00,$04
+ $C660 DEFB $19,$00,$FF,$11,$15,$02,$11,$13
+ $C668 DEFB $4A,$00,$90,$C6,$07,$38,$00,$90
+ $C670 DEFB $C6,$0A,$1B,$0C,$1C,$FF,$0E,$04
+ $C678 DEFB $FF,$0B,$3F,$FF,$11,$01,$4A,$08
+ $C680 DEFB $4A,$FF,$04,$60,$01,$FF,$11,$00
+ $C688 DEFB $06,$4A,$FF,$04,$5F,$01,$FF,$11
+ $C690 DEFB $00,$04,$4D,$01,$FF,$11,$15,$04
+ $C698 DEFB $11,$13,$38,$00,$BE,$C6,$02,$7D
+ $C6A0 DEFB $04,$54,$01,$FF,$11,$1D,$7C,$11
+ $C6A8 DEFB $0B,$0A,$0C,$0A,$FF,$0E,$04,$00
+ $C6B0 DEFB $07,$7D,$7E,$FF,$08,$7C,$FF,$13
+ $C6B8 DEFB $FF,$04,$1A,$00,$FF,$11,$13,$22
+ $C6C0 DEFB $FE,$07,$3B,$00,$E5,$C6,$02,$4E
+ $C6C8 DEFB $04,$54,$01,$FF,$11,$1D,$4C,$11
+ $C6D0 DEFB $00,$0C,$1A,$FF,$0E,$04,$FF,$07
+ $C6D8 DEFB $4E,$50,$FF,$08,$4C,$FF,$13,$FF
+ $C6E0 DEFB $04,$1A,$00,$FF,$11,$13,$23,$00
+ $C6E8 DEFB $1A,$C7,$01,$51,$04,$54,$01,$FF
+ $C6F0 DEFB $11,$02,$50,$04,$19,$00,$FF,$11
+ $C6F8 DEFB $04,$55,$04,$6E,$01,$FF,$11,$08
+ $C700 DEFB $4A,$38,$04,$61,$01,$FF,$0C,$00
+ $C708 DEFB $FF,$11,$00,$07,$50,$51,$FF,$0C
+ $C710 DEFB $1B,$FF,$0E,$02,$FF,$04,$1A,$00
+ $C718 DEFB $FF,$11,$00,$04,$19,$00,$FF,$11
+ $C720 DEFB $15,$04,$11,$13,$1F,$00,$47,$C7
+ $C728 DEFB $02,$45,$04,$19,$00,$FF,$11,$02
+ $C730 DEFB $42,$04,$23,$00,$FF,$11,$00,$07
+ $C738 DEFB $45,$44,$FF,$08,$3F,$FF,$19,$04
+ $C740 DEFB $37,$FF,$04,$63,$01,$FF,$11,$00
+ $C748 DEFB $04,$19,$00,$FF,$11,$15,$02,$11
+ $C750 DEFB $13,$1D,$FF,$13,$4D,$FF,$13,$4F
+ $C758 DEFB $00,$7D,$C7,$01,$41,$04,$54,$01
+ $C760 DEFB $FF,$11,$07,$31,$04,$19,$00,$FF
+ $C768 DEFB $11,$03,$19,$04,$6F,$01,$FF,$11
+ $C770 DEFB $00,$07,$40,$43,$FF,$06,$41,$FF
+ $C778 DEFB $04,$64,$01,$FF,$11,$13,$2C,$FF
+ $C780 DEFB $13,$4E,$00,$A1,$C7,$09,$63,$00
+ $C788 DEFB $04,$54,$01,$FF,$11,$02,$71,$04
+ $C790 DEFB $53,$01,$FF,$11,$00,$07,$62,$85
+ $C798 DEFB $FF,$06,$63,$FF,$04,$1A,$00,$FF
+ $C7A0 DEFB $11,$00,$04,$19,$00,$FF,$11,$15
+ $C7A8 DEFB $02,$11,$17,$01,$04,$18,$00,$FF
+ $C7B0 DEFB $11,$13,$32,$FF,$13,$33,$00,$E9
+ $C7B8 DEFB $C7,$0D,$49,$00,$FF,$1D,$FF,$11
+ $C7C0 DEFB $12,$32,$FF,$03,$6A,$04,$54,$01
+ $C7C8 DEFB $FF,$11,$12,$32,$07,$69,$6A,$FF
+ $C7D0 DEFB $04,$1A,$00,$FF,$11,$12,$33,$FF
+ $C7D8 DEFB $03,$69,$04,$65,$01,$FF,$11,$00
+ $C7E0 DEFB $07,$6A,$69,$FF,$04,$1A,$00,$FF
+ $C7E8 DEFB $11,$13,$30,$00,$02,$C8,$01,$68
+ $C7F0 DEFB $04,$54,$01,$FF,$11,$00,$07,$67
+ $C7F8 DEFB $68,$FF,$08,$70,$FF,$04,$1A,$00
+ $C800 DEFB $FF,$11,$00,$04,$19,$00,$FF,$11
+ $C808 DEFB $15,$02,$11,$17,$01,$04,$18,$00
+ $C810 DEFB $FF,$11,$13,$15,$00,$29,$C8,$03
+ $C818 DEFB $20,$04,$3E,$01,$FF,$11,$1C,$1F
+ $C820 DEFB $07,$1F,$20,$FF,$04,$1A,$00,$00
+ $C828 DEFB $11,$00,$04,$50,$01,$FF,$11,$15
+ $C830 DEFB $02,$11,$17,$01,$04,$18,$00,$FF
+ $C838 DEFB $11,$13,$02,$00,$4A,$C8,$1C,$07
+ $C840 DEFB $08,$07,$FF,$13,$FF,$04,$67,$01
+ $C848 DEFB $00,$11,$13,$03,$00,$56,$C8,$1C
+ $C850 DEFB $08,$04,$66,$01,$00,$11,$13,$39
+ $C858 DEFB $00,$67,$C8,$1C,$80,$08,$80,$FF
+ $C860 DEFB $13,$FF,$04,$69,$01,$00,$11,$13
+ $C868 DEFB $40,$00,$78,$C8,$1C,$86,$08,$86
+ $C870 DEFB $FF,$13,$FF,$04,$68,$01,$00,$11
+ $C878 DEFB $00,$04,$50,$01,$FF,$11,$15,$02
+ $C880 DEFB $11,$12,$1D,$FE,$12,$4F,$04,$6A
+ $C888 DEFB $01,$FF,$11,$00,$04,$6B,$01,$FF
+ $C890 DEFB $11,$15,$02,$11,$13,$48,$FF,$13
+ $C898 DEFB $4B,$00,$B4,$C8,$02,$52,$04,$6C
+ $C8A0 DEFB $01,$FF,$11,$04,$3F,$04,$5D,$01
+ $C8A8 DEFB $FF,$11,$00,$07,$52,$53,$FF,$04
+ $C8B0 DEFB $1A,$00,$FF,$11,$00,$04,$19,$00
+ $C8B8 DEFB $FF,$11,$15,$02,$11,$13,$49,$FF
+ $C8C0 DEFB $13,$4C,$00,$E3,$C8,$0A,$0D,$04
+ $C8C8 DEFB $54,$01,$FF,$11,$04,$0F,$04,$6D
+ $C8D0 DEFB $01,$FF,$11,$00,$07,$0F,$0E,$FF
+ $C8D8 DEFB $0C,$0D,$FF,$0E,$04,$FF,$04,$1A
+ $C8E0 DEFB $00,$FF,$11,$00,$04,$23,$00,$FF
+ $C8E8 DEFB $11
 
 ; Data: Strings
 @label=Data_Strings
@@ -29647,27 +29762,4 @@ u$FF1E DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $FF3E DEFB $00,$00
 
 ; Unused
-u$FF40 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FF48 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FF50 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FF58 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FF60 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FF68 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FF70 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FF78 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FF80 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FF88 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FF90 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FF98 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFA0 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFA8 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFB0 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFB8 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFC0 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFC8 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFD0 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFD8 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFE0 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFE8 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFF0 DEFB $00,$00,$00,$00,$00,$00,$00,$00
- $FFF8 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+u$FF40 DEFS $C0

@@ -33,8 +33,10 @@ c $5B00 Tape Loader
 @ $5B00 label=TapeLoader
 E $5B00 View the equivalent code in;
 . #LIST
+. { #FOREST$5B00 }
 . { #HEROES$5B00 }
 . { #JEWELS$5B00 }
+. { #ANDROMEDA$5CD0 }
 . LIST#
 N $5B00 Load the first block: screen data.
   $5B00,$04 #REGix=#R$4000(#N$4000).
@@ -77,8 +79,8 @@ N $5B21 Tape loading routine.
   $5B4C,$02 Write #N$80 to *#REGhl.
   $5B4E,$01 Call #SKOOLKID$0008(ERROR_1).
 
-u $5B4F Unused
-  $5B4F,$0659
+u $5B4F
+S $5B4F,$0659
 
 b $61A8 Graphics: The Wooded Vale
 @ $61A8 label=Image_WoodedVale
@@ -365,8 +367,10 @@ c $A531 Game Entry Point
 E $A531 View the equivalent code in;
 . #LIST
 . { #SHOCK$9DD7 }
+. { #FOREST$B9C5 }
 . { #HEROES$ABD4 }
 . { #JEWELS$BA50 }
+. { #ANDROMEDA$61A8 }
 . LIST#
   $A531,$05 Set CAPS LOCK on, using bit 3 of *#SKOOLKID$5C6A(FLAGS2).
   $A536,$05 Write #N$18 to *#R$A82E.
@@ -491,8 +495,8 @@ c $A592 Print String And A Newline
 @ $A592 label=PrintStringAndNewline
 E $A592 View the equivalent code in;
 . #LIST
-. { #SHOCK$A25C(After Shock (compressed)) }
-. { #SHOCK$A275(After Shock (plain)) }
+. { #SHOCK$A25C }
+. { #SHOCK$A275 }
 . { #FOREST$BE2E }
 . { #HEROES$AC35 }
 . { #JEWELS$BAB1 }
@@ -590,25 +594,28 @@ E $A5CA View the equivalent code in;
 . { #JEWELS$BB59 }
 . { #ANDROMEDA$69A1 }
 . LIST#
-  $A5CA,$03 #REGa=*#R$A7F0.
-  $A5CD,$03 Jump to #R$A5E9 if #REGa is zero.
-  $A5D0,$01 #REGb=#REGa.
+  $A5CA,$03 Read the configurable-exit count into #REGa.
+  $A5CD,$03 Jump to #R$A5E9 if there are no configurable exits to pack.
+  $A5D0,$01 Copy the configurable-exit count into #REGb.
   $A5D1,$04 #REGix=*#R$A7DC(#N$A7DC).
   $A5D5,$03 #REGde=#R$A791.
   $A5D8,$02 Jump to #R$A5DF.
-
-  $A5DA,$04 Increment #REGix by two.
-  $A5DE,$01 Increment #REGde by one.
-  $A5DF,$03 #REGl=*#REGix+#N$00.
-  $A5E2,$03 #REGh=*#REGix+#N$01.
-  $A5E5,$02 Write *#REGhl to *#REGde.
-  $A5E7,$02 Decrease counter by one and loop back to #R$A5DA until counter is zero.
+N $A5DA Move on to the next configurable-exit address.
+@ $A5DA label=SaveGame_Copy
+  $A5DA,$04 Move #REGix on to the next exit address.
+  $A5DE,$01 Move #REGde on to the next packed exit byte.
+@ $A5DF label=SaveGame_StoreFlag
+  $A5DF,$06 Fetch the exit address from *#REGix into #REGhl.
+  $A5E5,$02 Copy the exit byte into the packed save buffer.
+  $A5E7,$02 Decrease the pack counter and loop back to #R$A5DA until every
+. exit byte is packed.
 N $A5E9 Print "#STR$A950,$08($b==$FF)".
+@ $A5E9 label=SaveGame_PrintSaving
   $A5E9,$03 #REGhl=#R$A950.
   $A5EC,$03 Call #R$A592.
   $A5EF,$03 Call #R$A53E.
-  $A5F2,$04 #REGix=#R$A66C(#N$A66C).
-  $A5F6,$03 #REGde=#N$0186.
+  $A5F2,$04 Load the starting address into #REGix at #R$A66C.
+  $A5F6,$03 Set the block length in #REGde to #N$0186 bytes.
   $A5F9,$02 Set #REGa to #N$FF which indicates this is a data block.
   $A5FB,$03 Call #SKOOLKID$04C2(SA_BYTES).
 N $A5FE Print "#STR$A986,$08($b==$FF)".
@@ -640,22 +647,23 @@ N $A61A Print "#STR$A92A,$08($b==$FF)".
   $A61D,$03 Call #R$A592.
   $A620,$01 Set the carry flag to signal that loading failed.
   $A621,$01 Return.
+N $A622 There is nothing to unpack when no configurable exits were saved.
 @ $A622 label=LoadTape_Success
-  $A622,$03 #REGa=*#R$A7F0.
-  $A625,$02 Return if #REGa is zero.
-  $A627,$01 #REGb=#REGa.
+  $A622,$03 Read the configurable-exit count into #REGa.
+  $A625,$02 Return if there are no configurable exits to unpack.
+  $A627,$01 Copy the configurable-exit count into #REGb.
   $A628,$04 #REGix=*#R$A7DC.
   $A62C,$03 #REGde=#R$A791.
   $A62F,$02 Jump to #R$A636.
+N $A631 The next saved exit address.
 @ $A631 label=LoadTape_WriteLoop
-  $A631,$04 Increment #REGix by two.
-  $A635,$01 Increment #REGde by one.
+  $A631,$04 Move #REGix on to the next exit address.
+  $A635,$01 Move #REGde on to the next packed exit byte.
 @ $A636 label=LoadTape_Write
-  $A636,$03 #REGl=*#REGix+#N$00.
-  $A639,$03 #REGh=*#REGix+#N$01.
-  $A63C,$01 #REGa=*#REGde.
-  $A63D,$01 Write #REGa to *#REGhl.
-  $A63E,$02 Decrease counter by one and loop back to #R$A631 until counter is zero.
+  $A636,$06 Fetch the exit address from *#REGix into #REGhl.
+  $A63C,$02 Write that packed exit byte back into the game.
+  $A63E,$02 Decrease the unpack counter and loop back to #R$A631 until every
+. exit byte is restored.
   $A640,$02 #REGe=#N$00.
   $A642,$03 Call #R$ABB6.
   $A645,$01 Clear the carry flag to signal that loading succeeded.
@@ -710,8 +718,10 @@ g $A66C Table: Item/ Event Locations
 E $A66C View the equivalent code in;
 . #LIST
 . { #SHOCK$9F88 }
+. { #FOREST$B9C8 }
 . { #HEROES$AD76 }
 . { #JEWELS$BBF0 }
+. { #ANDROMEDA$61AB }
 . LIST#
 D $A66C A table where the index is the item/ event ID, and the value is the
 . room it resides in (#N$00 for "currently inactive").
@@ -762,7 +772,7 @@ D $A76D Bits #N($00), #N($01), #N($02), #N$04 and #N$06 award #N$04 points once.
 . TABLE#
 B $A76D,$01 Quest-progress flags.
 
-u $A76E Unused
+u $A76E
 S $A76E,$04
 
 g $A772 Temporary Mixed Storage
@@ -796,7 +806,7 @@ D $A774 Used by the routine at #R$ABB6 but uses the bit index from #R$FEF1.
 B $A774,b$01 Seen-image flags.
 B $A775,b$01 Seen-image flags.
 
-u $A776 Unused
+u $A776
 S $A776,$08
 
 g $A77E Flags: Turn-Based Event States
@@ -824,11 +834,23 @@ B $A77F,$01 Turn counter for bit #N$00 of *#R$A77E.
 N $A780 Initialised to #N$05 by #R$EC21.
 @ $A780 label=Counter_FomorianTribe
 B $A780,$01 Turn counter for bit #N$01 of *#R$A77E.
+N $A781 Unused.
+@ $A781 label=Counter_Unused_0
 B $A781,$01 Turn counter for bit #N$02 of *#R$A77E.
+N $A782 Unused.
+@ $A782 label=Counter_Unused_1
 B $A782,$01 Turn counter for bit #N$03 of *#R$A77E.
+N $A783 Unused.
+@ $A783 label=Counter_Unused_2
 B $A783,$01 Turn counter for bit #N$04 of *#R$A77E.
+N $A784 Unused.
+@ $A784 label=Counter_Unused_3
 B $A784,$01 Turn counter for bit #N$05 of *#R$A77E.
+N $A785 Unused.
+@ $A785 label=Counter_Unused_4
 B $A785,$01 Turn counter for bit #N$06 of *#R$A77E.
+N $A786 Unused.
+@ $A786 label=Counter_Unused_5
 B $A786,$01 Turn counter for bit #N$07 of *#R$A77E.
 
 g $A787 Flags: Event States
@@ -958,13 +980,19 @@ g $A7E4 Pointer: Scenic Event Rooms
 D $A7E4 Pointer to the address of each scenic event's room group.
 W $A7E4,$02 #R$E4E6.
 
-g $A7E6 Number Of Object
+g $A7E6 Number Of Objects
 @ $A7E6 label=Count_Objects
 D $A7E6 The total number of objects in the game.
 W $A7E6,$02
 
 g $A7E8 Number Of Items
 @ $A7E8 label=Count_Items
+E $A7E8 View the equivalent code in;
+. #LIST
+. { #SHOCK$BBC7 }
+. { #FOREST$BAF8 }
+. { #JEWELS$BD28 }
+. LIST#
 D $A7E8 The total number of items in the game.
 W $A7E8,$02
 
@@ -980,6 +1008,12 @@ W $A7EC,$02
 
 g $A7EE Number Of Scenic Events
 @ $A7EE label=Count_ScenicEvents
+E $A7EE View the equivalent code in;
+. #LIST
+. { #SHOCK$BBCF }
+. { #FOREST$BB00 }
+. { #JEWELS$BD30 }
+. LIST#
 D $A7EE The total number of scenic events in the game. See #R$E4E6.
 W $A7EE,$02
 
@@ -1004,8 +1038,10 @@ g $A82E Line Number
 @ $A82E label=LineNumber
 E $A82E View the equivalent code in;
 . #LIST
+. { #FOREST$BB40 }
 . { #HEROES$AF38 }
 . { #JEWELS$BD70 }
+. { #ANDROMEDA$629B }
 . LIST#
 B $A82E,$01 Printing line.
 
@@ -1013,7 +1049,7 @@ g $A82F Four Letter Buffer
 @ $A82F label=FourLetterBuffer
 B $A82F,$04 Word buffer.
 
-u $A833 Unused
+u $A833
 S $A833,$08
 
 g $A83B Temporary Storage Table Pointer
@@ -1024,7 +1060,7 @@ g $A83D Temporary Storage Table Index
 @ $A83D label=TemporaryStorage_TableIndex
 W $A83D,$02 Saved table index.
 
-u $A83F Unused
+u $A83F
 S $A83F,$04
 
 t $A843 Messaging: "> "
@@ -1289,11 +1325,12 @@ N $AAFC Print "#STR$A9EC,$08($b==$FF)".
   $AAFF,$03 Call #R$A592.
   $AB02,$01 Return.
 
-c $AB03 Response: "O.K"
+c $AB03 Response: "O.K."
 @ $AB03 label=Response_OK
 E $AB03 View the equivalent code in;
 . #LIST
 . { #FOREST$BDD3 }
+. { #FOREST$ED96 }
 . { #HEROES$B1F9 }
 . { #JEWELS$C003 }
 . { #ANDROMEDA$648E }
@@ -1334,28 +1371,27 @@ D $AB0A This routine manages two types of in-game events:
 N $AB0A First process the turn-based events (if any are active).
   $AB0A,$03 Load *#R$A77E into #REGa.
   $AB0D,$03 Jump to #R$AB3C if no turn-based events are currently active.
-N $AB10 One of the events has triggered, find which one.
+N $AB10 Eight turn-based events share the flag byte.
   $AB10,$01 Copy the turn-based event flags into #REGc.
   $AB11,$02 Set a counter in #REGb for the number of possible turn-based events
 . (#N$08).
 N $AB13 Keep shifting the event flags one-by-one to find which bits are set.
 @ $AB13 label=GameEventChecker_Loop
-  $AB13,$02 Shift #REGc right; bit 0 (the next event flag) goes into the carry flag.
-  $AB15,$02 Jump to #R$AB3A if this event bit isn't set.
-N $AB17 The currently processed turn-based event is active, so process it.
-N $AB17 This is: #R$A77F+(#N$08-the current event counter).
+  $AB13,$02 Shift #REGc right so bit 0 (the next event flag) goes into the
+. carry flag.
+  $AB15,$02 Jump to #R$AB3A if this event bit is not set.
+N $AB17 Count down this event. It fires when the counter reaches zero.
   $AB17,$0B Calculate the turn-based event index and store it in #REGhl.
   $AB22,$01 Decrease the turn-based event counter at *#REGhl by one.
-  $AB23,$02 Jump to #R$AB3A if the event turn counter at *#REGhl was still more
-. than zero.
-N $AB25 The event turn counter is zero, so activate the event itself.
+  $AB23,$02 Jump to #R$AB3A if the counter is still running.
+N $AB25 The counter has expired, so run this event's handler.
   $AB25,$04 Load *#R$A7C8 into #REGix.
   $AB29,$02 Double the index as this table contains addresses.
   $AB2B,$02 Add this offset to #REGix to point to the current handler.
   $AB2D,$06 Get the handler address and store it in #REGhl.
   $AB33,$01 Stash the bit index and event flag byte on the stack.
-  $AB34,$04 Push #R$AB39 onto the stack so that the next return will go on to
-. continue processing events.
+  $AB34,$04 Push #R$AB39 onto the stack so the next return resumes event
+. processing.
   $AB38,$01 Jump to the routine pointed to by *#REGhl to action the current
 . event.
 N $AB39 Once the event handler has run, this is where the routine will resume.
@@ -1363,8 +1399,9 @@ N $AB39 Once the event handler has run, this is where the routine will resume.
   $AB39,$01 Restore the event bit index counter and event flag byte from the
 . stack.
 @ $AB3A label=GameEventChecker_Next
+N $AB3A Test the next turn-based event.
   $AB3A,$02 Decrease the event bit counter by one and loop back to #R$AB13
-. until all the event status bits have been processed.
+. until all eight events have been considered.
 N $AB3C Process scenic events.
 @ $AB3C label=GameScenicEventsProcessor
   $AB3C,$01 No operation.
@@ -1388,8 +1425,9 @@ N $AB49 This is the main scenic event loop.
   $AB54,$03 Load the player's current room (*#R$A7C3) into #REGa.
   $AB57,$01 Compare the current room with the item location.
   $AB58,$02 Jump to #R$AB85 if the item is in the current room.
-  $AB5A,$02 Stash the scenic event location pointer and event counter on the stack.
-N $AB5C This is: #REGe=*#R$A7EE-#REGb.
+  $AB5A,$02 Stash the scenic event location pointer and event counter on the
+. stack.
+N $AB5C Calculate which scenic event's room group this is.
   $AB5C,$05 Calculate the index of the currently processed event.
   $AB61,$04 Load *#R$A7E4 into #REGix.
 N $AB65 The routine at #R$AB88 is usually used to fetch an address from the
@@ -1409,7 +1447,7 @@ N $AB76 Use the random number to select a room from the group - this loops
 @ $AB76 label=GameScenicEvent_CountRooms_Loop
   $AB76,$01 Move to the next room ID in the group.
 @ $AB77 label=GameScenicEvent_CountRoomsInGroup
-  $AB77,$03 Jump to #R$AB6E if the terminator is read from *#REGhl.
+  $AB77,$03 Jump back to #R$AB6E when the terminator matches.
   $AB7A,$02 Decrease the random counter by one and loop back to #R$AB76 until
 . the counter is zero.
   $AB7C,$01 Load the chosen room ID into #REGc.
@@ -1417,7 +1455,8 @@ N $AB76 Use the random number to select a room from the group - this loops
   $AB7E,$01 Load the scenic event item ID into #REGb.
   $AB7F,$01 Stash the scenic event pointer on the stack.
   $AB80,$03 Call #R$AF08.
-  $AB83,$02 Restore the event counter and scenic event location pointer from the stack.
+  $AB83,$02 Restore the event counter and scenic event location pointer from
+. the stack.
 @ $AB85 label=GameScenicEventChecker_Next
   $AB85,$02 Decrease the scenic event counter by one and loop back to #R$AB49
 . until all scenic events have been processed.
@@ -1456,8 +1495,9 @@ E $AB97 View the equivalent code in;
 . { #ANDROMEDA$6763 }
 . LIST#
 R $AB97 A #N$01 for inventory items, or room number for room objects
-  $AB97,$03 #REGhl=#R$A66C.
-  $AB9A,$04 #REGbc=*#R$A7E6.
+  $AB97,$03 Point #REGhl at #R$A66C.
+  $AB9A,$04 Load the number of items into #REGbc.
+N $AB9E Search #R$A66C for the next object in this place.
 @ $AB9E label=FindObject_Loop
   $AB9E,$02 Search for matching objects.
   $ABA0,$01 Return if no objects were found.
@@ -1467,12 +1507,15 @@ R $AB97 A #N$01 for inventory items, or room number for room objects
   $ABA7,$02 Temporarily stash the object type and object counter on the stack.
   $ABA9,$03 Call #R$A592.
   $ABAC,$02 Restore the object counter and object type from the stack.
+N $ABAE Move on to the next object in the table.
 @ $ABAE label=FindObject_Next
   $ABAE,$01 Temporarily hold the object type in #REGe.
   $ABAF,$01 Restore the current place in #R$A66C from the stack.
-  $ABB0,$02 Test if all objects have been checked..
+  $ABB0,$02 Test if all objects have been checked.
   $ABB2,$01 Restore the object type to #REGa.
-  $ABB3,$02 Jump to #R$AB9E until all objects in the table have been checked.
+  $ABB3,$02 Jump back to #R$AB9E until all objects in the table have been
+. checked.
+N $ABB5 All matching objects have been printed.
   $ABB5,$01 Return.
 
 c $ABB6 Handler: Display Room Image
@@ -1650,6 +1693,7 @@ N $AC8D Print "#STR$A884,$08($b==$FF)".
 N $AC93 Print the objects at this location.
   $AC93,$03 #REGa=*#R$A7C3.
   $AC96,$03 Call #R$AB97.
+N $AC99 The exits and objects for this room are done.
   $AC99,$01 Return.
 
 c $AC9A Get Room Pointer
@@ -1657,8 +1701,10 @@ c $AC9A Get Room Pointer
 E $AC9A View the equivalent code in;
 . #LIST
 . { #SHOCK$A41C }
+. { #FOREST$C201 }
 . { #HEROES$B503 }
 . { #JEWELS$C302 }
+. { #ANDROMEDA$6892 }
 . LIST#
 R $AC9A O:HL Pointer to the room data
 M $AC9A,$06 Load the *#R$A7C3 into #REGde.
@@ -1701,7 +1747,6 @@ D $ACC6 Used by the routine at #R$AD32.
   $ACC6,$03 "#STR(#PC,$08)($b==$FF)".
 N $ACC9 Messaging: "SPACE<BS>"
 @ $ACC9 label=Messaging_SpaceBackspace
-D $ACC9 Used by the routine at #R$AD32.
   $ACC9,$02 "#STR(#PC,$08)($b==$FF)".
 B $ACCB,$01 Terminator.
 
@@ -1799,7 +1844,10 @@ c $AD32 Handler: User Input
 E $AD32 View the equivalent code in;
 . #LIST
 . { #SHOCK$A4B0 }
+. { #FOREST$BF73 }
+. { #HEROES$B200 }
 . { #JEWELS$C00A }
+. { #ANDROMEDA$6604 }
 . LIST#
 D $AD32 Handles keyboard input, tokenises commands and validates the
 . vocabulary.
@@ -2264,6 +2312,7 @@ R $AF08 C Room ID
 
 u $AF11 Find Index Of Item From Item Group Present
 @ $AF11 label=FindIndexOfItemFromItemGroupPresent
+D $AF11 This routine is unused; nothing in the game ever calls it.
 R $AF11 HL Pointer to item group data
 R $AF11 O:A The found index
 C $AF11,$02 Initialise an index counter in #REGb to #N$00.
@@ -2582,7 +2631,10 @@ c $AFEB Handler: Scenic Events
 E $AFEB View the equivalent code in;
 . #LIST
 . { #SHOCK$AC88 }
+. { #FOREST$C3FA }
+. { #HEROES$B6E0 }
 . { #JEWELS$C4EB }
+. { #ANDROMEDA$658A }
 . LIST#
 D $AFEB Handles checking if a scenic event should occur .. and also, handles
 . jumping to the correct related scenic event routine to action it.
@@ -2623,8 +2675,10 @@ c $B01F Move Player To Room
 E $B01F View the equivalent code in;
 . #LIST
 . { #SHOCK$ACBD }
+. { #FOREST$C42F }
 . { #HEROES$B714 }
 . { #JEWELS$C520 }
+. { #ANDROMEDA$8E18 }
 . LIST#
 R $B01F A Destination room ID
   $B01F,$01 Load the destination room ID into #REGc.
@@ -2841,27 +2895,33 @@ c $B10B Print Room Image
 E $B10B View the equivalent code in;
 . #LIST
 . { #SHOCK$9F28 }
+. { #FOREST$BEB8 }
+. { #HEROES$AD60 }
+. { #JEWELS$BB3B }
+. { #ANDROMEDA$6541 }
 . LIST#
 R $B10B IX Pointer to room image data
   $B10B,$03 #REGhl=#REGix (using the stack).
-  $B10E,$04 Add #N$0200 to the image data to skip the header.
-  $B112,$03 Initialise the screen buffer pointer in #REGde to #N$4000 (the
-. beginning of the screen buffer).
+  $B10E,$04 Move #REGhl past the #N$0200-byte mask to the pixel data.
+  $B112,$03 Set #REGde to the start of the screen buffer (#N$4000).
   $B115,$03 Set a counter in #REGbc for #N$0200 bytes to process.
 @ $B118 label=DecompressPixelData_Loop
-  $B118,$01 Stash the byte counter on the stack.
-  $B119,$02 #REGb=#N$08.
-  $B11B,$03 #REGc=*#REGix+#N$00.
+  $B118,$01 Stash the mask byte counter on the stack.
+  $B119,$02 Set #REGb to #N$08 for the #N$08 bits in a byte.
+  $B11B,$03 Fetch the mask byte from *#REGix into #REGc.
+@ $B11E label=DecompressPixelBit_Loop
   $B11E,$02 Shift #REGc left (with carry).
-  $B120,$02 Jump to #R$B125 if the mask bit was clear; that skips the screen byte, so those 8 pixels stay blank.
-  $B122,$01 #REGa=*#REGhl.
-  $B123,$01 Write #REGa to *#REGde.
-  $B124,$01 Increment #REGhl by one.
+  $B120,$02 Jump to #R$B125 if the mask bit was clear (those #N$08 pixels stay
+. blank).
+  $B122,$02 Copy the next pixel byte onto the screen.
+  $B124,$01 Move to the next pixel byte.
+@ $B125 label=DecompressPixelBit_Next
   $B125,$01 Increment #REGde by one.
-  $B126,$02 Decrease counter by one and loop back to #R$B11E until counter is zero.
+  $B126,$02 Decrease the bit counter by one and loop back to #R$B11E until the
+. counter is zero.
   $B128,$02 Increment #REGix by one.
-  $B12A,$01 Restore the byte counter from the stack.
-  $B12B,$01 Decrease the byte counter by one.
+  $B12A,$01 Restore the mask byte counter from the stack.
+  $B12B,$01 Decrease the mask byte counter by one.
   $B12C,$04 Jump back to #R$B118 until all bytes have been processed.
 N $B130 Decompress the attribute data.
   $B130,$03 #REGix=#REGhl (using the stack).
@@ -2869,7 +2929,8 @@ N $B130 Decompress the attribute data.
 . beginning of the attribute buffer).
 @ $B136 label=DecompressAttributeData_Loop
   $B136,$03 Fetch the attribute byte from *#REGix+#N$00 and store it in #REGa.
-  $B139,$03 Fetch the repeat count from *#REGix+#N$01 and store this in #REGb.
+  $B139,$03 Fetch the repeat count from *#REGix+#N$01 and store this in #REGb
+. (#N$00 means #N$0100).
   $B13C,$04 Increment #REGix by two.
 @ $B140 label=RepeatAttribute_Loop
   $B140,$01 Write the attribute byte to the attribute buffer pointer.
@@ -4973,6 +5034,7 @@ E $E99F View the equivalent code in;
 . { #FOREST$EB10 }
 . { #HEROES$E9A1 }
 . { #JEWELS$EDC4 }
+. { #ANDROMEDA$8D2A }
 . LIST#
   $E99F,$03 Call #R$AB0A.
   $E9A2,$03 Call #R$AFEB.
@@ -5049,8 +5111,8 @@ N $E9FA Print "#STR$C97C,$08($b==$FF)".
 
 c $EA0B Fatal Events: Roman
 @ $EA0B label=Event_Roman
-  $EA0B,$05 Call #R$AEE0 with #ITEM$03.
-  $EA10,$05 Call #R$AEE7 with #ITEM$02.
+  $EA0B,$05 Call #R$AEE0 with item #N$03: #ITEM$03.
+  $EA10,$05 Call #R$AEE7 with item #N$02: #ITEM$02.
 N $EA15 Print "#STR$C9AF,$08($b==$FF)".
   $EA15,$03 #REGhl=#R$C9AF.
   $EA18,$03 Call #R$A592.
@@ -5153,7 +5215,7 @@ c $EAB4 Fatal Events: Woman Guides Through Swamp - East
 N $EAB4 Print "#STR$CC26,$08($b==$FF)".
   $EAB4,$03 #REGhl=#R$CC26.
   $EAB7,$03 Call #R$A592.
-  $EABA,$05 Call #R$AEE0 with item #N$3F: #ITEM$3F.
+  $EABA,$05 Call #R$AEE0 with item #N$3F: #ITEM$3F.
   $EABF,$05 Call #R$AEF0 with item #N$40: #ITEM$40.
   $EAC4,$07 Call #R$AF08 to move #ITEM$3D to #ROOM$2D.
   $EACB,$01 Return.
@@ -5164,7 +5226,7 @@ N $EACC Print "#STR$CC3C,$08($b==$FF)".
   $EACC,$03 #REGhl=#R$CC3C.
   $EACF,$03 Call #R$A592.
   $EAD2,$05 Call #R$AEE0 with item #N$40: #ITEM$40.
-  $EAD7,$05 Call #R$AEF0 with item #N$41: #ITEM$41.
+  $EAD7,$05 Call #R$AEF0 with item #N$41: #ITEM$41.
   $EADC,$07 Call #R$AF08 to move #ITEM$3D to #ROOM$25.
   $EAE3,$01 Return.
 
@@ -5250,7 +5312,7 @@ c $EBA7 Process: Pre-Enter Crystal Cavern
   $EBA7,$06 Return if *#R$A7C3 is not room #N$42: #ROOM$42.
 N $EBAD Check if the player is wearing the cloak?
 @ $EBAD label=IsPlayerWearingCloak
-  $EBAD,$05 Call #R$AEDA with #ITEM$6D.
+  $EBAD,$05 Call #R$AEDA with item #N$6D: #ITEM$6D.
   $EBB2,$01 Return if the player has #ITEM$6D in their inventory.
 N $EBB3 Uh oh .. the player isn't wearing the cloak ..
 N $EBB3 Print "#STR$DF48,$08($b==$FF)".
@@ -5405,6 +5467,7 @@ c $ECBE Process: Enter Causeway
   $ECD3,$05 Call #R$AEF0 with event #N$07: #ITEM$07.
   $ECD8,$05 Call #R$AEE0 with item #N$28: #ITEM$28.
   $ECDD,$05 Call #R$B09A to add #N$04 points to the score.
+N $ECE2 This action changes the map:
   $ECE2,$05 Write #N$1A to *#R$E7B9 to open up westbound access to #ROOM$1A
 . from #ROOM$1B.
   $ECE7,$01 Return.
@@ -5641,6 +5704,12 @@ N $EDF3 Print "#STR$A9F7,$08($b==$FF)".
 
 c $EDF9 Response: "I Don't See The Point"
 @ $EDF9 label=Response_IDontSeeThePoint
+E $EDF9 View the equivalent code in;
+. #LIST
+. { #FOREST$ED78 }
+. { #HEROES$EFE2 }
+. { #JEWELS$F065 }
+. LIST#
 N $EDF9 Print "#STR$AA84,$08($b==$FF)".
   $EDF9,$03 #REGhl=#R$AA84.
   $EDFC,$03 Jump to #R$ED6D.
@@ -5653,6 +5722,12 @@ N $EDFF Print "#STR$AA21,$08($b==$FF)".
 
 c $EE05 Response: "Don't Be Ridiculous"
 @ $EE05 label=Response_DontBeRidiculous
+E $EE05 View the equivalent code in;
+. #LIST
+. { #FOREST$ED91 }
+. { #HEROES$F205 }
+. { #JEWELS$F092 }
+. LIST#
 N $EE05 Print "#STR$CDD3,$08($b==$FF)".
   $EE05,$03 #REGhl=#R$CDD3.
   $EE08,$03 Jump to #R$ED6D.
@@ -5671,12 +5746,24 @@ N $EE11 Print "#STR$CE3E,$08($b==$FF)".
 
 c $EE17 Response: "You're Not Carrying Anything"
 @ $EE17 label=Response_YoureNotCarryingAnything
+E $EE17 View the equivalent code in;
+. #LIST
+. { #SHOCK$A6CF }
+. { #FOREST$EDAF }
+. { #HEROES$EAB8 }
+. { #JEWELS$F04C }
+. LIST#
 N $EE17 Print "#STR$CF22,$08($b==$FF)".
   $EE17,$03 #REGhl=#R$CF22.
   $EE1A,$03 Jump to #R$ED6D.
 
 c $EE1D Response: "You Can't Go In That Direction"
 @ $EE1D label=Response_YouCantGoInThatDirection
+E $EE1D View the equivalent code in;
+. #LIST
+. { #HEROES$EADC }
+. { #JEWELS$F05B }
+. LIST#
 N $EE1D Print "#STR$AA4E,$08($b==$FF)".
   $EE1D,$03 #REGhl=#R$AA4E.
   $EE20,$03 Jump to #R$ED6D.
@@ -5701,31 +5788,42 @@ N $EE2F Print "#STR$D748,$08($b==$FF)".
 
 c $EE35 Response: "It Isn't Tied"
 @ $EE35 label=Response_ItIsntTied
+N $EE35 Print "#STR$D75A,$08($b==$FF)".
   $EE35,$03 #REGhl=#R$D75A.
   $EE38,$03 Jump to #R$ED6D.
 
 c $EE3B Response: "He Isn't Tied"
 @ $EE3B label=Response_HeIsntTied
+N $EE3B Print "#STR$D769,$08($b==$FF)".
   $EE3B,$03 #REGhl=#R$D769.
   $EE3E,$03 Jump to #R$ED6D.
 
 c $EE41 Response: "You Are Already Wearing It"
 @ $EE41 label=Response_YouAreAlreadyWearingIt
+N $EE41 Print "#STR$DA82,$08($b==$FF)".
   $EE41,$03 #REGhl=#R$DA82.
   $EE44,$03 Jump to #R$ED6D.
 
 c $EE47 Response: "You Must Be Joking"
 @ $EE47 label=Response_YouMustBeJoking
+E $EE47 View the equivalent code in;
+. #LIST
+. { #HEROES$F09E }
+. { #JEWELS$F083 }
+. LIST#
+N $EE47 Print "#STR$DC09,$08($b==$FF)".
   $EE47,$03 #REGhl=#R$DC09.
   $EE4A,$03 Jump to #R$ED6D.
 
 c $EE4D Response: "You're Not In Water"
 @ $EE4D label=Response_YoureNotInWater
+N $EE4D Print "#STR$DF33,$08($b==$FF)".
   $EE4D,$03 #REGhl=#R$DF33.
   $EE50,$03 Jump to #R$ED6D.
 
 c $EE53 Response: "You See Nothing Special"
 @ $EE53 label=Response_YouSeeNothingSpecial
+N $EE53 Print "#STR$CF40,$08($b==$FF)".
   $EE53,$03 #REGhl=#R$CF40.
   $EE56,$03 Jump to #R$ED6D.
 
@@ -5958,13 +6056,14 @@ N $EF96 The player wants to pick up the ladder, check if there are any issues
 . carrying it).
   $EF96,$05 Call #R$ED75 with item #N$5A: #ITEM$5A.
   $EF9B,$05 Call #R$AEE0 with item #N$5E: #ITEM$5E.
+N $EFA0 This action changes the map:
 N $EFA0 No ladder no access .. so update the room exits.
   $EFA0,$04 Write #N$00 to *#R$E959 to close downward access in #ROOM$60.
   $EFA4,$03 Write #N$00 to *#R$E96A to close upward access in #ROOM$63.
   $EFA7,$05 Jump to #R$EDA6 with item #N$5A: #ITEM$5A.
 
-u $EFAC Unused
-C $EFAC,$01 Return.
+u $EFAC
+S $EFAC,$01
 
 c $EFAD Process: Get Cloak
 @ $EFAD label=Process_GetCloak
@@ -6116,11 +6215,13 @@ N $F073 The player wants to drop the ladder, check which version of it is in
 c $F07C Process: Drop Staff
 @ $F07C label=Process_DropStaff
   $F07C,$05 Call #R$EDD0 with item #N$61: #ITEM$61.
+N $F081 This action changes the map:
   $F081,$05 Write #N$50 to *#R$E8F4 to open up northbound access to #ROOM$50
 . from #ROOM$50.
   $F086,$03 Write #N$50 to *#R$E8F6 to open up eastbound access to #ROOM$50
 . from #ROOM$50.
-  $F089,$03 Write #REGa to *#R$E8F7.
+  $F089,$03 Write #REGa to *#R$E8F7 to open up westbound access to #ROOM$50
+. from #ROOM$50.
   $F08C,$02 #REGa=#N$61.
   $F08E,$03 Jump to #R$EDB8.
 
@@ -6144,8 +6245,10 @@ c $F0A7 Process: Drop Silver
 
 u $F0AC Process: Get Staff (Duplicate)
 @ $F0AC label=Process_GetStaff_Duplicate
-D $F0AC Complete copy of #R$F7E9 - this routine is completely unused.
+D $F0AC Complete copy of #R$F7E9. This routine is unused; nothing in the
+. game ever calls it.
 C $F0AC,$05 Call #R$ED75 with item #N$61: #ITEM$61.
+N $F0B1 This action changes the map:
 C $F0B1,$05 Write #N$4C to *#R$E8F4 to open up northbound access to #ROOM$4C
 . from #ROOM$50.
 C $F0B6,$04 Write #N$00 to *#R$E8F6 to close eastbound access in #ROOM$50.
@@ -6179,6 +6282,7 @@ N $F0E0 The player is carrying the meat, so destroy the item.
   $F0E0,$04 Call #R$AEE0 with the item ID originally passed to the routine.
 N $F0E4 The wolves have eaten an item so handle the inventory count.
   $F0E4,$04 Decrease *#R$A790 by one.
+N $F0E8 This action changes the map:
 N $F0E8 The wolves are appeased, the player can now pass them.
   $F0E8,$05 Write #N$30 to *#R$E830 to open up eastbound access to #ROOM$30
 . from #ROOM$2F.
@@ -6230,6 +6334,7 @@ N $F13D The guard has been given an item so handle the inventory count.
   $F13D,$04 Decrease *#R$A790 by one.
   $F141,$05 Call #R$AEE0 with item #N$46: #ITEM$46.
   $F146,$05 Call #R$B09A to add #N$04 points to the score.
+N $F14B This action changes the map:
   $F14B,$05 Write #N$49 to *#R$E870 to open up northbound access to #ROOM$49
 . from #ROOM$3A.
 N $F150 Print "#STR$D531,$08($b==$FF)".
@@ -6456,6 +6561,7 @@ N $F2B0 Untie the very much alive Roman who is understandably a bit annoyed
 N $F2B0 Bad luck!
   $F2B0,$04 Switch #R$E9B2 onto the stack so the next return actions a "game
 . over".
+N $F2B4 Print "#STR$D7B6,$08($b==$FF)".
   $F2B4,$03 #REGhl=#R$D7B6.
   $F2B7,$03 Jump to #R$ED6D.
 
@@ -6704,6 +6810,7 @@ N $F467 Change the amulet state!
 . (#ITEM$4C).
   $F46D,$06 Call #R$AF1E to transform item #N$29 (#ITEM$29) into item #N$2A
 . (#ITEM$2A).
+N $F473 This action changes the map:
 N $F473 Uncover an exit from #ROOM$20.
   $F473,$05 Write #N$18 to *#R$E7D5 to open up southbound access to #ROOM$18
 . from #ROOM$20.
@@ -6729,7 +6836,9 @@ N $F498 Change the amulet state!
 N $F49E Change the vale state!
   $F49E,$06 Call #R$AF1E to transform item #N$2A (#ITEM$2A) into item #N$29
 . (#ITEM$29).
-  $F4A4,$04 Write #N$00 to *#R$E7D5.
+N $F4A4 This action changes the map:
+  $F4A4,$04 Write #N$00 to *#R$E7D5 to remove access to #ROOM$18 from
+. #ROOM$20.
   $F4A8,$05 Call #R$EDC1 with item #N$4B: #ITEM$4B.
   $F4AD,$06 Return if *#R$A7C3 is not equal to room #N$20: #ROOM$20.
 N $F4B3 Print "#STR$B4A0,$08($b==$FF)".
@@ -6766,7 +6875,7 @@ R $F4F5 E The item ID currently being acted on
 N $F4F5 The player was trying to wear the shield, but are they carrying it? As
 . carrying it at all counts as wearing it.
   $F4F5,$05 Call #R$EDD0 with item #N$56: #ITEM$56.
-N $F4FA  Print "#STR$DBBE,$08($b==$FF)".
+N $F4FA Print "#STR$DBBE,$08($b==$FF)".
   $F4FA,$03 #REGhl=#R$DBBE.
   $F4FD,$03 Jump to #R$ED6D.
 
@@ -6857,8 +6966,11 @@ N $F58B This doesn't need to happen..
   $F593,$05 Call #R$AEE7 with item #N$5E: #ITEM$5E.
 N $F598 The ladder has been used so handle the inventory count.
   $F598,$04 Decrease *#R$A790 by one.
-  $F59C,$05 Write #N$60 to *#R$E96A.
-  $F5A1,$05 Write #N$63 to *#R$E959.
+N $F59C This action changes the map:
+  $F59C,$05 Write #N$60 to *#R$E96A to open up upward access to #ROOM$60
+. from #ROOM$63.
+  $F5A1,$05 Write #N$63 to *#R$E959 to open up downward access to #ROOM$63
+. from #ROOM$60.
   $F5A6,$08 Jump to #R$EDF3 if bit 6 of *#R$A76C is set.
   $F5AE,$02 Set bit 6 of *#REGhl which relates to placing the ladder.
   $F5B0,$05 Call #R$B09A to add #N$04 points to the score.
@@ -7127,8 +7239,11 @@ N $F749 Print "#STR$DE57,$08($b==$FF)".
 N $F74F Change the bear state!
   $F74F,$06 Call #R$AF1E to transform item #N$44 (#ITEM$44) into item #N$45
 . (#ITEM$45).
-  $F755,$05 Write #N$2C to *#R$E84D.
-  $F75A,$05 Write #N$35 to *#R$E84E.
+N $F755 This action changes the map:
+  $F755,$05 Write #N$2C to *#R$E84D to open up southbound access to #ROOM$2C
+. from #ROOM$34.
+  $F75A,$05 Write #N$35 to *#R$E84E to open up eastbound access to #ROOM$35
+. from #ROOM$34.
   $F75F,$05 Call #R$B09A to add #N$04 points to the score.
 N $F764 Print "#STR$DE9E,$08($b==$FF)".
   $F764,$03 #REGhl=#R$DE9E.
@@ -7210,6 +7325,7 @@ c $F7DB Process: Enter Broch
 c $F7E9 Process: Get Staff
 @ $F7E9 label=Process_GetStaff
   $F7E9,$05 Call #R$ED75 with item #N$61: #ITEM$61.
+N $F7EE This action changes the map:
   $F7EE,$04 Write #N$00 to *#R$E8F6 to close eastbound access in #ROOM$50.
   $F7F2,$03 Write #N$00 to *#R$E8F7 to close westbound access in #ROOM$50.
   $F7F5,$05 Write #N$4C to *#R$E8F4 to open up northbound access to #ROOM$4C
@@ -7292,7 +7408,10 @@ c $F853 Action: Examine
 @ $F853 label=Action_Examine
 E $F853 View the equivalent code in;
 . #LIST
+. { #FOREST$EE3D }
 . { #HEROES$F785 }
+. { #JEWELS$F19D }
+. { #ANDROMEDA$8F13 }
 . LIST#
   $F853,$03 Call #R$AF7B.
   $F856,$01 Return if there is no direct object in the user input (so the
@@ -7322,6 +7441,13 @@ L $F88F,$01,$03,$02
 
 c $F892 Action: Load
 @ $F892 label=Action_Load
+E $F892 View the equivalent code in;
+. #LIST
+. { #FOREST$EE81 }
+. { #HEROES$F7AC }
+. { #JEWELS$F236 }
+. { #ANDROMEDA$8FA1 }
+. LIST#
   $F892,$03 Call #R$AF70.
 N $F895 The "LOAD" command can only be called on its own.
   $F895,$01 Return if there's any token set in #R$A825.
@@ -7379,32 +7505,73 @@ N $F8C4 Jump to asking if the player "wants another game?"
 
 c $F8C9 Action: North
 @ $F8C9 label=Action_North
+E $F8C9 View the equivalent code in;
+. #LIST
+. { #FOREST$EE0F }
+. { #HEROES$F7E4 }
+. { #JEWELS$F155 }
+. { #ANDROMEDA$8EE4 }
+. LIST#
   $F8C9,$02 Set #REGc to "NORTH" (#N$00).
   $F8CB,$02 Jump to #R$F8DF.
 
 c $F8CD Action: South
 @ $F8CD label=Action_South
+E $F8CD View the equivalent code in;
+. #LIST
+. { #FOREST$EE13 }
+. { #HEROES$F7E8 }
+. { #JEWELS$F159 }
+. { #ANDROMEDA$8EE8 }
+. LIST#
   $F8CD,$02 Set #REGc to "SOUTH" (#N$01).
   $F8CF,$02 Jump to #R$F8DF.
 
 c $F8D1 Action: East
 @ $F8D1 label=Action_East
+E $F8D1 View the equivalent code in;
+. #LIST
+. { #FOREST$EE17 }
+. { #HEROES$F7EC }
+. { #JEWELS$F15D }
+. { #ANDROMEDA$8EEC }
+. LIST#
   $F8D1,$02 Set #REGc to "EAST" (#N$02).
   $F8D3,$02 Jump to #R$F8DF.
 
 c $F8D5 Action: West
 @ $F8D5 label=Action_West
+E $F8D5 View the equivalent code in;
+. #LIST
+. { #FOREST$EE1B }
+. { #HEROES$F7F0 }
+. { #JEWELS$F161 }
+. { #ANDROMEDA$8EF0 }
+. LIST#
   $F8D5,$02 Set #REGc to "WEST" (#N$03).
   $F8D7,$02 Jump to #R$F8DF.
 
 c $F8D9 Action: Up
 @ $F8D9 label=Action_Up
+E $F8D9 View the equivalent code in;
+. #LIST
+. { #FOREST$EE1F }
+. { #HEROES$F7F4 }
+. { #JEWELS$F165 }
+. { #ANDROMEDA$8EF4 }
+. LIST#
   $F8D9,$02 Set #REGc to "UP" (#N$04).
   $F8DB,$02 Jump to #R$F8DF.
 
 c $F8DD Action: Down
 @ $F8DD label=Action_Down
-E $F8DD Continue on to #R$F8DF.
+E $F8DD View the equivalent code in;
+. #LIST
+. { #FOREST$EE23 }
+. { #HEROES$F7F8 }
+. { #JEWELS$F169 }
+. { #ANDROMEDA$8EF8 }
+. LIST#
 E $F8DD View the equivalent code in;
 . #LIST
 . { #FOREST$EE23 }
@@ -7419,6 +7586,8 @@ c $F8DF Move Player
 E $F8DF View the equivalent code in;
 . #LIST
 . { #SHOCK$A6E8 }
+. { #FOREST$EE25 }
+. { #HEROES$F7FA }
 . { #JEWELS$F16B }
 . LIST#
 D $F8DF The data in #R$E714 is stored in a particular order for each room:
@@ -7478,6 +7647,13 @@ L $F930,$02,$13,$02
 
 c $F956 Action: Take
 @ $F956 label=Action_Take
+E $F956 View the equivalent code in;
+. #LIST
+. { #FOREST$EEAE }
+. { #HEROES$F80D }
+. { #JEWELS$F263 }
+. { #ANDROMEDA$8FCD }
+. LIST#
   $F956,$03 #REGhl=#R$F965.
   $F959,$03 #REGde=#R$F96D.
   $F95C,$03 #REGbc=#N($0004,$04,$04).
@@ -7497,7 +7673,9 @@ c $F975 Action: Drop
 @ $F975 label=Action_Drop
 E $F975 View the equivalent code in;
 . #LIST
+. { #FOREST$F03A }
 . { #HEROES$F8D0 }
+. { #ANDROMEDA$9198 }
 . LIST#
   $F975,$03 Call #R$AF7B.
   $F978,$01 Return if there is no direct object in the user input (so the
@@ -7518,6 +7696,13 @@ L $F98D,$02,$13,$02
 
 c $F9B3 Action: Give
 @ $F9B3 label=Action_Give
+E $F9B3 View the equivalent code in;
+. #LIST
+. { #FOREST$F216 }
+. { #HEROES$F972 }
+. { #JEWELS$F7AB }
+. { #ANDROMEDA$941B }
+. LIST#
   $F9B3,$03 Call #R$AF9F.
   $F9B6,$01 Return if there are not two direct objects in the user input (so 
 . the command is malformed).
@@ -7564,6 +7749,10 @@ L $FA0D,$02,$0E,$02
 
 c $FA29 Action: Throw
 @ $FA29 label=Action_Throw
+E $FA29 View the equivalent code in;
+. #LIST
+. { #HEROES$F93B }
+. LIST#
   $FA29,$03 Call #R$AF7B.
   $FA2C,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7612,7 +7801,10 @@ c $FA91 Action: Drink
 @ $FA91 label=Action_Drink
 E $FA91 View the equivalent code in;
 . #LIST
+. { #FOREST$F292 }
 . { #HEROES$FAA5 }
+. { #JEWELS$F9E4 }
+. { #ANDROMEDA$98AB }
 . LIST#
   $FA91,$03 Call #R$AF7B.
   $FA94,$01 Return if there is no direct object in the user input (so the
@@ -7636,6 +7828,10 @@ W $FAAB,$02 Action routine #N($01+(#PC-$FAAB)/$02).
 
 c $FAAD Action: Jump
 @ $FAAD label=Action_Jump
+E $FAAD View the equivalent code in;
+. #LIST
+. { #FOREST$F804 }
+. LIST#
   $FAAD,$03 Call #R$AFB7.
   $FAB0,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7659,6 +7855,11 @@ L $FAD1,$02,$06,$02
 
 c $FADD Action: Climb
 @ $FADD label=Action_Climb
+E $FADD View the equivalent code in;
+. #LIST
+. { #FOREST$F190 }
+. { #JEWELS$F946 }
+. LIST#
   $FADD,$03 Call #R$AFB7.
   $FAE0,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7682,6 +7883,12 @@ L $FB0B,$02,$0B,$02
 
 c $FB21 Action: Enter
 @ $FB21 label=Action_Enter
+E $FB21 View the equivalent code in;
+. #LIST
+. { #FOREST$F71B }
+. { #JEWELS$FC61 }
+. { #ANDROMEDA$93A1 }
+. LIST#
   $FB21,$03 Call #R$AF7B.
   $FB24,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7707,7 +7914,9 @@ c $FB5D Action: Wear
 @ $FB5D label=Action_Wear
 E $FB5D View the equivalent code in;
 . #LIST
+. { #FOREST$F79D }
 . { #JEWELS$FBD5 }
+. { #ANDROMEDA$9861 }
 . LIST#
   $FB5D,$03 Call #R$AF7B.
   $FB60,$01 Return if there is no direct object in the user input (so the
@@ -7755,6 +7964,11 @@ L $FBAD,$02,$06,$02
 
 c $FBB9 Action: Swearing
 @ $FBB9 label=Action_Swearing
+E $FBB9 View the equivalent code in;
+. #LIST
+. { #FOREST$F869 }
+. { #JEWELS$FB83 }
+. LIST#
   $FBB9,$03 Call #R$AF7B.
   $FBBC,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7764,6 +7978,12 @@ N $FBBD Print "#STR$DBF4,$08($b==$FF)".
 
 c $FBC3 Action: Eat
 @ $FBC3 label=Action_Eat
+E $FBC3 View the equivalent code in;
+. #LIST
+. { #FOREST$F26D }
+. { #JEWELS$F999 }
+. { #ANDROMEDA$9469 }
+. LIST#
   $FBC3,$03 Call #R$AF7B.
   $FBC6,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7785,10 +8005,6 @@ L $FBDA,$02,$02,$02
 
 c $FBDE Action: Capture
 @ $FBDE label=Action_Capture
-E $FBDE View the equivalent code in;
-. #LIST
-. { #HEROES$FA72 }
-. LIST#
   $FBDE,$03 Call #R$AF7B.
   $FBE1,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7871,6 +8087,13 @@ W $FC49,$02 Action routine #N($01+(#PC-$FC49)/$02).
 
 c $FC4B Action: Kill/ Attack/ Hit/ Strike
 @ $FC4B label=Action_Kill
+E $FC4B View the equivalent code in;
+. #LIST
+. { #FOREST$F2A7 }
+. { #HEROES$FA72 }
+. { #JEWELS$F851 }
+. { #ANDROMEDA$952B }
+. LIST#
   $FC4B,$03 Call #R$AF7B.
   $FC4E,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7901,6 +8124,12 @@ L $FC8A,$01,$03
 
 c $FC8D Action: Swim
 @ $FC8D label=Action_Swim
+E $FC8D View the equivalent code in;
+. #LIST
+. { #FOREST$F7EB }
+. { #JEWELS$FD7C }
+. { #ANDROMEDA$947C }
+. LIST#
   $FC8D,$03 Call #R$AFB7.
   $FC90,$01 Return if there is no direct object in the user input (so the
 . command is malformed).
@@ -7937,8 +8166,11 @@ c $FCCE Game Start
 @ $FCCE label=GameStart
 E $FCCE View the equivalent code in;
 . #LIST
+. { #SHOCK$ADA1 }
+. { #FOREST$F964 }
 . { #HEROES$FBA9 }
 . { #JEWELS$FD82 }
+. { #ANDROMEDA$F8AF }
 . LIST#
   $FCCE,$0B Copy #N$0186 bytes from #R$FD02 to #R$A66C.
 N $FCD9 Remove a bunch of room exits (as actions in the game will open them
@@ -8055,6 +8287,13 @@ L $FEF1,$01,$0B
 
 g $FEFC Jump Table: Room Images
 @ $FEFC label=JumpTable_RoomImages
+E $FEFC View the equivalent code in;
+. #LIST
+. { #FOREST$FB75 }
+. { #HEROES$FDEB }
+. { #JEWELS$FFA8 }
+. { #ANDROMEDA$FA68 }
+. LIST#
 D $FEFC See #R$FEF1.
 W $FEFC,$02 Location Slot: #N((#PC-$FEFC)/$02).
 L $FEFC,$02,$0B
@@ -8063,7 +8302,10 @@ c $FF12 Handler: Room Images
 @ $FF12 label=DisplayImage_WoodedVale
 E $FF12 View the equivalent code in;
 . #LIST
+. { #FOREST$FACF }
+. { #HEROES$FDAB }
 . { #JEWELS$FEFA }
+. { #ANDROMEDA$F813 }
 . LIST#
 N $FF12 Displays the image for The Wooded Vale.
 N $FF12 #PUSHS

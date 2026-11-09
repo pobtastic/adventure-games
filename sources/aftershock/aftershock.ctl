@@ -315,15 +315,21 @@ c $9DD7 Game Entry Point
 @ $9DD7 label=GameEntryPoint
 E $9DD7 View the equivalent code in;
 . #LIST
+. { #FOREST$B9C5 }
+. { #HEROES$ABD4 }
 . { #JEWELS$BA50 }
+. { #ANDROMEDA$61A8 }
 . { #WARLORD$A531 }
 . LIST#
   $9DD7,$05 Set CAPS LOCK on, using bit 3 of *#SKOOLKID$5C6A(FLAGS2).
   $9DDC,$05 Set keyboard mode "L", using bit 3 of *#SKOOLKID$5C3B(FLAGS).
+N $9DE1 Put the keyboard cursor into its normal (non-extended) mode.
   $9DE1,$04 Write #N$00 to *#SKOOLKID$5C41(MODE).
   $9DE5,$05 Set the current output channel to the main screen using #SKOOLKID$1601(CHAN_OPEN) with stream #N$02.
   $9DEA,$05 Reset printing to the lower screen, using bit 0 of *#SKOOLKID$5C3C(TV_FLAG).
+N $9DEF Collapse the lower screen so printing uses the full display.
   $9DEF,$04 Write #N$00 to *#SKOOLKID$5C6B(DF_SZ).
+N $9DF3 Prevent the ROM from pausing with a "scroll?" prompt.
   $9DF3,$05 Write #N$FF to *#SKOOLKID$5C8C(SCR_CT).
   $9DF8,$03 Jump to #R$ADA1.
 
@@ -350,7 +356,10 @@ c $9E0B Clear Lines
 @ $9E0B label=ClearLines
 E $9E0B View the equivalent code in;
 . #LIST
+. { #FOREST$BDF1 }
+. { #HEROES$ABF8 }
 . { #JEWELS$BA74 }
+. { #ANDROMEDA$64AC }
 . { #WARLORD$A555 }
 . LIST#
   $9E0B,$04 Stash #REGhl, #REGde, #REGbc and #REGaf on the stack.
@@ -362,7 +371,10 @@ c $9E19 Set Default Screen Position
 @ $9E19 label=SetDefaultScreenPosition
 E $9E19 View the equivalent code in;
 . #LIST
+. { #FOREST$BDFC }
+. { #HEROES$AC03 }
 . { #JEWELS$BA7F }
+. { #ANDROMEDA$64B7 }
 . { #WARLORD$A560 }
 . LIST#
   $9E19,$03 Stash #REGhl, #REGde and #REGbc on the stack.
@@ -375,11 +387,15 @@ c $9E26 Print Character
 @ $9E26 label=PrintCharacter
 E $9E26 View the equivalent code in;
 . #LIST
+. { #FOREST$BE37 }
+. { #HEROES$AC47 }
 . { #JEWELS$BAC3 }
+. { #ANDROMEDA$64F2 }
 . { #WARLORD$A5A4 }
 . LIST#
-R $A5A4 A The character to print
+R $9E26 A The character to print
   $9E26,$01 Stash the character to print on the stack.
+N $9E27 Prevent the ROM from pausing with a "scroll?" prompt.
   $9E27,$05 Write #N$FF to *#SKOOLKID$5C8C(SCR_CT).
   $9E2C,$01 Restore the character to print from the stack.
   $9E2D,$01 Print to the screen using #SKOOLKID$0010(PRINT_A_1).
@@ -425,25 +441,28 @@ E $9E80 View the equivalent code in;
   $9E85,$03 #REGa=*#R$BBD1.
 N $9E88 Skip packing the save when there are no state bytes.
   $9E88,$03 Jump to #R$9EA4 if there are no saved state bytes.
-  $9E8B,$01 #REGb=#REGa.
+  $9E8B,$01 Set #REGb to the number of state bytes to pack.
   $9E8C,$04 #REGix=#R$BAF9.
   $9E90,$03 #REGde=#R$A0D4.
   $9E93,$02 Jump to #R$9E9A.
+N $9E95 The next saved address.
+@ $9E95 label=SaveGame_Copy
   $9E95,$04 Move #REGix on to the next saved-state address.
   $9E99,$01 Move #REGde on to the next packed state byte.
-  $9E9A,$03 #REGl=*#REGix+#N$00.
-  $9E9D,$03 #REGh=*#REGix+#N$01.
-  $9EA0,$01 #REGa=*#REGhl.
-  $9EA1,$01 Store that state byte in the packed save buffer.
+@ $9E9A label=SaveGame_StoreFlag
+  $9E9A,$06 Fetch the state address from *#REGix into #REGhl.
+  $9EA0,$02 Copy the state byte into the packed save buffer.
   $9EA2,$02 Decrease the pack counter and loop back to #R$9E95 until every state byte is packed.
 N $9EA4 Print "#MESSAGE$9E33".
+@ $9EA4 label=SaveGame_PrintSaving
   $9EA4,$03 #REGhl=#R$9E33.
   $9EA7,$03 Call #R$A275.
   $9EAA,$03 Call #R$9DFB.
   $9EAD,$04 #REGix=#R$9F88.
-  $9EB1,$03 #REGde=#N$0181.
-  $9EB4,$02 #REGa=#N$FF.
+  $9EB1,$03 Set the block length in #REGde to #N$0181 bytes.
+  $9EB4,$02 Set #REGa to #N$FF which indicates this is a data block.
   $9EB6,$03 Call #SKOOLKID$04C2(SA_BYTES).
+N $9EB9 Print "#MESSAGE$9E63".
   $9EB9,$03 #REGhl=#R$9E63.
   $9EBC,$03 Call #R$A275.
   $9EBF,$05 Restore #REGbc, #REGde, #REGhl and #REGix from the stack.
@@ -477,8 +496,10 @@ N $9EE0 Print "#MESSAGE$9EC5".
 N $9EF5 Print "#DECODESTR$CD8F".
   $9EF5,$03 #REGhl=#R(#OFFSET($0013)).
 N $9EF8 The tape load failed.
-  $9EF8,$05 Print "#DECODESTR$CD8F" and leave the game state unchanged.
+  $9EF8,$03 Call #R$A25C.
+  $9EFB,$02 Jump to #R$9F21.
 N $9EFD There is nothing to unpack when no state bytes were saved.
+@ $9EFD label=LoadTape_Success
   $9EFD,$06 Jump to #R$9F21 if there are no saved state bytes.
 N $9F03 Write the packed bytes at #R$A0D4 back through the addresses in
 . #R$BAF9.
@@ -487,11 +508,13 @@ N $9F03 Write the packed bytes at #R$A0D4 back through the addresses in
 @ $9F0D label=RestoreState_Loop
 N $9F0D The next saved address.
   $9F0D,$05 Advance to the next saved address.
+@ $9F12 label=RestoreState_Write
   $9F12,$08 Write that byte back into the game.
   $9F1A,$02 Repeat until every saved byte is restored.
 N $9F1C Describe the room the save returned to.
   $9F1C,$02 Show the room as the player last saw it.
   $9F1E,$03 Call #R$A33A.
+N $9F21 Restore the caller's registers and return.
 @ $9F21 label=LoadTape_Return
   $9F21,$05 Restore #REGbc, #REGde, #REGhl and #REGix from the stack.
   $9F26,$01 Return.
@@ -504,48 +527,70 @@ c $9F28 Print Room Image
 @ $9F28 label=Print_RoomImage
 E $9F28 View the equivalent code in;
 . #LIST
+. { #FOREST$BEB8 }
+. { #HEROES$AD60 }
+. { #JEWELS$BB3B }
+. { #ANDROMEDA$6541 }
 . { #WARLORD$B10B }
 . LIST#
 R $9F28 IX Pointer to room image data
-  $9F28,$03 Copy the room-image pointer from #REGix into #REGhl.
+  $9F28,$03 Copy the room-image pointer from #REGix into #REGhl (using the
+. stack).
 N $9F2B Step over the #N$0200 mask bytes and aim at the display file.
-  $9F2B,$07 The pixel data follows the mask.
+  $9F2B,$04 Move #REGhl past the #N$0200-byte mask to the pixel data.
+  $9F2F,$03 Set #REGde to the start of the screen buffer (#N$4000).
 N $9F32 Expand each mask byte. Each bit stands for one screen byte (#N$08
 . pixels).
   $9F32,$03 #N$0200 mask bytes cover the screen, eight screen bytes at a time.
 @ $9F35 label=PixelControl_Loop
-  $9F35,$06 Take the next mask byte.
+  $9F35,$01 Stash the mask byte counter on the stack.
+  $9F36,$02 Set #REGb to #N$08 for the #N$08 bits in a byte.
+  $9F38,$03 Fetch the mask byte from *#REGix into #REGc.
 @ $9F3B label=PixelBit_Loop
 N $9F3B A set bit copies the next pixel byte onto the screen. When the bit is
 . clear, #REGde still advances but nothing is written, so those #N$08 pixels
 . stay blank.
   $9F3B,$04 Jump to #R$9F42 if the mask bit is clear (skip that screen byte).
-  $9F3F,$03 Copy the next pixel byte onto the screen.
+  $9F3F,$02 Copy the next pixel byte onto the screen.
+  $9F41,$01 Move to the next pixel byte.
+@ $9F42 label=PixelBit_Next
   $9F42,$01 Move along the screen.
-  $9F43,$04 This mask byte's eight screen bytes are done.
-  $9F47,$02 Restore the mask-byte counter from the stack and decrease it.
-  $9F49,$04 Another mask byte remains.
+  $9F43,$02 Decrease the bit counter by one and loop back to #R$9F3B until
+. the counter is zero.
+  $9F45,$02 Move #REGix on to the next mask byte.
+  $9F47,$01 Restore the mask byte counter from the stack.
+  $9F48,$01 Decrease the mask byte counter by one.
+  $9F49,$04 Jump back to #R$9F35 until all the mask bytes are done.
 N $9F4D The bytes that follow are the attribute stream.
-  $9F4D,$03 Copy the attribute-stream pointer from #REGhl into #REGix.
+  $9F4D,$03 Copy the attribute-stream pointer from #REGhl into #REGix (using
+. the stack).
 N $9F50 Paint attributes from #N$5800 until the display ends at #N$5A00.
   $9F50,$03 Start at the attribute file.
 @ $9F53 label=Attribute_Loop
-  $9F53,$0A The colour, and how many cells it covers (#N$00 means #N$0100).
-  $9F5D,$04 #HTML(Paint that many cells (#REGb=#N$00 runs the <code>DJNZ</code> loop #N$0100 times).)
-  $9F61,$05 Continue until the attribute file is full.
-N $9F66 The picture is on screen.
+  $9F53,$06 Fetch the colour into #REGa and the number of cells into #REGb
+. from *#REGix (#N$00 means #N$0100).
+  $9F59,$04 Move #REGix to the next pair.
+@ $9F5D label=Attribute_Paint
+  $9F5D,$01 Write the colour into this attribute cell.
+  $9F5E,$01 Move along the attribute file.
+  $9F5F,$02 Decrease the counter by one and loop back to #R$9F5D until the
+. counter is zero.
+  $9F61,$05 Jump back to #R$9F53 until the attribute file is full.
   $9F66,$01 Return.
 
 c $9F67 Handler: Room Images
 @ $9F67 label=Handler_Images
+R $9F67 A Room image number
   $9F67,$05 Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
-  $9F6C,$01 #REGe=#REGa.
+  $9F6C,$01 Copy the room image number from #REGa into #REGe.
   $9F6D,$04 #REGix=*#R$BBD5.
   $9F71,$03 Call #R$A305.
   $9F74,$05 #REGhl+=*#R$BBD5.
-  $9F79,$03 Copy the room-image address from #REGhl into #REGix.
+  $9F79,$03 Copy the room-image address from #REGhl into #REGix (using the
+. stack).
   $9F7C,$03 Call #R$9F28.
   $9F7F,$03 Call #R$9DFB.
+N $9F82 Restore the registers saved on entry to the routine and return.
   $9F82,$05 Restore #REGbc, #REGde, #REGhl and #REGix from the stack.
   $9F87,$01 Return.
 
@@ -553,8 +598,10 @@ g $9F88 Table: Item Locations
 @ $9F88 label=Table_ItemLocations
 E $9F88 View the equivalent code in;
 . #LIST
+. { #FOREST$B9C8 }
 . { #HEROES$AD76 }
 . { #JEWELS$BBF0 }
+. { #ANDROMEDA$61AB }
 . { #WARLORD$A66C }
 . LIST#
 D $9F88 A table where the index is the item ID, and the value is the room it
@@ -564,7 +611,8 @@ D $9F88 When the item is in the players inventory, the room ID changes to
 B $9F88,$01 Item #N(#PC-$9F88) #ITEM(#PC-$9F88) in room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
 L $9F88,$01,$88
 
-u $A010 Unused
+u $A010
+S $A010,$78
 
 g $A088 Flags: Game States
 @ $A088 label=Flags_GameStates
@@ -580,7 +628,8 @@ D $A0A8 One bit for each entry in #R$BB93. #R$A33A sets the bit after the
 B $A0A8,$01 Seen-image bits #N((#PC-$A0A8)*$08) to #N((#PC-$A0A8)*$08+$07).
 L $A0A8,$01,$03
 
-u $A0AB Unused
+u $A0AB
+S $A0AB,$1D
 
 g $A0C8 Flags: Turn-Based Event States
 @ $A0C8 label=Flags_TurnEvents
@@ -610,7 +659,7 @@ g $A0D3 Carrying Limit
 @ $A0D3 label=CarryingLimit
 D $A0D3 The most items the player may carry. #R$AE2C compares it with #R$A0D2.
 . The game starts it from #R$BBD7, and #R$ABE8 can replace it.
-B $A0D3,$01 #N(#PEEK(#PC)).
+B $A0D3,$01 The player can hold #N$05 items.
 
 g $A0D4 Saved State Bytes
 @ $A0D4 label=SavedStateBytes
@@ -619,7 +668,8 @@ D $A0D4 The #N$06 bytes copied to and from the addresses in #R$BAF9 while
 B $A0D4,$01 Saved state byte #N(#PC-$A0D4).
 L $A0D4,$01,$06
 
-u $A0DA Unused
+u $A0DA
+S $A0DA,$2C
 
 g $A106 Current Room ID
 @ $A106 label=CurrentRoom
@@ -663,8 +713,13 @@ R $A155 HL Bit index
 R $A155 O:HL Byte offset
 R $A155 O:C Bit number within the byte
   $A155,$01 Stash #REGaf on the stack.
-  $A156,$04,$01,b$02,$01 Keep the bit number within the byte (bits 0-2 of the bit index) in #REGc.
-  $A15A,$08 Divide the bit index in #REGhl by eight (three passes, counted in #REGb) to give the offset of the byte holding the flag.
+  $A156,$04,$01,b$02,$01 Keep the bit number within the byte (bits 0-2 of the
+. bit index) in #REGc.
+  $A15A,$02 Count three right shifts.
+@ $A15C label=CalculateBitAddress_Loop
+  $A15C,$04 Shift #REGhl right by one bit.
+  $A160,$02 Decrease the counter by one and loop back to #R$A15C until the
+. counter is zero.
   $A162,$01 Restore #REGaf from the stack.
   $A163,$01 Return.
 
@@ -680,56 +735,76 @@ R $A164 O:HL The word divided by four
 
 c $A16D Multiply Words
 @ $A16D label=MultiplyWords
-D $A16D Multiplies the word in #REGhl by the word in #REGde. #R$A41C uses it to multiply the current room number by #N$06 to find that room's record in #R$B8DD.
-R $A16D HL Multiplicand
-R $A16D DE Multiplier
-R $A16D O:HL Product
+D $A16D #REGhl=#REGhl*#REGde. #R$A41C uses it to turn the current room number
+. into an offset of #N$06 bytes per room in #R$B8DD.
+R $A16D HL First number
+R $A16D DE Second number
+R $A16D O:HL #REGhl*#REGde
   $A16D,$01 Stash #REGbc on the stack.
-  $A16E,$02 #REGb=#N$10.
-  $A170,$01 #REGa=#REGh.
-  $A171,$01 #REGc=#REGl.
+  $A16E,$02 Count #N$10 bits.
+  $A170,$02 Hold the first number in #REGa and #REGc.
   $A172,$03 #REGhl=#N($0000,$04,$04).
-  $A175,$01 #REGhl+=#REGhl.
-N $A176 For each bit of the multiplier, shift it into the carry and add the
-. multiplicand when that bit is set.
-  $A176,$09 Fold the next multiplier bit into the product.
-  $A17F,$01 Restore #REGbc from the stack, leaving the product in #REGhl.
+@ $A175 label=MultiplyWords_Loop
+  $A175,$01 Shift the running total left by one bit.
+N $A176 Test the next bit of the first number. When it is set, add the second
+. number into the total.
+  $A176,$06 Clear the carry, then shift the next bit of the first number into
+. it. Jump to #R$A17D when that bit is clear.
+  $A17C,$01 Add the second number into the total.
+@ $A17D label=MultiplyWords_Next
+  $A17D,$02 Decrease the bit counter by one and loop back to #R$A175 until
+. the counter is zero.
+  $A17F,$01 Restore #REGbc from the stack.
   $A180,$01 Return.
 
 c $A181 Divide Words
 @ $A181 label=DivideWords
-D $A181 Divides the word in #REGhl by the word in #REGde. Nothing in the game
-. calls it.
-R $A181 HL Dividend
-R $A181 DE Divisor
-R $A181 O:HL Quotient
-R $A181 O:DE Remainder
+D $A181 #REGhl=#REGhl/#REGde. Nothing in the game calls it.
+R $A181 HL First number
+R $A181 DE Second number
+R $A181 O:HL #REGhl/#REGde
+R $A181 O:DE What is left after the division
 N $A181 Nothing in the game divides one word by another.
-  $A181,$04 Hold the dividend.
-  $A185,$06 The remainder starts at zero, for sixteen bits.
+  $A181,$04 Hold the first number.
+  $A185,$06 The leftover starts at zero, for sixteen bits.
 @ $A18B label=DivideWords_NextBit
-N $A18B Try the next bit of the dividend.
-  $A18B,$05 Bring that bit into the remainder.
-  $A190,$04 See whether the divisor fits.
-  $A194,$05 The quotient gains a bit, and the next bit follows.
+N $A18B Try the next bit of the first number.
+  $A18B,$05 Bring that bit into the leftover.
+  $A190,$02 Take the second number away from the leftover.
+  $A192,$02 Jump to #R$A1A1 when it does not fit.
+@ $A194 label=DivideWords_Fits
+  $A194,$01 Keep that bit in the result.
+  $A195,$02 Decrease the bit counter by one and loop back to #R$A18B until
+. the counter is zero.
+  $A197,$02 Jump to #R$A1A4.
 @ $A199 label=DivideWords_Restore
-N $A199 The divisor did not fit.
-  $A199,$06 Put the remainder back.
-  $A19F,$05 Try the next bit.
-N $A1A4 Nothing in the game uses this quotient.
-  $A1A4,$03 Nothing in the game uses this quotient.
+N $A199 The second number did not fit.
+  $A199,$05 Bring the next bit into the leftover.
+  $A19E,$01 Add the second number back.
+  $A19F,$02 Jump to #R$A194 when the leftover is too big for a word.
+@ $A1A1 label=DivideWords_Skip
+  $A1A1,$02 Decrease the bit counter by one and loop back to #R$A199 until
+. the counter is zero.
+  $A1A3,$01 Add the second number back.
+@ $A1A4 label=DivideWords_Done
+N $A1A4 Nothing in the game uses this result.
+  $A1A4,$03 #REGhl holds the result of the division, and #REGde holds what is
+. left.
   $A1A7,$02 Restore #REGaf and #REGbc from the stack.
   $A1A9,$01 Return.
 
-c $A1AA Negate Word
+u $A1AA Negate Word
 @ $A1AA label=NegateWord
-D $A1AA Negates the word in #REGhl. Nothing in the game calls it.
+D $A1AA Unused. Nothing in the game calls this routine.
 R $A1AA HL Word to negate
-R $A1AA O:HL The negated word
-N $A1AA Negate the word in #REGhl. Nothing in the game calls this.
-  $A1AA,$08 Nothing in the game uses this negated word.
-  $A1B2,$01 Restore #REGde from the stack.
-  $A1B3,$01 Return.
+R $A1AA O:HL #-#REGhl
+N $A1AA #REGhl=-#REGhl.
+C $A1AA,$01 Stash #REGde on the stack.
+C $A1AB,$01 Switch the word into #REGde.
+C $A1AC,$03 #REGhl=#N($0000,$04,$04).
+C $A1AF,$03 #REGhl=#REGhl-#REGde.
+C $A1B2,$01 Restore #REGde from the stack.
+C $A1B3,$01 Return.
 
 c $A1B4 Build Flag Mask
 @ $A1B4 label=BuildFlagMask
@@ -740,16 +815,21 @@ R $A1B4 HL Flag base address
 R $A1B4 O:HL Address of the flag byte
 R $A1B4 O:A Bit mask
   $A1B4,$02 Stash #REGde and #REGbc on the stack.
-  $A1B6,$01 Switch the flag table base into #REGde so #REGhl can hold the bit index.
+  $A1B6,$01 Switch the flag table base into #REGde so #REGhl can hold the bit
+. index.
   $A1B7,$03 Put the bit index into #REGhl.
-  $A1BA,$03 Call #R$A155 to split the bit index into a byte offset (#REGhl) and a bit number (#REGc).
+  $A1BA,$03 Call #R$A155 to split the bit index into a byte offset (#REGhl)
+. and a bit number (#REGc).
   $A1BD,$01 Point #REGhl at the flag byte holding this bit.
   $A1BE,$01 Use the bit number as the rotate count.
   $A1BF,$01 Count one extra rotate so the mask lands on this bit.
   $A1C0,$01 Start the mask with no bits set.
   $A1C1,$01 Seed a single set bit for the mask.
-  $A1C2,$01 Build the mask for this flag bit.
-  $A1C3,$02 Keep rotating until the set bit reaches this flag's position.
+@ $A1C2 label=BuildFlagMask_Loop
+  $A1C2,$01 Rotate the set bit left into the next mask position.
+  $A1C3,$02 Decrease the counter by one and loop back to #R$A1C2 until the
+. counter is zero.
+N $A1C5 The mask for this flag bit is ready.
   $A1C5,$02 Restore #REGbc and #REGde from the stack.
   $A1C7,$01 Return.
 
@@ -805,6 +885,7 @@ c $A1F4 Print Compressed String
 @ $A1F4 label=PrintCompressedString
 D $A1F4 Prints a compressed text string using a dictionary lookup.
 R $A1F4 HL Messaging string ID
+N $A1F4 Resolve the messaging string ID into a pointer at #R$C8E9.
   $A1F4,$06 Stash #REGix, #REGhl, #REGde, #REGbc and #REGaf on the stack.
   $A1FA,$01 Double the messaging string ID held in #REGhl.
   $A1FB,$07 Add the result to #R$CA2B.
@@ -812,50 +893,59 @@ R $A1F4 HL Messaging string ID
 . #REGhl.
   $A208,$04 #REGhl+=#R$C8E9.
   $A20C,$02 Jump to #R$A223.
+N $A20E Codes below #N$60 are literal characters. Codes from #N$60 upwards
+. index the dictionary at #R$C8EB.
+@ $A20E label=PrintCompressedString_Process
   $A20E,$04 Jump to #R$A217 if #REGa is less than #N$60.
   $A212,$03 Call #R$A22F.
   $A215,$02 Jump to #R$A222.
+N $A217 Bias the literal into the printable range. #N$7E becomes a newline.
+@ $A217 label=PrintCompressedString_Literal
   $A217,$02 #REGa+=#N$20.
   $A219,$04 Jump to #R$A21F if #REGa is not equal to #N$7E.
   $A21D,$02 #REGa=#N$0D.
+@ $A21F label=PrintCompressedString_PrintChar
   $A21F,$03 Call #R$9E26.
+@ $A222 label=PrintCompressedString_Next
   $A222,$01 Move #REGhl on to the next compressed character.
+N $A223 Fetch the next compressed byte. #N$5F ends the string.
+@ $A223 label=PrintCompressedString_Loop
   $A223,$01 #REGa=*#REGhl.
   $A224,$04 Jump to #R$A20E if #REGa is not equal to #N$5F.
   $A228,$06 Restore #REGaf, #REGbc, #REGde, #REGhl and #REGix from the stack.
   $A22E,$01 Return.
-
+N $A22F Look up a two-byte dictionary entry and print both characters.
+@ $A22F label=PrintCompressedString_Dictionary
   $A22F,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $A232,$02 #REGa-=#N$60.
   $A234,$03 Create an offset in #REGhl using #REGa.
   $A237,$01 Double the offset held in #REGhl.
   $A238,$04 #REGhl+=#R$C8EB.
-  $A23C,$02 #REGb=#N$02.
-
+  $A23C,$02 Count two dictionary bytes.
   $A23E,$02 Jump to #R$A241.
+@ $A240 label=PrintCompressedString_DictNext
   $A240,$01 Move #REGhl on to the next dictionary character.
+N $A241 Dictionary bytes use the same literal-or-dictionary split as the main
+. string.
+@ $A241 label=PrintCompressedString_DictFetch
   $A241,$01 #REGa=*#REGhl.
   $A242,$04 Jump to #R$A24B if #REGa is less than #N$60.
   $A246,$03 Call #R$A22F.
   $A249,$02 Jump to #R$A256.
+@ $A24B label=PrintCompressedString_DictLiteral
   $A24B,$02 #REGa+=#N$20.
   $A24D,$04 Jump to #R$A253 if #REGa is not equal to #N$7E.
   $A251,$02 #REGa=#N$0D.
+@ $A253 label=PrintCompressedString_DictPrint
   $A253,$03 Call #R$9E26.
-  $A256,$02 Decrease the dictionary-character counter and loop back to #R$A240 until both bytes are done.
+@ $A256 label=PrintCompressedString_DictDone
+  $A256,$02 Decrease the dictionary-character counter and loop back to
+. #R$A240 until both bytes are done.
   $A258,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $A25B,$01 Return.
 
 c $A25C Print Compressed String And A Newline
 @ $A25C label=PrintCompressedStringAndNewline
-E $A25C View the equivalent code in;
-. #LIST
-. { #FOREST$BE2E }
-. { #HEROES$AC35 }
-. { #JEWELS$BAB1 }
-. { #ANDROMEDA$64E9 }
-. { #WARLORD$A592 }
-. LIST#
 D $A25C Shortcut print routine which prints a newline after it's done.
   $A25C,$01 Stash the character to print on the stack.
   $A25D,$03 Call #R$A1F4.
@@ -871,7 +961,10 @@ D $A267 Standard printing loop, which prints the fetched character byte and
 . loops until the termination byte is reached (#N$FF).
 E $A267 View the equivalent code in;
 . #LIST
+. { #FOREST$BE21 }
+. { #HEROES$AC28 }
 . { #JEWELS$BAA4 }
+. { #ANDROMEDA$64DC }
 . { #WARLORD$A585 }
 . LIST#
 R $A267 HL Pointer to string to be printed
@@ -919,58 +1012,72 @@ D $A280 Counts down the turn-based events in #R$A0C8 and, when a counter
 . reaches zero, runs the handler from #R$BBB9.
 D $A280 Then relocates any scenic event that is not already in the current
 . room, picking the new room from the group at #R$B6BF.
-N $A280 A turn-based event runs only while its bit in #R$A0C8 is set.
-  $A280,$06 Leave the events alone when none are armed.
+N $A280 First process the turn-based events (if any are active).
+  $A280,$06 Jump to #R$A2B7 if no turn-based events are currently active.
 N $A286 Eight turn-based events share the flag byte.
   $A286,$03 Start with the first turn-based event.
 @ $A289 label=TurnEvent_NextBit
-N $A289 This event is not running.
-  $A289,$04 Skip an event that is not armed.
+N $A289 Keep shifting the event flags one-by-one to find which bits are set.
+  $A289,$04 Jump to #R$A2B5 if this event bit is not set.
 N $A28D Count down this event. It fires when the counter at #R$A0C9 reaches
 . zero.
-  $A28D,$0E Leave the event for a later turn when the counter is still
-. running.
+  $A28D,$0E Jump to #R$A2B5 if the counter is still running.
 N $A29B The counter has expired, so run this event's script from #R$BBB9.
   $A29B,$07 The scripts are listed at #R$BBB9.
-  $A2A2,$04 This is the event whose counter expired.
+  $A2A2,$04 Point at this event's script entry.
   $A2A6,$06 Read that script's address.
-  $A2AC,$03 Copy the script address from #REGhl into #REGix.
+  $A2AC,$03 Copy the script address from #REGhl into #REGix (using the
+. stack).
   $A2AF,$03 Run that script.
   $A2B2,$03 Restore the event counter and event pointer from the stack.
+@ $A2B5 label=TurnEvent_Next
 N $A2B5 Test the next turn-based event.
-  $A2B5,$02 Every armed event is considered once per turn.
-N $A2B7 Scenic events live in #R$B6BA.
-  $A2B7,$09 There is nothing to move when no scenic event is active.
+  $A2B5,$02 Decrease the event bit counter by one and loop back to #R$A289
+. until all eight events have been considered.
+N $A2B7 Process scenic events.
+@ $A2B7 label=ScenicEvents_Start
+  $A2B7,$09 Jump to #R$A304 if no scenic event is active.
   $A2C0,$03 Visit each scenic event in turn.
 @ $A2C3 label=ScenicEvent_Next
 N $A2C3 Room #N$00 means this scenic item is inactive.
-  $A2C3,$01 The next scenic item.
+  $A2C3,$01 Move on to the next scenic item.
 @ $A2C4 label=ScenicEvent_Item
-  $A2C4,$02 Its item id.
+  $A2C4,$02 Fetch this scenic item's ID.
   $A2C6,$03 Call #R$A62C to read where this item is.
   $A2C9,$01 Restore the event-list pointer from the stack.
-  $A2CA,$03 An inactive item is left where it is.
+  $A2CA,$03 Jump to #R$A302 if the item is inactive.
 N $A2CD An event that is already in the player's room stays there.
-  $A2CD,$07 Skip an event whose room is #R$A106.
+  $A2CD,$07 Jump to #R$A302 if this event's room is *#R$A106.
 N $A2D4 Each scenic event has a room group in #R$B6BF.
-  $A2D4,$04 The scenic scan waits while a room is chosen.
-  $A2D8,$05 Which event's group this is.
+  $A2D4,$04 Keep the scenic scan while a room is chosen.
+  $A2D8,$05 Calculate which event's group this is.
   $A2DD,$04 The room groups are listed at #R$B6BF.
-  $A2E1,$03 This event's room group.
+  $A2E1,$03 Call #R$A305 to fetch this event's room group.
 N $A2E4 The refresh register picks how far to walk into the room group.
 . #N$FF ends the group and the walk wraps.
-  $A2E4,$0D Choose a room from this event's group.
+  $A2E4,$05 Load a step count from the refresh register and set the group
+. terminator in #REGa.
+@ $A2E9 label=ScenicRoom_Reload
+  $A2E9,$06 Point #REGhl at the start of this room group.
+  $A2EF,$02 Jump to #R$A2F2.
 @ $A2F1 label=ScenicRoom_Next
 N $A2F1 Walk the room group. #N$FF restarts it, and the refresh count chooses
 . where to stop. Then move the scenic item there.
-  $A2F1,$06 #N$FF restarts the group. Otherwise step to the next room.
+  $A2F1,$01 Move to the next room in the group.
+@ $A2F2 label=ScenicRoom_Check
+  $A2F2,$03 Jump back to #R$A2E9 when the terminator matches.
+  $A2F5,$02 Decrease the step counter by one and loop back to #R$A2F1 until
+. the counter is zero.
   $A2F7,$01 Fetch the destination room into #REGc.
   $A2F8,$01 Restore the scenic-event pointer from the stack.
   $A2F9,$02 Fetch the item ID into #REGb and stash the pointer again.
   $A2FB,$03 Call #R$A663.
   $A2FE,$04 Restore the scenic scan from the stack.
+@ $A302 label=ScenicEvent_Done
 N $A302 Move on to the next scenic event.
-  $A302,$02 Every scenic event is considered once.
+  $A302,$02 Decrease the scenic event counter by one and loop back to
+. #R$A2C3 until every scenic event has been considered.
+@ $A304 label=Handler_GameEvents_Return
   $A304,$01 Return.
 
 c $A305 Get Table Entry
@@ -1007,21 +1114,25 @@ R $A314 A #N$01 for inventory items, or room number for room objects
   $A314,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $A317,$03 #REGhl=#R$9F88.
   $A31A,$04 #REGbc=*#R$BBC7.
+N $A31E Search #R$9F88 for the next object in this place.
 @ $A31E label=FindObject_Loop
   $A31E,$02 Search for matching objects.
   $A320,$02 Jump to #R$A336 if no objects were found.
-  $A322,$01 Stash the current place in #R$A66C on the stack.
+  $A322,$01 Stash the current place in #R$9F88 on the stack.
   $A323,$03 Call #R$A6B1.
   $A326,$02 Jump to #R$A32F if the object is invalid.
   $A328,$02 Temporarily stash the object type and object counter on the stack.
   $A32A,$03 Call #R$A25C.
   $A32D,$02 Restore the object counter and object type from the stack.
+N $A32F Move on to the next object in the table.
 @ $A32F label=FindObject_Next
   $A32F,$01 Temporarily hold the object type in #REGe.
   $A330,$01 Restore the current place in #R$9F88 from the stack.
-  $A331,$02 Test if all objects have been checked...
+  $A331,$02 Test if all objects have been checked.
   $A333,$01 Restore the object type to #REGa.
-  $A334,$02 Jump to #R$A31E until all objects in the table have been checked.
+  $A334,$02 Jump back to #R$A31E until all objects in the table have been
+. checked.
+N $A336 Restore the registers saved on entry to the routine and return.
 @ $A336 label=PrintObjects_Return
   $A336,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $A339,$01 Return.
@@ -1031,7 +1142,10 @@ c $A33A Handler: Display Room Exits
 D $A33A Handles displaying the exits available for the current room.
 E $A33A View the equivalent code in;
 . #LIST
+. { #FOREST$C0F9 }
+. { #HEROES$B46B }
 . { #JEWELS$C26A }
+. { #ANDROMEDA$678A }
 . { #WARLORD$AC02 }
 . LIST#
   $A33A,$05 Stash #REGix, #REGhl, #REGde and #REGbc on the stack.
@@ -1054,10 +1168,14 @@ N $A35A A non-zero picture request shows the image even when the player has
   $A364,$01 Keep the mask for this room in #REGc.
   $A365,$01 Test whether this room's picture has already been shown.
   $A366,$02 Jump to #R$A379 if this room's picture has already been shown.
-  $A368,$03 Mark this room's picture as shown, so it isn't drawn again on the next visit.
+  $A368,$03 Mark this room's picture as shown, so it isn't drawn again on the
+. next visit.
+@ $A36B label=RoomExits_DrawImage
   $A36B,$03 Call #R$9E0B to clear the text lines.
   $A36E,$08 Look up this room's image number in #R$BBA6.
   $A376,$03 Call #R$9F67 to draw the room image.
+N $A379 Print the room description and work out the exits.
+@ $A379 label=RoomExits_Describe
   $A379,$03 Call #R$9E0B to clear the text lines.
   $A37C,$03 Call #R$9E19.
   $A37F,$03 Call #R$A42F.
@@ -1149,6 +1267,7 @@ N $A40A Print "#DECODESTR$CD26".
 N $A410 Print the objects at this location.
   $A410,$03 #REGa=*#R$A106.
   $A413,$03 Call #R$A314.
+N $A416 Restore the registers saved on entry to the routine and return.
 @ $A416 label=RoomExits_Return
   $A416,$05 Restore #REGbc, #REGde, #REGhl and #REGix from the stack.
   $A41B,$01 Return.
@@ -1157,7 +1276,10 @@ c $A41C Get Room Pointer
 @ $A41C label=GetRoomPointer
 E $A41C View the equivalent code in;
 . #LIST
+. { #FOREST$C201 }
+. { #HEROES$B503 }
 . { #JEWELS$C302 }
+. { #ANDROMEDA$6892 }
 . { #WARLORD$AC9A }
 . LIST#
 R $A41C O:HL Pointer to the room data
@@ -1201,7 +1323,6 @@ D $A447 Used by the routine at #R$A4B0.
   $A447,$03 "#MESSAGE$A447".
 N $A44A Messaging: "SPACE<BS>"
 @ $A44A label=Messaging_SpaceBackspace
-D $A44A Used by the routine at #R$A4B0?
   $A44A,$02 "#MESSAGE$A44A".
 B $A44C,$01 Terminator.
 
@@ -1294,7 +1415,10 @@ D $A4B0 Handles keyboard input, tokenises commands and validates the
 . vocabulary.
 E $A4B0 View the equivalent code in;
 . #LIST
+. { #FOREST$BF73 }
+. { #HEROES$B200 }
 . { #JEWELS$C00A }
+. { #ANDROMEDA$6604 }
 . { #WARLORD$AD32 }
 . LIST#
 N $A4B0 Reset the screen position to defaults.
@@ -1379,7 +1503,10 @@ N $A528 Ignore a leading "THE" from #R$9DD2, then search the main vocabulary
 N $A53B The word is in the vocabulary.
   $A53B,$05 Jump to #R$A549 if the word matched.
 N $A540 The word is not in the vocabulary.
-  $A540,$09 Print "#DECODESTR$CD16" and read the command again.
+N $A540 Print "#DECODESTR$CD16".
+  $A540,$03 #REGhl=#R(#OFFSET($0002)).
+  $A543,$03 Call #R$A25C.
+  $A546,$03 Jump to #R$A4B0.
 @ $A549 label=StoreTokenAndContinue
 N $A549 Store the token and stop after #N$0A tokens.
   $A549,$08 The token buffer at #R$A13B holds the words understood so far.
@@ -1699,6 +1826,7 @@ R $A663 C Room ID
 
 u $A66C Find Index Of Item From Item Group Present
 @ $A66C label=FindIndexOfItemFromItemGroupPresent
+D $A66C Unused. Nothing in the game calls this routine.
 R $A66C HL Pointer to item group data
 R $A66C O:A The found index
 C $A66C,$02 Initialise an index counter in #REGb to #N$00.
@@ -1823,8 +1951,8 @@ N $A6C2 The object's name can now be printed.
   $A6CD,$01 Set the zero flag; the object name is invalid.
   $A6CE,$01 Return.
 
-c $A6CF Response: "You're Not Carrying Anything"
-@ $A6CF label=Response_YoureNotCarryingAnything
+c $A6CF Action: Inventory
+@ $A6CF label=Action_Inventory
 E $A6CF View the equivalent code in;
 . #LIST
 . { #FOREST$EDE8 }
@@ -1833,6 +1961,7 @@ E $A6CF View the equivalent code in;
 . { #ANDROMEDA$8EC4 }
 . { #WARLORD$F824 }
 . LIST#
+D $A6CF List everything the player is carrying.
   $A6CF,$06 Jump to #R$A6DC if *#R$A0D2 is not #N$00.
 N $A6D5 Print "#DECODESTR$CE2D".
   $A6D5,$03 #REGhl=#R(#OFFSET($0020)).
@@ -1850,6 +1979,8 @@ c $A6E8 Move Player
 @ $A6E8 label=MovePlayer
 E $A6E8 View the equivalent code in;
 . #LIST
+. { #FOREST$EE25 }
+. { #HEROES$F7FA }
 . { #JEWELS$F16B }
 . { #WARLORD$F8DF }
 . LIST#
@@ -2792,7 +2923,9 @@ N $AC33 #REGa now contains the count of the number of valid direct objects.
 . input is not #N$01.
 N $AC37 There is only one valid direct object in the user input and the
 . command needs two...
-  $AC37,$06 Call #R$A25C to print "#DECODESTR$CDC1" and start a new line.
+N $AC37 Print "#DECODESTR$CDC1".
+  $AC37,$03 #REGhl=#R(#OFFSET($0017)).
+  $AC3A,$03 Call #R$A25C.
   $AC3D,$01 Set the carry flag; the command needs another object.
   $AC3E,$01 Return.
 N $AC3F There are two or more valid direct objects in the user input.
@@ -2803,7 +2936,9 @@ N $AC3F There are two or more valid direct objects in the user input.
   $AC44,$01 Return.
 N $AC45 There are more than two valid direct objects in the user input.
 @ $AC45 label=ValidateTwoDirectObjects_TooMany
-  $AC45,$06 Call #R$A25C to print "#DECODESTR$CDD1" and start a new line.
+N $AC45 Print "#DECODESTR$CDD1".
+  $AC45,$03 #REGhl=#R(#OFFSET($0018)).
+  $AC48,$03 Call #R$A25C.
   $AC4B,$01 Set the carry flag; there are too many objects.
   $AC4C,$01 Return.
 
@@ -2887,7 +3022,10 @@ D $AC88 Handles checking if a scenic event should occur ... and also, handles
 . jumping to the correct related scenic event routine to action it.
 E $AC88 View the equivalent code in;
 . #LIST
+. { #FOREST$C3FA }
+. { #HEROES$B6E0 }
 . { #JEWELS$C4EB }
+. { #ANDROMEDA$658A }
 . { #WARLORD$AFEB }
 . LIST#
   $AC88,$03 #REGa=*#R$BBCF.
@@ -2926,8 +3064,10 @@ c $ACBD Move Player To Room
 @ $ACBD label=MovePlayerToRoom
 E $ACBD View the equivalent code in;
 . #LIST
+. { #FOREST$C42F }
 . { #HEROES$B714 }
 . { #JEWELS$C520 }
+. { #ANDROMEDA$8E18 }
 . { #WARLORD$B01F }
 . LIST#
 R $ACBD A Destination room ID
@@ -2973,7 +3113,9 @@ D $ACFC Finds the first input token in #R$B420 and runs the matching script
 N $ACFC Look up the first token in the verb list at #R$B420.
   $ACFC,$0E Jump to #R$AD11 when the verb is known.
 N $AD0A The verb is not one this game understands.
-  $AD0A,$06 Print "#DECODESTR$CDD1".
+N $AD0A Print "#DECODESTR$CDD1".
+  $AD0A,$03 #REGhl=#R(#OFFSET($0018)).
+  $AD0D,$03 Call #R$A25C.
   $AD10,$01 Return.
 N $AD11 Run the verb script from #R$B44A.
   $AD11,$06 This verb's place in #R$B44A.
@@ -3092,6 +3234,14 @@ R $AD79 A Destination room ID
 
 c $ADA1 Game Start
 @ $ADA1 label=GameStart
+E $ADA1 View the equivalent code in;
+. #LIST
+. { #FOREST$F964 }
+. { #HEROES$FBA9 }
+. { #JEWELS$FD82 }
+. { #ANDROMEDA$F8AF }
+. { #WARLORD$FCCE }
+. LIST#
   $ADA1,$03 #REGhl=#R$9F88.
   $ADA4,$03 #REGbc=#N($0181,$04,$04).
   $ADA7,$02 Write #N$00 to *#REGhl.
@@ -3175,7 +3325,7 @@ N $AE37 Skip the plural-item search when the list length in #REGc is zero.
   $AE37,$04 Jump to #R$AE55 when the plural list is empty.
   $AE3B,$01 Stash #REGhl on the stack.
   $AE3C,$03 #REGhl=#R$B6F1.
-  $AE3F,$01 #REGa=#REGe.
+  $AE3F,$01 Copy the object ID back into #REGa.
   $AE40,$02 Search the plural-item list.
   $AE42,$01 Restore #REGhl from the stack.
   $AE43,$02 Jump to #R$AE55 when this item is singular.
@@ -3483,14 +3633,26 @@ D $BBBD Scripts run for the scenic events in #R$B6BA:
 W $BBBD,$02 Event #N((#PC-$BBBD)/$02).
 L $BBBD,$02,$05
 
-g $BBC7 Number Of Object
-@ $BBC7 label=Count_Objects_1
-D $BBC7 The total number of objects in the game.
+g $BBC7 Number Of Items
+@ $BBC7 label=Count_Items
+E $BBC7 View the equivalent code in;
+. #LIST
+. { #FOREST$BAF8 }
+. { #JEWELS$BD28 }
+. { #WARLORD$A7E8 }
+. LIST#
+D $BBC7 The total number of items in the game. See #R$9F88 and #R$BB0B.
 W $BBC7,$02
 
 g $BBC9 Number Of Objects
-@ $BBC9 label=Count_Objects_2
-D $BBC9 The total number of objects in the game.
+@ $BBC9 label=Count_Objects
+E $BBC9 View the equivalent code in;
+. #LIST
+. { #FOREST$BAFA }
+. { #JEWELS$BD2A }
+. { #ANDROMEDA$62C4 }
+. LIST#
+D $BBC9 The total number of objects in the game. See #R$B49E.
 W $BBC9,$02
 
 g $BBCB Number Of Verb Tokens
@@ -3505,7 +3667,13 @@ W $BBCD,$02
 
 g $BBCF Number Of Scenic Events
 @ $BBCF label=Count_ScenicEvents
-E $BBCF The total number of scenic events in the game, see Table_ScenicEventLocations.
+E $BBCF View the equivalent code in;
+. #LIST
+. { #FOREST$BB00 }
+. { #JEWELS$BD30 }
+. { #WARLORD$A7EE }
+. LIST#
+D $BBCF The total number of scenic events in the game, see #R$B6BA.
 W $BBCF,$02
 
 g $BBD1 Number Of Saved State Bytes
@@ -3517,7 +3685,8 @@ g $BBD3 Starting Room
 @ $BBD3 label=StartingRoom
 B $BBD3,$01
 
-u $BBD4 Unused
+u $BBD4
+S $BBD4,$01
 
 g $BBD5 Pointer: Room Image Offsets
 @ $BBD5 label=Pointer_RoomImageOffsets
@@ -3527,7 +3696,7 @@ W $BBD5,$02 #R$61A8.
 g $BBD7 Initial Carrying Limit
 @ $BBD7 label=InitialCarryingLimit
 D $BBD7 Copied to #R$A0D3 at the start of a game.
-B $BBD7,$01 #N(#PEEK(#PC)).
+B $BBD7,$01 The player can initially hold #N$05 items.
 
 g $BBD8 Data: Arrival Script
 @ $BBD8 label=Data_ArrivalScript
@@ -3558,6 +3727,11 @@ g $BD2E Data: Action Scripts
 D $BD2E Scenic event #N$04 starts here. The verb scripts addressed from
 . #R$B44A, and the later action scripts, continue through the rest of this
 . block.
+N $C52C This action changes the map:
+N $C556 This action changes the map:
+N $C59C This action changes the map:
+N $C5C9 This action changes the map:
+N $C600 This action changes the map:
 
 g $CA2B Table: Messaging Offsets
 @ $CA2B label=Table_MessagingOffsets
@@ -6114,4 +6288,5 @@ B $FF1D,$01 Terminator.
 
 u $FF1E
 
-u $FF40 Unused
+u $FF40
+S $FF40,$C0

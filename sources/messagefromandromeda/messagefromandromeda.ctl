@@ -10,6 +10,10 @@
 > $4000 @expand=#DEF(#FACT()(anchor,text) #LINK(Facts#$anchor)($text))
 > $4000 @expand=#DEF(#MESSAGE(addr) #STR$addr,$08($b==$FF))
 > $4000 @expand=#IF({asm})(#DEF(#PICTURE()(title,fname,attr=0)))
+> $4000 @expand=#DEF(#ROOM(id) #IF($01<$id<=$3F)(#HTML(&#10;)#SIM(start=$6754,stop=$6762,ix=$8568,de=$id)#HTML(&#10;)#R({sim[HL]})(#MAP({sim[HL]})(#HTML(&#10;)UNKNOWN,29024:In Deep Space,29049:In orbit around an unknown planet,29084:In the Galaxy at rest,29124:The Landing Pad,29141:The Square,29181:The Corridor,29195:The Yellow Room,29212:The Armoury,29225:The Long Corridor,29244:The Green Room,29260:The Workshop,29274:The Guard Room,29290:The Storage Room,29308:The Reception Room,29328:The Conference Room,29349:The Antechamber,29366:The Assembly Room,29385:The Blue Room,29400:The Red Room,29414:The Control Room,29432:The White Room,29448:The Mirrored Room,29467:The Bottom of a Stairwell,29494:The eastern end of a Long Cavern,29528:The Hall of the Ancients,29554:The Old Cave,29568:The Crystal Chamber,29589:The Botanical Grotto,29611:The Dusty Corridor,29631:The Limestone Maze,29651:The Damp Cave,29666:The Lower Corridor,29686:The Lower Store Room,29708:The Rock Slide,29724:The Tall Canyon,29741:The Torture Chamber,29762:The Underground Stream,29786:The Sloping Corridor,29808:The Cavern of Mists,29829:The Crystal Grotto,29849:The Crystal Bridge,29869:The Creature's Lair,29890:The Alien Commander's Chamber,29921:The Reactor Room,29939:The West Bank of the Lake,29966:The Subterranean Lake,29989:The East Bank of the Lake,30016:The South Bank of the Lake,30044:The Plateau,30109:The Repair Bay,30125:The Burial Chamber,30145:Inside a Teleport,30164:The western end of a Long Cavern)),#HTML(&#10;)N/A))
+> $4000 @expand=#DEF(#ITEM(id) #MAP($id)(#HTML(&#10;)N/A,00:"A knife.",01:"A laser pistol.",02:"A coin.",03:"A crystal rod.",04:"A detonator.",05:"A metal bar.",06:"A glowing sphere.",07:"Some poison fungus.",08:"Some round stones.",09:"A key.",10:"A space axe.",11:"Some explosives.",12:"A pair of gloves.",13:"The Galaxy.",14:"The airlock is closed.",15:"The airlock is closed.",16:"The airlock is open.",17:"The airlock is open.",18:"An android guard. He has shot at you and missed.",19:"A dead android guard.",20:"A glowing sphere sitting on a sunken dish#RAW(,) on a glass pedestal.",21:"A glass pedestal with a raised dish on top.",22:"A glass pedestal with a raised dish on top.",23:"A panel with a square plate to one side.",24:"The southern exit has a square plate to the side of it.",25:"A pile of rocks at the eastern end.",26:"Some shattered rocks to one side of the eastern exit.",27:"The landing co-ordinates are set.",28:"A closed door.",29:"An open door.",30:"A creeping vine has trapped you by coiling itself around you.",31:"A withered vine.",32:"A skeleton in space patrol uniform#RAW(,)tied to rings in the wall#RAW(,)by ropes.",33:"A skeleton on the floor.",34:"An alcove containing some round stones.",35:"An empty alcove.",36:"A huge#RAW(,)blind slug is blocking the western exit. It is advancing toward you.",37:"A pool of slime on the floor.",38:"A fierce#RAW(,)scaled creature is on the bridge#RAW(,)preventing your crossing.",39:"The alien commander#RAW(,) in space armour.",40:"The dead body of the alien commander.",41:"A computer.",42:"A keyhole in the control panel.",43:"A light is flashing and you can hear a warning siren.",44:"A dead alien soldier.",45:"A dead alien soldier.",46:"A dead alien soldier.",47:"A dead alien soldier.",48:"A tractor beam is holding the ship. Takeoff is impossible.",49:"A strange alien device in one corner.",50:"Some writing on the wall.",51:"A message on the ship's computer screen.",52:"A button.",53:"The water looks inviting.",54:"The water looks inviting.",55:"The water looks inviting.",56:"A pile of rocks.",57:"A pair of gloves#RAW(,)which you are wearing.",58:"A key in the control panel. The key is set to 'OFF'.",59:"A key in the control panel. The key is set to 'ON'.",60:"A glowing sphere sitting on a raised dish on a glass pedestal.",61:"The water looks inviting.",62:"A message on the computer screen reads:- TYPE PASSWORD.",63:"A wall of rock now blocks the northern exit.",64:"The ship is ready to take off."))
+> $4000 @expand=#DEF(#OBJECT(id) #MAP($id)(#HTML(&#10;)N/A,00:Glov,01:Ship,02:Mess,03:Airl,04:Keyh,05:Gun,06:Guar,07:Sphe,08:Pede,09:Dish,10:Rod,11:Plat,12:Door,13:Vine,14:Butt,15:Deto,16:Rock,17:Coin,18:Sold,19:Axe,20:Knif,21:Skel,22:Rope,23:Ston,24:Slug,25:Fung,26:Crea,27:Bar,28:Comm,29:Pane,30:Key,31:Comp,32:Devi,33:Lake,34:Writ,35:Body,36:Expl))
+> $4000 @expand=#DEF(#TOKEN(id) #MAP($id)(#HTML(&#10;)UNKNOWN,000:"H#RAW(,)HELP",001:"I#RAW(,)INVE",002:"L#RAW(,)LOOK",003:"N#RAW(,)NORT",004:"S#RAW(,)SOUT",005:"E#RAW(,)EAST",006:"W#RAW(,)WEST",007:"U#RAW(,)UP",008:"D#RAW(,)DOWN",009:"EXAM",010:"LOAD",011:"SAVE",012:"QUIT",013:"TAKE#RAW(,)GET#RAW(,)PICK",014:"DROP#RAW(,)PLAC#RAW(,)PUT#RAW(,)THRO#RAW(,)REMO#RAW(,)MOVE",015:"BLIN",016:"ENTE",017:"EXIT#RAW(,)LEAV",018:"GLOV",019:"SHIP#RAW(,)GALA",020:"YES",021:"NO",022:"POIS",023:"SQUA",024:"SCAL",025:"ANDR",026:"READ",027:"MESS",028:"LAND",029:"AIRL",030:"OPEN",031:"CLOS#RAW(,)SHUT",032:"LASE",033:"GUN#RAW(,)PIST",034:"SHOO#RAW(,)BLAS",035:"TOUC",036:"AT#RAW(,)TO",037:"EAT",038:"GUAR",039:"SPHE",040:"PEDE",041:"TURN#RAW(,)ROTA",042:"DISH",043:"ON",044:"GLOW",045:"ROD",046:"POIN",047:"PLAT",048:"DOOR",049:"SLID",050:"BODY",051:"EXPL",052:"BUTT",053:"PRES#RAW(,)PUSH",054:"DETO",055:"ROCK",056:"OFF",057:"STRA",058:"ROUN",059:"CREE",060:"VINE#RAW(,)PLAN",061:"SPAC",062:"COIN",063:"xxxx",064:"SOLD",065:"CUT#RAW(,)SLIC#RAW(,)STAB",066:"AXE",067:"KNIF",068:"SKEL",069:"ROPE",070:"STON",071:"SLUG",072:"FUNG",073:"CREA",074:"PANE",075:"COMM",076:"WITH#RAW(,)USIN",077:"META",078:"KEY",079:"FUCK#RAW(,)SCRE",080:"CRYS",081:"DEVI#RAW(,)TELE",082:"ALIE",083:"ATTA#RAW(,)KILL",084:"ROUN",085:"COMP",086:"INSE",087:"KEYH",088:"OLD#RAW(,)"OLD",089:"TYPE",090:"IN",091:"DEAD",092:"BAR",093:"WEAR",094:"SWIM",095:"LAKE#RAW(,)WATE",096:"RUN",097:"WRIT",098:"RAIS",099:"GLAS",253:Separator,254:Terminator))
 > $4000 @expand=#IF({asm})(#DEF(#FOREST(addr)(link=Forest At Worlds End)$link))
 > $4000 @expand=#IF({asm})(#DEF(#HEROES(addr)(link=Heroes Of Karn)$link))
 > $4000 @expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon)$link))
@@ -27,20 +31,19 @@ D $4000 #UDGTABLE
   $4000,$1800,$20 Pixels.
   $5800,$0300,$20 Attributes.
 
-u $5B00 Unused
-@ $5B00 label=PrinterBuffer
-D $5B00 The ZX printer buffer, left clear by the loader.
-B $5B00,$01
-L $5B00,$01,$100
+u $5B00
+S $5B00,$100
 
 i $5C00
 
 c $5CD0 Tape Loader
 @ $5CD0 label=TapeLoader
-E $5CD0 Continue on to #R$5D01.
 E $5CD0 View the equivalent code in;
 . #LIST
 . { #FOREST$5B00 }
+. { #HEROES$5B00 }
+. { #JEWELS$5B00 }
+. { #WARLORD$5B00 }
 . LIST#
 D $5CD0 Load the screen, then the game image. The length check keeps
 . the graphics and the code as two blocks.
@@ -49,21 +52,14 @@ N $5CD0 Load the first block: the loading screen.
 N $5CDA Choose one graphics block or two.
   $5CDA,$0B Jump to #R$5CFA when the pictures fit in one tape block.
 @ $5CE5 label=TapeLoader_Step1
-@ $5CE5 nowarn
   $5CE5,$0A Load the engine, the text and the first pictures at #R$61A8.
   $5CEF,$0A Load the remaining pictures at #N$D6D8.
   $5CF9,$01 Return.
 @ $5CFA label=TapeLoader_Step2
-@ $5CFA nowarn
   $5CFA,$07 Load the pictures and the code as one block at #R$61A8.
-
-c $5D01 Tape Loading
+N $5D01 The screen and split-graphics loads call here; the single-block
+. load falls into it, so its return ends the loader.
 @ $5D01 label=TapeLoading
-E $5D01 View the equivalent code in;
-. #LIST
-. { #FOREST$5B1B }
-. LIST#
-D $5D01 Load the tape block at the address and length already set up.
   $5D01,$02 Load the data-block marker #N$45.
   $5D03,$01 Set the carry flag so the ROM loads this block.
   $5D04,$03 Call #SKOOLKID$0802(LD_BLOCK).
@@ -79,66 +75,240 @@ L $5D08,$01,$4A0
 
 c $61A8 Game Entry Point
 @ $61A8 label=GameEntryPoint
+E $61A8 View the equivalent code in;
+. #LIST
+. { #SHOCK$9DD7 }
+. { #FOREST$B9C5 }
+. { #HEROES$ABD4 }
+. { #JEWELS$BA50 }
+. { #WARLORD$A531 }
+. LIST#
 D $61A8 The third load block is entered here. Jump straight into the
 . initialisation routine.
   $61A8,$03 Jump to #R$F8AF to initialise the game.
 
-b $61AB Game State
-@ $61AB label=GameState
+g $61AB Table: Item Locations
+@ $61AB label=Table_ItemLocations
+E $61AB View the equivalent code in;
+. #LIST
+. { #SHOCK$9F88 }
+. { #FOREST$B9C8 }
+. { #HEROES$AD76 }
+. { #JEWELS$BBF0 }
+. { #WARLORD$A66C }
+. LIST#
 D $61AB Workspace filled from #R$F8EA by the routine at #R$F8AF.
 . Object locations occupy the #N$41 bytes at #R$61AB. The current
 . room is *#R$6223. Pointers to the message, exit and handler tables
-. follow the input buffer.
-B $61AB,$01 Object location for object #N$00.
+. follow the command buffer.
+B $61AB,$01 Item #N(#PC-$61AB) #ITEM(#PC-$61AB) in room #N(#PEEK(#PC)):
+. #ROOM(#PEEK(#PC)).
 L $61AB,$01,$41
-B $61EC,$01
-L $61EC,$01,$23
-B $620F,$01 Flags: Display State
-B $6210,$01
-L $6210,$01,$03
-B $6213,$01
-L $6213,$01,$06
-B $6219,$01 Flags: Turn-Based Events
-B $621A,$01 Turn-Based Event Counters
-L $621A,$01,$08
-B $6222,$01 Flags: Scenic Events
-B $6223,$01 Current Room ID
-B $6224,$01 Table: Scenic Event Rooms
-L $6224,$01,$08
-B $622C,$01 Scenic Event Counter
-B $622D,$01
-L $622D,$01,$32
 
-b $625F Input Buffer
-@ $625F label=InputBuffer
+u $61EC
+S $61EC,$23
+
+g $620F Flags: Display State
+@ $620F label=Flag_DisplayState
+D $620F Bit 0 is set when a room picture is waiting for a keypress.
+B $620F,$01
+
+u $6210
+S $6210,$03
+
+g $6213 Table: Already Seen Room Images
+@ $6213 label=Table_RoomImagesAlreadySeen
+D $6213 One bit per entry in #R$8CFC. #R$678A tests and sets the bit for
+. the current room's picture slot.
+B $6213,b,$01
+B $6214,b,$01
+B $6215,b,$01
+B $6216,b,$01
+
+u $6217
+S $6217,$02
+
+g $6219 Flags: Turn-Based Event States
+@ $6219 label=Flag_TurnBasedEventState
+D $6219 Holds a single byte, where each bit relates to a turn-based event.
+. When the bit is set, #R$6557 runs the matching handler from #R$62A2.
+B $6219,$01
+
+g $621A Turn-Based Event Counters
+D $621A One countdown per bit of *#R$6219.
+N $621A Unused.
+@ $621A label=Counter_Unused_0
+N $621B Unused.
+@ $621B label=Counter_Unused_1
+N $621C Unused.
+@ $621C label=Counter_Unused_2
+N $621D Unused.
+@ $621D label=Counter_Unused_3
+N $621E Unused.
+@ $621E label=Counter_Unused_4
+N $621F Unused.
+@ $621F label=Counter_Unused_5
+N $6220 Unused.
+@ $6220 label=Counter_Unused_6
+N $6221 Unused.
+@ $6221 label=Counter_Unused_7
+B $621A,$08,$01
+
+g $6222 Flags: Scenic Event States
+@ $6222 label=Flag_ScenicEventState
+D $6222 Holds a single byte, where each set bit arms a scenic event. #R$658A
+. walks these bits and plants a message when the player is not already in
+. that event's room from #R$6224.
+B $6222,$01
+
+g $6223 Current Room ID
+@ $6223 label=CurrentRoom
+D $6223 The room the player starts the game in is room #N(#PEEK(#PC)):
+. #ROOM(#PEEK(#PC)).
+B $6223,$01 Current room ID.
+
+g $6224 Table: Scenic Event Locations
+@ $6224 label=Table_ScenicEventLocations
+D $6224 Where each of the #N$08 scenic events is. #R$658A compares these
+. rooms with *#R$6223.
+B $6224,$01 Event #N(#PC-$6224).
+L $6224,$01,$08
+
+g $622C Number Of Items In The Players Inventory
+@ $622C label=Count_InventoryItems
+D $622C The number of items the player is currently holding.
+B $622C,$01
+
+g $622D Load/ Save Buffer
+@ $622D label=LoadSaveBuffer
+D $622D When #R$69DC(loading) or #R$69A1(saving), this buffer holds the
+. bytes for the saved-location pointers at #R$8D16.
+B $622D,$32,$08
+
+g $625F Command Buffer
+@ $625F label=CommandBuffer
 D $625F The line being typed. Parsed word tokens follow at #R$6291.
-B $625F,$01
-L $625F,$01,$32
-B $6291,$01 User Input: Word Tokens
-L $6291,$01,$0A
-B $629B,$01 Line Number
-W $629C,$02 Pointer: Vocabulary
-B $629E,$01
-L $629E,$01,$04
-B $62A2,$01 Table: Turn-Based Event Handlers
-L $62A2,$01,$10
-B $62B2,$01 Table: Scenic Event Message Lists
-L $62B2,$01,$10
-W $62C2,$02 Pointer: Room Exits
-W $62C4,$02 Number Of Objects
-W $62C6,$02 Pointer: Object Descriptions
-W $62C8,$02 Number Of Nouns
-W $62CA,$02 Number Of Rooms With Images
-W $62CC,$02 Pointer: Rooms With Images
-W $62CE,$02 Pointer: Room Image Jump Table
-W $62D0,$02 Pointer: Room Descriptions
-W $62D2,$02 Pointer: Noun Phrases
-W $62D4,$02 Pointer: Nouns
-W $62D6,$02 Pointer: Noun Tokens
-W $62D8,$02 Pointer: Verbs Jump Table
-W $62DA,$02 Number Of Verbs
-W $62DC,$02 Number Of Saved Locations
-W $62DE,$02 Pointer: Saved Location Table
+B $625F,$32
+
+g $6291 User Input: Word Tokens
+@ $6291 label=UserInput_Token_1
+@ $6292 label=UserInput_Token_2
+D $6291 The vocabulary number of each word of the last command, in the
+. order they were typed, with #N$FF in every slot that isn't used.
+B $6291,$01 The first word, which should be the verb.
+B $6292,$09,$09 The words after the verb.
+
+g $629B Line Number
+@ $629B label=LineNumber
+E $629B View the equivalent code in;
+. #LIST
+. { #FOREST$BB40 }
+. { #HEROES$AF38 }
+. { #JEWELS$BD70 }
+. { #WARLORD$A82E }
+. LIST#
+D $629B The text and picture row used when clearing lines and parking the
+. cursor.
+B $629B,$01
+
+g $629C Pointer: Vocabulary Table
+@ $629C label=Pointer_Vocabulary
+D $629C Pointer to the table containing the game vocabulary.
+W $629C,$02
+
+g $629E Four Letter Buffer
+@ $629E label=FourLetterBuffer
+D $629E The four-character word the parser is matching.
+B $629E,$04
+
+g $62A2 Table: Turn-Based Event Handlers
+@ $62A2 label=Table_TurnBasedEventHandlers
+D $62A2 Handler addresses for each bit of *#R$6219. Used by #R$6557.
+W $62A2,$02 Event #N((#PC-$62A2)/$02).
+L $62A2,$02,$08
+
+g $62B2 Table: Scenic Event Message Lists
+@ $62B2 label=Table_ScenicEventMessageLists
+D $62B2 Pointers to the message lists #R$658A walks for each scenic event.
+W $62B2,$02 Event #N((#PC-$62B2)/$02).
+L $62B2,$02,$08
+
+g $62C2 Pointer: Room Map Table
+@ $62C2 label=Pointer_RoomMap
+D $62C2 Pointer to the table containing the relationships between rooms.
+W $62C2,$02
+
+g $62C4 Number Of Objects
+@ $62C4 label=Count_Objects
+E $62C4 View the equivalent code in;
+. #LIST
+. { #SHOCK$BBC9 }
+. { #FOREST$BAFA }
+. { #JEWELS$BD2A }
+. LIST#
+D $62C4 The total number of objects in the game.
+W $62C4,$02
+
+g $62C6 Pointer: Item Description Table
+@ $62C6 label=Pointer_ItemDescriptions
+D $62C6 Pointer to the table containing item descriptions.
+W $62C6,$02
+
+g $62C8 Number Of Nouns
+@ $62C8 label=Count_Nouns
+D $62C8 The total number of noun word tokens the game has.
+W $62C8,$02
+
+g $62CA Number Of Rooms With Images
+@ $62CA label=Count_RoomsWithImages
+D $62CA The total number of rooms which have related images in the game.
+W $62CA,$02
+
+g $62CC Pointer: Rooms With Images Table
+@ $62CC label=Pointer_RoomsWithImages
+D $62CC Pointer to the table containing all the rooms which have an image
+. to display.
+W $62CC,$02
+
+g $62CE Pointer: Room Image Jump Table
+@ $62CE label=Pointer_RoomImage
+D $62CE Pointer to the jump table for displaying an image relating to a
+. room.
+W $62CE,$02
+
+g $62D0 Pointer: Room Description Table
+@ $62D0 label=Pointer_RoomDescriptions
+D $62D0 Pointer to the table containing room descriptions.
+W $62D0,$02
+
+g $62D2 Pointer: Object Noun Phrases
+@ $62D2 label=Pointer_ObjectNounPhrases
+W $62D2,$02
+
+g $62D4 Pointer: Object List Table
+@ $62D4 label=Pointer_ObjectList
+W $62D4,$02
+
+g $62D6 Pointer: Noun Tokens Table
+@ $62D6 label=Pointer_NounTokens
+W $62D6,$02
+
+g $62D8 Pointer: Verbs Jump Table
+@ $62D8 label=Pointer_JumpTable_Verbs
+W $62D8,$02
+
+g $62DA Number Of Verb Tokens
+@ $62DA label=Count_VerbTokens
+D $62DA The total number of verb word tokens the game has.
+W $62DA,$02
+
+g $62DC Number Of Saved Locations
+@ $62DC label=Count_SavedLocations
+W $62DC,$02
+
+g $62DE Pointer: Saved Location Table
+@ $62DE label=Pointer_SavedLocations
+W $62DE,$02
 
 t $62E0 Messaging: ">"
 @ $62E0 label=Messaging_Block
@@ -388,6 +558,7 @@ c $64AC Clear Lines
 @ $64AC label=ClearLines
 E $64AC View the equivalent code in;
 . #LIST
+. { #SHOCK$9E0B }
 . { #FOREST$BDF1 }
 . { #HEROES$ABF8 }
 . { #JEWELS$BA74 }
@@ -396,13 +567,15 @@ E $64AC View the equivalent code in;
 D $64AC Clear the lines given by *#R$629B from the bottom of the screen.
 R $64AC B Line count from *#R$629B
   $64AC,$03 Call #R$64CE to switch to the normal screen output.
-  $64AF,$07 Clear the number of lines held by *#R$629B from the bottom of the screen using #SKOOLKID$0E44(CL_LINE).
+  $64AF,$07 Clear the number of lines held by *#R$629B from the bottom of the
+. screen using #SKOOLKID$0E44(CL_LINE).
   $64B6,$01 Return.
 
 c $64B7 Set Default Screen Position
 @ $64B7 label=SetDefaultScreenPosition
 E $64B7 View the equivalent code in;
 . #LIST
+. { #SHOCK$9E19 }
 . { #FOREST$BDFC }
 . { #HEROES$AC03 }
 . { #JEWELS$BA7F }
@@ -448,6 +621,7 @@ c $64DC Print String
 @ $64DC label=PrintString
 E $64DC View the equivalent code in;
 . #LIST
+. { #SHOCK$A267 }
 . { #FOREST$BE21 }
 . { #HEROES$AC28 }
 . { #JEWELS$BAA4 }
@@ -456,15 +630,14 @@ E $64DC View the equivalent code in;
 D $64DC Print a message terminated by #N$FF.
 R $64DC HL Pointer to a message terminated by #N$FF
   $64DC,$03 Call #R$64CE to switch to the normal screen output.
-@ $64DF label=PrintString_Loop1
+@ $64DF label=PrintString_Loop
   $64DF,$0A Print each character of the message until the #N$FF terminator.
 
 c $64E9 Print String And A Newline
 @ $64E9 label=PrintStringAndANewline
 E $64E9 View the equivalent code in;
 . #LIST
-. { #SHOCK$A25C(After Shock (compressed)) }
-. { #SHOCK$A275(After Shock (plain)) }
+. { #SHOCK$A275 }
 . { #FOREST$BE2E }
 . { #HEROES$AC35 }
 . { #JEWELS$BAB1 }
@@ -481,6 +654,7 @@ c $64F2 Print Character
 @ $64F2 label=PrintCharacter
 E $64F2 View the equivalent code in;
 . #LIST
+. { #SHOCK$9E26 }
 . { #FOREST$BE37 }
 . { #HEROES$AC47 }
 . { #JEWELS$BAC3 }
@@ -490,7 +664,8 @@ D $64F2 Print a character, scrolling when the cursor reaches the bottom
 . of the text area.
 R $64F2 A Character to print
   $64F2,$01 Preserve the character to print.
-  $64F3,$07 Jump to #R$650D when the cursor row in #SKOOLKID$5C88(S_POSN) (#N$5C89) is not #N$03.
+  $64F3,$07 Jump to #R$650D when the cursor row in #SKOOLKID$5C88(S_POSN)
+. (#N$5C89) is not #N$03.
   $64FA,$02 Restore the character from the stack, keeping a copy there.
   $64FC,$04 Jump to #R$6505 when this is not a newline (#N$0D).
 N $6500 A newline scrolls the text area.
@@ -499,7 +674,8 @@ N $6500 A newline scrolls the text area.
   $6504,$01 Return.
 @ $6505 label=PrintCharacter_Step1
 N $6505 Check the column position.
-  $6505,$08 Call #R$6510 to scroll when the column in #SKOOLKID$5C88(S_POSN) is #N$01.
+  $6505,$08 Call #R$6510 to scroll when the column in #SKOOLKID$5C88(S_POSN) is
+. #N$01.
 @ $650D label=PrintCharacter_Step2
   $650D,$01 Restore the character to print from the stack.
 N $650E Print the character.
@@ -522,6 +698,12 @@ D $6510 Scroll the text area up one row and home the cursor.
 
 c $6519 Print Room Graphic
 @ $6519 label=PrintRoomGraphic
+E $6519 View the equivalent code in;
+. #LIST
+. { #FOREST$BE5E }
+. { #HEROES$AD06 }
+. { #JEWELS$BAE1 }
+. LIST#
 D $6519 Expand a room picture into the display file.
 R $6519 I:IX Pointer to room image data
   $6519,$04 Count #N$10 display-file blocks (passes) and point #REGh at #N($40),
@@ -529,7 +711,8 @@ R $6519 I:IX Pointer to room image data
 @ $651D label=PrintRoomGraphic_Loop1
 N $651D Each pass fills one 256-byte block of the display file: pixel line n of
 . all eight character rows in the top or middle third. #REGh is the high byte of
-. the screen address, so the #N$10 values #N$40-#N$4F are pixel lines #N$00-#N$07
+. the screen address, so the #N$10 values #N$40-#N$4F are pixel lines
+. #N$00-#N$07
 . of the top two thirds (128 pixels high, matching #N$10 attribute rows).
   $651D,$02 Start a new pass.
 @ $651F label=PrintRoomGraphic_Loop2
@@ -558,9 +741,11 @@ c $6541 Print Room Image
 @ $6541 label=Print_RoomImage
 E $6541 View the equivalent code in;
 . #LIST
+. { #SHOCK$9F28 }
 . { #FOREST$BEB8 }
 . { #HEROES$AD60 }
 . { #JEWELS$BB3B }
+. { #WARLORD$B10B }
 . LIST#
 D $6541 Draw a room picture and its attributes.
 R $6541 IX Pointer to room image data
@@ -602,7 +787,6 @@ N $6560 Each set bit is a countdown that is still running.
   $657A,$06 Read that handler's address.
   $6580,$01 Remember which events are still to be checked.
 @ $6581 label=HandlerTurnBasedEvents_Step1
-@ $6581 nowarn
   $6581,$05 Run the handler, then return here for the remaining events.
   $6586,$01 Restore the event flags still to be checked.
 @ $6587 label=HandlerTurnBasedEvents_Step2
@@ -612,7 +796,16 @@ N $6560 Each set bit is a countdown that is still running.
 
 c $658A Handler: Scenic Events
 @ $658A label=HandlerScenicEvents
-D $658A Walk the scenic-event bits and fire a handler when the player is in its room.
+E $658A View the equivalent code in;
+. #LIST
+. { #SHOCK$AC88 }
+. { #FOREST$C3FA }
+. { #HEROES$B6E0 }
+. { #JEWELS$C4EB }
+. { #WARLORD$AFEB }
+. LIST#
+D $658A Walk the scenic-event bits and fire a handler when the player is in its
+. room.
   $658A,$03 Fetch the scenic-event flags.
   $658D,$03 No scenic event is running.
   $6590,$03 Keep the scenic flags and test all eight bits.
@@ -668,10 +861,12 @@ E $65D6 View the equivalent code in;
 . { #JEWELS$C582 }
 . { #WARLORD$B08A }
 . LIST#
-D $65D6 Return a number derived from the frame counter, used when an event may or
+D $65D6 Return a number derived from the frame counter, used when an event may
+. or
 . may not happen.
 R $65D6 O:A A random number derived from *#SKOOLKID$5C78(FRAMES)
-  $65D6,$07 Take the frame counter as a countdown, limited by the value passed in.
+  $65D6,$07 Take the frame counter as a countdown, limited by the value passed
+. in.
 @ $65DD label=GenerateRandomNumber_Loop1
   $65DD,$04 Wrap back to that limit when the countdown passes zero.
 @ $65E1 label=GenerateRandomNumber_Step1
@@ -716,101 +911,126 @@ c $6604 Handler: User Input
 E $6604 Continue on to #R$6669.
 E $6604 View the equivalent code in;
 . #LIST
+. { #SHOCK$A4B0 }
 . { #FOREST$BF73 }
 . { #HEROES$B200 }
 . { #JEWELS$C00A }
+. { #WARLORD$AD32 }
 . LIST#
-D $6604 Handles keyboard input, tokenises commands and validates the vocabulary.
-N $6604 Prepare a blank command line.
-  $6604,$03 Call #R$64B7 to park the cursor at the default position.
-  $6607,$07 Blank the command buffer with #N$32 spaces.
+D $6604 Read a line of text, then turn it into vocabulary tokens.
+N $6604 Reset the cursor to the default text position.
+  $6604,$03 Call #R$64B7.
+N $6607 Clear the command buffer.
+  $6607,$07 Blank #R$625F with #N$32 spaces.
 @ $660E label=Handler_UserInput_Loop1
   $660E,$04 Write spaces through the command buffer.
-N $6612 Ask for a command.
-  $6612,$03 Call #R$6A1C to print the prompt.
-  $6615,$03 The next character is stored at the start of the command.
+N $6612 Print the ">" prompt.
+  $6612,$03 Call #R$6A1C.
+N $6615 Collect keypresses into the command buffer.
+  $6615,$03 Start at the beginning of #R$625F.
 @ $6618 label=Handler_UserInput_Loop2
-N $6618 Read the next key.
-  $6618,$03 Call #R$6495 to wait for a keypress.
-  $661B,$04 Jump to #R$663B when DELETE (#N$0C) was pressed.
-  $661F,$04 Jump to #R$6652 when ENTER (#N$0D) was pressed.
-  $6623,$04 Jump back to #R$6618 when the key is a control character.
-  $6627,$0A Jump back to #R$6618 when the command buffer is full.
-  $6631,$0A Store the character in the command buffer and print it.
+N $6618 Wait for the next key.
+  $6618,$03 Call #R$6495.
+N $661B DELETE rubs out a character. ENTER finishes the line. Any other
+. control key is ignored.
+  $661B,$04 Jump to #R$663B if DELETE was pressed.
+  $661F,$04 Jump to #R$6652 if ENTER was pressed.
+  $6623,$04 Jump back to #R$6618 when the key is below SPACE.
+N $6627 Is the command buffer full?
+  $6627,$0A Jump back to #R$6618 once the pointer has reached the end of
+. #R$625F.
+N $6631 The key is valid, so store it and print it.
+  $6631,$0A Write the key into the buffer and echo it.
 @ $663B label=Handler_UserInput_Step1
 N $663B The player pressed DELETE.
-  $663B,$0A Jump back to #R$6618 when there is nothing to delete.
-  $6645,$0D Print #MESSAGE$62E3 and rub out the last character.
+  $663B,$0A Jump back to #R$6618 when the buffer is still empty.
+N $6645 Rub the previous character off the screen.
+N $6645 Print "#MESSAGE$62E3".
+  $6645,$0D Print "#MESSAGE$62E3" and blank the previous character.
 @ $6652 label=Handler_UserInput_Step2
-N $6652 The player pressed ENTER.
-  $6652,$07 Store the terminator and echo the newline.
-  $6659,$07 Point at the word tokens and prepare the empty marker (#N$FF).
+N $6652 The player pressed ENTER, so close the command and clear the tokens.
+  $6652,$07 Store ENTER as the terminator and echo the newline.
+N $6659 Initialise the word token buffer. Up to #N$0A vocabulary tokens are
+. stored at #R$6291; #N$FF marks an empty slot.
+  $6659,$07 Point at #R$6291 and prepare the empty marker (#N$FF).
 @ $6660 label=Handler_UserInput_Loop3
-  $6660,$04 Mark every word token as empty.
-  $6664,$05 Up to #N$0A words of the command are accepted.
+  $6660,$04 Write #N$FF into each of the #N$0A token slots.
+  $6664,$05 Start at the command and allow #N$0A words, then fall into
+. #R$6669.
 
 c $6669 Parser: Match Input Word
 @ $6669 label=Parser_MatchInputWord
 E $6669 View the equivalent code in;
 . #LIST
-. { #FOREST$BFD8 }
+. { #FOREST$BFC1 }
 . { #HEROES$B24E }
 . { #JEWELS$C058 }
 . LIST#
-D $6669 Read the next word of the command and turn it into a vocabulary token.
-  $6669,$03 The typed word is held as four letters.
+D $6669 Split the command into words and look each one up in the vocabulary.
+N $6669 Blank the four-character word buffer.
+  $6669,$03 Start at the word buffer (#R$629E).
   $666C,$02 A word is at most four letters.
   $666E,$02 Pad the typed word with spaces.
 @ $6670 label=Parser_MatchInputWord_Loop1
-  $6670,$04 Fill the four-letter word with spaces.
-  $6674,$02 No words left means the command has been parsed.
-  $6676,$03 An empty command is an unknown word.
+  $6670,$04 Write spaces through the word buffer.
+  $6674,$02 Jump to #R$6745 when no token slots remain.
+  $6676,$03 Jump to #R$6745 when the command has ended.
   $6679,$01 Read the next character of the command.
-  $667A,$05 Jump to #R$6745 when ENTER (#N$0D) was pressed.
+  $667A,$05 Jump to #R$6745 when ENTER ends the command.
+N $667F Copy the next word, up to #N$04 characters, stopping at a space, a
+. comma or ENTER.
   $667F,$02 Keep at most four letters of this word.
-  $6681,$03 The typed word is held as four letters.
+  $6681,$03 Point at the word buffer again.
 @ $6684 label=Parser_MatchInputWord_Loop2
-  $6684,$05 Stop copying when ENTER ends the command.
-  $6689,$08 Stop copying at a space or a comma.
-  $6691,$05 Store this letter and read the next.
+  $6684,$05 Jump to #R$66B0 when the character is ENTER.
+  $6689,$08 Jump to #R$66A6 when the character is a space or a comma.
+  $6691,$05 Copy the character into the word buffer and advance both
+. pointers.
 @ $6696 label=Parser_MatchInputWord_Loop3
-  $6696,$05 Stop skipping when ENTER ends the command.
-  $669B,$08 Stop skipping at a space or a comma.
-  $66A3,$03 Skip this extra letter.
+N $6696 A longer word is skipped up to the next delimiter.
+  $6696,$05 Jump to #R$66B0 on ENTER.
+  $669B,$08 Jump to #R$66A6 on a space or a comma.
+  $66A3,$03 Skip this character and keep looking for a delimiter.
 @ $66A6 label=Parser_MatchInputWord_Loop4
-  $66A6,$06 Skip spaces before the next word.
+  $66A6,$06 Skip consecutive spaces.
   $66AC,$04 Jump back to #R$66A6 when that character is a comma (#N$2C).
 @ $66B0 label=Parser_MatchInputWord_Step1
-N $66B0 The word THE is ignored.
-  $66B0,$09 Compare the word with #MESSAGE$62E7 without losing the command
-. pointer.
+N $66B0 Ignore the word "THE ".
+  $66B0,$09 Compare the word with "#MESSAGE$62E7" without losing the
+. command pointer.
 @ $66B9 label=Parser_MatchInputWord_Loop5
   $66B9,$08 Match the four letters of "THE ".
 @ $66C1 label=Parser_MatchInputWord_Step2
-  $66C1,$04 Ignore the word and parse again when it was "THE ".
+  $66C1,$04 Jump back to #R$6669 when the word was THE, so it is not
+. tokenised.
   $66C5,$06 Search the vocabulary addressed by *#R$629C.
 @ $66CB label=Parser_MatchInputWord_Loop6
+N $66CB Look the word up in the vocabulary. A comma separates synonyms.
   $66CB,$01 Read the next vocabulary letter.
   $66CC,$04 Jump to #R$66FD when the vocabulary list ends (#N$FF).
 @ $66D0 label=Parser_MatchInputWord_Loop7
-  $66D0,$03 The typed word is held as four letters.
+  $66D0,$03 Point at the word buffer.
   $66D3,$02 Compare four letters of this vocabulary word.
 @ $66D5 label=Parser_MatchInputWord_Loop8
   $66D5,$08 Match the typed word against this vocabulary entry.
+N $66DD Word matched. Store its vocabulary index in the token buffer and
+. parse the next word.
   $66DD,$0E Store this vocabulary number as the current word's token.
   $66EB,$03 Jump to #R$6669 to read the next word.
 @ $66EE label=Parser_MatchInputWord_Step3
+N $66EE This vocabulary entry did not match. Try a synonym after a comma,
+. else the next entry.
   $66EE,$04 Skip the letters left in a word that did not match.
   $66F2,$01 Read the byte that follows this vocabulary word.
   $66F3,$04 A comma marks another synonym of the same word.
   $66F7,$01 Step past that comma.
-  $66F8,$02 Continue at #R$66D0 to match this synonym against
-. the typed word.
+  $66F8,$02 Jump to #R$66D0 to match this synonym.
 @ $66FA label=Parser_MatchInputWord_Step4
   $66FA,$01 Try the next vocabulary word.
-  $66FB,$02 Continue at #R$66CB to try the next vocabulary word.
+  $66FB,$02 Jump to #R$66CB.
 @ $66FD label=Parser_MatchInputWord_Step5
-  $66FD,$08 The word is unknown. Count back to it from the end of the command.
+N $66FD The word is not in the vocabulary, so quote it and ask again.
+  $66FD,$08 Find the unknown word in the command buffer.
 @ $6705 label=Parser_MatchInputWord_Loop9
   $6705,$01 Step back to the previous word of the command.
   $6706,$02 This is the word the game could not recognise.
@@ -819,19 +1039,20 @@ N $66B0 The word THE is ignored.
 @ $6714 label=Parser_MatchInputWord_Loop11
   $6714,$06 Skip the gap after that word.
   $671A,$04 Jump back to #R$6714 when that character is a comma (#N$2C).
-  $671E,$02 Continue at #R$6705 to count back another word of
-. the command.
+  $671E,$02 Jump back to #R$6705 to count back another word.
 @ $6720 label=Parser_MatchInputWord_Step6
   $6720,$01 Remember where the unknown word starts.
-  $6721,$06 Print #MESSAGE$6300.
-  $6727,$01 The unknown word starts at the address just saved.
+N $6721 Print "#MESSAGE$6300".
+  $6721,$06 Print "#MESSAGE$6300".
+  $6727,$01 Restore the start of the unknown word.
   $6728,$05 Print a quotation mark before the unknown word.
 @ $672D label=Parser_MatchInputWord_Loop12
   $672D,$0B Print the characters of the unknown word.
 @ $6738 label=Parser_MatchInputWord_Step7
   $6738,$05 Close the quotation.
-  $673D,$06 Print #MESSAGE$646B.
-  $6743,$02 Continue at #R$6751 to ask for another command.
+N $673D Print "#MESSAGE$646B".
+  $673D,$06 Print "#MESSAGE$646B".
+  $6743,$02 Jump to #R$6751 to ask for another command.
 
 c $6745 Handler: Unknown Word
 @ $6745 label=Handler_UnknownWord
@@ -840,10 +1061,12 @@ E $6745 View the equivalent code in;
 . { #FOREST$C0B4 }
 . { #HEROES$B364 }
 . LIST#
-D $6745 Print "I don't understand." when the command did not match a verb, then ask
+D $6745 Print "I don't understand." when the command did not match a verb, then
+. ask
 . again.
   $6745,$03 Fetch the first word of the command.
-  $6748,$03 Return if the first word of the command is not the end marker (#N$FF).
+  $6748,$03 Return if the first word of the command is not the end marker
+. (#N$FF).
   $674B,$06 Print #MESSAGE$62EC.
 @ $6751 label=Handler_UnknownWord_Step1
   $6751,$03 Jump to #R$6604 to read another command.
@@ -879,6 +1102,7 @@ E $6763 View the equivalent code in;
 D $6763 List the objects in the room passed by the caller.
   $6763,$03 Point at the object locations.
   $6766,$04 Fetch the number of objects.
+N $676A Search for the next object in this place.
 @ $676A label=PrintObjects_Loop1
   $676A,$02 Find the next object that is in this room.
   $676C,$01 Return when no further object is in this room.
@@ -890,13 +1114,16 @@ D $6763 List the objects in the room passed by the caller.
   $677D,$03 Print the object's name and start a new line.
   $6780,$03 Restore the search and keep listing objects.
   $6783,$04 Keep the room number and continue while objects remain.
-  $6787,$02 List the next object that is in this room.
+  $6787,$02 Jump back to #R$676A until all objects in the table have been
+. checked.
+N $6789 All matching objects have been printed.
   $6789,$01 Return.
 
 c $678A Handler: Display Room
 @ $678A label=Handler_DisplayRoom
 E $678A View the equivalent code in;
 . #LIST
+. { #SHOCK$A33A }
 . { #FOREST$C0F9 }
 . { #HEROES$B46B }
 . { #JEWELS$C26A }
@@ -920,7 +1147,8 @@ D $678A Draw the current location, its exits and the objects that are here.
   $67AD,$03 Check whether this room's picture has been shown.
   $67B0,$01 The picture slot selects its seen flag.
 @ $67B1 label=Handler_DisplayRoom_Loop1
-  $67B1,$04 Jump to #R$67BA when the picture slot is below #N($08), in this flag byte.
+  $67B1,$04 Jump to #R$67BA when the picture slot is below #N($08), in this flag
+. byte.
   $67B5,$03 Move to the next flag byte while the slot is past this one.
   $67B8,$02 Continue at #R$67B1 to test the next picture-seen flag.
 @ $67BA label=Handler_DisplayRoom_Step1
@@ -940,7 +1168,6 @@ D $678A Draw the current location, its exits and the objects that are here.
   $67D7,$01 The picture slot selects its drawing routine.
   $67D8,$03 Call #R$6754 to look up the table entry.
 @ $67DB label=Handler_DisplayRoom_Step3
-@ $67DB nowarn
   $67DB,$05 Draw the picture, then continue with the room text.
 @ $67E0 label=Handler_DisplayRoom_Step4
   $67E0,$03 Call #R$64C1 to move the cursor to the stored row.
@@ -1008,13 +1235,18 @@ N $680C Count the open exits so they can be listed.
   $6885,$06 Print #MESSAGE$6321.
   $688B,$03 Fetch the current room.
   $688E,$03 Call #R$6763 to list the objects here.
+N $6891 The exits and objects for this room are done.
   $6891,$01 Return.
 
 c $6892 Get Room Pointer
 @ $6892 label=GetRoomPointer
 E $6892 View the equivalent code in;
 . #LIST
+. { #SHOCK$A41C }
 . { #FOREST$C201 }
+. { #HEROES$B503 }
+. { #JEWELS$C302 }
+. { #WARLORD$AC9A }
 . LIST#
 D $6892 Find the six-byte exit record for the current room.
   $6892,$03 Fetch the current room.
@@ -1031,35 +1263,43 @@ E $68A4 View the equivalent code in;
 . { #JEWELS$C32A }
 . { #WARLORD$AE36 }
 . LIST#
-D $68A4 Replace a typed phrase with the verb it stands for.
-  $68A4,$01 The search stops one byte past the matching noun.
+D $68A4 Walk this noun's object list from #R$62D2 and call #R$68E0 for each
+. object. Return if one is in the current room or the inventory. Otherwise
+. print "#MESSAGE$6378", the noun name from #R$62D4 and "#MESSAGE$6385",
+. then set the carry flag.
+R $68A4 BC Count left by the caller's object-list search
+R $68A4 O:F Carry flag set when the object is not here
+  $68A4,$01 Adjust the search count for the index sum.
   $68A5,$03 Fetch how many nouns the game knows.
-  $68A8,$05 Select this noun's phrase and the marker that ends it.
-  $68AD,$03 Fetch the noun-phrase table.
+  $68A8,$05 Turn that count into this noun's index and end marker (#N$FE).
+  $68AD,$03 Point at the noun-phrase table (*#R$62D2).
   $68B0,$01 Count the phrase terminator as one more step.
-  $68B1,$02 Continue at #R$68B8 to walk past the phrases already
-. considered.
+  $68B1,$02 Jump to #R$68B8 to skip phrases before this noun.
 @ $68B3 label=Parser_ResolvePhrase_Loop1
   $68B3,$01 Skip a byte inside the phrase just passed.
 @ $68B4 label=Parser_ResolvePhrase_Loop2
-  $68B4,$04 Walk forward until the end-of-phrase marker.
+  $68B4,$04 Keep skipping while this byte is the marker being sought.
 @ $68B8 label=Parser_ResolvePhrase_Step1
   $68B8,$02 Repeat for each phrase before this noun.
-  $68BA,$02 Continue at #R$68BD to read the object this phrase names.
+  $68BA,$02 Jump to #R$68BD to test the first object.
 @ $68BC label=Parser_ResolvePhrase_Loop3
-  $68BC,$01 Step to the next byte of the phrase.
+  $68BC,$01 Step to the next object in the phrase.
 @ $68BD label=Parser_ResolvePhrase_Step2
   $68BD,$01 Read the object this phrase refers to.
-  $68BE,$03 Call #R$68E0 to test whether the object is here.
+  $68BE,$03 Call #R$68E0.
   $68C1,$01 Return when that object is here or being carried.
   $68C2,$01 Step to the next byte of the phrase.
   $68C3,$01 Read the marker that follows the object.
-  $68C4,$04 Jump back to #R$68BC when another object follows in the phrase (#N$FE).
-  $68C8,$06 Print #MESSAGE$6378 on the same line.
-  $68CE,$04 Fetch the noun table.
-  $68D2,$03 Call #R$6754 to look up the table entry.
-  $68D5,$03 Call #R$64DC to print the message.
-  $68D8,$06 Print #MESSAGE$6385.
+  $68C4,$04 Jump back to #R$68BC when another object follows (#N$FE).
+N $68C8 None of this noun's objects is in the room or the inventory.
+N $68C8 Print "#MESSAGE$6378".
+  $68C8,$06 Print "#MESSAGE$6378".
+N $68CE Print the noun name.
+  $68CE,$04 Point #REGix at the noun table (*#R$62D4).
+  $68D2,$03 Call #R$6754.
+  $68D5,$03 Call #R$64DC to print the name.
+N $68D8 Print "#MESSAGE$6385".
+  $68D8,$06 Print "#MESSAGE$6385".
   $68DE,$01 Set the carry flag to reject the command.
   $68DF,$01 Return.
 
@@ -1104,37 +1344,48 @@ E $6900 View the equivalent code in;
 . { #JEWELS$C37F }
 . { #WARLORD$AE80 }
 . LIST#
-D $6900 Report whether the words still to be parsed match the phrase passed by
-. the caller.
-  $6900,$01 Hold the phrase while the command tokens are checked.
-  $6901,$02 Continue at #R$6904 to start at the second word
-. of the command.
+D $6900 Match phrase patterns with multiple wordings against the typed
+. tokens after the verb.
+R $6900 HL Pointer to phrase token data
+R $6900 O:F Z flag set when the input matches any wording
+  $6900,$01 Switch the phrase token pointer to #REGde.
+  $6901,$02 Jump to #R$6904.
 @ $6903 label=Parser_AdvanceToSeparator_Loop1
-  $6903,$01 Step to the next byte of the phrase.
+N $6903 Skip the separator.
+  $6903,$01 Advance to the next byte of the phrase.
 @ $6904 label=Parser_AdvanceToSeparator_Step1
-  $6904,$03 Matching starts at the second word of the command.
-  $6907,$02 Continue at #R$690B to compare that word with the phrase.
+N $6904 Fetch the second user input token (not the verb).
+N $6904 For example; "TAKE" (verb) "KEY" (direct object).
+  $6904,$03 #REGhl=#R$6292.
+  $6907,$02 Jump to #R$690B.
 @ $6909 label=Parser_AdvanceToSeparator_Loop2
-  $6909,$01 The next token of the command has to match too.
-  $690A,$01 Step to the next word of the command.
+N $6909 The tokens matched, so advance both pointers.
+  $6909,$01 Advance the input token pointer.
+  $690A,$01 Advance the phrase token pointer.
 @ $690B label=Parser_AdvanceToSeparator_Step2
+N $690B Keep looping while the tokens match.
   $690B,$01 Read the next byte of the phrase.
-  $690C,$03 Keep matching while this token agrees with the phrase.
-  $690F,$04 This byte is a word token, not the end of the phrase.
-  $6913,$01 Read the token the phrase is waiting for.
-  $6914,$02 Compare with #N$FF.
+  $690C,$03 Jump to #R$6909 while this token agrees with the phrase.
+N $690F The tokens differ. Is this the end of the wording (#N$FE)?
+  $690F,$04 Jump to #R$6917 unless this is the terminator (#N$FE).
+N $6913 The input matched this wording.
+  $6913,$01 Fetch the next input token.
+  $6914,$02 Return with the Z flag set when the command has also ended
+. (#N$FF).
   $6916,$01 Return.
 @ $6917 label=Parser_AdvanceToSeparator_Step3
-  $6917,$04 This byte is not an alternative in the phrase.
-  $691B,$01 Read the token the phrase is waiting for.
-  $691C,$04 Jump back to #R$6903 when the phrase token is not the end marker (#N$FF).
+N $6917 Is this an alternative separator (#N$FD)?
+  $6917,$04 Jump to #R$6921 unless this is the separator (#N$FD).
+  $691B,$01 Fetch the next input token.
+  $691C,$04 Jump back to #R$6903 when more input remains.
   $6920,$01 Return.
 @ $6921 label=Parser_AdvanceToSeparator_Loop3
-  $6921,$0A Match the next alternative in the phrase.
-  $692B,$02 Continue at #R$6903 to try the next wording of
-. the phrase.
+N $6921 This wording failed; skip to the next alternative.
+  $6921,$0A Skip ahead to the next separator or terminator.
+  $692B,$02 Jump back to #R$6903 to try the next wording.
 @ $692D label=Parser_AdvanceToSeparator_Step4
-  $692D,$01 Set flags from #REGa.
+N $692D No wording matched.
+  $692D,$01 Clear the Z flag.
   $692E,$01 Return.
 
 c $692F Parser: Find Phrase
@@ -1147,22 +1398,25 @@ E $692F View the equivalent code in;
 . { #JEWELS$C3AE }
 . { #WARLORD$AEAF }
 . LIST#
-D $692F Set the zero flag when none of the typed words is a known noun.
-  $692F,$03 Check the command's word tokens for a noun.
-  $6932,$02 A command has at most #N$0A words.
-  $6934,$02 No noun has matched yet.
+D $692F Count how many tokens in the user input refer to known nouns.
+R $692F O:A The number of noun references in the user input tokens
+R $692F O:E As #REGa
+R $692F O:F The Z flag is set when no nouns are present in the input
+  $692F,$03 Set a pointer to #R$6291 in #REGhl.
+  $6932,$02 Set a token count in #REGb of #N$0A.
+  $6934,$02 Initialise the noun counter in #REGe to #N$00.
 @ $6936 label=Parser_FindPhrase_Loop1
-  $6936,$01 Read the next word token.
-  $6937,$04 Jump to #R$694C when the command has no more words (#N$FF).
-  $693B,$0B Look that token up in the noun list without losing the token
-. pointer.
-  $6946,$02 Leave the match count alone when this token is not a noun.
-  $6948,$01 Count this token as a noun.
+  $6936,$01 Fetch a user input token.
+  $6937,$04 Jump to #R$694C if the terminator (#N$FF) has been reached.
+  $693B,$0B Search *#R$62D6 for this token among *#R$62C8 nouns.
+  $6946,$02 Jump to #R$6949 if this token is not a noun.
+N $6948 This token names a noun, so increase the counter.
+  $6948,$01 Increment the noun counter by one.
 @ $6949 label=Parser_FindPhrase_Step1
-  $6949,$01 Move on to the next word token.
-  $694A,$02 Repeat for the remaining words of the command.
+  $6949,$01 Move to the next token.
+  $694A,$02 Decrease the token counter and loop back to #R$6936 until done.
 @ $694C label=Parser_FindPhrase_Step2
-  $694C,$02 Set the zero flag when the command named no noun.
+  $694C,$02 Transfer the noun count into #REGa and set flags.
   $694E,$01 Return.
 
 c $694F Get Object Location
@@ -1219,12 +1473,14 @@ E $6972 View the equivalent code in;
 . { #JEWELS$C470 }
 . { #WARLORD$AF70 }
 . LIST#
-D $6972 Return with the carry flag set, after asking the player to rephrase, when a
-. command that takes no object was given one.
-  $6972,$03 Fetch the second word of the command.
-  $6975,$03 Return if the command has no second word (#N$FF).
-  $6978,$03 Call #R$6479 to ask the player to rephrase the command.
-  $697B,$01 Set the carry flag to reject the command.
+D $6972 The opposite of #R$697D; checks that there is no direct object.
+R $6972 O:F The Z flag is set when there is no direct object present
+R $6972 O:F The carry flag is set when there is a second token set
+  $6972,$06 Return if the second token (*#R$6292) is the terminator
+. (#N$FF).
+N $6978 The command must not name an object.
+  $6978,$03 Call #R$6479.
+  $697B,$01 Set the carry flag to indicate the command is malformed.
   $697C,$01 Return.
 
 c $697D Parser: Validate Direct Object
@@ -1237,17 +1493,29 @@ E $697D View the equivalent code in;
 . { #JEWELS$C47B }
 . { #WARLORD$AF7B }
 . LIST#
-D $697D Return with the carry flag set unless the command names one known object.
-  $697D,$03 Fetch the second word of the command.
-  $6980,$04 Jump to #R$6989 when the command has a second word.
-  $6984,$03 Call #R$6480 to say there is nothing there.
-  $6987,$01 Set the carry flag to reject the command.
+D $697D In most adventure games, the structure for a command is "verb +
+. direct object". The verb describes the action, and the direct object is
+. what the action is performed on. For example; "TAKE KEY" uses the verb
+. "TAKE" on the direct object "KEY".
+R $697D O:F The carry flag is set when the command is malformed
+N $697D The first token is the verb, so target the second token for the
+. direct object.
+  $697D,$03 Fetch the #R$6292(second token from the user input) into
+. #REGa.
+  $6980,$04 Jump forward to #R$6989 if the token is anything other than
+. the terminator (#N$FF).
+N $6984 The token was the terminator (#N$FF), so the sentence is
+. malformed.
+N $6984 E.g. They tried "TAKE" but didn't write anything after it.
+  $6984,$03 Call #R$6480.
+  $6987,$01 Set the carry flag to indicate this call was a failure.
   $6988,$01 Return.
+N $6989 Process the direct object.
 @ $6989 label=Parser_ValidateDirectObject_Step1
-  $6989,$03 Call #R$692F to look for a noun.
-  $698C,$01 Return when the command names a noun.
-  $698D,$03 Call #R$6479 to ask the player to rephrase the command.
-  $6990,$01 Set the carry flag to reject the command.
+  $6989,$03 Call #R$692F.
+  $698C,$01 Return if at least one noun was named.
+  $698D,$03 Call #R$6479.
+  $6990,$01 Set the carry flag to indicate the command is malformed.
   $6991,$01 Return.
 
 c $6992 Parser: Match Or Rephrase
@@ -1260,13 +1528,21 @@ E $6992 View the equivalent code in;
 . { #JEWELS$C490 }
 . { #WARLORD$AF90 }
 . LIST#
-D $6992 Return when the next token is absent or the phrase matches. Otherwise print "Please rephrase that.".
-  $6992,$03 Fetch the second word of the command.
-  $6995,$03 Return if the command has no second word (#N$FF).
-  $6998,$03 Call #R$692F to look for a noun.
-  $699B,$01 Return when the command names a noun.
-  $699C,$03 Call #R$6479 to ask the player to rephrase the command.
-  $699F,$01 Set the carry flag to reject the command.
+D $6992 Allow a command with no object. Otherwise require a named noun.
+R $6992 O:F The zero flag is set when there is only a verb present
+R $6992 O:F The zero flag is unset when there is at least one valid noun
+R $6992 O:F The carry flag is set when the command is malformed
+N $6992 The first token is the verb, so target the second token for the
+. direct object.
+  $6992,$03 Fetch the #R$6292(second token from the user input) into
+. #REGa.
+  $6995,$03 Return if there is no second token.
+N $6998 There is a second token; validate that it names a noun.
+  $6998,$03 Call #R$692F.
+  $699B,$01 Return if there is at least one valid noun.
+N $699C Any references are invalid.
+  $699C,$03 Call #R$6479.
+  $699F,$01 Set the carry flag.
   $69A0,$01 Return.
 
 c $69A1 Save Game
@@ -1281,26 +1557,32 @@ E $69A1 View the equivalent code in;
 . LIST#
 D $69A1 Save the game position to tape.
   $69A1,$03 Fetch how many locations the save file stores.
-  $69A4,$03 The save file has no extra locations to copy.
-  $69A7,$0A Prepare to copy each saved location into the tape workspace.
-@ $69B1 label=SaveGame_Loop1
-  $69B1,$05 Step to the next saved-location pointer.
-@ $69B6 label=SaveGame_Step1
-  $69B6,$06 Read the address of this saved location.
-  $69BC,$01 Read the byte that location holds.
-  $69BD,$01 Store it in the tape workspace.
-  $69BE,$02 Repeat for the remaining saved locations.
-@ $69C0 label=SaveGame_Step2
-  $69C0,$06 Print #MESSAGE$63D3.
+  $69A4,$03 Jump to #R$69C0 if there are no saved locations to pack.
+  $69A7,$0A Copy the saved-location count into #REGb and point at the location
+. table and the tape workspace.
+N $69B1 Move on to the next saved-location address.
+@ $69B1 label=SaveGame_Copy
+  $69B1,$05 Move #REGix on to the next saved-location address and #REGde on to
+. the next packed location byte.
+@ $69B6 label=SaveGame_StoreFlag
+  $69B6,$06 Fetch the location address from *#REGix into #REGhl.
+  $69BC,$02 Copy the location byte into the packed save buffer.
+  $69BE,$02 Decrease the pack counter and loop back to #R$69B1 until every
+. location byte is packed.
+N $69C0 Print "#MESSAGE$63D3".
+@ $69C0 label=SaveGame_PrintSaving
+  $69C0,$06 Print "#MESSAGE$63D3".
   $69C6,$03 Call #R$6495 to wait for a keypress.
-  $69C9,$04 The save starts at the object locations.
-  $69CD,$05 Save #N($00B4,$04,$04) bytes from the object locations as a data block.
+  $69C9,$04 Load the starting address into #REGix at the object locations.
+  $69CD,$03 Set the block length in #REGde to #N($00B4,$04,$04) bytes.
+  $69D0,$02 Set #REGa to #N$FF which indicates this is a data block.
   $69D2,$03 Call #SKOOLKID$04C2(SA_BYTES).
-  $69D5,$06 Print #MESSAGE$63F5.
+N $69D5 Print "#MESSAGE$63F5".
+  $69D5,$06 Print "#MESSAGE$63F5".
   $69DB,$01 Return.
 
 c $69DC Load From Tape
-@ $69DC label=LoadFromTape
+@ $69DC label=LoadTape
 E $69DC View the equivalent code in;
 . #LIST
 . { #SHOCK$9EDB }
@@ -1310,25 +1592,32 @@ E $69DC View the equivalent code in;
 . { #WARLORD$A605 }
 . LIST#
 D $69DC Load a game position from tape and redraw the room.
-  $69DC,$06 Print #MESSAGE$63B2.
-  $69E2,$04 The loaded game is written over the object locations.
-  $69E6,$05 Load a data block of #N($00B4,$04,$04) bytes over the object locations.
-  $69EB,$01 Ask the ROM to load the block rather than verify it.
+N $69DC Print "#MESSAGE$63B2".
+  $69DC,$06 Print "#MESSAGE$63B2".
+  $69E2,$04 Load the starting address into #REGix at the object locations.
+  $69E6,$03 Set the block length in #REGde to #N($00B4,$04,$04) bytes.
+  $69E9,$02 Set #REGa to #N$FF which indicates this is a data block.
+  $69EB,$01 Set the carry flag to indicate this is loading.
   $69EC,$03 Call #SKOOLKID$0556(LD_BYTES).
-  $69EF,$02 Restore the saved bytes when the tape block has loaded.
-  $69F1,$06 Print #MESSAGE$63C7.
+  $69EF,$02 Jump to #R$69F8 if the data block loaded.
+N $69F1 Print "#MESSAGE$63C7".
+  $69F1,$06 Print "#MESSAGE$63C7".
   $69F7,$01 Return.
-@ $69F8 label=LoadFromTape_Step1
+N $69F8 There is nothing to unpack when no saved locations were stored.
+@ $69F8 label=LoadTape_Success
   $69F8,$03 Fetch how many locations the save file stores.
-  $69FB,$02 Return if the save file stores no locations.
-  $69FD,$0A Prepare to copy each saved location back into the game.
-@ $6A07 label=LoadFromTape_Loop1
-  $6A07,$05 Step to the next saved-location pointer.
-@ $6A0C label=LoadFromTape_Step2
-  $6A0C,$06 Read the address of this saved location.
-  $6A12,$01 Read the byte saved for that location.
-  $6A13,$01 Write it back into the game.
-  $6A14,$02 Repeat for the remaining saved locations.
+  $69FB,$02 Return if there are no saved locations to unpack.
+  $69FD,$0A Copy the saved-location count into #REGb and point at the location
+. table and the tape workspace.
+N $6A07 The next saved location address.
+@ $6A07 label=LoadTape_WriteLoop
+  $6A07,$05 Move #REGix on to the next saved-location address and #REGde on to
+. the next packed location byte.
+@ $6A0C label=LoadTape_Write
+  $6A0C,$06 Fetch the location address from *#REGix into #REGhl.
+  $6A12,$02 Write that packed location byte back into the game.
+  $6A14,$02 Decrease the unpack counter and loop back to #R$6A07 until every
+. location byte is restored.
   $6A16,$02 Show the room picture even if it has been seen before.
   $6A18,$03 Call #R$678A to display the room.
   $6A1B,$01 Return.
@@ -1345,7 +1634,7 @@ E $6A1C View the equivalent code in;
 D $6A1C Print the ">" prompt.
   $6A1C,$03 The prompt is drawn in the prompt cell.
   $6A1F,$06 Look at the eight rows of the prompt cell.
-@ $6A25 label=PrintInputPrompt_Loop1
+@ $6A25 label=PrintInputPrompt_Loop
   $6A25,$04 Combine those rows to see whether the prompt is already visible.
   $6A29,$03 The prompt cell is empty, so the prompt must be printed.
   $6A2C,$02 Start the prompt on a new line.
@@ -1619,7 +1908,7 @@ t $709B Messaging: "A Glowing Sphere Sitting On A Raised Dish On A G"
   $709B,$3E "#MESSAGE$709B".
 B $70D9,$01 Terminator.
 
-t $70DA Messaging: "A Message On The Computer Screen Reads:- TYPE PA"
+t $70DA Messaging: "A Message On The Computer Screen Reads - TYPE PA"
 @ $70DA label=Messaging_AMessageOnTheComputerScreenReadsTYPEPA
   $70DA,$39 "#MESSAGE$70DA".
 B $7113,$01 Terminator.
@@ -2309,7 +2598,7 @@ t $7DF3 Messaging: "The Creature Stumbles And Loses Its Footing And "
   $7DF3,$52 "#MESSAGE$7DF3".
 B $7E45,$01 Terminator.
 
-t $7E46 Messaging: "The Message Reads:- A Signal Has Been Received O"
+t $7E46 Messaging: "The Message Reads - A Signal Has Been Received O"
 @ $7E46 label=Messaging_TheMessageReadsASignalHasBeenReceivedO
   $7E46,$6F "#MESSAGE$7E46".
 B $7EB5,$01 Terminator.
@@ -2374,7 +2663,7 @@ t $80A2 Messaging: "The Key Is In The 'ON' Position"
   $80A2,$20 "#MESSAGE$80A2".
 B $80C2,$01 Terminator.
 
-t $80C3 Messaging: "The Message:- INCORRECT PASSWORD Appears"
+t $80C3 Messaging: "The Message - INCORRECT PASSWORD Appears"
 @ $80C3 label=Messaging_TheMessageINCORRECTPASSWORDAppears
   $80C3,$2B "#MESSAGE$80C3".
 B $80EE,$01 Terminator.
@@ -2565,47 +2854,64 @@ L $8D16,$02,$0A
 
 c $8D2A Game Loop
 @ $8D2A label=GameLoop
-D $8D2A Run the scenic check, read a command and dispatch it.
-E $8D2A Continue on to #R$8D85.
-  $8D2A,$03 Call #R$6557 to turn-based events.
-  $8D2D,$03 Check the scenic-event rooms.
-  $8D30,$03 There are eight scenic rooms to check.
+E $8D2A View the equivalent code in;
+. #LIST
+. { #FOREST$EB10 }
+. { #HEROES$E9A1 }
+. { #JEWELS$EDC4 }
+. { #WARLORD$E99F }
+. LIST#
+D $8D2A One turn: turn-based threats, scenic checks, a command, then the
+. matching verb.
+N $8D2A Run any turn-based threats.
+  $8D2A,$03 Call #R$6557.
+N $8D2D Walk the scenic-event rooms for the plasma-shell warning.
+  $8D2D,$03 #REGhl=#R$6224.
+  $8D30,$03 #REGbc=#N($0008,$04,$04).
 @ $8D33 label=GameLoop_Loop1
+N $8D33 Test whether the player is standing in this scenic room.
   $8D33,$03 Fetch the current room.
-  $8D36,$02 See whether the player is standing in this scenic room.
-  $8D38,$02 The player is not in this scenic room.
+  $8D36,$02 Search the scenic-event rooms for it.
+  $8D38,$02 Jump to #R$8D55 if the player is not in a scenic room.
   $8D3A,$02 Keep the scenic search while the warning is printed.
-  $8D3C,$06 Print #MESSAGE$7851.
-  $8D42,$02 The plasma shell has one chance in #N$14 of hitting.
-  $8D44,$03 Call #R$65D6 to generate random number.
-  $8D47,$02 The shell hits when that draw comes up zero.
-  $8D49,$06 Print #MESSAGE$788F.
+N $8D3C Print "#MESSAGE$7851".
+  $8D3C,$03 #REGhl=#R$7851.
+  $8D3F,$03 Call #R$64E9.
+N $8D42 Give the plasma shell one chance in #N$14 of hitting.
+  $8D42,$02 #REGa=#N$14.
+  $8D44,$03 Call #R$65D6.
+  $8D47,$02 Jump to #R$8DAD if the shell hits.
+N $8D49 Print "#MESSAGE$788F".
+  $8D49,$03 #REGhl=#R$788F.
+  $8D4C,$03 Call #R$64E9.
   $8D4F,$02 Restore the scenic-room search.
   $8D51,$02 See whether another scenic room is still to be checked.
-  $8D53,$02 Check the next scenic room.
+  $8D53,$02 Jump to #R$8D33 to check the next scenic room.
+N $8D55 Read a command and turn it into vocabulary tokens.
 @ $8D55 label=GameLoop_Step1
-  $8D55,$03 Call #R$6604 to read another command.
+  $8D55,$03 Call #R$6604.
+N $8D58 Continue with Action: Type when the first word is "Y".
   $8D58,$03 Fetch the first word of the command.
   $8D5B,$04 Jump to #R$8D65 when Y (#N$59) was not pressed.
 @ $8D5F label=GameLoop_Step2
-@ $8D5F nowarn
   $8D5F,$06 Continue at #R$8DA8 to run Action: Type.
+N $8D65 Ensure every named object is present here.
 @ $8D65 label=GameLoop_Step3
   $8D65,$01 Start the synonym scan with a clear result.
-  $8D66,$03 Check the command's word tokens for a noun.
+  $8D66,$03 Point at the command's word tokens.
   $8D69,$02 A command has at most #N$0A word tokens.
 @ $8D6B label=GameLoop_Loop2
   $8D6B,$01 Read the next word token.
   $8D6C,$04 Jump to #R$8D85 when the command has no more words (#N$FF).
   $8D70,$0A Look that token up in the noun list without losing the token
 . pointer.
-  $8D7A,$02 This token is not a noun, so try the next word.
-  $8D7C,$03 Call #R$68A4 to resolve phrase.
+  $8D7A,$02 Jump to #R$8D81 if this token is not a noun.
+  $8D7C,$03 Call #R$68A4.
   $8D7F,$02 Jump back to #R$8D2A when the carry flag is set.
 @ $8D81 label=GameLoop_Step4
   $8D81,$01 Bring the token pointer back.
   $8D82,$01 Move on to the next word token.
-  $8D83,$02 Repeat for the remaining words of the command.
+  $8D83,$02 Jump to #R$8D6B for the remaining words of the command.
 
 c $8D85 Handler: Match Verb
 @ $8D85 label=HandlerMatchVerb
@@ -2616,21 +2922,27 @@ E $8D85 View the equivalent code in;
 . { #JEWELS$C556 }
 . { #WARLORD$B05E }
 . LIST#
-D $8D85 Find the typed verb and jump to its action routine.
+D $8D85 Match the first word token against the verb table. If a match is
+. found, jump to its handler. If not, print "I Don't Understand" and return
+. to the game loop.
+N $8D85 Set up to search the verb word tokens for the first word token.
   $8D85,$03 Point at the list of verb word numbers.
-  $8D88,$04 Fetch how many verbs the game knows.
-  $8D8C,$03 Fetch the first word of the command.
-  $8D8F,$02 Find the typed verb in that list.
-  $8D91,$02 The typed word is one of those verbs.
-  $8D93,$06 Print #MESSAGE$62EC.
+  $8D88,$04 Load *#R$62DA into #REGbc for the search.
+  $8D8C,$03 Fetch *#R$6291 from the user input.
+  $8D8F,$02 Search the verb word tokens for a matching token.
+  $8D91,$02 Jump to #R$8D9B if a match was found.
+N $8D93 The token doesn't match any verb.
+N $8D93 Print "#MESSAGE$62EC".
+  $8D93,$03 #REGhl=#R$62EC.
+  $8D96,$03 Call #R$64E9.
   $8D99,$02 Jump to #R$8D2A to read the next command.
 @ $8D9B label=HandlerMatchVerb_Step1
+N $8D9B A verb was matched. Calculate its index and jump to its handler.
   $8D9B,$03 Fetch how many verbs the game knows.
-  $8D9E,$03 The matching verb selects its handler.
-  $8DA1,$04 Fetch the verb handlers.
-  $8DA5,$03 Call #R$6754 to look up the table entry.
+  $8D9E,$03 The matching verb selects its handler index.
+  $8DA1,$04 Point #REGix at *#R$62D8.
+  $8DA5,$03 Call #R$6754.
 @ $8DA8 label=HandlerMatchVerb_Step2
-@ $8DA8 nowarn
   $8DA8,$05 Run the verb, then return to the game loop.
 
 c $8DAD Handler: Plasma Shell
@@ -2650,8 +2962,10 @@ E $8DB3 View the equivalent code in;
 . { #JEWELS$EDD7 }
 . { #WARLORD$E9B2 }
 . LIST#
-D $8DB3 Announce that the player is dead.
-  $8DB3,$06 Print #MESSAGE$638C.
+D $8DB3 Tell the player they are dead and ask whether to play again.
+N $8DB3 Print "#MESSAGE$638C".
+  $8DB3,$03 #REGhl=#R$638C.
+  $8DB6,$03 Call #R$64E9.
 
 c $8DB9 Handler: Ask To Play Again
 @ $8DB9 label=HandlerAskToPlayAgain
@@ -2659,13 +2973,18 @@ E $8DB9 View the equivalent code in;
 . #LIST
 . { #HEROES$E9BB }
 . LIST#
-D $8DB9 Read Y or N, then reset the machine or start another game.
-  $8DB9,$06 Print #MESSAGE$639A.
+D $8DB9 Ask whether to play again; reset the machine or start another game.
+N $8DB9 Print "#MESSAGE$639A".
+  $8DB9,$03 #REGhl=#R$639A.
+  $8DBC,$03 Call #R$64E9.
 @ $8DBF label=HandlerAskToPlayAgain_Loop1
-  $8DBF,$03 Call #R$6495 to wait for a keypress.
-  $8DC2,$05 Reset the computer when N (#N$4E) was pressed.
-  $8DC7,$05 Jump back to #R$61A8 when Y (#N$59) was pressed.
-  $8DCC,$02 Continue at #R$8DBF until the player presses Y or N.
+  $8DBF,$03 Call #R$6495.
+N $8DC2 The player is done with the game, so reset back to BASIC.
+  $8DC2,$05 Jump to #SKOOLKID$0000(START) if the player pressed "N".
+N $8DC7 The player wants another go...
+  $8DC7,$05 Jump back to #R$61A8 if the player pressed "Y".
+N $8DCC Just loop round for any other input.
+  $8DCC,$02 Jump to #R$8DBF.
 
 c $8DCE Game Complete
 @ $8DCE label=GameComplete
@@ -2675,32 +2994,41 @@ E $8DCE View the equivalent code in;
 . { #HEROES$E9D3 }
 . { #JEWELS$EDF2 }
 . LIST#
-D $8DCE Announce that the ship is clear and offer another game.
-  $8DCE,$03 Call #R$64A5 to clear the screen.
-  $8DD1,$03 Call #R$64C1 to move the cursor to the stored row.
-  $8DD4,$06 Print "#MESSAGE$8333" and start a new line.
-  $8DDA,$02 Jump to #R$8DB9 to ask to play again.
+D $8DCE Show the winning text, then ask whether to play again.
+N $8DCE Clear the screen for the winning text.
+  $8DCE,$03 Call #R$64A5.
+  $8DD1,$03 Call #R$64C1.
+N $8DD4 Print "#MESSAGE$8333".
+  $8DD4,$03 #REGhl=#R$8333.
+  $8DD7,$03 Call #R$64E9.
+  $8DDA,$02 Jump to #R$8DB9.
 
 c $8DDC Handler: Android Attack
 @ $8DDC label=HandlerAndroidAttack
 D $8DDC Fire the android guard when his event bit is set.
   $8DDC,$05 The android's attack is over for this turn.
   $8DE1,$06 Return when #MESSAGE$6B2A (#N$12) is not here or being carried.
-  $8DE7,$05 Print "#MESSAGE$8417" and start a new line.
+N $8DE7 Print "#MESSAGE$8417".
+  $8DE7,$03 #REGhl=#R$8417.
+  $8DEA,$02 Jump to #R$8E0F.
 
 c $8DEC Handler: Slug Attack
 @ $8DEC label=HandlerSlugAttack
 D $8DEC Let the slug attack when the player is still in its room.
   $8DEC,$05 The slug's attack is over for this turn.
   $8DF1,$06 Return when #MESSAGE$6DBF (#N$24) is not here or being carried.
-  $8DF7,$05 Print "#MESSAGE$8440" and start a new line.
+N $8DF7 Print "#MESSAGE$8440".
+  $8DF7,$03 #REGhl=#R$8440.
+  $8DFA,$02 Jump to #R$8E0F.
 
 c $8DFC Handler: Second Android
 @ $8DFC label=HandlerSecondAndroid
 D $8DFC Fire the second android guard.
   $8DFC,$05 The second android's attack is over for this turn.
   $8E01,$06 Return when #MESSAGE$6E6D (#N$27) is not here or being carried.
-  $8E07,$05 Print "#MESSAGE$8417" and start a new line.
+N $8E07 Print "#MESSAGE$8417".
+  $8E07,$03 #REGhl=#R$8417.
+  $8E0A,$02 Jump to #R$8E0F.
 
 c $8E0C Handler: Complex Explodes
 @ $8E0C label=HandlerComplexExplodes
@@ -2724,6 +3052,14 @@ D $8E0F Print the message in #REGhl, discard the return addresses and
 
 c $8E18 Move Player To Room
 @ $8E18 label=MovePlayerToRoom
+E $8E18 View the equivalent code in;
+. #LIST
+. { #SHOCK$ACBD }
+. { #FOREST$C42F }
+. { #HEROES$B714 }
+. { #JEWELS$C520 }
+. { #WARLORD$B01F }
+. LIST#
 D $8E18 Store the given room as the current room and update the exit record.
   $8E18,$01 Remember the room being entered.
   $8E19,$03 Fetch the current room.
@@ -2756,39 +3092,52 @@ D $8E18 Store the given room as the current room and update the exit record.
   $8E5F,$07 The second android will attack in #N$06 turns.
 @ $8E66 label=MovePlayerToRoom_Step5
   $8E66,$03 Fetch the current room.
-  $8E69,$04 The tractor beam is only dealt with on #MESSAGE$71C4.
+  $8E69,$04 The tractor beam is only dealt with on #ROOM$05.
   $8E6D,$03 Check the turn-based event flags.
   $8E70,$04 The explosion countdown is not armed.
   $8E74,$02 Leave the explosion countdown unarmed.
   $8E76,$06 Move #MESSAGE$6F31 (#N$30) to nowhere (#N$00).
-  $8E7C,$04 Close the south exit of #MESSAGE$71C4.
-  $8E80,$06 Move #MESSAGE$7141 (#N$40) to #MESSAGE$719C (#N$04).
+N $8E7C This action changes the map:
+  $8E7C,$04 Close the south exit of #ROOM$05.
+  $8E80,$06 Move #MESSAGE$7141 (#N$40) to room #N$04: "#ROOM$04".
   $8E86,$06 Print #MESSAGE$83C2.
 @ $8E8C label=MovePlayerToRoom_Step6
   $8E8C,$01 Return.
 
 c $8E8D Action: Help
 @ $8E8D label=ActionHelp
-D $8E8D Print the hint for this room, or a general hint.
-  $8E8D,$04 Return if the command names an object: the player is told to rephrase it.
+E $8E8D View the equivalent code in;
+. #LIST
+. { #FOREST$EDC3 }
+. { #HEROES$F715 }
+. { #JEWELS$F09C }
+. LIST#
+D $8E8D Offer a hint for this room, or a general hint.
+  $8E8D,$04 Return if the command names an object: the player is told to
+. rephrase it.
   $8E91,$03 Fetch the current room.
 @ $8E94 label=ActionHelp_Step1
-@ $8E94 nowarn
   $8E94,$03 Point at the rooms that have a hint of their own.
   $8E97,$03 #N($0008,$04,$04) rooms have a hint of their own.
   $8E9A,$02 Find this room among the rooms that have a hint.
 @ $8E9C label=ActionHelp_Loop1
   $8E9C,$02 This room has no hint of its own.
-  $8E9E,$05 Print "#MESSAGE$7794" and start a new line.
+N $8E9E Print "#MESSAGE$7794".
+  $8E9E,$03 #REGhl=#R$7794.
+  $8EA1,$02 Jump to #R$8EA6.
 @ $8EA3 label=ActionHelp_Loop2
-  $8EA3,$06 Print "#MESSAGE$77C2" and start a new line.
+N $8EA3 Print "#MESSAGE$77C2".
+  $8EA3,$03 #REGhl=#R$77C2.
+  $8EA6,$03 Call #R$64E9.
 @ $8EA6 label=ActionHelp_Loop3
   $8EA9,$01 Return.
 @ $8EAA label=ActionHelp_Step2
-  $8EAA,$04 The special hint applies only in #MESSAGE$7336.
+  $8EAA,$04 The special hint applies only in #ROOM$19.
   $8EAE,$07 Jump back to #R$8E9C when #MESSAGE$6ACF (#N$0B) is not here or
 . being carried.
-  $8EB5,$05 Print "#MESSAGE$7765" and start a new line.
+N $8EB5 Print "#MESSAGE$7765".
+  $8EB5,$03 #REGhl=#R$7765.
+  $8EB8,$02 Jump to #R$8EA6.
 @ $8EBA label=ActionHelp_Step3
   $8EBA,$02 Continue at #R$8EA3 to print the general hint.
 
@@ -2809,13 +3158,16 @@ E $8EC4 View the equivalent code in;
 . { #JEWELS$F12E }
 . { #WARLORD$F824 }
 . LIST#
-D $8EC4 List the objects being carried.
-  $8EC4,$04 Return if the command names an object: the player is told to rephrase it.
-  $8EC8,$03 Call #R$64A5 to clear the screen.
-  $8ECB,$03 Call #R$64C1 to move the cursor to the stored row.
-  $8ECE,$06 Print #MESSAGE$77EF.
-  $8ED4,$02 Carried objects are stored in location #N$01.
-  $8ED6,$03 Call #R$6763 to list the objects here.
+D $8EC4 List everything the player is carrying.
+  $8EC4,$04 Call #R$6972; return if the command names an object.
+N $8EC8 Clear the screen and display the player's inventory.
+  $8EC8,$03 Call #R$64A5.
+  $8ECB,$03 Call #R$64C1.
+N $8ECE Print "#MESSAGE$77EF".
+  $8ECE,$03 #REGhl=#R$77EF.
+  $8ED1,$03 Call #R$64E9.
+  $8ED4,$02 #REGa=#N$01 (the player's inventory).
+  $8ED6,$03 Call #R$6763.
   $8ED9,$01 Return.
 
 c $8EDA Action: Look
@@ -2827,39 +3179,81 @@ E $8EDA View the equivalent code in;
 . { #JEWELS$F14B }
 . { #WARLORD$F841 }
 . LIST#
-D $8EDA Redraw the current location.
-  $8EDA,$04 Return if the command names an object: the player is told to rephrase it.
-  $8EDE,$02 Redraw the room and show its picture again.
-  $8EE0,$03 Call #R$678A to display the room.
+D $8EDA Describe the room again, including any room image.
+  $8EDA,$04 Call #R$6972; return if the command names an object.
+N $8EDE Force any room images to be re-displayed.
+  $8EDE,$02 #REGe=#N$01.
+  $8EE0,$03 Call #R$678A.
   $8EE3,$01 Return.
 
 c $8EE4 Action: North
 @ $8EE4 label=Action_North
-D $8EE4 Try to leave by the north exit.
-  $8EE4,$04 Try to leave to the north.
+E $8EE4 View the equivalent code in;
+. #LIST
+. { #FOREST$EE0F }
+. { #HEROES$F7E4 }
+. { #JEWELS$F155 }
+. { #WARLORD$F8C9 }
+. LIST#
+D $8EE4 Try to leave to the north.
+  $8EE4,$02 Set #REGc to "NORTH" (#N$00).
+  $8EE6,$02 Jump to #R$8EFA.
 
 c $8EE8 Action: South
 @ $8EE8 label=Action_South
-D $8EE8 Try to leave by the south exit.
-  $8EE8,$04 Try to leave to the south.
+E $8EE8 View the equivalent code in;
+. #LIST
+. { #FOREST$EE13 }
+. { #HEROES$F7E8 }
+. { #JEWELS$F159 }
+. { #WARLORD$F8CD }
+. LIST#
+D $8EE8 Try to leave to the south.
+  $8EE8,$02 Set #REGc to "SOUTH" (#N$01).
+  $8EEA,$02 Jump to #R$8EFA.
 
 c $8EEC Action: East
 @ $8EEC label=Action_East
-D $8EEC Try to leave by the east exit.
-  $8EEC,$04 Try to leave to the east.
+E $8EEC View the equivalent code in;
+. #LIST
+. { #FOREST$EE17 }
+. { #HEROES$F7EC }
+. { #JEWELS$F15D }
+. { #WARLORD$F8D1 }
+. LIST#
+D $8EEC Try to leave to the east.
+  $8EEC,$02 Set #REGc to "EAST" (#N$02).
+  $8EEE,$02 Jump to #R$8EFA.
 
 c $8EF0 Action: West
 @ $8EF0 label=Action_West
-D $8EF0 Try to leave by the west exit.
-  $8EF0,$04 Try to leave to the west.
+E $8EF0 View the equivalent code in;
+. #LIST
+. { #FOREST$EE1B }
+. { #HEROES$F7F0 }
+. { #JEWELS$F161 }
+. { #WARLORD$F8D5 }
+. LIST#
+D $8EF0 Try to leave to the west.
+  $8EF0,$02 Set #REGc to "WEST" (#N$03).
+  $8EF2,$02 Jump to #R$8EFA.
 
 c $8EF4 Action: Up
 @ $8EF4 label=Action_Up
-D $8EF4 Try to leave by the up exit.
-  $8EF4,$04 Try to leave to the up.
+E $8EF4 View the equivalent code in;
+. #LIST
+. { #FOREST$EE1F }
+. { #HEROES$F7F4 }
+. { #JEWELS$F165 }
+. { #WARLORD$F8D9 }
+. LIST#
+D $8EF4 Try to leave upwards.
+  $8EF4,$02 Set #REGc to "UP" (#N$04).
+  $8EF6,$02 Jump to #R$8EFA.
 
 c $8EF8 Action: Down
 @ $8EF8 label=ActionDown
+E $8EF8 Continue on to #R$8EFA.
 E $8EF8 View the equivalent code in;
 . #LIST
 . { #FOREST$EE23 }
@@ -2867,54 +3261,94 @@ E $8EF8 View the equivalent code in;
 . { #JEWELS$F169 }
 . { #WARLORD$F8DD }
 . LIST#
-D $8EF8 Move in the given direction, or report that there is no exit.
-  $8EF8,$02 Select the down exit.
+D $8EF8 Try to leave downwards.
+  $8EF8,$02 Set #REGc to "DOWN" (#N$05).
+N $8EFA The movement commands share this common exit handler.
 @ $8EFA label=ActionDown_Step1
-  $8EFA,$04 Return if the command names an object: the player is told to rephrase it.
+  $8EFA,$04 Call #R$6972; return if the command names an object.
   $8EFE,$07 Read the exit byte for the chosen direction.
-  $8F05,$03 That direction is closed when the exit byte is zero.
-  $8F08,$03 Call #R$8E18 to move the player.
+  $8F05,$03 Jump to #R$8F0C if that direction is closed.
+  $8F08,$03 Call #R$8E18.
   $8F0B,$01 Return.
+N $8F0C Print "#MESSAGE$7831".
 @ $8F0C label=ActionDown_Step2
-  $8F0C,$06 Print #MESSAGE$7831.
+  $8F0C,$03 #REGhl=#R$7831.
+  $8F0F,$03 Call #R$64E9.
   $8F12,$01 Return.
 
 c $8F13 Action: Examine
 @ $8F13 label=ActionExamine
-D $8F13 Describe the object named in the command.
-  $8F13,$08 Return if the command does not name an object. Jump to #R$8F27 when exactly
-. one noun was named.
-  $8F1B,$05 Print "#MESSAGE$78CA" and start a new line.
+E $8F13 View the equivalent code in;
+. #LIST
+. { #FOREST$EE3D }
+. { #HEROES$F785 }
+. { #JEWELS$F19D }
+. { #WARLORD$F853 }
+. LIST#
+D $8F13 Describe the single object the player named.
+  $8F13,$08 Return if the command does not name an object. Jump to #R$8F27
+. when exactly one noun was named.
+N $8F1B Print "#MESSAGE$78CA".
+  $8F1B,$03 #REGhl=#R$78CA.
+  $8F1E,$02 Jump to #R$8F23.
 @ $8F20 label=ActionExamine_Loop1
-  $8F20,$06 Print "#MESSAGE$78BC" and start a new line.
+N $8F20 Nothing else is worth a closer look.
+N $8F20 Print "#MESSAGE$78BC".
+  $8F20,$03 #REGhl=#R$78BC.
+  $8F23,$03 Call #R$64E9.
 @ $8F23 label=ActionExamine_Loop2
   $8F26,$01 Return.
+N $8F27 Was the player trying to examine the detonator?
 @ $8F27 label=ActionExamine_Step1
   $8F27,$08 Jump to #R$8F34 unless the command matches the phrase at #R$8940.
-  $8F2F,$05 Print "#MESSAGE$78F5" and start a new line.
+N $8F2F Print "#MESSAGE$78F5".
+  $8F2F,$03 #REGhl=#R$78F5.
+  $8F32,$02 Jump to #R$8F23.
+N $8F34 Was the player trying to examine the poison fungus?
 @ $8F34 label=ActionExamine_Step2
   $8F34,$08 Jump to #R$8F41 unless the command matches the phrase at #R$8942.
-  $8F3C,$05 Print "#MESSAGE$7948" and start a new line.
+N $8F3C Print "#MESSAGE$7948".
+  $8F3C,$03 #REGhl=#R$7948.
+  $8F3F,$02 Jump to #R$8F23.
+N $8F41 Was the player trying to examine the explosives?
 @ $8F41 label=ActionExamine_Step3
   $8F41,$08 Jump to #R$8F4E unless the command matches the phrase at #R$8947.
-  $8F49,$05 Print "#MESSAGE$7975" and start a new line.
+N $8F49 Print "#MESSAGE$7975".
+  $8F49,$03 #REGhl=#R$7975.
+  $8F4C,$02 Jump to #R$8F23.
+N $8F4E Was the player trying to examine the shattered rocks?
 @ $8F4E label=ActionExamine_Step4
   $8F4E,$0F Jump to #R$8F62 unless the command matches the phrase at #R$8949
-. (#MESSAGE$6FF9 (#N$38)).
-  $8F5D,$05 Print "#MESSAGE$79A3" and start a new line.
+. (#ITEM$38).
+N $8F5D Print "#MESSAGE$79A3".
+  $8F5D,$03 #REGhl=#R$79A3.
+  $8F60,$02 Jump to #R$8F23.
+N $8F62 Was the player trying to examine the pile of rocks?
 @ $8F62 label=ActionExamine_Step5
   $8F62,$0F Jump to #R$8F76 unless the command matches the phrase at #R$8949
-. (#MESSAGE$6C3E (#N$19)).
-  $8F71,$05 Print "#MESSAGE$7A42" and start a new line.
+. (#ITEM$19).
+N $8F71 Print "#MESSAGE$7A42".
+  $8F71,$03 #REGhl=#R$7A42.
+  $8F74,$02 Jump to #R$8F23.
+N $8F76 Was the player trying to examine the alien commander?
 @ $8F76 label=ActionExamine_Step6
   $8F76,$08 Jump to #R$8F83 unless the command matches the phrase at #R$894B.
-  $8F7E,$05 Print "#MESSAGE$79D1" and start a new line.
+N $8F7E Print "#MESSAGE$79D1".
+  $8F7E,$03 #REGhl=#R$79D1.
+  $8F81,$02 Jump to #R$8F23.
+N $8F83 Was the player trying to examine the writing?
 @ $8F83 label=ActionExamine_Step7
   $8F83,$08 Jump to #R$8F90 unless the command matches the phrase at #R$8957.
-  $8F8B,$05 Print "#MESSAGE$79F0" and start a new line.
+N $8F8B Print "#MESSAGE$79F0".
+  $8F8B,$03 #REGhl=#R$79F0.
+  $8F8E,$02 Jump to #R$8F23.
+N $8F90 Was the player trying to examine the crystal rod?
 @ $8F90 label=ActionExamine_Step8
   $8F90,$08 Jump to #R$8F9E unless the command matches the phrase at #R$896E.
-  $8F98,$06 Print "#MESSAGE$848D" and start a new line.
+N $8F98 Print "#MESSAGE$848D".
+  $8F98,$03 #REGhl=#R$848D.
+  $8F9B,$03 Jump to #R$8F23.
+N $8F9E Nothing else is valid.
 @ $8F9E label=ActionExamine_Step9
   $8F9E,$03 Continue at #R$8F20 to say there is nothing worth a closer look.
 
@@ -2923,10 +3357,13 @@ c $8FA1 Action: Load
 E $8FA1 View the equivalent code in;
 . #LIST
 . { #FOREST$EE81 }
+. { #HEROES$F7AC }
 . { #JEWELS$F236 }
+. { #WARLORD$F892 }
 . LIST#
 D $8FA1 Load a saved position from tape.
-  $8FA1,$04 Return if the command names an object: the player is told to rephrase it.
+  $8FA1,$04 Return if the command names an object: the player is told to
+. rephrase it.
   $8FA5,$03 Call #R$69DC to load the game.
   $8FA8,$01 Return.
 
@@ -2940,7 +3377,8 @@ E $8FA9 View the equivalent code in;
 . { #WARLORD$F8A1 }
 . LIST#
 D $8FA9 Save the current position to tape.
-  $8FA9,$04 Return if the command names an object: the player is told to rephrase it.
+  $8FA9,$04 Return if the command names an object: the player is told to
+. rephrase it.
   $8FAD,$03 Call #R$69A1 to save the game.
   $8FB0,$01 Return.
 
@@ -2954,7 +3392,8 @@ E $8FB1 View the equivalent code in;
 . { #WARLORD$F8A9 }
 . LIST#
 D $8FB1 Ask whether to save, then offer another game.
-  $8FB1,$04 Return if the command names an object: the player is told to rephrase it.
+  $8FB1,$04 Return if the command names an object: the player is told to
+. rephrase it.
   $8FB5,$06 Print #MESSAGE$6410.
 @ $8FBB label=ActionQuit_Loop1
   $8FBB,$03 Call #R$6495 to wait for a keypress.
@@ -2967,230 +3406,374 @@ D $8FB1 Ask whether to save, then offer another game.
 
 c $8FCD Action: Take
 @ $8FCD label=ActionTake
-D $8FCD Parse the named object and take it when the rules allow.
+E $8FCD View the equivalent code in;
+. #LIST
+. { #FOREST$EEAE }
+. { #HEROES$F80D }
+. { #JEWELS$F263 }
+. { #WARLORD$F956 }
+. LIST#
+D $8FCD Pick up the single object the player named.
   $8FCD,$08 Jump to #R$9029 when the command matches the phrase at #R$8B58.
-  $8FD5,$08 Return if the command does not name an object. Jump to #R$9029 when exactly
-. one noun was named.
-  $8FDD,$05 Print "#MESSAGE$6445" and start a new line.
-@ $8FE2 label=ActionTake_Step1
-  $8FE2,$03 Call #R$6958 to test whether the object is carried.
-  $8FE5,$02 The named object is not being carried yet.
-  $8FE7,$01 Drop the return address; the failure message replaces it.
-  $8FE8,$06 Print #MESSAGE$7A1F on the same line.
-@ $8FEE label=ActionTake_Step2
-@ $8FEE nowarn
-  $8FEE,$03 The objects called "them" are listed at #R$9010.
-  $8FF1,$04 See whether this object is spoken of as "them".
-  $8FF5,$02 Search the list of objects that are called "them".
-  $8FF7,$02 A plural object uses the wording for "them".
-  $8FF9,$05 Print "#MESSAGE$7A38" and start a new line.
-@ $8FFE label=ActionTake_Step3
-  $8FFE,$05 Print "#MESSAGE$7A3C" and start a new line.
-@ $9003 label=ActionTake_Step4
-  $9003,$03 Fetch how many objects are being carried.
-  $9006,$03 Five objects is the most the player can carry.
-  $9009,$01 Return so the object can be taken when five are not already carried.
-  $900A,$01 Drop the return address; the player is already fully laden.
-  $900B,$05 Print "#MESSAGE$7802" and start a new line.
+  $8FD5,$08 Return if the command does not name an object. Jump to #R$9029 when
+. exactly one noun was named.
+N $8FDD Print "#MESSAGE$6445".
+  $8FDD,$03 #REGhl=#R$6445.
+  $8FE0,$02 Jump to #R$9025.
 
-b $9010 Table: Plural Objects
-@ $9010 label=Table_PluralObjects
-D $9010 Object numbers that are referred to as "them".
-B $9010,$01 Object #N(#PEEK(#PC)).
-L $9010,$01,$04
+c $8FE2 Take: Is Player Holding Item
+@ $8FE2 label=Take_IsPlayerHoldingItem
+E $8FE2 View the equivalent code in;
+. #LIST
+. { #FOREST$EEBA }
+. { #JEWELS$F26A }
+. LIST#
+D $8FE2 Refuse the take when the object is already carried or the inventory is
+. full; otherwise return so the caller can take it.
+R $8FE2 A Object ID
+R $8FE2 O:B The object ID (when returning so the take may proceed)
+  $8FE2,$03 Call #R$6958.
+N $8FE5 Refuse when that object is already being carried.
+  $8FE5,$02 Jump to #R$9003 if the item is not being held.
+  $8FE7,$01 Restore #REGhl from the stack.
+N $8FE8 Finish the sentence "You're already carrying" with "it" or "them".
+N $8FE8 Print "#MESSAGE$7A1F".
+  $8FE8,$03 #REGhl=#R$7A1F.
+  $8FEB,$03 Call #R$64DC.
+@ $8FEE label=Take_AlreadyCarrying_CheckPlural
+  $8FEE,$03 #REGhl=#R$9010.
+  $8FF1,$01 Copy the object ID back into #REGa.
+  $8FF2,$03 #REGbc=#N($0004,$04,$04).
+  $8FF5,$02 Search #R$9010 for the item ID among the plural items.
+  $8FF7,$02 Jump to #R$8FFE if the item is plural.
+N $8FF9 Print "#MESSAGE$7A38".
+  $8FF9,$03 #REGhl=#R$7A38.
+  $8FFC,$02 Jump to #R$9025.
+N $8FFE Print "#MESSAGE$7A3C".
+@ $8FFE label=Take_AlreadyCarrying_Them
+  $8FFE,$03 #REGhl=#R$7A3C.
+  $9001,$02 Jump to #R$9025.
+N $9003 Refuse the object when the player is already holding #N$05 things.
+@ $9003 label=Take_InventoryFull
+  $9003,$05 Compare *#R$622C with #N$05.
+  $9008,$01 #REGb=#REGe.
+  $9009,$01 Return if *#R$622C is not equal to #N$05.
+  $900A,$01 Restore #REGhl from the stack.
+N $900B Print "#MESSAGE$7802".
+  $900B,$03 #REGhl=#R$7802.
+  $900E,$02 Jump to #R$9025.
 
-c $9014 Handler: Pick Up Object
-@ $9014 label=HandlerPickUpObject
-D $9014 Mark the given object as carried and print the result.
+b $9010 Table: Items Which Are Plural
+@ $9010 label=Table_ItemsWhichArePlural
+E $9010 View the equivalent code in;
+. #LIST
+. { #FOREST$EEEB }
+. { #JEWELS$F29B }
+. LIST#
+D $9010 All the items in the game which are plural; used by #R$8FEE.
+B $9010,$01 Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
+L $9010,$01,$04,$02
+
+c $9014 Take Item
+@ $9014 label=TakeItem
+E $9014 View the equivalent code in;
+. #LIST
+. { #FOREST$EEED }
+. { #JEWELS$F29C }
+. LIST#
+D $9014 Places the item in the player's inventory and acknowledges success.
   $9014,$05 Call #R$65E6 to mark the object as carried.
-  $9019,$04 The player is carrying one more object.
-  $901D,$05 Print "#MESSAGE$6466" and start a new line.
-@ $9022 label=HandlerPickUpObject_Loop1
-  $9022,$06 Print "#MESSAGE$645B" and start a new line.
-@ $9025 label=HandlerPickUpObject_Loop2
+  $9019,$04 Increment *#R$622C by one.
+N $901D Print "#MESSAGE$6466".
+  $901D,$03 #REGhl=#R$6466.
+  $9020,$02 Jump to #R$9025.
+N $9022 Print "#MESSAGE$645B".
+@ $9022 label=Take_YouCant
+  $9022,$03 #REGhl=#R$645B.
+@ $9025 label=TakeItem_PrintAndReturn
+  $9025,$03 Call #R$64E9.
   $9028,$01 Return.
-@ $9029 label=HandlerPickUpObject_Step1
-  $9029,$06 Point at the phrase at #R$8959 and call #R$6900 to match it against the command.
-  $902F,$02 Jump to #R$9039 if it doesn't match.
-  $9031,$08 Take #MESSAGE$6A38 (#N$00).
-@ $9039 label=HandlerPickUpObject_Step2
-  $9039,$06 Point at the phrase at #R$8969 and call #R$6900 to match it against the command.
-  $903F,$02 Jump to #R$9049 if it doesn't match.
-  $9041,$08 Take #MESSAGE$6A41 (#N$01).
-@ $9049 label=HandlerPickUpObject_Step3
-  $9049,$06 Point at the phrase at #R$8960 and call #R$6900 to match it against the command.
-  $904F,$02 Jump to #R$9059 if it doesn't match.
-  $9051,$08 Take #MESSAGE$6A51 (#N$02).
-@ $9059 label=HandlerPickUpObject_Step4
-  $9059,$06 Point at the phrase at #R$896E and call #R$6900 to match it against the command.
-  $905F,$02 Jump to #R$9069 if it doesn't match.
-  $9061,$08 Take #MESSAGE$6A59 (#N$03).
-@ $9069 label=HandlerPickUpObject_Step5
-  $9069,$06 Point at the phrase at #R$8940 and call #R$6900 to match it against the command.
-  $906F,$02 Jump to #R$9079 if it doesn't match.
-  $9071,$08 Take #MESSAGE$6A68 (#N$04).
-@ $9079 label=HandlerPickUpObject_Step6
-  $9079,$06 Point at the phrase at #R$8964 and call #R$6900 to match it against the command.
-  $907F,$02 Jump to #R$9089 if it doesn't match.
-  $9081,$08 Take #MESSAGE$6A75 (#N$05).
-@ $9089 label=HandlerPickUpObject_Step7
+
+c $9029 Take: Knife
+@ $9029 label=Validate_Take_Knife
+D $9029 Was the player trying to take the knife?
+  $9029,$06 Call #R$6900 with #R$8959.
+  $902F,$02 Jump to #R$9039 if the token isn't for the knife.
+  $9031,$05 Call #R$8FE2 with item #N$00: #ITEM$00.
+  $9036,$03 Jump to #R$9014.
+
+c $9039 Take: Laser Pistol
+@ $9039 label=Validate_Take_LaserPistol
+D $9039 Was the player trying to take the laser pistol?
+  $9039,$06 Call #R$6900 with #R$8969.
+  $903F,$02 Jump to #R$9049 if the token isn't for the laser pistol.
+  $9041,$05 Call #R$8FE2 with item #N$01: #ITEM$01.
+  $9046,$03 Jump to #R$9014.
+
+c $9049 Take: Coin
+@ $9049 label=Validate_Take_Coin
+D $9049 Was the player trying to take the coin?
+  $9049,$06 Call #R$6900 with #R$8960.
+  $904F,$02 Jump to #R$9059 if the token isn't for the coin.
+  $9051,$05 Call #R$8FE2 with item #N$02: #ITEM$02.
+  $9056,$03 Jump to #R$9014.
+
+c $9059 Take: Crystal Rod
+@ $9059 label=Validate_Take_CrystalRod
+D $9059 Was the player trying to take the crystal rod?
+  $9059,$06 Call #R$6900 with #R$896E.
+  $905F,$02 Jump to #R$9069 if the token isn't for the crystal rod.
+  $9061,$05 Call #R$8FE2 with item #N$03: #ITEM$03.
+  $9066,$03 Jump to #R$9014.
+
+c $9069 Take: Detonator
+@ $9069 label=Validate_Take_Detonator
+D $9069 Was the player trying to take the detonator?
+  $9069,$06 Call #R$6900 with #R$8940.
+  $906F,$02 Jump to #R$9079 if the token isn't for the detonator.
+  $9071,$05 Call #R$8FE2 with item #N$04: #ITEM$04.
+  $9076,$03 Jump to #R$9014.
+
+c $9079 Take: Metal Bar
+@ $9079 label=Validate_Take_MetalBar
+D $9079 Was the player trying to take the metal bar?
+  $9079,$06 Call #R$6900 with #R$8964.
+  $907F,$02 Jump to #R$9089 if the token isn't for the metal bar.
+  $9081,$05 Call #R$8FE2 with item #N$05: #ITEM$05.
+  $9086,$03 Jump to #R$9014.
+
+c $9089 Take: Glowing Sphere
+@ $9089 label=Validate_Take_GlowingSphere
+D $9089 Was the player trying to take the glowing sphere?
   $9089,$0D Jump to #R$90C6 unless the command matches the phrase at #R$8973
-. (#MESSAGE$6A82 (#N$06)).
-  $9096,$07 Jump to #R$90C3 when #MESSAGE$6A82 (#N$06) is here or being
-. carried.
-  $909D,$08 Jump back to #R$9022 when #MESSAGE$709B (#N$3C) is not here or
-. being carried.
+. (#ITEM$06).
+  $9096,$07 Jump to #R$90C3 when #ITEM$06 is here or being carried.
+  $909D,$08 Jump back to #R$9022 when #ITEM$3C is not here or being carried.
   $90A5,$01 Keep the command pointer safe while the sphere is moved.
-  $90A6,$06 Move #MESSAGE$709B (#N$3C) to nowhere (#N$00).
+  $90A6,$06 Move #ITEM$3C to nowhere (#N$00).
   $90AC,$03 Fetch the current room.
-  $90AF,$04 The sphere was not picked up in #MESSAGE$7380.
-  $90B3,$06 Move #MESSAGE$6BB1 (#N$15) to #MESSAGE$7380 (#N$1C).
+  $90AF,$04 The sphere was not picked up in room #N$1C: "#ROOM$1C".
+  $90B3,$06 Move #ITEM$15 to room #N$1C: "#ROOM$1C".
   $90B9,$01 Bring the command pointer back.
   $90BA,$02 Continue at #R$90C3 to pick the object up.
-@ $90BC label=HandlerPickUpObject_Step8
-  $90BC,$06 Move #MESSAGE$6BB1 (#N$16) to #MESSAGE$72C9 (#N$13).
+N $90BC The sphere was taken outside the pedestal room.
+@ $90BC label=Validate_Take_GlowingSphere_Elsewhere
+  $90BC,$06 Move #ITEM$16 to room #N$13: "#ROOM$13".
   $90C2,$01 Bring the command pointer back.
-@ $90C3 label=HandlerPickUpObject_Step9
-  $90C3,$03 Jump to #R$9014 to pick the object up.
-@ $90C6 label=HandlerPickUpObject_Step10
+N $90C3 Pick up the glowing sphere.
+@ $90C3 label=Validate_Take_GlowingSphere_PickUp
+  $90C3,$03 Jump to #R$9014.
+
+c $90C6 Take: Poison Fungus
+@ $90C6 label=Validate_Take_PoisonFungus
+D $90C6 Was the player trying to take the poison fungus?
   $90C6,$0D Jump to #R$90E5 unless the command matches the phrase at #R$8942
-. (#MESSAGE$6A94 (#N$07)).
-  $90D3,$08 Jump back to #R$9014 when #MESSAGE$700A (#N$39) is here or being
-. carried.
-@ $90DB label=HandlerPickUpObject_Step11
-@ $90DB nowarn
-  $90DB,$04 Return to Game Over (#R$8DB3) after the message.
-  $90DF,$06 Print "#MESSAGE$7AA8" and start a new line.
-@ $90E5 label=HandlerPickUpObject_Step12
+. (#ITEM$07).
+  $90D3,$08 Jump back to #R$9014 when #ITEM$39 is here or being carried.
+N $90DB Bad luck!
+@ $90DB label=Validate_Take_PoisonFungus_Fatal
+  $90DB,$04 Switch #R$8DB3 onto the stack so the next return actions a "game
+. over".
+N $90DF Print "#MESSAGE$7AA8".
+  $90DF,$03 #REGhl=#R$7AA8.
+  $90E2,$03 Jump to #R$9025.
+
+c $90E5 Take: Round Stones
+@ $90E5 label=Validate_Take_RoundStones
+D $90E5 Was the player trying to take the round stones?
   $90E5,$0D Jump to #R$910A unless the command matches the phrase at #R$8978
-. (#MESSAGE$6AA8 (#N$08)).
-  $90F2,$07 Jump to #R$9107 when #MESSAGE$6D86 (#N$22) is not here or being
-. carried.
+. (#ITEM$08).
+  $90F2,$07 Jump to #R$9107 when #ITEM$22 is not here or being carried.
   $90F9,$01 Keep the command pointer safe while the stones are moved.
-  $90FA,$06 Move #MESSAGE$6D86 (#N$22) to nowhere (#N$00).
-  $9100,$06 Move #MESSAGE$6DAE (#N$23) to #MESSAGE$742D (#N$2E).
+  $90FA,$06 Move #ITEM$22 to nowhere (#N$00).
+  $9100,$06 Move #ITEM$23 to room #N$2E: "#ROOM$2E".
   $9106,$01 Bring the command pointer back.
-@ $9107 label=HandlerPickUpObject_Step13
-  $9107,$03 Jump to #R$9014 to pick the object up.
-@ $910A label=HandlerPickUpObject_Step14
+N $9107 Pick up the round stones.
+@ $9107 label=Validate_Take_RoundStones_PickUp
+  $9107,$03 Jump to #R$9014.
+
+c $910A Take: Key
+@ $910A label=Validate_Take_Key
+E $910A View the equivalent code in;
+. #LIST
+. { #FOREST$EFE8 }
+. { #JEWELS$F423 }
+. LIST#
+D $910A Was the player trying to take the key?
   $910A,$0D Jump to #R$9137 unless the command matches the phrase at #R$8962
-. (#MESSAGE$6ABB (#N$09)).
-  $9117,$08 Jump back to #R$9022 when #MESSAGE$7067 (#N$3B) is here or being
-. carried.
-  $911F,$07 Jump to #R$9134 when #MESSAGE$7032 (#N$3A) is not here or being
-. carried.
+. (#ITEM$09).
+  $9117,$08 Jump back to #R$9022 when #ITEM$3B is here or being carried.
+  $911F,$07 Jump to #R$9134 when #ITEM$3A is not here or being carried.
   $9126,$01 Keep the command pointer safe while the key is moved.
-  $9127,$06 Move #MESSAGE$7032 (#N$3A) to nowhere (#N$00).
-  $912D,$06 Move #MESSAGE$6EC5 (#N$2A) to #MESSAGE$74E1 (#N$36).
+  $9127,$06 Move #ITEM$3A to nowhere (#N$00).
+  $912D,$06 Move #ITEM$2A to room #N$36: "#ROOM$36".
   $9133,$01 Bring the command pointer back.
-@ $9134 label=HandlerPickUpObject_Step15
-  $9134,$03 Jump to #R$9014 to pick the object up.
-@ $9137 label=HandlerPickUpObject_Step16
-  $9137,$06 Point at the phrase at #R$895B and call #R$6900 to match it against the command.
-  $913D,$02 Jump to #R$9147 if it doesn't match.
-  $913F,$08 Take #MESSAGE$6AC2 (#N$0A).
-@ $9147 label=HandlerPickUpObject_Step17
-  $9147,$06 Point at the phrase at #R$8947 and call #R$6900 to match it against the command.
-  $914D,$02 Jump to #R$9157 if it doesn't match.
-  $914F,$08 Take #MESSAGE$6ACF (#N$0B).
-@ $9157 label=HandlerPickUpObject_Step18
-  $9157,$0D Jump to #R$916C unless the command matches the phrase at #R$897D
-. (#MESSAGE$700A (#N$39)).
-  $9164,$02 #MESSAGE$6AE0 is the object this phrase really takes.
-  $9166,$03 Call #R$8FE2 to take that object.
-  $9169,$03 Jump to #R$9014 to pick the object up.
-@ $916C label=HandlerPickUpObject_Step19
+N $9134 Pick up the key.
+@ $9134 label=Validate_Take_Key_PickUp
+  $9134,$03 Jump to #R$9014.
+
+c $9137 Take: Space Axe
+@ $9137 label=Validate_Take_SpaceAxe
+D $9137 Was the player trying to take the space axe?
+  $9137,$06 Call #R$6900 with #R$895B.
+  $913D,$02 Jump to #R$9147 if the token isn't for the space axe.
+  $913F,$05 Call #R$8FE2 with item #N$0A: #ITEM$0A.
+  $9144,$03 Jump to #R$9014.
+
+c $9147 Take: Explosives
+@ $9147 label=Validate_Take_Explosives
+D $9147 Was the player trying to take the explosives?
+  $9147,$06 Call #R$6900 with #R$8947.
+  $914D,$02 Jump to #R$9157 if the token isn't for the explosives.
+  $914F,$05 Call #R$8FE2 with item #N$0B: #ITEM$0B.
+  $9154,$03 Jump to #R$9014.
+
+c $9157 Take: Pair Of Gloves
+@ $9157 label=Validate_Take_PairOfGloves
+D $9157 Was the player trying to take the pair of gloves?
+  $9157,$06 Call #R$6900 with #R$897D.
+  $915D,$02 Jump to #R$916C if the token isn't for the gloves.
+  $915F,$05 Call #R$8FE2 with item #N$39: #ITEM$39.
+  $9164,$05 Call #R$8FE2 with item #N$0C: #ITEM$0C.
+  $9169,$03 Jump to #R$9014.
+
+c $916C Take: Ship
+@ $916C label=Validate_Take_Ship
+D $916C Was the player trying to take the ship?
   $916C,$08 Jump to #R$9195 unless the command matches the phrase at #R$8B58.
   $9174,$03 Fetch the current room.
-  $9177,$05 The ship can be claimed only from #MESSAGE$719C.
-  $917C,$08 Jump back to #R$9022 when #MESSAGE$7141 (#N$40) is not here or
-. being carried.
-  $9184,$07 Jump to #R$9191 when #MESSAGE$6AFE (#N$0E) is here or being
-. carried.
-  $918B,$06 Print "#MESSAGE$84CC" and start a new line.
-@ $9191 label=HandlerPickUpObject_Step20
-  $9191,$01 The ship is ready, so the game can end.
-  $9192,$03 Jump to #R$8DCE to game complete.
-@ $9195 label=HandlerPickUpObject_Step21
-  $9195,$03 Continue at #R$9022 to say the player can't.
-
+  $9177,$05 The ship can be claimed only from room #N$04: "#ROOM$04".
+  $917C,$08 Jump back to #R$9022 when #ITEM$40 is not here or being carried.
+  $9184,$07 Jump to #R$9191 when #ITEM$0E is here or being carried.
+N $918B Print "#MESSAGE$84CC".
+  $918B,$03 #REGhl=#R$84CC.
+  $918E,$03 Jump to #R$9025.
+N $9191 The ship is ready, so the game can end.
+@ $9191 label=Validate_Take_Ship_Complete
+  $9191,$01 Restore #REGhl from the stack.
+  $9192,$03 Jump to #R$8DCE.
+N $9195 Nothing else is valid.
+@ $9195 label=Take_Invalid
+  $9195,$03 Jump to #R$9022.
 c $9198 Action: Drop
 @ $9198 label=ActionDrop
-D $9198 Put a carried object down in the current room.
+E $9198 View the equivalent code in;
+. #LIST
+. { #FOREST$F03A }
+. { #HEROES$F8D0 }
+. { #WARLORD$F975 }
+. LIST#
+D $9198 Drop one of the objects the player named.
   $9198,$04 Return if the command does not name a single object.
   $919C,$04 Jump to #R$91D8 when the command names fewer than #N$03 nouns.
-  $91A0,$05 Print "#MESSAGE$6445" and start a new line.
+N $91A0 Print "#MESSAGE$6445".
+  $91A0,$03 #REGhl=#R$6445.
+  $91A3,$02 Jump to #R$91D4.
+N $91A5 Check if the player is holding the requested item?
 @ $91A5 label=ActionDrop_Loop1
   $91A5,$03 Call #R$6958 to test whether the object is carried.
-  $91A8,$02 The named object is being carried.
+  $91A8,$02 Jump to #R$91C5 if the named object is being carried.
+N $91AA The player is not holding that object.
 @ $91AA label=ActionDrop_Loop2
   $91AA,$06 Print #MESSAGE$7A59 on the same line.
-  $91B0,$01 The object number selects the plural list.
+  $91B0,$01 Copy the object ID back into #REGa.
+N $91B1 Finish "You're not carrying" with "it" or "them".
 @ $91B1 label=ActionDrop_Step1
-@ $91B1 nowarn
-  $91B1,$03 The objects called "them" are listed at #R$9010.
-  $91B4,$03 #N($0004,$04,$04) objects are spoken of as "them".
-  $91B7,$02 Search the list of objects that are called "them".
-  $91B9,$02 A plural object uses the wording for "them".
-  $91BB,$05 Print "#MESSAGE$7A38" and start a new line.
+  $91B1,$03 #REGhl=#R$9010.
+  $91B4,$03 #REGbc=#N($0004,$04,$04).
+  $91B7,$02 Search #R$9010 for the item ID among the plural items.
+  $91B9,$02 Jump to #R$91C0 if the item is plural.
+N $91BB Print "#MESSAGE$7A38".
+  $91BB,$03 #REGhl=#R$7A38.
+  $91BE,$02 Jump to #R$91D4.
+N $91C0 Print "#MESSAGE$7A3C".
 @ $91C0 label=ActionDrop_Step2
-  $91C0,$05 Print "#MESSAGE$7A3C" and start a new line.
+  $91C0,$03 #REGhl=#R$7A3C.
+  $91C3,$02 Jump to #R$91D4.
+N $91C5 The player has the item, so drop it in the current room.
 @ $91C5 label=ActionDrop_Step3
   $91C5,$05 Put the object down in the current room.
   $91CA,$03 Call #R$65E6 to move the object.
 @ $91CD label=ActionDrop_Loop3
   $91CD,$04 The player is carrying one fewer object.
-  $91D1,$06 Print "#MESSAGE$6466" and start a new line.
+N $91D1 Print "#MESSAGE$6466".
+  $91D1,$03 #REGhl=#R$6466.
+  $91D4,$03 Call #R$64E9.
 @ $91D4 label=ActionDrop_Loop4
   $91D7,$01 Return.
+N $91D8 Was the player trying to drop the knife?
 @ $91D8 label=ActionDrop_Step4
-  $91D8,$0D Jump to #R$91E5 unless the command matches the phrase at #R$8959
-. (#MESSAGE$6A38 (#N$00)).
+  $91D8,$06 Call #R$6900 with #R$8959.
+  $91DE,$02 Jump to #R$91E5 if the token isn't for the knife.
+  $91E0,$05 #REGa=#ITEM$00; jump to #R$91A5.
+N $91E5 Was the player trying to drop the laser pistol?
 @ $91E5 label=ActionDrop_Step5
-  $91E5,$0D Jump to #R$91F2 unless the command matches the phrase at #R$8969
-. (#MESSAGE$6A41 (#N$01)).
+  $91E5,$06 Call #R$6900 with #R$8969.
+  $91EB,$02 Jump to #R$91F2 if the token isn't for the laser pistol.
+  $91ED,$05 #REGa=#ITEM$01; jump to #R$91A5.
+N $91F2 Was the player trying to drop the coin?
 @ $91F2 label=ActionDrop_Step6
-  $91F2,$0D Jump to #R$91FF unless the command matches the phrase at #R$8960
-. (#MESSAGE$6A51 (#N$02)).
+  $91F2,$06 Call #R$6900 with #R$8960.
+  $91F8,$02 Jump to #R$91FF if the token isn't for the coin.
+  $91FA,$05 #REGa=#ITEM$02; jump to #R$91A5.
+N $91FF Was the player trying to drop the crystal rod?
 @ $91FF label=ActionDrop_Step7
-  $91FF,$0D Jump to #R$920C unless the command matches the phrase at #R$896E
-. (#MESSAGE$6A59 (#N$03)).
+  $91FF,$06 Call #R$6900 with #R$896E.
+  $9205,$02 Jump to #R$920C if the token isn't for the crystal rod.
+  $9207,$05 #REGa=#ITEM$03; jump to #R$91A5.
+N $920C Was the player trying to drop the detonator?
 @ $920C label=ActionDrop_Step8
-  $920C,$0D Jump to #R$9219 unless the command matches the phrase at #R$8940
-. (#MESSAGE$6A68 (#N$04)).
+  $920C,$06 Call #R$6900 with #R$8940.
+  $9212,$02 Jump to #R$9219 if the token isn't for the detonator.
+  $9214,$05 #REGa=#ITEM$04; jump to #R$91A5.
+N $9219 Was the player trying to drop the metal bar?
 @ $9219 label=ActionDrop_Step9
-  $9219,$0D Jump to #R$9226 unless the command matches the phrase at #R$8964
-. (#MESSAGE$6A75 (#N$05)).
+  $9219,$06 Call #R$6900 with #R$8964.
+  $921F,$02 Jump to #R$9226 if the token isn't for the metal bar.
+  $9221,$05 #REGa=#ITEM$05; jump to #R$91A5.
+N $9226 Was the player trying to drop the glowing sphere?
 @ $9226 label=ActionDrop_Step10
-  $9226,$0D Jump to #R$9233 unless the command matches the phrase at #R$8973
-. (#MESSAGE$6A82 (#N$06)).
+  $9226,$06 Call #R$6900 with #R$8973.
+  $922C,$02 Jump to #R$9233 if the token isn't for the glowing sphere.
+  $922E,$05 #REGa=#ITEM$06; jump to #R$91A5.
+N $9233 Was the player trying to drop the poison fungus?
 @ $9233 label=ActionDrop_Step11
-  $9233,$0D Jump to #R$9240 unless the command matches the phrase at #R$8942
-. (#MESSAGE$6A94 (#N$07)).
+  $9233,$06 Call #R$6900 with #R$8942.
+  $9239,$02 Jump to #R$9240 if the token isn't for the poison fungus.
+  $923B,$05 #REGa=#ITEM$07; jump to #R$91A5.
+N $9240 Was the player trying to drop the round stones?
 @ $9240 label=ActionDrop_Step12
-  $9240,$0D Jump to #R$924D unless the command matches the phrase at #R$8978
-. (#MESSAGE$6AA8 (#N$08)).
+  $9240,$06 Call #R$6900 with #R$8978.
+  $9246,$02 Jump to #R$924D if the token isn't for the round stones.
+  $9248,$05 #REGa=#ITEM$08; jump to #R$91A5.
+N $924D Was the player trying to drop the key?
 @ $924D label=ActionDrop_Step13
-  $924D,$0D Jump to #R$925A unless the command matches the phrase at #R$8962
-. (#MESSAGE$6ABB (#N$09)).
+  $924D,$06 Call #R$6900 with #R$8962.
+  $9253,$02 Jump to #R$925A if the token isn't for the key.
+  $9255,$05 #REGa=#ITEM$09; jump to #R$91A5.
+N $925A Was the player trying to drop the space axe?
 @ $925A label=ActionDrop_Step14
-  $925A,$0D Jump to #R$9267 unless the command matches the phrase at #R$895B
-. (#MESSAGE$6AC2 (#N$0A)).
+  $925A,$06 Call #R$6900 with #R$895B.
+  $9260,$02 Jump to #R$9267 if the token isn't for the space axe.
+  $9262,$05 #REGa=#ITEM$0A; jump to #R$91A5.
+N $9267 Was the player trying to drop the explosives?
 @ $9267 label=ActionDrop_Step15
-  $9267,$0D Jump to #R$9274 unless the command matches the phrase at #R$8947
-. (#MESSAGE$6ACF (#N$0B)).
+  $9267,$06 Call #R$6900 with #R$8947.
+  $926D,$02 Jump to #R$9274 if the token isn't for the explosives.
+  $926F,$05 #REGa=#ITEM$0B; jump to #R$91A5.
 @ $9274 label=ActionDrop_Step16
-  $9274,$02 Continue at #R$9276 to try the next thing the player might drop.
+  $9274,$02 Continue at #R$9276 to try the special drops.
+N $9276 Was the player trying to drop the sphere onto the pedestal?
 @ $9276 label=ActionDrop_Step17
-  $9276,$06 Point at the phrase at #R$897F and call #R$6900 to match it against the command.
-  $927C,$02 Jump to #R$92AA if it doesn't match.
-  $927E,$08 Jump to #R$91AA when the player is not carrying #MESSAGE$6A82 (#N$06).
+  $9276,$06 Call #R$6900 with #R$897F.
+  $927C,$02 Jump to #R$92AA if the token isn't for that phrase.
+  $927E,$08 Jump to #R$91AA when the player is not carrying #ITEM$06.
   $9286,$03 Fetch the current room.
-  $9289,$04 The sphere was not dropped in #MESSAGE$7380.
-  $928D,$03 Clear the glass pedestal in #MESSAGE$7380.
+  $9289,$04 The sphere was not dropped in #ROOM$1C.
+  $928D,$03 Clear the glass pedestal in #ROOM$1C.
   $9290,$02 Continue at #R$9295 to move what was dropped.
 @ $9292 label=ActionDrop_Step18
-  $9292,$03 Clear the glass pedestal in #MESSAGE$72C9.
+  $9292,$03 Clear the glass pedestal in #ROOM$13.
 @ $9295 label=ActionDrop_Step19
   $9295,$03 Call #R$65E6 to move the object.
   $9298,$06 Move #MESSAGE$6A82 (#N$06) to nowhere (#N$00).
@@ -3198,54 +3781,77 @@ D $9198 Put a carried object down in the current room.
   $92A1,$03 Leave #MESSAGE$709B in the room where it was dropped.
   $92A4,$03 Call #R$65E6 to move the object.
   $92A7,$03 Continue at #R$91CD to count one fewer object and confirm the drop.
+N $92AA Was the player trying to drop the axe on the second android?
 @ $92AA label=ActionDrop_Step20
   $92AA,$0F Jump to #R$92EC unless the command matches the phrase at #R$8A87
 . (#MESSAGE$6E6D (#N$27)).
-  $92B9,$06 Print "#MESSAGE$7CB3" and start a new line.
+N $92B9 Print "#MESSAGE$7CB3".
+  $92B9,$03 #REGhl=#R$7CB3.
+  $92BC,$03 Jump to #R$91D4.
 @ $92BF label=ActionDrop_Step21
   $92BF,$08 Jump back to #R$91AA when the player is not carrying #MESSAGE$6AC2
 . (#N$0A).
   $92C7,$06 Move #MESSAGE$6E6D (#N$27) to nowhere (#N$00).
-  $92CD,$06 Move #MESSAGE$6E93 (#N$28) to #MESSAGE$74C2 (#N$35).
+  $92CD,$06 Move #MESSAGE$6E93 (#N$28) to room #N$35: "#ROOM$35".
   $92D3,$03 Fetch the current room.
   $92D6,$03 Leave #MESSAGE$6AC2 in the current room.
   $92D9,$03 Call #R$65E6 to move the object.
   $92DC,$04 The player is carrying one fewer object.
-  $92E0,$06 Move #MESSAGE$6ABB (#N$09) to #MESSAGE$74C2 (#N$35).
-  $92E6,$06 Print "#MESSAGE$7CC6" and start a new line.
+  $92E0,$06 Move #MESSAGE$6ABB (#N$09) to room #N$35: "#ROOM$35".
+N $92E6 Print "#MESSAGE$7CC6".
+  $92E6,$03 #REGhl=#R$7CC6.
+  $92E9,$03 Jump to #R$91D4.
+N $92EC Was the player trying to drop the fungus on the slug?
 @ $92EC label=ActionDrop_Step22
-  $92EC,$06 Point at the phrase at #R$8A9B and call #R$6900 to match it against the command.
+  $92EC,$06 Point at the phrase at #R$8A9B and call #R$6900 to match it against
+. the command.
   $92F2,$02 Jump to #R$931D if it doesn't match.
-  $92F4,$08 Jump to #R$91AA when the player is not carrying #MESSAGE$6A94 (#N$07).
+  $92F4,$08 Jump to #R$91AA when the player is not carrying #MESSAGE$6A94
+. (#N$07).
   $92FC,$06 Move #MESSAGE$6DBF (#N$24) to nowhere (#N$00).
-  $9302,$06 Move #MESSAGE$6E0B (#N$25) to #MESSAGE$745A (#N$30).
+  $9302,$06 Move #MESSAGE$6E0B (#N$25) to room #N$30: "#ROOM$30".
   $9308,$06 Move #MESSAGE$6A94 (#N$07) to nowhere (#N$00).
   $930E,$04 The player is carrying one fewer object.
-  $9312,$05 Open the west exit of #MESSAGE$745A onto #MESSAGE$7442.
-  $9317,$06 Print "#MESSAGE$7D8A" and start a new line.
+N $9312 This action changes the map:
+  $9312,$05 Open the west exit of #ROOM$30 onto #ROOM$2F.
+N $9317 Print "#MESSAGE$7D8A".
+  $9317,$03 #REGhl=#R$7D8A.
+  $931A,$03 Jump to #R$91D4.
+N $931D Was the player trying to drop the stones on the scaled creature?
 @ $931D label=ActionDrop_Step23
-  $931D,$06 Point at the phrase at #R$8AAF and call #R$6900 to match it against the command.
+  $931D,$06 Point at the phrase at #R$8AAF and call #R$6900 to match it against
+. the command.
   $9323,$02 Jump to #R$9348 if it doesn't match.
-  $9325,$08 Jump to #R$91AA when the player is not carrying #MESSAGE$6AA8 (#N$08).
+  $9325,$08 Jump to #R$91AA when the player is not carrying #MESSAGE$6AA8
+. (#N$08).
   $932D,$06 Move #MESSAGE$6E29 (#N$26) to nowhere (#N$00).
-  $9333,$06 Move #MESSAGE$6AA8 (#N$08) to #MESSAGE$7499 (#N$33).
+  $9333,$06 Move #MESSAGE$6AA8 (#N$08) to room #N$33: "#ROOM$33".
   $9339,$04 The player is carrying one fewer object.
-  $933D,$05 Open the east exit of #MESSAGE$7499 onto #MESSAGE$74AD.
-  $9342,$06 Print "#MESSAGE$7DF3" and start a new line.
+N $933D This action changes the map:
+  $933D,$05 Open the east exit of #ROOM$33 onto #ROOM$34.
+N $9342 Print "#MESSAGE$7DF3".
+  $9342,$03 #REGhl=#R$7DF3.
+  $9345,$03 Jump to #R$91D4.
+N $9348 Was the player trying to drop the worn gloves?
 @ $9348 label=ActionDrop_Step24
   $9348,$0F Jump to #R$9375 unless the command matches the phrase at #R$897D
 . (#MESSAGE$700A (#N$39)).
   $9357,$07 Jump to #R$9364 when the player is not carrying #MESSAGE$6A94
 . (#N$07).
-  $935E,$06 Print "#MESSAGE$84B1" and start a new line.
+N $935E Print "#MESSAGE$84B1".
+  $935E,$03 #REGhl=#R$84B1.
+  $9361,$03 Jump to #R$91D4.
 @ $9364 label=ActionDrop_Step25
   $9364,$06 Move #MESSAGE$700A (#N$39) to nowhere (#N$00).
   $936A,$06 Move #MESSAGE$6AE0 (#N$0C) to the inventory (#N$01).
 @ $9370 label=ActionDrop_Step26
   $9370,$02 #MESSAGE$6AE0 is what the player is now holding.
   $9372,$03 Continue at #R$91A5 to see what the player is now holding.
+N $9375 Nothing else is valid.
 @ $9375 label=ActionDrop_Step27
-  $9375,$06 Print "#MESSAGE$645B" and start a new line.
+N $9375 Print "#MESSAGE$645B".
+  $9375,$03 #REGhl=#R$645B.
+  $9378,$03 Jump to #R$91D4.
 
 c $937B Handler: Resolve Synonym
 @ $937B label=HandlerResolveSynonym
@@ -3267,35 +3873,49 @@ D $937B Replace a synonym with the verb it stands for and run that verb.
 
 c $93A1 Action: Enter
 @ $93A1 label=ActionEnter
-D $93A1 Move into the named place when the exit is open.
+E $93A1 View the equivalent code in;
+. #LIST
+. { #FOREST$F71B }
+. { #JEWELS$FC61 }
+. { #WARLORD$FB21 }
+. LIST#
+D $93A1 Go into the open airlock or the alien commander's chamber.
   $93A1,$04 Return if the command does not name a single object.
   $93A5,$02 Continue at #R$93B2 to match the place the player named.
 @ $93A7 label=ActionEnter_Loop1
-  $93A7,$06 Print "#MESSAGE$645B" and start a new line.
+N $93A7 Print "#MESSAGE$645B".
+  $93A7,$03 #REGhl=#R$645B.
+  $93AA,$03 Call #R$64E9.
 @ $93AA label=ActionEnter_Loop2
   $93AD,$01 Return.
 @ $93AE label=ActionEnter_Loop3
   $93AE,$03 Call #R$8E18 to move the player.
   $93B1,$01 Return.
+N $93B2 Was the player trying to enter the airlock?
 @ $93B2 label=ActionEnter_Step1
-  $93B2,$06 Point at the phrase at #R$89B3 and call #R$6900 to match it against the command.
+  $93B2,$06 Point at the phrase at #R$89B3 and call #R$6900 to match it against
+. the command.
   $93B8,$02 Jump to #R$93C7 if it doesn't match.
-  $93BA,$08 Jump to #R$93A7 when #MESSAGE$6B15 (#N$11) is not here or being carried.
-  $93C2,$02 The open airlock leads into #MESSAGE$719C.
+  $93BA,$08 Jump to #R$93A7 when #MESSAGE$6B15 (#N$11) is not here or being
+. carried.
+  $93C2,$02 The open airlock leads into #ROOM$04.
   $93C4,$03 Continue at #R$93AE to go through the airlock.
+N $93C7 Was the player trying to enter the alien commander's chamber?
 @ $93C7 label=ActionEnter_Step2
   $93C7,$0F Jump to #R$93E1 unless the command matches the phrase at #R$894B
 . (#MESSAGE$6E6D (#N$27)).
-  $93D6,$06 Print "#MESSAGE$7D6B" and start a new line.
+N $93D6 Print "#MESSAGE$7D6B".
+  $93D6,$03 #REGhl=#R$7D6B.
+  $93D9,$03 Jump to #R$93AA.
 @ $93DC label=ActionEnter_Step3
-  $93DC,$02 The commander is reached through #MESSAGE$75C1.
+  $93DC,$02 The commander is reached through #ROOM$3E.
   $93DE,$03 Continue at #R$93AE to go to the alien commander.
 @ $93E1 label=ActionEnter_Step4
   $93E1,$03 Continue at #R$93A7 to say the player can't.
 
 c $93E4 Action: Leave
 @ $93E4 label=ActionLeave
-D $93E4 Leave the current place by the matching exit.
+D $93E4 Leave the ship or the alien commander's chamber.
   $93E4,$03 Call #R$6992 to match or rephrase.
   $93E7,$01 Return if the command was rejected.
   $93E8,$02 The command names a place the player can leave.
@@ -3310,36 +3930,51 @@ D $93E4 Leave the current place by the matching exit.
 @ $9402 label=ActionLeave_Step1
   $9402,$07 Jump to #R$940D when #MESSAGE$6B15 (#N$10) is not here or being
 . carried.
-  $9409,$02 Step back out onto #MESSAGE$71C4.
+  $9409,$02 Step back out onto #ROOM$05.
   $940B,$02 Continue at #R$93FE to step back onto the landing pad.
 @ $940D label=ActionLeave_Step2
   $940D,$03 Fetch the current room.
-  $9410,$04 The player can leave only from #MESSAGE$75C1.
+  $9410,$04 The player can leave only from #ROOM$3E.
   $9414,$02 Go to wherever #MESSAGE$6F6C currently is.
   $9416,$03 Call #R$694F to read the object's location.
   $9419,$02 Continue at #R$93FE to go where the alien device is.
 
 c $941B Action: Give
 @ $941B label=ActionGive
-D $941B Hand a carried object to the person named in the command.
+E $941B View the equivalent code in;
+. #LIST
+. { #FOREST$F216 }
+. { #HEROES$F972 }
+. { #JEWELS$F7AB }
+. { #WARLORD$F9B3 }
+. LIST#
+D $941B Hand the key to the alien commander.
   $941B,$04 Return if the command does not name a single object.
   $941F,$04 Jump to #R$9434 when the command names at least #N$02 nouns.
-  $9423,$05 Print "#MESSAGE$642C" and start a new line.
+N $9423 Print "#MESSAGE$642C".
+  $9423,$03 #REGhl=#R$642C.
+  $9426,$02 Jump to #R$9430.
 @ $9428 label=ActionGive_Loop1
-  $9428,$05 Print "#MESSAGE$645B" and start a new line.
+N $9428 Print "#MESSAGE$645B".
+  $9428,$03 #REGhl=#R$645B.
+  $942B,$02 Jump to #R$9430.
 @ $942D label=ActionGive_Loop2
-  $942D,$06 Print "#MESSAGE$6466" and start a new line.
+N $942D Print "#MESSAGE$6466".
+  $942D,$03 #REGhl=#R$6466.
+  $9430,$03 Call #R$64E9.
 @ $9430 label=ActionGive_Loop3
   $9433,$01 Return.
 @ $9434 label=ActionGive_Step1
   $9434,$0F Jump to #R$9466 unless the command matches the phrase at #R$89B5
 . (#MESSAGE$6ABB (#N$09)).
   $9443,$06 Print #MESSAGE$7A59 on the same line.
-  $9449,$05 Print "#MESSAGE$7708" and start a new line.
+N $9449 Print "#MESSAGE$7708".
+  $9449,$03 #REGhl=#R$7708.
+  $944C,$02 Jump to #R$9430.
 @ $944E label=ActionGive_Step2
   $944E,$06 Move #MESSAGE$6EC5 (#N$2A) to nowhere (#N$00).
   $9454,$06 Move #MESSAGE$6ABB (#N$09) to nowhere (#N$00).
-  $945A,$06 Move #MESSAGE$7032 (#N$3A) to #MESSAGE$74E1 (#N$36).
+  $945A,$06 Move #MESSAGE$7032 (#N$3A) to room #N$36: "#ROOM$36".
   $9460,$04 The player is carrying one fewer object.
   $9464,$02 Continue at #R$942D to confirm the gift.
 @ $9466 label=ActionGive_Step3
@@ -3347,32 +3982,56 @@ D $941B Hand a carried object to the person named in the command.
 
 c $9469 Action: Eat
 @ $9469 label=ActionEat
-D $9469 Eat the named object when it can be eaten.
+E $9469 View the equivalent code in;
+. #LIST
+. { #FOREST$F26D }
+. { #JEWELS$F999 }
+. { #WARLORD$FBC3 }
+. LIST#
+D $9469 Eating has no useful effect here.
   $9469,$03 Call #R$692F to look for a noun.
   $946C,$04 Jump to #R$9475 when the command names at least #N$01 noun.
-  $9470,$05 Print "#MESSAGE$645B" and start a new line.
+N $9470 Print "#MESSAGE$645B".
+  $9470,$03 #REGhl=#R$645B.
+  $9473,$02 Jump to #R$9478.
 @ $9475 label=ActionEat_Step1
-  $9475,$06 Print "#MESSAGE$7B05" and start a new line.
+N $9475 Print "#MESSAGE$7B05".
+  $9475,$03 #REGhl=#R$7B05.
+  $9478,$03 Call #R$64E9.
 @ $9478 label=ActionEat_Step2
   $947B,$01 Return.
 
 c $947C Action: Swim
 @ $947C label=ActionSwim
+E $947C View the equivalent code in;
+. #LIST
+. { #FOREST$F7EB }
+. { #JEWELS$FD7C }
+. { #WARLORD$FC8D }
+. LIST#
 D $947C Swim when the current room contains water.
   $947C,$08 Jump to #R$9489 when the command matches the phrase at #R$89B9.
-  $9484,$05 Print "#MESSAGE$645B" and start a new line.
+N $9484 Print "#MESSAGE$645B".
+  $9484,$03 #REGhl=#R$645B.
+  $9487,$02 Jump to #R$94AD.
 @ $9489 label=ActionSwim_Step1
   $9489,$03 Fetch the current room.
-  $948C,$04 The player is in the water at room #N$38.
-  $9490,$04 The player is in the water at room #N$37.
-  $9494,$04 The player is in the water at room #N$39.
-  $9498,$04 The player is in the water at room #N$3A.
-  $949C,$04 The player is at the stream in #MESSAGE$7442.
-  $94A0,$05 Print "#MESSAGE$7B26" and start a new line.
+  $948C,$04 The player is in the water at room #N$38: "#ROOM$38".
+  $9490,$04 The player is in the water at room #N$37: "#ROOM$37".
+  $9494,$04 The player is in the water at room #N$39: "#ROOM$39".
+  $9498,$04 The player is in the water at room #N$3A: "#ROOM$3A".
+  $949C,$04 The player is at the stream in #ROOM$2F.
+N $94A0 Print "#MESSAGE$7B26".
+  $94A0,$03 #REGhl=#R$7B26.
+  $94A3,$02 Jump to #R$94AD.
 @ $94A5 label=ActionSwim_Step2
-  $94A5,$05 Print "#MESSAGE$7B99" and start a new line.
+N $94A5 Print "#MESSAGE$7B99".
+  $94A5,$03 #REGhl=#R$7B99.
+  $94A8,$02 Jump to #R$94AD.
 @ $94AA label=ActionSwim_Step3
-  $94AA,$06 Print "#MESSAGE$7B41" and start a new line.
+N $94AA Print "#MESSAGE$7B41".
+  $94AA,$03 #REGhl=#R$7B41.
+  $94AD,$03 Call #R$64E9.
 @ $94AD label=ActionSwim_Step4
   $94B0,$01 Return.
 
@@ -3382,42 +4041,66 @@ D $94B1 Cut the named object when the player has a blade.
   $94B1,$04 Return if the command does not name a single object.
   $94B5,$02 Continue at #R$94BC to see whether the player has a blade.
 @ $94B7 label=ActionCut_Loop1
-  $94B7,$05 Print "#MESSAGE$645B" and start a new line.
+N $94B7 Print "#MESSAGE$645B".
+  $94B7,$03 #REGhl=#R$645B.
+  $94BA,$02 Jump to #R$94CD.
 @ $94BC label=ActionCut_Step1
   $94BC,$07 Jump to #R$94D1 when the player is carrying #MESSAGE$6A38 (#N$00).
   $94C3,$07 Jump to #R$94D1 when the player is carrying #MESSAGE$6AC2 (#N$0A).
-  $94CA,$06 Print "#MESSAGE$7BB3" and start a new line.
+N $94CA Print "#MESSAGE$7BB3".
+  $94CA,$03 #REGhl=#R$7BB3.
+  $94CD,$03 Call #R$64E9.
 @ $94CD label=ActionCut_Loop2
   $94D0,$01 Return.
+N $94D1 Was the player trying to cut the vine?
 @ $94D1 label=ActionCut_Step2
   $94D1,$0F Jump to #R$94FB unless the command matches the phrase at #R$89C0
 . (#MESSAGE$6CD7 (#N$1E)).
   $94E0,$06 Move #MESSAGE$6CD7 (#N$1E) to nowhere (#N$00).
-  $94E6,$06 Move #MESSAGE$6D15 (#N$1F) to #MESSAGE$7395 (#N$1D).
-  $94EC,$05 Open the east exit of #MESSAGE$7395 onto #MESSAGE$73AB.
-  $94F1,$05 Open the way up from #MESSAGE$7395 to #MESSAGE$75D4.
-  $94F6,$05 Print "#MESSAGE$7BD1" and start a new line.
+  $94E6,$06 Move #MESSAGE$6D15 (#N$1F) to room #N$1D: "#ROOM$1D".
+N $94EC This action changes the map:
+  $94EC,$05 Open the east exit of #ROOM$1D onto #ROOM$1E.
+  $94F1,$05 Open the way up from #ROOM$1D to #ROOM$3F.
+N $94F6 Print "#MESSAGE$7BD1".
+  $94F6,$03 #REGhl=#R$7BD1.
+  $94F9,$02 Jump to #R$94CD.
+N $94FB Was the player trying to cut the ropes?
 @ $94FB label=ActionCut_Step3
   $94FB,$0F Jump to #R$9528 unless the command matches the phrase at #R$89E2
 . (#MESSAGE$6D26 (#N$20)).
-  $950A,$06 Print "#MESSAGE$7C0E" and start a new line.
+N $950A Print "#MESSAGE$7C0E".
+  $950A,$03 #REGhl=#R$7C0E.
+  $950D,$03 Jump to #R$94CD.
 @ $9510 label=ActionCut_Step4
   $9510,$06 Move #MESSAGE$6D26 (#N$20) to nowhere (#N$00).
-  $9516,$06 Move #MESSAGE$6D6D (#N$21) to #MESSAGE$742D (#N$2E).
-  $951C,$06 Move #MESSAGE$6D86 (#N$22) to #MESSAGE$742D (#N$2E).
-  $9522,$06 Print "#MESSAGE$7C29" and start a new line.
+  $9516,$06 Move #MESSAGE$6D6D (#N$21) to room #N$2E: "#ROOM$2E".
+  $951C,$06 Move #MESSAGE$6D86 (#N$22) to room #N$2E: "#ROOM$2E".
+N $9522 Print "#MESSAGE$7C29".
+  $9522,$03 #REGhl=#R$7C29.
+  $9525,$03 Jump to #R$94CD.
 @ $9528 label=ActionCut_Step5
   $9528,$03 Continue at #R$94B7 to say the player can't.
 
 c $952B Action: Kill
 @ $952B label=ActionKill
-D $952B Attack the named creature.
+E $952B View the equivalent code in;
+. #LIST
+. { #FOREST$F2A7 }
+. { #HEROES$FA72 }
+. { #JEWELS$F851 }
+. { #WARLORD$FC4B }
+. LIST#
+D $952B Attack the named creature with a weapon.
   $952B,$04 Return if the command does not name a single object.
   $952F,$02 Continue at #R$953D to match the creature the player named.
 @ $9531 label=ActionKill_Loop1
-  $9531,$05 Print "#MESSAGE$642C" and start a new line.
+N $9531 Print "#MESSAGE$642C".
+  $9531,$03 #REGhl=#R$642C.
+  $9534,$02 Jump to #R$9539.
 @ $9536 label=ActionKill_Loop2
-  $9536,$06 Print "#MESSAGE$645B" and start a new line.
+N $9536 Print "#MESSAGE$645B".
+  $9536,$03 #REGhl=#R$645B.
+  $9539,$03 Call #R$64E9.
 @ $9539 label=ActionKill_Loop3
   $953C,$01 Return.
 @ $953D label=ActionKill_Step1
@@ -3429,40 +4112,58 @@ D $952B Attack the named creature.
 @ $9555 label=ActionKill_Step3
   $9555,$07 Jump to #R$9562 when #MESSAGE$6E6D (#N$27) is here or being
 . carried.
-  $955C,$06 Print "#MESSAGE$7CB3" and start a new line.
+N $955C Print "#MESSAGE$7CB3".
+  $955C,$03 #REGhl=#R$7CB3.
+  $955F,$03 Jump to #R$9539.
 @ $9562 label=ActionKill_Step4
   $9562,$07 Jump to #R$9575 when the player is carrying #MESSAGE$6A41 (#N$01).
   $9569,$06 Print #MESSAGE$7A59 on the same line.
-  $956F,$06 Print "#MESSAGE$762B" and start a new line.
+N $956F Print "#MESSAGE$762B".
+  $956F,$03 #REGhl=#R$762B.
+  $9572,$03 Jump to #R$9539.
 @ $9575 label=ActionKill_Step5
-  $9575,$06 Print "#MESSAGE$7C86" and start a new line.
+N $9575 Print "#MESSAGE$7C86".
+  $9575,$03 #REGhl=#R$7C86.
+  $9578,$03 Jump to #R$9539.
 @ $957B label=ActionKill_Step6
   $957B,$0F Jump to #R$95BB unless the command matches the phrase at #R$8A23
 . (#MESSAGE$6E6D (#N$27)).
-  $958A,$06 Print "#MESSAGE$7CB3" and start a new line.
+N $958A Print "#MESSAGE$7CB3".
+  $958A,$03 #REGhl=#R$7CB3.
+  $958D,$03 Jump to #R$9539.
 @ $9590 label=ActionKill_Step7
   $9590,$07 Jump to #R$95A3 when the player is carrying #MESSAGE$6AC2 (#N$0A).
   $9597,$06 Print #MESSAGE$7A59 on the same line.
-  $959D,$06 Print "#MESSAGE$76A0" and start a new line.
+N $959D Print "#MESSAGE$76A0".
+  $959D,$03 #REGhl=#R$76A0.
+  $95A0,$03 Jump to #R$9539.
 @ $95A3 label=ActionKill_Step8
   $95A3,$06 Move #MESSAGE$6E6D (#N$27) to nowhere (#N$00).
-  $95A9,$06 Move #MESSAGE$6E93 (#N$28) to #MESSAGE$74C2 (#N$35).
-  $95AF,$06 Move #MESSAGE$6ABB (#N$09) to #MESSAGE$74C2 (#N$35).
-  $95B5,$06 Print "#MESSAGE$7CC6" and start a new line.
+  $95A9,$06 Move #MESSAGE$6E93 (#N$28) to room #N$35: "#ROOM$35".
+  $95AF,$06 Move #MESSAGE$6ABB (#N$09) to room #N$35: "#ROOM$35".
+N $95B5 Print "#MESSAGE$7CC6".
+  $95B5,$03 #REGhl=#R$7CC6.
+  $95B8,$03 Jump to #R$9539.
 @ $95BB label=ActionKill_Step9
   $95BB,$08 Jump to #R$95F5 unless the command matches the phrase at #R$8A37.
 @ $95C3 label=ActionKill_Step10
   $95C3,$07 Jump to #R$95D0 when #MESSAGE$6B2A (#N$12) is here or being
 . carried.
-  $95CA,$06 Print "#MESSAGE$7CB3" and start a new line.
+N $95CA Print "#MESSAGE$7CB3".
+  $95CA,$03 #REGhl=#R$7CB3.
+  $95CD,$03 Jump to #R$9539.
 @ $95D0 label=ActionKill_Step11
   $95D0,$07 Jump to #R$95E3 when the player is carrying #MESSAGE$6A41 (#N$01).
   $95D7,$06 Print #MESSAGE$7A59 on the same line.
-  $95DD,$06 Print "#MESSAGE$762B" and start a new line.
+N $95DD Print "#MESSAGE$762B".
+  $95DD,$03 #REGhl=#R$762B.
+  $95E0,$03 Jump to #R$9539.
 @ $95E3 label=ActionKill_Step12
   $95E3,$06 Move #MESSAGE$6B2A (#N$12) to nowhere (#N$00).
-  $95E9,$06 Move #MESSAGE$6B5B (#N$13) to #MESSAGE$725A (#N$0D).
-  $95EF,$06 Print "#MESSAGE$7D2D" and start a new line.
+  $95E9,$06 Move #MESSAGE$6B5B (#N$13) to room #N$0D: "#ROOM$0D".
+N $95EF Print "#MESSAGE$7D2D".
+  $95EF,$03 #REGhl=#R$7D2D.
+  $95F2,$03 Jump to #R$9539.
 @ $95F5 label=ActionKill_Step13
   $95F5,$08 Jump to #R$964C unless the command matches the phrase at #R$8A4B.
 @ $95FD label=ActionKill_Step14
@@ -3473,63 +4174,87 @@ D $952B Attack the named creature.
   $9605,$02 This creature is here.
   $9607,$02 Try the next scenic slot.
   $9609,$02 Repeat for the other creatures in the group.
-  $960B,$06 Print "#MESSAGE$7CB3" and start a new line.
+N $960B Print "#MESSAGE$7CB3".
+  $960B,$03 #REGhl=#R$7CB3.
+  $960E,$03 Jump to #R$9539.
 @ $9611 label=ActionKill_Step15
   $9611,$07 Jump to #R$9624 when the player is carrying #MESSAGE$6A41 (#N$01).
   $9618,$06 Print #MESSAGE$7A59 on the same line.
-  $961E,$06 Print "#MESSAGE$762B" and start a new line.
+N $961E Print "#MESSAGE$762B".
+  $961E,$03 #REGhl=#R$762B.
+  $9621,$03 Jump to #R$9539.
 @ $9624 label=ActionKill_Step16
   $9624,$02 One chance in #N$05 that the shot misses.
   $9626,$03 Call #R$65D6 to generate random number.
   $9629,$02 The shot misses.
-  $962B,$06 Print "#MESSAGE$7D44" and start a new line.
+N $962B Print "#MESSAGE$7D44".
+  $962B,$03 #REGhl=#R$7D44.
+  $962E,$03 Jump to #R$9539.
 @ $9631 label=ActionKill_Step17
   $9631,$03 Remove the creature that was hit.
   $9634,$03 Call #R$65E6 to move the object.
   $9637,$04 Clear the scenic event that belonged to that creature.
   $963B,$08 Leave the corpse in the current room.
   $9643,$03 Call #R$65E6 to move the object.
-  $9646,$06 Print "#MESSAGE$7D2D" and start a new line.
+N $9646 Print "#MESSAGE$7D2D".
+  $9646,$03 #REGhl=#R$7D2D.
+  $9649,$03 Jump to #R$9539.
 @ $964C label=ActionKill_Step18
   $964C,$08 Jump to #R$966D unless the command matches the phrase at #R$8A5F.
 @ $9654 label=ActionKill_Step19
   $9654,$07 Jump to #R$9667 when the player is carrying #MESSAGE$6A41 (#N$01).
   $965B,$06 Print #MESSAGE$7A59 on the same line.
-  $9661,$06 Print "#MESSAGE$762B" and start a new line.
+N $9661 Print "#MESSAGE$762B".
+  $9661,$03 #REGhl=#R$762B.
+  $9664,$03 Jump to #R$9539.
 @ $9667 label=ActionKill_Step20
-  $9667,$06 Print "#MESSAGE$7D50" and start a new line.
+N $9667 Print "#MESSAGE$7D50".
+  $9667,$03 #REGhl=#R$7D50.
+  $966A,$03 Jump to #R$9539.
 @ $966D label=ActionKill_Step21
   $966D,$03 Continue at #R$9536 to say the player can't.
 
 c $9670 Action: Read
 @ $9670 label=ActionRead
-D $9670 Read the named sign, screen or message.
+E $9670 View the equivalent code in;
+. #LIST
+. { #HEROES$FA02 }
+. LIST#
+D $9670 Read the writing or the ship's computer screen.
   $9670,$04 Return if the command does not name a single object.
   $9674,$02 Continue at #R$967D to match what the player wants to read.
 @ $9676 label=ActionRead_Loop1
-  $9676,$06 Print "#MESSAGE$645B" and start a new line.
+N $9676 Print "#MESSAGE$645B".
+  $9676,$03 #REGhl=#R$645B.
+  $9679,$03 Call #R$64E9.
 @ $9679 label=ActionRead_Loop2
   $967C,$01 Return.
 @ $967D label=ActionRead_Step1
   $967D,$08 Jump to #R$968A unless the command matches the phrase at #R$8957.
-  $9685,$05 Print "#MESSAGE$79F0" and start a new line.
+N $9685 Print "#MESSAGE$79F0".
+  $9685,$03 #REGhl=#R$79F0.
+  $9688,$02 Jump to #R$9679.
 @ $968A label=ActionRead_Step2
   $968A,$08 Jump to #R$96BB unless the command matches the phrase at #R$8AC3.
-  $9692,$06 Print "#MESSAGE$7E46" and start a new line.
+N $9692 Print "#MESSAGE$7E46".
+  $9692,$03 #REGhl=#R$7E46.
+  $9695,$03 Call #R$64E9.
 @ $9698 label=ActionRead_Loop3
   $9698,$03 Call #R$6604 to read another command.
   $969B,$03 Call #R$6972 to reject a command that names an object.
   $969E,$02 Jump back to #R$9698 when the carry flag is set.
   $96A0,$03 Fetch the first word of the command.
   $96A3,$04 The typed word is not token #N$14.
-  $96A7,$05 Move the player to #MESSAGE$7179 (#N$03).
+  $96A7,$05 Move the player to room #N$03: "#ROOM$03".
   $96AC,$01 Return.
 @ $96AD label=ActionRead_Step3
   $96AD,$04 Jump to #R$96B5 when the typed word is token #N$15.
   $96B1,$03 Call #R$6487 to say that is not understood.
   $96B4,$01 Return.
 @ $96B5 label=ActionRead_Step4
-  $96B5,$06 Print "#MESSAGE$6466" and start a new line.
+N $96B5 Print "#MESSAGE$6466".
+  $96B5,$03 #REGhl=#R$6466.
+  $96B8,$03 Jump to #R$9679.
 @ $96BB label=ActionRead_Step5
   $96BB,$03 Continue at #R$9676 to say the player can't.
 
@@ -3540,84 +4265,120 @@ D $96BE Land the ship when the coordinates are set.
   $96C1,$01 Return if the command was rejected.
   $96C2,$02 Continue at #R$96CB to check where the ship can land.
 @ $96C4 label=ActionLand_Loop1
-  $96C4,$06 Print "#MESSAGE$645B" and start a new line.
+N $96C4 Print "#MESSAGE$645B".
+  $96C4,$03 #REGhl=#R$645B.
+  $96C7,$03 Call #R$64E9.
 @ $96C7 label=ActionLand_Loop2
   $96CA,$01 Return.
 @ $96CB label=ActionLand_Step1
   $96CB,$08 Jump to #R$96E5 unless the command matches the phrase at #R$8AC5.
   $96D3,$03 Fetch the current room.
-  $96D6,$04 The ship is already in #MESSAGE$719C, ready to land.
-  $96DA,$05 Print "#MESSAGE$774B" and start a new line.
+  $96D6,$04 The ship is already in #ROOM$04, ready to land.
+N $96DA Print "#MESSAGE$774B".
+  $96DA,$03 #REGhl=#R$774B.
+  $96DD,$02 Jump to #R$96C7.
 @ $96DF label=ActionLand_Step2
-  $96DF,$05 Move the player to #MESSAGE$719C (#N$04).
+  $96DF,$05 Move the player to room #N$04: "#ROOM$04".
   $96E4,$01 Return.
 @ $96E5 label=ActionLand_Step3
   $96E5,$02 Continue at #R$96C4 to say the player can't.
 
 c $96E7 Action: Open
 @ $96E7 label=ActionOpen
+E $96E7 View the equivalent code in;
+. #LIST
+. { #FOREST$F5F1 }
+. { #HEROES$F9DC }
+. { #JEWELS$FA3C }
+. LIST#
 D $96E7 Open the named door, airlock or container.
   $96E7,$04 Return if the command does not name a single object.
   $96EB,$02 Continue at #R$96F4 to match what the player wants to open.
 @ $96ED label=ActionOpen_Loop1
-  $96ED,$06 Print "#MESSAGE$645B" and start a new line.
+N $96ED Print "#MESSAGE$645B".
+  $96ED,$03 #REGhl=#R$645B.
+  $96F0,$03 Call #R$64E9.
 @ $96F0 label=ActionOpen_Loop2
   $96F3,$01 Return.
+N $96F4 Was the player trying to open the airlock?
 @ $96F4 label=ActionOpen_Step1
   $96F4,$0F Jump to #R$972B unless the command matches the phrase at #R$8AC9
 . (#MESSAGE$6AFE (#N$0E)).
   $9703,$07 Jump to #R$970F when #MESSAGE$6AFE (#N$0F) is here or being
 . carried.
-  $970A,$05 Print "#MESSAGE$77DC" and start a new line.
+N $970A Print "#MESSAGE$77DC".
+  $970A,$03 #REGhl=#R$77DC.
+  $970D,$02 Jump to #R$96F0.
 @ $970F label=ActionOpen_Step2
   $970F,$06 Move #MESSAGE$6AFE (#N$0E) to nowhere (#N$00).
   $9715,$06 Move #MESSAGE$6AFE (#N$0F) to nowhere (#N$00).
-  $971B,$06 Move #MESSAGE$6B15 (#N$10) to #MESSAGE$719C (#N$04).
-  $9721,$06 Move #MESSAGE$6B15 (#N$11) to #MESSAGE$71C4 (#N$05).
+  $971B,$06 Move #MESSAGE$6B15 (#N$10) to room #N$04: "#ROOM$04".
+  $9721,$06 Move #MESSAGE$6B15 (#N$11) to room #N$05: "#ROOM$05".
   $9727,$03 Call #R$648E to say the player is not carrying it.
   $972A,$01 Return.
+N $972B Was the player trying to open the door?
 @ $972B label=ActionOpen_Step3
   $972B,$0F Jump to #R$9757 unless the command matches the phrase at #R$8ACB
 . (#MESSAGE$6CC9 (#N$1D)).
-  $973A,$06 Print "#MESSAGE$77DC" and start a new line.
+N $973A Print "#MESSAGE$77DC".
+  $973A,$03 #REGhl=#R$77DC.
+  $973D,$03 Jump to #R$96F0.
 @ $9740 label=ActionOpen_Step4
   $9740,$06 Move #MESSAGE$6CBA (#N$1C) to nowhere (#N$00).
-  $9746,$06 Move #MESSAGE$6CC9 (#N$1D) to #MESSAGE$73F6 (#N$2B).
-  $974C,$05 Open the way down from #MESSAGE$73F6.
-  $9751,$06 Print "#MESSAGE$7EB6" and start a new line.
+  $9746,$06 Move #MESSAGE$6CC9 (#N$1D) to room #N$2B: "#ROOM$2B".
+N $974C This action changes the map:
+  $974C,$05 Open the way down from #ROOM$2B.
+N $9751 Print "#MESSAGE$7EB6".
+  $9751,$03 #REGhl=#R$7EB6.
+  $9754,$03 Jump to #R$96F0.
 @ $9757 label=ActionOpen_Step5
   $9757,$03 Continue at #R$96ED to say the player can't.
 
 c $975A Action: Close
 @ $975A label=ActionClose
+E $975A View the equivalent code in;
+. #LIST
+. { #FOREST$F68C }
+. { #HEROES$F9E3 }
+. { #JEWELS$FAA8 }
+. LIST#
 D $975A Close the named door or airlock.
   $975A,$04 Return if the command does not name a single object.
   $975E,$02 Continue at #R$9767 to match what the player wants to close.
 @ $9760 label=ActionClose_Loop1
-  $9760,$06 Print "#MESSAGE$645B" and start a new line.
+N $9760 Print "#MESSAGE$645B".
+  $9760,$03 #REGhl=#R$645B.
+  $9763,$03 Call #R$64E9.
 @ $9763 label=ActionClose_Loop2
   $9766,$01 Return.
+N $9767 Was the player trying to close the airlock?
 @ $9767 label=ActionClose_Step1
   $9767,$0F Jump to #R$979E unless the command matches the phrase at #R$8AC9
 . (#MESSAGE$6B15 (#N$10)).
   $9776,$07 Jump to #R$9782 when #MESSAGE$6B15 (#N$11) is here or being
 . carried.
-  $977D,$05 Print "#MESSAGE$781C" and start a new line.
+N $977D Print "#MESSAGE$781C".
+  $977D,$03 #REGhl=#R$781C.
+  $9780,$02 Jump to #R$9763.
 @ $9782 label=ActionClose_Step2
   $9782,$06 Move #MESSAGE$6B15 (#N$10) to nowhere (#N$00).
   $9788,$06 Move #MESSAGE$6B15 (#N$11) to nowhere (#N$00).
-  $978E,$06 Move #MESSAGE$6AFE (#N$0E) to #MESSAGE$719C (#N$04).
-  $9794,$06 Move #MESSAGE$6AFE (#N$0F) to #MESSAGE$71C4 (#N$05).
+  $978E,$06 Move #MESSAGE$6AFE (#N$0E) to room #N$04: "#ROOM$04".
+  $9794,$06 Move #MESSAGE$6AFE (#N$0F) to room #N$05: "#ROOM$05".
   $979A,$03 Call #R$648E to say the player is not carrying it.
   $979D,$01 Return.
+N $979E Was the player trying to close the door?
 @ $979E label=ActionClose_Step3
   $979E,$0F Jump to #R$97C7 unless the command matches the phrase at #R$8ACB
 . (#MESSAGE$6CBA (#N$1C)).
-  $97AD,$06 Print "#MESSAGE$781C" and start a new line.
+N $97AD Print "#MESSAGE$781C".
+  $97AD,$03 #REGhl=#R$781C.
+  $97B0,$03 Jump to #R$9763.
 @ $97B3 label=ActionClose_Step4
   $97B3,$06 Move #MESSAGE$6CC9 (#N$1D) to nowhere (#N$00).
-  $97B9,$06 Move #MESSAGE$6CBA (#N$1C) to #MESSAGE$73F6 (#N$2B).
-  $97BF,$04 Seal the way down from #MESSAGE$73F6.
+  $97B9,$06 Move #MESSAGE$6CBA (#N$1C) to room #N$2B: "#ROOM$2B".
+N $97BF This action changes the map:
+  $97BF,$04 Seal the way down from #ROOM$2B.
   $97C3,$03 Call #R$648E to say the player is not carrying it.
   $97C6,$01 Return.
 @ $97C7 label=ActionClose_Step5
@@ -3629,7 +4390,9 @@ D $97CA Fire the laser pistol at the named target.
   $97CA,$04 Return if the command does not name a single object.
   $97CE,$07 Jump to #R$97E2 when the player is carrying #MESSAGE$6A41 (#N$01).
   $97D5,$06 Print #MESSAGE$7A59 on the same line.
-  $97DB,$06 Print "#MESSAGE$762B" and start a new line.
+N $97DB Print "#MESSAGE$762B".
+  $97DB,$03 #REGhl=#R$762B.
+  $97DE,$03 Call #R$64E9.
 @ $97DE label=ActionShoot_Loop1
   $97E1,$01 Return.
 @ $97E2 label=ActionShoot_Step1
@@ -3640,11 +4403,12 @@ D $97CA Fire the laser pistol at the named target.
   $9806,$09 Jump to #R$95FD when the command matches the phrase at #R$8A4B.
   $980F,$09 Jump to #R$9555 when the command matches the phrase at #R$8ACD.
   $9818,$08 Jump to #R$9826 unless the command matches the phrase at #R$8B19.
-  $9820,$06 Print "#MESSAGE$7F07" and start a new line.
+N $9820 Print "#MESSAGE$7F07".
+  $9820,$03 #REGhl=#R$7F07.
+  $9823,$03 Jump to #R$97DE.
 @ $9826 label=ActionShoot_Step2
   $9826,$08 Jump to #R$9848 unless the command matches the phrase at #R$8ADC.
 @ $982E label=ActionShoot_Step3
-@ $982E nowarn
   $982E,$03 These are the targets that can be shot in this room.
   $9831,$02 Four targets can be shot in this room.
 @ $9833 label=ActionShoot_Loop2
@@ -3656,7 +4420,9 @@ D $97CA Fire the laser pistol at the named target.
 @ $983C label=ActionShoot_Step4
   $983C,$03 Remove the target that was hit.
   $983F,$03 Call #R$65E6 to move the object.
-  $9842,$06 Print "#MESSAGE$7EE7" and start a new line.
+N $9842 Print "#MESSAGE$7EE7".
+  $9842,$03 #REGhl=#R$7EE7.
+  $9845,$03 Jump to #R$97DE.
 @ $9848 label=ActionShoot_Step5
   $9848,$08 Jump to #R$985A unless the command matches the phrase at #R$8AF5.
   $9850,$06 Print #MESSAGE$7A6E.
@@ -3668,31 +4434,53 @@ D $97CA Fire the laser pistol at the named target.
 
 c $9861 Action: Wear
 @ $9861 label=ActionWear
-D $9861 Wear the named item of clothing.
+E $9861 View the equivalent code in;
+. #LIST
+. { #FOREST$F79D }
+. { #JEWELS$FBD5 }
+. { #WARLORD$FB5D }
+. LIST#
+D $9861 Wear the pair of gloves.
   $9861,$04 Return if the command does not name a single object.
   $9865,$02 Continue at #R$986E to match what the player wants to wear.
 @ $9867 label=ActionWear_Loop1
-  $9867,$06 Print "#MESSAGE$645B" and start a new line.
+N $9867 Print "#MESSAGE$645B".
+  $9867,$03 #REGhl=#R$645B.
+  $986A,$03 Call #R$64E9.
 @ $986A label=ActionWear_Loop2
   $986D,$01 Return.
+N $986E Was the player trying to wear the gloves?
 @ $986E label=ActionWear_Step1
   $986E,$0F Jump to #R$98A8 unless the command matches the phrase at #R$897D
 . (#MESSAGE$700A (#N$39)).
-  $987D,$06 Print "#MESSAGE$7F26" and start a new line.
+N $987D Print "#MESSAGE$7F26".
+  $987D,$03 #REGhl=#R$7F26.
+  $9880,$03 Jump to #R$986A.
 @ $9883 label=ActionWear_Step2
   $9883,$07 Jump to #R$9896 when the player is carrying #MESSAGE$6AE0 (#N$0C).
   $988A,$06 Print #MESSAGE$7A59 on the same line.
-  $9890,$06 Print "#MESSAGE$75F6" and start a new line.
+N $9890 Print "#MESSAGE$75F6".
+  $9890,$03 #REGhl=#R$75F6.
+  $9893,$03 Jump to #R$986A.
 @ $9896 label=ActionWear_Step3
   $9896,$06 Move #MESSAGE$6AE0 (#N$0C) to nowhere (#N$00).
   $989C,$06 Move #MESSAGE$700A (#N$39) to the inventory (#N$01).
-  $98A2,$06 Print "#MESSAGE$6466" and start a new line.
+N $98A2 Print "#MESSAGE$6466".
+  $98A2,$03 #REGhl=#R$6466.
+  $98A5,$03 Jump to #R$986A.
 @ $98A8 label=ActionWear_Step4
   $98A8,$03 Continue at #R$9867 to say the player can't.
 
 c $98AB Action: Drink
 @ $98AB label=ActionDrink
-D $98AB Drink from the named source.
+E $98AB View the equivalent code in;
+. #LIST
+. { #FOREST$F292 }
+. { #HEROES$FAA5 }
+. { #JEWELS$F9E4 }
+. { #WARLORD$FA91 }
+. LIST#
+D $98AB Drinking does nothing useful here.
   $98AB,$04 Return if the command does not name a single object.
   $98AF,$03 Call #R$6487 to say that is not understood.
   $98B2,$06 Print #MESSAGE$7F43.
@@ -3703,23 +4491,32 @@ c $98B9 Action: Turn
 D $98B9 Turn the named key, dial or switch.
   $98B9,$04 Return if the command does not name a single object.
   $98BD,$04 Jump to #R$98CD when the command names fewer than #N$02 nouns.
-  $98C1,$05 Print "#MESSAGE$6445" and start a new line.
+N $98C1 Print "#MESSAGE$6445".
+  $98C1,$03 #REGhl=#R$6445.
+  $98C4,$02 Jump to #R$98C9.
 @ $98C6 label=ActionTurn_Loop1
-  $98C6,$06 Print "#MESSAGE$645B" and start a new line.
+N $98C6 Print "#MESSAGE$645B".
+  $98C6,$03 #REGhl=#R$645B.
+  $98C9,$03 Call #R$64E9.
 @ $98C9 label=ActionTurn_Loop2
   $98CC,$01 Return.
+N $98CD Was the player trying to turn the dish / sphere?
 @ $98CD label=ActionTurn_Step1
   $98CD,$0F Jump to #R$9924 unless the command matches the phrase at #R$8973
 . (#MESSAGE$709B (#N$3C)).
   $98DC,$07 Jump to #R$98E9 when #MESSAGE$6B71 (#N$14) is here or being
 . carried.
-  $98E3,$06 Print "#MESSAGE$7F60" and start a new line.
+N $98E3 Print "#MESSAGE$7F60".
+  $98E3,$03 #REGhl=#R$7F60.
+  $98E6,$03 Jump to #R$98C9.
 @ $98E9 label=ActionTurn_Step2
   $98E9,$06 Move #MESSAGE$6B71 (#N$14) to nowhere (#N$00).
   $98EF,$03 Fetch the current room.
   $98F2,$03 Leave #MESSAGE$709B in the room where the dish was turned.
   $98F5,$03 Call #R$65E6 to move the object.
-  $98F8,$06 Print "#MESSAGE$7F77" and start a new line.
+N $98F8 Print "#MESSAGE$7F77".
+  $98F8,$03 #REGhl=#R$7F77.
+  $98FB,$03 Jump to #R$98C9.
 @ $98FE label=ActionTurn_Step3
   $98FE,$06 Move #MESSAGE$709B (#N$3C) to nowhere (#N$00).
   $9904,$03 Fetch the current room.
@@ -3727,27 +4524,37 @@ D $98B9 Turn the named key, dial or switch.
   $990A,$03 Call #R$65E6 to move the object.
   $990D,$06 Print #MESSAGE$7FB2.
   $9913,$03 Fetch the current room.
-  $9916,$03 Return if the player is not in #MESSAGE$72C9 (#N$13).
-  $9919,$05 Open the way down from #MESSAGE$72C9 to #MESSAGE$731B.
-  $991E,$06 Print "#MESSAGE$7FEE" and start a new line.
+  $9916,$03 Return if the player is not in room #N$13: "#ROOM$13".
+N $9919 This action changes the map:
+  $9919,$05 Open the way down from #ROOM$13 to #ROOM$18.
+N $991E Print "#MESSAGE$7FEE".
+  $991E,$03 #REGhl=#R$7FEE.
+  $9921,$03 Jump to #R$98C9.
+N $9924 Was the player trying to turn the key in the panel?
 @ $9924 label=ActionTurn_Step4
   $9924,$0F Jump to #R$997C unless the command matches the phrase at #R$8962
 . (#MESSAGE$7032 (#N$3A)).
   $9933,$07 Jump to #R$9940 when #MESSAGE$7067 (#N$3B) is here or being
 . carried.
-  $993A,$06 Print "#MESSAGE$7F60" and start a new line.
+N $993A Print "#MESSAGE$7F60".
+  $993A,$03 #REGhl=#R$7F60.
+  $993D,$03 Jump to #R$98C9.
 @ $9940 label=ActionTurn_Step5
   $9940,$06 Move #MESSAGE$7067 (#N$3B) to nowhere (#N$00).
-  $9946,$06 Move #MESSAGE$7032 (#N$3A) to #MESSAGE$74E1 (#N$36).
+  $9946,$06 Move #MESSAGE$7032 (#N$3A) to room #N$36: "#ROOM$36".
   $994C,$06 Move #MESSAGE$70DA (#N$3E) to nowhere (#N$00).
-  $9952,$06 Print "#MESSAGE$8035" and start a new line.
+N $9952 Print "#MESSAGE$8035".
+  $9952,$03 #REGhl=#R$8035.
+  $9955,$03 Jump to #R$98C9.
 @ $9958 label=ActionTurn_Step6
   $9958,$06 Move #MESSAGE$7032 (#N$3A) to nowhere (#N$00).
-  $995E,$06 Move #MESSAGE$7067 (#N$3B) to #MESSAGE$74E1 (#N$36).
+  $995E,$06 Move #MESSAGE$7067 (#N$3B) to room #N$36: "#ROOM$36".
   $9964,$06 Print #MESSAGE$80A2.
   $996A,$06 Return when #MESSAGE$6EE5 (#N$2B) is here or being carried.
-  $9970,$06 Move #MESSAGE$70DA (#N$3E) to #MESSAGE$74E1 (#N$36).
-  $9976,$06 Print "#MESSAGE$8056" and start a new line.
+  $9970,$06 Move #MESSAGE$70DA (#N$3E) to room #N$36: "#ROOM$36".
+N $9976 Print "#MESSAGE$8056".
+  $9976,$03 #REGhl=#R$8056.
+  $9979,$03 Jump to #R$98C9.
 @ $997C label=ActionTurn_Step7
   $997C,$03 Continue at #R$98C6 to say the player can't.
 
@@ -3755,55 +4562,80 @@ c $997F Action: Type
 @ $997F label=ActionType
 D $997F Type the password named in the command.
   $997F,$03 Fetch the current room.
-  $9982,$04 Jump to #R$9992 when the player is in #MESSAGE$74E1 (#N$36).
-  $9986,$05 Print "#MESSAGE$6445" and start a new line.
+  $9982,$04 Jump to #R$9992 when the player is in room #N$36: "#ROOM$36".
+N $9986 Print "#MESSAGE$6445".
+  $9986,$03 #REGhl=#R$6445.
+  $9989,$02 Jump to #R$998E.
 @ $998B label=ActionType_Loop1
-  $998B,$06 Print "#MESSAGE$80C3" and start a new line.
+N $998B Print "#MESSAGE$80C3".
+  $998B,$03 #REGhl=#R$80C3.
+  $998E,$03 Call #R$64E9.
 @ $998E label=ActionType_Loop2
   $9991,$01 Return.
 @ $9992 label=ActionType_Step1
   $9992,$07 Jump to #R$999F when #MESSAGE$7067 (#N$3B) is here or being
 . carried.
-  $9999,$06 Print "#MESSAGE$81BC" and start a new line.
+N $9999 Print "#MESSAGE$81BC".
+  $9999,$03 #REGhl=#R$81BC.
+  $999C,$03 Jump to #R$998E.
 @ $999F label=ActionType_Step2
   $999F,$07 Jump to #R$99AC when #MESSAGE$6EE5 (#N$2B) is not here or being
 . carried.
-  $99A6,$06 Print "#MESSAGE$81D9" and start a new line.
+N $99A6 Print "#MESSAGE$81D9".
+  $99A6,$03 #REGhl=#R$81D9.
+  $99A9,$03 Jump to #R$998E.
 @ $99AC label=ActionType_Step3
   $99AC,$08 Jump to #R$99DA unless the command matches the phrase at #R$8B32.
   $99B4,$06 Move #MESSAGE$70DA (#N$3E) to nowhere (#N$00).
-  $99BA,$06 Move #MESSAGE$7114 (#N$3F) to #MESSAGE$74C2 (#N$35).
-  $99C0,$06 Move #MESSAGE$6EE5 (#N$2B) to #MESSAGE$74E1 (#N$36).
-  $99C6,$04 Seal the north exit of #MESSAGE$74C2.
+  $99BA,$06 Move #MESSAGE$7114 (#N$3F) to room #N$35: "#ROOM$35".
+  $99C0,$06 Move #MESSAGE$6EE5 (#N$2B) to room #N$36: "#ROOM$36".
+N $99C6 This action changes the map:
+  $99C6,$04 Seal the north exit of #ROOM$35.
   $99CA,$03 Check the turn-based event flags.
   $99CD,$02 Arm the explosion countdown.
   $99CF,$05 The complex explodes in #N$15 turns.
-  $99D4,$06 Print "#MESSAGE$80EF" and start a new line.
+N $99D4 Print "#MESSAGE$80EF".
+  $99D4,$03 #REGhl=#R$80EF.
+  $99D7,$03 Jump to #R$998E.
 @ $99DA label=ActionType_Step4
   $99DA,$03 Continue at #R$998B to say the password is wrong.
 
 c $99DD Action: Touch
 @ $99DD label=ActionTouch
-D $99DD Touch the named object.
+E $99DD View the equivalent code in;
+. #LIST
+. { #FOREST$F7C2 }
+. LIST#
+D $99DD Touch the crystal rod to the plate and open the way south.
   $99DD,$04 Return if the command does not name a single object.
   $99E1,$04 Jump to #R$99F1 when the command names at least #N$02 nouns.
-  $99E5,$05 Print "#MESSAGE$642C" and start a new line.
+N $99E5 Print "#MESSAGE$642C".
+  $99E5,$03 #REGhl=#R$642C.
+  $99E8,$02 Jump to #R$99ED.
 @ $99EA label=ActionTouch_Loop1
-  $99EA,$06 Print "#MESSAGE$7D50" and start a new line.
+N $99EA Print "#MESSAGE$7D50".
+  $99EA,$03 #REGhl=#R$7D50.
+  $99ED,$03 Call #R$64E9.
 @ $99ED label=ActionTouch_Loop2
   $99F0,$01 Return.
+N $99F1 Was the player trying to touch the plate with the crystal rod?
 @ $99F1 label=ActionTouch_Step1
   $99F1,$0F Jump to #R$9A2B unless the command matches the phrase at #R$8B34
 . (#MESSAGE$6A59 (#N$03)).
   $9A00,$06 Print #MESSAGE$7A59 on the same line.
-  $9A06,$06 Print "#MESSAGE$7654" and start a new line.
+N $9A06 Print "#MESSAGE$7654".
+  $9A06,$03 #REGhl=#R$7654.
+  $9A09,$03 Jump to #R$99ED.
 @ $9A0C label=ActionTouch_Step2
   $9A0C,$08 Jump back to #R$99EA when #MESSAGE$6BDD (#N$17) is not here or
 . being carried.
   $9A14,$06 Move #MESSAGE$6BDD (#N$17) to nowhere (#N$00).
-  $9A1A,$06 Move #MESSAGE$6C06 (#N$18) to #MESSAGE$7308 (#N$17).
-  $9A20,$05 Open the south exit of #MESSAGE$7308 onto #MESSAGE$7380.
-  $9A25,$06 Print "#MESSAGE$8208" and start a new line.
+  $9A1A,$06 Move #MESSAGE$6C06 (#N$18) to room #N$17: "#ROOM$17".
+N $9A20 This action changes the map:
+  $9A20,$05 Open the south exit of #ROOM$17 onto #ROOM$1C.
+N $9A25 Print "#MESSAGE$8208".
+  $9A25,$03 #REGhl=#R$8208.
+  $9A28,$03 Jump to #R$99ED.
 @ $9A2B label=ActionTouch_Step3
   $9A2B,$03 Continue at #R$99EA to say it has no effect.
 
@@ -3823,49 +4655,64 @@ D $9A36 Print "It has no apparent effect.".
 
 c $9A41 Action: Use
 @ $9A41 label=ActionUse
-D $9A41 Use the named object on the named target.
+E $9A41 View the equivalent code in;
+. #LIST
+. { #HEROES$FB92 }
+. LIST#
+D $9A41 Use the detonator on the explosives.
   $9A41,$04 Return if the command does not name a single object.
   $9A45,$02 Continue at #R$9A4E to match what the player wants to use.
 @ $9A47 label=ActionUse_Loop1
-  $9A47,$06 Print "#MESSAGE$7D50" and start a new line.
+N $9A47 Print "#MESSAGE$7D50".
+  $9A47,$03 #REGhl=#R$7D50.
+  $9A4A,$03 Call #R$64E9.
 @ $9A4A label=ActionUse_Loop2
   $9A4D,$01 Return.
+N $9A4E Was the player trying to use the detonator?
 @ $9A4E label=ActionUse_Step1
   $9A4E,$08 Jump to #R$9ACA unless the command matches the phrase at #R$8B48.
   $9A56,$03 Fetch the current room.
-  $9A59,$04 The detonator is being used from #MESSAGE$75C1.
+  $9A59,$04 The detonator is being used from #ROOM$3E.
   $9A5D,$07 Jump to #R$9A6A when the player is carrying #MESSAGE$6A68 (#N$04).
-  $9A64,$06 Print "#MESSAGE$8310" and start a new line.
+N $9A64 Print "#MESSAGE$8310".
+  $9A64,$03 #REGhl=#R$8310.
+  $9A67,$03 Jump to #R$9A4A.
 @ $9A6A label=ActionUse_Step2
   $9A6A,$07 Jump to #R$9A7B when #MESSAGE$6ACF (#N$0B) is not here or being
 . carried.
 @ $9A71 label=ActionUse_Step3
-@ $9A71 nowarn
   $9A71,$04 Return to Game Over (#R$8DB3) after the message.
-  $9A75,$06 Print "#MESSAGE$8237" and start a new line.
+N $9A75 Print "#MESSAGE$8237".
+  $9A75,$03 #REGhl=#R$8237.
+  $9A78,$03 Jump to #R$9A4A.
 @ $9A7B label=ActionUse_Step4
   $9A7B,$02 See where #MESSAGE$6ACF has been left.
   $9A7D,$03 Call #R$694F to read the object's location.
-  $9A80,$05 The explosives are not lying in #MESSAGE$7336.
+  $9A80,$05 The explosives are not lying in #ROOM$19.
   $9A85,$03 Fetch the current room.
-  $9A88,$05 The player is not in #MESSAGE$75D4.
+  $9A88,$05 The player is not in #ROOM$3F.
   $9A8D,$06 Move #MESSAGE$6ACF (#N$0B) to nowhere (#N$00).
   $9A93,$06 Move #MESSAGE$6C3E (#N$19) to nowhere (#N$00).
   $9A99,$06 Move #MESSAGE$6FF9 (#N$38) to nowhere (#N$00).
-  $9A9F,$06 Move #MESSAGE$6C62 (#N$1A) to #MESSAGE$7336 (#N$19).
-  $9AA5,$05 Open the east exit of #MESSAGE$7336 onto #MESSAGE$7358.
-  $9AAA,$06 Print "#MESSAGE$8275" and start a new line.
+  $9A9F,$06 Move #MESSAGE$6C62 (#N$1A) to room #N$19: "#ROOM$19".
+N $9AA5 This action changes the map:
+  $9AA5,$05 Open the east exit of #ROOM$19 onto #ROOM$1A.
+N $9AAA Print "#MESSAGE$8275".
+  $9AAA,$03 #REGhl=#R$8275.
+  $9AAD,$03 Jump to #R$9A4A.
 @ $9AB0 label=ActionUse_Step5
   $9AB0,$02 See where #MESSAGE$6F6C has been left.
   $9AB2,$03 Call #R$694F to read the object's location.
-  $9AB5,$04 #MESSAGE$6F6C is in #MESSAGE$74C2.
-  $9AB9,$03 Send #MESSAGE$6F6C to #MESSAGE$74C2.
+  $9AB5,$04 #MESSAGE$6F6C is in #ROOM$35.
+  $9AB9,$03 Send #MESSAGE$6F6C to #ROOM$35.
   $9ABC,$02 Continue at #R$9AC1 to move the alien device.
 @ $9ABE label=ActionUse_Step6
-  $9ABE,$03 Send #MESSAGE$6F6C to #MESSAGE$72E6.
+  $9ABE,$03 Send #MESSAGE$6F6C to #ROOM$15.
 @ $9AC1 label=ActionUse_Step7
   $9AC1,$03 Call #R$65E6 to move the object.
-  $9AC4,$06 Print "#MESSAGE$82BD" and start a new line.
+N $9AC4 Print "#MESSAGE$82BD".
+  $9AC4,$03 #REGhl=#R$82BD.
+  $9AC7,$03 Jump to #R$9A4A.
 @ $9ACA label=ActionUse_Step8
   $9ACA,$03 Continue at #R$9A47 to say it has no effect.
 
@@ -3873,7 +4720,8 @@ b $9ACD Graphics: In Deep Space
 @ $9ACD label=Image_InDeepSpace
 D $9ACD #PICTURE(In Deep Space,in-deep-space)
 D $9ACD Drawn by #R$F813 for In Deep Space.
-  $9ACD,$0236,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair writes a pixel
+  $9ACD,$0236,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair
+. writes a pixel
 . byte at offset #REGl in the current display-file block; #N($00),#N$00 ends
 . that pass.
 
@@ -3884,9 +4732,11 @@ D $9D03 Attribute data for #R$9ACD, copied to the attribute file by #R$6535.
 
 b $9F03 Graphics: In Orbit Around an Unknown Planet
 @ $9F03 label=Image_InOrbitAroundAnUnknownPlanet
-D $9F03 #PICTURE(In Orbit Around an Unknown Planet,in-orbit-around-an-unknown-planet)
+D $9F03 #PICTURE(In Orbit Around an Unknown
+. Planet,in-orbit-around-an-unknown-planet)
 D $9F03 Drawn by #R$F81B for In Orbit Around an Unknown Planet.
-  $9F03,$0582,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair writes a pixel
+  $9F03,$0582,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair
+. writes a pixel
 . byte at offset #REGl in the current display-file block; #N($00),#N$00 ends
 . that pass.
 
@@ -3899,7 +4749,8 @@ b $A685 Graphics: The Limestone Maze
 @ $A685 label=Image_TheLimestoneMaze
 D $A685 #PICTURE(The Limestone Maze,the-limestone-maze)
 D $A685 Drawn by #R$F87F for The Limestone Maze.
-  $A685,$09B8,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair writes a pixel
+  $A685,$09B8,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair
+. writes a pixel
 . byte at offset #REGl in the current display-file block; #N($00),#N$00 ends
 . that pass.
 
@@ -3912,7 +4763,8 @@ b $B23D Graphics: The Plateau
 @ $B23D label=Image_ThePlateau
 D $B23D #PICTURE(The Plateau,the-plateau)
 D $B23D Drawn by #R$F89F for The Plateau.
-  $B23D,$0BBE,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair writes a pixel
+  $B23D,$0BBE,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair
+. writes a pixel
 . byte at offset #REGl in the current display-file block; #N($00),#N$00 ends
 . that pass.
 
@@ -3925,7 +4777,8 @@ b $BFFB Graphics: The Tall Canyon
 @ $BFFB label=Image_TheTallCanyon
 D $BFFB #PICTURE(The Tall Canyon,the-tall-canyon)
 D $BFFB Drawn by #R$F887 for The Tall Canyon.
-  $BFFB,$06EA,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair writes a pixel
+  $BFFB,$06EA,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair
+. writes a pixel
 . byte at offset #REGl in the current display-file block; #N($00),#N$00 ends
 . that pass.
 
@@ -3938,7 +4791,8 @@ b $C8E5 Graphics: The West Bank of the Lake
 @ $C8E5 label=Image_TheWestBankOfTheLake
 D $C8E5 #PICTURE(The West Bank of the Lake,the-west-bank-of-the-lake)
 D $C8E5 Drawn by #R$F897 for The West Bank of the Lake.
-  $C8E5,$073E,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair writes a pixel
+  $C8E5,$073E,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair
+. writes a pixel
 . byte at offset #REGl in the current display-file block; #N($00),#N$00 ends
 . that pass.
 
@@ -3951,7 +4805,8 @@ b $D223 Graphics: The Reactor Room
 @ $D223 label=Image_TheReactorRoom
 D $D223 #PICTURE(The Reactor Room,the-reactor-room)
 D $D223 Drawn by #R$F88F for The Reactor Room.
-  $D223,$0624,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair writes a pixel
+  $D223,$0624,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair
+. writes a pixel
 . byte at offset #REGl in the current display-file block; #N($00),#N$00 ends
 . that pass.
 
@@ -3964,7 +4819,8 @@ b $DA47 Graphics: The Landing Pad
 @ $DA47 label=Image_TheLandingPad
 D $DA47 #PICTURE(The Landing Pad,the-landing-pad)
 D $DA47 Drawn by #R$F823 for The Landing Pad.
-  $DA47,$04F0,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair writes a pixel
+  $DA47,$04F0,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair
+. writes a pixel
 . byte at offset #REGl in the current display-file block; #N($00),#N$00 ends
 . that pass.
 
@@ -3977,7 +4833,8 @@ b $E137 Graphics: The Repair Bay
 @ $E137 label=Image_TheRepairBay
 D $E137 #PICTURE(The Repair Bay,the-repair-bay)
 D $E137 Drawn by #R$F8A7 for The Repair Bay.
-  $E137,$05DA,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair writes a pixel
+  $E137,$05DA,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair
+. writes a pixel
 . byte at offset #REGl in the current display-file block; #N($00),#N$00 ends
 . that pass.
 
@@ -3999,7 +4856,8 @@ D $E911 #PICTURE(The Yellow Room,the-yellow-room,$30)
 D $E911 #PICTURE(The Green Room,the-green-room,$20)
 D $E911 #PICTURE(The Blue Room,the-blue-room,$28)
 D $E911 #PICTURE(The Red Room,the-red-room,$50)
-  $E911,$0C74,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair writes a pixel
+  $E911,$0C74,$02 Pixel data: (offset,byte) pairs read by #R$6519: each pair
+. writes a pixel
 . byte at offset #REGl in the current display-file block; #N($00),#N$00 ends
 . that pass.
 
@@ -4018,74 +4876,83 @@ D $F785 Attribute-file addresses that #R$F85F blanks after it paints a
 W $F785,$02 Attribute address #N(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
 L $F785,$02,$47
 
-c $F813 Handler: Room Image: In Deep Space
-@ $F813 label=HandlerRoomImageInDeepSpace
-D $F813 Used by the routine at #R$678A through #R$FA68.
-D $F813 Draw the picture for In Deep Space.
-  $F813,$04 Point at the picture of deep space.
+c $F813 Handler: Room Images
+@ $F813 label=DisplayImage_InDeepSpace
+E $F813 View the equivalent code in;
+. #LIST
+. { #FOREST$FACF }
+. { #HEROES$FDAB }
+. { #JEWELS$FEFA }
+. { #WARLORD$FF12 }
+. LIST#
+D $F813 Draw the location pictures. Each entry loads a graphic pointer and
+. either draws it directly or expands and tints the shared room picture.
+N $F813 Displays the image for in deep space.
+N $F813 #PUSHS #UDGTABLE #POKES$6223,$02
+. { #SIM(start=#PC,stop=$F81A)#SCR$01(game-in-deep-space) }
+. UDGTABLE# #POPS
+  $F813,$04 #REGix=#R$9ACD.
   $F817,$03 Call #R$6541 to draw the room picture.
   $F81A,$01 Return.
-
-c $F81B Handler: Room Image: In Orbit Around an Unknown Planet
-@ $F81B label=HandlerRoomImageInOrbitAroundAnUnknownPlanet
-D $F81B Used by the routine at #R$678A through #R$FA68.
-D $F81B Draw the picture for In Orbit Around an Unknown Planet.
-  $F81B,$04 Point at the picture of the planet from orbit.
+@ $F81B label=DisplayImage_InOrbit
+N $F81B Displays the image for in orbit around an unknown planet.
+N $F81B #PUSHS #UDGTABLE #POKES$6223,$03
+. { #SIM(start=#PC,stop=$F822)#SCR$01(game-in-orbit) }
+. UDGTABLE# #POPS
+  $F81B,$04 #REGix=#R$9F03.
   $F81F,$03 Call #R$6541 to draw the room picture.
   $F822,$01 Return.
-
-c $F823 Handler: Room Image: The Landing Pad
-@ $F823 label=HandlerRoomImageTheLandingPad
-D $F823 Used by the routine at #R$678A through #R$FA68.
-D $F823 Draw the picture for The Landing Pad.
-  $F823,$04 Point at the picture of the landing pad.
+@ $F823 label=DisplayImage_LandingPad
+N $F823 Displays the image for the landing pad.
+N $F823 #PUSHS #UDGTABLE #POKES$6223,$05
+. { #SIM(start=#PC,stop=$F82A)#SCR$01(game-landing-pad) }
+. UDGTABLE# #POPS
+  $F823,$04 #REGix=#R$DA47.
   $F827,$03 Call #R$6541 to draw the room picture.
   $F82A,$01 Return.
-
-c $F82B Handler: Room Image: The Yellow Room
-@ $F82B label=HandlerRoomImageTheYellowRoom
-D $F82B Used by the routine at #R$678A through #R$FA68.
-D $F82B Draw the picture for The Yellow Room.
-  $F82B,$04 Point at the shared picture before tinting it yellow.
+@ $F82B label=DisplayImage_YellowRoom
+N $F82B Displays the image for the yellow room.
+N $F82B #PUSHS #UDGTABLE #POKES$6223,$08
+. { #SIM(start=#PC,stop=$F837)#SCR$01(game-yellow-room) }
+. UDGTABLE# #POPS
+  $F82B,$04 #REGix=#R$E911.
   $F82F,$03 Call #R$6519 to expand the room picture.
   $F832,$02 Tint that picture yellow (#N$30).
   $F834,$03 Call #R$F85F to recolour the picture.
   $F837,$01 Return.
-
-c $F838 Handler: Room Image: The Green Room
-@ $F838 label=HandlerRoomImageTheGreenRoom
-D $F838 Used by the routine at #R$678A through #R$FA68.
-D $F838 Draw the picture for The Green Room.
-  $F838,$04 Point at the shared picture before tinting it green.
+@ $F838 label=DisplayImage_GreenRoom
+N $F838 Displays the image for the green room.
+N $F838 #PUSHS #UDGTABLE #POKES$6223,$0B
+. { #SIM(start=#PC,stop=$F844)#SCR$01(game-green-room) }
+. UDGTABLE# #POPS
+  $F838,$04 #REGix=#R$E911.
   $F83C,$03 Call #R$6519 to expand the room picture.
   $F83F,$02 Tint that picture green (#N$20).
   $F841,$03 Call #R$F85F to recolour the picture.
   $F844,$01 Return.
-
-c $F845 Handler: Room Image: The Blue Room
-@ $F845 label=HandlerRoomImageTheBlueRoom
-D $F845 Used by the routine at #R$678A through #R$FA68.
-D $F845 Draw the picture for The Blue Room.
-  $F845,$04 Point at the shared picture before tinting it cyan.
+@ $F845 label=DisplayImage_BlueRoom
+N $F845 Displays the image for the blue room.
+N $F845 #PUSHS #UDGTABLE #POKES$6223,$13
+. { #SIM(start=#PC,stop=$F851)#SCR$01(game-blue-room) }
+. UDGTABLE# #POPS
+  $F845,$04 #REGix=#R$E911.
   $F849,$03 Call #R$6519 to expand the room picture.
   $F84C,$02 Tint that picture cyan (#N$28), the colour the game calls blue.
   $F84E,$03 Call #R$F85F to recolour the picture.
   $F851,$01 Return.
-
-c $F852 Handler: Room Image: The Red Room
-@ $F852 label=HandlerRoomImageTheRedRoom
-D $F852 Used by the routine at #R$678A through #R$FA68.
-D $F852 Draw the picture for The Red Room.
-  $F852,$04 Point at the shared picture before tinting it red.
+@ $F852 label=DisplayImage_RedRoom
+N $F852 Displays the image for the red room.
+N $F852 #PUSHS #UDGTABLE #POKES$6223,$14
+. { #SIM(start=#PC,stop=$F85E)#SCR$01(game-red-room) }
+. UDGTABLE# #POPS
+  $F852,$04 #REGix=#R$E911.
   $F856,$03 Call #R$6519 to expand the room picture.
   $F859,$02 Tint that picture red (#N$50).
   $F85B,$03 Call #R$F85F to recolour the picture.
   $F85E,$01 Return.
-
-c $F85F Recolour Room Image
-@ $F85F label=RecolourRoomImage
-D $F85F Paint the whole picture with the attribute in #REGa first
+N $F85F Paint the whole picture with the attribute in #REGa first
 . (#R$6548), then blank the #N$47 attribute cells listed at #R$F785.
+@ $F85F label=RecolourRoomImage
 R $F85F I:A Attribute byte
   $F85F,$03 Call #R$6548 to paint every picture attribute with #REGa.
   $F862,$07 Point at #R$F785 and prepare to blank its
@@ -4093,60 +4960,60 @@ R $F85F I:A Attribute byte
 @ $F869 label=RecolourRoomImage_Loop
   $F869,$0D Blank every attribute address in that list.
   $F876,$01 Return.
-
-c $F877 Handler: Room Image: The White Room
-@ $F877 label=HandlerRoomImageTheWhiteRoom
-D $F877 Used by the routine at #R$678A through #R$FA68.
-D $F877 Draw the picture for The White Room.
-  $F877,$04 Point at the shared picture, left in its white colours.
+@ $F877 label=DisplayImage_WhiteRoom
+N $F877 Displays the image for the white room.
+N $F877 #PUSHS #UDGTABLE #POKES$6223,$16
+. { #SIM(start=#PC,stop=$F87E)#SCR$01(game-white-room) }
+. UDGTABLE# #POPS
+  $F877,$04 #REGix=#R$E911.
   $F87B,$03 Call #R$6541 to draw the room picture.
   $F87E,$01 Return.
-
-c $F87F Handler: Room Image: The Limestone Maze
-@ $F87F label=HandlerRoomImageTheLimestoneMaze
-D $F87F Used by the routine at #R$678A through #R$FA68.
-D $F87F Draw the picture for The Limestone Maze.
-  $F87F,$04 Point at the picture of the limestone maze.
+@ $F87F label=DisplayImage_LimestoneMaze
+N $F87F Displays the image for the limestone maze.
+N $F87F #PUSHS #UDGTABLE #POKES$6223,$1F
+. { #SIM(start=#PC,stop=$F886)#SCR$01(game-limestone-maze) }
+. UDGTABLE# #POPS
+  $F87F,$04 #REGix=#R$A685.
   $F883,$03 Call #R$6541 to draw the room picture.
   $F886,$01 Return.
-
-c $F887 Handler: Room Image: The Tall Canyon
-@ $F887 label=HandlerRoomImageTheTallCanyon
-D $F887 Used by the routine at #R$678A through #R$FA68.
-D $F887 Draw the picture for The Tall Canyon.
-  $F887,$04 Point at the picture of the tall canyon.
+@ $F887 label=DisplayImage_TallCanyon
+N $F887 Displays the image for the tall canyon.
+N $F887 #PUSHS #UDGTABLE #POKES$6223,$2D
+. { #SIM(start=#PC,stop=$F88E)#SCR$01(game-tall-canyon) }
+. UDGTABLE# #POPS
+  $F887,$04 #REGix=#R$BFFB.
   $F88B,$03 Call #R$6541 to draw the room picture.
   $F88E,$01 Return.
-
-c $F88F Handler: Room Image: The Reactor Room
-@ $F88F label=HandlerRoomImageTheReactorRoom
-D $F88F Used by the routine at #R$678A through #R$FA68.
-D $F88F Draw the picture for The Reactor Room.
-  $F88F,$04 Point at the picture of the reactor room.
+@ $F88F label=DisplayImage_ReactorRoom
+N $F88F Displays the image for the reactor room.
+N $F88F #PUSHS #UDGTABLE #POKES$6223,$36
+. { #SIM(start=#PC,stop=$F896)#SCR$01(game-reactor-room) }
+. UDGTABLE# #POPS
+  $F88F,$04 #REGix=#R$D223.
   $F893,$03 Call #R$6541 to draw the room picture.
   $F896,$01 Return.
-
-c $F897 Handler: Room Image: The West Bank of the Lake
-@ $F897 label=HandlerRoomImageTheWestBankOfTheLake
-D $F897 Used by the routine at #R$678A through #R$FA68.
-D $F897 Draw the picture for The West Bank of the Lake.
-  $F897,$04 Point at the picture of the west bank of the lake.
+@ $F897 label=DisplayImage_WestBankOfTheLake
+N $F897 Displays the image for the west bank of the lake.
+N $F897 #PUSHS #UDGTABLE #POKES$6223,$37
+. { #SIM(start=#PC,stop=$F89E)#SCR$01(game-west-bank-of-the-lake) }
+. UDGTABLE# #POPS
+  $F897,$04 #REGix=#R$C8E5.
   $F89B,$03 Call #R$6541 to draw the room picture.
   $F89E,$01 Return.
-
-c $F89F Handler: Room Image: The Plateau
-@ $F89F label=HandlerRoomImageThePlateau
-D $F89F Used by the routine at #R$678A through #R$FA68.
-D $F89F Draw the picture for The Plateau.
-  $F89F,$04 Point at the picture of the plateau.
+@ $F89F label=DisplayImage_Plateau
+N $F89F Displays the image for the plateau.
+N $F89F #PUSHS #UDGTABLE #POKES$6223,$3B
+. { #SIM(start=#PC,stop=$F8A6)#SCR$01(game-plateau) }
+. UDGTABLE# #POPS
+  $F89F,$04 #REGix=#R$B23D.
   $F8A3,$03 Call #R$6541 to draw the room picture.
   $F8A6,$01 Return.
-
-c $F8A7 Handler: Room Image: The Repair Bay
-@ $F8A7 label=HandlerRoomImageTheRepairBay
-D $F8A7 Used by the routine at #R$678A through #R$FA68.
-D $F8A7 Draw the picture for The Repair Bay.
-  $F8A7,$04 Point at the picture of the repair bay.
+@ $F8A7 label=DisplayImage_RepairBay
+N $F8A7 Displays the image for the repair bay.
+N $F8A7 #PUSHS #UDGTABLE #POKES$6223,$3C
+. { #SIM(start=#PC,stop=$F8AE)#SCR$01(game-repair-bay) }
+. UDGTABLE# #POPS
+  $F8A7,$04 #REGix=#R$E137.
   $F8AB,$03 Call #R$6541 to draw the room picture.
   $F8AE,$01 Return.
 
@@ -4154,37 +5021,223 @@ c $F8AF Game Start
 @ $F8AF label=GameStart
 E $F8AF View the equivalent code in;
 . #LIST
+. { #SHOCK$ADA1 }
 . { #FOREST$F964 }
+. { #HEROES$FBA9 }
+. { #JEWELS$FD82 }
+. { #WARLORD$FCCE }
 . LIST#
-D $F8AF Initialise the game state and enter the game loop at room #N$02.
+D $F8AF Initialise the game state and enter the game loop at room #N$02:
+. "#ROOM$02".
   $F8AF,$03 The keyboard flags are #SKOOLKID$5C6A(FLAGS2).
   $F8B2,$02 Turn CAPS LOCK on.
 N $F8B4 These exit bytes start closed and are opened by the plot.
-  $F8B4,$0A Seal the down exit of #MESSAGE$72C9, south from #MESSAGE$7308 and
-. east from #MESSAGE$7336.
-  $F8BE,$06 Seal the east and up exits of #MESSAGE$7395.
-  $F8C4,$09 Seal the down exit of #MESSAGE$73F6, west from #MESSAGE$745A and
-. east from #MESSAGE$7499.
-  $F8CD,$05 Restore the north exit of #MESSAGE$74C2 to #MESSAGE$74AD.
-  $F8D2,$05 Restore the south exit of #MESSAGE$71C4 to room #N$06.
+  $F8B4,$0A Seal the down exit of #ROOM$13, south from #ROOM$17 and
+. east from #ROOM$19.
+  $F8BE,$06 Seal the east and up exits of #ROOM$1D.
+  $F8C4,$09 Seal the down exit of #ROOM$2B, west from #ROOM$30 and
+. east from #ROOM$33.
+  $F8CD,$05 Restore the north exit of #ROOM$35 to #ROOM$34.
+  $F8D2,$05 Restore the south exit of #ROOM$05 to room #N$06: "#ROOM$06".
   $F8D7,$03 The default game state is stored at #R$F8EA.
   $F8DA,$03 The workspace begins with the object locations.
   $F8DD,$03 The initial game state is #N$0135 bytes.
   $F8E0,$02 Copy the default state into the workspace.
-  $F8E2,$05 Move the player to #MESSAGE$7160 (#N$02).
+  $F8E2,$05 Move the player to room #N$02: "#ROOM$02".
   $F8E7,$03 Jump to #R$8D2A to read the next command.
 
-b $F8EA Default Game State
+g $F8EA Default Game State
 @ $F8EA label=DefaultGameState
-D $F8EA Copied to #R$61AB by the routine at #R$F8AF. The layout matches
-. the workspace: object locations, flags, the input buffer and the
-. table pointers.
-B $F8EA,$01
-L $F8EA,$01,$135
+D $F8EA The starting values for the game status buffer. #R$F8AF copies all
+. #N$0135 bytes over #R$61AB at the start of every game, so the layout is the
+. same as the entries from #R$61AB to #R$62DE.
+N $F8EA Starting places for the items (#R$61AB).
+@ $F8EA label=Default_Table_ItemLocations
+B $F8EA,$01 Item #N(#PC-$F8EA) #ITEM(#PC-$F8EA): room #N(#PEEK(#PC)),
+. #ROOM(#PEEK(#PC)).
+L $F8EA,$01,$41
 
-g $FA1F Spare Byte
-@ $FA1F label=SpareByte
-B $FA1F,$01
+u $F92B
+S $F92B,$23
+
+g $F94E Flags: Display State
+@ $F94E label=Default_Flag_DisplayState
+D $F94E Copied to #R$620F. Bit 0 is clear at the start of every game.
+B $F94E,$01
+
+u $F94F
+S $F94F,$03
+
+g $F952 Table: Already Seen Room Images
+@ $F952 label=Default_Table_RoomImagesAlreadySeen
+D $F952 Copied to #R$6213. No room picture has been shown yet.
+B $F952,b,$01
+B $F953,b,$01
+B $F954,b,$01
+B $F955,b,$01
+
+u $F956
+S $F956,$02
+
+g $F958 Flags: Turn-Based Event States
+@ $F958 label=Default_Flag_TurnBasedEventState
+D $F958 Copied to #R$6219. No turn-based event has started.
+B $F958,$01
+
+g $F959 Turn-Based Event Counters
+@ $F959 label=Default_Counter_Unused_0
+@ $F95A label=Default_Counter_Unused_1
+@ $F95B label=Default_Counter_Unused_2
+@ $F95C label=Default_Counter_Unused_3
+@ $F95D label=Default_Counter_Unused_4
+@ $F95E label=Default_Counter_Unused_5
+@ $F95F label=Default_Counter_Unused_6
+@ $F960 label=Default_Counter_Unused_7
+D $F959 Copied to #R$621A. One countdown per bit of *#R$6219.
+B $F959,$08,$01
+
+g $F961 Flags: Scenic Event States
+@ $F961 label=Default_Flag_ScenicEventState
+D $F961 Copied to #R$6222. No scenic event is armed yet.
+B $F961,$01
+
+g $F962 Current Room ID
+@ $F962 label=Default_CurrentRoom
+D $F962 Copied to #R$6223. The player starts in room #N(#PEEK(#PC)).
+B $F962,$01
+
+g $F963 Table: Scenic Event Locations
+@ $F963 label=Default_Table_ScenicEventLocations
+D $F963 Copied to #R$6224. Where each of the #N$08 scenic events starts.
+B $F963,$01 Event #N(#PC-$F963) room #N(#PEEK(#PC)).
+L $F963,$01,$08
+
+g $F96B Number Of Items In The Players Inventory
+@ $F96B label=Default_Count_InventoryItems
+D $F96B Copied to #R$622C. The player starts holding #N(#PEEK(#PC)) item(s).
+B $F96B,$01
+
+g $F96C Load/ Save Buffer
+@ $F96C label=Default_LoadSaveBuffer
+D $F96C Copied to #R$622D. Initial bytes for the saved-location pointers.
+B $F96C,$32,$08
+
+g $F99E Command Buffer
+@ $F99E label=Default_CommandBuffer
+D $F99E Copied to #R$625F. Cleared again when a command is typed.
+B $F99E,$32
+
+g $F9D0 User Input: Word Tokens
+@ $F9D0 label=Default_UserInput_Token_1
+@ $F9D1 label=Default_UserInput_Token_2
+D $F9D0 Copied to #R$6291. Filled with #N$FF until a command is parsed.
+B $F9D0,$01
+B $F9D1,$09,$09
+
+g $F9DA Line Number
+@ $F9DA label=Default_LineNumber
+D $F9DA Copied to #R$629B. Initial text/picture row #N(#PEEK(#PC)).
+B $F9DA,$01
+
+g $F9DB Pointer: Vocabulary Table
+@ $F9DB label=Default_Pointer_Vocabulary
+D $F9DB Copied to #R$629C. Points at the vocabulary table.
+W $F9DB,$02
+
+g $F9DD Four Letter Buffer
+@ $F9DD label=Default_FourLetterBuffer
+D $F9DD Copied to #R$629E. Cleared again when a word is matched.
+B $F9DD,$04
+
+g $F9E1 Table: Turn-Based Event Handlers
+@ $F9E1 label=Default_Table_TurnBasedEventHandlers
+D $F9E1 Copied to #R$62A2. Handler addresses for each turn-based event bit.
+W $F9E1,$02 Event #N((#PC-$F9E1)/$02).
+L $F9E1,$02,$08
+
+g $F9F1 Table: Scenic Event Message Lists
+@ $F9F1 label=Default_Table_ScenicEventMessageLists
+D $F9F1 Copied to #R$62B2. Message-list pointers for each scenic event.
+W $F9F1,$02 Event #N((#PC-$F9F1)/$02).
+L $F9F1,$02,$08
+
+g $FA01 Pointer: Room Map Table
+@ $FA01 label=Default_Pointer_RoomMap
+D $FA01 Copied to #R$62C2.
+W $FA01,$02
+
+g $FA03 Number Of Objects
+@ $FA03 label=Default_Count_Objects
+D $FA03 Copied to #R$62C4.
+W $FA03,$02
+
+g $FA05 Pointer: Item Description Table
+@ $FA05 label=Default_Pointer_ItemDescriptions
+D $FA05 Copied to #R$62C6.
+W $FA05,$02
+
+g $FA07 Number Of Nouns
+@ $FA07 label=Default_Count_Nouns
+D $FA07 Copied to #R$62C8.
+W $FA07,$02
+
+g $FA09 Number Of Rooms With Images
+@ $FA09 label=Default_Count_RoomsWithImages
+D $FA09 Copied to #R$62CA.
+W $FA09,$02
+
+g $FA0B Pointer: Rooms With Images Table
+@ $FA0B label=Default_Pointer_RoomsWithImages
+D $FA0B Copied to #R$62CC.
+W $FA0B,$02
+
+g $FA0D Pointer: Room Image Jump Table
+@ $FA0D label=Default_Pointer_RoomImage
+D $FA0D Copied to #R$62CE.
+W $FA0D,$02
+
+g $FA0F Pointer: Room Description Table
+@ $FA0F label=Default_Pointer_RoomDescriptions
+D $FA0F Copied to #R$62D0.
+W $FA0F,$02
+
+g $FA11 Pointer: Object Noun Phrases
+@ $FA11 label=Default_Pointer_ObjectNounPhrases
+D $FA11 Copied to #R$62D2.
+W $FA11,$02
+
+g $FA13 Pointer: Object List Table
+@ $FA13 label=Default_Pointer_ObjectList
+D $FA13 Copied to #R$62D4.
+W $FA13,$02
+
+g $FA15 Pointer: Noun Tokens Table
+@ $FA15 label=Default_Pointer_NounTokens
+D $FA15 Copied to #R$62D6.
+W $FA15,$02
+
+g $FA17 Pointer: Verbs Jump Table
+@ $FA17 label=Default_Pointer_JumpTable_Verbs
+D $FA17 Copied to #R$62D8.
+W $FA17,$02
+
+g $FA19 Number Of Verb Tokens
+@ $FA19 label=Default_Count_VerbTokens
+D $FA19 Copied to #R$62DA.
+W $FA19,$02
+
+g $FA1B Number Of Saved Locations
+@ $FA1B label=Default_Count_SavedLocations
+D $FA1B Copied to #R$62DC.
+W $FA1B,$02
+
+g $FA1D Pointer: Saved Location Table
+@ $FA1D label=Default_Pointer_SavedLocations
+D $FA1D Copied to #R$62DE.
+W $FA1D,$02
+
+u $FA1F
+S $FA1F,$01
 
 g $FA20 Jump Table: Verbs
 @ $FA20 label=JumpTable_Verbs
@@ -4202,6 +5255,13 @@ L $FA20,$02,$24
 
 g $FA68 Jump Table: Room Images
 @ $FA68 label=JumpTable_RoomImages
+E $FA68 View the equivalent code in;
+. #LIST
+. { #FOREST$FB75 }
+. { #HEROES$FDEB }
+. { #JEWELS$FFA8 }
+. { #WARLORD$FEFC }
+. LIST#
 D $FA68 Handlers that draw the location pictures, in the same order
 . as the room list at #R$8CFC.
 D $FA68 Used by the routine at #R$678A through the pointer at #R$62CE,
@@ -4209,12 +5269,8 @@ D $FA68 Used by the routine at #R$678A through the pointer at #R$62CE,
 W $FA68,$02 #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
 L $FA68,$02,$1A
 
-u $FA9C Unused
-@ $FA9C label=Unused
-D $FA9C RAM above the loaded game. A fragment of the character set
-. remains at #R$FF58 from the loader; the game does not read it.
-B $FA9C,$01
-L $FA9C,$01,$4BC
+u $FA9C
+S $FA9C,$4BC
 
 b $FF58 Font Fragment
 @ $FF58 label=FontFragment
