@@ -114,7 +114,7 @@ Next: <a href="41345.html">41345</a>
 Used by the routine at <a href="42012.html">GetRoomPointer</a>.
 </div>
 <div class="paragraph">
-Multiplies the word in <span class="register">HL</span> by the word in <span class="register">DE</span>. <a href="42012.html">GetRoomPointer</a> uses it to multiply the current room number by 6 to find that room's record in <a href="47325.html">Table_RoomMap</a>.
+<span class="register">HL</span>=<span class="register">HL</span>*<span class="register">DE</span>. <a href="42012.html">GetRoomPointer</a> uses it to turn the current room number into an offset of 6 bytes per room in <a href="47325.html">Table_RoomMap</a>.
 </div>
 </div>
 <table class="input">
@@ -123,11 +123,11 @@ Multiplies the word in <span class="register">HL</span> by the word in <span cla
 </tr>
 <tr>
 <td class="register">HL</td>
-<td class="register-desc">Multiplicand</td>
+<td class="register-desc">First number</td>
 </tr>
 <tr>
 <td class="register">DE</td>
-<td class="register-desc">Multiplier</td>
+<td class="register-desc">Second number</td>
 </tr>
 </table>
 <table class="output">
@@ -136,7 +136,7 @@ Multiplies the word in <span class="register">HL</span> by the word in <span cla
 </tr>
 <tr>
 <td class="register">HL</td>
-<td class="register-desc">Product</td>
+<td class="register-desc"><span class="register">HL</span>*<span class="register">DE</span></td>
 </tr>
 </table>
 </td>
@@ -151,19 +151,18 @@ Multiplies the word in <span class="register">HL</span> by the word in <span cla
 <td class="asm-label"></td>
 <td class="address-1"><span id="41326"></span>41326</td>
 <td class="instruction">LD B,16</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=16.</td>
+<td class="comment-1" rowspan="1">Count 16 bits.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41328"></span>41328</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">H</span>.</td>
+<td class="comment-1" rowspan="2">Hold the first number in <span class="register">A</span> and <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41329"></span>41329</td>
 <td class="instruction">LD C,L</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">L</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -172,17 +171,17 @@ Multiplies the word in <span class="register">HL</span> by the word in <span cla
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=0000.</td>
 </tr>
 <tr>
-<td class="asm-label">MultiplyWords_0</td>
+<td class="asm-label">MultiplyWords_Loop</td>
 <td class="address-2"><span id="41333"></span>41333</td>
 <td class="instruction">ADD HL,HL</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Shift the running total left by one bit.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="41334"></span>
 <div class="comments">
 <div class="paragraph">
-For each bit of the multiplier, shift it into the carry and add the multiplicand when that bit is set.
+Test the next bit of the first number. When it is set, add the second number into the total.
 </div>
 </div>
 </td>
@@ -191,7 +190,7 @@ For each bit of the multiplier, shift it into the carry and add the multiplicand
 <td class="asm-label"></td>
 <td class="address-1"><span id="41334"></span>41334</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="6">Fold the next multiplier bit into the product.</td>
+<td class="comment-1" rowspan="4">Clear the carry, then shift the next bit of the first number into it. Jump to <a href="41325.html#41341">MultiplyWords_Next</a> when that bit is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -206,23 +205,25 @@ For each bit of the multiplier, shift it into the carry and add the multiplicand
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41338"></span>41338</td>
-<td class="instruction">JR NC,<a href="41325.html#41341">MultiplyWords_1</a></td>
+<td class="instruction">JR NC,<a href="41325.html#41341">MultiplyWords_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41340"></span>41340</td>
 <td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Add the second number into the total.</td>
 </tr>
 <tr>
-<td class="asm-label">MultiplyWords_1</td>
+<td class="asm-label">MultiplyWords_Next</td>
 <td class="address-2"><span id="41341"></span>41341</td>
-<td class="instruction">DJNZ <a href="41325.html#41333">MultiplyWords_0</a></td>
+<td class="instruction">DJNZ <a href="41325.html#41333">MultiplyWords_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the bit counter by one and loop back to <a href="41325.html#41333">MultiplyWords_Loop</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41343"></span>41343</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">BC</span> from the stack, leaving the product in <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">BC</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -245,7 +246,7 @@ Next: <a href="41345.html">41345</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../../asm/A16D.html">Switch to hexadecimal</a>.</div>
 </footer>

@@ -140,7 +140,7 @@ Used by the routine at <a href="FF12.html">DisplayImage_WoodedVale</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b10e"></span>B10E</td>
 <td class="instruction">LD DE,$0200</td>
-<td class="comment-1" rowspan="2">Add 0200 to the image data to skip the header.</td>
+<td class="comment-1" rowspan="2">Move <span class="register">HL</span> past the 0200-byte mask to the pixel data.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -151,7 +151,7 @@ Used by the routine at <a href="FF12.html">DisplayImage_WoodedVale</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b112"></span>B112</td>
 <td class="instruction">LD DE,$4000</td>
-<td class="comment-1" rowspan="1">Initialise the screen buffer pointer in <span class="register">DE</span> to 4000 (the beginning of the screen buffer).</td>
+<td class="comment-1" rowspan="1">Set <span class="register">DE</span> to the start of the screen buffer (4000).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -163,22 +163,22 @@ Used by the routine at <a href="FF12.html">DisplayImage_WoodedVale</a>.
 <td class="asm-label">DecompressPixelData_Loop</td>
 <td class="address-2"><span id="b118"></span>B118</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="1">Stash the byte counter on the stack.</td>
+<td class="comment-1" rowspan="1">Stash the mask byte counter on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b119"></span>B119</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=08.</td>
+<td class="comment-1" rowspan="1">Set <span class="register">B</span> to 08 for the 08 bits in a byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b11b"></span>B11B</td>
 <td class="instruction">LD C,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=*<span class="register">IX</span>+00.</td>
+<td class="comment-1" rowspan="1">Fetch the mask byte from *<span class="register">IX</span> into <span class="register">C</span>.</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_0</td>
+<td class="asm-label">DecompressPixelBit_Loop</td>
 <td class="address-2"><span id="b11e"></span>B11E</td>
 <td class="instruction">SLA C</td>
 <td class="comment-1" rowspan="1">Shift <span class="register">C</span> left (with carry).</td>
@@ -186,29 +186,28 @@ Used by the routine at <a href="FF12.html">DisplayImage_WoodedVale</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b120"></span>B120</td>
-<td class="instruction">JR NC,<a href="B10B.html#b125">Print_RoomImage_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="B10B.html#b125">Print_RoomImage_1</a> if the mask bit was clear; that skips the screen byte, so those 8 pixels stay blank.</td>
+<td class="instruction">JR NC,<a href="B10B.html#b125">DecompressPixelBit_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B10B.html#b125">DecompressPixelBit_Next</a> if the mask bit was clear (those 08 pixels stay blank).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b122"></span>B122</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="2">Copy the next pixel byte onto the screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b123"></span>B123</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b124"></span>B124</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next pixel byte.</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomImage_1</td>
+<td class="asm-label">DecompressPixelBit_Next</td>
 <td class="address-2"><span id="b125"></span>B125</td>
 <td class="instruction">INC DE</td>
 <td class="comment-1" rowspan="1">Increment <span class="register">DE</span> by one.</td>
@@ -216,8 +215,8 @@ Used by the routine at <a href="FF12.html">DisplayImage_WoodedVale</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b126"></span>B126</td>
-<td class="instruction">DJNZ <a href="B10B.html#b11e">Print_RoomImage_0</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="B10B.html#b11e">Print_RoomImage_0</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="B10B.html#b11e">DecompressPixelBit_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the bit counter by one and loop back to <a href="B10B.html#b11e">DecompressPixelBit_Loop</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -229,13 +228,13 @@ Used by the routine at <a href="FF12.html">DisplayImage_WoodedVale</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b12a"></span>B12A</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1">Restore the byte counter from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the mask byte counter from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b12b"></span>B12B</td>
 <td class="instruction">DEC BC</td>
-<td class="comment-1" rowspan="1">Decrease the byte counter by one.</td>
+<td class="comment-1" rowspan="1">Decrease the mask byte counter by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -290,7 +289,7 @@ Decompress the attribute data.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b139"></span>B139</td>
 <td class="instruction">LD B,(IX+$01)</td>
-<td class="comment-1" rowspan="1">Fetch the repeat count from *<span class="register">IX</span>+01 and store this in <span class="register">B</span>.</td>
+<td class="comment-1" rowspan="1">Fetch the repeat count from *<span class="register">IX</span>+01 and store this in <span class="register">B</span> (00 means 0100).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -359,6 +358,10 @@ Keep looping back until the end of the attribute buffer is reached.
 <div class="paragraph">
 View the equivalent code in; <ul class="">
 <li><a href="/adventure-games/aftershock/asm/9F28.html">After Shock</a></li>
+<li><a href="/adventure-games/forestatworldsend/asm/BEB8.html">Forest At Worlds End</a></li>
+<li><a href="/adventure-games/heroesofkarn/asm/AD60.html">Heroes Of Karn</a></li>
+<li><a href="/adventure-games/jewelsofbabylon/asm/BB3B.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/asm/6541.html">Message From Andromeda</a></li>
 </ul>
 </div>
 </div>
@@ -379,7 +382,7 @@ Next: <a href="B14A.html">B14A</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/warlord/">Source code</a>.</div>
 <div><a href="../dec/asm/45323.html">Switch to decimal</a>.</div>
 </footer>

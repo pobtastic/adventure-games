@@ -130,7 +130,7 @@ Print "LOADING. Start tape.".
 </td>
 </tr>
 <tr>
-<td class="asm-label">LoadFromTape</td>
+<td class="asm-label">LoadTape</td>
 <td class="address-2"><span id="c380"></span>C380</td>
 <td class="instruction">LD HL,$BC27</td>
 <td class="comment-1" rowspan="2">Print "LOADING. Start tape.".</td>
@@ -138,29 +138,31 @@ Print "LOADING. Start tape.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c383"></span>C383</td>
-<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndNewline</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c386"></span>C386</td>
 <td class="instruction">LD IX,$B9C8</td>
-<td class="comment-1" rowspan="2">Point the load at the game state (<a href="B9C8.html">GameState</a>) for 013C bytes.</td>
+<td class="comment-1" rowspan="1">Load the starting address into <span class="register">IX</span> at <a href="B9C8.html">Table_ItemLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c38a"></span>C38A</td>
 <td class="instruction">LD DE,$013C</td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 013C bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c38d"></span>C38D</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="2">Mark it as a data block and set the carry flag for "loading".</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to FF which indicates this is a data block.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c38f"></span>C38F</td>
 <td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set the carry flag to indicate this is loading.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -171,8 +173,8 @@ Print "LOADING. Start tape.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c393"></span>C393</td>
-<td class="instruction">JR C,<a href="C380.html#c39c">LoadFromTape_Success</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C380.html#c39c">LoadFromTape_Success</a> when the load succeeded.</td>
+<td class="instruction">JR C,<a href="C380.html#c39c">LoadTape_Success</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C380.html#c39c">LoadTape_Success</a> when the load succeeded.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -193,7 +195,7 @@ Print "Tape error.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c398"></span>C398</td>
-<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndNewline</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -202,10 +204,20 @@ Print "Tape error.".
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">LoadFromTape_Success</td>
+<td class="routine-comment" colspan="5">
+<span id="c39c"></span>
+<div class="comments">
+<div class="paragraph">
+There is nothing to unpack when no configurable exits were saved.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">LoadTape_Success</td>
 <td class="address-2"><span id="c39c"></span>C39C</td>
 <td class="instruction">LD A,($BB02)</td>
-<td class="comment-1" rowspan="3">Return when *<a href="B9C8.html#bb02">BB02</a> is zero, so there is no flag state to restore.</td>
+<td class="comment-1" rowspan="3">Return when *<a href="BB02.html">Count_ConfigurableExits</a> is zero, so there are no configurable exits to unpack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -221,7 +233,7 @@ Print "Tape error.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="c3a1"></span>C3A1</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="4">Take the flag addresses and the saved bytes.</td>
+<td class="comment-1" rowspan="4">Take the exit addresses and the packed exit bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -236,13 +248,23 @@ Print "Tape error.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c3a9"></span>C3A9</td>
-<td class="instruction">JR <a href="C380.html#c3b0">LoadFromTape_StoreFlag</a></td>
+<td class="instruction">JR <a href="C380.html#c3b0">LoadTape_StoreFlag</a></td>
 </tr>
 <tr>
-<td class="asm-label">LoadFromTape_Restore</td>
+<td class="routine-comment" colspan="5">
+<span id="c3ab"></span>
+<div class="comments">
+<div class="paragraph">
+The next saved exit address.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">LoadTape_Restore</td>
 <td class="address-2"><span id="c3ab"></span>C3AB</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="3">Step to the next flag address and the next saved byte.</td>
+<td class="comment-1" rowspan="3">Move <span class="register">IX</span> on to the next exit address and <span class="register">DE</span> on to the next packed exit byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -255,10 +277,10 @@ Print "Tape error.".
 <td class="instruction">INC DE</td>
 </tr>
 <tr>
-<td class="asm-label">LoadFromTape_StoreFlag</td>
+<td class="asm-label">LoadTape_StoreFlag</td>
 <td class="address-2"><span id="c3b0"></span>C3B0</td>
 <td class="instruction">LD L,(IX+$00)</td>
-<td class="comment-1" rowspan="5">Write that saved byte back and repeat until every flag is restored.</td>
+<td class="comment-1" rowspan="5">Fetch the exit address from *<span class="register">IX</span> into <span class="register">HL</span>, write that packed exit byte back into the game, and repeat until every exit byte is restored.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -278,7 +300,7 @@ Print "Tape error.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c3b8"></span>C3B8</td>
-<td class="instruction">DJNZ <a href="C380.html#c3ab">LoadFromTape_Restore</a></td>
+<td class="instruction">DJNZ <a href="C380.html#c3ab">LoadTape_Restore</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -327,7 +349,7 @@ Next: <a href="C3C0.html">C3C0</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/50048.html">Switch to decimal</a>.</div>
 </footer>

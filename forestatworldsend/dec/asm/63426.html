@@ -120,18 +120,29 @@ Touch the glowing rock and open the way east.
 <td class="asm-label">Action_Touch</td>
 <td class="address-2"><span id="63426"></span>63426</td>
 <td class="instruction">CALL <a href="49929.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="49929.html">Parser_ValidateDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63429"></span>63429</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="63430"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to touch ... the glowing rock?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63430"></span>63430</td>
 <td class="instruction">LD HL,59641</td>
-<td class="comment-1" rowspan="3">Jump to <a href="63426.html#63464">Action_Touch_Next</a> unless the player named the glowing rock.</td>
+<td class="comment-1" rowspan="2">Call <a href="49775.html">Parser_AdvanceToSeparator</a> with <a href="59344.html#59641">59641</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,18 +152,19 @@ Touch the glowing rock and open the way east.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63436"></span>63436</td>
-<td class="instruction">JR NZ,<a href="63426.html#63464">Action_Touch_Next</a></td>
+<td class="instruction">JR NZ,<a href="63426.html#63464">Touch_YouCant</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="63426.html#63464">Touch_YouCant</a> if the token isn't for the glowing rock.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63438"></span>63438</td>
 <td class="instruction">LD A,51</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60837.html">Response_ItHasNoApparentEffect</a> if object 51 (the glowing rock) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60837.html">Response_ItHasNoApparentEffect</a> if <a href="49743.html">ValidateItemPresent</a> reports that "A glowing rock" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63440"></span>63440</td>
-<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="49743.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -163,7 +175,7 @@ Touch the glowing rock and open the way east.
 <td class="asm-label"></td>
 <td class="address-1"><span id="63446"></span>63446</td>
 <td class="instruction">LD A,(60074)</td>
-<td class="comment-1" rowspan="3">Jump back to <a href="60837.html">Response_ItHasNoApparentEffect</a> when the rock wall already has a way east.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60837.html">Response_ItHasNoApparentEffect</a> if *<a href="59700.html#60074">Exit_RockWallEast</a> is not equal to 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -176,10 +188,27 @@ Touch the glowing rock and open the way east.
 <td class="instruction">JP NZ,<a href="60837.html">Response_ItHasNoApparentEffect</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="63453"></span>
+<div class="comments">
+<div class="paragraph">
+This action changes the map:
+</div>
+<div class="paragraph">
+Open the way east.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63453"></span>63453</td>
 <td class="instruction">LD A,70</td>
-<td class="comment-1" rowspan="4">Open the way east and print "As you touch the rock,a passage opens,leading east." and return to the game loop.</td>
+<td class="comment-1" rowspan="2">Write 70 to *<a href="59700.html#60074">Exit_RockWallEast</a> to open up eastbound access to 
+
+<a href="53490.html">The Cavern of Silence</a> from 
+
+<a href="53286.html">A Rock Wall</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -187,20 +216,53 @@ Touch the glowing rock and open the way east.
 <td class="instruction">LD (60074),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="63458"></span>
+<div class="comments">
+<div class="paragraph">
+Print "As you touch the rock,a passage opens,leading east.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63458"></span>63458</td>
 <td class="instruction">LD HL,57831</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="57831.html">Messaging_AsYouTouchTheRock</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63461"></span>63461</td>
 <td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Touch_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="63464"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Touch_YouCant</td>
 <td class="address-2"><span id="63464"></span>63464</td>
 <td class="instruction">JP <a href="60837.html">Response_ItHasNoApparentEffect</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="60837.html">Response_ItHasNoApparentEffect</a> to say it has no effect.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="60837.html">Response_ItHasNoApparentEffect</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/messagefromandromeda/dec/asm/39389.html">Message From Andromeda</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -217,7 +279,7 @@ Next: <a href="63467.html">63467</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/F7C2.html">Switch to hexadecimal</a>.</div>
 </footer>

@@ -111,7 +111,7 @@ Next: <a href="ED66.html">ED66</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="EE23.html">Action_Down</a>, <a href="F190.html">Action_Climb</a>, <a href="F71B.html">Action_Enter</a> and <a href="F964.html">GameStart</a>.
+Used by the routines at <a href="EE25.html">MovePlayer</a>, <a href="F190.html">Action_Climb</a>, <a href="F71B.html">Action_Enter</a> and <a href="F964.html">GameStart</a>.
 </div>
 <div class="paragraph">
 Refuse the move while the player is badly hurt. Otherwise change rooms and arm the local dangers.
@@ -123,33 +123,46 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="asm-label">Handler_InjuryCheck</td>
 <td class="address-2"><span id="ecb6"></span>ECB6</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="4">Call <a href="C24F.html">IsObjectInCurrentRoom</a> to test whether the injury is in this room. Jump to <a href="ECB6.html#ecc5">Handler_InjuryCheck_Next</a> when the player is not too badly hurt.</td>
+<td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecb7"></span>ECB7</td>
 <td class="instruction">LD A,$48</td>
+<td class="comment-1" rowspan="2">Call <a href="C24F.html">ValidateItemPresent</a> with item 48: "You are seriously injured".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecb9"></span>ECB9</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecbc"></span>ECBC</td>
 <td class="instruction">JR NZ,<a href="ECB6.html#ecc5">Handler_InjuryCheck_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ECB6.html#ecc5">Handler_InjuryCheck_Next</a> if "You are seriously injured" is not in the current room.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ecbe"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You can't move.You are too badly injured.".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecbe"></span>ECBE</td>
 <td class="instruction">LD HL,$DB38</td>
-<td class="comment-1" rowspan="2">Print "You can't move.You are too badly injured.".</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DB38.html">Messaging_YouCantMove</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecc1"></span>ECC1</td>
-<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BE2E.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -158,37 +171,49 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ecc5"></span>
+<div class="comments">
+<div class="paragraph">
+Move into the requested room and arm local dangers.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Handler_InjuryCheck_Next</td>
 <td class="address-2"><span id="ecc5"></span>ECC5</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="2">Call <a href="C42F.html">MovePlayerToRoom</a> to move the player into that room.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecc6"></span>ECC6</td>
 <td class="instruction">CALL <a href="C42F.html">MovePlayerToRoom</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C42F.html">MovePlayerToRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecc9"></span>ECC9</td>
 <td class="instruction">LD E,$00</td>
-<td class="comment-1" rowspan="2">Call <a href="C0F9.html">Handler_DisplayRoom</a> to describe the current room.</td>
+<td class="comment-1" rowspan="1"><span class="register">E</span>=00.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eccb"></span>ECCB</td>
 <td class="instruction">CALL <a href="C0F9.html">Handler_DisplayRoom</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C0F9.html">Handler_DisplayRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecce"></span>ECCE</td>
 <td class="instruction">LD A,$41</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ecdf">Handler_InjuryCheck_SlimeMonster</a> if object 41 (the giant spider) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ecdf">Handler_InjuryCheck_SlimeMonster</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "A giant spider. It advances toward you" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecd0"></span>ECD0</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -196,36 +221,59 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="instruction">JR NZ,<a href="ECB6.html#ecdf">Handler_InjuryCheck_SlimeMonster</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ecd5"></span>
+<div class="comments">
+<div class="paragraph">
+Arm the giant spider for six turns.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecd5"></span>ECD5</td>
 <td class="instruction">LD HL,$BA36</td>
-<td class="comment-1" rowspan="4">Arm the giant spider for six turns.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BA36.html">Flag_TurnBasedEventState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecd8"></span>ECD8</td>
 <td class="instruction">SET 1,(HL)</td>
+<td class="comment-1" rowspan="1">Set bit 1 of *<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecda"></span>ECDA</td>
 <td class="instruction">LD A,$06</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=06.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecdc"></span>ECDC</td>
 <td class="instruction">LD ($BA38),A</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="BA37.html#ba38">Counter_Spider</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ecdf"></span>
+<div class="comments">
+<div class="paragraph">
+Is the slime monster here?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">Handler_InjuryCheck_SlimeMonster</td>
 <td class="address-2"><span id="ecdf"></span>ECDF</td>
 <td class="instruction">LD A,$1E</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ecf0">Handler_InjuryCheck_Demons</a> if object 1E (the slime monster) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ecf0">Handler_InjuryCheck_Demons</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "A monster from the slime" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ece1"></span>ECE1</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -233,36 +281,59 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="instruction">JR NZ,<a href="ECB6.html#ecf0">Handler_InjuryCheck_Demons</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ece6"></span>
+<div class="comments">
+<div class="paragraph">
+Arm the slime monster for six turns.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ece6"></span>ECE6</td>
 <td class="instruction">LD HL,$BA36</td>
-<td class="comment-1" rowspan="4">Arm the slime monster for six turns.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BA36.html">Flag_TurnBasedEventState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ece9"></span>ECE9</td>
 <td class="instruction">SET 2,(HL)</td>
+<td class="comment-1" rowspan="1">Set bit 2 of *<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eceb"></span>ECEB</td>
 <td class="instruction">LD A,$06</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=06.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eced"></span>ECED</td>
 <td class="instruction">LD ($BA39),A</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="BA37.html#ba39">Counter_SlimeMonster</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ecf0"></span>
+<div class="comments">
+<div class="paragraph">
+Are the demons here?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">Handler_InjuryCheck_Demons</td>
 <td class="address-2"><span id="ecf0"></span>ECF0</td>
 <td class="instruction">LD A,$29</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed01">Handler_InjuryCheck_Zarn</a> if object 29 (the demons) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed01">Handler_InjuryCheck_Zarn</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "Some demons are attacking you. They scream and jab at you with vicious tridents" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecf2"></span>ECF2</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -270,36 +341,59 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="instruction">JR NZ,<a href="ECB6.html#ed01">Handler_InjuryCheck_Zarn</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ecf7"></span>
+<div class="comments">
+<div class="paragraph">
+Arm the demons for six turns.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecf7"></span>ECF7</td>
 <td class="instruction">LD HL,$BA36</td>
-<td class="comment-1" rowspan="4">Arm the demons for six turns.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BA36.html">Flag_TurnBasedEventState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecfa"></span>ECFA</td>
 <td class="instruction">SET 3,(HL)</td>
+<td class="comment-1" rowspan="1">Set bit 3 of *<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecfc"></span>ECFC</td>
 <td class="instruction">LD A,$06</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=06.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecfe"></span>ECFE</td>
 <td class="instruction">LD ($BA3A),A</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="BA37.html#ba3a">Counter_Demons</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ed01"></span>
+<div class="comments">
+<div class="paragraph">
+Is Zarn here?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">Handler_InjuryCheck_Zarn</td>
 <td class="address-2"><span id="ed01"></span>ED01</td>
 <td class="instruction">LD A,$2A</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed12">Handler_InjuryCheck_Witch</a> if object 2A (Zarn) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed12">Handler_InjuryCheck_Witch</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "The Wizard,Zarn. He prepares to cast a spell over you" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed03"></span>ED03</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -307,36 +401,59 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="instruction">JR NZ,<a href="ECB6.html#ed12">Handler_InjuryCheck_Witch</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ed08"></span>
+<div class="comments">
+<div class="paragraph">
+Arm Zarn for six turns.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed08"></span>ED08</td>
 <td class="instruction">LD HL,$BA36</td>
-<td class="comment-1" rowspan="4">Arm Zarn for six turns.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BA36.html">Flag_TurnBasedEventState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed0b"></span>ED0B</td>
 <td class="instruction">SET 4,(HL)</td>
+<td class="comment-1" rowspan="1">Set bit 4 of *<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed0d"></span>ED0D</td>
 <td class="instruction">LD A,$06</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=06.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed0f"></span>ED0F</td>
 <td class="instruction">LD ($BA3B),A</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="BA37.html#ba3b">Counter_Wizard</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ed12"></span>
+<div class="comments">
+<div class="paragraph">
+Is the witch here?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">Handler_InjuryCheck_Witch</td>
 <td class="address-2"><span id="ed12"></span>ED12</td>
 <td class="instruction">LD A,$2E</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed37">Handler_InjuryCheck_OldMan</a> if object 2E (the witch) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed37">Handler_InjuryCheck_OldMan</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "The Witch" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed14"></span>ED14</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -347,7 +464,7 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed19"></span>ED19</td>
 <td class="instruction">LD A,$43</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed2c">Handler_InjuryCheck_WitchSeesRing</a> when the player is carrying object 43 (the ring being worn).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed2c">Handler_InjuryCheck_WitchSeesRing</a> if "A ring,which you are wearing" is held.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -360,27 +477,38 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="instruction">JR Z,<a href="ECB6.html#ed2c">Handler_InjuryCheck_WitchSeesRing</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ed20"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The Witch sees you,chucklesgleefully,then throws somemajic powder at you.You cannot move.She beats you with her broom.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed20"></span>ED20</td>
 <td class="instruction">LD HL,$DB63</td>
-<td class="comment-1" rowspan="2">Print "The Witch sees you,chucklesgleefully,then throws somemajic powder at you.You cannot move.She beats you with her broom.".</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DB63.html">Messaging_TheWitchSeesYouChuckles</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed23"></span>ED23</td>
-<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BE2E.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed26"></span>ED26</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Discard the return address on the stack.</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed27"></span>ED27</td>
 <td class="instruction">LD HL,$EB23</td>
-<td class="comment-1" rowspan="2">Switch <a href="EB23.html">GameOver</a> onto the stack so the player dies.</td>
+<td class="comment-1" rowspan="2">Switch <a href="EB23.html">GameOver</a> onto the stack so the next return actions a "game over".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -394,21 +522,32 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ed2c"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The Witch sees the ring onyour hand,then she screamsand vanishes in a puff of smoke.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Handler_InjuryCheck_WitchSeesRing</td>
 <td class="address-2"><span id="ed2c"></span>ED2C</td>
 <td class="instruction">LD HL,$DBDE</td>
-<td class="comment-1" rowspan="2">Print "The Witch sees the ring onyour hand,then she screamsand vanishes in a puff of smoke.".</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DBDE.html">Messaging_TheWitchSeesTheRingOn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed2f"></span>ED2F</td>
-<td class="instruction">CALL <a href="BE2E.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BE2E.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed32"></span>ED32</td>
 <td class="instruction">LD A,$2E</td>
-<td class="comment-1" rowspan="2">Destroy object 2E (the witch).</td>
+<td class="comment-1" rowspan="2">Call <a href="C2D8.html">Handler_DestroyItem</a> with item 2E: "The Witch".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -416,15 +555,25 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="instruction">CALL <a href="C2D8.html">Handler_DestroyItem</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ed37"></span>
+<div class="comments">
+<div class="paragraph">
+Is the old man here?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Handler_InjuryCheck_OldMan</td>
 <td class="address-2"><span id="ed37"></span>ED37</td>
 <td class="instruction">LD A,$2F</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed53">Handler_InjuryCheck_GreatValley</a> if object 2F (the old man) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed53">Handler_InjuryCheck_GreatValley</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "The Old Man. He lays down a bow and some arrows. He says:- 'These are tipped wit" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed39"></span>ED39</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -435,7 +584,7 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed3e"></span>ED3E</td>
 <td class="instruction">LD A,$2F</td>
-<td class="comment-1" rowspan="2">Destroy object 2F (the old man).</td>
+<td class="comment-1" rowspan="2">Call <a href="C2D8.html">Handler_DestroyItem</a> with item 2F: "The Old Man. He lays down a bow and some arrows. He says:- 'These are tipped wit".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -446,7 +595,7 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed43"></span>ED43</td>
 <td class="instruction">LD A,$03</td>
-<td class="comment-1" rowspan="2">Move object 03 (the bow) into the current room.</td>
+<td class="comment-1" rowspan="2">Call <a href="C2DF.html">Handler_UpdateItemForTheCurrentRoom</a> with item 03: "A bow".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -457,7 +606,7 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed48"></span>ED48</td>
 <td class="instruction">LD A,$04</td>
-<td class="comment-1" rowspan="2">Move object 04 (the arrows) into the current room.</td>
+<td class="comment-1" rowspan="2">Call <a href="C2DF.html">Handler_UpdateItemForTheCurrentRoom</a> with item 04: "Some arrows".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -465,21 +614,44 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="instruction">CALL <a href="C2DF.html">Handler_UpdateItemForTheCurrentRoom</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ed4d"></span>
+<div class="comments">
+<div class="paragraph">
+Print "He suddenly vanishes.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed4d"></span>ED4D</td>
 <td class="instruction">LD HL,$D93D</td>
-<td class="comment-1" rowspan="2">Print "He suddenly vanishes.".</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="D93D.html">Messaging_HeSuddenlyVanishes</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed50"></span>ED50</td>
 <td class="instruction">CALL <a href="C486.html">PausePrintStringAndScroll</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C486.html">PausePrintStringAndScroll</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ed53"></span>
+<div class="comments">
+<div class="paragraph">
+Has the player brought Mara to the Great Valley?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">Handler_InjuryCheck_GreatValley</td>
 <td class="address-2"><span id="ed53"></span>ED53</td>
 <td class="instruction">LD A,($BA9B)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed65">Handler_InjuryCheck_Return</a> unless the player is in room 05 (The Great Valley).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed65">Handler_InjuryCheck_Return</a> if *<a href="BA9B.html">CurrentRoom</a> isn't room 05: "
+
+<a href="CB5D.html">The Great Valley</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -495,12 +667,12 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed5a"></span>ED5A</td>
 <td class="instruction">LD A,$2C</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed65">Handler_InjuryCheck_Return</a> if object 2C (Princess Mara) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ECB6.html#ed65">Handler_InjuryCheck_Return</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "The Princess,Mara" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed5c"></span>ED5C</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -511,13 +683,13 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed61"></span>ED61</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Discard the return address on the stack.</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed62"></span>ED62</td>
 <td class="instruction">JP <a href="EB3E.html">GameComplete</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="EB3E.html">GameComplete</a> to announce the win.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="EB3E.html">GameComplete</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">Handler_InjuryCheck_Return</td>
@@ -540,7 +712,7 @@ Next: <a href="ED66.html">ED66</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/60598.html">Switch to decimal</a>.</div>
 </footer>

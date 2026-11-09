@@ -120,18 +120,29 @@ Row the boat, if the player is in it and has the oars.
 <td class="asm-label">Action_Row</td>
 <td class="address-2"><span id="63659"></span>63659</td>
 <td class="instruction">CALL <a href="49929.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="49929.html">Parser_ValidateDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63662"></span>63662</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="63663"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to row ... across the river?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63663"></span>63663</td>
 <td class="instruction">LD HL,59685</td>
-<td class="comment-1" rowspan="3">Jump to <a href="63659.html#63713">Action_Row_YouCant</a> unless the player named crossing the river.</td>
+<td class="comment-1" rowspan="2">Call <a href="49775.html">Parser_AdvanceToSeparator</a> with <a href="59344.html#59685">59685</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,13 +152,16 @@ Row the boat, if the player is in it and has the oars.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63669"></span>63669</td>
-<td class="instruction">JR NZ,<a href="63659.html#63713">Action_Row_YouCant</a></td>
+<td class="instruction">JR NZ,<a href="63659.html#63713">Row_YouCant</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="63659.html#63713">Row_YouCant</a> if the token isn't for crossing the river.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63671"></span>63671</td>
 <td class="instruction">LD A,(47771)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="63659.html#63684">Action_Row_Next</a> when the player is in room 29 (In the Boat).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="63659.html#63684">Row_CheckBoat</a> if *<a href="47771.html">CurrentRoom</a> is room 29: "
+
+<a href="52813.html">In the Boat</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -157,14 +171,14 @@ Row the boat, if the player is in it and has the oars.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63676"></span>63676</td>
-<td class="instruction">JR Z,<a href="63659.html#63684">Action_Row_Next</a></td>
+<td class="instruction">JR Z,<a href="63659.html#63684">Row_CheckBoat</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="63678"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "You're not in the boat.".
+Print "You're not in the boat.".
 </div>
 </div>
 </td>
@@ -173,18 +187,29 @@ Reply with "You're not in the boat.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="63678"></span>63678</td>
 <td class="instruction">LD HL,56883</td>
-<td class="comment-1" rowspan="2">Print "You're not in the boat." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56883.html">Messaging_YoureNotInTheBoat</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63681"></span>63681</td>
 <td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Row_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="63684"></span>
+<div class="comments">
+<div class="paragraph">
+Where is the boat?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Row_CheckBoat</td>
 <td class="address-2"><span id="63684"></span>63684</td>
 <td class="instruction">LD A,29</td>
-<td class="comment-1" rowspan="2">Call <a href="49854.html">GetObjectLocation</a> to fetch where the boat is.</td>
+<td class="comment-1" rowspan="2">Call <a href="49854.html">GetObjectLocation</a> with item 29: "A rowing boat".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -195,18 +220,22 @@ Reply with "You're not in the boat.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="63689"></span>63689</td>
 <td class="instruction">CP 26</td>
-<td class="comment-1" rowspan="2">Jump to <a href="63659.html#63701">Action_Row_WesternBank</a> unless the boat is in room 26 (The Western Bank of a Broad River).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="63659.html#63701">Row_WesternBank</a> if the boat isn't in room 26: "
+
+<a href="52694.html">The Western Bank</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63691"></span>63691</td>
-<td class="instruction">JR NZ,<a href="63659.html#63701">Action_Row_WesternBank</a></td>
+<td class="instruction">JR NZ,<a href="63659.html#63701">Row_WesternBank</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63693"></span>63693</td>
 <td class="instruction">LD BC,7451</td>
-<td class="comment-1" rowspan="2">Put object 29 (the boat) in room 27 (The Eastern Bank of a Broad River).</td>
+<td class="comment-1" rowspan="2">Call <a href="48981.html">UpdateObjectLocation</a> to move "A rowing boat" to room 27: "
+
+<a href="52729.html">The Eastern Bank</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -216,14 +245,26 @@ Reply with "You're not in the boat.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63699"></span>63699</td>
-<td class="instruction">JR <a href="63659.html#63707">Action_Row_Across</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="63659.html#63707">Action_Row_Across</a> to say the boat has crossed.</td>
+<td class="instruction">JR <a href="63659.html#63707">Row_Across</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="63659.html#63707">Row_Across</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Row_WesternBank</td>
+<td class="routine-comment" colspan="5">
+<span id="63701"></span>
+<div class="comments">
+<div class="paragraph">
+Move the boat to the western bank.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Row_WesternBank</td>
 <td class="address-2"><span id="63701"></span>63701</td>
 <td class="instruction">LD BC,7450</td>
-<td class="comment-1" rowspan="2">Put object 29 (the boat) in room 26 (The Western Bank of a Broad River).</td>
+<td class="comment-1" rowspan="2">Call <a href="48981.html">UpdateObjectLocation</a> to move "A rowing boat" to room 26: "
+
+<a href="52694.html">The Western Bank</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -235,27 +276,49 @@ Reply with "You're not in the boat.".
 <span id="63707"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "You row across tothe opposite bank.".
+Print "You row across tothe opposite bank.".
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Action_Row_Across</td>
+<td class="asm-label">Row_Across</td>
 <td class="address-2"><span id="63707"></span>63707</td>
 <td class="instruction">LD HL,58186</td>
-<td class="comment-1" rowspan="2">Print "You row across tothe opposite bank." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="58186.html">Messaging_YouRowAcrossTo</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63710"></span>63710</td>
 <td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Row_YouCant</td>
+<td class="routine-comment" colspan="5">
+<span id="63713"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Row_YouCant</td>
 <td class="address-2"><span id="63713"></span>63713</td>
 <td class="instruction">JP <a href="60782.html">Response_YouCant_GameLoop</a></td>
-<td class="comment-1" rowspan="1">Tell the player the command is impossible.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="60782.html">Response_YouCant_GameLoop</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/64770.html">The Jewels Of Babylon</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -272,7 +335,7 @@ Next: <a href="63716.html">63716</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/F8AB.html">Switch to hexadecimal</a>.</div>
 </footer>

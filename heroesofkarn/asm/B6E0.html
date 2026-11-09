@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Heroes of Karn: Data at B6E0</title>
+<title>Heroes of Karn: Routine at B6E0</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Heroes of Karn: Data at B6E0. Complete ZX Spectrum RAM disassembly." />
-<meta property="og:title" content="Heroes of Karn: Data at B6E0" />
-<meta property="og:description" content="Heroes of Karn: Data at B6E0. Complete ZX Spectrum RAM disassembly." />
+<meta name="description" content="Heroes of Karn: Routine at B6E0. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:title" content="Heroes of Karn: Routine at B6E0" />
+<meta property="og:description" content="Heroes of Karn: Routine at B6E0. Complete ZX Spectrum RAM disassembly." />
 <meta property="og:site_name" content="ArcadeGeek" />
 <meta property="og:type" content="article" />
 <link rel="canonical" href="https://skoolkit.arcadegeek.co.uk/adventure-games/heroesofkarn/asm/B6E0.html" />
@@ -25,9 +25,9 @@
 },
 {
 "@type": "TechArticle",
-"headline": "Heroes of Karn: Data at B6E0",
-"name": "Heroes of Karn: Data at B6E0",
-"description": "Heroes of Karn: Data at B6E0. Complete ZX Spectrum RAM disassembly.",
+"headline": "Heroes of Karn: Routine at B6E0",
+"name": "Heroes of Karn: Routine at B6E0",
+"description": "Heroes of Karn: Routine at B6E0. Complete ZX Spectrum RAM disassembly.",
 "inLanguage": "en",
 "isPartOf": {"@id": "https://skoolkit.arcadegeek.co.uk/#website"},
 "author": {
@@ -67,7 +67,7 @@
 ,{
 "@type": "ListItem",
 "position": 4,
-"name": "Data at B6E0"
+"name": "Routine at B6E0"
 ,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/heroesofkarn/asm/B6E0.html"
 }
 ]
@@ -87,11 +87,11 @@ gtag('js', new Date());
 gtag('config', 'G-75RERFCHBG');
 </script>
 </head>
-<body class="Asm-b">
+<body class="Asm-c">
 <table class="header">
 <tr>
 <td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
-<td class="page-header">Data</td>
+<td class="page-header">Routines</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -101,23 +101,208 @@ Prev: <a href="B6BC.html">B6BC</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#b6e0">Map</a></td>
 <td class="next">
-Next: <a href="B6E5.html">B6E5</a>
+Next: <a href="B714.html">B714</a>
 </td>
 </tr>
 </table>
-<div class="description">B6E0: Data</div>
+<div class="description">B6E0: Handler: Scenic Events</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Handles checking if a scenic event should occur ... and also, handles jumping to the correct related scenic event routine to action it.
+</div>
 </div>
 </td>
 </tr>
 <tr>
 <td class="asm-label">Handler_ScenicEvents</td>
-<td class="address-1"><span id="b6e0"></span>B6E0</td>
-<td class="instruction">DEFB $3A,$F8,$AE,$A7,$C8</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-2"><span id="b6e0"></span>B6E0</td>
+<td class="instruction">LD A,($AEF8)</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="AEF8.html">Count_ScenicEvents</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6e3"></span>B6E3</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="2">Return if *<a href="AEF8.html">Count_ScenicEvents</a> is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6e4"></span>B6E4</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6e5"></span>B6E5</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6e6"></span>B6E6</td>
+<td class="instruction">LD HL,($AEEC)</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="AEEC.html">Pointer_Spare</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6e9"></span>B6E9</td>
+<td class="instruction">JR <a href="B6E0.html#b6ec">ScenicEvents_Process</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B6E0.html#b6ec">ScenicEvents_Process</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_ScenicEvents_Loop</td>
+<td class="address-2"><span id="b6eb"></span>B6EB</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+</tr>
+<tr>
+<td class="asm-label">ScenicEvents_Process</td>
+<td class="address-2"><span id="b6ec"></span>B6EC</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Load the scenic event item ID into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6ed"></span>B6ED</td>
+<td class="instruction">CALL <a href="B560.html">ValidateItemPresent</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B560.html">ValidateItemPresent</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6f0"></span>B6F0</td>
+<td class="instruction">JR NZ,<a href="B6E0.html#b711">ScenicEvents_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B6E0.html#b711">ScenicEvents_Next</a> if the scenic event item is neither here nor carried.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b6f2"></span>
+<div class="comments">
+<div class="paragraph">
+An event was found to be processed!
+</div>
+<div class="paragraph">
+First though, stash away the current pointer and index in the search, so this can be resumed later.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6f2"></span>B6F2</td>
+<td class="instruction">LD ($AF45),HL</td>
+<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to *<a href="AF45.html">TempStore_TablePointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6f5"></span>B6F5</td>
+<td class="instruction">LD ($AF47),BC</td>
+<td class="comment-1" rowspan="1">Write <span class="register">BC</span> to *<a href="AF47.html">TempStore_TableIndex</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b6f9"></span>
+<div class="comments">
+<div class="paragraph">
+Calculate the event index and get the event handler.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6f9"></span>B6F9</td>
+<td class="instruction">LD A,($AEF8)</td>
+<td class="comment-1" rowspan="3"><span class="register">E</span>=*<a href="AEF8.html">Count_ScenicEvents</a>-<span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6fc"></span>B6FC</td>
+<td class="instruction">SUB B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6fd"></span>B6FD</td>
+<td class="instruction">LD E,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b6fe"></span>B6FE</td>
+<td class="instruction">LD IX,($AEE8)</td>
+<td class="comment-1" rowspan="1">Load <span class="register">IX</span> with *<a href="AEE8.html">Pointer_JumpTable_ScenicEvents</a> which contains a pointer to the scenic event rountines jump table.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b702"></span>B702</td>
+<td class="instruction">CALL <a href="B3F1.html">GetTableEntry</a></td>
+<td class="comment-1" rowspan="1">Call <a href="B3F1.html">GetTableEntry</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b705"></span>B705</td>
+<td class="instruction">LD DE,$B70A</td>
+<td class="comment-1" rowspan="2">Push <a href="B6E0.html#b70a">ScenicEvents_PostProcessing</a> onto the stack (as the return address).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b708"></span>B708</td>
+<td class="instruction">PUSH DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b709"></span>B709</td>
+<td class="instruction">JP (HL)</td>
+<td class="comment-1" rowspan="1">Jump to the event handler held by <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b70a"></span>
+<div class="comments">
+<div class="paragraph">
+This is the return point after the handler has finished executing.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScenicEvents_PostProcessing</td>
+<td class="address-1"><span id="b70a"></span>B70A</td>
+<td class="instruction">LD HL,($AF45)</td>
+<td class="comment-1" rowspan="1">Restore *<a href="AF45.html">TempStore_TablePointer</a> to <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b70d"></span>B70D</td>
+<td class="instruction">LD BC,($AF47)</td>
+<td class="comment-1" rowspan="1">Restore *<a href="AF47.html">TempStore_TableIndex</a> to <span class="register">BC</span>.</td>
+</tr>
+<tr>
+<td class="asm-label">ScenicEvents_Next</td>
+<td class="address-2"><span id="b711"></span>B711</td>
+<td class="instruction">DJNZ <a href="B6E0.html#b6eb">Handler_ScenicEvents_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the event counter by one and loop back to <a href="B6E0.html#b6eb">Handler_ScenicEvents_Loop</a> until all events have been processed.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="b713"></span>B713</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/aftershock/asm/AC88.html">After Shock</a></li>
+<li><a href="/adventure-games/forestatworldsend/asm/C3FA.html">Forest At Worlds End</a></li>
+<li><a href="/adventure-games/jewelsofbabylon/asm/C4EB.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/asm/658A.html">Message From Andromeda</a></li>
+<li><a href="/adventure-games/warlord/asm/AFEB.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -127,14 +312,14 @@ Prev: <a href="B6BC.html">B6BC</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#b6e0">Map</a></td>
 <td class="next">
-Next: <a href="B6E5.html">B6E5</a>
+Next: <a href="B714.html">B714</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
 <div><a href="../dec/asm/46816.html">Switch to decimal</a>.</div>
 </footer>

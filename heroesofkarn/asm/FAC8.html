@@ -120,18 +120,29 @@ Carry out the "Dig" command.
 <td class="asm-label">Action_Dig</td>
 <td class="address-2"><span id="fac8"></span>FAC8</td>
 <td class="instruction">CALL <a href="B665.html">ParserValidateNoDirectObject</a></td>
-<td class="comment-1" rowspan="2">Call <a href="B665.html">ParserValidateNoDirectObject</a> to check that the command has no object, and return if it does not.</td>
+<td class="comment-1" rowspan="1">Call <a href="B665.html">ParserValidateNoDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="facb"></span>FACB</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="facc"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player have the shovel ("Some straw")?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="facc"></span>FACC</td>
 <td class="instruction">LD A,$60</td>
-<td class="comment-1" rowspan="3">Refuse to dig without the shovel.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F537.html">Response_YouHaveNothingToDigWith</a> if <a href="B5CF.html">IsObjectInInventory</a> reports that "Some straw" is not held.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,19 +152,33 @@ Carry out the "Dig" command.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fad1"></span>FAD1</td>
-<td class="instruction">JP NZ,<a href="F537.html">Messaging_YouHaveNothingToDigWith_Reply</a></td>
+<td class="instruction">JP NZ,<a href="F537.html">Response_YouHaveNothingToDigWith</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fad4"></span>FAD4</td>
 <td class="instruction">LD A,($AECD)</td>
-<td class="comment-1" rowspan="1">Read the current room into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="AECD.html">CurrentRoom</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fad7"></span>
+<div class="comments">
+<div class="paragraph">
+Is the player in room 3C: "
+
+<a href="CA31.html">The Sandy Beach</a>"?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fad7"></span>FAD7</td>
 <td class="instruction">CP $3C</td>
-<td class="comment-1" rowspan="2">Branch to <a href="F53D.html">Response_YouFindNothing</a> when 3C means the values differ.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F53D.html">Response_YouFindNothing</a> if *<a href="AECD.html">CurrentRoom</a> is not room 3C: "
+
+<a href="CA31.html">The Sandy Beach</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -161,10 +186,20 @@ Carry out the "Dig" command.
 <td class="instruction">JP NZ,<a href="F53D.html">Response_YouFindNothing</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="fadc"></span>
+<div class="comments">
+<div class="paragraph">
+Has this spot on the beach already been dug?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fadc"></span>FADC</td>
 <td class="instruction">LD HL,$AE77</td>
-<td class="comment-1" rowspan="3">See whether this spot on the beach has already been dug.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F53D.html">Response_YouFindNothing</a> if bit 0 of *<a href="AE77.html">Flag_BeachDug</a> is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -180,13 +215,14 @@ Carry out the "Dig" command.
 <td class="asm-label"></td>
 <td class="address-1"><span id="fae4"></span>FAE4</td>
 <td class="instruction">SET 0,(HL)</td>
-<td class="comment-1" rowspan="1">Remember that this spot on the beach has been dug.</td>
+<td class="comment-1" rowspan="1">Set bit 0 of *<a href="AE77.html">Flag_BeachDug</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fae6"></span>FAE6</td>
 <td class="instruction">LD A,$72</td>
-<td class="comment-1" rowspan="2">Call <a href="B5DC.html">HandlerUpdateItemEventForTheCurrentRoom</a> to update the item for this room.</td>
+<td class="comment-1" rowspan="2">Call <a href="B5DC.html">HandlerUpdateItemEventForTheCurrentRoom</a> with item 72: 
+N/A.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -197,7 +233,7 @@ Carry out the "Dig" command.
 <td class="asm-label"></td>
 <td class="address-1"><span id="faeb"></span>FAEB</td>
 <td class="instruction">LD A,$03</td>
-<td class="comment-1" rowspan="2">Call <a href="B78F.html">AddToScore</a> to add the points to the score.</td>
+<td class="comment-1" rowspan="2">Call <a href="B78F.html">AddToScore</a> with 03.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -207,15 +243,15 @@ Carry out the "Dig" command.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="faf0"></span>FAF0</td>
-<td class="instruction">CALL <a href="EAE8.html">Messaging_OK_Reply</a></td>
-<td class="comment-1" rowspan="1">Call <a href="EAE8.html">Messaging_OK_Reply</a> to tell the player that worked.</td>
+<td class="instruction">CALL <a href="EAE8.html">Response_OK_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Call <a href="EAE8.html">Response_OK_GameLoop</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="faf3"></span>
 <div class="comments">
 <div class="paragraph">
-Print it as the reply: You uncover an emerald!.
+Print "You uncover an emerald!".
 </div>
 </div>
 </td>
@@ -224,12 +260,13 @@ Print it as the reply: You uncover an emerald!.
 <td class="asm-label"></td>
 <td class="address-1"><span id="faf3"></span>FAF3</td>
 <td class="instruction">LD HL,$DE88</td>
-<td class="comment-1" rowspan="2">Point at the message and print it as the reply.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DE88.html">Messaging_YouUncoverAnEmerald</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="faf6"></span>FAF6</td>
 <td class="instruction">JP <a href="EA9E.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EA9E.html">PrintResponse</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -246,7 +283,7 @@ Next: <a href="FAF9.html">FAF9</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
 <div><a href="../dec/asm/64200.html">Switch to decimal</a>.</div>
 </footer>

@@ -120,18 +120,29 @@ Wear the ring.
 <td class="asm-label">Action_Wear</td>
 <td class="address-2"><span id="f79d"></span>F79D</td>
 <td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="C309.html">Parser_ValidateDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f7a0"></span>F7A0</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f7a1"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to wear ... the ring?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f7a1"></span>F7A1</td>
 <td class="instruction">LD HL,$E821</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F79D.html#f7bf">Action_Wear_YouCant</a> unless the player named the furnace.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e821">E821</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,13 +152,14 @@ Wear the ring.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f7a7"></span>F7A7</td>
-<td class="instruction">JR NZ,<a href="F79D.html#f7bf">Action_Wear_YouCant</a></td>
+<td class="instruction">JR NZ,<a href="F79D.html#f7bf">Wear_YouCant</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F79D.html#f7bf">Wear_YouCant</a> if the token isn't for the ring.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f7a9"></span>F7A9</td>
 <td class="instruction">LD A,$43</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F79D.html#f7b6">Action_Wear_Next</a> if the player is not carrying object 43 (the ring being worn).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F79D.html#f7b6">Wear_Ring</a> if "A ring,which you are wearing" isn't held.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -157,14 +169,14 @@ Wear the ring.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f7ae"></span>F7AE</td>
-<td class="instruction">JR NZ,<a href="F79D.html#f7b6">Action_Wear_Next</a></td>
+<td class="instruction">JR NZ,<a href="F79D.html#f7b6">Wear_Ring</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="f7b0"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "You're wearing it already!".
+Print "You're wearing it already!".
 </div>
 </div>
 </td>
@@ -173,18 +185,29 @@ Reply with "You're wearing it already!".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f7b0"></span>F7B0</td>
 <td class="instruction">LD HL,$E1B1</td>
-<td class="comment-1" rowspan="2">Print "You're wearing it already!" and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E1B1.html">Messaging_YoureWearingItAlready</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f7b3"></span>F7B3</td>
 <td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Wear_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="f7b6"></span>
+<div class="comments">
+<div class="paragraph">
+Change the ring state!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Wear_Ring</td>
 <td class="address-2"><span id="f7b6"></span>F7B6</td>
 <td class="instruction">LD BC,$0743</td>
-<td class="comment-1" rowspan="2">Replace object 07 (the ring) with object 43 (the ring being worn).</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A ring" into "A ring,which you are wearing".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -194,14 +217,37 @@ Reply with "You're wearing it already!".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f7bc"></span>F7BC</td>
-<td class="instruction">JP <a href="ED96.html">Response_OK</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="ED96.html">Response_OK</a> to confirm.</td>
+<td class="instruction">JP <a href="ED96.html">Response_OK_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED96.html">Response_OK_GameLoop</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Wear_YouCant</td>
+<td class="routine-comment" colspan="5">
+<span id="f7bf"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Wear_YouCant</td>
 <td class="address-2"><span id="f7bf"></span>F7BF</td>
 <td class="instruction">JP <a href="ED6E.html">Response_YouCant_GameLoop</a></td>
-<td class="comment-1" rowspan="1">Tell the player the command is impossible.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/asm/FBD5.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/asm/9861.html">Message From Andromeda</a></li>
+<li><a href="/adventure-games/warlord/asm/FB5D.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -218,7 +264,7 @@ Next: <a href="F7C2.html">F7C2</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/63389.html">Switch to decimal</a>.</div>
 </footer>

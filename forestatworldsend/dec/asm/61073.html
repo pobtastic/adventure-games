@@ -120,63 +120,115 @@ Ask whether to abandon the game and, if so, offer to save it.
 <td class="asm-label">Action_Quit</td>
 <td class="address-2"><span id="61073"></span>61073</td>
 <td class="instruction">CALL <a href="49918.html">Parser_ValidateNoDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="49918.html">Parser_ValidateNoDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61076"></span>
+<div class="comments">
+<div class="paragraph">
+The "QUIT" command can only be called on its own.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61076"></span>61076</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if there's any token set in <a href="47926.html#47927">UserInput_Token_2</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61077"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Want to save the game? Y/N.".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61077"></span>61077</td>
 <td class="instruction">LD HL,48261</td>
-<td class="comment-1" rowspan="2">Print "Want to save the game? Y/N.".</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="48261.html">Messaging_WantToSaveTheGameYN</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61080"></span>61080</td>
-<td class="instruction">CALL <a href="48686.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="48686.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="48686.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Quit_Loop</td>
+<td class="asm-label">WantToSave_Loop</td>
 <td class="address-2"><span id="61083"></span>61083</td>
 <td class="instruction">CALL <a href="48602.html">GetUserInput</a></td>
-<td class="comment-1" rowspan="1">Call <a href="48602.html">GetUserInput</a> to wait for a keypress.</td>
+<td class="comment-1" rowspan="1">Call <a href="48602.html">GetUserInput</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61086"></span>
+<div class="comments">
+<div class="paragraph">
+The player just wants to quit.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61086"></span>61086</td>
 <td class="instruction">CP 78</td>
-<td class="comment-1" rowspan="2">Jump to <a href="61073.html#61097">Action_Quit_Next</a> if "N" was pressed.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="61073.html#61097">QuitGame</a> if the keypress is "<code>&#78;</code>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61088"></span>61088</td>
-<td class="instruction">JR Z,<a href="61073.html#61097">Action_Quit_Next</a></td>
+<td class="instruction">JR Z,<a href="61073.html#61097">QuitGame</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61090"></span>61090</td>
 <td class="instruction">CP 89</td>
-<td class="comment-1" rowspan="2">Jump back to <a href="61073.html#61083">Action_Quit_Loop</a> if "Y" was not pressed.</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="61073.html#61083">WantToSave_Loop</a> if the keypress is anything other than "<code>&#89;</code>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61092"></span>61092</td>
-<td class="instruction">JR NZ,<a href="61073.html#61083">Action_Quit_Loop</a></td>
+<td class="instruction">JR NZ,<a href="61073.html#61083">WantToSave_Loop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61094"></span>
+<div class="comments">
+<div class="paragraph">
+The player does want to save before quitting...
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61094"></span>61094</td>
 <td class="instruction">CALL <a href="49989.html">SaveGame</a></td>
-<td class="comment-1" rowspan="1">Call <a href="49989.html">SaveGame</a> to save the game to tape.</td>
+<td class="comment-1" rowspan="1">Call <a href="49989.html">SaveGame</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Quit_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="61097"></span>
+<div class="comments">
+<div class="paragraph">
+Jump to asking if the player "wants another game?"
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">QuitGame</td>
 <td class="address-2"><span id="61097"></span>61097</td>
 <td class="instruction">LD HL,60201</td>
-<td class="comment-1" rowspan="2">Switch <a href="60195.html#60201">GameOver_WantAnother</a> onto the stack.</td>
+<td class="comment-1" rowspan="2">Switch <a href="60195.html#60201">WantAnotherGameInput</a> onto the stack so the next return action is asking if the player would "Want another game? Y/N.".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -218,7 +270,7 @@ Next: <a href="61102.html">61102</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/EE91.html">Switch to hexadecimal</a>.</div>
 </footer>

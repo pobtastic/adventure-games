@@ -120,7 +120,7 @@ Read a save block back from tape into the configurable exits.
 </td>
 </tr>
 <tr>
-<td class="asm-label">LoadFromTape</td>
+<td class="asm-label">LoadTape</td>
 <td class="address-2"><span id="aca8"></span>ACA8</td>
 <td class="instruction">LD HL,$B01F</td>
 <td class="comment-1" rowspan="2">Print "LOADING. Start tape." and start a new line.</td>
@@ -128,7 +128,7 @@ Read a save block back from tape into the configurable exits.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acab"></span>ACAB</td>
-<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndNewline</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -175,7 +175,7 @@ Read a save block back from tape into the configurable exits.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acc0"></span>ACC0</td>
-<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndNewline</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -190,6 +190,16 @@ Read a save block back from tape into the configurable exits.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="acc5"></span>
+<div class="comments">
+<div class="paragraph">
+There is nothing to unpack when no configurable exits were saved.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">LoadTape_Success</td>
 <td class="address-2"><span id="acc5"></span>ACC5</td>
 <td class="instruction">LD A,($AEFA)</td>
@@ -199,7 +209,7 @@ Read a save block back from tape into the configurable exits.
 <td class="asm-label"></td>
 <td class="address-1"><span id="acc8"></span>ACC8</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is zero.</td>
+<td class="comment-1" rowspan="2">Return if there are no configurable exits to unpack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -235,14 +245,24 @@ Read a save block back from tape into the configurable exits.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acd2"></span>ACD2</td>
-<td class="instruction">JR <a href="ACA8.html#acd9">LoadFromTape_0</a></td>
+<td class="instruction">JR <a href="ACA8.html#acd9">LoadTape_Write</a></td>
 <td class="comment-1" rowspan="1">Restore the first configurable exit.</td>
 </tr>
 <tr>
-<td class="asm-label">LoadTape_RestoreExit</td>
+<td class="routine-comment" colspan="5">
+<span id="acd4"></span>
+<div class="comments">
+<div class="paragraph">
+The next saved exit address.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">LoadTape_Restore</td>
 <td class="address-2"><span id="acd4"></span>ACD4</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="8">Copy each saved destination back into the configurable exits.</td>
+<td class="comment-1" rowspan="3">Move <span class="register">IX</span> on to the next exit address and <span class="register">DE</span> on to the next packed exit byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -255,9 +275,10 @@ Read a save block back from tape into the configurable exits.
 <td class="instruction">INC DE</td>
 </tr>
 <tr>
-<td class="asm-label">LoadFromTape_0</td>
+<td class="asm-label">LoadTape_Write</td>
 <td class="address-2"><span id="acd9"></span>ACD9</td>
 <td class="instruction">LD L,(IX+$00)</td>
+<td class="comment-1" rowspan="5">Fetch the exit address from *<span class="register">IX</span> into <span class="register">HL</span>, write that packed exit byte back into the game, and repeat until every exit byte is restored.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -277,7 +298,7 @@ Read a save block back from tape into the configurable exits.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ace1"></span>ACE1</td>
-<td class="instruction">DJNZ <a href="ACA8.html#acd4">LoadTape_RestoreExit</a></td>
+<td class="instruction">DJNZ <a href="ACA8.html#acd4">LoadTape_Restore</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -332,7 +353,7 @@ Next: <a href="ACEA.html">ACEA</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
 <div><a href="../dec/asm/44200.html">Switch to decimal</a>.</div>
 </footer>

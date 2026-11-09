@@ -105,7 +105,7 @@ Next: <a href="C345.html">C345</a>
 </td>
 </tr>
 </table>
-<div class="description">C32D: Parser: Validate Input Tokens</div>
+<div class="description">C32D: Parser: Validate Two Direct Objects</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -117,10 +117,19 @@ Used by the routines at <a href="F216.html">Action_Give</a>, <a href="F2A7.html"
 Accept a command that names one or two objects, and reject the rest.
 </div>
 </div>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The carry flag is set when the command is malformed</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Parser_ValidateInputTokens</td>
+<td class="asm-label">Parser_ValidateTwoDirectObjects</td>
 <td class="address-2"><span id="c32d"></span>C32D</td>
 <td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
 <td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
@@ -134,12 +143,12 @@ Accept a command that names one or two objects, and reject the rest.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c331"></span>C331</td>
 <td class="instruction">CP $01</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C32D.html#c33a">Parser_ValidateInputTokens_Next</a> unless the carried location matches.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C32D.html#c33a">ValidateTwoDirectObjects</a> unless exactly one object was named.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c333"></span>C333</td>
-<td class="instruction">JR NZ,<a href="C32D.html#c33a">Parser_ValidateInputTokens_Next</a></td>
+<td class="instruction">JR NZ,<a href="C32D.html#c33a">ValidateTwoDirectObjects</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -170,21 +179,31 @@ Only one object was named.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">Parser_ValidateInputTokens_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="c33a"></span>
+<div class="comments">
+<div class="paragraph">
+There are two or more valid direct objects in the user input.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ValidateTwoDirectObjects</td>
 <td class="address-2"><span id="c33a"></span>C33A</td>
 <td class="instruction">CP $03</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C32D.html#c340">Parser_ValidateInputTokens_Rephrase</a> when the value 03 succeeded.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C32D.html#c340">ValidateTwoDirectObjects_TooMany</a> when three or more objects were named.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c33c"></span>C33C</td>
-<td class="instruction">JR NC,<a href="C32D.html#c340">Parser_ValidateInputTokens_Rephrase</a></td>
+<td class="instruction">JR NC,<a href="C32D.html#c340">ValidateTwoDirectObjects_TooMany</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c33e"></span>C33E</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">Clear the carry flag; the input tokens are valid.</td>
+<td class="comment-1" rowspan="1">Clear the carry flag; exactly two objects were named.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -203,7 +222,7 @@ Too many objects were named.
 </td>
 </tr>
 <tr>
-<td class="asm-label">Parser_ValidateInputTokens_Rephrase</td>
+<td class="asm-label">ValidateTwoDirectObjects_TooMany</td>
 <td class="address-2"><span id="c340"></span>C340</td>
 <td class="instruction">CALL <a href="BDBE.html">Response_PleaseRephraseThat</a></td>
 <td class="comment-1" rowspan="1">Call <a href="BDBE.html">Response_PleaseRephraseThat</a>.</td>
@@ -249,7 +268,7 @@ Next: <a href="C345.html">C345</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/49965.html">Switch to decimal</a>.</div>
 </footer>

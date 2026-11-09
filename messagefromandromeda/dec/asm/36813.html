@@ -101,7 +101,7 @@ Prev: <a href="36785.html">36785</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#36813">Map</a></td>
 <td class="next">
-Next: <a href="36880.html">36880</a>
+Next: <a href="36834.html">36834</a>
 </td>
 </tr>
 </table>
@@ -111,7 +111,7 @@ Next: <a href="36880.html">36880</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Parse the named object and take it when the rules allow.
+Pick up the single object the player named.
 </div>
 </div>
 </td>
@@ -120,7 +120,7 @@ Parse the named object and take it when the rules allow.
 <td class="asm-label">ActionTake</td>
 <td class="address-2"><span id="36813"></span>36813</td>
 <td class="instruction">LD HL,35672</td>
-<td class="comment-1" rowspan="3">Jump to <a href="36884.html#36905">HandlerPickUpObject_Step1</a> when the command matches the phrase at <a href="35136.html#35672">35672</a>.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="36905.html">Validate_Take_Knife</a> when the command matches the phrase at <a href="35136.html#35672">35672</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -130,13 +130,13 @@ Parse the named object and take it when the rules allow.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36819"></span>36819</td>
-<td class="instruction">JR Z,<a href="36884.html#36905">HandlerPickUpObject_Step1</a></td>
+<td class="instruction">JR Z,<a href="36905.html">Validate_Take_Knife</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36821"></span>36821</td>
 <td class="instruction">CALL <a href="27005.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="4">Return if the command does not name an object. Jump to <a href="36884.html#36905">HandlerPickUpObject_Step1</a> when exactly one noun was named.</td>
+<td class="comment-1" rowspan="4">Return if the command does not name an object. Jump to <a href="36905.html">Validate_Take_Knife</a> when exactly one noun was named.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -151,148 +151,43 @@ Parse the named object and take it when the rules allow.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36827"></span>36827</td>
-<td class="instruction">JR Z,<a href="36884.html#36905">HandlerPickUpObject_Step1</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36829"></span>36829</td>
-<td class="instruction">LD HL,25669</td>
-<td class="comment-1" rowspan="2">Print "Please rephrase that." and start a new line.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36832"></span>36832</td>
-<td class="instruction">JR <a href="36884.html#36901">HandlerPickUpObject_Loop2</a></td>
+<td class="instruction">JR Z,<a href="36905.html">Validate_Take_Knife</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
-<span id="36834"></span>
+<span id="36829"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="36884.html">HandlerPickUpObject</a>.
+Print "Please rephrase that.".
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">ActionTake_Step1</td>
-<td class="address-2"><span id="36834"></span>36834</td>
-<td class="instruction">CALL <a href="26968.html">IsObjectCarried</a></td>
-<td class="comment-1" rowspan="1">Call <a href="26968.html">IsObjectCarried</a> to test whether the object is carried.</td>
+<td class="asm-label"></td>
+<td class="address-1"><span id="36829"></span>36829</td>
+<td class="instruction">LD HL,25669</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="25669.html">Messaging_PleaseRephraseThat</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="36837"></span>36837</td>
-<td class="instruction">JR NZ,<a href="36813.html#36867">ActionTake_Step4</a></td>
-<td class="comment-1" rowspan="1">The named object is not being carried yet.</td>
+<td class="address-1"><span id="36832"></span>36832</td>
+<td class="instruction">JR <a href="36884.html#36901">TakeItem_PrintAndReturn</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="36884.html#36901">TakeItem_PrintAndReturn</a>.</td>
 </tr>
 <tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36839"></span>36839</td>
-<td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Drop the return address; the failure message replaces it.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36840"></span>36840</td>
-<td class="instruction">LD HL,31263</td>
-<td class="comment-1" rowspan="2">Print You're already carrying  on the same line.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36843"></span>36843</td>
-<td class="instruction">CALL <a href="25820.html">PrintString</a></td>
-</tr>
-<tr>
-<td class="asm-label">ActionTake_Step2</td>
-<td class="address-1"><span id="36846"></span>36846</td>
-<td class="instruction">LD HL,36880</td>
-<td class="comment-1" rowspan="1">The objects called "them" are listed at <a href="36880.html">Table_PluralObjects</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36849"></span>36849</td>
-<td class="instruction">LD A,E</td>
-<td class="comment-1" rowspan="2">See whether this object is spoken of as "them".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36850"></span>36850</td>
-<td class="instruction">LD BC,4</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36853"></span>36853</td>
-<td class="instruction">CPIR</td>
-<td class="comment-1" rowspan="1">Search the list of objects that are called "them".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36855"></span>36855</td>
-<td class="instruction">JR Z,<a href="36813.html#36862">ActionTake_Step3</a></td>
-<td class="comment-1" rowspan="1">A plural object uses the wording for "them".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36857"></span>36857</td>
-<td class="instruction">LD HL,31288</td>
-<td class="comment-1" rowspan="2">Print "it." and start a new line.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36860"></span>36860</td>
-<td class="instruction">JR <a href="36884.html#36901">HandlerPickUpObject_Loop2</a></td>
-</tr>
-<tr>
-<td class="asm-label">ActionTake_Step3</td>
-<td class="address-2"><span id="36862"></span>36862</td>
-<td class="instruction">LD HL,31292</td>
-<td class="comment-1" rowspan="2">Print "them." and start a new line.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36865"></span>36865</td>
-<td class="instruction">JR <a href="36884.html#36901">HandlerPickUpObject_Loop2</a></td>
-</tr>
-<tr>
-<td class="asm-label">ActionTake_Step4</td>
-<td class="address-2"><span id="36867"></span>36867</td>
-<td class="instruction">LD A,(25132)</td>
-<td class="comment-1" rowspan="1">Fetch how many objects are being carried.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36870"></span>36870</td>
-<td class="instruction">CP 5</td>
-<td class="comment-1" rowspan="2">Five objects is the most the player can carry.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36872"></span>36872</td>
-<td class="instruction">LD B,E</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36873"></span>36873</td>
-<td class="instruction">RET NZ</td>
-<td class="comment-1" rowspan="1">Return so the object can be taken when five are not already carried.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36874"></span>36874</td>
-<td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Drop the return address; the player is already fully laden.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36875"></span>36875</td>
-<td class="instruction">LD HL,30722</td>
-<td class="comment-1" rowspan="2">Print "You can't carry any more." and start a new line.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="36878"></span>36878</td>
-<td class="instruction">JR <a href="36884.html#36901">HandlerPickUpObject_Loop2</a></td>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/forestatworldsend/dec/asm/61102.html">Forest At Worlds End</a></li>
+<li><a href="/adventure-games/heroesofkarn/dec/asm/63501.html">Heroes Of Karn</a></li>
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/62051.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/warlord/dec/asm/63830.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -302,14 +197,14 @@ Prev: <a href="36785.html">36785</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#36813">Map</a></td>
 <td class="next">
-Next: <a href="36880.html">36880</a>
+Next: <a href="36834.html">36834</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
 <div><a href="../../asm/8FCD.html">Switch to hexadecimal</a>.</div>
 </footer>

@@ -120,10 +120,20 @@ Load a game position from tape and redraw the room.
 </td>
 </tr>
 <tr>
-<td class="asm-label">LoadFromTape</td>
+<td class="routine-comment" colspan="5">
+<span id="69dc"></span>
+<div class="comments">
+<div class="paragraph">
+Print "LOADING. Start tape.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">LoadTape</td>
 <td class="address-2"><span id="69dc"></span>69DC</td>
 <td class="instruction">LD HL,$63B2</td>
-<td class="comment-1" rowspan="2">Print LOADING. Start tape..</td>
+<td class="comment-1" rowspan="2">Print "LOADING. Start tape.".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -134,24 +144,25 @@ Load a game position from tape and redraw the room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="69e2"></span>69E2</td>
 <td class="instruction">LD IX,$61AB</td>
-<td class="comment-1" rowspan="1">The loaded game is written over the object locations.</td>
+<td class="comment-1" rowspan="1">Load the starting address into <span class="register">IX</span> at the object locations.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="69e6"></span>69E6</td>
 <td class="instruction">LD DE,$00B4</td>
-<td class="comment-1" rowspan="2">Load a data block of 00B4 bytes over the object locations.</td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 00B4 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="69e9"></span>69E9</td>
 <td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to FF which indicates this is a data block.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="69eb"></span>69EB</td>
 <td class="instruction">SCF</td>
-<td class="comment-1" rowspan="1">Ask the ROM to load the block rather than verify it.</td>
+<td class="comment-1" rowspan="1">Set the carry flag to indicate this is loading.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -162,14 +173,24 @@ Load a game position from tape and redraw the room.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="69ef"></span>69EF</td>
-<td class="instruction">JR C,<a href="69DC.html#69f8">LoadFromTape_Step1</a></td>
-<td class="comment-1" rowspan="1">Restore the saved bytes when the tape block has loaded.</td>
+<td class="instruction">JR C,<a href="69DC.html#69f8">LoadTape_Success</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="69DC.html#69f8">LoadTape_Success</a> if the data block loaded.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="69f1"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Tape error.".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="69f1"></span>69F1</td>
 <td class="instruction">LD HL,$63C7</td>
-<td class="comment-1" rowspan="2">Print Tape error..</td>
+<td class="comment-1" rowspan="2">Print "Tape error.".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -183,7 +204,17 @@ Load a game position from tape and redraw the room.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">LoadFromTape_Step1</td>
+<td class="routine-comment" colspan="5">
+<span id="69f8"></span>
+<div class="comments">
+<div class="paragraph">
+There is nothing to unpack when no saved locations were stored.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">LoadTape_Success</td>
 <td class="address-2"><span id="69f8"></span>69F8</td>
 <td class="instruction">LD A,($62DC)</td>
 <td class="comment-1" rowspan="1">Fetch how many locations the save file stores.</td>
@@ -192,7 +223,7 @@ Load a game position from tape and redraw the room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="69fb"></span>69FB</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="2">Return if the save file stores no locations.</td>
+<td class="comment-1" rowspan="2">Return if there are no saved locations to unpack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -203,7 +234,7 @@ Load a game position from tape and redraw the room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="69fd"></span>69FD</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="4">Prepare to copy each saved location back into the game.</td>
+<td class="comment-1" rowspan="4">Copy the saved-location count into <span class="register">B</span> and point at the location table and the tape workspace.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -218,13 +249,23 @@ Load a game position from tape and redraw the room.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6a05"></span>6A05</td>
-<td class="instruction">JR <a href="69DC.html#6a0c">LoadFromTape_Step2</a></td>
+<td class="instruction">JR <a href="69DC.html#6a0c">LoadTape_Write</a></td>
 </tr>
 <tr>
-<td class="asm-label">LoadFromTape_Loop1</td>
+<td class="routine-comment" colspan="5">
+<span id="6a07"></span>
+<div class="comments">
+<div class="paragraph">
+The next saved location address.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">LoadTape_WriteLoop</td>
 <td class="address-2"><span id="6a07"></span>6A07</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="3">Step to the next saved-location pointer.</td>
+<td class="comment-1" rowspan="3">Move <span class="register">IX</span> on to the next saved-location address and <span class="register">DE</span> on to the next packed location byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -237,10 +278,10 @@ Load a game position from tape and redraw the room.
 <td class="instruction">INC DE</td>
 </tr>
 <tr>
-<td class="asm-label">LoadFromTape_Step2</td>
+<td class="asm-label">LoadTape_Write</td>
 <td class="address-2"><span id="6a0c"></span>6A0C</td>
 <td class="instruction">LD L,(IX+$00)</td>
-<td class="comment-1" rowspan="2">Read the address of this saved location.</td>
+<td class="comment-1" rowspan="2">Fetch the location address from *<span class="register">IX</span> into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -251,19 +292,18 @@ Load a game position from tape and redraw the room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6a12"></span>6A12</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="1">Read the byte saved for that location.</td>
+<td class="comment-1" rowspan="2">Write that packed location byte back into the game.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6a13"></span>6A13</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1">Write it back into the game.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6a14"></span>6A14</td>
-<td class="instruction">DJNZ <a href="69DC.html#6a07">LoadFromTape_Loop1</a></td>
-<td class="comment-1" rowspan="1">Repeat for the remaining saved locations.</td>
+<td class="instruction">DJNZ <a href="69DC.html#6a07">LoadTape_WriteLoop</a></td>
+<td class="comment-1" rowspan="1">Decrease the unpack counter and loop back to <a href="69DC.html#6a07">LoadTape_WriteLoop</a> until every location byte is restored.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -313,7 +353,7 @@ Next: <a href="6A1C.html">6A1C</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
 <div><a href="../dec/asm/27100.html">Switch to decimal</a>.</div>
 </footer>

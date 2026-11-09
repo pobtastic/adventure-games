@@ -111,7 +111,17 @@ Next: <a href="26437.html">26437</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Read the next word of the command and turn it into a vocabulary token.
+Split the command into words and look each one up in the vocabulary.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="26217"></span>
+<div class="comments">
+<div class="paragraph">
+Blank the four-character word buffer.
 </div>
 </div>
 </td>
@@ -120,7 +130,7 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="asm-label">Parser_MatchInputWord</td>
 <td class="address-2"><span id="26217"></span>26217</td>
 <td class="instruction">LD DE,25246</td>
-<td class="comment-1" rowspan="1">The typed word is held as four letters.</td>
+<td class="comment-1" rowspan="1">Start at the word buffer (<a href="25246.html">FourLetterBuffer</a>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -138,7 +148,7 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="asm-label">Parser_MatchInputWord_Loop1</td>
 <td class="address-2"><span id="26224"></span>26224</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-1" rowspan="3">Fill the four-letter word with spaces.</td>
+<td class="comment-1" rowspan="3">Write spaces through the word buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -154,7 +164,7 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26228"></span>26228</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">No words left means the command has been parsed.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="26437.html">Handler_UnknownWord</a> when no token slots remain.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -165,7 +175,7 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26230"></span>26230</td>
 <td class="instruction">JP Z,<a href="26437.html">Handler_UnknownWord</a></td>
-<td class="comment-1" rowspan="1">An empty command is an unknown word.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="26437.html">Handler_UnknownWord</a> when the command has ended.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -177,12 +187,22 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26234"></span>26234</td>
 <td class="instruction">CP 13</td>
-<td class="comment-1" rowspan="2">Jump to <a href="26437.html">Handler_UnknownWord</a> when ENTER (13) was pressed.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="26437.html">Handler_UnknownWord</a> when ENTER ends the command.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26236"></span>26236</td>
 <td class="instruction">JP Z,<a href="26437.html">Handler_UnknownWord</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="26239"></span>
+<div class="comments">
+<div class="paragraph">
+Copy the next word, up to 4 characters, stopping at a space, a comma or ENTER.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -194,13 +214,13 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26241"></span>26241</td>
 <td class="instruction">LD DE,25246</td>
-<td class="comment-1" rowspan="1">The typed word is held as four letters.</td>
+<td class="comment-1" rowspan="1">Point at the word buffer again.</td>
 </tr>
 <tr>
 <td class="asm-label">Parser_MatchInputWord_Loop2</td>
 <td class="address-2"><span id="26244"></span>26244</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Stop copying when ENTER ends the command.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="26217.html#26288">Parser_MatchInputWord_Step1</a> when the character is ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -216,7 +236,7 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26249"></span>26249</td>
 <td class="instruction">CP 32</td>
-<td class="comment-1" rowspan="4">Stop copying at a space or a comma.</td>
+<td class="comment-1" rowspan="4">Jump to <a href="26217.html#26278">Parser_MatchInputWord_Loop4</a> when the character is a space or a comma.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -237,7 +257,7 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26257"></span>26257</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-1" rowspan="4">Store this letter and read the next.</td>
+<td class="comment-1" rowspan="4">Copy the character into the word buffer and advance both pointers.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -255,10 +275,20 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="instruction">DJNZ <a href="26217.html#26244">Parser_MatchInputWord_Loop2</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="26262"></span>
+<div class="comments">
+<div class="paragraph">
+A longer word is skipped up to the next delimiter.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Parser_MatchInputWord_Loop3</td>
 <td class="address-2"><span id="26262"></span>26262</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Stop skipping when ENTER ends the command.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="26217.html#26288">Parser_MatchInputWord_Step1</a> on ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -274,7 +304,7 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26267"></span>26267</td>
 <td class="instruction">CP 32</td>
-<td class="comment-1" rowspan="4">Stop skipping at a space or a comma.</td>
+<td class="comment-1" rowspan="4">Jump to <a href="26217.html#26278">Parser_MatchInputWord_Loop4</a> on a space or a comma.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -295,7 +325,7 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26275"></span>26275</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="2">Skip this extra letter.</td>
+<td class="comment-1" rowspan="2">Skip this character and keep looking for a delimiter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -306,7 +336,7 @@ Read the next word of the command and turn it into a vocabulary token.
 <td class="asm-label">Parser_MatchInputWord_Loop4</td>
 <td class="address-2"><span id="26278"></span>26278</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="4">Skip spaces before the next word.</td>
+<td class="comment-1" rowspan="4">Skip consecutive spaces.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -339,7 +369,7 @@ Read the next word of the command and turn it into a vocabulary token.
 <span id="26288"></span>
 <div class="comments">
 <div class="paragraph">
-The word THE is ignored.
+Ignore the word "THE ".
 </div>
 </div>
 </td>
@@ -348,7 +378,7 @@ The word THE is ignored.
 <td class="asm-label">Parser_MatchInputWord_Step1</td>
 <td class="address-2"><span id="26288"></span>26288</td>
 <td class="instruction">EXX</td>
-<td class="comment-1" rowspan="4">Compare the word with THE  without losing the command pointer.</td>
+<td class="comment-1" rowspan="4">Compare the word with "THE " without losing the command pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -400,7 +430,7 @@ The word THE is ignored.
 <td class="asm-label">Parser_MatchInputWord_Step2</td>
 <td class="address-2"><span id="26305"></span>26305</td>
 <td class="instruction">EXX</td>
-<td class="comment-1" rowspan="3">Ignore the word and parse again when it was "THE ".</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="26217.html">Parser_MatchInputWord</a> when the word was THE, so it is not tokenised.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -416,7 +446,7 @@ The word THE is ignored.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26309"></span>26309</td>
 <td class="instruction">EXX</td>
-<td class="comment-1" rowspan="3">Search the vocabulary addressed by *<a href="25183.html#25244">25244</a>.</td>
+<td class="comment-1" rowspan="3">Search the vocabulary addressed by *<a href="25244.html">Pointer_Vocabulary</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -427,6 +457,16 @@ The word THE is ignored.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26313"></span>26313</td>
 <td class="instruction">LD C,0</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="26315"></span>
+<div class="comments">
+<div class="paragraph">
+Look the word up in the vocabulary. A comma separates synonyms.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">Parser_MatchInputWord_Loop6</td>
@@ -449,7 +489,7 @@ The word THE is ignored.
 <td class="asm-label">Parser_MatchInputWord_Loop7</td>
 <td class="address-2"><span id="26320"></span>26320</td>
 <td class="instruction">LD DE,25246</td>
-<td class="comment-1" rowspan="1">The typed word is held as four letters.</td>
+<td class="comment-1" rowspan="1">Point at the word buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -487,6 +527,16 @@ The word THE is ignored.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26331"></span>26331</td>
 <td class="instruction">DJNZ <a href="26217.html#26325">Parser_MatchInputWord_Loop8</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="26333"></span>
+<div class="comments">
+<div class="paragraph">
+Word matched. Store its vocabulary index in the token buffer and parse the next word.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -546,6 +596,16 @@ The word THE is ignored.
 <td class="comment-1" rowspan="1">Jump to <a href="26217.html">Parser_MatchInputWord</a> to read the next word.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="26350"></span>
+<div class="comments">
+<div class="paragraph">
+This vocabulary entry did not match. Try a synonym after a comma, else the next entry.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Parser_MatchInputWord_Step3</td>
 <td class="address-2"><span id="26350"></span>26350</td>
 <td class="instruction">LD E,B</td>
@@ -588,7 +648,7 @@ The word THE is ignored.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26360"></span>26360</td>
 <td class="instruction">JR <a href="26217.html#26320">Parser_MatchInputWord_Loop7</a></td>
-<td class="comment-1" rowspan="1">Continue at <a href="26217.html#26320">Parser_MatchInputWord_Loop7</a> to match this synonym against the typed word.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="26217.html#26320">Parser_MatchInputWord_Loop7</a> to match this synonym.</td>
 </tr>
 <tr>
 <td class="asm-label">Parser_MatchInputWord_Step4</td>
@@ -600,13 +660,23 @@ The word THE is ignored.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26363"></span>26363</td>
 <td class="instruction">JR <a href="26217.html#26315">Parser_MatchInputWord_Loop6</a></td>
-<td class="comment-1" rowspan="1">Continue at <a href="26217.html#26315">Parser_MatchInputWord_Loop6</a> to try the next vocabulary word.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="26217.html#26315">Parser_MatchInputWord_Loop6</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="26365"></span>
+<div class="comments">
+<div class="paragraph">
+The word is not in the vocabulary, so quote it and ask again.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">Parser_MatchInputWord_Step5</td>
 <td class="address-2"><span id="26365"></span>26365</td>
 <td class="instruction">EXX</td>
-<td class="comment-1" rowspan="5">The word is unknown. Count back to it from the end of the command.</td>
+<td class="comment-1" rowspan="5">Find the unknown word in the command buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -712,7 +782,7 @@ The word THE is ignored.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26398"></span>26398</td>
 <td class="instruction">JR <a href="26217.html#26373">Parser_MatchInputWord_Loop9</a></td>
-<td class="comment-1" rowspan="1">Continue at <a href="26217.html#26373">Parser_MatchInputWord_Loop9</a> to count back another word of the command.</td>
+<td class="comment-1" rowspan="1">Jump back to <a href="26217.html#26373">Parser_MatchInputWord_Loop9</a> to count back another word.</td>
 </tr>
 <tr>
 <td class="asm-label">Parser_MatchInputWord_Step6</td>
@@ -721,10 +791,20 @@ The word THE is ignored.
 <td class="comment-1" rowspan="1">Remember where the unknown word starts.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="26401"></span>
+<div class="comments">
+<div class="paragraph">
+Print "I don't know the word:-".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26401"></span>26401</td>
 <td class="instruction">LD HL,25344</td>
-<td class="comment-1" rowspan="2">Print I don't know the word:-.</td>
+<td class="comment-1" rowspan="2">Print "I don't know the word:-".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -735,7 +815,7 @@ The word THE is ignored.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26407"></span>26407</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">The unknown word starts at the address just saved.</td>
+<td class="comment-1" rowspan="1">Restore the start of the unknown word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -791,10 +871,20 @@ The word THE is ignored.
 <td class="instruction">CALL <a href="25842.html">PrintCharacter</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="26429"></span>
+<div class="comments">
+<div class="paragraph">
+Print ".".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26429"></span>26429</td>
 <td class="instruction">LD HL,25707</td>
-<td class="comment-1" rowspan="2">Print ..</td>
+<td class="comment-1" rowspan="2">Print ".".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -805,14 +895,14 @@ The word THE is ignored.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26435"></span>26435</td>
 <td class="instruction">JR <a href="26437.html#26449">Handler_UnknownWord_Step1</a></td>
-<td class="comment-1" rowspan="1">Continue at <a href="26437.html#26449">Handler_UnknownWord_Step1</a> to ask for another command.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="26437.html#26449">Handler_UnknownWord_Step1</a> to ask for another command.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="comments">
 <div class="paragraph">
 View the equivalent code in; <ul class="">
-<li><a href="/adventure-games/forestatworldsend/dec/asm/49112.html">Forest At Worlds End</a></li>
+<li><a href="/adventure-games/forestatworldsend/dec/asm/49089.html">Forest At Worlds End</a></li>
 <li><a href="/adventure-games/heroesofkarn/dec/asm/45646.html">Heroes Of Karn</a></li>
 <li><a href="/adventure-games/jewelsofbabylon/dec/asm/49240.html">The Jewels Of Babylon</a></li>
 </ul>
@@ -835,7 +925,7 @@ Next: <a href="26437.html">26437</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
 <div><a href="../../asm/6669.html">Switch to hexadecimal</a>.</div>
 </footer>

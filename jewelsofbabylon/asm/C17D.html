@@ -155,7 +155,7 @@ First process the turn-based events (if any are active).
 <span id="c183"></span>
 <div class="comments">
 <div class="paragraph">
-One of the events has triggered, find which one.
+Eight turn-based events share the flag byte.
 </div>
 </div>
 </td>
@@ -192,17 +192,14 @@ Keep shifting the event flags one-by-one to find which bits are set.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c188"></span>C188</td>
 <td class="instruction">JR NC,<a href="C17D.html#c1ad">GameEventChecker_Next</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C17D.html#c1ad">GameEventChecker_Next</a> if this event bit isn't set.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="C17D.html#c1ad">GameEventChecker_Next</a> if this event bit is not set.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="c18a"></span>
 <div class="comments">
 <div class="paragraph">
-The currently processed turn-based event is active, so process it.
-</div>
-<div class="paragraph">
-This is: <a href="BC67.html">Counter_Crab</a>+(08-the current event counter).
+Count down this event. It fires when the counter reaches zero.
 </div>
 </div>
 </td>
@@ -248,14 +245,14 @@ This is: <a href="BC67.html">Counter_Crab</a>+(08-the current event counter).
 <td class="asm-label"></td>
 <td class="address-1"><span id="c196"></span>C196</td>
 <td class="instruction">JR NZ,<a href="C17D.html#c1ad">GameEventChecker_Next</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="C17D.html#c1ad">GameEventChecker_Next</a> if the event turn counter at *<span class="register">HL</span> was still more than zero.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="C17D.html#c1ad">GameEventChecker_Next</a> if the counter is still running.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="c198"></span>
 <div class="comments">
 <div class="paragraph">
-The event turn counter is zero, so activate the event itself.
+The counter has expired, so run this event's handler.
 </div>
 </div>
 </td>
@@ -299,7 +296,7 @@ The event turn counter is zero, so activate the event itself.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c1a7"></span>C1A7</td>
 <td class="instruction">LD DE,$C1AC</td>
-<td class="comment-1" rowspan="2">Push <a href="C17D.html#c1ac">GameEventChecker_Return</a> onto the stack so that the next return will go on to continue processing events.</td>
+<td class="comment-1" rowspan="2">Push <a href="C17D.html#c1ac">GameEventChecker_Return</a> onto the stack so the next return resumes event processing.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -329,10 +326,20 @@ Once the event handler has run, this is where the routine will resume.
 <td class="comment-1" rowspan="1">Restore the event bit index counter and event flag byte from the stack.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c1ad"></span>
+<div class="comments">
+<div class="paragraph">
+Test the next turn-based event.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">GameEventChecker_Next</td>
 <td class="address-2"><span id="c1ad"></span>C1AD</td>
 <td class="instruction">DJNZ <a href="C17D.html#c186">GameEventChecker_Loop</a></td>
-<td class="comment-1" rowspan="1">Decrease the event bit counter by one and loop back to <a href="C17D.html#c186">GameEventChecker_Loop</a> until all the event status bits have been processed.</td>
+<td class="comment-1" rowspan="1">Decrease the event bit counter by one and loop back to <a href="C17D.html#c186">GameEventChecker_Loop</a> until all eight events have been considered.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -449,7 +456,7 @@ This is the main scenic event loop.
 <span id="c1c9"></span>
 <div class="comments">
 <div class="paragraph">
-This is: <span class="register">E</span>=*<a href="BD30.html">Count_ScenicEvents</a>-<span class="register">B</span>.
+Calculate which scenic event's room group this is.
 </div>
 </div>
 </td>
@@ -556,7 +563,7 @@ Use the random number to select a room from the group - this loops through the r
 <td class="asm-label">GameScenicEvent_CountRoomsInGroup</td>
 <td class="address-2"><span id="c1e4"></span>C1E4</td>
 <td class="instruction">CP (HL)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C17D.html#c1db">GameScenicEvent_FetchRoomGroup</a> if the terminator is read from *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="C17D.html#c1db">GameScenicEvent_FetchRoomGroup</a> when the terminator matches.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -642,7 +649,7 @@ Next: <a href="C1F0.html">C1F0</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/jewelsofbabylon/">Source code</a>.</div>
 <div><a href="../dec/asm/49533.html">Switch to decimal</a>.</div>
 </footer>

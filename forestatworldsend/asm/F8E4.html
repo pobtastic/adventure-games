@@ -120,18 +120,29 @@ Unlock a door with the key.
 <td class="asm-label">Action_Unlock</td>
 <td class="address-2"><span id="f8e4"></span>F8E4</td>
 <td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="C309.html">Parser_ValidateDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f8e7"></span>F8E7</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f8e8"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to unlock ... the chest?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f8e8"></span>F8E8</td>
 <td class="instruction">LD HL,$E92E</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F8E4.html#f913">Action_Unlock_YouCant</a> unless the player named the witch.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e92e">E92E</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,30 +152,31 @@ Unlock a door with the key.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f8ee"></span>F8EE</td>
-<td class="instruction">JR NZ,<a href="F8E4.html#f913">Action_Unlock_YouCant</a></td>
+<td class="instruction">JR NZ,<a href="F8E4.html#f913">Unlock_YouCant</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F8E4.html#f913">Unlock_YouCant</a> if the token isn't for the chest.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f8f0"></span>F8F0</td>
 <td class="instruction">LD A,$0B</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F8E4.html#f8fd">Action_Unlock_Next</a> when object 0B (the chest) is here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F8E4.html#f8fd">Unlock_CheckKey</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "A chest" is in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f8f2"></span>F8F2</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f8f5"></span>F8F5</td>
-<td class="instruction">JR Z,<a href="F8E4.html#f8fd">Action_Unlock_Next</a></td>
+<td class="instruction">JR Z,<a href="F8E4.html#f8fd">Unlock_CheckKey</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="f8f7"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "It is already unlocked.".
+Print "It is already unlocked.".
 </div>
 </div>
 </td>
@@ -173,18 +185,29 @@ Reply with "It is already unlocked.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f8f7"></span>F8F7</td>
 <td class="instruction">LD HL,$E36F</td>
-<td class="comment-1" rowspan="2">Print "It is already unlocked." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E36F.html">Messaging_ItIsAlreadyUnlocked</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f8fa"></span>F8FA</td>
 <td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Unlock_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="f8fd"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player hold the key?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Unlock_CheckKey</td>
 <td class="address-2"><span id="f8fd"></span>F8FD</td>
 <td class="instruction">LD A,$10</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F8E4.html#f90a">Action_Unlock_Chest</a> when the player is carrying object 10 (the key).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F8E4.html#f90a">Unlock_Chest</a> if "A key" is held.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -194,14 +217,14 @@ Reply with "It is already unlocked.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f902"></span>F902</td>
-<td class="instruction">JR Z,<a href="F8E4.html#f90a">Action_Unlock_Chest</a></td>
+<td class="instruction">JR Z,<a href="F8E4.html#f90a">Unlock_Chest</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="f904"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "You're not carrying a key.".
+Print "You're not carrying a key.".
 </div>
 </div>
 </td>
@@ -210,18 +233,29 @@ Reply with "You're not carrying a key.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f904"></span>F904</td>
 <td class="instruction">LD HL,$E387</td>
-<td class="comment-1" rowspan="2">Print "You're not carrying a key." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E387.html">Messaging_YoureNotCarryingAKey</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f907"></span>F907</td>
 <td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Unlock_Chest</td>
+<td class="routine-comment" colspan="5">
+<span id="f90a"></span>
+<div class="comments">
+<div class="paragraph">
+Change the chest state!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Unlock_Chest</td>
 <td class="address-2"><span id="f90a"></span>F90A</td>
 <td class="instruction">LD BC,$0B0C</td>
-<td class="comment-1" rowspan="2">Replace object 0B (the chest) with object 0C (the closed chest).</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A chest" into "A closed chest".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -231,14 +265,24 @@ Reply with "You're not carrying a key.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f910"></span>F910</td>
-<td class="instruction">JP <a href="ED96.html">Response_OK</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="ED96.html">Response_OK</a> to confirm.</td>
+<td class="instruction">JP <a href="ED96.html">Response_OK_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED96.html">Response_OK_GameLoop</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Unlock_YouCant</td>
+<td class="routine-comment" colspan="5">
+<span id="f913"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Unlock_YouCant</td>
 <td class="address-2"><span id="f913"></span>F913</td>
 <td class="instruction">JP <a href="ED6E.html">Response_YouCant_GameLoop</a></td>
-<td class="comment-1" rowspan="1">Tell the player the command is impossible.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -266,7 +310,7 @@ Next: <a href="F916.html">F916</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/63716.html">Switch to decimal</a>.</div>
 </footer>

@@ -97,7 +97,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="F6FD.html">F6FD</a>
+Prev: <a href="F68C.html">F68C</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#f71b">Map</a></td>
 <td class="next">
@@ -120,18 +120,29 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="asm-label">Action_Enter</td>
 <td class="address-2"><span id="f71b"></span>F71B</td>
 <td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="C309.html">Parser_ValidateDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f71e"></span>F71E</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f71f"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to enter ... the farmhouse?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f71f"></span>F71F</td>
 <td class="instruction">LD HL,$E8EC</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F71B.html#f73d">Action_Enter_Next</a> unless the player named the giant spider.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e8ec">E8EC</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,13 +152,26 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f725"></span>F725</td>
-<td class="instruction">JR NZ,<a href="F71B.html#f73d">Action_Enter_Next</a></td>
+<td class="instruction">JR NZ,<a href="F71B.html#f73d">Enter_CheckHut</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F71B.html#f73d">Enter_CheckHut</a> if the token isn't for the farmhouse.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f727"></span>
+<div class="comments">
+<div class="paragraph">
+The player is attempting to enter the farmhouse.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f727"></span>F727</td>
 <td class="instruction">LD A,($BA9B)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ED9B.html">Response_YoureInsideAlready</a> unless the player is in room 03 (At a large Farmhouse).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED9B.html">Response_YoureInsideAlready</a> if *<a href="BA9B.html">CurrentRoom</a> isn't room 03: "
+
+<a href="CAEA.html">At a large Farmhouse</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -163,12 +187,12 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="asm-label"></td>
 <td class="address-1"><span id="f72f"></span>F72F</td>
 <td class="instruction">LD A,$35</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a> if object 35 (an open door) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a> if "An open door" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f731"></span>F731</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -179,7 +203,9 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="asm-label"></td>
 <td class="address-1"><span id="f737"></span>F737</td>
 <td class="instruction">LD A,$02</td>
-<td class="comment-1" rowspan="2">Try to enter room 02 (Inside the Farmhouse).</td>
+<td class="comment-1" rowspan="2">Call <a href="ECB6.html">Handler_InjuryCheck</a> with room 02: "
+
+<a href="CAD4.html">Inside the Farmhouse</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -193,10 +219,20 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Enter_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="f73d"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to enter ... the hut?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Enter_CheckHut</td>
 <td class="address-2"><span id="f73d"></span>F73D</td>
 <td class="instruction">LD HL,$E8EE</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F71B.html#f75b">Action_Enter_Hovel</a> unless the player named the hut.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e8ee">E8EE</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -206,13 +242,26 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f743"></span>F743</td>
-<td class="instruction">JR NZ,<a href="F71B.html#f75b">Action_Enter_Hovel</a></td>
+<td class="instruction">JR NZ,<a href="F71B.html#f75b">Enter_CheckHovel</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F71B.html#f75b">Enter_CheckHovel</a> if the token isn't for the hut.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f745"></span>
+<div class="comments">
+<div class="paragraph">
+The player is attempting to enter the hut.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f745"></span>F745</td>
 <td class="instruction">LD A,($BA9B)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ED9B.html">Response_YoureInsideAlready</a> unless the player is in room 0F (At the Woodman's Hut).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED9B.html">Response_YoureInsideAlready</a> if *<a href="BA9B.html">CurrentRoom</a> isn't room 0F: "
+
+<a href="CC6C.html">At the Woodman's Hut</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -228,12 +277,12 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="asm-label"></td>
 <td class="address-1"><span id="f74d"></span>F74D</td>
 <td class="instruction">LD A,$39</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a> if object 39 is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a> if "An open door" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f74f"></span>F74F</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -244,7 +293,9 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="asm-label"></td>
 <td class="address-1"><span id="f755"></span>F755</td>
 <td class="instruction">LD A,$10</td>
-<td class="comment-1" rowspan="2">Try to enter room 10 (Inside the Woodman's Hut).</td>
+<td class="comment-1" rowspan="2">Call <a href="ECB6.html">Handler_InjuryCheck</a> with room 10: "
+
+<a href="CC82.html">Inside the Woodman's Hut</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -258,10 +309,20 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Enter_Hovel</td>
+<td class="routine-comment" colspan="5">
+<span id="f75b"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to enter ... the hovel?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Enter_CheckHovel</td>
 <td class="address-2"><span id="f75b"></span>F75B</td>
 <td class="instruction">LD HL,$E8F0</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F71B.html#f779">Action_Enter_Log</a> unless the player named the hovel.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e8f0">E8F0</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -271,13 +332,26 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f761"></span>F761</td>
-<td class="instruction">JR NZ,<a href="F71B.html#f779">Action_Enter_Log</a></td>
+<td class="instruction">JR NZ,<a href="F71B.html#f779">Enter_CheckForge</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F71B.html#f779">Enter_CheckForge</a> if the token isn't for the hovel.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f763"></span>
+<div class="comments">
+<div class="paragraph">
+The player is attempting to enter the hovel.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f763"></span>F763</td>
 <td class="instruction">LD A,($BA9B)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ED9B.html">Response_YoureInsideAlready</a> unless the player is in room 3C (At the Witch's Hovel).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED9B.html">Response_YoureInsideAlready</a> if *<a href="BA9B.html">CurrentRoom</a> isn't room 3C: "
+
+<a href="CFE1.html">At the Witch's Hovel</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -293,12 +367,12 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="asm-label"></td>
 <td class="address-1"><span id="f76b"></span>F76B</td>
 <td class="instruction">LD A,$3D</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a> if object 3D is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a> if "An open door" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f76d"></span>F76D</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -309,7 +383,9 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="asm-label"></td>
 <td class="address-1"><span id="f773"></span>F773</td>
 <td class="instruction">LD A,$3D</td>
-<td class="comment-1" rowspan="2">Try to enter room 3D (Inside the Witch's Hovel).</td>
+<td class="comment-1" rowspan="2">Call <a href="ECB6.html">Handler_InjuryCheck</a> with room 3D: "
+
+<a href="D00C.html">Inside the Witch's Hovel</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -323,10 +399,20 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Enter_Log</td>
+<td class="routine-comment" colspan="5">
+<span id="f779"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to enter ... the forge?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Enter_CheckForge</td>
 <td class="address-2"><span id="f779"></span>F779</td>
 <td class="instruction">LD HL,$E8F2</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F71B.html#f78f">Action_Enter_Boat</a> unless the player named the log.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e8f2">E8F2</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -336,13 +422,26 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f77f"></span>F77F</td>
-<td class="instruction">JR NZ,<a href="F71B.html#f78f">Action_Enter_Boat</a></td>
+<td class="instruction">JR NZ,<a href="F71B.html#f78f">Enter_CheckBoat</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F71B.html#f78f">Enter_CheckBoat</a> if the token isn't for the forge.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f781"></span>
+<div class="comments">
+<div class="paragraph">
+The player is attempting to enter the forge.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f781"></span>F781</td>
 <td class="instruction">LD A,($BA9B)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ED9B.html">Response_YoureInsideAlready</a> unless the player is in room 42 (At the Blacksmith's Forge).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED9B.html">Response_YoureInsideAlready</a> if *<a href="BA9B.html">CurrentRoom</a> isn't room 42: "
+
+<a href="D060.html">At the Blacksmith's Forge</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -358,7 +457,9 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="asm-label"></td>
 <td class="address-1"><span id="f789"></span>F789</td>
 <td class="instruction">LD A,$43</td>
-<td class="comment-1" rowspan="2">Try to enter room 43 (Inside the Forge).</td>
+<td class="comment-1" rowspan="2">Call <a href="ECB6.html">Handler_InjuryCheck</a> with room 43: "
+
+<a href="D07B.html">Inside the Forge</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -372,10 +473,20 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Enter_Boat</td>
+<td class="routine-comment" colspan="5">
+<span id="f78f"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to enter ... the boat?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Enter_CheckBoat</td>
 <td class="address-2"><span id="f78f"></span>F78F</td>
 <td class="instruction">LD HL,$E8F4</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F71B.html#f79a">Action_Enter_YouCant</a> unless the player named the boat.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e8f4">E8F4</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -385,25 +496,59 @@ Go into the farmhouse, the hut, the forge, the hovel or the boat.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f795"></span>F795</td>
-<td class="instruction">JR NZ,<a href="F71B.html#f79a">Action_Enter_YouCant</a></td>
+<td class="instruction">JR NZ,<a href="F71B.html#f79a">Enter_YouCant</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F71B.html#f79a">Enter_YouCant</a> if the token isn't for the boat.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f797"></span>
+<div class="comments">
+<div class="paragraph">
+Either way, it's a bad outcome.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f797"></span>F797</td>
 <td class="instruction">JP <a href="EDA0.html">Response_PleaseRephraseThat_EnterTheBoat</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="EDA0.html">Response_PleaseRephraseThat_EnterTheBoat</a> to ask for a rephrase.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="EDA0.html">Response_PleaseRephraseThat_EnterTheBoat</a> if the token is for the boat.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Enter_YouCant</td>
+<td class="routine-comment" colspan="5">
+<span id="f79a"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is able to be entered, so provide a generic response.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Enter_YouCant</td>
 <td class="address-2"><span id="f79a"></span>F79A</td>
 <td class="instruction">JP <a href="ED6E.html">Response_YouCant_GameLoop</a></td>
-<td class="comment-1" rowspan="1">Tell the player the command is impossible.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/asm/FC61.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/asm/93A1.html">Message From Andromeda</a></li>
+<li><a href="/adventure-games/warlord/asm/FB21.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="F6FD.html">F6FD</a>
+Prev: <a href="F68C.html">F68C</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#f71b">Map</a></td>
 <td class="next">
@@ -414,7 +559,7 @@ Next: <a href="F79D.html">F79D</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/63259.html">Switch to decimal</a>.</div>
 </footer>

@@ -129,7 +129,7 @@ Copy the configurable exits into the save buffer and write them to tape.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ac70"></span>AC70</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="AC6D.html#ac8c">SaveGame_StartTape</a> if <span class="register">A</span> is zero.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="AC6D.html#ac8c">SaveGame_StartTape</a> if there are no configurable exits to pack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -165,14 +165,24 @@ Copy the configurable exits into the save buffer and write them to tape.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ac7b"></span>AC7B</td>
-<td class="instruction">JR <a href="AC6D.html#ac82">SaveGame_0</a></td>
+<td class="instruction">JR <a href="AC6D.html#ac82">SaveGame_StoreFlag</a></td>
 <td class="comment-1" rowspan="1">Start with the first configurable exit.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ac7d"></span>
+<div class="comments">
+<div class="paragraph">
+Move on to the next configurable-exit address.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">SaveGame_CopyExit</td>
 <td class="address-2"><span id="ac7d"></span>AC7D</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="8">Copy each configurable exit's current destination into the save buffer.</td>
+<td class="comment-1" rowspan="3">Move <span class="register">IX</span> on to the next exit address and <span class="register">DE</span> on to the next packed exit byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -185,9 +195,10 @@ Copy the configurable exits into the save buffer and write them to tape.
 <td class="instruction">INC DE</td>
 </tr>
 <tr>
-<td class="asm-label">SaveGame_0</td>
+<td class="asm-label">SaveGame_StoreFlag</td>
 <td class="address-2"><span id="ac82"></span>AC82</td>
 <td class="instruction">LD L,(IX+$00)</td>
+<td class="comment-1" rowspan="5">Fetch the exit address from *<span class="register">IX</span> into <span class="register">HL</span>, copy the exit byte into the packed save buffer, and repeat until every exit byte is packed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -218,7 +229,7 @@ Copy the configurable exits into the save buffer and write them to tape.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ac8f"></span>AC8F</td>
-<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndNewline</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -230,23 +241,25 @@ Copy the configurable exits into the save buffer and write them to tape.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ac95"></span>AC95</td>
 <td class="instruction">LD IX,$AD76</td>
-<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at <a href="AD76.html">Table_ItemLocations</a>.</td>
+<td class="comment-1" rowspan="1">Load the starting address into <span class="register">IX</span> at the item-location table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ac99"></span>AC99</td>
 <td class="instruction">LD DE,$0186</td>
-<td class="comment-1" rowspan="3">Save 0186 bytes from the item-location table to tape as a data block.</td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 0186 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ac9c"></span>AC9C</td>
 <td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to FF which indicates this is a data block.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ac9e"></span>AC9E</td>
 <td class="instruction">CALL $04C2</td>
+<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/04C2.html">SA_BYTES</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -257,7 +270,7 @@ Copy the configurable exits into the save buffer and write them to tape.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aca4"></span>ACA4</td>
-<td class="instruction">CALL <a href="AC35.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="AC35.html">PrintStringAndNewline</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -295,7 +308,7 @@ Next: <a href="ACA8.html">ACA8</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
 <div><a href="../dec/asm/44141.html">Switch to decimal</a>.</div>
 </footer>

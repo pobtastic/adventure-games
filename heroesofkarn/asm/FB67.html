@@ -120,24 +120,35 @@ Carry out the "Pour" command.
 <td class="asm-label">Action_Pour</td>
 <td class="address-2"><span id="fb67"></span>FB67</td>
 <td class="instruction">CALL <a href="B665.html">ParserValidateNoDirectObject</a></td>
-<td class="comment-1" rowspan="2">Call <a href="B665.html">ParserValidateNoDirectObject</a> to check that the command has no object, and return if it does not.</td>
+<td class="comment-1" rowspan="1">Call <a href="B665.html">ParserValidateNoDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fb6a"></span>FB6A</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fb6b"></span>FB6B</td>
 <td class="instruction">LD A,($AECD)</td>
-<td class="comment-1" rowspan="1">Read the current room into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="AECD.html">CurrentRoom</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="fb6e"></span>
+<div class="comments">
+<div class="paragraph">
+Is the current room one Pour carries into the cottage?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fb6e"></span>FB6E</td>
 <td class="instruction">LD HL,$FB8F</td>
-<td class="comment-1" rowspan="3">See whether this room is one Pour carries to the cottage.</td>
+<td class="comment-1" rowspan="3">Search <a href="FB8F.html">Table_PourTokens</a> for *<a href="AECD.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -152,20 +163,20 @@ Carry out the "Pour" command.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fb76"></span>FB76</td>
-<td class="instruction">JR NZ,<a href="FB67.html#fb7f">Action_Pour_Next</a></td>
-<td class="comment-1" rowspan="1">Try to return when this room is not one of the three.</td>
+<td class="instruction">JR NZ,<a href="FB67.html#fb7f">Action_Pour_Return</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="FB67.html#fb7f">Action_Pour_Return</a> if the room is not in that list.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fb78"></span>FB78</td>
 <td class="instruction">LD ($AE79),A</td>
-<td class="comment-1" rowspan="1">Store <span class="register">A</span> in *<a href="AE79.html">Room_PourReturn</a>.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="AE79.html">Room_PourReturn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fb7b"></span>FB7B</td>
 <td class="instruction">LD A,$02</td>
-<td class="comment-1" rowspan="2">Take the player inside the ruined cottage.</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>=02; jump to <a href="FB67.html#fb8b">Action_Pour_ChangeRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -173,38 +184,50 @@ Carry out the "Pour" command.
 <td class="instruction">JR <a href="FB67.html#fb8b">Action_Pour_ChangeRoom</a></td>
 </tr>
 <tr>
-<td class="asm-label">Action_Pour_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="fb7f"></span>
+<div class="comments">
+<div class="paragraph">
+Returning from inside the cottage?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Pour_Return</td>
 <td class="address-2"><span id="fb7f"></span>FB7F</td>
 <td class="instruction">CP $02</td>
-<td class="comment-1" rowspan="2">Branch to <a href="ED2B.html">Messaging_NothingHappens_Reply</a> when the exit is east.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="ED2B.html">Response_NothingHappens</a> if *<a href="AECD.html">CurrentRoom</a> is not room 02: "
+
+<a href="BF78.html">Inside the Ruined Cottage</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fb81"></span>FB81</td>
-<td class="instruction">JP NZ,<a href="ED2B.html">Messaging_NothingHappens_Reply</a></td>
+<td class="instruction">JP NZ,<a href="ED2B.html">Response_NothingHappens</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fb84"></span>FB84</td>
 <td class="instruction">LD A,($AE79)</td>
-<td class="comment-1" rowspan="1">Read *<a href="AE79.html">Room_PourReturn</a> into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="AE79.html">Room_PourReturn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fb87"></span>FB87</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="2">Do nothing when Pour has nowhere to return.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="ED2B.html">Response_NothingHappens</a> if *<a href="AE79.html">Room_PourReturn</a> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="fb88"></span>FB88</td>
-<td class="instruction">JP Z,<a href="ED2B.html">Messaging_NothingHappens_Reply</a></td>
+<td class="instruction">JP Z,<a href="ED2B.html">Response_NothingHappens</a></td>
 </tr>
 <tr>
 <td class="asm-label">Action_Pour_ChangeRoom</td>
 <td class="address-2"><span id="fb8b"></span>FB8B</td>
 <td class="instruction">CALL <a href="E9E1.html">Handler_ChangeRoom</a></td>
-<td class="comment-1" rowspan="1">Call <a href="E9E1.html">Handler_ChangeRoom</a> to change room.</td>
+<td class="comment-1" rowspan="1">Call <a href="E9E1.html">Handler_ChangeRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -227,7 +250,7 @@ Next: <a href="FB8F.html">FB8F</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
 <div><a href="../dec/asm/64359.html">Switch to decimal</a>.</div>
 </footer>

@@ -113,6 +113,9 @@ Next: <a href="BB2F.html">BB2F</a>
 <div class="paragraph">
 Used by the routine at <a href="BB3B.html">Print_RoomImage</a>.
 </div>
+<div class="paragraph">
+Unpack a room picture into the display, drawing it in the paper colour.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -256,17 +259,17 @@ Reset graphic display area.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bb07"></span>BB07</td>
-<td class="instruction">JR <a href="BAE1.html#bb0a">Print_RoomGraphic_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="BAE1.html#bb0a">Print_RoomGraphic_1</a>.</td>
+<td class="instruction">JR <a href="BAE1.html#bb0a">Print_RoomGraphic_ShiftBit</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="BAE1.html#bb0a">Print_RoomGraphic_ShiftBit</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomGraphic_0</td>
+<td class="asm-label">Print_RoomGraphic_NextByte</td>
 <td class="address-2"><span id="bb09"></span>BB09</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomGraphic_1</td>
+<td class="asm-label">Print_RoomGraphic_ShiftBit</td>
 <td class="address-2"><span id="bb0a"></span>BB0A</td>
 <td class="instruction">SRL C</td>
 <td class="comment-1" rowspan="1">Shift <span class="register">C</span> right.</td>
@@ -274,8 +277,8 @@ Reset graphic display area.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bb0c"></span>BB0C</td>
-<td class="instruction">JR NC,<a href="BAE1.html#bb15">Print_RoomGraphic_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="BAE1.html#bb15">Print_RoomGraphic_2</a> if the mask bit was zero (a blank pixel row).</td>
+<td class="instruction">JR NC,<a href="BAE1.html#bb15">Print_RoomGraphic_BlankByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="BAE1.html#bb15">Print_RoomGraphic_BlankByte</a> if the mask bit was zero (a blank pixel row).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -292,17 +295,17 @@ Reset graphic display area.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bb13"></span>BB13</td>
-<td class="instruction">JR <a href="BAE1.html#bb16">Print_RoomGraphic_3</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="BAE1.html#bb16">Print_RoomGraphic_3</a>.</td>
+<td class="instruction">JR <a href="BAE1.html#bb16">Print_RoomGraphic_StoreByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="BAE1.html#bb16">Print_RoomGraphic_StoreByte</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomGraphic_2</td>
+<td class="asm-label">Print_RoomGraphic_BlankByte</td>
 <td class="address-2"><span id="bb15"></span>BB15</td>
 <td class="instruction">XOR A</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
 </tr>
 <tr>
-<td class="asm-label">Print_RoomGraphic_3</td>
+<td class="asm-label">Print_RoomGraphic_StoreByte</td>
 <td class="address-2"><span id="bb16"></span>BB16</td>
 <td class="instruction">LD (HL),A</td>
 <td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">HL</span>.</td>
@@ -310,8 +313,8 @@ Reset graphic display area.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bb17"></span>BB17</td>
-<td class="instruction">DJNZ <a href="BAE1.html#bb09">Print_RoomGraphic_0</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="BAE1.html#bb09">Print_RoomGraphic_0</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="BAE1.html#bb09">Print_RoomGraphic_NextByte</a></td>
+<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="BAE1.html#bb09">Print_RoomGraphic_NextByte</a> until counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -384,6 +387,7 @@ Reset graphic display area.
 View the equivalent code in; <ul class="">
 <li><a href="/adventure-games/forestatworldsend/asm/BE5E.html">Forest At Worlds End</a></li>
 <li><a href="/adventure-games/heroesofkarn/asm/AD06.html">Heroes Of Karn</a></li>
+<li><a href="/adventure-games/messagefromandromeda/asm/6519.html">Message From Andromeda</a></li>
 </ul>
 </div>
 </div>
@@ -404,7 +408,7 @@ Next: <a href="BB2F.html">BB2F</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/jewelsofbabylon/">Source code</a>.</div>
 <div><a href="../dec/asm/47841.html">Switch to decimal</a>.</div>
 </footer>

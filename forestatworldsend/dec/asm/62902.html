@@ -97,11 +97,11 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="62812.html">62812</a>
+Prev: <a href="62119.html">62119</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#62902">Map</a></td>
 <td class="next">
-Next: <a href="62908.html">62908</a>
+Next: <a href="62961.html">62961</a>
 </td>
 </tr>
 </table>
@@ -120,35 +120,205 @@ Kiss Princess Mara, if she is here and still alive.
 <td class="asm-label">Action_Kiss</td>
 <td class="address-2"><span id="62902"></span>62902</td>
 <td class="instruction">CALL <a href="49929.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="49929.html">Parser_ValidateDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62905"></span>62905</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62906"></span>62906</td>
-<td class="instruction">JR <a href="62914.html#62920">Handler_KissThePrincess_Princess</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="62914.html#62920">Handler_KissThePrincess_Princess</a> to kiss Princess Mara.</td>
+<td class="instruction">JR <a href="62902.html#62920">Validate_Kiss_Princess</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="62902.html#62920">Validate_Kiss_Princess</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62908"></span>
+<div class="comments">
+<div class="paragraph">
+Print "It's too late for that,she's dead.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kiss_TooLate</td>
+<td class="address-2"><span id="62908"></span>62908</td>
+<td class="instruction">LD HL,57678</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="57678.html">Messaging_ItsTooLateForThat</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62911"></span>62911</td>
+<td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62914"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You kiss her.She says:- "Thank you".".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kiss_Success</td>
+<td class="address-2"><span id="62914"></span>62914</td>
+<td class="instruction">LD HL,57619</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="57619.html">Messaging_YouKissHer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62917"></span>62917</td>
+<td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62920"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kiss ... the princess?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kiss_Princess</td>
+<td class="address-2"><span id="62920"></span>62920</td>
+<td class="instruction">LD HL,59619</td>
+<td class="comment-1" rowspan="2">Call <a href="49775.html">Parser_AdvanceToSeparator</a> with <a href="59344.html#59619">59619</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62923"></span>62923</td>
+<td class="instruction">CALL <a href="49775.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62926"></span>62926</td>
+<td class="instruction">JR NZ,<a href="62902.html#62939">Validate_Kiss_ClosedDoor</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="62902.html#62939">Validate_Kiss_ClosedDoor</a> if the token isn't for the princess.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62928"></span>62928</td>
+<td class="instruction">LD A,44</td>
+<td class="comment-1" rowspan="3">Jump to <a href="62902.html#62908">Kiss_TooLate</a> if <a href="49743.html">ValidateItemPresent</a> reports that "The Princess,Mara" isn't in the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62930"></span>62930</td>
+<td class="instruction">CALL <a href="49743.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62933"></span>62933</td>
+<td class="instruction">JP NZ,<a href="62902.html#62908">Kiss_TooLate</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62936"></span>62936</td>
+<td class="instruction">JP <a href="62902.html#62914">Kiss_Success</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="62902.html#62914">Kiss_Success</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62939"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kiss ... a closed door?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kiss_ClosedDoor</td>
+<td class="address-2"><span id="62939"></span>62939</td>
+<td class="instruction">LD HL,59621</td>
+<td class="comment-1" rowspan="2">Call <a href="49775.html">Parser_AdvanceToSeparator</a> with <a href="59344.html#59621">59621</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62942"></span>62942</td>
+<td class="instruction">CALL <a href="49775.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62945"></span>62945</td>
+<td class="instruction">JR NZ,<a href="62902.html#62958">Kiss_YouCant</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="62902.html#62958">Kiss_YouCant</a> if the token isn't for a closed door.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62947"></span>62947</td>
+<td class="instruction">LD A,28</td>
+<td class="comment-1" rowspan="3">Jump to <a href="62902.html#62908">Kiss_TooLate</a> if <a href="49743.html">ValidateItemPresent</a> reports that "The body of a wood nymph" is in the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62949"></span>62949</td>
+<td class="instruction">CALL <a href="49743.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62952"></span>62952</td>
+<td class="instruction">JP Z,<a href="62902.html#62908">Kiss_TooLate</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="62955"></span>62955</td>
+<td class="instruction">JP <a href="62902.html#62914">Kiss_Success</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="62902.html#62914">Kiss_Success</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62958"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kiss_YouCant</td>
+<td class="address-2"><span id="62958"></span>62958</td>
+<td class="instruction">JP <a href="60817.html">Response_DontBeRidiculous</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60817.html">Response_DontBeRidiculous</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/heroesofkarn/dec/asm/63881.html">Heroes Of Karn</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="62812.html">62812</a>
+Prev: <a href="62119.html">62119</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#62902">Map</a></td>
 <td class="next">
-Next: <a href="62908.html">62908</a>
+Next: <a href="62961.html">62961</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/F5B6.html">Switch to hexadecimal</a>.</div>
 </footer>

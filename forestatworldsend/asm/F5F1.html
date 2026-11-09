@@ -97,11 +97,11 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="F5C2.html">F5C2</a>
+Prev: <a href="F5B6.html">F5B6</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#f5f1">Map</a></td>
 <td class="next">
-Next: <a href="F665.html">F665</a>
+Next: <a href="F68C.html">F68C</a>
 </td>
 </tr>
 </table>
@@ -120,18 +120,29 @@ Open the named door, gate or chest.
 <td class="asm-label">Action_Open</td>
 <td class="address-2"><span id="f5f1"></span>F5F1</td>
 <td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="C309.html">Parser_ValidateDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f5f4"></span>F5F4</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f5f5"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to open ... the door?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f5f5"></span>F5F5</td>
 <td class="instruction">LD HL,$E8EA</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F665.html">Handler_OpenTheChest</a> unless the player named the door.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e8ea">E8EA</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,13 +152,14 @@ Open the named door, gate or chest.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f5fb"></span>F5FB</td>
-<td class="instruction">JP NZ,<a href="F665.html">Handler_OpenTheChest</a></td>
+<td class="instruction">JP NZ,<a href="F5F1.html#f665">Validate_Open_Chest</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F5F1.html#f665">Validate_Open_Chest</a> if the token isn't for the door.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f5fe"></span>F5FE</td>
 <td class="instruction">LD HL,$E797</td>
-<td class="comment-1" rowspan="2">Call <a href="C2EF.html">Parser_SkipToken</a> to skip to the object named by this phrase.</td>
+<td class="comment-1" rowspan="2">Call <a href="C2EF.html">Parser_SkipToken</a> with <a href="E6E6.html#e797">E797</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -158,19 +170,19 @@ Open the named door, gate or chest.
 <td class="asm-label"></td>
 <td class="address-1"><span id="f604"></span>F604</td>
 <td class="instruction">BIT 0,A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="F5F1.html#f60e">Action_Open_Next</a> when the named door is closed.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F5F1.html#f60e">Open_CheckRoom</a> if the named door is closed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f606"></span>F606</td>
-<td class="instruction">JR Z,<a href="F5F1.html#f60e">Action_Open_Next</a></td>
+<td class="instruction">JR Z,<a href="F5F1.html#f60e">Open_CheckRoom</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="f608"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "It's already open.".
+Print "It's already open.".
 </div>
 </div>
 </td>
@@ -179,18 +191,31 @@ Reply with "It's already open.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f608"></span>F608</td>
 <td class="instruction">LD HL,$E172</td>
-<td class="comment-1" rowspan="2">Print "It's already open." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E172.html">Messaging_ItsAlreadyOpen</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f60b"></span>F60B</td>
 <td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Open_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="f60e"></span>
+<div class="comments">
+<div class="paragraph">
+Which door is the player opening?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Open_CheckRoom</td>
 <td class="address-2"><span id="f60e"></span>F60E</td>
 <td class="instruction">LD A,($BA9B)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F5F1.html#f619">Action_Open_Farmhouse</a> when the player is in room 02 (Inside the Farmhouse).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F5F1.html#f619">Open_Farmhouse</a> if *<a href="BA9B.html">CurrentRoom</a> is room 02: "
+
+<a href="CAD4.html">Inside the Farmhouse</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -200,24 +225,36 @@ Reply with "It's already open.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f613"></span>F613</td>
-<td class="instruction">JR Z,<a href="F5F1.html#f619">Action_Open_Farmhouse</a></td>
+<td class="instruction">JR Z,<a href="F5F1.html#f619">Open_Farmhouse</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f615"></span>F615</td>
 <td class="instruction">CP $03</td>
-<td class="comment-1" rowspan="2">Jump to <a href="F5F1.html#f62d">Action_Open_WoodmansHutCheck</a> unless the player is in room 03 (At a large Farmhouse).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F5F1.html#f62d">Open_CheckWoodmansHut</a> if *<a href="BA9B.html">CurrentRoom</a> isn't room 03: "
+
+<a href="CAEA.html">At a large Farmhouse</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f617"></span>F617</td>
-<td class="instruction">JR NZ,<a href="F5F1.html#f62d">Action_Open_WoodmansHutCheck</a></td>
+<td class="instruction">JR NZ,<a href="F5F1.html#f62d">Open_CheckWoodmansHut</a></td>
 </tr>
 <tr>
-<td class="asm-label">Action_Open_Farmhouse</td>
+<td class="routine-comment" colspan="5">
+<span id="f619"></span>
+<div class="comments">
+<div class="paragraph">
+Change the farmhouse door states!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Open_Farmhouse</td>
 <td class="address-2"><span id="f619"></span>F619</td>
 <td class="instruction">LD BC,$3635</td>
-<td class="comment-1" rowspan="2">Replace object 36 (a closed door) with object 35 (an open door).</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A closed door" into "An open door".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -228,7 +265,7 @@ Reply with "It's already open.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f61f"></span>F61F</td>
 <td class="instruction">LD BC,$3837</td>
-<td class="comment-1" rowspan="2">Replace object 38 with object 37.</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A closed door" into "An open door".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -236,10 +273,24 @@ Reply with "It's already open.".
 <td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="f625"></span>
+<div class="comments">
+<div class="paragraph">
+This action changes the map:
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f625"></span>F625</td>
 <td class="instruction">LD A,$03</td>
-<td class="comment-1" rowspan="3">Jump back to <a href="ED96.html">Response_OK</a> to confirm.</td>
+<td class="comment-1" rowspan="2">Write 03 to *<a href="E934.html#e941">Exit_FarmhouseSouth</a> to open up southbound access to 
+
+<a href="CAEA.html">At a large Farmhouse</a> from 
+
+<a href="CAD4.html">Inside the Farmhouse</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -249,35 +300,60 @@ Reply with "It's already open.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f62a"></span>F62A</td>
-<td class="instruction">JP <a href="ED96.html">Response_OK</a></td>
+<td class="instruction">JP <a href="ED96.html">Response_OK_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED96.html">Response_OK_GameLoop</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Open_WoodmansHutCheck</td>
+<td class="routine-comment" colspan="5">
+<span id="f62d"></span>
+<div class="comments">
+<div class="paragraph">
+Is the player at the Woodman's Hut?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Open_CheckWoodmansHut</td>
 <td class="address-2"><span id="f62d"></span>F62D</td>
 <td class="instruction">CP $0F</td>
-<td class="comment-1" rowspan="2">Jump to <a href="F5F1.html#f635">Action_Open_WoodmansHut</a> when the player is in room 0F (At the Woodman's Hut).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F5F1.html#f635">Open_WoodmansHut</a> if *<a href="BA9B.html">CurrentRoom</a> is room 0F: "
+
+<a href="CC6C.html">At the Woodman's Hut</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f62f"></span>F62F</td>
-<td class="instruction">JR Z,<a href="F5F1.html#f635">Action_Open_WoodmansHut</a></td>
+<td class="instruction">JR Z,<a href="F5F1.html#f635">Open_WoodmansHut</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f631"></span>F631</td>
 <td class="instruction">CP $10</td>
-<td class="comment-1" rowspan="2">Jump to <a href="F5F1.html#f649">Action_Open_WitchsHovelCheck</a> unless the player is in room 10 (Inside the Woodman's Hut).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F5F1.html#f649">Open_CheckWitchsHovel</a> if *<a href="BA9B.html">CurrentRoom</a> isn't room 10: "
+
+<a href="CC82.html">Inside the Woodman's Hut</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f633"></span>F633</td>
-<td class="instruction">JR NZ,<a href="F5F1.html#f649">Action_Open_WitchsHovelCheck</a></td>
+<td class="instruction">JR NZ,<a href="F5F1.html#f649">Open_CheckWitchsHovel</a></td>
 </tr>
 <tr>
-<td class="asm-label">Action_Open_WoodmansHut</td>
+<td class="routine-comment" colspan="5">
+<span id="f635"></span>
+<div class="comments">
+<div class="paragraph">
+Change the Woodman's Hut door states!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Open_WoodmansHut</td>
 <td class="address-2"><span id="f635"></span>F635</td>
 <td class="instruction">LD BC,$3A39</td>
-<td class="comment-1" rowspan="2">Replace object 3A with object 39.</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A closed door" into "An open door".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -288,7 +364,7 @@ Reply with "It's already open.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f63b"></span>F63B</td>
 <td class="instruction">LD BC,$3C3B</td>
-<td class="comment-1" rowspan="2">Replace object 3C with object 3B.</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A closed door" into "An open door".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -296,10 +372,24 @@ Reply with "It's already open.".
 <td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="f641"></span>
+<div class="comments">
+<div class="paragraph">
+This action changes the map:
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f641"></span>F641</td>
 <td class="instruction">LD A,$0F</td>
-<td class="comment-1" rowspan="3">Jump back to <a href="ED96.html">Response_OK</a> to confirm.</td>
+<td class="comment-1" rowspan="2">Write 0F to *<a href="E934.html#e996">Exit_WoodmansHutEast</a> to open up eastbound access to 
+
+<a href="CC6C.html">At the Woodman's Hut</a> from 
+
+<a href="CC82.html">Inside the Woodman's Hut</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -309,35 +399,60 @@ Reply with "It's already open.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f646"></span>F646</td>
-<td class="instruction">JP <a href="ED96.html">Response_OK</a></td>
+<td class="instruction">JP <a href="ED96.html">Response_OK_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED96.html">Response_OK_GameLoop</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Open_WitchsHovelCheck</td>
+<td class="routine-comment" colspan="5">
+<span id="f649"></span>
+<div class="comments">
+<div class="paragraph">
+Is the player at the Witch's Hovel?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Open_CheckWitchsHovel</td>
 <td class="address-2"><span id="f649"></span>F649</td>
 <td class="instruction">CP $3C</td>
-<td class="comment-1" rowspan="2">Jump to <a href="F5F1.html#f651">Action_Open_WitchsHovel</a> when the player is in room 3C (At the Witch's Hovel).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F5F1.html#f651">Open_WitchsHovel</a> if *<a href="BA9B.html">CurrentRoom</a> is room 3C: "
+
+<a href="CFE1.html">At the Witch's Hovel</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f64b"></span>F64B</td>
-<td class="instruction">JR Z,<a href="F5F1.html#f651">Action_Open_WitchsHovel</a></td>
+<td class="instruction">JR Z,<a href="F5F1.html#f651">Open_WitchsHovel</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f64d"></span>F64D</td>
 <td class="instruction">CP $3D</td>
-<td class="comment-1" rowspan="2">Jump to <a href="F665.html">Handler_OpenTheChest</a> unless the player is in room 3D (Inside the Witch's Hovel).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="F5F1.html#f665">Validate_Open_Chest</a> if *<a href="BA9B.html">CurrentRoom</a> isn't room 3D: "
+
+<a href="D00C.html">Inside the Witch's Hovel</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f64f"></span>F64F</td>
-<td class="instruction">JR NZ,<a href="F665.html">Handler_OpenTheChest</a></td>
+<td class="instruction">JR NZ,<a href="F5F1.html#f665">Validate_Open_Chest</a></td>
 </tr>
 <tr>
-<td class="asm-label">Action_Open_WitchsHovel</td>
+<td class="routine-comment" colspan="5">
+<span id="f651"></span>
+<div class="comments">
+<div class="paragraph">
+Change the Witch's Hovel door states!
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Open_WitchsHovel</td>
 <td class="address-2"><span id="f651"></span>F651</td>
 <td class="instruction">LD BC,$3E3D</td>
-<td class="comment-1" rowspan="2">Replace object 3E with object 3D.</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A closed door" into "An open door".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -348,7 +463,7 @@ Reply with "It's already open.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f657"></span>F657</td>
 <td class="instruction">LD BC,$403F</td>
-<td class="comment-1" rowspan="2">Replace object 40 with object 3F.</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A closed door" into "An open door".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -356,10 +471,24 @@ Reply with "It's already open.".
 <td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="f65d"></span>
+<div class="comments">
+<div class="paragraph">
+This action changes the map:
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f65d"></span>F65D</td>
 <td class="instruction">LD A,$3C</td>
-<td class="comment-1" rowspan="3">Jump back to <a href="ED96.html">Response_OK</a> to confirm.</td>
+<td class="comment-1" rowspan="2">Write 3C to *<a href="E934.html#eaa4">Exit_WitchsHovelEast</a> to open up eastbound access to 
+
+<a href="CFE1.html">At the Witch's Hovel</a> from 
+
+<a href="D00C.html">Inside the Witch's Hovel</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -369,24 +498,146 @@ Reply with "It's already open.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f662"></span>F662</td>
-<td class="instruction">JP <a href="ED96.html">Response_OK</a></td>
+<td class="instruction">JP <a href="ED96.html">Response_OK_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED96.html">Response_OK_GameLoop</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f665"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to open ... the chest?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Open_Chest</td>
+<td class="address-2"><span id="f665"></span>F665</td>
+<td class="instruction">LD HL,$E814</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e814">E814</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f668"></span>F668</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f66b"></span>F66B</td>
+<td class="instruction">JR NZ,<a href="F5F1.html#f689">Open_YouCant</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F5F1.html#f689">Open_YouCant</a> if the token isn't for the chest.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f66d"></span>F66D</td>
+<td class="instruction">LD A,$0B</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EDB4.html">Response_YouCantItsLocked</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "A chest" is in the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f66f"></span>F66F</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f672"></span>F672</td>
+<td class="instruction">JP Z,<a href="EDB4.html">Response_YouCantItsLocked</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f675"></span>F675</td>
+<td class="instruction">LD A,$0C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EDB9.html">Response_ItsAlreadyOpen</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "A closed chest" isn't in the current room.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f677"></span>F677</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f67a"></span>F67A</td>
+<td class="instruction">JP NZ,<a href="EDB9.html">Response_ItsAlreadyOpen</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f67d"></span>F67D</td>
+<td class="instruction">LD BC,$0C0D</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A closed chest" into "An open chest containing the Crystals of Vulcan".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f680"></span>F680</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f683"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You open the chest,revealingthe Crystals of Vulcan,within.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f683"></span>F683</td>
+<td class="instruction">LD HL,$D608</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="D608.html">Messaging_YouOpenTheChestRevealing</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f686"></span>F686</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f689"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Open_YouCant</td>
+<td class="address-2"><span id="f689"></span>F689</td>
+<td class="instruction">JP <a href="ED6E.html">Response_YouCant_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/heroesofkarn/asm/F9DC.html">Heroes Of Karn</a></li>
+<li><a href="/adventure-games/jewelsofbabylon/asm/FA3C.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/asm/96E7.html">Message From Andromeda</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="F5C2.html">F5C2</a>
+Prev: <a href="F5B6.html">F5B6</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#f5f1">Map</a></td>
 <td class="next">
-Next: <a href="F665.html">F665</a>
+Next: <a href="F68C.html">F68C</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/62961.html">Switch to decimal</a>.</div>
 </footer>

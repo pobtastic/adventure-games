@@ -101,7 +101,7 @@ Prev: <a href="F292.html">F292</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#f2a7">Map</a></td>
 <td class="next">
-Next: <a href="F2AE.html">F2AE</a>
+Next: <a href="F5B6.html">F5B6</a>
 </td>
 </tr>
 </table>
@@ -119,19 +119,2162 @@ Fight the opponent the player named.
 <tr>
 <td class="asm-label">Action_Kill</td>
 <td class="address-2"><span id="f2a7"></span>F2A7</td>
-<td class="instruction">CALL <a href="C32D.html">Parser_ValidateInputTokens</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="instruction">CALL <a href="C32D.html">Parser_ValidateTwoDirectObjects</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C32D.html">Parser_ValidateTwoDirectObjects</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f2aa"></span>F2AA</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f2ab"></span>F2AB</td>
-<td class="instruction">JP <a href="F30B.html">Handler_FightOpponent</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="F30B.html">Handler_FightOpponent</a> to fight the named opponent.</td>
+<td class="instruction">JP <a href="F2A7.html#f30b">Validate_Kill_ElfSword</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F2A7.html#f30b">Validate_Kill_ElfSword</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f2ae"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player hold the bow and some arrows?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_CheckBowAndArrows</td>
+<td class="address-2"><span id="f2ae"></span>F2AE</td>
+<td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2">Call <a href="C2D2.html">IsObjectCarried</a> with item 03: "A bow".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2b0"></span>F2B0</td>
+<td class="instruction">CALL <a href="C2D2.html">IsObjectCarried</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2b3"></span>F2B3</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f2c0">Kill_NoBow</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F2A7.html#f2c0">Kill_NoBow</a> if "A bow" isn't held.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2b5"></span>F2B5</td>
+<td class="instruction">LD A,$04</td>
+<td class="comment-1" rowspan="2">Call <a href="C2D2.html">IsObjectCarried</a> with item 04: "Some arrows".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2b7"></span>F2B7</td>
+<td class="instruction">CALL <a href="C2D2.html">IsObjectCarried</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2ba"></span>F2BA</td>
+<td class="instruction">RET Z</td>
+<td class="comment-1" rowspan="1">Return if "Some arrows" is held.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f2bb"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You have no arrows.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2bb"></span>F2BB</td>
+<td class="instruction">LD HL,$DED1</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DED1.html">Messaging_YouHaveNoArrows</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2be"></span>F2BE</td>
+<td class="instruction">JR <a href="F2A7.html#f2c3">Kill_WeaponReply</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F2A7.html#f2c3">Kill_WeaponReply</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f2c0"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You're not carrying a bow.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_NoBow</td>
+<td class="address-2"><span id="f2c0"></span>F2C0</td>
+<td class="instruction">LD HL,$DF29</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DF29.html">Messaging_YoureNotCarryingABow</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_WeaponReply</td>
+<td class="address-2"><span id="f2c3"></span>F2C3</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2c4"></span>F2C4</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f2c7"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player hold the sword?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_CheckSword</td>
+<td class="address-2"><span id="f2c7"></span>F2C7</td>
+<td class="instruction">LD A,$0A</td>
+<td class="comment-1" rowspan="2">Call <a href="C2D2.html">IsObjectCarried</a> with item 0A: "A sword".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2c9"></span>F2C9</td>
+<td class="instruction">CALL <a href="C2D2.html">IsObjectCarried</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2cc"></span>F2CC</td>
+<td class="instruction">RET Z</td>
+<td class="comment-1" rowspan="1">Return if "A sword" is held.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f2cd"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You're not carrying the sword.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2cd"></span>F2CD</td>
+<td class="instruction">LD HL,$DF72</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DF72.html">Messaging_YoureNotCarryingTheSword</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2d0"></span>F2D0</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2d1"></span>F2D1</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f2d4"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You fire an arrow:-".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_AnnounceArrow</td>
+<td class="address-2"><span id="f2d4"></span>F2D4</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">AF</span> on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2d5"></span>F2D5</td>
+<td class="instruction">LD HL,$DEE5</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DEE5.html">Messaging_YouFireAnArrow</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2d8"></span>F2D8</td>
+<td class="instruction">JR <a href="F2A7.html#f2de">Kill_ResolveAttack_Print</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F2A7.html#f2de">Kill_ResolveAttack_Print</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f2da"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You swing the sword:-".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_ResolveAttack</td>
+<td class="address-2"><span id="f2da"></span>F2DA</td>
+<td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">AF</span> on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2db"></span>F2DB</td>
+<td class="instruction">LD HL,$DF5C</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DF5C.html">Messaging_YouSwingTheSword</a>.</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_ResolveAttack_Print</td>
+<td class="address-2"><span id="f2de"></span>F2DE</td>
+<td class="instruction">CALL <a href="BE2E.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BE2E.html">PrintStringAndNewline</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2e1"></span>F2E1</td>
+<td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2e2"></span>F2E2</td>
+<td class="instruction">AND A</td>
+<td class="comment-1" rowspan="2">Return if this attack cannot miss.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2e3"></span>F2E3</td>
+<td class="instruction">RET Z</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2e4"></span>F2E4</td>
+<td class="instruction">CALL <a href="BF45.html">GenerateRandomNumber</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BF45.html">GenerateRandomNumber</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2e7"></span>F2E7</td>
+<td class="instruction">RET NZ</td>
+<td class="comment-1" rowspan="1">Return if the blow lands.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f2e8"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Bad luck.You missed.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2e8"></span>F2E8</td>
+<td class="instruction">LD HL,$DEF9</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DEF9.html">Messaging_BadLuckYouMissed</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2eb"></span>F2EB</td>
+<td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2ec"></span>F2EC</td>
+<td class="instruction">JP <a href="ED6A.html">PauseAndPrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6A.html">PauseAndPrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f2ef"></span>
+<div class="comments">
+<div class="paragraph">
+Turn the defeated scenic event into its corpse.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_ApplyCombatResult</td>
+<td class="address-2"><span id="f2ef"></span>F2EF</td>
+<td class="instruction">LD HL,$BB4D</td>
+<td class="comment-1" rowspan="7">Call <a href="C48F.html">TransformItem</a> to turn the defeated scenic event into its corpse.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2f2"></span>F2F2</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2f3"></span>F2F3</td>
+<td class="instruction">SUB $80</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2f5"></span>F2F5</td>
+<td class="instruction">ADD A,$13</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2f7"></span>F2F7</td>
+<td class="instruction">LD B,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2f8"></span>F2F8</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2f9"></span>F2F9</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f2fc"></span>F2FC</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f2fd"></span>
+<div class="comments">
+<div class="paragraph">
+Turn the second defeated scenic event into its corpse.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_ApplySecondCombatResult</td>
+<td class="address-2"><span id="f2fd"></span>F2FD</td>
+<td class="instruction">LD HL,$BB4D</td>
+<td class="comment-1" rowspan="7">Call <a href="C48F.html">TransformItem</a> to turn the second defeated scenic event into its corpse.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f300"></span>F300</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f301"></span>F301</td>
+<td class="instruction">SUB $83</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f303"></span>F303</td>
+<td class="instruction">ADD A,$18</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f305"></span>F305</td>
+<td class="instruction">LD B,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f306"></span>F306</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f307"></span>F307</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f30a"></span>F30A</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f30b"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the elf with the sword?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_ElfSword</td>
+<td class="address-2"><span id="f30b"></span>F30B</td>
+<td class="instruction">LD HL,$E87D</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f344">Validate_Kill_ElfBow</a> unless the player named the elf with the sword.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f30e"></span>F30E</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f311"></span>F311</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f344">Validate_Kill_ElfBow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f313"></span>F313</td>
+<td class="instruction">LD HL,$E711</td>
+<td class="comment-1" rowspan="2">Call <a href="C2EF.html">Parser_SkipToken</a> to skip to the object named by this phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f316"></span>F316</td>
+<td class="instruction">CALL <a href="C2EF.html">Parser_SkipToken</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f319"></span>F319</td>
+<td class="instruction">BIT 7,A</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="ED82.html">Response_HesAlreadyDead</a> when the named opponent is already dead.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f31b"></span>F31B</td>
+<td class="instruction">JP Z,<a href="ED82.html">Response_HesAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f31e"></span>F31E</td>
+<td class="instruction">LD ($BB4D),A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2c7">Kill_CheckSword</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f321"></span>F321</td>
+<td class="instruction">CALL <a href="F2A7.html#f2c7">Kill_CheckSword</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f324"></span>F324</td>
+<td class="instruction">LD A,$0A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2da">Kill_ResolveAttack</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f326"></span>F326</td>
+<td class="instruction">CALL <a href="F2A7.html#f2da">Kill_ResolveAttack</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f329"></span>F329</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ef">Kill_ApplyCombatResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2ef">Kill_ApplyCombatResult</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f32c"></span>F32C</td>
+<td class="instruction">LD A,($BB4D)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f338">Kill_ElfSword_Done</a> unless the value 82 matches.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f32f"></span>F32F</td>
+<td class="instruction">CP $82</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f331"></span>F331</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f338">Kill_ElfSword_Done</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f333"></span>F333</td>
+<td class="instruction">LD A,$86</td>
+<td class="comment-1" rowspan="2">Remove object 86 (the centaur) from the game.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f335"></span>F335</td>
+<td class="instruction">CALL <a href="C2E8.html">Handler_RemoveItemFromPlay</a></td>
+</tr>
+<tr>
+<td class="asm-label">Kill_ElfSword_Done</td>
+<td class="address-2"><span id="f338"></span>F338</td>
+<td class="instruction">LD HL,$DF44</td>
+<td class="comment-1" rowspan="2">Print "Your blow strikes true.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f33b"></span>F33B</td>
+<td class="instruction">CALL <a href="C486.html">PausePrintStringAndScroll</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f33e"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The Elf is dead.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f33e"></span>F33E</td>
+<td class="instruction">LD HL,$DFA3</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DFA3.html">Messaging_TheElfIsDead</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f341"></span>F341</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f344"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the elf with the bow?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_ElfBow</td>
+<td class="address-2"><span id="f344"></span>F344</td>
+<td class="instruction">LD HL,$E881</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f37d">Validate_Kill_WarriorSword</a> unless the player named the elf with the bow.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f347"></span>F347</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f34a"></span>F34A</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f37d">Validate_Kill_WarriorSword</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f34c"></span>F34C</td>
+<td class="instruction">LD HL,$E711</td>
+<td class="comment-1" rowspan="2">Call <a href="C2EF.html">Parser_SkipToken</a> to skip to the object named by this phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f34f"></span>F34F</td>
+<td class="instruction">CALL <a href="C2EF.html">Parser_SkipToken</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f352"></span>F352</td>
+<td class="instruction">BIT 7,A</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="ED82.html">Response_HesAlreadyDead</a> when the named opponent is already dead.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f354"></span>F354</td>
+<td class="instruction">JP Z,<a href="ED82.html">Response_HesAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f357"></span>F357</td>
+<td class="instruction">LD ($BB4D),A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f35a"></span>F35A</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f35d"></span>F35D</td>
+<td class="instruction">LD A,$05</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f35f"></span>F35F</td>
+<td class="instruction">CALL <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f362"></span>F362</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ef">Kill_ApplyCombatResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2ef">Kill_ApplyCombatResult</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f365"></span>F365</td>
+<td class="instruction">LD A,($BB4D)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f371">Kill_ElfBow_Done</a> unless the value 82 matches.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f368"></span>F368</td>
+<td class="instruction">CP $82</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f36a"></span>F36A</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f371">Kill_ElfBow_Done</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f36c"></span>F36C</td>
+<td class="instruction">LD A,$86</td>
+<td class="comment-1" rowspan="2">Remove object 86 (the centaur) from the game.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f36e"></span>F36E</td>
+<td class="instruction">CALL <a href="C2E8.html">Handler_RemoveItemFromPlay</a></td>
+</tr>
+<tr>
+<td class="asm-label">Kill_ElfBow_Done</td>
+<td class="address-2"><span id="f371"></span>F371</td>
+<td class="instruction">LD HL,$DF0E</td>
+<td class="comment-1" rowspan="2">Print "Well done! A perfect shot.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f374"></span>F374</td>
+<td class="instruction">CALL <a href="C486.html">PausePrintStringAndScroll</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f377"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The Elf is dead.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f377"></span>F377</td>
+<td class="instruction">LD HL,$DFA3</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DFA3.html">Messaging_TheElfIsDead</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f37a"></span>F37A</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f37d"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the warrior with the sword?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_WarriorSword</td>
+<td class="address-2"><span id="f37d"></span>F37D</td>
+<td class="instruction">LD HL,$E885</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f3aa">Validate_Kill_WarriorBow</a> unless the player named the dead warrior.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f380"></span>F380</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f383"></span>F383</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f3aa">Validate_Kill_WarriorBow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f385"></span>F385</td>
+<td class="instruction">LD HL,$E71F</td>
+<td class="comment-1" rowspan="2">Call <a href="C2EF.html">Parser_SkipToken</a> to skip to the object named by this phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f388"></span>F388</td>
+<td class="instruction">CALL <a href="C2EF.html">Parser_SkipToken</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f38b"></span>F38B</td>
+<td class="instruction">BIT 7,A</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="ED8C.html">Response_ItsAlreadyDead</a> when the named opponent is already dead.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f38d"></span>F38D</td>
+<td class="instruction">JP Z,<a href="ED8C.html">Response_ItsAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f390"></span>F390</td>
+<td class="instruction">LD ($BB4D),A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2c7">Kill_CheckSword</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f393"></span>F393</td>
+<td class="instruction">CALL <a href="F2A7.html#f2c7">Kill_CheckSword</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f396"></span>F396</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2da">Kill_ResolveAttack</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f398"></span>F398</td>
+<td class="instruction">CALL <a href="F2A7.html#f2da">Kill_ResolveAttack</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f39b"></span>F39B</td>
+<td class="instruction">CALL <a href="F2A7.html#f2fd">Kill_ApplySecondCombatResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2fd">Kill_ApplySecondCombatResult</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f39e"></span>F39E</td>
+<td class="instruction">LD HL,$DF44</td>
+<td class="comment-1" rowspan="2">Print "Your blow strikes true.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3a1"></span>F3A1</td>
+<td class="instruction">CALL <a href="C486.html">PausePrintStringAndScroll</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f3a4"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The lizard falls to the ground.It is dead.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3a4"></span>F3A4</td>
+<td class="instruction">LD HL,$DFB4</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DFB4.html">Messaging_TheLizardFallsToTheGround</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3a7"></span>F3A7</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f3aa"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the warrior with the bow?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_WarriorBow</td>
+<td class="address-2"><span id="f3aa"></span>F3AA</td>
+<td class="instruction">LD HL,$E88E</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f3d7">Validate_Kill_MonsterBow</a> unless the player named the dead warrior.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3ad"></span>F3AD</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3b0"></span>F3B0</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f3d7">Validate_Kill_MonsterBow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3b2"></span>F3B2</td>
+<td class="instruction">LD HL,$E71F</td>
+<td class="comment-1" rowspan="2">Call <a href="C2EF.html">Parser_SkipToken</a> to skip to the object named by this phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3b5"></span>F3B5</td>
+<td class="instruction">CALL <a href="C2EF.html">Parser_SkipToken</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3b8"></span>F3B8</td>
+<td class="instruction">BIT 7,A</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="ED8C.html">Response_ItsAlreadyDead</a> when the named opponent is already dead.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3ba"></span>F3BA</td>
+<td class="instruction">JP Z,<a href="ED8C.html">Response_ItsAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3bd"></span>F3BD</td>
+<td class="instruction">LD ($BB4D),A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3c0"></span>F3C0</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3c3"></span>F3C3</td>
+<td class="instruction">LD A,$05</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3c5"></span>F3C5</td>
+<td class="instruction">CALL <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3c8"></span>F3C8</td>
+<td class="instruction">CALL <a href="F2A7.html#f2fd">Kill_ApplySecondCombatResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2fd">Kill_ApplySecondCombatResult</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3cb"></span>F3CB</td>
+<td class="instruction">LD HL,$DF0E</td>
+<td class="comment-1" rowspan="2">Print "Well done! A perfect shot.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3ce"></span>F3CE</td>
+<td class="instruction">CALL <a href="C486.html">PausePrintStringAndScroll</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f3d1"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The lizard falls to the ground.It is dead.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3d1"></span>F3D1</td>
+<td class="instruction">LD HL,$DFB4</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DFB4.html">Messaging_TheLizardFallsToTheGround</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3d4"></span>F3D4</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f3d7"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the slime monster with the bow?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_MonsterBow</td>
+<td class="address-2"><span id="f3d7"></span>F3D7</td>
+<td class="instruction">LD HL,$E8A4</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f3f8">Validate_Kill_Dragon</a> unless the player named the monster with the bow.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3da"></span>F3DA</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3dd"></span>F3DD</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f3f8">Validate_Kill_Dragon</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3df"></span>F3DF</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3e2"></span>F3E2</td>
+<td class="instruction">LD A,$05</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3e4"></span>F3E4</td>
+<td class="instruction">CALL <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3e7"></span>F3E7</td>
+<td class="instruction">LD A,$1E</td>
+<td class="comment-1" rowspan="2">Destroy "A monster from the slime".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3e9"></span>F3E9</td>
+<td class="instruction">CALL <a href="C2D8.html">Handler_DestroyItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3ec"></span>F3EC</td>
+<td class="instruction">LD HL,$DF0E</td>
+<td class="comment-1" rowspan="2">Print "Well done! A perfect shot.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3ef"></span>F3EF</td>
+<td class="instruction">CALL <a href="C486.html">PausePrintStringAndScroll</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f3f2"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The stricken monster slidesback into the oozing slime.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3f2"></span>F3F2</td>
+<td class="instruction">LD HL,$E009</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E009.html">Messaging_TheStrickenMonsterSlides</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3f5"></span>F3F5</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f3f8"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the dragon?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_Dragon</td>
+<td class="address-2"><span id="f3f8"></span>F3F8</td>
+<td class="instruction">LD HL,$E897</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f41b">Validate_Kill_WoodNymph</a> unless the player named the glowing rock.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3fb"></span>F3FB</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f3fe"></span>F3FE</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f41b">Validate_Kill_WoodNymph</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f400"></span>F400</td>
+<td class="instruction">LD A,$16</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED8C.html">Response_ItsAlreadyDead</a> if "A dragon. It is watching you" is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f402"></span>F402</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f405"></span>F405</td>
+<td class="instruction">JP NZ,<a href="ED8C.html">Response_ItsAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f408"></span>F408</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f40b"></span>F40B</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f40c"></span>F40C</td>
+<td class="instruction">CALL <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f40f"></span>F40F</td>
+<td class="instruction">LD BC,$1617</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A dragon. It is watching you" into "A dead dragon".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f412"></span>F412</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f415"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You have killed it.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f415"></span>F415</td>
+<td class="instruction">LD HL,$DFE0</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DFE0.html">Messaging_YouHaveKilledIt</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f418"></span>F418</td>
+<td class="instruction">JP <a href="ED6A.html">PauseAndPrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6A.html">PauseAndPrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f41b"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the wood nymph?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_WoodNymph</td>
+<td class="address-2"><span id="f41b"></span>F41B</td>
+<td class="instruction">LD HL,$E89B</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f443">Validate_Kill_DemonsSword</a> unless the player named a closed door.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f41e"></span>F41E</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f421"></span>F421</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f443">Validate_Kill_DemonsSword</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f423"></span>F423</td>
+<td class="instruction">LD A,$8A</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED87.html">Response_ShesAlreadyDead</a> if object 8A (the wood nymph) is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f425"></span>F425</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f428"></span>F428</td>
+<td class="instruction">JP NZ,<a href="ED87.html">Response_ShesAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f42b"></span>F42B</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f42e"></span>F42E</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f42f"></span>F42F</td>
+<td class="instruction">CALL <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f432"></span>F432</td>
+<td class="instruction">LD BC,$8A1C</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform 8A into "The body of a wood nymph".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f435"></span>F435</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f438"></span>F438</td>
+<td class="instruction">LD A,$89</td>
+<td class="comment-1" rowspan="2">Destroy object 89 (the nymph's glimpse).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f43a"></span>F43A</td>
+<td class="instruction">CALL <a href="C2D8.html">Handler_DestroyItem</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f43d"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You have killed her.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f43d"></span>F43D</td>
+<td class="instruction">LD HL,$DFF4</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DFF4.html">Messaging_YouHaveKilledHer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f440"></span>F440</td>
+<td class="instruction">JP <a href="ED6A.html">PauseAndPrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6A.html">PauseAndPrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f443"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the demons with the sword?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_DemonsSword</td>
+<td class="address-2"><span id="f443"></span>F443</td>
+<td class="instruction">LD HL,$E8A8</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f463">Validate_Kill_DemonsBow</a> unless the player named the log bridge.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f446"></span>F446</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f449"></span>F449</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f463">Validate_Kill_DemonsBow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f44b"></span>F44B</td>
+<td class="instruction">CALL <a href="F2A7.html#f2c7">Kill_CheckSword</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2c7">Kill_CheckSword</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f44e"></span>F44E</td>
+<td class="instruction">LD A,$0A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2da">Kill_ResolveAttack</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f450"></span>F450</td>
+<td class="instruction">CALL <a href="F2A7.html#f2da">Kill_ResolveAttack</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f453"></span>F453</td>
+<td class="instruction">LD A,$29</td>
+<td class="comment-1" rowspan="2">Destroy "Some demons are attacking you. They scream and jab at you with vicious tridents".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f455"></span>F455</td>
+<td class="instruction">CALL <a href="C2D8.html">Handler_DestroyItem</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f458"></span>
+<div class="comments">
+<div class="paragraph">
+This action changes the map:
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f458"></span>F458</td>
+<td class="instruction">LD A,$49</td>
+<td class="comment-1" rowspan="2">Write 49 to *<a href="E934.html#eada">Exit_CavernEast</a> to open up eastbound access to 
+
+<a href="D18D.html">In a Rock Passage</a> from 
+
+<a href="D0F2.html">The Cavern of Silence</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f45a"></span>F45A</td>
+<td class="instruction">LD ($EADA),A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f45d"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The demons scream with panic,then fade away.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f45d"></span>F45D</td>
+<td class="instruction">LD HL,$E041</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E041.html">Messaging_TheDemonsScreamWithPanic</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f460"></span>F460</td>
+<td class="instruction">JP <a href="ED6A.html">PauseAndPrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6A.html">PauseAndPrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f463"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the demons with the bow?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_DemonsBow</td>
+<td class="address-2"><span id="f463"></span>F463</td>
+<td class="instruction">LD HL,$E8AC</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f474">Validate_Kill_BlacksmithSword</a> unless the player named the log bridge.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f466"></span>F466</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f469"></span>F469</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f474">Validate_Kill_BlacksmithSword</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f46b"></span>F46B</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f46e"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Arrows have no effect.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f46e"></span>F46E</td>
+<td class="instruction">LD HL,$E06F</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E06F.html">Messaging_ArrowsHaveNoEffect</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f471"></span>F471</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f474"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the blacksmith with the sword?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_BlacksmithSword</td>
+<td class="address-2"><span id="f474"></span>F474</td>
+<td class="instruction">LD HL,$E8B0</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f49d">Validate_Kill_BlacksmithBow</a> unless the player named the ring being worn.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f477"></span>F477</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f47a"></span>F47A</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f49d">Validate_Kill_BlacksmithBow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f47c"></span>F47C</td>
+<td class="instruction">LD A,$27</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED82.html">Response_HesAlreadyDead</a> when "The body of the blacksmith" is here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f47e"></span>F47E</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f481"></span>F481</td>
+<td class="instruction">JP Z,<a href="ED82.html">Response_HesAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f484"></span>F484</td>
+<td class="instruction">CALL <a href="F2A7.html#f2c7">Kill_CheckSword</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2c7">Kill_CheckSword</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f487"></span>F487</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2da">Kill_ResolveAttack</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f488"></span>F488</td>
+<td class="instruction">CALL <a href="F2A7.html#f2da">Kill_ResolveAttack</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f48b"></span>
+<div class="comments">
+<div class="paragraph">
+Fight the Korl warrior.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_BlacksmithBody</td>
+<td class="address-2"><span id="f48b"></span>F48B</td>
+<td class="instruction">LD HL,$E77A</td>
+<td class="comment-1" rowspan="2">Call <a href="C2EF.html">Parser_SkipToken</a> to skip to the object named by this phrase.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f48e"></span>F48E</td>
+<td class="instruction">CALL <a href="C2EF.html">Parser_SkipToken</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f491"></span>F491</td>
+<td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="3">Call <a href="C48F.html">TransformItem</a> to turn the warrior into the dead blacksmith.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f492"></span>F492</td>
+<td class="instruction">LD C,$27</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f494"></span>F494</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f497"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You have killed him.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f497"></span>F497</td>
+<td class="instruction">LD HL,$E086</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E086.html">Messaging_YouHaveKilledHim</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f49a"></span>F49A</td>
+<td class="instruction">JP <a href="ED6A.html">PauseAndPrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6A.html">PauseAndPrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f49d"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the blacksmith with the bow?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_BlacksmithBow</td>
+<td class="address-2"><span id="f49d"></span>F49D</td>
+<td class="instruction">LD HL,$E8B4</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f4b7">Validate_Kill_ZarnSword</a> unless the player named the ring being worn.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4a0"></span>F4A0</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4a3"></span>F4A3</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f4b7">Validate_Kill_ZarnSword</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4a5"></span>F4A5</td>
+<td class="instruction">LD A,$27</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED82.html">Response_HesAlreadyDead</a> when "The body of the blacksmith" is here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4a7"></span>F4A7</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4aa"></span>F4AA</td>
+<td class="instruction">JP Z,<a href="ED82.html">Response_HesAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4ad"></span>F4AD</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4b0"></span>F4B0</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4b1"></span>F4B1</td>
+<td class="instruction">CALL <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4b4"></span>F4B4</td>
+<td class="instruction">JP <a href="F2A7.html#f48b">Kill_BlacksmithBody</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="F2A7.html#f48b">Kill_BlacksmithBody</a> to finish off the warrior.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f4b7"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... Zarn with the sword?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_ZarnSword</td>
+<td class="address-2"><span id="f4b7"></span>F4B7</td>
+<td class="instruction">LD HL,$E8B8</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f4e6">Validate_Kill_ZarnBow</a> unless the player named the log bridge.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4ba"></span>F4BA</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4bd"></span>F4BD</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f4e6">Validate_Kill_ZarnBow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4bf"></span>F4BF</td>
+<td class="instruction">LD A,$2A</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED82.html">Response_HesAlreadyDead</a> if "The Wizard,Zarn. He prepares to cast a spell over you" is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4c1"></span>F4C1</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4c4"></span>F4C4</td>
+<td class="instruction">JP NZ,<a href="ED82.html">Response_HesAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4c7"></span>F4C7</td>
+<td class="instruction">CALL <a href="F2A7.html#f2c7">Kill_CheckSword</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2c7">Kill_CheckSword</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4ca"></span>F4CA</td>
+<td class="instruction">LD A,$05</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2da">Kill_ResolveAttack</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4cc"></span>F4CC</td>
+<td class="instruction">CALL <a href="F2A7.html#f2da">Kill_ResolveAttack</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4cf"></span>F4CF</td>
+<td class="instruction">LD BC,$2A2B</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "The Wizard,Zarn. He prepares to cast a spell over you" into "The body of the Wizard".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4d2"></span>F4D2</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4d5"></span>F4D5</td>
+<td class="instruction">LD HL,$BA3F</td>
+<td class="comment-1" rowspan="4">Arm Princess Mara's arrival, then pause and print "Your blow strikes true." and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4d8"></span>F4D8</td>
+<td class="instruction">SET 0,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4da"></span>F4DA</td>
+<td class="instruction">LD HL,$DF44</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4dd"></span>F4DD</td>
+<td class="instruction">CALL <a href="C486.html">PausePrintStringAndScroll</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f4e0"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The Wizard falls to the floor.He is dead.The Princess says:-"My brave warrior,let us leave.Lead and I will follow."".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4e0"></span>F4E0</td>
+<td class="instruction">LD HL,$E09B</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E09B.html">Messaging_TheWizardFallsToTheFloor</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4e3"></span>F4E3</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f4e6"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... Zarn with the bow?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_ZarnBow</td>
+<td class="address-2"><span id="f4e6"></span>F4E6</td>
+<td class="instruction">LD HL,$E8BC</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f4ff">Validate_Kill_PrincessSword</a> unless the player named the log bridge.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4e9"></span>F4E9</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4ec"></span>F4EC</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f4ff">Validate_Kill_PrincessSword</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4ee"></span>F4EE</td>
+<td class="instruction">LD A,$2A</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED82.html">Response_HesAlreadyDead</a> if "The Wizard,Zarn. He prepares to cast a spell over you" is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4f0"></span>F4F0</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4f3"></span>F4F3</td>
+<td class="instruction">JP NZ,<a href="ED82.html">Response_HesAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4f6"></span>F4F6</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f4f9"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Arrows have no effect.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4f9"></span>F4F9</td>
+<td class="instruction">LD HL,$E06F</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E06F.html">Messaging_ArrowsHaveNoEffect</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f4fc"></span>F4FC</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f4ff"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... Princess Mara with the sword?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_PrincessSword</td>
+<td class="address-2"><span id="f4ff"></span>F4FF</td>
+<td class="instruction">LD HL,$E8C0</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f527">Validate_Kill_PrincessBow</a> unless the player named the princess with the sword.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f502"></span>F502</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f505"></span>F505</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f527">Validate_Kill_PrincessBow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f507"></span>F507</td>
+<td class="instruction">LD A,$2C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED87.html">Response_ShesAlreadyDead</a> if "The Princess,Mara" is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f509"></span>F509</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f50c"></span>F50C</td>
+<td class="instruction">JP NZ,<a href="ED87.html">Response_ShesAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f50f"></span>F50F</td>
+<td class="instruction">CALL <a href="F2A7.html#f2c7">Kill_CheckSword</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2c7">Kill_CheckSword</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f512"></span>F512</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2da">Kill_ResolveAttack</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f513"></span>F513</td>
+<td class="instruction">CALL <a href="F2A7.html#f2da">Kill_ResolveAttack</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f516"></span>
+<div class="comments">
+<div class="paragraph">
+Fight the witch.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_PrincessBody</td>
+<td class="address-2"><span id="f516"></span>F516</td>
+<td class="instruction">LD BC,$2C2D</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "The Princess,Mara" into "The body of the Princess".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f519"></span>F519</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f51c"></span>F51C</td>
+<td class="instruction">LD HL,$BA3F</td>
+<td class="comment-1" rowspan="4">Stop Princess Mara appearing, then pause and print "You have killed her." and return to the game loop.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f51f"></span>F51F</td>
+<td class="instruction">RES 0,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f521"></span>F521</td>
+<td class="instruction">LD HL,$DFF4</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f524"></span>F524</td>
+<td class="instruction">JP <a href="ED6A.html">PauseAndPrintResponse</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f527"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... Princess Mara with the bow?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_PrincessBow</td>
+<td class="address-2"><span id="f527"></span>F527</td>
+<td class="instruction">LD HL,$E8C4</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f541">Validate_Kill_WarriorSword2</a> unless the player named the princess with the bow.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f52a"></span>F52A</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f52d"></span>F52D</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f541">Validate_Kill_WarriorSword2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f52f"></span>F52F</td>
+<td class="instruction">LD A,$2C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED87.html">Response_ShesAlreadyDead</a> if "The Princess,Mara" is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f531"></span>F531</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f534"></span>F534</td>
+<td class="instruction">JP NZ,<a href="ED87.html">Response_ShesAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f537"></span>F537</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f53a"></span>F53A</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f53b"></span>F53B</td>
+<td class="instruction">CALL <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f53e"></span>F53E</td>
+<td class="instruction">JP <a href="F2A7.html#f516">Kill_PrincessBody</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="F2A7.html#f516">Kill_PrincessBody</a> to finish off the witch.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f541"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the warrior with the sword?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_WarriorSword2</td>
+<td class="address-2"><span id="f541"></span>F541</td>
+<td class="instruction">LD HL,$E8C8</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f56b">Validate_Kill_WarriorBow2</a> unless the player named the warrior with the sword.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f544"></span>F544</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f547"></span>F547</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f56b">Validate_Kill_WarriorBow2</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f549"></span>F549</td>
+<td class="instruction">LD A,$8C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED82.html">Response_HesAlreadyDead</a> if object 8C is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f54b"></span>F54B</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f54e"></span>F54E</td>
+<td class="instruction">JP NZ,<a href="ED82.html">Response_HesAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f551"></span>F551</td>
+<td class="instruction">CALL <a href="F2A7.html#f2c7">Kill_CheckSword</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2c7">Kill_CheckSword</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f554"></span>F554</td>
+<td class="instruction">LD A,$05</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2da">Kill_ResolveAttack</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f556"></span>F556</td>
+<td class="instruction">CALL <a href="F2A7.html#f2da">Kill_ResolveAttack</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f559"></span>F559</td>
+<td class="instruction">LD HL,$DF44</td>
+<td class="comment-1" rowspan="1">The sword lands, with "Your blow strikes true.".</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f55c"></span>
+<div class="comments">
+<div class="paragraph">
+Fight the blacksmith.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_WarriorBody</td>
+<td class="address-2"><span id="f55c"></span>F55C</td>
+<td class="instruction">CALL <a href="C486.html">PausePrintStringAndScroll</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C486.html">PausePrintStringAndScroll</a> to pause, then print that message and start a new line.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f55f"></span>F55F</td>
+<td class="instruction">LD BC,$8C34</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform 8C into "A dead warrior".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f562"></span>F562</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f565"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You have killed him.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f565"></span>F565</td>
+<td class="instruction">LD HL,$E086</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E086.html">Messaging_YouHaveKilledHim</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f568"></span>F568</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f56b"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the warrior with the bow?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_WarriorBow2</td>
+<td class="address-2"><span id="f56b"></span>F56B</td>
+<td class="instruction">LD HL,$E8D1</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f589">Validate_Kill_SpiderBow</a> unless the player named the warrior with the bow.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f56e"></span>F56E</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f571"></span>F571</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f589">Validate_Kill_SpiderBow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f573"></span>F573</td>
+<td class="instruction">LD A,$8C</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED82.html">Response_HesAlreadyDead</a> if object 8C is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f575"></span>F575</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f578"></span>F578</td>
+<td class="instruction">JP NZ,<a href="ED82.html">Response_HesAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f57b"></span>F57B</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f57e"></span>F57E</td>
+<td class="instruction">LD A,$05</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f580"></span>F580</td>
+<td class="instruction">CALL <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f583"></span>F583</td>
+<td class="instruction">LD HL,$DF0E</td>
+<td class="comment-1" rowspan="2">Print "Well done! A perfect shot." and strike the blacksmith.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f586"></span>F586</td>
+<td class="instruction">JP <a href="F2A7.html#f55c">Kill_WarriorBody</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f589"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to kill ... the giant spider with the bow?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Kill_SpiderBow</td>
+<td class="address-2"><span id="f589"></span>F589</td>
+<td class="instruction">LD HL,$E8DA</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F2A7.html#f5b3">Kill_YouCant</a> unless the player named the spider with the bow.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f58c"></span>F58C</td>
+<td class="instruction">CALL <a href="C26F.html">Parser_AdvanceToSeparator</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f58f"></span>F58F</td>
+<td class="instruction">JR NZ,<a href="F2A7.html#f5b3">Kill_YouCant</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f591"></span>F591</td>
+<td class="instruction">LD A,$41</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED8C.html">Response_ItsAlreadyDead</a> if "A giant spider. It advances toward you" is not here.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f593"></span>F593</td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f596"></span>F596</td>
+<td class="instruction">JP NZ,<a href="ED8C.html">Response_ItsAlreadyDead</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f599"></span>F599</td>
+<td class="instruction">CALL <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a></td>
+<td class="comment-1" rowspan="1">Call <a href="F2A7.html#f2ae">Kill_CheckBowAndArrows</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f59c"></span>F59C</td>
+<td class="instruction">LD A,$05</td>
+<td class="comment-1" rowspan="2">Call <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f59e"></span>F59E</td>
+<td class="instruction">CALL <a href="F2A7.html#f2d4">Kill_AnnounceArrow</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f5a1"></span>F5A1</td>
+<td class="instruction">LD BC,$4142</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A giant spider. It advances toward you" into "The body of a giant spider".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f5a4"></span>F5A4</td>
+<td class="instruction">CALL <a href="C48F.html">TransformItem</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f5a7"></span>F5A7</td>
+<td class="instruction">LD HL,$DF0E</td>
+<td class="comment-1" rowspan="2">Print "Well done! A perfect shot.".</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f5aa"></span>F5AA</td>
+<td class="instruction">CALL <a href="C486.html">PausePrintStringAndScroll</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f5ad"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You have killed it.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f5ad"></span>F5AD</td>
+<td class="instruction">LD HL,$DFE0</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="DFE0.html">Messaging_YouHaveKilledIt</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="f5b0"></span>F5B0</td>
+<td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f5b3"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Kill_YouCant</td>
+<td class="address-2"><span id="f5b3"></span>F5B3</td>
+<td class="instruction">JP <a href="ED6E.html">Response_YouCant_GameLoop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/heroesofkarn/asm/FA72.html">Heroes Of Karn</a></li>
+<li><a href="/adventure-games/jewelsofbabylon/asm/F851.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/asm/952B.html">Message From Andromeda</a></li>
+<li><a href="/adventure-games/warlord/asm/FC4B.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -141,14 +2284,14 @@ Prev: <a href="F292.html">F292</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#f2a7">Map</a></td>
 <td class="next">
-Next: <a href="F2AE.html">F2AE</a>
+Next: <a href="F5B6.html">F5B6</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/62119.html">Switch to decimal</a>.</div>
 </footer>

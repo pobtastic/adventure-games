@@ -97,7 +97,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="9014.html">9014</a>
+Prev: <a href="916C.html">916C</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#9198">Map</a></td>
 <td class="next">
@@ -111,7 +111,7 @@ Next: <a href="937B.html">937B</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Put a carried object down in the current room.
+Drop one of the objects the player named.
 </div>
 </div>
 </td>
@@ -139,15 +139,36 @@ Put a carried object down in the current room.
 <td class="instruction">JR C,<a href="9198.html#91d8">ActionDrop_Step4</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="91a0"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Please rephrase that.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91a0"></span>91A0</td>
 <td class="instruction">LD HL,$6445</td>
-<td class="comment-1" rowspan="2">Print "Please rephrase that." and start a new line.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="6445.html">Messaging_PleaseRephraseThat</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91a3"></span>91A3</td>
 <td class="instruction">JR <a href="9198.html#91d4">ActionDrop_Loop4</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91d4">ActionDrop_Loop4</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="91a5"></span>
+<div class="comments">
+<div class="paragraph">
+Check if the player is holding the requested item?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Loop1</td>
@@ -159,7 +180,17 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="91a8"></span>91A8</td>
 <td class="instruction">JR Z,<a href="9198.html#91c5">ActionDrop_Step3</a></td>
-<td class="comment-1" rowspan="1">The named object is being carried.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91c5">ActionDrop_Step3</a> if the named object is being carried.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="91aa"></span>
+<div class="comments">
+<div class="paragraph">
+The player is not holding that object.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Loop2</td>
@@ -176,53 +207,95 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="91b0"></span>91B0</td>
 <td class="instruction">LD A,E</td>
-<td class="comment-1" rowspan="1">The object number selects the plural list.</td>
+<td class="comment-1" rowspan="1">Copy the object ID back into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="91b1"></span>
+<div class="comments">
+<div class="paragraph">
+Finish "You're not carrying" with "it" or "them".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Step1</td>
 <td class="address-1"><span id="91b1"></span>91B1</td>
 <td class="instruction">LD HL,$9010</td>
-<td class="comment-1" rowspan="1">The objects called "them" are listed at <a href="9010.html">Table_PluralObjects</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="9010.html">Table_ItemsWhichArePlural</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91b4"></span>91B4</td>
 <td class="instruction">LD BC,$0004</td>
-<td class="comment-1" rowspan="1">0004 objects are spoken of as "them".</td>
+<td class="comment-1" rowspan="1"><span class="register">BC</span>=0004.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91b7"></span>91B7</td>
 <td class="instruction">CPIR</td>
-<td class="comment-1" rowspan="1">Search the list of objects that are called "them".</td>
+<td class="comment-1" rowspan="1">Search <a href="9010.html">Table_ItemsWhichArePlural</a> for the item ID among the plural items.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91b9"></span>91B9</td>
 <td class="instruction">JR Z,<a href="9198.html#91c0">ActionDrop_Step2</a></td>
-<td class="comment-1" rowspan="1">A plural object uses the wording for "them".</td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91c0">ActionDrop_Step2</a> if the item is plural.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="91bb"></span>
+<div class="comments">
+<div class="paragraph">
+Print "it.".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91bb"></span>91BB</td>
 <td class="instruction">LD HL,$7A38</td>
-<td class="comment-1" rowspan="2">Print "it." and start a new line.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="7A38.html">Messaging_It</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91be"></span>91BE</td>
 <td class="instruction">JR <a href="9198.html#91d4">ActionDrop_Loop4</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91d4">ActionDrop_Loop4</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="91c0"></span>
+<div class="comments">
+<div class="paragraph">
+Print "them.".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Step2</td>
 <td class="address-2"><span id="91c0"></span>91C0</td>
 <td class="instruction">LD HL,$7A3C</td>
-<td class="comment-1" rowspan="2">Print "them." and start a new line.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="7A3C.html">Messaging_Them</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91c3"></span>91C3</td>
 <td class="instruction">JR <a href="9198.html#91d4">ActionDrop_Loop4</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91d4">ActionDrop_Loop4</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="91c5"></span>
+<div class="comments">
+<div class="paragraph">
+The player has the item, so drop it in the current room.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Step3</td>
@@ -258,15 +331,26 @@ Put a carried object down in the current room.
 <td class="instruction">DEC (HL)</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="91d1"></span>
+<div class="comments">
+<div class="paragraph">
+Print "O.K.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91d1"></span>91D1</td>
 <td class="instruction">LD HL,$6466</td>
-<td class="comment-1" rowspan="2">Print "O.K." and start a new line.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="6466.html">Messaging_OK</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Loop4</td>
 <td class="address-2"><span id="91d4"></span>91D4</td>
 <td class="instruction">CALL <a href="64E9.html">PrintStringAndANewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="64E9.html">PrintStringAndANewline</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -275,10 +359,20 @@ Put a carried object down in the current room.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="91d8"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the knife?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step4</td>
 <td class="address-2"><span id="91d8"></span>91D8</td>
 <td class="instruction">LD HL,$8959</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#91e5">ActionDrop_Step5</a> unless the command matches the phrase at <a href="8940.html#8959">8959</a> (A knife. (00)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#8959">8959</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -289,11 +383,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="91de"></span>91DE</td>
 <td class="instruction">JR NZ,<a href="9198.html#91e5">ActionDrop_Step5</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91e5">ActionDrop_Step5</a> if the token isn't for the knife.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91e0"></span>91E0</td>
 <td class="instruction">LD A,$00</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="A knife."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -301,10 +397,20 @@ Put a carried object down in the current room.
 <td class="instruction">JP <a href="9198.html#91a5">ActionDrop_Loop1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="91e5"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the laser pistol?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step5</td>
 <td class="address-2"><span id="91e5"></span>91E5</td>
 <td class="instruction">LD HL,$8969</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#91f2">ActionDrop_Step6</a> unless the command matches the phrase at <a href="8940.html#8969">8969</a> (A laser pistol. (01)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#8969">8969</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -315,11 +421,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="91eb"></span>91EB</td>
 <td class="instruction">JR NZ,<a href="9198.html#91f2">ActionDrop_Step6</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91f2">ActionDrop_Step6</a> if the token isn't for the laser pistol.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91ed"></span>91ED</td>
 <td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="A laser pistol."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -327,10 +435,20 @@ Put a carried object down in the current room.
 <td class="instruction">JP <a href="9198.html#91a5">ActionDrop_Loop1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="91f2"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the coin?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step6</td>
 <td class="address-2"><span id="91f2"></span>91F2</td>
 <td class="instruction">LD HL,$8960</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#91ff">ActionDrop_Step7</a> unless the command matches the phrase at <a href="8940.html#8960">8960</a> (A coin. (02)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#8960">8960</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -341,11 +459,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="91f8"></span>91F8</td>
 <td class="instruction">JR NZ,<a href="9198.html#91ff">ActionDrop_Step7</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91ff">ActionDrop_Step7</a> if the token isn't for the coin.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="91fa"></span>91FA</td>
 <td class="instruction">LD A,$02</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="A coin."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -353,10 +473,20 @@ Put a carried object down in the current room.
 <td class="instruction">JP <a href="9198.html#91a5">ActionDrop_Loop1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="91ff"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the crystal rod?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step7</td>
 <td class="address-2"><span id="91ff"></span>91FF</td>
 <td class="instruction">LD HL,$896E</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#920c">ActionDrop_Step8</a> unless the command matches the phrase at <a href="8940.html#896e">896E</a> (A crystal rod. (03)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#896e">896E</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -367,11 +497,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9205"></span>9205</td>
 <td class="instruction">JR NZ,<a href="9198.html#920c">ActionDrop_Step8</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#920c">ActionDrop_Step8</a> if the token isn't for the crystal rod.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9207"></span>9207</td>
 <td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="A crystal rod."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -379,10 +511,20 @@ Put a carried object down in the current room.
 <td class="instruction">JP <a href="9198.html#91a5">ActionDrop_Loop1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="920c"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the detonator?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step8</td>
 <td class="address-2"><span id="920c"></span>920C</td>
 <td class="instruction">LD HL,$8940</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#9219">ActionDrop_Step9</a> unless the command matches the phrase at <a href="8940.html">Table_PhraseLists</a> (A detonator. (04)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html">Table_PhraseLists</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -393,11 +535,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9212"></span>9212</td>
 <td class="instruction">JR NZ,<a href="9198.html#9219">ActionDrop_Step9</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#9219">ActionDrop_Step9</a> if the token isn't for the detonator.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9214"></span>9214</td>
 <td class="instruction">LD A,$04</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="A detonator."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -405,10 +549,20 @@ Put a carried object down in the current room.
 <td class="instruction">JP <a href="9198.html#91a5">ActionDrop_Loop1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9219"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the metal bar?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step9</td>
 <td class="address-2"><span id="9219"></span>9219</td>
 <td class="instruction">LD HL,$8964</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#9226">ActionDrop_Step10</a> unless the command matches the phrase at <a href="8940.html#8964">8964</a> (A metal bar. (05)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#8964">8964</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -419,11 +573,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="921f"></span>921F</td>
 <td class="instruction">JR NZ,<a href="9198.html#9226">ActionDrop_Step10</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#9226">ActionDrop_Step10</a> if the token isn't for the metal bar.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9221"></span>9221</td>
 <td class="instruction">LD A,$05</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="A metal bar."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -431,10 +587,20 @@ Put a carried object down in the current room.
 <td class="instruction">JP <a href="9198.html#91a5">ActionDrop_Loop1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9226"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the glowing sphere?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step10</td>
 <td class="address-2"><span id="9226"></span>9226</td>
 <td class="instruction">LD HL,$8973</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#9233">ActionDrop_Step11</a> unless the command matches the phrase at <a href="8940.html#8973">8973</a> (A glowing sphere. (06)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#8973">8973</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -445,11 +611,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="922c"></span>922C</td>
 <td class="instruction">JR NZ,<a href="9198.html#9233">ActionDrop_Step11</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#9233">ActionDrop_Step11</a> if the token isn't for the glowing sphere.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="922e"></span>922E</td>
 <td class="instruction">LD A,$06</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="A glowing sphere."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -457,10 +625,20 @@ Put a carried object down in the current room.
 <td class="instruction">JP <a href="9198.html#91a5">ActionDrop_Loop1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9233"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the poison fungus?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step11</td>
 <td class="address-2"><span id="9233"></span>9233</td>
 <td class="instruction">LD HL,$8942</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#9240">ActionDrop_Step12</a> unless the command matches the phrase at <a href="8940.html#8942">8942</a> (Some poison fungus. (07)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#8942">8942</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -471,11 +649,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9239"></span>9239</td>
 <td class="instruction">JR NZ,<a href="9198.html#9240">ActionDrop_Step12</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#9240">ActionDrop_Step12</a> if the token isn't for the poison fungus.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="923b"></span>923B</td>
 <td class="instruction">LD A,$07</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="Some poison fungus."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -483,10 +663,20 @@ Put a carried object down in the current room.
 <td class="instruction">JP <a href="9198.html#91a5">ActionDrop_Loop1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9240"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the round stones?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step12</td>
 <td class="address-2"><span id="9240"></span>9240</td>
 <td class="instruction">LD HL,$8978</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#924d">ActionDrop_Step13</a> unless the command matches the phrase at <a href="8940.html#8978">8978</a> (Some round stones. (08)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#8978">8978</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -497,11 +687,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9246"></span>9246</td>
 <td class="instruction">JR NZ,<a href="9198.html#924d">ActionDrop_Step13</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#924d">ActionDrop_Step13</a> if the token isn't for the round stones.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9248"></span>9248</td>
 <td class="instruction">LD A,$08</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="Some round stones."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -509,10 +701,20 @@ Put a carried object down in the current room.
 <td class="instruction">JP <a href="9198.html#91a5">ActionDrop_Loop1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="924d"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the key?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step13</td>
 <td class="address-2"><span id="924d"></span>924D</td>
 <td class="instruction">LD HL,$8962</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#925a">ActionDrop_Step14</a> unless the command matches the phrase at <a href="8940.html#8962">8962</a> (A key. (09)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#8962">8962</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -523,11 +725,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9253"></span>9253</td>
 <td class="instruction">JR NZ,<a href="9198.html#925a">ActionDrop_Step14</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#925a">ActionDrop_Step14</a> if the token isn't for the key.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9255"></span>9255</td>
 <td class="instruction">LD A,$09</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="A key."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -535,10 +739,20 @@ Put a carried object down in the current room.
 <td class="instruction">JP <a href="9198.html#91a5">ActionDrop_Loop1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="925a"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the space axe?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step14</td>
 <td class="address-2"><span id="925a"></span>925A</td>
 <td class="instruction">LD HL,$895B</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#9267">ActionDrop_Step15</a> unless the command matches the phrase at <a href="8940.html#895b">895B</a> (A space axe. (0A)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#895b">895B</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -549,11 +763,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9260"></span>9260</td>
 <td class="instruction">JR NZ,<a href="9198.html#9267">ActionDrop_Step15</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#9267">ActionDrop_Step15</a> if the token isn't for the space axe.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9262"></span>9262</td>
 <td class="instruction">LD A,$0A</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="A space axe."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -561,10 +777,20 @@ Put a carried object down in the current room.
 <td class="instruction">JP <a href="9198.html#91a5">ActionDrop_Loop1</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9267"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the explosives?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step15</td>
 <td class="address-2"><span id="9267"></span>9267</td>
 <td class="instruction">LD HL,$8947</td>
-<td class="comment-1" rowspan="5">Jump to <a href="9198.html#9274">ActionDrop_Step16</a> unless the command matches the phrase at <a href="8940.html#8947">8947</a> (Some explosives. (0B)).</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#8947">8947</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -575,11 +801,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="926d"></span>926D</td>
 <td class="instruction">JR NZ,<a href="9198.html#9274">ActionDrop_Step16</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#9274">ActionDrop_Step16</a> if the token isn't for the explosives.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="926f"></span>926F</td>
 <td class="instruction">LD A,$0B</td>
+<td class="comment-1" rowspan="2"><span class="register">A</span>="Some explosives."; jump to <a href="9198.html#91a5">ActionDrop_Loop1</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -590,13 +818,23 @@ Put a carried object down in the current room.
 <td class="asm-label">ActionDrop_Step16</td>
 <td class="address-2"><span id="9274"></span>9274</td>
 <td class="instruction">JR <a href="9198.html#9276">ActionDrop_Step17</a></td>
-<td class="comment-1" rowspan="1">Continue at <a href="9198.html#9276">ActionDrop_Step17</a> to try the next thing the player might drop.</td>
+<td class="comment-1" rowspan="1">Continue at <a href="9198.html#9276">ActionDrop_Step17</a> to try the special drops.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9276"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the sphere onto the pedestal?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Step17</td>
 <td class="address-2"><span id="9276"></span>9276</td>
 <td class="instruction">LD HL,$897F</td>
-<td class="comment-1" rowspan="2">Point at the phrase at <a href="8940.html#897f">897F</a> and call <a href="6900.html">Parser_AdvanceToSeparator</a> to match it against the command.</td>
+<td class="comment-1" rowspan="2">Call <a href="6900.html">Parser_AdvanceToSeparator</a> with <a href="8940.html#897f">897F</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -607,13 +845,13 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="927c"></span>927C</td>
 <td class="instruction">JR NZ,<a href="9198.html#92aa">ActionDrop_Step20</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="9198.html#92aa">ActionDrop_Step20</a> if it doesn't match.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#92aa">ActionDrop_Step20</a> if the token isn't for that phrase.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="927e"></span>927E</td>
 <td class="instruction">LD A,$06</td>
-<td class="comment-1" rowspan="3">Jump to <a href="9198.html#91aa">ActionDrop_Loop2</a> when the player is not carrying A glowing sphere. (06).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="9198.html#91aa">ActionDrop_Loop2</a> when the player is not carrying "A glowing sphere.".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -635,7 +873,9 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9289"></span>9289</td>
 <td class="instruction">CP $1C</td>
-<td class="comment-1" rowspan="2">The sphere was not dropped in The Crystal Chamber..</td>
+<td class="comment-1" rowspan="2">The sphere was not dropped in 
+
+<a href="7380.html">The Crystal Chamber</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -646,7 +886,9 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="928d"></span>928D</td>
 <td class="instruction">LD BC,$1500</td>
-<td class="comment-1" rowspan="1">Clear the glass pedestal in The Crystal Chamber..</td>
+<td class="comment-1" rowspan="1">Clear the glass pedestal in 
+
+<a href="7380.html">The Crystal Chamber</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -658,7 +900,9 @@ Put a carried object down in the current room.
 <td class="asm-label">ActionDrop_Step18</td>
 <td class="address-2"><span id="9292"></span>9292</td>
 <td class="instruction">LD BC,$1600</td>
-<td class="comment-1" rowspan="1">Clear the glass pedestal in The Blue Room..</td>
+<td class="comment-1" rowspan="1">Clear the glass pedestal in 
+
+<a href="72C9.html">The Blue Room</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Step19</td>
@@ -707,6 +951,16 @@ Put a carried object down in the current room.
 <td class="comment-1" rowspan="1">Continue at <a href="9198.html#91cd">ActionDrop_Loop3</a> to count one fewer object and confirm the drop.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="92aa"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the axe on the second android?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step20</td>
 <td class="address-2"><span id="92aa"></span>92AA</td>
 <td class="instruction">LD HL,$8A87</td>
@@ -738,15 +992,26 @@ Put a carried object down in the current room.
 <td class="instruction">JR Z,<a href="9198.html#92bf">ActionDrop_Step21</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="92b9"></span>
+<div class="comments">
+<div class="paragraph">
+Print "He's already dead.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="92b9"></span>92B9</td>
 <td class="instruction">LD HL,$7CB3</td>
-<td class="comment-1" rowspan="2">Print "He's already dead." and start a new line.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="7CB3.html">Messaging_HeSAlreadyDead</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="92bc"></span>92BC</td>
 <td class="instruction">JP <a href="9198.html#91d4">ActionDrop_Loop4</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91d4">ActionDrop_Loop4</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Step21</td>
@@ -779,7 +1044,9 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="92cd"></span>92CD</td>
 <td class="instruction">LD BC,$2835</td>
-<td class="comment-1" rowspan="2">Move The dead body of thealien commander. (28) to The Alien Commander's Chamber. (35).</td>
+<td class="comment-1" rowspan="2">Move The dead body of thealien commander. (28) to room 35: "
+
+<a href="74C2.html">The Alien Commander's Chamber</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -824,7 +1091,9 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="92e0"></span>92E0</td>
 <td class="instruction">LD BC,$0935</td>
-<td class="comment-1" rowspan="2">Move A key. (09) to The Alien Commander's Chamber. (35).</td>
+<td class="comment-1" rowspan="2">Move A key. (09) to room 35: "
+
+<a href="74C2.html">The Alien Commander's Chamber</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -832,15 +1101,36 @@ Put a carried object down in the current room.
 <td class="instruction">CALL <a href="65E6.html">UpdateObjectLocation</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="92e6"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The axe pierces the space armourThe commander falls down,dead.As he falls,a key drops to the floor.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="92e6"></span>92E6</td>
 <td class="instruction">LD HL,$7CC6</td>
-<td class="comment-1" rowspan="2">Print "The axe pierces the space armourThe commander falls down,dead.As he falls,a key drops to the floor." and start a new line.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="7CC6.html">Messaging_TheAxePiercesTheSpaceArmourTheCommanderF</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="92e9"></span>92E9</td>
 <td class="instruction">JP <a href="9198.html#91d4">ActionDrop_Loop4</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91d4">ActionDrop_Loop4</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="92ec"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the fungus on the slug?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Step22</td>
@@ -890,7 +1180,9 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9302"></span>9302</td>
 <td class="instruction">LD BC,$2530</td>
-<td class="comment-1" rowspan="2">Move A pool of slime on the floor. (25) to The Sloping Corridor. (30).</td>
+<td class="comment-1" rowspan="2">Move A pool of slime on the floor. (25) to room 30: "
+
+<a href="745A.html">The Sloping Corridor</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -920,10 +1212,24 @@ Put a carried object down in the current room.
 <td class="instruction">DEC (HL)</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9312"></span>
+<div class="comments">
+<div class="paragraph">
+This action changes the map:
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9312"></span>9312</td>
 <td class="instruction">LD A,$2F</td>
-<td class="comment-1" rowspan="2">Open the west exit of The Sloping Corridor. onto The Underground Stream..</td>
+<td class="comment-1" rowspan="2">Open the west exit of 
+
+<a href="745A.html">The Sloping Corridor</a> onto 
+
+<a href="7442.html">The Underground Stream</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -931,15 +1237,36 @@ Put a carried object down in the current room.
 <td class="instruction">LD ($8C7D),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9317"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The slug greedily devours thepoison fungus.It writhes in pain,then dies.Only a pool of slime remains.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9317"></span>9317</td>
 <td class="instruction">LD HL,$7D8A</td>
-<td class="comment-1" rowspan="2">Print "The slug greedily devours thepoison fungus.It writhes in pain,then dies.Only a pool of slime remains." and start a new line.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="7D8A.html">Messaging_TheSlugGreedilyDevoursThePoisonFungusIt</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="931a"></span>931A</td>
 <td class="instruction">JP <a href="9198.html#91d4">ActionDrop_Loop4</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91d4">ActionDrop_Loop4</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="931d"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the stones on the scaled creature?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Step23</td>
@@ -989,7 +1316,9 @@ Put a carried object down in the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9333"></span>9333</td>
 <td class="instruction">LD BC,$0833</td>
-<td class="comment-1" rowspan="2">Move Some round stones. (08) to The Crystal Bridge. (33).</td>
+<td class="comment-1" rowspan="2">Move Some round stones. (08) to room 33: "
+
+<a href="7499.html">The Crystal Bridge</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1008,10 +1337,24 @@ Put a carried object down in the current room.
 <td class="instruction">DEC (HL)</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="933d"></span>
+<div class="comments">
+<div class="paragraph">
+This action changes the map:
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="933d"></span>933D</td>
 <td class="instruction">LD A,$34</td>
-<td class="comment-1" rowspan="2">Open the east exit of The Crystal Bridge. onto The Creature's Lair..</td>
+<td class="comment-1" rowspan="2">Open the east exit of 
+
+<a href="7499.html">The Crystal Bridge</a> onto 
+
+<a href="74AD.html">The Creature's Lair</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1019,15 +1362,36 @@ Put a carried object down in the current room.
 <td class="instruction">LD ($8C8E),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9342"></span>
+<div class="comments">
+<div class="paragraph">
+Print "The creature stumbles andloses its footing and fallsover the side of the bridge.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9342"></span>9342</td>
 <td class="instruction">LD HL,$7DF3</td>
-<td class="comment-1" rowspan="2">Print "The creature stumbles andloses its footing and fallsover the side of the bridge." and start a new line.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="7DF3.html">Messaging_TheCreatureStumblesAndLosesItsFootingAnd</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9345"></span>9345</td>
 <td class="instruction">JP <a href="9198.html#91d4">ActionDrop_Loop4</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91d4">ActionDrop_Loop4</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9348"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to drop the worn gloves?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Step24</td>
@@ -1077,15 +1441,26 @@ Put a carried object down in the current room.
 <td class="instruction">JR NZ,<a href="9198.html#9364">ActionDrop_Step25</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="935e"></span>
+<div class="comments">
+<div class="paragraph">
+Print "No. Drop the fungus first.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="935e"></span>935E</td>
 <td class="instruction">LD HL,$84B1</td>
-<td class="comment-1" rowspan="2">Print "No. Drop the fungus first." and start a new line.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="84B1.html">Messaging_NoDropTheFungusFirst</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9361"></span>9361</td>
 <td class="instruction">JP <a href="9198.html#91d4">ActionDrop_Loop4</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91d4">ActionDrop_Loop4</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">ActionDrop_Step25</td>
@@ -1122,21 +1497,48 @@ Put a carried object down in the current room.
 <td class="comment-1" rowspan="1">Continue at <a href="9198.html#91a5">ActionDrop_Loop1</a> to see what the player is now holding.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="9375"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+<div class="paragraph">
+Print "You can't.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDrop_Step27</td>
 <td class="address-2"><span id="9375"></span>9375</td>
 <td class="instruction">LD HL,$645B</td>
-<td class="comment-1" rowspan="2">Print "You can't." and start a new line.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="645B.html">Messaging_YouCanT</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9378"></span>9378</td>
 <td class="instruction">JP <a href="9198.html#91d4">ActionDrop_Loop4</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9198.html#91d4">ActionDrop_Loop4</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/forestatworldsend/asm/F03A.html">Forest At Worlds End</a></li>
+<li><a href="/adventure-games/heroesofkarn/asm/F8D0.html">Heroes Of Karn</a></li>
+<li><a href="/adventure-games/warlord/asm/F975.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="9014.html">9014</a>
+Prev: <a href="916C.html">916C</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#9198">Map</a></td>
 <td class="next">
@@ -1147,7 +1549,7 @@ Next: <a href="937B.html">937B</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
 <div><a href="../dec/asm/37272.html">Switch to decimal</a>.</div>
 </footer>

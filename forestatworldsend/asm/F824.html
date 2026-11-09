@@ -119,19 +119,30 @@ Tie the rope to the rock above the volcano.
 <tr>
 <td class="asm-label">Action_Tie</td>
 <td class="address-2"><span id="f824"></span>F824</td>
-<td class="instruction">CALL <a href="C32D.html">Parser_ValidateInputTokens</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="instruction">CALL <a href="C32D.html">Parser_ValidateTwoDirectObjects</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C32D.html">Parser_ValidateTwoDirectObjects</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f827"></span>F827</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f828"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to tie ... the rope to the overhang?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f828"></span>F828</td>
 <td class="instruction">LD HL,$E90B</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F824.html#f866">Action_Tie_YouCant</a> unless the player named the demons.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e90b">E90B</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,30 +152,31 @@ Tie the rope to the rock above the volcano.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f82e"></span>F82E</td>
-<td class="instruction">JR NZ,<a href="F824.html#f866">Action_Tie_YouCant</a></td>
+<td class="instruction">JR NZ,<a href="F824.html#f866">Tie_YouCant</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F824.html#f866">Tie_YouCant</a> if the token isn't for the overhang.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f830"></span>F830</td>
 <td class="instruction">LD A,$23</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F824.html#f83d">Action_Tie_Next</a> if object 23 (the rope on the overhang) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F824.html#f83d">Tie_CheckRoom</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "A projection of rock with a rope tied to it. The rope dangles down into the volc" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f832"></span>F832</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f835"></span>F835</td>
-<td class="instruction">JR NZ,<a href="F824.html#f83d">Action_Tie_Next</a></td>
+<td class="instruction">JR NZ,<a href="F824.html#f83d">Tie_CheckRoom</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="f837"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "The rope is already tied.".
+Print "The rope is already tied.".
 </div>
 </div>
 </td>
@@ -173,18 +185,31 @@ Reply with "The rope is already tied.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f837"></span>F837</td>
 <td class="instruction">LD HL,$E2F0</td>
-<td class="comment-1" rowspan="2">Print "The rope is already tied." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E2F0.html">Messaging_TheRopeIsAlreadyTied</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f83a"></span>F83A</td>
 <td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Tie_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="f83d"></span>
+<div class="comments">
+<div class="paragraph">
+Is the player at the top of the volcano?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Tie_CheckRoom</td>
 <td class="address-2"><span id="f83d"></span>F83D</td>
 <td class="instruction">LD A,($BA9B)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ED78.html">Response_IDontSeeThePoint</a> unless the player is in room 47 (The Top of the Volcano).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ED78.html">Response_IDontSeeThePoint</a> if *<a href="BA9B.html">CurrentRoom</a> isn't room 47: "
+
+<a href="D109.html">The Top of the Volcano</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -200,7 +225,7 @@ Reply with "The rope is already tied.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f845"></span>F845</td>
 <td class="instruction">LD A,$08</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F824.html#f855">Action_Tie_DestroyRope</a> if the player is not carrying object 08 (the rope).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F824.html#f855">Tie_AttachRope</a> if "A rope" isn't held.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -210,13 +235,13 @@ Reply with "The rope is already tied.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f84a"></span>F84A</td>
-<td class="instruction">JR NZ,<a href="F824.html#f855">Action_Tie_DestroyRope</a></td>
+<td class="instruction">JR NZ,<a href="F824.html#f855">Tie_AttachRope</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f84c"></span>F84C</td>
 <td class="instruction">LD HL,$BA68</td>
-<td class="comment-1" rowspan="4">Count one fewer thing carried and put the rope down here.</td>
+<td class="comment-1" rowspan="2">Decrease *<a href="BA68.html">Count_InventoryItems</a> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -227,6 +252,7 @@ Reply with "The rope is already tied.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f850"></span>F850</td>
 <td class="instruction">LD A,$08</td>
+<td class="comment-1" rowspan="2">Call <a href="C2DF.html">Handler_UpdateItemForTheCurrentRoom</a> with item 08: "A rope".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -234,10 +260,20 @@ Reply with "The rope is already tied.".
 <td class="instruction">CALL <a href="C2DF.html">Handler_UpdateItemForTheCurrentRoom</a></td>
 </tr>
 <tr>
-<td class="asm-label">Action_Tie_DestroyRope</td>
+<td class="routine-comment" colspan="5">
+<span id="f855"></span>
+<div class="comments">
+<div class="paragraph">
+Destroy the carried rope and attach it to the overhang.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Tie_AttachRope</td>
 <td class="address-2"><span id="f855"></span>F855</td>
 <td class="instruction">LD A,$08</td>
-<td class="comment-1" rowspan="2">Destroy object 08 (the rope).</td>
+<td class="comment-1" rowspan="2">Call <a href="C2D8.html">Handler_DestroyItem</a> with item 08: "A rope".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -248,7 +284,7 @@ Reply with "The rope is already tied.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f85a"></span>F85A</td>
 <td class="instruction">LD BC,$2223</td>
-<td class="comment-1" rowspan="2">Replace object 22 (the rock overhang) with object 23 (the rope on the overhang).</td>
+<td class="comment-1" rowspan="2">Call <a href="C48F.html">TransformItem</a> to transform "A projection of rock hangs over the lip of the volcano" into "A projection of rock with a rope tied to it. The rope dangles down into the volc".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -260,7 +296,7 @@ Reply with "The rope is already tied.".
 <span id="f860"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "O.K.The rope dangles down,into the volcano.".
+Print "O.K.The rope dangles down,into the volcano.".
 </div>
 </div>
 </td>
@@ -269,18 +305,29 @@ Reply with "O.K.The rope dangles down,into the volcano.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f860"></span>F860</td>
 <td class="instruction">LD HL,$E2C2</td>
-<td class="comment-1" rowspan="2">Print "O.K.The rope dangles down,into the volcano." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E2C2.html">Messaging_OKTheRopeDanglesDownIntoTheVolcano</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f863"></span>F863</td>
 <td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Tie_YouCant</td>
+<td class="routine-comment" colspan="5">
+<span id="f866"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Tie_YouCant</td>
 <td class="address-2"><span id="f866"></span>F866</td>
 <td class="instruction">JP <a href="ED6E.html">Response_YouCant_GameLoop</a></td>
-<td class="comment-1" rowspan="1">Tell the player the command is impossible.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED6E.html">Response_YouCant_GameLoop</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -297,7 +344,7 @@ Next: <a href="F869.html">F869</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/63524.html">Switch to decimal</a>.</div>
 </footer>

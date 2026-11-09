@@ -114,7 +114,17 @@ Next: <a href="36269.html">36269</a>
 Used by the routines at <a href="36138.html">GameLoop</a> and <a href="37755.html">HandlerResolveSynonym</a>.
 </div>
 <div class="paragraph">
-Find the typed verb and jump to its action routine.
+Match the first word token against the verb table. If a match is found, jump to its handler. If not, print "I Don't Understand" and return to the game loop.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="36229"></span>
+<div class="comments">
+<div class="paragraph">
+Set up to search the verb word tokens for the first word token.
 </div>
 </div>
 </td>
@@ -129,42 +139,66 @@ Find the typed verb and jump to its action routine.
 <td class="asm-label"></td>
 <td class="address-1"><span id="36232"></span>36232</td>
 <td class="instruction">LD BC,(25306)</td>
-<td class="comment-1" rowspan="1">Fetch how many verbs the game knows.</td>
+<td class="comment-1" rowspan="1">Load *<a href="25306.html">Count_VerbTokens</a> into <span class="register">BC</span> for the search.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36236"></span>36236</td>
 <td class="instruction">LD A,(25233)</td>
-<td class="comment-1" rowspan="1">Fetch the first word of the command.</td>
+<td class="comment-1" rowspan="1">Fetch *<a href="25233.html">UserInput_Token_1</a> from the user input.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36239"></span>36239</td>
 <td class="instruction">CPIR</td>
-<td class="comment-1" rowspan="1">Find the typed verb in that list.</td>
+<td class="comment-1" rowspan="1">Search the verb word tokens for a matching token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36241"></span>36241</td>
 <td class="instruction">JR Z,<a href="36229.html#36251">HandlerMatchVerb_Step1</a></td>
-<td class="comment-1" rowspan="1">The typed word is one of those verbs.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="36229.html#36251">HandlerMatchVerb_Step1</a> if a match was found.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="36243"></span>
+<div class="comments">
+<div class="paragraph">
+The token doesn't match any verb.
+</div>
+<div class="paragraph">
+Print "I don't understand.".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36243"></span>36243</td>
 <td class="instruction">LD HL,25324</td>
-<td class="comment-1" rowspan="2">Print I don't understand..</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="25324.html">Messaging_IDonTUnderstand</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36246"></span>36246</td>
 <td class="instruction">CALL <a href="25833.html">PrintStringAndANewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="25833.html">PrintStringAndANewline</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36249"></span>36249</td>
 <td class="instruction">JR <a href="36138.html">GameLoop</a></td>
 <td class="comment-1" rowspan="1">Jump to <a href="36138.html">GameLoop</a> to read the next command.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="36251"></span>
+<div class="comments">
+<div class="paragraph">
+A verb was matched. Calculate its index and jump to its handler.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">HandlerMatchVerb_Step1</td>
@@ -176,7 +210,7 @@ Find the typed verb and jump to its action routine.
 <td class="asm-label"></td>
 <td class="address-1"><span id="36254"></span>36254</td>
 <td class="instruction">SUB C</td>
-<td class="comment-1" rowspan="3">The matching verb selects its handler.</td>
+<td class="comment-1" rowspan="3">The matching verb selects its handler index.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -192,13 +226,13 @@ Find the typed verb and jump to its action routine.
 <td class="asm-label"></td>
 <td class="address-1"><span id="36257"></span>36257</td>
 <td class="instruction">LD IX,(25304)</td>
-<td class="comment-1" rowspan="1">Fetch the verb handlers.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at *<a href="25304.html">Pointer_JumpTable_Verbs</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36261"></span>36261</td>
 <td class="instruction">CALL <a href="26452.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="26452.html">GetTableEntry</a> to look up the table entry.</td>
+<td class="comment-1" rowspan="1">Call <a href="26452.html">GetTableEntry</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -255,7 +289,7 @@ Next: <a href="36269.html">36269</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
 <div><a href="../../asm/8D85.html">Switch to hexadecimal</a>.</div>
 </footer>

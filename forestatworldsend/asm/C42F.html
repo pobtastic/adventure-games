@@ -123,7 +123,7 @@ Move the player to the given room and retarget any scenic events that watched th
 <td class="asm-label">MovePlayerToRoom</td>
 <td class="address-2"><span id="c42f"></span>C42F</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="6">Read the current room and the scenic list. Jump to <a href="C42F.html#c43d">MovePlayerToRoom_Next</a> to continue.</td>
+<td class="comment-1" rowspan="6">Read the current room and the scenic list. Jump to <a href="C42F.html#c43d">FindScenicEvents</a> to continue.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -148,24 +148,24 @@ Move the player to the given room and retarget any scenic events that watched th
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c43a"></span>C43A</td>
-<td class="instruction">JR <a href="C42F.html#c43d">MovePlayerToRoom_Next</a></td>
+<td class="instruction">JR <a href="C42F.html#c43d">FindScenicEvents</a></td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_Loop</td>
+<td class="asm-label">FindScenicEvents_Loop</td>
 <td class="address-2"><span id="c43c"></span>C43C</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Step to the next scenic entry.</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_Next</td>
+<td class="asm-label">FindScenicEvents</td>
 <td class="address-2"><span id="c43d"></span>C43D</td>
 <td class="instruction">CP (HL)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="C42F.html#c441">MovePlayerToRoom_ScenicNext</a> unless this scenic entry watched the old room.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C42F.html#c441">FindScenicEvents_Next</a> unless this scenic entry watched the old room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c43e"></span>C43E</td>
-<td class="instruction">JR NZ,<a href="C42F.html#c441">MovePlayerToRoom_ScenicNext</a></td>
+<td class="instruction">JR NZ,<a href="C42F.html#c441">FindScenicEvents_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -174,10 +174,10 @@ Move the player to the given room and retarget any scenic events that watched th
 <td class="comment-1" rowspan="1">Retarget this scenic entry to the new room.</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_ScenicNext</td>
+<td class="asm-label">FindScenicEvents_Next</td>
 <td class="address-2"><span id="c441"></span>C441</td>
-<td class="instruction">DJNZ <a href="C42F.html#c43c">MovePlayerToRoom_Loop</a></td>
-<td class="comment-1" rowspan="1">Repeat from <a href="C42F.html#c43c">MovePlayerToRoom_Loop</a> for the remaining scenic entries.</td>
+<td class="instruction">DJNZ <a href="C42F.html#c43c">FindScenicEvents_Loop</a></td>
+<td class="comment-1" rowspan="1">Repeat from <a href="C42F.html#c43c">FindScenicEvents_Loop</a> for the remaining scenic entries.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -224,16 +224,16 @@ Move the player to the given room and retarget any scenic events that watched th
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c453"></span>C453</td>
-<td class="instruction">JR <a href="C42F.html#c456">MovePlayerToRoom_EventBit</a></td>
+<td class="instruction">JR <a href="C42F.html#c456">FollowingItems_CheckBit</a></td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_EventAdvance</td>
+<td class="asm-label">FollowingItems_Loop</td>
 <td class="address-2"><span id="c455"></span>C455</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Step to the next event object.</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_EventBit</td>
+<td class="asm-label">FollowingItems_CheckBit</td>
 <td class="address-2"><span id="c456"></span>C456</td>
 <td class="instruction">SRL C</td>
 <td class="comment-1" rowspan="2">Skip this object when its event bit is clear.</td>
@@ -241,7 +241,7 @@ Move the player to the given room and retarget any scenic events that watched th
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c458"></span>C458</td>
-<td class="instruction">JR NC,<a href="C42F.html#c460">MovePlayerToRoom_EventNext</a></td>
+<td class="instruction">JR NC,<a href="C42F.html#c460">FollowingItems_Next</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -266,10 +266,10 @@ Move the player to the given room and retarget any scenic events that watched th
 <td class="comment-1" rowspan="1">Switch back to the event scan.</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_EventNext</td>
+<td class="asm-label">FollowingItems_Next</td>
 <td class="address-2"><span id="c460"></span>C460</td>
-<td class="instruction">DJNZ <a href="C42F.html#c455">MovePlayerToRoom_EventAdvance</a></td>
-<td class="comment-1" rowspan="1">Repeat from <a href="C42F.html#c455">MovePlayerToRoom_EventAdvance</a> for the remaining event bits.</td>
+<td class="instruction">DJNZ <a href="C42F.html#c455">FollowingItems_Loop</a></td>
+<td class="comment-1" rowspan="1">Repeat from <a href="C42F.html#c455">FollowingItems_Loop</a> for the remaining event bits.</td>
 </tr>
 <tr>
 <td class="asm-label">MovePlayerToRoom_Return</td>
@@ -282,7 +282,10 @@ Move the player to the given room and retarget any scenic events that watched th
 <div class="comments">
 <div class="paragraph">
 View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/aftershock/asm/ACBD.html">After Shock</a></li>
 <li><a href="/adventure-games/jewelsofbabylon/asm/C520.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/asm/8E18.html">Message From Andromeda</a></li>
+<li><a href="/adventure-games/warlord/asm/B01F.html">Warlord</a></li>
 </ul>
 </div>
 </div>
@@ -303,7 +306,7 @@ Next: <a href="C463.html">C463</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/50223.html">Switch to decimal</a>.</div>
 </footer>

@@ -120,50 +120,91 @@ Explain how badly hurt the player is, if at all.
 <td class="asm-label">Action_Help</td>
 <td class="address-2"><span id="60867"></span>60867</td>
 <td class="instruction">CALL <a href="49918.html">Parser_ValidateNoDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="49918.html">Parser_ValidateNoDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60870"></span>
+<div class="comments">
+<div class="paragraph">
+The "HELP" command can only be called on its own.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60870"></span>60870</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if there's any token set in <a href="47926.html#47927">UserInput_Token_2</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60871"></span>
+<div class="comments">
+<div class="paragraph">
+Does the player want help with their injury?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60871"></span>60871</td>
 <td class="instruction">LD A,72</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60867.html#60898">Action_Help_Next</a> if object 72 (the injury) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60867.html#60898">Action_Help_GiveUp</a> if <a href="49743.html">ValidateItemPresent</a> reports the player isn't in the room where you're "You are seriously injured".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60873"></span>60873</td>
-<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="49743.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60876"></span>60876</td>
-<td class="instruction">JR NZ,<a href="60867.html#60898">Action_Help_Next</a></td>
+<td class="instruction">JR NZ,<a href="60867.html#60898">Action_Help_GiveUp</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60878"></span>
+<div class="comments">
+<div class="paragraph">
+Is the wood nymph already here?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60878"></span>60878</td>
 <td class="instruction">LD A,138</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60867.html#60898">Action_Help_Next</a> when object 138 (the wood nymph) is here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60867.html#60898">Action_Help_GiveUp</a> if <a href="49743.html">ValidateItemPresent</a> reports that 138 is in the same room as the player.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60880"></span>60880</td>
-<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="49743.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60883"></span>60883</td>
-<td class="instruction">JR Z,<a href="60867.html#60898">Action_Help_Next</a></td>
+<td class="instruction">JR Z,<a href="60867.html#60898">Action_Help_GiveUp</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60885"></span>
+<div class="comments">
+<div class="paragraph">
+Is the wood nymph still in play?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60885"></span>60885</td>
 <td class="instruction">LD A,138</td>
-<td class="comment-1" rowspan="2">Call <a href="49854.html">GetObjectLocation</a> to fetch where the wood nymph is.</td>
+<td class="comment-1" rowspan="2">Call <a href="49854.html">GetObjectLocation</a> with 138.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -174,35 +215,75 @@ Explain how badly hurt the player is, if at all.
 <td class="asm-label"></td>
 <td class="address-1"><span id="60890"></span>60890</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="60867.html#60898">Action_Help_Next</a> when the injury is not in play.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="60867.html#60898">Action_Help_GiveUp</a> if the wood nymph is not in play.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60891"></span>60891</td>
-<td class="instruction">JR Z,<a href="60867.html#60898">Action_Help_Next</a></td>
+<td class="instruction">JR Z,<a href="60867.html#60898">Action_Help_GiveUp</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60893"></span>
+<div class="comments">
+<div class="paragraph">
+Help is on the way.
+</div>
+<div class="paragraph">
+Print "Help is on the way.".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60893"></span>60893</td>
 <td class="instruction">LD HL,56399</td>
-<td class="comment-1" rowspan="2">Print "Help is on the way." to say help is on the way.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56399.html">Messaging_HelpIsOnTheWay</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60896"></span>60896</td>
 <td class="instruction">JR <a href="60867.html#60901">Action_Help_Reply</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60867.html#60901">Action_Help_Reply</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Help_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="60898"></span>
+<div class="comments">
+<div class="paragraph">
+There's no more help available...
+</div>
+<div class="paragraph">
+Print "Work it out for yourself.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Action_Help_GiveUp</td>
 <td class="address-2"><span id="60898"></span>60898</td>
 <td class="instruction">LD HL,56373</td>
-<td class="comment-1" rowspan="1">The player is not hurt, so say "Work it out for yourself.".</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56373.html">Messaging_WorkItOutForYourself</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">Action_Help_Reply</td>
 <td class="address-2"><span id="60901"></span>60901</td>
 <td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
-<td class="comment-1" rowspan="1">Return through the shared reply at <a href="60774.html">PrintResponse</a>.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/heroesofkarn/dec/asm/63253.html">Heroes Of Karn</a></li>
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/61596.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/dec/asm/36493.html">Message From Andromeda</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -219,7 +300,7 @@ Next: <a href="60904.html">60904</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/EDC3.html">Switch to hexadecimal</a>.</div>
 </footer>

@@ -119,19 +119,30 @@ Give the chest or the crystals to the blacksmith.
 <tr>
 <td class="asm-label">Action_Give</td>
 <td class="address-2"><span id="61974"></span>61974</td>
-<td class="instruction">CALL <a href="49965.html">Parser_ValidateInputTokens</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="instruction">CALL <a href="49965.html">Parser_ValidateTwoDirectObjects</a></td>
+<td class="comment-1" rowspan="1">Call <a href="49965.html">Parser_ValidateTwoDirectObjects</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61977"></span>61977</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61978"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to give ... to the old man / blacksmith?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61978"></span>61978</td>
 <td class="instruction">LD HL,59459</td>
-<td class="comment-1" rowspan="3">Jump to <a href="61974.html#62058">Action_Give_YouCant</a> unless the player named the old man.</td>
+<td class="comment-1" rowspan="2">Call <a href="49775.html">Parser_AdvanceToSeparator</a> with <a href="59344.html#59459">59459</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,30 +152,31 @@ Give the chest or the crystals to the blacksmith.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61984"></span>61984</td>
-<td class="instruction">JR NZ,<a href="61974.html#62058">Action_Give_YouCant</a></td>
+<td class="instruction">JR NZ,<a href="61974.html#62058">Give_YouCant</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61974.html#62058">Give_YouCant</a> if the token isn't for the old man.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61986"></span>61986</td>
 <td class="instruction">LD A,37</td>
-<td class="comment-1" rowspan="3">Jump to <a href="61974.html#61999">Action_Give_Next</a> when object 37 (the blacksmith) is here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="61974.html#61999">Give_CheckOpenChest</a> if <a href="49743.html">ValidateItemPresent</a> reports that "The blacksmith. He says:- 'I have been instructed to make a mighty sword for you" is in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61988"></span>61988</td>
-<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="49743.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61991"></span>61991</td>
-<td class="instruction">JR Z,<a href="61974.html#61999">Action_Give_Next</a></td>
+<td class="instruction">JR Z,<a href="61974.html#61999">Give_CheckOpenChest</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="61993"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "You can't.He's dead.".
+Print "You can't.He's dead.".
 </div>
 </div>
 </td>
@@ -173,34 +185,35 @@ Reply with "You can't.He's dead.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="61993"></span>61993</td>
 <td class="instruction">LD HL,56632</td>
-<td class="comment-1" rowspan="2">Print "You can't.He's dead." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56632.html">Messaging_YouCantHesDead</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61996"></span>61996</td>
 <td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Give_Next</td>
+<td class="asm-label">Give_CheckOpenChest</td>
 <td class="address-2"><span id="61999"></span>61999</td>
 <td class="instruction">LD A,13</td>
-<td class="comment-1" rowspan="3">Jump to <a href="61974.html#62014">Action_Give_CheckCrystals</a> if object 13 (the open chest) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="61974.html#62014">Give_CheckCrystals</a> if <a href="49743.html">ValidateItemPresent</a> reports that "An open chest containing the Crystals of Vulcan" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62001"></span>62001</td>
-<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="49743.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62004"></span>62004</td>
-<td class="instruction">JR NZ,<a href="61974.html#62014">Action_Give_CheckCrystals</a></td>
+<td class="instruction">JR NZ,<a href="61974.html#62014">Give_CheckCrystals</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62006"></span>62006</td>
 <td class="instruction">LD BC,3342</td>
-<td class="comment-1" rowspan="2">Replace object 13 (the open chest) with object 14 (the empty chest).</td>
+<td class="comment-1" rowspan="2">Call <a href="50319.html">TransformItem</a> to transform "An open chest containing the Crystals of Vulcan" into "An empty chest".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -210,14 +223,14 @@ Reply with "You can't.He's dead.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62012"></span>62012</td>
-<td class="instruction">JR <a href="61974.html#62025">Action_Give_HandOver</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="61974.html#62025">Action_Give_HandOver</a> to hand the crystals over.</td>
+<td class="instruction">JR <a href="61974.html#62025">Give_HandOver</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61974.html#62025">Give_HandOver</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Give_CheckCrystals</td>
+<td class="asm-label">Give_CheckCrystals</td>
 <td class="address-2"><span id="62014"></span>62014</td>
 <td class="instruction">LD A,15</td>
-<td class="comment-1" rowspan="3">Jump to <a href="61974.html#62025">Action_Give_HandOver</a> if the player is not carrying object 15 (the Crystals of Vulcan).</td>
+<td class="comment-1" rowspan="2">Call <a href="49874.html">IsObjectCarried</a> with item 15: "The Crystals of Vulcan".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -227,13 +240,14 @@ Reply with "You can't.He's dead.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62019"></span>62019</td>
-<td class="instruction">JR NZ,<a href="61974.html#62025">Action_Give_HandOver</a></td>
+<td class="instruction">JR NZ,<a href="61974.html#62025">Give_HandOver</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61974.html#62025">Give_HandOver</a> if "The Crystals of Vulcan" isn't held.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62021"></span>62021</td>
 <td class="instruction">LD HL,47720</td>
-<td class="comment-1" rowspan="2">Count one fewer thing carried.</td>
+<td class="comment-1" rowspan="2">Decrease *<a href="47720.html">Count_InventoryItems</a> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -241,10 +255,10 @@ Reply with "You can't.He's dead.".
 <td class="instruction">DEC (HL)</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Give_HandOver</td>
+<td class="asm-label">Give_HandOver</td>
 <td class="address-2"><span id="62025"></span>62025</td>
 <td class="instruction">LD A,15</td>
-<td class="comment-1" rowspan="2">Destroy object 15 (the Crystals of Vulcan).</td>
+<td class="comment-1" rowspan="2">Call <a href="49880.html">Handler_DestroyItem</a> with item 15: "The Crystals of Vulcan".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -255,7 +269,7 @@ Reply with "You can't.He's dead.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="62030"></span>62030</td>
 <td class="instruction">LD BC,9510</td>
-<td class="comment-1" rowspan="2">Replace object 37 (the blacksmith) with object 38 (the blacksmith).</td>
+<td class="comment-1" rowspan="2">Call <a href="50319.html">TransformItem</a> to transform "The blacksmith. He says:- 'I have been instructed to make a mighty sword for you" into "The blacksmith".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -266,7 +280,7 @@ Reply with "You can't.He's dead.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="62036"></span>62036</td>
 <td class="instruction">LD A,136</td>
-<td class="comment-1" rowspan="2">Destroy object 136 (the old man's quest).</td>
+<td class="comment-1" rowspan="2">Call <a href="49880.html">Handler_DestroyItem</a> with 136.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -277,7 +291,7 @@ Reply with "You can't.He's dead.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="62041"></span>62041</td>
 <td class="instruction">LD A,10</td>
-<td class="comment-1" rowspan="2">Move object 10 (the sword) into the current room.</td>
+<td class="comment-1" rowspan="2">Call <a href="49887.html">Handler_UpdateItemForTheCurrentRoom</a> with item 10: "A sword".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -285,22 +299,33 @@ Reply with "You can't.He's dead.".
 <td class="instruction">CALL <a href="49887.html">Handler_UpdateItemForTheCurrentRoom</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62046"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You give him the crystals.He puts them in the flames.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62046"></span>62046</td>
 <td class="instruction">LD HL,56653</td>
-<td class="comment-1" rowspan="2">Print "You give him the crystals.He puts them in the flames.".</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56653.html">Messaging_YouGiveHimTheCrystals</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62049"></span>62049</td>
-<td class="instruction">CALL <a href="48686.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="48686.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="48686.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="62052"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "After some time,he shapes a piece of metal fromthe fire,on the anvil.He produces a fine sword.".
+Print "After some time,he shapes a piece of metal fromthe fire,on the anvil.He produces a fine sword.".
 </div>
 </div>
 </td>
@@ -309,18 +334,43 @@ Reply with "After some time,he shapes a piece of metal fromthe fire,on the anv
 <td class="asm-label"></td>
 <td class="address-1"><span id="62052"></span>62052</td>
 <td class="instruction">LD HL,56708</td>
-<td class="comment-1" rowspan="2">Print "After some time,he shapes a piece of metal fromthe fire,on the anvil.He produces a fine sword." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56708.html">Messaging_AfterSomeTime</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62055"></span>62055</td>
 <td class="instruction">JP <a href="60778.html">PauseAndPrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60778.html">PauseAndPrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Give_YouCant</td>
+<td class="routine-comment" colspan="5">
+<span id="62058"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Give_YouCant</td>
 <td class="address-2"><span id="62058"></span>62058</td>
 <td class="instruction">JP <a href="60782.html">Response_YouCant_GameLoop</a></td>
-<td class="comment-1" rowspan="1">Tell the player the command is impossible.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="60782.html">Response_YouCant_GameLoop</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/heroesofkarn/dec/asm/63858.html">Heroes Of Karn</a></li>
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/63403.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/dec/asm/37915.html">Message From Andromeda</a></li>
+<li><a href="/adventure-games/warlord/dec/asm/63923.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -337,7 +387,7 @@ Next: <a href="62061.html">62061</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/F216.html">Switch to hexadecimal</a>.</div>
 </footer>

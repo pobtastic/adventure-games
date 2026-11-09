@@ -131,8 +131,8 @@ Expand one compressed room picture into the display.
 <tr>
 <td class="asm-label">PrintRoomGraphic</td>
 <td class="address-2"><span id="ad06"></span>AD06</td>
-<td class="instruction">CALL <a href="AC1A.html">SwitchToNormalScreenOutput</a></td>
-<td class="comment-1" rowspan="1">Call <a href="AC1A.html">SwitchToNormalScreenOutput</a> to switch to the normal screen output.</td>
+<td class="instruction">CALL <a href="AC1A.html">SwitchNormalScreenOutput</a></td>
+<td class="comment-1" rowspan="1">Call <a href="AC1A.html">SwitchNormalScreenOutput</a> to switch to the normal screen output.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -236,7 +236,7 @@ Reset graphic display area.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad22"></span>AD22</td>
 <td class="instruction">LD HL,$AF3D</td>
-<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="AF3D.html">CharacterCellBuffer</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="AF3D.html">RoomImageRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -259,17 +259,17 @@ Reset graphic display area.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad2c"></span>AD2C</td>
-<td class="instruction">JR <a href="AD06.html#ad2f">PrintRoomGraphic_1</a></td>
+<td class="instruction">JR <a href="AD06.html#ad2f">Print_RoomGraphic_ShiftBit</a></td>
 <td class="comment-1" rowspan="1">Expand the first row of this cell.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintRoomGraphic_0</td>
+<td class="asm-label">Print_RoomGraphic_NextByte</td>
 <td class="address-2"><span id="ad2e"></span>AD2E</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Step to the next row of the cell.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintRoomGraphic_1</td>
+<td class="asm-label">Print_RoomGraphic_ShiftBit</td>
 <td class="address-2"><span id="ad2f"></span>AD2F</td>
 <td class="instruction">SRL C</td>
 <td class="comment-1" rowspan="1">Test the next mask bit.</td>
@@ -277,7 +277,7 @@ Reset graphic display area.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad31"></span>AD31</td>
-<td class="instruction">JR NC,<a href="AD06.html#ad3a">PrintRoomGraphic_2</a></td>
+<td class="instruction">JR NC,<a href="AD06.html#ad3a">Print_RoomGraphic_BlankByte</a></td>
 <td class="comment-1" rowspan="1">Skip the stored row when this mask bit is clear.</td>
 </tr>
 <tr>
@@ -295,17 +295,17 @@ Reset graphic display area.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad38"></span>AD38</td>
-<td class="instruction">JR <a href="AD06.html#ad3b">PrintRoomGraphic_3</a></td>
+<td class="instruction">JR <a href="AD06.html#ad3b">Print_RoomGraphic_StoreByte</a></td>
 <td class="comment-1" rowspan="1">Store the pixel row for this mask bit.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintRoomGraphic_2</td>
+<td class="asm-label">Print_RoomGraphic_BlankByte</td>
 <td class="address-2"><span id="ad3a"></span>AD3A</td>
 <td class="instruction">XOR A</td>
 <td class="comment-1" rowspan="1">Use a blank pixel row when this mask bit is clear.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintRoomGraphic_3</td>
+<td class="asm-label">Print_RoomGraphic_StoreByte</td>
 <td class="address-2"><span id="ad3b"></span>AD3B</td>
 <td class="instruction">LD (HL),A</td>
 <td class="comment-1" rowspan="1">Store the row in this cell.</td>
@@ -313,14 +313,14 @@ Reset graphic display area.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad3c"></span>AD3C</td>
-<td class="instruction">DJNZ <a href="AD06.html#ad2e">PrintRoomGraphic_0</a></td>
+<td class="instruction">DJNZ <a href="AD06.html#ad2e">Print_RoomGraphic_NextByte</a></td>
 <td class="comment-1" rowspan="1">Repeat for all eight pixel rows of this character cell.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad3e"></span>AD3E</td>
 <td class="instruction">LD DE,$AF3D</td>
-<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="AF3D.html">CharacterCellBuffer</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="AF3D.html">RoomImageRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -387,6 +387,7 @@ Reset graphic display area.
 View the equivalent code in; <ul class="">
 <li><a href="/adventure-games/forestatworldsend/asm/BE5E.html">Forest At Worlds End</a></li>
 <li><a href="/adventure-games/jewelsofbabylon/asm/BAE1.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/asm/6519.html">Message From Andromeda</a></li>
 </ul>
 </div>
 </div>
@@ -407,7 +408,7 @@ Next: <a href="AD54.html">AD54</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/heroesofkarn/">Source code</a>.</div>
 <div><a href="../dec/asm/44294.html">Switch to decimal</a>.</div>
 </footer>

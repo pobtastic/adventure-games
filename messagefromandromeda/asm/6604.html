@@ -114,7 +114,7 @@ Next: <a href="6669.html">6669</a>
 Used by the routines at <a href="6745.html">Handler_UnknownWord</a>, <a href="8D2A.html">GameLoop</a> and <a href="9670.html">ActionRead</a>.
 </div>
 <div class="paragraph">
-Handles keyboard input, tokenises commands and validates the vocabulary.
+Read a line of text, then turn it into vocabulary tokens.
 </div>
 </div>
 </td>
@@ -124,7 +124,7 @@ Handles keyboard input, tokenises commands and validates the vocabulary.
 <span id="6604"></span>
 <div class="comments">
 <div class="paragraph">
-Prepare a blank command line.
+Reset the cursor to the default text position.
 </div>
 </div>
 </td>
@@ -133,13 +133,23 @@ Prepare a blank command line.
 <td class="asm-label">Handler_UserInput</td>
 <td class="address-2"><span id="6604"></span>6604</td>
 <td class="instruction">CALL <a href="64B7.html">SetDefaultScreenPosition</a></td>
-<td class="comment-1" rowspan="1">Call <a href="64B7.html">SetDefaultScreenPosition</a> to park the cursor at the default position.</td>
+<td class="comment-1" rowspan="1">Call <a href="64B7.html">SetDefaultScreenPosition</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6607"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the command buffer.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6607"></span>6607</td>
 <td class="instruction">LD HL,$625F</td>
-<td class="comment-1" rowspan="3">Blank the command buffer with 32 spaces.</td>
+<td class="comment-1" rowspan="3">Blank <a href="625F.html">CommandBuffer</a> with 32 spaces.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -172,7 +182,7 @@ Prepare a blank command line.
 <span id="6612"></span>
 <div class="comments">
 <div class="paragraph">
-Ask for a command.
+Print the "&gt;" prompt.
 </div>
 </div>
 </td>
@@ -181,20 +191,30 @@ Ask for a command.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6612"></span>6612</td>
 <td class="instruction">CALL <a href="6A1C.html">PrintInputPrompt</a></td>
-<td class="comment-1" rowspan="1">Call <a href="6A1C.html">PrintInputPrompt</a> to print the prompt.</td>
+<td class="comment-1" rowspan="1">Call <a href="6A1C.html">PrintInputPrompt</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6615"></span>
+<div class="comments">
+<div class="paragraph">
+Collect keypresses into the command buffer.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6615"></span>6615</td>
 <td class="instruction">LD HL,$625F</td>
-<td class="comment-1" rowspan="1">The next character is stored at the start of the command.</td>
+<td class="comment-1" rowspan="1">Start at the beginning of <a href="625F.html">CommandBuffer</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="6618"></span>
 <div class="comments">
 <div class="paragraph">
-Read the next key.
+Wait for the next key.
 </div>
 </div>
 </td>
@@ -203,13 +223,23 @@ Read the next key.
 <td class="asm-label">Handler_UserInput_Loop2</td>
 <td class="address-2"><span id="6618"></span>6618</td>
 <td class="instruction">CALL <a href="6495.html">GetUserInput</a></td>
-<td class="comment-1" rowspan="1">Call <a href="6495.html">GetUserInput</a> to wait for a keypress.</td>
+<td class="comment-1" rowspan="1">Call <a href="6495.html">GetUserInput</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="661b"></span>
+<div class="comments">
+<div class="paragraph">
+DELETE rubs out a character. ENTER finishes the line. Any other control key is ignored.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="661b"></span>661B</td>
 <td class="instruction">CP $0C</td>
-<td class="comment-1" rowspan="2">Jump to <a href="6604.html#663b">Handler_UserInput_Step1</a> when DELETE (0C) was pressed.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6604.html#663b">Handler_UserInput_Step1</a> if DELETE was pressed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -220,7 +250,7 @@ Read the next key.
 <td class="asm-label"></td>
 <td class="address-1"><span id="661f"></span>661F</td>
 <td class="instruction">CP $0D</td>
-<td class="comment-1" rowspan="2">Jump to <a href="6604.html#6652">Handler_UserInput_Step2</a> when ENTER (0D) was pressed.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6604.html#6652">Handler_UserInput_Step2</a> if ENTER was pressed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -231,7 +261,7 @@ Read the next key.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6623"></span>6623</td>
 <td class="instruction">CP $20</td>
-<td class="comment-1" rowspan="2">Jump back to <a href="6604.html#6618">Handler_UserInput_Loop2</a> when the key is a control character.</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="6604.html#6618">Handler_UserInput_Loop2</a> when the key is below SPACE.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -239,10 +269,20 @@ Read the next key.
 <td class="instruction">JR C,<a href="6604.html#6618">Handler_UserInput_Loop2</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6627"></span>
+<div class="comments">
+<div class="paragraph">
+Is the command buffer full?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6627"></span>6627</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="6">Jump back to <a href="6604.html#6618">Handler_UserInput_Loop2</a> when the command buffer is full.</td>
+<td class="comment-1" rowspan="6">Jump back to <a href="6604.html#6618">Handler_UserInput_Loop2</a> once the pointer has reached the end of <a href="625F.html">CommandBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -270,10 +310,20 @@ Read the next key.
 <td class="instruction">JR Z,<a href="6604.html#6618">Handler_UserInput_Loop2</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6631"></span>
+<div class="comments">
+<div class="paragraph">
+The key is valid, so store it and print it.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6631"></span>6631</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="5">Store the character in the command buffer and print it.</td>
+<td class="comment-1" rowspan="5">Write the key into the buffer and echo it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -309,7 +359,7 @@ The player pressed DELETE.
 <td class="asm-label">Handler_UserInput_Step1</td>
 <td class="address-2"><span id="663b"></span>663B</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="6">Jump back to <a href="6604.html#6618">Handler_UserInput_Loop2</a> when there is nothing to delete.</td>
+<td class="comment-1" rowspan="6">Jump back to <a href="6604.html#6618">Handler_UserInput_Loop2</a> when the buffer is still empty.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -337,10 +387,23 @@ The player pressed DELETE.
 <td class="instruction">JR Z,<a href="6604.html#6618">Handler_UserInput_Loop2</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6645"></span>
+<div class="comments">
+<div class="paragraph">
+Rub the previous character off the screen.
+</div>
+<div class="paragraph">
+Print " ".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6645"></span>6645</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="7">Print   and rub out the last character.</td>
+<td class="comment-1" rowspan="7">Print " " and blank the previous character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -377,7 +440,7 @@ The player pressed DELETE.
 <span id="6652"></span>
 <div class="comments">
 <div class="paragraph">
-The player pressed ENTER.
+The player pressed ENTER, so close the command and clear the tokens.
 </div>
 </div>
 </td>
@@ -386,7 +449,7 @@ The player pressed ENTER.
 <td class="asm-label">Handler_UserInput_Step2</td>
 <td class="address-2"><span id="6652"></span>6652</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="3">Store the terminator and echo the newline.</td>
+<td class="comment-1" rowspan="3">Store ENTER as the terminator and echo the newline.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -399,10 +462,20 @@ The player pressed ENTER.
 <td class="instruction">CALL <a href="64F2.html">PrintCharacter</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6659"></span>
+<div class="comments">
+<div class="paragraph">
+Initialise the word token buffer. Up to 0A vocabulary tokens are stored at <a href="6291.html">UserInput_Token_1</a>; FF marks an empty slot.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6659"></span>6659</td>
 <td class="instruction">LD HL,$6291</td>
-<td class="comment-1" rowspan="3">Point at the word tokens and prepare the empty marker (FF).</td>
+<td class="comment-1" rowspan="3">Point at <a href="6291.html">UserInput_Token_1</a> and prepare the empty marker (FF).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -418,7 +491,7 @@ The player pressed ENTER.
 <td class="asm-label">Handler_UserInput_Loop3</td>
 <td class="address-2"><span id="6660"></span>6660</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="3">Mark every word token as empty.</td>
+<td class="comment-1" rowspan="3">Write FF into each of the 0A token slots.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -434,7 +507,7 @@ The player pressed ENTER.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6664"></span>6664</td>
 <td class="instruction">LD HL,$625F</td>
-<td class="comment-1" rowspan="2">Up to 0A words of the command are accepted.</td>
+<td class="comment-1" rowspan="2">Start at the command and allow 0A words, then fall into <a href="6669.html">Parser_MatchInputWord</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -449,9 +522,11 @@ Continue on to <a href="6669.html">Parser_MatchInputWord</a>.
 </div>
 <div class="paragraph">
 View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/aftershock/asm/A4B0.html">After Shock</a></li>
 <li><a href="/adventure-games/forestatworldsend/asm/BF73.html">Forest At Worlds End</a></li>
 <li><a href="/adventure-games/heroesofkarn/asm/B200.html">Heroes Of Karn</a></li>
 <li><a href="/adventure-games/jewelsofbabylon/asm/C00A.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/warlord/asm/AD32.html">Warlord</a></li>
 </ul>
 </div>
 </div>
@@ -472,7 +547,7 @@ Next: <a href="6669.html">6669</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
 <div><a href="../dec/asm/26116.html">Switch to decimal</a>.</div>
 </footer>

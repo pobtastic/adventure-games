@@ -129,18 +129,18 @@ Save the game position to tape.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27044"></span>27044</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="2">The save file has no extra locations to copy.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="27041.html#27072">SaveGame_PrintSaving</a> if there are no saved locations to pack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27045"></span>27045</td>
-<td class="instruction">JR Z,<a href="27041.html#27072">SaveGame_Step2</a></td>
+<td class="instruction">JR Z,<a href="27041.html#27072">SaveGame_PrintSaving</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27047"></span>27047</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="4">Prepare to copy each saved location into the tape workspace.</td>
+<td class="comment-1" rowspan="4">Copy the saved-location count into <span class="register">B</span> and point at the location table and the tape workspace.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -155,13 +155,23 @@ Save the game position to tape.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27055"></span>27055</td>
-<td class="instruction">JR <a href="27041.html#27062">SaveGame_Step1</a></td>
+<td class="instruction">JR <a href="27041.html#27062">SaveGame_StoreFlag</a></td>
 </tr>
 <tr>
-<td class="asm-label">SaveGame_Loop1</td>
+<td class="routine-comment" colspan="5">
+<span id="27057"></span>
+<div class="comments">
+<div class="paragraph">
+Move on to the next saved-location address.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame_Copy</td>
 <td class="address-2"><span id="27057"></span>27057</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="3">Step to the next saved-location pointer.</td>
+<td class="comment-1" rowspan="3">Move <span class="register">IX</span> on to the next saved-location address and <span class="register">DE</span> on to the next packed location byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -174,10 +184,10 @@ Save the game position to tape.
 <td class="instruction">INC DE</td>
 </tr>
 <tr>
-<td class="asm-label">SaveGame_Step1</td>
+<td class="asm-label">SaveGame_StoreFlag</td>
 <td class="address-2"><span id="27062"></span>27062</td>
 <td class="instruction">LD L,(IX+0)</td>
-<td class="comment-1" rowspan="2">Read the address of this saved location.</td>
+<td class="comment-1" rowspan="2">Fetch the location address from *<span class="register">IX</span> into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -188,25 +198,34 @@ Save the game position to tape.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27068"></span>27068</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Read the byte that location holds.</td>
+<td class="comment-1" rowspan="2">Copy the location byte into the packed save buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27069"></span>27069</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-1" rowspan="1">Store it in the tape workspace.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27070"></span>27070</td>
-<td class="instruction">DJNZ <a href="27041.html#27057">SaveGame_Loop1</a></td>
-<td class="comment-1" rowspan="1">Repeat for the remaining saved locations.</td>
+<td class="instruction">DJNZ <a href="27041.html#27057">SaveGame_Copy</a></td>
+<td class="comment-1" rowspan="1">Decrease the pack counter and loop back to <a href="27041.html#27057">SaveGame_Copy</a> until every location byte is packed.</td>
 </tr>
 <tr>
-<td class="asm-label">SaveGame_Step2</td>
+<td class="routine-comment" colspan="5">
+<span id="27072"></span>
+<div class="comments">
+<div class="paragraph">
+Print "SAVING.Start tape,press any key.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame_PrintSaving</td>
 <td class="address-2"><span id="27072"></span>27072</td>
 <td class="instruction">LD HL,25555</td>
-<td class="comment-1" rowspan="2">Print SAVING.Start tape,press any key..</td>
+<td class="comment-1" rowspan="2">Print "SAVING.Start tape,press any key.".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -223,18 +242,19 @@ Save the game position to tape.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27081"></span>27081</td>
 <td class="instruction">LD IX,25003</td>
-<td class="comment-1" rowspan="1">The save starts at the object locations.</td>
+<td class="comment-1" rowspan="1">Load the starting address into <span class="register">IX</span> at the object locations.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27085"></span>27085</td>
 <td class="instruction">LD DE,180</td>
-<td class="comment-1" rowspan="2">Save 0180 bytes from the object locations as a data block.</td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 0180 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27088"></span>27088</td>
 <td class="instruction">LD A,255</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 255 which indicates this is a data block.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -243,10 +263,20 @@ Save the game position to tape.
 <td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/1218.html">SA_BYTES</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="27093"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Stop tape.Saving complete.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27093"></span>27093</td>
 <td class="instruction">LD HL,25589</td>
-<td class="comment-1" rowspan="2">Print Stop tape.Saving complete..</td>
+<td class="comment-1" rowspan="2">Print "Stop tape.Saving complete.".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -289,7 +319,7 @@ Next: <a href="27100.html">27100</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
 <div><a href="../../asm/69A1.html">Switch to hexadecimal</a>.</div>
 </footer>

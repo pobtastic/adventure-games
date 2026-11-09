@@ -120,18 +120,29 @@ Swearing has no effect.
 <td class="asm-label">Action_Swearing</td>
 <td class="address-2"><span id="f869"></span>F869</td>
 <td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="C309.html">Parser_ValidateDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f86c"></span>F86C</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f86d"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player swearing at ... the princess?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f86d"></span>F86D</td>
 <td class="instruction">LD HL,$E8E3</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F869.html#f88d">Action_Swearing_Next</a> unless the player named the princess.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e8e3">E8E3</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,18 +152,19 @@ Swearing has no effect.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f873"></span>F873</td>
-<td class="instruction">JR NZ,<a href="F869.html#f88d">Action_Swearing_Next</a></td>
+<td class="instruction">JR NZ,<a href="F869.html#f88d">Validate_Swearing_ClosedDoor</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F869.html#f88d">Validate_Swearing_ClosedDoor</a> if the token isn't for the princess.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f875"></span>F875</td>
 <td class="instruction">LD A,$2C</td>
-<td class="comment-1" rowspan="3">Jump to <a href="EDAA.html">Response_DontBeDisgusting</a> if object 2C (Princess Mara) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EDAA.html">Response_DontBeDisgusting</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "The Princess,Mara" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f877"></span>F877</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -163,17 +175,19 @@ Swearing has no effect.
 <td class="asm-label"></td>
 <td class="address-1"><span id="f87d"></span>F87D</td>
 <td class="instruction">LD HL,$BA3F</td>
-<td class="comment-1" rowspan="4">Take Princess Mara out of play.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BA3F.html">Flag_PrincessFollowing</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f880"></span>F880</td>
 <td class="instruction">RES 0,(HL)</td>
+<td class="comment-1" rowspan="1">Reset bit 0 of *<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f882"></span>F882</td>
 <td class="instruction">LD A,$2C</td>
+<td class="comment-1" rowspan="2">Call <a href="C2D8.html">Handler_DestroyItem</a> with item 2C: "The Princess,Mara".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -185,7 +199,7 @@ Swearing has no effect.
 <span id="f887"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "She evades your graspand flees,screaming.".
+Print "She evades your graspand flees,screaming.".
 </div>
 </div>
 </td>
@@ -194,18 +208,29 @@ Reply with "She evades your graspand flees,screaming.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f887"></span>F887</td>
 <td class="instruction">LD HL,$E31F</td>
-<td class="comment-1" rowspan="2">Print "She evades your graspand flees,screaming." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E31F.html">Messaging_SheEvadesYourGrasp</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f88a"></span>F88A</td>
 <td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Swearing_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="f88d"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player swearing at ... a closed door?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Validate_Swearing_ClosedDoor</td>
 <td class="address-2"><span id="f88d"></span>F88D</td>
 <td class="instruction">LD HL,$E8E5</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F869.html#f8a8">Action_Swearing_Refuse</a> unless the player named a closed door.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e8e5">E8E5</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -215,18 +240,19 @@ Reply with "She evades your graspand flees,screaming.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f893"></span>F893</td>
-<td class="instruction">JR NZ,<a href="F869.html#f8a8">Action_Swearing_Refuse</a></td>
+<td class="instruction">JR NZ,<a href="F869.html#f8a8">Swearing_YouCant</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F869.html#f8a8">Swearing_YouCant</a> if the token isn't for a closed door.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f895"></span>F895</td>
 <td class="instruction">LD A,$1C</td>
-<td class="comment-1" rowspan="3">Jump to <a href="EDAA.html">Response_DontBeDisgusting</a> when object 1C (the dead wood nymph) is here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EDAA.html">Response_DontBeDisgusting</a> if <a href="C24F.html">ValidateItemPresent</a> reports that "The body of a wood nymph" is in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f897"></span>F897</td>
-<td class="instruction">CALL <a href="C24F.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="C24F.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -237,7 +263,7 @@ Reply with "She evades your graspand flees,screaming.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f89d"></span>F89D</td>
 <td class="instruction">LD A,$8A</td>
-<td class="comment-1" rowspan="2">Destroy object 8A (the wood nymph).</td>
+<td class="comment-1" rowspan="2">Call <a href="C2D8.html">Handler_DestroyItem</a> with 8A.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -249,7 +275,7 @@ Reply with "She evades your graspand flees,screaming.".
 <span id="f8a2"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "She evades your graspand flees,screaming.".
+Print "She evades your graspand flees,screaming.".
 </div>
 </div>
 </td>
@@ -258,18 +284,41 @@ Reply with "She evades your graspand flees,screaming.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f8a2"></span>F8A2</td>
 <td class="instruction">LD HL,$E31F</td>
-<td class="comment-1" rowspan="2">Print "She evades your graspand flees,screaming." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E31F.html">Messaging_SheEvadesYourGrasp</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f8a5"></span>F8A5</td>
 <td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Swearing_Refuse</td>
+<td class="routine-comment" colspan="5">
+<span id="f8a8"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Swearing_YouCant</td>
 <td class="address-2"><span id="f8a8"></span>F8A8</td>
 <td class="instruction">JP <a href="EDAA.html">Response_DontBeDisgusting</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="EDAA.html">Response_DontBeDisgusting</a> to object.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="EDAA.html">Response_DontBeDisgusting</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/asm/FB83.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/warlord/asm/FBB9.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -286,7 +335,7 @@ Next: <a href="F8AB.html">F8AB</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/63593.html">Switch to decimal</a>.</div>
 </footer>

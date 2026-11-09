@@ -129,6 +129,16 @@ Prints a compressed text string using a dictionary lookup.
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a1f4"></span>
+<div class="comments">
+<div class="paragraph">
+Resolve the messaging string ID into a pointer at <a href="C8E9.html">Data_Strings</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PrintCompressedString</td>
 <td class="address-2"><span id="a1f4"></span>A1F4</td>
 <td class="instruction">PUSH IX</td>
@@ -201,34 +211,54 @@ Prints a compressed text string using a dictionary lookup.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a20c"></span>A20C</td>
-<td class="instruction">JR <a href="A1F4.html#a223">PrintCompressedString_4</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A1F4.html#a223">PrintCompressedString_4</a>.</td>
+<td class="instruction">JR <a href="A1F4.html#a223">PrintCompressedString_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A1F4.html#a223">PrintCompressedString_Loop</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCompressedString_0</td>
+<td class="routine-comment" colspan="5">
+<span id="a20e"></span>
+<div class="comments">
+<div class="paragraph">
+Codes below 60 are literal characters. Codes from 60 upwards index the dictionary at <a href="C8E9.html#c8eb">C8EB</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCompressedString_Process</td>
 <td class="address-2"><span id="a20e"></span>A20E</td>
 <td class="instruction">CP $60</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A1F4.html#a217">PrintCompressedString_1</a> if <span class="register">A</span> is less than 60.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="A1F4.html#a217">PrintCompressedString_Literal</a> if <span class="register">A</span> is less than 60.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a210"></span>A210</td>
-<td class="instruction">JR C,<a href="A1F4.html#a217">PrintCompressedString_1</a></td>
+<td class="instruction">JR C,<a href="A1F4.html#a217">PrintCompressedString_Literal</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a212"></span>A212</td>
-<td class="instruction">CALL <a href="A1F4.html#a22f">PrintCompressedString_5</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A1F4.html#a22f">PrintCompressedString_5</a>.</td>
+<td class="instruction">CALL <a href="A1F4.html#a22f">PrintCompressedString_Dictionary</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A1F4.html#a22f">PrintCompressedString_Dictionary</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a215"></span>A215</td>
-<td class="instruction">JR <a href="A1F4.html#a222">PrintCompressedString_3</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A1F4.html#a222">PrintCompressedString_3</a>.</td>
+<td class="instruction">JR <a href="A1F4.html#a222">PrintCompressedString_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A1F4.html#a222">PrintCompressedString_Next</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCompressedString_1</td>
+<td class="routine-comment" colspan="5">
+<span id="a217"></span>
+<div class="comments">
+<div class="paragraph">
+Bias the literal into the printable range. 7E becomes a newline.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCompressedString_Literal</td>
 <td class="address-2"><span id="a217"></span>A217</td>
 <td class="instruction">ADD A,$20</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>+=20.</td>
@@ -237,12 +267,12 @@ Prints a compressed text string using a dictionary lookup.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a219"></span>A219</td>
 <td class="instruction">CP $7E</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A1F4.html#a21f">PrintCompressedString_2</a> if <span class="register">A</span> is not equal to 7E.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="A1F4.html#a21f">PrintCompressedString_PrintChar</a> if <span class="register">A</span> is not equal to 7E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a21b"></span>A21B</td>
-<td class="instruction">JR NZ,<a href="A1F4.html#a21f">PrintCompressedString_2</a></td>
+<td class="instruction">JR NZ,<a href="A1F4.html#a21f">PrintCompressedString_PrintChar</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -251,19 +281,29 @@ Prints a compressed text string using a dictionary lookup.
 <td class="comment-1" rowspan="1"><span class="register">A</span>=0D.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCompressedString_2</td>
+<td class="asm-label">PrintCompressedString_PrintChar</td>
 <td class="address-2"><span id="a21f"></span>A21F</td>
 <td class="instruction">CALL <a href="9E26.html">PrintCharacter</a></td>
 <td class="comment-1" rowspan="1">Call <a href="9E26.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCompressedString_3</td>
+<td class="asm-label">PrintCompressedString_Next</td>
 <td class="address-2"><span id="a222"></span>A222</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Move <span class="register">HL</span> on to the next compressed character.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCompressedString_4</td>
+<td class="routine-comment" colspan="5">
+<span id="a223"></span>
+<div class="comments">
+<div class="paragraph">
+Fetch the next compressed byte. 5F ends the string.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCompressedString_Loop</td>
 <td class="address-2"><span id="a223"></span>A223</td>
 <td class="instruction">LD A,(HL)</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
@@ -272,12 +312,12 @@ Prints a compressed text string using a dictionary lookup.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a224"></span>A224</td>
 <td class="instruction">CP $5F</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A1F4.html#a20e">PrintCompressedString_0</a> if <span class="register">A</span> is not equal to 5F.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="A1F4.html#a20e">PrintCompressedString_Process</a> if <span class="register">A</span> is not equal to 5F.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a226"></span>A226</td>
-<td class="instruction">JR NZ,<a href="A1F4.html#a20e">PrintCompressedString_0</a></td>
+<td class="instruction">JR NZ,<a href="A1F4.html#a20e">PrintCompressedString_Process</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -312,7 +352,17 @@ Prints a compressed text string using a dictionary lookup.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCompressedString_5</td>
+<td class="routine-comment" colspan="5">
+<span id="a22f"></span>
+<div class="comments">
+<div class="paragraph">
+Look up a two-byte dictionary entry and print both characters.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCompressedString_Dictionary</td>
 <td class="address-2"><span id="a22f"></span>A22F</td>
 <td class="instruction">PUSH HL</td>
 <td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
@@ -365,22 +415,32 @@ Prints a compressed text string using a dictionary lookup.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a23c"></span>A23C</td>
 <td class="instruction">LD B,$02</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=02.</td>
+<td class="comment-1" rowspan="1">Count two dictionary bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a23e"></span>A23E</td>
-<td class="instruction">JR <a href="A1F4.html#a241">PrintCompressedString_7</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A1F4.html#a241">PrintCompressedString_7</a>.</td>
+<td class="instruction">JR <a href="A1F4.html#a241">PrintCompressedString_DictFetch</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A1F4.html#a241">PrintCompressedString_DictFetch</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCompressedString_6</td>
+<td class="asm-label">PrintCompressedString_DictNext</td>
 <td class="address-2"><span id="a240"></span>A240</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Move <span class="register">HL</span> on to the next dictionary character.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCompressedString_7</td>
+<td class="routine-comment" colspan="5">
+<span id="a241"></span>
+<div class="comments">
+<div class="paragraph">
+Dictionary bytes use the same literal-or-dictionary split as the main string.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">PrintCompressedString_DictFetch</td>
 <td class="address-2"><span id="a241"></span>A241</td>
 <td class="instruction">LD A,(HL)</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
@@ -389,27 +449,27 @@ Prints a compressed text string using a dictionary lookup.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a242"></span>A242</td>
 <td class="instruction">CP $60</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A1F4.html#a24b">PrintCompressedString_8</a> if <span class="register">A</span> is less than 60.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="A1F4.html#a24b">PrintCompressedString_DictLiteral</a> if <span class="register">A</span> is less than 60.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a244"></span>A244</td>
-<td class="instruction">JR C,<a href="A1F4.html#a24b">PrintCompressedString_8</a></td>
+<td class="instruction">JR C,<a href="A1F4.html#a24b">PrintCompressedString_DictLiteral</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a246"></span>A246</td>
-<td class="instruction">CALL <a href="A1F4.html#a22f">PrintCompressedString_5</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A1F4.html#a22f">PrintCompressedString_5</a>.</td>
+<td class="instruction">CALL <a href="A1F4.html#a22f">PrintCompressedString_Dictionary</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A1F4.html#a22f">PrintCompressedString_Dictionary</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a249"></span>A249</td>
-<td class="instruction">JR <a href="A1F4.html#a256">PrintCompressedString_10</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A1F4.html#a256">PrintCompressedString_10</a>.</td>
+<td class="instruction">JR <a href="A1F4.html#a256">PrintCompressedString_DictDone</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A1F4.html#a256">PrintCompressedString_DictDone</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCompressedString_8</td>
+<td class="asm-label">PrintCompressedString_DictLiteral</td>
 <td class="address-2"><span id="a24b"></span>A24B</td>
 <td class="instruction">ADD A,$20</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>+=20.</td>
@@ -418,12 +478,12 @@ Prints a compressed text string using a dictionary lookup.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a24d"></span>A24D</td>
 <td class="instruction">CP $7E</td>
-<td class="comment-1" rowspan="2">Jump to <a href="A1F4.html#a253">PrintCompressedString_9</a> if <span class="register">A</span> is not equal to 7E.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="A1F4.html#a253">PrintCompressedString_DictPrint</a> if <span class="register">A</span> is not equal to 7E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a24f"></span>A24F</td>
-<td class="instruction">JR NZ,<a href="A1F4.html#a253">PrintCompressedString_9</a></td>
+<td class="instruction">JR NZ,<a href="A1F4.html#a253">PrintCompressedString_DictPrint</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -432,16 +492,16 @@ Prints a compressed text string using a dictionary lookup.
 <td class="comment-1" rowspan="1"><span class="register">A</span>=0D.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCompressedString_9</td>
+<td class="asm-label">PrintCompressedString_DictPrint</td>
 <td class="address-2"><span id="a253"></span>A253</td>
 <td class="instruction">CALL <a href="9E26.html">PrintCharacter</a></td>
 <td class="comment-1" rowspan="1">Call <a href="9E26.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCompressedString_10</td>
+<td class="asm-label">PrintCompressedString_DictDone</td>
 <td class="address-2"><span id="a256"></span>A256</td>
-<td class="instruction">DJNZ <a href="A1F4.html#a240">PrintCompressedString_6</a></td>
-<td class="comment-1" rowspan="1">Decrease the dictionary-character counter and loop back to <a href="A1F4.html#a240">PrintCompressedString_6</a> until both bytes are done.</td>
+<td class="instruction">DJNZ <a href="A1F4.html#a240">PrintCompressedString_DictNext</a></td>
+<td class="comment-1" rowspan="1">Decrease the dictionary-character counter and loop back to <a href="A1F4.html#a240">PrintCompressedString_DictNext</a> until both bytes are done.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -480,7 +540,7 @@ Next: <a href="A25C.html">A25C</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/41460.html">Switch to decimal</a>.</div>
 </footer>

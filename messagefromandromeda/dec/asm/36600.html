@@ -111,7 +111,7 @@ Next: <a href="36627.html">36627</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Move in the given direction, or report that there is no exit.
+Try to leave downwards.
 </div>
 </div>
 </td>
@@ -120,7 +120,7 @@ Move in the given direction, or report that there is no exit.
 <td class="asm-label">ActionDown</td>
 <td class="address-2"><span id="36600"></span>36600</td>
 <td class="instruction">LD C,5</td>
-<td class="comment-1" rowspan="1">Select the down exit.</td>
+<td class="comment-1" rowspan="1">Set <span class="register">C</span> to "DOWN" (5).</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -129,6 +129,9 @@ Move in the given direction, or report that there is no exit.
 <div class="paragraph">
 This entry point is used by the routines at <a href="36580.html">Action_North</a>, <a href="36584.html">Action_South</a>, <a href="36588.html">Action_East</a>, <a href="36592.html">Action_West</a> and <a href="36596.html">Action_Up</a>.
 </div>
+<div class="paragraph">
+The movement commands share this common exit handler.
+</div>
 </div>
 </td>
 </tr>
@@ -136,7 +139,7 @@ This entry point is used by the routines at <a href="36580.html">Action_North</a
 <td class="asm-label">ActionDown_Step1</td>
 <td class="address-2"><span id="36602"></span>36602</td>
 <td class="instruction">CALL <a href="26994.html">Parser_ValidateNoDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the command names an object: the player is told to rephrase it.</td>
+<td class="comment-1" rowspan="2">Call <a href="26994.html">Parser_ValidateNoDirectObject</a>; return if the command names an object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -168,7 +171,7 @@ This entry point is used by the routines at <a href="36580.html">Action_North</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="36613"></span>36613</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="2">That direction is closed when the exit byte is zero.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="36600.html#36620">ActionDown_Step2</a> if that direction is closed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -179,7 +182,7 @@ This entry point is used by the routines at <a href="36580.html">Action_North</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="36616"></span>36616</td>
 <td class="instruction">CALL <a href="36376.html">MovePlayerToRoom</a></td>
-<td class="comment-1" rowspan="1">Call <a href="36376.html">MovePlayerToRoom</a> to move the player.</td>
+<td class="comment-1" rowspan="1">Call <a href="36376.html">MovePlayerToRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -188,15 +191,26 @@ This entry point is used by the routines at <a href="36580.html">Action_North</a
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="36620"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You can't go in that direction.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ActionDown_Step2</td>
 <td class="address-2"><span id="36620"></span>36620</td>
 <td class="instruction">LD HL,30769</td>
-<td class="comment-1" rowspan="2">Print You can't go in that direction..</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="30769.html">Messaging_YouCanTGoInThatDirection</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="36623"></span>36623</td>
 <td class="instruction">CALL <a href="25833.html">PrintStringAndANewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="25833.html">PrintStringAndANewline</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -207,6 +221,9 @@ This entry point is used by the routines at <a href="36580.html">Action_North</a
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="comments">
+<div class="paragraph">
+Continue on to <a href="36600.html#36602">ActionDown_Step1</a>.
+</div>
 <div class="paragraph">
 View the equivalent code in; <ul class="">
 <li><a href="/adventure-games/forestatworldsend/dec/asm/60963.html">Forest At Worlds End</a></li>
@@ -233,7 +250,7 @@ Next: <a href="36627.html">36627</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
 <div><a href="../../asm/8EF8.html">Switch to hexadecimal</a>.</div>
 </footer>

@@ -113,6 +113,9 @@ Next: <a href="48020.html">48020</a>
 <div class="paragraph">
 Used by the routines at <a href="62014.html">Action_Save</a> and <a href="62022.html">Action_Quit</a>.
 </div>
+<div class="paragraph">
+Ask for a tape and write the game state out.
+</div>
 </div>
 </td>
 </tr>
@@ -120,24 +123,24 @@ Used by the routines at <a href="62014.html">Action_Save</a> and <a href="62022.
 <td class="asm-label">SaveGame</td>
 <td class="address-2"><span id="47961"></span>47961</td>
 <td class="instruction">LD A,(48434)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="48434.html">Count_ConfigurableExits</a>.</td>
+<td class="comment-1" rowspan="1">Read the configurable-exit count into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="47964"></span>47964</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="47961.html#47992">SaveGame_2</a> if <span class="register">A</span> is zero.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="47961.html#47992">SaveGame_PrintSaving</a> if there are no configurable exits to pack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="47965"></span>47965</td>
-<td class="instruction">JR Z,<a href="47961.html#47992">SaveGame_2</a></td>
+<td class="instruction">JR Z,<a href="47961.html#47992">SaveGame_PrintSaving</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="47967"></span>47967</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Copy the configurable-exit count into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -154,14 +157,24 @@ Used by the routines at <a href="62014.html">Action_Save</a> and <a href="62022.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="47975"></span>47975</td>
-<td class="instruction">JR <a href="47961.html#47982">SaveGame_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="47961.html#47982">SaveGame_1</a>.</td>
+<td class="instruction">JR <a href="47961.html#47982">SaveGame_StoreFlag</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="47961.html#47982">SaveGame_StoreFlag</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">SaveGame_0</td>
+<td class="routine-comment" colspan="5">
+<span id="47977"></span>
+<div class="comments">
+<div class="paragraph">
+Move on to the next configurable-exit address.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame_Copy</td>
 <td class="address-2"><span id="47977"></span>47977</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="2">Increment <span class="register">IX</span> by two.</td>
+<td class="comment-1" rowspan="2">Move <span class="register">IX</span> on to the next exit address.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -172,25 +185,24 @@ Used by the routines at <a href="62014.html">Action_Save</a> and <a href="62022.
 <td class="asm-label"></td>
 <td class="address-1"><span id="47981"></span>47981</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">DE</span> by one.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">DE</span> on to the next packed exit byte.</td>
 </tr>
 <tr>
-<td class="asm-label">SaveGame_1</td>
+<td class="asm-label">SaveGame_StoreFlag</td>
 <td class="address-2"><span id="47982"></span>47982</td>
 <td class="instruction">LD L,(IX+0)</td>
-<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>+0.</td>
+<td class="comment-1" rowspan="2">Fetch the exit address from *<span class="register">IX</span> into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="47985"></span>47985</td>
 <td class="instruction">LD H,(IX+1)</td>
-<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>+1.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="47988"></span>47988</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="2">Write *<span class="register">HL</span> to *<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="2">Copy the exit byte into the packed save buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -200,8 +212,8 @@ Used by the routines at <a href="62014.html">Action_Save</a> and <a href="62022.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="47990"></span>47990</td>
-<td class="instruction">DJNZ <a href="47961.html#47977">SaveGame_0</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="47961.html#47977">SaveGame_0</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="47961.html#47977">SaveGame_Copy</a></td>
+<td class="comment-1" rowspan="1">Decrease the pack counter and loop back to <a href="47961.html#47977">SaveGame_Copy</a> until every exit byte is packed.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -214,7 +226,7 @@ Print "SAVING.Start tape,press any key.".
 </td>
 </tr>
 <tr>
-<td class="asm-label">SaveGame_2</td>
+<td class="asm-label">SaveGame_PrintSaving</td>
 <td class="address-2"><span id="47992"></span>47992</td>
 <td class="instruction">LD HL,48760</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="48760.html">Messaging_SavingStartTape</a>.</td>
@@ -235,13 +247,13 @@ Print "SAVING.Start tape,press any key.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="48001"></span>48001</td>
 <td class="instruction">LD IX,48112</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="48112.html">48112</a>.</td>
+<td class="comment-1" rowspan="1">Load the starting address into <span class="register">IX</span> at <a href="48112.html">Table_ItemLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48005"></span>48005</td>
 <td class="instruction">LD DE,324</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=324.</td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 324 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -313,7 +325,7 @@ Next: <a href="48020.html">48020</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/jewelsofbabylon/">Source code</a>.</div>
 <div><a href="../../asm/BB59.html">Switch to hexadecimal</a>.</div>
 </footer>

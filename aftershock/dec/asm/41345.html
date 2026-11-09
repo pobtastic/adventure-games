@@ -111,7 +111,7 @@ Next: <a href="41386.html">41386</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Divides the word in <span class="register">HL</span> by the word in <span class="register">DE</span>. Nothing in the game calls it.
+<span class="register">HL</span>=<span class="register">HL</span>/<span class="register">DE</span>. Nothing in the game calls it.
 </div>
 </div>
 <table class="input">
@@ -120,11 +120,11 @@ Divides the word in <span class="register">HL</span> by the word in <span class=
 </tr>
 <tr>
 <td class="register">HL</td>
-<td class="register-desc">Dividend</td>
+<td class="register-desc">First number</td>
 </tr>
 <tr>
 <td class="register">DE</td>
-<td class="register-desc">Divisor</td>
+<td class="register-desc">Second number</td>
 </tr>
 </table>
 <table class="output">
@@ -133,11 +133,11 @@ Divides the word in <span class="register">HL</span> by the word in <span class=
 </tr>
 <tr>
 <td class="register">HL</td>
-<td class="register-desc">Quotient</td>
+<td class="register-desc"><span class="register">HL</span>/<span class="register">DE</span></td>
 </tr>
 <tr>
 <td class="register">DE</td>
-<td class="register-desc">Remainder</td>
+<td class="register-desc">What is left after the division</td>
 </tr>
 </table>
 </td>
@@ -156,7 +156,7 @@ Nothing in the game divides one word by another.
 <td class="asm-label">DivideWords</td>
 <td class="address-2"><span id="41345"></span>41345</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="4">Hold the dividend.</td>
+<td class="comment-1" rowspan="4">Hold the first number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -177,7 +177,7 @@ Nothing in the game divides one word by another.
 <td class="asm-label"></td>
 <td class="address-1"><span id="41349"></span>41349</td>
 <td class="instruction">LD HL,0</td>
-<td class="comment-1" rowspan="3">The remainder starts at zero, for sixteen bits.</td>
+<td class="comment-1" rowspan="3">The leftover starts at zero, for sixteen bits.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -194,7 +194,7 @@ Nothing in the game divides one word by another.
 <span id="41355"></span>
 <div class="comments">
 <div class="paragraph">
-Try the next bit of the dividend.
+Try the next bit of the first number.
 </div>
 </div>
 </td>
@@ -203,7 +203,7 @@ Try the next bit of the dividend.
 <td class="asm-label">DivideWords_NextBit</td>
 <td class="address-2"><span id="41355"></span>41355</td>
 <td class="instruction">SLA C</td>
-<td class="comment-1" rowspan="3">Bring that bit into the remainder.</td>
+<td class="comment-1" rowspan="3">Bring that bit into the leftover.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -219,35 +219,38 @@ Try the next bit of the dividend.
 <td class="asm-label"></td>
 <td class="address-1"><span id="41360"></span>41360</td>
 <td class="instruction">SBC HL,DE</td>
-<td class="comment-1" rowspan="2">See whether the divisor fits.</td>
+<td class="comment-1" rowspan="1">Take the second number away from the leftover.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41362"></span>41362</td>
-<td class="instruction">JR C,<a href="41345.html#41377">DivideWords_1</a></td>
+<td class="instruction">JR C,<a href="41345.html#41377">DivideWords_Skip</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="41345.html#41377">DivideWords_Skip</a> when it does not fit.</td>
 </tr>
 <tr>
-<td class="asm-label">DivideWords_0</td>
+<td class="asm-label">DivideWords_Fits</td>
 <td class="address-2"><span id="41364"></span>41364</td>
 <td class="instruction">INC C</td>
-<td class="comment-1" rowspan="3">The quotient gains a bit, and the next bit follows.</td>
+<td class="comment-1" rowspan="1">Keep that bit in the result.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41365"></span>41365</td>
 <td class="instruction">DJNZ <a href="41345.html#41355">DivideWords_NextBit</a></td>
+<td class="comment-1" rowspan="1">Decrease the bit counter by one and loop back to <a href="41345.html#41355">DivideWords_NextBit</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41367"></span>41367</td>
-<td class="instruction">JR <a href="41345.html#41380">DivideWords_2</a></td>
+<td class="instruction">JR <a href="41345.html#41380">DivideWords_Done</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="41345.html#41380">DivideWords_Done</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="41369"></span>
 <div class="comments">
 <div class="paragraph">
-The divisor did not fit.
+The second number did not fit.
 </div>
 </div>
 </td>
@@ -256,7 +259,7 @@ The divisor did not fit.
 <td class="asm-label">DivideWords_Restore</td>
 <td class="address-2"><span id="41369"></span>41369</td>
 <td class="instruction">SLA C</td>
-<td class="comment-1" rowspan="4">Put the remainder back.</td>
+<td class="comment-1" rowspan="3">Bring the next bit into the leftover.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -272,38 +275,41 @@ The divisor did not fit.
 <td class="asm-label"></td>
 <td class="address-1"><span id="41374"></span>41374</td>
 <td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Add the second number back.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41375"></span>41375</td>
-<td class="instruction">JR C,<a href="41345.html#41364">DivideWords_0</a></td>
-<td class="comment-1" rowspan="3">Try the next bit.</td>
+<td class="instruction">JR C,<a href="41345.html#41364">DivideWords_Fits</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="41345.html#41364">DivideWords_Fits</a> when the leftover is too big for a word.</td>
 </tr>
 <tr>
-<td class="asm-label">DivideWords_1</td>
+<td class="asm-label">DivideWords_Skip</td>
 <td class="address-2"><span id="41377"></span>41377</td>
 <td class="instruction">DJNZ <a href="41345.html#41369">DivideWords_Restore</a></td>
+<td class="comment-1" rowspan="1">Decrease the bit counter by one and loop back to <a href="41345.html#41369">DivideWords_Restore</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="41379"></span>41379</td>
 <td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Add the second number back.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="41380"></span>
 <div class="comments">
 <div class="paragraph">
-Nothing in the game uses this quotient.
+Nothing in the game uses this result.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">DivideWords_2</td>
+<td class="asm-label">DivideWords_Done</td>
 <td class="address-2"><span id="41380"></span>41380</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="3">Nothing in the game uses this quotient.</td>
+<td class="comment-1" rowspan="3"><span class="register">HL</span> holds the result of the division, and <span class="register">DE</span> holds what is left.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -347,7 +353,7 @@ Next: <a href="41386.html">41386</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../../asm/A181.html">Switch to hexadecimal</a>.</div>
 </footer>

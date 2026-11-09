@@ -113,6 +113,9 @@ Next: <a href="48084.html">48084</a>
 <div class="paragraph">
 Used by the routine at <a href="62006.html">Action_Load</a>.
 </div>
+<div class="paragraph">
+Ask for a tape and read a previously saved game state back in.
+</div>
 </div>
 </td>
 </tr>
@@ -203,16 +206,26 @@ Print "Tape error.".
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="48048"></span>
+<div class="comments">
+<div class="paragraph">
+There is nothing to unpack when no configurable exits were saved.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">LoadTape_Success</td>
 <td class="address-2"><span id="48048"></span>48048</td>
 <td class="instruction">LD A,(48434)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="48434.html">Count_ConfigurableExits</a>.</td>
+<td class="comment-1" rowspan="1">Read the configurable-exit count into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48051"></span>48051</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="2">Return if *<a href="48434.html">Count_ConfigurableExits</a> is zero.</td>
+<td class="comment-1" rowspan="2">Return if there are no configurable exits to unpack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -223,7 +236,7 @@ Print "Tape error.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="48053"></span>48053</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1">Copy *<a href="48434.html">Count_ConfigurableExits</a> into <span class="register">B</span>.</td>
+<td class="comment-1" rowspan="1">Copy the configurable-exit count into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -244,10 +257,20 @@ Print "Tape error.".
 <td class="comment-1" rowspan="1">Jump to <a href="48020.html#48068">LoadTape_Write</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="48063"></span>
+<div class="comments">
+<div class="paragraph">
+The next saved exit address.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">LoadTape_WriteLoop</td>
 <td class="address-2"><span id="48063"></span>48063</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="2">Increment <span class="register">IX</span> by two.</td>
+<td class="comment-1" rowspan="2">Move <span class="register">IX</span> on to the next exit address.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -258,37 +281,35 @@ Print "Tape error.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="48067"></span>48067</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">DE</span> by one.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">DE</span> on to the next packed exit byte.</td>
 </tr>
 <tr>
 <td class="asm-label">LoadTape_Write</td>
 <td class="address-2"><span id="48068"></span>48068</td>
 <td class="instruction">LD L,(IX+0)</td>
-<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>+0.</td>
+<td class="comment-1" rowspan="2">Fetch the exit address from *<span class="register">IX</span> into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48071"></span>48071</td>
 <td class="instruction">LD H,(IX+1)</td>
-<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>+1.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48074"></span>48074</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="2">Write that packed exit byte back into the game.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48075"></span>48075</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="48076"></span>48076</td>
 <td class="instruction">DJNZ <a href="48020.html#48063">LoadTape_WriteLoop</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="48020.html#48063">LoadTape_WriteLoop</a> until counter is zero.</td>
+<td class="comment-1" rowspan="1">Decrease the unpack counter and loop back to <a href="48020.html#48063">LoadTape_WriteLoop</a> until every exit byte is restored.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -338,7 +359,7 @@ Next: <a href="48084.html">48084</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1985 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/jewelsofbabylon/">Source code</a>.</div>
 <div><a href="../../asm/BB94.html">Switch to hexadecimal</a>.</div>
 </footer>

@@ -101,18 +101,52 @@ Prev: <a href="61102.html">61102</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#61114">Map</a></td>
 <td class="next">
-Next: <a href="61120.html">61120</a>
+Next: <a href="61163.html">61163</a>
 </td>
 </tr>
 </table>
-<div class="description">61114: Handler: Already Carrying</div>
+<div class="description">61114: Take: Is Player Holding Item</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="61180.html">Action_ExamineItem</a>.
+Used by the routines at <a href="61180.html">Validate_Take_MarasBody</a>, <a href="61204.html">Validate_Take_Witch</a>, <a href="61224.html">Validate_Take_Food</a>, <a href="61240.html">Validate_Take_SilverCoin</a>, <a href="61256.html">Validate_Take_Bow</a>, <a href="61272.html">Validate_Take_Arrows</a>, <a href="61288.html">Validate_Take_Furnace</a>, <a href="61310.html">Validate_Take_Log</a>, <a href="61357.html">Validate_Take_Horn</a>, <a href="61416.html">Validate_Take_Key</a> and <a href="61457.html">Validate_Take_Rope</a>.
 </div>
+<div class="paragraph">
+Refuse the take when the object is already carried or the inventory is full; otherwise return so the caller can take it.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Object ID</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">B</td>
+<td class="register-desc">The object ID (when returning so the take may proceed)</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Take_IsPlayerHoldingItem</td>
+<td class="address-2"><span id="61114"></span>61114</td>
+<td class="instruction">CALL <a href="49874.html">IsObjectCarried</a></td>
+<td class="comment-1" rowspan="1">Call <a href="49874.html">IsObjectCarried</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61117"></span>
+<div class="comments">
 <div class="paragraph">
 Refuse when that object is already being carried.
 </div>
@@ -120,21 +154,194 @@ Refuse when that object is already being carried.
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_AlreadyCarrying</td>
-<td class="address-2"><span id="61114"></span>61114</td>
-<td class="instruction">CALL <a href="49874.html">IsObjectCarried</a></td>
-<td class="comment-1" rowspan="2">Jump to <a href="61149.html">Handler_InventoryFull</a> when the object is not being carried.</td>
-</tr>
-<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61117"></span>61117</td>
-<td class="instruction">JR NZ,<a href="61149.html">Handler_InventoryFull</a></td>
+<td class="instruction">JR NZ,<a href="61114.html#61149">Take_InventoryFull</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61114.html#61149">Take_InventoryFull</a> if the item is not being held.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61119"></span>61119</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Discard the return address on the stack.</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61120"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="61373.html">Validate_Take_OpenChest</a>.
+</div>
+<div class="paragraph">
+Finish the sentence "You're already carrying" with "it" or "them".
+</div>
+<div class="paragraph">
+Print "You're already carrying ".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Take_IsPlayerHoldingItem_0</td>
+<td class="address-2"><span id="61120"></span>61120</td>
+<td class="instruction">LD HL,48352</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="48352.html">Messaging_YoureAlreadyCarrying</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61123"></span>61123</td>
+<td class="instruction">CALL <a href="48673.html">PrintString</a></td>
+<td class="comment-1" rowspan="1">Call <a href="48673.html">PrintString</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61126"></span>61126</td>
+<td class="instruction">LD HL,61163</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="61163.html">Table_ItemsWhichArePlural</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61129"></span>61129</td>
+<td class="instruction">LD A,E</td>
+<td class="comment-1" rowspan="1">Copy the object ID back into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61130"></span>61130</td>
+<td class="instruction">LD BC,2</td>
+<td class="comment-1" rowspan="1"><span class="register">BC</span>=0002.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61133"></span>61133</td>
+<td class="instruction">CPIR</td>
+<td class="comment-1" rowspan="1">Search for the item ID among the plural items.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61135"></span>61135</td>
+<td class="instruction">JR Z,<a href="61114.html#61143">Take_AlreadyCarrying_Them</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61114.html#61143">Take_AlreadyCarrying_Them</a> if the item is plural.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61137"></span>
+<div class="comments">
+<div class="paragraph">
+Print "it.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61137"></span>61137</td>
+<td class="instruction">LD HL,48379</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="48379.html">Messaging_It</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61140"></span>61140</td>
+<td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61143"></span>
+<div class="comments">
+<div class="paragraph">
+Print "them.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Take_AlreadyCarrying_Them</td>
+<td class="address-2"><span id="61143"></span>61143</td>
+<td class="instruction">LD HL,48383</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="48383.html">Messaging_Them</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61146"></span>61146</td>
+<td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61149"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="61373.html">Validate_Take_OpenChest</a>.
+</div>
+<div class="paragraph">
+Refuse the object when the player is already holding 6 things.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Take_InventoryFull</td>
+<td class="address-2"><span id="61149"></span>61149</td>
+<td class="instruction">LD A,(47720)</td>
+<td class="comment-1" rowspan="2">Compare *<a href="47720.html">Count_InventoryItems</a> with 6.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61152"></span>61152</td>
+<td class="instruction">CP 6</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61154"></span>61154</td>
+<td class="instruction">LD B,E</td>
+<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">E</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61155"></span>61155</td>
+<td class="instruction">RET NZ</td>
+<td class="comment-1" rowspan="1">Return if *<a href="47720.html">Count_InventoryItems</a> is not equal to 6.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61156"></span>61156</td>
+<td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61157"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You can't carry any more.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61157"></span>61157</td>
+<td class="instruction">LD HL,48389</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="48389.html">Messaging_YouCantCarryAnyMore</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="61160"></span>61160</td>
+<td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/62058.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/dec/asm/36834.html">Message From Andromeda</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -144,14 +351,14 @@ Prev: <a href="61102.html">61102</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#61114">Map</a></td>
 <td class="next">
-Next: <a href="61120.html">61120</a>
+Next: <a href="61163.html">61163</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/EEBA.html">Switch to hexadecimal</a>.</div>
 </footer>

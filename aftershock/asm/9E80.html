@@ -157,18 +157,18 @@ Skip packing the save when there are no state bytes.
 <td class="asm-label"></td>
 <td class="address-1"><span id="9e88"></span>9E88</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="9E80.html#9ea4">SaveGame_2</a> if there are no saved state bytes.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="9E80.html#9ea4">SaveGame_PrintSaving</a> if there are no saved state bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9e89"></span>9E89</td>
-<td class="instruction">JR Z,<a href="9E80.html#9ea4">SaveGame_2</a></td>
+<td class="instruction">JR Z,<a href="9E80.html#9ea4">SaveGame_PrintSaving</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9e8b"></span>9E8B</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Set <span class="register">B</span> to the number of state bytes to pack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -185,11 +185,21 @@ Skip packing the save when there are no state bytes.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9e93"></span>9E93</td>
-<td class="instruction">JR <a href="9E80.html#9e9a">SaveGame_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="9E80.html#9e9a">SaveGame_1</a>.</td>
+<td class="instruction">JR <a href="9E80.html#9e9a">SaveGame_StoreFlag</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="9E80.html#9e9a">SaveGame_StoreFlag</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">SaveGame_0</td>
+<td class="routine-comment" colspan="5">
+<span id="9e95"></span>
+<div class="comments">
+<div class="paragraph">
+The next saved address.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SaveGame_Copy</td>
 <td class="address-2"><span id="9e95"></span>9E95</td>
 <td class="instruction">INC IX</td>
 <td class="comment-1" rowspan="2">Move <span class="register">IX</span> on to the next saved-state address.</td>
@@ -206,34 +216,32 @@ Skip packing the save when there are no state bytes.
 <td class="comment-1" rowspan="1">Move <span class="register">DE</span> on to the next packed state byte.</td>
 </tr>
 <tr>
-<td class="asm-label">SaveGame_1</td>
+<td class="asm-label">SaveGame_StoreFlag</td>
 <td class="address-2"><span id="9e9a"></span>9E9A</td>
 <td class="instruction">LD L,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>+00.</td>
+<td class="comment-1" rowspan="2">Fetch the state address from *<span class="register">IX</span> into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9e9d"></span>9E9D</td>
 <td class="instruction">LD H,(IX+$01)</td>
-<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>+01.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9ea0"></span>9EA0</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="2">Copy the state byte into the packed save buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9ea1"></span>9EA1</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-1" rowspan="1">Store that state byte in the packed save buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9ea2"></span>9EA2</td>
-<td class="instruction">DJNZ <a href="9E80.html#9e95">SaveGame_0</a></td>
-<td class="comment-1" rowspan="1">Decrease the pack counter and loop back to <a href="9E80.html#9e95">SaveGame_0</a> until every state byte is packed.</td>
+<td class="instruction">DJNZ <a href="9E80.html#9e95">SaveGame_Copy</a></td>
+<td class="comment-1" rowspan="1">Decrease the pack counter and loop back to <a href="9E80.html#9e95">SaveGame_Copy</a> until every state byte is packed.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -246,7 +254,7 @@ Print "Press REC & PLAY on tape...Then press any key.".
 </td>
 </tr>
 <tr>
-<td class="asm-label">SaveGame_2</td>
+<td class="asm-label">SaveGame_PrintSaving</td>
 <td class="address-2"><span id="9ea4"></span>9EA4</td>
 <td class="instruction">LD HL,$9E33</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="9E33.html">Messaging_Saving</a>.</td>
@@ -273,19 +281,29 @@ Print "Press REC & PLAY on tape...Then press any key.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="9eb1"></span>9EB1</td>
 <td class="instruction">LD DE,$0181</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=0181.</td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 0181 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9eb4"></span>9EB4</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=FF.</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to FF which indicates this is a data block.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="9eb6"></span>9EB6</td>
 <td class="instruction">CALL $04C2</td>
 <td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/04C2.html">SA_BYTES</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="9eb9"></span>
+<div class="comments">
+<div class="paragraph">
+Print "Saving Complete...Stop Tape.".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -356,7 +374,7 @@ Next: <a href="9EC5.html">9EC5</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1986 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/aftershock/">Source code</a>.</div>
 <div><a href="../dec/asm/40576.html">Switch to decimal</a>.</div>
 </footer>

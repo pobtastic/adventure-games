@@ -101,7 +101,7 @@ Prev: <a href="49001.html">49001</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#49011">Map</a></td>
 <td class="next">
-Next: <a href="49112.html">49112</a>
+Next: <a href="49066.html">49066</a>
 </td>
 </tr>
 </table>
@@ -149,7 +149,7 @@ Clear the command buffer.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49014"></span>49014</td>
 <td class="instruction">LD HL,47876</td>
-<td class="comment-1" rowspan="1">Start at the command buffer (<a href="47876.html">InputBuffer</a>).</td>
+<td class="comment-1" rowspan="1">Start at the command buffer (<a href="47876.html">CommandBuffer</a>).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -163,7 +163,7 @@ Clear the command buffer.
 <td class="instruction">LD B,50</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Clear</td>
+<td class="asm-label">EmptyCommandBuffer_Loop</td>
 <td class="address-2"><span id="49021"></span>49021</td>
 <td class="instruction">LD (HL),A</td>
 <td class="comment-1" rowspan="3">Write spaces through the whole command buffer.</td>
@@ -176,7 +176,7 @@ Clear the command buffer.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49023"></span>49023</td>
-<td class="instruction">DJNZ <a href="49011.html#49021">UserInput_Clear</a></td>
+<td class="instruction">DJNZ <a href="49011.html#49021">EmptyCommandBuffer_Loop</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -215,6 +215,9 @@ Collect keypresses.
 <span id="49031"></span>
 <div class="comments">
 <div class="paragraph">
+This entry point is used by the routine at <a href="49066.html">UserInput_Delete</a>.
+</div>
+<div class="paragraph">
 Wait for the next key.
 </div>
 </div>
@@ -240,23 +243,23 @@ DELETE rubs out a character. ENTER finishes the line. Any other control key is i
 <td class="asm-label"></td>
 <td class="address-1"><span id="49034"></span>49034</td>
 <td class="instruction">CP 12</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49011.html#49066">UserInput_Delete</a> if DELETE was pressed.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49066.html">UserInput_Delete</a> if DELETE was pressed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49036"></span>49036</td>
-<td class="instruction">JR Z,<a href="49011.html#49066">UserInput_Delete</a></td>
+<td class="instruction">JR Z,<a href="49066.html">UserInput_Delete</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49038"></span>49038</td>
 <td class="instruction">CP 13</td>
-<td class="comment-1" rowspan="2">Jump to <a href="49011.html#49089">UserInput_Enter</a> if ENTER was pressed.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49089.html">UserInput_Enter</a> if ENTER was pressed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49040"></span>49040</td>
-<td class="instruction">JR Z,<a href="49011.html#49089">UserInput_Enter</a></td>
+<td class="instruction">JR Z,<a href="49089.html">UserInput_Enter</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -283,7 +286,7 @@ Is the command buffer full?
 <td class="asm-label"></td>
 <td class="address-1"><span id="49046"></span>49046</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="6">Jump back to <a href="49011.html#49031">UserInput_Loop</a> once the pointer has reached the sentinel at <a href="47876.html#47925">47925</a>.</td>
+<td class="comment-1" rowspan="6">Jump back to <a href="49011.html#49031">UserInput_Loop</a> once the pointer has reached the sentinel at <a href="47876.html">47925</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -329,8 +332,8 @@ The key is valid, so store it and print it.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49057"></span>49057</td>
-<td class="instruction">CALL <a href="48659.html">SwitchToNormalScreenOutput</a></td>
-<td class="comment-1" rowspan="1">Call <a href="48659.html">SwitchToNormalScreenOutput</a> to select the screen channel.</td>
+<td class="instruction">CALL <a href="48659.html">SwitchNormalScreenOutput</a></td>
+<td class="comment-1" rowspan="1">Call <a href="48659.html">SwitchNormalScreenOutput</a> to select the screen channel.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -352,174 +355,14 @@ The key is valid, so store it and print it.
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
-<span id="49066"></span>
-<div class="comments">
-<div class="paragraph">
-The player pressed DELETE.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">UserInput_Delete</td>
-<td class="address-2"><span id="49066"></span>49066</td>
-<td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="6">Jump back to <a href="49011.html#49031">UserInput_Loop</a> when the buffer is still empty.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49067"></span>49067</td>
-<td class="instruction">LD HL,47876</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49070"></span>49070</td>
-<td class="instruction">AND A</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49071"></span>49071</td>
-<td class="instruction">SBC HL,DE</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49073"></span>49073</td>
-<td class="instruction">EX DE,HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49074"></span>49074</td>
-<td class="instruction">JR Z,<a href="49011.html#49031">UserInput_Loop</a></td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="49076"></span>
-<div class="comments">
-<div class="paragraph">
-Rub the previous character off the screen.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49076"></span>49076</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Keep the buffer pointer safe.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49077"></span>49077</td>
-<td class="instruction">LD HL,47960</td>
-<td class="comment-1" rowspan="2">Print " ".</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49080"></span>49080</td>
-<td class="instruction">CALL <a href="48673.html">PrintString</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49083"></span>49083</td>
-<td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore the buffer pointer from the stack.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49084"></span>49084</td>
-<td class="instruction">DEC HL</td>
-<td class="comment-1" rowspan="2">Step back one character and blank it.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49085"></span>49085</td>
-<td class="instruction">LD (HL),32</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49087"></span>49087</td>
-<td class="instruction">JR <a href="49011.html#49031">UserInput_Loop</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="49011.html#49031">UserInput_Loop</a> for the next key.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="49089"></span>
-<div class="comments">
-<div class="paragraph">
-The player pressed ENTER, so close the command and clear the tokens.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">UserInput_Enter</td>
-<td class="address-2"><span id="49089"></span>49089</td>
-<td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1">Store ENTER as the end of the command.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49090"></span>49090</td>
-<td class="instruction">CALL <a href="48659.html">SwitchToNormalScreenOutput</a></td>
-<td class="comment-1" rowspan="1">Call <a href="48659.html">SwitchToNormalScreenOutput</a> to select the screen channel.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49093"></span>49093</td>
-<td class="instruction">CALL <a href="48695.html">PrintCharacter</a></td>
-<td class="comment-1" rowspan="1">Call <a href="48695.html">PrintCharacter</a> to echo ENTER.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49096"></span>49096</td>
-<td class="instruction">LD HL,47926</td>
-<td class="comment-1" rowspan="3">Start at the token buffer (<a href="47876.html#47926">47926</a>) and prepare the empty marker 255.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49099"></span>49099</td>
-<td class="instruction">LD A,255</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49101"></span>49101</td>
-<td class="instruction">LD B,10</td>
-</tr>
-<tr>
-<td class="asm-label">UserInput_ClearTokens</td>
-<td class="address-2"><span id="49103"></span>49103</td>
-<td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="3">Write 255 into each of the 10 token slots.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49104"></span>49104</td>
-<td class="instruction">INC HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49105"></span>49105</td>
-<td class="instruction">DJNZ <a href="49011.html#49103">UserInput_ClearTokens</a></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49107"></span>49107</td>
-<td class="instruction">LD HL,47876</td>
-<td class="comment-1" rowspan="2">Start at the command and allow 10 words, then fall into the parser.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="49110"></span>49110</td>
-<td class="instruction">LD C,10</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
 <div class="comments">
 <div class="paragraph">
 View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/aftershock/dec/asm/42160.html">After Shock</a></li>
 <li><a href="/adventure-games/heroesofkarn/dec/asm/45568.html">Heroes Of Karn</a></li>
 <li><a href="/adventure-games/jewelsofbabylon/dec/asm/49162.html">The Jewels Of Babylon</a></li>
 <li><a href="/adventure-games/messagefromandromeda/dec/asm/26116.html">Message From Andromeda</a></li>
+<li><a href="/adventure-games/warlord/dec/asm/44338.html">Warlord</a></li>
 </ul>
 </div>
 </div>
@@ -533,14 +376,14 @@ Prev: <a href="49001.html">49001</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#49011">Map</a></td>
 <td class="next">
-Next: <a href="49112.html">49112</a>
+Next: <a href="49066.html">49066</a>
 </td>
 </tr>
 </table>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/BF73.html">Switch to hexadecimal</a>.</div>
 </footer>

@@ -120,18 +120,29 @@ Blow the horn.
 <td class="asm-label">Action_Blow</td>
 <td class="address-2"><span id="f916"></span>F916</td>
 <td class="instruction">CALL <a href="C309.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="C309.html">Parser_ValidateDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f919"></span>F919</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f91a"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to blow ... the horn?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f91a"></span>F91A</td>
 <td class="instruction">LD HL,$E827</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F916.html#f961">Action_Blow_NoEffect</a> unless the player named Princess Mara.</td>
+<td class="comment-1" rowspan="2">Call <a href="C26F.html">Parser_AdvanceToSeparator</a> with <a href="E7D0.html#e827">E827</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,13 +152,14 @@ Blow the horn.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f920"></span>F920</td>
-<td class="instruction">JR NZ,<a href="F916.html#f961">Action_Blow_NoEffect</a></td>
+<td class="instruction">JR NZ,<a href="F916.html#f961">Blow_YouCant</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="F916.html#f961">Blow_YouCant</a> if the token isn't for the horn.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f922"></span>F922</td>
 <td class="instruction">LD A,$09</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F916.html#f92f">Action_Blow_Next</a> when the player is carrying object 09 (the horn).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F916.html#f92f">Blow_CheckRoom</a> if "A horn" is held.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -157,14 +169,14 @@ Blow the horn.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f927"></span>F927</td>
-<td class="instruction">JR Z,<a href="F916.html#f92f">Action_Blow_Next</a></td>
+<td class="instruction">JR Z,<a href="F916.html#f92f">Blow_CheckRoom</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="f929"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "You're no carrying a horn.".
+Print "You're no carrying a horn.".
 </div>
 </div>
 </td>
@@ -173,18 +185,31 @@ Reply with "You're no carrying a horn.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f929"></span>F929</td>
 <td class="instruction">LD HL,$E3A2</td>
-<td class="comment-1" rowspan="2">Print "You're no carrying a horn." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E3A2.html">Messaging_YoureNoCarryingAHorn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f92c"></span>F92C</td>
 <td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Blow_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="f92f"></span>
+<div class="comments">
+<div class="paragraph">
+Where is the player blowing the horn?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Blow_CheckRoom</td>
 <td class="address-2"><span id="f92f"></span>F92F</td>
 <td class="instruction">LD A,($BA9B)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F916.html#f93b">Action_Blow_FetchDragon</a> when the player is in room 17 (The Brink of a Precipice).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F916.html#f93b">Blow_FetchDragon</a> if *<a href="BA9B.html">CurrentRoom</a> is room 17: "
+
+<a href="CD6A.html">The Brink of a Precipice</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -194,13 +219,15 @@ Reply with "You're no carrying a horn.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f934"></span>F934</td>
-<td class="instruction">JR Z,<a href="F916.html#f93b">Action_Blow_FetchDragon</a></td>
+<td class="instruction">JR Z,<a href="F916.html#f93b">Blow_FetchDragon</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f936"></span>F936</td>
 <td class="instruction">CP $34</td>
-<td class="comment-1" rowspan="2">Jump back to <a href="EDA5.html">Response_ItHasNoApparentEffect</a> unless the value 34 matches.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDA5.html">Response_ItHasNoApparentEffect</a> if *<a href="BA9B.html">CurrentRoom</a> isn't room 34: "
+
+<a href="CF6B.html">At the Bottom of the Precipice</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -208,10 +235,20 @@ Reply with "You're no carrying a horn.".
 <td class="instruction">JP NZ,<a href="EDA5.html">Response_ItHasNoApparentEffect</a></td>
 </tr>
 <tr>
-<td class="asm-label">Action_Blow_FetchDragon</td>
+<td class="routine-comment" colspan="5">
+<span id="f93b"></span>
+<div class="comments">
+<div class="paragraph">
+Is the dragon in play?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Blow_FetchDragon</td>
 <td class="address-2"><span id="f93b"></span>F93B</td>
 <td class="instruction">LD A,$16</td>
-<td class="comment-1" rowspan="2">Call <a href="C2BE.html">GetObjectLocation</a> to fetch where the dragon is.</td>
+<td class="comment-1" rowspan="2">Call <a href="C2BE.html">GetObjectLocation</a> with item 16: "A dragon. It is watching you".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -222,7 +259,7 @@ Reply with "You're no carrying a horn.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f940"></span>F940</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="2">Jump back to <a href="EDA5.html">Response_ItHasNoApparentEffect</a> when the dragon is not in play.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDA5.html">Response_ItHasNoApparentEffect</a> if the dragon is not in play.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -233,7 +270,9 @@ Reply with "You're no carrying a horn.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="f944"></span>F944</td>
 <td class="instruction">LD A,($BA9B)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="F916.html#f956">Action_Blow_ToPrecipice</a> unless the player is in room 17 (The Brink of a Precipice).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="F916.html#f956">Blow_ToPrecipice</a> if *<a href="BA9B.html">CurrentRoom</a> isn't room 17: "
+
+<a href="CD6A.html">The Brink of a Precipice</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -243,13 +282,15 @@ Reply with "You're no carrying a horn.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f949"></span>F949</td>
-<td class="instruction">JR NZ,<a href="F916.html#f956">Action_Blow_ToPrecipice</a></td>
+<td class="instruction">JR NZ,<a href="F916.html#f956">Blow_ToPrecipice</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f94b"></span>F94B</td>
 <td class="instruction">LD A,$34</td>
-<td class="comment-1" rowspan="2">Call <a href="C42F.html">MovePlayerToRoom</a> to move the player to the bottom of the precipice.</td>
+<td class="comment-1" rowspan="2">Call <a href="C42F.html">MovePlayerToRoom</a> with room 34: "
+
+<a href="CF6B.html">At the Bottom of the Precipice</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -261,7 +302,7 @@ Reply with "You're no carrying a horn.".
 <span id="f950"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "The dragon leaps into the air,catching you carefully.You are lifted with it.The dragon deposits you atthe bottom of the precipice.".
+Print "The dragon leaps into the air,catching you carefully.You are lifted with it.The dragon deposits you atthe bottom of the precipice.".
 </div>
 </div>
 </td>
@@ -270,18 +311,31 @@ Reply with "The dragon leaps into the air,catching you carefully.You are lifte
 <td class="asm-label"></td>
 <td class="address-1"><span id="f950"></span>F950</td>
 <td class="instruction">LD HL,$E3BD</td>
-<td class="comment-1" rowspan="2">Print "The dragon leaps into the air,catching you carefully.You are lifted with it.The dragon deposits you atthe bottom of the precipice." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E3BD.html">Messaging_TheDragonLeapsIntoTheAir</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f953"></span>F953</td>
 <td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Blow_ToPrecipice</td>
+<td class="routine-comment" colspan="5">
+<span id="f956"></span>
+<div class="comments">
+<div class="paragraph">
+Move the player to the brink of the precipice.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Blow_ToPrecipice</td>
 <td class="address-2"><span id="f956"></span>F956</td>
 <td class="instruction">LD A,$17</td>
-<td class="comment-1" rowspan="2">Call <a href="C42F.html">MovePlayerToRoom</a> to move the player to the brink of the precipice.</td>
+<td class="comment-1" rowspan="2">Call <a href="C42F.html">MovePlayerToRoom</a> with room 17: "
+
+<a href="CD6A.html">The Brink of a Precipice</a>".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -293,7 +347,7 @@ Reply with "The dragon leaps into the air,catching you carefully.You are lifte
 <span id="f95b"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "The dragon swoops downand picks you up.It takes you to the topof the precipice.".
+Print "The dragon swoops downand picks you up.It takes you to the topof the precipice.".
 </div>
 </div>
 </td>
@@ -302,18 +356,29 @@ Reply with "The dragon swoops downand picks you up.It takes you to the topof 
 <td class="asm-label"></td>
 <td class="address-1"><span id="f95b"></span>F95B</td>
 <td class="instruction">LD HL,$E444</td>
-<td class="comment-1" rowspan="2">Print "The dragon swoops downand picks you up.It takes you to the topof the precipice." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="E444.html">Messaging_TheDragonSwoopsDown</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f95e"></span>F95E</td>
 <td class="instruction">JP <a href="ED66.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ED66.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Blow_NoEffect</td>
+<td class="routine-comment" colspan="5">
+<span id="f961"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Blow_YouCant</td>
 <td class="address-2"><span id="f961"></span>F961</td>
 <td class="instruction">JP <a href="EDA5.html">Response_ItHasNoApparentEffect</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="EDA5.html">Response_ItHasNoApparentEffect</a> to say it has no effect.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="EDA5.html">Response_ItHasNoApparentEffect</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -330,7 +395,7 @@ Next: <a href="F964.html">F964</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/63766.html">Switch to decimal</a>.</div>
 </footer>

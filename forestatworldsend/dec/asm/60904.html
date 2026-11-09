@@ -120,18 +120,29 @@ List everything the player is carrying.
 <td class="asm-label">Action_Inventory</td>
 <td class="address-2"><span id="60904"></span>60904</td>
 <td class="instruction">CALL <a href="49918.html">Parser_ValidateNoDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="49918.html">Parser_ValidateNoDirectObject</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60907"></span>
+<div class="comments">
+<div class="paragraph">
+The "INVENTORY" command can only be called on its own.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60907"></span>60907</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if there's any token set in <a href="47926.html#47927">UserInput_Token_2</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60908"></span>60908</td>
 <td class="instruction">LD A,(47720)</td>
-<td class="comment-1" rowspan="3">Jump back to <a href="60847.html">Response_YoureNotCarryingAnything</a> when the number of objects carried is zero.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60847.html">Response_YoureNotCarryingAnything</a> if *<a href="47720.html">Count_InventoryItems</a> is zero (the player isn't holding any items).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,33 +155,54 @@ List everything the player is carrying.
 <td class="instruction">JP Z,<a href="60847.html">Response_YoureNotCarryingAnything</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="60915"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the screen and display the players inventory.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60915"></span>60915</td>
 <td class="instruction">CALL <a href="48618.html">ClearScreen</a></td>
-<td class="comment-1" rowspan="1">Call <a href="48618.html">ClearScreen</a> to clear the screen.</td>
+<td class="comment-1" rowspan="1">Call <a href="48618.html">ClearScreen</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60918"></span>60918</td>
 <td class="instruction">CALL <a href="48646.html">SetScreenPosition</a></td>
-<td class="comment-1" rowspan="1">Call <a href="48646.html">SetScreenPosition</a> to move the cursor to the text line stored at <a href="47876.html#47936">47936</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="48646.html">SetScreenPosition</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60921"></span>
+<div class="comments">
+<div class="paragraph">
+Print "You are carrying:-".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60921"></span>60921</td>
 <td class="instruction">LD HL,48415</td>
-<td class="comment-1" rowspan="2">Print "You are carrying:-".</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="48415.html">Messaging_YouAreCarrying</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60924"></span>60924</td>
-<td class="instruction">CALL <a href="48686.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="48686.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="48686.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60927"></span>60927</td>
 <td class="instruction">LD A,1</td>
-<td class="comment-1" rowspan="2">Call <a href="49362.html">PrintObjects</a> to list what is being carried.</td>
+<td class="comment-1" rowspan="2">Call <a href="49362.html">PrintObjects</a> with a room ID of 1 which is the players inventory.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -213,7 +245,7 @@ Next: <a href="60933.html">60933</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/EDE8.html">Switch to hexadecimal</a>.</div>
 </footer>

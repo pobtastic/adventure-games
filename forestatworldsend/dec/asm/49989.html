@@ -123,7 +123,7 @@ Ask for a tape and write the game state out.
 <td class="asm-label">SaveGame</td>
 <td class="address-2"><span id="49989"></span>49989</td>
 <td class="instruction">LD A,(47874)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="49989.html#50020">SaveGame_PrintSaving</a> when *<a href="47560.html#47874">47874</a> is zero, so there is no flag state to copy.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="49989.html#50020">SaveGame_PrintSaving</a> when *<a href="47874.html">Count_ConfigurableExits</a> is zero, so there are no configurable exits to pack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -139,7 +139,7 @@ Ask for a tape and write the game state out.
 <td class="asm-label"></td>
 <td class="address-1"><span id="49995"></span>49995</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="4">Take the flag addresses and the save area.</td>
+<td class="comment-1" rowspan="4">Take the exit addresses and the save area.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -157,10 +157,20 @@ Ask for a tape and write the game state out.
 <td class="instruction">JR <a href="49989.html#50010">SaveGame_StoreFlag</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="50005"></span>
+<div class="comments">
+<div class="paragraph">
+Move on to the next configurable-exit address.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">SaveGame_Copy</td>
 <td class="address-2"><span id="50005"></span>50005</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="3">Step to the next flag address and the next save byte.</td>
+<td class="comment-1" rowspan="3">Move <span class="register">IX</span> on to the next exit address and <span class="register">DE</span> on to the next packed exit byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -176,7 +186,7 @@ Ask for a tape and write the game state out.
 <td class="asm-label">SaveGame_StoreFlag</td>
 <td class="address-2"><span id="50010"></span>50010</td>
 <td class="instruction">LD L,(IX+0)</td>
-<td class="comment-1" rowspan="5">Copy that flag into the save area and repeat until every flag is stored.</td>
+<td class="comment-1" rowspan="5">Fetch the exit address from *<span class="register">IX</span> into <span class="register">HL</span>, copy the exit byte into the packed save buffer, and repeat until every exit byte is packed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -217,7 +227,7 @@ Print "SAVING.Start tape,press any key.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50023"></span>50023</td>
-<td class="instruction">CALL <a href="48686.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="48686.html">PrintStringAndNewline</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -228,17 +238,19 @@ Print "SAVING.Start tape,press any key.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="50029"></span>50029</td>
 <td class="instruction">LD IX,47560</td>
-<td class="comment-1" rowspan="3">Point the save at the game state (<a href="47560.html">GameState</a>) for 316 bytes, marked as a data block.</td>
+<td class="comment-1" rowspan="1">Load the starting address into <span class="register">IX</span> at <a href="47560.html">Table_ItemLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50033"></span>50033</td>
 <td class="instruction">LD DE,316</td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 316 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50036"></span>50036</td>
 <td class="instruction">LD A,255</td>
+<td class="comment-1" rowspan="1">Set <span class="register">A</span> to 255 which indicates this is a data block.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -265,7 +277,7 @@ Print "Stop tape.Saving complete.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50044"></span>50044</td>
-<td class="instruction">CALL <a href="48686.html">PrintStringAndANewline</a></td>
+<td class="instruction">CALL <a href="48686.html">PrintStringAndNewline</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -303,7 +315,7 @@ Next: <a href="50048.html">50048</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/C345.html">Switch to hexadecimal</a>.</div>
 </footer>

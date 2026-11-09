@@ -120,18 +120,29 @@ Eat the food, if it is being carried.
 <td class="asm-label">Action_Eat</td>
 <td class="address-2"><span id="62061"></span>62061</td>
 <td class="instruction">CALL <a href="49929.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="49929.html">Parser_ValidateDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62064"></span>62064</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62065"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to eat ... the food?
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62065"></span>62065</td>
 <td class="instruction">LD HL,59414</td>
-<td class="comment-1" rowspan="3">Jump to <a href="62061.html#62084">Action_Eat_Next</a> unless the player named the rope on the overhang.</td>
+<td class="comment-1" rowspan="2">Call <a href="49775.html">Parser_AdvanceToSeparator</a> with <a href="59344.html#59414">59414</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,13 +152,14 @@ Eat the food, if it is being carried.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62071"></span>62071</td>
-<td class="instruction">JR NZ,<a href="62061.html#62084">Action_Eat_Next</a></td>
+<td class="instruction">JR NZ,<a href="62061.html#62084">Eat_Consume</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="62061.html#62084">Eat_Consume</a> if the token isn't for the food.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62073"></span>62073</td>
 <td class="instruction">LD A,0</td>
-<td class="comment-1" rowspan="3">Jump to <a href="62061.html#62084">Action_Eat_Next</a> if the player is not carrying object 0 (the food).</td>
+<td class="comment-1" rowspan="2">Call <a href="49874.html">IsObjectCarried</a> with item 0: "Some food".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -157,13 +169,14 @@ Eat the food, if it is being carried.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62078"></span>62078</td>
-<td class="instruction">JR NZ,<a href="62061.html#62084">Action_Eat_Next</a></td>
+<td class="instruction">JR NZ,<a href="62061.html#62084">Eat_Consume</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="62061.html#62084">Eat_Consume</a> if "Some food" isn't held.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62080"></span>62080</td>
 <td class="instruction">LD HL,47720</td>
-<td class="comment-1" rowspan="2">Count one fewer thing carried.</td>
+<td class="comment-1" rowspan="2">Decrease *<a href="47720.html">Count_InventoryItems</a> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -171,10 +184,10 @@ Eat the food, if it is being carried.
 <td class="instruction">DEC (HL)</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Eat_Next</td>
+<td class="asm-label">Eat_Consume</td>
 <td class="address-2"><span id="62084"></span>62084</td>
 <td class="instruction">LD A,0</td>
-<td class="comment-1" rowspan="2">Destroy object 0 (the food).</td>
+<td class="comment-1" rowspan="2">Call <a href="49880.html">Handler_DestroyItem</a> with item 0: "Some food".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -186,7 +199,7 @@ Eat the food, if it is being carried.
 <span id="62089"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "You eat the food.That was delicious!".
+Print "You eat the food.That was delicious!".
 </div>
 </div>
 </td>
@@ -195,12 +208,26 @@ Reply with "You eat the food.That was delicious!".
 <td class="asm-label"></td>
 <td class="address-1"><span id="62089"></span>62089</td>
 <td class="instruction">LD HL,56907</td>
-<td class="comment-1" rowspan="2">Print "You eat the food.That was delicious!" and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56907.html">Messaging_YouEatTheFood</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62092"></span>62092</td>
 <td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/63897.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/dec/asm/37993.html">Message From Andromeda</a></li>
+<li><a href="/adventure-games/warlord/dec/asm/64451.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -217,7 +244,7 @@ Next: <a href="62095.html">62095</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/F26D.html">Switch to hexadecimal</a>.</div>
 </footer>

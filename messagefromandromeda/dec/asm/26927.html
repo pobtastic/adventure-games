@@ -114,40 +114,57 @@ Next: <a href="26959.html">26959</a>
 Used by the routines at <a href="27005.html">Parser_ValidateDirectObject</a>, <a href="27026.html">Parser_MatchOrRephrase</a> and <a href="37993.html">ActionEat</a>.
 </div>
 <div class="paragraph">
-Set the zero flag when none of the typed words is a known noun.
+Count how many tokens in the user input refer to known nouns.
 </div>
 </div>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">The number of noun references in the user input tokens</td>
+</tr>
+<tr>
+<td class="register">E</td>
+<td class="register-desc">As <span class="register">A</span></td>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The Z flag is set when no nouns are present in the input</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
 <td class="asm-label">Parser_FindPhrase</td>
 <td class="address-2"><span id="26927"></span>26927</td>
 <td class="instruction">LD HL,25233</td>
-<td class="comment-1" rowspan="1">Check the command's word tokens for a noun.</td>
+<td class="comment-1" rowspan="1">Set a pointer to <a href="25233.html">UserInput_Token_1</a> in <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26930"></span>26930</td>
 <td class="instruction">LD B,10</td>
-<td class="comment-1" rowspan="1">A command has at most 10 words.</td>
+<td class="comment-1" rowspan="1">Set a token count in <span class="register">B</span> of 10.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26932"></span>26932</td>
 <td class="instruction">LD E,0</td>
-<td class="comment-1" rowspan="1">No noun has matched yet.</td>
+<td class="comment-1" rowspan="1">Initialise the noun counter in <span class="register">E</span> to 0.</td>
 </tr>
 <tr>
 <td class="asm-label">Parser_FindPhrase_Loop1</td>
 <td class="address-2"><span id="26934"></span>26934</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Read the next word token.</td>
+<td class="comment-1" rowspan="1">Fetch a user input token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26935"></span>26935</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Jump to <a href="26927.html#26956">Parser_FindPhrase_Step2</a> when the command has no more words (255).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="26927.html#26956">Parser_FindPhrase_Step2</a> if the terminator (255) has been reached.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -158,7 +175,7 @@ Set the zero flag when none of the typed words is a known noun.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26939"></span>26939</td>
 <td class="instruction">EXX</td>
-<td class="comment-1" rowspan="5">Look that token up in the noun list without losing the token pointer.</td>
+<td class="comment-1" rowspan="5">Search *<a href="25302.html">Pointer_NounTokens</a> for this token among *<a href="25288.html">Count_Nouns</a> nouns.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -184,31 +201,41 @@ Set the zero flag when none of the typed words is a known noun.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26950"></span>26950</td>
 <td class="instruction">JR NZ,<a href="26927.html#26953">Parser_FindPhrase_Step1</a></td>
-<td class="comment-1" rowspan="1">Leave the match count alone when this token is not a noun.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="26927.html#26953">Parser_FindPhrase_Step1</a> if this token is not a noun.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="26952"></span>
+<div class="comments">
+<div class="paragraph">
+This token names a noun, so increase the counter.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26952"></span>26952</td>
 <td class="instruction">INC E</td>
-<td class="comment-1" rowspan="1">Count this token as a noun.</td>
+<td class="comment-1" rowspan="1">Increment the noun counter by one.</td>
 </tr>
 <tr>
 <td class="asm-label">Parser_FindPhrase_Step1</td>
 <td class="address-2"><span id="26953"></span>26953</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Move on to the next word token.</td>
+<td class="comment-1" rowspan="1">Move to the next token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26954"></span>26954</td>
 <td class="instruction">DJNZ <a href="26927.html#26934">Parser_FindPhrase_Loop1</a></td>
-<td class="comment-1" rowspan="1">Repeat for the remaining words of the command.</td>
+<td class="comment-1" rowspan="1">Decrease the token counter and loop back to <a href="26927.html#26934">Parser_FindPhrase_Loop1</a> until done.</td>
 </tr>
 <tr>
 <td class="asm-label">Parser_FindPhrase_Step2</td>
 <td class="address-2"><span id="26956"></span>26956</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Set the zero flag when the command named no noun.</td>
+<td class="comment-1" rowspan="2">Transfer the noun count into <span class="register">A</span> and set flags.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -251,7 +278,7 @@ Next: <a href="26959.html">26959</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/messagefromandromeda/">Source code</a>.</div>
 <div><a href="../../asm/692F.html">Switch to hexadecimal</a>.</div>
 </footer>

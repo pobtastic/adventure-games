@@ -120,6 +120,16 @@ Count down the timed threats and, when one expires, run its handler.
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="bece"></span>
+<div class="comments">
+<div class="paragraph">
+First process the turn-based events (if any are active).
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Handler_TurnBasedEvents</td>
 <td class="address-2"><span id="bece"></span>BECE</td>
 <td class="instruction">LD A,($BA36)</td>
@@ -160,7 +170,7 @@ Count down the timed threats and, when one expires, run its handler.
 <td class="asm-label"></td>
 <td class="address-1"><span id="bedb"></span>BEDB</td>
 <td class="instruction">LD DE,$0000</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=0000.</td>
+<td class="comment-1" rowspan="1">Clear the offset used while counting this threat down.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -228,12 +238,13 @@ Count down the timed threats and, when one expires, run its handler.
 <td class="asm-label"></td>
 <td class="address-1"><span id="bef7"></span>BEF7</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="4">Keep the bit scan safe, return here, and jump to that handler.</td>
+<td class="comment-1" rowspan="1">Keep the bit scan safe on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bef8"></span>BEF8</td>
 <td class="instruction">LD DE,$BEFD</td>
+<td class="comment-1" rowspan="2">Push <a href="BECE.html#befd">BEFD</a> so the next return resumes here.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -244,6 +255,7 @@ Count down the timed threats and, when one expires, run its handler.
 <td class="asm-label"></td>
 <td class="address-1"><span id="befc"></span>BEFC</td>
 <td class="instruction">JP (HL)</td>
+<td class="comment-1" rowspan="1">Jump to that handler.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -252,16 +264,36 @@ Count down the timed threats and, when one expires, run its handler.
 <td class="comment-1" rowspan="1">Restore the bit scan from the stack.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="befe"></span>
+<div class="comments">
+<div class="paragraph">
+Test the next turn-based event.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Handler_TurnBasedEvents_Next</td>
 <td class="address-2"><span id="befe"></span>BEFE</td>
 <td class="instruction">DJNZ <a href="BECE.html#bed7">Handler_TurnBasedEvents_Loop</a></td>
-<td class="comment-1" rowspan="1">Repeat from <a href="BECE.html#bed7">Handler_TurnBasedEvents_Loop</a> for the remaining event bits.</td>
+<td class="comment-1" rowspan="1">Decrease the event bit counter by one and loop back to <a href="BECE.html#bed7">Handler_TurnBasedEvents_Loop</a> until all eight events have been considered.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="bf00"></span>
+<div class="comments">
+<div class="paragraph">
+Process scenic events.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">Handler_TurnBasedEvents_Scenic</td>
 <td class="address-2"><span id="bf00"></span>BF00</td>
 <td class="instruction">NOP</td>
-<td class="comment-1" rowspan="5">Start at the scenic list. Jump to <a href="BECE.html#bf40">Handler_TurnBasedEvents_Return</a> when the scenic count is zero.</td>
+<td class="comment-1" rowspan="5">Jump to <a href="BECE.html#bf40">Handler_TurnBasedEvents_Return</a> when the scenic count is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -372,7 +404,7 @@ Count down the timed threats and, when one expires, run its handler.
 <td class="asm-label"></td>
 <td class="address-1"><span id="bf26"></span>BF26</td>
 <td class="instruction">LD A,($5C78)</td>
-<td class="comment-1" rowspan="6">Use the frame counter as a step count and start at the first room in the list.</td>
+<td class="comment-1" rowspan="3">Use the frame counter as a step count and set the group terminator in <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -385,9 +417,20 @@ Count down the timed threats and, when one expires, run its handler.
 <td class="instruction">LD A,$FF</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="bf2c"></span>
+<div class="comments">
+<div class="paragraph">
+Walk the room group. FF restarts it, and the frame count chooses where to stop.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Handler_TurnBasedEvents_RoomWalk</td>
 <td class="address-2"><span id="bf2c"></span>BF2C</td>
 <td class="instruction">LD L,(IX+$00)</td>
+<td class="comment-1" rowspan="2">Point <span class="register">HL</span> at the start of this room group.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -398,6 +441,7 @@ Count down the timed threats and, when one expires, run its handler.
 <td class="asm-label"></td>
 <td class="address-1"><span id="bf32"></span>BF32</td>
 <td class="instruction">JR <a href="BECE.html#bf35">Handler_TurnBasedEvents_RoomCheck</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="BECE.html#bf35">Handler_TurnBasedEvents_RoomCheck</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">Handler_TurnBasedEvents_RoomStep</td>
@@ -420,7 +464,7 @@ Count down the timed threats and, when one expires, run its handler.
 <td class="asm-label"></td>
 <td class="address-1"><span id="bf38"></span>BF38</td>
 <td class="instruction">DJNZ <a href="BECE.html#bf34">Handler_TurnBasedEvents_RoomStep</a></td>
-<td class="comment-1" rowspan="1">Repeat from <a href="BECE.html#bf34">Handler_TurnBasedEvents_RoomStep</a> until the step count runs out.</td>
+<td class="comment-1" rowspan="1">Decrease the step counter by one and loop back to <a href="BECE.html#bf34">Handler_TurnBasedEvents_RoomStep</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -446,10 +490,30 @@ Count down the timed threats and, when one expires, run its handler.
 <td class="comment-1" rowspan="1">Store that room back in this scenic slot.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="bf3e"></span>
+<div class="comments">
+<div class="paragraph">
+Move on to the next scenic event.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Handler_TurnBasedEvents_ScenicNext</td>
 <td class="address-2"><span id="bf3e"></span>BF3E</td>
 <td class="instruction">DJNZ <a href="BECE.html#bf0d">Handler_TurnBasedEvents_ScenicAdvance</a></td>
-<td class="comment-1" rowspan="1">Repeat from <a href="BECE.html#bf0d">Handler_TurnBasedEvents_ScenicAdvance</a> for the remaining scenic events.</td>
+<td class="comment-1" rowspan="1">Decrease the scenic event counter by one and loop back to <a href="BECE.html#bf0d">Handler_TurnBasedEvents_ScenicAdvance</a> until every scenic event has been considered.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="bf40"></span>
+<div class="comments">
+<div class="paragraph">
+All done, now return.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">Handler_TurnBasedEvents_Return</td>
@@ -485,7 +549,7 @@ Next: <a href="BF41.html">BF41</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../dec/asm/48846.html">Switch to decimal</a>.</div>
 </footer>

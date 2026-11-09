@@ -97,7 +97,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="60963.html">60963</a>
+Prev: <a href="60965.html">60965</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#60989">Map</a></td>
 <td class="next">
@@ -120,18 +120,19 @@ Describe the single object the player named.
 <td class="asm-label">Action_Examine</td>
 <td class="address-2"><span id="60989"></span>60989</td>
 <td class="instruction">CALL <a href="49929.html">Parser_ValidateDirectObject</a></td>
-<td class="comment-1" rowspan="2">Return if the words after the verb are not valid for this command.</td>
+<td class="comment-1" rowspan="1">Call <a href="49929.html">Parser_ValidateDirectObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60992"></span>60992</td>
 <td class="instruction">RET C</td>
+<td class="comment-1" rowspan="1">Return if the direct object is malformed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60993"></span>60993</td>
 <td class="instruction">CP 1</td>
-<td class="comment-1" rowspan="2">Jump back to <a href="60787.html">Response_OneAtATimePlease</a> unless the carried location matches.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="60787.html">Response_OneAtATimePlease</a> if <span class="register">A</span> is not equal to 1.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -139,10 +140,20 @@ Describe the single object the player named.
 <td class="instruction">JP NZ,<a href="60787.html">Response_OneAtATimePlease</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="60998"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to examine ... Mara's body?
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60998"></span>60998</td>
 <td class="instruction">LD HL,59410</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60989.html#61012">Action_Examine_Next</a> unless the player named Mara's body.</td>
+<td class="comment-1" rowspan="2">Call <a href="49775.html">Parser_AdvanceToSeparator</a> with <a href="59344.html#59410">59410</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -152,14 +163,15 @@ Describe the single object the player named.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61004"></span>61004</td>
-<td class="instruction">JR NZ,<a href="60989.html#61012">Action_Examine_Next</a></td>
+<td class="instruction">JR NZ,<a href="60989.html#61012">Examine_CheckWitch</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60989.html#61012">Examine_CheckWitch</a> if the token isn't for Mara's body.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="61006"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "There are curious runic symbolsalong its entire length.".
+Print "There are curious runic symbolsalong its entire length.".
 </div>
 </div>
 </td>
@@ -168,18 +180,29 @@ Reply with "There are curious runic symbolsalong its entire length.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="61006"></span>61006</td>
 <td class="instruction">LD HL,56503</td>
-<td class="comment-1" rowspan="2">Print "There are curious runic symbolsalong its entire length." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56503.html">Messaging_ThereAreCuriousRunicSymbols</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61009"></span>61009</td>
 <td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Examine_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="61012"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to examine ... the witch?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Examine_CheckWitch</td>
 <td class="address-2"><span id="61012"></span>61012</td>
 <td class="instruction">LD HL,59412</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60989.html#61033">Action_Examine_WitchClosedChest</a> unless the player named the witch.</td>
+<td class="comment-1" rowspan="2">Call <a href="49775.html">Parser_AdvanceToSeparator</a> with <a href="59344.html#59412">59412</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -189,30 +212,31 @@ Reply with "There are curious runic symbolsalong its entire length.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61018"></span>61018</td>
-<td class="instruction">JR NZ,<a href="60989.html#61033">Action_Examine_WitchClosedChest</a></td>
+<td class="instruction">JR NZ,<a href="60989.html#61033">Examine_CheckWitchClosedChest</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60989.html#61033">Examine_CheckWitchClosedChest</a> if the token isn't for the witch.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61020"></span>61020</td>
 <td class="instruction">LD A,11</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60989.html#61033">Action_Examine_WitchClosedChest</a> if object 11 (the chest) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60989.html#61033">Examine_CheckWitchClosedChest</a> if <a href="49743.html">ValidateItemPresent</a> reports that "A chest" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61022"></span>61022</td>
-<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="49743.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61025"></span>61025</td>
-<td class="instruction">JR NZ,<a href="60989.html#61033">Action_Examine_WitchClosedChest</a></td>
+<td class="instruction">JR NZ,<a href="60989.html#61033">Examine_CheckWitchClosedChest</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="61027"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "It is locked.".
+Print "It is locked.".
 </div>
 </div>
 </td>
@@ -221,18 +245,29 @@ Reply with "It is locked.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="61027"></span>61027</td>
 <td class="instruction">LD HL,56560</td>
-<td class="comment-1" rowspan="2">Print "It is locked." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56560.html">Messaging_ItIsLocked</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61030"></span>61030</td>
 <td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Examine_WitchClosedChest</td>
+<td class="routine-comment" colspan="5">
+<span id="61033"></span>
+<div class="comments">
+<div class="paragraph">
+Was the player trying to examine ... the witch (closed chest)?
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Examine_CheckWitchClosedChest</td>
 <td class="address-2"><span id="61033"></span>61033</td>
 <td class="instruction">LD HL,59412</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60989.html#61054">Action_Examine_NoPoint</a> unless the player named the witch.</td>
+<td class="comment-1" rowspan="2">Call <a href="49775.html">Parser_AdvanceToSeparator</a> with <a href="59344.html#59412">59412</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -242,30 +277,31 @@ Reply with "It is locked.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61039"></span>61039</td>
-<td class="instruction">JR NZ,<a href="60989.html#61054">Action_Examine_NoPoint</a></td>
+<td class="instruction">JR NZ,<a href="60989.html#61054">Examine_Invalid</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60989.html#61054">Examine_Invalid</a> if the token isn't for the witch.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61041"></span>61041</td>
 <td class="instruction">LD A,12</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60989.html#61054">Action_Examine_NoPoint</a> if object 12 (the closed chest) is not here.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60989.html#61054">Examine_Invalid</a> if <a href="49743.html">ValidateItemPresent</a> reports that "A closed chest" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61043"></span>61043</td>
-<td class="instruction">CALL <a href="49743.html">IsObjectInCurrentRoom</a></td>
+<td class="instruction">CALL <a href="49743.html">ValidateItemPresent</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61046"></span>61046</td>
-<td class="instruction">JR NZ,<a href="60989.html#61054">Action_Examine_NoPoint</a></td>
+<td class="instruction">JR NZ,<a href="60989.html#61054">Examine_Invalid</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="61048"></span>
 <div class="comments">
 <div class="paragraph">
-Reply with "It is unlocked.".
+Print "It is unlocked.".
 </div>
 </div>
 </td>
@@ -274,24 +310,49 @@ Reply with "It is unlocked.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="61048"></span>61048</td>
 <td class="instruction">LD HL,56443</td>
-<td class="comment-1" rowspan="2">Print "It is unlocked." and return to the game loop.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56443.html">Messaging_ItIsUnlocked</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61051"></span>61051</td>
 <td class="instruction">JP <a href="60774.html">PrintResponse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60774.html">PrintResponse</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Action_Examine_NoPoint</td>
+<td class="routine-comment" colspan="5">
+<span id="61054"></span>
+<div class="comments">
+<div class="paragraph">
+Nothing else is valid.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Examine_Invalid</td>
 <td class="address-2"><span id="61054"></span>61054</td>
 <td class="instruction">JP <a href="60792.html">Response_IDontSeeThePoint</a></td>
-<td class="comment-1" rowspan="1">Jump back to <a href="60792.html">Response_IDontSeeThePoint</a> to say there is no point.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="60792.html">Response_IDontSeeThePoint</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/heroesofkarn/dec/asm/63365.html">Heroes Of Karn</a></li>
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/61853.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/dec/asm/36627.html">Message From Andromeda</a></li>
+<li><a href="/adventure-games/warlord/dec/asm/63571.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="60963.html">60963</a>
+Prev: <a href="60965.html">60965</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#60989">Map</a></td>
 <td class="next">
@@ -302,7 +363,7 @@ Next: <a href="61057.html">61057</a>
 <footer>
 <div class="release"></div>
 <div class="copyright">&copy; 1984 Interceptor Software UK<br />&copy; 2026 ArcadeGeek LTD.</div>
-<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.1.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
 <div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/forestatworldsend/">Source code</a>.</div>
 <div><a href="../../asm/EE3D.html">Switch to hexadecimal</a>.</div>
 </footer>
