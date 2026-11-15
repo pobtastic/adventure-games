@@ -114,6 +114,15 @@ Next: <a href="A8B2.html">A8B2</a>
 Succeeds when the active item in the group operand equals the second operand.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry (opcode, group, item)</td>
+</tr>
+</table>
 <table class="output">
 <tr class="asm-output-header">
 <th colspan="2">Output</th>
@@ -130,7 +139,7 @@ Succeeds when the active item in the group operand equals the second operand.
 <span id="a898"></span>
 <div class="comments">
 <div class="paragraph">
-Does the active item in this group equal the second operand? <a href="A652.html">CheckActiveScenicEvents</a> returns with the zero flag set, so the early exit is never taken.
+The first operand selects a group from <a href="B60E.html">Table_ItemGrouping</a>.
 </div>
 </div>
 </td>
@@ -139,23 +148,25 @@ Does the active item in this group equal the second operand? <a href="A652.html"
 <td class="asm-label">Condition_GroupItemEquals</td>
 <td class="address-2"><span id="a898"></span>A898</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-1" rowspan="3">The operand selects a group from <a href="B60E.html">Table_ItemGrouping</a>.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">IX</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a89a"></span>A89A</td>
 <td class="instruction">LD E,(IX+$01)</td>
+<td class="comment-1" rowspan="1">Fetch the group number (the operand) from *<span class="register">IX</span>+01 into <span class="register">E</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a89d"></span>A89D</td>
 <td class="instruction">LD IX,$B60E</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the item-group table at <a href="B60E.html">Table_ItemGrouping</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a8a1"></span>A8A1</td>
 <td class="instruction">CALL <a href="A305.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">That group's list.</td>
+<td class="comment-1" rowspan="1">Call <a href="A305.html">GetTableEntry</a> to fetch the address of the group's item list into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -164,28 +175,38 @@ Does the active item in this group equal the second operand? <a href="A652.html"
 <td class="comment-1" rowspan="1">Restore the script pointer from the stack.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="a8a6"></span>
+<div class="comments">
+<div class="paragraph">
+Find the active item in that group and compare it with the second operand.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a8a6"></span>A8A6</td>
 <td class="instruction">CALL <a href="A652.html">CheckActiveScenicEvents</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A652.html">CheckActiveScenicEvents</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A652.html">CheckActiveScenicEvents</a> to find the first present item in that list.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a8a9"></span>A8A9</td>
-<td class="instruction">JP NZ,<a href="A6FF.html#a71b">Handler_RunScript_2</a></td>
-<td class="comment-1" rowspan="1">The active-item check always continues.</td>
+<td class="instruction">JP NZ,<a href="A6FF.html#a71b">RunScript_SkipCondition_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a71b">RunScript_SkipCondition_ThreeBytes</a> if none of the group's items is present.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a8ac"></span>A8AC</td>
 <td class="instruction">CP (IX+$02)</td>
-<td class="comment-1" rowspan="1">The active item is the second operand.</td>
+<td class="comment-1" rowspan="1">Set the zero flag when the active item equals the second operand.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a8af"></span>A8AF</td>
-<td class="instruction">JP <a href="A6FF.html#a71b">Handler_RunScript_2</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="A6FF.html#a71b">RunScript_SkipCondition_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a71b">RunScript_SkipCondition_ThreeBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

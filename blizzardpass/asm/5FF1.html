@@ -120,15 +120,26 @@ If the verb is one of the directions listed for this room, move to the destinati
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="5ff1"></span>
+<div class="comments">
+<div class="paragraph">
+Find this room's exits.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">TakeExit</td>
 <td class="address-2"><span id="5ff1"></span>5FF1</td>
 <td class="instruction">CALL <a href="5FCE.html">FindExits</a></td>
-<td class="comment-1" rowspan="2">Call <a href="5FCE.html">FindExits</a> to find this room's exits.</td>
+<td class="comment-1" rowspan="1">Call <a href="5FCE.html">FindExits</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5ff4"></span>5FF4</td>
 <td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="1">Step back one byte so the walk starts at the first exit.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -144,7 +155,7 @@ Each exit is a verb byte with bit 7 clear, then the destination room. Bit 7 ends
 <td class="asm-label">TakeExit_Next</td>
 <td class="address-2"><span id="5ff5"></span>5FF5</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="4">Bit 7 ends this room's exits.</td>
+<td class="comment-1" rowspan="2">Advance to the next exit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -155,6 +166,7 @@ Each exit is a verb byte with bit 7 clear, then the destination room. Bit 7 ends
 <td class="asm-label"></td>
 <td class="address-1"><span id="5ff7"></span>5FF7</td>
 <td class="instruction">BIT 7,(HL)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="5FF1.html#600e">TakeExit_Done</a> if bit 7 is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -165,7 +177,7 @@ Each exit is a verb byte with bit 7 clear, then the destination room. Bit 7 ends
 <td class="asm-label"></td>
 <td class="address-1"><span id="5ffb"></span>5FFB</td>
 <td class="instruction">LD A,($5B7F)</td>
-<td class="comment-1" rowspan="2">Keep the exit whose verb is the one just typed.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="5FF1.html#5ff5">TakeExit_Next</a> if this exit is not the typed verb.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -176,13 +188,12 @@ Each exit is a verb byte with bit 7 clear, then the destination room. Bit 7 ends
 <td class="asm-label"></td>
 <td class="address-1"><span id="5fff"></span>5FFF</td>
 <td class="instruction">JR NZ,<a href="5FF1.html#5ff5">TakeExit_Next</a></td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6001"></span>6001</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="4">Remember the match and clear the last-matched verb.</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5BCF.html">Last_Matched_Verb</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -193,6 +204,7 @@ Each exit is a verb byte with bit 7 clear, then the destination room. Bit 7 ends
 <td class="asm-label"></td>
 <td class="address-1"><span id="6005"></span>6005</td>
 <td class="instruction">INC A</td>
+<td class="comment-1" rowspan="2">Write 01 to <a href="5B7A.html">SearchHit</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -203,7 +215,7 @@ Each exit is a verb byte with bit 7 clear, then the destination room. Bit 7 ends
 <td class="asm-label"></td>
 <td class="address-1"><span id="6009"></span>6009</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="3">Move to the destination room.</td>
+<td class="comment-1" rowspan="2">Fetch the destination room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -214,6 +226,17 @@ Each exit is a verb byte with bit 7 clear, then the destination room. Bit 7 ends
 <td class="asm-label"></td>
 <td class="address-1"><span id="600b"></span>600B</td>
 <td class="instruction">LD ($5D87),A</td>
+<td class="comment-1" rowspan="1">Write it to <a href="5D87.html">CurrentRoom</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="600e"></span>
+<div class="comments">
+<div class="paragraph">
+No more exits, or the move is done.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">TakeExit_Done</td>

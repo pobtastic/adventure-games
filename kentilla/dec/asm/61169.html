@@ -111,64 +111,10 @@ Next: <a href="61314.html">61314</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="61330.html">CallSubMessage</a> and <a href="61348.html">SubMessageSelect</a>.
+Used by the routines at <a href="61330.html">CallSubMessage</a>, <a href="61348.html">SubMessageSelect</a> and <a href="61435.html">LocationGraphicSetup</a>.
 </div>
 <div class="paragraph">
-Walks a message script pointed to by <span class="register">HL</span>. Most bytes are literal character codes passed to <a href="61314.html">ClipAndPrintCharacter</a>; values below 32 are control codes:
-</div>
-<div class="paragraph">
-<table class="default">
-<tr>
-<th colspan="1" rowspan="1">Code</th>
-<th colspan="1" rowspan="1">Action</th>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">0-23</td>
-<td class="centre" colspan="1" rowspan="1">Set row, then column (also <a href="23296.html">PrintLeftMarginColumn</a>)</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">24</td>
-<td class="centre" colspan="1" rowspan="1">Set attribute at <a href="23541.html">PrintState</a></td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">25</td>
-<td class="centre" colspan="1" rowspan="1">Set flags at <a href="23541.html#23542">PrintState_Flags</a></td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">26</td>
-<td class="centre" colspan="1" rowspan="1">End of script (return)</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">27</td>
-<td class="centre" colspan="1" rowspan="1">Repeat current character</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">28</td>
-<td class="centre" colspan="1" rowspan="1">Fill a box of spaces</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">29</td>
-<td class="centre" colspan="1" rowspan="1">New line from <a href="23296.html">PrintLeftMarginColumn</a></td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">30</td>
-<td class="centre" colspan="1" rowspan="1">Add to column; advance row</td>
-</tr>
-<tr>
-<td class="centre" colspan="1" rowspan="1">31</td>
-<td class="centre" colspan="1" rowspan="1">Call sub-script via <a href="61330.html">CallSubMessage</a></td>
-</tr>
-</table>
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="61169"></span>
-<div class="comments">
-<div class="paragraph">
-Dispatch the next script byte to a control handler, or print it as a literal character.
+Walks a message script pointed to by <span class="register">HL</span>. Bytes below 32 are control codes; the rest print as literals via <a href="61314.html">ClipAndPrintCharacter</a>.
 </div>
 </div>
 </td>
@@ -235,13 +181,12 @@ Code 26 ends the script.
 <td class="asm-label"></td>
 <td class="address-1"><span id="61177"></span>61177</td>
 <td class="instruction">CP 26</td>
-<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with 26.</td>
+<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is 26.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61179"></span>61179</td>
 <td class="instruction">RET Z</td>
-<td class="comment-1" rowspan="1">Return if this is the end-of-script code.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -359,7 +304,7 @@ Code 31 calls a location-art sub-script.
 <span id="61199"></span>
 <div class="comments">
 <div class="paragraph">
-Literal character: store it and print via <a href="61314.html">ClipAndPrintCharacter</a>.
+Literal character.
 </div>
 </div>
 </td>
@@ -368,12 +313,13 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label"></td>
 <td class="address-1"><span id="61199"></span>61199</td>
 <td class="instruction">LD (23545),A</td>
-<td class="comment-1" rowspan="2">Store the character in *<a href="23541.html#23545">PrintState_Character</a> and print it.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="23545.html">PrintState_Character</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61202"></span>61202</td>
 <td class="instruction">CALL <a href="61314.html">ClipAndPrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="61314.html">ClipAndPrintCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -382,15 +328,26 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="comment-1" rowspan="1">Jump to <a href="61169.html">PrintMessage</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="61207"></span>
+<div class="comments">
+<div class="paragraph">
+Set the print row, column and left margin.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PrintMessage_SetPosition</td>
 <td class="address-2"><span id="61207"></span>61207</td>
 <td class="instruction">LD (23544),A</td>
-<td class="comment-1" rowspan="3">Store the new row and column in the print state.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="23544.html">PrintState_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61210"></span>61210</td>
 <td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="2">Write the next script byte to *<a href="23543.html">PrintState_Column</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -401,23 +358,35 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label"></td>
 <td class="address-1"><span id="61214"></span>61214</td>
 <td class="instruction">LD (23296),A</td>
-<td class="comment-1" rowspan="3">Remember the left margin at <a href="23296.html">PrintLeftMarginColumn</a> and continue.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="23296.html">PrintLeftMarginColumn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61217"></span>61217</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61218"></span>61218</td>
 <td class="instruction">JR <a href="61169.html#61169">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61169.html">PrintMessage</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61220"></span>
+<div class="comments">
+<div class="paragraph">
+Set the print attribute.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PrintMessage_SetAttribute</td>
 <td class="address-2"><span id="61220"></span>61220</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="4">Store the next script byte as the print attribute.</td>
+<td class="comment-1" rowspan="2">Write the next script byte to *<a href="23541.html">PrintState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -428,17 +397,29 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label"></td>
 <td class="address-1"><span id="61224"></span>61224</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61225"></span>61225</td>
 <td class="instruction">JR <a href="61169.html#61169">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61169.html">PrintMessage</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61227"></span>
+<div class="comments">
+<div class="paragraph">
+Set the print flags.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PrintMessage_SetFlags</td>
 <td class="address-2"><span id="61227"></span>61227</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="4">Store the next script byte as the print flags.</td>
+<td class="comment-1" rowspan="2">Write the next script byte to *<a href="23542.html">PrintState_Flags</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -449,11 +430,23 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label"></td>
 <td class="address-1"><span id="61231"></span>61231</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61232"></span>61232</td>
 <td class="instruction">JR <a href="61169.html#61169">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61169.html">PrintMessage</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61234"></span>
+<div class="comments">
+<div class="paragraph">
+Repeat the current character.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PrintMessage_Repeat</td>
@@ -470,7 +463,7 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label">PrintMessage_Repeat_Loop</td>
 <td class="address-2"><span id="61236"></span>61236</td>
 <td class="instruction">CALL <a href="61314.html">ClipAndPrintCharacter</a></td>
-<td class="comment-1" rowspan="2">Print the current character that many times.</td>
+<td class="comment-1" rowspan="2">Call <a href="61314.html">ClipAndPrintCharacter</a> until the count is done.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -481,23 +474,35 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label"></td>
 <td class="address-1"><span id="61241"></span>61241</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="2">Advance the script and continue.</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61242"></span>61242</td>
 <td class="instruction">JR <a href="61169.html#61169">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61169.html">PrintMessage</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61244"></span>
+<div class="comments">
+<div class="paragraph">
+Fill a box of spaces.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PrintMessage_FillBox</td>
 <td class="address-2"><span id="61244"></span>61244</td>
 <td class="instruction">LD B,(HL)</td>
-<td class="comment-1" rowspan="4">Set the fill character to a space and load the row count.</td>
+<td class="comment-1" rowspan="1"><span class="register">B</span>=the row count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61245"></span>61245</td>
 <td class="instruction">LD A,32</td>
+<td class="comment-1" rowspan="2">Write a space to *<a href="23545.html">PrintState_Character</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -508,12 +513,12 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label"></td>
 <td class="address-1"><span id="61250"></span>61250</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="3">Write the next script byte to *<a href="23541.html">PrintState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61251"></span>61251</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="5">Store the fill attribute and start row from the script.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -524,6 +529,7 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label"></td>
 <td class="address-1"><span id="61255"></span>61255</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="3">Write the next script byte to *<a href="23544.html">PrintState_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -536,15 +542,26 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="instruction">LD (23544),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="61260"></span>
+<div class="comments">
+<div class="paragraph">
+Print one row of the box.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PrintMessage_FillBox_Row</td>
 <td class="address-2"><span id="61260"></span>61260</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="4">Begin a row of 20 spaces from column 6.</td>
+<td class="comment-1" rowspan="1">Stash the row counter on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61261"></span>61261</td>
 <td class="instruction">LD B,20</td>
+<td class="comment-1" rowspan="3">Begin a row of 20 spaces from column 6.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -560,7 +577,7 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label">PrintMessage_FillBox_Column</td>
 <td class="address-2"><span id="61268"></span>61268</td>
 <td class="instruction">CALL <a href="61314.html">ClipAndPrintCharacter</a></td>
-<td class="comment-1" rowspan="2">Print one row of spaces.</td>
+<td class="comment-1" rowspan="2">Call <a href="61314.html">ClipAndPrintCharacter</a> until the column count is done.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -571,7 +588,7 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label"></td>
 <td class="address-1"><span id="61273"></span>61273</td>
 <td class="instruction">LD A,(23544)</td>
-<td class="comment-1" rowspan="5">Advance the print row and loop until the box is filled.</td>
+<td class="comment-1" rowspan="3">Advance *<a href="23544.html">PrintState_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -587,6 +604,7 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label"></td>
 <td class="address-1"><span id="61280"></span>61280</td>
 <td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore the row counter and loop.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -597,12 +615,23 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label"></td>
 <td class="address-1"><span id="61283"></span>61283</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="2">Advance the script and continue.</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61284"></span>61284</td>
 <td class="instruction">JP <a href="61169.html#61169">PrintMessage</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61169.html">PrintMessage</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61287"></span>
+<div class="comments">
+<div class="paragraph">
+Start a new line from the left margin.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PrintMessage_NewLine</td>
@@ -619,7 +648,7 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label">PrintMessage_AdvanceRow</td>
 <td class="address-2"><span id="61293"></span>61293</td>
 <td class="instruction">LD A,(23544)</td>
-<td class="comment-1" rowspan="3">Advance the print row.</td>
+<td class="comment-1" rowspan="3">Advance *<a href="23544.html">PrintState_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -638,10 +667,20 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="comment-1" rowspan="1">Jump to <a href="61169.html">PrintMessage</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="61303"></span>
+<div class="comments">
+<div class="paragraph">
+Add to the column, then advance the row.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PrintMessage_AddColumn</td>
 <td class="address-2"><span id="61303"></span>61303</td>
 <td class="instruction">LD B,(HL)</td>
-<td class="comment-1" rowspan="5">Add the next script byte to the left-margin column.</td>
+<td class="comment-1" rowspan="4">Add the next script byte to the left-margin column.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -662,12 +701,13 @@ Literal character: store it and print via <a href="61314.html">ClipAndPrintChara
 <td class="asm-label"></td>
 <td class="address-1"><span id="61311"></span>61311</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61312"></span>61312</td>
 <td class="instruction">JR <a href="61169.html#61293">PrintMessage_AdvanceRow</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="61169.html#61293">PrintMessage_AdvanceRow</a> to advance the row.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="61169.html#61293">PrintMessage_AdvanceRow</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

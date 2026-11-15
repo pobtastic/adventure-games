@@ -133,7 +133,7 @@ DELETE is printed as a space and then another DELETE, so the cursor steps back.
 <td class="asm-label">PlotCharacter</td>
 <td class="address-2"><span id="63fc"></span>63FC</td>
 <td class="instruction">CP $0C</td>
-<td class="comment-1" rowspan="2">DELETE prints a space and then rubs it out.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="63FC.html#640a">PlotCharacter_Byte</a> if this is not DELETE.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,12 +144,13 @@ DELETE is printed as a space and then another DELETE, so the cursor steps back.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6400"></span>6400</td>
 <td class="instruction">CALL <a href="63FC.html#640a">PlotCharacter_Byte</a></td>
-<td class="comment-1" rowspan="3">Plot the space, then pass DELETE on.</td>
+<td class="comment-1" rowspan="1">Call <a href="63FC.html#640a">PlotCharacter_Byte</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6403"></span>6403</td>
 <td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="2">Plot a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -161,6 +162,16 @@ DELETE is printed as a space and then another DELETE, so the cursor steps back.
 <td class="address-1"><span id="6408"></span>6408</td>
 <td class="instruction">LD A,$0C</td>
 <td class="comment-1" rowspan="1">DELETE is the character that falls through.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="640a"></span>
+<div class="comments">
+<div class="paragraph">
+Plot this byte, or handle ENTER and DELETE.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotCharacter_Byte</td>
@@ -209,7 +220,7 @@ DELETE is printed as a space and then another DELETE, so the cursor steps back.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6417"></span>6417</td>
 <td class="instruction">LD A,($5B8A)</td>
-<td class="comment-1" rowspan="3">Column 0 wraps to the previous row.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="63FC.html#642b">PlotCharacter_Back</a> if *<a href="5B8A.html">PrintColumn</a> is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -225,7 +236,7 @@ DELETE is printed as a space and then another DELETE, so the cursor steps back.
 <td class="asm-label"></td>
 <td class="address-1"><span id="641d"></span>641D</td>
 <td class="instruction">LD A,$29</td>
-<td class="comment-1" rowspan="2">Column 29 of the row above.</td>
+<td class="comment-1" rowspan="2">Write 29 to *<a href="5B8A.html">PrintColumn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -236,7 +247,7 @@ DELETE is printed as a space and then another DELETE, so the cursor steps back.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6422"></span>6422</td>
 <td class="instruction">LD A,($5B89)</td>
-<td class="comment-1" rowspan="4">The previous row, then the pixel address moves back.</td>
+<td class="comment-1" rowspan="3">Decrement *<a href="5B89.html">PrintRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -252,12 +263,23 @@ DELETE is printed as a space and then another DELETE, so the cursor steps back.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6429"></span>6429</td>
 <td class="instruction">JR <a href="63FC.html#6436">PlotCharacter_Pixel</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="63FC.html#6436">PlotCharacter_Pixel</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="642b"></span>
+<div class="comments">
+<div class="paragraph">
+Step one column left.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotCharacter_Back</td>
 <td class="address-2"><span id="642b"></span>642B</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="2">Step one column left.</td>
+<td class="comment-1" rowspan="2">Decrement *<a href="5B8A.html">PrintColumn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -267,13 +289,14 @@ DELETE is printed as a space and then another DELETE, so the cursor steps back.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="642f"></span>642F</td>
-<td class="instruction">AND $03</td>
-<td class="comment-1" rowspan="3">A column whose low bits are 2 does not move the pixel address.</td>
+<td class="instruction">AND %00000011</td>
+<td class="comment-1" rowspan="1">Keep only bits 0-1.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6431"></span>6431</td>
 <td class="instruction">CP $02</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6483.html#6546">PlotGlyph_Done</a> if the column is 02.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -281,10 +304,20 @@ DELETE is printed as a space and then another DELETE, so the cursor steps back.
 <td class="instruction">JP Z,<a href="6483.html#6546">PlotGlyph_Done</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6436"></span>
+<div class="comments">
+<div class="paragraph">
+Move the pixel address back one byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PlotCharacter_Pixel</td>
 <td class="address-2"><span id="6436"></span>6436</td>
 <td class="instruction">LD HL,($5B87)</td>
-<td class="comment-1" rowspan="4">Otherwise the pixel address moves back one byte.</td>
+<td class="comment-1" rowspan="3">Decrement *<a href="5B87.html">PrintAddress</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -300,6 +333,7 @@ DELETE is printed as a space and then another DELETE, so the cursor steps back.
 <td class="asm-label"></td>
 <td class="address-1"><span id="643d"></span>643D</td>
 <td class="instruction">JP <a href="6483.html#6546">PlotGlyph_Done</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6483.html#6546">PlotGlyph_Done</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -318,7 +352,7 @@ ENTER on row 13 while a description is on screen waits for a key. Below the wind
 <td class="asm-label">PlotCharacter_Newline</td>
 <td class="address-2"><span id="6440"></span>6440</td>
 <td class="instruction">LD A,($5B89)</td>
-<td class="comment-1" rowspan="3">Row 13 is the pause row while a description is on screen.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="63FC.html#645c">PlotCharacter_Low</a> if *<a href="5B89.html">PrintRow</a> is not 13.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -361,12 +395,13 @@ ENTER on row 13 while a description is on screen waits for a key. Below the wind
 <td class="asm-label"></td>
 <td class="address-1"><span id="6452"></span>6452</td>
 <td class="instruction">CALL <a href="6884.html">WaitKeyDown</a></td>
-<td class="comment-1" rowspan="2">Wait for a key and scroll.</td>
+<td class="comment-1" rowspan="1">Call <a href="6884.html">WaitKeyDown</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6455"></span>6455</td>
 <td class="instruction">CALL <a href="655E.html">ScrollWindow</a></td>
+<td class="comment-1" rowspan="1">Call <a href="655E.html">ScrollWindow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -378,6 +413,16 @@ ENTER on row 13 while a description is on screen waits for a key. Below the wind
 <td class="asm-label"></td>
 <td class="address-1"><span id="645a"></span>645A</td>
 <td class="instruction">JR <a href="63FC.html#6465">PlotCharacter_Stay</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="645c"></span>
+<div class="comments">
+<div class="paragraph">
+Rows below the pause line.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotCharacter_Low</td>
@@ -394,28 +439,41 @@ ENTER on row 13 while a description is on screen waits for a key. Below the wind
 <td class="asm-label"></td>
 <td class="address-1"><span id="6460"></span>6460</td>
 <td class="instruction">CALL <a href="655E.html">ScrollWindow</a></td>
-<td class="comment-1" rowspan="2">Row 17 scrolls and stays put.</td>
+<td class="comment-1" rowspan="1">Call <a href="655E.html">ScrollWindow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6463"></span>6463</td>
 <td class="instruction">LD A,$17</td>
+<td class="comment-1" rowspan="1">Stay on row 17.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6465"></span>
+<div class="comments">
+<div class="paragraph">
+Stay on this row.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotCharacter_Stay</td>
 <td class="address-2"><span id="6465"></span>6465</td>
 <td class="instruction">LD ($5B89),A</td>
-<td class="comment-1" rowspan="4">Home the cursor on that row.</td>
+<td class="comment-1" rowspan="1">Write the row to <a href="5B89.html">PrintRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6468"></span>6468</td>
 <td class="instruction">CALL <a href="654B.html">HomeRow</a></td>
+<td class="comment-1" rowspan="1">Call <a href="654B.html">HomeRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="646b"></span>646B</td>
 <td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5B8A.html">PrintColumn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -426,13 +484,23 @@ ENTER on row 13 while a description is on screen waits for a key. Below the wind
 <td class="asm-label"></td>
 <td class="address-1"><span id="646f"></span>646F</td>
 <td class="instruction">JP <a href="6483.html#6546">PlotGlyph_Done</a></td>
-<td class="comment-1" rowspan="1">Return to the plotter.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="6483.html#6546">PlotGlyph_Done</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6472"></span>
+<div class="comments">
+<div class="paragraph">
+Advance one row.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotCharacter_Down</td>
 <td class="address-2"><span id="6472"></span>6472</td>
 <td class="instruction">LD A,($5B89)</td>
-<td class="comment-1" rowspan="3">Advance one row.</td>
+<td class="comment-1" rowspan="3">Increment *<a href="5B89.html">PrintRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -448,12 +516,13 @@ ENTER on row 13 while a description is on screen waits for a key. Below the wind
 <td class="asm-label"></td>
 <td class="address-1"><span id="6479"></span>6479</td>
 <td class="instruction">CALL <a href="654B.html">HomeRow</a></td>
-<td class="comment-1" rowspan="3">Home the cursor on it.</td>
+<td class="comment-1" rowspan="1">Call <a href="654B.html">HomeRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="647c"></span>647C</td>
 <td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5B8A.html">PrintColumn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -464,7 +533,7 @@ ENTER on row 13 while a description is on screen waits for a key. Below the wind
 <td class="asm-label"></td>
 <td class="address-1"><span id="6480"></span>6480</td>
 <td class="instruction">JP <a href="6483.html#6546">PlotGlyph_Done</a></td>
-<td class="comment-1" rowspan="1">Return to the plotter.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="6483.html#6546">PlotGlyph_Done</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

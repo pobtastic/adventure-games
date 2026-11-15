@@ -123,17 +123,19 @@ Treats A as an index into <a href="B1BC.html">Dictionary</a>. Word 0 is empty. E
 <td class="asm-label">ExpandToken</td>
 <td class="address-2"><span id="62d7"></span>62D7</td>
 <td class="instruction">LD HL,$B1BC</td>
-<td class="comment-1" rowspan="4">Token 0 is the first dictionary word.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="B1BC.html">Dictionary</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62da"></span>62DA</td>
 <td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Copy the token number into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62db"></span>62DB</td>
 <td class="instruction">OR A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="62D7.html#62e9">ExpandToken_Character</a> if it is token 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -147,15 +149,26 @@ Treats A as an index into <a href="B1BC.html">Dictionary</a>. Word 0 is empty. E
 <td class="comment-1" rowspan="1">The scan starts on the byte before the dictionary.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62df"></span>
+<div class="comments">
+<div class="paragraph">
+Skip to the next word.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ExpandToken_Scan</td>
 <td class="address-2"><span id="62df"></span>62DF</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="4">Skip to the end of one word. Bit 7 marks it.</td>
+<td class="comment-1" rowspan="1">Advance to the next character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62e0"></span>62E0</td>
 <td class="instruction">BIT 7,(HL)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="62D7.html#62e6">ExpandToken_Next</a> if bit 7 is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -166,6 +179,17 @@ Treats A as an index into <a href="B1BC.html">Dictionary</a>. Word 0 is empty. E
 <td class="asm-label"></td>
 <td class="address-1"><span id="62e4"></span>62E4</td>
 <td class="instruction">JR <a href="62D7.html#62df">ExpandToken_Scan</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="62D7.html#62df">ExpandToken_Scan</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62e6"></span>
+<div class="comments">
+<div class="paragraph">
+Count down to the requested word.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ExpandToken_Next</td>
@@ -174,27 +198,48 @@ Treats A as an index into <a href="B1BC.html">Dictionary</a>. Word 0 is empty. E
 <td class="comment-1" rowspan="1">Count down to the requested word.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62e8"></span>
+<div class="comments">
+<div class="paragraph">
+Step onto the first character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ExpandToken_Word</td>
 <td class="address-2"><span id="62e8"></span>62E8</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Step onto its first character.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62e9"></span>
+<div class="comments">
+<div class="paragraph">
+Print this dictionary character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ExpandToken_Character</td>
 <td class="address-2"><span id="62e9"></span>62E9</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="2">Print this character.</td>
+<td class="comment-1" rowspan="1">Fetch this character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62ea"></span>62EA</td>
 <td class="instruction">CALL <a href="62F2.html">Capitalise</a></td>
+<td class="comment-1" rowspan="1">Call <a href="62F2.html">Capitalise</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62ed"></span>62ED</td>
 <td class="instruction">BIT 7,(HL)</td>
-<td class="comment-1" rowspan="3">Bit 7 ends the word.</td>
+<td class="comment-1" rowspan="2">Return if bit 7 is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -205,6 +250,7 @@ Treats A as an index into <a href="B1BC.html">Dictionary</a>. Word 0 is empty. E
 <td class="asm-label"></td>
 <td class="address-1"><span id="62f0"></span>62F0</td>
 <td class="instruction">JR <a href="62D7.html#62e8">ExpandToken_Word</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="62D7.html#62e8">ExpandToken_Word</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

@@ -170,8 +170,8 @@ Store the destination room ID and prepare to update scenic events.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50475"></span>50475</td>
-<td class="instruction">JR <a href="50464.html#50478">FindScenicEvents</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="50464.html#50478">FindScenicEvents</a>.</td>
+<td class="instruction">JR <a href="50464.html#50478">ScenicItem_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="50464.html#50478">ScenicItem_Next</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -184,21 +184,21 @@ Loop through all scenic events and move any that are in the current room to the 
 </td>
 </tr>
 <tr>
-<td class="asm-label">FindScenicEvents_Loop</td>
+<td class="asm-label">ScenicItem_Advance</td>
 <td class="address-2"><span id="50477"></span>50477</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Move to the next scenic event in the table.</td>
 </tr>
 <tr>
-<td class="asm-label">FindScenicEvents</td>
+<td class="asm-label">ScenicItem_Next</td>
 <td class="address-2"><span id="50478"></span>50478</td>
 <td class="instruction">CP (HL)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="50464.html#50482">FindScenicEvents_Next</a> if this scenic event is not in the current room.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="50464.html#50482">ScenicItem_Count</a> if this scenic event is not in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50479"></span>50479</td>
-<td class="instruction">JR NZ,<a href="50464.html#50482">FindScenicEvents_Next</a></td>
+<td class="instruction">JR NZ,<a href="50464.html#50482">ScenicItem_Count</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -207,10 +207,10 @@ Loop through all scenic events and move any that are in the current room to the 
 <td class="comment-1" rowspan="1">Update this scenic event's location to the destination room.</td>
 </tr>
 <tr>
-<td class="asm-label">FindScenicEvents_Next</td>
+<td class="asm-label">ScenicItem_Count</td>
 <td class="address-2"><span id="50482"></span>50482</td>
-<td class="instruction">DJNZ <a href="50464.html#50477">FindScenicEvents_Loop</a></td>
-<td class="comment-1" rowspan="1">Decrease the scenic event counter by one and loop back to <a href="50464.html#50477">FindScenicEvents_Loop</a> until all scenic events have been checked.</td>
+<td class="instruction">DJNZ <a href="50464.html#50477">ScenicItem_Advance</a></td>
+<td class="comment-1" rowspan="1">Decrease the scenic event counter by one and loop back to <a href="50464.html#50477">ScenicItem_Advance</a> until all scenic events have been checked.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -223,7 +223,7 @@ Update the current room ID to the destination room.
 </td>
 </tr>
 <tr>
-<td class="asm-label"></td>
+<td class="asm-label">MovePlayerToRoom_SetRoom</td>
 <td class="address-1"><span id="50484"></span>50484</td>
 <td class="instruction">LD A,C</td>
 <td class="comment-1" rowspan="2">Write the destination room ID to <a href="48331.html">CurrentRoom</a>.</td>
@@ -281,17 +281,17 @@ For each set bit, move the item at that position in <a href="48240.html">Table_F
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50500"></span>50500</td>
-<td class="instruction">JR <a href="50464.html#50503">FollowingItems_CheckBit</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="50464.html#50503">FollowingItems_CheckBit</a>.</td>
+<td class="instruction">JR <a href="50464.html#50503">EventFlag_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="50464.html#50503">EventFlag_Next</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">FollowingItems_Loop</td>
+<td class="asm-label">EventFlag_Advance</td>
 <td class="address-2"><span id="50502"></span>50502</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Move to the next item ID.</td>
 </tr>
 <tr>
-<td class="asm-label">FollowingItems_CheckBit</td>
+<td class="asm-label">EventFlag_Next</td>
 <td class="address-2"><span id="50503"></span>50503</td>
 <td class="instruction">SRL C</td>
 <td class="comment-1" rowspan="1">Shift the following flags right to check the next bit.</td>
@@ -299,8 +299,8 @@ For each set bit, move the item at that position in <a href="48240.html">Table_F
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="50505"></span>50505</td>
-<td class="instruction">JR NC,<a href="50464.html#50515">FollowingItems_Next</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="50464.html#50515">FollowingItems_Next</a> if this bit is not set.</td>
+<td class="instruction">JR NC,<a href="50464.html#50515">EventFlag_Count</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="50464.html#50515">EventFlag_Count</a> if this bit is not set.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -347,10 +347,10 @@ This item is following, so move it to the current room.
 <td class="instruction">POP HL</td>
 </tr>
 <tr>
-<td class="asm-label">FollowingItems_Next</td>
+<td class="asm-label">EventFlag_Count</td>
 <td class="address-2"><span id="50515"></span>50515</td>
-<td class="instruction">DJNZ <a href="50464.html#50502">FollowingItems_Loop</a></td>
-<td class="comment-1" rowspan="1">Decrease the bit counter by one and loop back to <a href="50464.html#50502">FollowingItems_Loop</a> until all 8 bits have been tested.</td>
+<td class="instruction">DJNZ <a href="50464.html#50502">EventFlag_Advance</a></td>
+<td class="comment-1" rowspan="1">Decrease the bit counter by one and loop back to <a href="50464.html#50502">EventFlag_Advance</a> until all 8 bits have been tested.</td>
 </tr>
 <tr>
 <td class="asm-label">MovePlayerToRoom_Return</td>
@@ -366,7 +366,6 @@ View the equivalent code in; <ul class="">
 <li><a href="/adventure-games/aftershock/dec/asm/44221.html">After Shock</a></li>
 <li><a href="/adventure-games/forestatworldsend/dec/asm/50223.html">Forest At Worlds End</a></li>
 <li><a href="/adventure-games/heroesofkarn/dec/asm/46868.html">Heroes Of Karn</a></li>
-<li><a href="/adventure-games/messagefromandromeda/dec/asm/36376.html">Message From Andromeda</a></li>
 <li><a href="/adventure-games/warlord/dec/asm/45087.html">Warlord</a></li>
 </ul>
 </div>

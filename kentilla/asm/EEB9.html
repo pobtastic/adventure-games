@@ -114,7 +114,7 @@ Next: <a href="EEE7.html">EEE7</a>
 Used by the routine at <a href="EA60.html">JumpTable</a>.
 </div>
 <div class="paragraph">
-Jump-table target <a href="EA60.html#ea78">JumpTable_SeedPrimaryBuffer</a> (<code>USR</code> <a href="EA60.html#ea78">JumpTable_SeedPrimaryBuffer</a>): point <a href="5BA0.html#5ba2">ParserState_WorkPointer</a> at <a href="F9E8.html#fa00">PrimaryWorkBuffer</a> and scan up to 2D entries. BASIC uses this for INVENTORY / LOOK object lists (see <a href="EA60.html">JumpTable</a>).
+Jump-table target <a href="EA60.html#ea78">JumpTable_SeedPrimaryBuffer</a> (<code>USR</code> <a href="EA60.html#ea78">JumpTable_SeedPrimaryBuffer</a>). BASIC uses this for INVENTORY / LOOK object lists (see <a href="EA60.html">JumpTable</a>).
 </div>
 </div>
 </td>
@@ -123,7 +123,7 @@ Jump-table target <a href="EA60.html#ea78">JumpTable_SeedPrimaryBuffer</a> (<cod
 <td class="asm-label">SeedPrimaryWorkBuffer</td>
 <td class="address-2"><span id="eeb9"></span>EEB9</td>
 <td class="instruction">LD HL,$FA00</td>
-<td class="comment-1" rowspan="3">Point <a href="5BA0.html#5ba2">ParserState_WorkPointer</a> at <a href="F9E8.html#fa00">PrimaryWorkBuffer</a> with 2D entries.</td>
+<td class="comment-1" rowspan="3">Point <a href="5BA2.html">ParserState_WorkPointer</a> at <a href="F9E8.html#fa00">PrimaryWorkBuffer</a> with 2D entries.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -142,6 +142,9 @@ Jump-table target <a href="EA60.html#ea78">JumpTable_SeedPrimaryBuffer</a> (<cod
 <div class="paragraph">
 This entry point is used by the routine at <a href="EEE7.html">SeedSecondaryWorkBuffer</a>.
 </div>
+<div class="paragraph">
+Remember the entry limit and clear the word index.
+</div>
 </div>
 </td>
 </tr>
@@ -149,12 +152,13 @@ This entry point is used by the routine at <a href="EEE7.html">SeedSecondaryWork
 <td class="asm-label">SeedWorkBuffer_Common</td>
 <td class="address-2"><span id="eec1"></span>EEC1</td>
 <td class="instruction">LD ($5BFB),A</td>
-<td class="comment-1" rowspan="3">Remember the entry limit and clear the index.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">A</span> to *<a href="5BFB.html">InputLineState_Length</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eec4"></span>EEC4</td>
 <td class="instruction">SUB A</td>
+<td class="comment-1" rowspan="2">Write 00 to *<a href="5BA5.html">ParserState_WordIndex</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -169,7 +173,7 @@ This entry point is used by the routine at <a href="EEE7.html">SeedSecondaryWork
 This entry point is used by the routine at <a href="EA60.html">JumpTable</a>.
 </div>
 <div class="paragraph">
-Jump-table target <a href="EA60.html#ea7b">JumpTable_StepWorkBuffer</a>: step <a href="5BA0.html#5ba2">ParserState_WorkPointer</a> and compare *<span class="register">HL</span> to <a href="5BFA.html#5bfd">InputLineState_Dirty</a>.
+Step to the next work-buffer entry.
 </div>
 </div>
 </td>
@@ -178,7 +182,7 @@ Jump-table target <a href="EA60.html#ea7b">JumpTable_StepWorkBuffer</a>: step <a
 <td class="asm-label">StepWorkBuffer</td>
 <td class="address-2"><span id="eec8"></span>EEC8</td>
 <td class="instruction">LD A,($5BA5)</td>
-<td class="comment-1" rowspan="7">Step the work-buffer pointer and compare to <a href="5BFA.html#5bfd">InputLineState_Dirty</a>.</td>
+<td class="comment-1" rowspan="4">Increment *<a href="5BA5.html">ParserState_WordIndex</a> into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -199,6 +203,7 @@ Jump-table target <a href="EA60.html#ea7b">JumpTable_StepWorkBuffer</a>: step <a
 <td class="asm-label"></td>
 <td class="address-1"><span id="eed0"></span>EED0</td>
 <td class="instruction">LD HL,($5BA2)</td>
+<td class="comment-1" rowspan="3">Step *<a href="5BA2.html">ParserState_WorkPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -230,7 +235,7 @@ Jump-table target <a href="EA60.html#ea7b">JumpTable_StepWorkBuffer</a>: step <a
 <td class="asm-label"></td>
 <td class="address-1"><span id="eede"></span>EEDE</td>
 <td class="instruction">LD A,($5BFB)</td>
-<td class="comment-1" rowspan="4">Keep scanning, or fall through to a miss.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EEB9.html#eec8">StepWorkBuffer</a> if there are more entries.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -246,6 +251,7 @@ Jump-table target <a href="EA60.html#ea7b">JumpTable_StepWorkBuffer</a>: step <a
 <td class="asm-label"></td>
 <td class="address-1"><span id="eee4"></span>EEE4</td>
 <td class="instruction">JP <a href="EDEE.html#ee55">MatchTokenInBasicList_Miss</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EDEE.html#ee55">MatchTokenInBasicList_Miss</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

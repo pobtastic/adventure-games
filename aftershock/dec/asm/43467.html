@@ -122,6 +122,10 @@ Succeeds when <a href="44638.html">Handler_IsCarryingItem</a> rejects the item o
 <td class="register">F</td>
 <td class="register-desc">The zero flag is set when the item is not carried</td>
 </tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -139,31 +143,31 @@ Invert the drop test so the condition succeeds when the item is not carried.
 <td class="asm-label">Condition_IsNotCarryingForDrop</td>
 <td class="address-2"><span id="43467"></span>43467</td>
 <td class="instruction">LD A,(IX+1)</td>
-<td class="comment-1" rowspan="1">The operand names the item.</td>
+<td class="comment-1" rowspan="1">Fetch the item ID (the operand) from *<span class="register">IX</span>+1 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43470"></span>43470</td>
-<td class="instruction">CALL <a href="42751.html#42866">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">255 stands for the matched item.</td>
+<td class="instruction">CALL <a href="42751.html#42866">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42751.html#42866">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="43013.html">ScriptMatchedItem</a> when the operand is 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43473"></span>43473</td>
 <td class="instruction">CALL <a href="44638.html">Handler_IsCarryingItem</a></td>
-<td class="comment-1" rowspan="1">Call <a href="44638.html">Handler_IsCarryingItem</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="44638.html">Handler_IsCarryingItem</a> to test whether that item is carried for a drop.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43476"></span>43476</td>
-<td class="instruction">CALL <a href="42751.html#42858">Handler_RunScript_13</a></td>
-<td class="comment-1" rowspan="1">Succeed when the item is not carried.</td>
+<td class="instruction">CALL <a href="42751.html#42858">RunScript_InvertConditionResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42751.html#42858">RunScript_InvertConditionResult</a> so the condition succeeds when the item is not carried.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43479"></span>43479</td>
-<td class="instruction">JP <a href="42751.html#42781">Handler_RunScript_3</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="42751.html#42781">RunScript_SkipCondition_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42781">RunScript_SkipCondition_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

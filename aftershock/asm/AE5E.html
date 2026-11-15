@@ -114,10 +114,7 @@ Next: <a href="AE7D.html">AE7D</a>
 Used by the routines at <a href="A9BF.html">Condition_IsCarryingForDrop</a> and <a href="A9CB.html">Condition_IsNotCarryingForDrop</a>.
 </div>
 <div class="paragraph">
-Rejects a drop when the item is not carried.
-</div>
-<div class="paragraph">
-Plural items in <a href="B6F1.html">Table_PluralItems</a> use the "them" message.
+Rejects a drop when the item is not carried. Plural items listed in <a href="B6F1.html">Table_PluralItems</a> use the "them" wording.
 </div>
 </div>
 <table class="input">
@@ -158,30 +155,20 @@ The drop is valid when the item is already being carried.
 <td class="asm-label">Handler_IsCarryingItem</td>
 <td class="address-2"><span id="ae5e"></span>AE5E</td>
 <td class="instruction">CALL <a href="A635.html">CheckObjectInInventory</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A635.html">CheckObjectInInventory</a>.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="ae61"></span>
-<div class="comments">
-<div class="paragraph">
-The item is being carried.
-</div>
-</div>
-</td>
+<td class="comment-1" rowspan="1">Call <a href="A635.html">CheckObjectInInventory</a> to test whether the item is carried.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae61"></span>AE61</td>
 <td class="instruction">RET Z</td>
-<td class="comment-1" rowspan="1">Return.</td>
+<td class="comment-1" rowspan="1">Return if the item is carried.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="ae62"></span>
 <div class="comments">
 <div class="paragraph">
-Tell the player the item is not carried. A plural form from <a href="B6F1.html">Table_PluralItems</a> is used when the item is one of those three.
+Tell the player the item is not carried. Prefer the plural form from <a href="B6F1.html">Table_PluralItems</a> when the item is one of those three.
 </div>
 </div>
 </td>
@@ -190,13 +177,13 @@ Tell the player the item is not carried. A plural form from <a href="B6F1.html">
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae62"></span>AE62</td>
 <td class="instruction">LD HL,$001D</td>
-<td class="comment-1" rowspan="1">The message for a singular item.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the singular "not carrying" message <a href="CE07.html">Messaging_YoureNotCarryingIt</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae65"></span>AE65</td>
 <td class="instruction">LD BC,$0003</td>
-<td class="comment-1" rowspan="3">Three items can take the plural message.</td>
+<td class="comment-1" rowspan="3">Load <span class="register">BC</span> with the plural-list length 0003.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -211,24 +198,26 @@ Tell the player the item is not carried. A plural form from <a href="B6F1.html">
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae6a"></span>AE6A</td>
-<td class="instruction">JR Z,<a href="AE5E.html#ae76">Handler_IsCarryingItem_0</a></td>
-<td class="comment-1" rowspan="1">No plural list, so keep the singular wording.</td>
+<td class="instruction">JR Z,<a href="AE5E.html#ae76">IsCarryingItem_PrintReject</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE5E.html#ae76">IsCarryingItem_PrintReject</a> when the plural list length is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae6c"></span>AE6C</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">Search the plural-item list.</td>
+<td class="comment-1" rowspan="1">Stash the message pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae6d"></span>AE6D</td>
 <td class="instruction">LD HL,$B6F1</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the plural items table at <a href="B6F1.html">Table_PluralItems</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae70"></span>AE70</td>
 <td class="instruction">CPIR</td>
+<td class="comment-1" rowspan="1">Search <a href="B6F1.html">Table_PluralItems</a> for the item ID.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -239,41 +228,41 @@ Tell the player the item is not carried. A plural form from <a href="B6F1.html">
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae73"></span>AE73</td>
-<td class="instruction">JR NZ,<a href="AE5E.html#ae76">Handler_IsCarryingItem_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AE5E.html#ae76">Handler_IsCarryingItem_0</a> when this item is singular.</td>
+<td class="instruction">JR NZ,<a href="AE5E.html#ae76">IsCarryingItem_PrintReject</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE5E.html#ae76">IsCarryingItem_PrintReject</a> when this item is singular.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae75"></span>AE75</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">This item is plural, so use the next message.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">HL</span> on to the plural message.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_IsCarryingItem_0</td>
+<td class="routine-comment" colspan="5">
+<span id="ae76"></span>
+<div class="comments">
+<div class="paragraph">
+Print the rejection message and return failure.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">IsCarryingItem_PrintReject</td>
 <td class="address-2"><span id="ae76"></span>AE76</td>
 <td class="instruction">CALL <a href="A25C.html">PrintCompressedStringAndNewline</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A25C.html">PrintCompressedStringAndNewline</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A25C.html">PrintCompressedStringAndNewline</a> to print that compressed string and a newline.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae79"></span>AE79</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="2">The drop is rejected.</td>
+<td class="comment-1" rowspan="2">Load 01 into <span class="register">A</span> and clear the zero flag; the drop is rejected.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae7b"></span>AE7B</td>
 <td class="instruction">AND A</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="ae7c"></span>
-<div class="comments">
-<div class="paragraph">
-The drop is rejected.
-</div>
-</div>
-</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

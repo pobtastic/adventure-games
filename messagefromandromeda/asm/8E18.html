@@ -146,17 +146,17 @@ Store the given room as the current room and update the exit record.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8e21"></span>8E21</td>
-<td class="instruction">JR <a href="8E18.html#8e24">MovePlayerToRoom_Step1</a></td>
-<td class="comment-1" rowspan="1">Continue at <a href="8E18.html#8e24">MovePlayerToRoom_Step1</a> to see if this scenic slot names the old room.</td>
+<td class="instruction">JR <a href="8E18.html#8e24">MovePlayerToRoom_CheckScenic</a></td>
+<td class="comment-1" rowspan="1">Continue at <a href="8E18.html#8e24">MovePlayerToRoom_CheckScenic</a> to see if this scenic slot names the old room.</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_Loop1</td>
+<td class="asm-label">MovePlayerToRoom_Loop</td>
 <td class="address-2"><span id="8e23"></span>8E23</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Move on to the next scenic room.</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_Step1</td>
+<td class="asm-label">MovePlayerToRoom_CheckScenic</td>
 <td class="address-2"><span id="8e24"></span>8E24</td>
 <td class="instruction">CP (HL)</td>
 <td class="comment-1" rowspan="2">Leave this scenic slot when it does not name the old room.</td>
@@ -164,7 +164,7 @@ Store the given room as the current room and update the exit record.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8e25"></span>8E25</td>
-<td class="instruction">JR NZ,<a href="8E18.html#8e28">MovePlayerToRoom_Step2</a></td>
+<td class="instruction">JR NZ,<a href="8E18.html#8e28">MovePlayerToRoom_NextScenic</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -173,9 +173,9 @@ Store the given room as the current room and update the exit record.
 <td class="comment-1" rowspan="1">This scenic slot now names the room being entered.</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_Step2</td>
+<td class="asm-label">MovePlayerToRoom_NextScenic</td>
 <td class="address-2"><span id="8e28"></span>8E28</td>
-<td class="instruction">DJNZ <a href="8E18.html#8e23">MovePlayerToRoom_Loop1</a></td>
+<td class="instruction">DJNZ <a href="8E18.html#8e23">MovePlayerToRoom_Loop</a></td>
 <td class="comment-1" rowspan="1">Repeat for the remaining scenic rooms.</td>
 </tr>
 <tr>
@@ -205,7 +205,7 @@ Store the given room as the current room and update the exit record.
 <td class="asm-label"></td>
 <td class="address-1"><span id="8e33"></span>8E33</td>
 <td class="instruction">LD A,$12</td>
-<td class="comment-1" rowspan="3">Jump to <a href="8E18.html#8e44">MovePlayerToRoom_Step3</a> when An android guard.He has shot at youand missed. (12) is not here or being carried.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="8E18.html#8e44">MovePlayerToRoom_CheckSlug</a> when An android guard.He has shot at youand missed. (12) is not here or being carried.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -215,7 +215,7 @@ Store the given room as the current room and update the exit record.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8e38"></span>8E38</td>
-<td class="instruction">JR NZ,<a href="8E18.html#8e44">MovePlayerToRoom_Step3</a></td>
+<td class="instruction">JR NZ,<a href="8E18.html#8e44">MovePlayerToRoom_CheckSlug</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -240,10 +240,10 @@ Store the given room as the current room and update the exit record.
 <td class="instruction">LD ($621A),A</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_Step3</td>
+<td class="asm-label">MovePlayerToRoom_CheckSlug</td>
 <td class="address-2"><span id="8e44"></span>8E44</td>
 <td class="instruction">LD A,$24</td>
-<td class="comment-1" rowspan="3">Jump to <a href="8E18.html#8e55">MovePlayerToRoom_Step4</a> when A huge,blind slugis blocking the western exit.It is advancing toward you. (24) is not here or being carried.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="8E18.html#8e55">MovePlayerToRoom_CheckAndroid</a> when A huge,blind slugis blocking the western exit.It is advancing toward you. (24) is not here or being carried.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -253,7 +253,7 @@ Store the given room as the current room and update the exit record.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8e49"></span>8E49</td>
-<td class="instruction">JR NZ,<a href="8E18.html#8e55">MovePlayerToRoom_Step4</a></td>
+<td class="instruction">JR NZ,<a href="8E18.html#8e55">MovePlayerToRoom_CheckAndroid</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -278,10 +278,10 @@ Store the given room as the current room and update the exit record.
 <td class="instruction">LD ($621B),A</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_Step4</td>
+<td class="asm-label">MovePlayerToRoom_CheckAndroid</td>
 <td class="address-2"><span id="8e55"></span>8E55</td>
 <td class="instruction">LD A,$27</td>
-<td class="comment-1" rowspan="3">Jump to <a href="8E18.html#8e66">MovePlayerToRoom_Step5</a> when The alien commander,in space armour. (27) is not here or being carried.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="8E18.html#8e66">MovePlayerToRoom_TractorBeam</a> when The alien commander,in space armour. (27) is not here or being carried.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -291,7 +291,7 @@ Store the given room as the current room and update the exit record.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8e5a"></span>8E5A</td>
-<td class="instruction">JR NZ,<a href="8E18.html#8e66">MovePlayerToRoom_Step5</a></td>
+<td class="instruction">JR NZ,<a href="8E18.html#8e66">MovePlayerToRoom_TractorBeam</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -316,7 +316,7 @@ Store the given room as the current room and update the exit record.
 <td class="instruction">LD ($621C),A</td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_Step5</td>
+<td class="asm-label">MovePlayerToRoom_TractorBeam</td>
 <td class="address-2"><span id="8e66"></span>8E66</td>
 <td class="instruction">LD A,($6223)</td>
 <td class="comment-1" rowspan="1">Fetch the current room.</td>
@@ -332,7 +332,7 @@ Store the given room as the current room and update the exit record.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8e6b"></span>8E6B</td>
-<td class="instruction">JR NZ,<a href="8E18.html#8e8c">MovePlayerToRoom_Step6</a></td>
+<td class="instruction">JR NZ,<a href="8E18.html#8e8c">MovePlayerToRoom_Return</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -349,7 +349,7 @@ Store the given room as the current room and update the exit record.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="8e72"></span>8E72</td>
-<td class="instruction">JR Z,<a href="8E18.html#8e8c">MovePlayerToRoom_Step6</a></td>
+<td class="instruction">JR Z,<a href="8E18.html#8e8c">MovePlayerToRoom_Return</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -416,25 +416,10 @@ This action changes the map:
 <td class="instruction">CALL <a href="64E9.html">PrintStringAndANewline</a></td>
 </tr>
 <tr>
-<td class="asm-label">MovePlayerToRoom_Step6</td>
+<td class="asm-label">MovePlayerToRoom_Return</td>
 <td class="address-2"><span id="8e8c"></span>8E8C</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<div class="comments">
-<div class="paragraph">
-View the equivalent code in; <ul class="">
-<li><a href="/adventure-games/aftershock/asm/ACBD.html">After Shock</a></li>
-<li><a href="/adventure-games/forestatworldsend/asm/C42F.html">Forest At Worlds End</a></li>
-<li><a href="/adventure-games/heroesofkarn/asm/B714.html">Heroes Of Karn</a></li>
-<li><a href="/adventure-games/jewelsofbabylon/asm/C520.html">The Jewels Of Babylon</a></li>
-<li><a href="/adventure-games/warlord/asm/B01F.html">Warlord</a></li>
-</ul>
-</div>
-</div>
-</td>
 </tr>
 </table>
 <table class="asm-navigation">

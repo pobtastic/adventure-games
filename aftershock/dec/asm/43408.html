@@ -122,6 +122,10 @@ Succeeds unless <a href="41222.html">CurrentRoom</a> is the first operand and <a
 <td class="register">F</td>
 <td class="register-desc">The zero flag is set unless both rooms match</td>
 </tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -139,40 +143,43 @@ Succeed unless the player is in the first room and the marked room is the second
 <td class="asm-label">Condition_RoomPairDiffers</td>
 <td class="address-2"><span id="43408"></span>43408</td>
 <td class="instruction">LD A,(41222)</td>
-<td class="comment-1" rowspan="3">The player is in the first room.</td>
+<td class="comment-1" rowspan="1">Fetch the current room from *<a href="41222.html">CurrentRoom</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43411"></span>43411</td>
 <td class="instruction">CP (IX+1)</td>
+<td class="comment-1" rowspan="1">Compare it with the first room operand.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43414"></span>43414</td>
 <td class="instruction">JR NZ,<a href="43408.html#43422">RoomPairDiffers_Invert</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="43408.html#43422">RoomPairDiffers_Invert</a> if the current room is not the first operand.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43416"></span>43416</td>
 <td class="instruction">LD A,(44408)</td>
-<td class="comment-1" rowspan="2">The marked room is the second.</td>
+<td class="comment-1" rowspan="1">Fetch the marked room from *<a href="44408.html">TemporaryRoom</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43419"></span>43419</td>
 <td class="instruction">CP (IX+2)</td>
+<td class="comment-1" rowspan="1">Compare it with the second room operand.</td>
 </tr>
 <tr>
 <td class="asm-label">RoomPairDiffers_Invert</td>
 <td class="address-2"><span id="43422"></span>43422</td>
-<td class="instruction">CALL <a href="42751.html#42858">Handler_RunScript_13</a></td>
-<td class="comment-1" rowspan="1">Succeed unless both rooms match.</td>
+<td class="instruction">CALL <a href="42751.html#42858">RunScript_InvertConditionResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42751.html#42858">RunScript_InvertConditionResult</a> so the condition succeeds unless both rooms match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43425"></span>43425</td>
-<td class="instruction">JP <a href="42751.html#42779">Handler_RunScript_2</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="42751.html#42779">RunScript_SkipCondition_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42779">RunScript_SkipCondition_ThreeBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

@@ -456,7 +456,7 @@ Clear down the user input tokens.
 <td class="asm-label"></td>
 <td class="address-1"><span id="44407"></span>44407</td>
 <td class="instruction">LD HL,43044</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43044.html">UserInput_VerbToken</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43044.html">UserInput_FirstToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -502,7 +502,7 @@ Set up pointers for the command buffer, the user input tokens and the count of t
 <td class="asm-label"></td>
 <td class="address-1"><span id="44420"></span>44420</td>
 <td class="instruction">LD IX,43044</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="43044.html">UserInput_VerbToken</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="43044.html">UserInput_FirstToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -552,7 +552,7 @@ Print "I don't understand.".
 <span id="44437"></span>
 <div class="comments">
 <div class="paragraph">
-Process found word into user input token.
+Copy up to four letters of the current word into <a href="43055.html">FourLetterBuffer</a>.
 </div>
 </div>
 </td>
@@ -561,7 +561,7 @@ Process found word into user input token.
 <td class="asm-label">ProcessFoundWord</td>
 <td class="address-2"><span id="44437"></span>44437</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">Stash the command buffer pointer, <span class="register">DE</span> and user input tokens counter on the stack.</td>
+<td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -650,10 +650,20 @@ Copy the word (up to 4 characters in length) into the four letter buffer.
 <td class="comment-1" rowspan="1">Copy the "up-to-4" letters from the command buffer into the four-letter buffer.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="44458"></span>
+<div class="comments">
+<div class="paragraph">
+Restore the registers saved at the start of <a href="44338.html#44437">ProcessFoundWord</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44458"></span>44458</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="3">Restore the user input token counter, <span class="register">DE</span> and command buffer pointer from the stack.</td>
+<td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -936,10 +946,7 @@ Store the found token and check if we can continue parsing.
 <span id="44534"></span>
 <div class="comments">
 <div class="paragraph">
-Token matching only uses four letters of every word so a buffer is used for processing.
-</div>
-<div class="paragraph">
-Start by clearing the buffer.
+Clear the four-letter buffer to spaces so a short word cannot match the previous one's tail.
 </div>
 </div>
 </td>
@@ -948,7 +955,7 @@ Start by clearing the buffer.
 <td class="asm-label">EmptyFourLetterBuffer</td>
 <td class="address-2"><span id="44534"></span>44534</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Stash the command buffer pointer and user input tokens counter on the stack.</td>
+<td class="comment-1" rowspan="2">Stash <span class="register">HL</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -959,37 +966,37 @@ Start by clearing the buffer.
 <td class="asm-label"></td>
 <td class="address-1"><span id="44536"></span>44536</td>
 <td class="instruction">LD HL,43055</td>
-<td class="comment-1" rowspan="1">Load <a href="43055.html">FourLetterBuffer</a> into <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="43055.html">FourLetterBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44539"></span>44539</td>
 <td class="instruction">LD B,4</td>
-<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the 4 letters in the buffer.</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the 4 letters.</td>
 </tr>
 <tr>
 <td class="asm-label">EmptyFourLetterBuffer_Loop</td>
 <td class="address-2"><span id="44541"></span>44541</td>
 <td class="instruction">LD (HL),32</td>
-<td class="comment-1" rowspan="1">Write ASCII "SPACE" (32) to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Write a space character (32) to the buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44543"></span>44543</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44544"></span>44544</td>
 <td class="instruction">DJNZ <a href="44338.html#44541">EmptyFourLetterBuffer_Loop</a></td>
-<td class="comment-1" rowspan="1">Decrease the letter buffer counter by one and loop back to <a href="44338.html#44541">EmptyFourLetterBuffer_Loop</a> until all four letters have been cleared.</td>
+<td class="comment-1" rowspan="1">Decrease the counter by one and loop back to <a href="44338.html#44541">EmptyFourLetterBuffer_Loop</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44546"></span>44546</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore the user input tokens counter and command buffer pointer from the stack.</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1174,7 +1181,7 @@ Check to see if any of the user input tokens have been populated, and if not, pr
 <td class="asm-label">CheckVerbToken</td>
 <td class="address-2"><span id="44589"></span>44589</td>
 <td class="instruction">LD A,(43044)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44428">Response_NotUnderstood</a> if *<a href="43044.html">UserInput_VerbToken</a> hold the terminator byte (255).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="44338.html#44428">Response_NotUnderstood</a> if *<a href="43044.html">UserInput_FirstToken</a> hold the terminator byte (255).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

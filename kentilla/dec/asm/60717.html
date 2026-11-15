@@ -114,7 +114,7 @@ Next: <a href="60773.html">60773</a>
 Used by the routine at <a href="60000.html">JumpTable</a>.
 </div>
 <div class="paragraph">
-Jump-table target <a href="60000.html#60003">JumpTable_SearchVerbs</a> (<code>USR</code> <a href="60000.html#60003">JumpTable_SearchVerbs</a>): search <a href="64169.html">Table_Verbs</a> for the token at <a href="23456.html#23463">InputBuffer_TokenStart</a>. Sets <a href="23456.html#23460">ParserState_MatchLength</a> to 2 and walks up to index 46. On a hit, returns <span class="register">BC</span>=word index for BASIC <code>GO TO n*100+1000</code> (see <a href="60000.html">JumpTable</a>); on a miss, <span class="register">BC</span>=0000.
+Jump-table target <a href="60000.html#60003">JumpTable_SearchVerbs</a> (<code>USR</code> <a href="60000.html#60003">JumpTable_SearchVerbs</a>). On a hit, BASIC <code>GO TO n*100+1000</code> for verb index <code>n</code> (see <a href="60000.html">JumpTable</a>).
 </div>
 </div>
 </td>
@@ -123,7 +123,7 @@ Jump-table target <a href="60000.html#60003">JumpTable_SearchVerbs</a> (<code>US
 <td class="asm-label">SearchVocabulary_Verbs</td>
 <td class="address-2"><span id="60717"></span>60717</td>
 <td class="instruction">LD A,2</td>
-<td class="comment-1" rowspan="2">Set the minimum match length to 2.</td>
+<td class="comment-1" rowspan="2">Write 2 to *<a href="23460.html">ParserState_MatchLength</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -158,7 +158,7 @@ Shared search loop used by <a href="60717.html">SearchVocabulary_Verbs</a>, <a h
 <td class="asm-label">SearchVocabulary_Loop</td>
 <td class="address-2"><span id="60727"></span>60727</td>
 <td class="instruction">LD A,1</td>
-<td class="comment-1" rowspan="2">Start the word index at 1.</td>
+<td class="comment-1" rowspan="2">Write 1 to *<a href="23461.html">ParserState_WordIndex</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -166,10 +166,20 @@ Shared search loop used by <a href="60717.html">SearchVocabulary_Verbs</a>, <a h
 <td class="instruction">LD (23461),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="60732"></span>
+<div class="comments">
+<div class="paragraph">
+Compare this table word.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">SearchVocabulary_TryWord</td>
 <td class="address-2"><span id="60732"></span>60732</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="6">Compare the current table word to the token at <a href="23456.html#23463">InputBuffer_TokenStart</a>.</td>
+<td class="comment-1" rowspan="2">Stash <span class="register">HL</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -180,16 +190,19 @@ Shared search loop used by <a href="60717.html">SearchVocabulary_Verbs</a>, <a h
 <td class="asm-label"></td>
 <td class="address-1"><span id="60734"></span>60734</td>
 <td class="instruction">LD DE,(23463)</td>
+<td class="comment-1" rowspan="1">Copy *<a href="23463.html">InputBuffer_TokenStart</a> to <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60738"></span>60738</td>
 <td class="instruction">CALL <a href="60810.html">CompareTokenToWord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="60810.html">CompareTokenToWord</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60741"></span>60741</td>
 <td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -206,7 +219,7 @@ Shared search loop used by <a href="60717.html">SearchVocabulary_Verbs</a>, <a h
 <td class="asm-label">SearchVocabulary_SkipWord</td>
 <td class="address-2"><span id="60745"></span>60745</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="4">Skip ahead to the CR that ends this table word.</td>
+<td class="comment-1" rowspan="4">Skip ahead to the ENTER that ends this table word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -227,12 +240,13 @@ Shared search loop used by <a href="60717.html">SearchVocabulary_Verbs</a>, <a h
 <td class="asm-label"></td>
 <td class="address-1"><span id="60751"></span>60751</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="5">Advance the word index and try the next entry.</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> past the ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60752"></span>60752</td>
 <td class="instruction">LD A,(23461)</td>
+<td class="comment-1" rowspan="3">Increment *<a href="23461.html">ParserState_WordIndex</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -248,12 +262,12 @@ Shared search loop used by <a href="60717.html">SearchVocabulary_Verbs</a>, <a h
 <td class="asm-label"></td>
 <td class="address-1"><span id="60759"></span>60759</td>
 <td class="instruction">CP B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="60717.html#60732">SearchVocabulary_TryWord</a> if there are more words to try.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60760"></span>60760</td>
 <td class="instruction">JR C,<a href="60717.html#60732">SearchVocabulary_TryWord</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="60717.html#60732">SearchVocabulary_TryWord</a> if there are more words to try.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -268,10 +282,20 @@ Shared search loop used by <a href="60717.html">SearchVocabulary_Verbs</a>, <a h
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="60766"></span>
+<div class="comments">
+<div class="paragraph">
+A vocabulary word matched.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">SearchVocabulary_Matched</td>
 <td class="address-2"><span id="60766"></span>60766</td>
 <td class="instruction">LD A,(23461)</td>
-<td class="comment-1" rowspan="3"><span class="register">BC</span>=the matched word index.</td>
+<td class="comment-1" rowspan="3">Copy *<a href="23461.html">ParserState_WordIndex</a> into <span class="register">BC</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

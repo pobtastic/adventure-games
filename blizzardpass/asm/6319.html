@@ -123,7 +123,7 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label">CollectWord</td>
 <td class="address-2"><span id="6319"></span>6319</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="4">Save the registers around the word buffer.</td>
+<td class="comment-1" rowspan="4">Stash the registers around the word buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,7 +144,7 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="631d"></span>631D</td>
 <td class="instruction">LD HL,($5B99)</td>
-<td class="comment-1" rowspan="4">Store the character and advance the word pointer.</td>
+<td class="comment-1" rowspan="2">Store the character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -155,6 +155,7 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="6321"></span>6321</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Advance the word pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -165,18 +166,19 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="6325"></span>6325</td>
 <td class="instruction">LD HL,$5B98</td>
-<td class="comment-1" rowspan="2">Count it.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5B98.html">WordLength</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6328"></span>6328</td>
 <td class="instruction">INC (HL)</td>
+<td class="comment-1" rowspan="1">Count it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6329"></span>6329</td>
 <td class="instruction">CP $20</td>
-<td class="comment-1" rowspan="4">A space or ENTER flushes the word.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6319.html#633c">CollectWord_Flush</a> if it is a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -187,6 +189,7 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="632d"></span>632D</td>
 <td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6319.html#633c">CollectWord_Flush</a> if it is ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -197,7 +200,7 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="6331"></span>6331</td>
 <td class="instruction">CP $5E</td>
-<td class="comment-1" rowspan="4">5E or 7E flushes it too.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6319.html#633c">CollectWord_Flush</a> if it is 5E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -208,6 +211,7 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="6335"></span>6335</td>
 <td class="instruction">CP $7E</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6319.html#633c">CollectWord_Flush</a> if it is 7E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -221,16 +225,26 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="comment-1" rowspan="1">Any other character returns.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="633c"></span>
+<div class="comments">
+<div class="paragraph">
+Flush the buffered word.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">CollectWord_Flush</td>
 <td class="address-2"><span id="633c"></span>633C</td>
 <td class="instruction">LD HL,$5B98</td>
-<td class="comment-1" rowspan="1">Point at the length.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5B98.html">WordLength</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="633f"></span>633F</td>
 <td class="instruction">CP $5E</td>
-<td class="comment-1" rowspan="4">5E or 7E is not part of the width.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6319.html#634b">CollectWord_Drop</a> if it is 5E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -241,6 +255,7 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="6343"></span>6343</td>
 <td class="instruction">CP $7E</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6319.html#634b">CollectWord_Drop</a> if it is 7E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -259,10 +274,30 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="instruction">JR NZ,<a href="6319.html#634c">CollectWord_Width</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="634b"></span>
+<div class="comments">
+<div class="paragraph">
+Drop the terminator from the width.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">CollectWord_Drop</td>
 <td class="address-2"><span id="634b"></span>634B</td>
 <td class="instruction">DEC (HL)</td>
 <td class="comment-1" rowspan="1">Drop that character from the count.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="634c"></span>
+<div class="comments">
+<div class="paragraph">
+See whether the word fits.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">CollectWord_Width</td>
@@ -274,7 +309,7 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="634d"></span>634D</td>
 <td class="instruction">LD A,($5B8A)</td>
-<td class="comment-1" rowspan="3">Wrap when the column plus the word would pass 2A.</td>
+<td class="comment-1" rowspan="4">Call <a href="6319.html#6378">WrapLine</a> when *<a href="5B8A.html">PrintColumn</a> plus the word would pass 2A.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -290,7 +325,6 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="6353"></span>6353</td>
 <td class="instruction">CALL NC,<a href="6319.html#6378">WrapLine</a></td>
-<td class="comment-1" rowspan="1">Call <a href="6319.html#6378">WrapLine</a> when the word does not fit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -305,10 +339,20 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="comment-1" rowspan="1">The buffered word starts at <a href="5B60.html">WordBuffer</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="635a"></span>
+<div class="comments">
+<div class="paragraph">
+Print the flushed characters.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">CollectWord_Character</td>
 <td class="address-2"><span id="635a"></span>635A</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">7E is printed as a space and finishes the message.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6319.html#6366">CollectWord_End</a> if it is not 7E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -324,7 +368,7 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="635f"></span>635F</td>
 <td class="instruction">LD A,$20</td>
-<td class="comment-1" rowspan="3">Print that space and finish.</td>
+<td class="comment-1" rowspan="2">Print a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -335,6 +379,17 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="6364"></span>6364</td>
 <td class="instruction">JR <a href="6319.html#6388">CollectWord_Reset</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6319.html#6388">CollectWord_Reset</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6366"></span>
+<div class="comments">
+<div class="paragraph">
+Finish the message or keep printing.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">CollectWord_End</td>
@@ -351,7 +406,7 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="636a"></span>636A</td>
 <td class="instruction">CP $20</td>
-<td class="comment-1" rowspan="4">A space or ENTER finishes after it is printed.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6319.html#6385">CollectWord_Break</a> if it is a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -362,6 +417,7 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="636e"></span>636E</td>
 <td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6319.html#6385">CollectWord_Break</a> if it is ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -372,17 +428,19 @@ Adds the character to the current word. A space, ENTER or a terminator flushes t
 <td class="asm-label"></td>
 <td class="address-1"><span id="6372"></span>6372</td>
 <td class="instruction">CALL <a href="6394.html">PrintCharacter</a></td>
-<td class="comment-1" rowspan="3">Print this character and continue the word.</td>
+<td class="comment-1" rowspan="1">Call <a href="6394.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6375"></span>6375</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance to the next buffered character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6376"></span>6376</td>
 <td class="instruction">JR <a href="6319.html#635a">CollectWord_Character</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6319.html#635a">CollectWord_Character</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -412,31 +470,64 @@ The word does not fit on this row.
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="637e"></span>
+<div class="comments">
+<div class="paragraph">
+Start a new line, then reset the word.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">CollectWord_Newline</td>
 <td class="address-2"><span id="637e"></span>637E</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="4">5E starts a new line and then resets the word.</td>
+<td class="comment-1" rowspan="1">Stash the character on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="637f"></span>637F</td>
 <td class="instruction">CALL <a href="6319.html#6378">WrapLine</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6319.html#6378">WrapLine</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6382"></span>6382</td>
 <td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore the character from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6383"></span>6383</td>
 <td class="instruction">JR <a href="6319.html#6388">CollectWord_Reset</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6319.html#6388">CollectWord_Reset</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6385"></span>
+<div class="comments">
+<div class="paragraph">
+A space or ENTER is printed before the reset.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">CollectWord_Break</td>
 <td class="address-2"><span id="6385"></span>6385</td>
 <td class="instruction">CALL <a href="6394.html">PrintCharacter</a></td>
-<td class="comment-1" rowspan="1">A space or ENTER is printed before the reset.</td>
+<td class="comment-1" rowspan="1">Call <a href="6394.html">PrintCharacter</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6388"></span>
+<div class="comments">
+<div class="paragraph">
+Reset the word buffer.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">CollectWord_Reset</td>
@@ -453,7 +544,7 @@ The word does not fit on this row.
 <td class="asm-label"></td>
 <td class="address-1"><span id="638e"></span>638E</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="3">Clear the length and restore the registers.</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5B98.html">WordLength</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -464,6 +555,7 @@ The word does not fit on this row.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6392"></span>6392</td>
 <td class="instruction">JR <a href="6394.html#63cf">PrintCharacter_Done</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6394.html#63cf">PrintCharacter_Done</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

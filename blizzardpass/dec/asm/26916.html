@@ -117,27 +117,48 @@ Asks message 26, do you want to restore a saved game. N returns. Y loads 321 byt
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="26916"></span>
+<div class="comments">
+<div class="paragraph">
+Print "do you want to restore a saved game ?".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">RestoreGame</td>
 <td class="address-2"><span id="26916"></span>26916</td>
 <td class="instruction">LD A,26</td>
-<td class="comment-1" rowspan="2">Remember the pointer and select message 26.</td>
+<td class="comment-1" rowspan="1">Print <a href="32294.html#32572">SystemMessage_1A</a> using <a href="25556.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26918"></span>26918</td>
 <td class="instruction">LD (27265),IX</td>
+<td class="comment-1" rowspan="1">Store the pointer at <a href="27265.html">RestoreScratch</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26922"></span>26922</td>
 <td class="instruction">CALL <a href="25556.html">PrintSystemMessage</a></td>
-<td class="comment-1" rowspan="1">Print the question.</td>
+<td class="comment-1" rowspan="1">Call <a href="25556.html">PrintSystemMessage</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="26925"></span>
+<div class="comments">
+<div class="paragraph">
+Wait for Y or N.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">RestoreGame_Key</td>
 <td class="address-2"><span id="26925"></span>26925</td>
 <td class="instruction">CALL <a href="26756.html">WaitKeyDown</a></td>
-<td class="comment-1" rowspan="1">Wait for a key.</td>
+<td class="comment-1" rowspan="1">Call <a href="26756.html">WaitKeyDown</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -162,6 +183,16 @@ Asks message 26, do you want to restore a saved game. N returns. Y loads 321 byt
 <td class="instruction">JR NZ,<a href="26916.html#26925">RestoreGame_Key</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="26936"></span>
+<div class="comments">
+<div class="paragraph">
+Load the saved state.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">RestoreGame_Load</td>
 <td class="address-2"><span id="26936"></span>26936</td>
 <td class="instruction">CP 78</td>
@@ -176,34 +207,37 @@ Asks message 26, do you want to restore a saved game. N returns. Y loads 321 byt
 <td class="asm-label"></td>
 <td class="address-1"><span id="26939"></span>26939</td>
 <td class="instruction">LD HL,26963</td>
-<td class="comment-1" rowspan="2">Return through <a href="26963.html">Restored</a> with the state block in <span class="register">IX</span>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="26963.html">Restored</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26942"></span>26942</td>
 <td class="instruction">LD IX,23943</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the state block.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26946"></span>26946</td>
 <td class="instruction">LD DE,321</td>
-<td class="comment-1" rowspan="3">321 bytes, marker 42, with carry set for a headerless block.</td>
+<td class="comment-1" rowspan="1">321 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26949"></span>26949</td>
 <td class="instruction">LD A,42</td>
+<td class="comment-1" rowspan="1">Marker 42.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26951"></span>26951</td>
 <td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set carry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26952"></span>26952</td>
 <td class="instruction">INC D</td>
-<td class="comment-1" rowspan="4">The loader wants interrupts off, and the border dance around the alternate accumulator.</td>
+<td class="comment-1" rowspan="3">The border dance around the alternate accumulator.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -219,6 +253,7 @@ Asks message 26, do you want to restore a saved game. N returns. Y loads 321 byt
 <td class="asm-label"></td>
 <td class="address-1"><span id="26955"></span>26955</td>
 <td class="instruction">DI</td>
+<td class="comment-1" rowspan="1">Disable interrupts.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

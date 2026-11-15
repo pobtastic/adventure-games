@@ -117,6 +117,15 @@ Calls the parser check indexed in <a href="A779.html">JumpTable_ParserChecks</a>
 Stores <span class="register">A</span> at <a href="A805.html#a806">ScriptParserResult</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry (opcode, check index)</td>
+</tr>
+</table>
 <table class="output">
 <tr class="asm-output-header">
 <th colspan="2">Output</th>
@@ -133,7 +142,7 @@ Stores <span class="register">A</span> at <a href="A805.html#a806">ScriptParserR
 <span id="a947"></span>
 <div class="comments">
 <div class="paragraph">
-Run the parser check selected from <a href="A779.html">JumpTable_ParserChecks</a>. It returns to <a href="A947.html#a958">ParserFails_Return</a>, its result is stored at <a href="A805.html#a806">ScriptParserResult</a>, and the condition succeeds when the carry is set.
+The operand selects a parser check from <a href="A779.html">JumpTable_ParserChecks</a>.
 </div>
 </div>
 </td>
@@ -142,29 +151,51 @@ Run the parser check selected from <a href="A779.html">JumpTable_ParserChecks</a
 <td class="asm-label">Condition_ParserFails</td>
 <td class="address-2"><span id="a947"></span>A947</td>
 <td class="instruction">LD E,(IX+$01)</td>
-<td class="comment-1" rowspan="3">The operand selects a check from <a href="A779.html">JumpTable_ParserChecks</a>.</td>
+<td class="comment-1" rowspan="1">Fetch the check number (the operand) from *<span class="register">IX</span>+01 into <span class="register">E</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a94a"></span>A94A</td>
 <td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">IX</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a94c"></span>A94C</td>
 <td class="instruction">LD IX,$A779</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the parser-check jump table at <a href="A779.html">JumpTable_ParserChecks</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a950"></span>
+<div class="comments">
+<div class="paragraph">
+Resolve the check routine address from that table.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a950"></span>A950</td>
 <td class="instruction">CALL <a href="A305.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">That check.</td>
+<td class="comment-1" rowspan="1">Call <a href="A305.html">GetTableEntry</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a953"></span>
+<div class="comments">
+<div class="paragraph">
+Jump to that check, returning here at <a href="A947.html#a958">ParserFails_Return</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a953"></span>A953</td>
 <td class="instruction">LD DE,$A958</td>
-<td class="comment-1" rowspan="3">Run that check. It returns here.</td>
+<td class="comment-1" rowspan="2">Push the return address <a href="A947.html#a958">ParserFails_Return</a> onto the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -175,6 +206,17 @@ Run the parser check selected from <a href="A779.html">JumpTable_ParserChecks</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="a957"></span>A957</td>
 <td class="instruction">JP (HL)</td>
+<td class="comment-1" rowspan="1">Jump to the check routine held in <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a958"></span>
+<div class="comments">
+<div class="paragraph">
+The check returns here with its result in <span class="register">A</span> and the carry flag.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ParserFails_Return</td>
@@ -186,40 +228,53 @@ Run the parser check selected from <a href="A779.html">JumpTable_ParserChecks</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="a95a"></span>A95A</td>
 <td class="instruction">LD ($A806),A</td>
-<td class="comment-1" rowspan="1">Remember the check's result at <a href="A805.html#a806">ScriptParserResult</a>.</td>
+<td class="comment-1" rowspan="1">Store the check's result at <a href="A805.html#a806">ScriptParserResult</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a95d"></span>A95D</td>
 <td class="instruction">JR NC,<a href="A947.html#a963">ParserFails_Passed</a></td>
-<td class="comment-1" rowspan="1">The check passed.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="A947.html#a963">ParserFails_Passed</a> if the check passed (carry clear).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a95f"></span>A95F</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">The parser check failed, so this condition succeeds.</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span> and set the zero flag; the parser check failed, so this condition succeeds.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a960"></span>A960</td>
-<td class="instruction">JP <a href="A6FF.html#a71d">Handler_RunScript_3</a></td>
+<td class="instruction">JP <a href="A6FF.html#a71d">RunScript_SkipCondition_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a71d">RunScript_SkipCondition_TwoBytes</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a963"></span>
+<div class="comments">
+<div class="paragraph">
+The check passed, so force this "fails" condition to fail.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ParserFails_Passed</td>
 <td class="address-2"><span id="a963"></span>A963</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="3">The parser check passed, so this condition does not.</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span> ready for <a href="A6FF.html#a76a">RunScript_InvertConditionResult</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a964"></span>A964</td>
-<td class="instruction">CALL <a href="A6FF.html#a76a">Handler_RunScript_13</a></td>
+<td class="instruction">CALL <a href="A6FF.html#a76a">RunScript_InvertConditionResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a76a">RunScript_InvertConditionResult</a> so the condition fails when the check passed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a967"></span>A967</td>
-<td class="instruction">JP <a href="A6FF.html#a71d">Handler_RunScript_3</a></td>
+<td class="instruction">JP <a href="A6FF.html#a71d">RunScript_SkipCondition_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a71d">RunScript_SkipCondition_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

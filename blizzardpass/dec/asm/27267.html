@@ -133,12 +133,13 @@ Wears the object. It must be carried and in this room, and it must not already b
 <td class="asm-label">WearObject</td>
 <td class="address-2"><span id="27267"></span>27267</td>
 <td class="instruction">CALL <a href="26631.html">ObjectAddress</a></td>
-<td class="comment-1" rowspan="4">Point at the object. Already worn is refused.</td>
+<td class="comment-1" rowspan="1">Call <a href="26631.html">ObjectAddress</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27270"></span>27270</td>
 <td class="instruction">LD A,(23946)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="27267.html#27281">WearObject_Held</a> if it is not *<a href="23946.html">WornObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -151,10 +152,20 @@ Wears the object. It must be carried and in this room, and it must not already b
 <td class="instruction">JR NZ,<a href="27267.html#27281">WearObject_Held</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="27276"></span>
+<div class="comments">
+<div class="paragraph">
+Print "you are wearing it.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27276"></span>27276</td>
 <td class="instruction">LD A,29</td>
-<td class="comment-1" rowspan="2">Message 29: you are wearing it.</td>
+<td class="comment-1" rowspan="2">Print <a href="32294.html#32604">SystemMessage_1D</a> using <a href="25556.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -162,10 +173,20 @@ Wears the object. It must be carried and in this room, and it must not already b
 <td class="instruction">JP <a href="26800.html#26808">GetObject_Refuse</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="27281"></span>
+<div class="comments">
+<div class="paragraph">
+Wear it if it is carried or here.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">WearObject_Held</td>
 <td class="address-2"><span id="27281"></span>27281</td>
 <td class="instruction">LD A,(23945)</td>
-<td class="comment-1" rowspan="3">A carried object is taken off the carried count.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="27267.html#27298">WearObject_Count</a> if it is *<a href="23945.html">CarriedObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -181,7 +202,7 @@ Wears the object. It must be carried and in this room, and it must not already b
 <td class="asm-label"></td>
 <td class="address-1"><span id="27287"></span>27287</td>
 <td class="instruction">LD A,(23943)</td>
-<td class="comment-1" rowspan="3">In this room, it can be worn.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="27267.html#27304">WearObject_Take</a> if it is *<a href="23943.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -194,10 +215,20 @@ Wears the object. It must be carried and in this room, and it must not already b
 <td class="instruction">JR Z,<a href="27267.html#27304">WearObject_Take</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="27293"></span>
+<div class="comments">
+<div class="paragraph">
+Print "sorry, I don't see it here.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27293"></span>27293</td>
 <td class="instruction">LD A,22</td>
-<td class="comment-1" rowspan="2">Message 22: it is not here.</td>
+<td class="comment-1" rowspan="2">Print <a href="32294.html#32521">SystemMessage_16</a> using <a href="25556.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -205,15 +236,26 @@ Wears the object. It must be carried and in this room, and it must not already b
 <td class="instruction">JP <a href="26800.html#26808">GetObject_Refuse</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="27298"></span>
+<div class="comments">
+<div class="paragraph">
+Count one fewer carried object.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">WearObject_Count</td>
 <td class="address-2"><span id="27298"></span>27298</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="4">One fewer object is carried.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27299"></span>27299</td>
 <td class="instruction">LD HL,23948</td>
+<td class="comment-1" rowspan="2">Decrement *<a href="23948.html">CarriedCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -224,12 +266,23 @@ Wears the object. It must be carried and in this room, and it must not already b
 <td class="asm-label"></td>
 <td class="address-1"><span id="27303"></span>27303</td>
 <td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="27304"></span>
+<div class="comments">
+<div class="paragraph">
+Mark the object as worn.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">WearObject_Take</td>
 <td class="address-2"><span id="27304"></span>27304</td>
 <td class="instruction">LD A,(23946)</td>
-<td class="comment-1" rowspan="2">The worn id replaces the object's location.</td>
+<td class="comment-1" rowspan="2">Write *<a href="23946.html">WornObject</a> into the object's location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

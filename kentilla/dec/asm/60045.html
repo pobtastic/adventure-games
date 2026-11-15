@@ -111,7 +111,7 @@ Next: <a href="60222.html">60222</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="60241.html">InputLine</a>, <a href="60608.html">InputLine_Redraw</a>, <a href="61314.html">ClipAndPrintCharacter</a> and <a href="61670.html">SubmitInputLine</a>.
+Used by the routines at <a href="60241.html">InputLine</a>, <a href="60608.html">InputLine_Redraw</a>, <a href="61314.html">ClipAndPrintCharacter</a>, <a href="61435.html">LocationGraphicSetup</a> and <a href="61670.html">SubmitInputLine</a>.
 </div>
 <div class="paragraph">
 Plots one character glyph into the display file. Callers set up <a href="23541.html">PrintState</a> first.
@@ -145,7 +145,7 @@ Plots one character glyph into the display file. Callers set up <a href="23541.h
 <span id="60049"></span>
 <div class="comments">
 <div class="paragraph">
-Pick the plot opcode written into <a href="60045.html#60145">PrintCharacter_PlotOpcode</a>: 174 (<code>XOR (HL)</code>) or 182 (<code>OR (HL)</code>) from bit 2 of the flags.
+Pick the plot opcode written into <a href="60045.html#60144">60145</a>: 174 (<code>XOR (HL)</code>) or 182 (<code>OR (HL)</code>) from bit 2 of the flags.
 </div>
 </div>
 </td>
@@ -154,18 +154,19 @@ Pick the plot opcode written into <a href="60045.html#60145">PrintCharacter_Plot
 <td class="asm-label"></td>
 <td class="address-1"><span id="60049"></span>60049</td>
 <td class="instruction">LD A,(23542)</td>
-<td class="comment-1" rowspan="2">Fetch *<a href="23541.html#23542">PrintState_Flags</a> and test bit 2.</td>
+<td class="comment-1" rowspan="1">Fetch *<a href="23542.html">PrintState_Flags</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60052"></span>60052</td>
 <td class="instruction">BIT 2,A</td>
+<td class="comment-1" rowspan="1">Test bit 2.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60054"></span>60054</td>
 <td class="instruction">LD A,174</td>
-<td class="comment-1" rowspan="2">Prefer 174 (XOR) unless bit 2 was set.</td>
+<td class="comment-1" rowspan="2">Prefer 174 (<code>XOR</code>) unless bit 2 was set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -176,13 +177,13 @@ Pick the plot opcode written into <a href="60045.html#60145">PrintCharacter_Plot
 <td class="asm-label"></td>
 <td class="address-1"><span id="60058"></span>60058</td>
 <td class="instruction">LD A,182</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=182 (OR).</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=182 (<code>OR</code>).</td>
 </tr>
 <tr>
 <td class="asm-label">PrintCharacter_SetPlotOpcode</td>
 <td class="address-2"><span id="60060"></span>60060</td>
 <td class="instruction">LD (60145),A</td>
-<td class="comment-1" rowspan="1">Patch that opcode into <a href="60045.html#60145">PrintCharacter_PlotOpcode</a>.</td>
+<td class="comment-1" rowspan="1">Patch that opcode into <a href="60045.html#60144">60145</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -198,7 +199,7 @@ Point <span class="register">HL</span> at the 8-byte glyph. Codes below 143 use 
 <td class="asm-label"></td>
 <td class="address-1"><span id="60063"></span>60063</td>
 <td class="instruction">LD A,(23545)</td>
-<td class="comment-1" rowspan="2">Fetch *<a href="23541.html#23545">PrintState_Character</a> and compare it with 143.</td>
+<td class="comment-1" rowspan="2">Fetch *<a href="23545.html">PrintState_Character</a> and compare it with 143.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -225,12 +226,13 @@ Unreachable <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/r
 <td class="asm-label"></td>
 <td class="address-1"><span id="60070"></span>60070</td>
 <td class="instruction">JR C,<a href="60045.html#60086">PrintCharacter_CharsGlyph</a></td>
-<td class="comment-1" rowspan="9">Scale the UDG index and point <span class="register">HL</span> at <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/23675.html">UDG</a>.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="60045.html#60086">PrintCharacter_CharsGlyph</a> if carry is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60072"></span>60072</td>
 <td class="instruction">SUB 144</td>
+<td class="comment-1" rowspan="8">Scale the UDG index and point <span class="register">HL</span> at <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/23675.html">UDG</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -277,7 +279,7 @@ Unreachable <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/r
 <td class="asm-label">PrintCharacter_CharsGlyph</td>
 <td class="address-2"><span id="60086"></span>60086</td>
 <td class="instruction">LD DE,(23606)</td>
-<td class="comment-1" rowspan="7">Point <span class="register">HL</span> at glyph *<a href="23541.html#23545">PrintState_Character</a> in <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/23606.html">CHARS</a>.</td>
+<td class="comment-1" rowspan="7">Point <span class="register">HL</span> at glyph *<a href="23545.html">PrintState_Character</a> in <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/23606.html">CHARS</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -314,7 +316,7 @@ Unreachable <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/r
 <span id="60097"></span>
 <div class="comments">
 <div class="paragraph">
-Convert row/column at <a href="23541.html#23543">PrintState_Column</a> into a display-file address in <span class="register">DE</span>.
+Convert row/column at <a href="23543.html">PrintState_Column</a> into a display-file address in <span class="register">DE</span>.
 </div>
 </div>
 </td>
@@ -323,13 +325,13 @@ Convert row/column at <a href="23541.html#23543">PrintState_Column</a> into a di
 <td class="asm-label">PrintCharacter_ScreenAddress</td>
 <td class="address-2"><span id="60097"></span>60097</td>
 <td class="instruction">LD DE,16384</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=16384.</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=16384 (screen buffer).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60100"></span>60100</td>
 <td class="instruction">LD BC,(23543)</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=*<a href="23541.html#23543">PrintState_Column</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">BC</span>=*<a href="23543.html">PrintState_Column</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -451,7 +453,7 @@ Convert row/column at <a href="23541.html#23543">PrintState_Column</a> into a di
 <span id="60135"></span>
 <div class="comments">
 <div class="paragraph">
-Copy or XOR the 8 glyph rows into the display file.
+Copy or <code>XOR</code> the 8 glyph rows into the display file.
 </div>
 </div>
 </td>
@@ -460,17 +462,19 @@ Copy or XOR the 8 glyph rows into the display file.
 <td class="asm-label"></td>
 <td class="address-1"><span id="60135"></span>60135</td>
 <td class="instruction">LD A,(23542)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60045.html#60153">PrintCharacter_CopyLoop</a> if bit 0 of *<a href="23541.html#23542">PrintState_Flags</a> clears XOR mode.</td>
+<td class="comment-1" rowspan="1">Fetch *<a href="23542.html">PrintState_Flags</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60138"></span>60138</td>
-<td class="instruction">AND 1</td>
+<td class="instruction">AND %00000001</td>
+<td class="comment-1" rowspan="1">Keep only bit 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60140"></span>60140</td>
 <td class="instruction">JR Z,<a href="60045.html#60153">PrintCharacter_CopyLoop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60045.html#60153">PrintCharacter_CopyLoop</a> if <code>XOR</code> mode is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -482,10 +486,10 @@ Copy or XOR the 8 glyph rows into the display file.
 <td class="asm-label">PrintCharacter_XorLoop</td>
 <td class="address-2"><span id="60144"></span>60144</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="6">Plot one glyph row with the patched XOR/OR at <a href="60045.html#60145">PrintCharacter_PlotOpcode</a> and move down a pixel line.</td>
+<td class="comment-1" rowspan="6">Plot one glyph row with the patched <code>XOR</code>/<code>OR</code> at <a href="60045.html#60144">60145</a> and move down a pixel line.</td>
 </tr>
 <tr>
-<td class="asm-label">PrintCharacter_PlotOpcode</td>
+<td class="asm-label"></td>
 <td class="address-1"><span id="60145"></span>60145</td>
 <td class="instruction">XOR (HL)</td>
 </tr>
@@ -561,23 +565,25 @@ Unless bit 1 of the flags is set, write the attribute from <a href="23541.html">
 <td class="asm-label">PrintCharacter_Attributes</td>
 <td class="address-2"><span id="60161"></span>60161</td>
 <td class="instruction">LD A,(23542)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60045.html#60200">PrintCharacter_AdvanceCursor</a> if bit 1 of *<a href="23541.html#23542">PrintState_Flags</a> skips attributes.</td>
+<td class="comment-1" rowspan="1">Fetch *<a href="23542.html">PrintState_Flags</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60164"></span>60164</td>
-<td class="instruction">AND 2</td>
+<td class="instruction">AND %00000010</td>
+<td class="comment-1" rowspan="1">Keep only bit 1.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60166"></span>60166</td>
 <td class="instruction">JR NZ,<a href="60045.html#60200">PrintCharacter_AdvanceCursor</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60045.html#60200">PrintCharacter_AdvanceCursor</a> if attributes are skipped.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60168"></span>60168</td>
 <td class="instruction">LD A,(23541)</td>
-<td class="comment-1" rowspan="5">Point <span class="register">HL</span> at the attribute-file cell for *<a href="23541.html#23543">PrintState_Column</a>.</td>
+<td class="comment-1" rowspan="5">Point <span class="register">HL</span> at the attribute-file cell for *<a href="23543.html">PrintState_Column</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -631,7 +637,7 @@ Unless bit 1 of the flags is set, write the attribute from <a href="23541.html">
 <td class="asm-label">PrintCharacter_AttrColumn</td>
 <td class="address-2"><span id="60188"></span>60188</td>
 <td class="instruction">ADD A,8</td>
-<td class="comment-1" rowspan="4">Restore the row remainder and load the column.</td>
+<td class="comment-1" rowspan="3">Restore the row remainder into <span class="register">B</span> and load the column.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -647,6 +653,7 @@ Unless bit 1 of the flags is set, write the attribute from <a href="23541.html">
 <td class="asm-label"></td>
 <td class="address-1"><span id="60192"></span>60192</td>
 <td class="instruction">JR Z,<a href="60045.html#60198">PrintCharacter_WriteAttr</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60045.html#60198">PrintCharacter_WriteAttr</a> if that remainder is zero.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintCharacter_0</td>
@@ -684,7 +691,7 @@ Advance the cursor: move to the next column, or wrap to the next row.
 <td class="asm-label">PrintCharacter_AdvanceCursor</td>
 <td class="address-2"><span id="60200"></span>60200</td>
 <td class="instruction">LD DE,(23543)</td>
-<td class="comment-1" rowspan="5">Advance the column; jump to <a href="60045.html#60213">PrintCharacter_StoreCursor</a> if still on this row.</td>
+<td class="comment-1" rowspan="2">Advance the column.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -695,6 +702,7 @@ Advance the cursor: move to the next column, or wrap to the next row.
 <td class="asm-label"></td>
 <td class="address-1"><span id="60205"></span>60205</td>
 <td class="instruction">LD A,E</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60045.html#60213">PrintCharacter_StoreCursor</a> if the column is still on this row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -721,7 +729,7 @@ Advance the cursor: move to the next column, or wrap to the next row.
 <td class="asm-label">PrintCharacter_StoreCursor</td>
 <td class="address-2"><span id="60213"></span>60213</td>
 <td class="instruction">LD (23543),DE</td>
-<td class="comment-1" rowspan="1">Store the updated cursor back in *<a href="23541.html#23543">PrintState_Column</a>.</td>
+<td class="comment-1" rowspan="1">Store the updated cursor back in *<a href="23543.html">PrintState_Column</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">PrintCharacter_Exit</td>

@@ -113,6 +113,9 @@ Next: <a href="ADA1.html">ADA1</a>
 <div class="paragraph">
 Used by the routines at <a href="A6E8.html">MovePlayer</a>, <a href="AAA8.html">Action_GoToRoom</a> and <a href="ADA1.html">GameStart</a>.
 </div>
+<div class="paragraph">
+Commits a move into the destination room held in <span class="register">A</span>. It stashes the room in <a href="AD78.html">TemporaryRoom</a>, runs the pre-move script at <a href="BBD8.html">Data_ArrivalScript</a>, abandons the move when flag bit 00 says the player is dead, then calls <a href="ACBD.html">MovePlayerToRoom</a>, describes the room, and runs the post-move script at <a href="BC4C.html">Data_RoomSetupScript</a>.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -126,10 +129,20 @@ Used by the routines at <a href="A6E8.html">MovePlayer</a>, <a href="AAA8.html">
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ad79"></span>
+<div class="comments">
+<div class="paragraph">
+Remember the destination and run the pre-move script.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ChangeRoom</td>
 <td class="address-2"><span id="ad79"></span>AD79</td>
 <td class="instruction">LD ($AD78),A</td>
-<td class="comment-1" rowspan="1">Store the room ID in *<a href="AD78.html">TemporaryRoom</a>.</td>
+<td class="comment-1" rowspan="1">Store the destination room ID at <a href="AD78.html">TemporaryRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,70 +154,90 @@ Used by the routines at <a href="A6E8.html">MovePlayer</a>, <a href="AAA8.html">
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad7e"></span>AD7E</td>
 <td class="instruction">LD IX,$BBD8</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="BBD8.html">Data_ArrivalScript</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the pre-move script at <a href="BBD8.html">Data_ArrivalScript</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad82"></span>AD82</td>
 <td class="instruction">CALL <a href="A6FF.html">Handler_RunScript</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A6FF.html">Handler_RunScript</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html">Handler_RunScript</a> to run that script.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ad85"></span>
+<div class="comments">
+<div class="paragraph">
+Abort the move when flag bit 00 (player dead) is set.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad85"></span>AD85</td>
 <td class="instruction">LD A,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="1">Load flag bit 00 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad87"></span>AD87</td>
 <td class="instruction">CALL <a href="A1C8.html">TestFlag</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A1C8.html">TestFlag</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A1C8.html">TestFlag</a> to test that flag bit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad8a"></span>AD8A</td>
-<td class="instruction">JR NZ,<a href="AD79.html#ad9e">ChangeRoom_0</a></td>
-<td class="comment-1" rowspan="1">Do not enter the room when the player is dead.</td>
+<td class="instruction">JR NZ,<a href="AD79.html#ad9e">ChangeRoom_Return</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AD79.html#ad9e">ChangeRoom_Return</a> if the player is dead.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ad8c"></span>
+<div class="comments">
+<div class="paragraph">
+Enter the room, describe it, and run the post-move script.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad8c"></span>AD8C</td>
 <td class="instruction">LD A,($AD78)</td>
-<td class="comment-1" rowspan="1">Restore the destination room ID from *<a href="AD78.html">TemporaryRoom</a>.</td>
+<td class="comment-1" rowspan="1">Fetch the destination room ID from *<a href="AD78.html">TemporaryRoom</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad8f"></span>AD8F</td>
 <td class="instruction">CALL <a href="ACBD.html">MovePlayerToRoom</a></td>
-<td class="comment-1" rowspan="1">Call <a href="ACBD.html">MovePlayerToRoom</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="ACBD.html">MovePlayerToRoom</a> to move the player into that room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad92"></span>AD92</td>
 <td class="instruction">LD E,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=00.</td>
+<td class="comment-1" rowspan="1">Set <span class="register">E</span> to 00 so the room picture is not forced.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad94"></span>AD94</td>
 <td class="instruction">CALL <a href="A33A.html">Handler_RoomExits</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A33A.html">Handler_RoomExits</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A33A.html">Handler_RoomExits</a> to describe the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad97"></span>AD97</td>
 <td class="instruction">LD IX,$BC4C</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="BC4C.html">Data_RoomSetupScript</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the post-move script at <a href="BC4C.html">Data_RoomSetupScript</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad9b"></span>AD9B</td>
 <td class="instruction">CALL <a href="A6FF.html">Handler_RunScript</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A6FF.html">Handler_RunScript</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html">Handler_RunScript</a> to run that script.</td>
 </tr>
 <tr>
-<td class="asm-label">ChangeRoom_0</td>
+<td class="asm-label">ChangeRoom_Return</td>
 <td class="address-2"><span id="ad9e"></span>AD9E</td>
 <td class="instruction">POP IX</td>
 <td class="comment-1" rowspan="1">Restore <span class="register">IX</span> from the stack.</td>
@@ -214,6 +247,17 @@ Used by the routines at <a href="A6E8.html">MovePlayer</a>, <a href="AAA8.html">
 <td class="address-1"><span id="ada0"></span>ADA0</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/warlord/asm/EB10.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">

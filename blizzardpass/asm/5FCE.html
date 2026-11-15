@@ -132,12 +132,13 @@ Looks through <a href="AB67.html">ExitTable</a> for the current room. The room i
 <td class="asm-label">FindExits</td>
 <td class="address-2"><span id="5fce"></span>5FCE</td>
 <td class="instruction">LD A,($5D87)</td>
-<td class="comment-1" rowspan="3">The search key is the room plus 80.</td>
+<td class="comment-1" rowspan="1">Fetch <a href="5D87.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5fd1"></span>5FD1</td>
 <td class="instruction">ADD A,$80</td>
+<td class="comment-1" rowspan="2">Write that room plus 80 to <a href="5B84.html">ExitKey</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -148,7 +149,7 @@ Looks through <a href="AB67.html">ExitTable</a> for the current room. The room i
 <td class="asm-label"></td>
 <td class="address-1"><span id="5fd6"></span>5FD6</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Nothing has matched yet.</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5B7A.html">SearchHit</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -159,24 +160,35 @@ Looks through <a href="AB67.html">ExitTable</a> for the current room. The room i
 <td class="asm-label"></td>
 <td class="address-1"><span id="5fda"></span>5FDA</td>
 <td class="instruction">LD DE,$AB67</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="AB67.html">ExitTable</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5fdd"></span>5FDD</td>
 <td class="instruction">LD HL,$5B84</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5B84.html">ExitKey</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="5fe0"></span>
+<div class="comments">
+<div class="paragraph">
+Scan the exit table.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">FindExits_Scan</td>
 <td class="address-2"><span id="5fe0"></span>5FE0</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="3">A matching key is this room.</td>
+<td class="comment-1" rowspan="1">Fetch this key.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5fe1"></span>5FE1</td>
 <td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="5FCE.html#5fef">FindExits_Found</a> if it matches this room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -221,15 +233,26 @@ Looks through <a href="AB67.html">ExitTable</a> for the current room. The room i
 <td class="instruction">JR NZ,<a href="5FCE.html#5fe0">FindExits_Scan</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="5fef"></span>
+<div class="comments">
+<div class="paragraph">
+The matching room key, or the end of the table.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">FindExits_Found</td>
 <td class="address-2"><span id="5fef"></span>5FEF</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="2">Return.</td>
+<td class="comment-1" rowspan="1">Put the table pointer in <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5ff0"></span>5FF0</td>
 <td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">

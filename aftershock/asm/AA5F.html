@@ -114,6 +114,19 @@ Next: <a href="AA6E.html">AA6E</a>
 Removes the item operand from the game.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Removes the item operand from the game.
 <span id="aa5f"></span>
 <div class="comments">
 <div class="paragraph">
-When the condition succeeded, remove the item operand from the game.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,32 +142,42 @@ When the condition succeeded, remove the item operand from the game.
 <tr>
 <td class="asm-label">Action_DestroyItem</td>
 <td class="address-2"><span id="aa5f"></span>AA5F</td>
-<td class="instruction">JP NZ,<a href="A6FF.html#a75d">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">Leave the item in the game.</td>
+<td class="instruction">JP NZ,<a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a> if the condition failed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="aa62"></span>
+<div class="comments">
+<div class="paragraph">
+Remove the item operand from the game.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa62"></span>AA62</td>
 <td class="instruction">LD A,(IX+$01)</td>
-<td class="comment-1" rowspan="1">The operand names the item.</td>
+<td class="comment-1" rowspan="1">Fetch the item ID (the operand) from *<span class="register">IX</span>+01 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa65"></span>AA65</td>
-<td class="instruction">CALL <a href="A6FF.html#a772">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">FF stands for the matched item.</td>
+<td class="instruction">CALL <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="A805.html">ScriptMatchedItem</a> when the operand is FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa68"></span>AA68</td>
 <td class="instruction">CALL <a href="A63B.html">Handler_DestroyItemEvent</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A63B.html">Handler_DestroyItemEvent</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A63B.html">Handler_DestroyItemEvent</a> to destroy that item.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa6b"></span>AA6B</td>
-<td class="instruction">JP <a href="A6FF.html#a75d">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

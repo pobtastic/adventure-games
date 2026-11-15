@@ -123,7 +123,7 @@ Skips earlier messages by counting 5E and 7E terminators, then expands each byte
 <td class="asm-label">FindMessage</td>
 <td class="address-2"><span id="62a2"></span>62A2</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="4">The next word is collected at <a href="5B60.html">WordBuffer</a>.</td>
+<td class="comment-1" rowspan="4">Point the next word at <a href="5B60.html">WordBuffer</a> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,7 +144,7 @@ Skips earlier messages by counting 5E and 7E terminators, then expands each byte
 <td class="asm-label"></td>
 <td class="address-1"><span id="62aa"></span>62AA</td>
 <td class="instruction">LD A,($5B8F)</td>
-<td class="comment-1" rowspan="4">Message 0 is already under <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="2">Fetch <a href="5B8F.html">MessageNumber</a> into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -155,6 +155,7 @@ Skips earlier messages by counting 5E and 7E terminators, then expands each byte
 <td class="asm-label"></td>
 <td class="address-1"><span id="62ae"></span>62AE</td>
 <td class="instruction">OR A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="62A2.html#62c1">FindMessage_Byte</a> if it is message 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -168,10 +169,20 @@ Skips earlier messages by counting 5E and 7E terminators, then expands each byte
 <td class="comment-1" rowspan="1">The scan starts on the byte before the message.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="62b2"></span>
+<div class="comments">
+<div class="paragraph">
+Skip earlier messages.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">FindMessage_Skip</td>
 <td class="address-2"><span id="62b2"></span>62B2</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="4">Look at the next byte.</td>
+<td class="comment-1" rowspan="2">Advance to the next byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -182,6 +193,7 @@ Skips earlier messages by counting 5E and 7E terminators, then expands each byte
 <td class="asm-label"></td>
 <td class="address-1"><span id="62b4"></span>62B4</td>
 <td class="instruction">CP $5E</td>
+<td class="comment-1" rowspan="2">Jump to <a href="62A2.html#62be">FindMessage_Count</a> if it is 5E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -192,7 +204,7 @@ Skips earlier messages by counting 5E and 7E terminators, then expands each byte
 <td class="asm-label"></td>
 <td class="address-1"><span id="62b8"></span>62B8</td>
 <td class="instruction">CP $7E</td>
-<td class="comment-1" rowspan="3">7E ends a message too, otherwise keep scanning.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="62A2.html#62be">FindMessage_Count</a> if it is 7E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -203,44 +215,69 @@ Skips earlier messages by counting 5E and 7E terminators, then expands each byte
 <td class="asm-label"></td>
 <td class="address-1"><span id="62bc"></span>62BC</td>
 <td class="instruction">JR <a href="62A2.html#62b2">FindMessage_Skip</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="62A2.html#62b2">FindMessage_Skip</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62be"></span>
+<div class="comments">
+<div class="paragraph">
+Count down to the chosen message.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">FindMessage_Count</td>
 <td class="address-2"><span id="62be"></span>62BE</td>
 <td class="instruction">DJNZ <a href="62A2.html#62b2">FindMessage_Skip</a></td>
-<td class="comment-1" rowspan="2">Count down the messages and land on the chosen one.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="62A2.html#62b2">FindMessage_Skip</a> until this is the chosen message.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62c0"></span>62C0</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Step onto the chosen message.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="62c1"></span>
+<div class="comments">
+<div class="paragraph">
+Expand this message byte.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">FindMessage_Byte</td>
 <td class="address-2"><span id="62c1"></span>62C1</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Remember this byte and expand it.</td>
+<td class="comment-1" rowspan="1">Fetch this byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62c2"></span>62C2</td>
 <td class="instruction">LD ($5B90),HL</td>
+<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to *<a href="5B90.html">MessagePointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62c5"></span>62C5</td>
 <td class="instruction">CALL <a href="62D7.html">ExpandToken</a></td>
+<td class="comment-1" rowspan="1">Call <a href="62D7.html">ExpandToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62c8"></span>62C8</td>
 <td class="instruction">LD A,($5B9B)</td>
-<td class="comment-1" rowspan="3">7E ends the message.</td>
+<td class="comment-1" rowspan="1">Fetch <a href="5B9B.html">LastCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62cb"></span>62CB</td>
 <td class="instruction">CP $7E</td>
+<td class="comment-1" rowspan="2">Return if it is 7E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -262,17 +299,19 @@ Skips earlier messages by counting 5E and 7E terminators, then expands each byte
 <td class="asm-label"></td>
 <td class="address-1"><span id="62d1"></span>62D1</td>
 <td class="instruction">LD HL,($5B90)</td>
-<td class="comment-1" rowspan="3">Otherwise expand the next byte.</td>
+<td class="comment-1" rowspan="1">Fetch <a href="5B90.html">MessagePointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62d4"></span>62D4</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="62d5"></span>62D5</td>
 <td class="instruction">JR <a href="62A2.html#62c1">FindMessage_Byte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="62A2.html#62c1">FindMessage_Byte</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

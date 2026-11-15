@@ -123,12 +123,13 @@ After a full stop, a letter is forced to capitals. A space is handled by <a href
 <td class="asm-label">Capitalise</td>
 <td class="address-2"><span id="25330"></span>25330</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="2">Keep the character while the last one is inspected.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25331"></span>25331</td>
 <td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Copy the character into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -150,17 +151,19 @@ After a full stop, a letter is forced to capitals. A space is handled by <a href
 <td class="asm-label"></td>
 <td class="address-1"><span id="25339"></span>25339</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="4">A character below 64 is not a letter.</td>
+<td class="comment-1" rowspan="1">The character is in <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25340"></span>25340</td>
-<td class="instruction">AND 127</td>
+<td class="instruction">AND %01111111</td>
+<td class="comment-1" rowspan="1">Keep only bits 0-6.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25342"></span>25342</td>
 <td class="instruction">CP 64</td>
+<td class="comment-1" rowspan="2">Jump to <a href="25330.html#25357">Capitalise_Plain</a> if it is below 64.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -171,7 +174,7 @@ After a full stop, a letter is forced to capitals. A space is handled by <a href
 <td class="asm-label"></td>
 <td class="address-1"><span id="25346"></span>25346</td>
 <td class="instruction">CP 94</td>
-<td class="comment-1" rowspan="4">94 and 126 are terminators, not letters.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="25330.html#25357">Capitalise_Plain</a> if it is 94.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -182,6 +185,7 @@ After a full stop, a letter is forced to capitals. A space is handled by <a href
 <td class="asm-label"></td>
 <td class="address-1"><span id="25350"></span>25350</td>
 <td class="instruction">CP 126</td>
+<td class="comment-1" rowspan="2">Jump to <a href="25330.html#25357">Capitalise_Plain</a> if it is 126.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -192,39 +196,52 @@ After a full stop, a letter is forced to capitals. A space is handled by <a href
 <td class="asm-label"></td>
 <td class="address-1"><span id="25354"></span>25354</td>
 <td class="instruction">RES 5,A</td>
-<td class="comment-1" rowspan="2">Clear bit 5 to make the letter a capital.</td>
+<td class="comment-1" rowspan="1">Clear bit 5 to make the letter a capital.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25356"></span>25356</td>
 <td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Copy it into <span class="register">B</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25357"></span>
+<div class="comments">
+<div class="paragraph">
+Restore the character.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">Capitalise_Plain</td>
 <td class="address-2"><span id="25357"></span>25357</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="4">The printer sees the character without bit 7. A space flushes the word.</td>
+<td class="comment-1" rowspan="1">Copy the character back into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25358"></span>25358</td>
 <td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">BC</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25359"></span>25359</td>
-<td class="instruction">AND 127</td>
+<td class="instruction">AND %01111111</td>
+<td class="comment-1" rowspan="1">Keep only bits 0-6.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25361"></span>25361</td>
 <td class="instruction">CP 32</td>
+<td class="comment-1" rowspan="2">Jump to <a href="27435.html">FinishWord</a> if the character is a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25363"></span>25363</td>
 <td class="instruction">JP Z,<a href="27435.html">FinishWord</a></td>
-<td class="comment-1" rowspan="1">A space is finished by <a href="27435.html">FinishWord</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

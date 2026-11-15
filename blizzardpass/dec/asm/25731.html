@@ -133,12 +133,13 @@ The ROM character set lives at <a rel="noopener nofollow" href="https://skoolkit
 <td class="asm-label">PlotGlyph</td>
 <td class="address-2"><span id="25731"></span>25731</td>
 <td class="instruction">LD DE,(23431)</td>
-<td class="comment-1" rowspan="2">Keep the screen address. The font is the ROM character set minus 256.</td>
+<td class="comment-1" rowspan="1">Keep the screen address.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25735"></span>25735</td>
 <td class="instruction">LD BC,15360</td>
+<td class="comment-1" rowspan="1">The font is <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/15616.html">CHARSET</a> minus 256.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -155,7 +156,7 @@ The ROM character set lives at <a rel="noopener nofollow" href="https://skoolkit
 <td class="asm-label"></td>
 <td class="address-1"><span id="25741"></span>25741</td>
 <td class="instruction">ADD HL,HL</td>
-<td class="comment-1" rowspan="4">Times eight, plus the font base.</td>
+<td class="comment-1" rowspan="3">Times eight.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -171,12 +172,13 @@ The ROM character set lives at <a rel="noopener nofollow" href="https://skoolkit
 <td class="asm-label"></td>
 <td class="address-1"><span id="25744"></span>25744</td>
 <td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1">Add the font base.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25745"></span>25745</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="2">The screen address and the glyph address are restored after the copy.</td>
+<td class="comment-1" rowspan="2">Stash the screen address and the glyph address on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -187,18 +189,29 @@ The ROM character set lives at <a rel="noopener nofollow" href="https://skoolkit
 <td class="asm-label"></td>
 <td class="address-1"><span id="25747"></span>25747</td>
 <td class="instruction">LD DE,27427</td>
-<td class="comment-1" rowspan="2">The eight glyph bytes are copied into <a href="27427.html">GlyphBuffer</a>. C starts clear.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="27427.html">GlyphBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25750"></span>25750</td>
 <td class="instruction">LD BC,2048</td>
+<td class="comment-1" rowspan="1">Eight bytes, with <span class="register">C</span> clear.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25753"></span>
+<div class="comments">
+<div class="paragraph">
+Copy the glyph into the buffer.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotGlyph_Copy</td>
 <td class="address-2"><span id="25753"></span>25753</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="4">Copy one byte of the glyph.</td>
+<td class="comment-1" rowspan="2">Copy one byte of the glyph.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -209,6 +222,7 @@ The ROM character set lives at <a rel="noopener nofollow" href="https://skoolkit
 <td class="asm-label"></td>
 <td class="address-1"><span id="25755"></span>25755</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Step both pointers.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -219,7 +233,7 @@ The ROM character set lives at <a rel="noopener nofollow" href="https://skoolkit
 <td class="asm-label"></td>
 <td class="address-1"><span id="25757"></span>25757</td>
 <td class="instruction">BIT 1,A</td>
-<td class="comment-1" rowspan="3">Bit 1 of a byte marks a descender.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="25731.html#25763">PlotGlyph_Copied</a> if bit 1 is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -230,6 +244,17 @@ The ROM character set lives at <a rel="noopener nofollow" href="https://skoolkit
 <td class="asm-label"></td>
 <td class="address-1"><span id="25761"></span>25761</td>
 <td class="instruction">LD C,255</td>
+<td class="comment-1" rowspan="1">Mark a descender.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25763"></span>
+<div class="comments">
+<div class="paragraph">
+The next glyph byte.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotGlyph_Copied</td>
@@ -251,33 +276,57 @@ Tip the glyph so it sits in the right-hand pixels of its byte. A descender in th
 <td class="asm-label">PlotGlyph_Align</td>
 <td class="address-1"><span id="25765"></span>25765</td>
 <td class="instruction">LD DE,27427</td>
-<td class="comment-1" rowspan="2">Eight glyph bytes are shifted in <a href="27427.html">GlyphBuffer</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="27427.html">GlyphBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25768"></span>25768</td>
 <td class="instruction">LD B,8</td>
+<td class="comment-1" rowspan="1">Eight glyph bytes.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25770"></span>
+<div class="comments">
+<div class="paragraph">
+Shift one glyph row.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotGlyph_Row</td>
 <td class="address-2"><span id="25770"></span>25770</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="4">A source bit carried out sets the top bit.</td>
+<td class="comment-1" rowspan="1">Fetch the glyph byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25771"></span>25771</td>
 <td class="instruction">RLA</td>
+<td class="comment-1" rowspan="1">Rotate it left.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25772"></span>25772</td>
 <td class="instruction">JR NC,<a href="25731.html#25776">PlotGlyph_Nibble</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="25731.html#25776">PlotGlyph_Nibble</a> if there is no carry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25774"></span>25774</td>
-<td class="instruction">OR 128</td>
+<td class="instruction">OR %10000000</td>
+<td class="comment-1" rowspan="1">Set bit 7.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25776"></span>
+<div class="comments">
+<div class="paragraph">
+Merge the shifted nibbles.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotGlyph_Nibble</td>
@@ -294,33 +343,37 @@ Tip the glyph so it sits in the right-hand pixels of its byte. A descender in th
 <td class="asm-label"></td>
 <td class="address-1"><span id="25780"></span>25780</td>
 <td class="instruction">LD H,A</td>
-<td class="comment-1" rowspan="3">Split the byte into nibbles.</td>
+<td class="comment-1" rowspan="1">Copy the byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25781"></span>25781</td>
-<td class="instruction">AND 15</td>
+<td class="instruction">AND %00001111</td>
+<td class="comment-1" rowspan="1">Keep only bits 0-3.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25783"></span>25783</td>
 <td class="instruction">LD L,A</td>
+<td class="comment-1" rowspan="1">Store the low nibble.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25784"></span>25784</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-1" rowspan="4">The low nibble moves into the neighbouring byte.</td>
+<td class="comment-1" rowspan="1">Fetch the saved byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25785"></span>25785</td>
-<td class="instruction">AND 240</td>
+<td class="instruction">AND %11110000</td>
+<td class="comment-1" rowspan="1">Keep only bits 4-7.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25787"></span>25787</td>
 <td class="instruction">RL L</td>
+<td class="comment-1" rowspan="2">Merge in the shifted low nibble.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -328,25 +381,38 @@ Tip the glyph so it sits in the right-hand pixels of its byte. A descender in th
 <td class="instruction">OR L</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="25790"></span>
+<div class="comments">
+<div class="paragraph">
+Store the aligned byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PlotGlyph_Mask</td>
 <td class="address-2"><span id="25790"></span>25790</td>
-<td class="instruction">AND 252</td>
-<td class="comment-1" rowspan="4">Store the aligned byte and do the next row.</td>
+<td class="instruction">AND %11111100</td>
+<td class="comment-1" rowspan="1">Keep only bits 2-7.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25792"></span>25792</td>
 <td class="instruction">LD (DE),A</td>
+<td class="comment-1" rowspan="1">Store the aligned byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25793"></span>25793</td>
 <td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Step on.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25794"></span>25794</td>
 <td class="instruction">DJNZ <a href="25731.html#25770">PlotGlyph_Row</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="25731.html#25770">PlotGlyph_Row</a> until eight rows are done.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -363,17 +429,19 @@ Tip the glyph so it sits in the right-hand pixels of its byte. A descender in th
 <td class="asm-label"></td>
 <td class="address-1"><span id="25798"></span>25798</td>
 <td class="instruction">LD HL,27427</td>
-<td class="comment-1" rowspan="3">Point <span class="register">DE</span> at the buffer and <span class="register">HL</span> at the screen byte.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="27427.html">GlyphBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25801"></span>25801</td>
 <td class="instruction">EX DE,HL</td>
+<td class="comment-1" rowspan="1">Swap the buffer into <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25802"></span>25802</td>
 <td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1">Stash the screen address on the stack.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -389,12 +457,13 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="asm-label">PlotGlyph_Column</td>
 <td class="address-1"><span id="25803"></span>25803</td>
 <td class="instruction">LD A,(23434)</td>
-<td class="comment-1" rowspan="2">The column within the byte is 0, 1, 2 or 3.</td>
+<td class="comment-1" rowspan="1">Fetch <a href="23434.html">PrintColumn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25806"></span>25806</td>
-<td class="instruction">AND 3</td>
+<td class="instruction">AND %00000011</td>
+<td class="comment-1" rowspan="1">Keep only bits 0-1.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -436,10 +505,20 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="comment-1" rowspan="1">Column 0 copies eight fresh bytes.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="25819"></span>
+<div class="comments">
+<div class="paragraph">
+Copy eight unshifted bytes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PlotGlyph_Byte0</td>
 <td class="address-2"><span id="25819"></span>25819</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="4">Copy one glyph byte and step to the next pixel row.</td>
+<td class="comment-1" rowspan="2">Copy one glyph byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -450,6 +529,7 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="asm-label"></td>
 <td class="address-1"><span id="25821"></span>25821</td>
 <td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="2">Step to the next pixel row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -463,15 +543,26 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="comment-1" rowspan="1">All eight bytes.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="25825"></span>
+<div class="comments">
+<div class="paragraph">
+Advance the print address.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PlotGlyph_Stored</td>
 <td class="address-2"><span id="25825"></span>25825</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="3">The print address moves on one byte.</td>
+<td class="comment-1" rowspan="1">Restore the screen address from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25826"></span>25826</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Move the print address on one byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -482,7 +573,17 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="asm-label"></td>
 <td class="address-1"><span id="25830"></span>25830</td>
 <td class="instruction">JR <a href="25731.html#25912">PlotGlyph_Advance</a></td>
-<td class="comment-1" rowspan="1">Join <a href="25731.html#25912">PlotGlyph_Advance</a> to advance the column.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="25731.html#25912">PlotGlyph_Advance</a> to advance the column.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25832"></span>
+<div class="comments">
+<div class="paragraph">
+Shift two pixels.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotGlyph_Byte1</td>
@@ -491,15 +592,26 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="comment-1" rowspan="1">Eight pixel rows.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="25834"></span>
+<div class="comments">
+<div class="paragraph">
+Merge a two-pixel shift.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PlotGlyph_Shift2</td>
 <td class="address-2"><span id="25834"></span>25834</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="2">Take the glyph byte and the previous screen byte.</td>
+<td class="comment-1" rowspan="1">Fetch the glyph byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25835"></span>25835</td>
 <td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="1">Step back to the previous screen byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -565,7 +677,17 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="asm-label"></td>
 <td class="address-1"><span id="25854"></span>25854</td>
 <td class="instruction">JR <a href="25731.html#25825">PlotGlyph_Stored</a></td>
-<td class="comment-1" rowspan="1">Join the shared advance at <a href="25731.html#25825">PlotGlyph_Stored</a>.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="25731.html#25825">PlotGlyph_Stored</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25856"></span>
+<div class="comments">
+<div class="paragraph">
+Shift four pixels.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotGlyph_Byte2</td>
@@ -574,15 +696,26 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="comment-1" rowspan="1">Eight pixel rows.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="25858"></span>
+<div class="comments">
+<div class="paragraph">
+Merge a four-pixel shift.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PlotGlyph_Shift4</td>
 <td class="address-2"><span id="25858"></span>25858</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="2">Take one glyph byte and the previous screen byte.</td>
+<td class="comment-1" rowspan="1">Fetch the glyph byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25859"></span>25859</td>
 <td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="1">Step back to the previous screen byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -679,18 +812,39 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="asm-label"></td>
 <td class="address-1"><span id="25890"></span>25890</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="2">This column restores the screen address itself and advances.</td>
+<td class="comment-1" rowspan="1">Restore the screen address from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25891"></span>25891</td>
 <td class="instruction">JR <a href="25731.html#25912">PlotGlyph_Advance</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="25731.html#25912">PlotGlyph_Advance</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25893"></span>
+<div class="comments">
+<div class="paragraph">
+Keep the top two pixels.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotGlyph_Byte3</td>
 <td class="address-2"><span id="25893"></span>25893</td>
 <td class="instruction">LD B,8</td>
 <td class="comment-1" rowspan="1">Eight pixel rows.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="25895"></span>
+<div class="comments">
+<div class="paragraph">
+Merge a six-pixel shift.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PlotGlyph_Top</td>
@@ -712,12 +866,13 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="asm-label"></td>
 <td class="address-1"><span id="25899"></span>25899</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="3">Shift the glyph right by two.</td>
+<td class="comment-1" rowspan="1">Fetch the glyph byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25900"></span>25900</td>
 <td class="instruction">SRL A</td>
+<td class="comment-1" rowspan="2">Shift it right by two.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -739,7 +894,7 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="asm-label"></td>
 <td class="address-1"><span id="25906"></span>25906</td>
 <td class="instruction">INC H</td>
-<td class="comment-1" rowspan="4">The next pixel row, then the shared advance.</td>
+<td class="comment-1" rowspan="2">Step both pointers.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -750,11 +905,13 @@ The column within the byte chooses how the shifted glyph is merged with the pixe
 <td class="asm-label"></td>
 <td class="address-1"><span id="25908"></span>25908</td>
 <td class="instruction">DJNZ <a href="25731.html#25895">PlotGlyph_Top</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="25731.html#25895">PlotGlyph_Top</a> until eight pixel rows are done.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="25910"></span>25910</td>
 <td class="instruction">JR <a href="25731.html#25825">PlotGlyph_Stored</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="25731.html#25825">PlotGlyph_Stored</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -770,7 +927,7 @@ The next character moves one column right. Column 41 is the margin, so the curso
 <td class="asm-label">PlotGlyph_Advance</td>
 <td class="address-2"><span id="25912"></span>25912</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="3">Keep the character and read the column.</td>
+<td class="comment-1" rowspan="2">Keep the character on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -781,6 +938,7 @@ The next character moves one column right. Column 41 is the margin, so the curso
 <td class="asm-label"></td>
 <td class="address-1"><span id="25914"></span>25914</td>
 <td class="instruction">LD A,(23434)</td>
+<td class="comment-1" rowspan="1">Fetch <a href="23434.html">PrintColumn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -810,6 +968,9 @@ The next character moves one column right. Column 41 is the margin, so the curso
 <div class="comments">
 <div class="paragraph">
 This entry point is used by the routine at <a href="25596.html">PlotCharacter</a>.
+</div>
+<div class="paragraph">
+Restore the registers.
 </div>
 </div>
 </td>

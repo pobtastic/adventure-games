@@ -105,7 +105,7 @@ Next: <a href="AD32.html">AD32</a>
 </td>
 </tr>
 </table>
-<div class="description">ACFB: Handler: Match Item</div>
+<div class="description">ACFB: Handler: Match Vocabulary Word</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -113,14 +113,21 @@ Next: <a href="AD32.html">AD32</a>
 <div class="paragraph">
 Used by the routine at <a href="AD32.html">Handler_UserInput</a>.
 </div>
+<div class="paragraph">
+Match the four letters at <a href="A82F.html">FourLetterBuffer</a> against the vocabulary. On success return the word's token number in <span class="register">A</span> with the carry flag set; on failure return with the carry flag clear. A comma separates synonyms of the same token; FF ends the table.
+</div>
 </div>
 <table class="output">
 <tr class="asm-output-header">
 <th colspan="2">Output</th>
 </tr>
 <tr>
+<td class="register">A</td>
+<td class="register-desc">The token number of the matched word</td>
+</tr>
+<tr>
 <td class="register">F</td>
-<td class="register-desc">The carry flag is set to indicate that an item was found</td>
+<td class="register-desc">Carry set when a match was found</td>
 </tr>
 </table>
 </td>
@@ -147,6 +154,16 @@ Used by the routine at <a href="AD32.html">Handler_UserInput</a>.
 <td class="instruction">PUSH IX</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ad00"></span>
+<div class="comments">
+<div class="paragraph">
+Search the vocabulary from the address held in *<a href="A7C6.html">Pointer_Vocabulary</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad00"></span>AD00</td>
 <td class="instruction">LD HL,($A7C6)</td>
@@ -156,73 +173,92 @@ Used by the routine at <a href="AD32.html">Handler_UserInput</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad03"></span>AD03</td>
 <td class="instruction">LD C,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=00.</td>
+<td class="comment-1" rowspan="1">Set the token number in <span class="register">C</span> to 00.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad05"></span>AD05</td>
-<td class="instruction">JR <a href="ACFB.html#ad14">Handler_MatchItem_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="ACFB.html#ad14">Handler_MatchItem_2</a>.</td>
+<td class="instruction">JR <a href="ACFB.html#ad14">MatchItem_Word</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ACFB.html#ad14">MatchItem_Word</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchItem_0</td>
+<td class="routine-comment" colspan="5">
+<span id="ad07"></span>
+<div class="comments">
+<div class="paragraph">
+This vocabulary word did not match. Step past the remaining letters. A comma keeps the same token for a synonym; anything else advances the token number for the next entry.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchItem_NextWord</td>
 <td class="address-2"><span id="ad07"></span>AD07</td>
 <td class="instruction">LD E,B</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=<span class="register">B</span>.</td>
+<td class="comment-1" rowspan="2">Turn the remaining letter count into a 16-bit offset in <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad08"></span>AD08</td>
 <td class="instruction">LD D,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">D</span>=00.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad0a"></span>AD0A</td>
 <td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>+=<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">HL</span> past the unmatched letters.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad0b"></span>AD0B</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Fetch the next vocabulary byte into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad0c"></span>AD0C</td>
 <td class="instruction">CP $2C</td>
-<td class="comment-1" rowspan="1">Compare <span class="register">A</span> with 2C.</td>
+<td class="comment-1" rowspan="1">Is this byte a comma (2C)?</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad0e"></span>AD0E</td>
-<td class="instruction">JR Z,<a href="ACFB.html#ad13">Handler_MatchItem_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="ACFB.html#ad13">Handler_MatchItem_1</a> if <span class="register">A</span> is equal to 2C.</td>
+<td class="instruction">JR Z,<a href="ACFB.html#ad13">MatchItem_SkipComma</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ACFB.html#ad13">MatchItem_SkipComma</a> if it is, so the token number stays the same.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad10"></span>AD10</td>
 <td class="instruction">INC C</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">C</span> by one.</td>
+<td class="comment-1" rowspan="1">Otherwise advance the token number for the next vocabulary entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad11"></span>AD11</td>
-<td class="instruction">JR <a href="ACFB.html#ad14">Handler_MatchItem_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="ACFB.html#ad14">Handler_MatchItem_2</a>.</td>
+<td class="instruction">JR <a href="ACFB.html#ad14">MatchItem_Word</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ACFB.html#ad14">MatchItem_Word</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchItem_1</td>
+<td class="asm-label">MatchItem_SkipComma</td>
 <td class="address-2"><span id="ad13"></span>AD13</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move past the comma.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchItem_2</td>
+<td class="routine-comment" colspan="5">
+<span id="ad14"></span>
+<div class="comments">
+<div class="paragraph">
+Test this vocabulary word against the four-letter buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MatchItem_Word</td>
 <td class="address-2"><span id="ad14"></span>AD14</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ACFB.html#ad2c">MatchItem_Return</a> if *<span class="register">HL</span> is equal to FF.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ACFB.html#ad2c">MatchItem_Return</a> if the word is the FF terminator.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -235,6 +271,16 @@ Used by the routine at <a href="AD32.html">Handler_UserInput</a>.
 <td class="instruction">JR Z,<a href="ACFB.html#ad2c">MatchItem_Return</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ad19"></span>
+<div class="comments">
+<div class="paragraph">
+Compare the four-letter buffer at <a href="A82F.html">FourLetterBuffer</a> with this word.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad19"></span>AD19</td>
 <td class="instruction">LD IX,$A82F</td>
@@ -244,13 +290,13 @@ Used by the routine at <a href="AD32.html">Handler_UserInput</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad1d"></span>AD1D</td>
 <td class="instruction">LD B,$04</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=04.</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the 04 letters.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchItem_3</td>
+<td class="asm-label">MatchItem_Letter</td>
 <td class="address-2"><span id="ad1f"></span>AD1F</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="ACFB.html#ad07">Handler_MatchItem_0</a> if *<span class="register">IX</span>+00 is not equal to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ACFB.html#ad07">MatchItem_NextWord</a> if this letter does not match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -260,37 +306,57 @@ Used by the routine at <a href="AD32.html">Handler_UserInput</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad23"></span>AD23</td>
-<td class="instruction">JR NZ,<a href="ACFB.html#ad07">Handler_MatchItem_0</a></td>
+<td class="instruction">JR NZ,<a href="ACFB.html#ad07">MatchItem_NextWord</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad25"></span>AD25</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next vocabulary letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad26"></span>AD26</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Increment <span class="register">IX</span> by one.</td>
+<td class="comment-1" rowspan="1">Move to the next letter of the four-letter buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad28"></span>AD28</td>
-<td class="instruction">DJNZ <a href="ACFB.html#ad1f">Handler_MatchItem_3</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="ACFB.html#ad1f">Handler_MatchItem_3</a> until counter is zero.</td>
+<td class="instruction">DJNZ <a href="ACFB.html#ad1f">MatchItem_Letter</a></td>
+<td class="comment-1" rowspan="1">Decrease the letter counter by one and loop back to <a href="ACFB.html#ad1f">MatchItem_Letter</a> until the counter is zero.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ad2a"></span>
+<div class="comments">
+<div class="paragraph">
+The word matched, so return its token with the carry set.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad2a"></span>AD2A</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">C</span>.</td>
+<td class="comment-1" rowspan="1">Copy the matched token number into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad2b"></span>AD2B</td>
 <td class="instruction">SCF</td>
-<td class="comment-1" rowspan="1">Set the carry flag to indicate that an item was successfully found.</td>
+<td class="comment-1" rowspan="1">Set the carry flag to show the word was found.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ad2c"></span>
+<div class="comments">
+<div class="paragraph">
+Hand back the registers saved at the start of the search.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">MatchItem_Return</td>

@@ -133,12 +133,13 @@ The ordinary command scripts live at <a href="9A54.html">CommandScripts</a> and 
 <td class="asm-label">RunScripts</td>
 <td class="address-2"><span id="6074"></span>6074</td>
 <td class="instruction">LD HL,$9A54</td>
-<td class="comment-1" rowspan="3">Select the ordinary scripts. The high-priority entry joins here.</td>
+<td class="comment-1" rowspan="1">Point at the ordinary scripts at <a href="9A54.html">CommandScripts</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6077"></span>6077</td>
 <td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5B96.html">ScriptSet</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -151,6 +152,9 @@ The ordinary command scripts live at <a href="9A54.html">CommandScripts</a> and 
 <div class="comments">
 <div class="paragraph">
 This entry point is used by the routine at <a href="6058.html">RunPriorityScripts</a>.
+</div>
+<div class="paragraph">
+Walk one script line.
 </div>
 </div>
 </td>
@@ -183,22 +187,42 @@ This entry point is used by the routine at <a href="6058.html">RunPriorityScript
 <td class="instruction">LD ($5ECA),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6084"></span>
+<div class="comments">
+<div class="paragraph">
+Test the verb and noun.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6084"></span>6084</td>
 <td class="instruction">CALL <a href="6155.html">MatchCommand</a></td>
-<td class="comment-1" rowspan="1">Call <a href="6155.html">MatchCommand</a> to test the verb and noun.</td>
+<td class="comment-1" rowspan="1">Call <a href="6155.html">MatchCommand</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6087"></span>6087</td>
 <td class="instruction">JR <a href="6074.html#6090">RunScripts_Next</a></td>
-<td class="comment-1" rowspan="1">The next byte is a condition or an action.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="6074.html#6090">RunScripts_Next</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6089"></span>
+<div class="comments">
+<div class="paragraph">
+This line failed.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">RunScripts_Failed</td>
 <td class="address-2"><span id="6089"></span>6089</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="3">A failed line is abandoned and the next one is tried.</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5ECA.html">ConditionFailed</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -206,9 +230,30 @@ This entry point is used by the routine at <a href="6058.html">RunPriorityScript
 <td class="instruction">LD ($5ECA),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="608d"></span>
+<div class="comments">
+<div class="paragraph">
+Skip the rest of this line.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="608d"></span>608D</td>
 <td class="instruction">CALL <a href="6141.html">SkipLine</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6141.html">SkipLine</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6090"></span>
+<div class="comments">
+<div class="paragraph">
+Advance to the next line.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">RunScripts_Next</td>
@@ -251,23 +296,25 @@ A condition byte, shifted, picks a routine from <a href="67C6.html#67cb">67CB</a
 <td class="asm-label">RunScripts_Condition</td>
 <td class="address-2"><span id="6097"></span>6097</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="2">Shift the condition number so it indexes a word.</td>
+<td class="comment-1" rowspan="1">Fetch the condition number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6098"></span>6098</td>
 <td class="instruction">SLA A</td>
+<td class="comment-1" rowspan="1">Double it so it indexes a word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="609a"></span>609A</td>
 <td class="instruction">LD IX,$67CB</td>
-<td class="comment-1" rowspan="4">Index the condition table at <a href="67C6.html#67cb">67CB</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at <a href="67C6.html#67cb">67CB</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="609e"></span>609E</td>
 <td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="3">Index by the condition number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -304,17 +351,19 @@ A condition byte, shifted, picks a routine from <a href="67C6.html#67cb">67CB</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="60af"></span>60AF</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="4">The next bytecode byte is the object number.</td>
+<td class="comment-1" rowspan="1">Stash the line pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60b0"></span>60B0</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance to the object number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60b1"></span>60B1</td>
 <td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="2">Fetch it into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -325,23 +374,25 @@ A condition byte, shifted, picks a routine from <a href="67C6.html#67cb">67CB</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="60b3"></span>60B3</td>
 <td class="instruction">LD IX,$5DCA</td>
-<td class="comment-1" rowspan="2">Point at that object's location in <a href="5DCA.html">ObjectLocations</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at <a href="5DCA.html">ObjectLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60b7"></span>60B7</td>
 <td class="instruction">ADD IX,BC</td>
+<td class="comment-1" rowspan="1">Add the object number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60b9"></span>60B9</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="3">The location itself is what the condition compares.</td>
+<td class="comment-1" rowspan="1">Keep the object number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60ba"></span>60BA</td>
 <td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="2">Fetch that object's location into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -352,28 +403,31 @@ A condition byte, shifted, picks a routine from <a href="67C6.html#67cb">67CB</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="60be"></span>60BE</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="3">The byte after the object is the condition's parameter.</td>
+<td class="comment-1" rowspan="1">Advance to the parameter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60bf"></span>60BF</td>
 <td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Fetch it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60c0"></span>60C0</td>
 <td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60c1"></span>60C1</td>
 <td class="instruction">CALL $0006</td>
-<td class="comment-1" rowspan="4">The condition routine returns normally when it passes, or sets <a href="5ECA.html">ConditionFailed</a> when it fails.</td>
+<td class="comment-1" rowspan="1">Call the planted condition routine.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60c4"></span>60C4</td>
 <td class="instruction">POP DE</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -384,6 +438,7 @@ A condition byte, shifted, picks a routine from <a href="67C6.html#67cb">67CB</a
 <td class="asm-label"></td>
 <td class="address-1"><span id="60c6"></span>60C6</td>
 <td class="instruction">CALL <a href="612B.html">SkipCondition</a></td>
+<td class="comment-1" rowspan="1">Call <a href="612B.html">SkipCondition</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -426,7 +481,7 @@ The line matched. Remember that, and perform each action until one asks to stop.
 <td class="asm-label">RunScripts_Matched</td>
 <td class="address-2"><span id="60d3"></span>60D3</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="2">Remember that a line matched.</td>
+<td class="comment-1" rowspan="2">Write 01 to *<a href="5B79.html">ScriptMatched</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -434,10 +489,20 @@ The line matched. Remember that, and perform each action until one asks to stop.
 <td class="instruction">LD ($5B79),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="60d8"></span>
+<div class="comments">
+<div class="paragraph">
+Perform the next action.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">RunScripts_NextAction</td>
 <td class="address-2"><span id="60d8"></span>60D8</td>
 <td class="instruction">LD A,($5B86)</td>
-<td class="comment-1" rowspan="3">The word slot is clear, so nothing to forget.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6074.html#60e2">RunScripts_Action</a> if *<a href="5B86.html">WordSlot</a> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -461,10 +526,20 @@ The line matched. Remember that, and perform each action until one asks to stop.
 <td class="instruction">LD ($5B86),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="60e2"></span>
+<div class="comments">
+<div class="paragraph">
+Decode this action.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">RunScripts_Action</td>
 <td class="address-2"><span id="60e2"></span>60E2</td>
 <td class="instruction">BIT 6,(HL)</td>
-<td class="comment-1" rowspan="4">Bit 6 asks the runner to stop after this action.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6074.html#60eb">RunScripts_Do</a> if bit 6 is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -475,6 +550,7 @@ The line matched. Remember that, and perform each action until one asks to stop.
 <td class="asm-label"></td>
 <td class="address-1"><span id="60e6"></span>60E6</td>
 <td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">Write 01 to <a href="5ECA.html">ConditionFailed</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -482,31 +558,44 @@ The line matched. Remember that, and perform each action until one asks to stop.
 <td class="instruction">LD ($5ECA),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="60eb"></span>
+<div class="comments">
+<div class="paragraph">
+Call the action.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">RunScripts_Do</td>
 <td class="address-2"><span id="60eb"></span>60EB</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Keep the action number in the low six bits and double it.</td>
+<td class="comment-1" rowspan="1">Fetch the action byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60ec"></span>60EC</td>
-<td class="instruction">AND $3F</td>
+<td class="instruction">AND %00111111</td>
+<td class="comment-1" rowspan="1">Keep only bits 0-5.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60ee"></span>60EE</td>
 <td class="instruction">SLA A</td>
+<td class="comment-1" rowspan="1">Double the action number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60f0"></span>60F0</td>
 <td class="instruction">LD IX,$6AD5</td>
-<td class="comment-1" rowspan="4">Index from the word inside <a href="6AC4.html#6ad4">6AD4</a>. Action 0 is the beeper operand; the routines start at <a href="6AD7.html">ActionTable</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the word inside <a href="6AC4.html#6ad4">6AD4</a>. Action 0 is the beeper operand, and the routines start at <a href="6AD7.html">ActionTable</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60f4"></span>60F4</td>
 <td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="3">Index by the action number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -543,44 +632,49 @@ The line matched. Remember that, and perform each action until one asks to stop.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6105"></span>6105</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">The next bytecode byte is the object number.</td>
+<td class="comment-1" rowspan="1">Stash the line pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6106"></span>6106</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance to the object number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6107"></span>6107</td>
 <td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Fetch it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6108"></span>6108</td>
 <td class="instruction">LD IX,$5DCA</td>
-<td class="comment-1" rowspan="3">Point at that object's location in <a href="5DCA.html">ObjectLocations</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at <a href="5DCA.html">ObjectLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="610c"></span>610C</td>
 <td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1">Copy the object number into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="610d"></span>610D</td>
 <td class="instruction">ADD IX,BC</td>
+<td class="comment-1" rowspan="1">Add it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="610f"></span>610F</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="3">The location itself is passed to the action.</td>
+<td class="comment-1" rowspan="1">Keep the object number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6110"></span>6110</td>
 <td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="2">Fetch that object's location into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -591,17 +685,19 @@ The line matched. Remember that, and perform each action until one asks to stop.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6114"></span>6114</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="3">The byte after the object is the action's parameter.</td>
+<td class="comment-1" rowspan="1">Advance to the parameter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6115"></span>6115</td>
 <td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Fetch it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6116"></span>6116</td>
 <td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -624,7 +720,7 @@ The line matched. Remember that, and perform each action until one asks to stop.
 <td class="asm-label"></td>
 <td class="address-1"><span id="611c"></span>611C</td>
 <td class="instruction">CALL <a href="6133.html">SkipAction</a></td>
-<td class="comment-1" rowspan="1">Call <a href="6133.html">SkipAction</a> to step past the action.</td>
+<td class="comment-1" rowspan="1">Call <a href="6133.html">SkipAction</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -654,10 +750,20 @@ The line matched. Remember that, and perform each action until one asks to stop.
 <td class="instruction">JR NZ,<a href="6074.html#60d8">RunScripts_NextAction</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6128"></span>
+<div class="comments">
+<div class="paragraph">
+Start the next line.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6128"></span>6128</td>
 <td class="instruction">JP <a href="6074.html#6089">RunScripts_Failed</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="6074.html#6089">RunScripts_Failed</a> to start the next line.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="6074.html#6089">RunScripts_Failed</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

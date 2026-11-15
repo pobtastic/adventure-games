@@ -105,7 +105,7 @@ Next: <a href="C486.html">C486</a>
 </td>
 </tr>
 </table>
-<div class="description">C463: Handler: Match Verb</div>
+<div class="description">C463: Handler: Dispatch Verb</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -114,47 +114,72 @@ Next: <a href="C486.html">C486</a>
 Used by the routine at <a href="EB10.html">GameLoop</a>.
 </div>
 <div class="paragraph">
-Jump to the handler for the first vocabulary token, or admit the verb is unknown.
+Matches the first word token from the user's command against the verb word tokens table. If a match is found, it calculates the verb index and jumps to the corresponding verb handler routine. If no match is found, it displays "I Don't Understand" and returns.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchVerb</td>
+<td class="routine-comment" colspan="5">
+<span id="c463"></span>
+<div class="comments">
+<div class="paragraph">
+Set up to search the verb word tokens table for the first word token.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Handler_DispatchVerb</td>
 <td class="address-2"><span id="c463"></span>C463</td>
 <td class="instruction">LD HL,($BAF6)</td>
-<td class="comment-1" rowspan="5">Jump to <a href="C463.html#c478">VerbMatched</a> if the search found a match.</td>
+<td class="comment-1" rowspan="1">Set a pointer to *<a href="BAF6.html">Pointer_VerbWordTokens</a> in <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c466"></span>C466</td>
 <td class="instruction">LD BC,($BAFC)</td>
+<td class="comment-1" rowspan="1">Load *<a href="BAFC.html">Count_VerbTokens</a> tokens into <span class="register">BC</span> for the search.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c46a"></span>C46A</td>
 <td class="instruction">LD A,($BB36)</td>
+<td class="comment-1" rowspan="1">Get the *<a href="BB36.html">UserInput_FirstToken</a> from the user input.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c46d"></span>C46D</td>
 <td class="instruction">CPIR</td>
+<td class="comment-1" rowspan="1">Search the verb word tokens table for a matching token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c46f"></span>C46F</td>
 <td class="instruction">JR Z,<a href="C463.html#c478">VerbMatched</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C463.html#c478">VerbMatched</a> if a match was found (Z flag is set).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c471"></span>
+<div class="comments">
+<div class="paragraph">
+The token doesn't match any verb. Display an error message: "I don't understand.".
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c471"></span>C471</td>
 <td class="instruction">LD HL,$BB61</td>
-<td class="comment-1" rowspan="2">Print "I don't understand.".</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="BB61.html">Messaging_IDontUnderstand</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c474"></span>C474</td>
 <td class="instruction">CALL <a href="BE2E.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="BE2E.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -163,10 +188,20 @@ Jump to the handler for the first vocabulary token, or admit the verb is unknown
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c478"></span>
+<div class="comments">
+<div class="paragraph">
+A verb was matched! Calculate its index in the table and jump to its handler routine.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">VerbMatched</td>
 <td class="address-2"><span id="c478"></span>C478</td>
 <td class="instruction">LD A,($BAFC)</td>
-<td class="comment-1" rowspan="6">Call <a href="C0C3.html">GetTableEntry</a> to look up the verb's handler.</td>
+<td class="comment-1" rowspan="2">Calculate the verb index: <span class="register">A</span>=*<a href="BAFC.html">Count_VerbTokens</a>-<span class="register">C</span> (total tokens minus remaining tokens after match).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -177,33 +212,38 @@ Jump to the handler for the first vocabulary token, or admit the verb is unknown
 <td class="asm-label"></td>
 <td class="address-1"><span id="c47c"></span>C47C</td>
 <td class="instruction">DEC A</td>
+<td class="comment-1" rowspan="1">Adjust the index (decrease by one, as indices are zero-based).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c47d"></span>C47D</td>
 <td class="instruction">LD E,A</td>
+<td class="comment-1" rowspan="1">Store the verb index in <span class="register">E</span> for the table lookup.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c47e"></span>C47E</td>
 <td class="instruction">LD IX,($BAF0)</td>
+<td class="comment-1" rowspan="1">Set a pointer to *<a href="BAF0.html">Pointer_JumpTable_Verbs</a> in <span class="register">IX</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c482"></span>C482</td>
 <td class="instruction">CALL <a href="C0C3.html">GetTableEntry</a></td>
+<td class="comment-1" rowspan="1">Call <a href="C0C3.html">GetTableEntry</a> to get the address of the verb handler routine for this index.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c485"></span>C485</td>
 <td class="instruction">JP (HL)</td>
-<td class="comment-1" rowspan="1">Jump to that handler.</td>
+<td class="comment-1" rowspan="1">Jump to the verb handler routine to execute the command.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="comments">
 <div class="paragraph">
 View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/aftershock/asm/ACFC.html">After Shock</a></li>
 <li><a href="/adventure-games/heroesofkarn/asm/B753.html">Heroes Of Karn</a></li>
 <li><a href="/adventure-games/jewelsofbabylon/asm/C556.html">The Jewels Of Babylon</a></li>
 <li><a href="/adventure-games/messagefromandromeda/asm/8D85.html">Message From Andromeda</a></li>

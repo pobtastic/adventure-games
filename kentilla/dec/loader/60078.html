@@ -105,577 +105,768 @@ Next: <a href="60236.html">60236</a>
 </td>
 </tr>
 </table>
-<div class="description">60078: Tape Sampler</div>
+<div class="description">60078: Sample Tape</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="59950.html">LoadingController</a>.
+Used by the routine at <a href="59950.html">Control_Loading</a>.
 </div>
 <div class="paragraph">
-Custom turbo sampler. It also compares the loader's additive checksum against the stored value near <a href="59875.html">LoaderChecksumAndTiming</a>.
+Custom turbo sampler. Before sampling it compares the loader's additive checksum in *<a href="59875.html#59877">Running_Checksum_Total</a> against the expected value in *<a href="59875.html#59879">Expected_Checksum</a>.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Destination address for the block</td>
+</tr>
+<tr>
+<td class="register">DE</td>
+<td class="register-desc">Block length</td>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Expected flag byte; carry set to load, reset to verify</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">Carry is set on success</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60078"></span>
+<div class="comments">
+<div class="paragraph">
+Refuse to load if the self-check total is wrong.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler</td>
+<td class="asm-label">Sample_Tape</td>
 <td class="address-2"><span id="60078"></span>60078</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Stash <span class="register">DE</span> and <span class="register">AF</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60079"></span>60079</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60080"></span>60080</td>
 <td class="instruction">LD HL,(59879)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="6">Jump to <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/0.html">START</a> if *<a href="59875.html#59879">Expected_Checksum</a> does not equal *<a href="59875.html#59877">Running_Checksum_Total</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60083"></span>60083</td>
 <td class="instruction">LD DE,(59877)</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60087"></span>60087</td>
 <td class="instruction">SCF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60088"></span>60088</td>
 <td class="instruction">CCF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60089"></span>60089</td>
 <td class="instruction">SBC HL,DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60091"></span>60091</td>
 <td class="instruction">JP NZ,0</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60094"></span>60094</td>
 <td class="instruction">POP AF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Restore <span class="register">AF</span> and <span class="register">DE</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60095"></span>60095</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60096"></span>
+<div class="comments">
+<div class="paragraph">
+Preserve the flag byte and blank the border.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60096"></span>60096</td>
 <td class="instruction">INC D</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Preserve the flag byte in <span class="register">AF'</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60097"></span>60097</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60098"></span>60098</td>
 <td class="instruction">DEC D</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60099"></span>60099</td>
 <td class="instruction">DI</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Disable interrupts.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60100"></span>60100</td>
 <td class="instruction">LD A,0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Set the border to black via port 254.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60102"></span>60102</td>
 <td class="instruction">OUT (254),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60104"></span>60104</td>
 <td class="instruction">LD HL,1343</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the initial timing budget in <span class="register">HL</span> to 1343.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60107"></span>
+<div class="comments">
+<div class="paragraph">
+Seed the EAR/border state in <span class="register">C</span> from the current EAR bit.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60107"></span>60107</td>
 <td class="instruction">IN A,(254)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Read the EAR port.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60109"></span>60109</td>
 <td class="instruction">RRA</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Rotate the EAR bit into bit 0 of <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60110"></span>60110</td>
-<td class="instruction">AND 32</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">AND %00100000</td>
+<td class="comment-1" rowspan="1">Keep only the EAR bit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60112"></span>60112</td>
-<td class="instruction">OR 2</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">OR %00000010</td>
+<td class="comment-1" rowspan="1">Set the blue border bit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60114"></span>60114</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Copy the EAR/border state into <span class="register">C</span> and set the zero flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60115"></span>60115</td>
 <td class="instruction">CP A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_0</td>
+<td class="routine-comment" colspan="5">
+<span id="60116"></span>
+<div class="comments">
+<div class="paragraph">
+Wait for the pilot tone.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_WaitPilot</td>
 <td class="address-2"><span id="60116"></span>60116</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return if the zero flag is reset (BREAK was pressed).</td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_1</td>
+<td class="routine-comment" colspan="5">
+<span id="60117"></span>
+<div class="comments">
+<div class="paragraph">
+Listen for a pair of edges that look like the pilot.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_PilotPair</td>
 <td class="address-2"><span id="60117"></span>60117</td>
-<td class="instruction">CALL <a href="60236.html#60240">EdgeRoutines_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="60236.html#60240">Sample_Edge_Wait</a></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="60078.html#60116">Sample_Tape_WaitPilot</a> if <a href="60236.html#60240">Sample_Edge_Wait</a> resets the carry flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60120"></span>60120</td>
-<td class="instruction">JR NC,<a href="60078.html#60116">TapeSampler_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="60078.html#60116">Sample_Tape_WaitPilot</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60122"></span>60122</td>
 <td class="instruction">LD HL,1045</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the leader timing budget in <span class="register">HL</span> to 1045.</td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_2</td>
+<td class="routine-comment" colspan="5">
+<span id="60125"></span>
+<div class="comments">
+<div class="paragraph">
+Exhaust the leader timing budget while edges continue to arrive.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_LeaderDelay</td>
 <td class="address-2"><span id="60125"></span>60125</td>
-<td class="instruction">DJNZ <a href="60078.html#60125">TapeSampler_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">DJNZ <a href="60078.html#60125">Sample_Tape_LeaderDelay</a></td>
+<td class="comment-1" rowspan="1">Decrease <span class="register">B</span> and loop until it is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60127"></span>60127</td>
 <td class="instruction">DEC HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Decrease <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60128"></span>60128</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="60078.html#60125">Sample_Tape_LeaderDelay</a> if <span class="register">HL</span> is non-zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60129"></span>60129</td>
 <td class="instruction">OR L</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60130"></span>60130</td>
-<td class="instruction">JR NZ,<a href="60078.html#60125">TapeSampler_2</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="60078.html#60125">Sample_Tape_LeaderDelay</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60132"></span>60132</td>
-<td class="instruction">CALL <a href="60236.html">EdgeRoutines</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="60236.html">Sample_Edge</a></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="60078.html#60116">Sample_Tape_WaitPilot</a> if <a href="60236.html">Sample_Edge</a> resets the carry flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60135"></span>60135</td>
-<td class="instruction">JR NC,<a href="60078.html#60116">TapeSampler_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="60078.html#60116">Sample_Tape_WaitPilot</a></td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_3</td>
+<td class="routine-comment" colspan="5">
+<span id="60137"></span>
+<div class="comments">
+<div class="paragraph">
+Confirm a long enough run of short pilot pulses.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_PilotPulse</td>
 <td class="address-2"><span id="60137"></span>60137</td>
 <td class="instruction">LD B,156</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the pulse timing constant in <span class="register">B</span> to 156.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60139"></span>60139</td>
-<td class="instruction">CALL <a href="60236.html">EdgeRoutines</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="60236.html">Sample_Edge</a></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="60078.html#60116">Sample_Tape_WaitPilot</a> if <a href="60236.html">Sample_Edge</a> resets the carry flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60142"></span>60142</td>
-<td class="instruction">JR NC,<a href="60078.html#60116">TapeSampler_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="60078.html#60116">Sample_Tape_WaitPilot</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60144"></span>60144</td>
 <td class="instruction">LD A,166</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="60078.html#60117">Sample_Tape_PilotPair</a> if <span class="register">B</span> is at least 166.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60146"></span>60146</td>
 <td class="instruction">CP B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60147"></span>60147</td>
-<td class="instruction">JR NC,<a href="60078.html#60117">TapeSampler_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="60078.html#60117">Sample_Tape_PilotPair</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60149"></span>60149</td>
 <td class="instruction">INC H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Increase <span class="register">H</span> by one and jump back to <a href="60078.html#60137">Sample_Tape_PilotPulse</a> until it wraps.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60150"></span>60150</td>
-<td class="instruction">JR NZ,<a href="60078.html#60137">TapeSampler_3</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="60078.html#60137">Sample_Tape_PilotPulse</a></td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_4</td>
+<td class="routine-comment" colspan="5">
+<span id="60152"></span>
+<div class="comments">
+<div class="paragraph">
+Wait for the sync pulse that ends the pilot.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_Sync</td>
 <td class="address-2"><span id="60152"></span>60152</td>
 <td class="instruction">LD B,201</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the sync timing constant in <span class="register">B</span> to 201.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60154"></span>60154</td>
-<td class="instruction">CALL <a href="60236.html#60240">EdgeRoutines_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="60236.html#60240">Sample_Edge_Wait</a></td>
+<td class="comment-1" rowspan="2">Jump back to <a href="60078.html#60116">Sample_Tape_WaitPilot</a> if <a href="60236.html#60240">Sample_Edge_Wait</a> resets the carry flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60157"></span>60157</td>
-<td class="instruction">JR NC,<a href="60078.html#60116">TapeSampler_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="60078.html#60116">Sample_Tape_WaitPilot</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60159"></span>60159</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="60078.html#60152">Sample_Tape_Sync</a> if <span class="register">B</span> is at least 212.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60160"></span>60160</td>
 <td class="instruction">CP 212</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60162"></span>60162</td>
-<td class="instruction">JR NC,<a href="60078.html#60152">TapeSampler_4</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="60078.html#60152">Sample_Tape_Sync</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60164"></span>60164</td>
-<td class="instruction">CALL <a href="60236.html#60240">EdgeRoutines_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="60236.html#60240">Sample_Edge_Wait</a></td>
+<td class="comment-1" rowspan="2">Call <a href="60236.html#60240">Sample_Edge_Wait</a> and return if the carry flag is reset.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60167"></span>60167</td>
 <td class="instruction">RET NC</td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60168"></span>
+<div class="comments">
+<div class="paragraph">
+Flip the border colour and start the byte-load loop.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60168"></span>60168</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the EAR/border state from <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60169"></span>60169</td>
-<td class="instruction">XOR 3</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">XOR %00000011</td>
+<td class="comment-1" rowspan="1">Toggle the border colour bits.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60171"></span>60171</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store the updated EAR/border state in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60172"></span>60172</td>
 <td class="instruction">LD H,0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear the parity byte in <span class="register">H</span>.</td>
 </tr>
 <tr>
-<td class="asm-label"></td>
+<td class="routine-comment" colspan="5">
+<span id="60174"></span>
+<div class="comments">
+<div class="paragraph">
+First-byte <span class="register">B</span> timing, patched by <a href="59925.html">Patch_Timing</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_First_Byte_Timing</td>
 <td class="address-1"><span id="60174"></span>60174</td>
 <td class="instruction">LD B,176</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set <span class="register">B</span> to the patched first-byte timing constant.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60176"></span>60176</td>
-<td class="instruction">JR <a href="60078.html#60209">TapeSampler_10</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="60078.html#60209">Sample_Tape_SampleByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60078.html#60209">Sample_Tape_SampleByte</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_5</td>
+<td class="routine-comment" colspan="5">
+<span id="60178"></span>
+<div class="comments">
+<div class="paragraph">
+Handle each loaded byte under the preserved flag in <span class="register">AF'</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_NextByte</td>
 <td class="address-2"><span id="60178"></span>60178</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Switch to <span class="register">AF'</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60179"></span>60179</td>
-<td class="instruction">JR NZ,<a href="60078.html#60188">TapeSampler_6</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="60078.html#60188">Sample_Tape_FlagByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60078.html#60188">Sample_Tape_FlagByte</a> if the flag byte is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60181"></span>60181</td>
-<td class="instruction">JR NC,<a href="60078.html#60198">TapeSampler_7</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NC,<a href="60078.html#60198">Sample_Tape_VerifyByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60078.html#60198">Sample_Tape_VerifyByte</a> if the carry flag is reset (verify mode).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60183"></span>60183</td>
 <td class="instruction">LD (IX+0),L</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Store the assembled byte in *<span class="register">IX</span>+0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60186"></span>60186</td>
-<td class="instruction">JR <a href="60078.html#60203">TapeSampler_8</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="60078.html#60203">Sample_Tape_Advance</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60078.html#60203">Sample_Tape_Advance</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_6</td>
+<td class="routine-comment" colspan="5">
+<span id="60188"></span>
+<div class="comments">
+<div class="paragraph">
+Compare the assembled byte against the expected flag byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_FlagByte</td>
 <td class="address-2"><span id="60188"></span>60188</td>
 <td class="instruction">RL C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Rotate the stored flag bits in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60190"></span>60190</td>
 <td class="instruction">XOR L</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return if the assembled byte does not match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60191"></span>60191</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60192"></span>60192</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Restore <span class="register">C</span> from the rotated value.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60193"></span>60193</td>
 <td class="instruction">RRA</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60194"></span>60194</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60195"></span>60195</td>
 <td class="instruction">INC DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance <span class="register">DE</span> past the flag byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60196"></span>60196</td>
-<td class="instruction">JR <a href="60078.html#60205">TapeSampler_9</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR <a href="60078.html#60205">Sample_Tape_Continue</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60078.html#60205">Sample_Tape_Continue</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_7</td>
+<td class="routine-comment" colspan="5">
+<span id="60198"></span>
+<div class="comments">
+<div class="paragraph">
+Verify the assembled byte against *<span class="register">IX</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_VerifyByte</td>
 <td class="address-2"><span id="60198"></span>60198</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Return if *<span class="register">IX</span>+0 does not match the assembled byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60201"></span>60201</td>
 <td class="instruction">XOR L</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60202"></span>60202</td>
 <td class="instruction">RET NZ</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_8</td>
+<td class="routine-comment" colspan="5">
+<span id="60203"></span>
+<div class="comments">
+<div class="paragraph">
+Advance the destination and continue for the remaining length.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_Advance</td>
 <td class="address-2"><span id="60203"></span>60203</td>
 <td class="instruction">INC IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance <span class="register">IX</span>.</td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_9</td>
+<td class="routine-comment" colspan="5">
+<span id="60205"></span>
+<div class="comments">
+<div class="paragraph">
+Prepare the timing constant for the next byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_Continue</td>
 <td class="address-2"><span id="60205"></span>60205</td>
 <td class="instruction">DEC DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Decrease the remaining length.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60206"></span>60206</td>
 <td class="instruction">EX AF,AF'</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Switch back to <span class="register">AF'</span>.</td>
 </tr>
 <tr>
-<td class="asm-label"></td>
+<td class="routine-comment" colspan="5">
+<span id="60207"></span>
+<div class="comments">
+<div class="paragraph">
+Next-byte <span class="register">B</span> timing, patched by <a href="59925.html">Patch_Timing</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_Next_Byte_Timing</td>
 <td class="address-1"><span id="60207"></span>60207</td>
 <td class="instruction">LD B,178</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set <span class="register">B</span> to the patched next-byte timing constant.</td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_10</td>
+<td class="routine-comment" colspan="5">
+<span id="60209"></span>
+<div class="comments">
+<div class="paragraph">
+Sample eight edges to assemble the next byte into <span class="register">L</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_SampleByte</td>
 <td class="address-2"><span id="60209"></span>60209</td>
 <td class="instruction">LD L,1</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Seed the assembled byte in <span class="register">L</span> with 1.</td>
 </tr>
 <tr>
-<td class="asm-label">TapeSampler_11</td>
+<td class="routine-comment" colspan="5">
+<span id="60211"></span>
+<div class="comments">
+<div class="paragraph">
+Sample one bit into <span class="register">L</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_SampleBit</td>
 <td class="address-2"><span id="60211"></span>60211</td>
-<td class="instruction">CALL <a href="60236.html">EdgeRoutines</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="60236.html">Sample_Edge</a></td>
+<td class="comment-1" rowspan="2">Call <a href="60236.html">Sample_Edge</a> and return if the carry flag is reset.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60214"></span>60214</td>
 <td class="instruction">RET NC</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
-<td class="asm-label"></td>
+<td class="routine-comment" colspan="5">
+<span id="60215"></span>
+<div class="comments">
+<div class="paragraph">
+Bit-threshold comparison, patched by <a href="59925.html">Patch_Timing</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_Bit_Threshold</td>
 <td class="address-1"><span id="60215"></span>60215</td>
 <td class="instruction">LD A,203</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Compare <span class="register">B</span> with the patched bit-threshold.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60217"></span>60217</td>
 <td class="instruction">CP B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60218"></span>60218</td>
 <td class="instruction">RL L</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Rotate that comparison result into <span class="register">L</span>.</td>
 </tr>
 <tr>
-<td class="asm-label"></td>
+<td class="routine-comment" colspan="5">
+<span id="60220"></span>
+<div class="comments">
+<div class="paragraph">
+Bit-loop <span class="register">B</span> timing, patched by <a href="59925.html">Patch_Timing</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Sample_Tape_Bit_Loop</td>
 <td class="address-1"><span id="60220"></span>60220</td>
 <td class="instruction">LD B,176</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set <span class="register">B</span> to the patched bit-loop timing constant.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60222"></span>60222</td>
-<td class="instruction">JP NC,<a href="60078.html#60211">TapeSampler_11</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP NC,<a href="60078.html#60211">Sample_Tape_SampleBit</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="60078.html#60211">Sample_Tape_SampleBit</a> until eight bits are in.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60225"></span>60225</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Mix the assembled byte into the running parity in <span class="register">H</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60226"></span>60226</td>
 <td class="instruction">XOR L</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60227"></span>60227</td>
 <td class="instruction">LD H,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60228"></span>60228</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump back to <a href="60078.html#60178">Sample_Tape_NextByte</a> until the remaining length in <span class="register">DE</span> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60229"></span>60229</td>
 <td class="instruction">OR E</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60230"></span>60230</td>
-<td class="instruction">JR NZ,<a href="60078.html#60178">TapeSampler_5</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="60078.html#60178">Sample_Tape_NextByte</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60232"></span>60232</td>
 <td class="instruction">LD A,H</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Compare the parity byte with 1.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60233"></span>60233</td>
 <td class="instruction">CP 1</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60235"></span>60235</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">

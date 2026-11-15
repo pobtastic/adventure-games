@@ -122,6 +122,10 @@ Succeeds when <a href="AD78.html">TemporaryRoom</a> is not the room operand.
 <td class="register">F</td>
 <td class="register-desc">The zero flag is set when the rooms differ</td>
 </tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -139,22 +143,25 @@ Succeed when the marked room is somewhere else.
 <td class="asm-label">Condition_MarkedRoomDiffers</td>
 <td class="address-2"><span id="a8ed"></span>A8ED</td>
 <td class="instruction">LD A,($AD78)</td>
-<td class="comment-1" rowspan="4">The condition succeeds when <a href="AD78.html">TemporaryRoom</a> differs from the operand.</td>
+<td class="comment-1" rowspan="1">Fetch the marked room from *<a href="AD78.html">TemporaryRoom</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a8f0"></span>A8F0</td>
 <td class="instruction">CP (IX+$01)</td>
+<td class="comment-1" rowspan="1">Compare it with the room operand.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a8f3"></span>A8F3</td>
-<td class="instruction">CALL <a href="A6FF.html#a76a">Handler_RunScript_13</a></td>
+<td class="instruction">CALL <a href="A6FF.html#a76a">RunScript_InvertConditionResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a76a">RunScript_InvertConditionResult</a> so the condition succeeds when the rooms differ.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a8f6"></span>A8F6</td>
-<td class="instruction">JP <a href="A6FF.html#a71d">Handler_RunScript_3</a></td>
+<td class="instruction">JP <a href="A6FF.html#a71d">RunScript_SkipCondition_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a71d">RunScript_SkipCondition_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

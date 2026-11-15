@@ -120,18 +120,29 @@ Puts every object that is carried down in the current room and clears the carrie
 <td class="asm-label">DropEverything</td>
 <td class="address-2"><span id="6a68"></span>6A68</td>
 <td class="instruction">LD B,$FE</td>
-<td class="comment-1" rowspan="2">Visit every object location. B counts FE slots.</td>
+<td class="comment-1" rowspan="1">Count FE object slots.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6a6a"></span>6A6A</td>
 <td class="instruction">LD HL,$5DCA</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5DCA.html">ObjectLocations</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6a6d"></span>
+<div class="comments">
+<div class="paragraph">
+Drop one carried object into this room.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">DropEverything_One</td>
 <td class="address-2"><span id="6a6d"></span>6A6D</td>
 <td class="instruction">LD A,($5D89)</td>
-<td class="comment-1" rowspan="3">A carried object is selected.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6A68.html#6a77">DropEverything_Next</a> if it is not *<a href="5D89.html">CarriedObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -147,7 +158,7 @@ Puts every object that is carried down in the current room and clears the carrie
 <td class="asm-label"></td>
 <td class="address-1"><span id="6a73"></span>6A73</td>
 <td class="instruction">LD A,($5D87)</td>
-<td class="comment-1" rowspan="2">It is given the current room.</td>
+<td class="comment-1" rowspan="2">Write *<a href="5D87.html">CurrentRoom</a> into its location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -155,21 +166,32 @@ Puts every object that is carried down in the current room and clears the carrie
 <td class="instruction">LD (HL),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6a77"></span>
+<div class="comments">
+<div class="paragraph">
+Move on to the next object.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">DropEverything_Next</td>
 <td class="address-2"><span id="6a77"></span>6A77</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="2">The next object.</td>
+<td class="comment-1" rowspan="1">The next object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6a78"></span>6A78</td>
 <td class="instruction">DJNZ <a href="6A68.html#6a6d">DropEverything_One</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6A68.html#6a6d">DropEverything_One</a> until every slot is done.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6a7a"></span>6A7A</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Clear the carried count.</td>
+<td class="comment-1" rowspan="2">Write 00 to *<a href="5D8C.html">CarriedCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -177,10 +199,20 @@ Puts every object that is carried down in the current room and clears the carrie
 <td class="instruction">LD ($5D8C),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6a7e"></span>
+<div class="comments">
+<div class="paragraph">
+The carried objects are now in this room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6a7e"></span>6A7E</td>
 <td class="instruction">JP <a href="696C.html">RoomHasChanged</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="696C.html">RoomHasChanged</a> now that the carried objects are in this room.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="696C.html">RoomHasChanged</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

@@ -114,7 +114,7 @@ Next: <a href="ECC0.html">ECC0</a>
 Used by the routine at <a href="EA60.html">JumpTable</a>.
 </div>
 <div class="paragraph">
-Main game entry from <a href="EA60.html#ea66">JumpTable_InputLine</a>. Clears <a href="5BFA.html">InputLineState</a>, draws the cursor via <a href="ECC0.html#ecf0">InputLine_DrawCursor</a>, then loops on <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C00.html">KSTATE</a> (second key slot) until the player presses Enter. Ordinary keys are echoed through <a href="EA8D.html">PrintCharacter</a> into the buffer at <a href="5BAE.html">InputBuffer</a>; Caps Shift chords edit the line; Enter submits via <a href="F0E6.html">SubmitInputLine</a>.)
+Main game entry from <a href="EA60.html#ea66">JumpTable_InputLine</a>. ENTER submits via <a href="F0E6.html">SubmitInputLine</a>.
 </div>
 </div>
 </td>
@@ -123,7 +123,7 @@ Main game entry from <a href="EA60.html#ea66">JumpTable_InputLine</a>. Clears <a
 <td class="asm-label">InputLine</td>
 <td class="address-2"><span id="eb51"></span>EB51</td>
 <td class="instruction">SUB A</td>
-<td class="comment-1" rowspan="4">Clear the length, cursor and dirty flag.</td>
+<td class="comment-1" rowspan="4">Write 00 to *<a href="5BFB.html">InputLineState_Length</a>, *<a href="5BFA.html">InputLineState</a> and *<a href="5BFD.html">InputLineState_Dirty</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -154,7 +154,7 @@ Main game entry from <a href="EA60.html#ea66">JumpTable_InputLine</a>. Clears <a
 This entry point is used by the routine at <a href="EB3E.html">InputLine_SymbolShiftRemap</a>.
 </div>
 <div class="paragraph">
-Wait for <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C00.html">KSTATE</a> (second key slot) to change to a new non-FF value.
+Wait until a new key is down.
 </div>
 </div>
 </td>
@@ -163,7 +163,7 @@ Wait for <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="asm-label">InputLine_Poll</td>
 <td class="address-2"><span id="eb5e"></span>EB5E</td>
 <td class="instruction">LD A,($5BFC)</td>
-<td class="comment-1" rowspan="3">Remember the previous key; read <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C00.html">KSTATE</a>.</td>
+<td class="comment-1" rowspan="2">Copy *<a href="5BFC.html">InputLineState_LastKey</a> to <span class="register">D</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -174,17 +174,19 @@ Wait for <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb62"></span>EB62</td>
 <td class="instruction">LD A,($5C04)</td>
+<td class="comment-1" rowspan="1">Read <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C00.html">KSTATE</a> (second key slot).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb65"></span>EB65</td>
 <td class="instruction">LD ($5BFC),A</td>
-<td class="comment-1" rowspan="3">Store the key and jump to <a href="EB51.html#eb5e">InputLine_Poll</a> if none is down.</td>
+<td class="comment-1" rowspan="1">Write the key to *<a href="5BFC.html">InputLineState_LastKey</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb68"></span>EB68</td>
 <td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a> if none is down.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -213,7 +215,7 @@ Wait for <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <span id="eb70"></span>
 <div class="comments">
 <div class="paragraph">
-Caps Shift held: dispatch editing chords at <a href="EB51.html#ebf5">InputLine_CapsShift</a>.
+Test for Caps Shift.
 </div>
 </div>
 </td>
@@ -222,7 +224,27 @@ Caps Shift held: dispatch editing chords at <a href="EB51.html#ebf5">InputLine_C
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb70"></span>EB70</td>
 <td class="instruction">LD BC,$FEFE</td>
-<td class="comment-1" rowspan="4">Jump to <a href="EB51.html#ebf5">InputLine_CapsShift</a> when Caps Shift is held.</td>
+<td class="comment-1" rowspan="2">Read from the keyboard; <table class="default">
+<tr>
+<th colspan="1" rowspan="2">Port Number</th>
+<th colspan="5" rowspan="1">Bit</th>
+</tr>
+<tr>
+<th colspan="1" rowspan="1">0</th>
+<th colspan="1" rowspan="1">1</th>
+<th colspan="1" rowspan="1">2</th>
+<th colspan="1" rowspan="1">3</th>
+<th colspan="1" rowspan="1">4</th>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">FE</td>
+<td class="centre" colspan="1" rowspan="1">CAPS SHIFT</td>
+<td class="centre" colspan="1" rowspan="1">Z</td>
+<td class="centre" colspan="1" rowspan="1">X</td>
+<td class="centre" colspan="1" rowspan="1">C</td>
+<td class="centre" colspan="1" rowspan="1">V</td>
+</tr>
+</table></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -233,6 +255,7 @@ Caps Shift held: dispatch editing chords at <a href="EB51.html#ebf5">InputLine_C
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb75"></span>EB75</td>
 <td class="instruction">BIT 0,A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EB51.html#ebf5">InputLine_CapsShift</a> when Caps Shift is held.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -240,20 +263,30 @@ Caps Shift held: dispatch editing chords at <a href="EB51.html#ebf5">InputLine_C
 <td class="instruction">JP Z,<a href="EB51.html#ebf5">InputLine_CapsShift</a></td>
 </tr>
 <tr>
-<td class="routine-comment" colspan="5">
-<span id="eb7a"></span>
-<div class="comments">
-<div class="paragraph">
-Test Symbol Shift on the CAPS/Symbol Shift row.
-</div>
-</div>
-</td>
-</tr>
-<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb7a"></span>EB7A</td>
 <td class="instruction">LD BC,$7FFE</td>
-<td class="comment-1" rowspan="3">Fetch that row and test Symbol Shift.</td>
+<td class="comment-1" rowspan="2">Read from the keyboard; <table class="default">
+<tr>
+<th colspan="1" rowspan="2">Port Number</th>
+<th colspan="5" rowspan="1">Bit</th>
+</tr>
+<tr>
+<th colspan="1" rowspan="1">0</th>
+<th colspan="1" rowspan="1">1</th>
+<th colspan="1" rowspan="1">2</th>
+<th colspan="1" rowspan="1">3</th>
+<th colspan="1" rowspan="1">4</th>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">7F</td>
+<td class="centre" colspan="1" rowspan="1">SPACE</td>
+<td class="centre" colspan="1" rowspan="1">SYMBOL SHIFT</td>
+<td class="centre" colspan="1" rowspan="1">M</td>
+<td class="centre" colspan="1" rowspan="1">N</td>
+<td class="centre" colspan="1" rowspan="1">B</td>
+</tr>
+</table></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -264,13 +297,14 @@ Test Symbol Shift on the CAPS/Symbol Shift row.
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb7f"></span>EB7F</td>
 <td class="instruction">BIT 1,A</td>
+<td class="comment-1" rowspan="1">Test the Symbol Shift bit.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="eb81"></span>
 <div class="comments">
 <div class="paragraph">
-Jump to <a href="EB3E.html">InputLine_SymbolShiftRemap</a> when Symbol Shift is held.
+Test for Symbol Shift.
 </div>
 </div>
 </td>
@@ -279,7 +313,7 @@ Jump to <a href="EB3E.html">InputLine_SymbolShiftRemap</a> when Symbol Shift is 
 <td class="asm-label">InputLine_SymbolShiftHeld</td>
 <td class="address-1"><span id="eb81"></span>EB81</td>
 <td class="instruction">JR Z,<a href="EB3E.html">InputLine_SymbolShiftRemap</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="EB3E.html">InputLine_SymbolShiftRemap</a> when Symbol Shift is held.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="EB3E.html">InputLine_SymbolShiftRemap</a> when it is held.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -288,6 +322,9 @@ Jump to <a href="EB3E.html">InputLine_SymbolShiftRemap</a> when Symbol Shift is 
 <div class="paragraph">
 This entry point is used by the routine at <a href="EB3E.html">InputLine_SymbolShiftRemap</a>.
 </div>
+<div class="paragraph">
+Handle an ordinary keypress.
+</div>
 </div>
 </td>
 </tr>
@@ -295,7 +332,7 @@ This entry point is used by the routine at <a href="EB3E.html">InputLine_SymbolS
 <td class="asm-label">InputLine_HandleKey</td>
 <td class="address-2"><span id="eb83"></span>EB83</td>
 <td class="instruction">LD A,E</td>
-<td class="comment-1" rowspan="3">Jump to <a href="EB51.html#ebd9">InputLine_Enter</a> if Enter was pressed.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EB51.html#ebd9">InputLine_Enter</a> if ENTER was pressed.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -312,7 +349,7 @@ This entry point is used by the routine at <a href="EB3E.html">InputLine_SymbolS
 <span id="eb88"></span>
 <div class="comments">
 <div class="paragraph">
-Append <span class="register">E</span> to the buffer when there is room (length &lt; 3E).
+Append the character to the input buffer.
 </div>
 </div>
 </td>
@@ -321,7 +358,7 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb88"></span>EB88</td>
 <td class="instruction">LD A,($5BFA)</td>
-<td class="comment-1" rowspan="4">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a> if the line already holds 3E characters.</td>
+<td class="comment-1" rowspan="2">Fetch *<a href="5BFA.html">InputLineState</a> into <span class="register">D</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -332,6 +369,7 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb8c"></span>EB8C</td>
 <td class="instruction">CP $3E</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a> if the line already holds 3E characters.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -342,7 +380,7 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb90"></span>EB90</td>
 <td class="instruction">LD HL,$5BAE</td>
-<td class="comment-1" rowspan="6">Store the key into the buffer at <a href="5BAE.html">InputBuffer</a>.</td>
+<td class="comment-1" rowspan="6">Store the key in <a href="5BAE.html">InputBuffer</a> and *<a href="5BF9.html">PrintState_Character</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -373,7 +411,7 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb9a"></span>EB9A</td>
 <td class="instruction">LD A,$16</td>
-<td class="comment-1" rowspan="6">Set print state for echoing on row 16.</td>
+<td class="comment-1" rowspan="6">Set <a href="5BF8.html">PrintState_Row</a>, <a href="5BF6.html">PrintState_Flags</a> and <a href="5BF5.html">PrintState</a> for echoing on row 16.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -404,7 +442,7 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="asm-label"></td>
 <td class="address-1"><span id="eba8"></span>EBA8</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-1" rowspan="8">Wrap onto row 17 when the cursor column is past 20.</td>
+<td class="comment-1" rowspan="2">Copy *<a href="5BFA.html">InputLineState</a> to *<a href="5BF7.html">PrintState_Column</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -415,6 +453,7 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ebac"></span>EBAC</td>
 <td class="instruction">CP $20</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EB51.html#ebba">InputLine_EchoChar</a> if the column is still on this row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -425,6 +464,7 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ebb0"></span>EBB0</td>
 <td class="instruction">SUB $20</td>
+<td class="comment-1" rowspan="4">Wrap onto row 17.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -442,6 +482,16 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="instruction">LD ($5BF8),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ebba"></span>
+<div class="comments">
+<div class="paragraph">
+Echo it onto the input row.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">InputLine_EchoChar</td>
 <td class="address-2"><span id="ebba"></span>EBBA</td>
 <td class="instruction">CALL <a href="EA8D.html">PrintCharacter</a></td>
@@ -451,7 +501,7 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ebbd"></span>EBBD</td>
 <td class="instruction">LD A,($5BFB)</td>
-<td class="comment-1" rowspan="5">Grow the stored length if this column is new.</td>
+<td class="comment-1" rowspan="5">Grow *<a href="5BFB.html">InputLineState_Length</a> if this column is new.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -474,10 +524,20 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="instruction">LD ($5BFB),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ebc7"></span>
+<div class="comments">
+<div class="paragraph">
+Advance the cursor, click, and poll again.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">InputLine_AdvanceCursor</td>
 <td class="address-2"><span id="ebc7"></span>EBC7</td>
 <td class="instruction">LD A,D</td>
-<td class="comment-1" rowspan="4">Advance the cursor and redraw it.</td>
+<td class="comment-1" rowspan="3">Advance *<a href="5BFA.html">InputLineState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -493,12 +553,13 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ebcc"></span>EBCC</td>
 <td class="instruction">CALL <a href="ECC0.html#ecf0">InputLine_DrawCursor</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ECC0.html#ecf0">InputLine_DrawCursor</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ebcf"></span>EBCF</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="4">Mark the line dirty, click, and poll again.</td>
+<td class="comment-1" rowspan="2">Set *<a href="5BFD.html">InputLineState_Dirty</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -509,18 +570,20 @@ Append <span class="register">E</span> to the buffer when there is room (length 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ebd4"></span>EBD4</td>
 <td class="instruction">CALL <a href="ED23.html">InputLine_Click</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ED23.html">InputLine_Click</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ebd7"></span>EBD7</td>
 <td class="instruction">JR <a href="EB51.html#eb5e">InputLine_Poll</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="ebd9"></span>
 <div class="comments">
 <div class="paragraph">
-Terminate the buffer with 0D, point both read pointers at the input buffer, and submit via <a href="F0E6.html">SubmitInputLine</a>.
+Terminate the buffer with ENTER and submit the line.
 </div>
 </div>
 </td>
@@ -529,7 +592,7 @@ Terminate the buffer with 0D, point both read pointers at the input buffer, and 
 <td class="asm-label">InputLine_Enter</td>
 <td class="address-2"><span id="ebd9"></span>EBD9</td>
 <td class="instruction">LD A,($5BFB)</td>
-<td class="comment-1" rowspan="7">Save the length and CR-terminate the buffer.</td>
+<td class="comment-1" rowspan="2">Copy *<a href="5BFB.html">InputLineState_Length</a> to *<a href="5BFE.html">InputLineState_SavedLength</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -540,6 +603,7 @@ Terminate the buffer with 0D, point both read pointers at the input buffer, and 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ebdf"></span>EBDF</td>
 <td class="instruction">LD A,($5BFB)</td>
+<td class="comment-1" rowspan="5">Write ENTER (0D) at the end of <a href="5BAE.html">InputBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -565,7 +629,7 @@ Terminate the buffer with 0D, point both read pointers at the input buffer, and 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ebe9"></span>EBE9</td>
 <td class="instruction">LD HL,$5BAE</td>
-<td class="comment-1" rowspan="3">Point both token pointers at the input buffer.</td>
+<td class="comment-1" rowspan="3">Point <a href="5BA7.html">InputBuffer_TokenStart</a> and <a href="5BA9.html">InputBuffer_NextToken</a> at <a href="5BAE.html">InputBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -671,10 +735,20 @@ Caps Shift chords: <code>1</code> restore length, <code>5</code>/ <code>8</code>
 <td class="comment-1" rowspan="1">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ec12"></span>
+<div class="comments">
+<div class="paragraph">
+Restore the saved length and redraw.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">InputLine_Caps1</td>
 <td class="address-2"><span id="ec12"></span>EC12</td>
 <td class="instruction">LD A,($5BFD)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a> if the line is dirty.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a> if *<a href="5BFD.html">InputLineState_Dirty</a> is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -690,7 +764,7 @@ Caps Shift chords: <code>1</code> restore length, <code>5</code>/ <code>8</code>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec19"></span>EC19</td>
 <td class="instruction">LD A,($5BFE)</td>
-<td class="comment-1" rowspan="4">Restore the saved length and redraw the line.</td>
+<td class="comment-1" rowspan="2">Copy *<a href="5BFE.html">InputLineState_SavedLength</a> to *<a href="5BFB.html">InputLineState_Length</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -701,17 +775,29 @@ Caps Shift chords: <code>1</code> restore length, <code>5</code>/ <code>8</code>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec1f"></span>EC1F</td>
 <td class="instruction">CALL <a href="ECC0.html">InputLine_Redraw</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ECC0.html">InputLine_Redraw</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec22"></span>EC22</td>
 <td class="instruction">JP <a href="EB51.html#eb5e">InputLine_Poll</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ec25"></span>
+<div class="comments">
+<div class="paragraph">
+Caps Shift + 2 is a no-op.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">InputLine_Caps2</td>
 <td class="address-2"><span id="ec25"></span>EC25</td>
 <td class="instruction">LD A,($5BFD)</td>
-<td class="comment-1" rowspan="4">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a> (Caps Shift + 2 is a no-op).</td>
+<td class="comment-1" rowspan="4">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -732,7 +818,7 @@ Caps Shift chords: <code>1</code> restore length, <code>5</code>/ <code>8</code>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec2f"></span>EC2F</td>
 <td class="instruction">LD A,($5BFE)</td>
-<td class="comment-1" rowspan="3">Unreachable restore of the saved length.</td>
+<td class="comment-1" rowspan="2">Copy *<a href="5BFE.html">InputLineState_SavedLength</a> to *<a href="5BFB.html">InputLineState_Length</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -743,6 +829,7 @@ Caps Shift chords: <code>1</code> restore length, <code>5</code>/ <code>8</code>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec35"></span>EC35</td>
 <td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -774,12 +861,13 @@ Move the cursor one column left and redraw it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec3d"></span>EC3D</td>
 <td class="instruction">CALL <a href="ED1C.html">InputLine_ClearCursor</a></td>
-<td class="comment-1" rowspan="6">Clear the old cursor, step left, and redraw.</td>
+<td class="comment-1" rowspan="1">Call <a href="ED1C.html">InputLine_ClearCursor</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec40"></span>EC40</td>
 <td class="instruction">LD A,($5BFA)</td>
+<td class="comment-1" rowspan="3">Decrease *<a href="5BFA.html">InputLineState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -795,18 +883,20 @@ Move the cursor one column left and redraw it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec47"></span>EC47</td>
 <td class="instruction">CALL <a href="ECC0.html#ecf0">InputLine_DrawCursor</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ECC0.html#ecf0">InputLine_DrawCursor</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec4a"></span>EC4A</td>
 <td class="instruction">JP <a href="EB51.html#eb5e">InputLine_Poll</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="ec4d"></span>
 <div class="comments">
 <div class="paragraph">
-Move the cursor one column right (not past the line length).
+Move the cursor one column right and redraw it.
 </div>
 </div>
 </td>
@@ -841,12 +931,13 @@ Move the cursor one column right (not past the line length).
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec58"></span>EC58</td>
 <td class="instruction">CALL <a href="ED1C.html">InputLine_ClearCursor</a></td>
-<td class="comment-1" rowspan="6">Clear the old cursor, step right, and redraw.</td>
+<td class="comment-1" rowspan="1">Call <a href="ED1C.html">InputLine_ClearCursor</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec5b"></span>EC5B</td>
 <td class="instruction">LD A,($5BFA)</td>
+<td class="comment-1" rowspan="3">Increase *<a href="5BFA.html">InputLineState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -862,11 +953,13 @@ Move the cursor one column right (not past the line length).
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec62"></span>EC62</td>
 <td class="instruction">CALL <a href="ECC0.html#ecf0">InputLine_DrawCursor</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ECC0.html#ecf0">InputLine_DrawCursor</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec65"></span>EC65</td>
 <td class="instruction">JP <a href="EB51.html#eb5e">InputLine_Poll</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -898,7 +991,7 @@ Insert a space at the cursor by shifting the tail right.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec70"></span>EC70</td>
 <td class="instruction">INC A</td>
-<td class="comment-1" rowspan="9">Grow the length and work out how many bytes to shift.</td>
+<td class="comment-1" rowspan="2">Increase *<a href="5BFB.html">InputLineState_Length</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -909,6 +1002,7 @@ Insert a space at the cursor by shifting the tail right.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec74"></span>EC74</td>
 <td class="instruction">LD E,A</td>
+<td class="comment-1" rowspan="6">Work out how many bytes to shift.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -939,12 +1033,12 @@ Insert a space at the cursor by shifting the tail right.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec7c"></span>EC7C</td>
 <td class="instruction">LD A,E</td>
+<td class="comment-1" rowspan="4">Point <span class="register">HL</span> at the end of <a href="5BAE.html">InputBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec7d"></span>EC7D</td>
 <td class="instruction">LD HL,$5BAE</td>
-<td class="comment-1" rowspan="10">LDDR the tail right and write a space at the cursor.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -960,6 +1054,7 @@ Insert a space at the cursor by shifting the tail right.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec82"></span>EC82</td>
 <td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Copy <span class="register">HL</span> to <span class="register">DE</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -970,6 +1065,7 @@ Insert a space at the cursor by shifting the tail right.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec84"></span>EC84</td>
 <td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="3">Shift the tail right.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -985,6 +1081,7 @@ Insert a space at the cursor by shifting the tail right.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec89"></span>EC89</td>
 <td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="2">Write a space at the cursor.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -995,12 +1092,13 @@ Insert a space at the cursor by shifting the tail right.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec8c"></span>EC8C</td>
 <td class="instruction">CALL <a href="ECC0.html">InputLine_Redraw</a></td>
-<td class="comment-1" rowspan="4">Redraw, mark the line dirty, and poll again.</td>
+<td class="comment-1" rowspan="1">Call <a href="ECC0.html">InputLine_Redraw</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec8f"></span>EC8F</td>
 <td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">Set *<a href="5BFD.html">InputLineState_Dirty</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1011,6 +1109,7 @@ Insert a space at the cursor by shifting the tail right.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec94"></span>EC94</td>
 <td class="instruction">JP <a href="EB51.html#eb5e">InputLine_Poll</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -1042,7 +1141,7 @@ Delete the character left of the cursor by shifting the tail left.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ec9e"></span>EC9E</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="9">Step the cursor left and shrink the stored length.</td>
+<td class="comment-1" rowspan="2">Decrease *<a href="5BFA.html">InputLineState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1053,6 +1152,7 @@ Delete the character left of the cursor by shifting the tail left.
 <td class="asm-label"></td>
 <td class="address-1"><span id="eca2"></span>ECA2</td>
 <td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="4">Decrease *<a href="5BFB.html">InputLineState_Length</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1073,6 +1173,7 @@ Delete the character left of the cursor by shifting the tail left.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecaa"></span>ECAA</td>
 <td class="instruction">SUB B</td>
+<td class="comment-1" rowspan="3">Count the bytes to shift.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1088,7 +1189,7 @@ Delete the character left of the cursor by shifting the tail left.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecad"></span>ECAD</td>
 <td class="instruction">LD HL,$5BAE</td>
-<td class="comment-1" rowspan="9">LDIR the tail left over the deleted character.</td>
+<td class="comment-1" rowspan="4">Point <span class="register">HL</span> at the cursor in <a href="5BAE.html">InputBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1109,6 +1210,7 @@ Delete the character left of the cursor by shifting the tail left.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecb3"></span>ECB3</td>
 <td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Copy <span class="register">HL</span> to <span class="register">DE</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1119,6 +1221,7 @@ Delete the character left of the cursor by shifting the tail left.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecb5"></span>ECB5</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="3">Shift the tail left.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -1134,12 +1237,13 @@ Delete the character left of the cursor by shifting the tail left.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecba"></span>ECBA</td>
 <td class="instruction">CALL <a href="ECC0.html">InputLine_Redraw</a></td>
-<td class="comment-1" rowspan="2">Redraw the line and poll again.</td>
+<td class="comment-1" rowspan="1">Call <a href="ECC0.html">InputLine_Redraw</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecbd"></span>ECBD</td>
 <td class="instruction">JP <a href="EB51.html#eb5e">InputLine_Poll</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EB51.html#eb5e">InputLine_Poll</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

@@ -121,7 +121,7 @@ Split the command into words and look each one up in the vocabulary.
 <span id="26217"></span>
 <div class="comments">
 <div class="paragraph">
-Blank the four-character word buffer.
+Clear the four-letter buffer to spaces so a short word cannot match the previous one's tail.
 </div>
 </div>
 </td>
@@ -130,35 +130,37 @@ Blank the four-character word buffer.
 <td class="asm-label">Parser_MatchInputWord</td>
 <td class="address-2"><span id="26217"></span>26217</td>
 <td class="instruction">LD DE,25246</td>
-<td class="comment-1" rowspan="1">Start at the word buffer (<a href="25246.html">FourLetterBuffer</a>).</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="25246.html">FourLetterBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26220"></span>26220</td>
 <td class="instruction">LD B,4</td>
-<td class="comment-1" rowspan="1">A word is at most four letters.</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the 4 letters.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26222"></span>26222</td>
 <td class="instruction">LD A,32</td>
-<td class="comment-1" rowspan="1">Pad the typed word with spaces.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=32.</td>
 </tr>
 <tr>
 <td class="asm-label">Parser_MatchInputWord_Loop1</td>
 <td class="address-2"><span id="26224"></span>26224</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-1" rowspan="3">Write spaces through the word buffer.</td>
+<td class="comment-1" rowspan="1">Write a space character (32) to the buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26225"></span>26225</td>
 <td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Move to the next letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26226"></span>26226</td>
 <td class="instruction">DJNZ <a href="26217.html#26224">Parser_MatchInputWord_Loop1</a></td>
+<td class="comment-1" rowspan="1">Decrease the counter by one and loop back to <a href="26217.html#26224">Parser_MatchInputWord_Loop1</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -443,42 +445,44 @@ Ignore the word "THE ".
 <td class="instruction">DEC C</td>
 </tr>
 <tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="26309"></span>26309</td>
-<td class="instruction">EXX</td>
-<td class="comment-1" rowspan="3">Search the vocabulary addressed by *<a href="25244.html">Pointer_Vocabulary</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="26310"></span>26310</td>
-<td class="instruction">LD HL,(25244)</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="26313"></span>26313</td>
-<td class="instruction">LD C,0</td>
-</tr>
-<tr>
 <td class="routine-comment" colspan="5">
-<span id="26315"></span>
+<span id="26309"></span>
 <div class="comments">
 <div class="paragraph">
-Look the word up in the vocabulary. A comma separates synonyms.
+Look the word up in the vocabulary. A comma separates synonyms of the same token; 255 ends the table.
 </div>
 </div>
 </td>
 </tr>
 <tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="26309"></span>26309</td>
+<td class="instruction">EXX</td>
+<td class="comment-1" rowspan="1">Switch to the alternate register set for the vocabulary search.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="26310"></span>26310</td>
+<td class="instruction">LD HL,(25244)</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="25244.html">Pointer_Vocabulary</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="26313"></span>26313</td>
+<td class="instruction">LD C,0</td>
+<td class="comment-1" rowspan="1">Set the token number in <span class="register">C</span> to 0.</td>
+</tr>
+<tr>
 <td class="asm-label">Parser_MatchInputWord_Loop6</td>
 <td class="address-2"><span id="26315"></span>26315</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Read the next vocabulary letter.</td>
+<td class="comment-1" rowspan="1">Fetch the next vocabulary byte into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26316"></span>26316</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Jump to <a href="26217.html#26365">Parser_MatchInputWord_Step5</a> when the vocabulary list ends (255).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="26217.html#26365">Parser_MatchInputWord_Step5</a> if the word is the 255 terminator.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -489,19 +493,19 @@ Look the word up in the vocabulary. A comma separates synonyms.
 <td class="asm-label">Parser_MatchInputWord_Loop7</td>
 <td class="address-2"><span id="26320"></span>26320</td>
 <td class="instruction">LD DE,25246</td>
-<td class="comment-1" rowspan="1">Point at the word buffer.</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="25246.html">FourLetterBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26323"></span>26323</td>
 <td class="instruction">LD B,4</td>
-<td class="comment-1" rowspan="1">Compare four letters of this vocabulary word.</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the 4 letters.</td>
 </tr>
 <tr>
 <td class="asm-label">Parser_MatchInputWord_Loop8</td>
 <td class="address-2"><span id="26325"></span>26325</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="6">Match the typed word against this vocabulary entry.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="26217.html#26350">Parser_MatchInputWord_Step3</a> if this letter does not match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -517,23 +521,26 @@ Look the word up in the vocabulary. A comma separates synonyms.
 <td class="asm-label"></td>
 <td class="address-1"><span id="26329"></span>26329</td>
 <td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Move to the next letter of the four-letter buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26330"></span>26330</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move to the next vocabulary letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26331"></span>26331</td>
 <td class="instruction">DJNZ <a href="26217.html#26325">Parser_MatchInputWord_Loop8</a></td>
+<td class="comment-1" rowspan="1">Decrease the letter counter by one and loop back to <a href="26217.html#26325">Parser_MatchInputWord_Loop8</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="26333"></span>
 <div class="comments">
 <div class="paragraph">
-Word matched. Store its vocabulary index in the token buffer and parse the next word.
+The word matched. Store its vocabulary index in the token buffer and parse the next word.
 </div>
 </div>
 </td>
@@ -600,7 +607,7 @@ Word matched. Store its vocabulary index in the token buffer and parse the next 
 <span id="26350"></span>
 <div class="comments">
 <div class="paragraph">
-This vocabulary entry did not match. Try a synonym after a comma, else the next entry.
+This vocabulary word did not match. Step past the remaining letters. A comma keeps the same token for a synonym; anything else advances the token number for the next entry.
 </div>
 </div>
 </td>
@@ -609,7 +616,7 @@ This vocabulary entry did not match. Try a synonym after a comma, else the next 
 <td class="asm-label">Parser_MatchInputWord_Step3</td>
 <td class="address-2"><span id="26350"></span>26350</td>
 <td class="instruction">LD E,B</td>
-<td class="comment-1" rowspan="3">Skip the letters left in a word that did not match.</td>
+<td class="comment-1" rowspan="2">Turn the remaining letter count into a 16-bit offset in <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -620,18 +627,19 @@ This vocabulary entry did not match. Try a synonym after a comma, else the next 
 <td class="asm-label"></td>
 <td class="address-1"><span id="26353"></span>26353</td>
 <td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Move <span class="register">HL</span> past the unmatched letters.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26354"></span>26354</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Read the byte that follows this vocabulary word.</td>
+<td class="comment-1" rowspan="1">Fetch the next vocabulary byte into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26355"></span>26355</td>
 <td class="instruction">CP 44</td>
-<td class="comment-1" rowspan="2">A comma marks another synonym of the same word.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="26217.html#26362">Parser_MatchInputWord_Step4</a> if this byte is not a comma (44).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -642,19 +650,19 @@ This vocabulary entry did not match. Try a synonym after a comma, else the next 
 <td class="asm-label"></td>
 <td class="address-1"><span id="26359"></span>26359</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Step past that comma.</td>
+<td class="comment-1" rowspan="1">Move past the comma.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26360"></span>26360</td>
 <td class="instruction">JR <a href="26217.html#26320">Parser_MatchInputWord_Loop7</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="26217.html#26320">Parser_MatchInputWord_Loop7</a> to match this synonym.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="26217.html#26320">Parser_MatchInputWord_Loop7</a> to try matching the synonym.</td>
 </tr>
 <tr>
 <td class="asm-label">Parser_MatchInputWord_Step4</td>
 <td class="address-2"><span id="26362"></span>26362</td>
 <td class="instruction">INC C</td>
-<td class="comment-1" rowspan="1">Try the next vocabulary word.</td>
+<td class="comment-1" rowspan="1">Advance the token number for the next vocabulary entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

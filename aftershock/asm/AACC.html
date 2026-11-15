@@ -114,6 +114,19 @@ Next: <a href="AAD8.html">AAD8</a>
 Adds the operand to the score at <a href="A107.html">Score</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Adds the operand to the score at <a href="A107.html">Score</a>.
 <span id="aacc"></span>
 <div class="comments">
 <div class="paragraph">
-When the condition succeeded, add the operand to the score.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,26 +142,36 @@ When the condition succeeded, add the operand to the score.
 <tr>
 <td class="asm-label">Action_AddToScore</td>
 <td class="address-2"><span id="aacc"></span>AACC</td>
-<td class="instruction">JP NZ,<a href="A6FF.html#a75d">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">Leave the score unchanged.</td>
+<td class="instruction">JP NZ,<a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a> if the condition failed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="aacf"></span>
+<div class="comments">
+<div class="paragraph">
+Add the operand to the score at <a href="A107.html">Score</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aacf"></span>AACF</td>
 <td class="instruction">LD A,(IX+$01)</td>
-<td class="comment-1" rowspan="1">The operand is the points to add.</td>
+<td class="comment-1" rowspan="1">Fetch the points to add (the operand) from *<span class="register">IX</span>+01 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aad2"></span>AAD2</td>
 <td class="instruction">CALL <a href="AD34.html">AddToScore</a></td>
-<td class="comment-1" rowspan="1">Call <a href="AD34.html">AddToScore</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="AD34.html">AddToScore</a> to add those points to the score.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aad5"></span>AAD5</td>
-<td class="instruction">JP <a href="A6FF.html#a75d">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

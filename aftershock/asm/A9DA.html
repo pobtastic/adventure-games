@@ -114,6 +114,19 @@ Next: <a href="A9E9.html">A9E9</a>
 Continues execution at the script address in the operand when the condition succeeded.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry (opcode, address)</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Continues execution at the script address in the operand when the condition succ
 <span id="a9da"></span>
 <div class="comments">
 <div class="paragraph">
-When the condition succeeded, continue at the script address in the operand.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,13 +142,24 @@ When the condition succeeded, continue at the script address in the operand.
 <tr>
 <td class="asm-label">Action_JumpToScript</td>
 <td class="address-2"><span id="a9da"></span>A9DA</td>
-<td class="instruction">JP NZ,<a href="A6FF.html#a75b">Handler_RunScript_9</a></td>
-<td class="comment-1" rowspan="3">Continue at the script named by the operand.</td>
+<td class="instruction">JP NZ,<a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a> if the condition failed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a9dd"></span>
+<div class="comments">
+<div class="paragraph">
+Continue at the script address held in the operand.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a9dd"></span>A9DD</td>
 <td class="instruction">LD L,(IX+$01)</td>
+<td class="comment-1" rowspan="2">Fetch the destination script address from *<span class="register">IX</span>+01 into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -146,7 +170,7 @@ When the condition succeeded, continue at the script address in the operand.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a9e3"></span>A9E3</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Copy the script address from <span class="register">HL</span> into <span class="register">IX</span>.</td>
+<td class="comment-1" rowspan="2">Copy the destination script address from <span class="register">HL</span> into <span class="register">IX</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -156,8 +180,8 @@ When the condition succeeded, continue at the script address in the operand.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a9e6"></span>A9E6</td>
-<td class="instruction">JP <a href="A6FF.html#a761">Handler_RunScript_12</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a761">Handler_RunScript_12</a>.</td>
+<td class="instruction">JP <a href="A6FF.html#a761">RunScript_AfterAction</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a761">RunScript_AfterAction</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

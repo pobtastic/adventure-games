@@ -114,7 +114,7 @@ Next: <a href="6E7F.html">6E7F</a>
 Used by the routines at <a href="6EC1.html">PlotShape</a>, <a href="6F2C.html">ChangePictureColour</a>, <a href="6F44.html">BrightenAttributes</a>, <a href="7213.html">ShapeIfPresent</a>, <a href="72B5.html">DrawPatched</a>, <a href="72C0.html">DrawFixedShift</a>, <a href="7382.html">DrawFromOrigin</a>, <a href="738D.html">ResetOrigin</a>, <a href="73DC.html">ShapeForObject</a>, <a href="7428.html">HorizontalRun</a>, <a href="746E.html">VerticalRun</a>, <a href="7512.html">DrawVertical</a>, <a href="751D.html">FixedVertical</a> and <a href="753E.html">PaintAttributeRun</a>.
 </div>
 <div class="paragraph">
-Reads the next record byte. FF ends it. FE reflects the left half of the picture onto the right, FD changes one colour to another in the ink and paper, FC paints a run of attributes, FB brightens the picture, FA mirrors it left to right, and F9 draws another room's record. Any other byte goes to <a href="6E7F.html">DispatchShape</a>.
+Reads the next record byte. FF ends it. FE draws with a fixed shift, FD changes one colour to another in the ink and paper, FC paints a run of attributes, FB brightens the picture, FA draws a fixed vertical stroke, and F9 draws another room's record. Any other byte goes to <a href="6E7F.html">DispatchShape</a>.
 </div>
 </div>
 </td>
@@ -123,133 +123,206 @@ Reads the next record byte. FF ends it. FE reflects the left half of the picture
 <td class="asm-label">PictureRecord</td>
 <td class="address-2"><span id="6e53"></span>6E53</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the next record byte.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6e56"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode FF ends the record.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e56"></span>6E56</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return if it is the terminator FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e57"></span>6E57</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6e58"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode FE draws with the shift forced to 0C.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e58"></span>6E58</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="72C0.html">DrawFixedShift</a> if it is FE.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e59"></span>6E59</td>
 <td class="instruction">JP Z,<a href="72C0.html">DrawFixedShift</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6e5c"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode FD changes one colour to another.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e5c"></span>6E5C</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F2C.html">ChangePictureColour</a> if it is FD.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e5d"></span>6E5D</td>
 <td class="instruction">JP Z,<a href="6F2C.html">ChangePictureColour</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6e60"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode FC paints a run of attributes.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e60"></span>6E60</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="753E.html">PaintAttributeRun</a> if it is FC.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e61"></span>6E61</td>
 <td class="instruction">JP Z,<a href="753E.html">PaintAttributeRun</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6e64"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode FB sets bright on every attribute.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e64"></span>6E64</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F44.html">BrightenAttributes</a> if it is FB.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e65"></span>6E65</td>
 <td class="instruction">JP Z,<a href="6F44.html">BrightenAttributes</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6e68"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode FA draws a fixed vertical stroke.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e68"></span>6E68</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="751D.html">FixedVertical</a> if it is FA.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e69"></span>6E69</td>
 <td class="instruction">JP Z,<a href="751D.html">FixedVertical</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6e6c"></span>
+<div class="comments">
+<div class="paragraph">
+Any other opcode except F9 goes to <a href="6E7F.html">DispatchShape</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e6c"></span>6E6C</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="6E7F.html">DispatchShape</a> if it is not F9.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e6d"></span>6E6D</td>
 <td class="instruction">JR NZ,<a href="6E7F.html">DispatchShape</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6e6f"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode F9 draws another room's picture record.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e6f"></span>6E6F</td>
 <td class="instruction">INC IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance the record pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e71"></span>6E71</td>
 <td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the room number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e74"></span>6E74</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the record pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e76"></span>6E76</td>
 <td class="instruction">CALL <a href="6E43.html">FindPictureRecord</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="6E43.html">FindPictureRecord</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e79"></span>6E79</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the record pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e7b"></span>6E7B</td>
 <td class="instruction">INC IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance the record pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6e7d"></span>6E7D</td>
 <td class="instruction">JR <a href="6E53.html#6e53">PictureRecord</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6E53.html">PictureRecord</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

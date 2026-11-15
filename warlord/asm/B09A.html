@@ -113,6 +113,9 @@ Next: <a href="B0A9.html">B0A9</a>
 <div class="paragraph">
 Used by the routines at <a href="EBDA.html">Process_EnterForestPath</a>, <a href="EC07.html">Process_CongratulationsGameOver</a>, <a href="EC32.html">Process_EnterLugsCavern</a>, <a href="EC40.html">Process_EnterValeOfCuchulainn</a>, <a href="EC4E.html">Process_EnterInnerCourtyard</a>, <a href="EC5C.html">Process_EnterEnchantedHills</a>, <a href="EC6A.html">Process_EnterDeepPoolOfWater</a>, <a href="EC78.html">Process_EnterBleakMoorland</a>, <a href="EC86.html">Process_EnterCrystalCavern</a>, <a href="EC94.html">Process_EnterValeOfRhia</a>, <a href="ECBE.html">Process_EnterCauseway</a>, <a href="EEE9.html">Process_GetUrn</a>, <a href="EF5A.html">Process_GetRope</a>, <a href="EFAD.html">Process_GetCloak</a>, <a href="F0DB.html">Process_ThrowMeatToWolves</a>, <a href="F134.html">Process_GiveSaltToGuard</a>, <a href="F156.html">Process_BuyMeatFromTraderWithIron</a>, <a href="F191.html">Process_GiveRomanToDruid</a>, <a href="F4B9.html">Process_ThrowUrnIntoFire</a>, <a href="F544.html">Process_CaptureRoman</a>, <a href="F57B.html">Process_PlaceLadderAgainstPlatform</a>, <a href="F5B8.html">Process_PlaceSwordOnSlab</a>, <a href="F739.html">Process_KillBear</a>, <a href="F793.html">Process_KillOxWithSword</a> and <a href="F7FD.html">Action_Sleep</a>.
 </div>
+<div class="paragraph">
+Adds the points in <span class="register">A</span> to the two-byte BCD score at <a href="A7C4.html">Score</a>. The low byte is adjusted with DAA; when that addition carries, the high byte increases by one.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -126,6 +129,16 @@ Used by the routines at <a href="EBDA.html">Process_EnterForestPath</a>, <a href
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="b09a"></span>
+<div class="comments">
+<div class="paragraph">
+Preserve <span class="register">HL</span> and load the current score from <a href="A7C4.html">Score</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">AddToScore</td>
 <td class="address-2"><span id="b09a"></span>B09A</td>
 <td class="instruction">PUSH HL</td>
@@ -135,38 +148,48 @@ Used by the routines at <a href="EBDA.html">Process_EnterForestPath</a>, <a href
 <td class="asm-label"></td>
 <td class="address-1"><span id="b09b"></span>B09B</td>
 <td class="instruction">LD HL,($A7C4)</td>
-<td class="comment-1" rowspan="1">Load *<a href="A7C4.html">Score</a> into <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Fetch the BCD score from *<a href="A7C4.html">Score</a> into <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b09e"></span>
+<div class="comments">
+<div class="paragraph">
+Add the points into the low score byte and adjust for BCD.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b09e"></span>B09E</td>
 <td class="instruction">ADD A,L</td>
-<td class="comment-1" rowspan="1">Add the points to the low byte.</td>
+<td class="comment-1" rowspan="1">Add the points in <span class="register">A</span> to the low score byte in <span class="register">L</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b09f"></span>B09F</td>
 <td class="instruction">DAA</td>
-<td class="comment-1" rowspan="1">Decimal adjust for BCD (Binary Coded Decimal).</td>
+<td class="comment-1" rowspan="1">Decimal-adjust <span class="register">A</span> for a BCD score digit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b0a0"></span>B0A0</td>
 <td class="instruction">LD L,A</td>
-<td class="comment-1" rowspan="1">Store the adjusted result.</td>
+<td class="comment-1" rowspan="1">Store the adjusted low byte back in <span class="register">L</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b0a1"></span>B0A1</td>
-<td class="instruction">JR NC,<a href="B09A.html#b0a4">SaveScore</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="B09A.html#b0a4">SaveScore</a> if there was no carry from the addition.</td>
+<td class="instruction">JR NC,<a href="B09A.html#b0a4">AddToScore_Store</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B09A.html#b0a4">AddToScore_Store</a> if the addition did not carry.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="b0a3"></span>
 <div class="comments">
 <div class="paragraph">
-If there was carry, increment the high byte.
+The low byte carried, so raise the high score byte.
 </div>
 </div>
 </td>
@@ -175,13 +198,23 @@ If there was carry, increment the high byte.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b0a3"></span>B0A3</td>
 <td class="instruction">INC H</td>
-<td class="comment-1" rowspan="1">Increment the high byte by one.</td>
+<td class="comment-1" rowspan="1">Increase the high score byte in <span class="register">H</span> by one.</td>
 </tr>
 <tr>
-<td class="asm-label">SaveScore</td>
+<td class="routine-comment" colspan="5">
+<span id="b0a4"></span>
+<div class="comments">
+<div class="paragraph">
+Write the updated score back to <a href="A7C4.html">Score</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">AddToScore_Store</td>
 <td class="address-2"><span id="b0a4"></span>B0A4</td>
 <td class="instruction">LD ($A7C4),HL</td>
-<td class="comment-1" rowspan="1">Write the updated score back to *<a href="A7C4.html">Score</a>.</td>
+<td class="comment-1" rowspan="1">Store <span class="register">HL</span> at <a href="A7C4.html">Score</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

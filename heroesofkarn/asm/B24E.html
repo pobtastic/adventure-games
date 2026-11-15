@@ -174,7 +174,7 @@ Initialise the word token buffer. This buffer will store up to 0A vocabulary tok
 <td class="asm-label"></td>
 <td class="address-1"><span id="b255"></span>B255</td>
 <td class="instruction">LD HL,$AF2E</td>
-<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="AF2E.html">UserInput_Token_1</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="AF2E.html">UserInput_FirstToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -227,36 +227,50 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <td class="comment-1" rowspan="1">Allow ten words in the command.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="b265"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the four-letter buffer to spaces so a short word cannot match the previous one's tail.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Parser_MatchInputWord</td>
 <td class="address-2"><span id="b265"></span>B265</td>
 <td class="instruction">LD DE,$AF39</td>
-<td class="comment-1" rowspan="3">Blank the four-byte word scratch with spaces.</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="AF39.html">FourLetterBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b268"></span>B268</td>
 <td class="instruction">LD B,$04</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the 04 letters.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b26a"></span>B26A</td>
 <td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=20.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_0</td>
+<td class="asm-label">ClearWordBuffer_Loop</td>
 <td class="address-2"><span id="b26c"></span>B26C</td>
 <td class="instruction">LD (DE),A</td>
-<td class="comment-1" rowspan="3">Fill the word scratch with spaces.</td>
+<td class="comment-1" rowspan="1">Write a space character (20) to the buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b26d"></span>B26D</td>
 <td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Move to the next letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b26e"></span>B26E</td>
-<td class="instruction">DJNZ <a href="B24E.html#b26c">UserInput_Enter_0</a></td>
+<td class="instruction">DJNZ <a href="B24E.html#b26c">ClearWordBuffer_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the counter by one and loop back to <a href="B24E.html#b26c">ClearWordBuffer_Loop</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -303,7 +317,7 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <td class="instruction">LD DE,$AF39</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_1</td>
+<td class="asm-label">UserInput_Enter_0</td>
 <td class="address-2"><span id="b280"></span>B280</td>
 <td class="instruction">LD A,(HL)</td>
 <td class="comment-1" rowspan="1">Read the next character of this word.</td>
@@ -317,7 +331,7 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b283"></span>B283</td>
-<td class="instruction">JR Z,<a href="B24E.html#b2ac">UserInput_Enter_4</a></td>
+<td class="instruction">JR Z,<a href="B24E.html#b2ac">UserInput_Enter_3</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -328,7 +342,7 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b287"></span>B287</td>
-<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_2</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -339,7 +353,7 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b28b"></span>B28B</td>
-<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_2</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -361,11 +375,11 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b290"></span>B290</td>
-<td class="instruction">DJNZ <a href="B24E.html#b280">UserInput_Enter_1</a></td>
+<td class="instruction">DJNZ <a href="B24E.html#b280">UserInput_Enter_0</a></td>
 <td class="comment-1" rowspan="1">Copy up to four letters of this word into the word scratch.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_2</td>
+<td class="asm-label">UserInput_Enter_1</td>
 <td class="address-2"><span id="b292"></span>B292</td>
 <td class="instruction">LD A,(HL)</td>
 <td class="comment-1" rowspan="1">Read the character past a word that did not fit.</td>
@@ -379,7 +393,7 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b295"></span>B295</td>
-<td class="instruction">JR Z,<a href="B24E.html#b2ac">UserInput_Enter_4</a></td>
+<td class="instruction">JR Z,<a href="B24E.html#b2ac">UserInput_Enter_3</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -390,7 +404,7 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b299"></span>B299</td>
-<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_2</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -401,7 +415,7 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b29d"></span>B29D</td>
-<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_2</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -412,11 +426,11 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2a0"></span>B2A0</td>
-<td class="instruction">JR <a href="B24E.html#b292">UserInput_Enter_2</a></td>
+<td class="instruction">JR <a href="B24E.html#b292">UserInput_Enter_1</a></td>
 <td class="comment-1" rowspan="1">Keep skipping to the end of a long word.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_3</td>
+<td class="asm-label">UserInput_Enter_2</td>
 <td class="address-2"><span id="b2a2"></span>B2A2</td>
 <td class="instruction">INC HL</td>
 <td class="comment-1" rowspan="1">Step past the space or comma between words.</td>
@@ -436,7 +450,7 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2a6"></span>B2A6</td>
-<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_2</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -447,13 +461,23 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2aa"></span>B2AA</td>
-<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_3</a></td>
+<td class="instruction">JR Z,<a href="B24E.html#b2a2">UserInput_Enter_2</a></td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_4</td>
+<td class="routine-comment" colspan="5">
+<span id="b2ac"></span>
+<div class="comments">
+<div class="paragraph">
+Preserve the command pointer, word buffer and token counter while comparing.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">UserInput_Enter_3</td>
 <td class="address-2"><span id="b2ac"></span>B2AC</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">Remember the command, the scratch and the word count.</td>
+<td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -485,7 +509,7 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <td class="asm-label">CompareWord_Loop</td>
 <td class="address-2"><span id="b2b7"></span>B2B7</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="B24E.html#b2bf">UserInput_Enter_5</a> if the characters don't match (the word is not "The").</td>
+<td class="comment-1" rowspan="3">Jump to <a href="B24E.html#b2bf">UserInput_Enter_4</a> if the characters don't match (the word is not "The").</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -495,7 +519,7 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2b9"></span>B2B9</td>
-<td class="instruction">JR NZ,<a href="B24E.html#b2bf">UserInput_Enter_5</a></td>
+<td class="instruction">JR NZ,<a href="B24E.html#b2bf">UserInput_Enter_4</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -512,13 +536,23 @@ Fill the word token buffer with FF (the terminator value) to mark all slots as e
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2bd"></span>B2BD</td>
 <td class="instruction">DJNZ <a href="B24E.html#b2b7">CompareWord_Loop</a></td>
-<td class="comment-1" rowspan="1">Keep going until all four letters have been compared.</td>
+<td class="comment-1" rowspan="1">Decrease the letter counter by one and loop back to <a href="B24E.html#b2b7">CompareWord_Loop</a> until the counter is zero.</td>
 </tr>
 <tr>
-<td class="asm-label">UserInput_Enter_5</td>
+<td class="routine-comment" colspan="5">
+<span id="b2bf"></span>
+<div class="comments">
+<div class="paragraph">
+Restore the registers saved before the "THE" comparison.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">UserInput_Enter_4</td>
 <td class="address-2"><span id="b2bf"></span>B2BF</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">DE</span>, <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="3">Restore <span class="register">BC</span>, <span class="register">DE</span> and <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -574,19 +608,19 @@ Look up the word in the vocabulary table. The vocabulary contains all recognised
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2d0"></span>B2D0</td>
 <td class="instruction">LD HL,($AED0)</td>
-<td class="comment-1" rowspan="1">Load the pointer for the vocabulary pointer into <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="AED0.html">Pointer_Vocabulary</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2d3"></span>B2D3</td>
 <td class="instruction">LD C,$00</td>
-<td class="comment-1" rowspan="1">Select the north exit.</td>
+<td class="comment-1" rowspan="1">Set the token number in <span class="register">C</span> to 00.</td>
 </tr>
 <tr>
 <td class="asm-label">VocabularyLookup_Loop</td>
 <td class="address-2"><span id="b2d5"></span>B2D5</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="B24E.html#b312">ProcessUnrecognisedWords</a> if *<span class="register">HL</span> is equal to FF (end of vocabulary table).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="B24E.html#b312">ProcessUnrecognisedWords</a> if the word is the FF terminator.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -602,18 +636,19 @@ Look up the word in the vocabulary table. The vocabulary contains all recognised
 <td class="asm-label">CompareVocabularyWord</td>
 <td class="address-2"><span id="b2da"></span>B2DA</td>
 <td class="instruction">LD DE,$AF39</td>
-<td class="comment-1" rowspan="2">Compare this vocabulary word with the scratch word.</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="AF39.html">FourLetterBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2dd"></span>B2DD</td>
 <td class="instruction">LD B,$04</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the 04 letters.</td>
 </tr>
 <tr>
 <td class="asm-label">CompareVocabularyWord_Loop</td>
 <td class="address-2"><span id="b2df"></span>B2DF</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="B24E.html#b303">VocabularyWordNoMatch</a> if the characters don't match (this vocabulary entry doesn't match the word).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="B24E.html#b303">VocabularyWordNoMatch</a> if this letter does not match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -629,26 +664,26 @@ Look up the word in the vocabulary table. The vocabulary contains all recognised
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2e3"></span>B2E3</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="1">Move to the next character in the extracted word.</td>
+<td class="comment-1" rowspan="1">Move to the next letter of the four-letter buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2e4"></span>B2E4</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Move to the next character in the vocabulary entry.</td>
+<td class="comment-1" rowspan="1">Move to the next vocabulary letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2e5"></span>B2E5</td>
 <td class="instruction">DJNZ <a href="B24E.html#b2df">CompareVocabularyWord_Loop</a></td>
-<td class="comment-1" rowspan="1">Decrease counter by one and loop back to <a href="B24E.html#b2df">CompareVocabularyWord_Loop</a> until all 04 characters have been compared.</td>
+<td class="comment-1" rowspan="1">Decrease the letter counter by one and loop back to <a href="B24E.html#b2df">CompareVocabularyWord_Loop</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="b2e7"></span>
 <div class="comments">
 <div class="paragraph">
-Word matched in vocabulary! Calculate which slot in the token buffer to use (based on how many words have been processed so far) and store the vocabulary index as the token.
+The word matched. Calculate which token-buffer slot to use and store the vocabulary index as the token.
 </div>
 </div>
 </td>
@@ -678,13 +713,13 @@ Word matched in vocabulary! Calculate which slot in the token buffer to use (bas
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2ef"></span>B2EF</td>
 <td class="instruction">LD E,A</td>
-<td class="comment-1" rowspan="1">Use the filled slot as an offset into the token buffer.</td>
+<td class="comment-1" rowspan="1">Copy the slot index into <span class="register">E</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b2f0"></span>B2F0</td>
 <td class="instruction">LD HL,$AF2E</td>
-<td class="comment-1" rowspan="2">Calculate the address of the token buffer slot: <span class="register">HL</span>=the first word token+<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="2">Calculate the address of the token buffer slot: <span class="register">HL</span>=<a href="AF2E.html">UserInput_FirstToken</a>+<span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -719,14 +754,14 @@ Word matched in vocabulary! Calculate which slot in the token buffer to use (bas
 <td class="asm-label"></td>
 <td class="address-1"><span id="b300"></span>B300</td>
 <td class="instruction">JP <a href="B24E.html#b265">Parser_MatchInputWord</a></td>
-<td class="comment-1" rowspan="1">Take the next word.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="B24E.html#b265">Parser_MatchInputWord</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="b303"></span>
 <div class="comments">
 <div class="paragraph">
-Word didn't match this vocabulary entry. Check if there's a synonym (indicated by a comma). If found, try matching against the synonym instead.
+This vocabulary word did not match. Step past the remaining letters. A comma keeps the same token for a synonym; anything else advances the token number for the next entry.
 </div>
 </div>
 </td>
@@ -735,7 +770,7 @@ Word didn't match this vocabulary entry. Check if there's a synonym (indicated b
 <td class="asm-label">VocabularyWordNoMatch</td>
 <td class="address-2"><span id="b303"></span>B303</td>
 <td class="instruction">LD E,B</td>
-<td class="comment-1" rowspan="3">Step past the vocabulary word that did not match.</td>
+<td class="comment-1" rowspan="2">Turn the remaining letter count into a 16-bit offset in <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -746,18 +781,19 @@ Word didn't match this vocabulary entry. Check if there's a synonym (indicated b
 <td class="asm-label"></td>
 <td class="address-1"><span id="b306"></span>B306</td>
 <td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Move <span class="register">HL</span> past the unmatched letters.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b307"></span>B307</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Read the character at this position and store it in <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Fetch the next vocabulary byte into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b308"></span>B308</td>
 <td class="instruction">CP $2C</td>
-<td class="comment-1" rowspan="2">Jump to <a href="B24E.html#b30f">VocabularyNextEntry</a> if this character is not a comma (2C, meaning no synonym exists).</td>
+<td class="comment-1" rowspan="2">Jump to <a href="B24E.html#b30f">VocabularyNextEntry</a> if this byte is not a comma (2C).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -768,7 +804,7 @@ Word didn't match this vocabulary entry. Check if there's a synonym (indicated b
 <td class="asm-label"></td>
 <td class="address-1"><span id="b30c"></span>B30C</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Move past the comma to the synonym.</td>
+<td class="comment-1" rowspan="1">Move past the comma.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -780,13 +816,13 @@ Word didn't match this vocabulary entry. Check if there's a synonym (indicated b
 <td class="asm-label">VocabularyNextEntry</td>
 <td class="address-2"><span id="b30f"></span>B30F</td>
 <td class="instruction">INC C</td>
-<td class="comment-1" rowspan="1">Advance to the next vocabulary word.</td>
+<td class="comment-1" rowspan="1">Advance the token number for the next vocabulary entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b310"></span>B310</td>
 <td class="instruction">JR <a href="B24E.html#b2d5">VocabularyLookup_Loop</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="B24E.html#b2d5">VocabularyLookup_Loop</a> to check the next vocabulary entry.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="B24E.html#b2d5">VocabularyLookup_Loop</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">

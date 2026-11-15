@@ -123,7 +123,7 @@ Plots A. A space that would sit on top of another space is rubbed out first. ENT
 <td class="asm-label">PrintCharacter</td>
 <td class="address-2"><span id="6394"></span>6394</td>
 <td class="instruction">CP $20</td>
-<td class="comment-1" rowspan="4">A space may need to rub out a previous space.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6394.html#639b">PrintCharacter_Other</a> if this is not a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -134,22 +134,35 @@ Plots A. A space that would sit on top of another space is rubbed out first. ENT
 <td class="asm-label"></td>
 <td class="address-1"><span id="6398"></span>6398</td>
 <td class="instruction">PUSH AF</td>
+<td class="comment-1" rowspan="1">Stash the space on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6399"></span>6399</td>
 <td class="instruction">JR <a href="6394.html#63a3">PrintCharacter_Rub</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6394.html#63a3">PrintCharacter_Rub</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="639b"></span>
+<div class="comments">
+<div class="paragraph">
+Any other character, or a space that is not doubled.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PrintCharacter_Other</td>
 <td class="address-2"><span id="639b"></span>639B</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="4">Only column 1 can be a doubled space.</td>
+<td class="comment-1" rowspan="1">Stash the character on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="639c"></span>639C</td>
 <td class="instruction">LD A,($5B8A)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6394.html#63af">PrintCharacter_Keep</a> if *<a href="5B8A.html">PrintColumn</a> is not 01.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -162,10 +175,20 @@ Plots A. A space that would sit on top of another space is rubbed out first. ENT
 <td class="instruction">JR NZ,<a href="6394.html#63af">PrintCharacter_Keep</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="63a3"></span>
+<div class="comments">
+<div class="paragraph">
+Rub out a previous space.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PrintCharacter_Rub</td>
 <td class="address-2"><span id="63a3"></span>63A3</td>
 <td class="instruction">LD A,($5B9C)</td>
-<td class="comment-1" rowspan="3">The previous glyph is a space.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6394.html#63af">PrintCharacter_Keep</a> if *<a href="5B9C.html">PreviousGlyph</a> is not a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -189,10 +212,20 @@ Plots A. A space that would sit on top of another space is rubbed out first. ENT
 <td class="instruction">CALL <a href="63FC.html">PlotCharacter</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="63af"></span>
+<div class="comments">
+<div class="paragraph">
+Plot this character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PrintCharacter_Keep</td>
 <td class="address-2"><span id="63af"></span>63AF</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="2">Remember this glyph.</td>
+<td class="comment-1" rowspan="2">Write it to *<a href="5B9C.html">PreviousGlyph</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -203,7 +236,7 @@ Plots A. A space that would sit on top of another space is rubbed out first. ENT
 <td class="asm-label"></td>
 <td class="address-1"><span id="63b3"></span>63B3</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="4">Save the registers around the plot.</td>
+<td class="comment-1" rowspan="4">Stash the registers around the plot.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -224,7 +257,7 @@ Plots A. A space that would sit on top of another space is rubbed out first. ENT
 <td class="asm-label"></td>
 <td class="address-1"><span id="63b7"></span>63B7</td>
 <td class="instruction">CP $0D</td>
-<td class="comment-1" rowspan="4">ENTER pads the line out to column 2A.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6394.html#63cc">PrintCharacter_Plot</a> if this is not ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -235,11 +268,22 @@ Plots A. A space that would sit on top of another space is rubbed out first. ENT
 <td class="asm-label"></td>
 <td class="address-1"><span id="63bb"></span>63BB</td>
 <td class="instruction">LD A,($5B8A)</td>
+<td class="comment-1" rowspan="2">Copy *<a href="5B8A.html">PrintColumn</a> into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="63be"></span>63BE</td>
 <td class="instruction">LD B,A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="63bf"></span>
+<div class="comments">
+<div class="paragraph">
+Pad the row to the margin.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PrintCharacter_Pad</td>
@@ -267,7 +311,7 @@ Plots A. A space that would sit on top of another space is rubbed out first. ENT
 <td class="asm-label"></td>
 <td class="address-1"><span id="63c5"></span>63C5</td>
 <td class="instruction">LD A,$20</td>
-<td class="comment-1" rowspan="3">Print a pad space and continue.</td>
+<td class="comment-1" rowspan="2">Print a pad space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -278,12 +322,23 @@ Plots A. A space that would sit on top of another space is rubbed out first. ENT
 <td class="asm-label"></td>
 <td class="address-1"><span id="63ca"></span>63CA</td>
 <td class="instruction">JR <a href="6394.html#63bf">PrintCharacter_Pad</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6394.html#63bf">PrintCharacter_Pad</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="63cc"></span>
+<div class="comments">
+<div class="paragraph">
+Plot any other character.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">PrintCharacter_Plot</td>
 <td class="address-2"><span id="63cc"></span>63CC</td>
 <td class="instruction">CALL <a href="63FC.html">PlotCharacter</a></td>
-<td class="comment-1" rowspan="1">Call <a href="63FC.html">PlotCharacter</a> to plot any other character.</td>
+<td class="comment-1" rowspan="1">Call <a href="63FC.html">PlotCharacter</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -291,6 +346,9 @@ Plots A. A space that would sit on top of another space is rubbed out first. ENT
 <div class="comments">
 <div class="paragraph">
 This entry point is used by the routines at <a href="6319.html">CollectWord</a>, <a href="63D7.html">PrintObjectName</a> and <a href="63E6.html">PrintNumberedMessage</a>.
+</div>
+<div class="paragraph">
+Restore the registers.
 </div>
 </div>
 </td>

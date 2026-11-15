@@ -114,6 +114,19 @@ Next: <a href="AB37.html">AB37</a>
 Clears the bit operand in <a href="A0D1.html">Flags_EventStates</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry (opcode, event index)</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Clears the bit operand in <a href="A0D1.html">Flags_EventStates</a>.
 <span id="ab22"></span>
 <div class="comments">
 <div class="paragraph">
-When the condition succeeded, clear the operand bit in <a href="A0D1.html">Flags_EventStates</a>.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,24 +142,36 @@ When the condition succeeded, clear the operand bit in <a href="A0D1.html">Flags
 <tr>
 <td class="asm-label">Action_ClearEventFlag</td>
 <td class="address-2"><span id="ab22"></span>AB22</td>
-<td class="instruction">JP NZ,<a href="A6FF.html#a75d">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">That event keeps following the player.</td>
+<td class="instruction">JP NZ,<a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a> if the condition failed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ab25"></span>
+<div class="comments">
+<div class="paragraph">
+The operand selects which event bit to clear in <a href="A0D1.html">Flags_EventStates</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab25"></span>AB25</td>
 <td class="instruction">LD B,(IX+$01)</td>
-<td class="comment-1" rowspan="4">The operand selects which event.</td>
+<td class="comment-1" rowspan="1">Fetch the event number from *<span class="register">IX</span>+01 into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab28"></span>AB28</td>
 <td class="instruction">INC B</td>
+<td class="comment-1" rowspan="1">Start the count at one so event 00 needs a single rotate.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab29"></span>AB29</td>
 <td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Clear <span class="register">A</span> and set the carry flag as the seed bit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -157,18 +182,29 @@ When the condition succeeded, clear the operand bit in <a href="A0D1.html">Flags
 <td class="asm-label">ClearEventMask</td>
 <td class="address-2"><span id="ab2b"></span>AB2B</td>
 <td class="instruction">RLA</td>
-<td class="comment-1" rowspan="2">Build the mask for that event.</td>
+<td class="comment-1" rowspan="1">Rotate the seed bit left into the mask.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab2c"></span>AB2C</td>
 <td class="instruction">DJNZ <a href="AB22.html#ab2b">ClearEventMask</a></td>
+<td class="comment-1" rowspan="1">Decrease the event count by one and loop back to <a href="AB22.html#ab2b">ClearEventMask</a> until the bit is in place.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ab2e"></span>
+<div class="comments">
+<div class="paragraph">
+Clear that bit so the event no longer follows the player.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab2e"></span>AB2E</td>
 <td class="instruction">LD HL,$A0D1</td>
-<td class="comment-1" rowspan="4">That event no longer follows the player.</td>
+<td class="comment-1" rowspan="4">Clear that bit in *<a href="A0D1.html">Flags_EventStates</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -188,8 +224,8 @@ When the condition succeeded, clear the operand bit in <a href="A0D1.html">Flags
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab34"></span>AB34</td>
-<td class="instruction">JP <a href="A6FF.html#a75d">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

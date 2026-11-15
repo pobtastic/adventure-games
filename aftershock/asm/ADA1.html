@@ -113,6 +113,19 @@ Next: <a href="AE0D.html">AE0D</a>
 <div class="paragraph">
 Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 </div>
+<div class="paragraph">
+Clears game state, copies the starting item locations from <a href="BB0B.html">Table_InitialItemLocations</a> into <a href="9F88.html">Table_ItemLocations</a>, primes the saved-state bytes through <a href="BAF9.html">Table_SavedStateAddresses</a>, places the player in the starting room from <a href="BBD3.html">StartingRoom</a>, then loops on turn events, scenic events and command input until a game-over flag is set.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ada1"></span>
+<div class="comments">
+<div class="paragraph">
+Clear <a href="9F88.html">Table_ItemLocations</a> and the following 0181 state bytes.
+</div>
 </div>
 </td>
 </tr>
@@ -120,19 +133,19 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <td class="asm-label">GameStart</td>
 <td class="address-2"><span id="ada1"></span>ADA1</td>
 <td class="instruction">LD HL,$9F88</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="9F88.html">Table_ItemLocations</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the item locations table at <a href="9F88.html">Table_ItemLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ada4"></span>ADA4</td>
 <td class="instruction">LD BC,$0181</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=0181.</td>
+<td class="comment-1" rowspan="1">Load <span class="register">BC</span> with 0181 bytes to clear.</td>
 </tr>
 <tr>
-<td class="asm-label">GameStart_0</td>
+<td class="asm-label">GameStart_ClearLoop</td>
 <td class="address-2"><span id="ada7"></span>ADA7</td>
 <td class="instruction">LD (HL),$00</td>
-<td class="comment-1" rowspan="1">Write 00 to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Write 00 through <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,7 +157,7 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="adaa"></span>ADAA</td>
 <td class="instruction">DEC BC</td>
-<td class="comment-1" rowspan="4">Count down the 0181 bytes and loop back to <a href="ADA1.html#ada7">GameStart_0</a> until all are cleared.</td>
+<td class="comment-1" rowspan="4">Decrease <span class="register">BC</span> and loop back to <a href="ADA1.html#ada7">GameStart_ClearLoop</a> until every byte is clear.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -159,13 +172,23 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adad"></span>ADAD</td>
-<td class="instruction">JR NZ,<a href="ADA1.html#ada7">GameStart_0</a></td>
+<td class="instruction">JR NZ,<a href="ADA1.html#ada7">GameStart_ClearLoop</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="adaf"></span>
+<div class="comments">
+<div class="paragraph">
+Copy the starting item locations and carrying limit.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adaf"></span>ADAF</td>
 <td class="instruction">LD HL,$BB0B</td>
-<td class="comment-1" rowspan="4">Copy 0088 bytes of data (count is via *<a href="BBC7.html">Count_Items</a>) from <a href="BB0B.html">Table_InitialItemLocations</a> to <a href="9F88.html">Table_ItemLocations</a>.</td>
+<td class="comment-1" rowspan="4">Copy *<a href="BBC7.html">Count_Items</a> bytes from <a href="BB0B.html">Table_InitialItemLocations</a> to <a href="9F88.html">Table_ItemLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -194,22 +217,32 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <td class="instruction">LD ($A0D3),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="adc1"></span>
+<div class="comments">
+<div class="paragraph">
+Prime each saved-state address from <a href="BAF9.html">Table_SavedStateAddresses</a> with the matching byte from <a href="BB05.html">InitialSavedStateBytes</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adc1"></span>ADC1</td>
 <td class="instruction">LD IX,$BAF9</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="BAF9.html">Table_SavedStateAddresses</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the saved-state address table at <a href="BAF9.html">Table_SavedStateAddresses</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adc5"></span>ADC5</td>
 <td class="instruction">LD DE,$BB05</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="BB05.html">InitialSavedStateBytes</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at the initial-state bytes at <a href="BB05.html">InitialSavedStateBytes</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adc8"></span>ADC8</td>
 <td class="instruction">LD A,($BBD1)</td>
-<td class="comment-1" rowspan="2"><span class="register">B</span>=*<a href="BBD1.html">Count_SavedStateBytes</a>.</td>
+<td class="comment-1" rowspan="2">Load the saved-state count from *<a href="BBD1.html">Count_SavedStateBytes</a> into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -217,34 +250,33 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <td class="instruction">LD B,A</td>
 </tr>
 <tr>
-<td class="asm-label">GameStart_1</td>
+<td class="asm-label">GameStart_InitStateLoop</td>
 <td class="address-2"><span id="adcc"></span>ADCC</td>
 <td class="instruction">LD L,(IX+$00)</td>
-<td class="comment-1" rowspan="1"><span class="register">L</span>=*<span class="register">IX</span>+00.</td>
+<td class="comment-1" rowspan="2">Fetch the next destination address from *<span class="register">IX</span> into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adcf"></span>ADCF</td>
 <td class="instruction">LD H,(IX+$01)</td>
-<td class="comment-1" rowspan="1"><span class="register">H</span>=*<span class="register">IX</span>+01.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="add2"></span>ADD2</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">DE</span>.</td>
+<td class="comment-1" rowspan="1">Fetch the next initial-state byte from *<span class="register">DE</span> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="add3"></span>ADD3</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1">Write that initial-state byte through the address from <a href="BAF9.html">Table_SavedStateAddresses</a>.</td>
+<td class="comment-1" rowspan="1">Write that byte through <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="add4"></span>ADD4</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="2">Move <span class="register">IX</span> on to the next initial-state address.</td>
+<td class="comment-1" rowspan="2">Move <span class="register">IX</span> on to the next saved-state address.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -260,14 +292,24 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="add9"></span>ADD9</td>
-<td class="instruction">DJNZ <a href="ADA1.html#adcc">GameStart_1</a></td>
-<td class="comment-1" rowspan="1">Decrease the init counter and loop back to <a href="ADA1.html#adcc">GameStart_1</a> until every saved-state address is primed.</td>
+<td class="instruction">DJNZ <a href="ADA1.html#adcc">GameStart_InitStateLoop</a></td>
+<td class="comment-1" rowspan="1">Decrease the init counter by one and loop back to <a href="ADA1.html#adcc">GameStart_InitStateLoop</a> until every saved-state address is primed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="addb"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the screen, enter the starting room, then run the main loop.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="addb"></span>ADDB</td>
 <td class="instruction">CALL <a href="9F27.html">JustReturn</a></td>
-<td class="comment-1" rowspan="1">Call <a href="9F27.html">JustReturn</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="9F27.html">JustReturn</a> to clear the play screen.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -284,97 +326,107 @@ Used by the routine at <a href="9DD7.html">GameEntryPoint</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ade4"></span>ADE4</td>
 <td class="instruction">CALL <a href="AD79.html">ChangeRoom</a></td>
-<td class="comment-1" rowspan="1">Call <a href="AD79.html">ChangeRoom</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="AD79.html">ChangeRoom</a> to change into the starting room.</td>
 </tr>
 <tr>
-<td class="asm-label">GameStart_2</td>
+<td class="routine-comment" colspan="5">
+<span id="ade7"></span>
+<div class="comments">
+<div class="paragraph">
+Process turn events and scenic events, then read the next command.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">GameStart_MainLoop</td>
 <td class="address-2"><span id="ade7"></span>ADE7</td>
 <td class="instruction">CALL <a href="A280.html">Handler_GameEvents</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A280.html">Handler_GameEvents</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A280.html">Handler_GameEvents</a> to process turn-based events.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adea"></span>ADEA</td>
 <td class="instruction">CALL <a href="AC88.html">Handler_ScenicEvents</a></td>
-<td class="comment-1" rowspan="1">Call <a href="AC88.html">Handler_ScenicEvents</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="AC88.html">Handler_ScenicEvents</a> to process scenic events.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aded"></span>ADED</td>
 <td class="instruction">LD A,$00</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="1">Load flag bit 00 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adef"></span>ADEF</td>
 <td class="instruction">CALL <a href="A1C8.html">TestFlag</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A1C8.html">TestFlag</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A1C8.html">TestFlag</a> to test whether the player is dead.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adf2"></span>ADF2</td>
 <td class="instruction">JR NZ,<a href="AE0D.html">GameOver</a></td>
-<td class="comment-1" rowspan="1">End the game when the player is dead.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE0D.html">GameOver</a> if the player is dead.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adf4"></span>ADF4</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=01.</td>
+<td class="comment-1" rowspan="1">Load flag bit 01 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adf6"></span>ADF6</td>
 <td class="instruction">CALL <a href="A1C8.html">TestFlag</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A1C8.html">TestFlag</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A1C8.html">TestFlag</a> to test the score/end flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adf9"></span>ADF9</td>
 <td class="instruction">JR NZ,<a href="AE0D.html#ae13">GameOver_Score</a></td>
-<td class="comment-1" rowspan="1">End the game and show the score.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE0D.html#ae13">GameOver_Score</a> if that flag is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adfb"></span>ADFB</td>
 <td class="instruction">LD A,$02</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=02.</td>
+<td class="comment-1" rowspan="1">Load flag bit 02 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="adfd"></span>ADFD</td>
 <td class="instruction">CALL <a href="A1C8.html">TestFlag</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A1C8.html">TestFlag</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A1C8.html">TestFlag</a> to test the offer-another-game flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae00"></span>AE00</td>
 <td class="instruction">JR NZ,<a href="AE0D.html#ae16">WantAnotherGameInput</a></td>
-<td class="comment-1" rowspan="1">End the game and ask for another one.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE0D.html#ae16">WantAnotherGameInput</a> if that flag is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae02"></span>AE02</td>
 <td class="instruction">CALL <a href="A4B0.html">Handler_UserInput</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A4B0.html">Handler_UserInput</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A4B0.html">Handler_UserInput</a> to read a command line.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae05"></span>AE05</td>
 <td class="instruction">CALL <a href="AC60.html">Parser_ProcessItem</a></td>
-<td class="comment-1" rowspan="1">Call <a href="AC60.html">Parser_ProcessItem</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="AC60.html">Parser_ProcessItem</a> to tokenise that command.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae08"></span>AE08</td>
 <td class="instruction">CALL NC,<a href="ACFC.html">Handler_DispatchVerb</a></td>
-<td class="comment-1" rowspan="1">Call <a href="ACFC.html">Handler_DispatchVerb</a> if <span class="register">C</span> is greater than 02.</td>
+<td class="comment-1" rowspan="1">Call <a href="ACFC.html">Handler_DispatchVerb</a> when the command has a verb to dispatch.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae0b"></span>AE0B</td>
-<td class="instruction">JR <a href="ADA1.html#ade7">GameStart_2</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="ADA1.html#ade7">GameStart_2</a>.</td>
+<td class="instruction">JR <a href="ADA1.html#ade7">GameStart_MainLoop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ADA1.html#ade7">GameStart_MainLoop</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">

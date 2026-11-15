@@ -105,7 +105,7 @@ Next: <a href="42160.html">42160</a>
 </td>
 </tr>
 </table>
-<div class="description">42105: Handler: Match Item</div>
+<div class="description">42105: Handler: Match Vocabulary Word</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -113,14 +113,21 @@ Next: <a href="42160.html">42160</a>
 <div class="paragraph">
 Used by the routine at <a href="42160.html">Handler_UserInput</a>.
 </div>
+<div class="paragraph">
+Match the four letters at <a href="41285.html">FourLetterBuffer</a> against the vocabulary. On success return the word's token number in <span class="register">A</span> with the carry flag set; on failure return with the carry flag clear. A comma separates synonyms of the same token; 255 ends the table.
+</div>
 </div>
 <table class="output">
 <tr class="asm-output-header">
 <th colspan="2">Output</th>
 </tr>
 <tr>
+<td class="register">A</td>
+<td class="register-desc">The token number of the matched word</td>
+</tr>
+<tr>
 <td class="register">F</td>
-<td class="register-desc">The carry flag is set to indicate that an item was found</td>
+<td class="register-desc">Carry set when a match was found</td>
 </tr>
 </table>
 </td>
@@ -151,7 +158,7 @@ Used by the routine at <a href="42160.html">Handler_UserInput</a>.
 <span id="42110"></span>
 <div class="comments">
 <div class="paragraph">
-Search the vocabulary from the address written into this instruction, which starts as <a href="45293.html">Table_Vocabulary</a>.
+Search the vocabulary from the address written into this instruction, which starts as <a href="45293.html">Table_Vocabulary</a>. <a href="42160.html">Handler_UserInput</a> rewrites that address to try "THE" first.
 </div>
 </div>
 </td>
@@ -160,24 +167,26 @@ Search the vocabulary from the address written into this instruction, which star
 <td class="asm-label"></td>
 <td class="address-1"><span id="42110"></span>42110</td>
 <td class="instruction">LD HL,45293</td>
-<td class="comment-1" rowspan="3">A comma separates synonyms and 255 ends the table.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="45293.html">Table_Vocabulary</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42113"></span>42113</td>
 <td class="instruction">LD C,0</td>
+<td class="comment-1" rowspan="1">Set the token number in <span class="register">C</span> to 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42115"></span>42115</td>
 <td class="instruction">JR <a href="42105.html#42130">MatchItem_Word</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42105.html#42130">MatchItem_Word</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42117"></span>
 <div class="comments">
 <div class="paragraph">
-Step to the next synonym. Each comma advances the token number.
+This vocabulary word did not match. Step past the remaining letters. A comma keeps the same token for a synonym; anything else advances the token number for the next entry.
 </div>
 </div>
 </td>
@@ -186,7 +195,7 @@ Step to the next synonym. Each comma advances the token number.
 <td class="asm-label">MatchItem_NextWord</td>
 <td class="address-2"><span id="42117"></span>42117</td>
 <td class="instruction">LD E,B</td>
-<td class="comment-1" rowspan="9">Skip a comma and keep the token number of the word before it.</td>
+<td class="comment-1" rowspan="2">Turn the remaining letter count into a 16-bit offset in <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -197,43 +206,50 @@ Step to the next synonym. Each comma advances the token number.
 <td class="asm-label"></td>
 <td class="address-1"><span id="42120"></span>42120</td>
 <td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Move <span class="register">HL</span> past the unmatched letters.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42121"></span>42121</td>
 <td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Fetch the next vocabulary byte into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42122"></span>42122</td>
 <td class="instruction">CP 44</td>
+<td class="comment-1" rowspan="1">Is this byte a comma (44)?</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42124"></span>42124</td>
-<td class="instruction">JR Z,<a href="42105.html#42129">Handler_MatchItem_0</a></td>
+<td class="instruction">JR Z,<a href="42105.html#42129">MatchItem_SkipComma</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42105.html#42129">MatchItem_SkipComma</a> if it is, so the token number stays the same.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42126"></span>42126</td>
 <td class="instruction">INC C</td>
+<td class="comment-1" rowspan="1">Otherwise advance the token number for the next vocabulary entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42127"></span>42127</td>
 <td class="instruction">JR <a href="42105.html#42130">MatchItem_Word</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42105.html#42130">MatchItem_Word</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_MatchItem_0</td>
+<td class="asm-label">MatchItem_SkipComma</td>
 <td class="address-2"><span id="42129"></span>42129</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move past the comma.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42130"></span>
 <div class="comments">
 <div class="paragraph">
-The vocabulary is exhausted.
+Test this vocabulary word against the four-letter buffer.
 </div>
 </div>
 </td>
@@ -268,18 +284,19 @@ Compare the four-letter buffer at <a href="41285.html">FourLetterBuffer</a> with
 <td class="asm-label"></td>
 <td class="address-1"><span id="42135"></span>42135</td>
 <td class="instruction">LD IX,41285</td>
-<td class="comment-1" rowspan="2">Four letters, starting at <a href="41285.html">FourLetterBuffer</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="41285.html">FourLetterBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42139"></span>42139</td>
 <td class="instruction">LD B,4</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the 4 letters.</td>
 </tr>
 <tr>
 <td class="asm-label">MatchItem_Letter</td>
 <td class="address-2"><span id="42141"></span>42141</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-1" rowspan="3">This letter does not match, so try the next synonym.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="42105.html#42117">MatchItem_NextWord</a> if this letter does not match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -295,17 +312,19 @@ Compare the four-letter buffer at <a href="41285.html">FourLetterBuffer</a> with
 <td class="asm-label"></td>
 <td class="address-1"><span id="42147"></span>42147</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="3">The next letter of both words.</td>
+<td class="comment-1" rowspan="1">Move to the next vocabulary letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42148"></span>42148</td>
 <td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="1">Move to the next letter of the four-letter buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42150"></span>42150</td>
 <td class="instruction">DJNZ <a href="42105.html#42141">MatchItem_Letter</a></td>
+<td class="comment-1" rowspan="1">Decrease the letter counter by one and loop back to <a href="42105.html#42141">MatchItem_Letter</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -321,19 +340,20 @@ The word matched, so return its token with the carry set.
 <td class="asm-label"></td>
 <td class="address-1"><span id="42152"></span>42152</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="2">The token number is the count of commas passed on the way.</td>
+<td class="comment-1" rowspan="1">Copy the matched token number into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42153"></span>42153</td>
 <td class="instruction">SCF</td>
+<td class="comment-1" rowspan="1">Set the carry flag to show the word was found.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="42154"></span>
 <div class="comments">
 <div class="paragraph">
-Hand back the registers the search borrowed.
+Hand back the registers saved at the start of the search.
 </div>
 </div>
 </td>

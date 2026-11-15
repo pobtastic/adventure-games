@@ -133,7 +133,7 @@ Puts a carried or worn object down in the current room. Message 23 says you don'
 <td class="asm-label">DropObject</td>
 <td class="address-2"><span id="26852"></span>26852</td>
 <td class="instruction">LD A,(23946)</td>
-<td class="comment-1" rowspan="3">An object that is worn is put down without changing the carried count.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="26852.html#26872">DropObject_Put</a> if it is *<a href="23946.html">WornObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -149,7 +149,7 @@ Puts a carried or worn object down in the current room. Message 23 says you don'
 <td class="asm-label"></td>
 <td class="address-1"><span id="26858"></span>26858</td>
 <td class="instruction">LD A,(23945)</td>
-<td class="comment-1" rowspan="3">An object that is carried is counted down.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="26852.html#26868">DropObject_Count</a> if it is *<a href="23945.html">CarriedObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -162,10 +162,20 @@ Puts a carried or worn object down in the current room. Message 23 says you don'
 <td class="instruction">JR Z,<a href="26852.html#26868">DropObject_Count</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="26864"></span>
+<div class="comments">
+<div class="paragraph">
+Print "you don't have it.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26864"></span>26864</td>
 <td class="instruction">LD A,23</td>
-<td class="comment-1" rowspan="2">Message 23: you don't have it.</td>
+<td class="comment-1" rowspan="2">Print <a href="32294.html#32539">SystemMessage_17</a> using <a href="25556.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -173,10 +183,20 @@ Puts a carried or worn object down in the current room. Message 23 says you don'
 <td class="instruction">JR <a href="26800.html#26808">GetObject_Refuse</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="26868"></span>
+<div class="comments">
+<div class="paragraph">
+Count one fewer carried object.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">DropObject_Count</td>
 <td class="address-2"><span id="26868"></span>26868</td>
 <td class="instruction">LD HL,23948</td>
-<td class="comment-1" rowspan="2">One fewer object is carried.</td>
+<td class="comment-1" rowspan="2">Decrement *<a href="23948.html">CarriedCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -184,15 +204,26 @@ Puts a carried or worn object down in the current room. Message 23 says you don'
 <td class="instruction">DEC (HL)</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="26872"></span>
+<div class="comments">
+<div class="paragraph">
+Put the object in this room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">DropObject_Put</td>
 <td class="address-2"><span id="26872"></span>26872</td>
 <td class="instruction">CALL <a href="26631.html">ObjectAddress</a></td>
-<td class="comment-1" rowspan="3">Write the current room into the object's location.</td>
+<td class="comment-1" rowspan="1">Call <a href="26631.html">ObjectAddress</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26875"></span>26875</td>
 <td class="instruction">LD A,(23943)</td>
+<td class="comment-1" rowspan="2">Write *<a href="23943.html">CurrentRoom</a> into its location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -200,10 +231,20 @@ Puts a carried or worn object down in the current room. Message 23 says you don'
 <td class="instruction">LD (HL),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="26879"></span>
+<div class="comments">
+<div class="paragraph">
+Describe the room again.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26879"></span>26879</td>
 <td class="instruction">JP <a href="26988.html">RoomHasChanged</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="26988.html">RoomHasChanged</a> so the room is described again.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="26988.html">RoomHasChanged</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

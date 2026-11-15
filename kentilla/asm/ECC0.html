@@ -114,7 +114,7 @@ Next: <a href="ED1C.html">ED1C</a>
 Used by the routine at <a href="EB51.html">InputLine</a>.
 </div>
 <div class="paragraph">
-Repaint the buffered characters at row 16 via <a href="EA8D.html">PrintCharacter</a>, pad with two spaces, then fall into <a href="ECC0.html#ecf0">InputLine_DrawCursor</a> to draw the cursor.
+Redraws the input row, then the cursor at <a href="ECC0.html#ecf0">InputLine_DrawCursor</a>.
 </div>
 </div>
 </td>
@@ -123,12 +123,13 @@ Repaint the buffered characters at row 16 via <a href="EA8D.html">PrintCharacter
 <td class="asm-label">InputLine_Redraw</td>
 <td class="address-2"><span id="ecc0"></span>ECC0</td>
 <td class="instruction">LD HL,$5BAE</td>
-<td class="comment-1" rowspan="8">Point at the buffer and reset print state for row 16.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5BAE.html">InputBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecc3"></span>ECC3</td>
 <td class="instruction">SUB A</td>
+<td class="comment-1" rowspan="3">Write 00 to *<a href="5BF6.html">PrintState_Flags</a> and *<a href="5BF7.html">PrintState_Column</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,6 +145,7 @@ Repaint the buffered characters at row 16 via <a href="EA8D.html">PrintCharacter
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecca"></span>ECCA</td>
 <td class="instruction">LD A,$05</td>
+<td class="comment-1" rowspan="2">Write 05 to *<a href="5BF5.html">PrintState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -154,6 +156,7 @@ Repaint the buffered characters at row 16 via <a href="EA8D.html">PrintCharacter
 <td class="asm-label"></td>
 <td class="address-1"><span id="eccf"></span>ECCF</td>
 <td class="instruction">LD A,$16</td>
+<td class="comment-1" rowspan="2">Write 16 to *<a href="5BF8.html">PrintState_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -164,7 +167,7 @@ Repaint the buffered characters at row 16 via <a href="EA8D.html">PrintCharacter
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecd4"></span>ECD4</td>
 <td class="instruction">LD A,($5BFB)</td>
-<td class="comment-1" rowspan="4">Jump to <a href="ECC0.html#ece5">InputLine_Redraw_Pad</a> if the line is empty.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="ECC0.html#ece5">InputLine_Redraw_Pad</a> if the line is empty.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -180,12 +183,23 @@ Repaint the buffered characters at row 16 via <a href="EA8D.html">PrintCharacter
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecda"></span>ECDA</td>
 <td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1"><span class="register">B</span>=the line length.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ecdb"></span>
+<div class="comments">
+<div class="paragraph">
+Print each buffered character.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">InputLine_Redraw_Loop</td>
 <td class="address-2"><span id="ecdb"></span>ECDB</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="5">Print each buffered character through <a href="EA8D.html">PrintCharacter</a>.</td>
+<td class="comment-1" rowspan="5">Call <a href="EA8D.html">PrintCharacter</a> for the next character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -208,10 +222,20 @@ Repaint the buffered characters at row 16 via <a href="EA8D.html">PrintCharacter
 <td class="instruction">DJNZ <a href="ECC0.html#ecdb">InputLine_Redraw_Loop</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ece5"></span>
+<div class="comments">
+<div class="paragraph">
+Pad the rest of the row with spaces.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">InputLine_Redraw_Pad</td>
 <td class="address-2"><span id="ece5"></span>ECE5</td>
 <td class="instruction">LD A,$20</td>
-<td class="comment-1" rowspan="4">Pad with two spaces, then fall into the cursor draw.</td>
+<td class="comment-1" rowspan="2">Write a space to *<a href="5BF9.html">PrintState_Character</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -222,11 +246,13 @@ Repaint the buffered characters at row 16 via <a href="EA8D.html">PrintCharacter
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecea"></span>ECEA</td>
 <td class="instruction">CALL <a href="EA8D.html">PrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="EA8D.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eced"></span>ECED</td>
 <td class="instruction">CALL <a href="EA8D.html">PrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="EA8D.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -235,6 +261,9 @@ Repaint the buffered characters at row 16 via <a href="EA8D.html">PrintCharacter
 <div class="paragraph">
 This entry point is used by the routine at <a href="EB51.html">InputLine</a>.
 </div>
+<div class="paragraph">
+Draw the blinking cursor.
+</div>
 </div>
 </td>
 </tr>
@@ -242,7 +271,7 @@ This entry point is used by the routine at <a href="EB51.html">InputLine</a>.
 <td class="asm-label">InputLine_DrawCursor</td>
 <td class="address-2"><span id="ecf0"></span>ECF0</td>
 <td class="instruction">LD A,$28</td>
-<td class="comment-1" rowspan="2">Use attribute 28 for the blinking cursor.</td>
+<td class="comment-1" rowspan="2">Write 28 to *<a href="5BF5.html">PrintState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -256,6 +285,9 @@ This entry point is used by the routine at <a href="EB51.html">InputLine</a>.
 <div class="paragraph">
 This entry point is used by the routine at <a href="ED1C.html">InputLine_ClearCursor</a>.
 </div>
+<div class="paragraph">
+Set <code>XOR</code> mode and load a space glyph.
+</div>
 </div>
 </td>
 </tr>
@@ -263,7 +295,7 @@ This entry point is used by the routine at <a href="ED1C.html">InputLine_ClearCu
 <td class="asm-label">InputLine_DrawCursor_Body</td>
 <td class="address-2"><span id="ecf5"></span>ECF5</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="4">Set XOR mode and load a space glyph.</td>
+<td class="comment-1" rowspan="2">Set <code>XOR</code> mode in *<a href="5BF6.html">PrintState_Flags</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -274,6 +306,7 @@ This entry point is used by the routine at <a href="ED1C.html">InputLine_ClearCu
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecfa"></span>ECFA</td>
 <td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="2">Write a space to *<a href="5BF9.html">PrintState_Character</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -284,7 +317,7 @@ This entry point is used by the routine at <a href="ED1C.html">InputLine_ClearCu
 <td class="asm-label"></td>
 <td class="address-1"><span id="ecff"></span>ECFF</td>
 <td class="instruction">LD A,$16</td>
-<td class="comment-1" rowspan="6">Plot it on row 16 at the cursor column.</td>
+<td class="comment-1" rowspan="2">Write 16 to *<a href="5BF8.html">PrintState_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -295,6 +328,7 @@ This entry point is used by the routine at <a href="ED1C.html">InputLine_ClearCu
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed04"></span>ED04</td>
 <td class="instruction">LD A,($5BFA)</td>
+<td class="comment-1" rowspan="2">Copy *<a href="5BFA.html">InputLineState</a> to *<a href="5BF7.html">PrintState_Column</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -305,6 +339,7 @@ This entry point is used by the routine at <a href="ED1C.html">InputLine_ClearCu
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed0a"></span>ED0A</td>
 <td class="instruction">CP $20</td>
+<td class="comment-1" rowspan="2">Jump to <a href="ECC0.html#ed18">InputLine_DrawCursor_Print</a> if the column is still on this row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -315,7 +350,7 @@ This entry point is used by the routine at <a href="ED1C.html">InputLine_ClearCu
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed0e"></span>ED0E</td>
 <td class="instruction">SUB $20</td>
-<td class="comment-1" rowspan="4">Wrap onto row 17 when the column is past 20.</td>
+<td class="comment-1" rowspan="4">Wrap onto row 17.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -331,6 +366,16 @@ This entry point is used by the routine at <a href="ED1C.html">InputLine_ClearCu
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed15"></span>ED15</td>
 <td class="instruction">LD ($5BF8),A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ed18"></span>
+<div class="comments">
+<div class="paragraph">
+Print the cursor glyph.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">InputLine_DrawCursor_Print</td>

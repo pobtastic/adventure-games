@@ -133,7 +133,7 @@ Picks the object up. It must be in the room, not already carried, and not worn. 
 <td class="asm-label">GetObject</td>
 <td class="address-2"><span id="68b0"></span>68B0</td>
 <td class="instruction">LD A,($5D89)</td>
-<td class="comment-1" rowspan="4">Already carried is message 15.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="68B0.html#68c2">GetObject_Worn</a> if it is not *<a href="5D89.html">CarriedObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -146,9 +146,20 @@ Picks the object up. It must be in the room, not already carried, and not worn. 
 <td class="instruction">JR NZ,<a href="68B0.html#68c2">GetObject_Worn</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="68b6"></span>
+<div class="comments">
+<div class="paragraph">
+Print "you already have it.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="68b6"></span>68B6</td>
 <td class="instruction">LD A,$15</td>
+<td class="comment-1" rowspan="1">Print <a href="7E26.html#7f00">SystemMessage_15</a> using <a href="63D4.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -157,6 +168,9 @@ Picks the object up. It must be in the room, not already carried, and not worn. 
 <div class="paragraph">
 This entry point is used by the routines at <a href="68E4.html">DropObject</a>, <a href="6A83.html">WearObject</a> and <a href="6AAD.html">RemoveWorn</a>.
 </div>
+<div class="paragraph">
+Print the refusal and reject the line.
+</div>
 </div>
 </td>
 </tr>
@@ -164,12 +178,13 @@ This entry point is used by the routines at <a href="68E4.html">DropObject</a>, 
 <td class="asm-label">GetObject_Refuse</td>
 <td class="address-2"><span id="68b8"></span>68B8</td>
 <td class="instruction">CALL <a href="63D4.html">PrintSystemMessage</a></td>
-<td class="comment-1" rowspan="4">Print the refusal, drop any comma continuation, and reject the line.</td>
+<td class="comment-1" rowspan="1">Call <a href="63D4.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="68bb"></span>68BB</td>
 <td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5B85.html">Continuation</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -180,12 +195,23 @@ This entry point is used by the routines at <a href="68E4.html">DropObject</a>, 
 <td class="asm-label"></td>
 <td class="address-1"><span id="68bf"></span>68BF</td>
 <td class="instruction">JP <a href="6879.html">RejectLine</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6879.html">RejectLine</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="68c2"></span>
+<div class="comments">
+<div class="paragraph">
+Already worn.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">GetObject_Worn</td>
 <td class="address-2"><span id="68c2"></span>68C2</td>
 <td class="instruction">LD A,($5D8A)</td>
-<td class="comment-1" rowspan="3">Already worn is message 1D.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="68B0.html#68cc">GetObject_Here</a> if it is not *<a href="5D8A.html">WornObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -198,10 +224,20 @@ This entry point is used by the routines at <a href="68E4.html">DropObject</a>, 
 <td class="instruction">JR NZ,<a href="68B0.html#68cc">GetObject_Here</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="68c8"></span>
+<div class="comments">
+<div class="paragraph">
+Print "you are wearing it.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="68c8"></span>68C8</td>
 <td class="instruction">LD A,$1D</td>
-<td class="comment-1" rowspan="2">Print that refusal.</td>
+<td class="comment-1" rowspan="2">Print <a href="7E26.html#7f5c">SystemMessage_1D</a> using <a href="63D4.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -209,10 +245,20 @@ This entry point is used by the routines at <a href="68E4.html">DropObject</a>, 
 <td class="instruction">JR <a href="68B0.html#68b8">GetObject_Refuse</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="68cc"></span>
+<div class="comments">
+<div class="paragraph">
+Take it if it is here.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">GetObject_Here</td>
 <td class="address-2"><span id="68cc"></span>68CC</td>
 <td class="instruction">LD A,($5D87)</td>
-<td class="comment-1" rowspan="3">In this room, take it.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="68B0.html#68d6">GetObject_Take</a> if it is *<a href="5D87.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -225,10 +271,20 @@ This entry point is used by the routines at <a href="68E4.html">DropObject</a>, 
 <td class="instruction">JR Z,<a href="68B0.html#68d6">GetObject_Take</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="68d2"></span>
+<div class="comments">
+<div class="paragraph">
+Print "sorry, I don't see it here.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="68d2"></span>68D2</td>
 <td class="instruction">LD A,$16</td>
-<td class="comment-1" rowspan="2">Message 16: it is not here.</td>
+<td class="comment-1" rowspan="2">Print <a href="7E26.html#7f09">SystemMessage_16</a> using <a href="63D4.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -236,16 +292,26 @@ This entry point is used by the routines at <a href="68E4.html">DropObject</a>, 
 <td class="instruction">JR <a href="68B0.html#68b8">GetObject_Refuse</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="68d6"></span>
+<div class="comments">
+<div class="paragraph">
+Pick the object up.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">GetObject_Take</td>
 <td class="address-2"><span id="68d6"></span>68D6</td>
 <td class="instruction">CALL <a href="6807.html">ObjectAddress</a></td>
-<td class="comment-1" rowspan="1">Point at the object's location byte.</td>
+<td class="comment-1" rowspan="1">Call <a href="6807.html">ObjectAddress</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="68d9"></span>68D9</td>
 <td class="instruction">LD A,($5D89)</td>
-<td class="comment-1" rowspan="4">Write the carried id there and count it.</td>
+<td class="comment-1" rowspan="2">Write *<a href="5D89.html">CarriedObject</a> into the object's location.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -256,6 +322,7 @@ This entry point is used by the routines at <a href="68E4.html">DropObject</a>, 
 <td class="asm-label"></td>
 <td class="address-1"><span id="68dd"></span>68DD</td>
 <td class="instruction">LD HL,$5D8C</td>
+<td class="comment-1" rowspan="2">Increment *<a href="5D8C.html">CarriedCount</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -263,10 +330,20 @@ This entry point is used by the routines at <a href="68E4.html">DropObject</a>, 
 <td class="instruction">INC (HL)</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="68e1"></span>
+<div class="comments">
+<div class="paragraph">
+Describe the room again.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="68e1"></span>68E1</td>
 <td class="instruction">JP <a href="696C.html">RoomHasChanged</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="696C.html">RoomHasChanged</a> so the room is described again.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="696C.html">RoomHasChanged</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

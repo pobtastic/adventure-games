@@ -97,7 +97,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="61654.html">61654</a>
+Prev: <a href="61651.html">61651</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#61670">Map</a></td>
 <td class="next">
@@ -114,7 +114,7 @@ Next: <a href="61760.html">61760</a>
 Used by the routine at <a href="60241.html">InputLine</a>.
 </div>
 <div class="paragraph">
-Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is pressed. Clears the input rows, adjusts the lower screen via <a href="61651.html">ScrollAdjust</a>, prints a <code>></code> prompt, echoes <a href="23470.html">InputBuffer</a> through <a href="60045.html">PrintCharacter</a>, then returns via <a href="61651.html">ScrollAdjust</a>. Token walks and vocabulary lookup are separate jump-table entries (<a href="60847.html">AdvanceInputPointer</a>, <a href="60798.html">SearchVocabulary_Commands</a> and neighbours).
+Reached from <a href="60241.html#60377">InputLine_Enter</a> when ENTER is pressed. Token walks and vocabulary lookup are separate jump-table entries (<a href="60847.html">AdvanceInputPointer</a>, <a href="60798.html">SearchVocabulary_Commands</a> and neighbours).
 </div>
 </div>
 </td>
@@ -123,7 +123,7 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label">SubmitInputLine</td>
 <td class="address-2"><span id="61670"></span>61670</td>
 <td class="instruction">LD A,32</td>
-<td class="comment-1" rowspan="9">Clear both input rows to spaces with blank attributes.</td>
+<td class="comment-1" rowspan="2">Write a space to *<a href="23545.html">PrintState_Character</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -134,11 +134,13 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label"></td>
 <td class="address-1"><span id="61675"></span>61675</td>
 <td class="instruction">LD B,64</td>
+<td class="comment-1" rowspan="1"><span class="register">B</span>=64.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61677"></span>61677</td>
 <td class="instruction">SUB A</td>
+<td class="comment-1" rowspan="4">Write 0 to *<a href="23542.html">PrintState_Flags</a>, *<a href="23541.html">PrintState</a> and *<a href="23543.html">PrintState_Column</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -159,6 +161,7 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label"></td>
 <td class="address-1"><span id="61687"></span>61687</td>
 <td class="instruction">LD A,22</td>
+<td class="comment-1" rowspan="2">Write 22 to *<a href="23544.html">PrintState_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -166,10 +169,20 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="instruction">LD (23544),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="61692"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the input rows.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">SubmitInputLine_ClearLoop</td>
 <td class="address-2"><span id="61692"></span>61692</td>
 <td class="instruction">CALL <a href="60045.html">PrintCharacter</a></td>
-<td class="comment-1" rowspan="2">Print spaces until the clear count is done.</td>
+<td class="comment-1" rowspan="2">Call <a href="60045.html">PrintCharacter</a> until the count is done.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -180,7 +193,7 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label"></td>
 <td class="address-1"><span id="61697"></span>61697</td>
 <td class="instruction">SUB A</td>
-<td class="comment-1" rowspan="3">Reset the column and call <a href="61651.html">ScrollAdjust</a>.</td>
+<td class="comment-1" rowspan="2">Write 0 to *<a href="23543.html">PrintState_Column</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -191,12 +204,23 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label"></td>
 <td class="address-1"><span id="61701"></span>61701</td>
 <td class="instruction">CALL <a href="61651.html">ScrollAdjust</a></td>
+<td class="comment-1" rowspan="1">Call <a href="61651.html">ScrollAdjust</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61704"></span>
+<div class="comments">
+<div class="paragraph">
+Print a "&gt;" prompt on the lower screen.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61704"></span>61704</td>
 <td class="instruction">LD A,(23689)</td>
-<td class="comment-1" rowspan="10">Print a "&gt;" prompt on the lower screen.</td>
+<td class="comment-1" rowspan="5">Write the prompt row to *<a href="23544.html">PrintState_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -222,6 +246,7 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label"></td>
 <td class="address-1"><span id="61714"></span>61714</td>
 <td class="instruction">LD A,7</td>
+<td class="comment-1" rowspan="2">Write 7 to *<a href="23541.html">PrintState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -232,6 +257,7 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label"></td>
 <td class="address-1"><span id="61719"></span>61719</td>
 <td class="instruction">LD A,62</td>
+<td class="comment-1" rowspan="2">Write <code>></code> to *<a href="23545.html">PrintState_Character</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -242,12 +268,23 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label"></td>
 <td class="address-1"><span id="61724"></span>61724</td>
 <td class="instruction">CALL <a href="60045.html">PrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="60045.html">PrintCharacter</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61727"></span>
+<div class="comments">
+<div class="paragraph">
+Echo the submitted line.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61727"></span>61727</td>
 <td class="instruction">LD A,5</td>
-<td class="comment-1" rowspan="3">Restore the echo attribute and point at <a href="23470.html">InputBuffer</a>.</td>
+<td class="comment-1" rowspan="2">Write 5 to *<a href="23541.html">PrintState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -258,17 +295,19 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label"></td>
 <td class="address-1"><span id="61732"></span>61732</td>
 <td class="instruction">LD HL,23470</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="23470.html">InputBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">SubmitInputLine_Echo</td>
 <td class="address-2"><span id="61735"></span>61735</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="61670.html#61749">SubmitInputLine_ScrollBack</a> at end-of-line.</td>
+<td class="comment-1" rowspan="1">Fetch the next character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61736"></span>61736</td>
 <td class="instruction">CP 13</td>
+<td class="comment-1" rowspan="2">Jump to <a href="61670.html#61749">SubmitInputLine_ScrollBack</a> if it is ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -279,7 +318,7 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label"></td>
 <td class="address-1"><span id="61740"></span>61740</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="4">Echo this character through <a href="60045.html">PrintCharacter</a> and continue.</td>
+<td class="comment-1" rowspan="2">Write this character to *<a href="23545.html">PrintState_Character</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -290,17 +329,29 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label"></td>
 <td class="address-1"><span id="61744"></span>61744</td>
 <td class="instruction">CALL <a href="60045.html">PrintCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="60045.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61747"></span>61747</td>
 <td class="instruction">JR <a href="61670.html#61735">SubmitInputLine_Echo</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61670.html#61735">SubmitInputLine_Echo</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61749"></span>
+<div class="comments">
+<div class="paragraph">
+Scroll the lower screen back two rows.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">SubmitInputLine_ScrollBack</td>
 <td class="address-2"><span id="61749"></span>61749</td>
 <td class="instruction">LD A,(23689)</td>
-<td class="comment-1" rowspan="4">Scroll the lower screen back two rows via <a href="61651.html">ScrollAdjust</a>.</td>
+<td class="comment-1" rowspan="3">Subtract 2 from the line byte of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/23688.html">S_POSN</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -316,12 +367,13 @@ Reached from <a href="60241.html#60377">InputLine_Enter</a> when Enter is presse
 <td class="asm-label"></td>
 <td class="address-1"><span id="61757"></span>61757</td>
 <td class="instruction">JP <a href="61651.html">ScrollAdjust</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="61651.html">ScrollAdjust</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="61654.html">61654</a>
+Prev: <a href="61651.html">61651</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#61670">Map</a></td>
 <td class="next">

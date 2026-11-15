@@ -114,35 +114,59 @@ Next: <a href="26086.html">26086</a>
 Used by the routines at <a href="36138.html">GameLoop</a> and <a href="38187.html">ActionKill</a>.
 </div>
 <div class="paragraph">
-Return a number derived from the frame counter, used when an event may or may not happen.
+Returns a number from 0 up to, but not including, <span class="register">A</span>.
+</div>
+<div class="paragraph">
+The frame counter chooses how far to walk around that range.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Exclusive upper bound</td>
+</tr>
+</table>
 <table class="output">
 <tr class="asm-output-header">
 <th colspan="2">Output</th>
 </tr>
 <tr>
 <td class="register">A</td>
-<td class="register-desc">A random number derived from *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/23672.html">FRAMES</a></td>
+<td class="register-desc">The generated number</td>
 </tr>
 </table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="26070"></span>
+<div class="comments">
+<div class="paragraph">
+Mix the frame counter into a number below the limit in <span class="register">A</span>.
+</div>
+</div>
 </td>
 </tr>
 <tr>
 <td class="asm-label">GenerateRandomNumber</td>
 <td class="address-2"><span id="26070"></span>26070</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="5">Take the frame counter as a countdown, limited by the value passed in.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26071"></span>26071</td>
 <td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1">Store the exclusive upper bound in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26072"></span>26072</td>
 <td class="instruction">LD A,(23672)</td>
+<td class="comment-1" rowspan="2">Load *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/23672.html">FRAMES</a> into <span class="register">B</span> as the loop count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -153,40 +177,43 @@ Return a number derived from the frame counter, used when an event may or may no
 <td class="asm-label"></td>
 <td class="address-1"><span id="26076"></span>26076</td>
 <td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="1">Restore the exclusive upper bound into <span class="register">A</span>.</td>
 </tr>
 <tr>
-<td class="asm-label">GenerateRandomNumber_Loop1</td>
+<td class="asm-label">GenerateRandomNumber_Loop</td>
 <td class="address-2"><span id="26077"></span>26077</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="3">Wrap back to that limit when the countdown passes zero.</td>
+<td class="comment-1" rowspan="1">Decrease the walking value by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26078"></span>26078</td>
-<td class="instruction">JR NZ,<a href="26070.html#26081">GenerateRandomNumber_Step1</a></td>
+<td class="instruction">JR NZ,<a href="26070.html#26081">GenerateRandomNumber_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="26070.html#26081">GenerateRandomNumber_Next</a> if it has not wrapped past zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26080"></span>26080</td>
 <td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="1">Wrap back to the exclusive upper bound.</td>
 </tr>
 <tr>
-<td class="asm-label">GenerateRandomNumber_Step1</td>
+<td class="asm-label">GenerateRandomNumber_Next</td>
 <td class="address-2"><span id="26081"></span>26081</td>
-<td class="instruction">DJNZ <a href="26070.html#26077">GenerateRandomNumber_Loop1</a></td>
-<td class="comment-1" rowspan="1">Repeat for every frame that has passed.</td>
+<td class="instruction">DJNZ <a href="26070.html#26077">GenerateRandomNumber_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the frame-count loop by one and loop back to <a href="26070.html#26077">GenerateRandomNumber_Loop</a> until the count is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26083"></span>26083</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="1">Step the result back one more.</td>
+<td class="comment-1" rowspan="1">Decrease the result by one so the range starts at 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="26084"></span>26084</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1">Restore the registers the caller needs from the stack.</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">BC</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

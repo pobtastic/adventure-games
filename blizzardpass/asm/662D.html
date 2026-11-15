@@ -139,45 +139,48 @@ Bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="asm-label">WaitForKey</td>
 <td class="address-2"><span id="662d"></span>662D</td>
 <td class="instruction">CALL $0052</td>
-<td class="comment-1" rowspan="3">Call the <code>RET</code> at the end of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0038.html">MASK_INT</a>, then wait for bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3B.html">FLAGS</a>.</td>
+<td class="comment-1" rowspan="1">Call the <code>RET</code> at the end of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0038.html">MASK_INT</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6630"></span>6630</td>
 <td class="instruction">SET 3,(IY+$30)</td>
+<td class="comment-1" rowspan="1">Set bit 3 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C6A.html">FLAGS2</a> (CAPS LOCK).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6634"></span>6634</td>
 <td class="instruction">BIT 5,(IY+$01)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="662D.html">WaitForKey</a> until bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C3B.html">FLAGS</a> is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6638"></span>6638</td>
 <td class="instruction">JR Z,<a href="662D.html#662d">WaitForKey</a></td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="663a"></span>663A</td>
 <td class="instruction">RES 5,(IY+$01)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Clear that bit for the next wait.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="663e"></span>663E</td>
 <td class="instruction">LD A,R</td>
-<td class="comment-1" rowspan="4">Stir <span class="register">R</span> into the signature byte at <a href="676E.html">Signature</a>.</td>
+<td class="comment-1" rowspan="1">Read <span class="register">R</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6640"></span>6640</td>
-<td class="instruction">AND $07</td>
+<td class="instruction">AND %00000111</td>
+<td class="comment-1" rowspan="1">Keep only bits 0-2.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6642"></span>6642</td>
 <td class="instruction">INC A</td>
+<td class="comment-1" rowspan="2">Write <span class="register">R</span>+01 into the signature at <a href="676E.html">Signature</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -188,12 +191,13 @@ Bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="asm-label"></td>
 <td class="address-1"><span id="6646"></span>6646</td>
 <td class="instruction">LD IX,$676E</td>
-<td class="comment-1" rowspan="3">Read that stirred byte back.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at <a href="676E.html">Signature</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="664a"></span>664A</td>
 <td class="instruction">LD A,($676E)</td>
+<td class="comment-1" rowspan="2">Plant that stirred byte over the next instruction.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -220,12 +224,13 @@ Bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="asm-label"></td>
 <td class="address-1"><span id="6656"></span>6656</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="2">Save <span class="register">BC</span>.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6657"></span>6657</td>
 <td class="instruction">LD B,$05</td>
+<td class="comment-1" rowspan="1">Five passes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -247,7 +252,7 @@ Bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="asm-label"></td>
 <td class="address-1"><span id="665d"></span>665D</td>
 <td class="instruction">LD A,$1E</td>
-<td class="comment-1" rowspan="2">Sound the key click. A is 1E.</td>
+<td class="comment-1" rowspan="2">Sound the key click with <span class="register">A</span> equal to 1E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -276,6 +281,16 @@ Bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="instruction">POP BC</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6667"></span>
+<div class="comments">
+<div class="paragraph">
+Cursor keys change the scroll delay.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">WaitForKey_Cursor</td>
 <td class="address-1"><span id="6667"></span>6667</td>
 <td class="instruction">LD A,($5C08)</td>
@@ -285,12 +300,13 @@ Bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="asm-label"></td>
 <td class="address-1"><span id="666a"></span>666A</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="4">Cursor key C7 stores no scroll delay.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="666b"></span>666B</td>
 <td class="instruction">CP $C7</td>
+<td class="comment-1" rowspan="3">Cursor key C7 stores no scroll delay.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -335,10 +351,30 @@ Bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="instruction">JR NZ,<a href="662D.html#6683">WaitForKey_Ignore</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6680"></span>
+<div class="comments">
+<div class="paragraph">
+Store the delay.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">WaitForKey_Delay</td>
 <td class="address-2"><span id="6680"></span>6680</td>
 <td class="instruction">LD ($655A),HL</td>
 <td class="comment-1" rowspan="1">Store the delay at <a href="655A.html">RepeatTimer</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6683"></span>
+<div class="comments">
+<div class="paragraph">
+Ignore printer terminators.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">WaitForKey_Ignore</td>
@@ -350,7 +386,7 @@ Bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="asm-label"></td>
 <td class="address-1"><span id="6684"></span>6684</td>
 <td class="instruction">CP $5E</td>
-<td class="comment-1" rowspan="4">5E and 5F are ignored.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="662D.html">WaitForKey</a> if it is 5E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -361,6 +397,7 @@ Bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="asm-label"></td>
 <td class="address-1"><span id="6688"></span>6688</td>
 <td class="instruction">CP $5F</td>
+<td class="comment-1" rowspan="2">Jump to <a href="662D.html">WaitForKey</a> if it is 5F.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -371,7 +408,7 @@ Bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="asm-label"></td>
 <td class="address-1"><span id="668c"></span>668C</td>
 <td class="instruction">CP $7F</td>
-<td class="comment-1" rowspan="4">7F and 7E are ignored.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="662D.html">WaitForKey</a> if it is 7F.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -382,6 +419,7 @@ Bit 5 of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/
 <td class="asm-label"></td>
 <td class="address-1"><span id="6690"></span>6690</td>
 <td class="instruction">CP $7E</td>
+<td class="comment-1" rowspan="2">Jump to <a href="662D.html">WaitForKey</a> if it is 7E.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -413,7 +451,7 @@ EDIT toggles the picture. The illustration attributes are cleared when pictures 
 <td class="asm-label"></td>
 <td class="address-1"><span id="6697"></span>6697</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="3">Save the registers around the redraw.</td>
+<td class="comment-1" rowspan="3">Stash the registers around the redraw.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -429,18 +467,19 @@ EDIT toggles the picture. The illustration attributes are cleared when pictures 
 <td class="asm-label"></td>
 <td class="address-1"><span id="669a"></span>669A</td>
 <td class="instruction">CALL <a href="65ED.html">ClearLowerRows</a></td>
-<td class="comment-1" rowspan="1">Call <a href="65ED.html">ClearLowerRows</a> to clear the lower rows.</td>
+<td class="comment-1" rowspan="1">Call <a href="65ED.html">ClearLowerRows</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="669d"></span>669D</td>
 <td class="instruction">LD HL,$66D6</td>
-<td class="comment-1" rowspan="4">Pictures turning off clear the illustration colours.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="66D6.html">PicturesOn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="66a0"></span>66A0</td>
 <td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="3">Call <a href="66D8.html">ClearPictureAttributes</a> if pictures are currently on.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -455,13 +494,14 @@ EDIT toggles the picture. The illustration attributes are cleared when pictures 
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="66a5"></span>66A5</td>
-<td class="instruction">XOR $01</td>
-<td class="comment-1" rowspan="2">Toggle <a href="66D6.html">PicturesOn</a>.</td>
+<td class="instruction">XOR %00000001</td>
+<td class="comment-1" rowspan="1">Flip bit 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="66a7"></span>66A7</td>
 <td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Write the new picture flag to *<a href="66D6.html">PicturesOn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -475,16 +515,26 @@ EDIT toggles the picture. The illustration attributes are cleared when pictures 
 <td class="instruction">CALL <a href="66BD.html">PageBank</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="66ac"></span>
+<div class="comments">
+<div class="paragraph">
+Redraw the room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="66ac"></span>66AC</td>
 <td class="instruction">CALL <a href="6B43.html">RedrawLocation</a></td>
-<td class="comment-1" rowspan="1">Call <a href="6B43.html">RedrawLocation</a> to redraw the room.</td>
+<td class="comment-1" rowspan="1">Call <a href="6B43.html">RedrawLocation</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="66af"></span>66AF</td>
 <td class="instruction">LD A,$03</td>
-<td class="comment-1" rowspan="2">Remember bank 3 and page it back in.</td>
+<td class="comment-1" rowspan="2">Page RAM bank 03 back in.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -508,10 +558,20 @@ EDIT toggles the picture. The illustration attributes are cleared when pictures 
 <td class="instruction">POP BC</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="66b7"></span>
+<div class="comments">
+<div class="paragraph">
+Read the next key.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="66b7"></span>66B7</td>
 <td class="instruction">JP <a href="662D.html#662d">WaitForKey</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="662D.html">WaitForKey</a> to read the next key.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="662D.html">WaitForKey</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

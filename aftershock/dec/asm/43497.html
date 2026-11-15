@@ -114,6 +114,19 @@ Next: <a href="43520.html">43520</a>
 Runs the script addressed by the operand, then returns to the instruction after this one.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry (opcode, address)</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Runs the script addressed by the operand, then returns to the instruction after 
 <span id="43497"></span>
 <div class="comments">
 <div class="paragraph">
-When the condition succeeded, run the operand script and come back to the next instruction.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,14 +142,24 @@ When the condition succeeded, run the operand script and come back to the next i
 <tr>
 <td class="asm-label">Action_CallScript</td>
 <td class="address-2"><span id="43497"></span>43497</td>
-<td class="instruction">JP NZ,<a href="42751.html#42843">Handler_RunScript_9</a></td>
-<td class="comment-1" rowspan="1">Leave this action alone.</td>
+<td class="instruction">JP NZ,<a href="42751.html#42843">RunScript_SkipAction_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42843">RunScript_SkipAction_ThreeBytes</a> if the condition failed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="43500"></span>
+<div class="comments">
+<div class="paragraph">
+Run the operand script, then resume at the next instruction.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43500"></span>43500</td>
 <td class="instruction">LD L,(IX+1)</td>
-<td class="comment-1" rowspan="2">The script named by the operand.</td>
+<td class="comment-1" rowspan="2">Fetch the called script address from *<span class="register">IX</span>+1 into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -147,7 +170,7 @@ When the condition succeeded, run the operand script and come back to the next i
 <td class="asm-label"></td>
 <td class="address-1"><span id="43506"></span>43506</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="4">Come back to the next action afterwards.</td>
+<td class="comment-1" rowspan="3">Move <span class="register">IX</span> past this action's three bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -163,12 +186,13 @@ When the condition succeeded, run the operand script and come back to the next i
 <td class="asm-label"></td>
 <td class="address-1"><span id="43512"></span>43512</td>
 <td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="1">Stash the return script pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43514"></span>43514</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Copy the called script address from <span class="register">HL</span> into <span class="register">IX</span>.</td>
+<td class="comment-1" rowspan="2">Copy the called script address from <span class="register">HL</span> into <span class="register">IX</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -178,8 +202,8 @@ When the condition succeeded, run the operand script and come back to the next i
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43517"></span>43517</td>
-<td class="instruction">JP <a href="42751.html#42849">Handler_RunScript_12</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42849">Handler_RunScript_12</a>.</td>
+<td class="instruction">JP <a href="42751.html#42849">RunScript_AfterAction</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42849">RunScript_AfterAction</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

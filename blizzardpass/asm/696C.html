@@ -114,7 +114,7 @@ Next: <a href="69BF.html">69BF</a>
 Used by the routines at <a href="6892.html">MoveToRoom</a>, <a href="68A2.html">MoveToObject</a>, <a href="68B0.html">GetObject</a>, <a href="68E4.html">DropObject</a>, <a href="6914.html">Saved</a>, <a href="695D.html">RemoveObject</a>, <a href="69BF.html">SwapObjects</a>, <a href="6A16.html">SetObjectLocation</a>, <a href="6A68.html">DropEverything</a> and <a href="6B43.html">RedrawLocation</a>.
 </div>
 <div class="paragraph">
-Sets the room-changed flag and walks the per-room records at <a href="B798.html">RoomRecords</a> so an illustration that depended on an object is redrawn. Verbs 43, 8A, 8B, 85 and 8E skip that walk.
+Sets the room-changed flag and walks the per-room records at <a href="B798.html">RoomRecords</a> so an illustration that depended on an object is redrawn. Verb 43, CAVE (8A), LEVE (8B), CURT (85) and PIT (8E) skip that walk.
 </div>
 </div>
 </td>
@@ -134,18 +134,19 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="6971"></span>6971</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Keep the line pointer. The last-matched verb may skip the picture walk.</td>
+<td class="comment-1" rowspan="1">Stash the line pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6972"></span>6972</td>
 <td class="instruction">LD A,($5BCF)</td>
+<td class="comment-1" rowspan="1">Fetch <a href="5BCF.html">Last_Matched_Verb</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6975"></span>6975</td>
 <td class="instruction">CP $43</td>
-<td class="comment-1" rowspan="2">Verb 43 skips it.</td>
+<td class="comment-1" rowspan="10">Jump to <a href="696C.html#69b6">RoomHasChanged_Redraw</a> if the verb is 43, CAVE (8A), LEVE (8B), CURT (85) or PIT (8E).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -156,7 +157,6 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="6979"></span>6979</td>
 <td class="instruction">CP $8A</td>
-<td class="comment-1" rowspan="2">Verb 8A skips it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -167,7 +167,6 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="697d"></span>697D</td>
 <td class="instruction">CP $8B</td>
-<td class="comment-1" rowspan="2">Verb 8B skips it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -178,7 +177,6 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="6981"></span>6981</td>
 <td class="instruction">CP $85</td>
-<td class="comment-1" rowspan="2">Verb 85 skips it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -189,7 +187,6 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="6985"></span>6985</td>
 <td class="instruction">CP $8E</td>
-<td class="comment-1" rowspan="2">Verb 8E skips it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -200,17 +197,19 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="6989"></span>6989</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="4">The records live at <a href="B798.html">RoomRecords</a>, one per room.</td>
+<td class="comment-1" rowspan="1">Discard the saved line pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="698a"></span>698A</td>
 <td class="instruction">LD HL,$B798</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="B798.html">RoomRecords</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="698d"></span>698D</td>
 <td class="instruction">LD A,($5D87)</td>
+<td class="comment-1" rowspan="2">Fetch <a href="5D87.html">CurrentRoom</a> into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -221,13 +220,23 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="6991"></span>6991</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-1" rowspan="1">A record ends at FF.</td>
+<td class="comment-1" rowspan="1">A record terminates with FF.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6993"></span>
+<div class="comments">
+<div class="paragraph">
+Skip bytes until the next terminator.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">RoomHasChanged_Sep</td>
 <td class="address-2"><span id="6993"></span>6993</td>
 <td class="instruction">CP (HL)</td>
-<td class="comment-1" rowspan="3">Skip to the next separator.</td>
+<td class="comment-1" rowspan="3">Advance until this record ends.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -243,18 +252,29 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="6997"></span>6997</td>
 <td class="instruction">DJNZ <a href="696C.html#6993">RoomHasChanged_Sep</a></td>
-<td class="comment-1" rowspan="1">Count one separator per room until this room's record.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="696C.html#6993">RoomHasChanged_Sep</a> until this is the current room's record.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6999"></span>
+<div class="comments">
+<div class="paragraph">
+Walk this room's picture record.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">RoomHasChanged_Record</td>
 <td class="address-2"><span id="6999"></span>6999</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">FF ends this room's record.</td>
+<td class="comment-1" rowspan="1">Fetch the next record byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="699a"></span>699A</td>
 <td class="instruction">CP $FF</td>
+<td class="comment-1" rowspan="2">Return if it is the terminator FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -265,12 +285,13 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="699d"></span>699D</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="3">Only an F8 record names an object.</td>
+<td class="comment-1" rowspan="1">Advance to the opcode.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="699e"></span>699E</td>
 <td class="instruction">CP $F8</td>
+<td class="comment-1" rowspan="2">Jump to <a href="696C.html#6999">RoomHasChanged_Record</a> if it is not F8.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -281,12 +302,13 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="69a2"></span>69A2</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="4">Compare the record with <a href="5F15.html">PicturedObject</a>, which nothing writes, so it matches a zero.</td>
+<td class="comment-1" rowspan="1">Stash the record pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="69a3"></span>69A3</td>
 <td class="instruction">LD A,($5F15)</td>
+<td class="comment-1" rowspan="3">Compare the record with <a href="5F15.html">PicturedObject</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -302,7 +324,7 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="69a9"></span>69A9</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="4">Point at that object's location.</td>
+<td class="comment-1" rowspan="2">Copy the object number into <span class="register">BC</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -313,17 +335,19 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="69ac"></span>69AC</td>
 <td class="instruction">LD HL,$5DCA</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5DCA.html">ObjectLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="69af"></span>69AF</td>
 <td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1">Add the object number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="69b0"></span>69B0</td>
 <td class="instruction">LD A,($5D87)</td>
-<td class="comment-1" rowspan="3">The picture is left alone when the object is in this room.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="696C.html#69bc">RoomHasChanged_Keep</a> if it is *<a href="5D87.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -336,10 +360,20 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="instruction">JR Z,<a href="696C.html#69bc">RoomHasChanged_Keep</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="69b6"></span>
+<div class="comments">
+<div class="paragraph">
+Force the picture to be drawn again.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">RoomHasChanged_Redraw</td>
 <td class="address-2"><span id="69b6"></span>69B6</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="3">Forget the drawn picture, restore the picture record pointer from the stack.</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="6185.html">PictureDrawn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -350,12 +384,23 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="69ba"></span>69BA</td>
 <td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore the record pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="69bb"></span>69BB</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="69bc"></span>
+<div class="comments">
+<div class="paragraph">
+Keep scanning this record.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">RoomHasChanged_Keep</td>
@@ -367,7 +412,7 @@ Sets the room-changed flag and walks the per-room records at <a href="B798.html"
 <td class="asm-label"></td>
 <td class="address-1"><span id="69bd"></span>69BD</td>
 <td class="instruction">JR <a href="696C.html#6999">RoomHasChanged_Record</a></td>
-<td class="comment-1" rowspan="1">The next byte of the record.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="696C.html#6999">RoomHasChanged_Record</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

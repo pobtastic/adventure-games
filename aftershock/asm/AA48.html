@@ -114,6 +114,19 @@ Next: <a href="AA5F.html">AA5F</a>
 Replaces the first item operand with the second, in the same room.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Replaces the first item operand with the second, in the same room.
 <span id="aa48"></span>
 <div class="comments">
 <div class="paragraph">
-When the condition succeeded, replace the first item operand with the second, in the same room.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,56 +142,66 @@ When the condition succeeded, replace the first item operand with the second, in
 <tr>
 <td class="asm-label">Action_TransformItem</td>
 <td class="address-2"><span id="aa48"></span>AA48</td>
-<td class="instruction">JP NZ,<a href="A6FF.html#a75b">Handler_RunScript_9</a></td>
-<td class="comment-1" rowspan="1">Leave both items as they are.</td>
+<td class="instruction">JP NZ,<a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a> if the condition failed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="aa4b"></span>
+<div class="comments">
+<div class="paragraph">
+Replace the first item operand with the second, in the same room.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa4b"></span>AA4B</td>
 <td class="instruction">LD A,(IX+$01)</td>
-<td class="comment-1" rowspan="1">The first operand names the item.</td>
+<td class="comment-1" rowspan="1">Fetch the item ID being replaced from *<span class="register">IX</span>+01 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa4e"></span>AA4E</td>
-<td class="instruction">CALL <a href="A6FF.html#a772">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">FF stands for the matched item.</td>
+<td class="instruction">CALL <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="A805.html">ScriptMatchedItem</a> when the operand is FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa51"></span>AA51</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1">The item being replaced.</td>
+<td class="comment-1" rowspan="1">Keep the item being replaced in <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa52"></span>AA52</td>
 <td class="instruction">LD A,(IX+$02)</td>
-<td class="comment-1" rowspan="1">The second operand names the replacement.</td>
+<td class="comment-1" rowspan="1">Fetch the replacement item ID from *<span class="register">IX</span>+02 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa55"></span>AA55</td>
-<td class="instruction">CALL <a href="A6FF.html#a772">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">FF stands for the matched item.</td>
+<td class="instruction">CALL <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="A805.html">ScriptMatchedItem</a> when the operand is FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa58"></span>AA58</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1">The item that replaces it.</td>
+<td class="comment-1" rowspan="1">Keep the replacement item ID in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa59"></span>AA59</td>
 <td class="instruction">CALL <a href="A679.html">TransformItem</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A679.html">TransformItem</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A679.html">TransformItem</a> to replace the first item with the second.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa5c"></span>AA5C</td>
-<td class="instruction">JP <a href="A6FF.html#a75b">Handler_RunScript_9</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

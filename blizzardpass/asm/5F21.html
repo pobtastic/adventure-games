@@ -181,13 +181,13 @@ A movement that matches an exit changes the room and skips the scripts.
 <td class="asm-label">ObeyCommand_Move</td>
 <td class="address-2"><span id="5f31"></span>5F31</td>
 <td class="instruction">CALL <a href="5FF1.html">TakeExit</a></td>
-<td class="comment-1" rowspan="1">Call <a href="5FF1.html">TakeExit</a> to take an exit in the direction just typed.</td>
+<td class="comment-1" rowspan="1">Call <a href="5FF1.html">TakeExit</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f34"></span>5F34</td>
 <td class="instruction">LD A,($5B7A)</td>
-<td class="comment-1" rowspan="3">A matched exit is remembered as a room change, and the scripts are not run.</td>
+<td class="comment-1" rowspan="2">Write the match into <a href="5B95.html">RoomChanged</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -198,24 +198,34 @@ A movement that matches an exit changes the room and skips the scripts.
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f3a"></span>5F3A</td>
 <td class="instruction">OR A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="5ECB.html#5ede">GameLoop_Act</a> if an exit was taken.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f3b"></span>5F3B</td>
 <td class="instruction">JR NZ,<a href="5ECB.html#5ede">GameLoop_Act</a></td>
-<td class="comment-1" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="5f3d"></span>
+<div class="comments">
+<div class="paragraph">
+Run the ordinary command scripts.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f3d"></span>5F3D</td>
 <td class="instruction">CALL <a href="6074.html">RunScripts</a></td>
-<td class="comment-1" rowspan="1">Call <a href="6074.html">RunScripts</a> to run the ordinary command scripts.</td>
+<td class="comment-1" rowspan="1">Call <a href="6074.html">RunScripts</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f40"></span>5F40</td>
 <td class="instruction">LD A,($5B79)</td>
-<td class="comment-1" rowspan="2">Jump to <a href="5F21.html#5f65">ObeyCommand_Wet</a> when no script line matched.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="5F21.html#5f65">ObeyCommand_Wet</a> when no script line matched.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -226,7 +236,6 @@ A movement that matches an exit changes the room and skips the scripts.
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f44"></span>5F44</td>
 <td class="instruction">JR Z,<a href="5F21.html#5f65">ObeyCommand_Wet</a></td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -261,7 +270,7 @@ A script asked for the location to be reconsidered several times.
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f4c"></span>5F4C</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="3">Run the high-priority scripts again without keeping the old room-changed flag.</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5B95.html">RoomChanged</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -269,27 +278,36 @@ A script asked for the location to be reconsidered several times.
 <td class="instruction">LD ($5B95),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="5f50"></span>
+<div class="comments">
+<div class="paragraph">
+Run the high-priority scripts.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f50"></span>5F50</td>
 <td class="instruction">CALL <a href="6058.html">RunPriorityScripts</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6058.html">RunPriorityScripts</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f53"></span>5F53</td>
 <td class="instruction">LD A,($5B95)</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="5F21.html#5f5c">ObeyCommand_Redraw</a> if the room did not change.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f56"></span>5F56</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f57"></span>5F57</td>
 <td class="instruction">JR Z,<a href="5F21.html#5f5c">ObeyCommand_Redraw</a></td>
-<td class="comment-1" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -298,26 +316,38 @@ A script asked for the location to be reconsidered several times.
 <td class="comment-1" rowspan="1">Call <a href="6187.html">DescribeLocation</a> when those scripts moved the player.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="5f5c"></span>
+<div class="comments">
+<div class="paragraph">
+Count down one repeat after the redraw.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ObeyCommand_Redraw</td>
 <td class="address-2"><span id="5f5c"></span>5F5C</td>
 <td class="instruction">CALL <a href="6B15.html">DrawRoomOnce</a></td>
-<td class="comment-1" rowspan="3">Redraw, then count down one repeat.</td>
+<td class="comment-1" rowspan="1">Call <a href="6B15.html">DrawRoomOnce</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f5f"></span>5F5F</td>
 <td class="instruction">LD HL,$5D8E</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5D8E.html">RepeatCounter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f62"></span>5F62</td>
 <td class="instruction">DEC (HL)</td>
+<td class="comment-1" rowspan="1">Count down one repeat.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f63"></span>5F63</td>
 <td class="instruction">JR <a href="5F21.html#5f46">ObeyCommand_Repeat</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5F21.html#5f46">ObeyCommand_Repeat</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -387,39 +417,53 @@ WET, COOL, DAMP or SOAK only works on the robe, the door or the running water.
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f7b"></span>5F7B</td>
 <td class="instruction">LD HL,$5F8F</td>
-<td class="comment-1" rowspan="2">The sentence at <a href="5F8F.html">AbsorbWater</a> is 1B characters.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5F8F.html">AbsorbWater</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f7e"></span>5F7E</td>
 <td class="instruction">LD B,$1B</td>
+<td class="comment-1" rowspan="1">1B characters.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="5f80"></span>
+<div class="comments">
+<div class="paragraph">
+Print the refusal one character at a time.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ObeyCommand_Water</td>
 <td class="address-2"><span id="5f80"></span>5F80</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="4">Print one character of it.</td>
+<td class="comment-1" rowspan="1">Fetch this character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f81"></span>5F81</td>
 <td class="instruction">CALL <a href="63FC.html">PlotCharacter</a></td>
+<td class="comment-1" rowspan="1">Call <a href="63FC.html">PlotCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f84"></span>5F84</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance to the next character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f85"></span>5F85</td>
 <td class="instruction">DJNZ <a href="5F21.html#5f80">ObeyCommand_Water</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5F21.html#5f80">ObeyCommand_Water</a> until the sentence is done.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f87"></span>5F87</td>
 <td class="instruction">LD A,$0D</td>
-<td class="comment-1" rowspan="2">Finish that sentence with ENTER and take another turn.</td>
+<td class="comment-1" rowspan="2">Print ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -430,7 +474,7 @@ WET, COOL, DAMP or SOAK only works on the robe, the door or the running water.
 <td class="asm-label"></td>
 <td class="address-1"><span id="5f8c"></span>5F8C</td>
 <td class="instruction">JP <a href="5ECB.html#5ede">GameLoop_Act</a></td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5ECB.html#5ede">GameLoop_Act</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

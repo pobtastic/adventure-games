@@ -114,7 +114,7 @@ Next: <a href="F168.html">F168</a>
 Used by the routine at <a href="EA60.html">JumpTable</a>.
 </div>
 <div class="paragraph">
-Jump-table target <a href="EA60.html#ea81">JumpTable_ScanInputSpaces</a>: walk <a href="5BAE.html">InputBuffer</a> until a quote or a character below space. On quote, seed <a href="5BA0.html#5ba7">InputBuffer_TokenStart</a> / <a href="5BA0.html#5ba9">InputBuffer_NextToken</a>, call <a href="EDAF.html">AdvanceInputPointer</a>, then set <span class="register">BC</span>=0000. The early return for a character below 20 leaves <span class="register">BC</span> unchanged.
+Jump-table target <a href="EA60.html#ea81">JumpTable_ScanInputSpaces</a>. A character below space returns with <span class="register">BC</span> unchanged.
 </div>
 </div>
 </td>
@@ -134,7 +134,7 @@ Jump-table target <a href="EA60.html#ea81">JumpTable_ScanInputSpaces</a>: walk <
 <td class="asm-label">ScanInputSpaces_Loop</td>
 <td class="address-2"><span id="f150"></span>F150</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="3">Fetch the next character and compare it with space.</td>
+<td class="comment-1" rowspan="2">Fetch the next character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -145,12 +145,22 @@ Jump-table target <a href="EA60.html#ea81">JumpTable_ScanInputSpaces</a>: walk <
 <td class="asm-label"></td>
 <td class="address-1"><span id="f152"></span>F152</td>
 <td class="instruction">CP $20</td>
+<td class="comment-1" rowspan="2">Return if it is below space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f154"></span>F154</td>
 <td class="instruction">RET C</td>
-<td class="comment-1" rowspan="1">Return if the next character is below space.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="f155"></span>
+<div class="comments">
+<div class="paragraph">
+A quote starts a token.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -167,7 +177,7 @@ Jump-table target <a href="EA60.html#ea81">JumpTable_ScanInputSpaces</a>: walk <
 <td class="asm-label"></td>
 <td class="address-1"><span id="f159"></span>F159</td>
 <td class="instruction">LD ($5BA7),DE</td>
-<td class="comment-1" rowspan="4">Seed both token pointers, call <a href="EDAF.html">AdvanceInputPointer</a>, and set <span class="register">BC</span>=0000.</td>
+<td class="comment-1" rowspan="2">Write <span class="register">DE</span> to *<a href="5BA7.html">InputBuffer_TokenStart</a> and *<a href="5BA9.html">InputBuffer_NextToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -178,11 +188,13 @@ Jump-table target <a href="EA60.html#ea81">JumpTable_ScanInputSpaces</a>: walk <
 <td class="asm-label"></td>
 <td class="address-1"><span id="f161"></span>F161</td>
 <td class="instruction">CALL <a href="EDAF.html">AdvanceInputPointer</a></td>
+<td class="comment-1" rowspan="1">Call <a href="EDAF.html">AdvanceInputPointer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="f164"></span>F164</td>
 <td class="instruction">LD BC,$0000</td>
+<td class="comment-1" rowspan="1"><span class="register">BC</span>=0000.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

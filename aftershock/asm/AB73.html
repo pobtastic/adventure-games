@@ -114,6 +114,19 @@ Next: <a href="AB8B.html">AB8B</a>
 Writes the second operand through the state-byte pointer selected from <a href="BAF9.html">Table_SavedStateAddresses</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry (opcode, index, value)</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Writes the second operand through the state-byte pointer selected from <a href="
 <span id="ab73"></span>
 <div class="comments">
 <div class="paragraph">
-When the condition succeeded, write the second operand through the address selected from <a href="BAF9.html">Table_SavedStateAddresses</a>.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,14 +142,24 @@ When the condition succeeded, write the second operand through the address selec
 <tr>
 <td class="asm-label">Action_WriteSavedByte</td>
 <td class="address-2"><span id="ab73"></span>AB73</td>
-<td class="instruction">JP NZ,<a href="A6FF.html#a75b">Handler_RunScript_9</a></td>
-<td class="comment-1" rowspan="1">Leave the saved bytes alone.</td>
+<td class="instruction">JP NZ,<a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a> if the condition failed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ab76"></span>
+<div class="comments">
+<div class="paragraph">
+The first operand selects a saved-byte pointer from <a href="BAF9.html">Table_SavedStateAddresses</a>; the second operand is the value to write.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab76"></span>AB76</td>
 <td class="instruction">LD L,(IX+$01)</td>
-<td class="comment-1" rowspan="2">The first operand selects a saved byte.</td>
+<td class="comment-1" rowspan="2">Load the saved-byte index from *<span class="register">IX</span>+01 into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -147,13 +170,13 @@ When the condition succeeded, write the second operand through the address selec
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab7b"></span>AB7B</td>
 <td class="instruction">LD A,(IX+$02)</td>
-<td class="comment-1" rowspan="1">The second operand is the new value.</td>
+<td class="comment-1" rowspan="1">Fetch the new value from *<span class="register">IX</span>+02 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab7e"></span>AB7E</td>
 <td class="instruction">ADD HL,HL</td>
-<td class="comment-1" rowspan="3">Look up its address in <a href="BAF9.html">Table_SavedStateAddresses</a>.</td>
+<td class="comment-1" rowspan="3">Double the index and add <a href="BAF9.html">Table_SavedStateAddresses</a> to point at that pointer entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -169,7 +192,7 @@ When the condition succeeded, write the second operand through the address selec
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab83"></span>AB83</td>
 <td class="instruction">LD E,(HL)</td>
-<td class="comment-1" rowspan="4">That address.</td>
+<td class="comment-1" rowspan="4">Fetch the destination address from the table into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -190,13 +213,13 @@ When the condition succeeded, write the second operand through the address selec
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab87"></span>AB87</td>
 <td class="instruction">LD (HL),A</td>
-<td class="comment-1" rowspan="1">Write the new value there.</td>
+<td class="comment-1" rowspan="1">Write the new value through <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab88"></span>AB88</td>
-<td class="instruction">JP <a href="A6FF.html#a75b">Handler_RunScript_9</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

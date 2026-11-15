@@ -105,7 +105,7 @@ Next: <a href="B753.html">B753</a>
 </td>
 </tr>
 </table>
-<div class="description">B714: Handler: Set Current Room</div>
+<div class="description">B714: Move Player To Room</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -114,81 +114,120 @@ Next: <a href="B753.html">B753</a>
 Used by the routine at <a href="E9E1.html">Handler_ChangeRoom</a>.
 </div>
 <div class="paragraph">
-Move the player into the room held in <span class="register">A</span> and update events there.
+Moves the player to a new room. Before updating the current room, it brings every scenic-event item that is here or carried along to the destination. It then moves each item whose bit is set in <a href="AE91.html">Flag_FollowingHeroes</a> into the new room (see <a href="AE92.html">Table_FollowingItems</a>).
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Destination room ID</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b714"></span>
+<div class="comments">
+<div class="paragraph">
+Store the destination room ID and prepare to update scenic events.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_SetCurrentRoom</td>
+<td class="asm-label">MovePlayerToRoom</td>
 <td class="address-2"><span id="b714"></span>B714</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1">Remember the destination room.</td>
+<td class="comment-1" rowspan="1">Copy the destination room ID into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b715"></span>B715</td>
 <td class="instruction">LD A,($AEF8)</td>
-<td class="comment-1" rowspan="1">Read the scenic-event count into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Load *<a href="AEF8.html">Count_ScenicEvents</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b718"></span>B718</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="2">Skip scenic events when the game defines none.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="B714.html#b732">MovePlayerToRoom_SetRoom</a> if no scenic events are defined.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b719"></span>B719</td>
-<td class="instruction">JR Z,<a href="B714.html#b732">Handler_SetCurrentRoom_Next</a></td>
+<td class="instruction">JR Z,<a href="B714.html#b732">MovePlayerToRoom_SetRoom</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b71b"></span>B71B</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1">Take the scenic-event count.</td>
+<td class="comment-1" rowspan="1">Load *<a href="AEF8.html">Count_ScenicEvents</a> into <span class="register">B</span> for the loop counter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b71c"></span>B71C</td>
 <td class="instruction">LD HL,($AEEC)</td>
-<td class="comment-1" rowspan="1">Load the word at *<a href="AEEC.html">Pointer_Spare</a> into <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Set a pointer to *<a href="AEEC.html">Pointer_Spare</a> in <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b71f"></span>B71F</td>
-<td class="instruction">JR <a href="B714.html#b722">Handler_SetCurrentRoom_Scenic</a></td>
-<td class="comment-1" rowspan="1">Read the first scenic item at <a href="B714.html#b722">Handler_SetCurrentRoom_Scenic</a>.</td>
+<td class="instruction">JR <a href="B714.html#b722">ScenicItem_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B714.html#b722">ScenicItem_Next</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_SetCurrentRoom_Loop</td>
+<td class="routine-comment" colspan="5">
+<span id="b721"></span>
+<div class="comments">
+<div class="paragraph">
+Loop through all scenic event items and move any that are here or carried to the destination room (so they follow the player).
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScenicItem_Advance</td>
 <td class="address-2"><span id="b721"></span>B721</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> to the next byte.</td>
+<td class="comment-1" rowspan="1">Move to the next scenic event item ID.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_SetCurrentRoom_Scenic</td>
+<td class="asm-label">ScenicItem_Next</td>
 <td class="address-2"><span id="b722"></span>B722</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Read this scenic item.</td>
+<td class="comment-1" rowspan="1">Load this scenic event item ID into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b723"></span>B723</td>
 <td class="instruction">CALL <a href="B560.html">ValidateItemPresent</a></td>
-<td class="comment-1" rowspan="1">Call <a href="B560.html">ValidateItemPresent</a> to find where the object is.</td>
+<td class="comment-1" rowspan="1">Call <a href="B560.html">ValidateItemPresent</a> to test whether it is here or carried.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b726"></span>B726</td>
-<td class="instruction">JR NZ,<a href="B714.html#b730">Handler_SetCurrentRoom_ScenicNext</a></td>
-<td class="comment-1" rowspan="1">Leave a scenic item that is not here.</td>
+<td class="instruction">JR NZ,<a href="B714.html#b730">ScenicItem_Count</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B714.html#b730">ScenicItem_Count</a> if it is neither here nor carried.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b728"></span>
+<div class="comments">
+<div class="paragraph">
+This scenic event item is here or carried, so move it with the player.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b728"></span>B728</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Keep this scenic item while it is moved.</td>
+<td class="comment-1" rowspan="2">Stash the table pointer and counter on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -199,19 +238,19 @@ Move the player into the room held in <span class="register">A</span> and update
 <td class="asm-label"></td>
 <td class="address-1"><span id="b72a"></span>B72A</td>
 <td class="instruction">LD B,(HL)</td>
-<td class="comment-1" rowspan="1">Read the buffer byte into <span class="register">B</span>.</td>
+<td class="comment-1" rowspan="1">Load the scenic event item ID into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b72b"></span>B72B</td>
 <td class="instruction">CALL <a href="B5FD.html">SetItemRoom</a></td>
-<td class="comment-1" rowspan="1">Call <a href="B5FD.html">SetItemRoom</a> to store the item's room.</td>
+<td class="comment-1" rowspan="1">Call <a href="B5FD.html">SetItemRoom</a> to update the item's location to the destination room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b72e"></span>B72E</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore the scenic item count and this scenic item from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the table pointer and counter from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -219,34 +258,44 @@ Move the player into the room held in <span class="register">A</span> and update
 <td class="instruction">POP HL</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_SetCurrentRoom_ScenicNext</td>
+<td class="asm-label">ScenicItem_Count</td>
 <td class="address-2"><span id="b730"></span>B730</td>
-<td class="instruction">DJNZ <a href="B714.html#b721">Handler_SetCurrentRoom_Loop</a></td>
-<td class="comment-1" rowspan="1">Count down <span class="register">B</span> and repeat from <a href="B714.html#b721">Handler_SetCurrentRoom_Loop</a> until the count is exhausted.</td>
+<td class="instruction">DJNZ <a href="B714.html#b721">ScenicItem_Advance</a></td>
+<td class="comment-1" rowspan="1">Decrease the scenic event counter by one and loop back to <a href="B714.html#b721">ScenicItem_Advance</a> until all scenic events have been checked.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_SetCurrentRoom_Next</td>
+<td class="routine-comment" colspan="5">
+<span id="b732"></span>
+<div class="comments">
+<div class="paragraph">
+Update the current room ID to the destination room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">MovePlayerToRoom_SetRoom</td>
 <td class="address-2"><span id="b732"></span>B732</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-1" rowspan="1">Restore the destination room.</td>
+<td class="comment-1" rowspan="1">Copy the destination room ID into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b733"></span>B733</td>
 <td class="instruction">LD ($AECD),A</td>
-<td class="comment-1" rowspan="1">Store <span class="register">A</span> in the current room.</td>
+<td class="comment-1" rowspan="1">Write the destination room ID to <a href="AECD.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b736"></span>B736</td>
 <td class="instruction">LD A,($AE91)</td>
-<td class="comment-1" rowspan="1">Read the event-state flags into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Load *<a href="AE91.html">Flag_FollowingHeroes</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b739"></span>B739</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="2">Leave the turn-based events alone when none are armed.</td>
+<td class="comment-1" rowspan="2">Return if no following item is active.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -254,58 +303,78 @@ Move the player into the room held in <span class="register">A</span> and update
 <td class="instruction">RET Z</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="b73b"></span>
+<div class="comments">
+<div class="paragraph">
+For each set bit, move the item at that position in <a href="AE92.html">Table_FollowingItems</a> into the current room.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b73b"></span>B73B</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-1" rowspan="1">Use 08 as the count in <span class="register">B</span>.</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for 08 bits.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b73d"></span>B73D</td>
 <td class="instruction">LD HL,$AE92</td>
-<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="AE92.html">Table_FollowingItems</a>.</td>
+<td class="comment-1" rowspan="1">Set a pointer to <a href="AE92.html">Table_FollowingItems</a> in <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b740"></span>B740</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1">Hold the event flags while each one is tested.</td>
+<td class="comment-1" rowspan="1">Copy the following flags into <span class="register">C</span> for bit testing.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b741"></span>B741</td>
-<td class="instruction">JR <a href="B714.html#b744">Handler_SetCurrentRoom_Event</a></td>
-<td class="comment-1" rowspan="1">Test the first turn-based event at <a href="B714.html#b744">Handler_SetCurrentRoom_Event</a>.</td>
+<td class="instruction">JR <a href="B714.html#b744">EventFlag_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B714.html#b744">EventFlag_Next</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_SetCurrentRoom_EventLoop</td>
+<td class="asm-label">EventFlag_Advance</td>
 <td class="address-2"><span id="b743"></span>B743</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> to the next byte.</td>
+<td class="comment-1" rowspan="1">Move to the next item ID.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_SetCurrentRoom_Event</td>
+<td class="asm-label">EventFlag_Next</td>
 <td class="address-2"><span id="b744"></span>B744</td>
 <td class="instruction">SRL C</td>
-<td class="comment-1" rowspan="1">Test the next turn-based event flag.</td>
+<td class="comment-1" rowspan="1">Shift the following flags right to check the next bit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b746"></span>B746</td>
-<td class="instruction">JR NC,<a href="B714.html#b750">Handler_SetCurrentRoom_EventNext</a></td>
-<td class="comment-1" rowspan="1">Branch to <a href="B714.html#b750">Handler_SetCurrentRoom_EventNext</a> when the carry flag is clear.</td>
+<td class="instruction">JR NC,<a href="B714.html#b750">EventFlag_Count</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B714.html#b750">EventFlag_Count</a> if this bit is not set.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="b748"></span>
+<div class="comments">
+<div class="paragraph">
+This item is following, so move it to the current room.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b748"></span>B748</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Read the item this event places in the room.</td>
+<td class="comment-1" rowspan="1">Get the item ID from the table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b749"></span>B749</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Keep this turn-based event while its item is placed.</td>
+<td class="comment-1" rowspan="2">Stash the table pointer and counter on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -316,13 +385,13 @@ Move the player into the room held in <span class="register">A</span> and update
 <td class="asm-label"></td>
 <td class="address-1"><span id="b74b"></span>B74B</td>
 <td class="instruction">CALL <a href="B5DC.html">HandlerUpdateItemEventForTheCurrentRoom</a></td>
-<td class="comment-1" rowspan="1">Call <a href="B5DC.html">HandlerUpdateItemEventForTheCurrentRoom</a> to update the item for this room.</td>
+<td class="comment-1" rowspan="1">Call <a href="B5DC.html">HandlerUpdateItemEventForTheCurrentRoom</a> to update the item's location to the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b74e"></span>B74E</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="2">Restore the event count and flags, and this turn-based event from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the table pointer and counter from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -330,13 +399,13 @@ Move the player into the room held in <span class="register">A</span> and update
 <td class="instruction">POP HL</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_SetCurrentRoom_EventNext</td>
+<td class="asm-label">EventFlag_Count</td>
 <td class="address-2"><span id="b750"></span>B750</td>
-<td class="instruction">DJNZ <a href="B714.html#b743">Handler_SetCurrentRoom_EventLoop</a></td>
-<td class="comment-1" rowspan="1">Count down <span class="register">B</span> and repeat from <a href="B714.html#b743">Handler_SetCurrentRoom_EventLoop</a> until the count is exhausted.</td>
+<td class="instruction">DJNZ <a href="B714.html#b743">EventFlag_Advance</a></td>
+<td class="comment-1" rowspan="1">Decrease the bit counter by one and loop back to <a href="B714.html#b743">EventFlag_Advance</a> until all 08 bits have been tested.</td>
 </tr>
 <tr>
-<td class="asm-label"></td>
+<td class="asm-label">MovePlayerToRoom_Return</td>
 <td class="address-1"><span id="b752"></span>B752</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
@@ -349,7 +418,6 @@ View the equivalent code in; <ul class="">
 <li><a href="/adventure-games/aftershock/asm/ACBD.html">After Shock</a></li>
 <li><a href="/adventure-games/forestatworldsend/asm/C42F.html">Forest At Worlds End</a></li>
 <li><a href="/adventure-games/jewelsofbabylon/asm/C520.html">The Jewels Of Babylon</a></li>
-<li><a href="/adventure-games/messagefromandromeda/asm/8E18.html">Message From Andromeda</a></li>
 <li><a href="/adventure-games/warlord/asm/B01F.html">Warlord</a></li>
 </ul>
 </div>

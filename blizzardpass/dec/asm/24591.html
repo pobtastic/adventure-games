@@ -133,7 +133,7 @@ The text window sits on rows 22 and 23 until a location description moves it.
 <td class="asm-label">PrepareGame</td>
 <td class="address-2"><span id="24591"></span>24591</td>
 <td class="instruction">LD A,23</td>
-<td class="comment-1" rowspan="2">The text window uses rows 22 and 23.</td>
+<td class="comment-1" rowspan="2">Write 23 to <a href="23447.html">BottomRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,7 +144,7 @@ The text window sits on rows 22 and 23 until a location description moves it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="24596"></span>24596</td>
 <td class="instruction">LD A,22</td>
-<td class="comment-1" rowspan="2">The cursor starts on row 22.</td>
+<td class="comment-1" rowspan="2">Write 22 to <a href="23433.html">PrintRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -155,13 +155,13 @@ The text window sits on rows 22 and 23 until a location description moves it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="24601"></span>24601</td>
 <td class="instruction">CALL <a href="25931.html">HomeRow</a></td>
-<td class="comment-1" rowspan="1">Call <a href="25931.html">HomeRow</a> to home that row.</td>
+<td class="comment-1" rowspan="1">Call <a href="25931.html">HomeRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24604"></span>24604</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Column 0.</td>
+<td class="comment-1" rowspan="2">Write 0 to <a href="23434.html">PrintColumn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -172,7 +172,7 @@ The text window sits on rows 22 and 23 until a location description moves it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="24608"></span>24608</td>
 <td class="instruction">CALL <a href="26136.html">ClearScreen</a></td>
-<td class="comment-1" rowspan="1">Call <a href="26136.html">ClearScreen</a> to blank the display.</td>
+<td class="comment-1" rowspan="1">Call <a href="26136.html">ClearScreen</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -197,26 +197,38 @@ Forget the verb, the noun and the three counters.
 <td class="comment-1" rowspan="1">Five bytes: the verb, the noun and the three counters.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="24616"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the command bytes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PrepareGame_ClearCommand</td>
 <td class="address-2"><span id="24616"></span>24616</td>
 <td class="instruction">LD (HL),0</td>
-<td class="comment-1" rowspan="3">Clear one byte and step on.</td>
+<td class="comment-1" rowspan="1">Write 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24618"></span>24618</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24619"></span>24619</td>
 <td class="instruction">DJNZ <a href="24591.html#24616">PrepareGame_ClearCommand</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="24591.html#24616">PrepareGame_ClearCommand</a> until the five bytes are done.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24621"></span>24621</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">There is no comma left over from a previous game.</td>
+<td class="comment-1" rowspan="2">Write 0 to <a href="23429.html">Continuation</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -246,62 +258,80 @@ A new game starts in room 0 with empty flags, then the authored state is copied 
 <td class="comment-1" rowspan="1">65 bytes, through the last flag.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="24630"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the state and flags.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PrepareGame_ClearState</td>
 <td class="address-2"><span id="24630"></span>24630</td>
 <td class="instruction">LD (HL),0</td>
-<td class="comment-1" rowspan="3">Clear one byte and step on.</td>
+<td class="comment-1" rowspan="1">Write 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24632"></span>24632</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24633"></span>24633</td>
 <td class="instruction">DJNZ <a href="24591.html#24630">PrepareGame_ClearState</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="24591.html#24630">PrepareGame_ClearState</a> until the state is cleared.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24635"></span>24635</td>
 <td class="instruction">LD HL,46760</td>
-<td class="comment-1" rowspan="4">Copy the initial object locations from <a href="46760.html">InitialObjects</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="46760.html">InitialObjects</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24638"></span>24638</td>
 <td class="instruction">LD DE,24010</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="24010.html">ObjectLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24641"></span>24641</td>
 <td class="instruction">LD BC,256</td>
+<td class="comment-1" rowspan="1">256 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24644"></span>24644</td>
 <td class="instruction">LDIR</td>
+<td class="comment-1" rowspan="1">Copy them.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24646"></span>24646</td>
 <td class="instruction">LD HL,24658</td>
-<td class="comment-1" rowspan="4">Copy the six initial state bytes from <a href="24658.html">InitialState</a> onto <a href="23944.html">Darkness</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="24658.html">InitialState</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24649"></span>24649</td>
 <td class="instruction">LD DE,23944</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="23944.html">Darkness</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24652"></span>24652</td>
 <td class="instruction">LD BC,6</td>
+<td class="comment-1" rowspan="1">0006 bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="24655"></span>24655</td>
 <td class="instruction">LDIR</td>
+<td class="comment-1" rowspan="1">Copy them.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

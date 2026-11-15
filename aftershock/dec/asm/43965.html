@@ -114,6 +114,19 @@ Next: <a href="43999.html">43999</a>
 Prints the score, asks whether to save, and sets flag bit 2.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Prints the score, asks whether to save, and sets flag bit 2.
 <span id="43965"></span>
 <div class="comments">
 <div class="paragraph">
-Do not offer to save.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,8 +142,8 @@ Do not offer to save.
 <tr>
 <td class="asm-label">Action_OfferSave</td>
 <td class="address-2"><span id="43965"></span>43965</td>
-<td class="instruction">JP NZ,<a href="42751.html#42847">Handler_RunScript_11</a></td>
-<td class="comment-1" rowspan="1">Do not offer to save.</td>
+<td class="instruction">JP NZ,<a href="42751.html#42847">RunScript_SkipAction_OneByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42847">RunScript_SkipAction_OneByte</a> if the condition failed.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -146,19 +159,19 @@ Show the score, then ask "Want to save the game? Y/N".
 <td class="asm-label"></td>
 <td class="address-1"><span id="43968"></span>43968</td>
 <td class="instruction">CALL <a href="44355.html">Print_Scoring</a></td>
-<td class="comment-1" rowspan="1">Show the score.</td>
+<td class="comment-1" rowspan="1">Call <a href="44355.html">Print_Scoring</a> to print the score.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43971"></span>43971</td>
 <td class="instruction">LD HL,22</td>
-<td class="comment-1" rowspan="1">Ask whether to save.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="52656.html">Messaging_WantToSaveTheGame</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43974"></span>43974</td>
 <td class="instruction">CALL <a href="41564.html">PrintCompressedStringAndNewline</a></td>
-<td class="comment-1" rowspan="1">Call <a href="41564.html">PrintCompressedStringAndNewline</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="41564.html">PrintCompressedStringAndNewline</a> to print that compressed string and a newline.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -174,35 +187,37 @@ N declines the save and Y writes the position to tape.
 <td class="asm-label">SavePrompt_Loop</td>
 <td class="address-2"><span id="43977"></span>43977</td>
 <td class="instruction">CALL <a href="40443.html">GetUserInput</a></td>
-<td class="comment-1" rowspan="1">Read the answer.</td>
+<td class="comment-1" rowspan="1">Call <a href="40443.html">GetUserInput</a> to read the answer key.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43980"></span>43980</td>
 <td class="instruction">CP 78</td>
-<td class="comment-1" rowspan="2">N declines the save.</td>
+<td class="comment-1" rowspan="1">Compare it with "N".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43982"></span>43982</td>
-<td class="instruction">JR Z,<a href="43965.html#43991">Action_OfferSave_0</a></td>
+<td class="instruction">JR Z,<a href="43965.html#43991">OfferSave_SetFlag</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="43965.html#43991">OfferSave_SetFlag</a> if the player declined.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43984"></span>43984</td>
 <td class="instruction">CP 89</td>
-<td class="comment-1" rowspan="2">Anything but Y asks again.</td>
+<td class="comment-1" rowspan="1">Compare it with "Y".</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43986"></span>43986</td>
 <td class="instruction">JR NZ,<a href="43965.html#43977">SavePrompt_Loop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="43965.html#43977">SavePrompt_Loop</a> if the key was neither Y nor N.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43988"></span>43988</td>
 <td class="instruction">CALL <a href="40576.html">SaveGame</a></td>
-<td class="comment-1" rowspan="1">Write the position to tape.</td>
+<td class="comment-1" rowspan="1">Call <a href="40576.html">SaveGame</a> to save the game to tape.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -215,22 +230,22 @@ Remember that the offer was made by setting flag bit 2 then resume the script.
 </td>
 </tr>
 <tr>
-<td class="asm-label">Action_OfferSave_0</td>
+<td class="asm-label">OfferSave_SetFlag</td>
 <td class="address-2"><span id="43991"></span>43991</td>
 <td class="instruction">LD A,2</td>
-<td class="comment-1" rowspan="1">Flag bit 2 records the offer.</td>
+<td class="comment-1" rowspan="1">Load flag bit 2 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43993"></span>43993</td>
 <td class="instruction">CALL <a href="41426.html">SetFlag</a></td>
-<td class="comment-1" rowspan="1">Call <a href="41426.html">SetFlag</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="41426.html">SetFlag</a> to set that flag bit in <a href="41096.html">Flags_GameStates</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43996"></span>43996</td>
-<td class="instruction">JP <a href="42751.html#42847">Handler_RunScript_11</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="42751.html#42847">RunScript_SkipAction_OneByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42847">RunScript_SkipAction_OneByte</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

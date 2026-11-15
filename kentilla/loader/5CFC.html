@@ -99,569 +99,717 @@ gtag('config', 'G-75RERFCHBG');
 <td class="prev">
 Prev: <a href="5CD0.html">5CD0</a>
 </td>
-<td class="up">Up: <a href="loader.html#5cfc">Map</a></td>
+<td class="up">Up: <a href="loader.html#23804">Map</a></td>
 <td class="next">
 Next: <a href="5D96.html">5D96</a>
 </td>
 </tr>
 </table>
-<div class="description">5CFC: Custom Load Routine</div>
+<div class="description">5CFC: Load Tape Block</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routine at <a href="5CD0.html">BootstrapEntry</a>.
+Used by the routine at <a href="5CD0.html">Load_Stage_Two</a>.
 </div>
 <div class="paragraph">
-Custom edge sampler used by the bootstrap. It still calls the ROM edge routines at 05E3 / 05E7, but with Micromega timing thresholds rather than the standard ROM pilot. On error it restores the border from <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C48.html">BORDCR</a> and prints "ATTEMPTED BREAK!" or "TAPE LOADING ERROR".
+Custom edge sampler used by the bootstrap. It still calls the ROM edge routines <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/05E3.html">LD-EDGE-1</a> / <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/05E7.html">LD-EDGE-2</a>, but with Micromega timing thresholds rather than the standard ROM pilot. On success it returns through <a href="5DAC.html">Restore_Border</a>; tape errors from <a href="5CD0.html">Load_Stage_Two</a> jump to <a href="5CFC.html#23945">Load_Tape_Block_PrintError</a>, which prints "TAPE LOADING ERROR" via <a href="5DAC.html#24009">Restore_Border_PrintLoop</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Destination address for the block</td>
+</tr>
+<tr>
+<td class="register">DE</td>
+<td class="register-desc">Block length</td>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Expected flag byte; carry set to load, reset to verify</td>
+</tr>
+</table>
+<table class="output">
+<tr class="asm-output-header">
+<th colspan="2">Output</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">Carry is set on success; <span class="register">A'</span> holds the preserved flag byte</td>
+</tr>
+</table>
 </td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad</td>
-<td class="address-2"><span id="5cfc"></span>5CFC</td>
-<td class="instruction">INC D</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5cfd"></span>5CFD</td>
-<td class="instruction">EX AF,AF'</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5cfe"></span>5CFE</td>
-<td class="instruction">DEC D</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5cff"></span>5CFF</td>
-<td class="instruction">DI</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d00"></span>5D00</td>
-<td class="instruction">LD A,$0F</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d02"></span>5D02</td>
-<td class="instruction">OUT ($FE),A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d04"></span>5D04</td>
-<td class="instruction">LD HL,$5DAC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d07"></span>5D07</td>
-<td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d08"></span>5D08</td>
-<td class="instruction">IN A,($FE)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d0a"></span>5D0A</td>
-<td class="instruction">RRA</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d0b"></span>5D0B</td>
-<td class="instruction">AND $20</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d0d"></span>5D0D</td>
-<td class="instruction">OR $02</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d0f"></span>5D0F</td>
-<td class="instruction">LD C,A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d10"></span>5D10</td>
-<td class="instruction">CP A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_0</td>
-<td class="address-2"><span id="5d11"></span>5D11</td>
-<td class="instruction">RET NZ</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_1</td>
-<td class="address-2"><span id="5d12"></span>5D12</td>
-<td class="instruction">CALL $05E7</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d15"></span>5D15</td>
-<td class="instruction">JR NC,<a href="5CFC.html#5d11">CustomLoad_0</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d17"></span>5D17</td>
-<td class="instruction">LD HL,$0415</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_2</td>
-<td class="address-2"><span id="5d1a"></span>5D1A</td>
-<td class="instruction">DJNZ <a href="5CFC.html#5d1a">CustomLoad_2</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d1c"></span>5D1C</td>
-<td class="instruction">DEC HL</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d1d"></span>5D1D</td>
-<td class="instruction">LD A,H</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d1e"></span>5D1E</td>
-<td class="instruction">OR L</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d1f"></span>5D1F</td>
-<td class="instruction">JR NZ,<a href="5CFC.html#5d1a">CustomLoad_2</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d21"></span>5D21</td>
-<td class="instruction">CALL $05E3</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d24"></span>5D24</td>
-<td class="instruction">JR NC,<a href="5CFC.html#5d11">CustomLoad_0</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_3</td>
-<td class="address-2"><span id="5d26"></span>5D26</td>
-<td class="instruction">LD B,$9C</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d28"></span>5D28</td>
-<td class="instruction">CALL $05E3</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d2b"></span>5D2B</td>
-<td class="instruction">JR NC,<a href="5CFC.html#5d11">CustomLoad_0</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d2d"></span>5D2D</td>
-<td class="instruction">LD A,$A6</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d2f"></span>5D2F</td>
-<td class="instruction">CP B</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d30"></span>5D30</td>
-<td class="instruction">JR NC,<a href="5CFC.html#5d12">CustomLoad_1</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d32"></span>5D32</td>
-<td class="instruction">INC H</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d33"></span>5D33</td>
-<td class="instruction">JR NZ,<a href="5CFC.html#5d26">CustomLoad_3</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_4</td>
-<td class="address-2"><span id="5d35"></span>5D35</td>
-<td class="instruction">LD B,$C9</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d37"></span>5D37</td>
-<td class="instruction">CALL $05E7</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d3a"></span>5D3A</td>
-<td class="instruction">JR NC,<a href="5CFC.html#5d11">CustomLoad_0</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d3c"></span>5D3C</td>
-<td class="instruction">LD A,B</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d3d"></span>5D3D</td>
-<td class="instruction">CP $D4</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d3f"></span>5D3F</td>
-<td class="instruction">JR NC,<a href="5CFC.html#5d35">CustomLoad_4</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d41"></span>5D41</td>
-<td class="instruction">CALL $05E7</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d44"></span>5D44</td>
-<td class="instruction">RET NC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d45"></span>5D45</td>
-<td class="instruction">LD A,C</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d46"></span>5D46</td>
-<td class="instruction">XOR $03</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d48"></span>5D48</td>
-<td class="instruction">LD C,A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d49"></span>5D49</td>
-<td class="instruction">LD H,$00</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d4b"></span>5D4B</td>
-<td class="instruction">LD B,$B0</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d4d"></span>5D4D</td>
-<td class="instruction">JR <a href="5CFC.html#5d6e">CustomLoad_10</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_5</td>
-<td class="address-2"><span id="5d4f"></span>5D4F</td>
-<td class="instruction">EX AF,AF'</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d50"></span>5D50</td>
-<td class="instruction">JR NZ,<a href="5CFC.html#5d59">CustomLoad_6</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d52"></span>5D52</td>
-<td class="instruction">JR NC,<a href="5CFC.html#5d63">CustomLoad_7</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d54"></span>5D54</td>
-<td class="instruction">LD (IX+$00),L</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d57"></span>5D57</td>
-<td class="instruction">JR <a href="5CFC.html#5d68">CustomLoad_8</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_6</td>
-<td class="address-2"><span id="5d59"></span>5D59</td>
-<td class="instruction">RL C</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d5b"></span>5D5B</td>
-<td class="instruction">XOR L</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d5c"></span>5D5C</td>
-<td class="instruction">RET NZ</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d5d"></span>5D5D</td>
-<td class="instruction">LD A,C</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d5e"></span>5D5E</td>
-<td class="instruction">RRA</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d5f"></span>5D5F</td>
-<td class="instruction">LD C,A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d60"></span>5D60</td>
-<td class="instruction">INC DE</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d61"></span>5D61</td>
-<td class="instruction">JR <a href="5CFC.html#5d6a">CustomLoad_9</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_7</td>
-<td class="address-2"><span id="5d63"></span>5D63</td>
-<td class="instruction">LD A,(IX+$00)</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d66"></span>5D66</td>
-<td class="instruction">XOR L</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d67"></span>5D67</td>
-<td class="instruction">RET NZ</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_8</td>
-<td class="address-2"><span id="5d68"></span>5D68</td>
-<td class="instruction">INC IX</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_9</td>
-<td class="address-2"><span id="5d6a"></span>5D6A</td>
-<td class="instruction">DEC DE</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d6b"></span>5D6B</td>
-<td class="instruction">EX AF,AF'</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d6c"></span>5D6C</td>
-<td class="instruction">LD B,$B2</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_10</td>
-<td class="address-2"><span id="5d6e"></span>5D6E</td>
-<td class="instruction">LD L,$01</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label">CustomLoad_11</td>
-<td class="address-2"><span id="5d70"></span>5D70</td>
-<td class="instruction">CALL $05E3</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d73"></span>5D73</td>
-<td class="instruction">RET NC</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d74"></span>5D74</td>
-<td class="instruction">LD A,$CB</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d76"></span>5D76</td>
-<td class="instruction">CP B</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d77"></span>5D77</td>
-<td class="instruction">RL L</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d79"></span>5D79</td>
-<td class="instruction">LD B,$B0</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d7b"></span>5D7B</td>
-<td class="instruction">JP NC,<a href="5CFC.html#5d70">CustomLoad_11</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d7e"></span>5D7E</td>
-<td class="instruction">LD A,H</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d7f"></span>5D7F</td>
-<td class="instruction">XOR L</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d80"></span>5D80</td>
-<td class="instruction">LD H,A</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d81"></span>5D81</td>
-<td class="instruction">LD A,D</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d82"></span>5D82</td>
-<td class="instruction">OR E</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d83"></span>5D83</td>
-<td class="instruction">JR NZ,<a href="5CFC.html#5d4f">CustomLoad_5</a></td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d85"></span>5D85</td>
-<td class="instruction">LD A,H</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d86"></span>5D86</td>
-<td class="instruction">CP $01</td>
-<td class="comment-0" rowspan="1"></td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="5d88"></span>5D88</td>
-<td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
-<span id="5d89"></span>
+<span id="23804"></span>
 <div class="comments">
 <div class="paragraph">
-This entry point is used by the routine at <a href="5CD0.html">BootstrapEntry</a>.
+Preserve the flag byte and install the post-load return at <a href="5DAC.html">Restore_Border</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">CustomLoad_12</td>
-<td class="address-2"><span id="5d89"></span>5D89</td>
+<td class="asm-label">Load_Tape_Block</td>
+<td class="address-2"><span id="23804"></span>5CFC</td>
+<td class="instruction">INC D</td>
+<td class="comment-1" rowspan="3">Preserve the flag byte in <span class="register">AF'</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23805"></span>5CFD</td>
+<td class="instruction">EX AF,AF'</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23806"></span>5CFE</td>
+<td class="instruction">DEC D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23807"></span>5CFF</td>
+<td class="instruction">DI</td>
+<td class="comment-1" rowspan="1">Disable interrupts.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23808"></span>5D00</td>
+<td class="instruction">LD A,$0F</td>
+<td class="comment-1" rowspan="2">Set the border to white via port FE.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23810"></span>5D02</td>
+<td class="instruction">OUT ($FE),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23812"></span>5D04</td>
+<td class="instruction">LD HL,$5DAC</td>
+<td class="comment-1" rowspan="2">Point <span class="register">HL</span> at <a href="5DAC.html">Restore_Border</a> and stash it as the return address.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23815"></span>5D07</td>
+<td class="instruction">PUSH HL</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23816"></span>
+<div class="comments">
+<div class="paragraph">
+Seed the EAR/border state in <span class="register">C</span> from the current EAR bit.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23816"></span>5D08</td>
+<td class="instruction">IN A,($FE)</td>
+<td class="comment-1" rowspan="1">Read the EAR port.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23818"></span>5D0A</td>
+<td class="instruction">RRA</td>
+<td class="comment-1" rowspan="1">Rotate the EAR bit into bit 0 of <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23819"></span>5D0B</td>
+<td class="instruction">AND %00100000</td>
+<td class="comment-1" rowspan="1">Keep only the EAR bit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23821"></span>5D0D</td>
+<td class="instruction">OR %00000010</td>
+<td class="comment-1" rowspan="1">Set the blue border bit.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23823"></span>5D0F</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="2">Copy the EAR/border state into <span class="register">C</span> and set the zero flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23824"></span>5D10</td>
+<td class="instruction">CP A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23825"></span>
+<div class="comments">
+<div class="paragraph">
+Wait for the pilot tone.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_WaitPilot</td>
+<td class="address-2"><span id="23825"></span>5D11</td>
+<td class="instruction">RET NZ</td>
+<td class="comment-1" rowspan="1">Return if the zero flag is reset (BREAK was pressed).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23826"></span>
+<div class="comments">
+<div class="paragraph">
+Listen for a pair of edges that look like the pilot.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_PilotPair</td>
+<td class="address-2"><span id="23826"></span>5D12</td>
+<td class="instruction">CALL $05E7</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="5CFC.html#23825">Load_Tape_Block_WaitPilot</a> if <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/05E7.html">LD-EDGE-2</a> resets the carry flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23829"></span>5D15</td>
+<td class="instruction">JR NC,<a href="5CFC.html#23825">Load_Tape_Block_WaitPilot</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23831"></span>5D17</td>
+<td class="instruction">LD HL,$0415</td>
+<td class="comment-1" rowspan="1">Set the leader timing budget in <span class="register">HL</span> to 0415.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23834"></span>
+<div class="comments">
+<div class="paragraph">
+Exhaust the leader timing budget while edges continue to arrive.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_LeaderDelay</td>
+<td class="address-2"><span id="23834"></span>5D1A</td>
+<td class="instruction">DJNZ <a href="5CFC.html#23834">Load_Tape_Block_LeaderDelay</a></td>
+<td class="comment-1" rowspan="1">Decrease <span class="register">B</span> and loop until it is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23836"></span>5D1C</td>
+<td class="instruction">DEC HL</td>
+<td class="comment-1" rowspan="1">Decrease <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23837"></span>5D1D</td>
+<td class="instruction">LD A,H</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="5CFC.html#23834">Load_Tape_Block_LeaderDelay</a> if <span class="register">HL</span> is non-zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23838"></span>5D1E</td>
+<td class="instruction">OR L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23839"></span>5D1F</td>
+<td class="instruction">JR NZ,<a href="5CFC.html#23834">Load_Tape_Block_LeaderDelay</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23841"></span>5D21</td>
+<td class="instruction">CALL $05E3</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="5CFC.html#23825">Load_Tape_Block_WaitPilot</a> if <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/05E3.html">LD-EDGE-1</a> resets the carry flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23844"></span>5D24</td>
+<td class="instruction">JR NC,<a href="5CFC.html#23825">Load_Tape_Block_WaitPilot</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23846"></span>
+<div class="comments">
+<div class="paragraph">
+Confirm a long enough run of short pilot pulses.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_PilotPulse</td>
+<td class="address-2"><span id="23846"></span>5D26</td>
+<td class="instruction">LD B,$9C</td>
+<td class="comment-1" rowspan="1">Set the pulse timing constant in <span class="register">B</span> to 9C.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23848"></span>5D28</td>
+<td class="instruction">CALL $05E3</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="5CFC.html#23825">Load_Tape_Block_WaitPilot</a> if <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/05E3.html">LD-EDGE-1</a> resets the carry flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23851"></span>5D2B</td>
+<td class="instruction">JR NC,<a href="5CFC.html#23825">Load_Tape_Block_WaitPilot</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23853"></span>5D2D</td>
+<td class="instruction">LD A,$A6</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="5CFC.html#23826">Load_Tape_Block_PilotPair</a> if <span class="register">B</span> is at least A6.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23855"></span>5D2F</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23856"></span>5D30</td>
+<td class="instruction">JR NC,<a href="5CFC.html#23826">Load_Tape_Block_PilotPair</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23858"></span>5D32</td>
+<td class="instruction">INC H</td>
+<td class="comment-1" rowspan="2">Increase <span class="register">H</span> by one and jump back to <a href="5CFC.html#23846">Load_Tape_Block_PilotPulse</a> until it wraps.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23859"></span>5D33</td>
+<td class="instruction">JR NZ,<a href="5CFC.html#23846">Load_Tape_Block_PilotPulse</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23861"></span>
+<div class="comments">
+<div class="paragraph">
+Wait for the sync pulse that ends the pilot.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_Sync</td>
+<td class="address-2"><span id="23861"></span>5D35</td>
+<td class="instruction">LD B,$C9</td>
+<td class="comment-1" rowspan="1">Set the sync timing constant in <span class="register">B</span> to C9.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23863"></span>5D37</td>
+<td class="instruction">CALL $05E7</td>
+<td class="comment-1" rowspan="2">Jump back to <a href="5CFC.html#23825">Load_Tape_Block_WaitPilot</a> if <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/05E7.html">LD-EDGE-2</a> resets the carry flag.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23866"></span>5D3A</td>
+<td class="instruction">JR NC,<a href="5CFC.html#23825">Load_Tape_Block_WaitPilot</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23868"></span>5D3C</td>
+<td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="5CFC.html#23861">Load_Tape_Block_Sync</a> if <span class="register">B</span> is at least D4.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23869"></span>5D3D</td>
+<td class="instruction">CP $D4</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23871"></span>5D3F</td>
+<td class="instruction">JR NC,<a href="5CFC.html#23861">Load_Tape_Block_Sync</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23873"></span>5D41</td>
+<td class="instruction">CALL $05E7</td>
+<td class="comment-1" rowspan="2">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/05E7.html">LD-EDGE-2</a> and return if the carry flag is reset.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23876"></span>5D44</td>
+<td class="instruction">RET NC</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23877"></span>
+<div class="comments">
+<div class="paragraph">
+Flip the border colour and start the byte-load loop.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23877"></span>5D45</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="1">Fetch the EAR/border state from <span class="register">C</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23878"></span>5D46</td>
+<td class="instruction">XOR %00000011</td>
+<td class="comment-1" rowspan="1">Toggle the border colour bits.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23880"></span>5D48</td>
+<td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1">Store the updated EAR/border state in <span class="register">C</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23881"></span>5D49</td>
+<td class="instruction">LD H,$00</td>
+<td class="comment-1" rowspan="1">Clear the parity byte in <span class="register">H</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23883"></span>5D4B</td>
+<td class="instruction">LD B,$B0</td>
+<td class="comment-1" rowspan="1">Set <span class="register">B</span> to B0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23885"></span>5D4D</td>
+<td class="instruction">JR <a href="5CFC.html#23918">Load_Tape_Block_SampleByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5CFC.html#23918">Load_Tape_Block_SampleByte</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23887"></span>
+<div class="comments">
+<div class="paragraph">
+Handle each loaded byte under the preserved flag in <span class="register">AF'</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_NextByte</td>
+<td class="address-2"><span id="23887"></span>5D4F</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="1">Switch to <span class="register">AF'</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23888"></span>5D50</td>
+<td class="instruction">JR NZ,<a href="5CFC.html#23897">Load_Tape_Block_FlagByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5CFC.html#23897">Load_Tape_Block_FlagByte</a> if the flag byte is not zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23890"></span>5D52</td>
+<td class="instruction">JR NC,<a href="5CFC.html#23907">Load_Tape_Block_VerifyByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5CFC.html#23907">Load_Tape_Block_VerifyByte</a> if the carry flag is reset (verify mode).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23892"></span>5D54</td>
+<td class="instruction">LD (IX+$00),L</td>
+<td class="comment-1" rowspan="1">Store the assembled byte in *<span class="register">IX</span>+00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23895"></span>5D57</td>
+<td class="instruction">JR <a href="5CFC.html#23912">Load_Tape_Block_Advance</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5CFC.html#23912">Load_Tape_Block_Advance</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23897"></span>
+<div class="comments">
+<div class="paragraph">
+Compare the assembled byte against the expected flag byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_FlagByte</td>
+<td class="address-2"><span id="23897"></span>5D59</td>
+<td class="instruction">RL C</td>
+<td class="comment-1" rowspan="1">Rotate the stored flag bits in <span class="register">C</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23899"></span>5D5B</td>
+<td class="instruction">XOR L</td>
+<td class="comment-1" rowspan="2">Return if the assembled byte does not match.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23900"></span>5D5C</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23901"></span>5D5D</td>
+<td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="3">Restore <span class="register">C</span> from the rotated value.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23902"></span>5D5E</td>
+<td class="instruction">RRA</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23903"></span>5D5F</td>
+<td class="instruction">LD C,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23904"></span>5D60</td>
+<td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">DE</span> past the flag byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23905"></span>5D61</td>
+<td class="instruction">JR <a href="5CFC.html#23914">Load_Tape_Block_Continue</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5CFC.html#23914">Load_Tape_Block_Continue</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23907"></span>
+<div class="comments">
+<div class="paragraph">
+Verify the assembled byte against *<span class="register">IX</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_VerifyByte</td>
+<td class="address-2"><span id="23907"></span>5D63</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="3">Return if *<span class="register">IX</span>+00 does not match the assembled byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23910"></span>5D66</td>
+<td class="instruction">XOR L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23911"></span>5D67</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23912"></span>
+<div class="comments">
+<div class="paragraph">
+Advance the destination and continue for the remaining length.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_Advance</td>
+<td class="address-2"><span id="23912"></span>5D68</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">IX</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23914"></span>
+<div class="comments">
+<div class="paragraph">
+Prepare the timing constant for the next byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_Continue</td>
+<td class="address-2"><span id="23914"></span>5D6A</td>
+<td class="instruction">DEC DE</td>
+<td class="comment-1" rowspan="1">Decrease the remaining length.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23915"></span>5D6B</td>
+<td class="instruction">EX AF,AF'</td>
+<td class="comment-1" rowspan="1">Switch back to <span class="register">AF'</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23916"></span>5D6C</td>
+<td class="instruction">LD B,$B2</td>
+<td class="comment-1" rowspan="1">Set <span class="register">B</span> to B2.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23918"></span>
+<div class="comments">
+<div class="paragraph">
+Sample eight edges to assemble the next byte into <span class="register">L</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_SampleByte</td>
+<td class="address-2"><span id="23918"></span>5D6E</td>
+<td class="instruction">LD L,$01</td>
+<td class="comment-1" rowspan="1">Seed the assembled byte in <span class="register">L</span> with 01.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23920"></span>
+<div class="comments">
+<div class="paragraph">
+Sample one bit into <span class="register">L</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_SampleBit</td>
+<td class="address-2"><span id="23920"></span>5D70</td>
+<td class="instruction">CALL $05E3</td>
+<td class="comment-1" rowspan="2">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/05E3.html">LD-EDGE-1</a> and return if the carry flag is reset.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23923"></span>5D73</td>
+<td class="instruction">RET NC</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23924"></span>5D74</td>
+<td class="instruction">LD A,$CB</td>
+<td class="comment-1" rowspan="2">Compare <span class="register">B</span> with the bit-threshold CB.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23926"></span>5D76</td>
+<td class="instruction">CP B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23927"></span>5D77</td>
+<td class="instruction">RL L</td>
+<td class="comment-1" rowspan="1">Rotate that comparison result into <span class="register">L</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23929"></span>5D79</td>
+<td class="instruction">LD B,$B0</td>
+<td class="comment-1" rowspan="1">Set <span class="register">B</span> to B0.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23931"></span>5D7B</td>
+<td class="instruction">JP NC,<a href="5CFC.html#23920">Load_Tape_Block_SampleBit</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="5CFC.html#23920">Load_Tape_Block_SampleBit</a> until eight bits are in.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23934"></span>5D7E</td>
+<td class="instruction">LD A,H</td>
+<td class="comment-1" rowspan="3">Mix the assembled byte into the running parity in <span class="register">H</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23935"></span>5D7F</td>
+<td class="instruction">XOR L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23936"></span>5D80</td>
+<td class="instruction">LD H,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23937"></span>5D81</td>
+<td class="instruction">LD A,D</td>
+<td class="comment-1" rowspan="3">Jump back to <a href="5CFC.html#23887">Load_Tape_Block_NextByte</a> until the remaining length in <span class="register">DE</span> is zero.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23938"></span>5D82</td>
+<td class="instruction">OR E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23939"></span>5D83</td>
+<td class="instruction">JR NZ,<a href="5CFC.html#23887">Load_Tape_Block_NextByte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23941"></span>5D85</td>
+<td class="instruction">LD A,H</td>
+<td class="comment-1" rowspan="2">Compare the parity byte with 01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23942"></span>5D86</td>
+<td class="instruction">CP $01</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="23944"></span>5D88</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23945"></span>
+<div class="comments">
+<div class="paragraph">
+This entry point is used by the routine at <a href="5CD0.html">Load_Stage_Two</a>.
+</div>
+<div class="paragraph">
+Print "TAPE LOADING ERROR" after a failed load from <a href="5CD0.html">Load_Stage_Two</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Tape_Block_PrintError</td>
+<td class="address-2"><span id="23945"></span>5D89</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Open stream 01 via <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/1601.html">CHAN_OPEN</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5d8b"></span>5D8B</td>
+<td class="address-1"><span id="23947"></span>5D8B</td>
 <td class="instruction">CALL $1601</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5d8e"></span>5D8E</td>
+<td class="address-1"><span id="23950"></span>5D8E</td>
 <td class="instruction">LD B,$19</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Point <span class="register">DE</span> at <a href="5DEA.html">Messaging_TapeLoadingError</a> with length 19.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5d90"></span>5D90</td>
+<td class="address-1"><span id="23952"></span>5D90</td>
 <td class="instruction">LD DE,$5DEA</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5d93"></span>5D93</td>
-<td class="instruction">JP $5DC9</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="23955"></span>5D93</td>
+<td class="instruction">JP <a href="5DAC.html#24009">Restore_Border_PrintLoop</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5DAC.html#24009">Restore_Border_PrintLoop</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -669,7 +817,7 @@ This entry point is used by the routine at <a href="5CD0.html">BootstrapEntry</a
 <td class="prev">
 Prev: <a href="5CD0.html">5CD0</a>
 </td>
-<td class="up">Up: <a href="loader.html#5cfc">Map</a></td>
+<td class="up">Up: <a href="loader.html#23804">Map</a></td>
 <td class="next">
 Next: <a href="5D96.html">5D96</a>
 </td>

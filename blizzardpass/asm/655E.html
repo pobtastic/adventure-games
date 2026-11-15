@@ -133,7 +133,7 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="asm-label">ScrollWindow</td>
 <td class="address-2"><span id="655e"></span>655E</td>
 <td class="instruction">LD A,($5B97)</td>
-<td class="comment-1" rowspan="2">The bottom row.</td>
+<td class="comment-1" rowspan="2">Copy <a href="5B97.html">BottomRow</a> into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -184,6 +184,16 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="instruction">LD ($5C78),HL</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6572"></span>
+<div class="comments">
+<div class="paragraph">
+Wait for a key or the delay.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ScrollWindow_Wait</td>
 <td class="address-2"><span id="6572"></span>6572</td>
 <td class="instruction">LD A,($5C04)</td>
@@ -203,12 +213,13 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="asm-label"></td>
 <td class="address-1"><span id="6579"></span>6579</td>
 <td class="instruction">CALL $0052</td>
-<td class="comment-1" rowspan="4">Call the <code>RET</code> at the end of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0038.html">MASK_INT</a> and scroll once the frame counter has moved.</td>
+<td class="comment-1" rowspan="1">Call the <code>RET</code> at the end of <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0038.html">MASK_INT</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="657c"></span>657C</td>
 <td class="instruction">LD A,($5C79)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="655E.html#6572">ScrollWindow_Wait</a> until <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C78.html&#35;5C79">FRAMES</a> has moved.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -221,27 +232,48 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="instruction">JR Z,<a href="655E.html#6572">ScrollWindow_Wait</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6582"></span>
+<div class="comments">
+<div class="paragraph">
+Scroll the window up one character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ScrollWindow_Row</td>
 <td class="address-2"><span id="6582"></span>6582</td>
 <td class="instruction">LD HL,$655C</td>
-<td class="comment-1" rowspan="2">Count this scroll.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="655A.html#655c">RowsScrolled</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6585"></span>6585</td>
 <td class="instruction">INC (HL)</td>
+<td class="comment-1" rowspan="1">Count this scroll.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6586"></span>6586</td>
 <td class="instruction">LD A,($5B97)</td>
-<td class="comment-1" rowspan="1">The bottom row is the first one to move.</td>
+<td class="comment-1" rowspan="1">Fetch <a href="5B97.html">BottomRow</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6589"></span>
+<div class="comments">
+<div class="paragraph">
+Copy one character row onto the row above.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ScrollWindow_Up</td>
 <td class="address-2"><span id="6589"></span>6589</td>
 <td class="instruction">CALL <a href="5F16.html">RowAddress</a></td>
-<td class="comment-1" rowspan="1">Address of that character row.</td>
+<td class="comment-1" rowspan="1">Call <a href="5F16.html">RowAddress</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -253,12 +285,13 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="asm-label"></td>
 <td class="address-1"><span id="658d"></span>658D</td>
 <td class="instruction">INC A</td>
-<td class="comment-1" rowspan="2">Address of the row below it.</td>
+<td class="comment-1" rowspan="1">The next character row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="658e"></span>658E</td>
 <td class="instruction">CALL <a href="5F16.html">RowAddress</a></td>
+<td class="comment-1" rowspan="1">Call <a href="5F16.html">RowAddress</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -276,6 +309,16 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="address-1"><span id="6593"></span>6593</td>
 <td class="instruction">LD B,$08</td>
 <td class="comment-1" rowspan="1">Eight pixel rows.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6595"></span>
+<div class="comments">
+<div class="paragraph">
+Copy eight pixel rows.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ScrollWindow_Pixels</td>
@@ -366,15 +409,26 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="comment-1" rowspan="1">Otherwise the blank line is the bottom row.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="65ae"></span>
+<div class="comments">
+<div class="paragraph">
+Blank the pause row during a description.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ScrollWindow_Pause</td>
 <td class="address-2"><span id="65ae"></span>65AE</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="4">A description in progress blanks the pause row instead.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">AF</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="65af"></span>65AF</td>
 <td class="instruction">LD A,($6186)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="655E.html#65bb">ScrollWindow_More</a> if a description is not in progress.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -390,12 +444,13 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="asm-label"></td>
 <td class="address-1"><span id="65b5"></span>65B5</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="2">The blank line is at 5060 while the description is paused.</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="65b6"></span>65B6</td>
 <td class="instruction">LD HL,$5060</td>
+<td class="comment-1" rowspan="1">The blank line is at 5060 (screen buffer).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -404,27 +459,58 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="comment-1" rowspan="1">Clear that line.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="65bb"></span>
+<div class="comments">
+<div class="paragraph">
+Keep copying rows.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ScrollWindow_More</td>
 <td class="address-2"><span id="65bb"></span>65BB</td>
 <td class="instruction">POP AF</td>
-<td class="comment-1" rowspan="2">Keep copying while the window has not been reached.</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">AF</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="65bc"></span>65BC</td>
 <td class="instruction">JR <a href="655E.html#6589">ScrollWindow_Up</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="655E.html#6589">ScrollWindow_Up</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="65be"></span>
+<div class="comments">
+<div class="paragraph">
+Blank the bottom of the window.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ScrollWindow_Bottom</td>
 <td class="address-2"><span id="65be"></span>65BE</td>
 <td class="instruction">LD HL,$50E0</td>
-<td class="comment-1" rowspan="1">The ordinary blank line is at 50E0.</td>
+<td class="comment-1" rowspan="1">The ordinary blank line is at 50E0 (screen buffer).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="65c1"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the vacated row.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ScrollWindow_Clear</td>
 <td class="address-2"><span id="65c1"></span>65C1</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">The cleared row is copied onto itself, one byte on.</td>
+<td class="comment-1" rowspan="2">Copy <span class="register">HL</span> to <span class="register">DE</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -435,12 +521,23 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="asm-label"></td>
 <td class="address-1"><span id="65c3"></span>65C3</td>
 <td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Advance the destination.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="65c4"></span>65C4</td>
 <td class="instruction">LD B,$08</td>
 <td class="comment-1" rowspan="1">Eight pixel rows.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="65c6"></span>
+<div class="comments">
+<div class="paragraph">
+Wipe eight pixel rows.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ScrollWindow_Wipe</td>
@@ -462,12 +559,13 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="asm-label"></td>
 <td class="address-1"><span id="65c9"></span>65C9</td>
 <td class="instruction">LD (HL),$00</td>
-<td class="comment-1" rowspan="3">Write a zero and copy it across the row.</td>
+<td class="comment-1" rowspan="1">Write a zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="65cb"></span>65CB</td>
 <td class="instruction">LD BC,$001F</td>
+<td class="comment-1" rowspan="2">Copy it across the rest of the row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -527,7 +625,7 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="asm-label"></td>
 <td class="address-1"><span id="65dd"></span>65DD</td>
 <td class="instruction">LD HL,$5060</td>
-<td class="comment-1" rowspan="1">That row is 5060.</td>
+<td class="comment-1" rowspan="1">That row is 5060 (screen buffer).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -536,22 +634,42 @@ A short delay, taken from <a href="655A.html">RepeatTimer</a>, lets the player r
 <td class="comment-1" rowspan="1">Home there.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="65e2"></span>
+<div class="comments">
+<div class="paragraph">
+Home the cursor after the scroll.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ScrollWindow_Home</td>
 <td class="address-2"><span id="65e2"></span>65E2</td>
 <td class="instruction">LD HL,$50E0</td>
-<td class="comment-1" rowspan="1">Otherwise the cursor sits on 50E0.</td>
+<td class="comment-1" rowspan="1">Otherwise the cursor sits on 50E0 (screen buffer).</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="65e5"></span>
+<div class="comments">
+<div class="paragraph">
+Store the print address.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ScrollWindow_Cursor</td>
 <td class="address-2"><span id="65e5"></span>65E5</td>
 <td class="instruction">LD ($5B87),HL</td>
-<td class="comment-1" rowspan="1">Store the print address.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to *<a href="5B87.html">PrintAddress</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="65e8"></span>65E8</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="2">Column 0.</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5B8A.html">PrintColumn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

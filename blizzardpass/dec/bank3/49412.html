@@ -220,7 +220,7 @@ Count this word. A third word is stored as an extra, not as the noun.
 <span id="49439"></span>
 <div class="comments">
 <div class="paragraph">
-IT and THEM reuse the previous noun; other ids become the noun unless they rewrite to a verb.
+IT and THEM reuse the previous noun.
 </div>
 </div>
 </td>
@@ -229,7 +229,7 @@ IT and THEM reuse the previous noun; other ids become the noun unless they rewri
 <td class="asm-label">KeepToken_It</td>
 <td class="address-2"><span id="49439"></span>49439</td>
 <td class="instruction">CP 128</td>
-<td class="comment-1" rowspan="3">IT and THEM (128) reuse *<a href="../asm/23453.html">PreviousNoun</a>.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49412.html#49446">KeepToken_Held</a> if the token is not IT or THEM (128).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -240,17 +240,29 @@ IT and THEM reuse the previous noun; other ids become the noun unless they rewri
 <td class="asm-label"></td>
 <td class="address-1"><span id="49443"></span>49443</td>
 <td class="instruction">LD A,(23453)</td>
+<td class="comment-1" rowspan="1">Fetch *<a href="../asm/23453.html">PreviousNoun</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="49446"></span>
+<div class="comments">
+<div class="paragraph">
+A verb already stored means this id is the noun.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">KeepToken_Held</td>
 <td class="address-2"><span id="49446"></span>49446</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="5">Jump to <a href="49412.html#49475">KeepToken_Noun</a> if a verb is already stored.</td>
+<td class="comment-1" rowspan="1">Stash the token in <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49447"></span>49447</td>
 <td class="instruction">LD A,(23423)</td>
+<td class="comment-1" rowspan="2">Test *<a href="../asm/23423.html">Verb</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -261,22 +273,35 @@ IT and THEM reuse the previous noun; other ids become the noun unless they rewri
 <td class="asm-label"></td>
 <td class="address-1"><span id="49451"></span>49451</td>
 <td class="instruction">LD A,B</td>
+<td class="comment-1" rowspan="1">Restore the token from <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49452"></span>49452</td>
 <td class="instruction">JR NZ,<a href="49412.html#49475">KeepToken_Noun</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="49412.html#49475">KeepToken_Noun</a> if a verb is already stored.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="49454"></span>
+<div class="comments">
+<div class="paragraph">
+POLISH, SKIN and BRIDGE become internal verbs.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">KeepToken_Rewrite</td>
 <td class="address-1"><span id="49454"></span>49454</td>
 <td class="instruction">CP 175</td>
-<td class="comment-1" rowspan="3">Jump to <a href="49412.html#49433">KeepToken_Verb</a> with 44 if the token is POLISH (175).</td>
+<td class="comment-1" rowspan="1">Test for POLISH (175).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49456"></span>49456</td>
 <td class="instruction">LD A,44</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49412.html#49433">KeepToken_Verb</a> with 44 if it matched.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -287,17 +312,19 @@ IT and THEM reuse the previous noun; other ids become the noun unless they rewri
 <td class="asm-label"></td>
 <td class="address-1"><span id="49460"></span>49460</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="4">Jump to <a href="49412.html#49433">KeepToken_Verb</a> with 43 if the token is SKIN (249).</td>
+<td class="comment-1" rowspan="1">Restore the token from <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49461"></span>49461</td>
 <td class="instruction">CP 249</td>
+<td class="comment-1" rowspan="1">Test for SKIN (249).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49463"></span>49463</td>
 <td class="instruction">LD A,43</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49412.html#49433">KeepToken_Verb</a> with 43 if it matched.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -308,17 +335,19 @@ IT and THEM reuse the previous noun; other ids become the noun unless they rewri
 <td class="asm-label"></td>
 <td class="address-1"><span id="49467"></span>49467</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="4">Jump to <a href="49412.html#49433">KeepToken_Verb</a> with 49 if the token is BRIDGE (134).</td>
+<td class="comment-1" rowspan="1">Restore the token from <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49468"></span>49468</td>
 <td class="instruction">CP 134</td>
+<td class="comment-1" rowspan="1">Test for BRIDGE (134).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="49470"></span>49470</td>
 <td class="instruction">LD A,49</td>
+<td class="comment-1" rowspan="2">Jump to <a href="49412.html#49433">KeepToken_Verb</a> with 49 if it matched.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

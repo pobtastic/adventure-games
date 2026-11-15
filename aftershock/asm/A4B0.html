@@ -450,7 +450,7 @@ Clear down the user input tokens.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4f2"></span>A4F2</td>
 <td class="instruction">LD HL,$A13B</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="A13B.html">UserInput_Token_1</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="A13B.html">UserInput_FirstToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -496,7 +496,7 @@ Set up pointers for the command buffer, the user input tokens and the count of t
 <td class="asm-label"></td>
 <td class="address-1"><span id="a4ff"></span>A4FF</td>
 <td class="instruction">LD IX,$A13B</td>
-<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="A13B.html">UserInput_Token_1</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=<a href="A13B.html">UserInput_FirstToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -521,7 +521,7 @@ Print "Give me a command!".
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_0</td>
+<td class="asm-label">Response_NotUnderstood</td>
 <td class="address-2"><span id="a507"></span>A507</td>
 <td class="instruction">LD HL,$0001</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="CD0B.html">Messaging_GiveMeACommand</a>.</td>
@@ -552,7 +552,7 @@ Copy up to four letters of the current word into <a href="A145.html">FourLetterB
 <td class="asm-label">TokeniseWord</td>
 <td class="address-2"><span id="a510"></span>A510</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">The command scan waits.</td>
+<td class="comment-1" rowspan="3">Stash <span class="register">HL</span>, <span class="register">DE</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -568,24 +568,25 @@ Copy up to four letters of the current word into <a href="A145.html">FourLetterB
 <td class="asm-label"></td>
 <td class="address-1"><span id="a513"></span>A513</td>
 <td class="instruction">LD HL,($A443)</td>
-<td class="comment-1" rowspan="2">The word starts at the address in <a href="A443.html">Pointer_CommandWord</a>, and lands in <a href="A145.html">FourLetterBuffer</a>.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="A443.html">Pointer_CommandWord</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a516"></span>A516</td>
 <td class="instruction">LD DE,$A145</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="A145.html">FourLetterBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a519"></span>A519</td>
 <td class="instruction">LD BC,$0004</td>
-<td class="comment-1" rowspan="1">Four letters is the most a word contributes.</td>
+<td class="comment-1" rowspan="1">Set <span class="register">BC</span> to 0004 letters at most.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a51c"></span>A51C</td>
 <td class="instruction">LD A,($A445)</td>
-<td class="comment-1" rowspan="4">A shorter word copies only as many letters as <a href="A443.html#a445">CommandWordLength</a> holds.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="A4B0.html#a523">CopyWordToBuffer</a> if *<a href="A443.html#a445">CommandWordLength</a> is at least 04.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -595,18 +596,29 @@ Copy up to four letters of the current word into <a href="A145.html">FourLetterB
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a520"></span>A520</td>
-<td class="instruction">JR NC,<a href="A4B0.html#a523">Handler_UserInput_1</a></td>
+<td class="instruction">JR NC,<a href="A4B0.html#a523">CopyWordToBuffer</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a522"></span>A522</td>
 <td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1">Copy the actual length into <span class="register">C</span>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_1</td>
+<td class="asm-label">CopyWordToBuffer</td>
 <td class="address-2"><span id="a523"></span>A523</td>
 <td class="instruction">LDIR</td>
 <td class="comment-1" rowspan="1">Copy those letters into <a href="A145.html">FourLetterBuffer</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="a525"></span>
+<div class="comments">
+<div class="paragraph">
+Restore the registers saved at the start of <a href="A4B0.html#a510">TokeniseWord</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -638,12 +650,13 @@ Ignore a leading "THE" from <a href="9DD2.html">Table_Vocabulary_The</a>, then s
 <td class="asm-label"></td>
 <td class="address-1"><span id="a528"></span>A528</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="3">Point the search at "THE" in <a href="9DD2.html">Table_Vocabulary_The</a>.</td>
+<td class="comment-1" rowspan="1">Stash the command-buffer pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a529"></span>A529</td>
 <td class="instruction">LD HL,$9DD2</td>
+<td class="comment-1" rowspan="2">Point the search at "THE" in <a href="9DD2.html">Table_Vocabulary_The</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -684,7 +697,7 @@ Ignore a leading "THE" from <a href="9DD2.html">Table_Vocabulary_The</a>, then s
 <span id="a53b"></span>
 <div class="comments">
 <div class="paragraph">
-The word is in the vocabulary.
+Search the main vocabulary for this word.
 </div>
 </div>
 </td>
@@ -693,12 +706,13 @@ The word is in the vocabulary.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a53b"></span>A53B</td>
 <td class="instruction">CALL <a href="A479.html">Handler_MatchItem</a></td>
-<td class="comment-1" rowspan="2">Jump to <a href="A4B0.html#a549">StoreTokenAndContinue</a> if the word matched.</td>
+<td class="comment-1" rowspan="1">Call <a href="A479.html">Handler_MatchItem</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a53e"></span>A53E</td>
 <td class="instruction">JR C,<a href="A4B0.html#a549">StoreTokenAndContinue</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A4B0.html#a549">StoreTokenAndContinue</a> if the word matched.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -745,29 +759,32 @@ Store the token and stop after 0A tokens.
 <td class="asm-label">StoreTokenAndContinue</td>
 <td class="address-2"><span id="a549"></span>A549</td>
 <td class="instruction">LD (IX+$00),A</td>
-<td class="comment-1" rowspan="4">The token buffer at <a href="A13B.html">UserInput_Token_1</a> holds the words understood so far.</td>
+<td class="comment-1" rowspan="1">Write the token to the current token slot at <a href="A13B.html">UserInput_FirstToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a54c"></span>A54C</td>
 <td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="1">Move to the next token slot.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a54e"></span>A54E</td>
 <td class="instruction">DEC C</td>
+<td class="comment-1" rowspan="1">Decrease the token counter by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a54f"></span>A54F</td>
-<td class="instruction">JR Z,<a href="A4B0.html#a588">Handler_UserInput_5</a></td>
+<td class="instruction">JR Z,<a href="A4B0.html#a588">CheckVerbToken</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A4B0.html#a588">CheckVerbToken</a> if all token slots are filled.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="a551"></span>
 <div class="comments">
 <div class="paragraph">
-Clear the four-letter buffer to spaces before the next word.
+Clear the four-letter buffer to spaces so a short word cannot match the previous one's tail.
 </div>
 </div>
 </td>
@@ -776,7 +793,7 @@ Clear the four-letter buffer to spaces before the next word.
 <td class="asm-label">EmptyFourLetterBuffer</td>
 <td class="address-2"><span id="a551"></span>A551</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="7">Clear the four-letter buffer to spaces so a short word cannot match the previous one's tail.</td>
+<td class="comment-1" rowspan="2">Stash <span class="register">HL</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -787,26 +804,31 @@ Clear the four-letter buffer to spaces before the next word.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a553"></span>A553</td>
 <td class="instruction">LD HL,$A145</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="A145.html">FourLetterBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a556"></span>A556</td>
 <td class="instruction">LD B,$04</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the 04 letters.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_2</td>
+<td class="asm-label">EmptyFourLetterBuffer_Loop</td>
 <td class="address-2"><span id="a558"></span>A558</td>
 <td class="instruction">LD (HL),$20</td>
+<td class="comment-1" rowspan="1">Write a space character (20) to the buffer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a55a"></span>A55A</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Move to the next letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a55b"></span>A55B</td>
-<td class="instruction">DJNZ <a href="A4B0.html#a558">Handler_UserInput_2</a></td>
+<td class="instruction">DJNZ <a href="A4B0.html#a558">EmptyFourLetterBuffer_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the counter by one and loop back to <a href="A4B0.html#a558">EmptyFourLetterBuffer_Loop</a> until the counter is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -833,34 +855,36 @@ Find the next word. ENTER finishes the command, and <a href="A459.html">IsDelimi
 <td class="asm-label"></td>
 <td class="address-1"><span id="a55f"></span>A55F</td>
 <td class="instruction">PUSH DE</td>
-<td class="comment-1" rowspan="2">Start at this character.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">DE</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a560"></span>A560</td>
-<td class="instruction">JR <a href="A4B0.html#a563">Handler_UserInput_3</a></td>
+<td class="instruction">JR <a href="A4B0.html#a563">FindWordStart</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A4B0.html#a563">FindWordStart</a>.</td>
 </tr>
 <tr>
 <td class="asm-label">SkipDelimiter</td>
 <td class="address-2"><span id="a562"></span>A562</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="1">The next character.</td>
+<td class="comment-1" rowspan="1">Move to the next character.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_3</td>
+<td class="asm-label">FindWordStart</td>
 <td class="address-2"><span id="a563"></span>A563</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">ENTER finishes the command.</td>
+<td class="comment-1" rowspan="1">Fetch the character at *<span class="register">HL</span> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a564"></span>A564</td>
 <td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Jump to <a href="A4B0.html#a584">EndWordParsing</a> if the character is ENTER (0D).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a566"></span>A566</td>
-<td class="instruction">JR Z,<a href="A4B0.html#a584">Handler_UserInput_4</a></td>
+<td class="instruction">JR Z,<a href="A4B0.html#a584">EndWordParsing</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -872,7 +896,7 @@ Find the next word. ENTER finishes the command, and <a href="A459.html">IsDelimi
 <td class="asm-label"></td>
 <td class="address-1"><span id="a56b"></span>A56B</td>
 <td class="instruction">JR Z,<a href="A4B0.html#a562">SkipDelimiter</a></td>
-<td class="comment-1" rowspan="1">Skip the gap and keep looking.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="A4B0.html#a562">SkipDelimiter</a> if the character is a delimiter.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -888,34 +912,37 @@ Remember where this word starts and how long it is, then tokenise it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a56d"></span>A56D</td>
 <td class="instruction">LD ($A443),HL</td>
-<td class="comment-1" rowspan="2">Remember where this word starts.</td>
+<td class="comment-1" rowspan="1">Store the starting address of this word in *<a href="A443.html">Pointer_CommandWord</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a570"></span>A570</td>
 <td class="instruction">LD DE,$0000</td>
+<td class="comment-1" rowspan="1">Initialise <span class="register">DE</span> to 0000 to count the letters.</td>
 </tr>
 <tr>
 <td class="asm-label">MeasureWord</td>
 <td class="address-2"><span id="a573"></span>A573</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="2">Count this letter.</td>
+<td class="comment-1" rowspan="1">Move to the next character.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a574"></span>A574</td>
 <td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Increment the letter counter by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a575"></span>A575</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">ENTER ends the word.</td>
+<td class="comment-1" rowspan="1">Fetch the character at *<span class="register">HL</span> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a576"></span>A576</td>
 <td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Jump to <a href="A4B0.html#a57f">MeasureWord_Store</a> if the character is ENTER (0D).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -932,7 +959,7 @@ Remember where this word starts and how long it is, then tokenise it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a57d"></span>A57D</td>
 <td class="instruction">JR NZ,<a href="A4B0.html#a573">MeasureWord</a></td>
-<td class="comment-1" rowspan="1">A gap has not been reached yet.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="A4B0.html#a573">MeasureWord</a> if the character was not a delimiter.</td>
 </tr>
 <tr>
 <td class="asm-label">MeasureWord_Store</td>
@@ -944,7 +971,7 @@ Remember where this word starts and how long it is, then tokenise it.
 <td class="asm-label"></td>
 <td class="address-1"><span id="a583"></span>A583</td>
 <td class="instruction">SCF</td>
-<td class="comment-1" rowspan="1">The word is ready to tokenise.</td>
+<td class="comment-1" rowspan="1">Set the carry flag to show a word was found.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -957,10 +984,10 @@ Tokenise the word that was just measured.
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_4</td>
+<td class="asm-label">EndWordParsing</td>
 <td class="address-2"><span id="a584"></span>A584</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="1">Restore the command-scan pointer from the stack.</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">DE</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -973,16 +1000,16 @@ Tokenise the word that was just measured.
 <span id="a588"></span>
 <div class="comments">
 <div class="paragraph">
-Nothing was understood.
+Check whether any token was stored; if not, the command was not understood.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_UserInput_5</td>
+<td class="asm-label">CheckVerbToken</td>
 <td class="address-2"><span id="a588"></span>A588</td>
 <td class="instruction">LD A,($A13B)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="A4B0.html#a507">Handler_UserInput_0</a> if no token was stored.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="A4B0.html#a507">Response_NotUnderstood</a> if *<a href="A13B.html">UserInput_FirstToken</a> holds the terminator byte (FF).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -992,7 +1019,7 @@ Nothing was understood.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a58d"></span>A58D</td>
-<td class="instruction">JP Z,<a href="A4B0.html#a507">Handler_UserInput_0</a></td>
+<td class="instruction">JP Z,<a href="A4B0.html#a507">Response_NotUnderstood</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>

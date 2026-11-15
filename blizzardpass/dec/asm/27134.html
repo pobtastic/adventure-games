@@ -111,7 +111,7 @@ Next: <a href="27153.html">27153</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Subtracts <span class="register">A</span> from flag <span class="register">B</span>, sticking at zero.
+Subtracts <span class="register">A</span> from flag <span class="register">B</span>, sticking at 0 instead of wrapping.
 </div>
 </div>
 <table class="input">
@@ -133,34 +133,37 @@ Subtracts <span class="register">A</span> from flag <span class="register">B</sp
 <td class="asm-label">SubtractFromFlag</td>
 <td class="address-2"><span id="27134"></span>27134</td>
 <td class="instruction">CALL <a href="26623.html">FlagAddress</a></td>
-<td class="comment-1" rowspan="2">Point at flag <span class="register">B</span>. <span class="register">A</span> is the amount to subtract.</td>
+<td class="comment-1" rowspan="1">Call <a href="26623.html">FlagAddress</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27137"></span>27137</td>
 <td class="instruction">LD (23444),A</td>
+<td class="comment-1" rowspan="1">Write the amount to *<a href="23444.html">SubtractScratch</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27140"></span>27140</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">The flag minus the amount, via the scratch byte.</td>
+<td class="comment-1" rowspan="1">Fetch the flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27141"></span>27141</td>
 <td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1">Stash the flag pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27142"></span>27142</td>
 <td class="instruction">LD HL,23444</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="23444.html">SubtractScratch</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27145"></span>27145</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="4">The result sticks at zero.</td>
+<td class="comment-1" rowspan="2">Subtract the amount.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -171,6 +174,7 @@ Subtracts <span class="register">A</span> from flag <span class="register">B</sp
 <td class="asm-label"></td>
 <td class="address-1"><span id="27147"></span>27147</td>
 <td class="instruction">JR NC,<a href="27134.html#27150">SubtractFlag_Store</a></td>
+<td class="comment-1" rowspan="2">The difference sticks at 0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -178,15 +182,26 @@ Subtracts <span class="register">A</span> from flag <span class="register">B</sp
 <td class="instruction">XOR A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="27150"></span>
+<div class="comments">
+<div class="paragraph">
+Store the difference.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">SubtractFlag_Store</td>
 <td class="address-2"><span id="27150"></span>27150</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="2">Store the result.</td>
+<td class="comment-1" rowspan="1">Restore the flag pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27151"></span>27151</td>
 <td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Store it.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

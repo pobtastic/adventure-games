@@ -155,7 +155,7 @@ Remember the cursor, and choose a row. Pictures use row 0D so the text sits unde
 <td class="asm-label"></td>
 <td class="address-1"><span id="6191"></span>6191</td>
 <td class="instruction">LD HL,($5B89)</td>
-<td class="comment-1" rowspan="4">Save the cursor so it can be restored under the rule.</td>
+<td class="comment-1" rowspan="2">Stash the cursor on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -166,6 +166,7 @@ Remember the cursor, and choose a row. Pictures use row 0D so the text sits unde
 <td class="asm-label"></td>
 <td class="address-1"><span id="6195"></span>6195</td>
 <td class="instruction">LD HL,($5B87)</td>
+<td class="comment-1" rowspan="2">Stash the print address on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -173,16 +174,26 @@ Remember the cursor, and choose a row. Pictures use row 0D so the text sits unde
 <td class="instruction">PUSH HL</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6199"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the text rows.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6199"></span>6199</td>
 <td class="instruction">CALL <a href="65ED.html">ClearLowerRows</a></td>
-<td class="comment-1" rowspan="1">Call <a href="65ED.html">ClearLowerRows</a> to clear the text rows.</td>
+<td class="comment-1" rowspan="1">Call <a href="65ED.html">ClearLowerRows</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="619c"></span>619C</td>
 <td class="instruction">LD A,($66D6)</td>
-<td class="comment-1" rowspan="2">Pictures off forces row 0.</td>
+<td class="comment-1" rowspan="2">Test whether pictures are on.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -206,21 +217,32 @@ Remember the cursor, and choose a row. Pictures use row 0D so the text sits unde
 <td class="instruction">XOR A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="61a5"></span>
+<div class="comments">
+<div class="paragraph">
+Home the chosen row.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">DescribeLocation_Row</td>
 <td class="address-2"><span id="61a5"></span>61A5</td>
 <td class="instruction">LD ($5B89),A</td>
-<td class="comment-1" rowspan="1">Remember that row.</td>
+<td class="comment-1" rowspan="1">Write it to *<a href="5B89.html">PrintRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61a8"></span>61A8</td>
 <td class="instruction">CALL <a href="654B.html">HomeRow</a></td>
-<td class="comment-1" rowspan="3">Call <a href="654B.html">HomeRow</a> and home the cursor.</td>
+<td class="comment-1" rowspan="1">Call <a href="654B.html">HomeRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61ab"></span>61AB</td>
 <td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5B8A.html">PrintColumn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -231,7 +253,7 @@ Remember the cursor, and choose a row. Pictures use row 0D so the text sits unde
 <td class="asm-label"></td>
 <td class="address-1"><span id="61af"></span>61AF</td>
 <td class="instruction">LD A,($5D88)</td>
-<td class="comment-1" rowspan="3">Darkness skips the description.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6187.html#61bd">DescribeLocation_Text</a> if *<a href="5D88.html">Darkness</a> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -244,10 +266,20 @@ Remember the cursor, and choose a row. Pictures use row 0D so the text sits unde
 <td class="instruction">JR Z,<a href="6187.html#61bd">DescribeLocation_Text</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="61b5"></span>
+<div class="comments">
+<div class="paragraph">
+Print "It is dark. You cannot see.".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61b5"></span>61B5</td>
 <td class="instruction">LD A,$19</td>
-<td class="comment-1" rowspan="2">Message 19: it is dark, you cannot see.</td>
+<td class="comment-1" rowspan="2">Print <a href="7E26.html#7f2f">SystemMessage_19</a> using <a href="63D4.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -255,10 +287,20 @@ Remember the cursor, and choose a row. Pictures use row 0D so the text sits unde
 <td class="instruction">CALL <a href="63D4.html">PrintSystemMessage</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="61ba"></span>
+<div class="comments">
+<div class="paragraph">
+Underline the description.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61ba"></span>61BA</td>
 <td class="instruction">JP <a href="6187.html#6262">DescribeLocation_Rule</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="6187.html#6262">DescribeLocation_Rule</a> to underline the description.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="6187.html#6262">DescribeLocation_Rule</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -280,7 +322,7 @@ Rooms under 66 with pictures switched off are read from bank 6. Every other room
 <td class="asm-label"></td>
 <td class="address-1"><span id="61c0"></span>61C0</td>
 <td class="instruction">LD A,($5D87)</td>
-<td class="comment-1" rowspan="3">Rooms at or above 66 have no long description.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6187.html#61da">DescribeLocation_Print</a> if *<a href="5D87.html">CurrentRoom</a> is at least 66.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -296,7 +338,7 @@ Rooms under 66 with pictures switched off are read from bank 6. Every other room
 <td class="asm-label"></td>
 <td class="address-1"><span id="61c7"></span>61C7</td>
 <td class="instruction">LD A,($66D6)</td>
-<td class="comment-1" rowspan="4">Pictures on also keep the short text.</td>
+<td class="comment-1" rowspan="2">Test whether pictures are on.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -307,22 +349,35 @@ Rooms under 66 with pictures switched off are read from bank 6. Every other room
 <td class="asm-label"></td>
 <td class="address-1"><span id="61cb"></span>61CB</td>
 <td class="instruction">LD A,($5D87)</td>
+<td class="comment-1" rowspan="1">Fetch <a href="5D87.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61ce"></span>61CE</td>
 <td class="instruction">JR NZ,<a href="6187.html#61da">DescribeLocation_Print</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6187.html#61da">DescribeLocation_Print</a> if pictures are on.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61d0"></span>
+<div class="comments">
+<div class="paragraph">
+Page in the long descriptions.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">DescribeLocation_Page</td>
 <td class="address-1"><span id="61d0"></span>61D0</td>
 <td class="instruction">PUSH AF</td>
-<td class="comment-1" rowspan="3">page RAM bank 06 in at C000, keeping the 48K ROM.</td>
+<td class="comment-1" rowspan="1">Stash the room number on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61d1"></span>61D1</td>
 <td class="instruction">LD A,$06</td>
+<td class="comment-1" rowspan="2">page RAM bank 06 in at C000, keeping the 48K ROM.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -333,24 +388,35 @@ Rooms under 66 with pictures switched off are read from bank 6. Every other room
 <td class="asm-label"></td>
 <td class="address-1"><span id="61d6"></span>61D6</td>
 <td class="instruction">LD HL,$C000</td>
-<td class="comment-1" rowspan="2">The long description starts at C000.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="../bank6/C000.html">Picture_IcyThroneHall</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61d9"></span>61D9</td>
 <td class="instruction">POP AF</td>
+<td class="comment-1" rowspan="1">Restore the room number from the stack.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="61da"></span>
+<div class="comments">
+<div class="paragraph">
+Print this room's text.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">DescribeLocation_Print</td>
 <td class="address-2"><span id="61da"></span>61DA</td>
 <td class="instruction">LD ($5B8F),A</td>
-<td class="comment-1" rowspan="1">Store the room as the message number.</td>
+<td class="comment-1" rowspan="1">Write it to *<a href="5B8F.html">MessageNumber</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61dd"></span>61DD</td>
 <td class="instruction">CALL <a href="629D.html">PrintMessage</a></td>
-<td class="comment-1" rowspan="1">Call <a href="629D.html">PrintMessage</a> to print that description.</td>
+<td class="comment-1" rowspan="1">Call <a href="629D.html">PrintMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -367,7 +433,7 @@ Rooms under 66 with pictures switched off are read from bank 6. Every other room
 <td class="asm-label"></td>
 <td class="address-1"><span id="61e4"></span>61E4</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="4">No object has been listed yet. Start the scan at <a href="5DCA.html">ObjectLocations</a>.</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5B7A.html">SearchHit</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -378,11 +444,13 @@ Rooms under 66 with pictures switched off are read from bank 6. Every other room
 <td class="asm-label"></td>
 <td class="address-1"><span id="61e8"></span>61E8</td>
 <td class="instruction">LD HL,$5DCA</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5DCA.html">ObjectLocations</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61eb"></span>61EB</td>
 <td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Start with a zero count.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -398,7 +466,7 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="asm-label">DescribeLocation_Objects</td>
 <td class="address-2"><span id="61ec"></span>61EC</td>
 <td class="instruction">LD A,($5D87)</td>
-<td class="comment-1" rowspan="3">This object is in the current room.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6187.html#6220">DescribeLocation_Next</a> if it is not *<a href="5D87.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -414,7 +482,7 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="asm-label"></td>
 <td class="address-1"><span id="61f2"></span>61F2</td>
 <td class="instruction">LD A,($5B7A)</td>
-<td class="comment-1" rowspan="3">Another object in the same room skips the introduction.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6187.html#6217">DescribeLocation_Seen</a> if *<a href="5B7A.html">SearchHit</a> is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -443,15 +511,26 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="instruction">JR C,<a href="6187.html#621c">DescribeLocation_Name</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="61fd"></span>
+<div class="comments">
+<div class="paragraph">
+Print ". You can see".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61fd"></span>61FD</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="4">Message 0: ". You can see ".</td>
+<td class="comment-1" rowspan="1">Print <a href="7E26.html">SystemMessages</a> using <a href="63D4.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="61fe"></span>61FE</td>
 <td class="instruction">PUSH BC</td>
+<td class="comment-1" rowspan="3">Call <a href="63D4.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -467,7 +546,7 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="asm-label"></td>
 <td class="address-1"><span id="6203"></span>6203</td>
 <td class="instruction">LD A,$20</td>
-<td class="comment-1" rowspan="4">Print a space and a colon.</td>
+<td class="comment-1" rowspan="2">Print a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -478,6 +557,7 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="asm-label"></td>
 <td class="address-1"><span id="6208"></span>6208</td>
 <td class="instruction">LD A,$3A</td>
+<td class="comment-1" rowspan="2">Print a colon.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -488,7 +568,7 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="asm-label"></td>
 <td class="address-1"><span id="620d"></span>620D</td>
 <td class="instruction">LD A,$2D</td>
-<td class="comment-1" rowspan="4">Print a dash and a space.</td>
+<td class="comment-1" rowspan="2">Print a dash.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -499,6 +579,7 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="asm-label"></td>
 <td class="address-1"><span id="6212"></span>6212</td>
 <td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="2">Print a space.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -506,10 +587,20 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="instruction">CALL <a href="63FC.html">PlotCharacter</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6217"></span>
+<div class="comments">
+<div class="paragraph">
+An object was listed.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">DescribeLocation_Seen</td>
 <td class="address-2"><span id="6217"></span>6217</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="2">Remember that an object was listed.</td>
+<td class="comment-1" rowspan="2">Write 01 to *<a href="5B7A.html">SearchHit</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -517,10 +608,20 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="instruction">LD ($5B7A),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="621c"></span>
+<div class="comments">
+<div class="paragraph">
+Print this object's name.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">DescribeLocation_Name</td>
 <td class="address-2"><span id="621c"></span>621C</td>
 <td class="instruction">LD A,B</td>
-<td class="comment-1" rowspan="2">Call <a href="63D7.html">PrintObjectName</a> to print this object's name.</td>
+<td class="comment-1" rowspan="2">Call <a href="63D7.html">PrintObjectName</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -528,10 +629,20 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="instruction">CALL <a href="63D7.html">PrintObjectName</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6220"></span>
+<div class="comments">
+<div class="paragraph">
+Step to the next object.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">DescribeLocation_Next</td>
 <td class="address-2"><span id="6220"></span>6220</td>
 <td class="instruction">LD A,($5D8D)</td>
-<td class="comment-1" rowspan="3">Stop at the object total.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6187.html#622a">DescribeLocation_Exits</a> if <span class="register">B</span> equals *<a href="5D8D.html">ObjectTotal</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -547,7 +658,7 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="asm-label"></td>
 <td class="address-1"><span id="6226"></span>6226</td>
 <td class="instruction">INC B</td>
-<td class="comment-1" rowspan="3">The next location byte belongs to the next object.</td>
+<td class="comment-1" rowspan="2">The next location byte belongs to the next object.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -558,6 +669,7 @@ List every object whose location byte is this room. The first one is introduced 
 <td class="asm-label"></td>
 <td class="address-1"><span id="6228"></span>6228</td>
 <td class="instruction">JR <a href="6187.html#61ec">DescribeLocation_Objects</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6187.html#61ec">DescribeLocation_Objects</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -607,21 +719,32 @@ After the objects, list the directions that leave this room.
 <td class="instruction">CALL <a href="63FC.html">PlotCharacter</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="623a"></span>
+<div class="comments">
+<div class="paragraph">
+List the ways out.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">DescribeLocation_Moves</td>
 <td class="address-2"><span id="623a"></span>623A</td>
 <td class="instruction">CALL <a href="5FCE.html">FindExits</a></td>
-<td class="comment-1" rowspan="1">Call <a href="5FCE.html">FindExits</a> to find this room's exits.</td>
+<td class="comment-1" rowspan="1">Call <a href="5FCE.html">FindExits</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="623d"></span>623D</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="3">No exits means no "you can go" line.</td>
+<td class="comment-1" rowspan="1">Advance to the first exit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="623e"></span>623E</td>
 <td class="instruction">BIT 7,(HL)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6187.html#6262">DescribeLocation_Rule</a> if bit 7 is set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -629,15 +752,35 @@ After the objects, list the directions that leave this room.
 <td class="instruction">JR NZ,<a href="6187.html#6262">DescribeLocation_Rule</a></td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6242"></span>
+<div class="comments">
+<div class="paragraph">
+Print ". You can go".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6242"></span>6242</td>
 <td class="instruction">LD A,$0D</td>
-<td class="comment-1" rowspan="2">Message 0D: ". You can go".</td>
+<td class="comment-1" rowspan="2">Print <a href="7E26.html#7e91">SystemMessage_0D</a> using <a href="63D4.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6244"></span>6244</td>
 <td class="instruction">CALL <a href="63D4.html">PrintSystemMessage</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6247"></span>
+<div class="comments">
+<div class="paragraph">
+Print one direction.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">DescribeLocation_Exit</td>
@@ -659,12 +802,13 @@ After the objects, list the directions that leave this room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="624c"></span>624C</td>
 <td class="instruction">CALL <a href="63D4.html">PrintSystemMessage</a></td>
-<td class="comment-1" rowspan="4">Print the direction and step to the next exit.</td>
+<td class="comment-1" rowspan="1">Call <a href="63D4.html">PrintSystemMessage</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="624f"></span>624F</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Advance to the next exit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -675,6 +819,17 @@ After the objects, list the directions that leave this room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6251"></span>6251</td>
 <td class="instruction">JR <a href="6187.html#6247">DescribeLocation_Exit</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6187.html#6247">DescribeLocation_Exit</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6253"></span>
+<div class="comments">
+<div class="paragraph">
+Finish the exit list.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">DescribeLocation_Stop</td>
@@ -744,7 +899,7 @@ Underline the description and restore the cursor the caller had saved.
 <td class="asm-label"></td>
 <td class="address-1"><span id="626b"></span>626B</td>
 <td class="instruction">LD A,($66D6)</td>
-<td class="comment-1" rowspan="4">Pictures on keep the row the text already reached.</td>
+<td class="comment-1" rowspan="2">Test whether pictures are on.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -755,11 +910,13 @@ Underline the description and restore the cursor the caller had saved.
 <td class="asm-label"></td>
 <td class="address-1"><span id="626f"></span>626F</td>
 <td class="instruction">LD A,($5B89)</td>
+<td class="comment-1" rowspan="1">Fetch <a href="5B89.html">PrintRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6272"></span>6272</td>
 <td class="instruction">JR NZ,<a href="6187.html#6282">DescribeLocation_Bottom</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6187.html#6282">DescribeLocation_Bottom</a> if pictures are on.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -776,7 +933,7 @@ Underline the description and restore the cursor the caller had saved.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6279"></span>6279</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="4">Home the cursor and keep that row.</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5B8A.html">PrintColumn</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -787,11 +944,23 @@ Underline the description and restore the cursor the caller had saved.
 <td class="asm-label"></td>
 <td class="address-1"><span id="627d"></span>627D</td>
 <td class="instruction">CALL <a href="654B.html">HomeRow</a></td>
+<td class="comment-1" rowspan="1">Call <a href="654B.html">HomeRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6280"></span>6280</td>
 <td class="instruction">LD A,$0F</td>
+<td class="comment-1" rowspan="1">Row 0F, ready for the rule.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6282"></span>
+<div class="comments">
+<div class="paragraph">
+Draw the underline.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">DescribeLocation_Bottom</td>
@@ -811,10 +980,20 @@ Underline the description and restore the cursor the caller had saved.
 <td class="comment-1" rowspan="1">Forty-two underscores fill the row.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6288"></span>
+<div class="comments">
+<div class="paragraph">
+Print the rule.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">DescribeLocation_Bar</td>
 <td class="address-2"><span id="6288"></span>6288</td>
 <td class="instruction">LD A,$5F</td>
-<td class="comment-1" rowspan="3">Print one underscore.</td>
+<td class="comment-1" rowspan="2">Print this underscore.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -825,6 +1004,7 @@ Underline the description and restore the cursor the caller had saved.
 <td class="asm-label"></td>
 <td class="address-1"><span id="628d"></span>628D</td>
 <td class="instruction">DJNZ <a href="6187.html#6288">DescribeLocation_Bar</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6187.html#6288">DescribeLocation_Bar</a> until the row is filled.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -841,7 +1021,7 @@ Underline the description and restore the cursor the caller had saved.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6294"></span>6294</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="4">Restore the cursor saved before the description from the stack.</td>
+<td class="comment-1" rowspan="2">Restore the print address from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -852,6 +1032,7 @@ Underline the description and restore the cursor the caller had saved.
 <td class="asm-label"></td>
 <td class="address-1"><span id="6298"></span>6298</td>
 <td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="2">Restore the cursor from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

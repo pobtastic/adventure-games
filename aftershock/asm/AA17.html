@@ -114,6 +114,19 @@ Next: <a href="AA26.html">AA26</a>
 Prints the compressed message addressed by the operand, then a newline.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Prints the compressed message addressed by the operand, then a newline.
 <span id="aa17"></span>
 <div class="comments">
 <div class="paragraph">
-When the condition succeeded, print the message addressed by the operand and start a new line.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,14 +142,24 @@ When the condition succeeded, print the message addressed by the operand and sta
 <tr>
 <td class="asm-label">Action_PrintMessageAndNewline</td>
 <td class="address-2"><span id="aa17"></span>AA17</td>
-<td class="instruction">JP NZ,<a href="A6FF.html#a75b">Handler_RunScript_9</a></td>
-<td class="comment-1" rowspan="1">Leave the message unprinted.</td>
+<td class="instruction">JP NZ,<a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a> if the condition failed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="aa1a"></span>
+<div class="comments">
+<div class="paragraph">
+Print the compressed message addressed by the operand, then a newline.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa1a"></span>AA1A</td>
 <td class="instruction">LD L,(IX+$01)</td>
-<td class="comment-1" rowspan="2">The message addressed by the operand.</td>
+<td class="comment-1" rowspan="2">Fetch the message address from *<span class="register">IX</span>+01 into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -147,13 +170,13 @@ When the condition succeeded, print the message addressed by the operand and sta
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa20"></span>AA20</td>
 <td class="instruction">CALL <a href="A25C.html">PrintCompressedStringAndNewline</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A25C.html">PrintCompressedStringAndNewline</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A25C.html">PrintCompressedStringAndNewline</a> to print that compressed string and a newline.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa23"></span>AA23</td>
-<td class="instruction">JP <a href="A6FF.html#a75b">Handler_RunScript_9</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

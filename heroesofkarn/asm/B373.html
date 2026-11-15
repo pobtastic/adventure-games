@@ -195,7 +195,7 @@ Keep shifting the event flags one-by-one to find which bits are set.
 <span id="b380"></span>
 <div class="comments">
 <div class="paragraph">
-Count down this event. It fires when the counter reaches zero.
+Count down this event's timer.
 </div>
 </div>
 </td>
@@ -204,17 +204,19 @@ Count down this event. It fires when the counter reaches zero.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b380"></span>B380</td>
 <td class="instruction">LD DE,$0000</td>
-<td class="comment-1" rowspan="6">Calculate the turn-based event index and store it in <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Initialise <span class="register">DE</span> to 00.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b383"></span>B383</td>
 <td class="instruction">LD HL,$AE89</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="AE89.html">Counter_Unused_0</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b386"></span>B386</td>
 <td class="instruction">LD A,$08</td>
+<td class="comment-1" rowspan="3">Calculate the event index (08-<span class="register">B</span>) and store it in <span class="register">E</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -230,25 +232,26 @@ Count down this event. It fires when the counter reaches zero.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b38a"></span>B38A</td>
 <td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at this event's countdown timer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b38b"></span>B38B</td>
 <td class="instruction">DEC (HL)</td>
-<td class="comment-1" rowspan="1">Decrease the turn-based event counter at *<span class="register">HL</span> by one.</td>
+<td class="comment-1" rowspan="1">Decrease this event's countdown timer by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b38c"></span>B38C</td>
 <td class="instruction">JR NZ,<a href="B373.html#b3a3">GameEventChecker_Next</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="B373.html#b3a3">GameEventChecker_Next</a> if the counter is still running.</td>
+<td class="comment-1" rowspan="1">Jump to <a href="B373.html#b3a3">GameEventChecker_Next</a> if this event's countdown timer is still running.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="b38e"></span>
 <div class="comments">
 <div class="paragraph">
-The counter has expired, so run this event's handler.
+The timer has expired, so run this event's handler.
 </div>
 </div>
 </td>
@@ -257,25 +260,25 @@ The counter has expired, so run this event's handler.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b38e"></span>B38E</td>
 <td class="instruction">LD IX,($AED2)</td>
-<td class="comment-1" rowspan="1">Load the turn-based handler pointer into <span class="register">IX</span>.</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="AED2.html">Pointer_TurnBasedEvents_Jump</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b392"></span>B392</td>
 <td class="instruction">SLA E</td>
-<td class="comment-1" rowspan="1">Double the index as this table contains addresses.</td>
+<td class="comment-1" rowspan="1">Double the event index, as each entry in the table is two bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b394"></span>B394</td>
 <td class="instruction">ADD IX,DE</td>
-<td class="comment-1" rowspan="1">Add this offset to <span class="register">IX</span> to point to the current handler.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at this event's entry in the table.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b396"></span>B396</td>
 <td class="instruction">LD L,(IX+$00)</td>
-<td class="comment-1" rowspan="2">Get the handler address and store it in <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="2">Read that handler's address into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -286,13 +289,13 @@ The counter has expired, so run this event's handler.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b39c"></span>B39C</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="1">Keep the bit index and event flag byte on the stack.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b39d"></span>B39D</td>
 <td class="instruction">LD DE,$B3A2</td>
-<td class="comment-1" rowspan="2">Push <a href="B373.html#b3a2">GameEventChecker_Return</a> onto the stack so the next return resumes event processing.</td>
+<td class="comment-1" rowspan="2">Stash <a href="B373.html#b3a2">GameEventChecker_Return</a> on the stack so the next return resumes event processing.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -319,7 +322,7 @@ Once the event handler has run, this is where the routine will resume.
 <td class="asm-label">GameEventChecker_Return</td>
 <td class="address-1"><span id="b3a2"></span>B3A2</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1">Restore the event bit index counter and event flag byte from the stack.</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">BC</span> from the stack.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -342,7 +345,7 @@ Test the next turn-based event.
 <span id="b3a5"></span>
 <div class="comments">
 <div class="paragraph">
-Process scenic events.
+Now handle the scenic events.
 </div>
 </div>
 </td>
@@ -357,12 +360,13 @@ Process scenic events.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3a6"></span>B3A6</td>
 <td class="instruction">LD HL,($AEEC)</td>
-<td class="comment-1" rowspan="4">Jump to <a href="B373.html#b3f0">GameEventsProcessor_Return</a> if no scenic event is active.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=*<a href="AEEC.html">Pointer_Spare</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3a9"></span>B3A9</td>
 <td class="instruction">LD A,($AEF8)</td>
+<td class="comment-1" rowspan="2">Fetch the number of active scenic events from <a href="AEF8.html">Count_ScenicEvents</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -373,17 +377,19 @@ Process scenic events.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3ad"></span>B3AD</td>
 <td class="instruction">JR Z,<a href="B373.html#b3f0">GameEventsProcessor_Return</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B373.html#b3f0">GameEventsProcessor_Return</a> if there are no active scenic events.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3af"></span>B3AF</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="2">Visit each scenic event in turn.</td>
+<td class="comment-1" rowspan="1">Set a counter in <span class="register">B</span> for the number of scenic events.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3b0"></span>B3B0</td>
 <td class="instruction">JR <a href="B373.html#b3b3">GameScenicEventChecker</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="B373.html#b3b3">GameScenicEventChecker</a> to process the first scenic event without advancing the table pointer.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -405,13 +411,13 @@ Room 00 means this scenic item is inactive.
 <td class="asm-label">GameScenicEventChecker</td>
 <td class="address-2"><span id="b3b3"></span>B3B3</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="1">Fetch this scenic item's ID.</td>
+<td class="comment-1" rowspan="1">Fetch this scenic event's item ID.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3b4"></span>B3B4</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Remember which scenic event this is.</td>
+<td class="comment-1" rowspan="1">Stash the scenic event table pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -423,7 +429,7 @@ Room 00 means this scenic item is inactive.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3b8"></span>B3B8</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore the pointer to this scenic event from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the scenic event table pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -450,13 +456,13 @@ An event that is already in the player's room stays there.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3bc"></span>B3BC</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-1" rowspan="1">Remember which room holds this scenic item.</td>
+<td class="comment-1" rowspan="1">Hold this event's room in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3bd"></span>B3BD</td>
 <td class="instruction">LD A,($AECD)</td>
-<td class="comment-1" rowspan="1">Read the current room into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="AECD.html">CurrentRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -474,7 +480,7 @@ An event that is already in the player's room stays there.
 <span id="b3c3"></span>
 <div class="comments">
 <div class="paragraph">
-Each scenic event has a room group to pick from.
+Pick a room for this scenic event.
 </div>
 </div>
 </td>
@@ -483,7 +489,7 @@ Each scenic event has a room group to pick from.
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3c3"></span>B3C3</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="2">Keep the scenic scan while a room is chosen.</td>
+<td class="comment-1" rowspan="2">Stash <span class="register">BC</span> and <span class="register">HL</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -507,10 +513,20 @@ Each scenic event has a room group to pick from.
 <td class="instruction">LD E,A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="b3ca"></span>
+<div class="comments">
+<div class="paragraph">
+Point at this event's room list.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3ca"></span>B3CA</td>
 <td class="instruction">LD IX,($AEEE)</td>
-<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at this event's room list.</td>
+<td class="comment-1" rowspan="1"><span class="register">IX</span>=*<a href="AEEE.html">Pointer_Spare2</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -532,7 +548,7 @@ The frame counter picks how far to walk into the room group. FF ends the group a
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3d1"></span>B3D1</td>
 <td class="instruction">CALL <a href="AC69.html">FetchFrames</a></td>
-<td class="comment-1" rowspan="3">Load a step count from the frame counter and set the group terminator in <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="2">Call <a href="AC69.html">FetchFrames</a> to pick a random step count and store it in <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -543,6 +559,7 @@ The frame counter picks how far to walk into the room group. FF ends the group a
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3d5"></span>B3D5</td>
 <td class="instruction">LD A,$FF</td>
+<td class="comment-1" rowspan="1"><span class="register">A</span>=the room group terminator (FF).</td>
 </tr>
 <tr>
 <td class="asm-label">GameScenicEvent_FetchRoomGroup</td>
@@ -604,18 +621,19 @@ Walk the room group. FF restarts it, and the frame count chooses where to stop. 
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3e6"></span>B3E6</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore the scenic-event pointer from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the scenic event table pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3e7"></span>B3E7</td>
 <td class="instruction">LD B,(HL)</td>
-<td class="comment-1" rowspan="2">Fetch the item ID into <span class="register">B</span> and stash the pointer again.</td>
+<td class="comment-1" rowspan="1">Fetch this scenic event's item ID into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3e8"></span>B3E8</td>
 <td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1">Stash the scenic event table pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -627,7 +645,7 @@ Walk the room group. FF restarts it, and the frame count chooses where to stop. 
 <td class="asm-label"></td>
 <td class="address-1"><span id="b3ec"></span>B3EC</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="2">Restore the scenic scan from the stack.</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">HL</span> and <span class="register">BC</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

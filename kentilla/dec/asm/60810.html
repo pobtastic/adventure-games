@@ -114,7 +114,7 @@ Next: <a href="60847.html">60847</a>
 Used by the routines at <a href="60717.html">SearchVocabulary_Verbs</a>, <a href="60847.html">AdvanceInputPointer</a>, <a href="60910.html">MatchTokenInBasicList</a> and <a href="61024.html">BasicHelper</a>.
 </div>
 <div class="paragraph">
-Compare the token at <span class="register">DE</span> to the table word at <span class="register">HL</span>. Counts token characters until space, quote or control, requires at least *<a href="23456.html#23460">ParserState_MatchLength</a> characters, then matches that many bytes. Returns with carry reset on a match, set on a miss.
+Returns with carry reset on a match, set on a miss.
 </div>
 </div>
 </td>
@@ -123,12 +123,13 @@ Compare the token at <span class="register">DE</span> to the table word at <span
 <td class="asm-label">CompareTokenToWord</td>
 <td class="address-2"><span id="60810"></span>60810</td>
 <td class="instruction">LD B,0</td>
-<td class="comment-1" rowspan="2">Clear the length counter and stash the token pointer.</td>
+<td class="comment-1" rowspan="1"><span class="register">B</span>=0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60812"></span>60812</td>
 <td class="instruction">PUSH DE</td>
+<td class="comment-1" rowspan="1">Stash the token pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label">CompareTokenToWord_Count</td>
@@ -177,12 +178,13 @@ Compare the token at <span class="register">DE</span> to the table word at <span
 <td class="asm-label">CompareTokenToWord_CheckLength</td>
 <td class="address-2"><span id="60826"></span>60826</td>
 <td class="instruction">POP DE</td>
-<td class="comment-1" rowspan="6">Restore the token pointer; jump to <a href="60810.html#60845">CompareTokenToWord_Miss</a> if it is too short.</td>
+<td class="comment-1" rowspan="1">Restore the token pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60827"></span>60827</td>
 <td class="instruction">LD A,(23460)</td>
+<td class="comment-1" rowspan="5">Jump to <a href="60810.html#60845">CompareTokenToWord_Miss</a> if the token is shorter than *<a href="23460.html">ParserState_MatchLength</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -247,6 +249,16 @@ Compare the token at <span class="register">DE</span> to the table word at <span
 <td class="address-1"><span id="60844"></span>60844</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="60845"></span>
+<div class="comments">
+<div class="paragraph">
+The token did not match this table word.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">CompareTokenToWord_Miss</td>

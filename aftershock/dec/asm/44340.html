@@ -114,7 +114,7 @@ Next: <a href="44355.html">44355</a>
 Used by the routine at <a href="43724.html">Action_AddToScore</a>.
 </div>
 <div class="paragraph">
-Adds <span class="register">A</span> to the BCD score at <a href="41223.html">Score</a>.
+Adds the points in <span class="register">A</span> to the two-byte BCD score at <a href="41223.html">Score</a>. The low byte is adjusted with DAA; when that addition carries, the high byte increases by one.
 </div>
 </div>
 <table class="input">
@@ -133,7 +133,7 @@ Adds <span class="register">A</span> to the BCD score at <a href="41223.html">Sc
 <span id="44340"></span>
 <div class="comments">
 <div class="paragraph">
-Add the points in <span class="register">A</span> to the BCD score at <a href="41223.html">Score</a>.
+Preserve <span class="register">HL</span> and load the current score from <a href="41223.html">Score</a>.
 </div>
 </div>
 </td>
@@ -142,42 +142,79 @@ Add the points in <span class="register">A</span> to the BCD score at <a href="4
 <td class="asm-label">AddToScore</td>
 <td class="address-2"><span id="44340"></span>44340</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="8">Add the points in <span class="register">A</span> to the BCD score at <a href="41223.html">Score</a>.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44341"></span>44341</td>
 <td class="instruction">LD HL,(41223)</td>
+<td class="comment-1" rowspan="1">Fetch the BCD score from *<a href="41223.html">Score</a> into <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44344"></span>
+<div class="comments">
+<div class="paragraph">
+Add the points into the low score byte and adjust for BCD.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44344"></span>44344</td>
 <td class="instruction">ADD A,L</td>
+<td class="comment-1" rowspan="1">Add the points in <span class="register">A</span> to the low score byte in <span class="register">L</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44345"></span>44345</td>
 <td class="instruction">DAA</td>
+<td class="comment-1" rowspan="1">Decimal-adjust <span class="register">A</span> for a BCD score digit.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44346"></span>44346</td>
 <td class="instruction">LD L,A</td>
+<td class="comment-1" rowspan="1">Store the adjusted low byte back in <span class="register">L</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44347"></span>44347</td>
-<td class="instruction">JR NC,<a href="44340.html#44350">AddToScore_0</a></td>
+<td class="instruction">JR NC,<a href="44340.html#44350">AddToScore_Store</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="44340.html#44350">AddToScore_Store</a> if the addition did not carry.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="44349"></span>
+<div class="comments">
+<div class="paragraph">
+The low byte carried, so raise the high score byte.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="44349"></span>44349</td>
 <td class="instruction">INC H</td>
+<td class="comment-1" rowspan="1">Increase the high score byte in <span class="register">H</span> by one.</td>
 </tr>
 <tr>
-<td class="asm-label">AddToScore_0</td>
+<td class="routine-comment" colspan="5">
+<span id="44350"></span>
+<div class="comments">
+<div class="paragraph">
+Write the updated score back to <a href="41223.html">Score</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">AddToScore_Store</td>
 <td class="address-2"><span id="44350"></span>44350</td>
 <td class="instruction">LD (41223),HL</td>
+<td class="comment-1" rowspan="1">Store <span class="register">HL</span> at <a href="41223.html">Score</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

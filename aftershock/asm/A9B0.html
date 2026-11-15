@@ -122,6 +122,10 @@ Succeeds when <a href="AE2C.html">Handler_CanTakeItem</a> rejects the item opera
 <td class="register">F</td>
 <td class="register-desc">The zero flag is set when the item cannot be taken</td>
 </tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -139,31 +143,31 @@ Invert the take test so the condition succeeds when the item cannot be taken.
 <td class="asm-label">Condition_CannotTakeItem</td>
 <td class="address-2"><span id="a9b0"></span>A9B0</td>
 <td class="instruction">LD A,(IX+$01)</td>
-<td class="comment-1" rowspan="1">The operand names the item.</td>
+<td class="comment-1" rowspan="1">Fetch the item ID (the operand) from *<span class="register">IX</span>+01 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a9b3"></span>A9B3</td>
-<td class="instruction">CALL <a href="A6FF.html#a772">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">FF stands for the matched item.</td>
+<td class="instruction">CALL <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="A805.html">ScriptMatchedItem</a> when the operand is FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a9b6"></span>A9B6</td>
 <td class="instruction">CALL <a href="AE2C.html">Handler_CanTakeItem</a></td>
-<td class="comment-1" rowspan="1">Call <a href="AE2C.html">Handler_CanTakeItem</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="AE2C.html">Handler_CanTakeItem</a> to test whether that item can be taken.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a9b9"></span>A9B9</td>
-<td class="instruction">CALL <a href="A6FF.html#a76a">Handler_RunScript_13</a></td>
-<td class="comment-1" rowspan="1">Succeed when the item cannot be taken.</td>
+<td class="instruction">CALL <a href="A6FF.html#a76a">RunScript_InvertConditionResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a76a">RunScript_InvertConditionResult</a> so the condition succeeds when the item cannot be taken.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a9bc"></span>A9BC</td>
-<td class="instruction">JP <a href="A6FF.html#a71d">Handler_RunScript_3</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="A6FF.html#a71d">RunScript_SkipCondition_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a71d">RunScript_SkipCondition_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

@@ -122,6 +122,10 @@ Succeeds when <a href="41170.html">Count_InventoryItems</a> is not the operand.
 <td class="register">F</td>
 <td class="register-desc">The zero flag is set when the counts differ</td>
 </tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -139,22 +143,25 @@ Succeed when the inventory count is not the operand.
 <td class="asm-label">Condition_InventoryCountDiffers</td>
 <td class="address-2"><span id="43224"></span>43224</td>
 <td class="instruction">LD A,(41170)</td>
-<td class="comment-1" rowspan="4">The condition succeeds when <a href="41170.html">Count_InventoryItems</a> differs from the operand.</td>
+<td class="comment-1" rowspan="1">Fetch the inventory count from *<a href="41170.html">Count_InventoryItems</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43227"></span>43227</td>
 <td class="instruction">CP (IX+1)</td>
+<td class="comment-1" rowspan="1">Compare it with the operand.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43230"></span>43230</td>
-<td class="instruction">CALL <a href="42751.html#42858">Handler_RunScript_13</a></td>
+<td class="instruction">CALL <a href="42751.html#42858">RunScript_InvertConditionResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42751.html#42858">RunScript_InvertConditionResult</a> so the condition succeeds when the counts differ.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43233"></span>43233</td>
-<td class="instruction">JP <a href="42751.html#42781">Handler_RunScript_3</a></td>
+<td class="instruction">JP <a href="42751.html#42781">RunScript_SkipCondition_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42781">RunScript_SkipCondition_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

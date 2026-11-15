@@ -114,6 +114,19 @@ Next: <a href="43763.html">43763</a>
 Marks the scenic event operand as already triggered.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Marks the scenic event operand as already triggered.
 <span id="43748"></span>
 <div class="comments">
 <div class="paragraph">
-When the condition succeeded, mark the scenic event operand as already triggered.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,32 +142,42 @@ When the condition succeeded, mark the scenic event operand as already triggered
 <tr>
 <td class="asm-label">Action_MarkScenicEvent</td>
 <td class="address-2"><span id="43748"></span>43748</td>
-<td class="instruction">JP NZ,<a href="42751.html#42845">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">Leave that scenic event untriggered.</td>
+<td class="instruction">JP NZ,<a href="42751.html#42845">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42845">RunScript_SkipAction_TwoBytes</a> if the condition failed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="43751"></span>
+<div class="comments">
+<div class="paragraph">
+Mark the scenic event operand as already triggered.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43751"></span>43751</td>
 <td class="instruction">LD A,(IX+1)</td>
-<td class="comment-1" rowspan="1">The operand names the scenic event.</td>
+<td class="comment-1" rowspan="1">Fetch the scenic event ID (the operand) from *<span class="register">IX</span>+1 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43754"></span>43754</td>
-<td class="instruction">CALL <a href="42751.html#42866">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">255 stands for the matched item.</td>
+<td class="instruction">CALL <a href="42751.html#42866">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42751.html#42866">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="43013.html">ScriptMatchedItem</a> when the operand is 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43757"></span>43757</td>
 <td class="instruction">CALL <a href="42571.html">ScenicEventTriggered</a></td>
-<td class="comment-1" rowspan="1">Call <a href="42571.html">ScenicEventTriggered</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="42571.html">ScenicEventTriggered</a> to mark that scenic event as triggered.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43760"></span>43760</td>
-<td class="instruction">JP <a href="42751.html#42845">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="42751.html#42845">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42845">RunScript_SkipAction_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

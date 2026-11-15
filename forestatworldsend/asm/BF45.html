@@ -114,35 +114,59 @@ Next: <a href="BF55.html">BF55</a>
 Used by the routines at <a href="EBAF.html">Events_Elf</a>, <a href="EBCC.html">Events_FlyingLizard</a>, <a href="EC99.html">Events_KorlWarrior</a> and <a href="F2A7.html">Action_Kill</a>.
 </div>
 <div class="paragraph">
-Return a number between 00 and the limit passed in.
+Returns a number from 00 up to, but not including, <span class="register">A</span>.
+</div>
+<div class="paragraph">
+The frame counter chooses how far to walk around that range.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Exclusive upper bound</td>
+</tr>
+</table>
 <table class="output">
 <tr class="asm-output-header">
 <th colspan="2">Output</th>
 </tr>
 <tr>
 <td class="register">A</td>
-<td class="register-desc">A random number derived from *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C78.html">FRAMES</a></td>
+<td class="register-desc">The generated number</td>
 </tr>
 </table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="bf45"></span>
+<div class="comments">
+<div class="paragraph">
+Mix the frame counter into a number below the limit in <span class="register">A</span>.
+</div>
+</div>
 </td>
 </tr>
 <tr>
 <td class="asm-label">GenerateRandomNumber</td>
 <td class="address-2"><span id="bf45"></span>BF45</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="5">Save the limit and take the low byte of *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C78.html">FRAMES</a> as the scramble.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bf46"></span>BF46</td>
 <td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1">Store the exclusive upper bound in <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bf47"></span>BF47</td>
 <td class="instruction">LD A,($5C78)</td>
+<td class="comment-1" rowspan="2">Load *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C78.html">FRAMES</a> into <span class="register">B</span> as the loop count.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -153,40 +177,43 @@ Return a number between 00 and the limit passed in.
 <td class="asm-label"></td>
 <td class="address-1"><span id="bf4b"></span>BF4B</td>
 <td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="1">Restore the exclusive upper bound into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label">GenerateRandomNumber_Loop</td>
 <td class="address-2"><span id="bf4c"></span>BF4C</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="3">Step the result down, wrapping to the limit when it passes zero.</td>
+<td class="comment-1" rowspan="1">Decrease the walking value by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bf4d"></span>BF4D</td>
 <td class="instruction">JR NZ,<a href="BF45.html#bf50">GenerateRandomNumber_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="BF45.html#bf50">GenerateRandomNumber_Next</a> if it has not wrapped past zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bf4f"></span>BF4F</td>
 <td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="1">Wrap back to the exclusive upper bound.</td>
 </tr>
 <tr>
 <td class="asm-label">GenerateRandomNumber_Next</td>
 <td class="address-2"><span id="bf50"></span>BF50</td>
 <td class="instruction">DJNZ <a href="BF45.html#bf4c">GenerateRandomNumber_Loop</a></td>
-<td class="comment-1" rowspan="1">Repeat that step once for each frame count.</td>
+<td class="comment-1" rowspan="1">Decrease the frame-count loop by one and loop back to <a href="BF45.html#bf4c">GenerateRandomNumber_Loop</a> until the count is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bf52"></span>BF52</td>
 <td class="instruction">DEC A</td>
-<td class="comment-1" rowspan="1">Step the result down once more, so the range starts at zero.</td>
+<td class="comment-1" rowspan="1">Decrease the result by one so the range starts at 00.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="bf53"></span>BF53</td>
 <td class="instruction">POP BC</td>
-<td class="comment-1" rowspan="1">Restore the saved limit from the stack.</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">BC</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

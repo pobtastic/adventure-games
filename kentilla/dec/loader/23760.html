@@ -105,118 +105,144 @@ Next: <a href="23804.html">23804</a>
 </td>
 </tr>
 </table>
-<div class="description">23760: Bootstrap Entry Point</div>
+<div class="description">23760: Load Stage Two</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Stage-1 loader kept inside the line-1 REM. It reads a 17-byte custom header into <a href="23958.html">Stage2Header</a>, pulls the stage-2 length and address from that header, loads 0600 bytes to 59830, then jumps there.
+Stage-1 loader kept inside the line-1 REM. It reads a 17-byte custom header into <a href="23958.html">Stage2Header</a>, pulls the stage-2 length and address from that header, loads 0600 bytes to <a href="59830.html">MicromegaLoader</a>, then jumps there.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">BootstrapEntry</td>
+<td class="routine-comment" colspan="5">
+<span id="23760"></span>
+<div class="comments">
+<div class="paragraph">
+Load the 17-byte stage-2 header.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Stage_Two</td>
 <td class="address-2"><span id="23760"></span>23760</td>
 <td class="instruction">LD IX,23958</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at <a href="23958.html">Stage2Header</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23764"></span>23764</td>
 <td class="instruction">LD DE,17</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 0017.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23767"></span>23767</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Clear <span class="register">A</span> and set the carry flag (load a header block).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23768"></span>23768</td>
 <td class="instruction">SCF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23769"></span>23769</td>
-<td class="instruction">CALL <a href="23804.html">CustomLoad</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="23804.html">Load_Tape_Block</a></td>
+<td class="comment-1" rowspan="1">Call <a href="23804.html">Load_Tape_Block</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23772"></span>23772</td>
-<td class="instruction">JP NC,<a href="23804.html#23945">CustomLoad_12</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP NC,<a href="23804.html#23945">Load_Tape_Block_PrintError</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="23804.html#23945">Load_Tape_Block_PrintError</a> if the carry flag is reset.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23775"></span>
+<div class="comments">
+<div class="paragraph">
+Refuse to continue unless *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/23623.html">SUBPPC</a> is 6.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23775"></span>23775</td>
 <td class="instruction">LD A,(23623)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/0.html">START</a> if *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/23623.html">SUBPPC</a> is not 6.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23778"></span>23778</td>
 <td class="instruction">CP 6</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23780"></span>23780</td>
 <td class="instruction">JP NZ,0</td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23783"></span>
+<div class="comments">
+<div class="paragraph">
+Load the stage-2 Micromega block named by that header.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23783"></span>23783</td>
 <td class="instruction">LD DE,(23958)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the stage-2 length from *<a href="23958.html">Stage2Header</a> into <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23787"></span>23787</td>
 <td class="instruction">LD IX,(23960)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the stage-2 destination from *<a href="23958.html#23960">Stage_Two_Destination</a> into <span class="register">IX</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23791"></span>23791</td>
 <td class="instruction">LD A,255</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Set <span class="register">A</span> to 255 and set the carry flag (load a data block).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23793"></span>23793</td>
 <td class="instruction">SCF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23794"></span>23794</td>
-<td class="instruction">CALL <a href="23804.html">CustomLoad</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="23804.html">Load_Tape_Block</a></td>
+<td class="comment-1" rowspan="1">Call <a href="23804.html">Load_Tape_Block</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23797"></span>23797</td>
-<td class="instruction">JP NC,<a href="23804.html#23945">CustomLoad_12</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JP NC,<a href="23804.html#23945">Load_Tape_Block_PrintError</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="23804.html#23945">Load_Tape_Block_PrintError</a> if the carry flag is reset.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23800"></span>23800</td>
 <td class="instruction">EI</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Enable interrupts.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="23801"></span>23801</td>
 <td class="instruction">JP <a href="59830.html">MicromegaLoader</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Jump to <a href="59830.html">MicromegaLoader</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

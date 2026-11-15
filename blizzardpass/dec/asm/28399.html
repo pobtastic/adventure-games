@@ -101,7 +101,7 @@ Prev: <a href="28398.html">28398</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#28399">Map</a></td>
 <td class="next">
-Next: <a href="28426.html">28426</a>
+Next: <a href="28460.html">28460</a>
 </td>
 </tr>
 </table>
@@ -123,100 +123,230 @@ Changes colour <span class="register">C</span> to colour <span class="register">
 <td class="asm-label">ChangeInkAndPaperColour</td>
 <td class="address-2"><span id="28399"></span>28399</td>
 <td class="instruction">LD B,7</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">The ink mask is 7, keeping bits 3-7.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28401"></span>28401</td>
 <td class="instruction">LD H,248</td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28403"></span>
+<div class="comments">
+<div class="paragraph">
+Replace matching bits.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28403"></span>28403</td>
-<td class="instruction">CALL <a href="28426.html">ChangeMatchingColourBits</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="28399.html#28426">ChangeMatchingColourBits</a></td>
+<td class="comment-1" rowspan="1">Call <a href="28399.html#28426">ChangeMatchingColourBits</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28406"></span>
+<div class="comments">
+<div class="paragraph">
+Move both colours into the paper bits.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28406"></span>28406</td>
 <td class="instruction">LD A,C</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="5">Shift the source colour left by three.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28407"></span>28407</td>
 <td class="instruction">SLA A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28409"></span>28409</td>
 <td class="instruction">SLA A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28411"></span>28411</td>
 <td class="instruction">SLA A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28413"></span>28413</td>
 <td class="instruction">LD C,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28414"></span>28414</td>
 <td class="instruction">LD A,L</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="5">Shift the destination colour left by three.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28415"></span>28415</td>
 <td class="instruction">SLA A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28417"></span>28417</td>
 <td class="instruction">SLA A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28419"></span>28419</td>
 <td class="instruction">SLA A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28421"></span>28421</td>
 <td class="instruction">LD L,A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28422"></span>28422</td>
 <td class="instruction">LD B,56</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Prepare the paper mask.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28424"></span>28424</td>
 <td class="instruction">LD H,199</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
+<span id="28426"></span>
 <div class="comments">
 <div class="paragraph">
-Continue on to <a href="28426.html">ChangeMatchingColourBits</a>.
+Walks the attribute buffer. Wherever the bits selected by <span class="register">B</span> equal <span class="register">C</span>, those bits are replaced with <span class="register">L</span> and the bits in <span class="register">H</span> are kept.
 </div>
 </div>
 </td>
+</tr>
+<tr>
+<td class="asm-label">ChangeMatchingColourBits</td>
+<td class="address-2"><span id="28426"></span>28426</td>
+<td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">IX</span> on the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28428"></span>28428</td>
+<td class="instruction">LD IX,27770</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at <a href="27770.html">AttributeBuffer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28432"></span>28432</td>
+<td class="instruction">LD DE,384</td>
+<td class="comment-1" rowspan="1">384 bytes.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28435"></span>
+<div class="comments">
+<div class="paragraph">
+Test this attribute byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ChangeMatchingColourBits_Byte</td>
+<td class="address-2"><span id="28435"></span>28435</td>
+<td class="instruction">LD A,(IX+0)</td>
+<td class="comment-1" rowspan="4">Jump to <a href="28399.html#28450">ChangeMatchingColourBits_Next</a> if the selected bits are not <span class="register">C</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28438"></span>28438</td>
+<td class="instruction">AND B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28439"></span>28439</td>
+<td class="instruction">CP C</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28440"></span>28440</td>
+<td class="instruction">JR NZ,<a href="28399.html#28450">ChangeMatchingColourBits_Next</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28442"></span>28442</td>
+<td class="instruction">LD A,(IX+0)</td>
+<td class="comment-1" rowspan="4">Replace those bits with <span class="register">L</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28445"></span>28445</td>
+<td class="instruction">AND H</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28446"></span>28446</td>
+<td class="instruction">OR L</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28447"></span>28447</td>
+<td class="instruction">LD (IX+0),A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28450"></span>
+<div class="comments">
+<div class="paragraph">
+Advance through the buffer.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ChangeMatchingColourBits_Next</td>
+<td class="address-2"><span id="28450"></span>28450</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="1">Advance the buffer pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28452"></span>28452</td>
+<td class="instruction">DEC DE</td>
+<td class="comment-1" rowspan="4">Jump to <a href="28399.html#28435">ChangeMatchingColourBits_Byte</a> until the buffer is done.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28453"></span>28453</td>
+<td class="instruction">LD A,D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28454"></span>28454</td>
+<td class="instruction">OR E</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28455"></span>28455</td>
+<td class="instruction">JR NZ,<a href="28399.html#28435">ChangeMatchingColourBits_Byte</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28457"></span>28457</td>
+<td class="instruction">POP IX</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">IX</span> from the stack.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="28459"></span>28459</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -226,7 +356,7 @@ Prev: <a href="28398.html">28398</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#28399">Map</a></td>
 <td class="next">
-Next: <a href="28426.html">28426</a>
+Next: <a href="28460.html">28460</a>
 </td>
 </tr>
 </table>

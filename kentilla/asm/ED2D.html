@@ -114,7 +114,7 @@ Next: <a href="ED65.html">ED65</a>
 Used by the routine at <a href="EA60.html">JumpTable</a>.
 </div>
 <div class="paragraph">
-Jump-table target <a href="EA60.html#ea63">JumpTable_SearchVerbs</a> (<code>USR</code> <a href="EA60.html#ea63">JumpTable_SearchVerbs</a>): search <a href="FAA9.html">Table_Verbs</a> for the token at <a href="5BA0.html#5ba7">InputBuffer_TokenStart</a>. Sets <a href="5BA0.html#5ba4">ParserState_MatchLength</a> to 02 and walks up to index 2E. On a hit, returns <span class="register">BC</span>=word index for BASIC <code>GO TO n*100+1000</code> (see <a href="EA60.html">JumpTable</a>); on a miss, <span class="register">BC</span>=0000.
+Jump-table target <a href="EA60.html#ea63">JumpTable_SearchVerbs</a> (<code>USR</code> <a href="EA60.html#ea63">JumpTable_SearchVerbs</a>). On a hit, BASIC <code>GO TO n*100+1000</code> for verb index <code>n</code> (see <a href="EA60.html">JumpTable</a>).
 </div>
 </div>
 </td>
@@ -123,7 +123,7 @@ Jump-table target <a href="EA60.html#ea63">JumpTable_SearchVerbs</a> (<code>USR<
 <td class="asm-label">SearchVocabulary_Verbs</td>
 <td class="address-2"><span id="ed2d"></span>ED2D</td>
 <td class="instruction">LD A,$02</td>
-<td class="comment-1" rowspan="2">Set the minimum match length to 02.</td>
+<td class="comment-1" rowspan="2">Write 02 to *<a href="5BA4.html">ParserState_MatchLength</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -158,7 +158,7 @@ Shared search loop used by <a href="ED2D.html">SearchVocabulary_Verbs</a>, <a hr
 <td class="asm-label">SearchVocabulary_Loop</td>
 <td class="address-2"><span id="ed37"></span>ED37</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="2">Start the word index at 01.</td>
+<td class="comment-1" rowspan="2">Write 01 to *<a href="5BA5.html">ParserState_WordIndex</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -166,10 +166,20 @@ Shared search loop used by <a href="ED2D.html">SearchVocabulary_Verbs</a>, <a hr
 <td class="instruction">LD ($5BA5),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ed3c"></span>
+<div class="comments">
+<div class="paragraph">
+Compare this table word.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">SearchVocabulary_TryWord</td>
 <td class="address-2"><span id="ed3c"></span>ED3C</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="6">Compare the current table word to the token at <a href="5BA0.html#5ba7">InputBuffer_TokenStart</a>.</td>
+<td class="comment-1" rowspan="2">Stash <span class="register">HL</span> and <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -180,16 +190,19 @@ Shared search loop used by <a href="ED2D.html">SearchVocabulary_Verbs</a>, <a hr
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed3e"></span>ED3E</td>
 <td class="instruction">LD DE,($5BA7)</td>
+<td class="comment-1" rowspan="1">Copy *<a href="5BA7.html">InputBuffer_TokenStart</a> to <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed42"></span>ED42</td>
 <td class="instruction">CALL <a href="ED8A.html">CompareTokenToWord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ED8A.html">CompareTokenToWord</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed45"></span>ED45</td>
 <td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="2">Restore <span class="register">BC</span> and <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -206,7 +219,7 @@ Shared search loop used by <a href="ED2D.html">SearchVocabulary_Verbs</a>, <a hr
 <td class="asm-label">SearchVocabulary_SkipWord</td>
 <td class="address-2"><span id="ed49"></span>ED49</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="4">Skip ahead to the CR that ends this table word.</td>
+<td class="comment-1" rowspan="4">Skip ahead to the ENTER that ends this table word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -227,12 +240,13 @@ Shared search loop used by <a href="ED2D.html">SearchVocabulary_Verbs</a>, <a hr
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed4f"></span>ED4F</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="5">Advance the word index and try the next entry.</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span> past the ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed50"></span>ED50</td>
 <td class="instruction">LD A,($5BA5)</td>
+<td class="comment-1" rowspan="3">Increment *<a href="5BA5.html">ParserState_WordIndex</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -248,12 +262,12 @@ Shared search loop used by <a href="ED2D.html">SearchVocabulary_Verbs</a>, <a hr
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed57"></span>ED57</td>
 <td class="instruction">CP B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="ED2D.html#ed3c">SearchVocabulary_TryWord</a> if there are more words to try.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ed58"></span>ED58</td>
 <td class="instruction">JR C,<a href="ED2D.html#ed3c">SearchVocabulary_TryWord</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="ED2D.html#ed3c">SearchVocabulary_TryWord</a> if there are more words to try.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -268,10 +282,20 @@ Shared search loop used by <a href="ED2D.html">SearchVocabulary_Verbs</a>, <a hr
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ed5e"></span>
+<div class="comments">
+<div class="paragraph">
+A vocabulary word matched.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">SearchVocabulary_Matched</td>
 <td class="address-2"><span id="ed5e"></span>ED5E</td>
 <td class="instruction">LD A,($5BA5)</td>
-<td class="comment-1" rowspan="3"><span class="register">BC</span>=the matched word index.</td>
+<td class="comment-1" rowspan="3">Copy *<a href="5BA5.html">ParserState_WordIndex</a> into <span class="register">BC</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

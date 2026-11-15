@@ -122,6 +122,10 @@ Succeeds when the item operand is not in the room given by the second operand.
 <td class="register">F</td>
 <td class="register-desc">The zero flag is set when the location differs</td>
 </tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -139,37 +143,37 @@ Invert the location test so the condition succeeds when the item is somewhere el
 <td class="asm-label">Condition_ItemLocationDiffers</td>
 <td class="address-2"><span id="a871"></span>A871</td>
 <td class="instruction">LD A,(IX+$01)</td>
-<td class="comment-1" rowspan="1">The operand names the item.</td>
+<td class="comment-1" rowspan="1">Fetch the item ID (the operand) from *<span class="register">IX</span>+01 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a874"></span>A874</td>
-<td class="instruction">CALL <a href="A6FF.html#a772">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">FF stands for the matched item.</td>
+<td class="instruction">CALL <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="A805.html">ScriptMatchedItem</a> when the operand is FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a877"></span>A877</td>
 <td class="instruction">CALL <a href="A62C.html">ItemLocator</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A62C.html">ItemLocator</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A62C.html">ItemLocator</a> to read that item's room into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a87a"></span>A87A</td>
 <td class="instruction">CP (IX+$02)</td>
-<td class="comment-1" rowspan="1">Is the item in the room operand?</td>
+<td class="comment-1" rowspan="1">Compare it with the room operand.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a87d"></span>A87D</td>
-<td class="instruction">CALL <a href="A6FF.html#a76a">Handler_RunScript_13</a></td>
-<td class="comment-1" rowspan="1">Succeed when it is somewhere else.</td>
+<td class="instruction">CALL <a href="A6FF.html#a76a">RunScript_InvertConditionResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a76a">RunScript_InvertConditionResult</a> so the condition succeeds when the rooms differ.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a880"></span>A880</td>
-<td class="instruction">JP <a href="A6FF.html#a71b">Handler_RunScript_2</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="A6FF.html#a71b">RunScript_SkipCondition_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a71b">RunScript_SkipCondition_ThreeBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

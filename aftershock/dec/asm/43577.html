@@ -114,6 +114,19 @@ Next: <a href="43592.html">43592</a>
 Moves the item operand into the current room.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Moves the item operand into the current room.
 <span id="43577"></span>
 <div class="comments">
 <div class="paragraph">
-When the condition succeeded, bring the item operand into the current room.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,32 +142,42 @@ When the condition succeeded, bring the item operand into the current room.
 <tr>
 <td class="asm-label">Action_BringItemHere</td>
 <td class="address-2"><span id="43577"></span>43577</td>
-<td class="instruction">JP NZ,<a href="42751.html#42845">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">Leave the item where it is.</td>
+<td class="instruction">JP NZ,<a href="42751.html#42845">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42845">RunScript_SkipAction_TwoBytes</a> if the condition failed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="43580"></span>
+<div class="comments">
+<div class="paragraph">
+Bring the item operand into the current room.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43580"></span>43580</td>
 <td class="instruction">LD A,(IX+1)</td>
-<td class="comment-1" rowspan="1">The operand names the item.</td>
+<td class="comment-1" rowspan="1">Fetch the item ID (the operand) from *<span class="register">IX</span>+1 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43583"></span>43583</td>
-<td class="instruction">CALL <a href="42751.html#42866">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">255 stands for the matched item.</td>
+<td class="instruction">CALL <a href="42751.html#42866">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42751.html#42866">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="43013.html">ScriptMatchedItem</a> when the operand is 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43586"></span>43586</td>
 <td class="instruction">CALL <a href="42562.html">Handler_UpdateItemEventCurrentRoom</a></td>
-<td class="comment-1" rowspan="1">Call <a href="42562.html">Handler_UpdateItemEventCurrentRoom</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="42562.html">Handler_UpdateItemEventCurrentRoom</a> to move that item into the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43589"></span>43589</td>
-<td class="instruction">JP <a href="42751.html#42845">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="42751.html#42845">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42845">RunScript_SkipAction_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

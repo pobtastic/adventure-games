@@ -111,13 +111,7 @@ Next: <a href="AD34.html">AD34</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Returns a number from 00 up to, but not including, <span class="register">A</span>.
-</div>
-<div class="paragraph">
-The refresh register chooses how far to walk around that range.
-</div>
-<div class="paragraph">
-Nothing in the game calls it.
+Returns a number from 00 up to, but not including, the limit passed in <span class="register">A</span>. The Z80 Memory Refresh Register supplies the walk count: the routine counts down inside that limit once per refresh tick, wrapping to the original limit when it hits zero, then decreases the result by one more before returning. Nothing in the game calls it.
 </div>
 </div>
 <table class="input">
@@ -145,7 +139,7 @@ Nothing in the game calls it.
 <span id="ad25"></span>
 <div class="comments">
 <div class="paragraph">
-Mix the refresh register into a number below the limit in <span class="register">A</span>. Nothing in the game calls this.
+Preserve <span class="register">BC</span>, keep the limit, and read the refresh register for the walk count.
 </div>
 </div>
 </td>
@@ -154,52 +148,71 @@ Mix the refresh register into a number below the limit in <span class="register"
 <td class="asm-label">GenerateRandomNumber</td>
 <td class="address-2"><span id="ad25"></span>AD25</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="10">Walk around the range until the refresh count runs out.</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">BC</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad26"></span>AD26</td>
 <td class="instruction">LD C,A</td>
+<td class="comment-1" rowspan="1">Copy the exclusive upper bound into <span class="register">C</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad27"></span>AD27</td>
 <td class="instruction">LD A,R</td>
+<td class="comment-1" rowspan="1">Read the Memory Refresh Register into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad29"></span>AD29</td>
 <td class="instruction">LD B,A</td>
+<td class="comment-1" rowspan="1">Use that refresh value as the walk counter in <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad2a"></span>AD2A</td>
 <td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="1">Restore the exclusive upper bound into <span class="register">A</span>.</td>
 </tr>
 <tr>
-<td class="asm-label">Random_Mix</td>
+<td class="routine-comment" colspan="5">
+<span id="ad2b"></span>
+<div class="comments">
+<div class="paragraph">
+Count down inside the limit; when it wraps, reload the original bound from <span class="register">C</span>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">GenerateRandomNumber_Loop</td>
 <td class="address-2"><span id="ad2b"></span>AD2B</td>
 <td class="instruction">DEC A</td>
+<td class="comment-1" rowspan="1">Decrease the running value in <span class="register">A</span> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad2c"></span>AD2C</td>
-<td class="instruction">JR NZ,<a href="AD25.html#ad2f">GenerateRandomNumber_0</a></td>
+<td class="instruction">JR NZ,<a href="AD25.html#ad2f">GenerateRandomNumber_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AD25.html#ad2f">GenerateRandomNumber_Next</a> if the running value is not zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad2e"></span>AD2E</td>
 <td class="instruction">LD A,C</td>
+<td class="comment-1" rowspan="1">Reload the exclusive upper bound from <span class="register">C</span> into <span class="register">A</span>.</td>
 </tr>
 <tr>
-<td class="asm-label">GenerateRandomNumber_0</td>
+<td class="asm-label">GenerateRandomNumber_Next</td>
 <td class="address-2"><span id="ad2f"></span>AD2F</td>
-<td class="instruction">DJNZ <a href="AD25.html#ad2b">Random_Mix</a></td>
+<td class="instruction">DJNZ <a href="AD25.html#ad2b">GenerateRandomNumber_Loop</a></td>
+<td class="comment-1" rowspan="1">Decrease the walk counter by one and loop back to <a href="AD25.html#ad2b">GenerateRandomNumber_Loop</a> until the refresh count is spent.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad31"></span>AD31</td>
 <td class="instruction">DEC A</td>
+<td class="comment-1" rowspan="1">Decrease the running value in <span class="register">A</span> by one for the final result.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

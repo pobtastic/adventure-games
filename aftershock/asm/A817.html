@@ -122,6 +122,10 @@ Succeeds when the item operand is not in the current room or the inventory.
 <td class="register">F</td>
 <td class="register-desc">The zero flag is set when the item is absent</td>
 </tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -139,31 +143,31 @@ Invert the presence test so the condition succeeds when the item is absent.
 <td class="asm-label">Condition_ItemIsAbsent</td>
 <td class="address-2"><span id="a817"></span>A817</td>
 <td class="instruction">LD A,(IX+$01)</td>
-<td class="comment-1" rowspan="1">The operand names the item.</td>
+<td class="comment-1" rowspan="1">Fetch the item ID (the operand) from *<span class="register">IX</span>+01 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a81a"></span>A81A</td>
-<td class="instruction">CALL <a href="A6FF.html#a772">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">FF stands for the matched item.</td>
+<td class="instruction">CALL <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="A805.html">ScriptMatchedItem</a> when the operand is FF.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a81d"></span>A81D</td>
 <td class="instruction">CALL <a href="A5C6.html">ValidateItemPresent</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A5C6.html">ValidateItemPresent</a> to check whether the matched item is here.</td>
+<td class="comment-1" rowspan="1">Call <a href="A5C6.html">ValidateItemPresent</a> to test whether that item is present.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a820"></span>A820</td>
-<td class="instruction">CALL <a href="A6FF.html#a76a">Handler_RunScript_13</a></td>
-<td class="comment-1" rowspan="1">Succeed when the item is absent.</td>
+<td class="instruction">CALL <a href="A6FF.html#a76a">RunScript_InvertConditionResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a76a">RunScript_InvertConditionResult</a> so the condition succeeds when the item is absent.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="a823"></span>A823</td>
-<td class="instruction">JP <a href="A6FF.html#a71d">Handler_RunScript_3</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="A6FF.html#a71d">RunScript_SkipCondition_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a71d">RunScript_SkipCondition_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

@@ -114,10 +114,7 @@ Next: <a href="AE5E.html">AE5E</a>
 Used by the routines at <a href="A9A4.html">Condition_CanTakeItem</a> and <a href="A9B0.html">Condition_CannotTakeItem</a>.
 </div>
 <div class="paragraph">
-Rejects a take when the item is already carried or the inventory is full.
-</div>
-<div class="paragraph">
-Plural items in <a href="B6F1.html">Table_PluralItems</a> use the "them" message.
+Rejects a take when the item is already carried or the inventory is full. Plural items listed in <a href="B6F1.html">Table_PluralItems</a> use the "them" wording.
 </div>
 </div>
 <table class="input">
@@ -145,16 +142,26 @@ Plural items in <a href="B6F1.html">Table_PluralItems</a> use the "them" message
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ae2c"></span>
+<div class="comments">
+<div class="paragraph">
+First refuse the take when the item is already in the inventory.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Handler_CanTakeItem</td>
 <td class="address-2"><span id="ae2c"></span>AE2C</td>
 <td class="instruction">CALL <a href="A635.html">CheckObjectInInventory</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A635.html">CheckObjectInInventory</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A635.html">CheckObjectInInventory</a> to test whether the item is carried.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae2f"></span>AE2F</td>
-<td class="instruction">JR NZ,<a href="AE2C.html#ae48">Handler_CanTakeItem_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AE2C.html#ae48">Handler_CanTakeItem_0</a> when it is not in the inventory.</td>
+<td class="instruction">JR NZ,<a href="AE2C.html#ae48">CanTakeItem_CheckLimit</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE2C.html#ae48">CanTakeItem_CheckLimit</a> if the item is not carried.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -167,7 +174,7 @@ Print "You're already carrying it.".
 </td>
 </tr>
 <tr>
-<td class="asm-label"></td>
+<td class="asm-label">CanTakeItem_AlreadyCarried</td>
 <td class="address-1"><span id="ae31"></span>AE31</td>
 <td class="instruction">LD HL,$001B</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="CDEA.html">Messaging_YoureAlreadyCarryingIt</a>.</td>
@@ -176,14 +183,14 @@ Print "You're already carrying it.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae34"></span>AE34</td>
 <td class="instruction">LD BC,$0003</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=0003.</td>
+<td class="comment-1" rowspan="1">Load <span class="register">BC</span> with the plural-list length 0003.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="ae37"></span>
 <div class="comments">
 <div class="paragraph">
-Skip the plural-item search when the list length in <span class="register">C</span> is zero.
+Prefer the plural wording when this item ID appears in <a href="B6F1.html">Table_PluralItems</a>.
 </div>
 </div>
 </td>
@@ -192,7 +199,7 @@ Skip the plural-item search when the list length in <span class="register">C</sp
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae37"></span>AE37</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="3">Jump to <a href="AE2C.html#ae55">Handler_CanTakeItem_1</a> when the plural list is empty.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="AE2C.html#ae55">CanTakeItem_PrintReject</a> when the plural list length in <span class="register">C</span> is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -202,43 +209,43 @@ Skip the plural-item search when the list length in <span class="register">C</sp
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae39"></span>AE39</td>
-<td class="instruction">JR Z,<a href="AE2C.html#ae55">Handler_CanTakeItem_1</a></td>
+<td class="instruction">JR Z,<a href="AE2C.html#ae55">CanTakeItem_PrintReject</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae3b"></span>AE3B</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
+<td class="comment-1" rowspan="1">Stash the singular-message pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae3c"></span>AE3C</td>
 <td class="instruction">LD HL,$B6F1</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="B6F1.html">Table_PluralItems</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the plural items table at <a href="B6F1.html">Table_PluralItems</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae3f"></span>AE3F</td>
 <td class="instruction">LD A,E</td>
-<td class="comment-1" rowspan="1">Copy the object ID back into <span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Copy the item ID from <span class="register">E</span> back into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae40"></span>AE40</td>
 <td class="instruction">CPIR</td>
-<td class="comment-1" rowspan="1">Search the plural-item list.</td>
+<td class="comment-1" rowspan="1">Search <a href="B6F1.html">Table_PluralItems</a> for that item ID.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae42"></span>AE42</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
+<td class="comment-1" rowspan="1">Restore the message pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae43"></span>AE43</td>
-<td class="instruction">JR NZ,<a href="AE2C.html#ae55">Handler_CanTakeItem_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AE2C.html#ae55">Handler_CanTakeItem_1</a> when this item is singular.</td>
+<td class="instruction">JR NZ,<a href="AE2C.html#ae55">CanTakeItem_PrintReject</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE2C.html#ae55">CanTakeItem_PrintReject</a> when this item is singular.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -249,21 +256,24 @@ Skip the plural-item search when the list length in <span class="register">C</sp
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae46"></span>AE46</td>
-<td class="instruction">JR <a href="AE2C.html#ae55">Handler_CanTakeItem_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="AE2C.html#ae55">Handler_CanTakeItem_1</a>.</td>
+<td class="instruction">JR <a href="AE2C.html#ae55">CanTakeItem_PrintReject</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="AE2C.html#ae55">CanTakeItem_PrintReject</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="ae48"></span>
 <div class="comments">
 <div class="paragraph">
-Print "You can't carry any more.".
+The item is not already carried: check the carrying limit next.
+</div>
+<div class="paragraph">
+Print "You can't carry any more." when the inventory is full.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_CanTakeItem_0</td>
+<td class="asm-label">CanTakeItem_CheckLimit</td>
 <td class="address-2"><span id="ae48"></span>AE48</td>
 <td class="instruction">LD HL,$001F</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="CE20.html">Messaging_YouCantCarryAnyMore</a>.</td>
@@ -272,7 +282,7 @@ Print "You can't carry any more.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae4b"></span>AE4B</td>
 <td class="instruction">LD A,($A0D3)</td>
-<td class="comment-1" rowspan="5">Jump to <a href="AE2C.html#ae5c">Handler_CanTakeItem_2</a> if *<a href="A0D2.html">Count_InventoryItems</a> is less than *<a href="A0D3.html">CarryingLimit</a>.</td>
+<td class="comment-1" rowspan="5">Jump to <a href="AE2C.html#ae5c">CanTakeItem_OK</a> if *<a href="A0D2.html">Count_InventoryItems</a> is less than *<a href="A0D3.html">CarryingLimit</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -292,25 +302,35 @@ Print "You can't carry any more.".
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae53"></span>AE53</td>
-<td class="instruction">JR C,<a href="AE2C.html#ae5c">Handler_CanTakeItem_2</a></td>
+<td class="instruction">JR C,<a href="AE2C.html#ae5c">CanTakeItem_OK</a></td>
 </tr>
 <tr>
-<td class="asm-label">Handler_CanTakeItem_1</td>
+<td class="routine-comment" colspan="5">
+<span id="ae55"></span>
+<div class="comments">
+<div class="paragraph">
+Print the rejection message and return failure.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CanTakeItem_PrintReject</td>
 <td class="address-2"><span id="ae55"></span>AE55</td>
 <td class="instruction">CALL <a href="A25C.html">PrintCompressedStringAndNewline</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A25C.html">PrintCompressedStringAndNewline</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A25C.html">PrintCompressedStringAndNewline</a> to print that compressed string and a newline.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae58"></span>AE58</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=01.</td>
+<td class="comment-1" rowspan="1">Load 01 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ae5a"></span>AE5A</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">The take is rejected.</td>
+<td class="comment-1" rowspan="1">Clear the zero flag; the take is rejected.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -319,10 +339,20 @@ Print "You can't carry any more.".
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_CanTakeItem_2</td>
+<td class="routine-comment" colspan="5">
+<span id="ae5c"></span>
+<div class="comments">
+<div class="paragraph">
+The inventory has room, so allow the take.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">CanTakeItem_OK</td>
 <td class="address-2"><span id="ae5c"></span>AE5C</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=00.</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span> and set the zero flag; the item can be taken.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

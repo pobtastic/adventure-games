@@ -99,124 +99,150 @@ gtag('config', 'G-75RERFCHBG');
 <td class="prev">
 Prev: <a href="5CCB.html">5CCB</a>
 </td>
-<td class="up">Up: <a href="loader.html#5cd0">Map</a></td>
+<td class="up">Up: <a href="loader.html#23760">Map</a></td>
 <td class="next">
 Next: <a href="5CFC.html">5CFC</a>
 </td>
 </tr>
 </table>
-<div class="description">5CD0: Bootstrap Entry Point</div>
+<div class="description">5CD0: Load Stage Two</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Stage-1 loader kept inside the line-1 REM. It reads a 17-byte custom header into <a href="5D96.html">Stage2Header</a>, pulls the stage-2 length and address from that header, loads 0258 bytes to E9B6, then jumps there.
+Stage-1 loader kept inside the line-1 REM. It reads a 17-byte custom header into <a href="5D96.html">Stage2Header</a>, pulls the stage-2 length and address from that header, loads 0258 bytes to <a href="E9B6.html">MicromegaLoader</a>, then jumps there.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">BootstrapEntry</td>
-<td class="address-2"><span id="5cd0"></span>5CD0</td>
+<td class="routine-comment" colspan="5">
+<span id="23760"></span>
+<div class="comments">
+<div class="paragraph">
+Load the 17-byte stage-2 header.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">Load_Stage_Two</td>
+<td class="address-2"><span id="23760"></span>5CD0</td>
 <td class="instruction">LD IX,$5D96</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at <a href="5D96.html">Stage2Header</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cd4"></span>5CD4</td>
+<td class="address-1"><span id="23764"></span>5CD4</td>
 <td class="instruction">LD DE,$0011</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Set the block length in <span class="register">DE</span> to 0011.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cd7"></span>5CD7</td>
+<td class="address-1"><span id="23767"></span>5CD7</td>
 <td class="instruction">XOR A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Clear <span class="register">A</span> and set the carry flag (load a header block).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cd8"></span>5CD8</td>
+<td class="address-1"><span id="23768"></span>5CD8</td>
 <td class="instruction">SCF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cd9"></span>5CD9</td>
-<td class="instruction">CALL <a href="5CFC.html">CustomLoad</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="23769"></span>5CD9</td>
+<td class="instruction">CALL <a href="5CFC.html">Load_Tape_Block</a></td>
+<td class="comment-1" rowspan="1">Call <a href="5CFC.html">Load_Tape_Block</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cdc"></span>5CDC</td>
-<td class="instruction">JP NC,<a href="5CFC.html#5d89">CustomLoad_12</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="23772"></span>5CDC</td>
+<td class="instruction">JP NC,<a href="5CFC.html#23945">Load_Tape_Block_PrintError</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5CFC.html#23945">Load_Tape_Block_PrintError</a> if the carry flag is reset.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23775"></span>
+<div class="comments">
+<div class="paragraph">
+Refuse to continue unless *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C47.html">SUBPPC</a> is 06.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cdf"></span>5CDF</td>
+<td class="address-1"><span id="23775"></span>5CDF</td>
 <td class="instruction">LD A,($5C47)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/0000.html">START</a> if *<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/hex/asm/5C47.html">SUBPPC</a> is not 06.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5ce2"></span>5CE2</td>
+<td class="address-1"><span id="23778"></span>5CE2</td>
 <td class="instruction">CP $06</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5ce4"></span>5CE4</td>
+<td class="address-1"><span id="23780"></span>5CE4</td>
 <td class="instruction">JP NZ,$0000</td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="23783"></span>
+<div class="comments">
+<div class="paragraph">
+Load the stage-2 Micromega block named by that header.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5ce7"></span>5CE7</td>
+<td class="address-1"><span id="23783"></span>5CE7</td>
 <td class="instruction">LD DE,($5D96)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the stage-2 length from *<a href="5D96.html">Stage2Header</a> into <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5ceb"></span>5CEB</td>
+<td class="address-1"><span id="23787"></span>5CEB</td>
 <td class="instruction">LD IX,($5D98)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the stage-2 destination from *<a href="5D96.html#23960">Stage_Two_Destination</a> into <span class="register">IX</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cef"></span>5CEF</td>
+<td class="address-1"><span id="23791"></span>5CEF</td>
 <td class="instruction">LD A,$FF</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Set <span class="register">A</span> to FF and set the carry flag (load a data block).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cf1"></span>5CF1</td>
+<td class="address-1"><span id="23793"></span>5CF1</td>
 <td class="instruction">SCF</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cf2"></span>5CF2</td>
-<td class="instruction">CALL <a href="5CFC.html">CustomLoad</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="23794"></span>5CF2</td>
+<td class="instruction">CALL <a href="5CFC.html">Load_Tape_Block</a></td>
+<td class="comment-1" rowspan="1">Call <a href="5CFC.html">Load_Tape_Block</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cf5"></span>5CF5</td>
-<td class="instruction">JP NC,<a href="5CFC.html#5d89">CustomLoad_12</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="address-1"><span id="23797"></span>5CF5</td>
+<td class="instruction">JP NC,<a href="5CFC.html#23945">Load_Tape_Block_PrintError</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="5CFC.html#23945">Load_Tape_Block_PrintError</a> if the carry flag is reset.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cf8"></span>5CF8</td>
+<td class="address-1"><span id="23800"></span>5CF8</td>
 <td class="instruction">EI</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Enable interrupts.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
-<td class="address-1"><span id="5cf9"></span>5CF9</td>
+<td class="address-1"><span id="23801"></span>5CF9</td>
 <td class="instruction">JP <a href="E9B6.html">MicromegaLoader</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Jump to <a href="E9B6.html">MicromegaLoader</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -224,7 +250,7 @@ Stage-1 loader kept inside the line-1 REM. It reads a 17-byte custom header into
 <td class="prev">
 Prev: <a href="5CCB.html">5CCB</a>
 </td>
-<td class="up">Up: <a href="loader.html#5cd0">Map</a></td>
+<td class="up">Up: <a href="loader.html#23760">Map</a></td>
 <td class="next">
 Next: <a href="5CFC.html">5CFC</a>
 </td>

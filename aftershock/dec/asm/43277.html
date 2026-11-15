@@ -114,6 +114,15 @@ Next: <a href="43300.html">43300</a>
 Succeeds when the player input does not match the indexed phrase.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry (opcode, phrase index)</td>
+</tr>
+</table>
 <table class="output">
 <tr class="asm-output-header">
 <th colspan="2">Output</th>
@@ -130,7 +139,7 @@ Succeeds when the player input does not match the indexed phrase.
 <span id="43277"></span>
 <div class="comments">
 <div class="paragraph">
-Invert the phrase test so the condition succeeds when the command does not match.
+The operand selects a phrase from <a href="47165.html">Table_PhrasePointers</a>. Invert the match so the condition succeeds when the command does not match.
 </div>
 </div>
 </td>
@@ -139,29 +148,31 @@ Invert the phrase test so the condition succeeds when the command does not match
 <td class="asm-label">Condition_PhraseDoesNotMatch</td>
 <td class="address-2"><span id="43277"></span>43277</td>
 <td class="instruction">LD E,(IX+1)</td>
-<td class="comment-1" rowspan="3">The operand selects a phrase from <a href="47165.html">Table_PhrasePointers</a>.</td>
+<td class="comment-1" rowspan="1">Fetch the phrase number (the operand) from *<span class="register">IX</span>+1 into <span class="register">E</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43280"></span>43280</td>
 <td class="instruction">PUSH IX</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">IX</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43282"></span>43282</td>
 <td class="instruction">LD IX,47165</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the phrase-pointer table at <a href="47165.html">Table_PhrasePointers</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43286"></span>43286</td>
 <td class="instruction">CALL <a href="41733.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">That phrase.</td>
+<td class="comment-1" rowspan="1">Call <a href="41733.html">GetTableEntry</a> to fetch the address of the phrase from the table into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43289"></span>43289</td>
 <td class="instruction">CALL <a href="42459.html">MatchPhraseTokens</a></td>
-<td class="comment-1" rowspan="1">Call <a href="42459.html">MatchPhraseTokens</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="42459.html">MatchPhraseTokens</a> to match the player's command against that phrase.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -172,14 +183,14 @@ Invert the phrase test so the condition succeeds when the command does not match
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43294"></span>43294</td>
-<td class="instruction">CALL <a href="42751.html#42858">Handler_RunScript_13</a></td>
-<td class="comment-1" rowspan="1">Succeed when the command does not match.</td>
+<td class="instruction">CALL <a href="42751.html#42858">RunScript_InvertConditionResult</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42751.html#42858">RunScript_InvertConditionResult</a> so the condition succeeds when the command does not match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43297"></span>43297</td>
-<td class="instruction">JP <a href="42751.html#42781">Handler_RunScript_3</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="42751.html#42781">RunScript_SkipCondition_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42781">RunScript_SkipCondition_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

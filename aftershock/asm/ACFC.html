@@ -114,7 +114,7 @@ Next: <a href="AD25.html">AD25</a>
 Used by the routine at <a href="ADA1.html">GameStart</a>.
 </div>
 <div class="paragraph">
-Finds the first input token in <a href="B420.html">Table_VerbTokens</a> and runs the matching script from <a href="B44A.html">JumpTable_VerbScripts</a>. Prints the rephrase message when the token is unknown.
+Matches the first input token from <a href="A13B.html">UserInput_FirstToken</a> against the verb tokens at <a href="B420.html">Table_VerbTokens</a>. When a match is found, it indexes the verb script table at <a href="B44A.html">JumpTable_VerbScripts</a> and runs that script through <a href="A6FF.html">Handler_RunScript</a>. When no match is found, it prints the rephrase message and returns.
 </div>
 </div>
 </td>
@@ -124,7 +124,7 @@ Finds the first input token in <a href="B420.html">Table_VerbTokens</a> and runs
 <span id="acfc"></span>
 <div class="comments">
 <div class="paragraph">
-Look up the first token in the verb list at <a href="B420.html">Table_VerbTokens</a>.
+Search the verb token list at <a href="B420.html">Table_VerbTokens</a> for the first user-input token.
 </div>
 </div>
 </td>
@@ -133,34 +133,38 @@ Look up the first token in the verb list at <a href="B420.html">Table_VerbTokens
 <td class="asm-label">Handler_DispatchVerb</td>
 <td class="address-2"><span id="acfc"></span>ACFC</td>
 <td class="instruction">LD HL,$B420</td>
-<td class="comment-1" rowspan="5">Jump to <a href="ACFC.html#ad11">Handler_DispatchVerb_0</a> when the verb is known.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the verb tokens table at <a href="B420.html">Table_VerbTokens</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="acff"></span>ACFF</td>
 <td class="instruction">LD BC,($BBCB)</td>
+<td class="comment-1" rowspan="1">Load the verb-token count from *<a href="BBCB.html">Count_VerbTokens</a> into <span class="register">BC</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad03"></span>AD03</td>
 <td class="instruction">LD A,($A13B)</td>
+<td class="comment-1" rowspan="1">Fetch the first user-input token from *<a href="A13B.html">UserInput_FirstToken</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad06"></span>AD06</td>
 <td class="instruction">CPIR</td>
+<td class="comment-1" rowspan="1">Search <a href="B420.html">Table_VerbTokens</a> for a matching token.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad08"></span>AD08</td>
-<td class="instruction">JR Z,<a href="ACFC.html#ad11">Handler_DispatchVerb_0</a></td>
+<td class="instruction">JR Z,<a href="ACFC.html#ad11">VerbMatched</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="ACFC.html#ad11">VerbMatched</a> if a match was found.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="ad0a"></span>
 <div class="comments">
 <div class="paragraph">
-The verb is not one this game understands.
+The token is not a known verb.
 </div>
 <div class="paragraph">
 Print "Please rephrase that.".
@@ -178,7 +182,7 @@ Print "Please rephrase that.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad0d"></span>AD0D</td>
 <td class="instruction">CALL <a href="A25C.html">PrintCompressedStringAndNewline</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A25C.html">PrintCompressedStringAndNewline</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A25C.html">PrintCompressedStringAndNewline</a> to print that compressed string and a newline.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -191,49 +195,62 @@ Print "Please rephrase that.".
 <span id="ad11"></span>
 <div class="comments">
 <div class="paragraph">
-Run the verb script from <a href="B44A.html">JumpTable_VerbScripts</a>.
+A verb matched: turn its place in <a href="B420.html">Table_VerbTokens</a> into an index for <a href="B44A.html">JumpTable_VerbScripts</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_DispatchVerb_0</td>
+<td class="asm-label">VerbMatched</td>
 <td class="address-2"><span id="ad11"></span>AD11</td>
 <td class="instruction">LD A,($BBCB)</td>
-<td class="comment-1" rowspan="4">This verb's place in <a href="B44A.html">JumpTable_VerbScripts</a>.</td>
+<td class="comment-1" rowspan="1">Fetch the verb-token count from *<a href="BBCB.html">Count_VerbTokens</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad14"></span>AD14</td>
 <td class="instruction">SUB C</td>
+<td class="comment-1" rowspan="1">Subtract the CPIR remainder in <span class="register">C</span> to get the 1-based position.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad15"></span>AD15</td>
 <td class="instruction">DEC A</td>
+<td class="comment-1" rowspan="1">Decrease by one for a zero-based index.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad16"></span>AD16</td>
 <td class="instruction">LD E,A</td>
+<td class="comment-1" rowspan="1">Store that index in <span class="register">E</span> for <a href="A305.html">GetTableEntry</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ad17"></span>
+<div class="comments">
+<div class="paragraph">
+Look up and run the verb script from <a href="B44A.html">JumpTable_VerbScripts</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad17"></span>AD17</td>
 <td class="instruction">LD IX,$B44A</td>
-<td class="comment-1" rowspan="1">The verb scripts are listed at <a href="B44A.html">JumpTable_VerbScripts</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">IX</span> at the verb script table at <a href="B44A.html">JumpTable_VerbScripts</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad1b"></span>AD1B</td>
 <td class="instruction">CALL <a href="A305.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">This verb's script.</td>
+<td class="comment-1" rowspan="1">Call <a href="A305.html">GetTableEntry</a> to fetch this verb's script address into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad1e"></span>AD1E</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-1" rowspan="2">Restore the verb script address into <span class="register">IX</span> from the stack.</td>
+<td class="comment-1" rowspan="2">Copy the script address from <span class="register">HL</span> into <span class="register">IX</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -244,13 +261,28 @@ Run the verb script from <a href="B44A.html">JumpTable_VerbScripts</a>.
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad21"></span>AD21</td>
 <td class="instruction">CALL <a href="A6FF.html">Handler_RunScript</a></td>
-<td class="comment-1" rowspan="1">Run that script.</td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html">Handler_RunScript</a> to run that script.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ad24"></span>AD24</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/forestatworldsend/asm/C463.html">Forest At Worlds End</a></li>
+<li><a href="/adventure-games/heroesofkarn/asm/B753.html">Heroes Of Karn</a></li>
+<li><a href="/adventure-games/jewelsofbabylon/asm/C556.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/asm/8D85.html">Message From Andromeda</a></li>
+<li><a href="/adventure-games/warlord/asm/B05E.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">

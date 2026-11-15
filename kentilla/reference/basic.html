@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Kentilla: BASIC Listing</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Kentilla: BASIC Listing. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:title" content="Kentilla: BASIC Listing" />
+<meta property="og:description" content="Kentilla: BASIC Listing. Complete ZX Spectrum RAM disassembly." />
+<meta property="og:site_name" content="ArcadeGeek" />
+<meta property="og:type" content="article" />
+<link rel="canonical" href="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/reference/basic.html" />
+<meta property="og:url" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/reference/basic.html" />
+<meta property="og:image" content="https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@graph": [
+{
+"@type": "WebSite",
+"@id": "https://skoolkit.arcadegeek.co.uk/#website",
+"name": "ArcadeGeek",
+"url": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "TechArticle",
+"headline": "Kentilla: BASIC Listing",
+"name": "Kentilla: BASIC Listing",
+"description": "Kentilla: BASIC Listing. Complete ZX Spectrum RAM disassembly.",
+"inLanguage": "en",
+"isPartOf": {"@id": "https://skoolkit.arcadegeek.co.uk/#website"},
+"author": {
+"@type": "Organization",
+"name": "ArcadeGeek",
+"url": "https://www.arcadegeek.co.uk/"
+},
+"about": {
+"@type": "VideoGame",
+"name": "Kentilla",
+"gamePlatform": "ZX Spectrum"
+}
+,"url": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/reference/basic.html"
+,"image": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/images/logo.png"
+},
+{
+"@type": "BreadcrumbList",
+"itemListElement": [
+{
+"@type": "ListItem",
+"position": 1,
+"name": "ArcadeGeek",
+"item": "https://skoolkit.arcadegeek.co.uk/"
+},
+{
+"@type": "ListItem",
+"position": 2,
+"name": "Adventure game disassemblies",
+"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/"
+},
+{
+"@type": "ListItem",
+"position": 3,
+"name": "Kentilla"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/"
+}
+,{
+"@type": "ListItem",
+"position": 4,
+"name": "BASIC Listing"
+,"item": "https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/reference/basic.html"
+}
+]
+}
+]
+}
+</script>
+<link rel="stylesheet" type="text/css" href="../skoolkit.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-dark.css" />
+<link rel="stylesheet" type="text/css" href="../skoolkit-wide.css" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-75RERFCHBG"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-75RERFCHBG');
+</script>
+</head>
+<body class="Basic">
+<table class="header">
+<tr>
+<td class="logo"><a href="../index.html"><img alt="logo" src="../images/logo.png" /></a></td>
+<td class="page-header">BASIC Listing</td>
+</tr>
+</table>
+<p>Kentilla is driven from Sinclair BASIC with a machine-code support
+layer for input, graphics and helpers. This page is a <code>LIST</code> of
+the tokenised program in the post-load snapshot (870 lines), from
+<code>PROG</code> at <a href="../asm/5CCB.html">BasicProgram</a> up to <code>VARS</code> at <a href="../asm/E56B.html">BasicVariables</a>.</p>
+<p>The command loop at line 113 prints <code>What now?</code> then enters
+the support code with <code>LET A=USR</code> <a href="../asm/EA60.html#ea66">JumpTable_InputLine</a> and
+<code>LET A=USR</code> <a href="../asm/EA60.html#ea6c">JumpTable_AdvanceInputPointer</a>. Verb and noun indices come back through
+<a href="../asm/EA60.html">JumpTable</a> / <a href="../asm/EA60.html#ea63">JumpTable_SearchVerbs</a> / <a href="../asm/EA60.html#ea6f">JumpTable_SearchCommands</a> and are dispatched with
+<code>GO TO n*100+1000</code> / <code>GO SUB 1000</code>. Location text
+lives in the high line numbers (9900s).</p>
+<pre class="basic" style="white-space:pre; overflow:auto; font-size:12px; line-height:1.35">
+1 SAVE &quot;KENTILLA&quot;CODE VAL &quot;16384&quot;,VAL &quot;43037&quot;
+2 POKE VAL &quot;23659&quot;,z: LET n=PEEK VAL &quot;23613&quot;+VAL &quot;256&quot;*PEEK VAL &quot;23614&quot;: POKE n,VAL &quot;251&quot;: POKE n+o,wvv
+3 POKE VAL &quot;23624&quot;,z: PRINT AT (q*w)+r,z: LOAD &quot;&quot;CODE : POKE VAL &quot;23659&quot;,w
+5 GO SUB 9000: LET m=G: GO SUB 350
+100 RANDOMIZE : GO SUB 6000: GO SUB 6300
+101 GO SUB E: IF co&lt;&gt;w THEN GO SUB 6210
+102 RANDOMIZE : IF sp THEN GO SUB sp
+103 GO SUB 6830
+104 IF o(27) THEN LET o(27)=o(27)-o: IF o(27) THEN PRINT &quot;The staff is glowing.&quot;
+105 IF O(28) THEN GO SUB 6800
+106 LET go=go+O
+112 IF NOT hp THEN GO TO 6700
+113 GO SUB e: PRINT INK s;&quot;What now?&quot;: LET A=USR 60006: LET A=USR 60012
+120 IF PEEK 23468=13 THEN GO SUB 300: GO TO 100
+130 RANDOMIZE : GO SUB 1000: GO TO 100
+200 LET A=USR 60012: LET x=USR 60009: RETURN
+310 LET m=USR 60015
+320 IF NOT m THEN PRINT &quot;Pardon?&quot;: RETURN
+325 IF M&gt;6 THEN GO TO 400
+330 LET j=op: GO SUB 990
+341 IF NP=Z THEN PRINT &quot;I CAN&#x27;T GO IN THAT DIRECTION.&quot;: RETURN
+342 IF se THEN GO SUB se: IF np=op THEN RETURN
+343 IF NOT hp THEN RETURN
+350 CLS : LET op=np: GO SUB 8100: IF DA THEN PRINT AT 7,0: POKE 23297,OP: RANDOMIZE USR 60039: GO SUB OP+9900: GO TO 360
+351 PRINT &quot;It&#x27;s very dark. I can&#x27;t see&quot;&#x27;&quot;anything.&quot;: PRINT AT s,z: GO TO VAL &quot;372&quot;
+360 INK V: RESTORE 9800+OP: READ A$: PRINT &quot;EXITS : &quot;;&quot;NORTH &quot; AND VAL A$( TO 2) AND VAL A$( TO 2)&lt;75;&quot;EAST &quot; AND VAL A$(3 TO 4) AND VAL A$(3 TO 4)&lt;75;&quot;SOUTH &quot; AND VAL A$(5 TO 6) AND VAL A$(5 TO 6)&lt;75;&quot;WEST &quot; AND VAL A$(7 TO 8) AND VAL A$(7 TO 8)&lt;75;&quot;UP &quot; AND VAL A$(9 TO 10) AND VAL A$(9 TO 10)&lt;75;&quot;DOWN &quot; AND VAL A$(11 TO 12) AND VAL A$(11 TO 12)&lt;75
+361 IF VAL A$( TO w)&gt;74 THEN READ V$,N: GO SUB 369: PRINT V$;&quot; NORTH &quot;
+362 IF VAL A$(R TO F)&gt;74 THEN READ V$,N: GO SUB 369: PRINT V$;&quot; EAST &quot;
+363 IF VAL A$(V TO I)&gt;74 THEN READ V$,N: GO SUB 369: PRINT V$;&quot; SOUTH &quot;
+364 IF VAL A$(OO TO OW)&gt;75 THEN READ V$,N: GO SUB 369: PRINT V$;&quot; DOWN &quot;
+365 IF VAL A$(7 TO 8)&gt;75 THEN READ V$,N: GO SUB 369: PRINT V$;&quot; WEST&quot;
+366 INK I: IF PEEK 23689&gt;OI THEN PRINT AT S,Z
+367 GO TO 370
+369 PRINT &quot;  &quot;;&quot;OPEN &quot; AND O(N)=w;&quot;CLOSED &quot; AND O(N)&lt;w;&quot;BROKEN &quot; AND O(N)=r;: RETURN
+370 GO SUB 445
+371 GO SUB 6500
+372 LET NP=Z: RESTORE 9800+OP: READ A$: IF LEN A$&gt;OW THEN GO SUB 9500+V*VAL (A$(OR TO OF)): IF NP THEN GO TO 350
+375 RETURN
+410 IF M&lt;&gt;S THEN GO TO 440
+411 LET no=W: PRINT INK 7;&quot;I&#x27;m carrying :&quot;: POKE 23549,WVV: LET x=USR 60024
+420 GO SUB 455
+422 IF no=w THEN LET no=O
+425 POKE 23549,254: LET x=USR 60024: GO TO 455
+440 IF m&lt;&gt;G THEN GO TO 500
+441 LET NP=OP: GO TO 350
+445 LET n=op
+450 POKE 23549,n: LET no=o: PRINT INK s;&quot;I see :&quot;: LET x=USR 60024
+455 IF x THEN RESTORE 9700+x: READ a$: GO SUB E: PRINT &quot;   &quot;;&quot;The &quot; AND VAL a$(O);a$(w TO );&quot; (worn)&quot; AND PEEK (t+x)=wvf: LET no=Z: LET x=USR 60027: GO TO 455
+460 LET co=w: LET x=USR 60030
+465 IF x THEN RESTORE 9600+x: LET co=z: READ a$: GO SUB e: PRINT &quot;   &quot;;&quot;The &quot; AND VAL a$(O);&quot;dead &quot; AND NOT PEEK (m2+X);a$(w TO ): LET no=Z: LET x=USR 60027: GO TO 465
+470 IF NO=O THEN PRINT &quot;NOTHING&quot;
+499 RETURN
+500 IF m=ow THEN GO TO VAL &quot;6900&quot;
+501 IF m=of THEN PRINT &quot;I wait.&quot;: RETURN
+505 IF m=or THEN PRINT INK s;&quot;You have completed &quot;;l;&quot;%&quot;: RETURN
+520 IF m=q THEN PRINT &quot;Sorry, I can&#x27;t help you.&quot;: RETURN
+540 IF m=oz THEN LET np=op: SAVE &quot;1&quot;CODE VAL &quot;64e3&quot;,c: POKE VAL &quot;23736&quot;,VAL &quot;181&quot;: SAVE &quot;2&quot;CODE PEEK VAL &quot;23627&quot;+VAL &quot;256&quot;*PEEK VAL &quot;23628&quot;,VAL &quot;700&quot;: POKE VAL &quot;23736&quot;,VAL &quot;181&quot;: SAVE &quot;3&quot;CODE VAL &quot;23552&quot;,c: GO TO h
+560 PRINT FLASH o; INK s;&quot;LOAD GAME (Y OR N)?&quot;
+565 IF INKEY$=&quot;n&quot; OR INKEY$=&quot;N&quot; THEN RETURN
+570 IF INKEY$&lt;&gt;&quot;y&quot; AND INKEY$&lt;&gt;&quot;Y&quot; THEN GO TO VAL &quot;565&quot;
+580 CLS : PRINT AT r,oo;&quot;START TAPE&quot;: INK o: LOAD &quot;1&quot;CODE : LOAD &quot;2&quot;CODE : LOAD &quot;3&quot;CODE : INK i: RETURN
+990 RESTORE 9800+j: READ a$: LET np=VAL (a$(w*m-o TO w*m)): IF np&lt;75 THEN GO TO 993
+992 RESTORE 9800+np: READ a,np: IF o(a)&lt;w THEN LET np=z
+993 IF m=w AND j=42 AND PEEK (T+oi)=wvf THEN LET np=VAL &quot;43&quot;
+994 RETURN
+1010 LET n=USR 60003
+1020 IF n THEN LET A=USR 60012: LET x=USR 60009: GO TO n*100+1000
+1050 PRINT &quot;I don&#x27;t understand &quot;: RETURN
+1101 GO TO 1200
+1102 GO TO 1150
+1105 RESTORE 9701: POKE 23469,45: LET A$=&quot;&quot;: LET N=USR 60018
+1110 IF NOT N THEN RETURN
+1115 READ a$: LET a$=(&quot;The &quot; AND VAL a$(O))+a$(W TO )
+1120 IF P=WVR AND PEEK (T+N)&gt;WVR THEN RETURN
+1125 IF PEEK (T+N)=P OR P=WVW THEN RETURN
+1130 LET N=USR 60021: GO TO 1110
+1155 RESTORE 9601: POKE 23469,35: LET A$=&quot;&quot;: LET N=USR 60018
+1160 IF NOT N THEN RETURN
+1165 READ A$: LET A$=(&quot;The &quot; AND (VAL a$(O) OR NOT PEEK (m2+n)))+(&quot;dead &quot; AND NOT PEEK (m2+n))+a$(W TO )
+1170 IF PEEK (m1+n)=p OR p=WVW THEN RETURN
+1175 LET n=USR 60021: GO TO 1160
+1180 IF j&gt;26 THEN PRINT &quot;It has no effect.&quot;: RETURN
+1202 IF x=56 OR x=57 THEN GO TO 1270
+1205 LET p=WVW: GO SUB 1105: IF a$=&quot;&quot; THEN GO TO 1235
+1207 IF a$=&quot;The ROPE&quot; AND PEEK (T+3)=201 THEN POKE t+3,op: GO TO 1211
+1209 IF n=20 THEN PRINT &quot;It&#x27;s far too heavy.&quot;: RETURN
+1210 IF NOT n THEN GO TO ee
+1211 IF op=PEEK (t+n) OR (PEEK (t+n)=82 AND PEEK (t+F)=WVV) THEN GO TO 1220
+1212 IF (PEEK (t+n)=80 AND OP=42 AND NOT o(16)) OR (PEEK (t+n)=81 AND PEEK (t+28)=WVV) OR (PEEK (t+n)=83 AND OP=43 AND O(OF)=W) OR (PEEK (t+n)=84 AND OP=OR AND O(OR)=W) THEN GO TO 1220
+1215 IF (PEEK (t+n)&lt;&gt;85 OR OP&lt;&gt;41) AND (PEEK (t+n)&lt;&gt;86 OR OP&lt;&gt;55) THEN GO SUB VAL &quot;1130&quot;: GO TO VAL &quot;1210&quot;
+1220 IF ob&lt;G THEN LET ob=ob+O: POKE t+n,WVV: PRINT &quot;I take &quot;;a$: RETURN
+1221 PRINT &quot;I can&#x27;t carry any more.&quot;: RETURN
+1235 IF x=20 THEN GO SUB 200
+1239 LET p=op: GO SUB 1102
+1240 IF NOT n THEN GO TO 3830
+1245 IF PEEK (m2+n) THEN PRINT &quot;I can&#x27;t get &quot;;a$: RETURN
+1248 IF ob&gt;7 THEN GO TO 1221
+1250 LET ob=ob+v: PRINT &quot;I get &quot;;a$: POKE m1+n,255: RETURN
+1270 POKE 23549,OP: LET N=USR 60024: IF N=20 THEN GO TO 1286
+1275 IF NOT n THEN PRINT &quot;I see nothing to get.&quot;: RETURN
+1280 IF oB&gt;S THEN GO TO 1221
+1285 GO SUB 1370: PRINT &quot;I get &quot;;a$: LET ob=ob+o: POKE t+n,wvv
+1286 LET n=USR 60027: IF n=20 THEN GO TO 1286
+1287 IF n THEN GO TO 1280
+1290 RETURN
+1302 IF x=56 OR x=57 THEN GO TO 1350
+1305 LET p=wvr: GO SUB 1105: IF a$=&quot;&quot; THEN GO TO 1320
+1310 IF NOT n THEN GO TO cc
+1315 LET OB=OB-O: POKE t+n,op: PRINT &quot;I drop &quot;;a$: RETURN
+1320 LET p=255: GO SUB 1102: IF a$=&quot;&quot; THEN PRINT &quot;Drop what?&quot;: RETURN
+1325 IF n THEN POKE m1+n,op: LET ob=ob-v: PRINT &quot;I drop &quot;;a$: RETURN
+1330 PRINT &quot;I don&#x27;t have&quot;&#x27;a$: RETURN
+1350 POKE 23549,255: LET n=USR 60024
+1355 IF n THEN GO SUB 1370: GO SUB 1315: LET n=USR 60027: GO TO 1355
+1360 IF PEEK 23549=254 THEN RETURN
+1365 POKE 23549,254: LET n=USR 60024: GO TO 1355
+1370 GO SUB e: RESTORE 9700+n: READ a$: LET a$=(&quot;The &quot; AND VAL a$(1))+a$(2 TO ): RETURN
+1400 GO TO 1500
+1409 GO SUB 1370: PRINT &quot;I&#x27;ve found &quot;;a$: POKE T+N,op: RETURN
+1410 IF (x=59 OR X=15 OR X=26) AND OP=11 AND NOT PEEK (T+2) THEN LET n=W: GO TO VAL &quot;1409&quot;
+1415 IF X=24 AND op=43 AND NOT PEEK (T+10) THEN LET n=oz: GO TO 1409
+1416 IF x=23 AND op=42 THEN PRINT &quot;It is a small furnace with a&quot;&#x27;&quot;dial turned to &quot;;&quot;off.&quot; AND NOT o(oi);&quot;on.&quot; AND o(oi): RETURN
+1420 IF (X=15 OR X=27 OR X=59) AND OP=52 AND NOT PEEK (T+ov) THEN LET N=ov: LET o(VAL &quot;28&quot;)=o: GO TO 1409
+1422 IF x=12 AND op=57 THEN PRINT &quot;It has a small hole in its left shoulder.&quot;: RETURN
+1425 IF X=9 AND NOT PEEK (T+16) AND OP=41 THEN LET N=OI: GO TO VAL &quot;1409&quot;
+1430 IF X=28 AND OP=44 AND NOT PEEK (T+6) THEN LET N=6: GO TO 1409
+1431 IF NOT o(9) AND (x=61 OR x=62) AND op=44 THEN PRINT &quot;It is a hideous beast, with armsraised as if ready to pounce.&quot;: RETURN
+1435 IF X&lt;&gt;16 OR OP&lt;&gt;47 THEN GO TO 1445
+1440 IF NOT PEEK (T+20) THEN LET o(OO)=O: LET N=20: GO TO 1409
+1442 IF NOT PEEK (T+21) THEN LET n=21: GO TO 1409
+1445 IF X=29 AND OP=58 AND NOT PEEK (T+22) AND o(oo) THEN LET N=VAL &quot;22&quot;: GO TO VAL &quot;1409&quot;
+1446 IF PEEK (t+4)=wvv AND (x=41 OR x=42) THEN PRINT &quot;It&#x27;s a magic sack. Items in it  weigh nothing.&quot;: RETURN
+1447 IF X=25 AND NOT PEEK (T+11) AND OP=43 THEN LET N=oo: LET l=l+v: GO TO 1409
+1455 IF (X=13 OR X=14 OR X=43) AND NOT PEEK (T+29) AND OP=14 THEN LET N=VAL &quot;29&quot;: LET l=l+w: GO TO 1409
+1465 IF X=31 AND (OP=8 OR OP=17) AND NOT PEEK (T+43) THEN LET n=43: GO TO 1409
+1470 LET P=OP: GO SUB 1102: IF A$=&quot;&quot; THEN GO TO 1498
+1475 IF NOT N THEN PRINT &quot;I don&#x27;t see &quot;;a$: RETURN
+1478 IF PEEK (m2+n) THEN GO TO u
+1480 PRINT &quot;I find &quot;;: POKE 23549,100+n: LET n=USR 60024: IF NOT n THEN PRINT &quot;nothing&quot;: RETURN
+1485 POKE t+n,op: GO SUB 1370: PRINT a$: RETURN
+1498 IF NOT n AND NOT x THEN GO TO u
+1499 PRINT &quot;I find nothing unusual.&quot;: RETURN
+1501 IF X THEN GO TO 1410
+1503 LET P=wvr: GO SUB b: IF a$=&quot;&quot; THEN GO TO VAL &quot;1470&quot;
+1505 IF NOT n THEN GO TO cc
+1511 IF N=O THEN PRINT &quot;The name KENTILLA is engraved onthe hilt.&quot;: RETURN
+1512 IF N=W THEN PRINT &quot;It&#x27;s very soft.&quot;: RETURN
+1516 IF n=i AND NOT PEEK (t+VAL &quot;31&quot;) THEN PRINT &quot;It looks valuable, it&#x27;s studded with diamonds.&quot;: RETURN
+1522 IF n=ow THEN PRINT &quot;It is black with gold runic&quot;&#x27;&quot;designs.&quot;: RETURN
+1523 IF n=or THEN PRINT &quot;It has inscribed on it -&quot;&#x27;&quot; STOLEN FROM ALADDIN.&quot;: RETURN
+1524 IF n=of THEN PRINT &quot;It is a healing plant.&quot;: RETURN
+1528 IF n=oq AND da THEN PRINT &quot;It&#x27;s giving me a strange image  but I can&#x27;t quite make it out.&quot;: RETURN
+1529 IF N=OQ THEN PRINT &quot;It gives me the image of the&quot;&#x27;&quot;word SAGAGOO.&quot;: RETURN
+1535 IF N=17 OR N=33 OR N=40 OR N=42 THEN GO TO 2915
+1540 IF N=S THEN PRINT &quot;It&#x27;s translucent and about 30 cmwide.&quot;: RETURN
+1590 GO TO 1499
+1701 IF NOT da THEN PRINT &quot;It&#x27;s too dark.&quot;: RETURN
+1705 LET P=OP: GO SUB b-r: IF A$=&quot;&quot; THEN GO TO u
+1710 IF NOT n THEN GO TO ee
+1712 IF NOT PEEK (M2+N) THEN PRINT &quot;I can&#x27;t attack &quot;&#x27;a$: RETURN
+1715 IF PEEK (T+o)&lt;&gt;wvv AND PEEK (T+V)&lt;&gt;WVV THEN PRINT &quot;I have no weapon.&quot;: RETURN
+1720 PRINT &quot;I attack &quot;;a$
+1725 IF CO=z THEN LET CO=o: LET MO=PEEK (M3+N)
+1730 POKE M2+N,PEEK (M2+N)-OZ*RND: IF PEEK (M2+N)&gt;VAL &quot;230&quot; THEN POKE (M2+N),Z
+1735 PRINT a$;&quot; is injured.&quot; AND PEEK (M2+N);&quot; is killed.&quot; AND NOT PEEK (M2+N): RETURN
+1910 IF x=VAL &quot;66&quot; AND OP=oi THEN LET NP=VAL &quot;69&quot;: GO TO H
+1920 IF x&lt;&gt;VAL &quot;37&quot; THEN GO TO U
+1923 IF Op&gt;VAL &quot;70&quot; THEN PRINT &quot;I already am!&quot;: RETURN
+1924 IF o(oo)=o THEN PRINT &quot;No point, it&#x27;s not in the water.&quot;: RETURN
+1925 IF O(oo) AND (OP=VAL &quot;47&quot; OR OP=VAL &quot;48&quot;) THEN LET Op=op+VAL &quot;26&quot;: GO TO K
+1930 PRINT &quot;What boat?&quot;: RETURN
+2001 LET m=USR 6e4: IF m THEN GO TO VAL &quot;2020&quot;
+2002 IF X THEN GO TO VAL &quot;2010&quot;
+2006 IF USR 60033 THEN PRINT &quot;MISSING &quot;&quot;&quot;&quot;&quot;: RETURN
+2008 LET X=USR 60009
+2010 IF X&lt;&gt;38 AND X&lt;&gt;54 THEN PRINT &quot;I talk.&quot;: RETURN
+2011 IF x=54 THEN GO TO 2016
+2012 IF PEEK (T+O)&lt;&gt;WVV THEN LET ob=ob+O: PRINT &quot;The sword teleports to my hand.&quot;: POKE T+O,WVV: RETURN
+2014 GO TO y
+2015 IF PEEK (t+OW)&lt;&gt;WVV THEN GO TO Y
+2016 IF PEEK (t+ow)&lt;&gt;wvv THEN GO TO y
+2018 GO TO 6600
+2020 IF m&lt;&gt;o THEN PRINT &quot;Pardon?&quot;: RETURN
+2022 GO SUB c: LET p=op: GO SUB 1102: IF a$=&quot;&quot; THEN GO TO u
+2024 IF NOT n THEN GO TO ee
+2026 IF NOT PEEK (m2+n) THEN PRINT &quot;I can&#x27;t talk to&quot;&#x27;a$: RETURN
+2027 IF USR 60033 THEN PRINT &quot;Missing &quot;&quot;&quot;&quot;&quot;: RETURN
+2028 PRINT INK s;&quot;I talk to &quot;;a$
+2030 IF n&lt;oo OR n&gt;26 THEN GO TO 2090
+2034 LET p=n+c/w: LET b$=a$: LET j=n: LET n=USR 60003: IF NOT n THEN GO TO 2080
+2037 GO SUB c: IF n&lt;&gt;22 THEN GO TO 2054
+2038 GO SUB b: IF a$=&quot;&quot; THEN GO TO 2048
+2040 GO SUB cn: IF m&lt;&gt;o THEN RETURN
+2042 IF NOT n THEN PRINT b$;&quot; says - &quot;: GO TO cc
+2044 IF USR 60009&lt;&gt;64 THEN RETURN
+2046 IF n=41 OR n=26 THEN GO TO 2099
+2047 PRINT b$;&quot; gives me &quot;;CHR$ or AND LEN a$+LEN b$&gt;w+oq;a$: POKE n+t,wvv: LET ob=ob+o: GO TO e
+2048 IF x&lt;&gt;64 THEN RETURN
+2050 GO SUB c: GO SUB b: IF NOT n THEN RETURN
+2052 GO TO 2046
+2054 IF n&lt;&gt;r THEN GO TO 2061
+2055 GO SUB b: IF a$=&quot;&quot; THEN RETURN
+2056 IF NOT n THEN GO TO 2042
+2058 IF n=41 OR n=26 THEN GO TO 2099
+2060 PRINT b$;&quot; drops &quot;;CHR$ or AND LEN a$+LEN b$&gt;23;a$: POKE n+t,op: RETURN
+2062 IF n&gt;2 THEN GO TO 2070
+2064 LET p=op: GO SUB b: IF a$=&quot;&quot; THEN RETURN
+2066 IF NOT n THEN PRINT b$;&quot;says -&quot;: GO TO cc
+2068 PRINT b$;&quot; takes &quot;;CHR$ or AND LEN a$+LEN b$&gt;23;a$: POKE n+t,c/w+j: GO TO e
+2070 IF n&lt;&gt;37 THEN GO TO 2099
+2072 IF PEEK (t+41)&lt;&gt;100+j OR PEEK (t+26)&lt;&gt;100+j THEN RETURN
+2074 LET p=op: GO SUB b-r: IF a$(oo TO or)=&quot;DAR&quot; THEN LET n=VAL &quot;31&quot;
+2075 IF NOT n THEN RETURN
+2076 IF n&lt;&gt;31 AND RND&gt;.5 THEN GO TO 2099
+2078 GO TO 4730
+2080 IF j=23 THEN GO TO 8200
+2081 IF RND&gt;o/w OR USR VAL &quot;60009&quot;=VAL &quot;55&quot; THEN PRINT b$;&quot; says - Hello.&quot;
+2082 RETURN
+2090 IF NOT co AND RND&gt;.7 THEN LET co=o: LET mo=PEEK (m2+n): RETURN
+2095 RETURN
+2099 PRINT b$;&quot; says - NO!&quot;: RETURN
+2105 IF op=27 AND PEEK (M1+26)=op AND mo&lt;&gt;ow THEN LET np=37: GO SUB h: PRINT &quot;Zelda and Timandra leave.&quot;: RETURN
+2110 IF PEEK nn&lt;&gt;OR THEN GO SUB 200
+2115 IF (op&lt;&gt;VAL &quot;72&quot; AND op&lt;&gt;VAL &quot;36&quot;) OR (x&lt;&gt;VAL &quot;39&quot; AND x&lt;&gt;VAL &quot;65&quot;) THEN GO TO VAL &quot;2135&quot;
+2116 IF PEEK (m2+VAL &quot;26&quot;) AND NOT O(o+oq) THEN PRINT &quot;With one blast of her fiery&quot;&#x27;&quot;breath, Zelda burns me to a pileof smouldering ashes.&quot;: LET hp=Z: RETURN
+2120 IF OP=36 THEN LET NP=72: GO TO h
+2125 IF OP=72 THEN LET NP=36: GO TO h
+2130 GO TO u
+2135 IF x&lt;&gt;40 THEN GO TO u
+2140 IF OP=OI THEN LET NP=OV: GO TO 350
+2145 IF OP&lt;&gt;OV THEN GO TO u
+2150 IF NOT O(S) OR O(S)=W THEN PRINT &quot;It&#x27;s not tied to anything.&quot;: RETURN
+2155 IF o(S)=O THEN PRINT &quot;The stalagmite breaks!&quot;&#x27;&quot;I plunge to my death on the&quot;&#x27;&quot;jagged rocks below.&quot;: LET HP=Z: GO TO E
+2160 LET np=OI: GO TO h
+2205 IF x&lt;&gt;40 OR op&lt;&gt;ov THEN GO TO U
+2206 IF PEEK (t+r)&lt;&gt;wvv THEN PRINT &quot;I have no rope.&quot;: RETURN
+2210 IF PEEK nn=or THEN PRINT &quot;To what?&quot;: RETURN
+2220 GO SUB C: GO SUB C: IF x&lt;&gt;OQ THEN GO TO U
+2225 PRINT &quot;I tie the rope to a stalagmite.&quot;: LET ob=ob-o: POKE t+R,C: LET o(S)=o(S)+O: RETURN
+2310 LET p=wvv: GO SUB b: IF a$=&quot;&quot; THEN GO TO u
+2315 IF NOT n THEN GO TO cc
+2320 LET ob=ob-o: PRINT &quot;I throw &quot;;a$
+2325 IF op&lt;&gt;g AND op&lt;&gt;17 THEN POKE t+n,op: RETURN
+2330 IF n=r THEN PRINT &quot;It hangs from a tree.&quot;: POKE t+n,c+o: RETURN
+2335 IF RND&gt;.5 THEN PRINT &quot;It lands in the river and is&quot;&#x27;&quot;carried down stream.&quot;: POKE t+n,16: RETURN
+2340 PRINT &quot;It lands on the opposite river  bank.&quot;: POKE t+n,g*(op=os)+os*(op=g): RETURN
+2410 LET p=253: GO SUB b: IF NOT n THEN GO TO cc
+2420 IF N&lt;&gt;i AND N&lt;&gt;oz AND N&lt;&gt;16 AND N&lt;&gt;39 THEN PRINT &quot;I can&#x27;t wear the &quot;;a$: RETURN
+2430 IF PEEK (t+n)=254 THEN PRINT &quot;I already am.&quot;: RETURN
+2440 IF PEEK (t+n)&lt;&gt;WVV THEN GO TO CC
+2450 PRINT &quot;I wear the &quot;;a$: POKE t+n,254: RETURN
+2510 LET p=252: GO SUB b
+2520 IF NOT n THEN GO TO U
+2525 IF N=31 AND PEEK nn&lt;&gt;13 THEN GO TO 2550
+2530 IF PEEK (t+n)&lt;&gt;254 THEN PRINT &quot;I&#x27;m not wearing &quot;;CHR$ or AND LEN a$&gt;oi;a$: RETURN
+2540 POKE t+n,WVV: PRINT &quot;I remove the &quot;;a$: RETURN
+2550 GO SUB cn: IF m&lt;&gt;s THEN PRINT &quot;From what?&quot;: RETURN
+2555 LET p=WVV: GO SUB b: IF n=i THEN PRINT &quot;I remove the diamonds.&quot;: LET ob=ob+o: POKE t+31,wvv: RETURN
+2560 GO TO U
+2610 GO SUB 2650
+2615 IF NOT j THEN RETURN
+2620 IF O(j) THEN PRINT &quot;It&#x27;s not locked.&quot;: RETURN
+2625 GO SUB c: IF PEEK nn=13 THEN PRINT &quot;What with?&quot;: RETURN
+2630 IF PEEK vn&lt;&gt;87 THEN GO TO 2625
+2632 GO SUB C: LET p=wvv: GO SUB b: IF a$=&quot;&quot; THEN PRINT &quot;Pardon?&quot;: RETURN
+2633 IF NOT n THEN GO TO CC
+2634 IF n=23 AND (j=F OR j=V OR j=R) THEN LET o(j)=O: GO TO K
+2636 IF n=37 AND j=of THEN LET o(j)=O: GO TO K
+2638 IF n=OO AND j=OF THEN PRINT &quot;The lock is stiff. If I force itthe GOLD KEY will break.&quot;: RETURN
+2639 IF N=38 AND J=13 THEN LET O(J)=O: GO TO K
+2640 PRINT &quot;It doesn&#x27;t fit.&quot;: RETURN
+2650 LET J=Z: LET N=Z: IF x=OO THEN RETURN
+2655 IF x&lt;&gt;G THEN GO TO 2674
+2660 IF op=43 THEN LET j=14: RETURN
+2665 IF op=OR THEN LET j=OR: RETURN
+2670 PRINT &quot;I see no chest!&quot;: RETURN
+2674 IF (x=q OR x=oz) AND (op=55 OR op=41) THEN LET j=29: RETURN
+2675 IF x=S AND OP=57 THEN LET J=21: RETURN
+2676 IF (x=O OR x=I) AND (OP=56 OR OP=59) THEN LET J=22: RETURN
+2677 IF (x=V OR x=O) AND (OP=59 OR OP=60) THEN LET J=23: RETURN
+2679 IF x&gt;F THEN GO TO U
+2680 IF OP=O OR OP=W THEN LET J=O: RETURN
+2685 IF OP=13 OR (OP=10 AND x=3) THEN LET J=4: RETURN
+2688 IF OP=12 OR (OP=10 AND x=2) THEN LET J=5: RETURN
+2690 IF OP=11 OR (OP=10 AND x=4) THEN LET J=3: RETURN
+2695 IF OP=10 THEN PRINT &quot;Which door?&quot;: RETURN
+2696 IF OP=39 OR OP=45 THEN PRINT &quot;It&#x27;s perfectly smooth, there&#x27;s  nothing to grip.&quot;: RETURN
+2699 GO TO U
+2715 GO SUB 2650: IF X=7 AND OP=57 AND NOT O(OW) THEN PRINT &quot;A huge sword crashes down and   slices me in two.&quot;: LET hp=z: RETURN
+2716 IF x=oo AND PEEK (t+22)&gt;253 THEN GO TO 2750
+2717 IF X=oo THEN GO TO U
+2718 IF NOT j THEN RETURN
+2720 IF NOT o(j) THEN PRINT &quot;It&#x27;s locked.&quot;: RETURN
+2730 IF o(j)=W THEN PRINT &quot;It&#x27;s already open.&quot;: RETURN
+2740 LET o(j)=W: GO TO K
+2750 GO SUB e: PRINT &quot;A Jinni bursts from the bottle. The Jinni says - NOT YOU AGAIN.&quot;: LET OB=OB-O: POKE t+VAL &quot;22&quot;,c
+2752 GO SUB e: IF op=58 THEN PRINT &quot;The Jinni smashes the stone door.&quot;: LET o(VAL &quot;24&quot;)=r: LET l=l+v
+2754 GO SUB e: IF op=PEEK (m1+26) AND PEEK (m2+26) THEN PRINT &quot;The Jinni slays Zelda.&quot;: POKE m2+26,Z
+2760 PRINT &quot;The Jinni snatches the bottle   and leaves.&quot;: RETURN
+2810 GO SUB 2650: IF NOT j THEN RETURN
+2820 IF o(j)&lt;&gt;w THEN PRINT &quot;It&#x27;s already closed.&quot;: RETURN
+2830 LET o(j)=O: GO TO K
+2905 LET p=WVV: GO SUB b: IF NOT n THEN GO TO U
+2910 IF PEEK (t+n)&lt;254 THEN GO TO 2315
+2915 IF n=17 THEN PRINT &quot;It chronicles Tylon&#x27;s failed&quot;&#x27;&quot;attempts to turn iron to gold.&quot;: RETURN
+2920 IF n=33 THEN PRINT &quot;It&#x27;s the FIRE PROTECTION SCROLL.You will need graphite to cast  it.&quot;: RETURN
+2930 IF n=40 THEN PRINT &quot;It&#x27;s the CURE DISEASE SPELL.&quot;&#x27;&quot;You will need dried moss to castit.&quot;: RETURN
+2935 IF n=42 THEN PRINT &quot;It&#x27;s the HEAL SPELL. No&quot;&#x27;&quot;ingredients needed.&quot;: RETURN
+2940 GO TO U
+3010 GO SUB 2650
+3015 IF NOT j THEN RETURN
+3020 IF NOT o(j) THEN PRINT &quot;It&#x27;s already locked.&quot;: RETURN
+3025 GO SUB C: IF PEEK VN=OR THEN PRINT &quot;What with?&quot;: RETURN
+3035 GO SUB C: LET P=255: GO SUB 1105: IF A$=&quot;&quot; THEN GO TO U
+3036 IF NOT N THEN PRINT &quot;I don&#x27;t have the &quot;;a$: RETURN
+3040 IF N=23 AND (J=F OR J=V OR J=R) THEN GO TO 3099
+3045 IF N=37 AND J=14 THEN GO TO 3099
+3080 PRINT &quot;I can&#x27;t.&quot;: RETURN
+3099 LET O(J)=Z: GO TO K
+3110 IF op&lt;&gt;G AND op&lt;&gt;OS THEN PRINT &quot;It&#x27;s far too dangerous.&quot;: RETURN
+3120 IF OB THEN PRINT &quot;I&#x27;m carrying too much.&quot;: RETURN
+3130 IF op=g THEN LET Np=17
+3140 IF op=VAL &quot;17&quot; THEN LET Np=VAL &quot;8&quot;
+3150 GO TO h
+3205 GO SUB e: LET p=wvr: GO SUB b: IF a$=&quot;&quot; THEN GO TO U
+3210 IF NOT n THEN GO TO cc
+3215 LET j=n
+3220 GO SUB cn: IF PEEK vn=VAL &quot;13&quot; THEN PRINT &quot;To who?&quot;: RETURN
+3230 LET p=op: GO SUB 1102: IF NOT PEEK (m2+n) OR a$=&quot;&quot; THEN GO TO u
+3235 IF NOT n THEN PRINT &quot;I don&#x27;t see &quot;&#x27;a$: RETURN
+3240 PRINT a$&#x27;&quot;says - Thank you&quot;: LET ob=ob-o: POKE t+j,VAL &quot;100&quot;+n
+3245 GO SUB e: IF j&lt;&gt;r AND mo&lt;&gt;s AND n=OG AND NOT o(I) THEN LET o(I)=O: LET l=l+v: PRINT &quot;You may take anything you need.&quot;: RETURN
+3250 IF op&lt;&gt;VAL &quot;68&quot; OR j&lt;&gt;ow THEN RETURN
+3255 CLS : PRINT &quot;Grako says - SAGAGOO&quot;&#x27;&quot;The moonstone burns brightly as power increases.&quot;
+3260 GO SUB 6600: IF o(VAL &quot;26&quot;)&lt;&gt;r THEN GO TO 6760
+3265 GO TO 6675
+3410 IF x=VAL &quot;37&quot; AND OP=VAL &quot;47&quot; AND O(oo)=o THEN LET o(oo)=w: PRINT &quot;I pull the boat into the sea.&quot;: RETURN
+3411 IF NOT o(Q) AND x=VAL &quot;60&quot; AND op=VAL &quot;44&quot; THEN LET l=l+w: PRINT &quot;O.K.&quot;&#x27;&quot;I hear a sliding sound.&quot;: LET o(Q)=W: RETURN
+3415 IF x&lt;&gt;VAL &quot;40&quot; THEN GO TO U
+3416 IF PEEK (t+r)=c+o THEN GO TO 3430
+3420 IF PEEK (t+R)&lt;&gt;C THEN PRINT &quot;It&#x27;s not tied to anything.&quot;: RETURN
+3425 IF o(S)=O THEN LET l=l+w: PRINT &quot;The stalagmite breaks&quot;: LET o(S)=W: POKE t+R,WVV: LET ob=ob+O: POKE t+VAL &quot;25&quot;,op: RETURN
+3430 PRINT &quot;It will hold my weight.&quot;: RETURN
+3502 LET M=USR 60015: IF M AND M&lt;S THEN GO TO 3590
+3505 IF USR 60000=W THEN GO SUB C
+3515 IF x=G AND OP=43 THEN LET M=14: LET N=83: GO TO 3580
+3520 IF X=G AND OP=OR THEN LET M=OR: LET N=84: GO TO 3580
+3525 IF X=23 AND OP=42 THEN LET N=80: GO TO 3585
+3530 IF (X=21 OR X=22) AND PEEK (T+28)=WVV THEN LET N=81: GO TO 3585
+3535 IF (X=41 OR X=42) AND PEEK (T+4)=WVV THEN LET N=82: GO TO 3585
+3540 IF X=9 AND OP=41 THEN LET N=85: GO TO 3585
+3545 IF x=10 AND op=55 THEN LET n=86: GO TO 3585
+3575 GO TO 3830
+3577 GO TO u
+3580 IF O(M)&lt;&gt;W THEN PRINT &quot;I can&#x27;t. It&#x27;s shut.&quot;: RETURN
+3585 GO TO 450
+3590 LET J=OP: GO SUB 990: IF NOT NP THEN GO TO U
+3591 LET N=NP: GO TO VAL &quot;450&quot;
+3605 IF x=VAL &quot;63&quot; AND op=VAL &quot;45&quot; THEN LET np=di: GO TO h
+3610 GO TO U
+3700 LET p=wvv: GO SUB b: IF a$=&quot;&quot; THEN GO TO u
+3710 IF NOT n THEN GO TO cc
+3720 IF n=of THEN POKE T+N,C: LET OB=OB-O: PRINT &quot;I&#x27;m healed and refreshed.&quot;: LET hp=ov: RETURN
+3730 PRINT &quot;I&#x27;m not that hungry.&quot;: RETURN
+3820 IF X=VAL &quot;43&quot; AND PEEK (36+T)=WVV AND PEEK (VAL &quot;30&quot;+T)=WVV THEN PRINT &quot;Torch lit.&quot;: POKE VAL &quot;36&quot;+T,C: POKE VAL &quot;29&quot;+T,WVV: RETURN
+3830 PRINT &quot;I can&#x27;t do that.&quot;: RETURN
+3920 IF X=VAL &quot;43&quot; AND PEEK (T+VAL &quot;29&quot;)=WVV THEN PRINT &quot;Torch extinguished.&quot;: POKE T+VAL &quot;29&quot;,C: POKE T+VAL &quot;36&quot;,WVV: GO SUB VAL &quot;8100&quot;: RETURN
+3930 GO TO U
+4010 IF X&lt;&gt;VAL &quot;44&quot; THEN GO TO U
+4012 IF op&lt;&gt;VAL &quot;42&quot; THEN GO TO VAL &quot;4040&quot;
+4015 IF O(OI) THEN PRINT &quot;I turn the furnace off.&quot;: LET O(OI)=Z: RETURN
+4020 IF NOT O(OI) THEN PRINT &quot;I turn the furnace on.&quot;: LET o(OI)=O
+4025 IF o(OS)=W THEN GO TO Y
+4030 PRINT &quot;It heats up.&quot;: IF PEEK (t+VAL &quot;31&quot;)=VAL &quot;81&quot; AND PEEK (t+VAL &quot;28&quot;)=VAL &quot;80&quot; THEN LET l=l+v: POKE t+VAL &quot;32&quot;,VAL &quot;81&quot;: POKE t+VAL &quot;31&quot;,c
+4035 RETURN
+4040 IF op&lt;&gt;VAL &quot;45&quot; THEN GO TO U
+4050 GO SUB C: LET a=PEEK nn-48: LET n=PEEK (PEEK nd+256*PEEK (nd+o)+o)-48: IF n&lt;&gt;-35 THEN LET a=a*oz+n
+4055 IF a&lt;O OR a&gt;35 THEN GO TO U
+4060 LET di=a: PRINT &quot;I turn the dial to &quot;;a: RETURN
+4105 IF x&lt;&gt;34 THEN GO TO 4150
+4110 GO SUB c: IF USR VAL &quot;6e4&quot;&lt;&gt;f THEN GO TO U
+4115 GO SUB C: LET p=WVV: GO SUB 1105
+4120 IF NOT n THEN GO TO U
+4125 IF n&lt;&gt;ow OR NOT o(27) THEN GO TO Y
+4130 IF PEEK (t+oi)&lt;&gt;254 OR (op&lt;&gt;54 AND op&lt;&gt;67) THEN PRINT &quot;I don&#x27;t see a ward.&quot;: RETURN
+4135 IF op=54 THEN LET o(25)=O
+4140 IF op=67 THEN LET o(25)=W
+4145 LET l=l+v: PRINT &quot;The staff smashes the ward.&quot;: RETURN
+4150 IF x THEN GO TO Y
+4155 LET p=op: GO SUB 1102: IF NOT n THEN GO TO U
+4160 LET j=n: LET b$=a$: IF NOT o(27) THEN GO TO 1710
+4165 GO SUB cn: IF m&lt;&gt;f THEN GO TO 1710
+4170 LET p=wvr: GO SUB b: IF NOT n THEN GO TO U
+4175 IF n&lt;&gt;ow THEN GO TO 1710
+4180 IF j&gt;26 THEN PRINT &quot;It has no effect.&quot;: RETURN
+4185 PRINT b$;&quot; is turned&quot;&#x27;&quot;to dust.&quot;: POKE m2+j,z: POKE m1+j,c: RETURN
+4205 LET P=253: GO SUB b: IF A$=&quot;&quot; THEN GO TO U
+4210 IF NOT N THEN GO TO CC
+4212 GO SUB e: IF n=og AND op=56 THEN LET OB=OB-O: LET l=l+v: PRINT &quot;O.K.&quot;&#x27;&quot;The Karush charges its own&quot;: GO SUB e: PRINT &quot;reflection. The bars are bent   and the mirror is smashed into  fine fragments.&quot;: POKE T+og,c: GO TO 9555
+4215 LET j=n: GO SUB C: IF PEEK NN=or THEN PRINT &quot;Into what?&quot;: RETURN
+4220 IF PEEK VN&lt;&gt;73 THEN GO TO 4215
+4227 GO SUB C: IF X=58 AND PEEK (T+w)=WVV THEN POKE T+w,254: GO TO K
+4230 IF X=g THEN GO TO 4280
+4235 IF X=41 OR X=42 THEN GO TO 4270
+4240 IF X=21 OR X=22 THEN GO TO 4260
+4245 IF X&lt;&gt;23 OR OP&lt;&gt;42 THEN GO TO U
+4250 IF J&lt;&gt;28 THEN PRINT &quot;I can&#x27;t. It&#x27;s only designed to  take the TUNGSTEN CRUCIBLE.&quot;: RETURN
+4254 POKE T+J,80: LET OB=ob-O: GO TO K
+4260 IF PEEK (T+28)&lt;&gt;wvv THEN GO TO U
+4262 IF j&lt;&gt;31 THEN PRINT &quot;It wont fit in.&quot;: RETURN
+4264 POKE T+31,81: GO TO D
+4270 IF PEEK (T+4)&lt;&gt;wvv THEN PRINT &quot;I don&#x27;t have the BLACK SACK.&quot;: RETURN
+4272 IF j=f THEN GO TO sl
+4274 POKE 23549,82: LET M=Z: LET N=USR 60024
+4275 IF N THEN LET M=M+o: LET N=USR 60027: GO TO 4275
+4276 IF m&gt;r THEN PRINT &quot;The sack is already full.&quot;: RETURN
+4278 POKE T+J,82: GO TO D
+4280 IF op=or THEN GO TO 4885
+4281 IF op&lt;&gt;43 THEN PRINT &quot;I see no chest.&quot;: RETURN
+4282 IF o(of)=w THEN POKE T+J,83: GO TO D
+4283 PRINT &quot;It&#x27;s closed.&quot;: RETURN
+4285 IF o(ow)=w THEN POKE T+J,84: GO TO D
+4286 GO TO 4883
+4299 LET OB=OB-O: GO TO K
+4305 IF PEEK NN=73 THEN GO SUB c
+4310 IF (x&lt;&gt;og AND X&lt;&gt;os) OR op&lt;&gt;46 THEN GO TO U
+4320 IF NOT PEEK (T+VAL &quot;35&quot;) THEN LET l=l+w: LET N=VAL &quot;35&quot;: GO TO VAL &quot;1409&quot;
+4330 PRINT &quot;I&#x27;ve found nothing.&quot;: RETURN
+4405 LET P=WVV: GO SUB b: IF A$=&quot;&quot; OR OP&lt;&gt;42 THEN GO TO U
+4410 LET j=n: IF NOT N THEN GO TO CC
+4415 GO SUB CN: IF M&lt;&gt;W THEN PRINT &quot;Into what?&quot;: RETURN
+4430 IF X&lt;&gt;R AND X&lt;&gt;45 AND X&lt;&gt;46 THEN GO TO U
+4435 IF j=oo OR j=oi THEN PRINT &quot;It turns to IRON.&quot;: POKE t+j,c
+4436 IF PEEK (T+OI)=WVF THEN POKE T+OI,C: POKE T+39,WVF
+4440 IF j=oo THEN LET l=l+v: POKE t+VAL &quot;37&quot;,wvv: RETURN
+4445 IF j=oi THEN POKE 39+t,wvv: RETURN
+4450 GO TO Y
+4510 LET P=WVV: GO SUB b
+4520 IF n&lt;&gt;or OR o(oo) THEN GO TO Y
+4530 LET l=l+r: PRINT &quot;A Jinni bursts from the lamp.&quot;&#x27;&quot;The Jinni says:&quot;: GO SUB e: PRINT &quot;If you expect 3 wishes you&#x27;re infantasy land.&quot;&#x27;&quot;The Jinni disappears.&quot;: GO SUB e
+4540 LET o(OO)=O: RETURN
+4605 IF USR VAL &quot;6e4&quot;=o THEN GO SUB c
+4606 IF PEEK (t+w)=wvf THEN PRINT &quot;I can&#x27;t hear anything.&quot;: RETURN
+4610 LET p=wvv: GO SUB b
+4620 IF n=35 AND PEEK (t+35)=wvv THEN PRINT &quot;It says:&quot;&#x27;&quot;Death beetles hate blue mushroom&quot;: RETURN
+4630 PRINT &quot;I hear nothing in particular.&quot;: RETURN
+4705 IF PEEK (t+41)&lt;&gt;wvv OR PEEK (t+26)&lt;&gt;wvv THEN PRINT &quot;I have nothing to shoot&quot;: RETURN
+4710 LET p=op: GO SUB 1102: IF a$=&quot;&quot; THEN GO TO u
+4715 IF a$(oo TO or)=&quot;DAR&quot; THEN LET n=31
+4720 IF NOT n THEN GO TO ee
+4725 IF RND&lt;.8 THEN PRINT &quot;I missed.&quot;: RETURN
+4727 PRINT &quot;I shoot &quot;;a$
+4730 IF n&lt;&gt;VAL &quot;31&quot; AND n&gt;VAL &quot;25&quot; THEN PRINT &quot;The arrow bounces off its&quot;&#x27;&quot;rubbery hide.&quot;: RETURN
+4735 PRINT &quot;The arrow slays&quot;&#x27;a$: POKE (m2+n),z: RETURN
+4810 IF x&lt;&gt;47 THEN GO TO 4830
+4815 IF PEEK (t+33)&lt;&gt;wvv THEN GO TO 4880
+4820 IF PEEK (t+32)&lt;&gt;wvv THEN GO TO 4885
+4825 PRINT &quot;I&#x27;m protected from FIRE.&quot;: POKE t+33,c: POKE t+32,c: LET ob=ob-w: RETURN
+4850 IF x&lt;&gt;49 THEN GO TO 4870
+4855 IF PEEK (t+40)&lt;&gt;wvv THEN GO TO 4880
+4860 IF PEEK (t+44)&lt;&gt;wvv THEN GO TO 4885
+4865 POKE t+40,c: POKE t+44,c: LET ob=ob-w: IF o(VAL &quot;28&quot;) THEN LET l=l+v: PRINT &quot;I&#x27;ve been cured.&quot;: LET o(VAL &quot;28&quot;)=z: RETURN
+4867 GO TO y
+4870 IF x&lt;&gt;50 THEN GO TO U
+4872 IF PEEK (t+42)&lt;&gt;wvv THEN GO TO 4880
+4874 LET l=l+w: PRINT &quot;I&#x27;m healed.&quot;: POKE t+VAL &quot;42&quot;,c: LET ob=ob-o: LET hp=ov: RETURN
+4880 PRINT &quot;I don&#x27;t have the SCROLL.&quot;: RETURN
+4885 PRINT &quot;I don&#x27;t have the INGREDIENT.&quot;: RETURN
+4910 IF op=69 THEN LET op=OI: GO TO H
+4920 IF X&lt;&gt;37 THEN GO TO U
+4925 IF op&lt;71 THEN PRINT &quot;I&#x27;m not in the boat.&quot;: RETURN
+4930 IF op&gt;VAL &quot;72&quot; THEN LET np=op-VAL &quot;26&quot;: GO TO h
+4935 GO TO sl
+5005 IF PEEK (t+21)&lt;&gt;wvv THEN PRINT &quot;I have no oars!&quot;: RETURN
+5010 IF op&lt;71 OR op=72 THEN PRINT &quot;I&#x27;m not in the boat!&quot;: RETURN
+5015 IF PEEK nn&lt;&gt;or THEN GO SUB C: GO TO VAL &quot;5015&quot;
+5020 LET m=USR 60015: IF NOT m OR m&gt;4 THEN PRINT &quot;In which direction?&quot;: RETURN
+5022 IF op&lt;&gt;71 THEN GO TO VAL &quot;5050&quot;
+5025 IF m=O OR m=R THEN PRINT &quot;The boat strikes jagged rocks   and sinks.&quot;: GO TO VAL &quot;5065&quot;
+5030 IF NOT o(19) THEN PRINT &quot;The boat sinks.&quot;: GO TO 5065
+5035 IF m=4 AND PEEK (t+2)&lt;&gt;254 THEN PRINT &quot;I&#x27;m charmed by the Siren song   and the boat sinks.&quot;: GO TO 5065
+5040 IF m=4 THEN LET np=74: GO TO h
+5045 LET np=73: GO TO h
+5050 IF m=w AND op=74 THEN LET np=71: GO TO h
+5055 IF m=4 AND op=73 THEN LET np=71: GO TO h
+5060 PRINT &quot;I can&#x27;t row in that direction.&quot;: RETURN
+5065 GO SUB e: PRINT &quot;I&#x27;M DROWNED.&quot;: LET HP=Z: RETURN
+5110 IF x&lt;&gt;52 OR PEEK (t+15)&lt;&gt;WVV OR op&lt;&gt;57 THEN GO TO U
+5120 LET l=l+w: PRINT &quot;O.K. The sword arm is locked.&quot;: POKE T+OV,C: LET OB=OB-O: LET o(OW)=O: RETURN
+5210 IF x=VAL &quot;53&quot; AND NOT O(VAL &quot;20&quot;) AND OP=VAL &quot;29&quot; THEN LET l=l+v: PRINT &quot;O.K.&quot;&#x27;&quot;Timandra says - THANK YOU&quot; AND PEEK (m2+24): LET o(20)=o: RETURN
+5215 IF x=40 AND op=ov AND PEEK (t+r)=c THEN PRINT &quot;I untie the rope.&quot;: POKE t+r,op: LET o(s)=o(s)-o: RETURN
+5220 GO TO U
+5300 GO TO VAL &quot;4100&quot;
+5410 IF PEEK (t+R)=c+o AND op=G THEN GO TO VAL &quot;3130&quot;
+5420 GO TO u
+5500 IF op&lt;&gt;VAL &quot;71&quot; THEN GO TO u
+5510 GO SUB cn: IF NOT m THEN PRINT &quot;What with?&quot;: RETURN
+5515 IF m=g THEN GO TO VAL &quot;5510&quot;
+5520 LET p=wvv: GO SUB b: IF a$=&quot;&quot; THEN GO TO u
+5530 IF NOT n THEN GO TO cc
+5540 IF o(oq)=w OR n&lt;&gt;VAL &quot;27&quot; THEN PRINT &quot;It&#x27;s no use!&quot;: RETURN
+5550 LET l=l+v: LET o(oq)=w: PRINT &quot;I bail out the water.&quot;: RETURN
+5600 PRINT &quot;Please be more specific.&quot;: RETURN
+6005 LET N=o+INT (RND*of): LET M=o+INT (RND*26)
+6010 IF NOT PEEK (n+m2) OR NOT PEEK (m+m2) THEN RETURN
+6015 IF PEEK (n+m1)&lt;&gt;PEEK (m+m1) OR PEEK (n+m3)=PEEK (m+m3) THEN RETURN
+6020 GO SUB 6050: IF NOT PEEK (m2+m) THEN RETURN
+6025 LET A=N: LET N=M: LET M=A: GO SUB 6050: RETURN
+6050 GO SUB e: IF PEEK (M1+N)=OP THEN RESTORE 9600+N: READ A$: RESTORE 9600+M: READ b$: PRINT &quot;The &quot; AND VAL a$(o);a$(w TO );&quot; attacks&quot;&#x27;&quot;the &quot; AND VAL a$(o);b$(w TO )
+6055 RANDOMIZE : IF RND*oq&lt;PEEK (m2+m) THEN RETURN
+6060 GO SUB e: LET N$=&quot; is injured.&quot;: POKE m2+m,PEEK (m2+m)-PEEK (m2+n)*w*RND: IF PEEK (m2+m)&gt;230 THEN POKE m2+m,z: LET n$=&quot; is killed.&quot;
+6065 IF PEEK (m1+n)=op THEN PRINT &quot;The &quot; AND VAL b$(o);b$(w TO );n$
+6070 RETURN
+6105 IF PEEK (M1+N)&lt;&gt;op THEN RETURN
+6110 GO SUB E: RESTORE 9600+n: READ a$: PRINT &quot;The &quot; AND VAL A$(o);a$(w TO );&quot; attacks me.&quot;
+6112 IF RND&lt;.6 THEN RETURN
+6115 LET hp=hp-PEEK (M2+N)/W: IF hp&lt;=z THEN LET hp=z: PRINT &quot;AGH ! I&#x27;m dead.&quot;: RETURN
+6120 PRINT &quot;OUCH ! I&#x27;m injured.&quot;: RETURN
+6210 RANDOMIZE : LET co=z: POKE 23549,op: LET X=USR 60030
+6220 IF NOT hp OR NOT x THEN RETURN
+6230 IF PEEK (m3+X)=mo AND PEEK (m2+X) THEN LET CO=O: LET N=X: GO SUB 6100
+6240 LET x=USR 60027: GO TO 6220
+6250 RETURN
+6300 IF op&gt;=27 AND op&lt;=36 THEN GO TO 6350
+6302 IF op=PEEK (m1+33) THEN GO TO 6370
+6305 LET m=o+INT (RND*6): LET N=1+2*INT (RND*11): IF NOT PEEK (m2+n) THEN RETURN
+6310 LET j=PEEK (m1+n): IF NOT j OR j&gt;72 THEN RETURN
+6312 GO SUB 990: IF NOT np THEN RETURN
+6315 IF OP=j THEN RESTORE 9600+n: READ a$: PRINT &quot;The &quot; AND VAL a$(o);a$(w TO );&quot; leaves.&quot;
+6320 IF op=np THEN RESTORE 9600+n: READ a$: PRINT &quot;The &quot; AND VAL a$(O);a$(W TO );&quot; enters&quot;
+6325 POKE m1+n,np: RETURN
+6351 LET P=PEEK (M1+1): IF P=255 THEN LET P=OP
+6352 POKE 23549,P: LET X=USR 60030
+6354 IF NOT X OR X&gt;14 THEN RETURN
+6356 IF (X=W OR X&gt;10) AND PEEK (M2+X) THEN LET N=X: LET J=OP: LET NP=Z: GO SUB 6315
+6358 LET X=USR 60027: GO TO 6354
+6370 IF PEEK (t+q)&lt;&gt;wvv AND PEEK (t+g)&lt;&gt;wvv THEN PRINT &quot;I&#x27;ve been attacked and devoured by death beetles.&quot;: LET hp=z: RETURN
+6375 LET N=VAL &quot;33&quot;: LET J=PEEK (M1+N): RESTORE 9800+J: READ a$
+6377 FOR m=O TO F: LET NP=VAL (a$(W*m-O TO W*m)): IF NP THEN GO TO 6381
+6380 NEXT m: RETURN
+6381 IF NP=PEEK (t+G) OR NP=PEEK (t+Q) THEN GO TO 6380
+6385 GO SUB 6315: IF PEEK (m2+29) THEN IF PEEK (m1+29)=PEEK (m1+33) THEN POKE m2+29,Z: LET x=V
+6390 IF PEEK (m2+30) THEN IF PEEK (m1+30)=PEEK (m1+33) THEN POKE m2+30,Z: LET x=V
+6395 IF x=V THEN LET l=l+v: PRINT &quot;I hear screams.&quot;
+6396 RETURN
+6510 IF PEEK (m2+25) AND O(w) THEN IF PEEK (m1+25)&lt;&gt;op THEN POKE m1+25,op: PRINT &quot;ELVA enters&quot; AND op&lt;70
+6520 IF PEEK (m2+VAL &quot;24&quot;) AND O(VAL &quot;20&quot;)=O AND PEEK (M1+VAL &quot;24&quot;)&lt;&gt;OP AND OP&lt;48 THEN GO SUB e: PRINT &quot;TIMANDRA enters&quot;: POKE m1+oq+v,op: IF OP=36 AND PEEK (m2+oq+7) THEN LET L=L+V: PRINT &#x27;&quot;Timandra says - HELLO&quot;: GO SUB e: PRINT &quot;Zelda says - HELLO&quot;&#x27;&quot;Timandra says - I rescued Zelda from one of those do-gooder&quot;: GO SUB e: PRINT &quot;knights when she was only a&quot;&#x27;&quot;dragonette.&quot;: LET o(oq+o)=w: GO TO e
+6530 RETURN
+6605 GO SUB e: LET o(VAL &quot;27&quot;)=R: LET o(VAL &quot;26&quot;)=o(VAL &quot;26&quot;)+O: PRINT &quot;The staff glows faintly with&quot;&#x27;&quot;latent energy.&quot;: LET a$=&quot; me&quot;: IF PEEK (t+12)&lt;&gt;WVV THEN LET A$=&quot; Grako&quot;
+6615 GO SUB e: IF o(VAL &quot;26&quot;)=O THEN PRINT &quot;I see a strange misty image&quot;&#x27;&quot;beside&quot;;a$
+6620 IF o(26)&gt;w THEN PRINT &quot;I see a strange misty figure&quot;&#x27;&quot;clawing towards&quot;;a$
+6625 IF o(26)=W THEN PRINT &quot;I see a strange human shaped&quot;&#x27;&quot;mist beside&quot;;a$
+6630 GO SUB e: IF o(26)=F THEN LET hp=z: PRINT &quot;The hand of Velnor strikes out  and drags&quot;;a$;&quot; through the void&quot;&#x27;&quot;to the fires of Abyss.&quot;
+6635 RETURN
+6710 PAUSE C/W: GO SUB e: PRINT INK s;&quot;The world enters eternal&quot;&#x27;&quot;darkness&quot;&#x27;&quot;Grako has achieved supreme power&quot;: GO SUB e: PRINT INK s;&quot;I have failed and all is lost.&quot;: GO TO 6900
+6760 PAUSE C/W: PRINT INK s;&quot;Congratulations on the&quot;&#x27;&quot;completion of your quest.&quot;: LET l=l+v: GO TO VAL &quot;6900&quot;
+6805 GO SUB e: LET O(VAL &quot;28&quot;)=O(VAL &quot;28&quot;)+o: IF O(VAL &quot;28&quot;)&lt;i THEN RETURN
+6810 LET n=o(VAL &quot;28&quot;): PRINT &quot;I feel &quot;;&quot;slightly &quot; AND n&gt;v AND n&lt;oz;&quot;rather &quot; AND n&gt;of AND n&lt;VAL &quot;20&quot;;&quot;very &quot; AND n&gt;oq;&quot;ill.&quot;&#x27;&quot;The world&#x27;s all misty and the   ground&#x27;s spinning. HELP!&quot; AND N&gt;VAL &quot;25&quot;: GO SUB e: IF N&gt;VAL &quot;26&quot; THEN PRINT &quot;I&#x27;ve just died from the black   death.&quot;: LET hp=z
+6815 RETURN
+6835 GO SUB e: IF PEEK (t+S)=WVV THEN PRINT &quot;The crystal is &quot;;&quot;glowing.&quot; AND o(og);&quot;dull &quot; AND NOT o(VAL &quot;18&quot;): IF o(og) AND op=PEEK (m1+34) THEN LET l=l+v: PRINT &quot;The Troll is turned to stone.&quot;: POKE m1+VAL &quot;34&quot;,c: POKE m2+VAL &quot;34&quot;,z
+6840 IF PEEK (t+S)=82 THEN RETURN
+6845 LET o(OG)=Z: IF op&lt;Q OR (op&gt;OI AND op&lt;VAL &quot;37&quot;) OR (op&gt;VAL &quot;45&quot; AND op&lt;VAL &quot;49&quot;) THEN LET o(OG)=O
+6850 RETURN
+6900 GO SUB e: PRINT INK v&#x27;&quot;You have completed &quot;;l;&quot;%&quot;: FOR n=z TO 70: NEXT n
+6910 PAUSE Z: PAUSE z: GO TO V
+8000 PRINT &quot;Nothing happens.&quot;: RETURN
+8001 PRINT &quot;O.K.&quot;: RETURN
+8002 PRINT &quot;I don&#x27;t have &quot;;CHR$ 13 AND LEN a$&gt;15;a$: RETURN
+8003 IF USR 60042 THEN RETURN
+8004 PRINT &quot;Don&#x27;t be silly!&quot;: RETURN
+8005 PRINT &quot;I don&#x27;t see &quot;;a$: RETURN
+8050 LET m=USR 60000: IF m OR PEEK vn=13 THEN GO SUB c: RETURN
+8060 GO SUB c: GO TO 8050
+8100 LET da=o: IF (PEEK (t+29)&lt;&gt;wvv AND PEEK (t+29)&lt;&gt;op AND PEEK (t+29)&lt;&gt;125) AND ((op&gt;37 AND op&lt;44) OR (op&gt;48 AND op&lt;69)) THEN LET da=z
+8110 RETURN
+8200 GO SUB e: LET b$=b$+&quot; says - &quot;: IF PEEK (T+OW)&lt;&gt;83 THEN GO TO 8220
+8205 IF NOT O(g) THEN LET O(G)=O: PRINT B$;&quot;Grakocan&#x27;t be beaten without Velnor&#x27;sstaff.&quot;: RETURN
+8210 PRINT b$;&quot;Be&quot;&#x27;&quot;off and find the staff.&quot;: RETURN
+8220 IF NOT qq THEN PRINT b$;&quot;Take care, you have the power to saveor damn the world!&quot;: LET qq=o: RETURN
+8225 PRINT b$;&quot;Grakocan never be slain.&quot;: RETURN
+9004 RANDOMIZE : LET l=z: LET qq=z: LET di=INT (RND*VAL &quot;36&quot;)+O: LET mu=Z: LET go=Z: LET ob=Z: LET vn=nn-O: LET np=w
+9005 LET MO=f: LET T1=I: LET T2=Z: LET DA=Z: LET SE=Z: LET sp=Z: INK I: PAPER Z: BORDER Z: CLS : LET HP=ov: LET co=o
+9026 DIM O(VAL &quot;30&quot;): LET o(VAL &quot;29&quot;)=o: LET O(O)=O: LET O(oq+w)=O: LET O(oq+r)=O: LET O(oq+f)=O
+9029 RANDOMIZE USR 60036: POKE t+of,c/w+RND*VAL &quot;25&quot;: RETURN
+9405 IF RND&gt;VAL &quot;.7&quot; THEN LET sp=Z: PRINT &quot;The large Urga-maul enters. He  carries a nasty knife.&quot;: POKE m1+g,op: LET co=O: LET mo=F: LET o(R)=O: RETURN
+9406 RETURN
+9410 LET se=Z: IF PEEK (m2+34) AND np&lt;&gt;c/f THEN LET NP=OP: LET se=VAL &quot;9410&quot;: PRINT &quot;The Large Troll says - Ya cheekywert.&quot;: LET co=o: LET mo=og: RETURN
+9411 RETURN
+9415 IF op=VAL &quot;54&quot; AND NOT o(VAL &quot;25&quot;) AND PEEK (t+oi)=wvf THEN PRINT &quot;The passage north is blocked by a glowing ward.&quot;
+9416 IF op&lt;&gt;VAL &quot;55&quot; OR o(VAL &quot;25&quot;) THEN RETURN
+9417 PRINT &quot;I&#x27;ve walked straight into a wardof disintegration and have been turned to dust.&quot;: LET hp=z: RETURN
+9420 IF np=VAL &quot;68&quot; AND o(VAL &quot;25&quot;)=o THEN GO TO VAL &quot;9417&quot;
+9421 RETURN
+9425 IF op&lt;&gt;67 OR PEEK (m1+27)=c THEN LET sp=z: RETURN
+9426 IF PEEK (m1+VAL &quot;27&quot;)=op AND PEEK (t+VAL &quot;33&quot;)=c THEN LET l=l+v: PRINT &quot;The Fire Demons notice my fire  protection and dissolve away.&quot;: POKE m1+27,c: POKE m1+VAL &quot;28&quot;,c: RETURN
+9427 LET co=o: LET mo=PEEK (m3+VAL &quot;27&quot;): RETURN
+9430 IF PEEK (T+r)&lt;VAL &quot;121&quot; OR NOT PEEK (M2+og) OR NP=of OR O(i) THEN RETURN
+9431 LET NP=OP: PRINT &quot;The Cavezats wont let thieves   leave.&quot;: RETURN
+9435 LET sp=z: IF PEEK (t+v)=VAL &quot;125&quot; AND PEEK (m1+VAL &quot;25&quot;)=op AND NOT PEEK (t+VAL &quot;26&quot;) AND RND&gt;VAL &quot;.8&quot; THEN PRINT &quot;Elva makes a Longbow and some   Arrows from an elm tree.&quot;: POKE t+VAL &quot;26&quot;,VAL &quot;125&quot;: POKE t+VAL &quot;41&quot;,VAL &quot;125&quot;
+9436 RETURN
+9440 IF PEEK (VAL &quot;26&quot;+m2) AND NOT o(oq+1) AND PEEK (t+VAL &quot;33&quot;)=wvv THEN GO TO VAL &quot;2116&quot;
+9441 RETURN
+9450 RANDOMIZE : IF op&lt;&gt;27 THEN LET sp=z: RETURN
+9451 IF PEEK (M1+26)=OP AND RND&gt;.9 THEN GO TO 9455
+9452 IF PEEK (M1+24)&lt;&gt;PEEK (M1+26) OR NOT PEEK (M2+24) OR NOT PEEK (M2+26) THEN RETURN
+9453 IF PEEK (M1+24)&lt;&gt;36 OR RND&lt;.6 THEN RETURN
+9454 POKE M1+24,OP: POKE M1+26,OP: PRINT &quot;Zelda flies in with Timandra.&quot;
+9455 GO SUB e: PRINT &quot;Timandra says - If you want to  cross the moat then climb up andwe&#x27;ll fly you over.&quot;: GO SUB e: RETURN
+9460 GO SUB e: IF OP&lt;&gt;PEEK (M1+22) OR NOT PEEK (M2+22) THEN LET SP=Z: RETURN
+9461 LET B$=&quot;OGERON&quot;: LET J=21: LET A$=&quot;the SWORD&quot;: LET N=O: IF PEEK (T+O)=O THEN GO TO 2068
+9462 IF PEEK (T+O)=121 THEN GO SUB 2047: PRINT B$;&quot; says - This is the sword of the great warrior Ashka.&quot;: GO TO e
+9463 IF NOT o(os) THEN LET o(os)=o: PRINT b$;&quot; says - Grako is held out in the Black tower.&quot;: RETURN
+9464 IF RND&gt;.7 THEN PRINT b$;&quot; says - Be off! The fate  of the world lies in your hands and time is short.&quot;: RETURN
+9465 RETURN
+9480 IF op&lt;&gt;65 THEN LET se=z
+9481 IF PEEK (M2+30) AND np&gt;65 THEN PRINT &quot;I can&#x27;t get past the Zalrogs.&quot;: LET np=65: RETURN
+9490 LET sp=9491
+9491 IF PEEK (t+43)=v THEN POKE t+VAL &quot;43&quot;,z: POKE t+VAL &quot;44&quot;,v: LET l=l+v
+9492 RETURN
+9496 IF NOT mu THEN LET mu=go
+9497 IF go&gt;mu+20 AND NOT PEEK (t+q) THEN POKE t+q,72
+9498 RETURN
+9505 IF O(w) THEN RETURN
+9506 LET sp=9405: PRINT &quot;I&#x27;ve been overpowered and&quot;&#x27;&quot;captured by Urga-Mauls. All of  my possessions have been taken.&quot;: LET o(w)=o: LET np=oo: FOR N=o TO VAL &quot;45&quot;: IF PEEK (t+n)&gt;wvr THEN POKE t+n,or: LET OB=OB-O
+9507 NEXT N: RETURN
+9515 LET co=O: LET MO=F: RETURN
+9516 RETURN
+9520 IF o(19) THEN RETURN
+9521 PRINT &quot;The boat is filling with water.&quot;: RETURN
+9525 IF PEEK (m2+34) THEN LET SE=9410: PRINT &quot;A Large Troll stands guard here.&quot;
+9526 RETURN
+9530 LET CO=O: LET MO=W
+9531 RANDOMIZE : IF PEEK (M1+O)&lt;&gt;WVV AND RND&gt;.9 THEN PRINT &quot;A giant tentacle rises from the swamp and drags me under.&quot;: GO TO 5065
+9532 RETURN
+9545 IF op=VAL &quot;42&quot; AND PEEK (t+oi)=wvf THEN PRINT &quot;I see a magic passage east.&quot;: RETURN
+9546 RETURN
+9550 IF PEEK (t+og)&lt;&gt;c THEN PRINT &quot;The Karush has pounced on me andtorn me to shreds.&quot;: LET hp=z: RETURN
+9555 GO SUB e: IF PEEK (t+18)=200 AND PEEK (m2+20) THEN PRINT &quot;The Karush has its head jammed  in the bars.&quot;: RETURN
+9556 RETURN
+9565 LET se=9420: IF o(25)=o AND PEEK (t+oi)=wvf THEN PRINT &quot;The passage south is blocked by a glowing ward.&quot;
+9566 LET sp=9425: IF NOT PEEK (m1+27) THEN PRINT &quot;Two Fire Demons rise from the   torches.&quot;: POKE m1+27,op: POKE m1+28,op
+9567 RETURN
+9570 LET SE=9480: LET co=o: LET mo=PEEK (m3+29): RETURN
+9575 IF NOT o(i) THEN LET se=9430: RETURN
+9578 RETURN
+9585 IF PEEK (m2+31) THEN PRINT &quot;The Darg-Vool throws a spear.   Agh. I&#x27;m hit.&quot;&#x27;&quot;I fall dying into the abyss.&quot;: LET hp=z: RETURN
+9586 RETURN
+9601 DATA &quot;1RATTLING QUARG&quot;
+9602 DATA &quot;1GIANT SPIDER&quot;
+9603 DATA &quot;1DEADLY GARGOYLE&quot;
+9604 DATA &quot;1UGLY URGA-MAUL&quot;
+9605 DATA &quot;1NASTY URGA-MAUL&quot;
+9606 DATA &quot;1FAT URGA-MAUL&quot;
+9607 DATA &quot;1THIN URGA-MAUL&quot;
+9608 DATA &quot;1LARGE URGA-MAUL&quot;
+9609 DATA &quot;1SMALL URGA-MAUL&quot;
+9610 DATA &quot;1CHIEF URGA-MAUL&quot;
+9611 DATA &quot;1UGLY MARSHZAT&quot;
+9612 DATA &quot;1CHIEF MARSHZAT&quot;
+9613 DATA &quot;1LARGE MARSHZAT&quot;
+9614 DATA &quot;1NASTY MARSHZAT&quot;
+9615 DATA &quot;1LARGE CAVEZAT&quot;
+9616 DATA &quot;1SMALL CAVEZAT&quot;
+9617 DATA &quot;1FAT CAVEZAT&quot;
+9618 DATA &quot;1CHIEF CAVEZAT&quot;
+9619 DATA &quot;1UGLY CAVEZAT&quot;
+9620 DATA &quot;1GREY CAVEZAT&quot;
+9621 DATA &quot;1SHADOW CREATURE&quot;
+9622 DATA &quot;0OGERON&quot;
+9623 DATA &quot;1CARAWOOD ORACLE&quot;
+9624 DATA &quot;0TIMANDRA&quot;
+9625 DATA &quot;0ELVA&quot;
+9626 DATA &quot;1DRAGON ZELDA&quot;
+9627 DATA &quot;1FIRE DEMON&quot;
+9628 DATA &quot;1FIRE DEMON&quot;
+9629 DATA &quot;1GREEN ZALROG&quot;
+9630 DATA &quot;1RED ZALROG&quot;
+9631 DATA &quot;1NASTY DARG-VOOL&quot;
+9632 DATA &quot;0GRAKO&quot;
+9633 DATA &quot;1DEATH BEETLES&quot;
+9634 DATA &quot;1LARGE TROLL&quot;
+9701 DATA &quot;1SWORD&quot;
+9702 DATA &quot;1CANDLE WAX&quot;
+9703 DATA &quot;1ROPE&quot;
+9704 DATA &quot;1BLACK SACK&quot;
+9705 DATA &quot;1NASTY KNIFE&quot;
+9706 DATA &quot;1TALISMAN&quot;
+9707 DATA &quot;1LARGE CRYSTAL&quot;
+9708 DATA &quot;1BLUE MUSHROOMS&quot;
+9709 DATA &quot;1BLUE MUSHROOMS&quot;
+9710 DATA &quot;1BLANKET&quot;
+9711 DATA &quot;1GOLD KEY&quot;
+9712 DATA &quot;0VELNOR&#x27;S STAFF&quot;
+9713 DATA &quot;1BRASS LAMP&quot;
+9714 DATA &quot;1VELMISTA&quot;
+9715 DATA &quot;1IRON ROD&quot;
+9716 DATA &quot;1GOLD RING&quot;
+9717 DATA &quot;1TOME&quot;
+9718 DATA &quot;1MIRROR&quot;
+9719 DATA &quot;1EMERALD&quot;
+9720 DATA &quot;1WOODEN BOAT&quot;
+9721 DATA &quot;1OARS&quot;
+9722 DATA &quot;1CORKED BOTTLE&quot;
+9723 DATA &quot;1LARGE KEY&quot;
+9724 DATA &quot;1BLACK KNIFE&quot;
+9725 DATA &quot;1STALAGMITE&quot;
+9726 DATA &quot;1LONGBOW&quot;
+9727 DATA &quot;1SILVER CHALICE&quot;
+9728 DATA &quot;1TUNGSTEN CRUCIBLE&quot;
+9729 DATA &quot;1LIT TORCH&quot;
+9730 DATA &quot;1TINDERBOX&quot;
+9731 DATA &quot;1DIAMONDS&quot;
+9732 DATA &quot;1GRAPHITE&quot;
+9733 DATA &quot;1GREEN SCROLL&quot;
+9734 DATA &quot;1SILVER DAGGER&quot;
+9735 DATA &quot;1CONCH SHELL&quot;
+9736 DATA &quot;1UNLIT TORCH&quot;
+9737 DATA &quot;1IRON KEY&quot;
+9738 DATA &quot;1SMALL KEY&quot;
+9739 DATA &quot;1IRON RING&quot;
+9740 DATA &quot;1RED SCROLL&quot;
+9741 DATA &quot;1ARROWS&quot;
+9742 DATA &quot;1YELLOW SCROLL&quot;
+9743 DATA &quot;1DAMP MOSS&quot;
+9744 DATA &quot;1DRIED MOSS&quot;
+9801 DATA &quot;750000000000&quot;,&quot;DOOR&quot;,1
+9802 DATA &quot;040376050000&quot;,&quot;DOOR&quot;,1
+9803 DATA &quot;09000002000001&quot;
+9804 DATA &quot;060002000000&quot;
+9805 DATA &quot;060200070000-2&quot;
+9806 DATA &quot;080405070000&quot;
+9807 DATA &quot;000605000015&quot;
+9808 DATA &quot;000006000000&quot;
+9809 DATA &quot;00000300100002&quot;
+9810 DATA &quot;79810077000903&quot;,&quot;RED DOOR&quot;,5,&quot;BLUE DOOR&quot;,3,&quot;GREEN DOOR&quot;,4
+9811 DATA &quot;000000820000&quot;,&quot;DOOR&quot;,3
+9812 DATA &quot;000080000014&quot;,&quot;DOOR&quot;,5
+9813 DATA &quot;007800000000&quot;,&quot;DOOR&quot;,4
+9814 DATA &quot;00000015120015&quot;
+9815 DATA &quot;001400070000&quot;
+9816 DATA &quot;000000000000&quot;
+9817 DATA &quot;190000000000&quot;
+9818 DATA &quot;211920220000&quot;
+9819 DATA &quot;182117200000&quot;
+9820 DATA &quot;231819220000&quot;
+9821 DATA &quot;261918260000&quot;
+9822 DATA &quot;242318200000&quot;
+9823 DATA &quot;252620220000&quot;
+9824 DATA &quot;472525220000&quot;
+9825 DATA &quot;242623240000&quot;
+9826 DATA &quot;252721230000&quot;
+9827 DATA &quot;280026000000&quot;
+9828 DATA &quot;00312736000006&quot;
+9829 DATA &quot;00003500000006&quot;
+9830 DATA &quot;34313632000006&quot;
+9831 DATA &quot;00352830000006&quot;
+9832 DATA &quot;33300000000006&quot;
+9833 DATA &quot;343200460000&quot;
+9834 DATA &quot;00353033000006&quot;
+9835 DATA &quot;34293100000006&quot;
+9836 DATA &quot;003028000000&quot;
+9837 DATA &quot;003800000000&quot;
+9838 DATA &quot;390040370000&quot;
+9839 DATA &quot;009138440000&quot;,&quot;STEEL DOOR&quot;,q
+9840 DATA &quot;384200410000&quot;
+9841 DATA &quot;004000000000&quot;
+9842 DATA &quot;000000400000&quot;
+9843 DATA &quot;000000420000&quot;
+9844 DATA &quot;003900000000&quot;
+9845 DATA &quot;000000920000&quot;,&quot;STEEL DOOR&quot;,q
+9846 DATA &quot;003347000000&quot;
+9847 DATA &quot;460024000000&quot;
+9848 DATA &quot;000000490000&quot;
+9849 DATA &quot;004800500000&quot;
+9850 DATA &quot;004900510000&quot;
+9851 DATA &quot;52500000540005&quot;
+9852 DATA &quot;000051000000&quot;
+9854 DATA &quot;550000000051&quot;
+9855 DATA &quot;000054570000&quot;
+9856 DATA &quot;85005800000011&quot;,&quot;CAGE DOOR&quot;,22
+9857 DATA &quot;005500000083&quot;,&quot;TRAPDOOR&quot;,21
+9858 DATA &quot;890000005700&quot;,&quot;STONE DOOR&quot;,24
+9859 DATA &quot;00878600000010&quot;,&quot;SMALL DOOR&quot;,23,&quot;CAGE DOOR&quot;,22
+9860 DATA &quot;006100880000&quot;,&quot;DOOR&quot;,23
+9861 DATA &quot;00620060000017&quot;
+9862 DATA &quot;630000610000&quot;
+9863 DATA &quot;000062640000&quot;
+9864 DATA &quot;006300650000&quot;
+9865 DATA &quot;66640000670014&quot;
+9866 DATA &quot;000065000000&quot;
+9867 DATA &quot;00006800006513&quot;
+9868 DATA &quot;670000000000&quot;
+9869 DATA &quot;000000160000&quot;
+9871 DATA &quot;00000000000004&quot;
+9872 DATA &quot;000000000036&quot;
+9873 DATA &quot;000000000000&quot;
+9874 DATA &quot;000000000000&quot;
+9875 DATA O,w
+9876 DATA O,O
+9877 DATA F,or
+9878 DATA F,oz
+9879 DATA V,ow
+9880 DATA V,oz
+9881 DATA R,oo
+9882 DATA r,oz
+9883 DATA 21,58
+9884 DATA 21,57
+9885 DATA 22,59
+9886 DATA 22,56
+9887 DATA 23,60
+9888 DATA 23,59
+9889 DATA 24,56
+9890 DATA 24,58
+9891 DATA q,45
+9892 DATA q,39
+9901 LET SP=9460: PRINT &quot;I&#x27;m in Ogeron&#x27;s house.&quot;: RETURN
+9902 PRINT &quot;I&#x27;m at Ogeron&#x27;s house, on the   edge of a large forest.&quot;: RETURN
+9903 PRINT &quot;I&#x27;m in dense forest beside a&quot;&#x27;&quot;large cave opening.&quot;: RETURN
+9904  PRINT &quot;I&#x27;m in dense forest.&quot;: RETURN
+9905 PRINT &quot;I&#x27;m on the scorched plains&quot;: RETURN
+9906 PRINT &quot;I&#x27;m in arid scrubland&quot;: RETURN
+9907 PRINT &quot;I&#x27;m in the shattered hills.&quot;&#x27;&quot;A narrow crack leads down.&quot;: RETURN
+9908 PRINT &quot;I&#x27;m on the fertile banks of&quot;&#x27;&quot;the fast flowing river Cara.&quot;&#x27;&quot;A rope hangs from a tree here.&quot; AND PEEK (t+r)=c+o: RETURN
+9909 PRINT &quot;I&#x27;m in the main hall of the&quot;&#x27;&quot;Urga-Mauls.&quot;: RETURN
+9910 PRINT &quot;I&#x27;m on a high balcony&quot;&#x27;&quot;overlooking a large cavern of   many Urga-Mauls.&quot;: RETURN
+9911 PRINT &quot;I&#x27;m in the Urga-Maul dungeon.&quot;: RETURN
+9912 PRINT &quot;I&#x27;m in a narrow stale smelling  passage. Urga-Maul skulls line  the sides of steps leading down.&quot;: RETURN
+9913 PRINT &quot;I&#x27;m in the Urga-Mauls&#x27; treasure room. There is a large chest&quot;&#x27;&quot;here&quot;: RETURN
+9914 PRINT &quot;I&#x27;m in the large comfortably litCavezats cavern.&quot;: RETURN
+9915 PRINT &quot;I&#x27;m on a high platform&quot;&#x27;&quot;overlooking a large subterraneanwaterfall.&quot;;&quot; A rope is tied to a  stalagmite here.&quot; AND PEEK (t+r)=c: RETURN
+9916 PRINT &quot;I&#x27;m at the base of a large&quot;&#x27;&quot;waterfall. A rope hangs down    here.&quot;: RETURN
+9917 PRINT &quot;I&#x27;m on the north bank of the&quot;&#x27;&quot;Cara. Carawood is to the north.&quot;: RETURN
+9926 PRINT &quot;I&#x27;m in Carawood.&quot;: LET sp=9435: RETURN
+9927 PRINT &quot;I stand beside Tylon&#x27;s castle.  A moat of serpents surrounds it.&quot;: LET sp=9450: RETURN
+9935 PRINT &quot;I&#x27;m amongst the vile swamps of  Caradoom.&quot;&#x27;&quot;Timandra is tied to a tree.&quot; AND op=29 AND NOT o(20): RETURN
+9936 LET sp=9440: PRINT &quot;I&#x27;m in the dragons lair in&quot;&#x27;&quot;Caradoom. A huge&quot;&#x27;&quot;Hishara tree stands here.&quot;: RETURN
+9937 PRINT &quot;I&#x27;m at the entrance of Tylon&#x27;s  castle.&quot;: RETURN
+9938 PRINT &quot;I&#x27;m in a large dusty entrance&quot;&#x27;&quot;hall. The place hasn&#x27;t been&quot;&#x27;&quot;lived in for quite some time.&quot;: RETURN
+9940 PRINT &quot;I&#x27;m at the end of long dusty&quot;&#x27;&quot;passage.&quot;: RETURN
+9941 PRINT &quot;I&#x27;m in a small dusty bedroom.   There are a set of drawers here.&quot;: RETURN
+9942 LET sp=VAL &quot;9545&quot;: PRINT &quot;I&#x27;m in Tylon&#x27;s laboratory. Thereis a furnace and a barrel of&quot;&#x27;&quot;green liquid here marked AU/FE.&quot;: RETURN
+9943 PRINT &quot;I&#x27;m in Tylon&#x27;s bedroom. There isa four poster bed and a large   chest here.&quot;: RETURN
+9944 PRINT &quot;I&#x27;m in the cloister garden, a   gargoyle statue stands amongst  rags & bones in the centre.&quot;: RETURN
+9945 PRINT &quot;I&#x27;m in a strange metallic alcove.There is a dial marked from 1  to 35 and a button marked&quot;&#x27;&quot;ACTIVATE. I can hear a humming  noise. The dial is set on &quot;;di: RETURN
+9946 PRINT &quot;I&#x27;m on a small beach at the edgeof the Serpent Sea. Across the  water stands Grako&#x27;s black tower&quot;: RETURN
+9947 PRINT &quot;I&#x27;m amongst thick vegetation at the water&#x27;s edge. I can see the black tower.&quot;: RETURN
+9948 PRINT &quot;I&#x27;m at the base of Black Tower  island.&quot;: RETURN
+9949 PRINT &quot;I&#x27;m at the entrance to the blacktower.&quot;: RETURN
+9950 PRINT &quot;I&#x27;m in a long dark passage.&quot;: RETURN
+9951 PRINT &quot;I&#x27;m in the Troll guard room. An iron spiral staircase leads up&quot;&#x27;&quot;A stone troll stands here.&quot; AND PEEK (m1+34)=c: RETURN
+9952 PRINT &quot;I&#x27;m in the acrid smelling Troll lair. Several inches of putrid  fluid covers the floor.&quot;: RETURN
+9954 LET sp=VAL &quot;9415&quot;: PRINT &quot;I&#x27;m on a balcony overlooking theguard room.&quot;: RETURN
+9955 PRINT &quot;I&#x27;m in a small study. There is  a desk here.&quot;: RETURN
+9956 PRINT &quot;I&#x27;m in a natural cave. The&quot;&#x27;&quot;northern portion has been made  into a cage for a large Karush. (Pretty good guard-dog!).&quot;: RETURN
+9957 PRINT &quot;I&#x27;m at the shrine of Grako. A   huge demonic idol stands with   sword poised over a trapdoor in the floor.&quot;: RETURN
+9958 PRINT &quot;I&#x27;m in a natural cave. The flooris strewn with debris from a&quot;&#x27;&quot;recent rock fall. There is a&quot;&#x27;&quot;skeleton here.&quot;: RETURN
+9959 PRINT &quot;I&#x27;m in the Karush cage.&quot;: RETURN
+9960 PRINT &quot;I&#x27;m in a large domed cavern. A  natural rock bridge spans a&quot;&#x27;&quot;bottomless abyss to the east.&quot;&#x27;&quot;A Darg-vool guards the far side of the bridge.&quot; AND PEEK (m2+31): RETURN
+9961 PRINT &quot;I stand on a narrow rock bridge across a near bottomless abyss.&quot;: RETURN
+9962 PRINT &quot;I&#x27;m in a large domed cavern. A   natural rock bridge spans a&quot;&#x27;&quot;bottomless abyss to the east.&quot;: RETURN
+9964 PRINT &quot;I&#x27;m in a long winding&quot;&#x27;&quot;passageway.&quot;: RETURN
+9965 PRINT &quot;I&#x27;m in a hot dusty cavern. A&quot;&#x27;&quot;fiery glow emanates from 40ft   up the south wall.&quot;: RETURN
+9966 PRINT &quot;I&#x27;m in the Zalrog lair.&quot;: RETURN
+9967 PRINT &quot;I&#x27;m in a long well lit passage&quot;: RETURN
+9968 PRINT &quot;I&#x27;m in Grako&#x27;s lair. The walls  are adorned with images of hate.&quot;: RETURN
+9969 PRINT &quot;I&#x27;m in a small damp cave.&quot;: RETURN
+9971 PRINT &quot;I&#x27;m at sea. To the west is the  Black Tower surounded by Sirens and to the east is Caraland.&quot;: RETURN
+9972 LET se=9495: GO SUB se: PRINT &quot;I&#x27;m up the Hishara tree.&quot;: RETURN
+9973 PRINT &quot;I&#x27;m in a boat at the shores of  Caraland. To the west is the&quot;&#x27;&quot;Black Tower.&quot;: RETURN
+9974 PRINT &quot;I&#x27;m in a boat at the base of&quot;&#x27;&quot;Black Tower island. The sea is  swarming with sirens.&quot;: RETURN
+</pre>
+<footer>
+<div class="release"></div>
+<div class="copyright">&copy; 1984 Micromega<br />&copy; 2026 ArcadeGeek LTD.</div>
+<div class="created">Created using <a href="https://skoolkit.ca">SkoolKit</a> 10.2.</div>
+<div class="repository">Link to <a rel="noopener nofollow" href="https://github.com/pobtastic/adventure-games/tree/main/sources/kentilla/">Source code</a>.</div>
+<div><a href="../dec/reference/basic.html">Switch to decimal</a>.</div>
+</footer>
+</body>
+</html>

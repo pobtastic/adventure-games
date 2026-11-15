@@ -105,66 +105,92 @@ Next: <a href="AA8A.html">AA8A</a>
 </td>
 </tr>
 </table>
-<div class="description">AA6E: Handler: Pick Up Item</div>
+<div class="description">AA6E: Action: Pick Up Item</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
 <div class="details">
+<div class="paragraph">
+Moves the item operand into the inventory and prints the taken message.
+</div>
+</div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="aa6e"></span>
+<div class="comments">
+<div class="paragraph">
+When the condition failed, skip this action.
+</div>
 </div>
 </td>
 </tr>
 <tr>
 <td class="asm-label">Handler_PickUpItem</td>
 <td class="address-2"><span id="aa6e"></span>AA6E</td>
-<td class="instruction">JP NZ,<a href="A6FF.html#a75d">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">The item stays where it is.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="aa71"></span>AA71</td>
-<td class="instruction">LD A,(IX+$01)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+01.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="aa74"></span>AA74</td>
-<td class="instruction">CALL <a href="A6FF.html#a772">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a772">Handler_RunScript_15</a>.</td>
+<td class="instruction">JP NZ,<a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a> if the condition failed.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
-<span id="aa77"></span>
+<span id="aa71"></span>
 <div class="comments">
 <div class="paragraph">
-Call <a href="A663.html">Handler_UpdateItemLocation</a> using the item ID, to change the location to 01 (to the players inventory).
+Move the item operand into the inventory (room 01).
 </div>
 </div>
 </td>
 </tr>
 <tr>
 <td class="asm-label"></td>
+<td class="address-1"><span id="aa71"></span>AA71</td>
+<td class="instruction">LD A,(IX+$01)</td>
+<td class="comment-1" rowspan="1">Fetch the item ID (the operand) from *<span class="register">IX</span>+01 into <span class="register">A</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="aa74"></span>AA74</td>
+<td class="instruction">CALL <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="A6FF.html#a772">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="A805.html">ScriptMatchedItem</a> when the operand is FF.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
 <td class="address-1"><span id="aa77"></span>AA77</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="1"><span class="register">B</span>=<span class="register">A</span>.</td>
+<td class="comment-1" rowspan="1">Copy the item ID into <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa78"></span>AA78</td>
 <td class="instruction">LD C,$01</td>
-<td class="comment-1" rowspan="1"><span class="register">C</span>=01.</td>
+<td class="comment-1" rowspan="1">Set the destination room to the inventory (01).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa7a"></span>AA7A</td>
 <td class="instruction">CALL <a href="A663.html">Handler_UpdateItemLocation</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A663.html">Handler_UpdateItemLocation</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A663.html">Handler_UpdateItemLocation</a> to update that item's location.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="aa7d"></span>
 <div class="comments">
 <div class="paragraph">
-Player has picked up an item so handle the inventory count.
+The player has gained an item, so raise the inventory count.
 </div>
 </div>
 </td>
@@ -173,7 +199,7 @@ Player has picked up an item so handle the inventory count.
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa7d"></span>AA7D</td>
 <td class="instruction">LD HL,$A0D2</td>
-<td class="comment-1" rowspan="2">Increment *<a href="A0D2.html">Count_InventoryItems</a> by one.</td>
+<td class="comment-1" rowspan="2">Increment the inventory count at <a href="A0D2.html">Count_InventoryItems</a> by one.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -200,13 +226,13 @@ Print "O.K.".
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa84"></span>AA84</td>
 <td class="instruction">CALL <a href="A25C.html">PrintCompressedStringAndNewline</a></td>
-<td class="comment-1" rowspan="1">Call <a href="A25C.html">PrintCompressedStringAndNewline</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="A25C.html">PrintCompressedStringAndNewline</a> to print that compressed string and a newline.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="aa87"></span>AA87</td>
-<td class="instruction">JP <a href="A6FF.html#a75d">Handler_RunScript_10</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75d">Handler_RunScript_10</a>.</td>
+<td class="instruction">JP <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75d">RunScript_SkipAction_TwoBytes</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">

@@ -113,6 +113,9 @@ Next: <a href="EB9D.html">EB9D</a>
 <div class="paragraph">
 Used by the routines at <a href="F2FF.html">Process_EnterIntoPool</a>, <a href="F34B.html">Process_JumpOntoStraw</a>, <a href="F359.html">Process_ClimbOutOfPool</a>, <a href="F3AC.html">Process_ClimbUpLadder</a>, <a href="F3BA.html">Process_ClimbDownLadder</a>, <a href="F3C8.html">Process_EnterFissure</a>, <a href="F3D6.html">Process_EnterHut</a>, <a href="F3EC.html">Process_EnterCavern</a>, <a href="F5F9.html">Process_StepIntoRing</a>, <a href="F7C0.html">Process_Guard</a>, <a href="F7DB.html">Process_EnterBroch</a>, <a href="F8DF.html">MovePlayer</a> and <a href="FCCE.html">GameStart</a>.
 </div>
+<div class="paragraph">
+Commits a move into the destination room held in <span class="register">A</span>. It stashes the room in <a href="A772.html#a773">TemporaryStorage_SingleByte</a>, runs any matching pre-enter action from <a href="EB10.html#eb3a">Table_ActionPreEnterRoomIDs</a> and <a href="EB10.html#eb45">Table_ActionPreEnterRoom</a> via <a href="E98E.html">EventRouting</a>, calls <a href="B01F.html">MovePlayerToRoom</a>, describes the room via <a href="ABB6.html">Handler_DisplayRoomImage</a>, then runs any matching post-enter action from <a href="EB10.html#eb5b">Table_ActionEnteredRoomIDs</a> and <a href="EB10.html#eb71">Table_ActionEnteredRoom</a>.
+</div>
 </div>
 <table class="input">
 <tr class="asm-input-header">
@@ -126,10 +129,20 @@ Used by the routines at <a href="F2FF.html">Process_EnterIntoPool</a>, <a href="
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="eb10"></span>
+<div class="comments">
+<div class="paragraph">
+Remember the destination and run the pre-enter actions.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ChangeRoom</td>
 <td class="address-2"><span id="eb10"></span>EB10</td>
 <td class="instruction">LD ($A773),A</td>
-<td class="comment-1" rowspan="1">Store the room ID in *<a href="A772.html#a773">TemporaryStorage_SingleByte</a>.</td>
+<td class="comment-1" rowspan="1">Store the destination room ID at <a href="A772.html#a773">TemporaryStorage_SingleByte</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -145,32 +158,32 @@ Look up the destination room in the list of room IDs at <a href="EB10.html#eb3a"
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb13"></span>EB13</td>
 <td class="instruction">LD HL,$EB3A</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="EB10.html#eb3a">Table_ActionPreEnterRoomIDs</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the pre-enter room IDs at <a href="EB10.html#eb3a">Table_ActionPreEnterRoomIDs</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb16"></span>EB16</td>
 <td class="instruction">LD DE,$EB45</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="EB10.html#eb45">Table_ActionPreEnterRoom</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at the pre-enter actions at <a href="EB10.html#eb45">Table_ActionPreEnterRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb19"></span>EB19</td>
 <td class="instruction">LD BC,$000B</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=000B.</td>
+<td class="comment-1" rowspan="1">Load <span class="register">BC</span> with 000B matching entries.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb1c"></span>EB1C</td>
 <td class="instruction">CALL <a href="E98E.html">EventRouting</a></td>
-<td class="comment-1" rowspan="1">Call <a href="E98E.html">EventRouting</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="E98E.html">EventRouting</a> to run any matching pre-enter action.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="eb1f"></span>
 <div class="comments">
 <div class="paragraph">
-Set the destination room ID as the current room.
+Enter the room and describe it.
 </div>
 </div>
 </td>
@@ -179,19 +192,19 @@ Set the destination room ID as the current room.
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb1f"></span>EB1F</td>
 <td class="instruction">LD A,($A773)</td>
-<td class="comment-1" rowspan="1">Restore the destination room ID from *<a href="A772.html#a773">TemporaryStorage_SingleByte</a>.</td>
+<td class="comment-1" rowspan="1">Fetch the destination room ID from *<a href="A772.html#a773">TemporaryStorage_SingleByte</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb22"></span>EB22</td>
 <td class="instruction">CALL <a href="B01F.html">MovePlayerToRoom</a></td>
-<td class="comment-1" rowspan="1">Call <a href="B01F.html">MovePlayerToRoom</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="B01F.html">MovePlayerToRoom</a> to move the player into that room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb25"></span>EB25</td>
 <td class="instruction">LD E,$00</td>
-<td class="comment-1" rowspan="2">Call <a href="ABB6.html">Handler_DisplayRoomImage</a> with <span class="register">E</span> set to 00 (which does not display room images).</td>
+<td class="comment-1" rowspan="2">Call <a href="ABB6.html">Handler_DisplayRoomImage</a> with <span class="register">E</span> set to 00 so the room picture is not forced.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -212,34 +225,34 @@ Now look up the current room in the list of room IDs at <a href="EB10.html#eb5b"
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb2a"></span>EB2A</td>
 <td class="instruction">LD A,($A7C3)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="A7C3.html">CurrentRoom</a>.</td>
+<td class="comment-1" rowspan="1">Fetch the current room ID from *<a href="A7C3.html">CurrentRoom</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb2d"></span>EB2D</td>
 <td class="instruction">LD HL,$EB5B</td>
-<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="EB10.html#eb5b">Table_ActionEnteredRoomIDs</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the post-enter room IDs at <a href="EB10.html#eb5b">Table_ActionEnteredRoomIDs</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb30"></span>EB30</td>
 <td class="instruction">LD DE,$EB71</td>
-<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="EB10.html#eb71">Table_ActionEnteredRoom</a>.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at the post-enter actions at <a href="EB10.html#eb71">Table_ActionEnteredRoom</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb33"></span>EB33</td>
 <td class="instruction">LD BC,$0016</td>
-<td class="comment-1" rowspan="1"><span class="register">BC</span>=0016.</td>
+<td class="comment-1" rowspan="1">Load <span class="register">BC</span> with 0016 matching entries.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eb36"></span>EB36</td>
 <td class="instruction">CALL <a href="E98E.html">EventRouting</a></td>
-<td class="comment-1" rowspan="1">Call <a href="E98E.html">EventRouting</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="E98E.html">EventRouting</a> to run any matching post-enter action.</td>
 </tr>
 <tr>
-<td class="asm-label"></td>
+<td class="asm-label">ChangeRoom_Return</td>
 <td class="address-1"><span id="eb39"></span>EB39</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
@@ -679,6 +692,17 @@ The actions table for when a player enters a room:
 <td class="address-1"><span id="eb9b"></span>EB9B</td>
 <td class="instruction">DEFW <a href="ED47.html">Process_Swamp_TorcPointsNorthAndEastAndWest</a></td>
 <td class="comment-1" rowspan="1">Action 16.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/aftershock/asm/AD79.html">After Shock</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">

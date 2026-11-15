@@ -122,6 +122,10 @@ Succeeds when the item operand is in the room given by the second operand.
 <td class="register">F</td>
 <td class="register-desc">The zero flag is set when the location matches</td>
 </tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -139,31 +143,31 @@ Is the item in the room given by the second operand?
 <td class="asm-label">Condition_ItemLocationEquals</td>
 <td class="address-2"><span id="43106"></span>43106</td>
 <td class="instruction">LD A,(IX+1)</td>
-<td class="comment-1" rowspan="1">The operand names the item.</td>
+<td class="comment-1" rowspan="1">Fetch the item ID (the operand) from *<span class="register">IX</span>+1 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43109"></span>43109</td>
-<td class="instruction">CALL <a href="42751.html#42866">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">255 stands for the matched item.</td>
+<td class="instruction">CALL <a href="42751.html#42866">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42751.html#42866">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="43013.html">ScriptMatchedItem</a> when the operand is 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43112"></span>43112</td>
 <td class="instruction">CALL <a href="42540.html">ItemLocator</a></td>
-<td class="comment-1" rowspan="1">Call <a href="42540.html">ItemLocator</a> to read the item's room.</td>
+<td class="comment-1" rowspan="1">Call <a href="42540.html">ItemLocator</a> to read that item's room into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43115"></span>43115</td>
 <td class="instruction">CP (IX+2)</td>
-<td class="comment-1" rowspan="1">Is the item in the room operand?</td>
+<td class="comment-1" rowspan="1">Set the zero flag when it equals the room operand.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43118"></span>43118</td>
-<td class="instruction">JP <a href="42751.html#42779">Handler_RunScript_2</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="42751.html#42779">RunScript_SkipCondition_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42779">RunScript_SkipCondition_ThreeBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

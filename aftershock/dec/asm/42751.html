@@ -138,6 +138,16 @@ Each instruction is a condition from <a href="42885.html">JumpTable_ScriptCondit
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="42751"></span>
+<div class="comments">
+<div class="paragraph">
+Preserve the caller's registers for <a href="43763.html">Action_EndScript</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">Handler_RunScript</td>
 <td class="address-2"><span id="42751"></span>42751</td>
 <td class="instruction">PUSH HL</td>
@@ -154,7 +164,17 @@ Each instruction is a condition from <a href="42885.html">JumpTable_ScriptCondit
 <td class="instruction">PUSH BC</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_0</td>
+<td class="routine-comment" colspan="5">
+<span id="42754"></span>
+<div class="comments">
+<div class="paragraph">
+Begin a new instruction: clear the condition mask and reset the operator to AND.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RunScript_NewInstruction</td>
 <td class="address-2"><span id="42754"></span>42754</td>
 <td class="instruction">LD HL,42749</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="42749.html">ScriptConditionMask</a>.</td>
@@ -178,10 +198,20 @@ Each instruction is a condition from <a href="42885.html">JumpTable_ScriptCondit
 <td class="comment-1" rowspan="1">Start with the <code>AND</code> operator (255).</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_1</td>
+<td class="routine-comment" colspan="5">
+<span id="42762"></span>
+<div class="comments">
+<div class="paragraph">
+Dispatch the condition opcode at *<span class="register">IX</span> through <a href="42885.html">JumpTable_ScriptConditions</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RunScript_DispatchCondition</td>
 <td class="address-2"><span id="42762"></span>42762</td>
 <td class="instruction">LD E,(IX+0)</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=*<span class="register">IX</span>+0.</td>
+<td class="comment-1" rowspan="1">Fetch the condition opcode from *<span class="register">IX</span>+0 into <span class="register">E</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -199,7 +229,7 @@ Each instruction is a condition from <a href="42885.html">JumpTable_ScriptCondit
 <td class="asm-label"></td>
 <td class="address-1"><span id="42771"></span>42771</td>
 <td class="instruction">CALL <a href="41733.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="41733.html">GetTableEntry</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="41733.html">GetTableEntry</a> to fetch the condition routine address into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -211,13 +241,23 @@ Each instruction is a condition from <a href="42885.html">JumpTable_ScriptCondit
 <td class="asm-label"></td>
 <td class="address-1"><span id="42776"></span>42776</td>
 <td class="instruction">JP (HL)</td>
-<td class="comment-1" rowspan="1">Jump to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Jump to the condition routine held in <span class="register">HL</span>.</td>
 </tr>
 <tr>
-<td class="asm-label"></td>
+<td class="routine-comment" colspan="5">
+<span id="42777"></span>
+<div class="comments">
+<div class="paragraph">
+Conditions of different lengths jump into this run of INC <span class="register">IX</span> at different points, so each entry point skips the right number of bytes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RunScript_SkipCondition_FourBytes</td>
 <td class="address-1"><span id="42777"></span>42777</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the four bytes of that condition.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the four bytes of this condition.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -230,10 +270,10 @@ This entry point is used by the routines at <a href="43106.html">Condition_ItemL
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_2</td>
+<td class="asm-label">RunScript_SkipCondition_ThreeBytes</td>
 <td class="address-2"><span id="42779"></span>42779</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the three bytes of this condition.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -246,10 +286,10 @@ This entry point is used by the routines at <a href="43019.html">Condition_ItemI
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_3</td>
+<td class="asm-label">RunScript_SkipCondition_TwoBytes</td>
 <td class="address-2"><span id="42781"></span>42781</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the two bytes of this condition.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -262,10 +302,20 @@ This entry point is used by the routine at <a href="43015.html">Condition_Always
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_4</td>
+<td class="asm-label">RunScript_SkipCondition_OneByte</td>
 <td class="address-2"><span id="42783"></span>42783</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">}</td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the one byte of this condition.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42785"></span>
+<div class="comments">
+<div class="paragraph">
+Combine this condition's result with the running mask using AND or OR.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -293,13 +343,13 @@ This entry point is used by the routine at <a href="43015.html">Condition_Always
 <td class="asm-label"></td>
 <td class="address-1"><span id="42792"></span>42792</td>
 <td class="instruction">LD A,(42749)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="42749.html">ScriptConditionMask</a>.</td>
+<td class="comment-1" rowspan="1">Fetch the running condition mask from *<a href="42749.html">ScriptConditionMask</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42795"></span>42795</td>
-<td class="instruction">JR NZ,<a href="42751.html#42800">Handler_RunScript_5</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42800">Handler_RunScript_5</a> if *<a href="42749.html#42750">ScriptConditionOperator</a> is not equal to 254.</td>
+<td class="instruction">JR NZ,<a href="42751.html#42800">RunScript_CombineWithAnd</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42800">RunScript_CombineWithAnd</a> if *<a href="42749.html#42750">ScriptConditionOperator</a> is not equal to 254.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -310,43 +360,53 @@ This entry point is used by the routine at <a href="43015.html">Condition_Always
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42798"></span>42798</td>
-<td class="instruction">JR <a href="42751.html#42801">Handler_RunScript_6</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42801">Handler_RunScript_6</a>.</td>
+<td class="instruction">JR <a href="42751.html#42801">RunScript_StoreConditionMask</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42801">RunScript_StoreConditionMask</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_5</td>
+<td class="asm-label">RunScript_CombineWithAnd</td>
 <td class="address-2"><span id="42800"></span>42800</td>
 <td class="instruction">AND C</td>
 <td class="comment-1" rowspan="1">Otherwise both conditions must hold (<code>AND C</code>).</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_6</td>
+<td class="asm-label">RunScript_StoreConditionMask</td>
 <td class="address-2"><span id="42801"></span>42801</td>
 <td class="instruction">LD (42749),A</td>
-<td class="comment-1" rowspan="1">Store the combined condition result.</td>
+<td class="comment-1" rowspan="1">Store the combined condition result at <a href="42749.html">ScriptConditionMask</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="42804"></span>
+<div class="comments">
+<div class="paragraph">
+After the condition, either chain another with AND/OR, or dispatch the action.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42804"></span>42804</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+0.</td>
+<td class="comment-1" rowspan="1">Fetch the next script byte from *<span class="register">IX</span>+0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42807"></span>42807</td>
 <td class="instruction">CP 254</td>
-<td class="comment-1" rowspan="2">Jump to <a href="42751.html#42820">Handler_RunScript_8</a> if <span class="register">A</span> is less than 254.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="42751.html#42820">RunScript_DispatchAction</a> if it is an action opcode (less than 254).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42809"></span>42809</td>
-<td class="instruction">JR C,<a href="42751.html#42820">Handler_RunScript_8</a></td>
+<td class="instruction">JR C,<a href="42751.html#42820">RunScript_DispatchAction</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42811"></span>42811</td>
 <td class="instruction">LD (42750),A</td>
-<td class="comment-1" rowspan="1">Store the new operator.</td>
+<td class="comment-1" rowspan="1">Store the new AND/OR operator at <a href="42749.html#42750">ScriptConditionOperator</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -357,20 +417,30 @@ This entry point is used by the routine at <a href="43015.html">Condition_Always
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42816"></span>42816</td>
-<td class="instruction">JR <a href="42751.html#42762">Handler_RunScript_1</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42762">Handler_RunScript_1</a>.</td>
+<td class="instruction">JR <a href="42751.html#42762">RunScript_DispatchCondition</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42762">RunScript_DispatchCondition</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_7</td>
+<td class="routine-comment" colspan="5">
+<span id="42818"></span>
+<div class="comments">
+<div class="paragraph">
+Advance past a chained action separator, then dispatch the action opcode.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RunScript_NextAction</td>
 <td class="address-2"><span id="42818"></span>42818</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Move <span class="register">IX</span> on to the action code.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> on to the action opcode.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_8</td>
+<td class="asm-label">RunScript_DispatchAction</td>
 <td class="address-2"><span id="42820"></span>42820</td>
 <td class="instruction">LD E,(IX+0)</td>
-<td class="comment-1" rowspan="1"><span class="register">E</span>=*<span class="register">IX</span>+0.</td>
+<td class="comment-1" rowspan="1">Fetch the action opcode from *<span class="register">IX</span>+0 into <span class="register">E</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -388,7 +458,7 @@ This entry point is used by the routine at <a href="43015.html">Condition_Always
 <td class="asm-label"></td>
 <td class="address-1"><span id="42829"></span>42829</td>
 <td class="instruction">CALL <a href="41733.html">GetTableEntry</a></td>
-<td class="comment-1" rowspan="1">Call <a href="41733.html">GetTableEntry</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="41733.html">GetTableEntry</a> to fetch the action routine address into <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -421,13 +491,23 @@ This entry point is used by the routine at <a href="43015.html">Condition_Always
 <td class="asm-label"></td>
 <td class="address-1"><span id="42840"></span>42840</td>
 <td class="instruction">JP (HL)</td>
-<td class="comment-1" rowspan="1">Jump to *<span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Jump to the action routine held in <span class="register">HL</span>.</td>
 </tr>
 <tr>
-<td class="asm-label"></td>
+<td class="routine-comment" colspan="5">
+<span id="42841"></span>
+<div class="comments">
+<div class="paragraph">
+Actions of different lengths jump into this run of INC <span class="register">IX</span> at different points, so each entry point skips the right number of bytes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">RunScript_SkipAction_FourBytes</td>
 <td class="address-1"><span id="42841"></span>42841</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the four bytes of that action.</td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the four bytes of this action.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -440,10 +520,10 @@ This entry point is used by the routines at <a href="43482.html">Action_JumpToSc
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_9</td>
+<td class="asm-label">RunScript_SkipAction_ThreeBytes</td>
 <td class="address-2"><span id="42843"></span>42843</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the three bytes of this action.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -456,10 +536,10 @@ This entry point is used by the routines at <a href="43577.html">Action_BringIte
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_10</td>
+<td class="asm-label">RunScript_SkipAction_TwoBytes</td>
 <td class="address-2"><span id="42845"></span>42845</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the two bytes of this action.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -472,10 +552,10 @@ This entry point is used by the routines at <a href="43520.html">Action_ReturnFr
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_11</td>
+<td class="asm-label">RunScript_SkipAction_OneByte</td>
 <td class="address-2"><span id="42847"></span>42847</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">}</td>
+<td class="comment-1" rowspan="1">Move <span class="register">IX</span> past the one byte of this action.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -484,31 +564,34 @@ This entry point is used by the routines at <a href="43520.html">Action_ReturnFr
 <div class="paragraph">
 This entry point is used by the routines at <a href="43482.html">Action_JumpToScript</a>, <a href="43497.html">Action_CallScript</a> and <a href="43520.html">Action_ReturnFromScript</a>.
 </div>
+<div class="paragraph">
+Decide whether another action follows, or whether to start a new instruction.
+</div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_12</td>
+<td class="asm-label">RunScript_AfterAction</td>
 <td class="address-2"><span id="42849"></span>42849</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<span class="register">IX</span>+0.</td>
+<td class="comment-1" rowspan="1">Fetch the next script byte from *<span class="register">IX</span>+0.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42852"></span>42852</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Jump to <a href="42751.html#42818">Handler_RunScript_7</a> if <span class="register">A</span> is equal to 255.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="42751.html#42818">RunScript_NextAction</a> if it is the chained-action marker 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42854"></span>42854</td>
-<td class="instruction">JR Z,<a href="42751.html#42818">Handler_RunScript_7</a></td>
+<td class="instruction">JR Z,<a href="42751.html#42818">RunScript_NextAction</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42856"></span>42856</td>
-<td class="instruction">JR <a href="42751.html#42754">Handler_RunScript_0</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42754">Handler_RunScript_0</a>.</td>
+<td class="instruction">JR <a href="42751.html#42754">RunScript_NewInstruction</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42754">RunScript_NewInstruction</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -517,26 +600,29 @@ This entry point is used by the routines at <a href="43482.html">Action_JumpToSc
 <div class="paragraph">
 This entry point is used by the routines at <a href="43031.html">Condition_ItemIsAbsent</a>, <a href="43058.html">Condition_ItemIsNotCarried</a>, <a href="43094.html">Condition_NotInRoom</a>, <a href="43121.html">Condition_ItemLocationDiffers</a>, <a href="43139.html">Condition_FlagIsSet</a>, <a href="43186.html">Condition_GroupItemDiffers</a>, <a href="43224.html">Condition_InventoryCountDiffers</a>, <a href="43245.html">Condition_MarkedRoomDiffers</a>, <a href="43277.html">Condition_PhraseDoesNotMatch</a>, <a href="43300.html">Condition_ParserSucceeds</a>, <a href="43335.html">Condition_ParserFails</a>, <a href="43379.html">Condition_ParserResultDiffers</a>, <a href="43408.html">Condition_RoomPairDiffers</a>, <a href="43440.html">Condition_CannotTakeItem</a> and <a href="43467.html">Condition_IsNotCarryingForDrop</a>.
 </div>
+<div class="paragraph">
+Invert a condition result: succeed when the tested flag was clear.
+</div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_13</td>
+<td class="asm-label">RunScript_InvertConditionResult</td>
 <td class="address-2"><span id="42858"></span>42858</td>
-<td class="instruction">JR NZ,<a href="42751.html#42864">Handler_RunScript_14</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42864">Handler_RunScript_14</a> if <span class="register">A</span> is not equal to 255.</td>
+<td class="instruction">JR NZ,<a href="42751.html#42864">RunScript_ConditionHolds</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42864">RunScript_ConditionHolds</a> if the zero flag is not set.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42860"></span>42860</td>
 <td class="instruction">LD A,1</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=1.</td>
+<td class="comment-1" rowspan="1">Load 1 so the following AND A clears the zero flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="42862"></span>42862</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="1">The condition does not hold.</td>
+<td class="comment-1" rowspan="1">Clear the zero flag; the inverted condition does not hold.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -545,10 +631,10 @@ This entry point is used by the routines at <a href="43031.html">Condition_ItemI
 <td class="comment-1" rowspan="1">Return.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_14</td>
+<td class="asm-label">RunScript_ConditionHolds</td>
 <td class="address-2"><span id="42864"></span>42864</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=0.</td>
+<td class="comment-1" rowspan="1">Clear <span class="register">A</span> and set the zero flag; the inverted condition holds.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -563,14 +649,17 @@ This entry point is used by the routines at <a href="43031.html">Condition_ItemI
 <div class="paragraph">
 This entry point is used by the routines at <a href="43019.html">Condition_ItemIsPresent</a>, <a href="43031.html">Condition_ItemIsAbsent</a>, <a href="43046.html">Condition_ItemIsCarried</a>, <a href="43058.html">Condition_ItemIsNotCarried</a>, <a href="43073.html">Condition_ItemIsHere</a>, <a href="43106.html">Condition_ItemLocationEquals</a>, <a href="43121.html">Condition_ItemLocationDiffers</a>, <a href="43428.html">Condition_CanTakeItem</a>, <a href="43440.html">Condition_CannotTakeItem</a>, <a href="43455.html">Condition_IsCarryingForDrop</a>, <a href="43467.html">Condition_IsNotCarryingForDrop</a>, <a href="43558.html">Action_PlaceItem</a>, <a href="43577.html">Action_BringItemHere</a>, <a href="43592.html">Action_TransformItem</a>, <a href="43615.html">Action_DestroyItem</a>, <a href="43630.html">Handler_PickUpItem</a>, <a href="43658.html">Handler_DropItem</a> and <a href="43748.html">Action_MarkScenicEvent</a>.
 </div>
+<div class="paragraph">
+When the operand is 255 substitute the matched item ID from <a href="43013.html">ScriptMatchedItem</a>.
+</div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_RunScript_15</td>
+<td class="asm-label">RunScript_ResolveMatchedItem</td>
 <td class="address-2"><span id="42866"></span>42866</td>
 <td class="instruction">CP 255</td>
-<td class="comment-1" rowspan="2">Return if <span class="register">A</span> is not equal to 255.</td>
+<td class="comment-1" rowspan="2">Return if the operand is not the matched-item sentinel 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -581,7 +670,7 @@ This entry point is used by the routines at <a href="43019.html">Condition_ItemI
 <td class="asm-label"></td>
 <td class="address-1"><span id="42869"></span>42869</td>
 <td class="instruction">LD A,(43013)</td>
-<td class="comment-1" rowspan="1"><span class="register">A</span>=*<a href="43013.html">ScriptMatchedItem</a>.</td>
+<td class="comment-1" rowspan="1">Fetch the matched item ID from *<a href="43013.html">ScriptMatchedItem</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

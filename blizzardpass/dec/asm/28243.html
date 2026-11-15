@@ -114,7 +114,7 @@ Next: <a href="28287.html">28287</a>
 Used by the routines at <a href="28353.html">PlotShape</a>, <a href="28460.html">ChangePictureColour</a>, <a href="28484.html">BrightenAttributes</a>, <a href="29203.html">ShapeIfPresent</a>, <a href="29365.html">DrawPatched</a>, <a href="29376.html">DrawFixedShift</a>, <a href="29570.html">DrawFromOrigin</a>, <a href="29581.html">ResetOrigin</a>, <a href="29660.html">ShapeForObject</a>, <a href="29736.html">HorizontalRun</a>, <a href="29806.html">VerticalRun</a>, <a href="29970.html">DrawVertical</a>, <a href="29981.html">FixedVertical</a> and <a href="30014.html">PaintAttributeRun</a>.
 </div>
 <div class="paragraph">
-Reads the next record byte. 255 ends it. 254 reflects the left half of the picture onto the right, 253 changes one colour to another in the ink and paper, 252 paints a run of attributes, 251 brightens the picture, 250 mirrors it left to right, and 249 draws another room's record. Any other byte goes to <a href="28287.html">DispatchShape</a>.
+Reads the next record byte. 255 ends it. 254 draws with a fixed shift, 253 changes one colour to another in the ink and paper, 252 paints a run of attributes, 251 brightens the picture, 250 draws a fixed vertical stroke, and 249 draws another room's record. Any other byte goes to <a href="28287.html">DispatchShape</a>.
 </div>
 </div>
 </td>
@@ -123,133 +123,206 @@ Reads the next record byte. 255 ends it. 254 reflects the left half of the pictu
 <td class="asm-label">PictureRecord</td>
 <td class="address-2"><span id="28243"></span>28243</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the next record byte.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28246"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode 255 ends the record.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28246"></span>28246</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Return if it is the terminator 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28247"></span>28247</td>
 <td class="instruction">RET Z</td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28248"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode 254 draws with the shift forced to 12.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28248"></span>28248</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="29376.html">DrawFixedShift</a> if it is 254.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28249"></span>28249</td>
 <td class="instruction">JP Z,<a href="29376.html">DrawFixedShift</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28252"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode 253 changes one colour to another.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28252"></span>28252</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="28460.html">ChangePictureColour</a> if it is 253.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28253"></span>28253</td>
 <td class="instruction">JP Z,<a href="28460.html">ChangePictureColour</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28256"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode 252 paints a run of attributes.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28256"></span>28256</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="30014.html">PaintAttributeRun</a> if it is 252.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28257"></span>28257</td>
 <td class="instruction">JP Z,<a href="30014.html">PaintAttributeRun</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28260"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode 251 sets bright on every attribute.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28260"></span>28260</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="28484.html">BrightenAttributes</a> if it is 251.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28261"></span>28261</td>
 <td class="instruction">JP Z,<a href="28484.html">BrightenAttributes</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28264"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode 250 draws a fixed vertical stroke.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28264"></span>28264</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="29981.html">FixedVertical</a> if it is 250.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28265"></span>28265</td>
 <td class="instruction">JP Z,<a href="29981.html">FixedVertical</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28268"></span>
+<div class="comments">
+<div class="paragraph">
+Any other opcode except 249 goes to <a href="28287.html">DispatchShape</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28268"></span>28268</td>
 <td class="instruction">INC A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Jump to <a href="28287.html">DispatchShape</a> if it is not 249.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28269"></span>28269</td>
 <td class="instruction">JR NZ,<a href="28287.html">DispatchShape</a></td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28271"></span>
+<div class="comments">
+<div class="paragraph">
+Opcode 249 draws another room's picture record.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28271"></span>28271</td>
 <td class="instruction">INC IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance the record pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28273"></span>28273</td>
 <td class="instruction">LD A,(IX+0)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the room number.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28276"></span>28276</td>
 <td class="instruction">PUSH IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the record pointer on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28278"></span>28278</td>
 <td class="instruction">CALL <a href="28227.html">FindPictureRecord</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="28227.html">FindPictureRecord</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28281"></span>28281</td>
 <td class="instruction">POP IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the record pointer from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28283"></span>28283</td>
 <td class="instruction">INC IX</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance the record pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28285"></span>28285</td>
 <td class="instruction">JR <a href="28243.html#28243">PictureRecord</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Jump to <a href="28243.html">PictureRecord</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

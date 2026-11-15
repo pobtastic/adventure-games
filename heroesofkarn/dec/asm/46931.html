@@ -105,7 +105,7 @@ Next: <a href="46966.html">46966</a>
 </td>
 </tr>
 </table>
-<div class="description">46931: Handler: Match Verb</div>
+<div class="description">46931: Handler: Dispatch Verb</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -114,7 +114,7 @@ Next: <a href="46966.html">46966</a>
 Used by the routine at <a href="59809.html">GameLoop</a>.
 </div>
 <div class="paragraph">
-Turn the first word token into a verb and run its action.
+Matches the first word token from the user's command against the verb word tokens table. If a match is found, it calculates the verb index and jumps to the corresponding verb handler routine. If no match is found, it displays "I Don't Understand" and returns.
 </div>
 </div>
 </td>
@@ -130,22 +130,22 @@ Set up to search the verb word tokens table for the first word token.
 </td>
 </tr>
 <tr>
-<td class="asm-label">HandlerMatchVerb</td>
+<td class="asm-label">Handler_DispatchVerb</td>
 <td class="address-2"><span id="46931"></span>46931</td>
 <td class="instruction">LD HL,(44778)</td>
-<td class="comment-1" rowspan="1">Set a pointer to the verb-token pointer in <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="1">Set a pointer to *<a href="44778.html">Pointer_VerbWordTokens</a> in <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="46934"></span>46934</td>
 <td class="instruction">LD BC,(44788)</td>
-<td class="comment-1" rowspan="1">Load the verb-token count tokens into <span class="register">BC</span> for the search.</td>
+<td class="comment-1" rowspan="1">Load *<a href="44788.html">Count_VerbTokens</a> tokens into <span class="register">BC</span> for the search.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="46938"></span>46938</td>
 <td class="instruction">LD A,(44846)</td>
-<td class="comment-1" rowspan="1">Get the the first word token from the user input.</td>
+<td class="comment-1" rowspan="1">Get the *<a href="44846.html">UserInput_FirstToken</a> from the user input.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -164,7 +164,7 @@ Set up to search the verb word tokens table for the first word token.
 <span id="46945"></span>
 <div class="comments">
 <div class="paragraph">
-The token doesn't match any verb.
+The token doesn't match any verb. Display an error message: "I don't understand.".
 </div>
 </div>
 </td>
@@ -173,12 +173,13 @@ The token doesn't match any verb.
 <td class="asm-label"></td>
 <td class="address-1"><span id="46945"></span>46945</td>
 <td class="instruction">LD HL,44889</td>
-<td class="comment-1" rowspan="2">Print "I don't understand." and start a new line.</td>
+<td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="44889.html">Messaging_IDontUnderstand</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="46948"></span>46948</td>
 <td class="instruction">CALL <a href="44085.html">PrintStringAndNewline</a></td>
+<td class="comment-1" rowspan="1">Call <a href="44085.html">PrintStringAndNewline</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -200,7 +201,7 @@ A verb was matched! Calculate its index in the table and jump to its handler rou
 <td class="asm-label">VerbMatched</td>
 <td class="address-2"><span id="46952"></span>46952</td>
 <td class="instruction">LD A,(44788)</td>
-<td class="comment-1" rowspan="2">Calculate the verb index: <span class="register">A</span>=the verb-token count-<span class="register">C</span> (total tokens minus remaining tokens after match).</td>
+<td class="comment-1" rowspan="2">Calculate the verb index: <span class="register">A</span>=*<a href="44788.html">Count_VerbTokens</a>-<span class="register">C</span> (total tokens minus remaining tokens after match).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -223,7 +224,7 @@ A verb was matched! Calculate its index in the table and jump to its handler rou
 <td class="asm-label"></td>
 <td class="address-1"><span id="46958"></span>46958</td>
 <td class="instruction">LD IX,(44772)</td>
-<td class="comment-1" rowspan="1">Set a pointer to the verb-jump pointer in <span class="register">IX</span>.</td>
+<td class="comment-1" rowspan="1">Set a pointer to *<a href="44772.html">Pointer_JumpTable_Verbs</a> in <span class="register">IX</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -242,6 +243,7 @@ A verb was matched! Calculate its index in the table and jump to its handler rou
 <div class="comments">
 <div class="paragraph">
 View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/aftershock/dec/asm/44284.html">After Shock</a></li>
 <li><a href="/adventure-games/forestatworldsend/dec/asm/50275.html">Forest At Worlds End</a></li>
 <li><a href="/adventure-games/jewelsofbabylon/dec/asm/50518.html">The Jewels Of Babylon</a></li>
 <li><a href="/adventure-games/messagefromandromeda/dec/asm/36229.html">Message From Andromeda</a></li>

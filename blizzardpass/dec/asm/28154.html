@@ -120,178 +120,217 @@ Blanks the illustration from pixel row 175 down to 80, lets the picture bytecode
 </td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="28154"></span>
+<div class="comments">
+<div class="paragraph">
+Blank the illustration pixels, row by row, from row 175 down to row 80.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ClearIllustration</td>
 <td class="address-2"><span id="28154"></span>28154</td>
 <td class="instruction">LD BC,44800</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Pixel row 175, column 0.</td>
 </tr>
 <tr>
-<td class="asm-label">ClearIllustration_0</td>
+<td class="routine-comment" colspan="5">
+<span id="28157"></span>
+<div class="comments">
+<div class="paragraph">
+Blank one pixel row of 32 bytes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ClearIllustration_Row</td>
 <td class="address-2"><span id="28157"></span>28157</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Stash the row counter on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28158"></span>28158</td>
 <td class="instruction">CALL 8874</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/asm/8874.html">PIXEL_ADD</a> for this row's screen address.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28161"></span>28161</td>
 <td class="instruction">PUSH HL</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Copy the screen address to <span class="register">DE</span> (using the stack).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28162"></span>28162</td>
 <td class="instruction">POP DE</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28163"></span>28163</td>
 <td class="instruction">INC DE</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Advance to the next byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28164"></span>28164</td>
 <td class="instruction">LD BC,31</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">0031 more bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28167"></span>28167</td>
 <td class="instruction">LD (HL),0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Write 0 across the rest of the row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28169"></span>28169</td>
 <td class="instruction">LDIR</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28171"></span>28171</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Restore the row counter from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28172"></span>28172</td>
 <td class="instruction">DEC B</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Count down one row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28173"></span>28173</td>
 <td class="instruction">LD A,79</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Jump to <a href="28154.html#28157">ClearIllustration_Row</a> until row 80 has been cleared.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28175"></span>28175</td>
 <td class="instruction">CP B</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28176"></span>28176</td>
-<td class="instruction">JR NZ,<a href="28154.html#28157">ClearIllustration_0</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">JR NZ,<a href="28154.html#28157">ClearIllustration_Row</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28178"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the matching attribute rows, then copy them into the illustration buffer.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28178"></span>28178</td>
 <td class="instruction">LD HL,22528</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at 22528 (attribute buffer).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28181"></span>28181</td>
 <td class="instruction">LD DE,22529</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at the next byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28184"></span>28184</td>
 <td class="instruction">LD BC,383</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">0383 more bytes.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28187"></span>28187</td>
 <td class="instruction">LD (HL),0</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Write 0 across the block.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28189"></span>28189</td>
 <td class="instruction">LDIR</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28191"></span>28191</td>
 <td class="instruction">LD HL,22528</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Copy 384 bytes from 22528 (attribute buffer) to <a href="27770.html">AttributeBuffer</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28194"></span>28194</td>
 <td class="instruction">LD DE,27770</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28197"></span>28197</td>
 <td class="instruction">LD BC,384</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28200"></span>28200</td>
 <td class="instruction">LDIR</td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28202"></span>
+<div class="comments">
+<div class="paragraph">
+Paint the picture into the buffer.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28202"></span>28202</td>
 <td class="instruction">CALL <a href="28217.html">DrawRoomPicture</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Call <a href="28217.html">DrawRoomPicture</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="28205"></span>
+<div class="comments">
+<div class="paragraph">
+Copy the painted attributes back onto the screen.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28205"></span>28205</td>
 <td class="instruction">LD DE,22528</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="4">Copy 384 bytes from <a href="27770.html">AttributeBuffer</a> to 22528 (attribute buffer).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28208"></span>28208</td>
 <td class="instruction">LD HL,27770</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28211"></span>28211</td>
 <td class="instruction">LD BC,384</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28214"></span>28214</td>
 <td class="instruction">LDIR</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="28216"></span>28216</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">

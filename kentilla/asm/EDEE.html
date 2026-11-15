@@ -114,7 +114,7 @@ Next: <a href="EE60.html">EE60</a>
 Used by the routine at <a href="EA60.html">JumpTable</a>.
 </div>
 <div class="paragraph">
-Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the delimiter in <a href="5BA0.html#5bac">ParserState_TokenDelimiter</a>, try <a href="ED65.html">SearchVocabulary_Prepositions</a> (prepositions) and then walk a BASIC-resident word list via <a href="EE9C.html">StepBasicListEntry</a>. Returns <span class="register">BC</span>=index or 0000.
+Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>. Returns <span class="register">BC</span>=index or 0000.
 </div>
 </div>
 </td>
@@ -123,7 +123,7 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label">MatchTokenInBasicList</td>
 <td class="address-2"><span id="edee"></span>EDEE</td>
 <td class="instruction">LD A,$02</td>
-<td class="comment-1" rowspan="4">Set match length 02 and reset the word index.</td>
+<td class="comment-1" rowspan="2">Write 02 to *<a href="5BA4.html">ParserState_MatchLength</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -134,6 +134,7 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="edf3"></span>EDF3</td>
 <td class="instruction">DEC A</td>
+<td class="comment-1" rowspan="2">Write 01 to *<a href="5BA5.html">ParserState_WordIndex</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,7 +145,7 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="edf7"></span>EDF7</td>
 <td class="instruction">LD A,($5BAC)</td>
-<td class="comment-1" rowspan="5">Jump to <a href="EDEE.html#ee23">MatchTokenInBasicList_ClearDirty</a> if the delimiter ends the line or is a quote.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="EDEE.html#ee23">MatchTokenInBasicList_ClearDirty</a> if *<a href="5BAC.html">ParserState_TokenDelimiter</a> is ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -160,6 +161,7 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="edfe"></span>EDFE</td>
 <td class="instruction">CP $22</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDEE.html#ee23">MatchTokenInBasicList_ClearDirty</a> if *<a href="5BAC.html">ParserState_TokenDelimiter</a> is a quote.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -170,7 +172,7 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee02"></span>EE02</td>
 <td class="instruction">LD HL,($5BA7)</td>
-<td class="comment-1" rowspan="7">Stash <a href="5BA0.html#5ba7">InputBuffer_TokenStart</a> in <span class="register">HL</span>, promote <a href="5BA0.html#5ba9">InputBuffer_NextToken</a> as the current token, try a preposition match (<a href="ED65.html">SearchVocabulary_Prepositions</a>) and seed <a href="5BA0.html#5ba5">ParserState_WordIndex</a> to 01.</td>
+<td class="comment-1" rowspan="2">Stash *<a href="5BA7.html">InputBuffer_TokenStart</a> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -181,6 +183,7 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee06"></span>EE06</td>
 <td class="instruction">LD HL,($5BA9)</td>
+<td class="comment-1" rowspan="2">Copy *<a href="5BA9.html">InputBuffer_NextToken</a> to *<a href="5BA7.html">InputBuffer_TokenStart</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -191,11 +194,13 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee0c"></span>EE0C</td>
 <td class="instruction">CALL <a href="ED65.html">SearchVocabulary_Prepositions</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ED65.html">SearchVocabulary_Prepositions</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee0f"></span>EE0F</td>
 <td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">Write 01 to *<a href="5BA5.html">ParserState_WordIndex</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -206,7 +211,7 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee14"></span>EE14</td>
 <td class="instruction">POP HL</td>
-<td class="comment-1" rowspan="2">Pop the stashed pointer back into <a href="5BA0.html#5ba7">InputBuffer_TokenStart</a> via <span class="register">HL</span>.</td>
+<td class="comment-1" rowspan="2">Restore *<a href="5BA7.html">InputBuffer_TokenStart</a> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -233,7 +238,7 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee1c"></span>EE1C</td>
 <td class="instruction">LD A,$01</td>
-<td class="comment-1" rowspan="3">Mark the line dirty and scan the BASIC list.</td>
+<td class="comment-1" rowspan="2">Set *<a href="5BFD.html">InputLineState_Dirty</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -244,12 +249,23 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee21"></span>EE21</td>
 <td class="instruction">JR <a href="EDEE.html#ee29">MatchTokenInBasicList_Scan</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EDEE.html#ee29">MatchTokenInBasicList_Scan</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ee23"></span>
+<div class="comments">
+<div class="paragraph">
+Clear the dirty flag and scan.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">MatchTokenInBasicList_ClearDirty</td>
 <td class="address-2"><span id="ee23"></span>EE23</td>
 <td class="instruction">SUB A</td>
-<td class="comment-1" rowspan="3">Clear the dirty flag and use the BASIC-helper scan.</td>
+<td class="comment-1" rowspan="2">Write 00 to *<a href="5BFD.html">InputLineState_Dirty</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -260,12 +276,23 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee27"></span>EE27</td>
 <td class="instruction">JR <a href="EE60.html#ee6e">BasicHelper_Scan</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EE60.html#ee6e">BasicHelper_Scan</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ee29"></span>
+<div class="comments">
+<div class="paragraph">
+Compare the next BASIC-list word.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">MatchTokenInBasicList_Scan</td>
 <td class="address-2"><span id="ee29"></span>EE29</td>
 <td class="instruction">LD HL,($5C57)</td>
-<td class="comment-1" rowspan="8">Compare the next BASIC-list word to the token at <a href="5BA0.html#5ba7">InputBuffer_TokenStart</a>.</td>
+<td class="comment-1" rowspan="3">Point <span class="register">HL</span> at the next BASIC-list word.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -281,26 +308,31 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee30"></span>EE30</td>
 <td class="instruction">LD DE,($5BA7)</td>
+<td class="comment-1" rowspan="1">Copy *<a href="5BA7.html">InputBuffer_TokenStart</a> to <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee34"></span>EE34</td>
 <td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="1">Stash <span class="register">HL</span> on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee35"></span>EE35</td>
 <td class="instruction">CALL <a href="ED8A.html">CompareTokenToWord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ED8A.html">CompareTokenToWord</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee38"></span>EE38</td>
 <td class="instruction">POP HL</td>
+<td class="comment-1" rowspan="1">Restore <span class="register">HL</span> from the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee39"></span>EE39</td>
 <td class="instruction">JR C,<a href="EDEE.html#ee4f">MatchTokenInBasicList_AdvanceEntry</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EDEE.html#ee4f">MatchTokenInBasicList_AdvanceEntry</a> if it missed.</td>
 </tr>
 <tr>
 <td class="asm-label">MatchTokenInBasicList_NextWord</td>
@@ -337,22 +369,25 @@ Jump-table target <a href="EA60.html#ea72">JumpTable_TokenHelper</a>: using the 
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee45"></span>EE45</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="4">Compare that word to the next input token.</td>
+<td class="comment-1" rowspan="1">Advance <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee46"></span>EE46</td>
 <td class="instruction">LD DE,($5BA9)</td>
+<td class="comment-1" rowspan="1">Copy *<a href="5BA9.html">InputBuffer_NextToken</a> to <span class="register">DE</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee4a"></span>EE4A</td>
 <td class="instruction">CALL <a href="ED8A.html">CompareTokenToWord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ED8A.html">CompareTokenToWord</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee4d"></span>EE4D</td>
 <td class="instruction">JR NC,<a href="EDEE.html#ee59">MatchTokenInBasicList_Hit</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EDEE.html#ee59">MatchTokenInBasicList_Hit</a> if it matched.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -368,12 +403,13 @@ This entry point is used by the routine at <a href="EE60.html">BasicHelper</a>.
 <td class="asm-label">MatchTokenInBasicList_AdvanceEntry</td>
 <td class="address-2"><span id="ee4f"></span>EE4F</td>
 <td class="instruction">CALL <a href="EE9C.html">StepBasicListEntry</a></td>
-<td class="comment-1" rowspan="3">Step to the next BASIC-list entry and keep scanning.</td>
+<td class="comment-1" rowspan="1">Call <a href="EE9C.html">StepBasicListEntry</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ee52"></span>EE52</td>
 <td class="instruction">CP B</td>
+<td class="comment-1" rowspan="2">Jump to <a href="EDEE.html#ee29">MatchTokenInBasicList_Scan</a> if there are more entries.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -409,6 +445,9 @@ This entry point is used by the routines at <a href="EE60.html">BasicHelper</a> 
 <div class="paragraph">
 This entry point is used by the routines at <a href="EE60.html">BasicHelper</a> and <a href="EEB9.html">SeedPrimaryWorkBuffer</a>.
 </div>
+<div class="paragraph">
+A BASIC-list word matched.
+</div>
 </div>
 </td>
 </tr>
@@ -416,7 +455,7 @@ This entry point is used by the routines at <a href="EE60.html">BasicHelper</a> 
 <td class="asm-label">MatchTokenInBasicList_Hit</td>
 <td class="address-2"><span id="ee59"></span>EE59</td>
 <td class="instruction">LD A,($5BA5)</td>
-<td class="comment-1" rowspan="3"><span class="register">BC</span>=the matched word index.</td>
+<td class="comment-1" rowspan="3">Copy *<a href="5BA5.html">ParserState_WordIndex</a> into <span class="register">BC</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

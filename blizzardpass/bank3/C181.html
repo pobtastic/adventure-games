@@ -154,31 +154,54 @@ Compares the four characters with every vocabulary entry.
 <td class="comment-1" rowspan="1">The vocabulary starts at <a href="../asm/A720.html">Vocabulary</a>, one byte after <a href="../asm/A71F.html">VocabularyLead</a>.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c187"></span>
+<div class="comments">
+<div class="paragraph">
+Compare the next vocabulary entry with <a href="../asm/5B7B.html">WordToken</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">MatchWord_Next</td>
 <td class="address-2"><span id="c187"></span>C187</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="3">Compare the next entry with <a href="../asm/5B7B.html">WordToken</a>.</td>
+<td class="comment-1" rowspan="1">Step to the next vocabulary entry.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c188"></span>C188</td>
 <td class="instruction">LD DE,$5B7B</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="../asm/5B7B.html">WordToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c18b"></span>C18B</td>
 <td class="instruction">LD BC,$0400</td>
+<td class="comment-1" rowspan="1">Count four letters, starting from no matches.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c18e"></span>
+<div class="comments">
+<div class="paragraph">
+Compare one letter and count it when it matches.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">MatchWord_Character</td>
 <td class="address-2"><span id="c18e"></span>C18E</td>
 <td class="instruction">LD A,(DE)</td>
-<td class="comment-1" rowspan="7">Compare four letters and count the matches.</td>
+<td class="comment-1" rowspan="1">Fetch the token letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c18f"></span>C18F</td>
 <td class="instruction">CP (HL)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C181.html#c193">MatchWord_Miss</a> if it does not match.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -189,27 +212,41 @@ Compares the four characters with every vocabulary entry.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c192"></span>C192</td>
 <td class="instruction">INC C</td>
+<td class="comment-1" rowspan="1">Count this match.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c193"></span>
+<div class="comments">
+<div class="paragraph">
+Step on after this letter.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">MatchWord_Miss</td>
 <td class="address-2"><span id="c193"></span>C193</td>
 <td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance the vocabulary pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c194"></span>C194</td>
 <td class="instruction">INC DE</td>
+<td class="comment-1" rowspan="1">Advance the token pointer.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c195"></span>C195</td>
 <td class="instruction">DJNZ <a href="C181.html#c18e">MatchWord_Character</a></td>
+<td class="comment-1" rowspan="1">Jump back to <a href="C181.html#c18e">MatchWord_Character</a> for the next letter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="c197"></span>C197</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="C181.html#c1a2">MatchWord_Done</a> if the table has ended (FF).</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C181.html#c1a2">MatchWord_Done</a> if the terminator has been reached (FF).</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

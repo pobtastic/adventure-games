@@ -114,6 +114,19 @@ Next: <a href="AB4A.html">AB4A</a>
 Writes the second operand into the turn counter selected by the first operand.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">F</td>
+<td class="register-desc">The zero flag is set when the conditions hold</td>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry (opcode, counter, value)</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -121,7 +134,7 @@ Writes the second operand into the turn counter selected by the first operand.
 <span id="ab37"></span>
 <div class="comments">
 <div class="paragraph">
-When the condition succeeded, store the second operand in the turn counter selected by the first.
+When the condition failed, skip this action.
 </div>
 </div>
 </td>
@@ -129,19 +142,30 @@ When the condition succeeded, store the second operand in the turn counter selec
 <tr>
 <td class="asm-label">Action_SetTurnCounter</td>
 <td class="address-2"><span id="ab37"></span>AB37</td>
-<td class="instruction">JP NZ,<a href="A6FF.html#a75b">Handler_RunScript_9</a></td>
-<td class="comment-1" rowspan="1">Leave the turn counters alone.</td>
+<td class="instruction">JP NZ,<a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a> if the condition failed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="ab3a"></span>
+<div class="comments">
+<div class="paragraph">
+The first operand selects a counter at <a href="A0C9.html">TurnEventCounters</a>; the second is the new value.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab3a"></span>AB3A</td>
 <td class="instruction">LD HL,$A0C9</td>
-<td class="comment-1" rowspan="4">The counter selected by the first operand.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the turn-event counters at <a href="A0C9.html">TurnEventCounters</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab3d"></span>AB3D</td>
 <td class="instruction">LD E,(IX+$01)</td>
+<td class="comment-1" rowspan="2">Add the counter index from *<span class="register">IX</span>+01.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -152,23 +176,25 @@ When the condition succeeded, store the second operand in the turn counter selec
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab42"></span>AB42</td>
 <td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at that counter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab43"></span>AB43</td>
 <td class="instruction">LD A,(IX+$02)</td>
-<td class="comment-1" rowspan="2">That counter now holds the second operand.</td>
+<td class="comment-1" rowspan="1">Fetch the new value from *<span class="register">IX</span>+02 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab46"></span>AB46</td>
 <td class="instruction">LD (HL),A</td>
+<td class="comment-1" rowspan="1">Store it in the selected counter.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ab47"></span>AB47</td>
-<td class="instruction">JP <a href="A6FF.html#a75b">Handler_RunScript_9</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="A6FF.html#a75b">RunScript_SkipAction_ThreeBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

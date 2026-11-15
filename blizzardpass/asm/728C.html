@@ -97,7 +97,7 @@ gtag('config', 'G-75RERFCHBG');
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="7213.html">7213</a>
+Prev: <a href="7271.html">7271</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#728c">Map</a></td>
 <td class="next">
@@ -123,37 +123,35 @@ Writes the next picture byte over the immediate of the shift that follows, so th
 <td class="asm-label">PatchShift</td>
 <td class="address-2"><span id="728c"></span>728C</td>
 <td class="instruction">LD A,(IX+$03)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Write the row count over both loop immediates.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="728f"></span>728F</td>
 <td class="instruction">LD ($726C),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="7292"></span>7292</td>
 <td class="instruction">LD ($7287),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="7295"></span>7295</td>
 <td class="instruction">LD A,(IX+$04)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the shift.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="7298"></span>7298</td>
 <td class="instruction">LD B,(IX+$01)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the Y coordinate.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="729b"></span>729B</td>
 <td class="instruction">LD C,(IX+$02)</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Fetch the X coordinate.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -162,80 +160,98 @@ Writes the next picture byte over the immediate of the shift that follows, so th
 <div class="paragraph">
 This entry point is used by the routine at <a href="72C0.html">DrawFixedShift</a>.
 </div>
+<div class="paragraph">
+Patch the offset immediates and draw both layers.
+</div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">PatchShift_0</td>
+<td class="asm-label">PatchShift_Draw</td>
 <td class="address-2"><span id="729e"></span>729E</td>
 <td class="instruction">LD ($7248),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Write the shift into both offset immediates.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72a1"></span>72A1</td>
 <td class="instruction">LD ($7276),A</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72a4"></span>72A4</td>
 <td class="instruction">AND A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Halve the shift.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72a5"></span>72A5</td>
 <td class="instruction">RRA</td>
-<td class="comment-0" rowspan="1"></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72a6"></span>72A6</td>
 <td class="instruction">LD ($7253),A</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="2">Write it into both inner byte counts.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72a9"></span>72A9</td>
 <td class="instruction">LD ($727D),A</td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="72ac"></span>
+<div class="comments">
+<div class="paragraph">
+Reverse the pixels.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72ac"></span>72AC</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="3">Call <a href="7242.html">ShapeIfPresent_Mirror</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72ad"></span>72AD</td>
-<td class="instruction">CALL <a href="7213.html#7242">ShapeIfPresent_1</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="7242.html">ShapeIfPresent_Mirror</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72b0"></span>72B0</td>
 <td class="instruction">POP BC</td>
-<td class="comment-0" rowspan="1"></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="72b1"></span>
+<div class="comments">
+<div class="paragraph">
+Reverse the attributes.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72b1"></span>72B1</td>
-<td class="instruction">CALL <a href="7213.html#7271">ShapeIfPresent_5</a></td>
-<td class="comment-0" rowspan="1"></td>
+<td class="instruction">CALL <a href="7271.html">ShapeIfPresent_Copy</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7271.html">ShapeIfPresent_Copy</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72b4"></span>72B4</td>
 <td class="instruction">RET</td>
-<td class="comment-0" rowspan="1"></td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
 <tr>
 <td class="prev">
-Prev: <a href="7213.html">7213</a>
+Prev: <a href="7271.html">7271</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#728c">Map</a></td>
 <td class="next">

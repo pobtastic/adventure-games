@@ -122,6 +122,10 @@ Succeeds when the item operand is in the current room or the inventory.
 <td class="register">F</td>
 <td class="register-desc">The zero flag is set when the item is present</td>
 </tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -130,7 +134,7 @@ Succeeds when the item operand is in the current room or the inventory.
 <span id="43019"></span>
 <div class="comments">
 <div class="paragraph">
-Is the item in the current room or the inventory? 255 stands for the matched item.
+Is the item in the current room or the inventory?
 </div>
 </div>
 </td>
@@ -139,25 +143,25 @@ Is the item in the current room or the inventory? 255 stands for the matched ite
 <td class="asm-label">Condition_ItemIsPresent</td>
 <td class="address-2"><span id="43019"></span>43019</td>
 <td class="instruction">LD A,(IX+1)</td>
-<td class="comment-1" rowspan="1">The operand names the item.</td>
+<td class="comment-1" rowspan="1">Fetch the item ID (the operand) from *<span class="register">IX</span>+1 into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43022"></span>43022</td>
-<td class="instruction">CALL <a href="42751.html#42866">Handler_RunScript_15</a></td>
-<td class="comment-1" rowspan="1">255 stands for the matched item.</td>
+<td class="instruction">CALL <a href="42751.html#42866">RunScript_ResolveMatchedItem</a></td>
+<td class="comment-1" rowspan="1">Call <a href="42751.html#42866">RunScript_ResolveMatchedItem</a> to substitute the matched item ID from <a href="43013.html">ScriptMatchedItem</a> when the operand is 255.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43025"></span>43025</td>
 <td class="instruction">CALL <a href="42438.html">ValidateItemPresent</a></td>
-<td class="comment-1" rowspan="1">Call <a href="42438.html">ValidateItemPresent</a>.</td>
+<td class="comment-1" rowspan="1">Call <a href="42438.html">ValidateItemPresent</a> to test whether that item is present.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43028"></span>43028</td>
-<td class="instruction">JP <a href="42751.html#42781">Handler_RunScript_3</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="42751.html#42781">RunScript_SkipCondition_TwoBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42781">RunScript_SkipCondition_TwoBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">

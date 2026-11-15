@@ -114,7 +114,7 @@ Next: <a href="EDEE.html">EDEE</a>
 Used by the routines at <a href="EA60.html">JumpTable</a> and <a href="F14C.html">ScanInputSpaces</a>.
 </div>
 <div class="paragraph">
-Jump-table target <a href="EA60.html#ea6c">JumpTable_AdvanceInputPointer</a>: advance <a href="5BA0.html#5ba7">InputBuffer_TokenStart</a> / <a href="5BA0.html#5ba9">InputBuffer_NextToken</a> through <a href="5BAE.html">InputBuffer</a>. Skips a leading <code>THE</code> via <a href="FBA4.html">Token_THE</a>, then leaves <a href="5BA0.html#5bac">ParserState_TokenDelimiter</a> holding the delimiter that ended the token.
+Jump-table target <a href="EA60.html#ea6c">JumpTable_AdvanceInputPointer</a>.
 </div>
 </div>
 </td>
@@ -123,7 +123,7 @@ Jump-table target <a href="EA60.html#ea6c">JumpTable_AdvanceInputPointer</a>: ad
 <td class="asm-label">AdvanceInputPointer</td>
 <td class="address-2"><span id="edaf"></span>EDAF</td>
 <td class="instruction">LD HL,($5BA7)</td>
-<td class="comment-1" rowspan="3">Fetch the current token and compare it with end-of-line.</td>
+<td class="comment-1" rowspan="2">Fetch *<a href="5BA7.html">InputBuffer_TokenStart</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -134,18 +134,28 @@ Jump-table target <a href="EA60.html#ea6c">JumpTable_AdvanceInputPointer</a>: ad
 <td class="asm-label"></td>
 <td class="address-1"><span id="edb3"></span>EDB3</td>
 <td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Return if this token is ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="edb5"></span>EDB5</td>
 <td class="instruction">RET Z</td>
-<td class="comment-1" rowspan="1">Return if the current token is already at end-of-line.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="edb6"></span>
+<div class="comments">
+<div class="paragraph">
+Move on to the next token.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="edb6"></span>EDB6</td>
 <td class="instruction">LD HL,($5BA9)</td>
-<td class="comment-1" rowspan="5">Promote <a href="5BA0.html#5ba9">InputBuffer_NextToken</a> to <a href="5BA0.html#5ba7">InputBuffer_TokenStart</a> and test for an empty token.</td>
+<td class="comment-1" rowspan="2">Copy *<a href="5BA9.html">InputBuffer_NextToken</a> to *<a href="5BA7.html">InputBuffer_TokenStart</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -156,6 +166,7 @@ Jump-table target <a href="EA60.html#ea6c">JumpTable_AdvanceInputPointer</a>: ad
 <td class="asm-label"></td>
 <td class="address-1"><span id="edbc"></span>EDBC</td>
 <td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="2">Write *<span class="register">HL</span> to *<a href="5BAB.html">ParserState_TokenChar</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -166,18 +177,28 @@ Jump-table target <a href="EA60.html#ea6c">JumpTable_AdvanceInputPointer</a>: ad
 <td class="asm-label"></td>
 <td class="address-1"><span id="edc0"></span>EDC0</td>
 <td class="instruction">CP $0D</td>
+<td class="comment-1" rowspan="2">Return if that token is ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="edc2"></span>EDC2</td>
 <td class="instruction">RET Z</td>
-<td class="comment-1" rowspan="1">Return if that token is empty.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="edc3"></span>
+<div class="comments">
+<div class="paragraph">
+Walk to the delimiter that ends this token.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">AdvanceInputPointer_Scan</td>
 <td class="address-2"><span id="edc3"></span>EDC3</td>
 <td class="instruction">INC HL</td>
-<td class="comment-1" rowspan="4">Jump to <a href="EDAF.html#edd7">AdvanceInputPointer_Store</a> at end-of-line or a quote.</td>
+<td class="comment-1" rowspan="4">Jump to <a href="EDAF.html#edd7">AdvanceInputPointer_Store</a> if this character is ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -241,17 +262,19 @@ Jump-table target <a href="EA60.html#ea6c">JumpTable_AdvanceInputPointer</a>: ad
 <td class="asm-label">AdvanceInputPointer_Store</td>
 <td class="address-2"><span id="edd7"></span>EDD7</td>
 <td class="instruction">LD ($5BAC),A</td>
-<td class="comment-1" rowspan="4">Store the delimiter and next-token pointer; require 03 matching characters for "THE".</td>
+<td class="comment-1" rowspan="1">Write the delimiter to *<a href="5BAC.html">ParserState_TokenDelimiter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="edda"></span>EDDA</td>
 <td class="instruction">LD ($5BA9),HL</td>
+<td class="comment-1" rowspan="1">Write <span class="register">HL</span> to *<a href="5BA9.html">InputBuffer_NextToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eddd"></span>EDDD</td>
 <td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2">Write 03 to *<a href="5BA4.html">ParserState_MatchLength</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -259,31 +282,44 @@ Jump-table target <a href="EA60.html#ea6c">JumpTable_AdvanceInputPointer</a>: ad
 <td class="instruction">LD ($5BA4),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="ede2"></span>
+<div class="comments">
+<div class="paragraph">
+Skip a leading "THE".
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ede2"></span>EDE2</td>
 <td class="instruction">LD HL,($5BA7)</td>
-<td class="comment-1" rowspan="4">Skip a leading "THE" via <a href="FBA4.html">Token_THE</a>.</td>
+<td class="comment-1" rowspan="1">Copy *<a href="5BA7.html">InputBuffer_TokenStart</a> to <span class="register">HL</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ede5"></span>EDE5</td>
 <td class="instruction">LD DE,$FBA4</td>
+<td class="comment-1" rowspan="1"><span class="register">DE</span>=<a href="FBA4.html">Token_THE</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="ede8"></span>EDE8</td>
 <td class="instruction">CALL <a href="ED8A.html">CompareTokenToWord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="ED8A.html">CompareTokenToWord</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="edeb"></span>EDEB</td>
 <td class="instruction">JR NC,<a href="EDAF.html#edaf">AdvanceInputPointer</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="EDAF.html">AdvanceInputPointer</a> if "THE" was skipped.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="eded"></span>EDED</td>
 <td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return if "THE" was not skipped.</td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">

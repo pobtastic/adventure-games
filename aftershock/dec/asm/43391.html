@@ -122,6 +122,10 @@ Succeeds when <a href="41222.html">CurrentRoom</a> is the first operand and <a h
 <td class="register">F</td>
 <td class="register-desc">The zero flag is set when both rooms match</td>
 </tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Pointer to the script entry</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -139,34 +143,37 @@ Succeed only when the player is in the first room and the marked room is the sec
 <td class="asm-label">Condition_RoomPairMatches</td>
 <td class="address-2"><span id="43391"></span>43391</td>
 <td class="instruction">LD A,(41222)</td>
-<td class="comment-1" rowspan="3">The player is in the first room.</td>
+<td class="comment-1" rowspan="1">Fetch the current room from *<a href="41222.html">CurrentRoom</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43394"></span>43394</td>
 <td class="instruction">CP (IX+1)</td>
+<td class="comment-1" rowspan="1">Compare it with the first room operand.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43397"></span>43397</td>
 <td class="instruction">JR NZ,<a href="43391.html#43405">RoomPairMatches_Done</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="43391.html#43405">RoomPairMatches_Done</a> if the current room is not the first operand.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43399"></span>43399</td>
 <td class="instruction">LD A,(44408)</td>
-<td class="comment-1" rowspan="2">The marked room is the second.</td>
+<td class="comment-1" rowspan="1">Fetch the marked room from *<a href="44408.html">TemporaryRoom</a> into <span class="register">A</span>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="43402"></span>43402</td>
 <td class="instruction">CP (IX+2)</td>
+<td class="comment-1" rowspan="1">Set the zero flag when it equals the second room operand.</td>
 </tr>
 <tr>
 <td class="asm-label">RoomPairMatches_Done</td>
 <td class="address-2"><span id="43405"></span>43405</td>
-<td class="instruction">JP <a href="42751.html#42779">Handler_RunScript_2</a></td>
-<td class="comment-1" rowspan="1">Resume the script.</td>
+<td class="instruction">JP <a href="42751.html#42779">RunScript_SkipCondition_ThreeBytes</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="42751.html#42779">RunScript_SkipCondition_ThreeBytes</a>.</td>
 </tr>
 </table>
 <table class="asm-navigation">
