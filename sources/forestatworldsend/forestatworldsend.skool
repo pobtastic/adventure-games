@@ -3876,10 +3876,10 @@ g$BB04 DEFB $00,$00,$00,$00,$00,$00,$00,$00
  $BB34 DEFB $00,$00
 
 ; User Input: Word Tokens
-@label=UserInput_Token_1
+@label=UserInput_FirstToken
 g$BB36 DEFB $FF                                 ; The first word, which should
                                                 ; be the verb.
-@label=UserInput_Token_2
+@label=UserInput_SecondToken
  $BB37 DEFB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; The words after the verb.
 
 ; Line Number
@@ -4583,47 +4583,55 @@ c$BEBF LD BC,$0200   ; {Start at the attribute file and count #N$0200 bytes.
 ;
 ; First process the turn-based events (if any are active).
 @label=Handler_TurnBasedEvents
-c$BECE LD A,($BA36)  ; {Jump to #R$BF00 when the event mask is zero.
- $BED1 OR A          ;
- $BED2 JR Z,$BF00    ; }
- $BED4 LD C,A        ; {Count the eight event bits, and skip a threat whose bit
- $BED5 LD B,$08      ; is clear.
+c$BECE LD A,($BA36)  ; #REGa=*#R$BA36.
+ $BED1 OR A          ; {Jump to #R$BF00 if no turn-based events are currently
+ $BED2 JR Z,$BF00    ; active.}
+; Eight turn-based events share the flag byte.
+ $BED4 LD C,A        ; Copy the turn-based event flags into #REGc.
+ $BED5 LD B,$08      ; Set a counter in #REGb for the number of possible turn-based events
+                     ; (#N$08).
+; Keep shifting the event flags one-by-one to find which bits are set.
 @label=Handler_TurnBasedEvents_Loop
-*$BED7 SRL C         ;
- $BED9 JR NC,$BEFE   ; }
- $BEDB LD DE,$0000   ; Clear the offset used while counting this threat down.
- $BEDE LD HL,$BA37   ; {Count this threat's timer down. Leave it alone while time
- $BEE1 LD A,$08      ; remains.
- $BEE3 SUB B         ;
- $BEE4 LD E,A        ;
- $BEE5 ADD HL,DE     ;
- $BEE6 DEC (HL)      ;
- $BEE7 JR NZ,$BEFE   ; }
- $BEE9 LD IX,($BADE) ; {Take this threat's handler.
- $BEED SLA E         ;
- $BEEF ADD IX,DE     ;
- $BEF1 LD L,(IX+$00) ;
+*$BED7 SRL C         ; Shift the next event flag into the carry.
+ $BED9 JR NC,$BEFE   ; Jump to #R$BEFE if this event bit is not set.
+; Count down this event's timer.
+ $BEDB LD DE,$0000   ; Initialise #REGde to #N$0000.
+ $BEDE LD HL,$BA37   ; #REGhl=#R$BA37.
+ $BEE1 LD A,$08      ; {Calculate the event index (#N$08-#REGb) and store it in
+ $BEE3 SUB B         ; #REGe.
+ $BEE4 LD E,A        ; }
+ $BEE5 ADD HL,DE     ; Point #REGhl at this event's countdown timer.
+ $BEE6 DEC (HL)      ; Decrease this event's countdown timer by one.
+ $BEE7 JR NZ,$BEFE   ; Jump to #R$BEFE if this event's countdown timer is still
+                     ; running.
+; The timer has expired, so run this event's handler.
+ $BEE9 LD IX,($BADE) ; #REGix=*#R$BADE.
+ $BEED SLA E         ; Double the event index, as each entry in the table is
+                     ; two bytes.
+ $BEEF ADD IX,DE     ; Point #REGix at this event's entry in the table.
+ $BEF1 LD L,(IX+$00) ; {Read that handler's address into #REGhl.
  $BEF4 LD H,(IX+$01) ; }
- $BEF7 PUSH BC       ; Keep the bit scan safe on the stack.
- $BEF8 LD DE,$BEFD   ; {Push #R$BEFD so the next return resumes here.
- $BEFB PUSH DE       ; }
+ $BEF7 PUSH BC       ; Stash #REGbc on the stack.
+ $BEF8 LD DE,$BEFD   ; {Stash #R$BEFD on the stack so the next return resumes
+ $BEFB PUSH DE       ; here.}
  $BEFC JP (HL)       ; Jump to that handler.
- $BEFD POP BC        ; Restore the bit scan from the stack.
+ $BEFD POP BC        ; Restore #REGbc from the stack.
 ; Test the next turn-based event.
 @label=Handler_TurnBasedEvents_Next
 *$BEFE DJNZ $BED7    ; Decrease the event bit counter by one and loop back to #R$BED7
                      ; until all eight events have been considered.
-; Process scenic events.
+; Now handle the scenic events.
 @label=Handler_TurnBasedEvents_Scenic
-*$BF00 NOP           ; {Jump to #R$BF40 when the scenic count is zero.
- $BF01 LD HL,$BA48   ;
- $BF04 LD A,($BB00)  ;
- $BF07 OR A          ;
- $BF08 JR Z,$BF40    ; }
- $BF0A LD B,A        ; {Start at the first scenic entry.
- $BF0B JR $BF0E      ; }
+*$BF00 NOP           ; No operation.
+ $BF01 LD HL,$BA48   ; #REGhl=#R$BA48.
+ $BF04 LD A,($BB00)  ; {Fetch the number of active scenic events from #R$BB00.
+ $BF07 OR A          ; }
+ $BF08 JR Z,$BF40    ; Jump to #R$BF40 if there are no active scenic events.
+ $BF0A LD B,A        ; Set a counter in #REGb for the number of scenic events.
+ $BF0B JR $BF0E      ; Jump to #R$BF0E to process the first scenic event without
+                     ; advancing the table pointer.
 @label=Handler_TurnBasedEvents_ScenicAdvance
-*$BF0D INC HL        ; Advance to the next scenic entry.
+*$BF0D INC HL        ; Move on to the next scenic item.
 @label=Handler_TurnBasedEvents_ScenicSlot
 *$BF0E LD A,(HL)     ; {Jump to #R$BF3E when this scenic slot is empty.
  $BF0F OR A          ;
@@ -4631,16 +4639,20 @@ c$BECE LD A,($BA36)  ; {Jump to #R$BF00 when the event mask is zero.
  $BF12 LD A,($BA9B)  ; {Jump to #R$BF3E when this event is already in the
  $BF15 CP (HL)       ; current room.
  $BF16 JR Z,$BF3E    ; }
- $BF18 PUSH HL       ; {Call #R$C0C3 to fetch this event's room list.
- $BF19 PUSH BC       ;
- $BF1A LD A,($BB00)  ;
+; Pick a room for this scenic event.
+ $BF18 PUSH HL       ; {Stash #REGhl and #REGbc on the stack.
+ $BF19 PUSH BC       ; }
+ $BF1A LD A,($BB00)  ; {Calculate which event's group this is.
  $BF1D SUB B         ;
- $BF1E LD E,A        ;
- $BF1F LD IX,$BA9C   ;
- $BF23 CALL $C0C3    ; }
- $BF26 LD A,($5C78)  ; {Use the frame counter as a step count and set the group
- $BF29 LD B,A        ; terminator in #REGa.
- $BF2A LD A,$FF      ; }
+ $BF1E LD E,A        ; }
+; Point at this event's room list.
+ $BF1F LD IX,$BA9C   ; #REGix=#R$BA9C.
+ $BF23 CALL $C0C3    ; Call #R$C0C3 to fetch this event's room group.
+; The frame counter picks how far to walk into the room group.
+; #N$FF ends the group and the walk wraps.
+ $BF26 LD A,($5C78)  ; {Use the frame counter to pick a random step count and store it in
+ $BF29 LD B,A        ; #REGb.}
+ $BF2A LD A,$FF      ; #REGa=the room group terminator (#N$FF).
 ; Walk the room group. #N$FF restarts it, and the frame count chooses
 ; where to stop.
 @label=Handler_TurnBasedEvents_RoomWalk
@@ -4648,15 +4660,15 @@ c$BECE LD A,($BA36)  ; {Jump to #R$BF00 when the event mask is zero.
  $BF2F LD H,(IX+$01) ; }
  $BF32 JR $BF35      ; Jump to #R$BF35.
 @label=Handler_TurnBasedEvents_RoomStep
-*$BF34 INC HL        ; Step to the next room in the list.
+*$BF34 INC HL        ; Move to the next room in the group.
 @label=Handler_TurnBasedEvents_RoomCheck
 *$BF35 CP (HL)       ; {Jump back to #R$BF2C when the end marker matches.
  $BF36 JR Z,$BF2C    ; }
  $BF38 DJNZ $BF34    ; Decrease the step counter by one and loop back to #R$BF34 until
                      ; the counter is zero.
- $BF3A LD A,(HL)     ; Take the room the walk landed on.
- $BF3B POP BC        ; {Restore the scenic counter and scenic entry pointer
- $BF3C POP HL        ; from the stack.}
+ $BF3A LD A,(HL)     ; Fetch the destination room into #REGa.
+ $BF3B POP BC        ; {Restore #REGbc and #REGhl from the stack.
+ $BF3C POP HL        ; }
  $BF3D LD (HL),A     ; Store that room back in this scenic slot.
 ; Move on to the next scenic event.
 @label=Handler_TurnBasedEvents_ScenicNext
@@ -4696,24 +4708,29 @@ c$BF41 HALT          ; Halt for one frame.
 ;
 ; Used by the routines at #R$EBAF, #R$EBCC, #R$EC99 and #R$F2A7.
 ; .
-; Return a number between #N$00 and the limit passed in.
+; Returns a number from #N$00 up to, but not including, #REGa.
+; .
+; The frame counter chooses how far to walk around that range.
 ;
-; O:A A random number derived from *#SKOOLKID$5C78(FRAMES)
+;   A Exclusive upper bound
+; O:A The generated number
+;
+; Mix the frame counter into a number below the limit in #REGa.
 @label=GenerateRandomNumber
-c$BF45 PUSH BC       ; {Save the limit and take the low byte of *#SKOOLKID$5C78(FRAMES) as
- $BF46 LD C,A        ; the scramble.
- $BF47 LD A,($5C78)  ;
- $BF4A LD B,A        ;
- $BF4B LD A,C        ; }
+c$BF45 PUSH BC       ; Stash #REGbc on the stack.
+ $BF46 LD C,A        ; Store the exclusive upper bound in #REGc.
+ $BF47 LD A,($5C78)  ; {Load *#SKOOLKID$5C78(FRAMES) into #REGb as the loop
+ $BF4A LD B,A        ; count.}
+ $BF4B LD A,C        ; Restore the exclusive upper bound into #REGa.
 @label=GenerateRandomNumber_Loop
-*$BF4C DEC A         ; {Step the result down, wrapping to the limit when it
- $BF4D JR NZ,$BF50   ; passes zero.
- $BF4F LD A,C        ; }
+*$BF4C DEC A         ; Decrease the walking value by one.
+ $BF4D JR NZ,$BF50   ; Jump to #R$BF50 if it has not wrapped past zero.
+ $BF4F LD A,C        ; Wrap back to the exclusive upper bound.
 @label=GenerateRandomNumber_Next
-*$BF50 DJNZ $BF4C    ; Repeat that step once for each frame count.
- $BF52 DEC A         ; Step the result down once more, so the range starts at
-                     ; zero.
- $BF53 POP BC        ; Restore the saved limit from the stack.
+*$BF50 DJNZ $BF4C    ; Decrease the frame-count loop by one and loop back to #R$BF4C
+                     ; until the count is zero.
+ $BF52 DEC A         ; Decrease the result by one so the range starts at #N$00.
+ $BF53 POP BC        ; Restore #REGbc from the stack.
  $BF54 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
@@ -4874,15 +4891,17 @@ c$BFC1 LD (HL),A     ; Store ENTER as the end of the command.
  $BFD6 LD C,$0A      ; parser.}
 ; Split the command into words and look each one up in the vocabulary.
 ; .
-; Blank the four-character word buffer.
+; Clear the four-letter buffer to spaces so a short word cannot match
+; the previous one's tail.
 @label=Parser_MatchInputWord
-*$BFD8 LD DE,$BB41   ; Start at the word buffer (#R$BB41).
- $BFDB LD B,$04      ; {Prepare a space and a counter of #N$04 characters.
- $BFDD LD A,$20      ; }
+*$BFD8 LD DE,$BB41   ; #REGde=#R$BB41.
+ $BFDB LD B,$04      ; Set a counter in #REGb for the #N$04 letters.
+ $BFDD LD A,$20      ; #REGa=#N$20.
 @label=MatchInputWord_Clear
-*$BFDF LD (DE),A     ; {Write spaces through the word buffer.
- $BFE0 INC DE        ;
- $BFE1 DJNZ $BFDF    ; }
+*$BFDF LD (DE),A     ; Write a space character (#N$20) to the buffer.
+ $BFE0 INC DE        ; Move to the next letter.
+ $BFE1 DJNZ $BFDF    ; Decrease the counter by one and loop back to #R$BFDF until the
+                     ; counter is zero.
  $BFE3 XOR A         ; {Jump to #R$C0B4 when no token slots remain, or the command has
  $BFE4 OR C          ; ended.
  $BFE5 JP Z,$C0B4    ;
@@ -4945,23 +4964,27 @@ c$BFC1 LD (HL),A     ; Store ENTER as the end of the command.
                      ; tokenised.
  $C033 DEC C         ; {Use up one token slot.
  $C034 EXX           ; }
-; Look the word up in the vocabulary. A comma separates synonyms.
- $C035 LD HL,($BADC) ; {Start at the vocabulary, with the token index at zero.
- $C038 LD C,$00      ; }
+; Look the word up in the vocabulary. A comma separates synonyms of the
+; same token; #N$FF ends the table.
+ $C035 LD HL,($BADC) ; #REGhl=*#R$BADC.
+ $C038 LD C,$00      ; Set the token number in #REGc to #N$00.
 @label=MatchInputWord_Vocabulary
-*$C03A LD A,(HL)     ; {Jump to #R$C06C when the vocabulary is exhausted.
+*$C03A LD A,(HL)     ; {Jump to #R$C06C if the word is the #N$FF terminator.
  $C03B CP $FF        ;
  $C03D JR Z,$C06C    ; }
 @label=MatchInputWord_CompareWord
-*$C03F LD DE,$BB41   ; {Compare the next vocabulary word with the word buffer.
- $C042 LD B,$04      ; }
+*$C03F LD DE,$BB41   ; #REGde=#R$BB41.
+ $C042 LD B,$04      ; Set a counter in #REGb for the #N$04 letters.
 @label=MatchInputWord_CompareChar
-*$C044 LD A,(DE)     ; {Compare the next character.
- $C045 CP (HL)       ; }
- $C046 JR NZ,$C05D   ; {Jump to #R$C05D when it does not match.
- $C048 INC DE        ;
- $C049 INC HL        ;
- $C04A DJNZ $C044    ; }
+*$C044 LD A,(DE)     ; {Jump to #R$C05D if this letter does not match.
+ $C045 CP (HL)       ;
+ $C046 JR NZ,$C05D   ; }
+ $C048 INC DE        ; Move to the next letter of the four-letter buffer.
+ $C049 INC HL        ; Move to the next vocabulary letter.
+ $C04A DJNZ $C044    ; Decrease the letter counter by one and loop back to #R$C044 until
+                     ; the counter is zero.
+; The word matched. Calculate which token-buffer slot to use and store
+; the vocabulary index as the token.
  $C04C EXX           ; {Turn the vocabulary index into a token-slot offset.
  $C04D LD A,$09      ;
  $C04F SUB C         ;
@@ -4973,18 +4996,21 @@ c$BFC1 LD (HL),A     ; Store ENTER as the end of the command.
  $C058 LD (HL),C     ;
  $C059 EXX           ;
  $C05A JP $BFD8      ; }
+; This vocabulary word did not match. Step past the remaining letters.
+; A comma keeps the same token for a synonym; anything else advances the token
+; number for the next entry.
 @label=MatchInputWord_NextWord
-*$C05D LD E,B        ; {Step to the end of this vocabulary word.
- $C05E LD D,$00      ;
- $C060 ADD HL,DE     ; }
- $C061 LD A,(HL)     ; {Jump back to #R$C03F to try the synonym after a comma.
- $C062 CP $2C        ;
- $C064 JR NZ,$C069   ;
- $C066 INC HL        ;
- $C067 JR $C03F      ; }
+*$C05D LD E,B        ; {Turn the remaining letter count into a 16-bit offset in
+ $C05E LD D,$00      ; #REGde.}
+ $C060 ADD HL,DE     ; Move #REGhl past the unmatched letters.
+ $C061 LD A,(HL)     ; Fetch the next vocabulary byte into #REGa.
+ $C062 CP $2C        ; {Jump to #R$C069 if this byte is not a comma (#N$2C).
+ $C064 JR NZ,$C069   ; }
+ $C066 INC HL        ; Move past the comma.
+ $C067 JR $C03F      ; Jump to #R$C03F to try matching the synonym.
 @label=MatchInputWord_NextEntry
-*$C069 INC C         ; {Try the next vocabulary word.
- $C06A JR $C03A      ; }
+*$C069 INC C         ; Advance the token number for the next vocabulary entry.
+ $C06A JR $C03A      ; Jump to #R$C03A.
 ; The word is not in the vocabulary, so quote it and ask again.
 @label=MatchInputWord_Unknown
 *$C06C EXX           ; {Find the unknown word in the command buffer.
@@ -5139,7 +5165,7 @@ c$C0D2 LD HL,$B9C8   ; {Look up the object locations.
 ;
 ; Clear the screen, then show the room picture on a first visit.
 @label=Handler_DisplayRoom
-c$C0F9 PUSH DE       ; Keep #REGde safe on the stack.
+c$C0F9 PUSH DE       ; Stash #REGde on the stack.
  $C0FA CALL $BDEA    ; Call #R$BDEA to clear the screen.
  $C0FD POP DE        ; Restore #REGde from the stack.
  $C0FE LD A,($BAFE)  ; {Jump to #R$C14F when room descriptions are switched
@@ -5295,6 +5321,7 @@ c$C0F9 PUSH DE       ; Keep #REGde safe on the stack.
  $C200 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #SHOCK$A33A }
 ; { #HEROES$B46B }
 ; { #JEWELS$C26A }
 ; { #ANDROMEDA$678A }
@@ -5955,78 +5982,109 @@ c$C3FA LD HL,$BA48   ; {Start at the scenic list.
 ;
 ; Used by the routines at #R$ECB6 and #R$F916.
 ; .
-; Move the player to the given room and retarget any scenic events that
-; watched the old room.
+; Moves the player to a new room. Before updating the current room, it
+; updates all scenic events that were in the old room to be in the new room
+; (so they follow the player). It then moves each item whose bit is set in
+; #R$BA3F into the new room. Only bit 0, Princess Mara, is ever set.
+;
+; A Destination room ID
+;
+; Store the destination room ID and prepare to update scenic events.
 @label=MovePlayerToRoom
-c$C42F LD C,A        ; {Read the current room and the scenic list. Jump to #R$C43D to
- $C430 LD A,($BB00)  ; continue.
- $C433 LD B,A        ;
- $C434 LD A,($BA9B)  ;
- $C437 LD HL,$BA48   ;
- $C43A JR $C43D      ; }
-@label=FindScenicEvents_Loop
-*$C43C INC HL        ; Step to the next scenic entry.
-@label=FindScenicEvents
-*$C43D CP (HL)       ; {Jump to #R$C441 unless this scenic entry watched the
- $C43E JR NZ,$C441   ; old room.}
- $C440 LD (HL),C     ; Retarget this scenic entry to the new room.
-@label=FindScenicEvents_Next
-*$C441 DJNZ $C43C    ; Repeat from #R$C43C for the remaining scenic entries.
- $C443 LD A,C        ; {Remember the new room. Return when no event bits are
- $C444 LD ($BA9B),A  ; set.
- $C447 LD A,($BA3F)  ;
- $C44A AND A         ;
+c$C42F LD C,A        ; Copy the destination room ID into #REGc.
+ $C430 LD A,($BB00)  ; {Load *#R$BB00 into #REGb for the loop counter.
+ $C433 LD B,A        ; }
+ $C434 LD A,($BA9B)  ; Load *#R$BA9B into #REGa (the room we're leaving).
+ $C437 LD HL,$BA48   ; Set a pointer to #R$BA48 in #REGhl.
+ $C43A JR $C43D      ; Jump to #R$C43D.
+; Loop through all scenic events and move any that are in the current room
+; to the destination room (so they follow the player).
+@label=ScenicItem_Advance
+*$C43C INC HL        ; Move to the next scenic event in the table.
+@label=ScenicItem_Next
+*$C43D CP (HL)       ; {Jump to #R$C441 if this scenic event is not in the
+ $C43E JR NZ,$C441   ; current room.}
+ $C440 LD (HL),C     ; Update this scenic event's location to the destination
+                     ; room.
+@label=ScenicItem_Count
+*$C441 DJNZ $C43C    ; Decrease the scenic event counter by one and loop back to #R$C43C
+                     ; until all scenic events have been checked.
+; Update the current room ID to the destination room.
+@label=MovePlayerToRoom_SetRoom
+ $C443 LD A,C        ; {Write the destination room ID to #R$BA9B.
+ $C444 LD ($BA9B),A  ; }
+ $C447 LD A,($BA3F)  ; Load *#R$BA3F into #REGa.
+ $C44A AND A         ; {Jump to #R$C462 if no following item is active.
  $C44B JR Z,$C462    ; }
- $C44D LD B,$08      ; {Take the eight event bits and the objects they summon.
- $C44F LD HL,$BA40   ;
- $C452 LD C,A        ;
- $C453 JR $C456      ; }
-@label=FollowingItems_Loop
-*$C455 INC HL        ; Step to the next event object.
-@label=FollowingItems_CheckBit
-*$C456 SRL C         ; {Skip this object when its event bit is clear.
- $C458 JR NC,$C460   ; }
- $C45A LD A,(HL)     ; {Call #R$C2DF to move that event's object into this
- $C45B EXX           ; room.
- $C45C CALL $C2DF    ; }
- $C45F EXX           ; Switch back to the event scan.
-@label=FollowingItems_Next
-*$C460 DJNZ $C455    ; Repeat from #R$C455 for the remaining event bits.
+; For each set bit, move the item at that position in #R$BA40 into the
+; current room.
+ $C44D LD B,$08      ; Set a counter in #REGb for #N$08 bits.
+ $C44F LD HL,$BA40   ; Set a pointer to #R$BA40 in #REGhl.
+ $C452 LD C,A        ; Copy the following flags into #REGc for bit testing.
+ $C453 JR $C456      ; Jump to #R$C456.
+@label=EventFlag_Advance
+*$C455 INC HL        ; Move to the next item ID.
+@label=EventFlag_Next
+*$C456 SRL C         ; Shift the following flags right to check the next bit.
+ $C458 JR NC,$C460   ; Jump to #R$C460 if this bit is not set.
+; This item is following, so move it to the current room.
+ $C45A LD A,(HL)     ; Get the item ID from the table.
+ $C45B EXX           ; Switch to the alternate register set to preserve the
+                     ; scan.
+ $C45C CALL $C2DF    ; Call #R$C2DF to update the item's location to the
+                     ; current room.
+ $C45F EXX           ; Switch back to the event scan registers.
+@label=EventFlag_Count
+*$C460 DJNZ $C455    ; Decrease the bit counter by one and loop back to #R$C455 until
+                     ; all #N$08 bits have been tested.
 @label=MovePlayerToRoom_Return
 *$C462 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
 ; { #SHOCK$ACBD }
+; { #HEROES$B714 }
 ; { #JEWELS$C520 }
-; { #ANDROMEDA$8E18 }
 ; { #WARLORD$B01F }
 ; LIST#
 
-; Handler: Match Verb
+; Handler: Dispatch Verb
 ;
 ; Used by the routine at #R$EB10.
 ; .
-; Jump to the handler for the first vocabulary token, or admit the verb is
-; unknown.
-@label=Handler_MatchVerb
-c$C463 LD HL,($BAF6) ; {Jump to #R$C478 if the search found a match.
- $C466 LD BC,($BAFC) ;
- $C46A LD A,($BB36)  ;
- $C46D CPIR          ;
- $C46F JR Z,$C478    ; }
- $C471 LD HL,$BB61   ; {Print "#MESSAGE$BB61".
- $C474 CALL $BE2E    ; }
+; Matches the first word token from the user's command against the verb
+; word tokens table. If a match is found, it calculates the verb index and
+; jumps to the corresponding verb handler routine. If no match is found, it
+; displays "I Don't Understand" and returns.
+;
+; .
+;
+; Set up to search the verb word tokens table for the first word token.
+@label=Handler_DispatchVerb
+c$C463 LD HL,($BAF6) ; Set a pointer to *#R$BAF6 in #REGhl.
+ $C466 LD BC,($BAFC) ; Load *#R$BAFC tokens into #REGbc for the search.
+ $C46A LD A,($BB36)  ; Get the *#R$BB36 from the user input.
+ $C46D CPIR          ; Search the verb word tokens table for a matching token.
+ $C46F JR Z,$C478    ; Jump to #R$C478 if a match was found (Z flag is set).
+; The token doesn't match any verb. Display an error message:
+; "#STR$BB61,$08($b==$FF)".
+ $C471 LD HL,$BB61   ; #REGhl=#R$BB61.
+ $C474 CALL $BE2E    ; Call #R$BE2E.
  $C477 RET           ; Return.
+; A verb was matched! Calculate its index in the table and jump to its
+; handler routine.
 @label=VerbMatched
-*$C478 LD A,($BAFC)  ; {Call #R$C0C3 to look up the verb's handler.
- $C47B SUB C         ;
- $C47C DEC A         ;
- $C47D LD E,A        ;
- $C47E LD IX,($BAF0) ;
- $C482 CALL $C0C3    ; }
- $C485 JP (HL)       ; Jump to that handler.
+*$C478 LD A,($BAFC)  ; {Calculate the verb index: #REGa=*#R$BAFC-#REGc (total tokens minus
+ $C47B SUB C         ; remaining tokens after match).}
+ $C47C DEC A         ; Adjust the index (decrease by one, as indices are
+                     ; zero-based).
+ $C47D LD E,A        ; Store the verb index in #REGe for the table lookup.
+ $C47E LD IX,($BAF0) ; Set a pointer to *#R$BAF0 in #REGix.
+ $C482 CALL $C0C3    ; Call #R$C0C3 to get the address of the verb handler routine for this
+                     ; index.
+ $C485 JP (HL)       ; Jump to the verb handler routine to execute the command.
 ; View the equivalent code in;
 ; #LIST
+; { #SHOCK$ACFC }
 ; { #HEROES$B753 }
 ; { #JEWELS$C556 }
 ; { #ANDROMEDA$8D85 }
@@ -6056,16 +6114,36 @@ c$C486 LD B,$19      ; {Call #R$BF41 to pause for a moment.
 ; Used by the routines at #R$EFBD, #R$F011, #R$F03A, #R$F216, #R$F2A7, #R$F5F1,
 ; #R$F68C, #R$F79D, #R$F824 and #R$F8E4.
 ; .
-; Put the new object where the old one was, and clear the old one.
+; Transforms one item into another by destroying the "from" item and
+; creating the "to" item in the same location. Rather than use item
+; properties, the game just has separate objects that don't exist until an
+; action is performed.
+; .
+; An example is:
+; #TABLE(default,centre,centre)
+; { =h Item ID | =h Item Name }
+; { #N$0C | #ITEM$0C }
+; { #N$0D | #ITEM$0D }
+; TABLE#
+; When the chest is opened; item #N$0C is destroyed and replaced with item
+; #N$0D.
+;
+; B From item ID (the item to be destroyed)
+; C To item ID (the item to be created)
+;
+; Get the location of the "from" item so the "to" item can be created
+; in the same place.
 @label=TransformItem
 c$C48F LD A,B        ; {Call #R$C2BE to fetch where the original object is.
  $C490 CALL $C2BE    ; }
+; Destroy the "from" item by clearing its location.
  $C493 PUSH BC       ; {Call #R$BF55 to clear the original object.
  $C494 PUSH AF       ;
  $C495 LD C,$00      ;
  $C497 CALL $BF55    ; }
  $C49A POP AF        ; {Restore the new object and its destination from the
  $C49B POP BC        ; stack.}
+; Create the "to" item at the same location where the "from" item was.
  $C49C LD B,C        ; {Call #R$BF55 to put the new object in its place.
  $C49D LD C,A        ;
  $C49E CALL $BF55    ; }
@@ -10443,6 +10521,7 @@ c$ED96 LD HL,$BCDB   ; #REGhl=#R$BCDB.
 ; View the equivalent code in;
 ; #LIST
 ; { #HEROES$EAE8 }
+; { #JEWELS$F06A }
 ; LIST#
 
 ; Response: "You're Inside Already"

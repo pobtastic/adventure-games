@@ -424,7 +424,7 @@ D $BAE1 Unpack a room picture into the display, drawing it in the paper
 . colour.
 R $BAE1 IX Pointer to room image data
   $BAE1,$03 Call #R$BA96.
-  $BAE4,$03 #REGbc=#N($1821,$04,$04).
+  $BAE4,$03 #REGbc=#N$1821.
   $BAE7,$03 Call #SKOOLKID$0DD9(CL_SET).
 N $BAEA Reset graphic display area.
   $BAEA,$03 Point #REGhl at #SKOOLKID$5C8F(ATTR_T) which holds the current
@@ -437,7 +437,7 @@ N $BAEA Reset graphic display area.
   $BAF5,$02,b$01 Keep everything except the INK bits.
   $BAF7,$01 Combine the two values.
   $BAF8,$01 Write the result back to *#SKOOLKID$5C8F(ATTR_T).
-  $BAF9,$03 Set a byte counter in #REGbc of #N($0200,$04,$04).
+  $BAF9,$03 Set a byte counter in #REGbc of #N$0200.
 @ $BAFC label=Print_RoomGraphic_Loop
   $BAFC,$01 Stash the byte counter on the stack.
   $BAFD,$03 #REGhl=#R$BD75.
@@ -482,7 +482,7 @@ D $BB2F Copy the #N$0200 attribute bytes that follow a picture into the
 R $BB2F IX Pointer to the room attribute data
   $BB2F,$03 #REGde=#N$5800 (attribute buffer location).
   $BB32,$03 #REGhl=#REGix (using the stack).
-  $BB35,$05 Copy #N($0200,$04,$04) of attribute data from #REGhl to #REGde
+  $BB35,$05 Copy #N$0200 of attribute data from #REGhl to #REGde
 . (into the attribute buffer).
   $BB3A,$01 Return.
 
@@ -987,8 +987,8 @@ g $BD34 Command Buffer
 B $BD34,$32
 
 g $BD66 User Input: Word Tokens
-@ $BD66 label=UserInput_Token_1
-@ $BD67 label=UserInput_Token_2
+@ $BD66 label=UserInput_FirstToken
+@ $BD67 label=UserInput_SecondToken
 D $BD66 The vocabulary number (#R$E61D) of each word of the last command, in
 . the order they were typed, with #N$FF in every slot that isn't used. "THE"
 . is skipped, and a word that isn't in the vocabulary stops the command with
@@ -1433,14 +1433,15 @@ N $C06F Begin parsing the command. Extract each word from the input, look it up
 . commas, and the word "The" is automatically ignored.
 @ $C06F label=UserInputParser_Loop
   $C06F,$03 #REGde=#R$BD71.
-  $C072,$02 #REGb=#N$04.
-N $C074 Clear the word buffer by writing ASCII "SPACE" (#N$20) #N$04 times.
-  $C074,$02 Load ASCII "SPACE" (#N$20) into #REGa.
+  $C072,$02 Set a counter in #REGb for the #N$04 letters.
+N $C074 Clear the four-letter buffer to spaces so a short word cannot match
+. the previous one's tail.
+  $C074,$02 #REGa=#N$20.
 @ $C076 label=ClearWordBuffer_Loop
-  $C076,$01 Write the ASCII space to *#REGde.
-  $C077,$01 Increment #REGde by one.
-  $C078,$02 Decrease counter by one and loop back to #R$C076 until counter is
-. zero.
+  $C076,$01 Write a space character (#N$20) to the buffer.
+  $C077,$01 Move to the next letter.
+  $C078,$02 Decrease the counter by one and loop back to #R$C076 until the
+. counter is zero.
   $C07A,$01 #REGa=#N$00.
   $C07B,$01 #REGa|=#REGc.
   $C07C,$03 Jump to #R$C16E if #REGde is equal to #REGc.
@@ -1482,6 +1483,8 @@ N $C0AC Skip over any consecutive spaces or commas to find the start of the next
 N $C0B6 Check if the extracted word is "The". If it is, ignore it and continue
 . with the next word (adventure games typically ignore articles like "the",
 . "a", "an").
+N $C0B6 Preserve the command pointer, word buffer and token counter while
+. comparing.
   $C0B6,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $C0B9,$03 #REGhl=#R$BD8C.
   $C0BC,$03 #REGde=#R$BD71.
@@ -1494,6 +1497,7 @@ N $C0B6 Check if the extracted word is "The". If it is, ignore it and continue
   $C0C7,$02 Decrease counter by one and loop back to #R$C0C1 until all #N$04
 . characters have been compared.
 @ $C0C9 label=AfterCompareWord
+N $C0C9 Restore the registers saved before the "THE" comparison.
   $C0C9,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $C0CC,$02 Jump to #R$C06F if the words matched (this was "The", so skip it and
 . process the next word).
@@ -1505,28 +1509,24 @@ N $C0DA Look up the word in the vocabulary table. The vocabulary contains all
 . recognised verbs, nouns, and other words the game understands. Each entry
 . can have synonyms separated by commas.
   $C0DA,$03 #REGhl=*#R$BD0C.
-  $C0DD,$02 #REGc=#N$00.
+  $C0DD,$02 Set the token number in #REGc to #N$00.
 @ $C0DF label=VocabularyLookup_Loop
-  $C0DF,$05 Jump to #R$C11C if *#REGhl is equal to #N$FF
-. (end of vocabulary table).
+  $C0DF,$05 Jump to #R$C11C if the word is the #N$FF terminator.
 @ $C0E4 label=CompareVocabularyWord
   $C0E4,$03 #REGde=#R$BD71.
-  $C0E7,$02 #REGb=#N$04.
+  $C0E7,$02 Set a counter in #REGb for the #N$04 letters.
 @ $C0E9 label=CompareVocabularyWord_Loop
-  $C0E9,$04 Jump to #R$C10D if the characters don't match
-. (this vocabulary entry doesn't match the word).
-  $C0ED,$01 Move to the next character in the extracted word.
-  $C0EE,$01 Move to the next character in the vocabulary entry.
-  $C0EF,$02 Decrease counter by one and loop back to #R$C0E9 until all #N$04
-. characters have been compared.
-N $C0F1 Word matched in vocabulary! Calculate which slot in the token buffer to
-. use (based on how many words have been processed so far) and store the
-. vocabulary index as the token.
+  $C0E9,$04 Jump to #R$C10D if this letter does not match.
+  $C0ED,$01 Move to the next letter of the four-letter buffer.
+  $C0EE,$01 Move to the next vocabulary letter.
+  $C0EF,$02 Decrease the letter counter by one and loop back to #R$C0E9 until
+. the counter is zero.
+N $C0F1 The word matched. Calculate which token-buffer slot to use and store
+. the vocabulary index as the token.
   $C0F1,$03 #REGhl=#R$BD81.
   $C0F4,$02 #REGa=#N$09.
   $C0F6,$01 Calculate the token buffer slot index: #REGa-=*#REGhl.
-  $C0F7,$02 #REGd=#N$00.
-  $C0F9,$01 #REGe=#REGa.
+  $C0F7,$03 Turn the slot index into a 16-bit offset in #REGde.
   $C0FA,$04 Calculate the address of the token buffer slot:
 . #REGhl=#R$BD66+#REGde.
   $C0FE,$01 Store the vocabulary index (#REGc) in the token buffer slot.
@@ -1536,21 +1536,19 @@ N $C0F1 Word matched in vocabulary! Calculate which slot in the token buffer to
   $C10A,$03 Jump to #R$C06F.
 
 @ $C10D label=VocabularyWordNoMatch
-N $C10D Word didn't match this vocabulary entry. Check if there's a synonym
-. (indicated by a comma). If found, try matching against the synonym instead.
-  $C10D,$01 #REGe=#REGb.
-  $C10E,$02 #REGd=#N$00.
-  $C110,$01 Move the vocabulary pointer past the word that didn't match:
-. #REGhl+=#REGde.
-  $C111,$01 Read the character at this position and store it in #REGa.
-  $C112,$04 Jump to #R$C119 if this character is not a comma (#N($2C), meaning
-. no synonym exists).
-  $C116,$01 Move past the comma to the synonym.
+N $C10D This vocabulary word did not match. Step past the remaining letters.
+. A comma keeps the same token for a synonym; anything else advances the token
+. number for the next entry.
+  $C10D,$03 Turn the remaining letter count into a 16-bit offset in #REGde.
+  $C110,$01 Move #REGhl past the unmatched letters.
+  $C111,$01 Fetch the next vocabulary byte into #REGa.
+  $C112,$04 Jump to #R$C119 if this byte is not a comma (#N$2C).
+  $C116,$01 Move past the comma.
   $C117,$02 Jump to #R$C0E4 to try matching the synonym.
 
 @ $C119 label=VocabularyNextEntry
-  $C119,$01 Increment #REGc by one.
-  $C11A,$02 Jump to #R$C0DF to check the next vocabulary entry.
+  $C119,$01 Advance the token number for the next vocabulary entry.
+  $C11A,$02 Jump to #R$C0DF.
 
 @ $C11C label=ProcessUnrecognisedWords
 N $C11C All recognised words have been tokenised. Now check if there are any
@@ -1653,59 +1651,62 @@ N $C186 Keep shifting the event flags one-by-one to find which bits are set.
 @ $C186 label=GameEventChecker_Loop
   $C186,$02 Shift #REGc one position left to check the next event flag bit.
   $C188,$02 Jump to #R$C1AD if this event bit is not set.
-N $C18A Count down this event. It fires when the counter reaches zero.
-  $C18A,$0B Calculate the turn-based event index and store it in #REGhl.
-  $C195,$01 Decrease the turn-based event counter at *#REGhl by one.
-  $C196,$02 Jump to #R$C1AD if the counter is still running.
-N $C198 The counter has expired, so run this event's handler.
-  $C198,$04 Load *#R$BD0E into #REGix.
-  $C19C,$02 Double the index as this table contains addresses.
-  $C19E,$02 Add this offset to #REGix to point to the current handler.
-  $C1A0,$06 Get the handler address and store it in #REGhl.
-  $C1A6,$01 Stash the bit index and event flag byte on the stack.
-  $C1A7,$04 Push #R$C1AC onto the stack so the next return resumes event
+N $C18A Count down this event's timer.
+  $C18A,$03 Initialise #REGde to #N$0000.
+  $C18D,$03 #REGhl=#R$BC67.
+  $C190,$04 Calculate the event index (#N$08-#REGb) and store it in #REGe.
+  $C194,$01 Point #REGhl at this event's countdown timer.
+  $C195,$01 Decrease this event's countdown timer by one.
+  $C196,$02 Jump to #R$C1AD if this event's countdown timer is still running.
+N $C198 The timer has expired, so run this event's handler.
+  $C198,$04 #REGix=*#R$BD0E.
+  $C19C,$02 Double the event index, as each entry in the table is two bytes.
+  $C19E,$02 Point #REGix at this event's entry in the table.
+  $C1A0,$06 Read that handler's address into #REGhl.
+  $C1A6,$01 Stash #REGbc on the stack.
+  $C1A7,$04 Stash #R$C1AC on the stack so the next return resumes event
 . processing.
   $C1AB,$01 Jump to the routine pointed to by *#REGhl to action the current
 . event.
 N $C1AC Once the event handler has run, this is where the routine will resume.
 @ $C1AC label=GameEventChecker_Return
-  $C1AC,$01 Restore the event bit index counter and event flag byte from the
-. stack.
+  $C1AC,$01 Restore #REGbc from the stack.
 @ $C1AD label=GameEventChecker_Next
 N $C1AD Test the next turn-based event.
   $C1AD,$02 Decrease the event bit counter by one and loop back to #R$C186
 . until all eight events have been considered.
-N $C1AF Process scenic events.
+N $C1AF Now handle the scenic events.
 @ $C1AF label=GameScenicEventsProcessor
   $C1AF,$01 No operation.
-  $C1B0,$03 Load #REGhl with #R$BC78.
-  $C1B3,$03 Load *#R$BD30 into #REGa.
-  $C1B6,$03 Jump to #R$C1EF if there are no more scenic events to run (the
-. count is zero).
-  $C1B9,$01 Copy *#R$BD30 into #REGb as an event counter for the loop.
-  $C1BA,$02 Jump to #R$C1BD.
+  $C1B0,$03 #REGhl=#R$BC78.
+  $C1B3,$04 Fetch the number of active scenic events from #R$BD30.
+  $C1B7,$02 Jump to #R$C1EF if there are no active scenic events.
+  $C1B9,$01 Set a counter in #REGb for the number of scenic events.
+  $C1BA,$02 Jump to #R$C1BD to process the first scenic event without
+. advancing the table pointer.
 N $C1BC This is the main scenic event loop.
 @ $C1BC label=GameScenicEventChecker_Loop
-  $C1BC,$01 Increment the scenic event pointer location by one.
+  $C1BC,$01 Move on to the next scenic item.
 @ $C1BD label=GameScenicEventChecker
   $C1BD,$04 Jump to #R$C1ED if the event room is #N$00 (deactivated).
   $C1C1,$06 Jump to #R$C1ED if *#R$BCCB is equal to the event room.
-  $C1C7,$02 Stash the scenic event location pointer and event counter on the
-. stack.
+N $C1C7 Pick a room for this scenic event.
+  $C1C7,$02 Stash #REGhl and #REGbc on the stack.
 N $C1C9 Calculate which scenic event's room group this is.
   $C1C9,$05 Calculate the index of the currently processed event.
-  $C1CE,$04 Load #R$BCCC into #REGix.
+N $C1CE Point at this event's room list.
+  $C1CE,$04 #REGix=#R$BCCC.
 N $C1D2 The routine at #R$C1F0 is usually used to fetch an address from the
 . given table, but here it's used to move #REGix to point to the index of the
 . currently processed event (and this routine will fetch the address itself).
   $C1D2,$03 Call #R$C1F0.
-  $C1D5,$04 Load a random number from #R$BB55 into #REGb.
-  $C1D9,$02 Set #REGa to #N$FF (the room group terminator) for the comparison.
+  $C1D5,$04 Call #R$BB55 to pick a random step count and store it in #REGb.
+  $C1D9,$02 #REGa=the room group terminator (#N$FF).
 N $C1DB The table at #R$BCCC is indexed by event (there are #N$08 entries), but
 . each address points to a "group" of room IDs where this event could occur.
 . Each set of room IDs for the event is terminated using #N$FF.
 @ $C1DB label=GameScenicEvent_FetchRoomGroup
-  $C1DB,$06 Get the room group address pointer and store it in #REGhl.
+  $C1DB,$06 Point #REGhl at the start of this room group.
   $C1E1,$02 Jump to #R$C1E4.
 N $C1E3 Use the random number to select a room from the group - this loops
 . through the rooms using #REGb as a counter.
@@ -1715,9 +1716,8 @@ N $C1E3 Use the random number to select a room from the group - this loops
   $C1E4,$03 Jump back to #R$C1DB when the terminator matches.
   $C1E7,$02 Decrease the random counter by one and loop back to #R$C1E3 until
 . the counter is zero.
-  $C1E9,$01 Load the current room ID into #REGa.
-  $C1EA,$02 Restore the event counter and scenic event location pointer from the
-. stack.
+  $C1E9,$01 Fetch the destination room into #REGa.
+  $C1EA,$02 Restore #REGbc and #REGhl from the stack.
   $C1EC,$01 Update the scenic event location with the newly selected room.
 @ $C1ED label=GameScenicEventChecker_Next
   $C1ED,$02 Decrease the scenic event counter by one and loop back to #R$C1BC
@@ -2284,6 +2284,7 @@ R $C401 O:F The Z flag is set then there are no matching scenic events
   $C40E,$01 #REGa=*#REGhl.
   $C40F,$01 Return.
 @ $C410 label=NoActiveScenicEvents
+N $C410 No event on the list is in the current room.
   $C410,$01 Set Z flag.
   $C411,$01 Return.
 
@@ -2406,6 +2407,8 @@ R $C456 O:F Z is unset if the object is valid, unset when invalid
   $C46B,$01 Clear the Z flag.
   $C46C,$01 Return.
 @ $C46D label=InvalidObject
+N $C46D Housekeeping: restore the stashed registers and report that this
+. object is invalid.
   $C46D,$01 Restore #REGaf from the stack.
   $C46E,$01 Set the Z flag.
   $C46F,$01 Return.
@@ -2666,7 +2669,6 @@ E $C520 View the equivalent code in;
 . { #SHOCK$ACBD }
 . { #FOREST$C42F }
 . { #HEROES$B714 }
-. { #ANDROMEDA$8E18 }
 . { #WARLORD$B01F }
 . LIST#
 R $C520 A Destination room ID
@@ -2682,15 +2684,16 @@ N $C520 Store the destination room ID and prepare to update scenic events.
   $C52B,$02 Jump to #R$C52E.
 N $C52D Loop through all scenic events and move any that are in the current room
 . to the destination room (so they follow the player).
-@ $C52D label=FindScenicEvents_Loop
+@ $C52D label=ScenicItem_Advance
   $C52D,$01 Move to the next scenic event in the table.
-@ $C52E label=FindScenicEvents
+@ $C52E label=ScenicItem_Next
   $C52E,$03 Jump to #R$C532 if this scenic event is not in the current room.
   $C531,$01 Update this scenic event's location to the destination room.
-@ $C532 label=FindScenicEvents_Next
+@ $C532 label=ScenicItem_Count
   $C532,$02 Decrease the scenic event counter by one and loop back to #R$C52D
 . until all scenic events have been checked.
 N $C534 Update the current room ID to the destination room.
+@ $C534 label=MovePlayerToRoom_SetRoom
   $C534,$04 Write the destination room ID to #R$BCCB.
   $C538,$03 Load *#R$BC6F into #REGa.
   $C53B,$03 Jump to #R$C555 if no following item is active.
@@ -2700,9 +2703,9 @@ N $C53E For each set bit, move the item at that position in #R$BC70 into the
   $C540,$03 Set a pointer to #R$BC70 in #REGhl.
   $C543,$01 Copy the following flags into #REGc for bit testing.
   $C544,$02 Jump to #R$C547.
-@ $C546 label=FollowingItems_Loop
+@ $C546 label=EventFlag_Advance
   $C546,$01 Move to the next item ID.
-@ $C547 label=FollowingItems_CheckBit
+@ $C547 label=EventFlag_Next
   $C547,$02 Shift the following flags right to check the next bit.
   $C549,$02 Jump to #R$C553 if this bit is not set.
 N $C54B This item is following, so move it to the current room.
@@ -2710,16 +2713,17 @@ N $C54B This item is following, so move it to the current room.
   $C54C,$02 Stash the table pointer and counter on the stack.
   $C54E,$03 Call #R$C3F1 to update the item's location to the current room.
   $C551,$02 Restore the table pointer and counter from the stack.
-@ $C553 label=FollowingItems_Next
+@ $C553 label=EventFlag_Count
   $C553,$02 Decrease the bit counter by one and loop back to #R$C546 until
 . all #N$08 bits have been tested.
 @ $C555 label=MovePlayerToRoom_Return
   $C555,$01 Return.
 
-c $C556 Handler: Match Verb
-@ $C556 label=Handler_MatchVerb
+c $C556 Handler: Dispatch Verb
+@ $C556 label=Handler_DispatchVerb
 E $C556 View the equivalent code in;
 . #LIST
+. { #SHOCK$ACFC }
 . { #FOREST$C463 }
 . { #HEROES$B753 }
 . { #ANDROMEDA$8D85 }
@@ -2776,21 +2780,24 @@ E $C582 View the equivalent code in;
 . { #ANDROMEDA$65D6 }
 . { #WARLORD$B08A }
 . LIST#
-D $C582 Return a number between #N$00 and the limit passed in.
-R $C582 A Maximum value of generated number
+D $C582 Returns a number from #N$00 up to, but not including, #REGa.
+D $C582 The frame counter chooses how far to walk around that range.
+R $C582 A Exclusive upper bound
+R $C582 O:A The generated number
+N $C582 Mix the frame counter into a number below the limit in #REGa.
   $C582,$01 Stash #REGbc on the stack.
-  $C583,$01 Store the maximum number in #REGc.
-  $C584,$03 Call #R$BB55.
-  $C587,$01 Use the frames number as a loop counter in #REGb.
-  $C588,$01 Restore the maximum number value back to #REGa.
+  $C583,$01 Store the exclusive upper bound in #REGc.
+  $C584,$03 Call #R$BB55 to read *#SKOOLKID$5C78(FRAMES).
+  $C587,$01 Use the frame counter as the loop count in #REGb.
+  $C588,$01 Restore the exclusive upper bound into #REGa.
 @ $C589 label=GenerateRandomNumber_Loop
-  $C589,$01 Decrease the maximum number value by one.
-  $C58A,$02 Jump to #R$C58D if the maximum number value is not equal to zero.
-  $C58C,$01 Restore the maximum number value back to #REGa.
+  $C589,$01 Decrease the walking value by one.
+  $C58A,$02 Jump to #R$C58D if it has not wrapped past zero.
+  $C58C,$01 Wrap back to the exclusive upper bound.
 @ $C58D label=GenerateRandomNumber_Next
-  $C58D,$02 Decrease the loop counter by one and loop back to #R$C589 until the
-. loop counter is zero.
-  $C58F,$01 Decrease the maximum number value by one.
+  $C58D,$02 Decrease the frame-count loop by one and loop back to #R$C589
+. until the count is zero.
+  $C58F,$01 Decrease the result by one so the range starts at #N$00.
   $C590,$01 Restore #REGbc from the stack.
   $C591,$01 Return.
 

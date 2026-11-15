@@ -13,12 +13,19 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-from skoolkit.skoolhtml import HtmlWriter
+from skoolkit.skoolhtml import HtmlWriter, T_LAYOUT
 from skoolkit.skoolmacro import parse_ints, parse_r
 
 class AdventureGamesHtmlWriter(HtmlWriter):
 	def init(self):
 		self._type = 'asm' if self.base == 16 else 'dec/asm'
+
+	def format_template(self, name, fields):
+		if name == T_LAYOUT and self._get_page_id() == 'GameIndex':
+			for section in fields['sections']:
+				if section['header'] == 'Other code':
+					section['header'] = 'Other Code'
+		return HtmlWriter.format_template(self, name, fields)
 
 	def expand_shock(self, text, index, cwd):
 		# #SHOCKaddress[#anchor][(link text)]

@@ -20,6 +20,8 @@
 
 > $4000 @expand=#DEF(#ROOM(id) #IF($01<$id<=$41)(#HTML(&#10;)#SIM(start=$B3F1,stop=$B3FF,ix=$CE66,de=$id)#HTML(&#10;)#R({sim[HL]})(#MAP({sim[HL]})(#HTML(&#10;)UNKNOWN,49016:Inside the Ruined Cottage,49043:In the Field,49089:The Open Moorland,49138:High on the Moors,49218:The Dead Marshes,49322:The Narrow Path,49363:The Valley,49461:The Gates of Karn,49560:The Deserted Village,49608:The Plain of Stones,49662:The Gypsy Camp,49720:Pilgrims' Hill,49822:The Monastery,49931:The Wizard's Chamber,49953:The Sand Room,49968:The Hall of Gold,50023:Within the Long Barrow,50090:At the Edge of the Sea,50135:The Hall of the Mountain King,50166:The King's Anteroom,50187:The Hall of Wisdom,50207:The Star Chamber,50276:The Bird Chamber,50330:The Vast Hall,50377:The Sword Room,50393:The Gatehouse,50432:The King's Chamber,50498:The Falcon Chamber,50518:The King's Stairway,50584:The Crystal Room,50602:The Debris Room,50619:The Stair Room,50702:The Hall of Music,50721:The Hall of Infinity,50799:The Lair of the Hydra,50822:The Star Cavern,50889:The Hall of Smoke,50966:The Oil Room,50980:The Acid Room,50995:The Treasury,51009:The Crypt,51077:The Hall of the Black Knight,51159:The Hall of Jade,51242:The Ice Cavern,51258:The Cascade Cavern,51278:The Volcano Cavern,51298:The Hall of the Four Winds,51376:The Dragon's Lair,51395:The Toolroom,51409:The Torture Chamber,51483:The Pirate's Lair,51502:The Sand Cavern,51519:The Hall of Fire,51581:The Hall of the Phoenix,51606:The Steam Cavern,51689:The Limestone Cavern,51711:The Dungeon,51749:The Cellar,51761:The Sandy Beach,51778:The Sea Cavern,51794:The Plant Room,51850:The Hall of Black Magic,51875:The Bat Cavern,51891:The Hall of Stairs)),#HTML(&#10;)N/A))
 
+> $4000 @expand=#DEF(#ITEM(id) #MAP($id)(#HTML(&#10;)N/A,000:"Beren#RAW(,)the King.",001:"Istar#RAW(,)the wizard.",002:"Haldir#RAW(,)the minstrel.",003:"Khadim#RAW(,)the dwarf.",004:"A tinderbox.",005:"A frog.",006:"A swamp lizard.",007:"A bear.",008:"A sleeping bear.",009:"Copper gates#RAW(,)to the South.",010:"The gates are open.",011:"The gates are closed.",012:"Copper gates#RAW(,)to the North.",013:"The gates are open.",014:"The gates are closed.",015:"Jewelled gates#RAW(,)to the East.",016:"The gates are open.",017:"The gates are closed.",018:"Jewelled gates#RAW(,)to the West.",019:"The gates are open.",020:"The gates are closed.",021:"Golden gates#RAW(,)to the South.",022:"The gates are open.",023:"The gates are closed.",024:"Golden gates#RAW(,)to the North.",025:"The gates are open.",026:"The gates are closed.",027:"Golden gates#RAW(,)to the South.",028:"The gates are open.",029:"The gates are closed.",030:"Golden gates#RAW(,)to the North.",031:"The gates are open.",032:"The gates are closed.",033:"Some money.",034:"A barrowight.",035:"A bible.",036:"A wand.",037:"A scroll.",038:"A silver flute.",039:"A carpet.",040:"A jewelled key.",041:"A spirit.",042:"A songbird.",043:"A songbird in a wicker cage.",044:"A balrog.",045:"A crystal bridge over the chasm.",046:"A crystal bridge over the chasm.",047:"A sword.",048:"A spear.",049:"A dagger.",050:"A velvet pillow.",054:"A falcon.",055:"A bottle.",056:"A bottle of water.",057:"A bottle of acid.",058:"A bottle of oil.",059:"A broken bottle.",060:"A serpent.",061:"A dead serpent.",062:"Istar#RAW(,)held behind crystal bars.",069:"A golden lyre.",070:"A mandolin.",071:"A gold key.",072:"A hydra.",073:"A dead hydra.",074:"A ruby.",075:"A pool of oil.",076:"A pool of acid.",077:"A diamond.",078:"A venomous spider.",079:"A sleeping spider.",080:"A rusty#RAW(,)iron chest.",081:"A chest with oiled hinges.",082:"An open chest.",083:"A coffin.",084:"An open coffin.",085:"A vampire.",086:"The Black Knight.",087:"The body of the Black Knight.",088:"A jade flower.",089:"Some jade fragments.",090:"A waterfall.",091:"A wooden box.",092:"A sapphire.",093:"A dragon.",094:"A dead dragon.",095:"A crowbar.",096:"A shovel.",097:"A map.",098:"A pirate.",099:"A dead pirate.",100:"A wicker cage.",101:"A silver coin.",102:"Firegates lay North#RAW(,)East & West.",103:"A firegate to the South.",104:"A firegate to the East.",105:"A firegate to the West.",106:"A black potion.",107:"A white potion.",108:"A copper key.",109:"The guard#RAW(,)looking at you through the bars.",110:"The door is closed.",111:"The door is open.",112:"Some honey.",113:"Some meat.",114:"An emerald.",115:"A giant clam#RAW(,)tightly closed.",116:"An open clam.",117:"A pearl.",118:"A tiny plant.",119:"A plant#RAW(,)6 feet in height.",120:"A massive beanstalk.",121:"A witch.",122:"A dead witch.",123:"A silver cross.",124:"A giant bat.",125:"A dead bat.",126:"A magic mirror.",127:"Anton#RAW(,)the Gypsy King. He says #HTML(&#34;)Find me a magic mirror and I will tell your fortune.#HTML(&#34;)",128:"Anton#RAW(,)the Gypsy King. He says #HTML(&#34;)Cross my palm with silver.#HTML(&#34;)",129:"Some hot ashes.",130:"A phoenix.",131:"A jade flower#RAW(,)resting on a velvet pillow.",133:"The top of a giant beanstalk."))
+
 b $4000 Loading Screen
 @ $4000 label=Loading
 D $4000 #UDGTABLE
@@ -532,7 +534,7 @@ N $AD0F Reset graphic display area.
   $AD1A,$02,b$01 Keep everything except the INK bits.
   $AD1C,$01 Combine the two values.
   $AD1D,$01 Write the result back to *#SKOOLKID$5C8F(ATTR_T).
-  $AD1E,$03 Set a byte counter in #REGbc of #N($0200,$04,$04).
+  $AD1E,$03 Set a byte counter in #REGbc of #N$0200.
 @ $AD21 label=Print_RoomGraphic_Loop
   $AD21,$01 Keep the byte counter on the stack.
   $AD22,$03 Point #REGhl at #R$AF3D.
@@ -871,8 +873,8 @@ D $AEFC The line the player is typing. The input handler clears all #N$32 bytes.
 B $AEFC,$32
 
 g $AF2E User Input: Word Tokens
-@ $AF2E label=UserInput_Token_1
-@ $AF2F label=UserInput_Token_2
+@ $AF2E label=UserInput_FirstToken
+@ $AF2F label=UserInput_SecondToken
 B $AF2E,$01 The first word, which should be the verb.
 B $AF2F,$09,$09 The words after the verb.
 
@@ -1276,8 +1278,16 @@ N $B25C Fill the word token buffer with #N$FF (the terminator value) to mark all
   $B260,$03 Point #REGhl at #R$AEFC.
   $B263,$02 Allow ten words in the command.
 @ $B265 label=Parser_MatchInputWord
-  $B265,$07 Blank the four-byte word scratch with spaces.
-  $B26C,$04 Fill the word scratch with spaces.
+N $B265 Clear the four-letter buffer to spaces so a short word cannot match
+. the previous one's tail.
+  $B265,$03 #REGde=#R$AF39.
+  $B268,$02 Set a counter in #REGb for the #N$04 letters.
+  $B26A,$02 #REGa=#N$20.
+@ $B26C label=ClearWordBuffer_Loop
+  $B26C,$01 Write a space character (#N$20) to the buffer.
+  $B26D,$01 Move to the next letter.
+  $B26E,$02 Decrease the counter by one and loop back to #R$B26C until the
+. counter is zero.
   $B270,$05 Finish when every word slot is full.
   $B275,$01 Read the next character of the command.
   $B276,$05 Finish the command at ENTER.
@@ -1299,14 +1309,18 @@ N $B25C Fill the word token buffer with #N$FF (the terminator value) to mark all
   $B2A3,$01 Read the character after that space or comma.
   $B2A4,$04 Skip spaces between words.
   $B2A8,$04 Skip commas between words.
-  $B2AC,$03 Remember the command, the scratch and the word count.
+N $B2AC Preserve the command pointer, word buffer and token counter while
+. comparing.
+  $B2AC,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $B2AF,$08 Compare the scratch word with "#MESSAGE$AF54".
 @ $B2B7 label=CompareWord_Loop
   $B2B7,$04 Jump to #R$B2BF if the characters don't match (the word is not
 . "The").
   $B2BB,$02 Compare the next letter of "THE".
-  $B2BD,$02 Keep going until all four letters have been compared.
-  $B2BF,$03 Restore #REGbc, #REGde, #REGhl from the stack.
+  $B2BD,$02 Decrease the letter counter by one and loop back to #R$B2B7 until
+. the counter is zero.
+N $B2BF Restore the registers saved before the "THE" comparison.
+  $B2BF,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $B2C2,$02 Jump to #R$B265 if the words matched (this was "The", so skip it and
 . process the next word).
   $B2C4,$01 Use up one of the ten word slots for this word.
@@ -1316,44 +1330,43 @@ N $B25C Fill the word token buffer with #N$FF (the terminator value) to mark all
 N $B2D0 Look up the word in the vocabulary table. The vocabulary contains all
 . recognised verbs, nouns, and other words the game understands. Each entry can
 . have synonyms separated by commas.
-  $B2D0,$03 Load the pointer for the vocabulary pointer into #REGhl.
-  $B2D3,$02 Select the north exit.
+  $B2D0,$03 #REGhl=*#R$AED0.
+  $B2D3,$02 Set the token number in #REGc to #N$00.
 @ $B2D5 label=VocabularyLookup_Loop
-  $B2D5,$05 Jump to #R$B312 if *#REGhl is equal to #N$FF (end of vocabulary
-. table).
+  $B2D5,$05 Jump to #R$B312 if the word is the #N$FF terminator.
 @ $B2DA label=CompareVocabularyWord
-  $B2DA,$05 Compare this vocabulary word with the scratch word.
+  $B2DA,$03 #REGde=#R$AF39.
+  $B2DD,$02 Set a counter in #REGb for the #N$04 letters.
 @ $B2DF label=CompareVocabularyWord_Loop
-  $B2DF,$04 Jump to #R$B303 if the characters don't match (this vocabulary entry
-. doesn't match the word).
-  $B2E3,$01 Move to the next character in the extracted word.
-  $B2E4,$01 Move to the next character in the vocabulary entry.
-  $B2E5,$02 Decrease counter by one and loop back to #R$B2DF until all #N$04
-. characters have been compared.
-N $B2E7 Word matched in vocabulary! Calculate which slot in the token buffer to
-. use (based on how many words have been processed so far) and store the
-. vocabulary index as the token.
+  $B2DF,$04 Jump to #R$B303 if this letter does not match.
+  $B2E3,$01 Move to the next letter of the four-letter buffer.
+  $B2E4,$01 Move to the next vocabulary letter.
+  $B2E5,$02 Decrease the letter counter by one and loop back to #R$B2DF until
+. the counter is zero.
+N $B2E7 The word matched. Calculate which token-buffer slot to use and store
+. the vocabulary index as the token.
   $B2E7,$08 Work out which token slot this word fills.
-  $B2EF,$01 Use the filled slot as an offset into the token buffer.
-  $B2F0,$04 Calculate the address of the token buffer slot: #REGhl=the first
-. word token+#REGde.
+  $B2EF,$01 Copy the slot index into #REGe.
+  $B2F0,$04 Calculate the address of the token buffer slot:
+. #REGhl=#R$AF2E+#REGde.
   $B2F4,$01 Store the vocabulary index (#REGc) in the token buffer slot.
   $B2F5,$03 Put back the command buffer position from the word scratch.
   $B2F8,$04 Put back the word buffer position from the word pointer.
   $B2FC,$04 Put back the word counter from *#R$AF49.
-  $B300,$03 Take the next word.
+  $B300,$03 Jump to #R$B265.
 @ $B303 label=VocabularyWordNoMatch
-N $B303 Word didn't match this vocabulary entry. Check if there's a synonym
-. (indicated by a comma). If found, try matching against the synonym instead.
-  $B303,$04 Step past the vocabulary word that did not match.
-  $B307,$01 Read the character at this position and store it in #REGa.
-  $B308,$04 Jump to #R$B30F if this character is not a comma (#N($2C), meaning
-. no synonym exists).
-  $B30C,$01 Move past the comma to the synonym.
+N $B303 This vocabulary word did not match. Step past the remaining letters.
+. A comma keeps the same token for a synonym; anything else advances the token
+. number for the next entry.
+  $B303,$03 Turn the remaining letter count into a 16-bit offset in #REGde.
+  $B306,$01 Move #REGhl past the unmatched letters.
+  $B307,$01 Fetch the next vocabulary byte into #REGa.
+  $B308,$04 Jump to #R$B30F if this byte is not a comma (#N$2C).
+  $B30C,$01 Move past the comma.
   $B30D,$02 Jump to #R$B2DA to try matching the synonym.
 @ $B30F label=VocabularyNextEntry
-  $B30F,$01 Advance to the next vocabulary word.
-  $B310,$02 Jump to #R$B2D5 to check the next vocabulary entry.
+  $B30F,$01 Advance the token number for the next vocabulary entry.
+  $B310,$02 Jump to #R$B2D5.
 @ $B312 label=ProcessUnrecognisedWords
 N $B312 All recognised words have been tokenised. Now check if there are any
 . unrecognised words remaining in the input. If so, display an error message to
@@ -1435,56 +1448,63 @@ N $B37C Keep shifting the event flags one-by-one to find which bits are set.
 @ $B37C label=GameEventChecker_Loop
   $B37C,$02 Test the next turn-based event flag.
   $B37E,$02 Jump to #R$B3A3 if this event bit is not set.
-N $B380 Count down this event. It fires when the counter reaches zero.
-  $B380,$0B Calculate the turn-based event index and store it in #REGhl.
-  $B38B,$01 Decrease the turn-based event counter at *#REGhl by one.
-  $B38C,$02 Jump to #R$B3A3 if the counter is still running.
-N $B38E The counter has expired, so run this event's handler.
-  $B38E,$04 Load the turn-based handler pointer into #REGix.
-  $B392,$02 Double the index as this table contains addresses.
-  $B394,$02 Add this offset to #REGix to point to the current handler.
-  $B396,$06 Get the handler address and store it in #REGhl.
-  $B39C,$01 Keep the bit index and event flag byte on the stack.
-  $B39D,$04 Push #R$B3A2 onto the stack so the next return resumes event
+N $B380 Count down this event's timer.
+  $B380,$03 Initialise #REGde to #N$0000.
+  $B383,$03 #REGhl=#R$AE89.
+  $B386,$04 Calculate the event index (#N$08-#REGb) and store it in #REGe.
+  $B38A,$01 Point #REGhl at this event's countdown timer.
+  $B38B,$01 Decrease this event's countdown timer by one.
+  $B38C,$02 Jump to #R$B3A3 if this event's countdown timer is still running.
+N $B38E The timer has expired, so run this event's handler.
+  $B38E,$04 #REGix=*#R$AED2.
+  $B392,$02 Double the event index, as each entry in the table is two bytes.
+  $B394,$02 Point #REGix at this event's entry in the table.
+  $B396,$06 Read that handler's address into #REGhl.
+  $B39C,$01 Stash #REGbc on the stack.
+  $B39D,$04 Stash #R$B3A2 on the stack so the next return resumes event
 . processing.
   $B3A1,$01 Jump to the routine pointed to by *#REGhl to action the current
 . event.
 N $B3A2 Once the event handler has run, this is where the routine will resume.
 @ $B3A2 label=GameEventChecker_Return
-  $B3A2,$01 Restore the event bit index counter and event flag byte from the
-. stack.
+  $B3A2,$01 Restore #REGbc from the stack.
 @ $B3A3 label=GameEventChecker_Next
 N $B3A3 Test the next turn-based event.
   $B3A3,$02 Decrease the event bit counter by one and loop back to #R$B37C
 . until all eight events have been considered.
-N $B3A5 Process scenic events.
+N $B3A5 Now handle the scenic events.
 @ $B3A5 label=GameScenicEventsProcessor
   $B3A5,$01 #HTML(A spare <code>NOP</code>, probably where an instruction was
 . patched out, before the scenic events are processed.)
-  $B3A6,$09 Jump to #R$B3F0 if no scenic event is active.
-  $B3AF,$03 Visit each scenic event in turn.
+  $B3A6,$03 #REGhl=*#R$AEEC.
+  $B3A9,$04 Fetch the number of active scenic events from #R$AEF8.
+  $B3AD,$02 Jump to #R$B3F0 if there are no active scenic events.
+  $B3AF,$01 Set a counter in #REGb for the number of scenic events.
+  $B3B0,$02 Jump to #R$B3B3 to process the first scenic event without
+. advancing the table pointer.
 @ $B3B2 label=GameScenicEventChecker_Loop
 N $B3B2 Room #N$00 means this scenic item is inactive.
   $B3B2,$01 Move on to the next scenic item.
 @ $B3B3 label=GameScenicEventChecker
-  $B3B3,$01 Fetch this scenic item's ID.
-  $B3B4,$01 Remember which scenic event this is.
+  $B3B3,$01 Fetch this scenic event's item ID.
+  $B3B4,$01 Stash the scenic event table pointer on the stack.
   $B3B5,$03 Call #R$B5C6 to read which room holds the item.
-  $B3B8,$01 Restore the pointer to this scenic event from the stack.
+  $B3B8,$01 Restore the scenic event table pointer from the stack.
   $B3B9,$03 Jump to #R$B3EE if the item is inactive.
 N $B3BC An event that is already in the player's room stays there.
-  $B3BC,$01 Remember which room holds this scenic item.
-  $B3BD,$03 Read the current room into #REGa.
+  $B3BC,$01 Hold this event's room in #REGc.
+  $B3BD,$03 #REGa=*#R$AECD.
   $B3C0,$03 Jump to #R$B3EE if this event's room is the current room.
-N $B3C3 Each scenic event has a room group to pick from.
-  $B3C3,$02 Keep the scenic scan while a room is chosen.
+N $B3C3 Pick a room for this scenic event.
+  $B3C3,$02 Stash #REGbc and #REGhl on the stack.
   $B3C5,$05 Calculate which event's group this is.
-  $B3CA,$04 Point #REGix at this event's room list.
+N $B3CA Point at this event's room list.
+  $B3CA,$04 #REGix=*#R$AEEE.
   $B3CE,$03 Call #R$B3F1 to look up the table entry.
 N $B3D1 The frame counter picks how far to walk into the room group.
 . #N$FF ends the group and the walk wraps.
-  $B3D1,$06 Load a step count from the frame counter and set the group
-. terminator in #REGa.
+  $B3D1,$04 Call #R$AC69 to pick a random step count and store it in #REGb.
+  $B3D5,$02 #REGa=the room group terminator (#N$FF).
 @ $B3D7 label=GameScenicEvent_FetchRoomGroup
   $B3D7,$06 Point #REGhl at the start of this room group.
   $B3DD,$02 Jump to #R$B3E0.
@@ -1497,10 +1517,11 @@ N $B3DF Walk the room group. #N$FF restarts it, and the frame count chooses
   $B3E3,$02 Decrease the step counter by one and loop back to #R$B3DF until
 . the counter is zero.
   $B3E5,$01 Fetch the destination room into #REGc.
-  $B3E6,$01 Restore the scenic-event pointer from the stack.
-  $B3E7,$02 Fetch the item ID into #REGb and stash the pointer again.
+  $B3E6,$01 Restore the scenic event table pointer from the stack.
+  $B3E7,$01 Fetch this scenic event's item ID into #REGb.
+  $B3E8,$01 Stash the scenic event table pointer on the stack.
   $B3E9,$03 Call #R$B5FD to store the item's room.
-  $B3EC,$02 Restore the scenic scan from the stack.
+  $B3EC,$02 Restore #REGhl and #REGbc from the stack.
 @ $B3EE label=GameScenicEventChecker_Next
 N $B3EE Move on to the next scenic event.
   $B3EE,$02 Decrease the scenic event counter by one and loop back to
@@ -2053,9 +2074,12 @@ E $B613 View the equivalent code in;
 . { #JEWELS$C426 }
 . { #WARLORD$AF1E }
 . LIST#
-D $B613 Transform Item.
 R $B613 B From item ID (the item to be destroyed)
 R $B613 C To item ID (the item to be created)
+D $B613 Transforms one item into another by destroying the "from" item and
+. creating the "to" item in the same location. Rather than use item
+. properties, the game just has separate objects that don't exist until an
+. action is performed.
 N $B613 Get the location of the "from" item so the "to" item can be created in
 . the same place.
   $B613,$01 Copy the "from" item ID into #REGa.
@@ -2373,88 +2397,104 @@ N $B70A This is the return point after the handler has finished executing.
 . all events have been processed.
   $B713,$01 Return.
 
-c $B714 Handler: Set Current Room
-@ $B714 label=Handler_SetCurrentRoom
+c $B714 Move Player To Room
+@ $B714 label=MovePlayerToRoom
 E $B714 View the equivalent code in;
 . #LIST
 . { #SHOCK$ACBD }
 . { #FOREST$C42F }
 . { #JEWELS$C520 }
-. { #ANDROMEDA$8E18 }
 . { #WARLORD$B01F }
 . LIST#
-D $B714 Move the player into the room held in #REGa and update events there.
-  $B714,$01 Remember the destination room.
-  $B715,$03 Read the scenic-event count into #REGa.
-  $B718,$03 Skip scenic events when the game defines none.
-  $B71B,$01 Take the scenic-event count.
-  $B71C,$03 Load the word at *#R$AEEC into #REGhl.
-  $B71F,$02 Read the first scenic item at #R$B722.
-@ $B721 label=Handler_SetCurrentRoom_Loop
-  $B721,$01 Advance #REGhl to the next byte.
-@ $B722 label=Handler_SetCurrentRoom_Scenic
-  $B722,$01 Read this scenic item.
-  $B723,$03 Call #R$B560 to find where the object is.
-  $B726,$02 Leave a scenic item that is not here.
-  $B728,$02 Keep this scenic item while it is moved.
-  $B72A,$01 Read the buffer byte into #REGb.
-  $B72B,$03 Call #R$B5FD to store the item's room.
-  $B72E,$02 Restore the scenic item count and this scenic item from the stack.
-@ $B730 label=Handler_SetCurrentRoom_ScenicNext
-  $B730,$02 Count down #REGb and repeat from #R$B721 until the count is
-. exhausted.
-@ $B732 label=Handler_SetCurrentRoom_Next
-  $B732,$01 Restore the destination room.
-  $B733,$03 Store #REGa in the current room.
-  $B736,$03 Read the event-state flags into #REGa.
-  $B739,$02 Leave the turn-based events alone when none are armed.
-  $B73B,$02 Use #N$08 as the count in #REGb.
-  $B73D,$03 Point #REGhl at #R$AE92.
-  $B740,$01 Hold the event flags while each one is tested.
-  $B741,$02 Test the first turn-based event at #R$B744.
-@ $B743 label=Handler_SetCurrentRoom_EventLoop
-  $B743,$01 Advance #REGhl to the next byte.
-@ $B744 label=Handler_SetCurrentRoom_Event
-  $B744,$02 Test the next turn-based event flag.
-  $B746,$02 Branch to #R$B750 when the carry flag is clear.
-  $B748,$01 Read the item this event places in the room.
-  $B749,$02 Keep this turn-based event while its item is placed.
-  $B74B,$03 Call #R$B5DC to update the item for this room.
-  $B74E,$02 Restore the event count and flags, and this turn-based event from
-. the stack.
-@ $B750 label=Handler_SetCurrentRoom_EventNext
-  $B750,$02 Count down #REGb and repeat from #R$B743 until the count is
-. exhausted.
+R $B714 A Destination room ID
+D $B714 Moves the player to a new room. Before updating the current room, it
+. brings every scenic-event item that is here or carried along to the
+. destination. It then moves each item whose bit is set in #R$AE91 into the
+. new room (see #R$AE92).
+N $B714 Store the destination room ID and prepare to update scenic events.
+  $B714,$01 Copy the destination room ID into #REGc.
+  $B715,$03 Load *#R$AEF8 into #REGa.
+  $B718,$03 Jump to #R$B732 if no scenic events are defined.
+  $B71B,$01 Load *#R$AEF8 into #REGb for the loop counter.
+  $B71C,$03 Set a pointer to *#R$AEEC in #REGhl.
+  $B71F,$02 Jump to #R$B722.
+N $B721 Loop through all scenic event items and move any that are here or
+. carried to the destination room (so they follow the player).
+@ $B721 label=ScenicItem_Advance
+  $B721,$01 Move to the next scenic event item ID.
+@ $B722 label=ScenicItem_Next
+  $B722,$01 Load this scenic event item ID into #REGa.
+  $B723,$03 Call #R$B560 to test whether it is here or carried.
+  $B726,$02 Jump to #R$B730 if it is neither here nor carried.
+N $B728 This scenic event item is here or carried, so move it with the player.
+  $B728,$02 Stash the table pointer and counter on the stack.
+  $B72A,$01 Load the scenic event item ID into #REGb.
+  $B72B,$03 Call #R$B5FD to update the item's location to the destination room.
+  $B72E,$02 Restore the table pointer and counter from the stack.
+@ $B730 label=ScenicItem_Count
+  $B730,$02 Decrease the scenic event counter by one and loop back to #R$B721
+. until all scenic events have been checked.
+N $B732 Update the current room ID to the destination room.
+@ $B732 label=MovePlayerToRoom_SetRoom
+  $B732,$01 Copy the destination room ID into #REGa.
+  $B733,$03 Write the destination room ID to #R$AECD.
+  $B736,$03 Load *#R$AE91 into #REGa.
+  $B739,$02 Return if no following item is active.
+N $B73B For each set bit, move the item at that position in #R$AE92 into the
+. current room.
+  $B73B,$02 Set a counter in #REGb for #N$08 bits.
+  $B73D,$03 Set a pointer to #R$AE92 in #REGhl.
+  $B740,$01 Copy the following flags into #REGc for bit testing.
+  $B741,$02 Jump to #R$B744.
+@ $B743 label=EventFlag_Advance
+  $B743,$01 Move to the next item ID.
+@ $B744 label=EventFlag_Next
+  $B744,$02 Shift the following flags right to check the next bit.
+  $B746,$02 Jump to #R$B750 if this bit is not set.
+N $B748 This item is following, so move it to the current room.
+  $B748,$01 Get the item ID from the table.
+  $B749,$02 Stash the table pointer and counter on the stack.
+  $B74B,$03 Call #R$B5DC to update the item's location to the current room.
+  $B74E,$02 Restore the table pointer and counter from the stack.
+@ $B750 label=EventFlag_Count
+  $B750,$02 Decrease the bit counter by one and loop back to #R$B743 until
+. all #N$08 bits have been tested.
+@ $B752 label=MovePlayerToRoom_Return
   $B752,$01 Return.
 
-c $B753 Handler: Match Verb
-@ $B753 label=HandlerMatchVerb
+c $B753 Handler: Dispatch Verb
+@ $B753 label=Handler_DispatchVerb
 E $B753 View the equivalent code in;
 . #LIST
+. { #SHOCK$ACFC }
 . { #FOREST$C463 }
 . { #JEWELS$C556 }
 . { #ANDROMEDA$8D85 }
 . { #WARLORD$B05E }
 . LIST#
-D $B753 Turn the first word token into a verb and run its action.
+D $B753 Matches the first word token from the user's command against the verb
+. word tokens table. If a match is found, it calculates the verb index and
+. jumps to the corresponding verb handler routine. If no match is found, it
+. displays "I Don't Understand" and returns.
 N $B753 Set up to search the verb word tokens table for the first word token.
-  $B753,$03 Set a pointer to the verb-token pointer in #REGhl.
-  $B756,$04 Load the verb-token count tokens into #REGbc for the search.
-  $B75A,$03 Get the the first word token from the user input.
+  $B753,$03 Set a pointer to *#R$AEEA in #REGhl.
+  $B756,$04 Load *#R$AEF4 tokens into #REGbc for the search.
+  $B75A,$03 Get the *#R$AF2E from the user input.
   $B75D,$02 Search the verb word tokens table for a matching token.
   $B75F,$02 Jump to #R$B768 if a match was found (Z flag is set).
-N $B761 The token doesn't match any verb.
-  $B761,$06 Print "#MESSAGE$AF59" and start a new line.
+N $B761 The token doesn't match any verb. Display an error message:
+. "#STR$AF59,$08($b==$FF)".
+  $B761,$03 #REGhl=#R$AF59.
+  $B764,$03 Call #R$AC35.
   $B767,$01 Return.
 @ $B768 label=VerbMatched
 N $B768 A verb was matched! Calculate its index in the table and jump to its
 . handler routine.
-  $B768,$04 Calculate the verb index: #REGa=the verb-token count-#REGc (total
-. tokens minus
+  $B768,$04 Calculate the verb index: #REGa=*#R$AEF4-#REGc (total tokens minus
 . remaining tokens after match).
   $B76C,$01 Adjust the index (decrease by one, as indices are zero-based).
   $B76D,$01 Store the verb index in #REGe for the table lookup.
-  $B76E,$04 Set a pointer to the verb-jump pointer in #REGix.
+  $B76E,$04 Set a pointer to *#R$AEE4 in #REGix.
   $B772,$03 Call #R$B3F1 to get the address of the verb handler routine for this
 . index.
   $B775,$01 Jump to the verb handler routine to execute the command.
@@ -2482,20 +2522,25 @@ E $B77F View the equivalent code in;
 . { #ANDROMEDA$65D6 }
 . { #WARLORD$B08A }
 . LIST#
-D $B77F Pick a number below the limit in #REGa.
-R $B77F A Maximum value of generated number
-  $B77F,$01 Remember the caller's registers.
-  $B780,$01 Remember the upper limit.
-  $B781,$03 Call #R$AC69 to read the frame counter.
-  $B784,$02 Use the frame counter as the spin count.
+D $B77F Returns a number from #N$00 up to, but not including, #REGa.
+D $B77F The frame counter chooses how far to walk around that range.
+R $B77F A Exclusive upper bound
+R $B77F O:A The generated number
+N $B77F Mix the frame counter into a number below the limit in #REGa.
+  $B77F,$01 Stash #REGbc on the stack.
+  $B780,$01 Store the exclusive upper bound in #REGc.
+  $B781,$03 Call #R$AC69 to read *#SKOOLKID$5C78(FRAMES).
+  $B784,$01 Use the frame counter as the loop count in #REGb.
+  $B785,$01 Restore the exclusive upper bound into #REGa.
 @ $B786 label=GenerateRandomNumber_Loop
-  $B786,$04 Count down inside the limit.
+  $B786,$01 Decrease the walking value by one.
+  $B787,$02 Jump to #R$B78A if it has not wrapped past zero.
+  $B789,$01 Wrap back to the exclusive upper bound.
 @ $B78A label=GenerateRandomNumber_Next
-  $B78A,$02 Count down #REGb and repeat from #R$B786 until the count is
-. exhausted.
-  $B78C,$01 Step the count in #REGa down.
-  $B78D,$01 Restore the caller's #REGbc from the stack, leaving the random
-. number in #REGa.
+  $B78A,$02 Decrease the frame-count loop by one and loop back to #R$B786
+. until the count is zero.
+  $B78C,$01 Decrease the result by one so the range starts at #N$00.
+  $B78D,$01 Restore #REGbc from the stack.
   $B78E,$01 Return.
 
 c $B78F Add To Score
@@ -2505,15 +2550,24 @@ E $B78F View the equivalent code in;
 . { #SHOCK$AD34 }
 . { #WARLORD$B09A }
 . LIST#
-D $B78F Add the points in #REGa to the BCD score.
-  $B78F,$01 Remember the caller's pointer.
-  $B790,$03 Load the word at the score into #REGhl.
-  $B793,$03 Add the points into the decimal score.
-  $B796,$02 Branch to #R$B799 when the carry flag is clear.
-  $B798,$01 Advance the count in #REGh.
-@ $B799 label=AddToScore_Next
-  $B799,$03 Store #REGhl in the score.
-  $B79C,$01 Restore the caller's pointer from the stack.
+D $B78F Adds the points in #REGa to the two-byte BCD score at #R$AECE. The low
+. byte is adjusted with DAA; when that addition carries, the high byte
+. increases by one.
+R $B78F A Points to add
+N $B78F Preserve #REGhl and load the current score from #R$AECE.
+  $B78F,$01 Stash #REGhl on the stack.
+  $B790,$03 Fetch the BCD score from *#R$AECE into #REGhl.
+N $B793 Add the points into the low score byte and adjust for BCD.
+  $B793,$01 Add the points in #REGa to the low score byte in #REGl.
+  $B794,$01 Decimal-adjust #REGa for a BCD score digit.
+  $B795,$01 Store the adjusted low byte back in #REGl.
+  $B796,$02 Jump to #R$B799 if the addition did not carry.
+N $B798 The low byte carried, so raise the high score byte.
+  $B798,$01 Increase the high score byte in #REGh by one.
+@ $B799 label=AddToScore_Store
+N $B799 Write the updated score back to #R$AECE.
+  $B799,$03 Store #REGhl at #R$AECE.
+  $B79C,$01 Restore #REGhl from the stack.
   $B79D,$01 Return.
 
 c $B79E Messaging: "You Have Scored"
@@ -3805,7 +3859,8 @@ E $CD58 View the equivalent code in;
 . { #WARLORD$C732 }
 . LIST#
 D $CD58 One word per item. Each entry points at an #N$FF-terminated name.
-W $CD58,$02
+W $CD58,$02 Item #N((#PC-$CD58)/$02):
+. #IF(#EVAL(#PEEK(#PC)+#PEEK(#PC+$01)*$100)>$0000)(#R(#PEEK(#PC)+#PEEK(#PC+$01)*$100) #ITEM((#PC-$CD58)/$02),N/A).
 L $CD58,$02,$87
 
 g $CE66 Table: Room Descriptions
@@ -4477,8 +4532,8 @@ D $E9A1 One turn: run events, read a command, and dispatch its verb.
   $E9B0,$03 Call #R$B753 to run the verb.
   $E9B3,$02 Take another turn at #R$E9A1.
 
-c $E9B5 Messaging: "You are dead."
-@ $E9B5 label=Messaging_YouAreDead_Continue
+c $E9B5 Game Over
+@ $E9B5 label=GameOver
 E $E9B5 View the equivalent code in;
 . #LIST
 . { #SHOCK$AE0D }
@@ -4491,8 +4546,8 @@ D $E9B5 Print "You are dead." and fall into the play-again question.
 N $E9B5 Print it and start a new line: #MESSAGE$AFF9.
   $E9B5,$06 Point at the message and print it and start a new line.
 
-c $E9BB Handler: Ask To Play Again
-@ $E9BB label=HandlerAskToPlayAgain
+c $E9BB Want Another Game Input
+@ $E9BB label=WantAnotherGameInput
 E $E9BB View the equivalent code in;
 . #LIST
 . { #ANDROMEDA$8DB9 }
@@ -4501,7 +4556,7 @@ D $E9BB Ask To Play Again.
   $E9BB,$03 Call #R$B79E to tell the player the score.
 N $E9BE Print it and start a new line: #MESSAGE$B007.
   $E9BE,$06 Point at the message and print it and start a new line.
-@ $E9C4 label=HandlerAskToPlayAgain_Loop
+@ $E9C4 label=WantAnotherGameInput_Loop
   $E9C4,$03 Call #R$ABE1 to read the player's key.
   $E9C7,$05 Branch to #SKOOLKID$0000(START) when the player pressed "N".
   $E9CC,$05 Branch to #R$ABD4 when the player pressed "Y".

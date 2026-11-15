@@ -191,8 +191,8 @@ D $625F The line being typed. Parsed word tokens follow at #R$6291.
 B $625F,$32
 
 g $6291 User Input: Word Tokens
-@ $6291 label=UserInput_Token_1
-@ $6292 label=UserInput_Token_2
+@ $6291 label=UserInput_FirstToken
+@ $6292 label=UserInput_SecondToken
 D $6291 The vocabulary number of each word of the last command, in the
 . order they were typed, with #N$FF in every slot that isn't used.
 B $6291,$01 The first word, which should be the verb.
@@ -795,7 +795,7 @@ N $6560 Each set bit is a countdown that is still running.
   $6589,$01 Leave this event for the next turn.
 
 c $658A Handler: Scenic Events
-@ $658A label=HandlerScenicEvents
+@ $658A label=Handler_ScenicEvents
 E $658A View the equivalent code in;
 . #LIST
 . { #SHOCK$AC88 }
@@ -809,7 +809,7 @@ D $658A Walk the scenic-event bits and fire a handler when the player is in its
   $658A,$03 Fetch the scenic-event flags.
   $658D,$03 No scenic event is running.
   $6590,$03 Keep the scenic flags and test all eight bits.
-@ $6593 label=HandlerScenicEvents_Loop1
+@ $6593 label=Handler_ScenicEvents_Loop1
 N $6593 Each set bit is a scenic event that can plant a message.
   $6593,$02 Take the next scenic-event bit.
   $6595,$02 This scenic event is not running.
@@ -818,9 +818,9 @@ N $6593 Each set bit is a scenic event that can plant a message.
   $65A1,$04 Let the frame counter choose how far to walk the message list.
   $65A5,$04 Find the messages for this scenic event.
   $65A9,$04 Point at this event's messages and prepare the end marker.
-@ $65AD label=HandlerScenicEvents_Loop2
+@ $65AD label=Handler_ScenicEvents_Loop2
   $65AD,$06 Read the address of this event's message list.
-@ $65B3 label=HandlerScenicEvents_Loop3
+@ $65B3 label=Handler_ScenicEvents_Loop3
   $65B3,$06 Walk the list for as many frames as have passed.
   $65B9,$01 Step back to the message those frames selected.
   $65BA,$02 Recover the event number from the list index.
@@ -830,9 +830,9 @@ N $6593 Each set bit is a scenic event that can plant a message.
   $65C3,$03 Fetch the current room.
   $65C6,$05 Leave the event alone when the player is already in its room.
   $65CB,$04 Plant the chosen message in this event's room.
-@ $65CF label=HandlerScenicEvents_Step1
+@ $65CF label=Handler_ScenicEvents_Step1
   $65CF,$02 Repeat for the remaining scenic events.
-@ $65D1 label=HandlerScenicEvents_Step2
+@ $65D1 label=Handler_ScenicEvents_Step2
   $65D1,$01 Return.
 
 c $65D2 Pause Loop
@@ -861,18 +861,24 @@ E $65D6 View the equivalent code in;
 . { #JEWELS$C582 }
 . { #WARLORD$B08A }
 . LIST#
-D $65D6 Return a number derived from the frame counter, used when an event may
-. or
-. may not happen.
-R $65D6 O:A A random number derived from *#SKOOLKID$5C78(FRAMES)
-  $65D6,$07 Take the frame counter as a countdown, limited by the value passed
-. in.
-@ $65DD label=GenerateRandomNumber_Loop1
-  $65DD,$04 Wrap back to that limit when the countdown passes zero.
-@ $65E1 label=GenerateRandomNumber_Step1
-  $65E1,$02 Repeat for every frame that has passed.
-  $65E3,$01 Step the result back one more.
-  $65E4,$01 Restore the registers the caller needs from the stack.
+D $65D6 Returns a number from #N$00 up to, but not including, #REGa.
+D $65D6 The frame counter chooses how far to walk around that range.
+R $65D6 A Exclusive upper bound
+R $65D6 O:A The generated number
+N $65D6 Mix the frame counter into a number below the limit in #REGa.
+  $65D6,$01 Stash #REGbc on the stack.
+  $65D7,$01 Store the exclusive upper bound in #REGc.
+  $65D8,$04 Load *#SKOOLKID$5C78(FRAMES) into #REGb as the loop count.
+  $65DC,$01 Restore the exclusive upper bound into #REGa.
+@ $65DD label=GenerateRandomNumber_Loop
+  $65DD,$01 Decrease the walking value by one.
+  $65DE,$02 Jump to #R$65E1 if it has not wrapped past zero.
+  $65E0,$01 Wrap back to the exclusive upper bound.
+@ $65E1 label=GenerateRandomNumber_Next
+  $65E1,$02 Decrease the frame-count loop by one and loop back to #R$65DD
+. until the count is zero.
+  $65E3,$01 Decrease the result by one so the range starts at #N$00.
+  $65E4,$01 Restore #REGbc from the stack.
   $65E5,$01 Return.
 
 c $65E6 Handler: Update Object Location
@@ -967,12 +973,16 @@ E $6669 View the equivalent code in;
 . { #JEWELS$C058 }
 . LIST#
 D $6669 Split the command into words and look each one up in the vocabulary.
-N $6669 Blank the four-character word buffer.
-  $6669,$03 Start at the word buffer (#R$629E).
-  $666C,$02 A word is at most four letters.
-  $666E,$02 Pad the typed word with spaces.
+N $6669 Clear the four-letter buffer to spaces so a short word cannot match
+. the previous one's tail.
+  $6669,$03 #REGde=#R$629E.
+  $666C,$02 Set a counter in #REGb for the #N$04 letters.
+  $666E,$02 #REGa=#N$20.
 @ $6670 label=Parser_MatchInputWord_Loop1
-  $6670,$04 Write spaces through the word buffer.
+  $6670,$01 Write a space character (#N$20) to the buffer.
+  $6671,$01 Move to the next letter.
+  $6672,$02 Decrease the counter by one and loop back to #R$6670 until the
+. counter is zero.
   $6674,$02 Jump to #R$6745 when no token slots remain.
   $6676,$03 Jump to #R$6745 when the command has ended.
   $6679,$01 Read the next character of the command.
@@ -1003,30 +1013,39 @@ N $66B0 Ignore the word "THE ".
 @ $66C1 label=Parser_MatchInputWord_Step2
   $66C1,$04 Jump back to #R$6669 when the word was THE, so it is not
 . tokenised.
-  $66C5,$06 Search the vocabulary addressed by *#R$629C.
+N $66C5 Look the word up in the vocabulary. A comma separates synonyms of the
+. same token; #N$FF ends the table.
+  $66C5,$01 Switch to the alternate register set for the vocabulary search.
+  $66C6,$03 #REGhl=*#R$629C.
+  $66C9,$02 Set the token number in #REGc to #N$00.
 @ $66CB label=Parser_MatchInputWord_Loop6
-N $66CB Look the word up in the vocabulary. A comma separates synonyms.
-  $66CB,$01 Read the next vocabulary letter.
-  $66CC,$04 Jump to #R$66FD when the vocabulary list ends (#N$FF).
+  $66CB,$01 Fetch the next vocabulary byte into #REGa.
+  $66CC,$04 Jump to #R$66FD if the word is the #N$FF terminator.
 @ $66D0 label=Parser_MatchInputWord_Loop7
-  $66D0,$03 Point at the word buffer.
-  $66D3,$02 Compare four letters of this vocabulary word.
+  $66D0,$03 #REGde=#R$629E.
+  $66D3,$02 Set a counter in #REGb for the #N$04 letters.
 @ $66D5 label=Parser_MatchInputWord_Loop8
-  $66D5,$08 Match the typed word against this vocabulary entry.
-N $66DD Word matched. Store its vocabulary index in the token buffer and
+  $66D5,$04 Jump to #R$66EE if this letter does not match.
+  $66D9,$01 Move to the next letter of the four-letter buffer.
+  $66DA,$01 Move to the next vocabulary letter.
+  $66DB,$02 Decrease the letter counter by one and loop back to #R$66D5 until
+. the counter is zero.
+N $66DD The word matched. Store its vocabulary index in the token buffer and
 . parse the next word.
   $66DD,$0E Store this vocabulary number as the current word's token.
   $66EB,$03 Jump to #R$6669 to read the next word.
 @ $66EE label=Parser_MatchInputWord_Step3
-N $66EE This vocabulary entry did not match. Try a synonym after a comma,
-. else the next entry.
-  $66EE,$04 Skip the letters left in a word that did not match.
-  $66F2,$01 Read the byte that follows this vocabulary word.
-  $66F3,$04 A comma marks another synonym of the same word.
-  $66F7,$01 Step past that comma.
-  $66F8,$02 Jump to #R$66D0 to match this synonym.
+N $66EE This vocabulary word did not match. Step past the remaining letters.
+. A comma keeps the same token for a synonym; anything else advances the token
+. number for the next entry.
+  $66EE,$03 Turn the remaining letter count into a 16-bit offset in #REGde.
+  $66F1,$01 Move #REGhl past the unmatched letters.
+  $66F2,$01 Fetch the next vocabulary byte into #REGa.
+  $66F3,$04 Jump to #R$66FA if this byte is not a comma (#N$2C).
+  $66F7,$01 Move past the comma.
+  $66F8,$02 Jump to #R$66D0 to try matching the synonym.
 @ $66FA label=Parser_MatchInputWord_Step4
-  $66FA,$01 Try the next vocabulary word.
+  $66FA,$01 Advance the token number for the next vocabulary entry.
   $66FB,$02 Jump to #R$66CB.
 @ $66FD label=Parser_MatchInputWord_Step5
 N $66FD The word is not in the vocabulary, so quote it and ask again.
@@ -2913,37 +2932,46 @@ N $8D65 Ensure every named object is present here.
   $8D82,$01 Move on to the next word token.
   $8D83,$02 Jump to #R$8D6B for the remaining words of the command.
 
-c $8D85 Handler: Match Verb
-@ $8D85 label=HandlerMatchVerb
+c $8D85 Handler: Dispatch Verb
+@ $8D85 label=Handler_DispatchVerb
 E $8D85 View the equivalent code in;
 . #LIST
+. { #SHOCK$ACFC }
 . { #FOREST$C463 }
 . { #HEROES$B753 }
 . { #JEWELS$C556 }
 . { #WARLORD$B05E }
 . LIST#
-D $8D85 Match the first word token against the verb table. If a match is
-. found, jump to its handler. If not, print "I Don't Understand" and return
-. to the game loop.
-N $8D85 Set up to search the verb word tokens for the first word token.
-  $8D85,$03 Point at the list of verb word numbers.
-  $8D88,$04 Load *#R$62DA into #REGbc for the search.
-  $8D8C,$03 Fetch *#R$6291 from the user input.
-  $8D8F,$02 Search the verb word tokens for a matching token.
-  $8D91,$02 Jump to #R$8D9B if a match was found.
-N $8D93 The token doesn't match any verb.
-N $8D93 Print "#MESSAGE$62EC".
+D $8D85 Matches the first word token from the user's command against the verb
+. word tokens table. If a match is found, it calculates the verb index and
+. jumps to the corresponding verb handler routine. If no match is found, it
+. displays "I Don't Understand" and returns to the game loop.
+N $8D85 Set up to search the verb word tokens table for the first word token.
+  $8D85,$03 Set a pointer to #R$891C in #REGhl.
+  $8D88,$04 Load *#R$62DA tokens into #REGbc for the search.
+  $8D8C,$03 Get the *#R$6291 from the user input.
+  $8D8F,$02 Search the verb word tokens table for a matching token.
+  $8D91,$02 Jump to #R$8D9B if a match was found (Z flag is set).
+N $8D93 The token doesn't match any verb. Display an error message:
+. "#MESSAGE$62EC".
   $8D93,$03 #REGhl=#R$62EC.
   $8D96,$03 Call #R$64E9.
   $8D99,$02 Jump to #R$8D2A to read the next command.
-@ $8D9B label=HandlerMatchVerb_Step1
-N $8D9B A verb was matched. Calculate its index and jump to its handler.
-  $8D9B,$03 Fetch how many verbs the game knows.
-  $8D9E,$03 The matching verb selects its handler index.
-  $8DA1,$04 Point #REGix at *#R$62D8.
-  $8DA5,$03 Call #R$6754.
-@ $8DA8 label=HandlerMatchVerb_Step2
-  $8DA8,$05 Run the verb, then return to the game loop.
+@ $8D9B label=VerbMatched
+N $8D9B A verb was matched! Calculate its index in the table and jump to its
+. handler routine.
+  $8D9B,$04 Calculate the verb index: #REGa=*#R$62DA-#REGc (total tokens minus
+. remaining tokens after match).
+  $8D9F,$01 Adjust the index (decrease by one, as indices are zero-based).
+  $8DA0,$01 Store the verb index in #REGe for the table lookup.
+  $8DA1,$04 Set a pointer to *#R$62D8 in #REGix.
+  $8DA5,$03 Call #R$6754 to get the address of the verb handler routine for this
+. index.
+@ $8DA8 label=VerbMatched_Run
+N $8DA8 Run the matched verb handler, then return to the game loop.
+  $8DA8,$03 Load #R$8D2A into #REGde as the return address.
+  $8DAB,$01 Stash the game-loop return address on the stack.
+  $8DAC,$01 Jump to the verb handler routine to execute the command.
 
 c $8DAD Handler: Plasma Shell
 @ $8DAD label=HandlerPlasmaShell
@@ -2967,8 +2995,8 @@ N $8DB3 Print "#MESSAGE$638C".
   $8DB3,$03 #REGhl=#R$638C.
   $8DB6,$03 Call #R$64E9.
 
-c $8DB9 Handler: Ask To Play Again
-@ $8DB9 label=HandlerAskToPlayAgain
+c $8DB9 Want Another Game Input
+@ $8DB9 label=WantAnotherGameInput
 E $8DB9 View the equivalent code in;
 . #LIST
 . { #HEROES$E9BB }
@@ -2977,7 +3005,7 @@ D $8DB9 Ask whether to play again; reset the machine or start another game.
 N $8DB9 Print "#MESSAGE$639A".
   $8DB9,$03 #REGhl=#R$639A.
   $8DBC,$03 Call #R$64E9.
-@ $8DBF label=HandlerAskToPlayAgain_Loop1
+@ $8DBF label=WantAnotherGameInput_Loop
   $8DBF,$03 Call #R$6495.
 N $8DC2 The player is done with the game, so reset back to BASIC.
   $8DC2,$05 Jump to #SKOOLKID$0000(START) if the player pressed "N".
@@ -3052,26 +3080,18 @@ D $8E0F Print the message in #REGhl, discard the return addresses and
 
 c $8E18 Move Player To Room
 @ $8E18 label=MovePlayerToRoom
-E $8E18 View the equivalent code in;
-. #LIST
-. { #SHOCK$ACBD }
-. { #FOREST$C42F }
-. { #HEROES$B714 }
-. { #JEWELS$C520 }
-. { #WARLORD$B01F }
-. LIST#
 D $8E18 Store the given room as the current room and update the exit record.
   $8E18,$01 Remember the room being entered.
   $8E19,$03 Fetch the current room.
   $8E1C,$03 The scenic events remember the room the player just left.
   $8E1F,$02 Up to eight scenic rooms may name the room just left.
   $8E21,$02 Continue at #R$8E24 to see if this scenic slot names the old room.
-@ $8E23 label=MovePlayerToRoom_Loop1
+@ $8E23 label=MovePlayerToRoom_Loop
   $8E23,$01 Move on to the next scenic room.
-@ $8E24 label=MovePlayerToRoom_Step1
+@ $8E24 label=MovePlayerToRoom_CheckScenic
   $8E24,$03 Leave this scenic slot when it does not name the old room.
   $8E27,$01 This scenic slot now names the room being entered.
-@ $8E28 label=MovePlayerToRoom_Step2
+@ $8E28 label=MovePlayerToRoom_NextScenic
   $8E28,$02 Repeat for the remaining scenic rooms.
   $8E2A,$04 Make the new room current.
   $8E2E,$02 Draw the room, including its picture.
@@ -3080,17 +3100,17 @@ D $8E18 Store the given room as the current room and update the exit record.
 . carried.
   $8E3A,$03 Check the turn-based event flags.
   $8E3D,$07 The android will attack in #N$02 turns.
-@ $8E44 label=MovePlayerToRoom_Step3
+@ $8E44 label=MovePlayerToRoom_CheckSlug
   $8E44,$07 Jump to #R$8E55 when #MESSAGE$6DBF (#N$24) is not here or being
 . carried.
   $8E4B,$03 Check the turn-based event flags.
   $8E4E,$07 The slug will attack in #N$06 turns.
-@ $8E55 label=MovePlayerToRoom_Step4
+@ $8E55 label=MovePlayerToRoom_CheckAndroid
   $8E55,$07 Jump to #R$8E66 when #MESSAGE$6E6D (#N$27) is not here or being
 . carried.
   $8E5C,$03 Check the turn-based event flags.
   $8E5F,$07 The second android will attack in #N$06 turns.
-@ $8E66 label=MovePlayerToRoom_Step5
+@ $8E66 label=MovePlayerToRoom_TractorBeam
   $8E66,$03 Fetch the current room.
   $8E69,$04 The tractor beam is only dealt with on #ROOM$05.
   $8E6D,$03 Check the turn-based event flags.
@@ -3101,7 +3121,7 @@ N $8E7C This action changes the map:
   $8E7C,$04 Close the south exit of #ROOM$05.
   $8E80,$06 Move #MESSAGE$7141 (#N$40) to room #N$04: "#ROOM$04".
   $8E86,$06 Print #MESSAGE$83C2.
-@ $8E8C label=MovePlayerToRoom_Step6
+@ $8E8C label=MovePlayerToRoom_Return
   $8E8C,$01 Return.
 
 c $8E8D Action: Help
@@ -5128,8 +5148,8 @@ D $F99E Copied to #R$625F. Cleared again when a command is typed.
 B $F99E,$32
 
 g $F9D0 User Input: Word Tokens
-@ $F9D0 label=Default_UserInput_Token_1
-@ $F9D1 label=Default_UserInput_Token_2
+@ $F9D0 label=Default_UserInput_FirstToken
+@ $F9D1 label=Default_UserInput_SecondToken
 D $F9D0 Copied to #R$6291. Filled with #N$FF until a command is parsed.
 B $F9D0,$01
 B $F9D1,$09,$09

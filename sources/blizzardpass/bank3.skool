@@ -34,8 +34,8 @@ c$C000 XOR A         ; {Clear *#R$5B80@main(Noun) and #REGhl.
  $C002 LD H,A        ;
  $C003 LD ($5B80),A  ; }
  $C006 LD ($655C),A  ; Clear *#R$655C@main(RowsScrolled).
- $C009 LD ($5B81),HL ; {Clear *#R$5B81@main(Counter1), *#R$5B83@main(Counter3)
- $C00C LD ($5B83),A  ; and *#R$5B8B@main(WordCount).
+ $C009 LD ($5B81),HL ; {Clear *#R$5B81@main(Counter1), *#R$5B83@main(Counter3) and
+ $C00C LD ($5B83),A  ; *#R$5B8B@main(WordCount).
  $C00F LD ($5B8B),A  ; }
  $C012 INC A         ; {Write #N$01 to *#R$5B86@main(WordSlot).
  $C013 LD ($5B86),A  ; }
@@ -43,8 +43,8 @@ c$C000 XOR A         ; {Clear *#R$5B80@main(Noun) and #REGhl.
  $C016 LD A,($5B85)  ; {Jump to #R$C02E when there is no leftover command.
  $C019 OR A          ;
  $C01A JR Z,$C02E    ; }
- $C01C LD A,$1B      ; {Call #R$63D4@main(PrintSystemMessage) to print message
- $C01E CALL $63D4    ; #N$1B (a space).}
+ $C01C LD A,$1B      ; {Call #R$63D4@main(PrintSystemMessage) to print message #N$1B (a
+ $C01E CALL $63D4    ; space).}
 @label=ReadCommand_Wait
 *$C021 LD A,($5C04)  ; {Wait until the key is not a space.
  $C024 CP $20        ;
@@ -70,6 +70,7 @@ c$C02E LD A,$0D       ; {Call #R$6394@main(PrintCharacter) to print ENTER.
  $C03E LD ($5B8E),A   ; }
  $C041 RES 5,(IY+$01) ; Clear the new-key bit of #SKOOLKID$5C3B(FLAGS).
  $C045 LD HL,$5B00    ; Point #REGhl at #R$5B00@main(CommandBuffer).
+; Continue on to #R$C048.
 
 ; Read Key
 ;
@@ -106,8 +107,8 @@ c$C048 CALL $662D    ; Call #R$662D@main(WaitForKey) to read one key.
 ; Store a capital letter if the buffer still has room.
 @label=ReadKey_Store
 *$C06D PUSH AF       ; Stash the key on the stack.
- $C06E LD A,($5B8E)  ; {Jump to #R$C06A if *#R$5B8E@main(InputLength) already holds
- $C071 CP $5E        ; #N$5E characters.
+ $C06E LD A,($5B8E)  ; {Jump to #R$C06A if *#R$5B8E@main(InputLength) already holds #N$5E
+ $C071 CP $5E        ; characters.
  $C073 JR Z,$C06A    ; }
  $C075 POP AF        ; Restore the key from the stack.
  $C076 CP $20        ; {Jump to #R$C048 if a control or a graphic is rejected.
@@ -120,9 +121,9 @@ c$C048 CALL $662D    ; Call #R$662D@main(WaitForKey) to read one key.
  $C082 JR NC,$C048   ; }
  $C084 LD (HL),A     ; {Store the capital and call #R$6394@main(PrintCharacter)
  $C085 CALL $6394    ; to echo it.}
- $C088 INC HL        ; {Advance the pointer and increment
- $C089 PUSH HL       ; *#R$5B8E@main(InputLength).
- $C08A LD HL,$5B8E   ;
+ $C088 INC HL        ; Advance the buffer pointer.
+ $C089 PUSH HL       ; Stash the buffer pointer on the stack.
+ $C08A LD HL,$5B8E   ; {Increment *#R$5B8E@main(InputLength).
  $C08D INC (HL)      ; }
  $C08E POP HL        ; Restore the buffer pointer from the stack.
  $C08F JR $C048      ; Jump to #R$C048.
@@ -138,8 +139,8 @@ c$C091 LD (HL),A     ; {Store ENTER and call #R$6394@main(PrintCharacter) to
  $C092 CALL $6394    ; echo it.}
  $C095 XOR A         ; {Clear *#R$5B7F@main(Verb).
  $C096 LD ($5B7F),A  ; }
- $C099 LD HL,$5B00   ; {Point #REGhl at #R$5B00@main(CommandBuffer) and fetch the
- $C09C LD A,(HL)     ; first character.}
+ $C099 LD HL,$5B00   ; {Point #REGhl at #R$5B00@main(CommandBuffer) and fetch the first
+ $C09C LD A,(HL)     ; character.}
  $C09D CP $0D        ; {Jump to #R$C02E if the line is empty.
  $C09F JP Z,$C02E    ; }
  $C0A2 JR $C0B2      ; Jump to #R$C0B2.
@@ -153,8 +154,7 @@ c$C091 LD (HL),A     ; {Store ENTER and call #R$6394@main(PrintCharacter) to
 ;
 ; HL Line pointer
 ;
-; Move to the next word. A comma after a word saves the rest of the
-; line.
+; Move to the next word. A comma after a word saves the rest of the line.
 @label=ParseWord
 c$C0A4 CALL $C1A6    ; Call #R$C1A6 to skip to a space, a comma or ENTER.
  $C0A7 CP $0D        ; {Jump to #R$C173 to finish the command.
@@ -165,8 +165,7 @@ c$C0A4 CALL $C1A6    ; Call #R$C1A6 to skip to a space, a comma or ENTER.
  $C0B0 JR Z,$C0D1    ; }
 ; This entry point is used by the routines at #R$C000 and #R$C091.
 ; .
-; Copy up to four characters, padding with spaces, then look the word
-; up.
+; Copy up to four characters, padding with spaces, then look the word up.
 @label=ParseWord_Copy
 *$C0B2 LD B,$04      ; {Fill #R$5B7B@main(WordToken) with four spaces.
  $C0B4 LD DE,$5B7B   ;
@@ -204,17 +203,17 @@ c$C0A4 CALL $C1A6    ; Call #R$C1A6 to skip to a space, a comma or ENTER.
  $C0E5 JR Z,$C0EE    ; }
  $C0E7 LD A,(HL)     ; {Store one character in #R$5B7B@main(WordToken).
  $C0E8 LD (DE),A     ; }
- $C0E9 INC HL        ; {Advance both pointers and jump to #R$C0C2.
- $C0EA INC DE        ;
- $C0EB INC B         ;
- $C0EC JR $C0C2      ; }
+ $C0E9 INC HL        ; Advance the line pointer.
+ $C0EA INC DE        ; Advance the token pointer.
+ $C0EB INC B         ; Count this letter.
+ $C0EC JR $C0C2      ; Jump to #R$C0C2.
 
 ; Look Up Word
 ;
 ; Used by the routine at #R$C0A4.
 ; .
-; Looks the four letters up. An unknown or leading noise word is
-; skipped; a noise word after a real word keeps the rest of the line.
+; Looks the four letters up. An unknown or leading noise word is skipped;
+; a noise word after a real word keeps the rest of the line.
 ;
 ;   HL Line pointer
 ; O:A Token id, or #N$FF if the word is unknown
@@ -228,8 +227,8 @@ c$C0EE CALL $C181    ; Call #R$C181 to look the four characters up.
  $C0F8 LD A,($5B8B)  ; {Jump to #R$C0A4 if a noise word arrives before any real
  $C0FB OR A          ; word.
  $C0FC JR Z,$C0A4    ; }
- $C0FE LD A,$01      ; {Write #N$01 to *#R$5B85@main(Continuation) to keep the rest
- $C100 LD ($5B85),A  ; of the line.}
+ $C0FE LD A,$01      ; {Write #N$01 to *#R$5B85@main(Continuation) to keep the rest of the
+ $C100 LD ($5B85),A  ; line.}
  $C103 RET           ; Return.
 
 ; Keep Token
@@ -259,29 +258,30 @@ c$C104 PUSH AF       ; Stash the id on the stack.
 @label=KeepToken_Verb
 *$C119 LD ($5B7F),A  ; Write the id to *#R$5B7F@main(Verb).
  $C11C JP $C0A4      ; Jump to #R$C0A4 to take the next word.
-; IT and THEM reuse the previous noun; other ids become the noun
-; unless they rewrite to a verb.
+; IT and THEM reuse the previous noun.
 @label=KeepToken_It
-*$C11F CP $80        ; {IT and THEM (#N$80) reuse *#R$5B9D@main(PreviousNoun).
- $C121 JR NZ,$C126   ;
- $C123 LD A,($5B9D)  ; }
+*$C11F CP $80        ; {Jump to #R$C126 if the token is not IT or THEM (#N$80).
+ $C121 JR NZ,$C126   ; }
+ $C123 LD A,($5B9D)  ; Fetch *#R$5B9D@main(PreviousNoun).
+; A verb already stored means this id is the noun.
 @label=KeepToken_Held
-*$C126 LD B,A        ; {Jump to #R$C143 if a verb is already stored.
- $C127 LD A,($5B7F)  ;
- $C12A OR A          ;
- $C12B LD A,B        ;
- $C12C JR NZ,$C143   ; }
+*$C126 LD B,A        ; Stash the token in #REGb.
+ $C127 LD A,($5B7F)  ; {Test *#R$5B7F@main(Verb).
+ $C12A OR A          ; }
+ $C12B LD A,B        ; Restore the token from #REGb.
+ $C12C JR NZ,$C143   ; Jump to #R$C143 if a verb is already stored.
+; POLISH, SKIN and BRIDGE become internal verbs.
 @label=KeepToken_Rewrite
- $C12E CP $AF        ; {Jump to #R$C119 with #N$2C if the token is POLISH
- $C130 LD A,$2C      ; (#N$AF).
+ $C12E CP $AF        ; Test for POLISH (#N$AF).
+ $C130 LD A,$2C      ; {Jump to #R$C119 with #N$2C if it matched.
  $C132 JR Z,$C119    ; }
- $C134 LD A,B        ; {Jump to #R$C119 with #N$2B if the token is SKIN
- $C135 CP $F9        ; (#N$F9).
- $C137 LD A,$2B      ;
+ $C134 LD A,B        ; Restore the token from #REGb.
+ $C135 CP $F9        ; Test for SKIN (#N$F9).
+ $C137 LD A,$2B      ; {Jump to #R$C119 with #N$2B if it matched.
  $C139 JR Z,$C119    ; }
- $C13B LD A,B        ; {Jump to #R$C119 with #N$31 if the token is BRIDGE
- $C13C CP $86        ; (#N$86).
- $C13E LD A,$31      ;
+ $C13B LD A,B        ; Restore the token from #REGb.
+ $C13C CP $86        ; Test for BRIDGE (#N$86).
+ $C13E LD A,$31      ; {Jump to #R$C119 with #N$31 if it matched.
  $C140 JR Z,$C119    ; }
  $C142 LD A,B        ; Restore the id when none of those matched.
 @label=KeepToken_Noun
@@ -293,7 +293,7 @@ c$C104 PUSH AF       ; Stash the id on the stack.
 ;
 ; Used by the routine at #R$C104.
 ; .
-; A third word, and a word count of #N$20, go in the spare slots after
+; A third word, and a word count of #N($20), go in the spare slots after
 ; the noun. A fifth word is ignored.
 @label=StoreExtra
 c$C14C LD A,($5B86)  ; {Increment *#R$5B86@main(WordSlot).
@@ -315,10 +315,10 @@ c$C14C LD A,($5B86)  ; {Increment *#R$5B86@main(WordSlot).
 ; This entry point is used by the routine at #R$C104.
 @label=StoreExtra_Overflow
 *$C16B PUSH AF       ; Stash the id on the stack.
- $C16C LD A,($5B8B)  ; {Use one less than *#R$5B8B@main(WordCount) as the slot
- $C16F DEC A         ; and jump to #R$C15C.
- $C170 LD C,A        ;
- $C171 JR $C15C      ; }
+ $C16C LD A,($5B8B)  ; Fetch *#R$5B8B@main(WordCount).
+ $C16F DEC A         ; Count one fewer.
+ $C170 LD C,A        ; That count is the slot.
+ $C171 JR $C15C      ; Jump to #R$C15C.
 
 ; Finish Parse
 ;
@@ -348,23 +348,26 @@ c$C173 LD A,($5B8B)  ; {Clear *#R$5B7F@main(Verb) if no word was recognised.
 @label=MatchWord
 c$C181 LD ($5B8C),HL ; Remember the line pointer in
                      ; *#R$5B8C@main(InputPointer).
- $C184 LD HL,$A71F   ; The vocabulary starts at #R$A720@main(Vocabulary), one byte
-                     ; after #R$A71F@main(VocabularyLead).
+ $C184 LD HL,$A71F   ; The vocabulary starts at #R$A720@main(Vocabulary), one byte after
+                     ; #R$A71F@main(VocabularyLead).
+; Compare the next vocabulary entry with #R$5B7B@main(WordToken).
 @label=MatchWord_Next
-*$C187 INC HL        ; {Compare the next entry with #R$5B7B@main(WordToken).
- $C188 LD DE,$5B7B   ;
- $C18B LD BC,$0400   ; }
+*$C187 INC HL        ; Step to the next vocabulary entry.
+ $C188 LD DE,$5B7B   ; Point #REGde at #R$5B7B@main(WordToken).
+ $C18B LD BC,$0400   ; Count four letters, starting from no matches.
+; Compare one letter and count it when it matches.
 @label=MatchWord_Character
-*$C18E LD A,(DE)     ; {Compare four letters and count the matches.
- $C18F CP (HL)       ;
- $C190 JR NZ,$C193   ;
- $C192 INC C         ;
+*$C18E LD A,(DE)     ; Fetch the token letter.
+ $C18F CP (HL)       ; {Jump to #R$C193 if it does not match.
+ $C190 JR NZ,$C193   ; }
+ $C192 INC C         ; Count this match.
+; Step on after this letter.
 @label=MatchWord_Miss
-*$C193 INC HL        ;
- $C194 INC DE        ;
- $C195 DJNZ $C18E    ; }
- $C197 LD A,(HL)     ; {Jump to #R$C1A2 if the table has ended (#N$FF).
- $C198 CP $FF        ;
+*$C193 INC HL        ; Advance the vocabulary pointer.
+ $C194 INC DE        ; Advance the token pointer.
+ $C195 DJNZ $C18E    ; Jump back to #R$C18E for the next letter.
+ $C197 LD A,(HL)     ; {Jump to #R$C1A2 if the terminator has been reached
+ $C198 CP $FF        ; (#N$FF).
  $C19A JR Z,$C1A2    ; }
  $C19C LD A,$04      ; {Jump back to #R$C187 unless all four letters matched.
  $C19E CP C          ;
@@ -398,8 +401,8 @@ c$C1A6 LD A,(HL)     ; {A space ends the skip.
 ; Location Text Under Parser
 ;
 ; The rest of this bank is the same location text as bank 6. The parser
-; occupies the first #N$01B3 bytes, so this fragment begins in the middle of
-; a description. Each description terminates with #N$7E.
+; occupies the first #N$01B3 bytes, so this fragment begins in the middle of a
+; description. Each description terminates with #N$7E.
 @label=LocationTextUnderParser
 t$C1B3 DEFM "ed in cloud. At one point however the cliff is nowhere near as st" ; {"#MESSAGE(#PC)".
  $C1F4 DEFM "eep and a fair way up a single window is cut into the cliff, look" ;
@@ -797,6 +800,5 @@ t$C1B3 DEFM "ed in cloud. At one point however the cliff is nowhere near as st" 
  $FFDD DEFB $7E                                                                 ; Terminator.
  $FFDE DEFM "you are in a maze of catacombs"                                    ; "#MESSAGE(#PC)".
  $FFFC DEFB $7E                                                                 ; Terminator.
-; The bank ends three characters into the next
-; description.
+; The bank ends three characters into the next description.
  $FFFD DEFM "you"                                                               ; "you".

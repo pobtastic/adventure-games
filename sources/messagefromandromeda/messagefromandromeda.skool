@@ -1771,10 +1771,10 @@ g$625F DEFB $00,$00,$00,$00,$00,$00,$00,$00
 ;
 ; The vocabulary number of each word of the last command, in the
 ; order they were typed, with #N$FF in every slot that isn't used.
-@label=UserInput_Token_1
+@label=UserInput_FirstToken
 g$6291 DEFB $FF                                 ; The first word, which should
                                                 ; be the verb.
-@label=UserInput_Token_2
+@label=UserInput_SecondToken
  $6292 DEFB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; The words after the verb.
 
 ; Line Number
@@ -2538,14 +2538,14 @@ c$6557 LD A,($6219)  ; Fetch the turn-based event flags.
 ;
 ; Walk the scenic-event bits and fire a handler when the player is in its
 ; room.
-@label=HandlerScenicEvents
+@label=Handler_ScenicEvents
 c$658A LD A,($6222)  ; Fetch the scenic-event flags.
  $658D OR A          ; {No scenic event is running.
  $658E JR Z,$65D1    ; }
  $6590 LD C,A        ; {Keep the scenic flags and test all eight bits.
  $6591 LD B,$08      ; }
 ; Each set bit is a scenic event that can plant a message.
-@label=HandlerScenicEvents_Loop1
+@label=Handler_ScenicEvents_Loop1
 *$6593 SRL C         ; Take the next scenic-event bit.
  $6595 JR NC,$65CF   ; This scenic event is not running.
  $6597 LD DE,$0000   ; {Index this scenic event's message list.
@@ -2559,10 +2559,10 @@ c$658A LD A,($6222)  ; Fetch the scenic-event flags.
  $65A5 LD IX,$62B2   ; Find the messages for this scenic event.
  $65A9 ADD IX,DE     ; {Point at this event's messages and prepare the end
  $65AB LD A,$FF      ; marker.}
-@label=HandlerScenicEvents_Loop2
+@label=Handler_ScenicEvents_Loop2
 *$65AD LD L,(IX+$00) ; {Read the address of this event's message list.
  $65B0 LD H,(IX+$01) ; }
-@label=HandlerScenicEvents_Loop3
+@label=Handler_ScenicEvents_Loop3
 *$65B3 CP (HL)       ; {Walk the list for as many frames as have passed.
  $65B4 INC HL        ;
  $65B5 JR Z,$65AD    ;
@@ -2577,9 +2577,9 @@ c$658A LD A,($6222)  ; Fetch the scenic-event flags.
  $65C9 JR Z,$65CF    ; room.}
  $65CB LD A,(HL)     ; {Plant the chosen message in this event's room.
  $65CC LD (IX+$00),A ; }
-@label=HandlerScenicEvents_Step1
+@label=Handler_ScenicEvents_Step1
 *$65CF DJNZ $6593    ; Repeat for the remaining scenic events.
-@label=HandlerScenicEvents_Step2
+@label=Handler_ScenicEvents_Step2
 *$65D1 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
@@ -2612,25 +2612,29 @@ c$65D2 HALT          ; Wait for the next frame.
 ;
 ; Used by the routines at #R$8D2A and #R$952B.
 ; .
-; Return a number derived from the frame counter, used when an event may
-; or
-; may not happen.
+; Returns a number from #N$00 up to, but not including, #REGa.
+; .
+; The frame counter chooses how far to walk around that range.
 ;
-; O:A A random number derived from *#SKOOLKID$5C78(FRAMES)
+;   A Exclusive upper bound
+; O:A The generated number
+;
+; Mix the frame counter into a number below the limit in #REGa.
 @label=GenerateRandomNumber
-c$65D6 PUSH BC       ; {Take the frame counter as a countdown, limited by the value passed
- $65D7 LD C,A        ; in.
- $65D8 LD A,($5C78)  ;
- $65DB LD B,A        ;
- $65DC LD A,C        ; }
-@label=GenerateRandomNumber_Loop1
-*$65DD DEC A         ; {Wrap back to that limit when the countdown passes zero.
- $65DE JR NZ,$65E1   ;
- $65E0 LD A,C        ; }
-@label=GenerateRandomNumber_Step1
-*$65E1 DJNZ $65DD    ; Repeat for every frame that has passed.
- $65E3 DEC A         ; Step the result back one more.
- $65E4 POP BC        ; Restore the registers the caller needs from the stack.
+c$65D6 PUSH BC       ; Stash #REGbc on the stack.
+ $65D7 LD C,A        ; Store the exclusive upper bound in #REGc.
+ $65D8 LD A,($5C78)  ; {Load *#SKOOLKID$5C78(FRAMES) into #REGb as the loop
+ $65DB LD B,A        ; count.}
+ $65DC LD A,C        ; Restore the exclusive upper bound into #REGa.
+@label=GenerateRandomNumber_Loop
+*$65DD DEC A         ; Decrease the walking value by one.
+ $65DE JR NZ,$65E1   ; Jump to #R$65E1 if it has not wrapped past zero.
+ $65E0 LD A,C        ; Wrap back to the exclusive upper bound.
+@label=GenerateRandomNumber_Next
+*$65E1 DJNZ $65DD    ; Decrease the frame-count loop by one and loop back to #R$65DD
+                     ; until the count is zero.
+ $65E3 DEC A         ; Decrease the result by one so the range starts at #N$00.
+ $65E4 POP BC        ; Restore #REGbc from the stack.
  $65E5 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
@@ -2782,15 +2786,17 @@ c$6604 CALL $64B7    ; Call #R$64B7.
 ;
 ; .
 ;
-; Blank the four-character word buffer.
+; Clear the four-letter buffer to spaces so a short word cannot match
+; the previous one's tail.
 @label=Parser_MatchInputWord
-c$6669 LD DE,$629E   ; Start at the word buffer (#R$629E).
- $666C LD B,$04      ; A word is at most four letters.
- $666E LD A,$20      ; Pad the typed word with spaces.
+c$6669 LD DE,$629E   ; #REGde=#R$629E.
+ $666C LD B,$04      ; Set a counter in #REGb for the #N$04 letters.
+ $666E LD A,$20      ; #REGa=#N$20.
 @label=Parser_MatchInputWord_Loop1
-*$6670 LD (DE),A     ; {Write spaces through the word buffer.
- $6671 INC DE        ;
- $6672 DJNZ $6670    ; }
+*$6670 LD (DE),A     ; Write a space character (#N$20) to the buffer.
+ $6671 INC DE        ; Move to the next letter.
+ $6672 DJNZ $6670    ; Decrease the counter by one and loop back to #R$6670 until the
+                     ; counter is zero.
  $6674 XOR A         ; {Jump to #R$6745 when no token slots remain.
  $6675 OR C          ; }
  $6676 JP Z,$6745    ; Jump to #R$6745 when the command has ended.
@@ -2848,25 +2854,28 @@ c$6669 LD DE,$629E   ; Start at the word buffer (#R$629E).
 *$66C1 EXX           ; {Jump back to #R$6669 when the word was THE, so it is not
  $66C2 JR Z,$6669    ; tokenised.
  $66C4 DEC C         ; }
- $66C5 EXX           ; {Search the vocabulary addressed by *#R$629C.
- $66C6 LD HL,($629C) ;
- $66C9 LD C,$00      ; }
-; Look the word up in the vocabulary. A comma separates synonyms.
+; Look the word up in the vocabulary. A comma separates synonyms of the
+; same token; #N$FF ends the table.
+ $66C5 EXX           ; Switch to the alternate register set for the vocabulary
+                     ; search.
+ $66C6 LD HL,($629C) ; #REGhl=*#R$629C.
+ $66C9 LD C,$00      ; Set the token number in #REGc to #N$00.
 @label=Parser_MatchInputWord_Loop6
-*$66CB LD A,(HL)     ; Read the next vocabulary letter.
- $66CC CP $FF        ; {Jump to #R$66FD when the vocabulary list ends (#N$FF).
+*$66CB LD A,(HL)     ; Fetch the next vocabulary byte into #REGa.
+ $66CC CP $FF        ; {Jump to #R$66FD if the word is the #N$FF terminator.
  $66CE JR Z,$66FD    ; }
 @label=Parser_MatchInputWord_Loop7
-*$66D0 LD DE,$629E   ; Point at the word buffer.
- $66D3 LD B,$04      ; Compare four letters of this vocabulary word.
+*$66D0 LD DE,$629E   ; #REGde=#R$629E.
+ $66D3 LD B,$04      ; Set a counter in #REGb for the #N$04 letters.
 @label=Parser_MatchInputWord_Loop8
-*$66D5 LD A,(DE)     ; {Match the typed word against this vocabulary entry.
+*$66D5 LD A,(DE)     ; {Jump to #R$66EE if this letter does not match.
  $66D6 CP (HL)       ;
- $66D7 JR NZ,$66EE   ;
- $66D9 INC DE        ;
- $66DA INC HL        ;
- $66DB DJNZ $66D5    ; }
-; Word matched. Store its vocabulary index in the token buffer and
+ $66D7 JR NZ,$66EE   ; }
+ $66D9 INC DE        ; Move to the next letter of the four-letter buffer.
+ $66DA INC HL        ; Move to the next vocabulary letter.
+ $66DB DJNZ $66D5    ; Decrease the letter counter by one and loop back to #R$66D5 until
+                     ; the counter is zero.
+; The word matched. Store its vocabulary index in the token buffer and
 ; parse the next word.
  $66DD EXX           ; {Store this vocabulary number as the current word's
  $66DE LD A,$09      ; token.
@@ -2879,19 +2888,20 @@ c$6669 LD DE,$629E   ; Start at the word buffer (#R$629E).
  $66E9 LD (HL),C     ;
  $66EA EXX           ; }
  $66EB JP $6669      ; Jump to #R$6669 to read the next word.
-; This vocabulary entry did not match. Try a synonym after a comma,
-; else the next entry.
+; This vocabulary word did not match. Step past the remaining letters.
+; A comma keeps the same token for a synonym; anything else advances the token
+; number for the next entry.
 @label=Parser_MatchInputWord_Step3
-*$66EE LD E,B        ; {Skip the letters left in a word that did not match.
- $66EF LD D,$00      ;
- $66F1 ADD HL,DE     ; }
- $66F2 LD A,(HL)     ; Read the byte that follows this vocabulary word.
- $66F3 CP $2C        ; {A comma marks another synonym of the same word.
+*$66EE LD E,B        ; {Turn the remaining letter count into a 16-bit offset in
+ $66EF LD D,$00      ; #REGde.}
+ $66F1 ADD HL,DE     ; Move #REGhl past the unmatched letters.
+ $66F2 LD A,(HL)     ; Fetch the next vocabulary byte into #REGa.
+ $66F3 CP $2C        ; {Jump to #R$66FA if this byte is not a comma (#N$2C).
  $66F5 JR NZ,$66FA   ; }
- $66F7 INC HL        ; Step past that comma.
- $66F8 JR $66D0      ; Jump to #R$66D0 to match this synonym.
+ $66F7 INC HL        ; Move past the comma.
+ $66F8 JR $66D0      ; Jump to #R$66D0 to try matching the synonym.
 @label=Parser_MatchInputWord_Step4
-*$66FA INC C         ; Try the next vocabulary word.
+*$66FA INC C         ; Advance the token number for the next vocabulary entry.
  $66FB JR $66CB      ; Jump to #R$66CB.
 ; The word is not in the vocabulary, so quote it and ask again.
 @label=Parser_MatchInputWord_Step5
@@ -3199,6 +3209,7 @@ c$678A PUSH DE       ; Remember whether the caller asked for the picture.
  $6891 RET           ; Return.
 ; View the equivalent code in;
 ; #LIST
+; { #SHOCK$A33A }
 ; { #FOREST$C0F9 }
 ; { #HEROES$B46B }
 ; { #JEWELS$C26A }
@@ -6424,44 +6435,50 @@ c$8D2A CALL $6557    ; Call #R$6557.
 ; { #WARLORD$E99F }
 ; LIST#
 
-; Handler: Match Verb
+; Handler: Dispatch Verb
 ;
 ; Used by the routines at #R$8D2A and #R$937B.
 ; .
-; Match the first word token against the verb table. If a match is
-; found, jump to its handler. If not, print "I Don't Understand" and return
-; to the game loop.
+; Matches the first word token from the user's command against the verb
+; word tokens table. If a match is found, it calculates the verb index and
+; jumps to the corresponding verb handler routine. If no match is found, it
+; displays "I Don't Understand" and returns to the game loop.
 ;
 ; .
 ;
-; Set up to search the verb word tokens for the first word token.
-@label=HandlerMatchVerb
-c$8D85 LD HL,$891C   ; Point at the list of verb word numbers.
- $8D88 LD BC,($62DA) ; Load *#R$62DA into #REGbc for the search.
- $8D8C LD A,($6291)  ; Fetch *#R$6291 from the user input.
- $8D8F CPIR          ; Search the verb word tokens for a matching token.
- $8D91 JR Z,$8D9B    ; Jump to #R$8D9B if a match was found.
-; The token doesn't match any verb.
-; .
-; Print "#MESSAGE$62EC".
+; Set up to search the verb word tokens table for the first word token.
+@label=Handler_DispatchVerb
+c$8D85 LD HL,$891C   ; Set a pointer to #R$891C in #REGhl.
+ $8D88 LD BC,($62DA) ; Load *#R$62DA tokens into #REGbc for the search.
+ $8D8C LD A,($6291)  ; Get the *#R$6291 from the user input.
+ $8D8F CPIR          ; Search the verb word tokens table for a matching token.
+ $8D91 JR Z,$8D9B    ; Jump to #R$8D9B if a match was found (Z flag is set).
+; The token doesn't match any verb. Display an error message:
+; "#MESSAGE$62EC".
  $8D93 LD HL,$62EC   ; #REGhl=#R$62EC.
  $8D96 CALL $64E9    ; Call #R$64E9.
  $8D99 JR $8D2A      ; Jump to #R$8D2A to read the next command.
-; A verb was matched. Calculate its index and jump to its handler.
-@label=HandlerMatchVerb_Step1
-*$8D9B LD A,($62DA)  ; Fetch how many verbs the game knows.
- $8D9E SUB C         ; {The matching verb selects its handler index.
- $8D9F DEC A         ;
- $8DA0 LD E,A        ; }
- $8DA1 LD IX,($62D8) ; Point #REGix at *#R$62D8.
- $8DA5 CALL $6754    ; Call #R$6754.
+; A verb was matched! Calculate its index in the table and jump to its
+; handler routine.
+@label=VerbMatched
+*$8D9B LD A,($62DA)  ; {Calculate the verb index: #REGa=*#R$62DA-#REGc (total tokens minus
+ $8D9E SUB C         ; remaining tokens after match).}
+ $8D9F DEC A         ; Adjust the index (decrease by one, as indices are
+                     ; zero-based).
+ $8DA0 LD E,A        ; Store the verb index in #REGe for the table lookup.
+ $8DA1 LD IX,($62D8) ; Set a pointer to *#R$62D8 in #REGix.
+ $8DA5 CALL $6754    ; Call #R$6754 to get the address of the verb handler routine for this
+                     ; index.
 ; This entry point is used by the routine at #R$8D2A.
-@label=HandlerMatchVerb_Step2
-*$8DA8 LD DE,$8D2A   ; {Run the verb, then return to the game loop.
- $8DAB PUSH DE       ;
- $8DAC JP (HL)       ; }
+; .
+; Run the matched verb handler, then return to the game loop.
+@label=VerbMatched_Run
+*$8DA8 LD DE,$8D2A   ; Load #R$8D2A into #REGde as the return address.
+ $8DAB PUSH DE       ; Stash the game-loop return address on the stack.
+ $8DAC JP (HL)       ; Jump to the verb handler routine to execute the command.
 ; View the equivalent code in;
 ; #LIST
+; { #SHOCK$ACFC }
 ; { #FOREST$C463 }
 ; { #HEROES$B753 }
 ; { #JEWELS$C556 }
@@ -6501,7 +6518,7 @@ c$8DB3 LD HL,$638C   ; #REGhl=#R$638C.
 ; { #WARLORD$E9B2 }
 ; LIST#
 
-; Handler: Ask To Play Again
+; Want Another Game Input
 ;
 ; Used by the routines at #R$8DCE and #R$8FB1.
 ; .
@@ -6510,10 +6527,10 @@ c$8DB3 LD HL,$638C   ; #REGhl=#R$638C.
 ; .
 ;
 ; Print "#MESSAGE$639A".
-@label=HandlerAskToPlayAgain
+@label=WantAnotherGameInput
 c$8DB9 LD HL,$639A   ; #REGhl=#R$639A.
  $8DBC CALL $64E9    ; Call #R$64E9.
-@label=HandlerAskToPlayAgain_Loop1
+@label=WantAnotherGameInput_Loop
 *$8DBF CALL $6495    ; Call #R$6495.
 ; The player is done with the game, so reset back to BASIC.
  $8DC2 CP $4E        ; {Jump to #SKOOLKID$0000(START) if the player pressed
@@ -6630,13 +6647,13 @@ c$8E18 LD C,A        ; Remember the room being entered.
  $8E1F LD B,$08      ; Up to eight scenic rooms may name the room just left.
  $8E21 JR $8E24      ; Continue at #R$8E24 to see if this scenic slot names the
                      ; old room.
-@label=MovePlayerToRoom_Loop1
+@label=MovePlayerToRoom_Loop
 *$8E23 INC HL        ; Move on to the next scenic room.
-@label=MovePlayerToRoom_Step1
+@label=MovePlayerToRoom_CheckScenic
 *$8E24 CP (HL)       ; {Leave this scenic slot when it does not name the old
  $8E25 JR NZ,$8E28   ; room.}
  $8E27 LD (HL),C     ; This scenic slot now names the room being entered.
-@label=MovePlayerToRoom_Step2
+@label=MovePlayerToRoom_NextScenic
 *$8E28 DJNZ $8E23    ; Repeat for the remaining scenic rooms.
  $8E2A LD A,C        ; {Make the new room current.
  $8E2B LD ($6223),A  ; }
@@ -6649,7 +6666,7 @@ c$8E18 LD C,A        ; Remember the room being entered.
  $8E3D SET 0,(HL)    ; {The android will attack in #N$02 turns.
  $8E3F LD A,$02      ;
  $8E41 LD ($621A),A  ; }
-@label=MovePlayerToRoom_Step3
+@label=MovePlayerToRoom_CheckSlug
 *$8E44 LD A,$24      ; {Jump to #R$8E55 when #MESSAGE$6DBF (#N$24) is not here or being
  $8E46 CALL $68E0    ; carried.
  $8E49 JR NZ,$8E55   ; }
@@ -6657,7 +6674,7 @@ c$8E18 LD C,A        ; Remember the room being entered.
  $8E4E SET 1,(HL)    ; {The slug will attack in #N$06 turns.
  $8E50 LD A,$06      ;
  $8E52 LD ($621B),A  ; }
-@label=MovePlayerToRoom_Step4
+@label=MovePlayerToRoom_CheckAndroid
 *$8E55 LD A,$27      ; {Jump to #R$8E66 when #MESSAGE$6E6D (#N$27) is not here or being
  $8E57 CALL $68E0    ; carried.
  $8E5A JR NZ,$8E66   ; }
@@ -6665,7 +6682,7 @@ c$8E18 LD C,A        ; Remember the room being entered.
  $8E5F SET 2,(HL)    ; {The second android will attack in #N$06 turns.
  $8E61 LD A,$06      ;
  $8E63 LD ($621C),A  ; }
-@label=MovePlayerToRoom_Step5
+@label=MovePlayerToRoom_TractorBeam
 *$8E66 LD A,($6223)  ; Fetch the current room.
  $8E69 CP $05        ; {The tractor beam is only dealt with on #ROOM$05.
  $8E6B JR NZ,$8E8C   ; }
@@ -6682,16 +6699,8 @@ c$8E18 LD C,A        ; Remember the room being entered.
  $8E83 CALL $65E6    ; }
  $8E86 LD HL,$83C2   ; {Print #MESSAGE$83C2.
  $8E89 CALL $64E9    ; }
-@label=MovePlayerToRoom_Step6
+@label=MovePlayerToRoom_Return
 *$8E8C RET           ; Return.
-; View the equivalent code in;
-; #LIST
-; { #SHOCK$ACBD }
-; { #FOREST$C42F }
-; { #HEROES$B714 }
-; { #JEWELS$C520 }
-; { #WARLORD$B01F }
-; LIST#
 
 ; Action: Help
 ;
@@ -19053,9 +19062,9 @@ g$F99E DEFB $00,$00,$00,$00,$00,$00,$00,$00
 ; User Input: Word Tokens
 ;
 ; Copied to #R$6291. Filled with #N$FF until a command is parsed.
-@label=Default_UserInput_Token_1
+@label=Default_UserInput_FirstToken
 g$F9D0 DEFB $FF
-@label=Default_UserInput_Token_2
+@label=Default_UserInput_SecondToken
  $F9D1 DEFB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ; Line Number

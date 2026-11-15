@@ -5,11 +5,14 @@
 ;
 ; To build the HTML disassembly, run these commands:
 ;   tap2sna.py @kentilla.t2s
-;   tap2sna.py @kentilla-bootstrap.t2s
 ;   tap2sna.py @kentilla-loader.t2s
 ;   sna2skool.py -H --ini ListRefs=2 -c sources/kentilla/kentilla.ctl Kentilla.z80 > sources/kentilla/kentilla.skool
 ;   sna2skool.py -H --ini ListRefs=2 -c sources/kentilla/loader.ctl Kentilla-loader.z80 > sources/kentilla/loader.skool
 ;   skool2html.py -H sources/kentilla/kentilla.skool -T dark -T wide -toOa
+;
+; kentilla-bootstrap.t2s is a research freeze at USR $5CD0 (REM stage-1,
+; before the Micromega loader lands at $E9B6). It is not a published
+; disassembly; loader.ctl already covers that REM in the loader snapshot.
 ;
 ; To regenerate the skool from the ctl (byte-identical):
 ;   sna2skool.py -H --ini ListRefs=2 -c sources/kentilla/kentilla.ctl Kentilla.z80 > sources/kentilla/kentilla.skool
@@ -17,7 +20,7 @@
 
 [Config]
 Expand=#INCLUDE(Expand)
-RefFiles=../analytics.ref;../bases.ref;changelog.ref;facts.ref;pokes.ref
+RefFiles=../analytics.ref;../bases.ref;basic.ref;changelog.ref;facts.ref;locations.ref;pokes.ref
 HtmlWriterClass=sources:linking.AdventureGamesHtmlWriter
 GameDir=adventure-games/kentilla
 
@@ -26,7 +29,7 @@ ListRefs=2
 
 [Game]
 Game=Kentilla
-Logo=#SCR$02,$00,$00,$20,$18,$4000,$5800(/images/logo)
+Logo=#SCR$02,$02,$01,$11,$08,$4000,$5800(/images/logo)
 Copyright=&copy; 1984 Micromega<br />&copy; 2026 ArcadeGeek LTD.
 Repository=https://github.com/pobtastic/adventure-games/tree/main/sources/kentilla/
 Canonical=https://skoolkit.arcadegeek.co.uk/adventure-games/kentilla/
@@ -36,12 +39,24 @@ LinkInternalOperands=1
 AddressAnchor={address#IF({base}==16)(:04x)}
 
 [Titles]
-loader-Index=Loading Code
+GameStatusBuffer=Game Status Buffer
+loader-Index=Loader
+UnusedMap=Unused Addresses
 
 [OtherCode:loader]
 
 [PageHeaders]
-GameIndex=The complete<>RAM disassembly (work in progress)
+GameIndex=The complete<>RAM disassembly
+
+[Index:DataTables:Data Tables And Buffers]
+GameStatusBuffer
+
+[Index:MemoryMaps:Memory Maps]
+MemoryMap
+RoutinesMap
+DataMap
+MessagesMap
+UnusedMap
 
 [Expand]
 #DEF(#COLOUR(id)

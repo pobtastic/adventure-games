@@ -216,6 +216,5 @@ B $FFBE,$01 Terminator.
 B $FFDD,$01 Terminator.
   $FFDE,$1E "#MESSAGE(#PC)".
 B $FFFC,$01 Terminator.
-N $FFFD The bank ends three characters into the next
-. description.
+N $FFFD The bank ends three characters into the next description.
   $FFFD,$03 "you".

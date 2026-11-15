@@ -93,7 +93,7 @@ D $61A8 #SIM(start=$5B46,stop=$5B4E)#SIM(start=$A54E,stop=$A554) #PUSHS
 D $61A8 Mask bytes. Each bit stands for one screen byte. When the bit is set,
 . #R$B10B writes a pixel byte from #R$63A8; when it is clear, #REGde still
 . advances but nothing is written, so those 8 pixels stay blank. #R$B10B
-. starts here and skips ahead #N($0200,$04,$04) bytes to the pixel data.
+. starts here and skips ahead #N$0200 bytes to the pixel data.
   $61A8,$0200 Mask data.
 
 b $63A8 Graphics: The Wooded Vale Pixels
@@ -105,7 +105,7 @@ D $63A8 Packed pixel bytes. #R$B10B writes one byte from here for each set bit
 b $6922 Graphics: The Wooded Vale Attributes
 @ $6922 label=Image_WoodedVale_Attributes
 D $6922 #HTML(Run-length attribute pairs. #R$B10B expands each pair into the
-. attribute buffer until #N($0200,$04,$04) cells are written. A count of #N$00 means
+. attribute buffer until #N$0200 cells are written. A count of #N$00 means
 . #N$0100 cells (the #R$B140 <code>DJNZ</code> loop).)
 B $6922,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #N(#PEEK(#PC+$01)) cells.
 L $6922,$02,$89
@@ -121,7 +121,7 @@ D $6A34 #PUSHS
 D $6A34 Mask bytes. Each bit stands for one screen byte. When the bit is set,
 . #R$B10B writes a pixel byte from #R$6C34; when it is clear, #REGde still
 . advances but nothing is written, so those 8 pixels stay blank. #R$B10B
-. starts here and skips ahead #N($0200,$04,$04) bytes to the pixel data.
+. starts here and skips ahead #N$0200 bytes to the pixel data.
   $6A34,$0200 Mask data.
 
 b $6C34 Graphics: The Evaporation Pits Pixels
@@ -133,7 +133,7 @@ D $6C34 Packed pixel bytes. #R$B10B writes one byte from here for each set bit
 b $6FA5 Graphics: The Evaporation Pits Attributes
 @ $6FA5 label=Image_EvaporationPits_Attributes
 D $6FA5 #HTML(Run-length attribute pairs. #R$B10B expands each pair into the
-. attribute buffer until #N($0200,$04,$04) cells are written. A count of #N$00 means
+. attribute buffer until #N$0200 cells are written. A count of #N$00 means
 . #N$0100 cells (the #R$B140 <code>DJNZ</code> loop).)
 B $6FA5,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #N(#PEEK(#PC+$01)) cells.
 L $6FA5,$02,$55
@@ -149,7 +149,7 @@ D $704F #PUSHS
 D $704F Mask bytes. Each bit stands for one screen byte. When the bit is set,
 . #R$B10B writes a pixel byte from #R$724F; when it is clear, #REGde still
 . advances but nothing is written, so those 8 pixels stay blank. #R$B10B
-. starts here and skips ahead #N($0200,$04,$04) bytes to the pixel data.
+. starts here and skips ahead #N$0200 bytes to the pixel data.
   $704F,$0200 Mask data.
 
 b $724F Graphics: The Shrine Of The Nemed Pixels
@@ -161,7 +161,7 @@ D $724F Packed pixel bytes. #R$B10B writes one byte from here for each set bit
 b $74EB Graphics: The Shrine Of The Nemed Attributes
 @ $74EB label=Image_NemedShrine_Attributes
 D $74EB #HTML(Run-length attribute pairs. #R$B10B expands each pair into the
-. attribute buffer until #N($0200,$04,$04) cells are written. A count of #N$00 means
+. attribute buffer until #N$0200 cells are written. A count of #N$00 means
 . #N$0100 cells (the #R$B140 <code>DJNZ</code> loop).)
 B $74EB,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #N(#PEEK(#PC+$01)) cells.
 L $74EB,$02,$79
@@ -177,7 +177,7 @@ D $75DD #PUSHS
 D $75DD Mask bytes. Each bit stands for one screen byte. When the bit is set,
 . #R$B10B writes a pixel byte from #R$77DD; when it is clear, #REGde still
 . advances but nothing is written, so those 8 pixels stay blank. #R$B10B
-. starts here and skips ahead #N($0200,$04,$04) bytes to the pixel data.
+. starts here and skips ahead #N$0200 bytes to the pixel data.
   $75DD,$0200 Mask data.
 
 b $77DD Graphics: The Burial Pit Pixels
@@ -189,7 +189,7 @@ D $77DD Packed pixel bytes. #R$B10B writes one byte from here for each set bit
 b $7BE7 Graphics: The Burial Pit Attributes
 @ $7BE7 label=Image_BurialPit_Attributes
 D $7BE7 #HTML(Run-length attribute pairs. #R$B10B expands each pair into the
-. attribute buffer until #N($0200,$04,$04) cells are written. A count of #N$00 means
+. attribute buffer until #N$0200 cells are written. A count of #N$00 means
 . #N$0100 cells (the #R$B140 <code>DJNZ</code> loop).)
 B $7BE7,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #N(#PEEK(#PC+$01)) cells.
 L $7BE7,$02,$53
@@ -205,7 +205,7 @@ D $7C8D #PUSHS
 D $7C8D Mask bytes. Each bit stands for one screen byte. When the bit is set,
 . #R$B10B writes a pixel byte from #R$7E8D; when it is clear, #REGde still
 . advances but nothing is written, so those 8 pixels stay blank. #R$B10B
-. starts here and skips ahead #N($0200,$04,$04) bytes to the pixel data.
+. starts here and skips ahead #N$0200 bytes to the pixel data.
   $7C8D,$0200 Mask data.
 
 b $7E8D Graphics: The Main Courtyard Pixels
@@ -217,7 +217,7 @@ D $7E8D Packed pixel bytes. #R$B10B writes one byte from here for each set bit
 b $83C0 Graphics: The Main Courtyard Attributes
 @ $83C0 label=Image_MainCourtyard_Attributes
 D $83C0 #HTML(Run-length attribute pairs. #R$B10B expands each pair into the
-. attribute buffer until #N($0200,$04,$04) cells are written. A count of #N$00 means
+. attribute buffer until #N$0200 cells are written. A count of #N$00 means
 . #N$0100 cells (the #R$B140 <code>DJNZ</code> loop).)
 B $83C0,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #N(#PEEK(#PC+$01)) cells.
 L $83C0,$02,$69
@@ -233,7 +233,7 @@ D $8492 #PUSHS
 D $8492 Mask bytes. Each bit stands for one screen byte. When the bit is set,
 . #R$B10B writes a pixel byte from #R$8692; when it is clear, #REGde still
 . advances but nothing is written, so those 8 pixels stay blank. #R$B10B
-. starts here and skips ahead #N($0200,$04,$04) bytes to the pixel data.
+. starts here and skips ahead #N$0200 bytes to the pixel data.
   $8492,$0200 Mask data.
 
 b $8692 Graphics: The Deserted Broch Pixels
@@ -245,7 +245,7 @@ D $8692 Packed pixel bytes. #R$B10B writes one byte from here for each set bit
 b $8A1B Graphics: The Deserted Broch Attributes
 @ $8A1B label=Image_DesertedBroch_Attributes
 D $8A1B #HTML(Run-length attribute pairs. #R$B10B expands each pair into the
-. attribute buffer until #N($0200,$04,$04) cells are written. A count of #N$00 means
+. attribute buffer until #N$0200 cells are written. A count of #N$00 means
 . #N$0100 cells (the #R$B140 <code>DJNZ</code> loop).)
 B $8A1B,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #N(#PEEK(#PC+$01)) cells.
 L $8A1B,$02,$6C
@@ -261,7 +261,7 @@ D $8AF3 #PUSHS
 D $8AF3 Mask bytes. Each bit stands for one screen byte. When the bit is set,
 . #R$B10B writes a pixel byte from #R$8CF3; when it is clear, #REGde still
 . advances but nothing is written, so those 8 pixels stay blank. #R$B10B
-. starts here and skips ahead #N($0200,$04,$04) bytes to the pixel data.
+. starts here and skips ahead #N$0200 bytes to the pixel data.
   $8AF3,$0200 Mask data.
 
 b $8CF3 Graphics: The Crystal Cavern Pixels
@@ -273,7 +273,7 @@ D $8CF3 Packed pixel bytes. #R$B10B writes one byte from here for each set bit
 b $909B Graphics: The Crystal Cavern Attributes
 @ $909B label=Image_CrystalCavern_Attributes
 D $909B #HTML(Run-length attribute pairs. #R$B10B expands each pair into the
-. attribute buffer until #N($0200,$04,$04) cells are written. A count of #N$00 means
+. attribute buffer until #N$0200 cells are written. A count of #N$00 means
 . #N$0100 cells (the #R$B140 <code>DJNZ</code> loop).)
 B $909B,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #N(#PEEK(#PC+$01)) cells.
 L $909B,$02,$62
@@ -289,7 +289,7 @@ D $915F #PUSHS
 D $915F Mask bytes. Each bit stands for one screen byte. When the bit is set,
 . #R$B10B writes a pixel byte from #R$935F; when it is clear, #REGde still
 . advances but nothing is written, so those 8 pixels stay blank. #R$B10B
-. starts here and skips ahead #N($0200,$04,$04) bytes to the pixel data.
+. starts here and skips ahead #N$0200 bytes to the pixel data.
   $915F,$0200 Mask data.
 
 b $935F Graphics: The Circle of Stones Pixels
@@ -301,7 +301,7 @@ D $935F Packed pixel bytes. #R$B10B writes one byte from here for each set bit
 b $9727 Graphics: The Circle of Stones Attributes
 @ $9727 label=Image_StoneCircle_Attributes
 D $9727 #HTML(Run-length attribute pairs. #R$B10B expands each pair into the
-. attribute buffer until #N($0200,$04,$04) cells are written. A count of #N$00 means
+. attribute buffer until #N$0200 cells are written. A count of #N$00 means
 . #N$0100 cells (the #R$B140 <code>DJNZ</code> loop).)
 B $9727,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #N(#PEEK(#PC+$01)) cells.
 L $9727,$02,$8C
@@ -317,7 +317,7 @@ D $983F #PUSHS
 D $983F Mask bytes. Each bit stands for one screen byte. When the bit is set,
 . #R$B10B writes a pixel byte from #R$9A3F; when it is clear, #REGde still
 . advances but nothing is written, so those 8 pixels stay blank. #R$B10B
-. starts here and skips ahead #N($0200,$04,$04) bytes to the pixel data.
+. starts here and skips ahead #N$0200 bytes to the pixel data.
   $983F,$0200 Mask data.
 
 b $9A3F Graphics: The Fomorians' Cavern Pixels
@@ -329,7 +329,7 @@ D $9A3F Packed pixel bytes. #R$B10B writes one byte from here for each set bit
 b $9FC3 Graphics: The Fomorians' Cavern Attributes
 @ $9FC3 label=Image_FomoriansCavern_Attributes
 D $9FC3 #HTML(Run-length attribute pairs. #R$B10B expands each pair into the
-. attribute buffer until #N($0200,$04,$04) cells are written. A count of #N$00 means
+. attribute buffer until #N$0200 cells are written. A count of #N$00 means
 . #N$0100 cells (the #R$B140 <code>DJNZ</code> loop).)
 B $9FC3,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #N(#PEEK(#PC+$01)) cells.
 L $9FC3,$02,$94
@@ -345,7 +345,7 @@ D $A0EB #PUSHS
 D $A0EB Mask bytes. Each bit stands for one screen byte. When the bit is set,
 . #R$B10B writes a pixel byte from #R$A2EB; when it is clear, #REGde still
 . advances but nothing is written, so those 8 pixels stay blank. #R$B10B
-. starts here and skips ahead #N($0200,$04,$04) bytes to the pixel data.
+. starts here and skips ahead #N$0200 bytes to the pixel data.
   $A0EB,$0200 Mask data.
 
 b $A2EB Graphics: Lake Pixels
@@ -357,7 +357,7 @@ D $A2EB Packed pixel bytes. #R$B10B writes one byte from here for each set bit
 b $A4F7 Graphics: Lake Attributes
 @ $A4F7 label=Image_Lake_Attributes
 D $A4F7 #HTML(Run-length attribute pairs. #R$B10B expands each pair into the
-. attribute buffer until #N($0200,$04,$04) cells are written. A count of #N$00 means
+. attribute buffer until #N$0200 cells are written. A count of #N$00 means
 . #N$0100 cells (the #R$B140 <code>DJNZ</code> loop).)
 B $A4F7,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #N(#PEEK(#PC+$01)) cells.
 L $A4F7,$02,$1D
@@ -434,7 +434,7 @@ E $A560 View the equivalent code in;
 . { #ANDROMEDA$64B7 }
 . LIST#
   $A560,$03 Call #R$A577.
-  $A563,$03 #REGbc=#N($0321,$04,$04).
+  $A563,$03 #REGbc=#N$0321.
   $A566,$03 Call #SKOOLKID$0DD9(CL_SET).
   $A569,$01 Return.
 
@@ -1029,7 +1029,7 @@ L $A7F2,$08,$06
 B $A822,$02 Command byte.
 
 g $A824 User Input: Word Tokens
-@ $A824 label=UserInput_VerbToken
+@ $A824 label=UserInput_FirstToken
 @ $A825 label=UserInput_SecondToken
 B $A824,$01 Word token #N(#PC-$A824) (#N$FF when empty).
 L $A824,$01,$0A
@@ -1380,67 +1380,71 @@ N $AB13 Keep shifting the event flags one-by-one to find which bits are set.
   $AB13,$02 Shift #REGc right so bit 0 (the next event flag) goes into the
 . carry flag.
   $AB15,$02 Jump to #R$AB3A if this event bit is not set.
-N $AB17 Count down this event. It fires when the counter reaches zero.
-  $AB17,$0B Calculate the turn-based event index and store it in #REGhl.
-  $AB22,$01 Decrease the turn-based event counter at *#REGhl by one.
-  $AB23,$02 Jump to #R$AB3A if the counter is still running.
-N $AB25 The counter has expired, so run this event's handler.
-  $AB25,$04 Load *#R$A7C8 into #REGix.
-  $AB29,$02 Double the index as this table contains addresses.
-  $AB2B,$02 Add this offset to #REGix to point to the current handler.
-  $AB2D,$06 Get the handler address and store it in #REGhl.
-  $AB33,$01 Stash the bit index and event flag byte on the stack.
-  $AB34,$04 Push #R$AB39 onto the stack so the next return resumes event
+N $AB17 Count down this event's timer.
+  $AB17,$03 Initialise #REGde to #N$0000.
+  $AB1A,$03 #REGhl=#R$A77F.
+  $AB1D,$04 Calculate the event index (#N$08-#REGb) and store it in #REGe.
+  $AB21,$01 Point #REGhl at this event's countdown timer.
+  $AB22,$01 Decrease this event's countdown timer by one.
+  $AB23,$02 Jump to #R$AB3A if this event's countdown timer is still running.
+N $AB25 The timer has expired, so run this event's handler.
+  $AB25,$04 #REGix=*#R$A7C8.
+  $AB29,$02 Double the event index, as each entry in the table is two bytes.
+  $AB2B,$02 Point #REGix at this event's entry in the table.
+  $AB2D,$06 Read that handler's address into #REGhl.
+  $AB33,$01 Stash #REGbc on the stack.
+  $AB34,$04 Stash #R$AB39 on the stack so the next return resumes event
 . processing.
   $AB38,$01 Jump to the routine pointed to by *#REGhl to action the current
 . event.
 N $AB39 Once the event handler has run, this is where the routine will resume.
 @ $AB39 label=GameEventChecker_Return
-  $AB39,$01 Restore the event bit index counter and event flag byte from the
-. stack.
+  $AB39,$01 Restore #REGbc from the stack.
 @ $AB3A label=GameEventChecker_Next
 N $AB3A Test the next turn-based event.
   $AB3A,$02 Decrease the event bit counter by one and loop back to #R$AB13
 . until all eight events have been considered.
-N $AB3C Process scenic events.
+N $AB3C Now handle the scenic events.
 @ $AB3C label=GameScenicEventsProcessor
   $AB3C,$01 No operation.
-  $AB3D,$03 Load #REGhl with *#R$A7E2.
-  $AB40,$03 Load *#R$A7EE into #REGa.
-  $AB43,$03 Jump to #R$AB87 if there are no more scenic events to run (the
-. count is zero).
-  $AB46,$01 Copy *#R$A7EE into #REGb as an event counter for the loop.
-  $AB47,$02 Jump to #R$AB4A.
+  $AB3D,$03 #REGhl=*#R$A7E2.
+  $AB40,$04 Fetch the number of active scenic events from #R$A7EE.
+  $AB44,$02 Jump to #R$AB87 if there are no active scenic events.
+  $AB46,$01 Set a counter in #REGb for the number of scenic events.
+  $AB47,$02 Jump to #R$AB4A to process the first scenic event without
+. advancing the table pointer.
 N $AB49 This is the main scenic event loop.
 @ $AB49 label=GameScenicEventChecker_Loop
-  $AB49,$01 Increment the scenic event pointer location by one.
+  $AB49,$01 Move on to the next scenic item.
 @ $AB4A label=GameScenicEventChecker
-  $AB4A,$01 Load the scenic event item ID into #REGa.
-  $AB4B,$01 Stash the scenic event pointer on the stack.
+  $AB4A,$01 Fetch this scenic event's item ID.
+  $AB4B,$01 Stash the scenic event table pointer on the stack.
   $AB4C,$03 Call #R$AED1 to find where this scenic event's item is.
-  $AB4F,$01 Restore the scenic event pointer from the stack.
+  $AB4F,$01 Restore the scenic event table pointer from the stack.
   $AB50,$01 Set the flags from the item location in #REGa.
   $AB51,$02 Jump to #R$AB85 if the item is inactive.
-  $AB53,$01 Store the item location in #REGc.
-  $AB54,$03 Load the player's current room (*#R$A7C3) into #REGa.
+  $AB53,$01 Hold this event's room in #REGc.
+  $AB54,$03 #REGa=*#R$A7C3.
   $AB57,$01 Compare the current room with the item location.
   $AB58,$02 Jump to #R$AB85 if the item is in the current room.
-  $AB5A,$02 Stash the scenic event location pointer and event counter on the
-. stack.
+N $AB5A Pick a room for this scenic event.
+  $AB5A,$02 Stash #REGbc and #REGhl on the stack.
 N $AB5C Calculate which scenic event's room group this is.
   $AB5C,$05 Calculate the index of the currently processed event.
-  $AB61,$04 Load *#R$A7E4 into #REGix.
+N $AB61 Point at this event's room list.
+  $AB61,$04 #REGix=*#R$A7E4.
 N $AB65 The routine at #R$AB88 is usually used to fetch an address from the
 . given table, but here it's used to move #REGix to point to the index of the
 . currently processed event (and this routine will fetch the address itself).
   $AB65,$03 Call #R$AB88.
-  $AB68,$04 Load a random number from #R$A5C6 into #REGb.
-  $AB6C,$02 Set #REGa to #N$FF (the room group terminator) for the comparison.
+N $AB68 The routine at #R$A5C6 picks how far to walk into the room group.
+  $AB68,$04 Call #R$A5C6 to pick a random step count and store it in #REGb.
+  $AB6C,$02 #REGa=the room group terminator (#N$FF).
 N $AB6E The table at #R$A7E4 is indexed by event (there are #N$11 entries), and
 . each address points to a group of room IDs where this event could occur.
 . Each set of room IDs for the event is terminated using #N$FF.
 @ $AB6E label=GameScenicEvent_FetchRoomGroup
-  $AB6E,$06 Get the room group address pointer and store it in #REGhl.
+  $AB6E,$06 Point #REGhl at the start of this room group.
   $AB74,$02 Jump to #R$AB77.
 N $AB76 Use the random number to select a room from the group - this loops
 . through the rooms using #REGb as a counter.
@@ -1450,13 +1454,12 @@ N $AB76 Use the random number to select a room from the group - this loops
   $AB77,$03 Jump back to #R$AB6E when the terminator matches.
   $AB7A,$02 Decrease the random counter by one and loop back to #R$AB76 until
 . the counter is zero.
-  $AB7C,$01 Load the chosen room ID into #REGc.
-  $AB7D,$01 Restore the scenic event pointer from the stack.
-  $AB7E,$01 Load the scenic event item ID into #REGb.
-  $AB7F,$01 Stash the scenic event pointer on the stack.
+  $AB7C,$01 Fetch the destination room into #REGc.
+  $AB7D,$01 Restore the scenic event table pointer from the stack.
+  $AB7E,$01 Fetch this scenic event's item ID into #REGb.
+  $AB7F,$01 Stash the scenic event table pointer on the stack.
   $AB80,$03 Call #R$AF08.
-  $AB83,$02 Restore the event counter and scenic event location pointer from
-. the stack.
+  $AB83,$02 Restore #REGhl and #REGbc from the stack.
 @ $AB85 label=GameScenicEventChecker_Next
   $AB85,$02 Decrease the scenic event counter by one and loop back to #R$AB49
 . until all scenic events have been processed.
@@ -1806,36 +1809,53 @@ N $ACF7 Print the user input keypress to the screen.
   $ACF7,$03 Call #R$A5A4.
   $ACFA,$01 Return.
 
-c $ACFB Handler: Match Item
+c $ACFB Handler: Match Vocabulary Word
 @ $ACFB label=Handler_MatchItem
 E $ACFB View the equivalent code in;
 . #LIST
 . { #SHOCK$A479 }
 . LIST#
-R $ACFB O:F The carry flag is set to indicate that an item was found
+D $ACFB Match the four letters at #R$A82F against the vocabulary. On success
+. return the word's token number in #REGa with the carry flag set; on failure
+. return with the carry flag clear. A comma separates synonyms of the same
+. token; #N$FF ends the table.
+R $ACFB O:A The token number of the matched word
+R $ACFB O:F Carry set when a match was found
   $ACFB,$05 Stash #REGhl, #REGde, #REGbc and #REGix on the stack.
+N $AD00 Search the vocabulary from the address held in *#R$A7C6.
   $AD00,$03 #REGhl=*#R$A7C6.
-  $AD03,$02 #REGc=#N$00.
+  $AD03,$02 Set the token number in #REGc to #N$00.
   $AD05,$02 Jump to #R$AD14.
-  $AD07,$01 #REGe=#REGb.
-  $AD08,$02 #REGd=#N$00.
-  $AD0A,$01 #REGhl+=#REGde.
-  $AD0B,$01 #REGa=*#REGhl.
-  $AD0C,$02 Compare #REGa with #N$2C.
-  $AD0E,$02 Jump to #R$AD13 if #REGa is equal to #N$2C.
-  $AD10,$01 Increment #REGc by one.
+@ $AD07 label=MatchItem_NextWord
+N $AD07 This vocabulary word did not match. Step past the remaining letters.
+. A comma keeps the same token for a synonym; anything else advances the token
+. number for the next entry.
+  $AD07,$03 Turn the remaining letter count into a 16-bit offset in #REGde.
+  $AD0A,$01 Move #REGhl past the unmatched letters.
+  $AD0B,$01 Fetch the next vocabulary byte into #REGa.
+  $AD0C,$02 Is this byte a comma (#N$2C)?
+  $AD0E,$02 Jump to #R$AD13 if it is, so the token number stays the same.
+  $AD10,$01 Otherwise advance the token number for the next vocabulary entry.
   $AD11,$02 Jump to #R$AD14.
-  $AD13,$01 Increment #REGhl by one.
-  $AD14,$05 Jump to #R$AD2C if *#REGhl is equal to #N$FF.
+@ $AD13 label=MatchItem_SkipComma
+  $AD13,$01 Move past the comma.
+@ $AD14 label=MatchItem_Word
+N $AD14 Test this vocabulary word against the four-letter buffer.
+  $AD14,$05 Jump to #R$AD2C if the word is the #N$FF terminator.
+N $AD19 Compare the four-letter buffer at #R$A82F with this word.
   $AD19,$04 #REGix=#R$A82F.
-  $AD1D,$02 #REGb=#N$04.
-  $AD1F,$06 Jump to #R$AD07 if *#REGix+#N$00 is not equal to *#REGhl.
-  $AD25,$01 Increment #REGhl by one.
-  $AD26,$02 Increment #REGix by one.
-  $AD28,$02 Decrease counter by one and loop back to #R$AD1F until counter is zero.
-  $AD2A,$01 #REGa=#REGc.
-  $AD2B,$01 Set the carry flag to indicate that an item was successfully found.
+  $AD1D,$02 Set a counter in #REGb for the #N$04 letters.
+@ $AD1F label=MatchItem_Letter
+  $AD1F,$06 Jump to #R$AD07 if this letter does not match.
+  $AD25,$01 Move to the next vocabulary letter.
+  $AD26,$02 Move to the next letter of the four-letter buffer.
+  $AD28,$02 Decrease the letter counter by one and loop back to #R$AD1F until
+. the counter is zero.
+N $AD2A The word matched, so return its token with the carry set.
+  $AD2A,$01 Copy the matched token number into #REGa.
+  $AD2B,$01 Set the carry flag to show the word was found.
 @ $AD2C label=MatchItem_Return
+N $AD2C Hand back the registers saved at the start of the search.
   $AD2C,$05 Restore #REGix, #REGbc, #REGde and #REGhl from the stack.
   $AD31,$01 Return.
 
@@ -1886,8 +1906,8 @@ N $AD5B Check which key the user pressed:
   $AD5B,$05 Jump to #R$AD6D if "ENTER" was pressed.
   $AD60,$04 If the keypress was any other control key (the value being under
 . #N$20 ASCII "SPACE"), it's not valid input so jump back to #R$AD41.
-  $AD64,$04 If the keypress was higher than #N($80), it's also not valid input so
-. jump back to #R$AD41.
+  $AD64,$04 If the keypress was higher than #N($80), it's also not valid input
+. so jump back to #R$AD41.
 N $AD68 Is the command buffer full?
   $AD68,$05 Jump to #R$AD41 if the letter counter is #N$31 (so the buffer is
 . full).
@@ -1918,10 +1938,9 @@ N $AD8C Print "#STR$A84F,$08($b==$FF)".
   $AD8C,$03 #REGhl=#R$A84F.
   $AD8F,$03 Call #R$A592.
   $AD92,$03 Jump to #R$AD32.
-N $AD95 Process found word into user input token.
+N $AD95 Copy up to four letters of the current word into #R$A82F.
 @ $AD95 label=ProcessFoundWord
-  $AD95,$03 Stash the command buffer pointer, #REGde and user input tokens
-. counter on the stack.
+  $AD95,$03 Stash #REGhl, #REGde and #REGbc on the stack.
   $AD98,$03 #REGhl=*#R$ACC2.
   $AD9B,$03 #REGde=#R$A82F.
 N $AD9E Ensure that the length is not more than #N$04.
@@ -1934,8 +1953,8 @@ N $ADA8 Copy the word (up to #N$04 characters in length) into the four letter
 @ $ADA8 label=CopyWordToBuffer
   $ADA8,$02 Copy the "up-to-#N$04" letters from the command buffer into the
 . four-letter buffer.
-  $ADAA,$03 Restore the user input token counter, #REGde and command buffer
-. pointer from the stack.
+N $ADAA Restore the registers saved at the start of #R$AD95.
+  $ADAA,$03 Restore #REGbc, #REGde and #REGhl from the stack.
   $ADAD,$01 Stash the command buffer pointer back on the stack.
 N $ADAE Stash the vocabulary pointer for a separate check..
   $ADAE,$04 Stash *#R$A7C6 on the stack.
@@ -1975,21 +1994,18 @@ N $ADEE Store the found token and check if we can continue parsing.
   $ADF1,$02 Move to the next token slot.
   $ADF3,$01 Decrease the token counter by one.
   $ADF4,$02 Jump to #R$AE2D if all token slots are filled.
-N $ADF6 Token matching only uses four letters of every word so a buffer is used
-. for processing.
-N $ADF6 Start by clearing the buffer.
+N $ADF6 Clear the four-letter buffer to spaces so a short word cannot match
+. the previous one's tail.
 @ $ADF6 label=EmptyFourLetterBuffer
-  $ADF6,$02 Stash the command buffer pointer and user input tokens counter on
-. the stack.
-  $ADF8,$03 Load #R$A82F into #REGhl.
-  $ADFB,$02 Set a counter in #REGb for the #N$04 letters in the buffer.
+  $ADF6,$02 Stash #REGhl and #REGbc on the stack.
+  $ADF8,$03 #REGhl=#R$A82F.
+  $ADFB,$02 Set a counter in #REGb for the #N$04 letters.
 @ $ADFD label=EmptyFourLetterBuffer_Loop
-  $ADFD,$02 Write ASCII "SPACE" (#N$20) to *#REGhl.
-  $ADFF,$01 Increment #REGhl by one.
-  $AE00,$02 Decrease the letter buffer counter by one and loop back to #R$ADFD
-. until all four letters have been cleared.
-  $AE02,$02 Restore the user input tokens counter and command buffer pointer
-. from the stack.
+  $ADFD,$02 Write a space character (#N$20) to the buffer.
+  $ADFF,$01 Move to the next letter.
+  $AE00,$02 Decrease the counter by one and loop back to #R$ADFD until the
+. counter is zero.
+  $AE02,$02 Restore #REGbc and #REGhl from the stack.
   $AE04,$01 Stash #REGde on the stack.
   $AE05,$02 Jump to #R$AE08.
 N $AE07 Skip delimiter characters to find the next word.
@@ -2430,6 +2446,8 @@ R $AF56 O:F Z is unset if the object is valid, set when invalid
   $AF6B,$01 Clear the Z flag.
   $AF6C,$01 Return.
 @ $AF6D label=InvalidObject
+N $AF6D Housekeeping: restore the stashed registers and report that this
+. object is invalid.
   $AF6D,$01 Restore #REGaf from the stack.
   $AF6E,$01 Set the Z flag.
   $AF6F,$01 Return.
@@ -2678,78 +2696,96 @@ E $B01F View the equivalent code in;
 . { #FOREST$C42F }
 . { #HEROES$B714 }
 . { #JEWELS$C520 }
-. { #ANDROMEDA$8E18 }
 . LIST#
 R $B01F A Destination room ID
-  $B01F,$01 Load the destination room ID into #REGc.
+D $B01F Moves the player to a new room. Before updating the current room, it
+. brings every scenic-event item that is here or carried along to the
+. destination. It then moves each item whose bit is set in #R$A787 into the
+. new room (see #R$A788).
+N $B01F Store the destination room ID and prepare to update scenic events.
+  $B01F,$01 Copy the destination room ID into #REGc.
   $B020,$06 Jump to #R$B03D if *#R$A7EE is zero.
-  $B026,$01 #REGb=#R$A7EE.
-  $B027,$03 #REGhl=*#R$A7E2.
+  $B026,$01 Load *#R$A7EE into #REGb for the loop counter.
+  $B027,$03 Set a pointer to *#R$A7E2 in #REGhl.
   $B02A,$02 Jump to #R$B02D.
-N $B02C
-@ $B02C label=FindScenicEvents_Loop
-  $B02C,$01 Increment the scenic event item ID pointer by one.
-@ $B02D label=FindScenicEvents
-  $B02D,$01 Load the next scenic event item ID into #REGa.
-  $B02E,$03 Call #R$AE6B.
-  $B031,$02 Jump to #R$B03B if the scenic event item is neither here nor carried.
-N $B033 The scenic event item is here or carried.
-  $B033,$02 Stash the scenic event item ID pointer and scenic events counter
-. on the stack.
+N $B02C Loop through all scenic event items and move any that are here or
+. carried to the destination room (so they follow the player).
+@ $B02C label=ScenicItem_Advance
+  $B02C,$01 Move to the next scenic event item ID.
+@ $B02D label=ScenicItem_Next
+  $B02D,$01 Load this scenic event item ID into #REGa.
+  $B02E,$03 Call #R$AE6B to test whether it is here or carried.
+  $B031,$02 Jump to #R$B03B if it is neither here nor carried.
+N $B033 This scenic event item is here or carried, so move it with the player.
+  $B033,$02 Stash the table pointer and counter on the stack.
   $B035,$01 Load the scenic event item ID into #REGb.
-  $B036,$03 Call #R$AF08.
-  $B039,$02 Restore the scenic events counter and scenic event item ID pointer
-. from the stack.
-@ $B03B label=FindScenicEvents_Next
-  $B03B,$02 Decrease counter by one and loop back to #R$B02C until counter is zero.
-N $B03D Sets the destination room ID as the new current room ID.
-@ $B03D label=SetNewCurrentRoomID
-  $B03D,$04 Write #REGc to *#R$A7C3.
-  $B041,$05 Return if *#R$A787 is zero.
-  $B046,$02 #REGb=#N$08.
-  $B048,$03 #REGhl=#R$A788.
-  $B04B,$01 #REGc=#REGa.
+  $B036,$03 Call #R$AF08 to update the item's location to the destination room.
+  $B039,$02 Restore the table pointer and counter from the stack.
+@ $B03B label=ScenicItem_Count
+  $B03B,$02 Decrease the scenic event counter by one and loop back to #R$B02C
+. until all scenic events have been checked.
+N $B03D Update the current room ID to the destination room.
+@ $B03D label=MovePlayerToRoom_SetRoom
+  $B03D,$04 Write the destination room ID to #R$A7C3.
+  $B041,$05 Return if no following event flag is set in #R$A787.
+N $B046 For each set bit, move the item at that position in #R$A788 into the
+. current room.
+  $B046,$02 Set a counter in #REGb for #N$08 bits.
+  $B048,$03 Set a pointer to #R$A788 in #REGhl.
+  $B04B,$01 Copy the event flags into #REGc for bit testing.
   $B04C,$02 Jump to #R$B04F.
-  $B04E,$01 Increment #REGhl by one.
-  $B04F,$02 Shift #REGc right.
-  $B051,$02 Jump to #R$B05B if the bit shifted out of #REGc is reset.
-  $B053,$01 #REGa=*#REGhl.
-  $B054,$02 Stash #REGhl and #REGbc on the stack.
-  $B056,$03 Call #R$AEE7.
-  $B059,$02 Restore #REGbc and #REGhl from the stack.
-  $B05B,$02 Decrease counter by one and loop back to #R$B04E until counter is zero.
+@ $B04E label=EventFlag_Advance
+  $B04E,$01 Move to the next item ID.
+@ $B04F label=EventFlag_Next
+  $B04F,$02 Shift the event flags right to check the next bit.
+  $B051,$02 Jump to #R$B05B if this bit is not set.
+N $B053 This item is following, so move it to the current room.
+  $B053,$01 Get the item ID from the table.
+  $B054,$02 Stash the table pointer and counter on the stack.
+  $B056,$03 Call #R$AEE7 to update the item's location to the current room.
+  $B059,$02 Restore the table pointer and counter from the stack.
+@ $B05B label=EventFlag_Count
+  $B05B,$02 Decrease the bit counter by one and loop back to #R$B04E until
+. all #N$08 bits have been tested.
+@ $B05D label=MovePlayerToRoom_Return
   $B05D,$01 Return.
 
-c $B05E Handler: Match Verb
-@ $B05E label=Handler_MatchVerb
+c $B05E Handler: Dispatch Verb
+@ $B05E label=Handler_DispatchVerb
 E $B05E View the equivalent code in;
 . #LIST
+. { #SHOCK$ACFC }
 . { #FOREST$C463 }
 . { #HEROES$B753 }
 . { #JEWELS$C556 }
 . { #ANDROMEDA$8D85 }
 . LIST#
-  $B05E,$03 Load #REGhl with *#R$A7E0.
-  $B061,$04 Set the length of the table from *#R$A7EA into #REGbc.
-  $B065,$05 Search *#R$A7E0 for *#R$A824.
-  $B06A,$02 Jump to #R$B073 if *#R$A824 was found in the table.
-N $B06C The verb wasn't found.
-N $B06C Print "#STR$A84F,$08($b==$FF)".
+D $B05E Matches the first word token from the user's command against the verb
+. word tokens table. If a match is found, it calculates the verb index and
+. jumps to the corresponding verb handler routine. If no match is found, it
+. displays "I Don't Understand" and returns.
+N $B05E Set up to search the verb word tokens table for the first word token.
+  $B05E,$03 Set a pointer to *#R$A7E0 in #REGhl.
+  $B061,$04 Load *#R$A7EA tokens into #REGbc for the search.
+  $B065,$03 Get the *#R$A824 from the user input.
+  $B068,$02 Search the verb word tokens table for a matching token.
+  $B06A,$02 Jump to #R$B073 if a match was found (Z flag is set).
+N $B06C The token doesn't match any verb. Display an error message:
+. "#STR$A84F,$08($b==$FF)".
   $B06C,$03 #REGhl=#R$A84F.
   $B06F,$03 Call #R$A592.
   $B072,$01 Return.
-N $B073 The verb token was found in the table, so jump to the appropriate
-. routine.
-@ $B073 label=Handler_Verb
-M $B073,$06 Calculate the index using *#R$A7EA-#REGc-#N($01), and store the
-. result in #REGe.
-  $B073,$03 #REGa=*#R$A7EA.
-  $B076,$01 #REGa-=#REGc.
-  $B077,$01 Decrease #REGa by one.
-  $B078,$01 #REGe=#REGa.
-  $B079,$04 #REGix=*#R$A7DA.
-  $B07D,$03 Call #R$AB88.
-  $B080,$01 Jump to the verb handler held by #REGhl.
+@ $B073 label=VerbMatched
+N $B073 A verb was matched! Calculate its index in the table and jump to its
+. handler routine.
+  $B073,$04 Calculate the verb index: #REGa=*#R$A7EA-#REGc (total tokens minus
+. remaining tokens after match).
+  $B077,$01 Adjust the index (decrease by one, as indices are zero-based).
+  $B078,$01 Store the verb index in #REGe for the table lookup.
+  $B079,$04 Set a pointer to *#R$A7DA in #REGix.
+  $B07D,$03 Call #R$AB88 to get the address of the verb handler routine for this
+. index.
+  $B080,$01 Jump to the verb handler routine to execute the command.
 
 c $B081 Pause, Print String And Scroll
 @ $B081 label=PausePrintStringAndScroll
@@ -2774,20 +2810,24 @@ E $B08A View the equivalent code in;
 . { #JEWELS$C582 }
 . { #ANDROMEDA$65D6 }
 . LIST#
-R $B08A A Maximum value of generated number
+D $B08A Returns a number from #N$00 up to, but not including, #REGa.
+D $B08A The frame counter chooses how far to walk around that range.
+R $B08A A Exclusive upper bound
+R $B08A O:A The generated number
+N $B08A Mix the frame counter into a number below the limit in #REGa.
   $B08A,$01 Stash #REGbc on the stack.
-  $B08B,$01 Store the maximum number in #REGc.
-  $B08C,$03 Call #R$A5C6.
-  $B08F,$01 Use the frames number as a loop counter in #REGb.
-  $B090,$01 Restore the maximum number value back to #REGa.
+  $B08B,$01 Store the exclusive upper bound in #REGc.
+  $B08C,$03 Call #R$A5C6 to read *#SKOOLKID$5C78(FRAMES).
+  $B08F,$01 Use the frame counter as the loop count in #REGb.
+  $B090,$01 Restore the exclusive upper bound into #REGa.
 @ $B091 label=GenerateRandomNumber_Loop
-  $B091,$01 Decrease the maximum number value by one.
-  $B092,$02 Jump to #R$B095 if the maximum number value is not equal to zero.
-  $B094,$01 Restore the maximum number value back to #REGa.
+  $B091,$01 Decrease the walking value by one.
+  $B092,$02 Jump to #R$B095 if it has not wrapped past zero.
+  $B094,$01 Wrap back to the exclusive upper bound.
 @ $B095 label=GenerateRandomNumber_Next
-  $B095,$02 Decrease the loop counter by one and loop back to #R$B091 until the
-. loop counter is zero.
-  $B097,$01 Decrease the maximum number value by one.
+  $B095,$02 Decrease the frame-count loop by one and loop back to #R$B091
+. until the count is zero.
+  $B097,$01 Decrease the result by one so the range starts at #N$00.
   $B098,$01 Restore #REGbc from the stack.
   $B099,$01 Return.
 
@@ -2798,17 +2838,23 @@ E $B09A View the equivalent code in;
 . { #SHOCK$AD34 }
 . { #HEROES$B78F }
 . LIST#
+D $B09A Adds the points in #REGa to the two-byte BCD score at #R$A7C4. The low
+. byte is adjusted with DAA; when that addition carries, the high byte
+. increases by one.
 R $B09A A Points to add
+N $B09A Preserve #REGhl and load the current score from #R$A7C4.
   $B09A,$01 Stash #REGhl on the stack.
-  $B09B,$03 Load *#R$A7C4 into #REGhl.
-  $B09E,$01 Add the points to the low byte.
-  $B09F,$01 Decimal adjust for BCD (Binary Coded Decimal).
-  $B0A0,$01 Store the adjusted result.
-  $B0A1,$02 Jump to #R$B0A4 if there was no carry from the addition.
-N $B0A3 If there was carry, increment the high byte.
-  $B0A3,$01 Increment the high byte by one.
-@ $B0A4 label=SaveScore
-  $B0A4,$03 Write the updated score back to *#R$A7C4.
+  $B09B,$03 Fetch the BCD score from *#R$A7C4 into #REGhl.
+N $B09E Add the points into the low score byte and adjust for BCD.
+  $B09E,$01 Add the points in #REGa to the low score byte in #REGl.
+  $B09F,$01 Decimal-adjust #REGa for a BCD score digit.
+  $B0A0,$01 Store the adjusted low byte back in #REGl.
+  $B0A1,$02 Jump to #R$B0A4 if the addition did not carry.
+N $B0A3 The low byte carried, so raise the high score byte.
+  $B0A3,$01 Increase the high score byte in #REGh by one.
+@ $B0A4 label=AddToScore_Store
+N $B0A4 Write the updated score back to #R$A7C4.
+  $B0A4,$03 Store #REGhl at #R$A7C4.
   $B0A7,$01 Restore #REGhl from the stack.
   $B0A8,$01 Return.
 
@@ -5259,24 +5305,34 @@ N $EB09 Print "#STR$CD00,$08($b==$FF)".
 
 c $EB10 Change Room
 @ $EB10 label=ChangeRoom
+E $EB10 View the equivalent code in;
+. #LIST
+. { #SHOCK$AD79 }
+. LIST#
+D $EB10 Commits a move into the destination room held in #REGa. It stashes the
+. room in #R$A773, runs any matching pre-enter action from #R$EB3A and
+. #R$EB45 via #R$E98E, calls #R$B01F, describes the room via #R$ABB6, then
+. runs any matching post-enter action from #R$EB5B and #R$EB71.
 R $EB10 A Destination room ID
-  $EB10,$03 Store the room ID in *#R$A773.
+N $EB10 Remember the destination and run the pre-enter actions.
+  $EB10,$03 Store the destination room ID at #R$A773.
 N $EB13 Look up the destination room in the list of room IDs at #R$EB3A.
-  $EB13,$03 #REGhl=#R$EB3A.
-  $EB16,$03 #REGde=#R$EB45.
-  $EB19,$03 #REGbc=#N($000B,$04,$04).
-  $EB1C,$03 Call #R$E98E.
-N $EB1F Set the destination room ID as the current room.
-  $EB1F,$03 Restore the destination room ID from *#R$A773.
-  $EB22,$03 Call #R$B01F.
-  $EB25,$05 Call #R$ABB6 with #REGe set to #N$00 (which does not display room
-. images).
+  $EB13,$03 Point #REGhl at the pre-enter room IDs at #R$EB3A.
+  $EB16,$03 Point #REGde at the pre-enter actions at #R$EB45.
+  $EB19,$03 Load #REGbc with #N($000B,$04,$04) matching entries.
+  $EB1C,$03 Call #R$E98E to run any matching pre-enter action.
+N $EB1F Enter the room and describe it.
+  $EB1F,$03 Fetch the destination room ID from *#R$A773 into #REGa.
+  $EB22,$03 Call #R$B01F to move the player into that room.
+  $EB25,$05 Call #R$ABB6 with #REGe set to #N$00 so the room picture is not
+. forced.
 N $EB2A Now look up the current room in the list of room IDs at #R$EB5B.
-  $EB2A,$03 #REGa=*#R$A7C3.
-  $EB2D,$03 #REGhl=#R$EB5B.
-  $EB30,$03 #REGde=#R$EB71.
-  $EB33,$03 #REGbc=#N($0016,$04,$04).
-  $EB36,$03 Call #R$E98E.
+  $EB2A,$03 Fetch the current room ID from *#R$A7C3 into #REGa.
+  $EB2D,$03 Point #REGhl at the post-enter room IDs at #R$EB5B.
+  $EB30,$03 Point #REGde at the post-enter actions at #R$EB71.
+  $EB33,$03 Load #REGbc with #N($0016,$04,$04) matching entries.
+  $EB36,$03 Call #R$E98E to run any matching post-enter action.
+@ $EB39 label=ChangeRoom_Return
   $EB39,$01 Return.
 N $EB3A The room ID table to identify which rooms are applicable:
 @ $EB3A label=Table_ActionPreEnterRoomIDs
