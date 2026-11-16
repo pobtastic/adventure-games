@@ -18,6 +18,7 @@
 
 > $4000 @start=$FFE9
 @ $4000 org=$4000
+> $4000 @rom
 > $4000 @expand=#DEF(#COLOUR(id) #LET(ink=$id&$07)#IF({ink}>=$00)(INK:#HTML(&#10;)#MAP({ink})(#HTML(&#10;)UNKNOWN,0:BLACK,1:BLUE,2:RED,3:MAGENTA,4:GREEN,5:CYAN,6:YELLOW,7:WHITE)),#HTML(&#10;)#LET(paper=$id>>$03&$07)#IF({paper}>=$00)(PAPER:#HTML(&#10;)#MAP({paper})(#HTML(&#10;)UNKNOWN,0:BLACK,1:BLUE,2:RED,3:MAGENTA,4:GREEN,5:CYAN,6:YELLOW,7:WHITE))#HTML(&#10;)#LET(bright=$id&$40)#IF({bright}>$00)((BRIGHT))#HTML(&#10;)#LET(flash=$id&$80)#IF({flash}>$00)(FLASH: ON))
 > $4000 @expand=#DEF1(#SKOOLKID(addr,anchor=0)(name)#HTML(<a rel="noopener nofollow" href="https://skoolkit.ca/disassemblies/rom/#IF({{mode[base]}}==16)(hex/)asm/#IF({{mode[base]}}==16)(#EVAL({addr},16,4),#EVAL({addr})).html#IF({anchor})(#CHR(35)#IF({{mode[base]}}==16)(#EVAL({anchor},16,4),#EVAL({anchor})))">){name}#HTML(</a>))
 > $4000 @expand=#DEF1(#PAGE(bank) page RAM bank #N({bank}) in at #N($C000), keeping the 48K ROM)
@@ -25,8 +26,11 @@
 > $4000 @expand=#DEF1(#MESSAGE(addr)#STR{addr},$08($b==$5E||$b==$7E))
 > $4000 @expand=#DEF1(#BUILDICT #LET(dict[]=(0))#LET(d=$B1BC)#FOR$00,$FF||q|#LET(dict[q]={{d}})#WHILE((#PEEK({{d}})&$80)==0)(#LET(d={{d}}+1))#LET(d={{d}}+1)||)
 > $4000 @expand=#DEF1(#TOKENS(n) #FOR($00,{n}-1)||x|#R({{dict[#PEEK(#PC+x)]}})(#STR({{dict[#PEEK(#PC+x)]}}))|, ||)
+> $4000 @expand=#DEF1(#BUILDICTOLD #LET(old[]=(0))#LET(d=$93D0)#FOR$00,$FF||q|#LET(old[q]={{d}})#WHILE((#PEEK({{d}})&$80)==0)(#LET(d={{d}}+1))#LET(d={{d}}+1)||)
+> $4000 @expand=#DEF1(#OLDTOKENS(n) #FOR($00,{n}-1)||x|#R({{old[#PEEK(#PC+x)]}})(#STR({{old[#PEEK(#PC+x)]}}))|, ||)
 > $4000 @expand=#DEF(#FACT()(anchor,text) #LINK(Facts#$anchor)($text))
-> $4000 @expand=#DEF(#PICTURE(room)(fname,title) #SIM(start=$$66C1,stop=$$66C5,a=$$00,bc=$$7FFD)#PUSHS #UDGTABLE { =h $title } { #SIM(start=$$600F,stop=$$6051,sp=$$5D84)#POKES$$5D87,$room#SIM(start=$$6DFA,stop=$$6E38,sp=$$5D84)#SCR$$02,$$00,$$00,$$20,$$0C($fname) } UDGTABLE# #POPS)
+> $4000 @expand=#DEF(#PICTURE(room)(fname,title) #SIM(start=$66C1,stop=$66C5,a=$00,bc=$7FFD)#PUSHS #UDGTABLE { =h $title } { #SIM(start=$600F,stop=$6051,sp=$5D84)#POKES$5D87,$room#SIM(start=$6DFA,stop=$6E38,sp=$5D84)#SCR$02,$00,$00,$20,$0C($fname) } UDGTABLE# #POPS)
+> $4000 @expand=#DEF(#SHAPE(id,width,height)(fname) #SIM(start=$66C1,stop=$66C5,a=$00,bc=$7FFD)#PUSHS #SIM(start=$6DFA,stop=$6E2A,sp=$5D84)#POKES$5B00,$id;$5B01,$00;$5B02,$00;$5B03,$FF#POKES$7188,$FF#SIM(start=$6EC1,stop=$6E57,a=$id,ix=$5B00,iy=$5C3A,sp=$5D84)#SIM(start=$6E2D,stop=$6E38,sp=$5D84)#SCR$02,$00,$00,$width,$height($fname)#POPS)
 > $4000 @set-handle-unsupported-macros=1
 
 b $4000 Loading Screen
@@ -246,7 +250,11 @@ D $5BBC Next byte of the shape currently being drawn.
 
 g $5BBE Shift Flags
 @ $5BBE label=Shift_Flags
-D $5BBE How the current tile is shifted and merged.
+D $5BBE How the current tile is shifted and merged. Bit 0 selects the second
+. tile page. Bits 2-3 are the combine mode:
+. #HTML(#N$04 <code>OR</code>, #N$08 <code>AND</code>, #N$0C <code>XOR</code>.)
+. Bits 4-5 choose the shift: #N$10 left, #N$20 right, #N$30 logical right.
+. Bit 6 adds an extra left rotate. Bit 1 is set when a run count follows.
   $5BBE,$01
 
 g $5BBF Shift Flag
@@ -296,7 +304,8 @@ D $5BC7 Rows left in the current shape.
 
 g $5BC8 Combine Mode
 @ $5BC8 label=Combine_Mode
-D $5BC8 How tile bytes are merged: #N$04 OR, #N$08 AND, #N$0C XOR.
+D $5BC8 #HTML(How tile bytes are merged: #N$04 <code>OR</code>, #N$08
+. <code>AND</code>, #N$0C <code>XOR</code>.)
   $5BC8,$01
 
 g $5BC9 Destination Base
@@ -403,9 +412,8 @@ b $5D8F Flag Bytes
 @ $5D8F label=FlagBytes
 D $5D8F The rest of the flag area the bytecode indexes from #R$5D87, from flag
 . #N$08. It is cleared at the start of a game.
-N $5D8F Flag #N($08+(#PC-$5D8F)).
-  $5D8F,$01
-L $5D8F,$01,$3B,$02
+  $5D8F,$01 Flag #N($08+(#PC-$5D8F)).
+L $5D8F,$01,$3B
 
 b $5DCA Object Locations
 @ $5DCA label=ObjectLocations
@@ -454,17 +462,19 @@ N $5EFB Read a command. An empty line is a complaint, not an action.
   $5F04,$06 Jump to #R$5F21 if *#R$5B80 is set.
 N $5F0A Print "that input contained no recognised words.".
   $5F0A,$05 Print #R$7E65 using #R$63D4.
-  $5F0F,$04 Clear *#R$5B85.
+  $5F0F,$04 Clear *#R$5B85. After #R$7213 this can instead write #N$00
+. at #R$5B00 plus the last pictured object.
 N $5F13 Start another turn.
   $5F13,$02 Jump to #R$5EDE.
 
 g $5F15 Pictured Object
 @ $5F15 label=PicturedObject
-D $5F15 The room-change scan compares a picture record with this byte. Nothing
-. in the game writes it, so the comparison is against zero.
+D $5F15 The room-change scan compares a picture #N$F8 object with this byte.
+. Nothing writes it; #R$7213 stores at #R$5F10(#N$5F11) instead, so the
+. comparison is against #N$00.
   $5F15,$01
 
-c $5F16 Character Row Address
+c $5F16 Address Character Row
 @ $5F16 label=RowAddress
 D $5F16 Turns a character row in #REGa into the display address of that row.
 R $5F16 A Character row
@@ -566,8 +576,8 @@ N $5FE0 Scan the exit table.
 @ $5FE0 label=FindExits_Scan
   $5FE0,$01 Fetch this key.
   $5FE1,$03 Jump to #R$5FEF if it matches this room.
-  $5FE4,$06 The table wraps when the pointer reaches #N$34CE.
-  $5FEA,$05 Otherwise keep scanning.
+  $5FE4,$01 Advance the table pointer.
+  $5FE5,$0A Jump to #R$5FE0 until #REGde is #N$34CE.
 N $5FEF The matching room key, or the end of the table.
 @ $5FEF label=FindExits_Found
   $5FEF,$01 Put the table pointer in #REGhl.
@@ -687,7 +697,7 @@ N $6097 A condition byte, shifted, picks a routine from #R$67CB. The object byte
   $6098,$02 Double it so it indexes a word.
   $609A,$04 Point #REGix at #R$67CB.
   $609E,$05 Index by the condition number.
-  $60A3,$0C Plant that routine over the call at #R$60C1.
+  $60A3,$0C Plant that routine over the call at #R$60C1(#N$60C2).
   $60AF,$01 Stash the line pointer on the stack.
   $60B0,$01 Advance to the object number.
   $60B1,$02 Fetch it into #REGc.
@@ -723,7 +733,7 @@ N $60EB Call the action.
   $60F0,$04 Point #REGix at the word inside #R$6AD4. Action 0 is the
 . beeper operand, and the routines start at #R$6AD7.
   $60F4,$05 Index by the action number.
-  $60F9,$0C Plant that routine over the call at #R$6117.
+  $60F9,$0C Plant that routine over the call at #R$6117(#N$6118).
   $6105,$01 Stash the line pointer on the stack.
   $6106,$01 Advance to the object number.
   $6107,$01 Fetch it.
@@ -1287,7 +1297,7 @@ N $64E1 Advance the print address.
   $64E6,$02 Jump to #R$6538 to advance the column.
 N $64E8 Shift two pixels.
 @ $64E8 label=PlotGlyph_Byte1
-  $64E8,$02 Eight pixel rows.
+  $64E8,$02 Count the #N$08 pixel rows of this glyph.
 N $64EA Merge a two-pixel shift.
 @ $64EA label=PlotGlyph_Shift2
   $64EA,$01 Fetch the glyph byte.
@@ -1300,7 +1310,7 @@ N $64EA Merge a two-pixel shift.
   $64FE,$02 Jump to #R$64E1.
 N $6500 Shift four pixels.
 @ $6500 label=PlotGlyph_Byte2
-  $6500,$02 Eight pixel rows.
+  $6500,$02 Count the #N$08 pixel rows of this glyph.
 N $6502 Merge a four-pixel shift.
 @ $6502 label=PlotGlyph_Shift4
   $6502,$01 Fetch the glyph byte.
@@ -1315,7 +1325,7 @@ N $6502 Merge a four-pixel shift.
   $6523,$02 Jump to #R$6538.
 N $6525 Keep the top two pixels.
 @ $6525 label=PlotGlyph_Byte3
-  $6525,$02 Eight pixel rows.
+  $6525,$02 Count the #N$08 pixel rows of this glyph.
 N $6527 Merge a six-pixel shift.
 @ $6527 label=PlotGlyph_Top
   $6527,$04 Keep the top two pixels already on screen.
@@ -1385,7 +1395,7 @@ N $6589 Copy one character row onto the row above.
   $658D,$01 The next character row.
   $658E,$03 Call #R$5F16.
   $6591,$02 That address is the destination.
-  $6593,$02 Eight pixel rows.
+  $6593,$02 Count the #N$08 pixel rows of this character.
 N $6595 Copy eight pixel rows.
 @ $6595 label=ScrollWindow_Pixels
   $6595,$03 Save the row pair.
@@ -1414,7 +1424,7 @@ N $65C1 Clear the vacated row.
 @ $65C1 label=ScrollWindow_Clear
   $65C1,$02 Copy #REGhl to #REGde (using the stack).
   $65C3,$01 Advance the destination.
-  $65C4,$02 Eight pixel rows.
+  $65C4,$02 Count the #N$08 pixel rows to blank.
 N $65C6 Wipe eight pixel rows.
 @ $65C6 label=ScrollWindow_Wipe
   $65C6,$03 Save the row.
@@ -1493,7 +1503,8 @@ N $662D #HTML(Bit 5 of #SKOOLKID$5C3B(FLAGS) is set by the maskable interrupt
   $6640,$02,b$01 Keep only bits 0-2.
   $6642,$04 Write #REGr+#N$01 into the signature at #R$676E.
   $6646,$04 Point #REGix at #R$676E.
-  $664A,$06 Plant that stirred byte over the next instruction.
+  $664A,$06 Plant that stirred byte over the displacement at
+. #R$6653(#N$6655).
   $6650,$06 Mix #REGr in again.
   $6656,$01 Stash #REGbc on the stack.
   $6657,$02 Five passes.
@@ -1639,7 +1650,7 @@ E $6709 Continue on to #R$6713.
 
 c $6713 Condition: Object Is Here
 @ $6713 label=IsHere
-D $6713 Loads *#R$5D87 and continues into #R$6716.
+D $6713 Loads *#R$5D87 as the location to match.
 R $6713 C Object location
 R $6713 O:F The zero flag is set when the object is *#R$5D87
 E $6713 Continue on to #R$6716.
@@ -1720,8 +1731,7 @@ D $674E Passes when the object is not being carried.
 R $674E C Object location
 R $674E O:F The zero flag is unset on a pass return
 E $674E Continue on to #R$6753.
-  $674E,$05 Jump to #R$6753 to reject this bytecode condition
-. when it is *#R$5D89.
+  $674E,$05 Return if the object is not *#R$5D89.
 
 c $6753 Condition: Reject
 @ $6753 label=RejectCondition
@@ -1766,7 +1776,8 @@ D $6777 Passes when a value stirred from the frame counter and the signature
 . comes out below the parameter.
 R $6777 B Threshold
 R $6777 O:F Carry is set when the stirred value is below the parameter
-  $6777,$06 Plant the signature over the address read next.
+  $6777,$06 Plant the signature byte over the displacement at
+. #R$6781(#N$6783).
   $677D,$04 Point #REGix at #R$676E.
   $6781,$03 Fetch the stirred byte.
   $6784,$03 Widen the stirred byte.
@@ -2137,7 +2148,7 @@ N $6999 Walk this room's picture record.
   $699D,$01 Advance to the opcode.
   $699E,$04 Jump to #R$6999 if it is not #N$F8.
   $69A2,$01 Stash the record pointer on the stack.
-  $69A3,$06 Compare the record with #R$5F15.
+  $69A3,$06 Jump to #R$69B6 if the object is not *#R$5F15.
   $69A9,$03 Copy the object number into #REGbc.
   $69AC,$03 Point #REGhl at #R$5DCA.
   $69AF,$01 Add the object number.
@@ -2286,30 +2297,33 @@ N $6A34 Address the source object.
 
 c $6A3C Action: Print Flag
 @ $6A3C label=PrintFlag
-D $6A3C #HTML(Prints flag #REGb as a decimal number followed by a space. The
-. conversion goes through the <code>DAA</code> instruction, so the flag is
-. treated as two decimal digits.)
+D $6A3C Prints flag #REGb as a decimal number followed by a space. Zero is a
+. single digit; any other value is two digits.
 R $6A3C B Flag number
   $6A3C,$03 Call #R$67FF.
-  $6A3F,$04 Jump to #R$6A49 if the flag is zero.
-  $6A43,$02 #HTML(Count that value through <code>DAA</code>.)
-N $6A45 Count the flag into two decimal digits.
+  $6A3F,$01 Fetch the flag.
+  $6A40,$03 Jump to #R$6A49 if it is zero.
+  $6A43,$01 Count the flag in #REGb.
+N $6A44 Count the flag into two decimal digits.
+  $6A44,$01 Start the decimal byte at #N$00.
+N $6A45 Count one decimal step.
 @ $6A45 label=PrintFlag_Tens
-  $6A45,$04 #HTML(Each pass through <code>DAA</code> builds one decimal step.)
-N $6A49 Print the tens digit when it is not zero.
+  $6A45,$01 Increment the decimal byte.
+  $6A46,$01 #HTML(Keep it as two decimal digits with <code>DAA</code>.)
+  $6A47,$02 Jump to #R$6A45 until the flag has been counted.
+N $6A49 Print the tens digit unless the flag is zero.
 @ $6A49 label=PrintFlag_High
   $6A49,$01 Stash the decimal byte on the stack.
-  $6A4A,$03 Jump to #R$6A5A if the tens digit is zero.
-  $6A4D,$08 Shift the tens digit down.
-  $6A55,$02 Convert the tens digit to ASCII.
-  $6A57,$03 Call #R$6394.
+  $6A4A,$03 Jump to #R$6A5A if the flag is zero.
+  $6A4D,$08 Move the tens digit into the low nibble.
+N $6A55 Add #N$30 so the tens digit is an ASCII character.
+  $6A55,$05 Print the tens digit using #R$6394.
 N $6A5A Print the units digit.
 @ $6A5A label=PrintFlag_Units
   $6A5A,$01 Restore the decimal byte from the stack.
   $6A5B,$02,b$01 Keep only bits 0-3.
-  $6A5D,$02 Convert the units digit to ASCII.
-  $6A5F,$03 Call #R$6394.
-  $6A62,$05 Print a following space.
+  $6A5D,$05 Print the units digit using #R$6394.
+  $6A62,$05 Print a following space using #R$63FC.
   $6A67,$01 Return.
 
 c $6A68 Action: Drop Everything
@@ -2386,12 +2400,14 @@ D $6AC4 Turns #REGa and #REGb into a duration and a pitch and hands them to the
 . jump below.
 R $6AC4 A Duration
 R $6AC4 B Pitch
+N $6AC4 #HTML(#AUDIO0(key-click.wav)(#INCLUDE(KeyClick)))
   $6AC4,$01 Carry is clear.
   $6AC5,$01 Put the duration in #REGl.
   $6AC6,$01 Copy the pitch into #REGa.
   $6AC7,$03 The high byte of the duration, and #REGd, start at zero.
   $6ACA,$04 Shift the pitch two places, keeping the overflow in #REGd.
-  $6ACE,$02 Save that pitch.
+  $6ACE,$01 Put the pitch in #REGe.
+  $6ACF,$01 Stash it on the stack.
   $6AD0,$03 Call #SKOOLKID$30A9(HL_HLxDE) to scale the duration by the pitch.
   $6AD3,$01 Restore the pitch for the beeper from the stack.
   $6AD4,$03 Jump to #SKOOLKID$03B5(BEEPER).
@@ -2401,10 +2417,7 @@ w $6AD7 Table: Action Routines
 D $6AD7 One address per bytecode action, after action 0, which is the BEEPER
 . entry embedded in #R$6AC4. The runner shifts the action number and calls the
 . address.
-N $6AD7 The actions are #FOR$6AD5,$6B13,$02||a|#N(#PEEK(a)+$100*#PEEK(a+$01))|,
-. | and ||.
-  $6AD7,$02 Action #N($01+(#PC-$6AD5)/$02) at
-. #N(#PEEK(#PC)+$100*#PEEK(#PC+$01)).
+  $6AD7,$02 Action #N($01+(#PC-$6AD5)/$02).
 L $6AD7,$02,$1F,$02
 
 c $6B15 Draw Room Once
@@ -2456,7 +2469,7 @@ c $6B4C Draw Picture When Enabled
 D $6B4C Returns immediately while pictures are switched off. Otherwise paints
 . the illustration.
   $6B4C,$01 Stash #REGaf on the stack.
-  $6B4D,$06 Jump to #R$6B55 if pictures are on.
+  $6B4D,$06 Jump to #R$6B55 if *#R$66D6 is set.
   $6B53,$01 Restore #REGaf from the stack.
   $6B54,$01 Return.
 N $6B55 Draw the illustration.
@@ -2487,7 +2500,7 @@ N $6DFD Blank one pixel row of #N($20) bytes.
   $6DFE,$03 Call #SKOOLKID$22AA(PIXEL_ADD) for this row's screen address.
   $6E01,$02 Copy the screen address to #REGde (using the stack).
   $6E03,$01 Advance to the next byte.
-  $6E04,$03 #N($001F,$04,$04) more bytes.
+  $6E04,$03 Count the remaining #N($001F,$04,$04) bytes of this row.
   $6E07,$04 Write #N$00 across the rest of the row.
   $6E0B,$01 Restore the row counter from the stack.
   $6E0C,$01 Count down one row.
@@ -2496,7 +2509,7 @@ N $6E12 Clear the matching attribute rows, then copy them into the
 . illustration buffer.
   $6E12,$03 Point #REGhl at #N$5800 (attribute buffer).
   $6E15,$03 Point #REGde at the next byte.
-  $6E18,$03 #N($017F,$04,$04) more bytes.
+  $6E18,$03 Count the remaining #N$017F bytes of the top twelve rows.
   $6E1B,$04 Write #N$00 across the block.
   $6E1F,$0B Copy #N$0180 bytes from #N$5800 (attribute buffer) to #R$6C7A.
 N $6E2A Paint the picture into the buffer.
@@ -2567,15 +2580,15 @@ E $6E7F Continue on to #R$6EC1.
   $6E7F,$03 Fetch the opcode.
 N $6E82 Opcode #N$F8 draws the following shape only when that object is here.
   $6E82,$05 Jump to #R$7213 if it is #N$F8.
-N $6E87 Opcode #N$F7 draws with ink offset #N$0C.
+N $6E87 Opcode #N$F7 plots the following shape after writing #N$0C to #R$6EEE.
   $6E87,$05 Jump to #R$73BE if it is #N$F7.
-N $6E8C Opcode #N$F6 draws with ink offset #N$08.
+N $6E8C Opcode #N$F6 plots the following shape after writing #N$08 to #R$6EEE.
   $6E8C,$05 Jump to #R$73D2 if it is #N$F6.
-N $6E91 Opcode #N$F5 draws with ink offset #N$04.
+N $6E91 Opcode #N$F5 plots the following shape after writing #N$04 to #R$6EEE.
   $6E91,$05 Jump to #R$73C8 if it is #N$F5.
 N $6E96 Opcode #N$F4 continues the record only when that object is here.
   $6E96,$05 Jump to #R$73DC if it is #N$F4.
-N $6E9B Opcode #N$F3 zeroes the origin and restores the default margins.
+N $6E9B Opcode #N$F3 resets the origin and copies the default rectangle.
   $6E9B,$05 Jump to #R$738D if it is #N$F3.
 N $6EA0 Opcode #N$F2 patches the shift and draws.
   $6EA0,$05 Jump to #R$72B5 if it is #N$F2.
@@ -2588,18 +2601,17 @@ N $6EAF Opcode #N$EF draws a run shifted across the pixel columns.
 N $6EB4 Opcode #N$EE patches the vertical shift.
   $6EB4,$05 Jump to #R$7512 if it is #N$EE.
 N $6EB9 A smaller byte is a shape, plotted below.
-  $6EB9,$02 Compare with #N$EC.
+  $6EB9,$02 This compare with #N$EC is unused.
   $6EBB,$01 Copy the opcode into #REGb.
-  $6EBC,$01 Clear the suppress flag.
-N $6EBD Store the suppress flag and plot the shape.
+  $6EBC,$01 Clear #REGa so an ordinary shape stores #N$00.
+N $6EBD Store that byte and plot the shape.
 @ $6EBD label=DispatchShape_Flag
-  $6EBD,$03 Write the suppress flag to #R$6EEE.
+  $6EBD,$03 Write #REGa to #R$6EEE.
   $6EC0,$01 Restore the opcode.
 
 c $6EC1 Plot Shape
 @ $6EC1 label=PlotShape
-D $6EC1 Clears the suppress flag, reads the shape's coordinates and paints it
-. into the attribute buffer.
+D $6EC1 Reads the shape's coordinates and paints it into the attribute buffer.
 N $6EC1 Find the shape in the picture font.
   $6EC1,$03 Call #R$718B.
   $6EC4,$02 Advance the record pointer.
@@ -2617,8 +2629,9 @@ N $6EDC Address the destination byte.
 
 g $6EEE Shape Suppressed
 @ $6EEE label=ShapeSuppressed
-D $6EEE Cleared before each shape is plotted. A later test uses it to skip a
-. shape that should not be drawn.
+D $6EEE Written by #R$6EBD before a shape is plotted. Ordinary shapes store
+. #N$00; opcodes #N($F5), #N$F6 and #N$F7 store #N($04), #N$08 or #N$0C.
+. No instruction reads this byte.
   $6EEE,$01
 
 c $6EEF Change Colour In Ink And Paper
@@ -2638,7 +2651,7 @@ N $6F0A Walks the attribute buffer. Wherever the bits selected by #REGb equal
 @ $6F0A label=ChangeMatchingColourBits
   $6F0A,$02 Stash #REGix on the stack.
   $6F0C,$04 Point #REGix at #R$6C7A.
-  $6F10,$03 #N$0180 bytes.
+  $6F10,$03 Count the #N$0180 bytes of #R$6C7A.
 N $6F13 Test this attribute byte.
 @ $6F13 label=ChangeMatchingColourBits_Byte
   $6F13,$07 Jump to #R$6F22 if the selected bits are not #REGc.
@@ -2672,64 +2685,66 @@ c $6F44 Brighten Illustration
 @ $6F44 label=BrightenAttributes
 D $6F44 Sets the bright bit on every byte of the attribute buffer.
   $6F44,$03 Point #REGhl at #R$6C7A.
-  $6F47,$03 #N$0180 bytes.
+  $6F47,$03 Count the #N$0180 bytes of #R$6C7A.
 N $6F4A Set bright on each attribute byte.
 @ $6F4A label=BrightenAttributes_Byte
   $6F4A,$02 Set the bright bit.
-  $6F4C,$06 Jump to #R$6F4A until the buffer is done.
+  $6F4C,$01 Advance the buffer pointer.
+  $6F4D,$01 Count down one byte.
+  $6F4E,$04 Jump to #R$6F4A until the buffer is done.
   $6F52,$02 Advance the record pointer.
   $6F54,$03 Jump to #R$6E53.
 
 c $6F57 Address Picture Byte
 @ $6F57 label=PictureAddress
 D $6F57 Turns a character row into a pointer inside the attribute buffer, using
-. the same row table as the text printer.
+. the same row table as the text printer. It then reads each shape byte and
+. expands the tiles.
 R $6F57 A Character row
 R $6F57 HL Shape pointer
 R $6F57 O:HL Shape pointer
-E $6F57 Continue on to #R$6F6C.
   $6F57,$01 Stash #REGhl on the stack.
   $6F58,$03 Call #R$7532.
   $6F5B,$02 Add the picture origin.
   $6F5D,$03 Store the buffer address in #R$5BBA.
   $6F60,$01 Restore the shape pointer from the stack.
   $6F61,$04 Store the next shape pointer in #R$5BBC.
+N $6F65 Start this shape with overwrite and no run count.
   $6F65,$07 Write #N$00 to #R$5BC8 and #R$5BC0.
-
-c $6F6C Read Shape Byte
+N $6F6C Fetch the next shape byte and remember it for the shift that follows.
 @ $6F6C label=ReadShapeByte
-D $6F6C Fetches the next shape byte and remembers it for the shift that follows.
-E $6F6C Continue on to #R$6FC9.
   $6F6C,$04 Write #N$00 to #R$5BBE.
   $6F70,$01 Fetch the next shape byte.
 N $6F71 Marker #N$FB replaces this byte from the parameter block.
-  $6F71,$05 Call #R$71EB if it is #N$FB.
-N $6F76 Marker #N$EF stores a run count of #N$01.
-  $6F76,$04 Jump to #R$6F7E if it is not #N$EF.
-  $6F7A,$04 Use a run count of #N$01.
-N $6F7E Marker #N$EE stores a run count of #N$02.
+  $6F71,$05 Call #R$71EB if it is #N($FB), which replaces this byte.
+N $6F76 Marker #N$EF paints a run of #N$01 blank tiles.
+  $6F76,$04 Jump to #R$6F7E if it is not #N($EF), a blank run of #N$01.
+  $6F7A,$04 Jump to #R$6F94 with a blank run of #N$01.
+N $6F7E Marker #N$EE paints a run of #N$02 blank tiles.
 @ $6F7E label=ReadShapeByte_Marker
-  $6F7E,$04 Jump to #R$6F86 if it is not #N$EE.
-  $6F82,$04 Use a run count of #N$02.
-N $6F86 Marker #N$EB stores a run count of #N$03.
+  $6F7E,$04 Jump to #R$6F86 if it is not #N($EE), a blank run of #N$02.
+  $6F82,$04 Jump to #R$6F94 with a blank run of #N$02.
+N $6F86 Marker #N$EB paints a run of #N$03 blank tiles.
 @ $6F86 label=ReadShapeByte_Wide
-  $6F86,$04 Jump to #R$6F8E if it is not #N$EB.
-  $6F8A,$04 Use a run count of #N$03.
-N $6F8E Marker #N$F3 takes the next byte as the run count.
+  $6F86,$04 Jump to #R$6F8E if it is not #N($EB), a blank run of #N$03.
+  $6F8A,$04 Jump to #R$6F94 with a blank run of #N$03.
+N $6F8E Marker #N$F3 paints a run of blank tiles; the next byte is the count.
 @ $6F8E label=ReadShapeByte_Literal
-  $6F8E,$04 Jump to #R$6FA5 if it is not #N$F3.
+  $6F8E,$04 Jump to #R$6FA5 if it is not #N($F3), a counted blank run.
   $6F92,$02 Fetch the run count.
 N $6F94 Store the run count and the default shift flags.
 @ $6F94 label=ReadShapeByte_Store
   $6F94,$03 Store it in #R$5BC0.
-  $6F97,$08 Write #N$82 to #R$5BBE and #R$5BBF.
+  $6F97,$08 Write default flags #N$82 (no shift, page 0, overwrite) to
+. #R$5BBE and #R$5BBF.
   $6F9F,$03 Store #REGhl in #R$5BBC.
-  $6FA2,$01 #REGa is clear.
+  $6FA2,$01 The tile number is #N$00.
   $6FA3,$02 Jump to #R$6FC9.
 N $6FA5 Marker #N$FA copies a parameter block. Other markers adjust the
 . coordinate that follows.
 @ $6FA5 label=SpecialShape
-  $6FA5,$04 Jump to #R$6FAE if it is not #N$FA.
+  $6FA5,$04 Jump to #R$6FAE if it is not #N($FA), which copies a parameter
+. block.
 N $6FA9 Copy the parameter block.
   $6FA9,$03 Call #R$71FF.
   $6FAC,$02 Jump to #R$6F6C.
@@ -2746,10 +2761,8 @@ N $6FC4 Step on to the coordinate.
 @ $6FC4 label=SpecialShape_Advance
   $6FC4,$04 Advance #R$5BBC.
   $6FC8,$01 Fetch the coordinate.
-
-c $6FC9 Scale Shape Coordinate
+N $6FC9 Multiply the coordinate by eight and add the picture origin.
 @ $6FC9 label=ScaleShape
-D $6FC9 Multiplies the coordinate by eight and adds the picture origin.
   $6FC9,$03 Copy the coordinate into #REGhl.
   $6FCC,$03 Point #REGbc at #R$C350.
   $6FCF,$07 Jump to #R$6FDA if bit 0 of #R$5BBF is reset.
@@ -2760,7 +2773,7 @@ N $6FDA Point at the tile bytes and choose a shift.
   $6FDD,$01 Add the tile base.
   $6FDE,$03 Point #REGix at those bytes (using the stack).
   $6FE1,$03 Point #REGhl at #R$5BB2.
-  $6FE4,$02 Eight pixel rows.
+  $6FE4,$02 Count the #N$08 pixel rows of this tile.
   $6FE6,$03 Fetch #R$5BBE.
   $6FE9,$02,b$01 Keep only bits 4-5.
   $6FEB,$02 Jump to #R$6FF8 if a shift is needed.
@@ -2773,10 +2786,10 @@ N $6FED Copy eight unshifted bytes.
 N $6FF8 Shift left when bits 4-5 are #N$10.
 @ $6FF8 label=ScaleShape_Left
   $6FF8,$04 Jump to #R$7014 if the shift is not #N$10.
-  $6FFC,$02 Eight passes.
+  $6FFC,$02 Count the #N$08 tile bytes to shift left.
 N $6FFE One left-shift pass.
 @ $6FFE label=ScaleShape_LeftPass
-  $6FFE,$02 Eight bits.
+  $6FFE,$02 Count the #N$08 bits of this tile byte.
   $7000,$03 Fetch this tile byte.
 N $7003 Rotate one tile byte left into the workspace.
 @ $7003 label=ScaleShape_LeftBit
@@ -2790,11 +2803,11 @@ N $7003 Rotate one tile byte left into the workspace.
 N $7014 Shift right when bits 4-5 are #N$20.
 @ $7014 label=ScaleShape_Right
   $7014,$04 Jump to #R$7030 if the shift is not #N$20.
-  $7018,$02 Eight passes.
+  $7018,$02 Count the #N$08 tile bytes to shift right.
   $701A,$03 Point #REGhl at #R$5BB2(#N$5BB9).
 N $701D One right-shift pass.
 @ $701D label=ScaleShape_RightPass
-  $701D,$02 Eight bits.
+  $701D,$02 Count the #N$08 bits of this tile byte.
   $701F,$03 Fetch this tile byte.
 N $7022 Rotate one tile byte left into the workspace, backwards.
 @ $7022 label=ScaleShape_RightBit
@@ -2805,10 +2818,10 @@ N $7022 Rotate one tile byte left into the workspace, backwards.
 N $7030 Shift right when bits 4-5 are #N$30.
 @ $7030 label=ScaleShape_Srl
   $7030,$04 Jump to #R$704A if the shift is not #N$30.
-  $7034,$02 Eight passes.
+  $7034,$02 Count the #N$08 tile bytes to shift right.
 N $7036 One logical-right pass.
 @ $7036 label=ScaleShape_SrlPass
-  $7036,$02 Eight bits.
+  $7036,$02 Count the #N$08 bits of this tile byte.
   $7038,$03 Fetch this tile byte.
 N $703B Rotate one tile byte right into the workspace.
 @ $703B label=ScaleShape_SrlBit
@@ -2823,7 +2836,7 @@ N $704A Optionally rotate the workspace once more.
   $704A,$03 Fetch #R$5BBE.
   $704D,$02,b$01 Keep only bit 6.
   $704F,$03 Jump to #R$7064 if bit 6 is reset.
-  $7052,$02 Eight passes.
+  $7052,$02 Count the #N$08 workspace bytes to rotate left.
   $7054,$03 Point #REGhl at #R$5BB2.
 N $7057 One extra left-shift pass.
 @ $7057 label=ScaleShape_RotatePass
@@ -2837,19 +2850,19 @@ N $7064 Combine the workspace with the destination.
 @ $7064 label=ScaleShape_Combine
   $7064,$04 Point #REGde at #R$5BBA.
   $7068,$03 Point #REGhl at #R$5BB2.
-  $706B,$02 Eight pixel rows.
+  $706B,$02 Count the #N$08 pixel rows to merge.
 N $706D Choose how this byte is merged.
 @ $706D label=ScaleShape_Merge
   $706D,$07 Jump to #R$7078 if #R$5BC8 is not #N$04.
-  $7074,$04 OR the workspace byte into the destination.
-N $7078 AND when the combine mode is #N$08.
+  $7074,$04 #HTML(<code>OR</code> the workspace byte into the destination.)
+N $7078 #HTML(<code>AND</code> when the combine mode is #N$08.)
 @ $7078 label=ScaleShape_And
   $7078,$04 Jump to #R$7080 if #R$5BC8 is not #N$08.
-  $707C,$04 AND the workspace byte into the destination.
-N $7080 XOR when the combine mode is #N$0C.
+  $707C,$04 #HTML(<code>AND</code> the workspace byte into the destination.)
+N $7080 #HTML(<code>XOR</code> when the combine mode is #N$0C.)
 @ $7080 label=ScaleShape_Xor
   $7080,$04 Jump to #R$7088 if #R$5BC8 is not #N$0C.
-  $7084,$04 XOR the workspace byte into the destination.
+  $7084,$04 #HTML(<code>XOR</code> the workspace byte into the destination.)
 N $7088 Write the merged byte.
 @ $7088 label=ScaleShape_Plain
   $7088,$01 Use the workspace byte as-is.
@@ -2866,7 +2879,7 @@ N $7099 Repeat the copy for the remaining run count.
 @ $7099 label=ScaleShape_Repeat
   $7099,$06 Jump to #R$70BA if #R$5BC0 has reached #N$00.
   $709F,$03 Call #R$70C7.
-  $70A2,$02 Eight pixel rows.
+  $70A2,$02 Count the #N$08 pixel rows to copy.
   $70A4,$03 Point #REGhl at #R$5BB2.
   $70A7,$04 Point #REGde at #R$5BBA.
 N $70AB Copy eight bytes to the destination.
@@ -2898,13 +2911,18 @@ N $70E8 Look up the new row.
   $70F1,$01 Add the destination.
   $70F2,$03 Store it in #R$5BBA.
   $70F5,$01 Return.
-N $70F6 Abandon the rest of this shape.
-@ $70F6 label=ScaleShape_Done
+
+c $70F6 Abandon Shape
+@ $70F6 label=AbandonShape
+D $70F6 Drops the return address of #R$70C7 so #R$6F57 returns at once.
   $70F6,$01 Drop the return address.
   $70F7,$01 Return.
-N $70F8 Paint onto the attribute file instead of the illustration buffer,
-. then continue on to #R$710E.
+
+c $70F8 Paint Shape On Screen
 @ $70F8 label=ScaleShape_Screen
+D $70F8 Finds the shape, expands it with #R$6F57, and points the destination
+. at #N$5800 (attribute buffer).
+E $70F8 Continue on to #R$710E.
   $70F8,$03 Call #R$718B.
   $70FB,$06 Copy #R$5BC1 into #REGbc.
   $7101,$03 Fetch #R$5BC2.
@@ -2987,22 +3005,21 @@ D $7188 The shape last looked up by #R$718B. It starts at #N$FF so the first
 
 g $7189 Last Shape Address
 @ $7189 label=LastShapeAddress
-D $7189 The picture-font pointer of that shape. The same number is served from
-. here without walking the font again.
+D $7189 The address of that shape. The same number is served from here without
+. walking #R$C708 again.
 W $7189,$02
 
 c $718B Find Shape In Picture Font
 @ $718B label=FindShape
-D $718B Looks the shape number up in the picture font that follows this routine
-. and remembers its address.
+D $718B Looks the shape number up in #R$C708 and remembers its address.
   $718B,$03 Point #REGhl at #R$7188.
   $718E,$03 Jump to #R$7199 if this is not the last matched shape.
   $7191,$03 Reuse the last matched address.
   $7194,$03 Point #REGbc at this shape number.
   $7197,$02 Jump to #R$71AF.
-N $7199 Walk the picture font from #R$C350(#N$C708).
+N $7199 Walk the shapes from #R$C708.
 @ $7199 label=FindShape_Search
-  $7199,$03 Point at the picture font at #R$C350(#N$C708).
+  $7199,$03 Point #REGhl at #R$C708.
   $719C,$02 Copy the shape number into #REGbc.
   $719E,$03 Remember it at #R$7188.
   $71A1,$03 Jump to #R$71AF if the shape number is #N$00.
@@ -3041,20 +3058,28 @@ N $71D9 Store the width and height.
   $71E3,$01 Add one.
   $71E4,$06 Store the height in #R$5BC5 and #R$5BC7.
   $71EA,$01 Return.
+
+c $71EB Fetch Parameter Byte
+@ $71EB label=FetchParameterByte
+D $71EB Returns the next parameter byte while #R$5B9E is non-zero, otherwise
+. the next shape byte from #R$5BCC.
+R $71EB O:A The byte
 N $71EB Fetch a byte from the parameter block, or the next shape byte.
-@ $71EB label=FindShape_Param
   $71EB,$06 Jump to #R$71FA if #R$5B9E is #N$00.
   $71F1,$04 Count one fewer in #R$5B9E.
   $71F5,$03 Point #REGhl at #R$5B9F.
   $71F8,$01 Fetch that byte.
   $71F9,$01 Return.
 N $71FA Fetch the next shape byte after the parameters.
-@ $71FA label=FindShape_Stream
+@ $71FA label=FetchParameterByte_Stream
   $71FA,$03 Fetch #R$5BCC.
   $71FD,$01 Fetch that byte.
   $71FE,$01 Return.
-N $71FF Copy a parameter block out of the shape stream.
-@ $71FF label=FindShape_Copy
+
+c $71FF Copy Parameter Block
+@ $71FF label=CopyParameterBlock
+D $71FF Copies a length-prefixed parameter block from the shape stream to
+. #R$5B9E and terminates it with #N$FB.
   $71FF,$01 Step to the length.
   $7200,$03 Fetch it into #REGbc.
   $7203,$03 Point #REGde at #R$5B9E.
@@ -3068,43 +3093,48 @@ N $71FF Copy a parameter block out of the shape stream.
 c $7213 Draw Shape When Object Is Here
 @ $7213 label=ShapeIfPresent
 D $7213 #HTML[Opcode #N$F8 names an object. The following shape is drawn only
-. when that object is in the current room, and the object id is planted in the
-. low address byte (#R$5F0F(#N$5F11)) of <code>LD (#R$5B85),#REGa</code> at
-. #R$5F0F. When the object is absent that byte is cleared again.]
+. when that object is in the current room. The object id is written over the
+. low address byte (#R$5F10(#N$5F11)) of <code>LD (*#R$5B85),#REGa</code> at
+. #R$5F10, so the next unrecognised line zeros #R$5B00 plus that id. Those
+. addresses are the command buffer and the bytes after it, not object state.
+. When the object is absent the operand is set to #N$00. #R$696C compares
+. #R$5F15, which this routine never writes.]
   $7213,$02 Advance the record pointer.
   $7215,$03 Fetch the object id.
   $7218,$03 Point #REGhl at #R$5DCA.
   $721B,$04 Index by the object number.
   $721F,$06 Jump to #R$7233 if it is not in *#R$5D87.
-  $7225,$06 Plant the object id in #R$5F0F(#N$5F11).
+  $7225,$06 #HTML[Patch #R$5F10(#N$5F11), the low address byte of
+. <code>LD (*#R$5B85),#REGa</code>, with the object id.]
   $722B,$02 Advance the record pointer.
   $722D,$03 Fetch the shape number.
   $7230,$03 Jump to #R$6EC1.
 N $7233 Skip the shape when the object is elsewhere.
 @ $7233 label=ShapeIfPresent_Skip
   $7233,$08 Step past the unused operands.
-  $723B,$04 Write #N$00 to #R$5F0F(#N$5F11).
+  $723B,$04 #HTML[Clear #R$5F10(#N$5F11), the low address byte of
+. <code>LD (*#R$5B85),#REGa</code>.]
   $723F,$03 Jump to #R$6E53.
 
 c $7242 Reverse Pixel Row
-@ $7242 label=ShapeIfPresent_Mirror
+@ $7242 label=ReversePixelRow
 D $7242 Reverses each pixel row of the current strip into the illustration.
   $7242,$01 Stash the row counter on the stack.
   $7243,$03 Call #R$73F1.
   $7246,$01 Stash the start of the row on the stack.
   $7247,$03 Load the patched width.
-  $724A,$02 Eight pixel rows.
+  $724A,$02 Count the #N$08 pixel rows to reverse.
   $724C,$03 Point #REGde at the start and #REGhl at the far end.
 N $724F Reverse one pixel row.
-@ $724F label=ShapeIfPresent_MirrorRow
+@ $724F label=ReversePixelRow_Row
   $724F,$03 Stash the row pointers and the bit counter.
   $7252,$02 Copy #N$0100 bytes.
 N $7254 Reverse one byte.
-@ $7254 label=ShapeIfPresent_MirrorByte
+@ $7254 label=ReversePixelRow_Byte
   $7254,$01 Fetch the source byte.
   $7255,$02 Bit 7 of #REGc is set.
 N $7257 Rotate its bits into #REGc.
-@ $7257 label=ShapeIfPresent_MirrorBit
+@ $7257 label=ReversePixelRow_Bit
   $7257,$06 Jump to #R$7257 until the byte is reversed.
   $725D,$01 Write the reversed byte.
   $725E,$02 Step both pointers.
@@ -3117,15 +3147,15 @@ N $7257 Rotate its bits into #REGc.
   $7270,$01 Return.
 
 c $7271 Reverse Attribute Row
-@ $7271 label=ShapeIfPresent_Copy
+@ $7271 label=ReverseAttributeRow
 D $7271 Copies a reversed attribute row into the illustration buffer.
   $7271,$01 Stash the row counter on the stack.
-  $7272,$03 Call #R$738D.
+  $7272,$03 Call #R$73AE.
   $7275,$03 Load the patched width.
   $7278,$04 Point #REGde at the start and #REGhl at the far end.
   $727C,$02 Copy #N$0100 bytes.
 N $727E Copy one reversed byte.
-@ $727E label=ShapeIfPresent_CopyByte
+@ $727E label=ReverseAttributeRow_Byte
   $727E,$02 Copy this byte.
   $7280,$02 Step both pointers.
   $7282,$02 Jump to #R$727E until the row is done.
@@ -3135,19 +3165,24 @@ N $727E Copy one reversed byte.
 
 c $728C Patch Shift Immediate
 @ $728C label=PatchShift
-D $728C Writes the next picture byte over the immediate of the shift that
-. follows, so the shape can move by a fraction of a pixel.
-  $728C,$09 Write the row count over both loop immediates.
+D $728C Writes the row count over the loop stops and the shift over the offset
+. immediates, so the shape can move by a fraction of a pixel.
+  $728C,$09 Self-modify the loop stops at #R$726A(#N$726C) and
+. #R$7285(#N$7287).
   $7295,$03 Fetch the shift.
   $7298,$03 Fetch the Y coordinate.
   $729B,$03 Fetch the X coordinate.
 N $729E Patch the offset immediates and draw both layers.
 @ $729E label=PatchShift_Draw
-  $729E,$06 Write the shift into both offset immediates.
+  $729E,$06 Self-modify the reverse widths at #R$7247(#N$7248) and
+. #R$7275(#N$7276).
   $72A4,$02 Halve the shift.
-  $72A6,$06 Write it into both inner byte counts.
+  $72A6,$06 Self-modify the inner counts at #R$7252(#N$7253) and
+. #R$727C(#N$727D).
 N $72AC Reverse the pixels.
-  $72AC,$05 Call #R$7242.
+  $72AC,$01 Stash the coordinates on the stack.
+  $72AD,$03 Call #R$7242.
+  $72B0,$01 Restore the coordinates from the stack.
 N $72B1 Reverse the attributes.
   $72B1,$03 Call #R$7271.
   $72B4,$01 Return.
@@ -3163,53 +3198,62 @@ D $72B5 Opcode #N$F2 patches the shift, draws, and steps the picture pointer on
 c $72C0 Draw With Fixed Shift
 @ $72C0 label=DrawFixedShift
 D $72C0 Used for picture record #N$FE. The shift immediate is forced to #N$0C.
-  $72C0,$08 Write #N$0C over the row-count immediates.
-  $72C8,$02 Width #N$20.
-  $72CA,$03 Offset #N($0000,$04,$04).
+  $72C0,$08 Write #N$0C over the loop stops at #R$726A(#N$726C) and
+. #R$7285(#N$7287).
+  $72C8,$02 Reverse all #N$20 character columns of the illustration.
+  $72CA,$03 Start at column #N($00), row #N$00.
   $72CD,$03 Call #R$729E.
   $72D0,$02 Advance the record pointer.
   $72D2,$03 Jump to #R$6E53.
 
 c $72D5 Copy Origin Attributes
-@ $72D5 label=DrawFixedShift_Attrs
-D $72D5 Copies one attribute strip from the source origin to the destination.
-  $72D5,$04 Fetch the source origin.
-  $72D9,$03 Call #R$738D.
+@ $72D5 label=CopyOrigin_Attributes
+D $72D5 Copies attribute rows from #R$7337 into #R$7339 until *#R$733A
+. equals the stop patched by #R$733B. #R$733B and #R$738D also patch the
+. width copied on each row.
+  $72D5,$04 Fetch *#R$7337.
+  $72D9,$03 Call #R$73AE.
   $72DC,$01 Stash the source pointer on the stack.
-  $72DD,$04 Fetch the destination origin.
-  $72E1,$03 Call #R$738D.
+  $72DD,$04 Fetch *#R$7339.
+  $72E1,$03 Call #R$73AE.
   $72E4,$01 Copy the source pointer into #REGde (using the stack).
-  $72E5,$03 Load the patched width.
-  $72E8,$01 Swap source and destination.
-  $72E9,$02 Copy those bytes.
-  $72EB,$07 Step the source Y coordinate.
-  $72F2,$07 Decrement the remaining row count.
-  $72F9,$04 Jump to #R$72D5 until it reaches #N$00.
+N $72E5 The width immediate is self-modified by #R$733B and #R$738D.
+  $72E5,$03 Load that width.
+  $72E8,$01 Point #REGhl at the source and #REGde at the destination.
+  $72E9,$02 Copy one attribute row.
+N $72EB Step to the next row.
+  $72EB,$07 Increment *#R$7338.
+  $72F2,$07 Decrement *#R$733A.
+N $72F9 The stop immediate is self-modified by #R$7361.
+  $72F9,$04 Jump to #R$72D5 until *#R$733A equals that stop.
   $72FD,$01 Return.
 
 c $72FE Copy Origin Pixels
-@ $72FE label=DrawFixedShift_Pixels
-D $72FE Copies one pixel strip from the source origin to the destination.
-  $72FE,$04 Fetch the source origin.
+@ $72FE label=CopyOrigin_Pixels
+D $72FE Copies pixel rows from #R$7337 into #R$7339 until *#R$733A equals
+. the stop patched by #R$733B.
+  $72FE,$04 Fetch *#R$7337.
   $7302,$03 Call #R$73F1.
   $7305,$01 Stash the source pointer on the stack.
-  $7306,$04 Fetch the destination origin.
+  $7306,$04 Fetch *#R$7339.
   $730A,$03 Call #R$73F1.
   $730D,$01 Copy the source pointer into #REGde (using the stack).
   $730E,$04 Move the destination seven rows down.
-  $7312,$02 Eight pixel rows.
+  $7312,$02 Count the #N$08 pixel rows to copy.
   $7314,$01 Switch the destination into #REGde.
 N $7315 Copy eight pixel rows.
-@ $7315 label=DrawFixedShift_PixelRow
+@ $7315 label=CopyOrigin_PixelRow
   $7315,$03 Stash the counters on the stack.
-  $7318,$03 Load the patched width.
+N $7318 The width immediate is self-modified by #R$733B and #R$738D.
+  $7318,$03 Load that width.
   $731B,$02 Copy those bytes.
   $731D,$03 Restore the counters from the stack.
   $7320,$02 Step both pointers.
   $7322,$02 Jump to #R$7315 until eight pixel rows are done.
-  $7324,$07 Step the source Y coordinate.
-  $732B,$07 Decrement the remaining row count.
-  $7332,$04 Jump to #R$72FE until it reaches #N$00.
+  $7324,$07 Increment *#R$7338.
+  $732B,$07 Decrement *#R$733A.
+N $7332 The stop immediate is self-modified by #R$7361.
+  $7332,$04 Jump to #R$72FE until *#R$733A equals that stop.
   $7336,$01 Return.
 
 g $7337 Source Origin
@@ -3230,24 +3274,30 @@ N $733A Remaining height.
 
 c $733B Set Drawing Origin
 @ $733B label=SetOrigin
-D $733B Stores the next coordinates as the origin later shapes are drawn from.
-  $733B,$09 Write the source X into both origin bytes.
-  $7344,$06 Write the source Y.
-  $734A,$06 Write the remaining height.
-  $7350,$09 Write the width over both copy immediates.
-  $7359,$06 Subtract the source Y from the destination Y.
-  $735F,$02 Halve it.
-N $7361 Patch the loop counts and copy from the origin.
+D $733B Opcode #N$F1 stores the source and destination from the picture
+. record, patches the copy widths and loop stops, then copies pixels and
+. attributes. The destination row counts down, so the rectangle is drawn
+. upside down. #R$738D enters at #R$7361.
+R $733B IX Picture record
+  $733B,$09 Write the source column to *#R$7337 and *#R$7339.
+  $7344,$06 Write the source row to *#R$7338.
+  $734A,$06 Write the destination row to *#R$733A.
+  $7350,$09 Self-modify the copy widths at #R$7318(#N$7319) and
+. #R$72E5(#N$72E6).
+  $7359,$06 Subtract the source row from the destination row.
+  $735F,$02 Halve that span.
+N $7361 Patch the loop stops and copy from the origin.
 @ $7361 label=SetOrigin_Copy
-  $7361,$06 Write that half-height over both loop immediates.
-  $7367,$04 Fetch the source origin.
-  $736B,$04 Fetch the destination origin.
+  $7361,$06 Self-modify the loop stops at #R$7332(#N$7333) and
+. #R$72F9(#N$72FA).
+  $7367,$04 Fetch *#R$7337.
+  $736B,$04 Fetch *#R$7339.
   $736F,$02 Stash #REGbc and #REGde on the stack.
-N $7371 Copy the pixels.
+N $7371 Copy the pixels, then put the origins back.
   $7371,$03 Call #R$72FE.
   $7374,$02 Restore #REGde and #REGbc from the stack.
-  $7376,$04 Store the source origin.
-  $737A,$04 Store the destination origin.
+  $7376,$04 Write #REGbc to *#R$7337.
+  $737A,$04 Write #REGde to *#R$7339.
 N $737E Copy the attributes.
   $737E,$03 Call #R$72D5.
   $7381,$01 Return.
@@ -3261,44 +3311,61 @@ D $7382 Opcode #N$F1 sets the origin, draws, and steps on by five bytes.
 
 c $738D Reset Drawing Origin
 @ $738D label=ResetOrigin
-D $738D Opcode #N$F3 zeroes the origin and restores the default margins.
-  $738D,$0A Write #N$00 to the origin.
-  $7397,$05 Write #N$0B as the remaining height.
-  $739C,$08 Write #N$20 over both copy immediates.
-  $73A4,$05 Call #R$7361 with half-height #N$05.
-  $73A9,$02 Advance the record pointer.
+D $738D Opcode #N$F3 sets *#R$7337, *#R$7339 and *#R$7338 to #N($00), *#R$733A
+. to the bottom illustration row #N($0B), and the copy width to #N$20. It
+. then copies that full-width rectangle through #R$7361. The destination
+. row counts down, so the copy is upside down.
+R $738D IX Picture record
+  $738D,$0A Write #N$00 to *#R$7337, *#R$7339 and *#R$7338.
+  $7397,$05 Write #N$0B to *#R$733A, the bottom row of the illustration.
+  $739C,$08 Self-modify the copy widths at #R$7318(#N$7319) and
+. #R$72E5(#N$72E6) to #N$20.
+N $73A4 Copy the default rectangle.
+  $73A4,$05 Call #R$7361 with the loop stop set to #N$05.
+  $73A9,$02 Step past this opcode.
   $73AB,$03 Jump to #R$6E53.
-N $73AE Turns a character row in #REGb and a column in #REGc into a pointer
+
+c $73AE Address Attribute Row
+@ $73AE label=AttributeRow
+D $73AE Turns a character row in #REGb and a column in #REGc into a pointer
 . inside #R$6C7A.
-@ $73AE label=ResetOrigin_Address
+R $73AE B Character row
+R $73AE C Column
+R $73AE O:HL Attribute pointer
   $73AE,$03 Copy the row into #REGhl.
-  $73B1,$05 Multiply by #N($20).
+  $73B1,$05 Multiply by #N$20.
   $73B6,$03 Point #REGde at #R$6C7A.
   $73B9,$01 Add that buffer.
   $73BA,$03 Add the column.
   $73BD,$01 Return.
 
-c $73BE Draw Offset #N$0C
+c $73BE Plot Shape With #N$0C
 @ $73BE label=OpcodeF7
-D $73BE Steps the picture pointer and draws with ink offset #N$0C.
+D $73BE Opcode #N$F7 plots the following shape after writing #N$0C to #R$6EEE.
+. No instruction reads that byte, and no picture record uses this opcode.
+R $73BE IX Picture record
   $73BE,$03 Fetch the following shape.
-  $73C1,$02 Ink offset #N$0C.
+  $73C1,$02 Load #N$0C to store at #R$6EEE.
   $73C3,$02 Advance the record pointer.
   $73C5,$03 Jump to #R$6EBD.
 
-c $73C8 Draw Offset #N$04
+c $73C8 Plot Shape With #N$04
 @ $73C8 label=OpcodeF5
-D $73C8 Steps the picture pointer and draws with ink offset #N$04.
+D $73C8 Opcode #N$F5 plots the following shape after writing #N$04 to #R$6EEE.
+. No instruction reads that byte, and no picture record uses this opcode.
+R $73C8 IX Picture record
   $73C8,$03 Fetch the following shape.
-  $73CB,$02 Ink offset #N$04.
+  $73CB,$02 Load #N$04 to store at #R$6EEE.
   $73CD,$02 Advance the record pointer.
   $73CF,$03 Jump to #R$6EBD.
 
-c $73D2 Draw Offset #N$08
+c $73D2 Plot Shape With #N$08
 @ $73D2 label=OpcodeF6
-D $73D2 Steps the picture pointer and draws with ink offset #N$08.
+D $73D2 Opcode #N$F6 plots the following shape after writing #N$08 to #R$6EEE.
+. No instruction reads that byte, and no picture record uses this opcode.
+R $73D2 IX Picture record
   $73D2,$03 Fetch the following shape.
-  $73D5,$02 Ink offset #N$08.
+  $73D5,$02 Load #N$08 to store at #R$6EEE.
   $73D7,$02 Advance the record pointer.
   $73D9,$03 Jump to #R$6EBD.
 
@@ -3329,7 +3396,8 @@ c $73FB Rotate Row Left
 @ $73FB label=PixelRow_Left
 D $73FB Rotates one character row left by one bit.
   $73FB,$02 Stash #REGbc and #REGhl on the stack.
-  $73FD,$04 Add the patched width.
+N $73FD The width immediate is self-modified by #R$7428.
+  $73FD,$04 Add that width.
   $7401,$01 Copy the width into #REGb.
   $7402,$01 Point at the last byte.
   $7403,$02 Copy that address into #REGde (using the stack).
@@ -3339,6 +3407,8 @@ N $7405 Rotate this row left by one bit.
   $7407,$01 Step back one byte.
   $7408,$02 Jump to #R$7405 until the width is rotated.
   $740A,$07 Wrap the outgoing bit into bit 0.
+N $7411 Restore the pointers after the wrap.
+@ $7411 label=PixelRow_Left_Restore
   $7411,$02 Restore #REGhl and #REGbc from the stack.
   $7413,$01 Step to the next pixel row.
   $7414,$02 Jump to #R$73FB until eight pixel rows are done.
@@ -3351,7 +3421,10 @@ D $7417 Rotates consecutive character rows left.
   $7418,$03 Call #R$73F1.
   $741B,$05 Call #R$73FB with eight pixel rows.
   $7420,$01 Restore the row counter from the stack.
-  $7421,$06 Jump to #R$7417 until the patched row count is done.
+  $7421,$01 Increment the row counter.
+  $7422,$01 Copy it into #REGa.
+N $7423 The stop immediate is self-modified by #R$7428.
+  $7423,$04 Jump to #R$7417 until it equals that stop.
   $7427,$01 Return.
 
 c $7428 Draw Horizontal Run
@@ -3360,8 +3433,8 @@ D $7428 Opcode #N$F0 draws a horizontal run of pixels, patching its own length
 . and shift bytes, then steps on by five.
   $7428,$03 Fetch the column.
   $742B,$03 Fetch the row.
-  $742E,$06 Write the row count over the loop immediate.
-  $7434,$06 Write the width over the rotate immediate.
+  $742E,$06 Self-modify the loop stop at #R$7423(#N$7424).
+  $7434,$06 Self-modify the rotate width at #R$73FD(#N$73FE).
   $743A,$03 Call #R$7417.
   $743D,$05 Step the record pointer on by five.
   $7442,$03 Jump to #R$6E53.
@@ -3370,14 +3443,20 @@ c $7445 Rotate Row Right
 @ $7445 label=HorizontalRun_Right
 D $7445 Rotates one character row right by one bit.
   $7445,$02 Stash #REGbc and #REGhl on the stack.
-  $7447,$02 Force a full-width rotate.
+N $7447 The width immediate is self-modified by #R$746E.
+  $7447,$02 Load that width.
   $7449,$02 Copy #REGhl to #REGde (using the stack).
 N $744B Rotate this row right by one bit.
 @ $744B label=HorizontalRun_RightBit
   $744B,$02 Rotate this byte right.
   $744D,$01 Step on one byte.
   $744E,$02 Jump to #R$744B until the width is rotated.
-  $7450,$07 Wrap the outgoing bit into bit 7.
+  $7450,$01 Point #REGhl at the start of the row.
+  $7451,$02 Clear bit 7.
+  $7453,$02 Jump to #R$7457 if the outgoing bit is reset.
+  $7455,$02 Set bit 7.
+N $7457 Restore the pointers after the wrap.
+@ $7457 label=HorizontalRun_Right_Restore
   $7457,$02 Restore #REGhl and #REGbc from the stack.
   $7459,$01 Step to the next pixel row.
   $745A,$02 Jump to #R$7445 until eight pixel rows are done.
@@ -3390,7 +3469,10 @@ D $745D Rotates consecutive character rows right.
   $745E,$03 Call #R$73F1.
   $7461,$05 Call #R$7445 with eight pixel rows.
   $7466,$01 Restore the row counter from the stack.
-  $7467,$06 Jump to #R$745D until the patched row count is done.
+  $7467,$01 Increment the row counter.
+  $7468,$01 Copy it into #REGa.
+N $7469 The stop immediate is self-modified by #R$746E.
+  $7469,$04 Jump to #R$745D until it equals that stop.
   $746D,$01 Return.
 
 c $746E Draw Shifted Run
@@ -3399,45 +3481,57 @@ D $746E Opcode #N$EF draws a run that is shifted across the pixel columns, using
 . the same five-byte operand layout.
   $746E,$03 Fetch the column.
   $7471,$03 Fetch the row.
-  $7474,$06 Write the row count over the loop immediate.
-  $747A,$06 Write the width over the rotate immediate.
+  $7474,$06 Self-modify the loop stop at #R$7469(#N$746A).
+  $747A,$06 Self-modify the rotate width at #R$7447(#N$7448).
   $7480,$03 Call #R$745D.
   $7483,$05 Step the record pointer on by five.
   $7488,$03 Jump to #R$6E53.
 
 c $748B Mirror Pixel Row
 @ $748B label=VerticalRun_Mirror
-D $748B Reverses a pixel row about its midpoint.
+D $748B Reverses eight pixel rows of the current character row about its
+. midpoint. #R$74FB patches the span and the inner pair count; #R$74E9
+. and #R$751D patch the outer loop stop.
+R $748B B Character row
+R $748B C Column
   $748B,$01 Stash the row counter on the stack.
   $748C,$03 Call #R$73F1.
   $748F,$01 Stash the start of the row on the stack.
-  $7490,$03 Load the patched width.
-  $7493,$02 Eight pixel rows.
+N $7490 The width immediate is self-modified by #R$74FB.
+  $7490,$03 Load that width.
+  $7493,$02 Count the #N$08 pixel rows to reverse.
   $7495,$03 Point #REGde at the start and #REGhl at the far end.
-N $7498 Reverse eight bytes of this pixel row.
+N $7498 Reverse this pixel row from both ends.
 @ $7498 label=VerticalRun_MirrorRow
   $7498,$03 Stash #REGhl, #REGde and #REGbc on the stack.
-  $749B,$02 Force a full-width reverse.
+N $749B The inner count immediate is self-modified by #R$74FB.
+  $749B,$02 Load that count.
 N $749D Reverse one pair of bytes.
 @ $749D label=VerticalRun_MirrorByte
-  $749D,$08 Reverse the bytes at both ends of the row.
+  $749D,$08 Reverse the bits of the bytes at both ends.
   $74A5,$06 Swap those two bytes.
-  $74AB,$02 Step both pointers.
+  $74AB,$02 Step inward along the row.
   $74AD,$02 Jump to #R$749D until the row is done.
   $74AF,$03 Restore #REGbc, #REGde and #REGhl from the stack.
-  $74B2,$02 Step both pointers.
+  $74B2,$02 Step down one pixel row.
   $74B4,$02 Jump to #R$7498 until eight pixel rows are done.
   $74B6,$01 Restore the row counter from the stack.
-  $74B7,$06 Jump to #R$748B until the patched row count is done.
+  $74B7,$01 Increment the row counter.
+N $74B8 The stop immediate is self-modified by #R$74E9 and #R$751D.
+  $74B8,$05 Jump to #R$748B until the row counter equals that stop.
   $74BD,$01 Return.
 
 c $74BE Mirror Attribute Row
 @ $74BE label=VerticalRun_Copy
 D $74BE Reverses an attribute row about its midpoint.
   $74BE,$01 Stash the row counter on the stack.
-  $74BF,$03 Call #R$738D.
-  $74C2,$03 Load the patched width.
-  $74C5,$04 Point #REGde at the start and #REGhl at the far end.
+  $74BF,$03 Call #R$73AE.
+N $74C2 The width immediate is self-modified by #R$74FB.
+  $74C2,$03 Load that width.
+  $74C5,$01 Stash the start of the row on the stack.
+  $74C6,$01 Add that width.
+  $74C7,$01 Point at the last byte.
+  $74C8,$01 Restore the start into #REGde.
   $74C9,$02 Copy #N$0100 bytes.
 N $74CB Swap one reversed pair.
 @ $74CB label=VerticalRun_CopyByte
@@ -3445,7 +3539,9 @@ N $74CB Swap one reversed pair.
   $74D1,$02 Step both pointers.
   $74D3,$02 Jump to #R$74CB until the row is done.
   $74D5,$01 Restore the row counter from the stack.
-  $74D6,$06 Jump to #R$74BE until the patched row count is done.
+  $74D6,$01 Increment the row counter.
+N $74D7 The stop immediate is self-modified by #R$74E9 and #R$751D.
+  $74D7,$05 Jump to #R$74BE until the row counter equals that stop.
   $74DC,$01 Return.
 
 c $74DD Reverse Byte Bits
@@ -3464,17 +3560,22 @@ c $74E9 Patch Vertical Shift
 @ $74E9 label=VerticalRun_Patch
 D $74E9 Writes the next picture byte over the vertical-shift immediates and
 . draws both layers.
-  $74E9,$09 Write the row count over both loop immediates.
+  $74E9,$09 Self-modify the loop stops at #R$74B8(#N$74B9) and
+. #R$74D7(#N$74D8).
   $74F2,$03 Fetch the shift.
   $74F5,$03 Fetch the Y coordinate.
   $74F8,$03 Fetch the X coordinate.
 N $74FB Patch the offset immediates and draw both layers.
 @ $74FB label=VerticalRun_Draw
-  $74FB,$06 Write the shift into both offset immediates.
+  $74FB,$06 Self-modify the reverse widths at #R$7490(#N$7491) and
+. #R$74C2(#N$74C3).
   $7501,$02 Halve the shift.
-  $7503,$06 Write it into both inner byte counts.
+  $7503,$06 Self-modify the inner counts at #R$749B(#N$749C) and
+. #R$74C9(#N$74CA).
 N $7509 Reverse the pixels.
-  $7509,$05 Call #R$748B.
+  $7509,$01 Stash the coordinates on the stack.
+  $750A,$03 Call #R$748B.
+  $750D,$01 Restore the coordinates from the stack.
 N $750E Reverse the attributes.
   $750E,$03 Call #R$74BE.
   $7511,$01 Return.
@@ -3490,9 +3591,10 @@ D $7512 Opcode #N$EE patches the vertical shift and steps the picture pointer on
 c $751D Draw Fixed Vertical Stroke
 @ $751D label=FixedVertical
 D $751D Used for picture record #N$FA. The shift is forced to #N$0C.
-  $751D,$08 Write #N$0C over the row-count immediates.
-  $7525,$02 Width #N$20.
-  $7527,$03 Offset #N($0000,$04,$04).
+  $751D,$08 Self-modify the loop stops at #R$74B8(#N$74B9) and
+. #R$74D7(#N$74D8) to #N$0C.
+  $7525,$02 Reverse all #N$20 character columns of the illustration.
+  $7527,$03 Start at column #N($00), row #N$00.
   $752A,$03 Call #R$74FB.
   $752D,$02 Advance the record pointer.
   $752F,$03 Jump to #R$6E53.
@@ -5122,7 +5224,741 @@ N $9382 Object #N($A4), "".
 B $9382,$01 Terminator.
 
 u $9383
-B $9383,$2E9
+D $9383 #BUILDICTOLD Leftover object phrases after #R$8CE6, in the same
+. #N$7E-terminated token form. Tokens index #R$93D0, not #R$B1BC.
+N $9383 Leftover object #N($A5), "====?ook,".
+B $9383,$09 #OLDTOKENS$09
+B $938C,$01 Terminator.
+N $938D Leftover object #N($A6), "ice wall spell,".
+B $938D,$05 #OLDTOKENS$05
+B $9392,$01 Terminator.
+N $9393 Leftover object #N($A7), "small silver obelisk,".
+B $9393,$0C #OLDTOKENS$0C
+B $939F,$01 Terminator.
+N $93A0 Leftover object #N($A8), "".
+B $93A0,$01 Terminator.
+N $93A1 Leftover object #N($A9), "mind shield spell,".
+B $93A1,$08 #OLDTOKENS$08
+B $93A9,$01 Terminator.
+N $93AA Leftover object #N($AA), "skinned yeti,".
+B $93AA,$09 #OLDTOKENS$09
+B $93B3,$01 Terminator.
+N $93B4 Leftover object #N($AB), "dead yeti,".
+B $93B4,$07 #OLDTOKENS$07
+B $93BB,$01 Terminator.
+N $93BC Leftover object #N($AC+(#PC-$93BC)), "".
+B $93BC,$01 Terminator.
+L $93BC,$01,$12,$02
+N $93CE Leftover dictionary tokens, "====".
+B $93CE,$02 #OLDTOKENS$02
+
+u $93D0
+D $93D0 An unused 256-word dictionary in the same bit-7-terminated form as
+. #R$B1BC. The phrases are older and longer. #R$62D7 reads #R$B1BC instead. The
+. first word is empty: its only byte is #N$80.
+N $93D0 "#STR(#PC)".
+B $93D0,$01,c$01 Terminator.
+N $93D1 "#STR(#PC)".
+T $93D1,$0B
+B $93DC,$01,c$01 Terminator.
+N $93DD "#STR(#PC)".
+T $93DD,$0B
+B $93E8,$01,c$01 Terminator.
+N $93E9 "#STR(#PC)".
+T $93E9,$0B
+B $93F4,$01,c$01 Terminator.
+N $93F5 "#STR(#PC)".
+T $93F5,$0B
+B $9400,$01,c$01 Terminator.
+N $9401 "#STR(#PC)".
+T $9401,$0B
+B $940C,$01,c$01 Terminator.
+N $940D "#STR(#PC)".
+T $940D,$0A
+B $9417,$01,c$01 Terminator.
+N $9418 "#STR(#PC)".
+T $9418,$0A
+B $9422,$01,c$01 Terminator.
+N $9423 "#STR(#PC)".
+T $9423,$09
+B $942C,$01,c$01 Terminator.
+N $942D "#STR(#PC)".
+T $942D,$09
+B $9436,$01,c$01 Terminator.
+N $9437 "#STR(#PC)".
+T $9437,$09
+B $9440,$01,c$01 Terminator.
+N $9441 "#STR(#PC)".
+T $9441,$08
+B $9449,$01,c$01 Terminator.
+N $944A "#STR(#PC)".
+T $944A,$07
+B $9451,$01,c$01 Terminator.
+N $9452 "#STR(#PC)".
+T $9452,$07
+B $9459,$01,c$01 Terminator.
+N $945A "#STR(#PC)".
+T $945A,$07
+B $9461,$01,c$01 Terminator.
+N $9462 "#STR(#PC)".
+T $9462,$07
+B $9469,$01,c$01 Terminator.
+N $946A "#STR(#PC)".
+T $946A,$07
+B $9471,$01,c$01 Terminator.
+N $9472 "#STR(#PC)".
+T $9472,$07
+B $9479,$01,c$01 Terminator.
+N $947A "#STR(#PC)".
+T $947A,$06
+B $9480,$01,c$01 Terminator.
+N $9481 "#STR(#PC)".
+T $9481,$06
+B $9487,$01,c$01 Terminator.
+N $9488 "#STR(#PC)".
+T $9488,$06
+B $948E,$01,c$01 Terminator.
+N $948F "#STR(#PC)".
+T $948F,$05
+B $9494,$01,c$01 Terminator.
+N $9495 "#STR(#PC)".
+T $9495,$05
+B $949A,$01,c$01 Terminator.
+N $949B "#STR(#PC)".
+T $949B,$05
+B $94A0,$01,c$01 Terminator.
+N $94A1 "#STR(#PC)".
+T $94A1,$05
+B $94A6,$01,c$01 Terminator.
+N $94A7 "#STR(#PC)".
+T $94A7,$05
+B $94AC,$01,c$01 Terminator.
+N $94AD "#STR(#PC)".
+B $94AD,$01,c$01 Terminator.
+N $94AE "#STR(#PC)".
+T $94AE,$05
+B $94B3,$01,c$01 Terminator.
+N $94B4 "#STR(#PC)".
+T $94B4,$04
+B $94B8,$01,c$01 Terminator.
+N $94B9 "#STR(#PC)".
+T $94B9,$04
+B $94BD,$01,c$01 Terminator.
+N $94BE "#STR(#PC)".
+T $94BE,$04
+B $94C2,$01,c$01 Terminator.
+N $94C3 "#STR(#PC)".
+T $94C3,$04
+B $94C7,$01,c$01 Terminator.
+N $94C8 "#STR(#PC)".
+B $94C8,$01,c$01 Terminator.
+N $94C9 "#STR(#PC)".
+B $94C9,$01,c$01 Terminator.
+N $94CA "#STR(#PC)".
+T $94CA,$04
+B $94CE,$01,c$01 Terminator.
+N $94CF "#STR(#PC)".
+T $94CF,$04
+B $94D3,$01,c$01 Terminator.
+N $94D4 "#STR(#PC)".
+T $94D4,$04
+B $94D8,$01,c$01 Terminator.
+N $94D9 "#STR(#PC)".
+B $94D9,$01,c$01 Terminator.
+N $94DA "#STR(#PC)".
+T $94DA,$03
+B $94DD,$01,c$01 Terminator.
+N $94DE "#STR(#PC)".
+B $94DE,$01,c$01 Terminator.
+N $94DF "#STR(#PC)".
+B $94DF,$01,c$01 Terminator.
+N $94E0 "#STR(#PC)".
+B $94E0,$01,c$01 Terminator.
+N $94E1 "#STR(#PC)".
+T $94E1,$03
+B $94E4,$01,c$01 Terminator.
+N $94E5 "#STR(#PC)".
+T $94E5,$03
+B $94E8,$01,c$01 Terminator.
+N $94E9 "#STR(#PC)".
+B $94E9,$01,c$01 Terminator.
+N $94EA "#STR(#PC)".
+T $94EA,$03
+B $94ED,$01,c$01 Terminator.
+N $94EE "#STR(#PC)".
+B $94EE,$01,c$01 Terminator.
+N $94EF "#STR(#PC)".
+B $94EF,$01,c$01 Terminator.
+N $94F0 "#STR(#PC)".
+B $94F0,$01,c$01 Terminator.
+N $94F1 "#STR(#PC)".
+B $94F1,$01,c$01 Terminator.
+N $94F2 "#STR(#PC)".
+T $94F2,$03
+B $94F5,$01,c$01 Terminator.
+N $94F6 "#STR(#PC)".
+T $94F6,$03
+B $94F9,$01,c$01 Terminator.
+N $94FA "#STR(#PC)".
+B $94FA,$01,c$01 Terminator.
+N $94FB "#STR(#PC)".
+T $94FB,$03
+B $94FE,$01,c$01 Terminator.
+N $94FF "#STR(#PC)".
+T $94FF,$02
+B $9501,$01,c$01 Terminator.
+N $9502 "#STR(#PC)".
+T $9502,$02
+B $9504,$01,c$01 Terminator.
+N $9505 "#STR(#PC)".
+T $9505,$02
+B $9507,$01,c$01 Terminator.
+N $9508 "#STR(#PC)".
+T $9508,$02
+B $950A,$01,c$01 Terminator.
+N $950B "#STR(#PC)".
+B $950B,$01,c$01 Terminator.
+N $950C "#STR(#PC)".
+T $950C,$02
+B $950E,$01,c$01 Terminator.
+N $950F "#STR(#PC)".
+T $950F,$02
+B $9511,$01,c$01 Terminator.
+N $9512 "#STR(#PC)".
+B $9512,$01,c$01 Terminator.
+N $9513 "#STR(#PC)".
+T $9513,$02
+B $9515,$01,c$01 Terminator.
+N $9516 "#STR(#PC)".
+B $9516,$01,c$01 Terminator.
+N $9517 "#STR(#PC)".
+T $9517,$02
+B $9519,$01,c$01 Terminator.
+N $951A "#STR(#PC)".
+B $951A,$01,c$01 Terminator.
+N $951B "#STR(#PC)".
+B $951B,$01,c$01 Terminator.
+N $951C "#STR(#PC)".
+B $951C,$01,c$01 Terminator.
+N $951D "#STR(#PC)".
+B $951D,$01,c$01 Terminator.
+N $951E "#STR(#PC)".
+B $951E,$01,c$01 Terminator.
+N $951F "#STR(#PC)".
+B $951F,$01,c$01 Terminator.
+N $9520 "#STR(#PC)".
+B $9520,$01,c$01 Terminator.
+N $9521 "#STR(#PC)".
+B $9521,$01,c$01 Terminator.
+N $9522 "#STR(#PC)".
+B $9522,$01,c$01 Terminator.
+N $9523 "#STR(#PC)".
+T $9523,$02
+B $9525,$01,c$01 Terminator.
+N $9526 "#STR(#PC)".
+T $9526,$02
+B $9528,$01,c$01 Terminator.
+N $9529 "#STR(#PC)".
+B $9529,$01,c$01 Terminator.
+N $952A "#STR(#PC)".
+B $952A,$01,c$01 Terminator.
+N $952B "#STR(#PC)".
+B $952B,$01,c$01 Terminator.
+N $952C "#STR(#PC)".
+B $952C,$01,c$01 Terminator.
+N $952D "#STR(#PC)".
+B $952D,$01,c$01 Terminator.
+N $952E "#STR(#PC)".
+T $952E,$02
+B $9530,$01,c$01 Terminator.
+N $9531 "#STR(#PC)".
+B $9531,$01,c$01 Terminator.
+N $9532 "#STR(#PC)".
+B $9532,$01,c$01 Terminator.
+N $9533 "#STR(#PC)".
+B $9533,$01,c$01 Terminator.
+N $9534 "#STR(#PC)".
+B $9534,$01,c$01 Terminator.
+N $9535 "#STR(#PC)".
+T $9535,$02
+B $9537,$01,c$01 Terminator.
+N $9538 "#STR(#PC)".
+B $9538,$01,c$01 Terminator.
+N $9539 "#STR(#PC)".
+T $9539,$01
+B $953A,$01,c$01 Terminator.
+N $953B "#STR(#PC)".
+B $953B,$01,c$01 Terminator.
+N $953C "#STR(#PC)".
+T $953C,$01
+B $953D,$01,c$01 Terminator.
+N $953E "#STR(#PC)".
+T $953E,$01
+B $953F,$01,c$01 Terminator.
+N $9540 "#STR(#PC)".
+T $9540,$01
+B $9541,$01,c$01 Terminator.
+N $9542 "#STR(#PC)".
+T $9542,$01
+B $9543,$01,c$01 Terminator.
+N $9544 "#STR(#PC)".
+B $9544,$01,c$01 Terminator.
+N $9545 "#STR(#PC)".
+T $9545,$01
+B $9546,$01,c$01 Terminator.
+N $9547 "#STR(#PC)".
+T $9547,$01
+B $9548,$01,c$01 Terminator.
+N $9549 "#STR(#PC)".
+B $9549,$01,c$01 Terminator.
+N $954A "#STR(#PC)".
+B $954A,$01,c$01 Terminator.
+N $954B "#STR(#PC)".
+B $954B,$01,c$01 Terminator.
+N $954C "#STR(#PC)".
+B $954C,$01,c$01 Terminator.
+N $954D "#STR(#PC)".
+B $954D,$01,c$01 Terminator.
+N $954E "#STR(#PC)".
+B $954E,$01,c$01 Terminator.
+N $954F "#STR(#PC)".
+B $954F,$01,c$01 Terminator.
+N $9550 "#STR(#PC)".
+B $9550,$01,c$01 Terminator.
+N $9551 "#STR(#PC)".
+B $9551,$01,c$01 Terminator.
+N $9552 "#STR(#PC)".
+B $9552,$01,c$01 Terminator.
+N $9553 "#STR(#PC)".
+B $9553,$01,c$01 Terminator.
+N $9554 "#STR(#PC)".
+B $9554,$01,c$01 Terminator.
+N $9555 "#STR(#PC)".
+B $9555,$01,c$01 Terminator.
+N $9556 "#STR(#PC)".
+B $9556,$01,c$01 Terminator.
+N $9557 "#STR(#PC)".
+B $9557,$01,c$01 Terminator.
+N $9558 "#STR(#PC)".
+B $9558,$01,c$01 Terminator.
+N $9559 "#STR(#PC)".
+B $9559,$01,c$01 Terminator.
+N $955A "#STR(#PC)".
+B $955A,$01,c$01 Terminator.
+N $955B "#STR(#PC)".
+B $955B,$01,c$01 Terminator.
+N $955C "#STR(#PC)".
+B $955C,$01,c$01 Terminator.
+N $955D "#STR(#PC)".
+B $955D,$01,c$01 Terminator.
+N $955E "#STR(#PC)".
+B $955E,$01,c$01 Terminator.
+N $955F "#STR(#PC)".
+B $955F,$01,c$01 Terminator.
+N $9560 "#STR(#PC)".
+B $9560,$01,c$01 Terminator.
+N $9561 "#STR(#PC)".
+B $9561,$01,c$01 Terminator.
+N $9562 "#STR(#PC)".
+B $9562,$01,c$01 Terminator.
+N $9563 "#STR(#PC)".
+T $9563,$01
+B $9564,$01,c$01 Terminator.
+N $9565 "#STR(#PC)".
+T $9565,$01
+B $9566,$01,c$01 Terminator.
+N $9567 "#STR(#PC)".
+T $9567,$01
+B $9568,$01,c$01 Terminator.
+N $9569 "#STR(#PC)".
+B $9569,$01,c$01 Terminator.
+N $956A "#STR(#PC)".
+T $956A,$01
+B $956B,$01,c$01 Terminator.
+N $956C "#STR(#PC)".
+T $956C,$01
+B $956D,$01,c$01 Terminator.
+N $956E "#STR(#PC)".
+T $956E,$01
+B $956F,$01,c$01 Terminator.
+N $9570 "#STR(#PC)".
+T $9570,$01
+B $9571,$01,c$01 Terminator.
+N $9572 "#STR(#PC)".
+T $9572,$01
+B $9573,$01,c$01 Terminator.
+N $9574 "#STR(#PC)".
+T $9574,$01
+B $9575,$01,c$01 Terminator.
+N $9576 "#STR(#PC)".
+T $9576,$01
+B $9577,$01,c$01 Terminator.
+N $9578 "#STR(#PC)".
+T $9578,$01
+B $9579,$01,c$01 Terminator.
+N $957A "#STR(#PC)".
+T $957A,$01
+B $957B,$01,c$01 Terminator.
+N $957C "#STR(#PC)".
+T $957C,$01
+B $957D,$01,c$01 Terminator.
+N $957E "#STR(#PC)".
+T $957E,$01
+B $957F,$01,c$01 Terminator.
+N $9580 "#STR(#PC)".
+T $9580,$01
+B $9581,$01,c$01 Terminator.
+N $9582 "#STR(#PC)".
+T $9582,$01
+B $9583,$01,c$01 Terminator.
+N $9584 "#STR(#PC)".
+T $9584,$01
+B $9585,$01,c$01 Terminator.
+N $9586 "#STR(#PC)".
+T $9586,$01
+B $9587,$01,c$01 Terminator.
+N $9588 "#STR(#PC)".
+T $9588,$01
+B $9589,$01,c$01 Terminator.
+N $958A "#STR(#PC)".
+T $958A,$01
+B $958B,$01,c$01 Terminator.
+N $958C "#STR(#PC)".
+T $958C,$01
+B $958D,$01,c$01 Terminator.
+N $958E "#STR(#PC)".
+T $958E,$01
+B $958F,$01,c$01 Terminator.
+N $9590 "#STR(#PC)".
+T $9590,$01
+B $9591,$01,c$01 Terminator.
+N $9592 "#STR(#PC)".
+T $9592,$01
+B $9593,$01,c$01 Terminator.
+N $9594 "#STR(#PC)".
+T $9594,$01
+B $9595,$01,c$01 Terminator.
+N $9596 "#STR(#PC)".
+T $9596,$01
+B $9597,$01,c$01 Terminator.
+N $9598 "#STR(#PC)".
+T $9598,$01
+B $9599,$01,c$01 Terminator.
+N $959A "#STR(#PC)".
+T $959A,$01
+B $959B,$01,c$01 Terminator.
+N $959C "#STR(#PC)".
+T $959C,$01
+B $959D,$01,c$01 Terminator.
+N $959E "#STR(#PC)".
+T $959E,$01
+B $959F,$01,c$01 Terminator.
+N $95A0 "#STR(#PC)".
+T $95A0,$01
+B $95A1,$01,c$01 Terminator.
+N $95A2 "#STR(#PC)".
+T $95A2,$01
+B $95A3,$01,c$01 Terminator.
+N $95A4 "#STR(#PC)".
+T $95A4,$01
+B $95A5,$01,c$01 Terminator.
+N $95A6 "#STR(#PC)".
+T $95A6,$01
+B $95A7,$01,c$01 Terminator.
+N $95A8 "#STR(#PC)".
+T $95A8,$01
+B $95A9,$01,c$01 Terminator.
+N $95AA "#STR(#PC)".
+T $95AA,$01
+B $95AB,$01,c$01 Terminator.
+N $95AC "#STR(#PC)".
+T $95AC,$01
+B $95AD,$01,c$01 Terminator.
+N $95AE "#STR(#PC)".
+T $95AE,$01
+B $95AF,$01,c$01 Terminator.
+N $95B0 "#STR(#PC)".
+T $95B0,$01
+B $95B1,$01,c$01 Terminator.
+N $95B2 "#STR(#PC)".
+T $95B2,$01
+B $95B3,$01,c$01 Terminator.
+N $95B4 "#STR(#PC)".
+T $95B4,$01
+B $95B5,$01,c$01 Terminator.
+N $95B6 "#STR(#PC)".
+T $95B6,$01
+B $95B7,$01,c$01 Terminator.
+N $95B8 "#STR(#PC)".
+T $95B8,$01
+B $95B9,$01,c$01 Terminator.
+N $95BA "#STR(#PC)".
+T $95BA,$01
+B $95BB,$01,c$01 Terminator.
+N $95BC "#STR(#PC)".
+T $95BC,$01
+B $95BD,$01,c$01 Terminator.
+N $95BE "#STR(#PC)".
+T $95BE,$01
+B $95BF,$01,c$01 Terminator.
+N $95C0 "#STR(#PC)".
+T $95C0,$01
+B $95C1,$01,c$01 Terminator.
+N $95C2 "#STR(#PC)".
+T $95C2,$01
+B $95C3,$01,c$01 Terminator.
+N $95C4 "#STR(#PC)".
+T $95C4,$01
+B $95C5,$01,c$01 Terminator.
+N $95C6 "#STR(#PC)".
+T $95C6,$01
+B $95C7,$01,c$01 Terminator.
+N $95C8 "#STR(#PC)".
+T $95C8,$01
+B $95C9,$01,c$01 Terminator.
+N $95CA "#STR(#PC)".
+T $95CA,$01
+B $95CB,$01,c$01 Terminator.
+N $95CC "#STR(#PC)".
+T $95CC,$01
+B $95CD,$01,c$01 Terminator.
+N $95CE "#STR(#PC)".
+T $95CE,$01
+B $95CF,$01,c$01 Terminator.
+N $95D0 "#STR(#PC)".
+T $95D0,$01
+B $95D1,$01,c$01 Terminator.
+N $95D2 "#STR(#PC)".
+T $95D2,$01
+B $95D3,$01,c$01 Terminator.
+N $95D4 "#STR(#PC)".
+T $95D4,$01
+B $95D5,$01,c$01 Terminator.
+N $95D6 "#STR(#PC)".
+T $95D6,$01
+B $95D7,$01,c$01 Terminator.
+N $95D8 "#STR(#PC)".
+T $95D8,$01
+B $95D9,$01,c$01 Terminator.
+N $95DA "#STR(#PC)".
+T $95DA,$01
+B $95DB,$01,c$01 Terminator.
+N $95DC "#STR(#PC)".
+T $95DC,$01
+B $95DD,$01,c$01 Terminator.
+N $95DE "#STR(#PC)".
+T $95DE,$01
+B $95DF,$01,c$01 Terminator.
+N $95E0 "#STR(#PC)".
+T $95E0,$01
+B $95E1,$01,c$01 Terminator.
+N $95E2 "#STR(#PC)".
+T $95E2,$01
+B $95E3,$01,c$01 Terminator.
+N $95E4 "#STR(#PC)".
+T $95E4,$01
+B $95E5,$01,c$01 Terminator.
+N $95E6 "#STR(#PC)".
+T $95E6,$01
+B $95E7,$01,c$01 Terminator.
+N $95E8 "#STR(#PC)".
+T $95E8,$01
+B $95E9,$01,c$01 Terminator.
+N $95EA "#STR(#PC)".
+T $95EA,$01
+B $95EB,$01,c$01 Terminator.
+N $95EC "#STR(#PC)".
+T $95EC,$01
+B $95ED,$01,c$01 Terminator.
+N $95EE "#STR(#PC)".
+T $95EE,$01
+B $95EF,$01,c$01 Terminator.
+N $95F0 "#STR(#PC)".
+T $95F0,$01
+B $95F1,$01,c$01 Terminator.
+N $95F2 "#STR(#PC)".
+T $95F2,$01
+B $95F3,$01,c$01 Terminator.
+N $95F4 "#STR(#PC)".
+T $95F4,$01
+B $95F5,$01,c$01 Terminator.
+N $95F6 "#STR(#PC)".
+T $95F6,$01
+B $95F7,$01,c$01 Terminator.
+N $95F8 "#STR(#PC)".
+T $95F8,$01
+B $95F9,$01,c$01 Terminator.
+N $95FA "#STR(#PC)".
+T $95FA,$01
+B $95FB,$01,c$01 Terminator.
+N $95FC "#STR(#PC)".
+T $95FC,$01
+B $95FD,$01,c$01 Terminator.
+N $95FE "#STR(#PC)".
+T $95FE,$01
+B $95FF,$01,c$01 Terminator.
+N $9600 "#STR(#PC)".
+T $9600,$01
+B $9601,$01,c$01 Terminator.
+N $9602 "#STR(#PC)".
+T $9602,$01
+B $9603,$01,c$01 Terminator.
+N $9604 "#STR(#PC)".
+T $9604,$01
+B $9605,$01,c$01 Terminator.
+N $9606 "#STR(#PC)".
+T $9606,$01
+B $9607,$01,c$01 Terminator.
+N $9608 "#STR(#PC)".
+T $9608,$01
+B $9609,$01,c$01 Terminator.
+N $960A "#STR(#PC)".
+T $960A,$01
+B $960B,$01,c$01 Terminator.
+N $960C "#STR(#PC)".
+T $960C,$01
+B $960D,$01,c$01 Terminator.
+N $960E "#STR(#PC)".
+T $960E,$01
+B $960F,$01,c$01 Terminator.
+N $9610 "#STR(#PC)".
+T $9610,$01
+B $9611,$01,c$01 Terminator.
+N $9612 "#STR(#PC)".
+T $9612,$01
+B $9613,$01,c$01 Terminator.
+N $9614 "#STR(#PC)".
+T $9614,$01
+B $9615,$01,c$01 Terminator.
+N $9616 "#STR(#PC)".
+T $9616,$01
+B $9617,$01,c$01 Terminator.
+N $9618 "#STR(#PC)".
+T $9618,$01
+B $9619,$01,c$01 Terminator.
+N $961A "#STR(#PC)".
+T $961A,$01
+B $961B,$01,c$01 Terminator.
+N $961C "#STR(#PC)".
+T $961C,$01
+B $961D,$01,c$01 Terminator.
+N $961E "#STR(#PC)".
+T $961E,$01
+B $961F,$01,c$01 Terminator.
+N $9620 "#STR(#PC)".
+T $9620,$01
+B $9621,$01,c$01 Terminator.
+N $9622 "#STR(#PC)".
+T $9622,$01
+B $9623,$01,c$01 Terminator.
+N $9624 "#STR(#PC)".
+T $9624,$01
+B $9625,$01,c$01 Terminator.
+N $9626 "#STR(#PC)".
+T $9626,$01
+B $9627,$01,c$01 Terminator.
+N $9628 "#STR(#PC)".
+T $9628,$01
+B $9629,$01,c$01 Terminator.
+N $962A "#STR(#PC)".
+T $962A,$01
+B $962B,$01,c$01 Terminator.
+N $962C "#STR(#PC)".
+T $962C,$01
+B $962D,$01,c$01 Terminator.
+N $962E "#STR(#PC)".
+T $962E,$01
+B $962F,$01,c$01 Terminator.
+N $9630 "#STR(#PC)".
+T $9630,$01
+B $9631,$01,c$01 Terminator.
+N $9632 "#STR(#PC)".
+T $9632,$01
+B $9633,$01,c$01 Terminator.
+N $9634 "#STR(#PC)".
+T $9634,$01
+B $9635,$01,c$01 Terminator.
+N $9636 "#STR(#PC)".
+T $9636,$01
+B $9637,$01,c$01 Terminator.
+N $9638 "#STR(#PC)".
+T $9638,$01
+B $9639,$01,c$01 Terminator.
+N $963A "#STR(#PC)".
+T $963A,$01
+B $963B,$01,c$01 Terminator.
+N $963C "#STR(#PC)".
+T $963C,$01
+B $963D,$01,c$01 Terminator.
+N $963E "#STR(#PC)".
+T $963E,$01
+B $963F,$01,c$01 Terminator.
+N $9640 "#STR(#PC)".
+T $9640,$01
+B $9641,$01,c$01 Terminator.
+N $9642 "#STR(#PC)".
+T $9642,$01
+B $9643,$01,c$01 Terminator.
+N $9644 "#STR(#PC)".
+T $9644,$01
+B $9645,$01,c$01 Terminator.
+N $9646 "#STR(#PC)".
+T $9646,$01
+B $9647,$01,c$01 Terminator.
+N $9648 "#STR(#PC)".
+T $9648,$01
+B $9649,$01,c$01 Terminator.
+N $964A "#STR(#PC)".
+T $964A,$01
+B $964B,$01,c$01 Terminator.
+N $964C "#STR(#PC)".
+T $964C,$01
+B $964D,$01,c$01 Terminator.
+N $964E "#STR(#PC)".
+T $964E,$01
+B $964F,$01,c$01 Terminator.
+N $9650 "#STR(#PC)".
+T $9650,$01
+B $9651,$01,c$01 Terminator.
+N $9652 "#STR(#PC)".
+T $9652,$01
+B $9653,$01,c$01 Terminator.
+N $9654 "#STR(#PC)".
+T $9654,$01
+B $9655,$01,c$01 Terminator.
+N $9656 "#STR(#PC)".
+T $9656,$01
+B $9657,$01,c$01 Terminator.
+N $9658 "#STR(#PC)".
+T $9658,$01
+B $9659,$01,c$01 Terminator.
+N $965A "#STR(#PC)".
+T $965A,$01
+B $965B,$01,c$01 Terminator.
+N $965C "#STR(#PC)".
+T $965C,$01
+B $965D,$01,c$01 Terminator.
+N $965E "#STR(#PC)".
+T $965E,$01
+B $965F,$01,c$01 Terminator.
+N $9660 "#STR(#PC)".
+T $9660,$01
+B $9661,$01,c$01 Terminator.
+N $9662 "#STR(#PC)".
+T $9662,$01
+B $9663,$01,c$01 Terminator.
+N $9664 "#STR(#PC)".
+T $9664,$01
+B $9665,$01,c$01 Terminator.
+N $9666 "#STR(#PC)".
+T $9666,$01
+B $9667,$01,c$01 Terminator.
+N $9668 "#STR(#PC)".
+T $9668,$01
+B $9669,$01,c$01 Terminator.
+N $966A "#STR(#PC)".
+T $966A,$01
+B $966B,$01,c$01 Terminator.
 
 u $966C
 B $966C,$6D
@@ -5605,7 +6441,7 @@ N $9988 Flag #R$5DA9(#N$22) equals #N($0E), object #N$78 is held or here.
   $998F,$02 #R$695D "#R$928A(chalk pentagram on the floor)".
   $9991,$03 #R$6A11 #R$5D8E and #N$01.
 N $9994 End of the table.
-  $9994,$01
+  $9994,$01 Terminator.
 
 u $9995
 B $9995,$86
@@ -7738,7 +8574,7 @@ N $A71A any ORB.
   $A71A,$02 Verb any, noun ORB or SPEL.
   $A71C,$02 #R$63E6 "#R$8C8D(Be more specific)", then stop.
 N $A71E End of the table.
-  $A71E,$01
+  $A71E,$01 Terminator.
 
 b $A71F Vocabulary Lead-In
 @ $A71F label=VocabularyLead
@@ -7752,7 +8588,8 @@ D $A720 Four-letter words and their token ids. A short word is padded with
 . #N$FF ends the table. Directions, GET, DROP, WEAR and QUIT are the first
 . entries.
 N $A720 There are #N$DA words, then the terminator at #R$AB62.
-  $A720,$04 "#CHR(#PEEK(#PC))#CHR(#PEEK(#PC+$01))#CHR(#PEEK(#PC+$02))#CHR(#PEEK(#PC+$03))"
+  $A720,$04 "#CHR(#PEEK(#PC))#CHR(#PEEK(#PC+$01))
+. #CHR(#PEEK(#PC+$02))#CHR(#PEEK(#PC+$03))"
   $A724,$01 Token #N(#PEEK(#PC)).
 L $A720,$05,$DB,$02
 
@@ -8177,53 +9014,53 @@ N $AD51 Room #N$6E.
 N $AD52 Room #N$6F.
   $AD52,$01 Room #N$6F with bit 7 set.
 
-t $AD53 Assembler Source (Scroll)
+u $AD53 Assembler Source (Scroll)
 @ $AD53 label=AssemblerSource_Scroll
 D $AD53 Part of the game's assembler source that happened to be in memory when
 . the data was saved, after the exit table at #R$AB67. Each line is a two-byte
 . line number, a length byte, the text and #N($0D), the same layout as #R$B74F.
 . The lines are 3760 to 4140 of a cursor-scroll listing.
-  $AD53,$02 The end of the line before.
-  $AD55,$13 #HTML(Line 3760: <code>LD (CURSADD),#REGhl</code>.)
-  $AD68,$0C #HTML(Line 3770: <code>JP dispr</code>.)
-  $AD74,$09 #HTML(Line 3780: <code>.scro</code>.)
-  $AD7D,$12 #HTML(Line 3790: <code>LD #REGa,(CURSROW)</code>.)
-  $AD8F,$09 #HTML(Line 3800: <code>CP 19</code>.)
-  $AD98,$0F #HTML(Line 3810: <code>JR NZ,not19</code>.)
-  $ADA7,$0E #HTML(Line 3820: <code>LD #REGa,(dck)</code>.)
-  $ADB5,$07 #HTML(Line 3830: <code>#N$84 #REGa</code>.)
-  $ADBC,$0E #HTML(Line 3840: <code>JR Z,not19</code>.)
-  $ADCA,$0B #HTML(Line 3850: <code>LD #REGa,13</code>.)
-  $ADD5,$0F #HTML(Line 3860: <code>LD (wbot),#REGa</code>.)
-  $ADE4,$11 #HTML(Line 3870: <code>#N$D6 ak:#N$D6 scrbot</code>.)
-  $ADF5,$12 #HTML(Line 3880: <code>LD #REGa,19:JR lds</code>.)
-  $AE07,$0A #HTML(Line 3890: <code>.not19</code>.)
-  $AE11,$09 #HTML(Line 3900: <code>CP 23</code>.)
-  $AE1A,$0D #HTML(Line 3910: <code>JR C,nsc1</code>.)
-  $AE27,$0D #HTML(Line 3920: <code> #N$D6 scrbot</code>.)
-  $AE34,$0B #HTML(Line 3930: <code>LD #REGa,23</code>.)
-  $AE3F,$1C #HTML(Line 3940: <code>.lds LD (CURSROW),#REGa:#N$D6 fa</code>.)
-  $AE5B,$18 #HTML(Line 3950: <code>XOR #REGa:LD (CURSCOL),#REGa</code>.)
-  $AE73,$0C #HTML(Line 3960: <code>JP dispr</code>.)
-  $AE7F,$09 #HTML(Line 3970: <code>.nsc1</code>.)
-  $AE88,$12 #HTML(Line 3980: <code>LD #REGa,(CURSROW)</code>.)
-  $AE9A,$09 #HTML(Line 3990: <code>INC #REGa</code>.)
-  $AEA3,$12 #HTML(Line 4000: <code>LD (CURSROW),#REGa</code>.)
-  $AEB5,$08 #HTML(Line 4010: <code>#N$D6 fa</code>.)
-  $AEBD,$18 #HTML(Line 4020: <code>XOR #REGa:LD (CURSCOL),#REGa</code>.)
-  $AED5,$0C #HTML(Line 4030: <code>JP dispr</code>.)
-  $AEE1,$08 #HTML(Line 4040: <code>.nsc</code>.)
-  $AEE9,$13 #HTML(Line 4050: <code>LD #REGde,(CURSADD)</code>.)
-  $AEFC,$10 #HTML(Line 4060: <code> LD #REGbc,15360</code>.)
-  $AF0C,$0A #HTML(Line 4070: <code>LD #REGh,0</code>.)
-  $AF16,$0A #HTML(Line 4080: <code>LD #REGl,#REGa</code>.)
-  $AF20,$0D #HTML(Line 4090: <code>ADD #REGhl,#REGhl</code>.)
-  $AF2D,$0D #HTML(Line 4100: <code>ADD #REGhl,#REGhl</code>.)
-  $AF3A,$0D #HTML(Line 4110: <code>ADD #REGhl,#REGhl</code>.)
-  $AF47,$0D #HTML(Line 4120: <code>ADD #REGhl,#REGbc</code>.)
-  $AF54,$2A #HTML(Line 4130: <code>PUSH #REGde:PUSH #REGhl:LD #REGde,BILB:LD
+T $AD53,$02 The end of the line before.
+T $AD55,$13 #HTML(Line 3760: <code>LD (CURSADD),#REGhl</code>.)
+T $AD68,$0C #HTML(Line 3770: <code>JP dispr</code>.)
+T $AD74,$09 #HTML(Line 3780: <code>.scro</code>.)
+T $AD7D,$12 #HTML(Line 3790: <code>LD #REGa,(CURSROW)</code>.)
+T $AD8F,$09 #HTML(Line 3800: <code>CP 19</code>.)
+T $AD98,$0F #HTML(Line 3810: <code>JR NZ,not19</code>.)
+T $ADA7,$0E #HTML(Line 3820: <code>LD #REGa,(dck)</code>.)
+T $ADB5,$07 #HTML(Line 3830: <code>#N$84 #REGa</code>.)
+T $ADBC,$0E #HTML(Line 3840: <code>JR Z,not19</code>.)
+T $ADCA,$0B #HTML(Line 3850: <code>LD #REGa,13</code>.)
+T $ADD5,$0F #HTML(Line 3860: <code>LD (wbot),#REGa</code>.)
+T $ADE4,$11 #HTML(Line 3870: <code>#N$D6 ak:#N$D6 scrbot</code>.)
+T $ADF5,$12 #HTML(Line 3880: <code>LD #REGa,19:JR lds</code>.)
+T $AE07,$0A #HTML(Line 3890: <code>.not19</code>.)
+T $AE11,$09 #HTML(Line 3900: <code>CP 23</code>.)
+T $AE1A,$0D #HTML(Line 3910: <code>JR C,nsc1</code>.)
+T $AE27,$0D #HTML(Line 3920: <code> #N$D6 scrbot</code>.)
+T $AE34,$0B #HTML(Line 3930: <code>LD #REGa,23</code>.)
+T $AE3F,$1C #HTML(Line 3940: <code>.lds LD (CURSROW),#REGa:#N$D6 fa</code>.)
+T $AE5B,$18 #HTML(Line 3950: <code>XOR #REGa:LD (CURSCOL),#REGa</code>.)
+T $AE73,$0C #HTML(Line 3960: <code>JP dispr</code>.)
+T $AE7F,$09 #HTML(Line 3970: <code>.nsc1</code>.)
+T $AE88,$12 #HTML(Line 3980: <code>LD #REGa,(CURSROW)</code>.)
+T $AE9A,$09 #HTML(Line 3990: <code>INC #REGa</code>.)
+T $AEA3,$12 #HTML(Line 4000: <code>LD (CURSROW),#REGa</code>.)
+T $AEB5,$08 #HTML(Line 4010: <code>#N$D6 fa</code>.)
+T $AEBD,$18 #HTML(Line 4020: <code>XOR #REGa:LD (CURSCOL),#REGa</code>.)
+T $AED5,$0C #HTML(Line 4030: <code>JP dispr</code>.)
+T $AEE1,$08 #HTML(Line 4040: <code>.nsc</code>.)
+T $AEE9,$13 #HTML(Line 4050: <code>LD #REGde,(CURSADD)</code>.)
+T $AEFC,$10 #HTML(Line 4060: <code> LD #REGbc,15360</code>.)
+T $AF0C,$0A #HTML(Line 4070: <code>LD #REGh,0</code>.)
+T $AF16,$0A #HTML(Line 4080: <code>LD #REGl,#REGa</code>.)
+T $AF20,$0D #HTML(Line 4090: <code>ADD #REGhl,#REGhl</code>.)
+T $AF2D,$0D #HTML(Line 4100: <code>ADD #REGhl,#REGhl</code>.)
+T $AF3A,$0D #HTML(Line 4110: <code>ADD #REGhl,#REGhl</code>.)
+T $AF47,$0D #HTML(Line 4120: <code>ADD #REGhl,#REGbc</code>.)
+T $AF54,$2A #HTML(Line 4130: <code>PUSH #REGde:PUSH #REGhl:LD #REGde,BILB:LD
 . #REGbc,8*256</code>.)
-  $AF7E,$30 #HTML(Line 4140, cut off after "<code> .acchasc LD #REGa,(#REGhl):LD
+T $AF7E,$30 #HTML(Line 4140, cut off after "<code> .acchasc LD #REGa,(#REGhl):LD
 . (#REGde),#REGa:INC #REGhl:INC #REGde:B</code> ".)
 
 u $AFAE
@@ -9197,7 +10034,11 @@ u $B48E
 B $B48E,$1DE
 
 u $B66C
-B $B66C,$3C
+D $B66C A leftover copy of the first #N$3C object locations; each byte matches
+. #R$B6A8. Nothing reads this table.
+N $B66C Object #N(#PC-$B66C).
+  $B66C,$01 #NOWHERE(#PC).
+L $B66C,$01,$3C
 
 b $B6A8 Initial Object Locations
 @ $B6A8 label=InitialObjects
@@ -9220,7 +10061,7 @@ D $B748 Seven more #N$FC bytes after the last of the #N$A0 objects at #R$B6A8.
 . the padding is unused.
   $B748,$07
 
-t $B74F Assembler Source Leftovers
+u $B74F Assembler Source Leftovers
 @ $B74F label=AssemblerSource_Leftovers
 D $B74F Part of the game's assembler source that happened to be in memory when
 . the data was saved. Each line is a two-byte line number, a length byte, the
@@ -9230,13 +10071,13 @@ D $B74F Part of the game's assembler source that happened to be in memory when
 . treats them as carried. It does treat slot #N$F4 as carried, because the #N$FD
 . at #R$B79C lands there, so #R$6A68 also writes the current room to
 . #R$5DCA(#N$5EBE), a slot no object uses, when dropping everything.
-  $B74F,$0B The end of the line before, "...RD #REGa,(#REGde)".
-  $B75A,$0B #HTML[Line 1090: <code>CP (#REGhl)</code>.]
-  $B765,$0F #HTML(Line 1100: <code>JR Z,found</code>.)
-  $B774,$0A #HTML(Line 1110: <code>INC #REGde</code>.)
-  $B77E,$0A #HTML(Line 1120: <code>LD #REGa,#REGe</code>.)
-  $B788,$0A #HTML(Line 1130: <code>CP mem</code>.)
-  $B792,$06 #HTML(Line 1140, cut off after "<code>JR</code> ".)
+T $B74F,$0B The end of the line before, "...RD #REGa,(#REGde)".
+T $B75A,$0B #HTML[Line 1090: <code>CP (#REGhl)</code>.]
+T $B765,$0F #HTML(Line 1100: <code>JR Z,found</code>.)
+T $B774,$0A #HTML(Line 1110: <code>INC #REGde</code>.)
+T $B77E,$0A #HTML(Line 1120: <code>LD #REGa,#REGe</code>.)
+T $B788,$0A #HTML(Line 1130: <code>CP mem</code>.)
+T $B792,$06 #HTML(Line 1140, cut off after "<code>JR</code> ".)
 
 b $B798 Per-Room Picture Records
 @ $B798 label=RoomRecords
@@ -10114,15 +10955,707 @@ D $C094 One more #N$FF after the record for room #N$6B closes the table. The
 u $C095
 B $C095,$2BB
 
-b $C350 Picture Tiles And Shapes
-@ $C350 label=PictureTilesAndShapes
-D $C350 What the picture records draw with. #R$6FC9 turns a tile number into
-. eight bytes counted from #N(#PC), so tile 0 here is blank, and #R$718B finds a
-. shape by counting #N$FE terminators from #R$C350(#N$C708).
-  $C350,$36A8
+b $C350 Picture Tiles
+@ $C350 label=PictureTiles
+D $C350 Eight-byte tiles. #R$6FC9 multiplies a tile number by eight and adds
+. this address; tile 0 is blank.
+  $C350,$08 #UDGTABLE(default,centre)
+. { #N((#PC-$C350)/$08) | #UDG(#PC) }
+. UDGTABLE#
+L $C350,$08,$77
 
-u $F9F8
-B $F9F8,$520
+b $C708 Picture Shapes
+@ $C708 label=PictureShapes
+D $C708 Shape records. #R$718B counts #N$FE terminators from here to find a
+. shape. Each record starts with a size byte: bits 4-7 are the width minus
+. one, bits 0-3 are the height minus one.
+N $C708 Shape #N$00: A left-hand brick wall.
+N $C708 #UDGTABLE
+. { #SHAPE($00,$04,$0C)(shape-00) }
+. UDGTABLE#
+  $C708,$66
+  $C76E,$01 Terminator.
+N $C76F Shape #N$01: A brick wall with a high opening.
+N $C76F #UDGTABLE
+. { #SHAPE($01,$04,$0C)(shape-01) }
+. UDGTABLE#
+  $C76F,$80
+  $C7EF,$01 Terminator.
+N $C7F0 Shape #N$02: A brick wall.
+N $C7F0 #UDGTABLE
+. { #SHAPE($02,$04,$0C)(shape-02) }
+. UDGTABLE#
+  $C7F0,$6C
+  $C85C,$01 Terminator.
+N $C85D Shape #N$03: A tapering brick wall.
+N $C85D #UDGTABLE
+. { #SHAPE($03,$04,$0C)(shape-03) }
+. UDGTABLE#
+  $C85D,$3B
+  $C898,$01 Terminator.
+N $C899 Shape #N$04: A brick wall with a passage.
+N $C899 #UDGTABLE
+. { #SHAPE($04,$04,$0C)(shape-04) }
+. UDGTABLE#
+  $C899,$39
+  $C8D2,$01 Terminator.
+N $C8D3 Shape #N$05: A left door jamb.
+N $C8D3 #UDGTABLE
+. { #SHAPE($05,$01,$08)(shape-05) }
+. UDGTABLE#
+  $C8D3,$15
+  $C8E8,$01 Terminator.
+N $C8E9 Shape #N$06: A right door jamb.
+N $C8E9 #UDGTABLE
+. { #SHAPE($06,$01,$08)(shape-06) }
+. UDGTABLE#
+  $C8E9,$1A
+  $C903,$01 Terminator.
+N $C904 Shape #N$07: A barred door.
+N $C904 #UDGTABLE
+. { #SHAPE($07,$06,$08)(shape-07) }
+. UDGTABLE#
+  $C904,$CE
+  $C9D2,$01 Terminator.
+N $C9D3 Shape #N$08: A barred grate.
+N $C9D3 #UDGTABLE
+. { #SHAPE($08,$02,$03)(shape-08) }
+. UDGTABLE#
+  $C9D3,$16
+  $C9E9,$01 Terminator.
+N $C9EA Shape #N$09: A yellow brick wall.
+N $C9EA #UDGTABLE
+. { #SHAPE($09,$04,$08)(shape-09) }
+. UDGTABLE#
+  $C9EA,$6B
+  $CA55,$01 Terminator.
+N $CA56 Shape #N$0A: A block wall.
+N $CA56 #UDGTABLE
+. { #SHAPE($0A,$04,$0C)(shape-0a) }
+. UDGTABLE#
+  $CA56,$9A
+  $CAF0,$01 Terminator.
+N $CAF1 Shape #N$0B: An arch fragment.
+N $CAF1 #UDGTABLE
+. { #SHAPE($0B,$04,$02)(shape-0b) }
+. UDGTABLE#
+  $CAF1,$27
+  $CB18,$01 Terminator.
+N $CB19 Shape #N$0C: A red rock.
+N $CB19 #UDGTABLE
+. { #SHAPE($0C,$06,$08)(shape-0c) }
+. UDGTABLE#
+  $CB19,$8C
+  $CBA5,$01 Terminator.
+N $CBA6 Shape #N$0D: A lava bank.
+N $CBA6 #UDGTABLE
+. { #SHAPE($0D,$20,$02)(shape-0d) }
+. UDGTABLE#
+  $CBA6,$68
+  $CC0E,$01 Terminator.
+N $CC0F Shape #N$0E: A lava splash.
+N $CC0F #UDGTABLE
+. { #SHAPE($0E,$02,$02)(shape-0e) }
+. UDGTABLE#
+  $CC0F,$0F
+  $CC1E,$01 Terminator.
+N $CC1F Shape #N$0F: Grassy ground.
+N $CC1F #UDGTABLE
+. { #SHAPE($0F,$20,$02)(shape-0f) }
+. UDGTABLE#
+  $CC1F,$A5
+  $CCC4,$01 Terminator.
+N $CCC5 Shape #N$10: A dark crack.
+N $CCC5 #UDGTABLE
+. { #SHAPE($10,$04,$05)(shape-10) }
+. UDGTABLE#
+  $CCC5,$6C
+  $CD31,$01 Terminator.
+N $CD32 Shape #N$11: Dripping lava.
+N $CD32 #UDGTABLE
+. { #SHAPE($11,$20,$01)(shape-11) }
+. UDGTABLE#
+  $CD32,$B7
+  $CDE9,$01 Terminator.
+N $CDEA Shape #N$12: A pillared hall.
+N $CDEA #UDGTABLE
+. { #SHAPE($12,$10,$0C)(shape-12) }
+. UDGTABLE#
+  $CDEA,$23B
+  $D025,$01 Terminator.
+N $D026 Shape #N$13: A temple doorway.
+N $D026 #UDGTABLE
+. { #SHAPE($13,$04,$04)(shape-13) }
+. UDGTABLE#
+  $D026,$55
+  $D07B,$01 Terminator.
+N $D07C Shape #N$14: Trees.
+N $D07C #UDGTABLE
+. { #SHAPE($14,$08,$04)(shape-14) }
+. UDGTABLE#
+  $D07C,$A2
+  $D11E,$01 Terminator.
+N $D11F Shape #N$15: A humpbacked bridge.
+N $D11F #UDGTABLE
+. { #SHAPE($15,$10,$06)(shape-15) }
+. UDGTABLE#
+  $D11F,$DD
+  $D1FC,$01 Terminator.
+N $D1FD Shape #N$16: A tree.
+N $D1FD #UDGTABLE
+. { #SHAPE($16,$03,$05)(shape-16) }
+. UDGTABLE#
+  $D1FD,$46
+  $D243,$01 Terminator.
+N $D244 Shape #N$17: A waterfall.
+N $D244 #UDGTABLE
+. { #SHAPE($17,$07,$07)(shape-17) }
+. UDGTABLE#
+  $D244,$85
+  $D2C9,$01 Terminator.
+N $D2CA Shape #N$18: A waterfall pool.
+N $D2CA #UDGTABLE
+. { #SHAPE($18,$0D,$03)(shape-18) }
+. UDGTABLE#
+  $D2CA,$67
+  $D331,$01 Terminator.
+N $D332 Shape #N$19: A brick arch.
+N $D332 #UDGTABLE
+. { #SHAPE($19,$05,$06)(shape-19) }
+. UDGTABLE#
+  $D332,$5B
+  $D38D,$01 Terminator.
+N $D38E Shape #N$1A: A shield with a cross.
+N $D38E #UDGTABLE
+. { #SHAPE($1A,$02,$03)(shape-1a) }
+. UDGTABLE#
+  $D38E,$1A
+  $D3A8,$01 Terminator.
+N $D3A9 Shape #N$1B: Hanging drapes.
+N $D3A9 #UDGTABLE
+. { #SHAPE($1B,$07,$08)(shape-1b) }
+. UDGTABLE#
+  $D3A9,$C4
+  $D46D,$01 Terminator.
+N $D46E Shape #N$1C: A red drape.
+N $D46E #UDGTABLE
+. { #SHAPE($1C,$02,$06)(shape-1c) }
+. UDGTABLE#
+  $D46E,$2F
+  $D49D,$01 Terminator.
+N $D49E Shape #N$1D: A long red drape.
+N $D49E #UDGTABLE
+. { #SHAPE($1D,$02,$08)(shape-1d) }
+. UDGTABLE#
+  $D49E,$47
+  $D4E5,$01 Terminator.
+N $D4E6 Shape #N$1E: A coffin.
+N $D4E6 #UDGTABLE
+. { #SHAPE($1E,$0C,$05)(shape-1e) }
+. UDGTABLE#
+  $D4E6,$79
+  $D55F,$01 Terminator.
+N $D560 Shape #N$1F: A crypt doorway.
+N $D560 #UDGTABLE
+. { #SHAPE($1F,$09,$0C)(shape-1f) }
+. UDGTABLE#
+  $D560,$98
+  $D5F8,$01 Terminator.
+N $D5F9 Shape #N$20: A green statue.
+N $D5F9 #UDGTABLE
+. { #SHAPE($20,$09,$0B)(shape-20) }
+. UDGTABLE#
+  $D5F9,$117
+  $D710,$01 Terminator.
+N $D711 Shape #N$21: A hanging body.
+N $D711 #UDGTABLE
+. { #SHAPE($21,$04,$0A)(shape-21) }
+. UDGTABLE#
+  $D711,$9F
+  $D7B0,$01 Terminator.
+N $D7B1 Shape #N$22: Snowy mountains.
+N $D7B1 #UDGTABLE
+. { #SHAPE($22,$20,$05)(shape-22) }
+. UDGTABLE#
+  $D7B1,$F9
+  $D8AA,$01 Terminator.
+N $D8AB Shape #N$23: A seated statue.
+N $D8AB #UDGTABLE
+. { #SHAPE($23,$07,$0B)(shape-23) }
+. UDGTABLE#
+  $D8AB,$D0
+  $D97B,$01 Terminator.
+N $D97C Shape #N$24: A brick pillar.
+N $D97C #UDGTABLE
+. { #SHAPE($24,$02,$06)(shape-24) }
+. UDGTABLE#
+  $D97C,$27
+  $D9A3,$01 Terminator.
+N $D9A4 Shape #N$25: A cave channel.
+N $D9A4 #UDGTABLE
+. { #SHAPE($25,$09,$06)(shape-25) }
+. UDGTABLE#
+  $D9A4,$92
+  $DA36,$01 Terminator.
+N $DA37 Shape #N$26: A heater shield.
+N $DA37 #UDGTABLE
+. { #SHAPE($26,$02,$08)(shape-26) }
+. UDGTABLE#
+  $DA37,$43
+  $DA7A,$01 Terminator.
+N $DA7B Shape #N$27: A black bar.
+N $DA7B #UDGTABLE
+. { #SHAPE($27,$10,$01)(shape-27) }
+. UDGTABLE#
+  $DA7B,$06
+  $DA81,$01 Terminator.
+N $DA82 Shape #N$28: A floor strip.
+N $DA82 #UDGTABLE
+. { #SHAPE($28,$04,$01)(shape-28) }
+. UDGTABLE#
+  $DA82,$06
+  $DA88,$01 Terminator.
+N $DA89 Shape #N$29: A wall edge.
+N $DA89 #UDGTABLE
+. { #SHAPE($29,$01,$02)(shape-29) }
+. UDGTABLE#
+  $DA89,$06
+  $DA8F,$01 Terminator.
+N $DA90 Shape #N$2A: A stairway.
+N $DA90 #UDGTABLE
+. { #SHAPE($2A,$10,$02)(shape-2a) }
+. UDGTABLE#
+  $DA90,$3E
+  $DACE,$01 Terminator.
+N $DACF Shape #N$2B: A brick wall.
+N $DACF #UDGTABLE
+. { #SHAPE($2B,$05,$0A)(shape-2b) }
+. UDGTABLE#
+  $DACF,$81
+  $DB50,$01 Terminator.
+N $DB51 Shape #N$2C: A narrow stairway.
+N $DB51 #UDGTABLE
+. { #SHAPE($2C,$03,$0A)(shape-2c) }
+. UDGTABLE#
+  $DB51,$46
+  $DB97,$01 Terminator.
+N $DB98 Shape #N$2D: A dripping cave.
+N $DB98 #UDGTABLE
+. { #SHAPE($2D,$05,$07)(shape-2d) }
+. UDGTABLE#
+  $DB98,$42
+  $DBDA,$01 Terminator.
+N $DBDB Shape #N$2E: A bowl.
+N $DBDB #UDGTABLE
+. { #SHAPE($2E,$04,$03)(shape-2e) }
+. UDGTABLE#
+  $DBDB,$22
+  $DBFD,$01 Terminator.
+N $DBFE Shape #N$2F: An ice cave.
+N $DBFE #UDGTABLE
+. { #SHAPE($2F,$0C,$0C)(shape-2f) }
+. UDGTABLE#
+  $DBFE,$11C
+  $DD1A,$01 Terminator.
+N $DD1B Shape #N$30: An ice cave mouth.
+N $DD1B #UDGTABLE
+. { #SHAPE($30,$08,$0C)(shape-30) }
+. UDGTABLE#
+  $DD1B,$AD
+  $DDC8,$01 Terminator.
+N $DDC9 Shape #N$31: A cloaked figure.
+N $DDC9 #UDGTABLE
+. { #SHAPE($31,$05,$06)(shape-31) }
+. UDGTABLE#
+  $DDC9,$66
+  $DE2F,$01 Terminator.
+N $DE30 Shape #N$32: A well.
+N $DE30 #UDGTABLE
+. { #SHAPE($32,$04,$03)(shape-32) }
+. UDGTABLE#
+  $DE30,$22
+  $DE52,$01 Terminator.
+N $DE53 Shape #N$33: A floor gap.
+N $DE53 #UDGTABLE
+. { #SHAPE($33,$07,$01)(shape-33) }
+. UDGTABLE#
+  $DE53,$12
+  $DE65,$01 Terminator.
+N $DE66 Shape #N$34: A cyan pool.
+N $DE66 #UDGTABLE
+. { #SHAPE($34,$04,$02)(shape-34) }
+. UDGTABLE#
+  $DE66,$1D
+  $DE83,$01 Terminator.
+N $DE84 Shape #N$35: Double doors.
+N $DE84 #UDGTABLE
+. { #SHAPE($35,$05,$08)(shape-35) }
+. UDGTABLE#
+  $DE84,$7E
+  $DF02,$01 Terminator.
+N $DF03 Shape #N$36: A bookshelf.
+N $DF03 #UDGTABLE
+. { #SHAPE($36,$0C,$01)(shape-36) }
+. UDGTABLE#
+  $DF03,$0E
+  $DF11,$01 Terminator.
+N $DF12 Shape #N$37: Books.
+N $DF12 #UDGTABLE
+. { #SHAPE($37,$07,$02)(shape-37) }
+. UDGTABLE#
+  $DF12,$1D
+  $DF2F,$01 Terminator.
+N $DF30 Shape #N$38: A bookcase end.
+N $DF30 #UDGTABLE
+. { #SHAPE($38,$03,$02)(shape-38) }
+. UDGTABLE#
+  $DF30,$15
+  $DF45,$01 Terminator.
+N $DF46 Shape #N$39: A red doorway.
+N $DF46 #UDGTABLE
+. { #SHAPE($39,$04,$03)(shape-39) }
+. UDGTABLE#
+  $DF46,$1D
+  $DF63,$01 Terminator.
+N $DF64 Shape #N$3A: A ruined wall.
+N $DF64 #UDGTABLE
+. { #SHAPE($3A,$02,$0C)(shape-3a) }
+. UDGTABLE#
+  $DF64,$48
+  $DFAC,$01 Terminator.
+N $DFAD Shape #N$3B: A fallen column.
+N $DFAD #UDGTABLE
+. { #SHAPE($3B,$0A,$04)(shape-3b) }
+. UDGTABLE#
+  $DFAD,$66
+  $E013,$01 Terminator.
+N $E014 Shape #N$3C: A ruined pillar.
+N $E014 #UDGTABLE
+. { #SHAPE($3C,$02,$07)(shape-3c) }
+. UDGTABLE#
+  $E014,$19
+  $E02D,$01 Terminator.
+N $E02E Shape #N$3D: Rubble.
+N $E02E #UDGTABLE
+. { #SHAPE($3D,$05,$04)(shape-3d) }
+. UDGTABLE#
+  $E02E,$2D
+  $E05B,$01 Terminator.
+N $E05C Shape #N$3E: Falling snow.
+N $E05C #UDGTABLE
+. { #SHAPE($3E,$0A,$01)(shape-3e) }
+. UDGTABLE#
+  $E05C,$2C
+  $E088,$01 Terminator.
+N $E089 Shape #N$3F: A barred gate.
+N $E089 #UDGTABLE
+. { #SHAPE($3F,$0D,$0C)(shape-3f) }
+. UDGTABLE#
+  $E089,$1E3
+  $E26C,$01 Terminator.
+N $E26D Shape #N$40: An ice wall.
+N $E26D #UDGTABLE
+. { #SHAPE($40,$02,$02)(shape-40) }
+. UDGTABLE#
+  $E26D,$0C
+  $E279,$01 Terminator.
+N $E27A Shape #N$41: An ice block.
+N $E27A #UDGTABLE
+. { #SHAPE($41,$01,$02)(shape-41) }
+. UDGTABLE#
+  $E27A,$07
+  $E281,$01 Terminator.
+N $E282 Shape #N$42: Dripping slime.
+N $E282 #UDGTABLE
+. { #SHAPE($42,$06,$07)(shape-42) }
+. UDGTABLE#
+  $E282,$80
+  $E302,$01 Terminator.
+N $E303 Shape #N$43: A red-robed figure.
+N $E303 #UDGTABLE
+. { #SHAPE($43,$08,$0C)(shape-43) }
+. UDGTABLE#
+  $E303,$113
+  $E416,$01 Terminator.
+N $E417 Shape #N$44: Snowy ground.
+N $E417 #UDGTABLE
+. { #SHAPE($44,$09,$02)(shape-44) }
+. UDGTABLE#
+  $E417,$3B
+  $E452,$01 Terminator.
+N $E453 Shape #N$45: A well shaft.
+N $E453 #UDGTABLE
+. { #SHAPE($45,$08,$02)(shape-45) }
+. UDGTABLE#
+  $E453,$30
+  $E483,$01 Terminator.
+N $E484 Shape #N$46: A sloping floor.
+N $E484 #UDGTABLE
+. { #SHAPE($46,$05,$06)(shape-46) }
+. UDGTABLE#
+  $E484,$56
+  $E4DA,$01 Terminator.
+N $E4DB Shape #N$47: A green-robed figure.
+N $E4DB #UDGTABLE
+. { #SHAPE($47,$06,$0C)(shape-47) }
+. UDGTABLE#
+  $E4DB,$13A
+  $E615,$01 Terminator.
+N $E616 Shape #N$48: A corridor wall.
+N $E616 #UDGTABLE
+. { #SHAPE($48,$01,$08)(shape-48) }
+. UDGTABLE#
+  $E616,$1B
+  $E631,$01 Terminator.
+N $E632 Shape #N$49: A left-hand pillar.
+N $E632 #UDGTABLE
+. { #SHAPE($49,$02,$0C)(shape-49) }
+. UDGTABLE#
+  $E632,$6F
+  $E6A1,$01 Terminator.
+N $E6A2 Shape #N$4A: A thin pillar.
+N $E6A2 #UDGTABLE
+. { #SHAPE($4A,$01,$08)(shape-4a) }
+. UDGTABLE#
+  $E6A2,$1C
+  $E6BE,$01 Terminator.
+N $E6BF Shape #N$4B: A right-hand pillar.
+N $E6BF #UDGTABLE
+. { #SHAPE($4B,$02,$0C)(shape-4b) }
+. UDGTABLE#
+  $E6BF,$6F
+  $E72E,$01 Terminator.
+N $E72F Shape #N$4C: A yeti.
+N $E72F #UDGTABLE
+. { #SHAPE($4C,$0C,$0C)(shape-4c) }
+. UDGTABLE#
+  $E72F,$1B8
+  $E8E7,$01 Terminator.
+N $E8E8 Shape #N$4D: A priest.
+N $E8E8 #UDGTABLE
+. { #SHAPE($4D,$09,$0C)(shape-4d) }
+. UDGTABLE#
+  $E8E8,$134
+  $EA1C,$01 Terminator.
+N $EA1D Shape #N$4E: A lava hall.
+N $EA1D #UDGTABLE
+. { #SHAPE($4E,$10,$09)(shape-4e) }
+. UDGTABLE#
+  $EA1D,$D9
+  $EAF6,$01 Terminator.
+N $EAF7 Shape #N$4F: A snow-covered figure.
+N $EAF7 #UDGTABLE
+. { #SHAPE($4F,$05,$07)(shape-4f) }
+. UDGTABLE#
+  $EAF7,$68
+  $EB5F,$01 Terminator.
+N $EB60 Shape #N$50: Packed snow.
+N $EB60 #UDGTABLE
+. { #SHAPE($50,$02,$02)(shape-50) }
+. UDGTABLE#
+  $EB60,$11
+  $EB71,$01 Terminator.
+N $EB72 Shape #N$51: A cave mouth.
+N $EB72 #UDGTABLE
+. { #SHAPE($51,$0C,$04)(shape-51) }
+. UDGTABLE#
+  $EB72,$6D
+  $EBDF,$01 Terminator.
+N $EBE0 Shape #N$52: A pool.
+N $EBE0 #UDGTABLE
+. { #SHAPE($52,$0B,$03)(shape-52) }
+. UDGTABLE#
+  $EBE0,$88
+  $EC68,$01 Terminator.
+N $EC69 Shape #N$53: A window.
+N $EC69 #UDGTABLE
+. { #SHAPE($53,$05,$06)(shape-53) }
+. UDGTABLE#
+  $EC69,$4A
+  $ECB3,$01 Terminator.
+N $ECB4 Shape #N$54: A snowflake.
+N $ECB4 #UDGTABLE
+. { #SHAPE($54,$01,$01)(shape-54) }
+. UDGTABLE#
+  $ECB4,$06
+  $ECBA,$01 Terminator.
+N $ECBB Shape #N$55: A cliff edge.
+N $ECBB #UDGTABLE
+. { #SHAPE($55,$20,$02)(shape-55) }
+. UDGTABLE#
+  $ECBB,$64
+  $ED1F,$01 Terminator.
+N $ED20 Shape #N$56: A ledge.
+N $ED20 #UDGTABLE
+. { #SHAPE($56,$05,$01)(shape-56) }
+. UDGTABLE#
+  $ED20,$16
+  $ED36,$01 Terminator.
+N $ED37 Shape #N$57: A gallery rail.
+N $ED37 #UDGTABLE
+. { #SHAPE($57,$08,$02)(shape-57) }
+. UDGTABLE#
+  $ED37,$06
+  $ED3D,$01 Terminator.
+N $ED3E Shape #N$58: Studded brick.
+N $ED3E #UDGTABLE
+. { #SHAPE($58,$04,$03)(shape-58) }
+. UDGTABLE#
+  $ED3E,$0F
+  $ED4D,$01 Terminator.
+N $ED4E Shape #N$59: A boulder.
+N $ED4E #UDGTABLE
+. { #SHAPE($59,$05,$05)(shape-59) }
+. UDGTABLE#
+  $ED4E,$52
+  $EDA0,$01 Terminator.
+N $EDA1 Shape #N$5A: Ruined walls.
+N $EDA1 #UDGTABLE
+. { #SHAPE($5A,$0A,$02)(shape-5a) }
+. UDGTABLE#
+  $EDA1,$2D
+  $EDCE,$01 Terminator.
+N $EDCF Shape #N$5B: A large statue.
+N $EDCF #UDGTABLE
+. { #SHAPE($5B,$0C,$0C)(shape-5b) }
+. UDGTABLE#
+  $EDCF,$1A7
+  $EF76,$01 Terminator.
+N $EF77 Shape #N$5C: An ice floor.
+N $EF77 #UDGTABLE
+. { #SHAPE($5C,$06,$01)(shape-5c) }
+. UDGTABLE#
+  $EF77,$12
+  $EF89,$01 Terminator.
+N $EF8A Shape #N$5D: A wall with a gap.
+N $EF8A #UDGTABLE
+. { #SHAPE($5D,$03,$01)(shape-5d) }
+. UDGTABLE#
+  $EF8A,$12
+  $EF9C,$01 Terminator.
+N $EF9D Shape #N$5E: A wall with a gap.
+N $EF9D #UDGTABLE
+. { #SHAPE($5E,$03,$01)(shape-5e) }
+. UDGTABLE#
+  $EF9D,$12
+  $EFAF,$01 Terminator.
+N $EFB0 Shape #N$5F: A wall with a gap.
+N $EFB0 #UDGTABLE
+. { #SHAPE($5F,$03,$01)(shape-5f) }
+. UDGTABLE#
+  $EFB0,$0C
+  $EFBC,$01 Terminator.
+N $EFBD Shape #N$60: Blue brick.
+N $EFBD #UDGTABLE
+. { #SHAPE($60,$03,$04)(shape-60) }
+. UDGTABLE#
+  $EFBD,$2B
+  $EFE8,$01 Terminator.
+N $EFE9 Shape #N$61: A temple star.
+N $EFE9 #UDGTABLE
+. { #SHAPE($61,$02,$02)(shape-61) }
+. UDGTABLE#
+  $EFE9,$1B
+  $F004,$01 Terminator.
+N $F005 Shape #N$62: A yellow doorway.
+N $F005 #UDGTABLE
+. { #SHAPE($62,$06,$08)(shape-62) }
+. UDGTABLE#
+  $F005,$C0
+  $F0C5,$01 Terminator.
+N $F0C6 Shape #N$63: Straw bedding.
+N $F0C6 #UDGTABLE
+. { #SHAPE($63,$07,$03)(shape-63) }
+. UDGTABLE#
+  $F0C6,$44
+  $F10A,$01 Terminator.
+N $F10B Shape #N$64: A burst of flame.
+N $F10B #UDGTABLE
+. { #SHAPE($64,$07,$05)(shape-64) }
+. UDGTABLE#
+  $F10B,$7E
+  $F189,$01 Terminator.
+N $F18A Shape #N$65: Fire.
+N $F18A #UDGTABLE
+. { #SHAPE($65,$04,$06)(shape-65) }
+. UDGTABLE#
+  $F18A,$56
+  $F1E0,$01 Terminator.
+N $F1E1 Shape #N$66: A flaming altar.
+N $F1E1 #UDGTABLE
+. { #SHAPE($66,$0A,$0C)(shape-66) }
+. UDGTABLE#
+  $F1E1,$19A
+  $F37B,$01 Terminator.
+N $F37C Shape #N$67: A brick wall with a step.
+N $F37C #UDGTABLE
+. { #SHAPE($67,$04,$06)(shape-67) }
+. UDGTABLE#
+  $F37C,$67
+  $F3E3,$01 Terminator.
+N $F3E4 Shape #N$68: A brick wall.
+N $F3E4 #UDGTABLE
+. { #SHAPE($68,$04,$0C)(shape-68) }
+. UDGTABLE#
+  $F3E4,$52
+  $F436,$01 Terminator.
+N $F437 Shape #N$69: A hanging silhouette.
+N $F437 #UDGTABLE
+. { #SHAPE($69,$02,$03)(shape-69) }
+. UDGTABLE#
+  $F437,$1F
+  $F456,$01 Terminator.
+N $F457 Shape #N$6A: Trees.
+N $F457 #UDGTABLE
+. { #SHAPE($6A,$0D,$0C)(shape-6a) }
+. UDGTABLE#
+  $F457,$1AE
+  $F605,$01 Terminator.
+N $F606 Shape #N$6B: A four-poster bed.
+N $F606 #UDGTABLE
+. { #SHAPE($6B,$09,$08)(shape-6b) }
+. UDGTABLE#
+  $F606,$99
+  $F69F,$01 Terminator.
+N $F6A0 Shape #N$6C: A wayside cross.
+N $F6A0 #UDGTABLE
+. { #SHAPE($6C,$02,$03)(shape-6c) }
+. UDGTABLE#
+  $F6A0,$19
+  $F6B9,$01 Terminator.
+N $F6BA Shape #N$6D: An ice wall.
+N $F6BA #UDGTABLE
+. { #SHAPE($6D,$05,$0C)(shape-6d) }
+. UDGTABLE#
+  $F6BA,$A0
+  $F75A,$01 Terminator.
+N $F75B Shape #N$6E: A yellow column.
+N $F75B #UDGTABLE
+. { #SHAPE($6E,$02,$09)(shape-6e) }
+. UDGTABLE#
+  $F75B,$3C
+  $F797,$01 Terminator.
+N $F798 Shape #N$6F: A cottage.
+N $F798 #UDGTABLE
+. { #SHAPE($6F,$11,$08)(shape-6f) }
+. UDGTABLE#
+  $F798,$1E6
+  $F97E,$01 Terminator.
+N $F97F Shape #N$70: A stream.
+N $F97F #UDGTABLE
+. { #SHAPE($70,$07,$03)(shape-70) }
+. UDGTABLE#
+  $F97F,$6F
+  $F9EE,$01 Terminator.
+N $F9EF Shape #N$71: A bookshelf.
+N $F9EF #UDGTABLE
+. { #SHAPE($71,$0C,$01)(shape-71) }
+. UDGTABLE#
+  $F9EF,$07
+  $F9F6,$01 Terminator.
+
+u $F9F7
+B $F9F7,$521
 
 b $FF18 BASIC Residue
 @ $FF18 label=BasicResidue

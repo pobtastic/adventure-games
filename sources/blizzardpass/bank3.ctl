@@ -7,6 +7,7 @@
 > $C000 @remote=main:$5B7F
 > $C000 @remote=main:$5B80
 > $C000 @remote=main:$5B81
+> $C000 @remote=main:$5B82
 > $C000 @remote=main:$5B83
 > $C000 @remote=main:$5B85
 > $C000 @remote=main:$5B86
@@ -28,13 +29,14 @@ D $C000 Clears the parser workspace. A comma on the previous line reprints a
 N $C000 Forget the previous noun, the scroll count and the three counters.
   $C000,$06 Clear *#R$5B80@main(Noun) and #REGhl.
   $C006,$03 Clear *#R$655C@main(RowsScrolled).
-  $C009,$09 Clear *#R$5B81@main(Counter1), *#R$5B83@main(Counter3) and
-. *#R$5B8B@main(WordCount).
+  $C009,$09 Clear *#R$5B81@main(Counter1), *#R$5B82@main(Counter2),
+. *#R$5B83@main(Counter3) and *#R$5B8B@main(WordCount).
   $C012,$04 Write #N$01 to *#R$5B86@main(WordSlot).
 N $C016 A comma on the previous line left more words to read.
   $C016,$06 Jump to #R$C02E when there is no leftover command.
   $C01C,$05 Call #R$63D4@main(PrintSystemMessage) to print message #N$1B (a
 . space).
+N $C021 Wait until the space is released.
 @ $C021 label=ReadCommand_Wait
   $C021,$07 Wait until the key is not a space.
   $C028,$03 Fetch the leftover pointer from *#R$5B8C@main(InputPointer).
@@ -82,6 +84,7 @@ N $C06D Store a capital letter if the buffer still has room.
   $C075,$01 Restore the key from the stack.
   $C076,$04 Jump to #R$C048 if a control or a graphic is rejected.
   $C07A,$06 Fold a lowercase letter to capitals.
+N $C080 Reject a character that is still above "Z".
 @ $C080 label=ReadKey_Fold
   $C080,$04 Jump to #R$C048 if the character is above "Z".
   $C084,$04 Store the capital and call #R$6394@main(PrintCharacter) to echo it.
@@ -109,18 +112,25 @@ D $C0A4 Skips to the next word and copies up to four letters. A comma after a
 R $C0A4 HL Line pointer
 N $C0A4 Move to the next word. A comma after a word saves the rest of the line.
   $C0A4,$03 Call #R$C1A6 to skip to a space, a comma or ENTER.
-  $C0A7,$07 Jump to #R$C173 to finish the command.
+  $C0A7,$04 Jump to #R$C0AE if the character is not ENTER.
+  $C0AB,$03 Jump to #R$C173 to finish the command.
+N $C0AE A comma keeps the rest of the line.
 @ $C0AE label=ParseWord_NotEnter
   $C0AE,$04 Jump to #R$C0D1 to keep the rest of the line.
 N $C0B2 Copy up to four characters, padding with spaces, then look the word up.
 @ $C0B2 label=ParseWord_Copy
-  $C0B2,$0B Fill #R$5B7B@main(WordToken) with four spaces.
+  $C0B2,$05 Count four letters and point #REGde at
+. #R$5B7B@main(WordToken).
+N $C0B7 Write those spaces.
 @ $C0B7 label=ParseWord_Pad
+  $C0B7,$06 Fill #R$5B7B@main(WordToken) with four spaces.
   $C0BD,$05 The copy starts at the first character of #R$5B7B@main(WordToken).
+N $C0C2 A comma after copied letters looks the word up. An empty comma keeps
+. scanning.
 @ $C0C2 label=ParseWord_Letter
-  $C0C2,$05 Jump to #R$C0DA to test for a space or ENTER.
-  $C0C7,$04 Jump to #R$C0EE to look the word up.
-  $C0CB,$06 Jump to #R$C0A4 to keep scanning.
+  $C0C2,$05 Jump to #R$C0DA if this character is not a comma.
+  $C0C7,$04 Jump to #R$C0EE if a letter has already been stored.
+  $C0CB,$06 Jump to #R$C0A4 if no word has been recognised yet.
 N $C0D1 Save the rest of the line for the next turn.
 @ $C0D1 label=ParseWord_Comma
   $C0D1,$08 Write #N$01 to *#R$5B85@main(Continuation) and store the pointer in
@@ -164,7 +174,8 @@ N $C104 Count this word. A third word is stored as an extra, not as the noun.
   $C10C,$04 Jump to #R$C14C if this is a third word.
   $C110,$04 Jump to #R$C16B if *#R$5B8B@main(WordCount) is #N$20.
   $C114,$01 Restore the id from the stack.
-  $C115,$04 An id below #N$55 is the verb.
+  $C115,$04 Jump to #R$C11F if the id is not below #N$55.
+N $C119 Store this id as the verb.
 @ $C119 label=KeepToken_Verb
   $C119,$03 Write the id to *#R$5B7F@main(Verb).
   $C11C,$03 Jump to #R$C0A4 to take the next word.
@@ -189,6 +200,7 @@ N $C12E POLISH, SKIN and BRIDGE become internal verbs.
   $C13C,$02 Test for BRIDGE (#N$86).
   $C13E,$04 Jump to #R$C119 with #N$31 if it matched.
   $C142,$01 Restore the id when none of those matched.
+N $C143 Store this id as the noun.
 @ $C143 label=KeepToken_Noun
   $C143,$06 Write the id to *#R$5B80@main(Noun) and *#R$5B9D@main(PreviousNoun).
   $C149,$03 Jump to #R$C0A4 to take the next word.
@@ -206,6 +218,7 @@ N $C15C Write the extra word into the next spare slot after the verb.
   $C15C,$08 The slot is an offset from *#R$5B7F@main(Verb).
   $C164,$04 Write the id into that slot.
   $C168,$03 Jump to #R$C0A4 to take the next word.
+N $C16B A word count of #N$20 uses that count as the slot.
 @ $C16B label=StoreExtra_Overflow
   $C16B,$01 Stash the id on the stack.
   $C16C,$03 Fetch *#R$5B8B@main(WordCount).
@@ -218,6 +231,7 @@ c $C173 Finish Parse
 D $C173 An empty command clears the verb. The continuation flag is always
 . cleared.
   $C173,$09 Clear *#R$5B7F@main(Verb) if no word was recognised.
+N $C17C Always clear the continuation flag.
 @ $C17C label=FinishParse_Clear
   $C17C,$04 Clear *#R$5B85@main(Continuation).
   $C180,$01 Return.
@@ -249,6 +263,7 @@ N $C193 Step on after this letter.
   $C197,$05 Jump to #R$C1A2 if the terminator has been reached (#N$FF).
   $C19C,$05 Jump back to #R$C187 unless all four letters matched.
   $C1A1,$01 The token byte is the id.
+N $C1A2 Restore the line pointer.
 @ $C1A2 label=MatchWord_Done
   $C1A2,$03 Restore the line pointer from *#R$5B8C@main(InputPointer).
   $C1A5,$01 Return.

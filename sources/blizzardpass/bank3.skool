@@ -6,6 +6,7 @@
 @remote=main:$5B7F
 @remote=main:$5B80
 @remote=main:$5B81
+@remote=main:$5B82
 @remote=main:$5B83
 @remote=main:$5B85
 @remote=main:$5B86
@@ -34,8 +35,8 @@ c$C000 XOR A         ; {Clear *#R$5B80@main(Noun) and #REGhl.
  $C002 LD H,A        ;
  $C003 LD ($5B80),A  ; }
  $C006 LD ($655C),A  ; Clear *#R$655C@main(RowsScrolled).
- $C009 LD ($5B81),HL ; {Clear *#R$5B81@main(Counter1), *#R$5B83@main(Counter3) and
- $C00C LD ($5B83),A  ; *#R$5B8B@main(WordCount).
+ $C009 LD ($5B81),HL ; {Clear *#R$5B81@main(Counter1), *#R$5B82@main(Counter2),
+ $C00C LD ($5B83),A  ; *#R$5B83@main(Counter3) and *#R$5B8B@main(WordCount).
  $C00F LD ($5B8B),A  ; }
  $C012 INC A         ; {Write #N$01 to *#R$5B86@main(WordSlot).
  $C013 LD ($5B86),A  ; }
@@ -45,6 +46,7 @@ c$C000 XOR A         ; {Clear *#R$5B80@main(Noun) and #REGhl.
  $C01A JR Z,$C02E    ; }
  $C01C LD A,$1B      ; {Call #R$63D4@main(PrintSystemMessage) to print message #N$1B (a
  $C01E CALL $63D4    ; space).}
+; Wait until the space is released.
 @label=ReadCommand_Wait
 *$C021 LD A,($5C04)  ; {Wait until the key is not a space.
  $C024 CP $20        ;
@@ -116,6 +118,7 @@ c$C048 CALL $662D    ; Call #R$662D@main(WaitForKey) to read one key.
  $C07A CP $61        ; {Fold a lowercase letter to capitals.
  $C07C JR C,$C080    ;
  $C07E SUB $20       ; }
+; Reject a character that is still above "Z".
 @label=ReadKey_Fold
 *$C080 CP $5B        ; {Jump to #R$C048 if the character is above "Z".
  $C082 JR NC,$C048   ; }
@@ -157,9 +160,10 @@ c$C091 LD (HL),A     ; {Store ENTER and call #R$6394@main(PrintCharacter) to
 ; Move to the next word. A comma after a word saves the rest of the line.
 @label=ParseWord
 c$C0A4 CALL $C1A6    ; Call #R$C1A6 to skip to a space, a comma or ENTER.
- $C0A7 CP $0D        ; {Jump to #R$C173 to finish the command.
- $C0A9 JR NZ,$C0AE   ;
- $C0AB JP $C173      ; }
+ $C0A7 CP $0D        ; {Jump to #R$C0AE if the character is not ENTER.
+ $C0A9 JR NZ,$C0AE   ; }
+ $C0AB JP $C173      ; Jump to #R$C173 to finish the command.
+; A comma keeps the rest of the line.
 @label=ParseWord_NotEnter
 *$C0AE CP $2C        ; {Jump to #R$C0D1 to keep the rest of the line.
  $C0B0 JR Z,$C0D1    ; }
@@ -167,23 +171,26 @@ c$C0A4 CALL $C1A6    ; Call #R$C1A6 to skip to a space, a comma or ENTER.
 ; .
 ; Copy up to four characters, padding with spaces, then look the word up.
 @label=ParseWord_Copy
-*$C0B2 LD B,$04      ; {Fill #R$5B7B@main(WordToken) with four spaces.
- $C0B4 LD DE,$5B7B   ;
+*$C0B2 LD B,$04      ; {Count four letters and point #REGde at
+ $C0B4 LD DE,$5B7B   ; #R$5B7B@main(WordToken).}
+; Write those spaces.
 @label=ParseWord_Pad
-*$C0B7 LD A,$20      ;
+*$C0B7 LD A,$20      ; {Fill #R$5B7B@main(WordToken) with four spaces.
  $C0B9 LD (DE),A     ;
  $C0BA INC DE        ;
  $C0BB DJNZ $C0B7    ; }
  $C0BD LD DE,$5B7B   ; {The copy starts at the first character of
  $C0C0 LD B,$00      ; #R$5B7B@main(WordToken).}
+; A comma after copied letters looks the word up. An empty comma keeps
+; scanning.
 @label=ParseWord_Letter
-*$C0C2 LD A,(HL)     ; {Jump to #R$C0DA to test for a space or ENTER.
+*$C0C2 LD A,(HL)     ; {Jump to #R$C0DA if this character is not a comma.
  $C0C3 CP $2C        ;
  $C0C5 JR NZ,$C0DA   ; }
- $C0C7 XOR A         ; {Jump to #R$C0EE to look the word up.
+ $C0C7 XOR A         ; {Jump to #R$C0EE if a letter has already been stored.
  $C0C8 CP B          ;
  $C0C9 JR NZ,$C0EE   ; }
- $C0CB LD A,($5B8B)  ; {Jump to #R$C0A4 to keep scanning.
+ $C0CB LD A,($5B8B)  ; {Jump to #R$C0A4 if no word has been recognised yet.
  $C0CE OR A          ;
  $C0CF JR Z,$C0A4    ; }
 ; Save the rest of the line for the next turn.
@@ -253,8 +260,9 @@ c$C104 PUSH AF       ; Stash the id on the stack.
  $C110 CP $20        ; {Jump to #R$C16B if *#R$5B8B@main(WordCount) is #N$20.
  $C112 JR Z,$C16B    ; }
  $C114 POP AF        ; Restore the id from the stack.
- $C115 CP $55        ; {An id below #N$55 is the verb.
+ $C115 CP $55        ; {Jump to #R$C11F if the id is not below #N$55.
  $C117 JR NC,$C11F   ; }
+; Store this id as the verb.
 @label=KeepToken_Verb
 *$C119 LD ($5B7F),A  ; Write the id to *#R$5B7F@main(Verb).
  $C11C JP $C0A4      ; Jump to #R$C0A4 to take the next word.
@@ -284,6 +292,7 @@ c$C104 PUSH AF       ; Stash the id on the stack.
  $C13E LD A,$31      ; {Jump to #R$C119 with #N$31 if it matched.
  $C140 JR Z,$C119    ; }
  $C142 LD A,B        ; Restore the id when none of those matched.
+; Store this id as the noun.
 @label=KeepToken_Noun
 *$C143 LD ($5B80),A  ; {Write the id to *#R$5B80@main(Noun) and
  $C146 LD ($5B9D),A  ; *#R$5B9D@main(PreviousNoun).}
@@ -313,6 +322,8 @@ c$C14C LD A,($5B86)  ; {Increment *#R$5B86@main(WordSlot).
  $C165 LD (IX+$00),A ; }
  $C168 JP $C0A4      ; Jump to #R$C0A4 to take the next word.
 ; This entry point is used by the routine at #R$C104.
+; .
+; A word count of #N$20 uses that count as the slot.
 @label=StoreExtra_Overflow
 *$C16B PUSH AF       ; Stash the id on the stack.
  $C16C LD A,($5B8B)  ; Fetch *#R$5B8B@main(WordCount).
@@ -331,6 +342,7 @@ c$C173 LD A,($5B8B)  ; {Clear *#R$5B7F@main(Verb) if no word was recognised.
  $C176 OR A          ;
  $C177 JR NZ,$C17C   ;
  $C179 LD ($5B7F),A  ; }
+; Always clear the continuation flag.
 @label=FinishParse_Clear
 *$C17C XOR A         ; {Clear *#R$5B85@main(Continuation).
  $C17D LD ($5B85),A  ; }
@@ -373,6 +385,7 @@ c$C181 LD ($5B8C),HL ; Remember the line pointer in
  $C19E CP C          ;
  $C19F JR NZ,$C187   ; }
  $C1A1 LD A,(HL)     ; The token byte is the id.
+; Restore the line pointer.
 @label=MatchWord_Done
 *$C1A2 LD HL,($5B8C) ; Restore the line pointer from
                      ; *#R$5B8C@main(InputPointer).
