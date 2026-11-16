@@ -131,10 +131,20 @@ Rotates one character row right by one bit.
 <td class="instruction">PUSH HL</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="29767"></span>
+<div class="comments">
+<div class="paragraph">
+The width immediate is self-modified by <a href="29806.html">VerticalRun</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29767"></span>29767</td>
 <td class="instruction">LD B,0</td>
-<td class="comment-1" rowspan="1">Force a full-width rotate.</td>
+<td class="comment-1" rowspan="1">Load that width.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -179,25 +189,38 @@ Rotate this row right by one bit.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29776"></span>29776</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="4">Wrap the outgoing bit into bit 7.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the start of the row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29777"></span>29777</td>
 <td class="instruction">RES 7,(HL)</td>
+<td class="comment-1" rowspan="1">Clear bit 7.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29779"></span>29779</td>
-<td class="instruction">JR NC,<a href="29765.html#29783">HorizontalRun_Right_0</a></td>
+<td class="instruction">JR NC,<a href="29765.html#29783">HorizontalRun_Right_Restore</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="29765.html#29783">HorizontalRun_Right_Restore</a> if the outgoing bit is reset.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29781"></span>29781</td>
 <td class="instruction">SET 7,(HL)</td>
+<td class="comment-1" rowspan="1">Set bit 7.</td>
 </tr>
 <tr>
-<td class="asm-label">HorizontalRun_Right_0</td>
+<td class="routine-comment" colspan="5">
+<span id="29783"></span>
+<div class="comments">
+<div class="paragraph">
+Restore the pointers after the wrap.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">HorizontalRun_Right_Restore</td>
 <td class="address-2"><span id="29783"></span>29783</td>
 <td class="instruction">POP HL</td>
 <td class="comment-1" rowspan="2">Restore <span class="register">HL</span> and <span class="register">BC</span> from the stack.</td>

@@ -492,7 +492,7 @@ Next byte of the shape currently being drawn.
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/5BBE.html">Shift Flags</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-How the current tile is shifted and merged.
+How the current tile is shifted and merged. Bit 0 selects the second tile page. Bits 2-3 are the combine mode: 04 <code>OR</code>, 08 <code>AND</code>, 0C <code>XOR</code>. Bits 4-5 choose the shift: 10 left, 20 right, 30 logical right. Bit 6 adds an extra left rotate. Bit 1 is set when a run count follows.
 </div>
 </div>
 </td>
@@ -612,7 +612,7 @@ Rows left in the current shape.
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/5BC8.html">Combine Mode</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-How tile bytes are merged: 04 OR, 08 AND, 0C XOR.
+How tile bytes are merged: 04 <code>OR</code>, 08 <code>AND</code>, 0C <code>XOR</code>.
 </div>
 </div>
 </td>
@@ -792,7 +792,7 @@ Set when a bytecode condition fails or an action wants the rest of the line skip
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/5F15.html">Pictured Object</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-The room-change scan compares a picture record with this byte. Nothing in the game writes it, so the comparison is against zero.
+The room-change scan compares a picture F8 object with this byte. Nothing writes it; <a href="../asm/7213.html">ShapeIfPresent</a> stores at <a href="../asm/5ECB.html#5f10">5F11</a> instead, so the comparison is against 00.
 </div>
 </div>
 </td>
@@ -864,7 +864,7 @@ Two bytes overwritten when a restore is offered. They are not read back.
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/6EEE.html">Shape Suppressed</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Cleared before each shape is plotted. A later test uses it to skip a shape that should not be drawn.
+Written by <a href="../asm/6E7F.html#6ebd">DispatchShape_Flag</a> before a shape is plotted. Ordinary shapes store 00; opcodes F5, F6 and F7 store 04, 08 or 0C. No instruction reads this byte.
 </div>
 </div>
 </td>
@@ -888,7 +888,7 @@ The shape last looked up by <a href="../asm/718B.html">FindShape</a>. It starts 
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/7189.html">Last Shape Address</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-The picture-font pointer of that shape. The same number is served from here without walking the font again.
+The address of that shape. The same number is served from here without walking <a href="../asm/C708.html">PictureShapes</a> again.
 </div>
 </div>
 </td>
@@ -900,7 +900,7 @@ The picture-font pointer of that shape. The same number is served from here with
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/7337.html">Source Origin</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Column and row copied from by <a href="../asm/72FE.html">DrawFixedShift_Pixels</a> and <a href="../asm/72D5.html">DrawFixedShift_Attrs</a>.
+Column and row copied from by <a href="../asm/72FE.html">CopyOrigin_Pixels</a> and <a href="../asm/72D5.html">CopyOrigin_Attributes</a>.
 </div>
 </div>
 </td>

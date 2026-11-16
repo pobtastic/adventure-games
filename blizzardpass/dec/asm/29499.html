@@ -114,16 +114,25 @@ Next: <a href="29570.html">29570</a>
 Used by the routine at <a href="29570.html">DrawFromOrigin</a>.
 </div>
 <div class="paragraph">
-Stores the next coordinates as the origin later shapes are drawn from.
+Opcode 241 stores the source and destination from the picture record, patches the copy widths and loop stops, then copies pixels and attributes. The destination row counts down, so the rectangle is drawn upside down. <a href="29581.html">ResetOrigin</a> enters at <a href="29499.html#29537">SetOrigin_Copy</a>.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Picture record</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
 <td class="asm-label">SetOrigin</td>
 <td class="address-2"><span id="29499"></span>29499</td>
 <td class="instruction">LD A,(IX+1)</td>
-<td class="comment-1" rowspan="3">Write the source X into both origin bytes.</td>
+<td class="comment-1" rowspan="3">Write the source column to *<a href="29495.html">SourceOrigin</a> and *<a href="29497.html">DestinationOrigin</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -139,7 +148,7 @@ Stores the next coordinates as the origin later shapes are drawn from.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29508"></span>29508</td>
 <td class="instruction">LD A,(IX+2)</td>
-<td class="comment-1" rowspan="2">Write the source Y.</td>
+<td class="comment-1" rowspan="2">Write the source row to *<a href="29495.html#29496">SourceOrigin_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -150,7 +159,7 @@ Stores the next coordinates as the origin later shapes are drawn from.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29514"></span>29514</td>
 <td class="instruction">LD A,(IX+3)</td>
-<td class="comment-1" rowspan="2">Write the remaining height.</td>
+<td class="comment-1" rowspan="2">Write the destination row to *<a href="29497.html#29498">DestinationOrigin_Height</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -161,7 +170,7 @@ Stores the next coordinates as the origin later shapes are drawn from.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29520"></span>29520</td>
 <td class="instruction">LD A,(IX+4)</td>
-<td class="comment-1" rowspan="3">Write the width over both copy immediates.</td>
+<td class="comment-1" rowspan="3">Self-modify the copy widths at <a href="29438.html#29464">29465</a> and <a href="29397.html#29413">29414</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -177,7 +186,7 @@ Stores the next coordinates as the origin later shapes are drawn from.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29529"></span>29529</td>
 <td class="instruction">LD A,(IX+3)</td>
-<td class="comment-1" rowspan="2">Subtract the source Y from the destination Y.</td>
+<td class="comment-1" rowspan="2">Subtract the source row from the destination row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -188,7 +197,7 @@ Stores the next coordinates as the origin later shapes are drawn from.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29535"></span>29535</td>
 <td class="instruction">AND A</td>
-<td class="comment-1" rowspan="2">Halve it.</td>
+<td class="comment-1" rowspan="2">Halve that span.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -203,7 +212,7 @@ Stores the next coordinates as the origin later shapes are drawn from.
 This entry point is used by the routine at <a href="29581.html">ResetOrigin</a>.
 </div>
 <div class="paragraph">
-Patch the loop counts and copy from the origin.
+Patch the loop stops and copy from the origin.
 </div>
 </div>
 </td>
@@ -212,7 +221,7 @@ Patch the loop counts and copy from the origin.
 <td class="asm-label">SetOrigin_Copy</td>
 <td class="address-2"><span id="29537"></span>29537</td>
 <td class="instruction">LD (29491),A</td>
-<td class="comment-1" rowspan="2">Write that half-height over both loop immediates.</td>
+<td class="comment-1" rowspan="2">Self-modify the loop stops at <a href="29438.html#29490">29491</a> and <a href="29397.html#29433">29434</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -223,13 +232,13 @@ Patch the loop counts and copy from the origin.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29543"></span>29543</td>
 <td class="instruction">LD BC,(29495)</td>
-<td class="comment-1" rowspan="1">Fetch the source origin.</td>
+<td class="comment-1" rowspan="1">Fetch *<a href="29495.html">SourceOrigin</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29547"></span>29547</td>
 <td class="instruction">LD DE,(29497)</td>
-<td class="comment-1" rowspan="1">Fetch the destination origin.</td>
+<td class="comment-1" rowspan="1">Fetch *<a href="29497.html">DestinationOrigin</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -247,7 +256,7 @@ Patch the loop counts and copy from the origin.
 <span id="29553"></span>
 <div class="comments">
 <div class="paragraph">
-Copy the pixels.
+Copy the pixels, then put the origins back.
 </div>
 </div>
 </td>
@@ -255,8 +264,8 @@ Copy the pixels.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29553"></span>29553</td>
-<td class="instruction">CALL <a href="29438.html">DrawFixedShift_Pixels</a></td>
-<td class="comment-1" rowspan="1">Call <a href="29438.html">DrawFixedShift_Pixels</a>.</td>
+<td class="instruction">CALL <a href="29438.html">CopyOrigin_Pixels</a></td>
+<td class="comment-1" rowspan="1">Call <a href="29438.html">CopyOrigin_Pixels</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -273,13 +282,13 @@ Copy the pixels.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29558"></span>29558</td>
 <td class="instruction">LD (29495),BC</td>
-<td class="comment-1" rowspan="1">Store the source origin.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">BC</span> to *<a href="29495.html">SourceOrigin</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29562"></span>29562</td>
 <td class="instruction">LD (29497),DE</td>
-<td class="comment-1" rowspan="1">Store the destination origin.</td>
+<td class="comment-1" rowspan="1">Write <span class="register">DE</span> to *<a href="29497.html">DestinationOrigin</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -294,8 +303,8 @@ Copy the attributes.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29566"></span>29566</td>
-<td class="instruction">CALL <a href="29397.html">DrawFixedShift_Attrs</a></td>
-<td class="comment-1" rowspan="1">Call <a href="29397.html">DrawFixedShift_Attrs</a>.</td>
+<td class="instruction">CALL <a href="29397.html">CopyOrigin_Attributes</a></td>
+<td class="comment-1" rowspan="1">Call <a href="29397.html">CopyOrigin_Attributes</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

@@ -114,7 +114,7 @@ Next: <a href="72B5.html">72B5</a>
 Used by the routine at <a href="72B5.html">DrawPatched</a>.
 </div>
 <div class="paragraph">
-Writes the next picture byte over the immediate of the shift that follows, so the shape can move by a fraction of a pixel.
+Writes the row count over the loop stops and the shift over the offset immediates, so the shape can move by a fraction of a pixel.
 </div>
 </div>
 </td>
@@ -123,7 +123,7 @@ Writes the next picture byte over the immediate of the shift that follows, so th
 <td class="asm-label">PatchShift</td>
 <td class="address-2"><span id="728c"></span>728C</td>
 <td class="instruction">LD A,(IX+$03)</td>
-<td class="comment-1" rowspan="3">Write the row count over both loop immediates.</td>
+<td class="comment-1" rowspan="3">Self-modify the loop stops at <a href="7242.html#726a">726C</a> and <a href="7271.html#7285">7287</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -170,7 +170,7 @@ Patch the offset immediates and draw both layers.
 <td class="asm-label">PatchShift_Draw</td>
 <td class="address-2"><span id="729e"></span>729E</td>
 <td class="instruction">LD ($7248),A</td>
-<td class="comment-1" rowspan="2">Write the shift into both offset immediates.</td>
+<td class="comment-1" rowspan="2">Self-modify the reverse widths at <a href="7242.html#7247">7248</a> and <a href="7271.html#7275">7276</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -192,7 +192,7 @@ Patch the offset immediates and draw both layers.
 <td class="asm-label"></td>
 <td class="address-1"><span id="72a6"></span>72A6</td>
 <td class="instruction">LD ($7253),A</td>
-<td class="comment-1" rowspan="2">Write it into both inner byte counts.</td>
+<td class="comment-1" rowspan="2">Self-modify the inner counts at <a href="7242.html#7252">7253</a> and <a href="7271.html#727c">727D</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -213,17 +213,19 @@ Reverse the pixels.
 <td class="asm-label"></td>
 <td class="address-1"><span id="72ac"></span>72AC</td>
 <td class="instruction">PUSH BC</td>
-<td class="comment-1" rowspan="3">Call <a href="7242.html">ShapeIfPresent_Mirror</a>.</td>
+<td class="comment-1" rowspan="1">Stash the coordinates on the stack.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72ad"></span>72AD</td>
-<td class="instruction">CALL <a href="7242.html">ShapeIfPresent_Mirror</a></td>
+<td class="instruction">CALL <a href="7242.html">ReversePixelRow</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7242.html">ReversePixelRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72b0"></span>72B0</td>
 <td class="instruction">POP BC</td>
+<td class="comment-1" rowspan="1">Restore the coordinates from the stack.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -238,8 +240,8 @@ Reverse the attributes.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="72b1"></span>72B1</td>
-<td class="instruction">CALL <a href="7271.html">ShapeIfPresent_Copy</a></td>
-<td class="comment-1" rowspan="1">Call <a href="7271.html">ShapeIfPresent_Copy</a>.</td>
+<td class="instruction">CALL <a href="7271.html">ReverseAttributeRow</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7271.html">ReverseAttributeRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

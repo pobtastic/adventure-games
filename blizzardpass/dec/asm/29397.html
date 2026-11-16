@@ -114,22 +114,22 @@ Next: <a href="29438.html">29438</a>
 Used by the routine at <a href="29499.html">SetOrigin</a>.
 </div>
 <div class="paragraph">
-Copies one attribute strip from the source origin to the destination.
+Copies attribute rows from <a href="29495.html">SourceOrigin</a> into <a href="29497.html">DestinationOrigin</a> until *<a href="29497.html#29498">DestinationOrigin_Height</a> equals the stop patched by <a href="29499.html">SetOrigin</a>. <a href="29499.html">SetOrigin</a> and <a href="29581.html">ResetOrigin</a> also patch the width copied on each row.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">DrawFixedShift_Attrs</td>
+<td class="asm-label">CopyOrigin_Attributes</td>
 <td class="address-2"><span id="29397"></span>29397</td>
 <td class="instruction">LD BC,(29495)</td>
-<td class="comment-1" rowspan="1">Fetch the source origin.</td>
+<td class="comment-1" rowspan="1">Fetch *<a href="29495.html">SourceOrigin</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29401"></span>29401</td>
-<td class="instruction">CALL <a href="29581.html#29614">ResetOrigin_Address</a></td>
-<td class="comment-1" rowspan="1">Call <a href="29581.html">ResetOrigin</a>.</td>
+<td class="instruction">CALL <a href="29614.html">AttributeRow</a></td>
+<td class="comment-1" rowspan="1">Call <a href="29614.html">AttributeRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,13 +141,13 @@ Copies one attribute strip from the source origin to the destination.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29405"></span>29405</td>
 <td class="instruction">LD BC,(29497)</td>
-<td class="comment-1" rowspan="1">Fetch the destination origin.</td>
+<td class="comment-1" rowspan="1">Fetch *<a href="29497.html">DestinationOrigin</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29409"></span>29409</td>
-<td class="instruction">CALL <a href="29581.html#29614">ResetOrigin_Address</a></td>
-<td class="comment-1" rowspan="1">Call <a href="29581.html">ResetOrigin</a>.</td>
+<td class="instruction">CALL <a href="29614.html">AttributeRow</a></td>
+<td class="comment-1" rowspan="1">Call <a href="29614.html">AttributeRow</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -156,28 +156,48 @@ Copies one attribute strip from the source origin to the destination.
 <td class="comment-1" rowspan="1">Copy the source pointer into <span class="register">DE</span> (using the stack).</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="29413"></span>
+<div class="comments">
+<div class="paragraph">
+The width immediate is self-modified by <a href="29499.html">SetOrigin</a> and <a href="29581.html">ResetOrigin</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29413"></span>29413</td>
 <td class="instruction">LD BC,0</td>
-<td class="comment-1" rowspan="1">Load the patched width.</td>
+<td class="comment-1" rowspan="1">Load that width.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29416"></span>29416</td>
 <td class="instruction">EX DE,HL</td>
-<td class="comment-1" rowspan="1">Swap source and destination.</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at the source and <span class="register">DE</span> at the destination.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29417"></span>29417</td>
 <td class="instruction">LDIR</td>
-<td class="comment-1" rowspan="1">Copy those bytes.</td>
+<td class="comment-1" rowspan="1">Copy one attribute row.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="29419"></span>
+<div class="comments">
+<div class="paragraph">
+Step to the next row.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29419"></span>29419</td>
 <td class="instruction">LD A,(29496)</td>
-<td class="comment-1" rowspan="3">Step the source Y coordinate.</td>
+<td class="comment-1" rowspan="3">Increment *<a href="29495.html#29496">SourceOrigin_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -193,7 +213,7 @@ Copies one attribute strip from the source origin to the destination.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29426"></span>29426</td>
 <td class="instruction">LD A,(29498)</td>
-<td class="comment-1" rowspan="3">Decrement the remaining row count.</td>
+<td class="comment-1" rowspan="3">Decrement *<a href="29497.html#29498">DestinationOrigin_Height</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -206,15 +226,25 @@ Copies one attribute strip from the source origin to the destination.
 <td class="instruction">LD (29498),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="29433"></span>
+<div class="comments">
+<div class="paragraph">
+The stop immediate is self-modified by <a href="29499.html#29537">SetOrigin_Copy</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29433"></span>29433</td>
 <td class="instruction">CP 0</td>
-<td class="comment-1" rowspan="2">Jump to <a href="29397.html">DrawFixedShift_Attrs</a> until it reaches 0.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="29397.html">CopyOrigin_Attributes</a> until *<a href="29497.html#29498">DestinationOrigin_Height</a> equals that stop.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29435"></span>29435</td>
-<td class="instruction">JR NZ,<a href="29397.html#29397">DrawFixedShift_Attrs</a></td>
+<td class="instruction">JR NZ,<a href="29397.html#29397">CopyOrigin_Attributes</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>

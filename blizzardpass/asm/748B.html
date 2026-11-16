@@ -114,9 +114,22 @@ Next: <a href="74BE.html">74BE</a>
 Used by the routine at <a href="74E9.html">VerticalRun_Patch</a>.
 </div>
 <div class="paragraph">
-Reverses a pixel row about its midpoint.
+Reverses eight pixel rows of the current character row about its midpoint. <a href="74E9.html#74fb">VerticalRun_Draw</a> patches the span and the inner pair count; <a href="74E9.html">VerticalRun_Patch</a> and <a href="751D.html">FixedVertical</a> patch the outer loop stop.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">B</td>
+<td class="register-desc">Character row</td>
+</tr>
+<tr>
+<td class="register">C</td>
+<td class="register-desc">Column</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
@@ -138,16 +151,26 @@ Reverses a pixel row about its midpoint.
 <td class="comment-1" rowspan="1">Stash the start of the row on the stack.</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="7490"></span>
+<div class="comments">
+<div class="paragraph">
+The width immediate is self-modified by <a href="74E9.html#74fb">VerticalRun_Draw</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="7490"></span>7490</td>
 <td class="instruction">LD DE,$0000</td>
-<td class="comment-1" rowspan="1">Load the patched width.</td>
+<td class="comment-1" rowspan="1">Load that width.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="7493"></span>7493</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-1" rowspan="1">Eight pixel rows.</td>
+<td class="comment-1" rowspan="1">Count the 08 pixel rows to reverse.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -170,7 +193,7 @@ Reverses a pixel row about its midpoint.
 <span id="7498"></span>
 <div class="comments">
 <div class="paragraph">
-Reverse eight bytes of this pixel row.
+Reverse this pixel row from both ends.
 </div>
 </div>
 </td>
@@ -192,10 +215,20 @@ Reverse eight bytes of this pixel row.
 <td class="instruction">PUSH BC</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="749b"></span>
+<div class="comments">
+<div class="paragraph">
+The inner count immediate is self-modified by <a href="74E9.html#74fb">VerticalRun_Draw</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="749b"></span>749B</td>
 <td class="instruction">LD B,$00</td>
-<td class="comment-1" rowspan="1">Force a full-width reverse.</td>
+<td class="comment-1" rowspan="1">Load that count.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -211,7 +244,7 @@ Reverse one pair of bytes.
 <td class="asm-label">VerticalRun_MirrorByte</td>
 <td class="address-2"><span id="749d"></span>749D</td>
 <td class="instruction">CALL <a href="74DD.html">VerticalRun_Reverse</a></td>
-<td class="comment-1" rowspan="4">Reverse the bytes at both ends of the row.</td>
+<td class="comment-1" rowspan="4">Reverse the bits of the bytes at both ends.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -263,7 +296,7 @@ Reverse one pair of bytes.
 <td class="asm-label"></td>
 <td class="address-1"><span id="74ab"></span>74AB</td>
 <td class="instruction">INC DE</td>
-<td class="comment-1" rowspan="2">Step both pointers.</td>
+<td class="comment-1" rowspan="2">Step inward along the row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -296,7 +329,7 @@ Reverse one pair of bytes.
 <td class="asm-label"></td>
 <td class="address-1"><span id="74b2"></span>74B2</td>
 <td class="instruction">INC D</td>
-<td class="comment-1" rowspan="2">Step both pointers.</td>
+<td class="comment-1" rowspan="2">Step down one pixel row.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -319,12 +352,23 @@ Reverse one pair of bytes.
 <td class="asm-label"></td>
 <td class="address-1"><span id="74b7"></span>74B7</td>
 <td class="instruction">INC B</td>
-<td class="comment-1" rowspan="4">Jump to <a href="748B.html">VerticalRun_Mirror</a> until the patched row count is done.</td>
+<td class="comment-1" rowspan="1">Increment the row counter.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="74b8"></span>
+<div class="comments">
+<div class="paragraph">
+The stop immediate is self-modified by <a href="74E9.html">VerticalRun_Patch</a> and <a href="751D.html">FixedVertical</a>.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="74b8"></span>74B8</td>
 <td class="instruction">LD A,$00</td>
+<td class="comment-1" rowspan="3">Jump to <a href="748B.html">VerticalRun_Mirror</a> until the row counter equals that stop.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

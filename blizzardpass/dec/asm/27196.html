@@ -111,7 +111,7 @@ Next: <a href="27240.html">27240</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Prints flag <span class="register">B</span> as a decimal number followed by a space. The conversion goes through the <code>DAA</code> instruction, so the flag is treated as two decimal digits.
+Prints flag <span class="register">B</span> as a decimal number followed by a space. Zero is a single digit; any other value is two digits.
 </div>
 </div>
 <table class="input">
@@ -135,12 +135,13 @@ Prints flag <span class="register">B</span> as a decimal number followed by a sp
 <td class="asm-label"></td>
 <td class="address-1"><span id="27199"></span>27199</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="27196.html#27209">PrintFlag_High</a> if the flag is zero.</td>
+<td class="comment-1" rowspan="1">Fetch the flag.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27200"></span>27200</td>
 <td class="instruction">OR A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="27196.html#27209">PrintFlag_High</a> if it is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -151,16 +152,11 @@ Prints flag <span class="register">B</span> as a decimal number followed by a sp
 <td class="asm-label"></td>
 <td class="address-1"><span id="27203"></span>27203</td>
 <td class="instruction">LD B,A</td>
-<td class="comment-1" rowspan="2">Count that value through <code>DAA</code>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="27204"></span>27204</td>
-<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Count the flag in <span class="register">B</span>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
-<span id="27205"></span>
+<span id="27204"></span>
 <div class="comments">
 <div class="paragraph">
 Count the flag into two decimal digits.
@@ -169,27 +165,45 @@ Count the flag into two decimal digits.
 </td>
 </tr>
 <tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="27204"></span>27204</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">Start the decimal byte at 0.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="27205"></span>
+<div class="comments">
+<div class="paragraph">
+Count one decimal step.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">PrintFlag_Tens</td>
 <td class="address-2"><span id="27205"></span>27205</td>
 <td class="instruction">INC A</td>
-<td class="comment-1" rowspan="3">Each pass through <code>DAA</code> builds one decimal step.</td>
+<td class="comment-1" rowspan="1">Increment the decimal byte.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27206"></span>27206</td>
 <td class="instruction">DAA</td>
+<td class="comment-1" rowspan="1">Keep it as two decimal digits with <code>DAA</code>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27207"></span>27207</td>
 <td class="instruction">DJNZ <a href="27196.html#27205">PrintFlag_Tens</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="27196.html#27205">PrintFlag_Tens</a> until the flag has been counted.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
 <span id="27209"></span>
 <div class="comments">
 <div class="paragraph">
-Print the tens digit when it is not zero.
+Print the tens digit unless the flag is zero.
 </div>
 </div>
 </td>
@@ -204,7 +218,7 @@ Print the tens digit when it is not zero.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27210"></span>27210</td>
 <td class="instruction">OR A</td>
-<td class="comment-1" rowspan="2">Jump to <a href="27196.html#27226">PrintFlag_Units</a> if the tens digit is zero.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="27196.html#27226">PrintFlag_Units</a> if the flag is zero.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -215,7 +229,7 @@ Print the tens digit when it is not zero.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27213"></span>27213</td>
 <td class="instruction">SRL A</td>
-<td class="comment-1" rowspan="4">Shift the tens digit down.</td>
+<td class="comment-1" rowspan="4">Move the tens digit into the low nibble.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -233,16 +247,25 @@ Print the tens digit when it is not zero.
 <td class="instruction">SRL A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="27221"></span>
+<div class="comments">
+<div class="paragraph">
+Add 48 so the tens digit is an ASCII character.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27221"></span>27221</td>
 <td class="instruction">ADD A,48</td>
-<td class="comment-1" rowspan="1">Convert the tens digit to ASCII.</td>
+<td class="comment-1" rowspan="2">Print the tens digit using <a href="25492.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27223"></span>27223</td>
 <td class="instruction">CALL <a href="25492.html">PrintCharacter</a></td>
-<td class="comment-1" rowspan="1">Call <a href="25492.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -270,19 +293,18 @@ Print the units digit.
 <td class="asm-label"></td>
 <td class="address-1"><span id="27229"></span>27229</td>
 <td class="instruction">ADD A,48</td>
-<td class="comment-1" rowspan="1">Convert the units digit to ASCII.</td>
+<td class="comment-1" rowspan="2">Print the units digit using <a href="25492.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27231"></span>27231</td>
 <td class="instruction">CALL <a href="25492.html">PrintCharacter</a></td>
-<td class="comment-1" rowspan="1">Call <a href="25492.html">PrintCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="27234"></span>27234</td>
 <td class="instruction">LD A,32</td>
-<td class="comment-1" rowspan="2">Print a following space.</td>
+<td class="comment-1" rowspan="2">Print a following space using <a href="25596.html">PlotCharacter</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

@@ -148,7 +148,7 @@ Move to the next word. A comma after a word saves the rest of the line.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c0a7"></span>C0A7</td>
 <td class="instruction">CP $0D</td>
-<td class="comment-1" rowspan="3">Jump to <a href="C173.html">FinishParse</a> to finish the command.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="C0A4.html#c0ae">ParseWord_NotEnter</a> if the character is not ENTER.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -159,6 +159,17 @@ Move to the next word. A comma after a word saves the rest of the line.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c0ab"></span>C0AB</td>
 <td class="instruction">JP <a href="C173.html">FinishParse</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="C173.html">FinishParse</a> to finish the command.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="c0ae"></span>
+<div class="comments">
+<div class="paragraph">
+A comma keeps the rest of the line.
+</div>
+</div>
+</td>
 </tr>
 <tr>
 <td class="asm-label">ParseWord_NotEnter</td>
@@ -188,7 +199,7 @@ Copy up to four characters, padding with spaces, then look the word up.
 <td class="asm-label">ParseWord_Copy</td>
 <td class="address-2"><span id="c0b2"></span>C0B2</td>
 <td class="instruction">LD B,$04</td>
-<td class="comment-1" rowspan="6">Fill <a href="../asm/5B7B.html">WordToken</a> with four spaces.</td>
+<td class="comment-1" rowspan="2">Count four letters and point <span class="register">DE</span> at <a href="../asm/5B7B.html">WordToken</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -196,9 +207,20 @@ Copy up to four characters, padding with spaces, then look the word up.
 <td class="instruction">LD DE,$5B7B</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c0b7"></span>
+<div class="comments">
+<div class="paragraph">
+Write those spaces.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ParseWord_Pad</td>
 <td class="address-2"><span id="c0b7"></span>C0B7</td>
 <td class="instruction">LD A,$20</td>
+<td class="comment-1" rowspan="4">Fill <a href="../asm/5B7B.html">WordToken</a> with four spaces.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -227,10 +249,20 @@ Copy up to four characters, padding with spaces, then look the word up.
 <td class="instruction">LD B,$00</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="c0c2"></span>
+<div class="comments">
+<div class="paragraph">
+A comma after copied letters looks the word up. An empty comma keeps scanning.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label">ParseWord_Letter</td>
 <td class="address-2"><span id="c0c2"></span>C0C2</td>
 <td class="instruction">LD A,(HL)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="C0A4.html#c0da">ParseWord_Break</a> to test for a space or ENTER.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C0A4.html#c0da">ParseWord_Break</a> if this character is not a comma.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -246,7 +278,7 @@ Copy up to four characters, padding with spaces, then look the word up.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c0c7"></span>C0C7</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="3">Jump to <a href="C0EE.html">LookupWord</a> to look the word up.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C0EE.html">LookupWord</a> if a letter has already been stored.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -262,7 +294,7 @@ Copy up to four characters, padding with spaces, then look the word up.
 <td class="asm-label"></td>
 <td class="address-1"><span id="c0cb"></span>C0CB</td>
 <td class="instruction">LD A,($5B8B)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="C0A4.html">ParseWord</a> to keep scanning.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="C0A4.html">ParseWord</a> if no word has been recognised yet.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>

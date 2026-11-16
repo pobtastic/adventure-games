@@ -101,7 +101,7 @@ Prev: <a href="7382.html">7382</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#738d">Map</a></td>
 <td class="next">
-Next: <a href="73BE.html">73BE</a>
+Next: <a href="73AE.html">73AE</a>
 </td>
 </tr>
 </table>
@@ -114,16 +114,25 @@ Next: <a href="73BE.html">73BE</a>
 Used by the routine at <a href="6E7F.html">DispatchShape</a>.
 </div>
 <div class="paragraph">
-Opcode F3 zeroes the origin and restores the default margins.
+Opcode F3 sets *<a href="7337.html">SourceOrigin</a>, *<a href="7339.html">DestinationOrigin</a> and *<a href="7337.html#7338">SourceOrigin_Row</a> to 00, *<a href="7339.html#733a">DestinationOrigin_Height</a> to the bottom illustration row 0B, and the copy width to 20. It then copies that full-width rectangle through <a href="733B.html#7361">SetOrigin_Copy</a>. The destination row counts down, so the copy is upside down.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Picture record</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
 <td class="asm-label">ResetOrigin</td>
 <td class="address-2"><span id="738d"></span>738D</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="4">Write 00 to the origin.</td>
+<td class="comment-1" rowspan="4">Write 00 to *<a href="7337.html">SourceOrigin</a>, *<a href="7339.html">DestinationOrigin</a> and *<a href="7337.html#7338">SourceOrigin_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,7 +153,7 @@ Opcode F3 zeroes the origin and restores the default margins.
 <td class="asm-label"></td>
 <td class="address-1"><span id="7397"></span>7397</td>
 <td class="instruction">LD A,$0B</td>
-<td class="comment-1" rowspan="2">Write 0B as the remaining height.</td>
+<td class="comment-1" rowspan="2">Write 0B to *<a href="7339.html#733a">DestinationOrigin_Height</a>, the bottom row of the illustration.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -155,7 +164,7 @@ Opcode F3 zeroes the origin and restores the default margins.
 <td class="asm-label"></td>
 <td class="address-1"><span id="739c"></span>739C</td>
 <td class="instruction">LD A,$20</td>
-<td class="comment-1" rowspan="3">Write 20 over both copy immediates.</td>
+<td class="comment-1" rowspan="3">Self-modify the copy widths at <a href="72FE.html#7318">7319</a> and <a href="72D5.html#72e5">72E6</a> to 20.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -168,10 +177,20 @@ Opcode F3 zeroes the origin and restores the default margins.
 <td class="instruction">LD ($72E6),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="73a4"></span>
+<div class="comments">
+<div class="paragraph">
+Copy the default rectangle.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="73a4"></span>73A4</td>
 <td class="instruction">LD A,$05</td>
-<td class="comment-1" rowspan="2">Call <a href="733B.html#7361">SetOrigin_Copy</a> with half-height 05.</td>
+<td class="comment-1" rowspan="2">Call <a href="733B.html#7361">SetOrigin_Copy</a> with the loop stop set to 05.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -182,92 +201,13 @@ Opcode F3 zeroes the origin and restores the default margins.
 <td class="asm-label"></td>
 <td class="address-1"><span id="73a9"></span>73A9</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Advance the record pointer.</td>
+<td class="comment-1" rowspan="1">Step past this opcode.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="73ab"></span>73AB</td>
 <td class="instruction">JP <a href="6E53.html">PictureRecord</a></td>
 <td class="comment-1" rowspan="1">Jump to <a href="6E53.html">PictureRecord</a>.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="73ae"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routines at <a href="7271.html">ShapeIfPresent_Copy</a>, <a href="72D5.html">DrawFixedShift_Attrs</a> and <a href="74BE.html">VerticalRun_Copy</a>.
-</div>
-<div class="paragraph">
-Turns a character row in <span class="register">B</span> and a column in <span class="register">C</span> into a pointer inside <a href="6C7A.html">AttributeBuffer</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">ResetOrigin_Address</td>
-<td class="address-2"><span id="73ae"></span>73AE</td>
-<td class="instruction">LD H,$00</td>
-<td class="comment-1" rowspan="2">Copy the row into <span class="register">HL</span>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="73b0"></span>73B0</td>
-<td class="instruction">LD L,B</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="73b1"></span>73B1</td>
-<td class="instruction">ADD HL,HL</td>
-<td class="comment-1" rowspan="5">Multiply by 20.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="73b2"></span>73B2</td>
-<td class="instruction">ADD HL,HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="73b3"></span>73B3</td>
-<td class="instruction">ADD HL,HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="73b4"></span>73B4</td>
-<td class="instruction">ADD HL,HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="73b5"></span>73B5</td>
-<td class="instruction">ADD HL,HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="73b6"></span>73B6</td>
-<td class="instruction">LD DE,$6C7A</td>
-<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="6C7A.html">AttributeBuffer</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="73b9"></span>73B9</td>
-<td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1">Add that buffer.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="73ba"></span>73BA</td>
-<td class="instruction">LD B,$00</td>
-<td class="comment-1" rowspan="2">Add the column.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="73bc"></span>73BC</td>
-<td class="instruction">ADD HL,BC</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="73bd"></span>73BD</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -277,7 +217,7 @@ Prev: <a href="7382.html">7382</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#738d">Map</a></td>
 <td class="next">
-Next: <a href="73BE.html">73BE</a>
+Next: <a href="73AE.html">73AE</a>
 </td>
 </tr>
 </table>

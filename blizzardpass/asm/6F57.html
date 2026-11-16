@@ -101,7 +101,7 @@ Prev: <a href="6F44.html">6F44</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#6f57">Map</a></td>
 <td class="next">
-Next: <a href="6F6C.html">6F6C</a>
+Next: <a href="70F6.html">70F6</a>
 </td>
 </tr>
 </table>
@@ -111,10 +111,10 @@ Next: <a href="6F6C.html">6F6C</a>
 <td class="routine-comment" colspan="5">
 <div class="details">
 <div class="paragraph">
-Used by the routines at <a href="6EC1.html">PlotShape</a> and <a href="6FC9.html">ScaleShape</a>.
+Used by the routines at <a href="6EC1.html">PlotShape</a> and <a href="70F8.html">ScaleShape_Screen</a>.
 </div>
 <div class="paragraph">
-Turns a character row into a pointer inside the attribute buffer, using the same row table as the text printer.
+Turns a character row into a pointer inside the attribute buffer, using the same row table as the text printer. It then reads each shape byte and expands the tiles.
 </div>
 </div>
 <table class="input">
@@ -188,6 +188,16 @@ Turns a character row into a pointer inside the attribute buffer, using the same
 <td class="instruction">LD ($5BBC),HL</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="6f65"></span>
+<div class="comments">
+<div class="paragraph">
+Start this shape with overwrite and no run count.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="6f65"></span>6F65</td>
 <td class="instruction">XOR A</td>
@@ -205,12 +215,1498 @@ Turns a character row into a pointer inside the attribute buffer, using the same
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
+<span id="6f6c"></span>
 <div class="comments">
 <div class="paragraph">
-Continue on to <a href="6F6C.html">ReadShapeByte</a>.
+Fetch the next shape byte and remember it for the shift that follows.
 </div>
 </div>
 </td>
+</tr>
+<tr>
+<td class="asm-label">ReadShapeByte</td>
+<td class="address-2"><span id="6f6c"></span>6F6C</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="2">Write 00 to <a href="5BBE.html">Shift_Flags</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f6d"></span>6F6D</td>
+<td class="instruction">LD ($5BBE),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f70"></span>6F70</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Fetch the next shape byte.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6f71"></span>
+<div class="comments">
+<div class="paragraph">
+Marker FB replaces this byte from the parameter block.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f71"></span>6F71</td>
+<td class="instruction">CP $FB</td>
+<td class="comment-1" rowspan="2">Call <a href="71EB.html">FetchParameterByte</a> if it is FB, which replaces this byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f73"></span>6F73</td>
+<td class="instruction">CALL Z,<a href="71EB.html">FetchParameterByte</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6f76"></span>
+<div class="comments">
+<div class="paragraph">
+Marker EF paints a run of 01 blank tiles.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f76"></span>6F76</td>
+<td class="instruction">CP $EF</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#6f7e">ReadShapeByte_Marker</a> if it is not EF, a blank run of 01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f78"></span>6F78</td>
+<td class="instruction">JR NZ,<a href="6F57.html#6f7e">ReadShapeByte_Marker</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f7a"></span>6F7A</td>
+<td class="instruction">LD A,$01</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#6f94">ReadShapeByte_Store</a> with a blank run of 01.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f7c"></span>6F7C</td>
+<td class="instruction">JR <a href="6F57.html#6f94">ReadShapeByte_Store</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6f7e"></span>
+<div class="comments">
+<div class="paragraph">
+Marker EE paints a run of 02 blank tiles.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadShapeByte_Marker</td>
+<td class="address-2"><span id="6f7e"></span>6F7E</td>
+<td class="instruction">CP $EE</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#6f86">ReadShapeByte_Wide</a> if it is not EE, a blank run of 02.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f80"></span>6F80</td>
+<td class="instruction">JR NZ,<a href="6F57.html#6f86">ReadShapeByte_Wide</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f82"></span>6F82</td>
+<td class="instruction">LD A,$02</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#6f94">ReadShapeByte_Store</a> with a blank run of 02.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f84"></span>6F84</td>
+<td class="instruction">JR <a href="6F57.html#6f94">ReadShapeByte_Store</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6f86"></span>
+<div class="comments">
+<div class="paragraph">
+Marker EB paints a run of 03 blank tiles.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadShapeByte_Wide</td>
+<td class="address-2"><span id="6f86"></span>6F86</td>
+<td class="instruction">CP $EB</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#6f8e">ReadShapeByte_Literal</a> if it is not EB, a blank run of 03.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f88"></span>6F88</td>
+<td class="instruction">JR NZ,<a href="6F57.html#6f8e">ReadShapeByte_Literal</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f8a"></span>6F8A</td>
+<td class="instruction">LD A,$03</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#6f94">ReadShapeByte_Store</a> with a blank run of 03.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f8c"></span>6F8C</td>
+<td class="instruction">JR <a href="6F57.html#6f94">ReadShapeByte_Store</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6f8e"></span>
+<div class="comments">
+<div class="paragraph">
+Marker F3 paints a run of blank tiles; the next byte is the count.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadShapeByte_Literal</td>
+<td class="address-2"><span id="6f8e"></span>6F8E</td>
+<td class="instruction">CP $F3</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#6fa5">SpecialShape</a> if it is not F3, a counted blank run.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f90"></span>6F90</td>
+<td class="instruction">JR NZ,<a href="6F57.html#6fa5">SpecialShape</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f92"></span>6F92</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Fetch the run count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f93"></span>6F93</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6f94"></span>
+<div class="comments">
+<div class="paragraph">
+Store the run count and the default shift flags.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ReadShapeByte_Store</td>
+<td class="address-2"><span id="6f94"></span>6F94</td>
+<td class="instruction">LD ($5BC0),A</td>
+<td class="comment-1" rowspan="1">Store it in <a href="5BC0.html">Run_Count</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f97"></span>6F97</td>
+<td class="instruction">LD A,$82</td>
+<td class="comment-1" rowspan="3">Write default flags 82 (no shift, page 0, overwrite) to <a href="5BBE.html">Shift_Flags</a> and <a href="5BBF.html">Shift_Flag</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f99"></span>6F99</td>
+<td class="instruction">LD ($5BBE),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f9c"></span>6F9C</td>
+<td class="instruction">LD ($5BBF),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6f9f"></span>6F9F</td>
+<td class="instruction">LD ($5BBC),HL</td>
+<td class="comment-1" rowspan="1">Store <span class="register">HL</span> in <a href="5BBC.html">Shape_Pointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fa2"></span>6FA2</td>
+<td class="instruction">XOR A</td>
+<td class="comment-1" rowspan="1">The tile number is 00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fa3"></span>6FA3</td>
+<td class="instruction">JR <a href="6F57.html#6fc9">ScaleShape</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#6fc9">ScaleShape</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6fa5"></span>
+<div class="comments">
+<div class="paragraph">
+Marker FA copies a parameter block. Other markers adjust the coordinate that follows.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SpecialShape</td>
+<td class="address-2"><span id="6fa5"></span>6FA5</td>
+<td class="instruction">CP $FA</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#6fae">SpecialShape_Other</a> if it is not FA, which copies a parameter block.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fa7"></span>6FA7</td>
+<td class="instruction">JR NZ,<a href="6F57.html#6fae">SpecialShape_Other</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6fa9"></span>
+<div class="comments">
+<div class="paragraph">
+Copy the parameter block.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fa9"></span>6FA9</td>
+<td class="instruction">CALL <a href="71FF.html">CopyParameterBlock</a></td>
+<td class="comment-1" rowspan="1">Call <a href="71FF.html">CopyParameterBlock</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fac"></span>6FAC</td>
+<td class="instruction">JR <a href="6F57.html#6f6c">ReadShapeByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#6f6c">ReadShapeByte</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6fae"></span>
+<div class="comments">
+<div class="paragraph">
+Adjust the coordinate that follows.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SpecialShape_Other</td>
+<td class="address-2"><span id="6fae"></span>6FAE</td>
+<td class="instruction">LD ($5BBC),HL</td>
+<td class="comment-1" rowspan="1">Store <span class="register">HL</span> in <a href="5BBC.html">Shape_Pointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fb1"></span>6FB1</td>
+<td class="instruction">BIT 7,A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#6fc9">ScaleShape</a> if bit 7 is reset.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fb3"></span>6FB3</td>
+<td class="instruction">JR Z,<a href="6F57.html#6fc9">ScaleShape</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fb5"></span>6FB5</td>
+<td class="instruction">LD ($5BBE),A</td>
+<td class="comment-1" rowspan="2">Copy the marker into <a href="5BBE.html">Shift_Flags</a> and <a href="5BBF.html">Shift_Flag</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fb8"></span>6FB8</td>
+<td class="instruction">LD ($5BBF),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fbb"></span>6FBB</td>
+<td class="instruction">AND %00000010</td>
+<td class="comment-1" rowspan="1">Keep only bit 1.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fbd"></span>6FBD</td>
+<td class="instruction">JR Z,<a href="6F57.html#6fc4">SpecialShape_Advance</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#6fc4">SpecialShape_Advance</a> if bit 1 is reset.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fbf"></span>6FBF</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Advance to the run count.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fc0"></span>6FC0</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fc1"></span>6FC1</td>
+<td class="instruction">LD ($5BC0),A</td>
+<td class="comment-1" rowspan="1">Store it in <a href="5BC0.html">Run_Count</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6fc4"></span>
+<div class="comments">
+<div class="paragraph">
+Step on to the coordinate.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">SpecialShape_Advance</td>
+<td class="address-2"><span id="6fc4"></span>6FC4</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Advance <a href="5BBC.html">Shape_Pointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fc5"></span>6FC5</td>
+<td class="instruction">LD ($5BBC),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fc8"></span>6FC8</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Fetch the coordinate.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6fc9"></span>
+<div class="comments">
+<div class="paragraph">
+Multiply the coordinate by eight and add the picture origin.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape</td>
+<td class="address-2"><span id="6fc9"></span>6FC9</td>
+<td class="instruction">LD L,A</td>
+<td class="comment-1" rowspan="2">Copy the coordinate into <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fca"></span>6FCA</td>
+<td class="instruction">LD H,$00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fcc"></span>6FCC</td>
+<td class="instruction">LD BC,$C350</td>
+<td class="comment-1" rowspan="1">Point <span class="register">BC</span> at <a href="C350.html">PictureTiles</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fcf"></span>6FCF</td>
+<td class="instruction">LD A,($5BBF)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6F57.html#6fda">ScaleShape_Offset</a> if bit 0 of <a href="5BBF.html">Shift_Flag</a> is reset.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fd2"></span>6FD2</td>
+<td class="instruction">BIT 0,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fd4"></span>6FD4</td>
+<td class="instruction">JR Z,<a href="6F57.html#6fda">ScaleShape_Offset</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fd6"></span>6FD6</td>
+<td class="instruction">INC B</td>
+<td class="comment-1" rowspan="4">Add 0400 to the tile base.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fd7"></span>6FD7</td>
+<td class="instruction">INC B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fd8"></span>6FD8</td>
+<td class="instruction">INC B</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fd9"></span>6FD9</td>
+<td class="instruction">INC B</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6fda"></span>
+<div class="comments">
+<div class="paragraph">
+Point at the tile bytes and choose a shift.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Offset</td>
+<td class="address-2"><span id="6fda"></span>6FDA</td>
+<td class="instruction">ADD HL,HL</td>
+<td class="comment-1" rowspan="3">Multiply the coordinate by eight.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fdb"></span>6FDB</td>
+<td class="instruction">ADD HL,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fdc"></span>6FDC</td>
+<td class="instruction">ADD HL,HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fdd"></span>6FDD</td>
+<td class="instruction">ADD HL,BC</td>
+<td class="comment-1" rowspan="1">Add the tile base.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fde"></span>6FDE</td>
+<td class="instruction">PUSH HL</td>
+<td class="comment-1" rowspan="2">Point <span class="register">IX</span> at those bytes (using the stack).</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fdf"></span>6FDF</td>
+<td class="instruction">POP IX</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fe1"></span>6FE1</td>
+<td class="instruction">LD HL,$5BB2</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5BB2.html">Tile_Workspace</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fe4"></span>6FE4</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="1">Count the 08 pixel rows of this tile.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fe6"></span>6FE6</td>
+<td class="instruction">LD A,($5BBE)</td>
+<td class="comment-1" rowspan="1">Fetch <a href="5BBE.html">Shift_Flags</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6fe9"></span>6FE9</td>
+<td class="instruction">AND %00110000</td>
+<td class="comment-1" rowspan="1">Keep only bits 4-5.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6feb"></span>6FEB</td>
+<td class="instruction">JR NZ,<a href="6F57.html#6ff8">ScaleShape_Left</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#6ff8">ScaleShape_Left</a> if a shift is needed.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6fed"></span>
+<div class="comments">
+<div class="paragraph">
+Copy eight unshifted bytes.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Copy</td>
+<td class="address-2"><span id="6fed"></span>6FED</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="2">Copy one tile byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ff0"></span>6FF0</td>
+<td class="instruction">LD (HL),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ff1"></span>6FF1</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="2">Step both pointers.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ff3"></span>6FF3</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ff4"></span>6FF4</td>
+<td class="instruction">DJNZ <a href="6F57.html#6fed">ScaleShape_Copy</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#6fed">ScaleShape_Copy</a> until eight bytes are copied.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ff6"></span>6FF6</td>
+<td class="instruction">JR <a href="6F57.html#704a">ScaleShape_Rotate</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#704a">ScaleShape_Rotate</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6ff8"></span>
+<div class="comments">
+<div class="paragraph">
+Shift left when bits 4-5 are 10.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Left</td>
+<td class="address-2"><span id="6ff8"></span>6FF8</td>
+<td class="instruction">CP $10</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#7014">ScaleShape_Right</a> if the shift is not 10.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ffa"></span>6FFA</td>
+<td class="instruction">JR NZ,<a href="6F57.html#7014">ScaleShape_Right</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="6ffc"></span>6FFC</td>
+<td class="instruction">LD C,$08</td>
+<td class="comment-1" rowspan="1">Count the 08 tile bytes to shift left.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="6ffe"></span>
+<div class="comments">
+<div class="paragraph">
+One left-shift pass.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_LeftPass</td>
+<td class="address-2"><span id="6ffe"></span>6FFE</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="1">Count the 08 bits of this tile byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7000"></span>7000</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="1">Fetch this tile byte.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7003"></span>
+<div class="comments">
+<div class="paragraph">
+Rotate one tile byte left into the workspace.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_LeftBit</td>
+<td class="address-2"><span id="7003"></span>7003</td>
+<td class="instruction">SLA A</td>
+<td class="comment-1" rowspan="2">Rotate this bit into the workspace.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7005"></span>7005</td>
+<td class="instruction">RR (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7007"></span>7007</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance the workspace pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7008"></span>7008</td>
+<td class="instruction">DJNZ <a href="6F57.html#7003">ScaleShape_LeftBit</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#7003">ScaleShape_LeftBit</a> until eight bits are done.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="700a"></span>700A</td>
+<td class="instruction">LD HL,$5BB2</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5BB2.html">Tile_Workspace</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="700d"></span>700D</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="1">Advance the tile pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="700f"></span>700F</td>
+<td class="instruction">DEC C</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#6ffe">ScaleShape_LeftPass</a> until eight bytes have been shifted.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7010"></span>7010</td>
+<td class="instruction">JR NZ,<a href="6F57.html#6ffe">ScaleShape_LeftPass</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7012"></span>7012</td>
+<td class="instruction">JR <a href="6F57.html#704a">ScaleShape_Rotate</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#704a">ScaleShape_Rotate</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7014"></span>
+<div class="comments">
+<div class="paragraph">
+Shift right when bits 4-5 are 20.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Right</td>
+<td class="address-2"><span id="7014"></span>7014</td>
+<td class="instruction">CP $20</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#7030">ScaleShape_Srl</a> if the shift is not 20.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7016"></span>7016</td>
+<td class="instruction">JR NZ,<a href="6F57.html#7030">ScaleShape_Srl</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7018"></span>7018</td>
+<td class="instruction">LD C,$08</td>
+<td class="comment-1" rowspan="1">Count the 08 tile bytes to shift right.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="701a"></span>701A</td>
+<td class="instruction">LD HL,$5BB9</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5BB2.html">5BB9</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="701d"></span>
+<div class="comments">
+<div class="paragraph">
+One right-shift pass.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_RightPass</td>
+<td class="address-2"><span id="701d"></span>701D</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="1">Count the 08 bits of this tile byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="701f"></span>701F</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="1">Fetch this tile byte.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7022"></span>
+<div class="comments">
+<div class="paragraph">
+Rotate one tile byte left into the workspace, backwards.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_RightBit</td>
+<td class="address-2"><span id="7022"></span>7022</td>
+<td class="instruction">SLA A</td>
+<td class="comment-1" rowspan="3">Rotate this bit into the workspace.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7024"></span>7024</td>
+<td class="instruction">RR (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7026"></span>7026</td>
+<td class="instruction">DJNZ <a href="6F57.html#7022">ScaleShape_RightBit</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7028"></span>7028</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="2">Step both pointers.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="702a"></span>702A</td>
+<td class="instruction">DEC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="702b"></span>702B</td>
+<td class="instruction">DEC C</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#701d">ScaleShape_RightPass</a> until eight bytes have been shifted.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="702c"></span>702C</td>
+<td class="instruction">JR NZ,<a href="6F57.html#701d">ScaleShape_RightPass</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="702e"></span>702E</td>
+<td class="instruction">JR <a href="6F57.html#704a">ScaleShape_Rotate</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#704a">ScaleShape_Rotate</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7030"></span>
+<div class="comments">
+<div class="paragraph">
+Shift right when bits 4-5 are 30.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Srl</td>
+<td class="address-2"><span id="7030"></span>7030</td>
+<td class="instruction">CP $30</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#704a">ScaleShape_Rotate</a> if the shift is not 30.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7032"></span>7032</td>
+<td class="instruction">JR NZ,<a href="6F57.html#704a">ScaleShape_Rotate</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7034"></span>7034</td>
+<td class="instruction">LD C,$08</td>
+<td class="comment-1" rowspan="1">Count the 08 tile bytes to shift right.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7036"></span>
+<div class="comments">
+<div class="paragraph">
+One logical-right pass.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_SrlPass</td>
+<td class="address-2"><span id="7036"></span>7036</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="1">Count the 08 bits of this tile byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7038"></span>7038</td>
+<td class="instruction">LD A,(IX+$00)</td>
+<td class="comment-1" rowspan="1">Fetch this tile byte.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="703b"></span>
+<div class="comments">
+<div class="paragraph">
+Rotate one tile byte right into the workspace.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_SrlBit</td>
+<td class="address-2"><span id="703b"></span>703B</td>
+<td class="instruction">SRL A</td>
+<td class="comment-1" rowspan="2">Rotate this bit into the workspace.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="703d"></span>703D</td>
+<td class="instruction">RL (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="703f"></span>703F</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance the workspace pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7040"></span>7040</td>
+<td class="instruction">DJNZ <a href="6F57.html#703b">ScaleShape_SrlBit</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#703b">ScaleShape_SrlBit</a> until eight bits are done.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7042"></span>7042</td>
+<td class="instruction">LD HL,$5BB2</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5BB2.html">Tile_Workspace</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7045"></span>7045</td>
+<td class="instruction">INC IX</td>
+<td class="comment-1" rowspan="1">Advance the tile pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7047"></span>7047</td>
+<td class="instruction">DEC C</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#7036">ScaleShape_SrlPass</a> until eight bytes have been shifted.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7048"></span>7048</td>
+<td class="instruction">JR NZ,<a href="6F57.html#7036">ScaleShape_SrlPass</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="704a"></span>
+<div class="comments">
+<div class="paragraph">
+Optionally rotate the workspace once more.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Rotate</td>
+<td class="address-2"><span id="704a"></span>704A</td>
+<td class="instruction">LD A,($5BBE)</td>
+<td class="comment-1" rowspan="1">Fetch <a href="5BBE.html">Shift_Flags</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="704d"></span>704D</td>
+<td class="instruction">AND %01000000</td>
+<td class="comment-1" rowspan="1">Keep only bit 6.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="704f"></span>704F</td>
+<td class="instruction">OR A</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#7064">ScaleShape_Combine</a> if bit 6 is reset.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7050"></span>7050</td>
+<td class="instruction">JR Z,<a href="6F57.html#7064">ScaleShape_Combine</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7052"></span>7052</td>
+<td class="instruction">LD C,$08</td>
+<td class="comment-1" rowspan="1">Count the 08 workspace bytes to rotate left.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7054"></span>7054</td>
+<td class="instruction">LD HL,$5BB2</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5BB2.html">Tile_Workspace</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7057"></span>
+<div class="comments">
+<div class="paragraph">
+One extra left-shift pass.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_RotatePass</td>
+<td class="address-2"><span id="7057"></span>7057</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="2">Fetch eight bits of this workspace byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7059"></span>7059</td>
+<td class="instruction">LD A,(HL)</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="705a"></span>
+<div class="comments">
+<div class="paragraph">
+Rotate this workspace byte left.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_RotateBit</td>
+<td class="address-2"><span id="705a"></span>705A</td>
+<td class="instruction">SLA A</td>
+<td class="comment-1" rowspan="3">Rotate this bit in place.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="705c"></span>705C</td>
+<td class="instruction">RR (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="705e"></span>705E</td>
+<td class="instruction">DJNZ <a href="6F57.html#705a">ScaleShape_RotateBit</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7060"></span>7060</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="1">Advance the workspace pointer.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7061"></span>7061</td>
+<td class="instruction">DEC C</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#7057">ScaleShape_RotatePass</a> until eight bytes have been shifted.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7062"></span>7062</td>
+<td class="instruction">JR NZ,<a href="6F57.html#7057">ScaleShape_RotatePass</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7064"></span>
+<div class="comments">
+<div class="paragraph">
+Combine the workspace with the destination.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Combine</td>
+<td class="address-2"><span id="7064"></span>7064</td>
+<td class="instruction">LD DE,($5BBA)</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="5BBA.html">Picture_Destination</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7068"></span>7068</td>
+<td class="instruction">LD HL,$5BB2</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5BB2.html">Tile_Workspace</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="706b"></span>706B</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="1">Count the 08 pixel rows to merge.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="706d"></span>
+<div class="comments">
+<div class="paragraph">
+Choose how this byte is merged.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Merge</td>
+<td class="address-2"><span id="706d"></span>706D</td>
+<td class="instruction">LD A,($5BC8)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6F57.html#7078">ScaleShape_And</a> if <a href="5BC8.html">Combine_Mode</a> is not 04.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7070"></span>7070</td>
+<td class="instruction">CP $04</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7072"></span>7072</td>
+<td class="instruction">JR NZ,<a href="6F57.html#7078">ScaleShape_And</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7074"></span>7074</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="3"><code>OR</code> the workspace byte into the destination.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7075"></span>7075</td>
+<td class="instruction">OR (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7076"></span>7076</td>
+<td class="instruction">JR <a href="6F57.html#7089">ScaleShape_Write</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7078"></span>
+<div class="comments">
+<div class="paragraph">
+<code>AND</code> when the combine mode is 08.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_And</td>
+<td class="address-2"><span id="7078"></span>7078</td>
+<td class="instruction">CP $08</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#7080">ScaleShape_Xor</a> if <a href="5BC8.html">Combine_Mode</a> is not 08.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="707a"></span>707A</td>
+<td class="instruction">JR NZ,<a href="6F57.html#7080">ScaleShape_Xor</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="707c"></span>707C</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="3"><code>AND</code> the workspace byte into the destination.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="707d"></span>707D</td>
+<td class="instruction">AND (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="707e"></span>707E</td>
+<td class="instruction">JR <a href="6F57.html#7089">ScaleShape_Write</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7080"></span>
+<div class="comments">
+<div class="paragraph">
+<code>XOR</code> when the combine mode is 0C.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Xor</td>
+<td class="address-2"><span id="7080"></span>7080</td>
+<td class="instruction">CP $0C</td>
+<td class="comment-1" rowspan="2">Jump to <a href="6F57.html#7088">ScaleShape_Plain</a> if <a href="5BC8.html">Combine_Mode</a> is not 0C.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7082"></span>7082</td>
+<td class="instruction">JR NZ,<a href="6F57.html#7088">ScaleShape_Plain</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7084"></span>7084</td>
+<td class="instruction">LD A,(DE)</td>
+<td class="comment-1" rowspan="3"><code>XOR</code> the workspace byte into the destination.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7085"></span>7085</td>
+<td class="instruction">XOR (HL)</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7086"></span>7086</td>
+<td class="instruction">JR <a href="6F57.html#7089">ScaleShape_Write</a></td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7088"></span>
+<div class="comments">
+<div class="paragraph">
+Write the merged byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Plain</td>
+<td class="address-2"><span id="7088"></span>7088</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="1">Use the workspace byte as-is.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7089"></span>
+<div class="comments">
+<div class="paragraph">
+Store this byte and step to the next pixel row.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Write</td>
+<td class="address-2"><span id="7089"></span>7089</td>
+<td class="instruction">LD (DE),A</td>
+<td class="comment-1" rowspan="2">Write the byte to the destination and the workspace.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="708a"></span>708A</td>
+<td class="instruction">LD (HL),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="708b"></span>708B</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Step both pointers.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="708c"></span>708C</td>
+<td class="instruction">INC D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="708d"></span>708D</td>
+<td class="instruction">DJNZ <a href="6F57.html#706d">ScaleShape_Merge</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#706d">ScaleShape_Merge</a> until eight rows are done.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="708f"></span>708F</td>
+<td class="instruction">LD A,($5BBE)</td>
+<td class="comment-1" rowspan="1">Fetch <a href="5BBE.html">Shift_Flags</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7092"></span>7092</td>
+<td class="instruction">AND %00001100</td>
+<td class="comment-1" rowspan="1">Keep only bits 2-3.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7094"></span>7094</td>
+<td class="instruction">LD ($5BC8),A</td>
+<td class="comment-1" rowspan="1">Store that in <a href="5BC8.html">Combine_Mode</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="7097"></span>7097</td>
+<td class="instruction">JR NZ,<a href="6F57.html#70bd">ScaleShape_Next</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#70bd">ScaleShape_Next</a> if it is set.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="7099"></span>
+<div class="comments">
+<div class="paragraph">
+Repeat the copy for the remaining run count.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Repeat</td>
+<td class="address-2"><span id="7099"></span>7099</td>
+<td class="instruction">LD A,($5BC0)</td>
+<td class="comment-1" rowspan="3">Jump to <a href="6F57.html#70ba">ScaleShape_Step</a> if <a href="5BC0.html">Run_Count</a> has reached 00.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="709c"></span>709C</td>
+<td class="instruction">OR A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="709d"></span>709D</td>
+<td class="instruction">JR Z,<a href="6F57.html#70ba">ScaleShape_Step</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="709f"></span>709F</td>
+<td class="instruction">CALL <a href="6F57.html#70c7">ScaleShape_Column</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6F57.html#70c7">ScaleShape_Column</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70a2"></span>70A2</td>
+<td class="instruction">LD B,$08</td>
+<td class="comment-1" rowspan="1">Count the 08 pixel rows to copy.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70a4"></span>70A4</td>
+<td class="instruction">LD HL,$5BB2</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5BB2.html">Tile_Workspace</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70a7"></span>70A7</td>
+<td class="instruction">LD DE,($5BBA)</td>
+<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="5BBA.html">Picture_Destination</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="70ab"></span>
+<div class="comments">
+<div class="paragraph">
+Copy eight bytes to the destination.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_RepeatCopy</td>
+<td class="address-2"><span id="70ab"></span>70AB</td>
+<td class="instruction">LD A,(HL)</td>
+<td class="comment-1" rowspan="2">Copy this byte.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70ac"></span>70AC</td>
+<td class="instruction">LD (DE),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70ad"></span>70AD</td>
+<td class="instruction">INC HL</td>
+<td class="comment-1" rowspan="2">Step both pointers.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70ae"></span>70AE</td>
+<td class="instruction">INC D</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70af"></span>70AF</td>
+<td class="instruction">DJNZ <a href="6F57.html#70ab">ScaleShape_RepeatCopy</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#70ab">ScaleShape_RepeatCopy</a> until eight rows are done.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70b1"></span>70B1</td>
+<td class="instruction">LD A,($5BC0)</td>
+<td class="comment-1" rowspan="3">Count down <a href="5BC0.html">Run_Count</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70b4"></span>70B4</td>
+<td class="instruction">DEC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70b5"></span>70B5</td>
+<td class="instruction">LD ($5BC0),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70b8"></span>70B8</td>
+<td class="instruction">JR NZ,<a href="6F57.html#7099">ScaleShape_Repeat</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#7099">ScaleShape_Repeat</a> until the run is done.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="70ba"></span>
+<div class="comments">
+<div class="paragraph">
+Step the destination on after the run.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Step</td>
+<td class="address-2"><span id="70ba"></span>70BA</td>
+<td class="instruction">CALL <a href="6F57.html#70c7">ScaleShape_Column</a></td>
+<td class="comment-1" rowspan="1">Call <a href="6F57.html#70c7">ScaleShape_Column</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="70bd"></span>
+<div class="comments">
+<div class="paragraph">
+Fetch the next shape byte.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Next</td>
+<td class="address-2"><span id="70bd"></span>70BD</td>
+<td class="instruction">LD HL,($5BBC)</td>
+<td class="comment-1" rowspan="3">Advance <a href="5BBC.html">Shape_Pointer</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70c0"></span>70C0</td>
+<td class="instruction">INC HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70c1"></span>70C1</td>
+<td class="instruction">LD ($5BBC),HL</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70c4"></span>70C4</td>
+<td class="instruction">JP <a href="6F57.html#6f6c">ReadShapeByte</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="6F57.html#6f6c">ReadShapeByte</a>.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="70c7"></span>
+<div class="comments">
+<div class="paragraph">
+Step the destination to the next column, wrapping at the row width.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label">ScaleShape_Column</td>
+<td class="address-2"><span id="70c7"></span>70C7</td>
+<td class="instruction">LD DE,($5BBA)</td>
+<td class="comment-1" rowspan="3">Advance <a href="5BBA.html">Picture_Destination</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70cb"></span>70CB</td>
+<td class="instruction">INC DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70cc"></span>70CC</td>
+<td class="instruction">LD ($5BBA),DE</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70d0"></span>70D0</td>
+<td class="instruction">LD HL,$5BC6</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5BC6.html">Column_Counter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70d3"></span>70D3</td>
+<td class="instruction">DEC (HL)</td>
+<td class="comment-1" rowspan="2">Return if this row still has columns left.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70d4"></span>70D4</td>
+<td class="instruction">RET NZ</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70d5"></span>70D5</td>
+<td class="instruction">LD HL,$5BC7</td>
+<td class="comment-1" rowspan="1">Point <span class="register">HL</span> at <a href="5BC7.html">Rows_Remaining</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70d8"></span>70D8</td>
+<td class="instruction">DEC (HL)</td>
+<td class="comment-1" rowspan="2">Jump to <a href="70F6.html">AbandonShape</a> if the remaining rows have run out.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70d9"></span>70D9</td>
+<td class="instruction">JR Z,<a href="70F6.html">AbandonShape</a></td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70db"></span>70DB</td>
+<td class="instruction">LD A,($5BC4)</td>
+<td class="comment-1" rowspan="2">Copy <a href="5BC4.html">Row_Width</a> into <a href="5BC6.html">Column_Counter</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70de"></span>70DE</td>
+<td class="instruction">LD ($5BC6),A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70e1"></span>70E1</td>
+<td class="instruction">LD A,($5BC3)</td>
+<td class="comment-1" rowspan="3">Step <a href="5BC3.html">Drawing_Y</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70e4"></span>70E4</td>
+<td class="instruction">INC A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70e5"></span>70E5</td>
+<td class="instruction">LD ($5BC3),A</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<span id="70e8"></span>
+<div class="comments">
+<div class="paragraph">
+Look up the new row.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70e8"></span>70E8</td>
+<td class="instruction">CALL <a href="7532.html">RowWord</a></td>
+<td class="comment-1" rowspan="1">Call <a href="7532.html">RowWord</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70eb"></span>70EB</td>
+<td class="instruction">LD A,($5BC1)</td>
+<td class="comment-1" rowspan="3">Copy <a href="5BC1.html">Picture_X</a> into <span class="register">HL</span>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70ee"></span>70EE</td>
+<td class="instruction">LD L,A</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70ef"></span>70EF</td>
+<td class="instruction">LD H,$00</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70f1"></span>70F1</td>
+<td class="instruction">ADD HL,DE</td>
+<td class="comment-1" rowspan="1">Add the destination.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70f2"></span>70F2</td>
+<td class="instruction">LD ($5BBA),HL</td>
+<td class="comment-1" rowspan="1">Store it in <a href="5BBA.html">Picture_Destination</a>.</td>
+</tr>
+<tr>
+<td class="asm-label"></td>
+<td class="address-1"><span id="70f5"></span>70F5</td>
+<td class="instruction">RET</td>
+<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -220,7 +1716,7 @@ Prev: <a href="6F44.html">6F44</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#6f57">Map</a></td>
 <td class="next">
-Next: <a href="6F6C.html">6F6C</a>
+Next: <a href="70F6.html">70F6</a>
 </td>
 </tr>
 </table>

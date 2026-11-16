@@ -101,7 +101,7 @@ Prev: <a href="29570.html">29570</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#29581">Map</a></td>
 <td class="next">
-Next: <a href="29630.html">29630</a>
+Next: <a href="29614.html">29614</a>
 </td>
 </tr>
 </table>
@@ -114,16 +114,25 @@ Next: <a href="29630.html">29630</a>
 Used by the routine at <a href="28287.html">DispatchShape</a>.
 </div>
 <div class="paragraph">
-Opcode 243 zeroes the origin and restores the default margins.
+Opcode 243 sets *<a href="29495.html">SourceOrigin</a>, *<a href="29497.html">DestinationOrigin</a> and *<a href="29495.html#29496">SourceOrigin_Row</a> to 0, *<a href="29497.html#29498">DestinationOrigin_Height</a> to the bottom illustration row 11, and the copy width to 32. It then copies that full-width rectangle through <a href="29499.html#29537">SetOrigin_Copy</a>. The destination row counts down, so the copy is upside down.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">IX</td>
+<td class="register-desc">Picture record</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
 <td class="asm-label">ResetOrigin</td>
 <td class="address-2"><span id="29581"></span>29581</td>
 <td class="instruction">XOR A</td>
-<td class="comment-1" rowspan="4">Write 0 to the origin.</td>
+<td class="comment-1" rowspan="4">Write 0 to *<a href="29495.html">SourceOrigin</a>, *<a href="29497.html">DestinationOrigin</a> and *<a href="29495.html#29496">SourceOrigin_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -144,7 +153,7 @@ Opcode 243 zeroes the origin and restores the default margins.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29591"></span>29591</td>
 <td class="instruction">LD A,11</td>
-<td class="comment-1" rowspan="2">Write 11 as the remaining height.</td>
+<td class="comment-1" rowspan="2">Write 11 to *<a href="29497.html#29498">DestinationOrigin_Height</a>, the bottom row of the illustration.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -155,7 +164,7 @@ Opcode 243 zeroes the origin and restores the default margins.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29596"></span>29596</td>
 <td class="instruction">LD A,32</td>
-<td class="comment-1" rowspan="3">Write 32 over both copy immediates.</td>
+<td class="comment-1" rowspan="3">Self-modify the copy widths at <a href="29438.html#29464">29465</a> and <a href="29397.html#29413">29414</a> to 32.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -168,10 +177,20 @@ Opcode 243 zeroes the origin and restores the default margins.
 <td class="instruction">LD (29414),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="29604"></span>
+<div class="comments">
+<div class="paragraph">
+Copy the default rectangle.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29604"></span>29604</td>
 <td class="instruction">LD A,5</td>
-<td class="comment-1" rowspan="2">Call <a href="29499.html#29537">SetOrigin_Copy</a> with half-height 5.</td>
+<td class="comment-1" rowspan="2">Call <a href="29499.html#29537">SetOrigin_Copy</a> with the loop stop set to 5.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -182,92 +201,13 @@ Opcode 243 zeroes the origin and restores the default margins.
 <td class="asm-label"></td>
 <td class="address-1"><span id="29609"></span>29609</td>
 <td class="instruction">INC IX</td>
-<td class="comment-1" rowspan="1">Advance the record pointer.</td>
+<td class="comment-1" rowspan="1">Step past this opcode.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="29611"></span>29611</td>
 <td class="instruction">JP <a href="28243.html">PictureRecord</a></td>
 <td class="comment-1" rowspan="1">Jump to <a href="28243.html">PictureRecord</a>.</td>
-</tr>
-<tr>
-<td class="routine-comment" colspan="5">
-<span id="29614"></span>
-<div class="comments">
-<div class="paragraph">
-This entry point is used by the routines at <a href="29297.html">ShapeIfPresent_Copy</a>, <a href="29397.html">DrawFixedShift_Attrs</a> and <a href="29886.html">VerticalRun_Copy</a>.
-</div>
-<div class="paragraph">
-Turns a character row in <span class="register">B</span> and a column in <span class="register">C</span> into a pointer inside <a href="27770.html">AttributeBuffer</a>.
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="asm-label">ResetOrigin_Address</td>
-<td class="address-2"><span id="29614"></span>29614</td>
-<td class="instruction">LD H,0</td>
-<td class="comment-1" rowspan="2">Copy the row into <span class="register">HL</span>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="29616"></span>29616</td>
-<td class="instruction">LD L,B</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="29617"></span>29617</td>
-<td class="instruction">ADD HL,HL</td>
-<td class="comment-1" rowspan="5">Multiply by 32.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="29618"></span>29618</td>
-<td class="instruction">ADD HL,HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="29619"></span>29619</td>
-<td class="instruction">ADD HL,HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="29620"></span>29620</td>
-<td class="instruction">ADD HL,HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="29621"></span>29621</td>
-<td class="instruction">ADD HL,HL</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="29622"></span>29622</td>
-<td class="instruction">LD DE,27770</td>
-<td class="comment-1" rowspan="1">Point <span class="register">DE</span> at <a href="27770.html">AttributeBuffer</a>.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="29625"></span>29625</td>
-<td class="instruction">ADD HL,DE</td>
-<td class="comment-1" rowspan="1">Add that buffer.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="29626"></span>29626</td>
-<td class="instruction">LD B,0</td>
-<td class="comment-1" rowspan="2">Add the column.</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="29628"></span>29628</td>
-<td class="instruction">ADD HL,BC</td>
-</tr>
-<tr>
-<td class="asm-label"></td>
-<td class="address-1"><span id="29629"></span>29629</td>
-<td class="instruction">RET</td>
-<td class="comment-1" rowspan="1">Return.</td>
 </tr>
 </table>
 <table class="asm-navigation">
@@ -277,7 +217,7 @@ Prev: <a href="29570.html">29570</a>
 </td>
 <td class="up">Up: <a href="../maps/all.html#29581">Map</a></td>
 <td class="next">
-Next: <a href="29630.html">29630</a>
+Next: <a href="29614.html">29614</a>
 </td>
 </tr>
 </table>

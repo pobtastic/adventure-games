@@ -114,16 +114,16 @@ Next: <a href="7337.html">7337</a>
 Used by the routine at <a href="733B.html">SetOrigin</a>.
 </div>
 <div class="paragraph">
-Copies one pixel strip from the source origin to the destination.
+Copies pixel rows from <a href="7337.html">SourceOrigin</a> into <a href="7339.html">DestinationOrigin</a> until *<a href="7339.html#733a">DestinationOrigin_Height</a> equals the stop patched by <a href="733B.html">SetOrigin</a>.
 </div>
 </div>
 </td>
 </tr>
 <tr>
-<td class="asm-label">DrawFixedShift_Pixels</td>
+<td class="asm-label">CopyOrigin_Pixels</td>
 <td class="address-2"><span id="72fe"></span>72FE</td>
 <td class="instruction">LD BC,($7337)</td>
-<td class="comment-1" rowspan="1">Fetch the source origin.</td>
+<td class="comment-1" rowspan="1">Fetch *<a href="7337.html">SourceOrigin</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -141,7 +141,7 @@ Copies one pixel strip from the source origin to the destination.
 <td class="asm-label"></td>
 <td class="address-1"><span id="7306"></span>7306</td>
 <td class="instruction">LD BC,($7339)</td>
-<td class="comment-1" rowspan="1">Fetch the destination origin.</td>
+<td class="comment-1" rowspan="1">Fetch *<a href="7339.html">DestinationOrigin</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -175,7 +175,7 @@ Copies one pixel strip from the source origin to the destination.
 <td class="asm-label"></td>
 <td class="address-1"><span id="7312"></span>7312</td>
 <td class="instruction">LD B,$08</td>
-<td class="comment-1" rowspan="1">Eight pixel rows.</td>
+<td class="comment-1" rowspan="1">Count the 08 pixel rows to copy.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -194,7 +194,7 @@ Copy eight pixel rows.
 </td>
 </tr>
 <tr>
-<td class="asm-label">DrawFixedShift_PixelRow</td>
+<td class="asm-label">CopyOrigin_PixelRow</td>
 <td class="address-2"><span id="7315"></span>7315</td>
 <td class="instruction">PUSH BC</td>
 <td class="comment-1" rowspan="3">Stash the counters on the stack.</td>
@@ -210,10 +210,20 @@ Copy eight pixel rows.
 <td class="instruction">PUSH HL</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="7318"></span>
+<div class="comments">
+<div class="paragraph">
+The width immediate is self-modified by <a href="733B.html">SetOrigin</a> and <a href="738D.html">ResetOrigin</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="7318"></span>7318</td>
 <td class="instruction">LD BC,$0000</td>
-<td class="comment-1" rowspan="1">Load the patched width.</td>
+<td class="comment-1" rowspan="1">Load that width.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -251,14 +261,14 @@ Copy eight pixel rows.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="7322"></span>7322</td>
-<td class="instruction">DJNZ <a href="72FE.html#7315">DrawFixedShift_PixelRow</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="72FE.html#7315">DrawFixedShift_PixelRow</a> until eight pixel rows are done.</td>
+<td class="instruction">DJNZ <a href="72FE.html#7315">CopyOrigin_PixelRow</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="72FE.html#7315">CopyOrigin_PixelRow</a> until eight pixel rows are done.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="7324"></span>7324</td>
 <td class="instruction">LD A,($7338)</td>
-<td class="comment-1" rowspan="3">Step the source Y coordinate.</td>
+<td class="comment-1" rowspan="3">Increment *<a href="7337.html#7338">SourceOrigin_Row</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -274,7 +284,7 @@ Copy eight pixel rows.
 <td class="asm-label"></td>
 <td class="address-1"><span id="732b"></span>732B</td>
 <td class="instruction">LD A,($733A)</td>
-<td class="comment-1" rowspan="3">Decrement the remaining row count.</td>
+<td class="comment-1" rowspan="3">Decrement *<a href="7339.html#733a">DestinationOrigin_Height</a>.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -287,15 +297,25 @@ Copy eight pixel rows.
 <td class="instruction">LD ($733A),A</td>
 </tr>
 <tr>
+<td class="routine-comment" colspan="5">
+<span id="7332"></span>
+<div class="comments">
+<div class="paragraph">
+The stop immediate is self-modified by <a href="733B.html#7361">SetOrigin_Copy</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="7332"></span>7332</td>
 <td class="instruction">CP $00</td>
-<td class="comment-1" rowspan="2">Jump to <a href="72FE.html">DrawFixedShift_Pixels</a> until it reaches 00.</td>
+<td class="comment-1" rowspan="2">Jump to <a href="72FE.html">CopyOrigin_Pixels</a> until *<a href="7339.html#733a">DestinationOrigin_Height</a> equals that stop.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="7334"></span>7334</td>
-<td class="instruction">JR NZ,<a href="72FE.html#72fe">DrawFixedShift_Pixels</a></td>
+<td class="instruction">JR NZ,<a href="72FE.html#72fe">CopyOrigin_Pixels</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
