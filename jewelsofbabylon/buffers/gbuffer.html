@@ -327,6 +327,9 @@ Holds a single byte, where each bit relates to a turn-based event as follows: <t
 <td class="map-g-desc">
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BC67.html">Turn-Based Event Counters</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+One countdown per bit of *<a href="../asm/BC66.html">Flag_TurnBasedEventState</a>.
+</div>
 </div>
 </td>
 </tr>
@@ -369,7 +372,7 @@ Each bit of <a href="../asm/BC6F.html">Flag_CrabFollowing</a> makes the item at 
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BC78.html">Table: Scenic Event Locations</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Where each of the 09 scenic events is (the count is at <a href="../asm/BD30.html">Count_ScenicEvents</a>). Scenic events are the animals and pirates that wander about; in the item groups at <a href="../asm/E86E.html">Data_ItemGroup_Match</a> event 00 is written as 80 and so on. <table class="default">
+Where each of the 09 scenic events is (the count is at <a href="../asm/BD30.html">Count_ScenicEvents</a>). Scenic events are the animals and pirates that wander about; in the item groups at <a href="../asm/E86E.html">Table_ItemGroups</a> event 00 is written as 80 and so on. <table class="default">
 <tr>
 <th colspan="1" rowspan="1">Byte</th>
 <th colspan="1" rowspan="1">Meaning</th>
@@ -783,6 +786,48 @@ Pointer to the table containing direction messaging.
 <td class="map-g-desc">
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/D4C6.html">Table: Object Noun Phrases</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+One word per object. Each entry points at the noun text.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="e86e"></span><a href="../asm/E86E.html">E86E</a></td>
+<td class="map-length">159</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E86E.html">Table: Item Groups</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+For each object in <a href="../asm/E83E.html">Table_TokenItemList</a>, in the same order: the items it may refer to, ending with FF. Numbers with bit 7 set are scenic events (<a href="../asm/BC78.html">Table_ScenicEventLocations</a>): 80 is event 00 and so on. The pointers at <a href="../asm/E96A.html">Table_ItemGrouping</a> say where each group starts.
+</div>
+<div class="paragraph">
+<a href="../asm/C32A.html">Parser_CheckObjectIsHere</a> takes an object the player named and checks each item in its group with <a href="../asm/C35F.html">ValidateItemPresent</a>; if none of them is here or carried it prints "I can't see ... here." with the name from <a href="../asm/D4C6.html">Table_ObjectNounPhrases</a>. Many actions also point <span class="register">HL</span> straight at a group and call <a href="../asm/C401.html">CheckActiveScenicEvents</a> to find out which of its items is present.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="e90d"></span><a href="../asm/E90D.html">E90D</a></td>
+<td class="map-length">38</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E90D.html">Table: Verb Word Tokens</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+The vocabulary number (<a href="../asm/E61D.html">Table_Vocabulary</a>) of each of the 26 verbs (the count is at <a href="../asm/BD2C.html">Count_VerbTokens</a>). <a href="../asm/C556.html">Handler_DispatchVerb</a> looks the first word of a command up here (through <a href="../asm/BD26.html">Pointer_VerbWordTokens</a>) and jumps to the action at the same position in <a href="../asm/FF3A.html">JumpTable_Verbs</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="e95d"></span><a href="../asm/E95D.html">E95D</a></td>
+<td class="map-length">13</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E95D.html">Table: Rooms With Images</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+The 0D rooms that have a picture (the count is at <a href="../asm/BD2E.html">Count_RoomsWithImages</a>). <a href="../asm/C21E.html">Handler_DisplayRoomImage</a> looks the current room up here (through <a href="../asm/BD14.html">Pointer_RoomsWithImages</a>); where it is found picks the drawing routine in <a href="../asm/FFA8.html">JumpTable_RoomImages</a> and the "already seen" bit in <a href="../asm/BC5C.html">Table_RoomImagesAlreadySeen</a>. A picture is shown the first time the player enters the room, and again whenever they type LOOK.
+</div>
 </div>
 </td>
 </tr>
@@ -845,11 +890,26 @@ Some examples are: <table class="default">
 </td>
 </tr>
 <tr>
+<td class="map-g"><span id="e9ca"></span><a href="../asm/E9CA.html">E9CA</a></td>
+<td class="map-length">326</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E9CA.html">Table: Phrase Tokens</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+The words an action expects after its verb, as vocabulary numbers (<a href="../asm/E61D.html">Table_Vocabulary</a>). FD separates alternative wordings and FE ends a phrase; FF at the start of a wording means "nothing at all". An action points <span class="register">HL</span> at a phrase and calls <a href="../asm/C37F.html">MatchPhraseTokens</a>. That compares it with the words after the verb (<a href="../asm/BD66.html#bd67">UserInput_SecondToken</a>) and sets the zero flag when one of the wordings matches the whole of the rest of the command.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="map-g"><span id="eb10"></span><a href="../asm/EB10.html">EB10</a></td>
 <td class="map-length">654</td>
 <td class="map-g-desc">
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/EB10.html">Table: Room Map</a></div>
 <div class="map-entry-desc">
+<div class="paragraph">
+Six bytes per room, in the order north, south, east, west, up, down. A zero means there is no exit.
+</div>
 </div>
 </td>
 </tr>
@@ -861,6 +921,18 @@ Some examples are: <table class="default">
 <div class="map-entry-desc">
 <div class="paragraph">
 Addresses of room-map exit bytes. <a href="../asm/FD82.html">GameStart</a> writes 00 to each of them, and <a href="../asm/BB59.html">SaveGame</a> copies the bytes into <a href="../asm/BC99.html">LoadSaveBuffer</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="f29b"></span><a href="../asm/F29B.html">F29B</a></td>
+<td class="map-length">1</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/F29B.html">Table: Items Which Are Plural</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+All the items in the game which are plural; used by <a href="../asm/F26A.html#f27d">F27D</a> and <a href="../asm/F4D4.html#f4ec">F4EC</a>.
 </div>
 </div>
 </td>

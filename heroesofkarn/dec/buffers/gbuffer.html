@@ -120,7 +120,46 @@ One byte per item. The value is the room the item is in, 0 when the item is inac
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/44662.html">Flags: Room Change</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Bit 0 and bit 1 gate the special move out of room 55.
+One byte of once-only and room-change flags. Bits 0 and 1 are tested when entering or leaving 
+
+<a href="../asm/51581.html">The Hall of the Phoenix</a>, but the shipped game never sets them. Bit 3 is tested after taking the copper key, but is never set. <table class="default">
+<tr>
+<th colspan="1" rowspan="1">Bit</th>
+<th colspan="1" rowspan="1">Relating To</th>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">0</td>
+<td class="" colspan="1" rowspan="1">Enter   <a href="../asm/51581.html">The Hall of the Phoenix</a> without dying</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">1</td>
+<td class="" colspan="1" rowspan="1">Skip the phoenix transformation</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">2</td>
+<td class="" colspan="1" rowspan="1"><a href="../asm/60420.html">Revealing the jewelled key under the carpet</a></td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">3</td>
+<td class="" colspan="1" rowspan="1">Awarding points for the copper key</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">4</td>
+<td class="" colspan="1" rowspan="1"><a href="../asm/60524.html">Awarding points for the gold key</a></td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">5</td>
+<td class="" colspan="1" rowspan="1"><a href="../asm/60608.html">Awarding points for the jewelled key</a></td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">6</td>
+<td class="" colspan="1" rowspan="1">Unused</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">7</td>
+<td class="" colspan="1" rowspan="1">Unused</td>
+</tr>
+</table>
 </div>
 </div>
 </td>
@@ -278,7 +317,44 @@ Corresponds to whether the player has already seen the image for the following r
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/44680.html">Flags: Turn-Based Event States</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Holds a single byte, where each bit relates to a turn-based event. <a href="../asm/45939.html">GameEventsProcessor</a> decrements the matching counter in <a href="../asm/44681.html">Counter_Unused_0</a> and, when a counter reaches zero, would call through <a href="../asm/44754.html">Pointer_TurnBasedEvents_Jump</a>. The shipped image leaves <a href="../asm/44754.html">Pointer_TurnBasedEvents_Jump</a> as 0 and never sets these bits.
+Holds a single byte, where each bit relates to a turn-based event as follows: <table class="default">
+<tr>
+<th colspan="1" rowspan="1">Bit</th>
+<th colspan="1" rowspan="1">Relating To</th>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">0</td>
+<td class="centre" colspan="1" rowspan="1">Unused</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">1</td>
+<td class="centre" colspan="1" rowspan="1">Unused</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">2</td>
+<td class="centre" colspan="1" rowspan="1">Unused</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">3</td>
+<td class="centre" colspan="1" rowspan="1">Unused</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">4</td>
+<td class="centre" colspan="1" rowspan="1">Unused</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">5</td>
+<td class="centre" colspan="1" rowspan="1">Unused</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">6</td>
+<td class="centre" colspan="1" rowspan="1">Unused</td>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">7</td>
+<td class="centre" colspan="1" rowspan="1">Unused</td>
+</tr>
+</table> When the bit is set, this starts a turn counter (see <a href="../asm/44681.html">Counter_Unused_0</a>). <a href="../asm/45939.html">GameEventsProcessor</a> decrements the matching counter in <a href="../asm/44681.html">Counter_Unused_0</a> and, when a counter reaches zero, would call through <a href="../asm/44754.html">Pointer_TurnBasedEvents_Jump</a>. The shipped image leaves <a href="../asm/44754.html">Pointer_TurnBasedEvents_Jump</a> as 0 and never sets these bits.
 </div>
 </div>
 </td>
@@ -302,7 +378,7 @@ One countdown per bit of *<a href="../asm/44680.html">Flag_TurnBasedEventState</
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/44689.html">Flag: Following Heroes</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Each set bit makes the matching item in <a href="../asm/44690.html">Table_FollowingItems</a> follow the player when the room changes (<a href="../asm/46868.html">MovePlayerToRoom</a>). Bits 0-3 default to "Beren,the King." (Beren), "Istar,the wizard." (Istar), "Haldir,the minstrel." (Haldir) and "Khadim,the dwarf." (Khadim). Bits 4-7 are never set. <a href="../asm/59873.html">Handler_ChangeRoom</a> also reads this byte when checking the ruined cottage.
+Each set bit makes the matching item in <a href="../asm/44690.html">Table_FollowingItems</a> follow the player when the room changes (<a href="../asm/46868.html">MovePlayerToRoom</a>). Bits 0-3 default to "Beren,the King." (Beren), "Istar,the wizard." (Istar), "Haldir,the minstrel." (Haldir) and "Khadim,the dwarf." (Khadim). Bits 4-7 are never set. <a href="../asm/59873.html">ChangeRoom</a> also reads this byte when checking the ruined cottage.
 </div>
 </div>
 </td>
@@ -481,10 +557,10 @@ Pointer to the object noun-phrase table.
 <td class="map-g"><span id="44770"></span><a href="../asm/44770.html">44770</a></td>
 <td class="map-length">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/44770.html">Pointer: Character Set</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/44770.html">Pointer: Object List Table</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Pointer to the character set used when expanding vocabulary tokens.
+Pointer to the object-word table.
 </div>
 </div>
 </td>
@@ -754,6 +830,81 @@ One word per object. Each entry points at the noun text.
 </td>
 </tr>
 <tr>
+<td class="map-g"><span id="58552"></span><a href="../asm/58552.html">58552</a></td>
+<td class="map-length">72</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/58552.html">Table: Object Words</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+The vocabulary number (<a href="../asm/57948.html">Table_Vocabulary</a>) of each of the 72 objects the player can name (the count is at <a href="../asm/44786.html">Count_Objects</a>). The position of a word in this list is its object number, which also indexes <a href="../asm/58871.html">Table_ItemGrouping</a> for the items it may mean.
+</div>
+<div class="paragraph">
+Reached through <a href="../asm/44770.html">Pointer_ObjectList</a>: <a href="../asm/46500.html">ParserCountItemReferences</a> counts the object words in a command, and <a href="../asm/46780.html">ParserProcessItem</a> looks each named object up here.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="58624"></span><a href="../asm/58624.html">58624</a></td>
+<td class="map-length">211</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/58624.html">Table: Item Groups</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+For each object in <a href="../asm/52970.html">Table_ObjectNounPhrases</a>, in the same order: the items it may refer to, ending with 255. The pointers at <a href="../asm/58871.html">Table_ItemGrouping</a> say where each group starts.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="58835"></span><a href="../asm/58835.html">58835</a></td>
+<td class="map-length">36</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/58835.html">Table: Verb Word Tokens</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+The vocabulary number (<a href="../asm/57948.html">Table_Vocabulary</a>) of each of the 36 verbs (the count is at <a href="../asm/44788.html">Count_VerbTokens</a>). <a href="../asm/46931.html">Handler_DispatchVerb</a> looks the first word of a command up here (through <a href="../asm/44778.html">Pointer_VerbWordTokens</a>) and jumps to the action at the same position in <a href="../asm/64867.html">JumpTable_Verbs</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="59015"></span><a href="../asm/59015.html">59015</a></td>
+<td class="map-length">351</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/59015.html">Table: Phrase Tokens</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+The words an action expects after its verb, as vocabulary numbers (<a href="../asm/57948.html">Table_Vocabulary</a>). 253 separates alternative wordings and 254 ends a phrase. An action points <span class="register">HL</span> at a phrase and calls <a href="../asm/46453.html">MatchPhraseTokens</a>. That compares it with the words after the verb and sets the zero flag when one of the wordings matches the whole of the rest of the command.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="59366"></span><a href="../asm/59366.html">59366</a></td>
+<td class="map-length">396</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/59366.html">Table: Room Map</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+Six bytes per room, in the order north, south, east, west, up, down. A zero means there is no exit.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="60061"></span><a href="../asm/60061.html">60061</a></td>
+<td class="map-length">1</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/60061.html">Table: Items Which Are Plural</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+All the items in the game which are plural; used by <a href="../asm/60148.html#60160">Take_AlreadyCarrying_CheckPlural</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
 <td class="map-g"><span id="64476"></span><a href="../asm/64476.html">64476</a></td>
 <td class="map-length">135</td>
 <td class="map-g-desc">
@@ -772,7 +923,7 @@ Starting places for the items. <a href="../asm/64425.html">GameStart</a> copies 
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/64732.html">Flags: Room Change</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Copied to <a href="../asm/44662.html">Flags_RoomChange</a>. Bit 0 and bit 1 gate the special move out of room 55.
+Copied to <a href="../asm/44662.html">Flags_RoomChange</a>.
 </div>
 </div>
 </td>
@@ -1035,10 +1186,10 @@ Copied to <a href="../asm/44768.html">Pointer_ObjectNounPhrases</a>.
 <td class="map-g"><span id="64840"></span><a href="../asm/64840.html">64840</a></td>
 <td class="map-length">2</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/64840.html">Pointer: Character Set</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/64840.html">Pointer: Object List Table</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Copied to <a href="../asm/44770.html">Pointer_CharacterSet</a>.
+Copied to <a href="../asm/44770.html">Pointer_ObjectList</a>.
 </div>
 </div>
 </td>
@@ -1183,6 +1334,30 @@ Copied to <a href="../asm/44792.html">Count_ScenicEvents</a>. Initial image stor
 <div class="map-entry-desc">
 <div class="paragraph">
 Copied to <a href="../asm/44794.html">Count_ConfigurableExits</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="65003"></span><a href="../asm/65003.html">65003</a></td>
+<td class="map-length">20</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/65003.html">Jump Table: Room Images</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+See <a href="../asm/65023.html">Table_RoomsWithImages</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="65023"></span><a href="../asm/65023.html">65023</a></td>
+<td class="map-length">11</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/65023.html">Table: Rooms With Images</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+The 10 rooms that have a picture (the count is at <a href="../asm/44790.html">Count_RoomsWithImages</a>). <a href="../asm/46111.html">HandlerDisplayRoomImage</a> looks the current room up here (through <a href="../asm/44760.html">Pointer_RoomsWithImages</a>); where it is found picks the drawing routine in <a href="../asm/65003.html">JumpTable_RoomImages</a> and the "already seen" bit in <a href="../asm/44670.html">Table_RoomImagesAlreadySeen</a>. A picture is shown the first time the player enters the room, and again whenever they type LOOK. An 0 end marker follows the list.
 </div>
 </div>
 </td>

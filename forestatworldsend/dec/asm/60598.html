@@ -105,7 +105,7 @@ Next: <a href="60774.html">60774</a>
 </td>
 </tr>
 </table>
-<div class="description">60598: Handler: Injury Check</div>
+<div class="description">60598: Change Room</div>
 <table class="disassembly">
 <tr>
 <td class="routine-comment" colspan="5">
@@ -114,13 +114,22 @@ Next: <a href="60774.html">60774</a>
 Used by the routines at <a href="60965.html">MovePlayer</a>, <a href="61840.html">Action_Climb</a>, <a href="63259.html">Action_Enter</a> and <a href="63844.html">GameStart</a>.
 </div>
 <div class="paragraph">
-Refuse the move while the player is badly hurt. Otherwise change rooms and arm the local dangers.
+Commits a move into the destination room held in <span class="register">A</span>. It refuses the move while the player is badly hurt, otherwise calls <a href="50223.html">MovePlayerToRoom</a>, describes the room via <a href="49401.html">Handler_DisplayRoom</a>, then arms the local dangers.
 </div>
 </div>
+<table class="input">
+<tr class="asm-input-header">
+<th colspan="2">Input</th>
+</tr>
+<tr>
+<td class="register">A</td>
+<td class="register-desc">Destination room ID</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_InjuryCheck</td>
+<td class="asm-label">ChangeRoom</td>
 <td class="address-2"><span id="60598"></span>60598</td>
 <td class="instruction">LD C,A</td>
 <td class="comment-1" rowspan="1"><span class="register">C</span>=<span class="register">A</span>.</td>
@@ -139,8 +148,8 @@ Refuse the move while the player is badly hurt. Otherwise change rooms and arm t
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60604"></span>60604</td>
-<td class="instruction">JR NZ,<a href="60598.html#60613">Handler_InjuryCheck_Next</a></td>
-<td class="comment-1" rowspan="1">Jump to <a href="60598.html#60613">Handler_InjuryCheck_Next</a> if "You are seriously injured" is not in the current room.</td>
+<td class="instruction">JR NZ,<a href="60598.html#60613">ChangeRoom_EnterRoom</a></td>
+<td class="comment-1" rowspan="1">Jump to <a href="60598.html#60613">ChangeRoom_EnterRoom</a> if "You are seriously injured" is not in the current room.</td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -181,7 +190,7 @@ Move into the requested room and arm local dangers.
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_InjuryCheck_Next</td>
+<td class="asm-label">ChangeRoom_EnterRoom</td>
 <td class="address-2"><span id="60613"></span>60613</td>
 <td class="instruction">LD A,C</td>
 <td class="comment-1" rowspan="1"><span class="register">A</span>=<span class="register">C</span>.</td>
@@ -208,7 +217,7 @@ Move into the requested room and arm local dangers.
 <td class="asm-label"></td>
 <td class="address-1"><span id="60622"></span>60622</td>
 <td class="instruction">LD A,65</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60639">Handler_InjuryCheck_SlimeMonster</a> if <a href="49743.html">ValidateItemPresent</a> reports that "A giant spider. It advances toward you" isn't in the current room.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60639">ChangeRoom_SlimeMonster</a> if <a href="49743.html">ValidateItemPresent</a> reports that "A giant spider. It advances toward you" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -218,7 +227,7 @@ Move into the requested room and arm local dangers.
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60627"></span>60627</td>
-<td class="instruction">JR NZ,<a href="60598.html#60639">Handler_InjuryCheck_SlimeMonster</a></td>
+<td class="instruction">JR NZ,<a href="60598.html#60639">ChangeRoom_SlimeMonster</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -265,10 +274,10 @@ Is the slime monster here?
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_InjuryCheck_SlimeMonster</td>
+<td class="asm-label">ChangeRoom_SlimeMonster</td>
 <td class="address-2"><span id="60639"></span>60639</td>
 <td class="instruction">LD A,30</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60656">Handler_InjuryCheck_Demons</a> if <a href="49743.html">ValidateItemPresent</a> reports that "A monster from the slime" isn't in the current room.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60656">ChangeRoom_Demons</a> if <a href="49743.html">ValidateItemPresent</a> reports that "A monster from the slime" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -278,7 +287,7 @@ Is the slime monster here?
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60644"></span>60644</td>
-<td class="instruction">JR NZ,<a href="60598.html#60656">Handler_InjuryCheck_Demons</a></td>
+<td class="instruction">JR NZ,<a href="60598.html#60656">ChangeRoom_Demons</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -325,10 +334,10 @@ Are the demons here?
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_InjuryCheck_Demons</td>
+<td class="asm-label">ChangeRoom_Demons</td>
 <td class="address-2"><span id="60656"></span>60656</td>
 <td class="instruction">LD A,41</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60673">Handler_InjuryCheck_Zarn</a> if <a href="49743.html">ValidateItemPresent</a> reports that "Some demons are attacking you. They scream and jab at you with vicious tridents" isn't in the current room.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60673">ChangeRoom_Zarn</a> if <a href="49743.html">ValidateItemPresent</a> reports that "Some demons are attacking you. They scream and jab at you with vicious tridents" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -338,7 +347,7 @@ Are the demons here?
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60661"></span>60661</td>
-<td class="instruction">JR NZ,<a href="60598.html#60673">Handler_InjuryCheck_Zarn</a></td>
+<td class="instruction">JR NZ,<a href="60598.html#60673">ChangeRoom_Zarn</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -385,10 +394,10 @@ Is Zarn here?
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_InjuryCheck_Zarn</td>
+<td class="asm-label">ChangeRoom_Zarn</td>
 <td class="address-2"><span id="60673"></span>60673</td>
 <td class="instruction">LD A,42</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60690">Handler_InjuryCheck_Witch</a> if <a href="49743.html">ValidateItemPresent</a> reports that "The Wizard,Zarn. He prepares to cast a spell over you" isn't in the current room.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60690">ChangeRoom_Witch</a> if <a href="49743.html">ValidateItemPresent</a> reports that "The Wizard,Zarn. He prepares to cast a spell over you" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -398,7 +407,7 @@ Is Zarn here?
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60678"></span>60678</td>
-<td class="instruction">JR NZ,<a href="60598.html#60690">Handler_InjuryCheck_Witch</a></td>
+<td class="instruction">JR NZ,<a href="60598.html#60690">ChangeRoom_Witch</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -445,10 +454,10 @@ Is the witch here?
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_InjuryCheck_Witch</td>
+<td class="asm-label">ChangeRoom_Witch</td>
 <td class="address-2"><span id="60690"></span>60690</td>
 <td class="instruction">LD A,46</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60727">Handler_InjuryCheck_OldMan</a> if <a href="49743.html">ValidateItemPresent</a> reports that "The Witch" isn't in the current room.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60727">ChangeRoom_OldMan</a> if <a href="49743.html">ValidateItemPresent</a> reports that "The Witch" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -458,13 +467,13 @@ Is the witch here?
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60695"></span>60695</td>
-<td class="instruction">JR NZ,<a href="60598.html#60727">Handler_InjuryCheck_OldMan</a></td>
+<td class="instruction">JR NZ,<a href="60598.html#60727">ChangeRoom_OldMan</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60697"></span>60697</td>
 <td class="instruction">LD A,67</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60716">Handler_InjuryCheck_WitchSeesRing</a> if "A ring,which you are wearing" is held.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60716">ChangeRoom_WitchSeesRing</a> if "A ring,which you are wearing" is held.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -474,7 +483,7 @@ Is the witch here?
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60702"></span>60702</td>
-<td class="instruction">JR Z,<a href="60598.html#60716">Handler_InjuryCheck_WitchSeesRing</a></td>
+<td class="instruction">JR Z,<a href="60598.html#60716">ChangeRoom_WitchSeesRing</a></td>
 </tr>
 <tr>
 <td class="routine-comment" colspan="5">
@@ -532,7 +541,7 @@ Print "The Witch sees the ring onyour hand,then she screamsand vanishes in a p
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_InjuryCheck_WitchSeesRing</td>
+<td class="asm-label">ChangeRoom_WitchSeesRing</td>
 <td class="address-2"><span id="60716"></span>60716</td>
 <td class="instruction">LD HL,56286</td>
 <td class="comment-1" rowspan="1"><span class="register">HL</span>=<a href="56286.html">Messaging_TheWitchSeesTheRingOn</a>.</td>
@@ -565,10 +574,10 @@ Is the old man here?
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_InjuryCheck_OldMan</td>
+<td class="asm-label">ChangeRoom_OldMan</td>
 <td class="address-2"><span id="60727"></span>60727</td>
 <td class="instruction">LD A,47</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60755">Handler_InjuryCheck_GreatValley</a> if <a href="49743.html">ValidateItemPresent</a> reports that "The Old Man. He lays down a bow and some arrows. He says:- 'These are tipped wit" isn't in the current room.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60755">ChangeRoom_GreatValley</a> if <a href="49743.html">ValidateItemPresent</a> reports that "The Old Man. He lays down a bow and some arrows. He says:- 'These are tipped wit" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -578,7 +587,7 @@ Is the old man here?
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60732"></span>60732</td>
-<td class="instruction">JR NZ,<a href="60598.html#60755">Handler_InjuryCheck_GreatValley</a></td>
+<td class="instruction">JR NZ,<a href="60598.html#60755">ChangeRoom_GreatValley</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -646,10 +655,10 @@ Has the player brought Mara to the Great Valley?
 </td>
 </tr>
 <tr>
-<td class="asm-label">Handler_InjuryCheck_GreatValley</td>
+<td class="asm-label">ChangeRoom_GreatValley</td>
 <td class="address-2"><span id="60755"></span>60755</td>
 <td class="instruction">LD A,(47771)</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60773">Handler_InjuryCheck_Return</a> if *<a href="47771.html">CurrentRoom</a> isn't room 5: "
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60773">ChangeRoom_Return</a> if *<a href="47771.html">CurrentRoom</a> isn't room 5: "
 
 <a href="52061.html">The Great Valley</a>".</td>
 </tr>
@@ -661,13 +670,13 @@ Has the player brought Mara to the Great Valley?
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60760"></span>60760</td>
-<td class="instruction">JR NZ,<a href="60598.html#60773">Handler_InjuryCheck_Return</a></td>
+<td class="instruction">JR NZ,<a href="60598.html#60773">ChangeRoom_Return</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60762"></span>60762</td>
 <td class="instruction">LD A,44</td>
-<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60773">Handler_InjuryCheck_Return</a> if <a href="49743.html">ValidateItemPresent</a> reports that "The Princess,Mara" isn't in the current room.</td>
+<td class="comment-1" rowspan="3">Jump to <a href="60598.html#60773">ChangeRoom_Return</a> if <a href="49743.html">ValidateItemPresent</a> reports that "The Princess,Mara" isn't in the current room.</td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -677,7 +686,7 @@ Has the player brought Mara to the Great Valley?
 <tr>
 <td class="asm-label"></td>
 <td class="address-1"><span id="60767"></span>60767</td>
-<td class="instruction">JR NZ,<a href="60598.html#60773">Handler_InjuryCheck_Return</a></td>
+<td class="instruction">JR NZ,<a href="60598.html#60773">ChangeRoom_Return</a></td>
 </tr>
 <tr>
 <td class="asm-label"></td>
@@ -692,10 +701,25 @@ Has the player brought Mara to the Great Valley?
 <td class="comment-1" rowspan="1">Jump to <a href="60222.html">GameComplete</a>.</td>
 </tr>
 <tr>
-<td class="asm-label">Handler_InjuryCheck_Return</td>
+<td class="asm-label">ChangeRoom_Return</td>
 <td class="address-2"><span id="60773"></span>60773</td>
 <td class="instruction">RET</td>
 <td class="comment-1" rowspan="1">Return.</td>
+</tr>
+<tr>
+<td class="routine-comment" colspan="5">
+<div class="comments">
+<div class="paragraph">
+View the equivalent code in; <ul class="">
+<li><a href="/adventure-games/aftershock/dec/asm/44409.html">After Shock</a></li>
+<li><a href="/adventure-games/heroesofkarn/dec/asm/59873.html">Heroes Of Karn</a></li>
+<li><a href="/adventure-games/jewelsofbabylon/dec/asm/61268.html">The Jewels Of Babylon</a></li>
+<li><a href="/adventure-games/messagefromandromeda/dec/asm/36376.html">Message From Andromeda</a></li>
+<li><a href="/adventure-games/warlord/dec/asm/60176.html">Warlord</a></li>
+</ul>
+</div>
+</div>
+</td>
 </tr>
 </table>
 <table class="asm-navigation">

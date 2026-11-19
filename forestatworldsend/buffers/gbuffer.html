@@ -120,7 +120,16 @@ Workspace filled from <a href="../asm/F992.html">Default_Table_ItemLocations</a>
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/BA2C.html">Flags: Display State</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Bit 0 is set when the long room description was just shown, so <a href="../asm/C0F9.html">Handler_DisplayRoom</a> waits for a key before listing exits and objects.
+Holds a single byte, where each bit relates to display state as follows: <table class="default">
+<tr>
+<th colspan="1" rowspan="1">Bit</th>
+<th colspan="1" rowspan="1">Relating To</th>
+</tr>
+<tr>
+<td class="centre" colspan="1" rowspan="1">00</td>
+<td class="centre" colspan="1" rowspan="1">Long room description was just shown</td>
+</tr>
+</table> When bit 00 is set, <a href="../asm/C0F9.html">Handler_DisplayRoom</a> waits for a key before listing exits and objects.
 </div>
 </div>
 </td>
@@ -230,7 +239,7 @@ Corresponds to whether the player has already seen the image for the following r
 </table>
 </div>
 <div class="paragraph">
-<a href="../asm/C0F9.html">Handler_DisplayRoom</a> tests and sets the bit for the current room. The bit number is the room's place in <a href="../asm/E7D0.html#e806">E806</a>.
+<a href="../asm/C0F9.html">Handler_DisplayRoom</a> tests and sets the bit for the current room. The bit number is the room's place in <a href="../asm/E806.html">Table_RoomsWithImages</a>.
 </div>
 </div>
 </td>
@@ -713,10 +722,61 @@ One pointer per room. Room 00 and room 01 are unused. The starting room is 05, T
 <td class="map-g"><span id="d4e6"></span><a href="../asm/D4E6.html">D4E6</a></td>
 <td class="map-length">84</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/D4E6.html">Table: Nouns</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/D4E6.html">Table: Object Noun Phrases</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-2A pointers to the noun phrases the parser matches.
+One word per object. Each entry points at the noun text.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="e6bc"></span><a href="../asm/E6BC.html">E6BC</a></td>
+<td class="map-length">42</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E6BC.html">Table: Object Words</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+The vocabulary number (<a href="../asm/E4AF.html">Table_Vocabulary</a>) of each of the 2A objects the player can name (the count is at <a href="../asm/BAFA.html">Count_Objects</a>). The position of a word in this list is its object number, which also indexes <a href="../asm/D4E6.html">Table_ObjectNounPhrases</a> for its name in "I can't see ... here." replies.
+</div>
+<div class="paragraph">
+Reached through <a href="../asm/BAEE.html">Pointer_ObjectList</a>: <a href="../asm/C29E.html">Parser_FindPhrase</a> counts the object words in a command, and <a href="../asm/C3DC.html">Parser_MatchVocabulary</a> looks each named object up here.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="e6e6"></span><a href="../asm/E6E6.html">E6E6</a></td>
+<td class="map-length">200</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E6E6.html">Table: Item Groups</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+For each object in <a href="../asm/D4E6.html">Table_ObjectNounPhrases</a>, in the same order: the items it may refer to, ending with FE. <a href="../asm/C213.html">Parser_ResolvePhrase</a> skips to this noun's group from *<a href="../asm/BAEA.html">Pointer_ItemGroupingTable</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="e7ae"></span><a href="../asm/E7AE.html">E7AE</a></td>
+<td class="map-length">34</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E7AE.html">Table: Verb Word Tokens</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+The vocabulary number (<a href="../asm/E4AF.html">Table_Vocabulary</a>) of each of the 22 verbs (the count is at <a href="../asm/BAFC.html">Count_VerbTokens</a>). <a href="../asm/C463.html">Handler_DispatchVerb</a> looks the first word of a command up here (through <a href="../asm/BAF6.html">Pointer_VerbWordTokens</a>) and jumps to the action at the same position in <a href="../asm/FB0D.html">JumpTable_Verbs</a>.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="e806"></span><a href="../asm/E806.html">E806</a></td>
+<td class="map-length">12</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E806.html">Table: Rooms With Images</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+The 0C rooms that have a picture (the count is at <a href="../asm/BAFE.html">Count_RoomsWithImages</a>). <a href="../asm/C0F9.html">Handler_DisplayRoom</a> looks the current room up here (through <a href="../asm/BAE4.html">Pointer_RoomsWithImages</a>); where it is found picks the drawing routine in <a href="../asm/FB75.html">JumpTable_RoomImages</a> and the "already seen" bit in <a href="../asm/BA30.html">Table_RoomImagesAlreadySeen</a>. A picture is shown the first time the player enters the room, and again whenever they type LOOK.
 </div>
 </div>
 </td>
@@ -725,10 +785,10 @@ One pointer per room. Room 00 and room 01 are unused. The starting room is 05, T
 <td class="map-g"><span id="e934"></span><a href="../asm/E934.html">E934</a></td>
 <td class="map-length">462</td>
 <td class="map-g-desc">
-<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E934.html">Table: Room Exits</a></div>
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/E934.html">Table: Room Map</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Six direction bytes for each room, in the order used by <a href="../asm/C201.html">GetRoomPointer</a>: north, south, east, west, up, down. 00 means no exit. Some of these bytes are rewritten when a door opens or an event moves the player.
+Six bytes per room, in the order north, south, east, west, up, down. A zero means there is no exit. Some of these bytes are rewritten when a door opens or an event moves the player.
 </div>
 </div>
 </td>
@@ -741,6 +801,18 @@ Six direction bytes for each room, in the order used by <a href="../asm/C201.htm
 <div class="map-entry-desc">
 <div class="paragraph">
 Addresses zeroed by the routine at <a href="../asm/F964.html">GameStart</a> before the game starts.
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="map-g"><span id="eeeb"></span><a href="../asm/EEEB.html">EEEB</a></td>
+<td class="map-length">2</td>
+<td class="map-g-desc">
+<div class="map-entry-title-11"><a class="map-entry-title" href="../asm/EEEB.html">Table: Items Which Are Plural</a></div>
+<div class="map-entry-desc">
+<div class="paragraph">
+All the items in the game which are plural; used by <a href="../asm/EEBA.html#eec6">EEC6</a> and <a href="../asm/F03A.html#f050">F050</a>.
 </div>
 </div>
 </td>
@@ -1141,7 +1213,7 @@ Copied to <a href="../asm/BB02.html">Count_ConfigurableExits</a>.
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/FB0D.html">Jump Table: Verbs</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Verb routines in the same order as <a href="../asm/E7AE.html">Table_VerbTokens</a>. Used by <a href="../asm/C463.html">Handler_DispatchVerb</a>.
+Verb routines in the same order as <a href="../asm/E7AE.html">Table_VerbWordTokens</a>. Used by <a href="../asm/C463.html">Handler_DispatchVerb</a>.
 </div>
 </div>
 </td>
@@ -1177,7 +1249,7 @@ Handlers run when the current room matches an entry in the room list at <a href=
 <div class="map-entry-title-11"><a class="map-entry-title" href="../asm/FB75.html">Jump Table: Room Images</a></div>
 <div class="map-entry-desc">
 <div class="paragraph">
-Handlers that draw the ten location pictures. Three entries share The Enchanted Wood.
+See <a href="../asm/E806.html">Table_RoomsWithImages</a>.
 </div>
 </div>
 </td>
