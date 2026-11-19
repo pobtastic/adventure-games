@@ -12,6 +12,8 @@
 > $4000 @expand=#DEF(#MESSAGE(addr) #STR$addr,$08($b==$FF))
 > $4000 @expand=#DEF(#ROOM(id) #IF($id>$01)(#HTML(&#10;)#SIM(start=$C0C3,stop=$C0D1,ix=$D44C,de=$id)#HTML(&#10;)#R({sim[HL]})(#MAP({sim[HL]})(#HTML(&#10;)UNKNOWN,51924:Inside the Farmhouse,51946:At a large Farmhouse,51995:On a long Farm Track,52061:The Great Valley,52107:The Vale of Shadows,52211:In the Forest,52244:The Leafy Glade,52308:The Woodman's Clearing,52332:At the Woodman's Hut,52354:Inside the Woodman's Hut,52419:A Burned out Farm,52438:An overgrown Fruit Grove,52510:On a Forest Path,52528:The Western Edge of a Chasm,52557:The Eastern Edge of a Chasm,52586:The Brink of a Precipice,52635:The Old Well,52677:The Wooded Vale,52694:The Western Bank,52729:The Eastern Bank,52764:The Swamp,52813:In the Boat,52826:The Pit of Oozing Slime,52851:On an Open Plain,52893:On a High Plateau,52939:On Marshy Ground,52957:The Enchanted Wood,53001:On a Rocky Outcrop,53021:The Forest of Sighs,53061:In a tangle of,53099:At the Bottom of the Precipice,53804:Marl's Gateway,53131:In Wildmoor Woods,53150:In the Forest of Night,53217:At the Witch's Hovel,53260:Inside the Witch's Hovel,53286:A Rock Wall,53299:The Plain of Marl,53344:At the Blacksmith's Forge,53371:Inside the Forge,53389:At the Base of a Volcano,53444:On a Narrow Ledge on the,53490:The Cavern of Silence,53513:The Top of the Volcano,53567:Inside the Volcano,53645:In a Rock Passage,53691:In the Great Hall of Zarn,53718:In a High Tower,53758:The Dungeon)),#HTML(&#10;)N/A))
 > $4000 @expand=#DEF(#ITEM(id) #MAP($id)(#HTML(&#10;)N/A,0:"Some food",1:"The well is completely dry",2:"A silver coin",3:"A bow",4:"Some arrows",5:"It looks too steep to climb",6:"A pair of oars",7:"A ring",8:"A rope",9:"A horn",10:"A sword",11:"A chest",12:"A closed chest",13:"An open chest containing the Crystals of Vulcan",14:"An empty chest",15:"The Crystals of Vulcan",16:"A key",17:"It seems too wide to jump across",18:"It seems too wide to jump across",19:"The body of a dead elf",20:"The body of a dead elf",21:"The body of a dead elf",22:"A dragon. It is watching you",23:"A dead dragon",24:"A dead flying lizard",25:"A dead flying lizard",26:"A dead flying lizard",27:"Some dead wolves",28:"The body of a wood nymph",29:"A rowing boat",30:"A monster from the slime",31:"SPARE",32:"The current is very strong",33:"The current is very strong",34:"A projection of rock hangs over the lip of the volcano",35:"A projection of rock with a rope tied to it. The rope dangles down into the volc",36:"The once beautiful buildings#RAW(,) are now in ruins",37:"The blacksmith. He says:- 'I have been instructed to make a mighty sword for you",38:"The blacksmith",39:"The body of the blacksmith",40:"The flames from the furnace inside",41:"Some demons are attacking you. They scream and jab at you with vicious tridents",42:"The Wizard#RAW(,)Zarn. He prepares to cast a spell over you",43:"The body of the Wizard",44:"The Princess#RAW(,)Mara",45:"The body of the Princess",46:"The Witch",47:"The Old Man. He lays down a bow and some arrows. He says:- 'These are tipped wit",48:"SPARE",49:"SPARE",50:"SPARE",51:"A glowing rock",52:"A dead warrior",53:"An open door",54:"A closed door",55:"An open door",56:"A closed door",57:"An open door",58:"A closed door",59:"An open door",60:"A closed door",61:"An open door",62:"A closed door",63:"An open door",64:"A closed door",65:"A giant spider. It advances toward you",66:"The body of a giant spider",67:"A ring#RAW(,)which you are wearing",68:"A log",69:"A log#RAW(,)bridging the chasm",70:"A log#RAW(,)bridging the chasm",71:"SPARE",72:"You are seriously injured",73:"You are sweating profusely. Gripping the rope is difficult"))
+> $4000 @expand=#DEF(#OBJECT(id) #MAP($id)(#HTML(&#10;)N/A,00:"any food",01:"any water",02:"a coin",03:"a bow",04:"any arrows",05:"a ring",06:"a rope",07:"a log",08:"a well",09:"a horn",10:"a sword",11:"a chest",12:"any crystals",13:"a key",14:"a chasm",15:"an elf",16:"a dragon",17:"a lizard",18:"any wolves",19:"a nymph",20:"a centaur",21:"a boat",22:"a monster",23:"a hut",24:"a hovel",25:"a spider",26:"a river",27:"a precipice",28:"a projection",29:"a body",30:"a farmhouse",31:"any oars",32:"a blacksmith",33:"a forge",34:"any demons",35:"the Wizard",36:"the Princess",37:"a witch",38:"the Old Man",39:"a rock",40:"a Korl warrior",41:"a door"))
+> $4000 @expand=#DEF(#TOKEN(id) #MAP($id)(#HTML(&#10;)UNKNOWN,000:"H#RAW(,)HELP",001:"I#RAW(,)INVE",002:"L#RAW(,)LOOK",003:"N#RAW(,)NORT",004:"S#RAW(,)SOUT",005:"E#RAW(,)EAST",006:"W#RAW(,)WEST",007:"U#RAW(,)UP",008:"D#RAW(,)DOWN",009:"EXAM",010:"LOAD",011:"SAVE",012:"QUIT",013:"TAKE#RAW(,)GET#RAW(,)PICK",014:"DROP#RAW(,)PLAC#RAW(,)PUT#RAW(,)THRO#RAW(,)LAY",015:"CLIM",016:"GIVE",017:"EAT",018:"DRIN",019:"KILL#RAW(,)FIGH#RAW(,)ATTA",020:"KISS",021:"OPEN",022:"CLOS#RAW(,)SHUT",023:"ENTE",024:"xxxx",025:"TOUC#RAW(,)RUB",026:"SWIM",027:"JUMP",028:"KICK",029:"TIE",030:"FUCK#RAW(,)SCRE#RAW(,)RAPE",031:"ROW",032:"UNLO",033:"BLOW",034:"WEAR",035:"FOOD",036:"WATE",037:"COIN",038:"BOW",039:"ARRO",040:"RING",041:"ROPE",042:"LOG",043:"WELL",044:"HORN",045:"SWOR",046:"CHES",047:"CRYS",048:"KEY",049:"CHAS",050:"ELF",051:"DRAG",052:"LIZA",053:"WOLF#RAW(,)WOLV",054:"NYMP",055:"CENT",056:"BOAT",057:"MONS",058:"HUT",059:"HOVE",060:"WOOD",061:"RIVE",062:"PREC",063:"PROJ",064:"BODY",065:"FARM",066:"OARS",067:"BLAC",068:"FORG",069:"DEMO",070:"WIZA#RAW(,)ZARN",071:"PRIN#RAW(,)MARA",072:"WITC",073:"MAN",074:"ROCK",075:"WARR",076:"SILV",077:"FLYI",078:"OLD",079:"GLOW",080:"KORL",081:"ON#RAW(,)ONTO",082:"AT",083:"ACRO#RAW(,)OVER",084:"OFF",085:"TO",086:"OF",087:"VULC",088:"xxxx",089:"DOOR",090:"SPID",091:"GIAN",092:"WITH#RAW(,)USIN",093:"IN#RAW(,)INTO",094:"OUT",095:"ROWI",253:Separator,254:Terminator))
 > $4000 @expand=#IF({asm})(#DEF(#ANDROMEDA(addr)(link=Message From Andromeda)$link))
 > $4000 @expand=#IF({asm})(#DEF(#HEROES(addr)(link=Heroes Of Karn)$link))
 > $4000 @expand=#IF({asm})(#DEF(#JEWELS(addr)(link=The Jewels Of Babylon)$link))
@@ -195,8 +197,18 @@ S $BA12,$1A
 
 g $BA2C Flags: Display State
 @ $BA2C label=Flag_DisplayState
-D $BA2C Bit 0 is set when the long room description was just shown, so
-. #R$C0F9 waits for a key before listing exits and objects.
+E $BA2C View the equivalent code in;
+. #LIST
+. { #ANDROMEDA$620F }
+. LIST#
+D $BA2C Holds a single byte, where each bit relates to display state as
+. follows:
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Relating To }
+. { #N$00 | Long room description was just shown }
+. TABLE#
+. When bit #N$00 is set, #R$C0F9 waits for a key before listing exits and
+. objects.
 B $BA2C,$01
 
 u $BA2D
@@ -204,6 +216,14 @@ S $BA2D,$03
 
 g $BA30 Table: Already Seen Room Images
 @ $BA30 label=Table_RoomImagesAlreadySeen
+E $BA30 View the equivalent code in;
+. #LIST
+. { #SHOCK$A0A8 }
+. { #HEROES$AE7E }
+. { #JEWELS$BC5C }
+. { #ANDROMEDA$6213 }
+. { #WARLORD$A774 }
+. LIST#
 D $BA30 Corresponds to whether the player has already seen the image for
 . the following rooms:
 .
@@ -226,6 +246,14 @@ S $BA32,$04
 
 g $BA36 Flags: Turn-Based Event States
 @ $BA36 label=Flag_TurnBasedEventState
+E $BA36 View the equivalent code in;
+. #LIST
+. { #SHOCK$A0C8 }
+. { #HEROES$AE88 }
+. { #JEWELS$BC66 }
+. { #ANDROMEDA$6219 }
+. { #WARLORD$A77E }
+. LIST#
 D $BA36 Holds a single byte, where each bit relates to a turn-based event as
 . follows:
 . #TABLE(default,centre,centre)
@@ -240,6 +268,14 @@ D $BA36 Holds a single byte, where each bit relates to a turn-based event as
 B $BA36,$01
 
 g $BA37 Turn-Based Event Counters
+E $BA37 View the equivalent code in;
+. #LIST
+. { #SHOCK$A0C9 }
+. { #HEROES$AE89 }
+. { #JEWELS$BC67 }
+. { #ANDROMEDA$621A }
+. { #WARLORD$A77F }
+. LIST#
 D $BA37 One countdown per bit of *#R$BA36. #R$BECE decrements a set
 . counter each turn and runs the handler from #R$BADE when it hits zero.
 N $BA37 Arm the wood nymph for the next turn (#R$EC3D writes #N$01).
@@ -310,6 +346,13 @@ B $BA9B,$01 Current room ID.
 
 g $BA9C Table: Scenic Event Rooms
 @ $BA9C label=Table_ScenicEventRooms
+E $BA9C View the equivalent code in;
+. #LIST
+. { #SHOCK$B6BF }
+. { #JEWELS$BCCC }
+. { #ANDROMEDA$62B2 }
+. { #WARLORD$E4E6 }
+. LIST#
 D $BA9C Pointer to the table containing groups of room IDs that an event
 . could occur in.
 W $BA9C,$02 Event #N((#PC-$BA9C)/$02).
@@ -2828,10 +2871,19 @@ D $D44C One pointer per room. Room #N$00 and room #N$01 are unused.
 W $D44C,$02 #IF(#PEEK(#PC)+#PEEK(#PC+$01)==$00)(Unused.,#R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).)
 L $D44C,$02,$4D
 
-g $D4E6 Table: Nouns
-@ $D4E6 label=Table_Nouns
-D $D4E6 #N$2A pointers to the noun phrases the parser matches.
-W $D4E6,$02 #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
+g $D4E6 Table: Object Noun Phrases
+@ $D4E6 label=Table_ObjectNounPhrases
+E $D4E6 View the equivalent code in;
+. #LIST
+. { #SHOCK$AF31 }
+. { #HEROES$CEEA }
+. { #JEWELS$D4C6 }
+. { #ANDROMEDA$85E8 }
+. { #WARLORD$C83E }
+. LIST#
+D $D4E6 One word per object. Each entry points at the noun text.
+W $D4E6,$02 Object #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$D4E6)/$02)):
+. #OBJECT((#PC-$D4E6)/$02).
 L $D4E6,$02,$2A
 
 t $D53A Messaging: "Congratulations"
@@ -3296,6 +3348,14 @@ B $E4AE,$01 Terminator.
 
 t $E4AF Table: Vocabulary
 @ $E4AF label=Table_Vocabulary
+E $E4AF View the equivalent code in;
+. #LIST
+. { #SHOCK$B0ED }
+. { #HEROES$E25C }
+. { #JEWELS$E61D }
+. { #ANDROMEDA$8632 }
+. { #WARLORD$E0B1 }
+. LIST#
 D $E4AF Four-character words. A comma binds synonyms to the same command.
   $E4AF,$09 Command #N$00.
   $E4B8,$09 Command #N$01.
@@ -3306,122 +3366,375 @@ D $E4AF Four-character words. A comma binds synonyms to the same command.
   $E4E5,$09 Command #N$06.
   $E4EE,$09 Command #N$07.
   $E4F7,$09 Command #N$08.
-  $E500,$04 Command #N$09.
-  $E504,$04 Command #N$0A.
-  $E508,$04 Command #N$0B.
-  $E50C,$04 Command #N$0C.
+  $E500,$04 Command #N((#PC-$E4DC)/$04).
+L $E500,$04,$04
   $E510,$0E Command #N$0D.
   $E51E,$18 Command #N$0E.
-  $E536,$04 Command #N$0F.
-  $E53A,$04 Command #N$10.
-  $E53E,$04 Command #N$11.
-  $E542,$04 Command #N$12.
+  $E536,$04 Command #N((#PC-$E4FA)/$04).
+L $E536,$04,$04
   $E546,$0E Command #N$13.
-  $E554,$04 Command #N$14.
-  $E558,$04 Command #N$15.
+  $E554,$04 Command #N((#PC-$E504)/$04).
+L $E554,$04,$02
   $E55C,$09 Command #N$16.
-  $E565,$04 Command #N$17.
-  $E569,$04 Command #N$18.
+  $E565,$04 Command #N((#PC-$E509)/$04).
+L $E565,$04,$02
   $E56D,$09 Command #N$19.
-  $E576,$04 Command #N$1A.
-  $E57A,$04 Command #N$1B.
-  $E57E,$04 Command #N$1C.
-  $E582,$04 Command #N$1D.
+  $E576,$04 Command #N((#PC-$E50E)/$04).
+L $E576,$04,$04
   $E586,$0E Command #N$1E.
-  $E594,$04 Command #N$1F.
-  $E598,$04 Command #N$20.
-  $E59C,$04 Command #N$21.
-  $E5A0,$04 Command #N$22.
-  $E5A4,$04 Command #N$23.
-  $E5A8,$04 Command #N$24.
-  $E5AC,$04 Command #N$25.
-  $E5B0,$04 Command #N$26.
-  $E5B4,$04 Command #N$27.
-  $E5B8,$04 Command #N$28.
-  $E5BC,$04 Command #N$29.
-  $E5C0,$04 Command #N$2A.
-  $E5C4,$04 Command #N$2B.
-  $E5C8,$04 Command #N$2C.
-  $E5CC,$04 Command #N$2D.
-  $E5D0,$04 Command #N$2E.
-  $E5D4,$04 Command #N$2F.
-  $E5D8,$04 Command #N$30.
-  $E5DC,$04 Command #N$31.
-  $E5E0,$04 Command #N$32.
-  $E5E4,$04 Command #N$33.
-  $E5E8,$04 Command #N$34.
-  $E5EC,$09 Command #N$35.
-  $E5F5,$04 Command #N$36.
-  $E5F9,$04 Command #N$37.
-  $E5FD,$04 Command #N$38.
-  $E601,$04 Command #N$39.
-  $E605,$04 Command #N$3A.
-  $E609,$04 Command #N$3B.
+  $E594,$04 Command #N((#PC-$E518)/$04).
+L $E594,$04,$04
+  $E5A4,$04 Command #N((#PC-$E518)/$04): #OBJECT((#PC-$E5A4)/$04).
+L $E5A4,$04,$12
+  $E5EC,$09 Command #N$35: #OBJECT$12.
+  $E5F5,$04 Command #N((#PC-$E51D)/$04): #OBJECT((#PC-$E5A9)/$04).
+L $E5F5,$04,$06
   $E60D,$04 Command #N$3C.
-  $E611,$04 Command #N$3D.
-  $E615,$04 Command #N$3E.
-  $E619,$04 Command #N$3F.
-  $E61D,$04 Command #N$40.
-  $E621,$04 Command #N$41.
-  $E625,$04 Command #N$42.
-  $E629,$04 Command #N$43.
-  $E62D,$04 Command #N$44.
-  $E631,$04 Command #N$45.
-  $E635,$09 Command #N$46.
-  $E63E,$09 Command #N$47.
-  $E647,$04 Command #N$48.
-  $E64B,$04 Command #N$49.
-  $E64F,$04 Command #N$4A.
-  $E653,$04 Command #N$4B.
-  $E657,$04 Command #N$4C.
-  $E65B,$04 Command #N$4D.
-  $E65F,$04 Command #N$4E.
-  $E663,$04 Command #N$4F.
-  $E667,$04 Command #N$50.
+  $E611,$04 Command #N((#PC-$E51D)/$04): #OBJECT((#PC-$E5A9)/$04).
+L $E611,$04,$09
+  $E635,$09 Command #N$46: #OBJECT$23.
+  $E63E,$09 Command #N$47: #OBJECT$24.
+  $E647,$04 Command #N((#PC-$E527)/$04): #OBJECT((#PC-$E5B3)/$04).
+L $E647,$04,$04
+  $E657,$04 Command #N((#PC-$E527)/$04).
+L $E657,$04,$05
   $E66B,$09 Command #N$51.
   $E674,$04 Command #N$52.
   $E678,$09 Command #N$53.
-  $E681,$04 Command #N$54.
-  $E685,$04 Command #N$55.
-  $E689,$04 Command #N$56.
-  $E68D,$04 Command #N$57.
-  $E691,$04 Command #N$58.
-  $E695,$04 Command #N$59.
-  $E699,$04 Command #N$5A.
+  $E681,$04 Command #N((#PC-$E531)/$04).
+L $E681,$04,$05
+  $E695,$04 Command #N$59: #OBJECT$29.
+  $E699,$04 Command #N$5A: #OBJECT$19.
   $E69D,$04 Command #N$5B.
   $E6A1,$09 Command #N$5C.
   $E6AA,$09 Command #N$5D.
-  $E6B3,$04 Command #N$5E.
-  $E6B7,$04 Command #N$5F.
+  $E6B3,$04 Command #N((#PC-$E53B)/$04).
+L $E6B3,$04,$02
 B $E6BB,$01 Terminator.
 
-b $E6BC Table: Match Characters
-@ $E6BC label=Table_MatchCharacters
-D $E6BC Characters used while comparing a typed word with the vocabulary.
-B $E6BC,$01 Character #N(#PEEK(#PC)): #CHR(#PEEK(#PC)).
-L $E6BC,$01,$2A
+g $E6BC Table: Object Words
+@ $E6BC label=Table_TokenItemList
+E $E6BC View the equivalent code in;
+. #LIST
+. { #SHOCK$B49E }
+. { #HEROES$E4B8 }
+. { #JEWELS$E83E }
+. { #ANDROMEDA$8868 }
+. { #WARLORD$E308 }
+. LIST#
+D $E6BC The vocabulary number (#R$E4AF) of each of the #N$2A objects the player
+. can name (the count is at #R$BAFA). The position of a word in this list is
+. its object number, which also indexes #R$D4E6 for its name in
+. "I can't see ... here." replies.
+.
+. Reached through #R$BAEE: #R$C29E counts the object words in a command, and
+. #R$C3DC looks each named object up here.
+B $E6BC,$01 Object #OBJECT$00: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6BD,$01 Object #OBJECT$01: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6BE,$01 Object #OBJECT$02: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6BF,$01 Object #OBJECT$03: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6C0,$01 Object #OBJECT$04: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6C1,$01 Object #OBJECT$05: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6C2,$01 Object #OBJECT$06: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6C3,$01 Object #OBJECT$07: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6C4,$01 Object #OBJECT$08: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6C5,$01 Object #OBJECT$09: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6C6,$01 Object #OBJECT$0A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6C7,$01 Object #OBJECT$0B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6C8,$01 Object #OBJECT$0C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6C9,$01 Object #OBJECT$0D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6CA,$01 Object #OBJECT$0E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6CB,$01 Object #OBJECT$0F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6CC,$01 Object #OBJECT$10: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6CD,$01 Object #OBJECT$11: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6CE,$01 Object #OBJECT$12: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6CF,$01 Object #OBJECT$13: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6D0,$01 Object #OBJECT$14: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6D1,$01 Object #OBJECT$15: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6D2,$01 Object #OBJECT$16: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6D3,$01 Object #OBJECT$17: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6D4,$01 Object #OBJECT$18: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6D5,$01 Object #OBJECT$19: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6D6,$01 Object #OBJECT$1A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6D7,$01 Object #OBJECT$1B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6D8,$01 Object #OBJECT$1C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6D9,$01 Object #OBJECT$1D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6DA,$01 Object #OBJECT$1E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6DB,$01 Object #OBJECT$1F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6DC,$01 Object #OBJECT$20: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6DD,$01 Object #OBJECT$21: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6DE,$01 Object #OBJECT$22: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6DF,$01 Object #OBJECT$23: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6E0,$01 Object #OBJECT$24: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6E1,$01 Object #OBJECT$25: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6E2,$01 Object #OBJECT$26: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6E3,$01 Object #OBJECT$27: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6E4,$01 Object #OBJECT$28: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E6E5,$01 Object #OBJECT$29: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 
-b $E6E6 Table: Phrase Tokens
-@ $E6E6 label=Table_PhraseTokens
-D $E6E6 Token lists terminated by #N$FE. Each list names the objects a
-. verb phrase may refer to.
-B $E6E6,$01 #IF(#PEEK(#PC)==$FE)(End of phrase.,Object #N(#PEEK(#PC)).)
-L $E6E6,$01,$C8
+g $E6E6 Table: Item Groups
+@ $E6E6 label=Table_ItemGroups
+E $E6E6 View the equivalent code in;
+. #LIST
+. { #SHOCK$B4F4 }
+. { #HEROES$E500 }
+. { #JEWELS$E86E }
+. { #ANDROMEDA$888D }
+. { #WARLORD$E341 }
+. LIST#
+D $E6E6 For each object in #R$D4E6, in the same order: the items it may refer
+. to, ending with #N$FE. #R$C213 skips to this noun's group from *#R$BAEA.
+B $E6E6,$03 Object #OBJECT$00: #ITEM$00 or #ITEM$20.
+@ $E6E9 label=Data_ItemGroup_Water
+B $E6E9,$02 Object #OBJECT$01: #ITEM$21.
+@ $E6EB label=Data_ItemGroup_Coin
+B $E6EB,$04 Object #OBJECT$02: #ITEM$06, #ITEM$02, #ITEM$03, #ITEM$04 or
+. #ITEM$07.
+B $E6EF,$02
+@ $E6F1 label=Data_ItemGroup_Bow
+B $E6F1,$03 Object #OBJECT$03: #ITEM$43 or #ITEM$08.
+@ $E6F4 label=Data_ItemGroup_Arrows
+B $E6F4,$02 Object #OBJECT$04: #ITEM$23.
+@ $E6F6 label=Data_ItemGroup_Ring
+B $E6F6,$03 Object #OBJECT$05: #ITEM$49 or #ITEM$44.
+@ $E6F9 label=Data_ItemGroup_Rope
+B $E6F9,$02 Object #OBJECT$06: #ITEM$45.
+@ $E6FB label=Data_ItemGroup_Log
+B $E6FB,$04 Object #OBJECT$07: #ITEM$46, #ITEM$01, #ITEM$09, #ITEM$0A or
+. #ITEM$0B.
+B $E6FF,$02
+@ $E701 label=Data_ItemGroup_Well
+B $E701,$02 Object #OBJECT$08: #ITEM$0C.
+@ $E703 label=Data_ItemGroup_Horn
+B $E703,$02 Object #OBJECT$09: #ITEM$0D.
+@ $E705 label=Data_ItemGroup_Sword
+B $E705,$01 Object #OBJECT$0A: #ITEM$0E or #ITEM$0F.
+B $E706,$02
+@ $E708 label=Data_ItemGroup_Chest
+B $E708,$04 Object #OBJECT$0B: #ITEM$0D, #ITEM$10 or #ITEM$11.
+@ $E70C label=Data_ItemGroup_Crystals
+B $E70C,$02 Object #OBJECT$0C: #ITEM$12.
+@ $E70E label=Data_ItemGroup_Key
+B $E70E,$02 Object #OBJECT$0D: #ITEM$45.
+@ $E710 label=Data_ItemGroup_Chasm
+B $E710,$01 Object #OBJECT$0E: #ITEM$46 or item #N$80.
+B $E711,$02
+@ $E713 label=Data_ItemGroup_Elf
+B $E713,$02 Object #OBJECT$0F: item #N$81.
+@ $E715 label=Data_ItemGroup_Dragon
+B $E715,$02 Object #OBJECT$10: item #N$82.
+@ $E717 label=Data_ItemGroup_Lizard
+B $E717,$02 Object #OBJECT$11: #ITEM$13.
+@ $E719 label=Data_ItemGroup_Wolves
+B $E719,$02 Object #OBJECT$12: #ITEM$14.
+@ $E71B label=Data_ItemGroup_Nymph
+B $E71B,$03 Object #OBJECT$13: #ITEM$15 or #ITEM$16.
+@ $E71E label=Data_ItemGroup_Centaur
+B $E71E,$01 Object #OBJECT$14: #ITEM$17 or item #N$83.
+B $E71F,$02
+@ $E721 label=Data_ItemGroup_Boat
+B $E721,$02 Object #OBJECT$15: item #N$84.
+@ $E723 label=Data_ItemGroup_Monster
+B $E723,$02 Object #OBJECT$16: item #N$85.
+@ $E725 label=Data_ItemGroup_Hut
+B $E725,$02 Object #OBJECT$17: #ITEM$18.
+@ $E727 label=Data_ItemGroup_Hovel
+B $E727,$02 Object #OBJECT$18: #ITEM$19.
+@ $E729 label=Data_ItemGroup_Spider
+B $E729,$03 Object #OBJECT$19: #ITEM$1A or item #N$8B.
+@ $E72C label=Data_ItemGroup_River
+B $E72C,$03 Object #OBJECT$1A: #ITEM$1B or item #N$89.
+@ $E72F label=Data_ItemGroup_Precipice
+B $E72F,$02 Object #OBJECT$1B: item #N$8A.
+@ $E731 label=Data_ItemGroup_Projection
+B $E731,$04 Object #OBJECT$1C: #ITEM$1C, item #N$86 or #ITEM$1D.
+@ $E735 label=Data_ItemGroup_Body
+B $E735,$04 Object #OBJECT$1D: #ITEM$06, #ITEM$1E or #ITEM$39.
+@ $E739 label=Data_ItemGroup_Farmhouse
+B $E739,$02 Object #OBJECT$1E: #ITEM$3A.
+@ $E73B label=Data_ItemGroup_Oars
+B $E73B,$02 Object #OBJECT$1F: #ITEM$3B.
+@ $E73D label=Data_ItemGroup_Blacksmith
+B $E73D,$03 Object #OBJECT$20: #ITEM$3C or #ITEM$3D.
+@ $E740 label=Data_ItemGroup_Forge
+B $E740,$02 Object #OBJECT$21: #ITEM$3E.
+@ $E742 label=Data_ItemGroup_Demons
+B $E742,$02 Object #OBJECT$22: #ITEM$3F.
+@ $E744 label=Data_ItemGroup_Wizard
+B $E744,$03 Object #OBJECT$23: #ITEM$40 or #ITEM$41.
+@ $E747 label=Data_ItemGroup_Princess
+B $E747,$03 Object #OBJECT$24: #ITEM$42 or #ITEM$20.
+@ $E74A label=Data_ItemGroup_Witch
+B $E74A,$02 Object #OBJECT$25: #ITEM$21.
+@ $E74C label=Data_ItemGroup_Old_Man
+B $E74C,$03 Object #OBJECT$26: #ITEM$06 or #ITEM$16.
+@ $E74F label=Data_ItemGroup_Rock
+B $E74F,$02 Object #OBJECT$27: #ITEM$17.
+@ $E751 label=Data_ItemGroup_Korl_Warrior
+B $E751,$03 Object #OBJECT$28: #ITEM$05 or #ITEM$22.
+@ $E754 label=Data_ItemGroup_Door
+B $E754,$03 Object #OBJECT$29: #ITEM$23 or #ITEM$13.
+N $E757 Further item lists, not indexed from #R$D4E6.
+B $E757,$02 #ITEM$14.
+B $E759,$02 #ITEM$15.
+B $E75B,$02 #ITEM$17.
+B $E75D,$02 #ITEM$18.
+B $E75F,$02 #ITEM$19.
+B $E761,$02 #ITEM$1A.
+B $E763,$02 #ITEM$1B.
+B $E765,$02 #ITEM$1C.
+B $E767,$02 #ITEM$34.
+B $E769,$02 #ITEM$27.
+B $E76B,$02 #ITEM$2B.
+B $E76D,$02 #ITEM$2D.
+B $E76F,$03 #ITEM$42 or #ITEM$35.
+B $E772,$02 #ITEM$36.
+B $E774,$02 #ITEM$37.
+B $E776,$03 #ITEM$38 or #ITEM$1D.
+B $E779,$01 #ITEM$06 or #ITEM$25.
+B $E77A,$02
+B $E77C,$02 #ITEM$26.
+B $E77E,$03 #ITEM$27 or #ITEM$28.
+B $E781,$02 #ITEM$25.
+B $E783,$02 #ITEM$26.
+B $E785,$04 #ITEM$27, #ITEM$29 or #ITEM$2A.
+B $E789,$03 #ITEM$2B or #ITEM$2C.
+B $E78C,$05 #ITEM$2D, #ITEM$2E, #ITEM$2F or #ITEM$33.
+B $E791,$02 #ITEM$22.
+B $E793,$03 #ITEM$23 or item #N$8C.
+B $E796,$01 #ITEM$34 or #ITEM$35.
+B $E797,$02
+B $E799,$02 #ITEM$36.
+B $E79B,$02 #ITEM$37.
+B $E79D,$02 #ITEM$38.
+B $E79F,$02 #ITEM$39.
+B $E7A1,$02 #ITEM$3A.
+B $E7A3,$02 #ITEM$3B.
+B $E7A5,$02 #ITEM$3C.
+B $E7A7,$02 #ITEM$3D.
+B $E7A9,$02 #ITEM$3E.
+B $E7AB,$02 #ITEM$3F.
+B $E7AD,$01 #ITEM$40.
 
-b $E7AE Table: Verb Tokens
-@ $E7AE label=Table_VerbTokens
-D $E7AE The vocabulary command number for each entry in #R$FB0D.
-B $E7AE,$01 Command #N(#PEEK(#PC)).
-L $E7AE,$01,$22
+g $E7AE Table: Verb Word Tokens
+@ $E7AE label=Table_VerbWordTokens
+E $E7AE View the equivalent code in;
+. #LIST
+. { #SHOCK$B420 }
+. { #HEROES$E5D3 }
+. { #JEWELS$E90D }
+. { #ANDROMEDA$891C }
+. { #WARLORD$E489 }
+. LIST#
+D $E7AE The vocabulary number (#R$E4AF) of each of the #N$22 verbs (the count
+. is at #R$BAFC). #R$C463 looks the first word of a command up here (through
+. #R$BAF6) and jumps to the action at the same position in #R$FB0D.
+B $E7AE,$01 Verb #N$00: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EDC3.
+B $E7AF,$01 Verb #N$01: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EDE8.
+B $E7B0,$01 Verb #N$02: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EE05.
+B $E7B1,$01 Verb #N$03: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EE0F.
+B $E7B2,$01 Verb #N$04: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EE13.
+B $E7B3,$01 Verb #N$05: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EE17.
+B $E7B4,$01 Verb #N$06: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EE1B.
+B $E7B5,$01 Verb #N$07: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EE1F.
+B $E7B6,$01 Verb #N$08: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EE23.
+B $E7B7,$01 Verb #N$09: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EE3D.
+B $E7B8,$01 Verb #N$0A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EE81.
+B $E7B9,$01 Verb #N$0B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EE89.
+B $E7BA,$01 Verb #N$0C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EE91.
+B $E7BB,$01 Verb #N$0D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$EEAE.
+B $E7BC,$01 Verb #N$0E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F03A.
+B $E7BD,$01 Verb #N$0F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F190.
+B $E7BE,$01 Verb #N$10: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F216.
+B $E7BF,$01 Verb #N$11: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F26D.
+B $E7C0,$01 Verb #N$12: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F292.
+B $E7C1,$01 Verb #N$13: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F2A7.
+B $E7C2,$01 Verb #N$14: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F5B6.
+B $E7C3,$01 Verb #N$15: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F5F1.
+B $E7C4,$01 Verb #N$16: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F68C.
+B $E7C5,$01 Verb #N$17: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F71B.
+B $E7C6,$01 Verb #N$18: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F79D.
+B $E7C7,$01 Verb #N$19: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F7C2.
+B $E7C8,$01 Verb #N$1A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F7EB.
+B $E7C9,$01 Verb #N$1B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F804.
+B $E7CA,$01 Verb #N$1C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F81D.
+B $E7CB,$01 Verb #N$1D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F824.
+B $E7CC,$01 Verb #N$1E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F869.
+B $E7CD,$01 Verb #N$1F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F8AB.
+B $E7CE,$01 Verb #N$20: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F8E4.
+B $E7CF,$01 Verb #N$21: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F916.
 
 b $E7D0 Table: Message Groups
 @ $E7D0 label=Table_MessageGroups
+E $E7D0 View the equivalent code in;
+. #LIST
+. { #SHOCK$B6C9 }
+. { #JEWELS$E933 }
+. { #ANDROMEDA$8CDA }
+. { #WARLORD$E4AA }
+. LIST#
 D $E7D0 Lists of message numbers, each list terminated by #N$FF.
 B $E7D0,$01 #IF(#PEEK(#PC)==$FF)(End of group.,Message #N(#PEEK(#PC)).)
-L $E7D0,$01,$164
+L $E7D0,$01,$36
 
-g $E934 Table: Room Exits
-@ $E934 label=Table_RoomExits
+g $E806 Table: Rooms With Images
+@ $E806 label=Table_RoomsWithImages
+E $E806 View the equivalent code in;
+. #LIST
+. { #SHOCK$BB93 }
+. { #HEROES$FDFF }
+. { #JEWELS$E95D }
+. { #ANDROMEDA$8CFC }
+. { #WARLORD$FEF1 }
+. LIST#
+D $E806 The #N$0C rooms that have a picture (the count is at #R$BAFE).
+. #R$C0F9 looks the current room up here (through #R$BAE4); where it is found
+. picks the drawing routine in #R$FB75 and the "already seen" bit in #R$BA30.
+. A picture is shown the first time the player enters the room, and again
+. whenever they type LOOK.
+B $E806,$01 Image #N$00: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FACF; seen flag: bit 0 of #R$BA30.
+B $E807,$01 Image #N$01: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FAD5; seen flag: bit 1 of #R$BA30.
+B $E808,$01 Image #N$02: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FADB; seen flag: bit 2 of #R$BA30.
+B $E809,$01 Image #N$03: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FAE1; seen flag: bit 3 of #R$BA30.
+B $E80A,$01 Image #N$04: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FAE7; seen flag: bit 4 of #R$BA30.
+B $E80B,$01 Image #N$05: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FAED; seen flag: bit 5 of #R$BA30.
+B $E80C,$01 Image #N$06: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FAF3; seen flag: bit 6 of #R$BA30.
+B $E80D,$01 Image #N$07: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FAF3; seen flag: bit 7 of #R$BA30.
+B $E80E,$01 Image #N$08: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FAF3; seen flag: bit 0 of #R$BA30(#N$BA31).
+B $E80F,$01 Image #N$09: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FAF9; seen flag: bit 1 of #R$BA30(#N$BA31).
+B $E810,$01 Image #N$0A: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FAFF; seen flag: bit 2 of #R$BA30(#N$BA31).
+B $E811,$01 Image #N$0B: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FB05; seen flag: bit 3 of #R$BA30(#N$BA31).
+
+b $E812 Table: Message Groups
+D $E812 Lists of message numbers, each list terminated by #N$FF.
+B $E812,$01 #IF(#PEEK(#PC)==$FF)(End of group.,Message #N(#PEEK(#PC)).)
+L $E812,$01,$122
+
+g $E934 Table: Room Map
+@ $E934 label=Table_RoomMap
+E $E934 View the equivalent code in;
+. #LIST
+. { #SHOCK$B8DD }
+. { #HEROES$E7E6 }
+. { #JEWELS$EB10 }
+. { #ANDROMEDA$8B5A }
+. { #WARLORD$E714 }
+. LIST#
+D $E934 Six bytes per room, in the order north, south, east, west, up, down. A
+. zero means there is no exit. Some of these bytes are rewritten when a door
+. opens or an event moves the player.
 @ $E941 label=Exit_FarmhouseSouth
 @ $E996 label=Exit_WoodmansHutEast
 @ $E9B4 label=Exit_WesternChasmEast
@@ -3429,16 +3742,30 @@ g $E934 Table: Room Exits
 @ $EAA4 label=Exit_WitchsHovelEast
 @ $EAAA label=Exit_RockWallEast
 @ $EADA label=Exit_CavernEast
-D $E934 Six direction bytes for each room, in the order used by #R$C201:
-. north, south, east, west, up, down. #N$00 means no exit. Some of
-. these bytes are rewritten when a door opens or an event moves the
-. player.
-B $E934,$01 Direction #N((#PC-$E934)%$06) of room #N((#PC-$E934)/$06):
-. #N(#PEEK(#PC)).
-L $E934,$01,$1CE
+N $E934 Room #N((#PC-$E934)/$06): #ROOM((#PC-$E934)/$06).
+B $E934,$01 #IF(#PEEK(#PC)>$00)(North to room:
+. #R($E934+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E935,$01 #IF(#PEEK(#PC)>$00)(South to room:
+. #R($E934+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E936,$01 #IF(#PEEK(#PC)>$00)(East to room:
+. #R($E934+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E937,$01 #IF(#PEEK(#PC)>$00)(West to room:
+. #R($E934+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E938,$01 #IF(#PEEK(#PC)>$00)(Up to room:
+. #R($E934+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E939,$01 #IF(#PEEK(#PC)>$00)(Down to room:
+. #R($E934+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+L $E934,$06,$4D
 
 g $EB02 Table: Flags To Clear
 @ $EB02 label=Table_FlagsToClear
+E $EB02 View the equivalent code in;
+. #LIST
+. { #HEROES$E972 }
+. { #JEWELS$ED9E }
+. { #ANDROMEDA$8D16 }
+. { #WARLORD$E978 }
+. LIST#
 D $EB02 Addresses zeroed by the routine at #R$F964 before the game starts.
 W $EB02,$02 #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
 L $EB02,$02,$07
@@ -3735,10 +4062,20 @@ N $ECAF Print "#MESSAGE$D768".
   $ECB2,$03 Call #R$C486.
   $ECB5,$01 Return.
 
-c $ECB6 Handler: Injury Check
-@ $ECB6 label=Handler_InjuryCheck
-D $ECB6 Refuse the move while the player is badly hurt. Otherwise change rooms
-. and arm the local dangers.
+c $ECB6 Change Room
+@ $ECB6 label=ChangeRoom
+E $ECB6 View the equivalent code in;
+. #LIST
+. { #SHOCK$AD79 }
+. { #HEROES$E9E1 }
+. { #JEWELS$EF54 }
+. { #ANDROMEDA$8E18 }
+. { #WARLORD$EB10 }
+. LIST#
+D $ECB6 Commits a move into the destination room held in #REGa. It refuses
+. the move while the player is badly hurt, otherwise calls #R$C42F, describes
+. the room via #R$C0F9, then arms the local dangers.
+R $ECB6 A Destination room ID
   $ECB6,$01 #REGc=#REGa.
   $ECB7,$05 Call #R$C24F with item #N$48: #ITEM$48.
   $ECBC,$02 Jump to #R$ECC5 if #ITEM$48 is not in the current room.
@@ -3747,7 +4084,7 @@ N $ECBE Print "#MESSAGE$DB38".
   $ECC1,$03 Call #R$BE2E.
   $ECC4,$01 Return.
 N $ECC5 Move into the requested room and arm local dangers.
-@ $ECC5 label=Handler_InjuryCheck_Next
+@ $ECC5 label=ChangeRoom_EnterRoom
   $ECC5,$01 #REGa=#REGc.
   $ECC6,$03 Call #R$C42F.
   $ECC9,$02 #REGe=#N$00.
@@ -3760,7 +4097,7 @@ N $ECD5 Arm the giant spider for six turns.
   $ECDA,$02 #REGa=#N$06.
   $ECDC,$03 Write #REGa to *#R$BA38.
 N $ECDF Is the slime monster here?
-@ $ECDF label=Handler_InjuryCheck_SlimeMonster
+@ $ECDF label=ChangeRoom_SlimeMonster
   $ECDF,$07 Jump to #R$ECF0 if #R$C24F reports that #ITEM$1E isn't in the
 . current room.
 N $ECE6 Arm the slime monster for six turns.
@@ -3769,7 +4106,7 @@ N $ECE6 Arm the slime monster for six turns.
   $ECEB,$02 #REGa=#N$06.
   $ECED,$03 Write #REGa to *#R$BA39.
 N $ECF0 Are the demons here?
-@ $ECF0 label=Handler_InjuryCheck_Demons
+@ $ECF0 label=ChangeRoom_Demons
   $ECF0,$07 Jump to #R$ED01 if #R$C24F reports that #ITEM$29 isn't in the
 . current room.
 N $ECF7 Arm the demons for six turns.
@@ -3778,7 +4115,7 @@ N $ECF7 Arm the demons for six turns.
   $ECFC,$02 #REGa=#N$06.
   $ECFE,$03 Write #REGa to *#R$BA3A.
 N $ED01 Is Zarn here?
-@ $ED01 label=Handler_InjuryCheck_Zarn
+@ $ED01 label=ChangeRoom_Zarn
   $ED01,$07 Jump to #R$ED12 if #R$C24F reports that #ITEM$2A isn't in the
 . current room.
 N $ED08 Arm Zarn for six turns.
@@ -3787,7 +4124,7 @@ N $ED08 Arm Zarn for six turns.
   $ED0D,$02 #REGa=#N$06.
   $ED0F,$03 Write #REGa to *#R$BA3B.
 N $ED12 Is the witch here?
-@ $ED12 label=Handler_InjuryCheck_Witch
+@ $ED12 label=ChangeRoom_Witch
   $ED12,$07 Jump to #R$ED37 if #R$C24F reports that #ITEM$2E isn't in the
 . current room.
   $ED19,$07 Jump to #R$ED2C if #ITEM$43 is held.
@@ -3799,12 +4136,12 @@ N $ED20 Print "#MESSAGE$DB63".
 . over".
   $ED2B,$01 Return.
 N $ED2C Print "#MESSAGE$DBDE".
-@ $ED2C label=Handler_InjuryCheck_WitchSeesRing
+@ $ED2C label=ChangeRoom_WitchSeesRing
   $ED2C,$03 #REGhl=#R$DBDE.
   $ED2F,$03 Call #R$BE2E.
   $ED32,$05 Call #R$C2D8 with item #N$2E: #ITEM$2E.
 N $ED37 Is the old man here?
-@ $ED37 label=Handler_InjuryCheck_OldMan
+@ $ED37 label=ChangeRoom_OldMan
   $ED37,$07 Jump to #R$ED53 if #R$C24F reports that #ITEM$2F isn't in the
 . current room.
   $ED3E,$05 Call #R$C2D8 with item #N$2F: #ITEM$2F.
@@ -3814,13 +4151,13 @@ N $ED4D Print "#MESSAGE$D93D".
   $ED4D,$03 #REGhl=#R$D93D.
   $ED50,$03 Call #R$C486.
 N $ED53 Has the player brought Mara to the Great Valley?
-@ $ED53 label=Handler_InjuryCheck_GreatValley
+@ $ED53 label=ChangeRoom_GreatValley
   $ED53,$07 Jump to #R$ED65 if *#R$BA9B isn't room #N$05: "#ROOM$05".
   $ED5A,$07 Jump to #R$ED65 if #R$C24F reports that #ITEM$2C isn't in the
 . current room.
   $ED61,$01 Restore #REGhl from the stack.
   $ED62,$03 Jump to #R$EB3E.
-@ $ED65 label=Handler_InjuryCheck_Return
+@ $ED65 label=ChangeRoom_Return
   $ED65,$01 Return.
 
 c $ED66 Print Response
@@ -4301,8 +4638,10 @@ c $EEBA Take: Is Player Holding Item
 @ $EEBA label=Take_IsPlayerHoldingItem
 E $EEBA View the equivalent code in;
 . #LIST
+. { #HEROES$EAF4 }
 . { #JEWELS$F26A }
 . { #ANDROMEDA$8FE2 }
+. { #WARLORD$ED75 }
 . LIST#
 D $EEBA Refuse the take when the object is already carried or the inventory is
 . full; otherwise return so the caller can take it.
@@ -4338,12 +4677,15 @@ N $EEE5 Print "#MESSAGE$BD05".
   $EEE5,$03 #REGhl=#R$BD05.
   $EEE8,$03 Jump to #R$ED66.
 
-b $EEEB Table: Items Which Are Plural
+g $EEEB Table: Items Which Are Plural
 @ $EEEB label=Table_ItemsWhichArePlural
 E $EEEB View the equivalent code in;
 . #LIST
+. { #SHOCK$B6F1 }
+. { #HEROES$EA9D }
 . { #JEWELS$F29B }
 . { #ANDROMEDA$9010 }
+. { #WARLORD$ED6C }
 . LIST#
 D $EEEB All the items in the game which are plural; used by #R$EEC6 and
 . #R$F050.
@@ -4354,8 +4696,11 @@ c $EEED Take Item
 @ $EEED label=TakeItem
 E $EEED View the equivalent code in;
 . #LIST
+. { #SHOCK$AA6E }
+. { #HEROES$EB25 }
 . { #JEWELS$F29C }
 . { #ANDROMEDA$9014 }
+. { #WARLORD$EDA6 }
 . LIST#
 D $EEED Places the item in the player's inventory and acknowledges success.
   $EEED,$02 Load #REGc with #N$01 which indicates the item will be in the
@@ -5920,9 +6265,8 @@ E $FB75 View the equivalent code in;
 . { #ANDROMEDA$FA68 }
 . { #WARLORD$FEFC }
 . LIST#
-D $FB75 Handlers that draw the ten location pictures. Three entries share
-. The Enchanted Wood.
-W $FB75,$02 #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
+D $FB75 See #R$E806.
+W $FB75,$02 Location Slot: #N((#PC-$FB75)/$02).
 L $FB75,$02,$0C
 
 u $FB8D

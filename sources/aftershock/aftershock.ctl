@@ -32,6 +32,8 @@ D $4000 #UDGTABLE
   $4000,$1800,$20 Pixels.
   $5800,$0300,$20 Attributes.
 
+i $5B00
+
 g $61A8 Table: Room Image Offsets
 @ $61A8 label=Table_RoomImageOffsets
 D $61A8 Word offsets from #R$61A8 to the room images. #R$BBD5 points at this
@@ -293,6 +295,7 @@ B $9D46,$02 Attribute #N(#PEEK(#PC)) (#COLOUR(#PEEK(#PC))) for #IF(#PEEK(#PC+$01
 L $9D46,$02,$43
 
 c $9DCC Game Entry Point Alias
+@ $9DCC label=GameEntryPoint_Alias
   $9DCC,$02 Jump to #R$9DD7.
 
 g $9DCE Table: Delimiters
@@ -616,38 +619,124 @@ S $A010,$78
 
 g $A088 Flags: Game States
 @ $A088 label=Flags_GameStates
-D $A088 Bit flags tested and changed by #R$A1C8, #R$A1D2 and #R$A1DD. The bit
-. index selects both the byte and the bit inside it.
+D $A088 Holds thirty-two bytes of flag bits, tested and changed by
+. #R$A1C8, #R$A1D2 and #R$A1DD. The bit index selects both the byte and
+. the bit inside it. The engine uses the first byte as follows:
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Relating To }
+. { #N$00 | Player is dead }
+. { #N$01 | Score / end of game }
+. { #N$02 | Offer another game }
+. TABLE#
 B $A088,$01 Flag byte #N(#PC-$A088).
 L $A088,$01,$20
 
-g $A0A8 Flags: Already Seen Room Images
-@ $A0A8 label=Flags_SeenRoomImages
-D $A0A8 One bit for each entry in #R$BB93. #R$A33A sets the bit after the
-. picture has been shown so the same room does not draw it again.
-B $A0A8,$01 Seen-image bits #N((#PC-$A0A8)*$08) to #N((#PC-$A0A8)*$08+$07).
-L $A0A8,$01,$03
+g $A0A8 Table: Already Seen Room Images
+@ $A0A8 label=Table_RoomImagesAlreadySeen
+E $A0A8 View the equivalent code in;
+. #LIST
+. { #FOREST$BA30 }
+. { #HEROES$AE7E }
+. { #JEWELS$BC5C }
+. { #ANDROMEDA$6213 }
+. { #WARLORD$A774 }
+. LIST#
+D $A0A8 Corresponds to whether the player has already seen the image for the
+. following rooms:
+.
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Room ID | =h Room Name }
+. #FOR$BB93,$BB9A,,1(n,{ #N(n-$BB93) | #N(#PEEKn) | #ROOM(#PEEKn) })
+. TABLE#
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Room ID | =h Room Name }
+. #FOR$BB9B,$BBA2,,1(n,{ #N(n-$BB9B) | #N(#PEEKn) | #ROOM(#PEEKn) })
+. TABLE#
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Room ID | =h Room Name }
+. #FOR$BBA3,$BBA5,,1(n,{ #N(n-$BBA3) | #N(#PEEKn) | #ROOM(#PEEKn) })
+. #FOR$03,$07,,1(n,{ #Nn | N/A | N/A })
+. TABLE#
+D $A0A8 #R$A33A tests and sets the bit for the current room. The bit number
+. is the room's place in #R$BB93.
+B $A0A8,b,$01
+B $A0A9,b,$01
+B $A0AA,b,$01
 
 u $A0AB
 S $A0AB,$1D
 
 g $A0C8 Flags: Turn-Based Event States
-@ $A0C8 label=Flags_TurnEvents
-D $A0C8 One bit per turn-based event. #R$A280 counts a bit down while it is
-. set, and the script actions #R$AB4A and #R$AB5E change the bits.
+@ $A0C8 label=Flag_TurnBasedEventState
+E $A0C8 View the equivalent code in;
+. #LIST
+. { #FOREST$BA36 }
+. { #HEROES$AE88 }
+. { #JEWELS$BC66 }
+. { #ANDROMEDA$6219 }
+. { #WARLORD$A77E }
+. LIST#
+D $A0C8 Holds a single byte, where each bit relates to a turn-based event as
+. follows:
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Relating To }
+. { #N$00 | Alligator }
+. { #N$01 | Explosion }
+. TABLE#
+. When the bit is set, this starts a turn counter (see #R$A0C9).
+. #R$A280 counts a bit down while it is set, and the script actions
+. #R$AB4A and #R$AB5E change the bits.
 B $A0C8,$01
 
 g $A0C9 Turn-Based Event Counters
-@ $A0C9 label=TurnEventCounters
-D $A0C9 One counter byte for each bit in #R$A0C8. #R$A280 decreases the
+E $A0C9 View the equivalent code in;
+. #LIST
+. { #FOREST$BA37 }
+. { #HEROES$AE89 }
+. { #JEWELS$BC67 }
+. { #ANDROMEDA$621A }
+. { #WARLORD$A77F }
+. LIST#
+D $A0C9 One countdown per bit of *#R$A0C8. #R$A280 decreases the
 . counter for every active event, and #R$AB37 stores a new count.
-B $A0C9,$01 Counter for event bit #N(#PC-$A0C9).
-L $A0C9,$01,$08
+N $A0C9 Initialised to #N$04 by #R$BBD8.
+@ $A0C9 label=Counter_Alligator
+N $A0CA Initialised to #N$64 by #R$BBD8.
+@ $A0CA label=Counter_Explosion
+N $A0CB Unused.
+@ $A0CB label=Counter_Unused_0
+N $A0CC Unused.
+@ $A0CC label=Counter_Unused_1
+N $A0CD Unused.
+@ $A0CD label=Counter_Unused_2
+N $A0CE Unused.
+@ $A0CE label=Counter_Unused_3
+N $A0CF Unused.
+@ $A0CF label=Counter_Unused_4
+N $A0D0 Unused.
+@ $A0D0 label=Counter_Unused_5
+B $A0C9,$08,$01
 
 g $A0D1 Flags: Event States
-@ $A0D1 label=Flags_EventStates
-D $A0D1 Bits that #R$ACBD honours after a move. #R$AB0E sets a bit and #R$AB22
-. clears one.
+@ $A0D1 label=Flag_EventStates
+E $A0D1 View the equivalent code in;
+. #LIST
+. { #WARLORD$A787 }
+. LIST#
+D $A0D1 Holds a single byte. Each set bit makes the matching byte of
+. #R$B6F4 follow the player into the new room (#R$ACBD). #R$AB0E sets a
+. bit and #R$AB22 clears one.
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Relating To }
+. { #N$00 | #ITEM(#PEEK($B6F4)) }
+. { #N$01 | #ITEM(#PEEK($B6F5)) }
+. { #N$02 | #ITEM(#PEEK($B6F6)) }
+. { #N$03 | #ITEM(#PEEK($B6F7)) }
+. { #N$04 | #ITEM(#PEEK($B6F8)) }
+. { #N$05 | #ITEM(#PEEK($B6F9)) }
+. { #N$06 | #ITEM(#PEEK($B6FA)) }
+. { #N$07 | #ITEM(#PEEK($B6FB)) }
+. TABLE#
 B $A0D1,$01
 
 g $A0D2 Number Of Items In The Players Inventory
@@ -2795,6 +2884,9 @@ D $AA6E Moves the item operand into the inventory and prints the taken
 E $AA6E View the equivalent code in;
 . #LIST
 . { #FOREST$EEED }
+. { #HEROES$EB25 }
+. { #JEWELS$F29C }
+. { #ANDROMEDA$9014 }
 . { #WARLORD$EDA6 }
 . LIST#
 R $AA6E F The zero flag is set when the conditions hold
@@ -2821,6 +2913,9 @@ D $AA8A Moves the item operand into the current room and prints the dropped
 . message.
 E $AA8A View the equivalent code in;
 . #LIST
+. { #FOREST$F045 }
+. { #HEROES$EB31 }
+. { #JEWELS$F4DA }
 . { #WARLORD$EDB8 }
 . LIST#
 R $AA8A F The zero flag is set when the conditions hold
@@ -3494,12 +3589,13 @@ E $ACFC View the equivalent code in;
 . { #ANDROMEDA$8D85 }
 . { #WARLORD$B05E }
 . LIST#
-D $ACFC Matches the first input token from #R$A13B against the verb tokens at
-. #R$B420. When a match is found, it indexes the verb script table at #R$B44A
-. and runs that script through #R$A6FF. When no match is found, it prints the
-. rephrase message and returns.
-N $ACFC Search the verb token list at #R$B420 for the first user-input token.
-  $ACFC,$03 Point #REGhl at the verb tokens table at #R$B420.
+D $ACFC Matches the first input token from #R$A13B against the verb word
+. tokens at #R$B420. When a match is found, it indexes the verb script table
+. at #R$B44A and runs that script through #R$A6FF. When no match is found, it
+. prints the rephrase message and returns.
+N $ACFC Search the verb word tokens table at #R$B420 for the first user-input
+. token.
+  $ACFC,$03 Point #REGhl at the verb word tokens table at #R$B420.
   $ACFF,$04 Load the verb-token count from *#R$BBCB into #REGbc.
   $AD03,$03 Fetch the first user-input token from *#R$A13B into #REGa.
   $AD06,$02 Search #R$B420 for a matching token.
@@ -3644,6 +3740,10 @@ c $AD79 Change Room
 @ $AD79 label=ChangeRoom
 E $AD79 View the equivalent code in;
 . #LIST
+. { #FOREST$ECB6 }
+. { #HEROES$E9E1 }
+. { #JEWELS$EF54 }
+. { #ANDROMEDA$8E18 }
 . { #WARLORD$EB10 }
 . LIST#
 D $AD79 Commits a move into the destination room held in #REGa. It stashes the
@@ -3850,10 +3950,13 @@ g $AF31 Table: Object Noun Phrases
 @ $AF31 label=Table_ObjectNounPhrases
 E $AF31 View the equivalent code in;
 . #LIST
+. { #FOREST$D4E6 }
 . { #HEROES$CEEA }
 . { #JEWELS$D4C6 }
+. { #ANDROMEDA$85E8 }
 . { #WARLORD$C83E }
 . LIST#
+D $AF31 One word per object. Each entry points at the noun text.
 W $AF31,$02 Object #R(#OFFSET(#PEEK(#PC+$01)*$100+#PEEK(#PC)))(#N((#PC-$AF31)/$02)): #OBJECT((#PC-$AF31)/$02).
 L $AF31,$02,$56
 
@@ -3873,8 +3976,25 @@ L $AFDD,$02,$88
 
 t $B0ED Table: Vocabulary
 @ $B0ED label=Table_Vocabulary
-  $B0ED,$09 Command #N((#PC-$B0ED)/$09).
-L $B0ED,$09,$0A
+E $B0ED View the equivalent code in;
+. #LIST
+. { #FOREST$E4AF }
+. { #HEROES$E25C }
+. { #JEWELS$E61D }
+. { #ANDROMEDA$8632 }
+. { #WARLORD$E0B1 }
+. LIST#
+D $B0ED Four-character words. A comma binds synonyms to the same command.
+  $B0ED,$09 Command #N$00.
+  $B0F6,$09 Command #N$01.
+  $B0FF,$09 Command #N$02.
+  $B108,$09 Command #N$03.
+  $B111,$09 Command #N$04.
+  $B11A,$09 Command #N$05.
+  $B123,$09 Command #N$06.
+  $B12C,$09 Command #N$07.
+  $B135,$09 Command #N$08.
+  $B13E,$09 Command #N$09.
   $B147,$04 Command #N((#PC-$B11F)/$04).
 L $B147,$04,$02
   $B14F,$09 Command #N$0C.
@@ -3898,41 +4018,42 @@ L $B1CD,$04,$02
   $B1D5,$09 Command #N$21.
   $B1DE,$04 Command #N((#PC-$B156)/$04).
 L $B1DE,$04,$0A
-  $B206,$09 Command #N$2C.
-  $B20F,$04 Command #N$2D.
-  $B213,$09 Command #N$2E.
-  $B21C,$04 Command #N((#PC-$B160)/$04).
+  $B206,$09 Command #N$2C: #OBJECT$00.
+  $B20F,$04 Command #N$2D: #OBJECT$01.
+  $B213,$09 Command #N$2E: #OBJECT$02.
+  $B21C,$04 Command #N((#PC-$B160)/$04): #OBJECT((#PC-$B210)/$04).
 L $B21C,$04,$02
-  $B224,$09 Command #N$31.
-  $B22D,$04 Command #N$32.
-  $B231,$09 Command #N$33.
-  $B23A,$04 Command #N((#PC-$B16A)/$04).
+  $B224,$09 Command #N$31: #OBJECT$05.
+  $B22D,$04 Command #N$32: #OBJECT$06.
+  $B231,$09 Command #N$33: #OBJECT$07.
+  $B23A,$04 Command #N((#PC-$B16A)/$04): #OBJECT((#PC-$B21A)/$04).
 L $B23A,$04,$02
-  $B242,$09 Command #N((#PC-$B05C)/$09).
-L $B242,$09,$02
-  $B254,$04 Command #N((#PC-$B174)/$04).
+  $B242,$09 Command #N$36: #OBJECT$0A.
+  $B24B,$09 Command #N$37: #OBJECT$0B.
+  $B254,$04 Command #N((#PC-$B174)/$04): #OBJECT((#PC-$B224)/$04).
 L $B254,$04,$04
-  $B264,$0E Command #N$3C.
-  $B272,$04 Command #N((#PC-$B17E)/$04).
+  $B264,$0E Command #N$3C: #OBJECT$10.
+  $B272,$04 Command #N((#PC-$B17E)/$04): #OBJECT((#PC-$B22E)/$04).
 L $B272,$04,$02
-  $B27A,$09 Command #N$3F.
-  $B283,$04 Command #N((#PC-$B183)/$04).
+  $B27A,$09 Command #N$3F: #OBJECT$13.
+  $B283,$04 Command #N((#PC-$B183)/$04): #OBJECT((#PC-$B233)/$04).
 L $B283,$04,$04
-  $B293,$09 Command #N$44.
-  $B29C,$04 Command #N((#PC-$B188)/$04).
+  $B293,$09 Command #N$44: #OBJECT$18.
+  $B29C,$04 Command #N((#PC-$B188)/$04): #OBJECT((#PC-$B238)/$04).
 L $B29C,$04,$11
-  $B2E0,$09 Command #N$56.
-  $B2E9,$04 Command #N((#PC-$B18D)/$04).
+  $B2E0,$09 Command #N$56: #OBJECT$2A.
+  $B2E9,$04 Command #N((#PC-$B18D)/$04): #OBJECT((#PC-$B23D)/$04).
 L $B2E9,$04,$1C
-  $B359,$09 Command #N$73.
-  $B362,$04 Command #N((#PC-$B192)/$04).
+  $B359,$09 Command #N$73: #OBJECT$47.
+  $B362,$04 Command #N((#PC-$B192)/$04): #OBJECT((#PC-$B242)/$04).
 L $B362,$04,$07
-  $B37E,$09 Command #N$7B.
-  $B387,$04 Command #N((#PC-$B197)/$04).
+  $B37E,$09 Command #N$7B: #OBJECT$4F.
+  $B387,$04 Command #N((#PC-$B197)/$04): #OBJECT((#PC-$B247)/$04).
 L $B387,$04,$04
-  $B397,$09 Command #N$80.
-  $B3A0,$04 Command #N((#PC-$B19C)/$04).
-L $B3A0,$04,$04
+  $B397,$09 Command #N$80: #OBJECT$54.
+  $B3A0,$04 Command #N$81: #OBJECT$55.
+  $B3A4,$04 Command #N((#PC-$B19C)/$04).
+L $B3A4,$04,$03
   $B3B0,$09 Command #N$85.
   $B3B9,$04 Command #N$86.
   $B3BD,$13 Command #N$87.
@@ -3949,11 +4070,61 @@ L $B3FE,$04,$02
 L $B40F,$04,$04
 B $B41F,$01 Terminator.
 
-g $B420 Table: Verb Tokens
-@ $B420 label=Table_VerbTokens
-D $B420 The token searched for by #R$ACFC. There are #R$BBCB entries.
-B $B420,$01 Verb index #N(#PC-$B420) matches token #N(#PEEK(#PC)).
-L $B420,$01,$2A
+g $B420 Table: Verb Word Tokens
+@ $B420 label=Table_VerbWordTokens
+E $B420 View the equivalent code in;
+. #LIST
+. { #FOREST$E7AE }
+. { #HEROES$E5D3 }
+. { #JEWELS$E90D }
+. { #ANDROMEDA$891C }
+. { #WARLORD$E489 }
+. LIST#
+D $B420 The vocabulary number (#R$B0ED) of each of the #N$2A verbs (the count
+. is at #R$BBCB). #R$ACFC looks the first word of a command up here and jumps
+. to the action at the same position in #R$B44A.
+B $B420,$01 Verb #N$00: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD37.
+B $B421,$01 Verb #N$01: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD5A.
+B $B422,$01 Verb #N$02: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD5F.
+B $B423,$01 Verb #N$03: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD64.
+B $B424,$01 Verb #N$04: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD69.
+B $B425,$01 Verb #N$05: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD6F.
+B $B426,$01 Verb #N$06: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD75.
+B $B427,$01 Verb #N$07: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD7B.
+B $B428,$01 Verb #N$08: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD81.
+B $B429,$01 Verb #N$09: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD87.
+B $B42A,$01 Verb #N$0A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD8D.
+B $B42B,$01 Verb #N$0B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD92.
+B $B42C,$01 Verb #N$0C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BD97.
+B $B42D,$01 Verb #N$0D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BE76.
+B $B42E,$01 Verb #N$0E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$BE7B.
+B $B42F,$01 Verb #N$0F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C0A2.
+B $B430,$01 Verb #N$10: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C20E.
+B $B431,$01 Verb #N$11: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C251.
+B $B432,$01 Verb #N$12: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C272.
+B $B433,$01 Verb #N$13: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C2C6.
+B $B434,$01 Verb #N$14: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C2F6.
+B $B435,$01 Verb #N$15: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C329.
+B $B436,$01 Verb #N$16: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C37A.
+B $B437,$01 Verb #N$17: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C455.
+B $B438,$01 Verb #N$18: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C467.
+B $B439,$01 Verb #N$19: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C47E.
+B $B43A,$01 Verb #N$1A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C48E.
+B $B43B,$01 Verb #N$1B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C49C.
+B $B43C,$01 Verb #N$1C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C4D2.
+B $B43D,$01 Verb #N$1D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C4F4.
+B $B43E,$01 Verb #N$1E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C5A7.
+B $B43F,$01 Verb #N$1F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C628.
+B $B440,$01 Verb #N$20: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C664.
+B $B441,$01 Verb #N$21: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C696.
+B $B442,$01 Verb #N$22: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C720.
+B $B443,$01 Verb #N$23: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C74D.
+B $B444,$01 Verb #N$24: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C7A7.
+B $B445,$01 Verb #N$25: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C808.
+B $B446,$01 Verb #N$26: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C82F.
+B $B447,$01 Verb #N$27: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C87E.
+B $B448,$01 Verb #N$28: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C891.
+B $B449,$01 Verb #N$29: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$C8BA.
 
 g $B44A Jump Table: Verb Scripts
 @ $B44A label=JumpTable_VerbScripts
@@ -3965,17 +4136,211 @@ g $B49E Table: Token Item List
 D $B49E A list of all tokens which relate to items.
 E $B49E View the equivalent code in;
 . #LIST
+. { #FOREST$E6BC }
+. { #HEROES$E4B8 }
 . { #JEWELS$E83E }
+. { #ANDROMEDA$8868 }
 . { #WARLORD$E308 }
 . LIST#
-B $B49E,$01 Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+B $B49E,$01 Object #OBJECT((#PC-$B49E)): word #N(#PEEK(#PC)),
+. #TOKEN(#PEEK(#PC)).
 L $B49E,$01,$56
 
-g $B4F4 Data: Item Groups
-D $B4F4 See #R$B60E for usage.
-@ $B4F4 label=Data_ItemGroup_Roman
-B $B4F4,$01 #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC))).
-L $B4F4,$01,$11A
+g $B4F4 Table: Item Groups
+@ $B4F4 label=Table_ItemGroups
+E $B4F4 View the equivalent code in;
+. #LIST
+. { #FOREST$E6E6 }
+. { #HEROES$E500 }
+. { #JEWELS$E86E }
+. { #ANDROMEDA$888D }
+. { #WARLORD$E341 }
+. LIST#
+D $B4F4 For each object in #R$AF31, in the same order: the items it may refer
+. to, ending with #N$FF. The pointers at #R$B60E say where each group starts.
+B $B4F4,$02 Object #OBJECT$00: #ITEM$00.
+@ $B4F6 label=Data_ItemGroup_Diamond
+B $B4F6,$02 Object #OBJECT$01: #ITEM$01.
+@ $B4F8 label=Data_ItemGroup_Bodies
+B $B4F8,$06 Object #OBJECT$02: #ITEM$02, #ITEM$3E, #ITEM$40, #ITEM$41 or
+. #ITEM$4B.
+@ $B4FE label=Data_ItemGroup_Tanker
+B $B4FE,$02 Object #OBJECT$03: #ITEM$03.
+@ $B500 label=Data_ItemGroup_Oil
+B $B500,$03 Object #OBJECT$04: #ITEM$03 or #ITEM$0F.
+@ $B503 label=Data_ItemGroup_Lions
+B $B503,$02 Object #OBJECT$05: #ITEM$04.
+@ $B505 label=Data_ItemGroup_Cage
+B $B505,$03 Object #OBJECT$06: #ITEM$05 or #ITEM$06.
+@ $B508 label=Data_ItemGroup_Monkey
+B $B508,$02 Object #OBJECT$07: #ITEM$05.
+@ $B50A label=Data_ItemGroup_Fruit
+B $B50A,$02 Object #OBJECT$08: #ITEM$07.
+@ $B50C label=Data_ItemGroup_Meat
+B $B50C,$02 Object #OBJECT$09: #ITEM$08.
+@ $B50E label=Data_ItemGroup_Shop
+B $B50E,$05 Object #OBJECT$0A: #ITEM$09, #ITEM$0A, #ITEM$26 or #ITEM$32.
+@ $B513 label=Data_ItemGroup_Television
+B $B513,$02 Object #OBJECT$0B: #ITEM$0B.
+@ $B515 label=Data_ItemGroup_Gate
+B $B515,$06 Object #OBJECT$0C: #ITEM$0C, #ITEM$34, #ITEM$35, #ITEM$3B or
+. #ITEM$3C.
+@ $B51B label=Data_ItemGroup_Bin
+B $B51B,$02 Object #OBJECT$0D: #ITEM$0D.
+@ $B51D label=Data_ItemGroup_Bottle
+B $B51D,$04 Object #OBJECT$0E: #ITEM$0E through #ITEM$10.
+@ $B521 label=Data_ItemGroup_Insects
+B $B521,$02 Object #OBJECT$0F: #ITEM$11.
+@ $B523 label=Data_ItemGroup_Car
+B $B523,$08 Object #OBJECT$10: #ITEM$12, #ITEM$40, #ITEM$43, #ITEM$44, #ITEM$45,
+. #ITEM$48 or #ITEM$60.
+@ $B52B label=Data_ItemGroup_Stick
+B $B52B,$02 Object #OBJECT$11: #ITEM$13.
+@ $B52D label=Data_ItemGroup_Statue
+B $B52D,$02 Object #OBJECT$12: #ITEM$14.
+@ $B52F label=Data_ItemGroup_Alligator
+B $B52F,$02 Object #OBJECT$13: #ITEM$15.
+@ $B531 label=Data_ItemGroup_Tent
+B $B531,$02 Object #OBJECT$14: #ITEM$16.
+@ $B533 label=Data_ItemGroup_Bear
+B $B533,$02 Object #OBJECT$15: #ITEM$17.
+@ $B535 label=Data_ItemGroup_Elephant
+B $B535,$02 Object #OBJECT$16: #ITEM$18.
+@ $B537 label=Data_ItemGroup_Ramp
+B $B537,$04 Object #OBJECT$17: #ITEM$18, #ITEM$19 or #ITEM$42.
+@ $B53B label=Data_ItemGroup_Parapet
+B $B53B,$04 Object #OBJECT$18: #ITEM$1A through #ITEM$1C.
+@ $B53F label=Data_ItemGroup_Roof
+B $B53F,$07 Object #OBJECT$19: #ITEM$1A, #ITEM$1B, #ITEM$1C, #ITEM$56, #ITEM$6E
+. or #ITEM$6F.
+@ $B546 label=Data_ItemGroup_Stairs
+B $B546,$0A Object #OBJECT$1A: #ITEM$1A, #ITEM$1C, #ITEM$2A, #ITEM$2B, #ITEM$2C,
+. #ITEM$36, #ITEM$58, #ITEM$59 or #ITEM$6F.
+@ $B550 label=Data_ItemGroup_Nail
+B $B550,$02 Object #OBJECT$1B: #ITEM$1D.
+@ $B552 label=Data_ItemGroup_Cap
+B $B552,$03 Object #OBJECT$1C: #ITEM$1F or #ITEM$20.
+@ $B555 label=Data_ItemGroup_Trumpet
+B $B555,$02 Object #OBJECT$1D: #ITEM$25.
+@ $B557 label=Data_ItemGroup_Adverts
+B $B557,$02 Object #OBJECT$1E: #ITEM$1E.
+@ $B559 label=Data_ItemGroup_Tunnel
+B $B559,$11 Object #OBJECT$1F: #ITEM$1E, #ITEM$21, #ITEM$22, #ITEM$23, #ITEM$72,
+. #ITEM$73, #ITEM$74, #ITEM$75, #ITEM$76, #ITEM$77, #ITEM$78, #ITEM$79,
+. #ITEM$7A, #ITEM$7B, #ITEM$6E or #ITEM$6F.
+@ $B56A label=Data_ItemGroup_Water
+B $B56A,$0F Object #OBJECT$20: #ITEM$21, #ITEM$10, #ITEM$4D, #ITEM$4F, #ITEM$72,
+. #ITEM$73, #ITEM$74, #ITEM$75, #ITEM$76, #ITEM$77, #ITEM$78, #ITEM$79, #ITEM$7A
+. or #ITEM$7B.
+@ $B579 label=Data_ItemGroup_Graffiti
+B $B579,$02 Object #OBJECT$21: #ITEM$23.
+@ $B57B label=Data_ItemGroup_Ticket
+B $B57B,$02 Object #OBJECT$22: #ITEM$24.
+@ $B57D label=Data_ItemGroup_Ladder
+B $B57D,$06 Object #OBJECT$23: #ITEM$27, #ITEM$28, #ITEM$57, #ITEM$5A or
+. #ITEM$64.
+@ $B583 label=Data_ItemGroup_Doll
+B $B583,$02 Object #OBJECT$24: #ITEM$29.
+@ $B585 label=Data_ItemGroup_Garden
+B $B585,$03 Object #OBJECT$25: #ITEM$2D or #ITEM$3A.
+@ $B588 label=Data_ItemGroup_Soldiers
+B $B588,$02 Object #OBJECT$26: #ITEM$2E.
+@ $B58A label=Data_ItemGroup_Looters
+B $B58A,$02 Object #OBJECT$27: #ITEM$2F.
+@ $B58C label=Data_ItemGroup_Rubble
+B $B58C,$03 Object #OBJECT$28: #ITEM$30 or #ITEM$31.
+@ $B58F label=Data_ItemGroup_Kiosk
+B $B58F,$02 Object #OBJECT$29: #ITEM$31.
+@ $B591 label=Data_ItemGroup_Petrol
+B $B591,$02 Object #OBJECT$2A: #ITEM$31.
+@ $B593 label=Data_ItemGroup_Desert
+B $B593,$04 Object #OBJECT$2B: #ITEM$33 through #ITEM$35.
+@ $B597 label=Data_ItemGroup_Tumbleweed
+B $B597,$02 Object #OBJECT$2C: #ITEM$33.
+@ $B599 label=Data_ItemGroup_Horse
+B $B599,$02 Object #OBJECT$2D: #ITEM$29.
+@ $B59B label=Data_ItemGroup_Swing
+B $B59B,$02 Object #OBJECT$2E: #ITEM$29.
+@ $B59D label=Data_ItemGroup_Beam
+B $B59D,$03 Object #OBJECT$2F: #ITEM$37 or item #N$84.
+@ $B5A0 label=Data_ItemGroup_Door
+B $B5A0,$06 Object #OBJECT$30: #ITEM$38, #ITEM$39, #ITEM$52, #ITEM$53 or
+. #ITEM$54.
+@ $B5A6 label=Data_ItemGroup_Trees
+B $B5A6,$02 Object #OBJECT$31: #ITEM$3A.
+@ $B5A8 label=Data_ItemGroup_Weeds
+B $B5A8,$02 Object #OBJECT$32: #ITEM$3A.
+@ $B5AA label=Data_ItemGroup_Wall
+B $B5AA,$06 Object #OBJECT$33: #ITEM$3D, #ITEM$5A, #ITEM$64, #ITEM$2C or
+. item #N$87.
+@ $B5B0 label=Data_ItemGroup_Chasm
+B $B5B0,$03 Object #OBJECT$34: #ITEM$3E or #ITEM$48.
+@ $B5B3 label=Data_ItemGroup_Key
+B $B5B3,$03 Object #OBJECT$35: #ITEM$3F or #ITEM$45.
+@ $B5B6 label=Data_ItemGroup_Desk
+B $B5B6,$04 Object #OBJECT$36: #ITEM$46, #ITEM$47 or #ITEM$5C.
+@ $B5BA label=Data_ItemGroup_Chair
+B $B5BA,$04 Object #OBJECT$37: #ITEM$47, #ITEM$5B or #ITEM$71.
+@ $B5BE label=Data_ItemGroup_Display
+B $B5BE,$03 Object #OBJECT$38: #ITEM$49 or #ITEM$61.
+@ $B5C1 label=Data_ItemGroup_Siren
+B $B5C1,$02 Object #OBJECT$39: #ITEM$49.
+@ $B5C3 label=Data_ItemGroup_Button
+B $B5C3,$03 Object #OBJECT$3A: #ITEM$49 or #ITEM$61.
+@ $B5C6 label=Data_ItemGroup_Valve
+B $B5C6,$04 Object #OBJECT$3B: #ITEM$4C, #ITEM$50 or #ITEM$51.
+@ $B5CA label=Data_ItemGroup_Wires
+B $B5CA,$04 Object #OBJECT$3C: #ITEM$4D, #ITEM$50 or #ITEM$51.
+@ $B5CE label=Data_ItemGroup_Pipe
+B $B5CE,$04 Object #OBJECT$3D: #ITEM$4D, #ITEM$4F or #ITEM$6E.
+@ $B5D2 label=Data_ItemGroup_Screwdriver
+B $B5D2,$02 Object #OBJECT$3E: #ITEM$55.
+@ $B5D4 label=Data_ItemGroup_Fire
+B $B5D4,$03 Object #OBJECT$3F: #ITEM$58 or #ITEM$6D.
+@ $B5D7 label=Data_ItemGroup_Lift
+B $B5D7,$04 Object #OBJECT$40: #ITEM$5A, #ITEM$5F or #ITEM$61.
+@ $B5DB label=Data_ItemGroup_Pen
+B $B5DB,$02 Object #OBJECT$41: #ITEM$5D.
+@ $B5DD label=Data_ItemGroup_Radio
+B $B5DD,$02 Object #OBJECT$42: #ITEM$5E.
+@ $B5DF label=Data_ItemGroup_Panel
+B $B5DF,$03 Object #OBJECT$43: #ITEM$62 or #ITEM$63.
+@ $B5E2 label=Data_ItemGroup_Ceiling
+B $B5E2,$02 Object #OBJECT$44: #ITEM$61.
+@ $B5E4 label=Data_ItemGroup_Basin
+B $B5E4,$02 Object #OBJECT$45: #ITEM$65.
+@ $B5E6 label=Data_ItemGroup_Mirror
+B $B5E6,$02 Object #OBJECT$46: #ITEM$65.
+@ $B5E8 label=Data_ItemGroup_Workbench
+B $B5E8,$02 Object #OBJECT$47: #ITEM$66.
+@ $B5EA label=Data_ItemGroup_Pickaxe
+B $B5EA,$02 Object #OBJECT$48: #ITEM$6C.
+@ $B5EC label=Data_ItemGroup_Torch
+B $B5EC,$03 Object #OBJECT$49: #ITEM$69 or #ITEM$6A.
+@ $B5EF label=Data_ItemGroup_Tissues
+B $B5EF,$02 Object #OBJECT$4A: #ITEM$6B.
+@ $B5F1 label=Data_ItemGroup_Isolator
+B $B5F1,$02 Object #OBJECT$4B: #ITEM$66.
+@ $B5F3 label=Data_ItemGroup_Cables
+B $B5F3,$02 Object #OBJECT$4C: #ITEM$6E.
+@ $B5F5 label=Data_ItemGroup_Handle
+B $B5F5,$04 Object #OBJECT$4D: #ITEM$7C, #ITEM$7E or #ITEM$7F.
+@ $B5F9 label=Data_ItemGroup_Shaft
+B $B5F9,$04 Object #OBJECT$4E: #ITEM$7D through #ITEM$7F.
+@ $B5FD label=Data_ItemGroup_Sluice
+B $B5FD,$04 Object #OBJECT$4F: #ITEM$7D through #ITEM$7F.
+@ $B601 label=Data_ItemGroup_Sweets
+B $B601,$02 Object #OBJECT$50: item #N$80.
+@ $B603 label=Data_ItemGroup_Ambulance
+B $B603,$02 Object #OBJECT$51: item #N$81.
+@ $B605 label=Data_ItemGroup_Truck
+B $B605,$02 Object #OBJECT$52: item #N$83.
+@ $B607 label=Data_ItemGroup_Geese
+B $B607,$02 Object #OBJECT$53: item #N$82.
+@ $B609 label=Data_ItemGroup_Buns
+B $B609,$02 Object #OBJECT$54: item #N$86.
+@ $B60B label=Data_ItemGroup_Woman
+B $B60B,$03 Object #OBJECT$55: #ITEM$40 or #ITEM$41.
 
 g $B60E Table: Item Grouping
 @ $B60E label=Table_ItemGrouping
@@ -4011,6 +4376,13 @@ L $B6BA,$01,$05
 
 b $B6BF Table: Scenic Event Room Groups
 @ $B6BF label=Table_ScenicEventRoomGroups
+E $B6BF View the equivalent code in;
+. #LIST
+. { #FOREST$BA9C }
+. { #JEWELS$BCCC }
+. { #ANDROMEDA$62B2 }
+. { #WARLORD$E4E6 }
+. LIST#
 D $B6BF One address per scenic event (#N$05 entries; see #R$BBCF). #R$A280
 . loads this table into #REGix and #R$A305 reads the address for the event
 . index. The bytes at that address are room IDs ended by #N$FF; see #R$B6C9.
@@ -4019,6 +4391,13 @@ L $B6BF,$02,$05
 
 b $B6C9 Data: Scenic Event Room Groups
 @ $B6C9 label=Data_ScenicEventRoomGroups
+E $B6C9 View the equivalent code in;
+. #LIST
+. { #FOREST$E7D0 }
+. { #JEWELS$E933 }
+. { #ANDROMEDA$8CDA }
+. { #WARLORD$E4AA }
+. LIST#
 D $B6C9 Room IDs for each scenic event, in groups terminated by #N$FF. The
 . addresses of the groups are held by #R$B6BF.
 N $B6C9 Event #N$00: rooms #ROOM$26, then #N$FF.
@@ -4036,17 +4415,34 @@ N $B6E6 Event #N$04: rooms #ROOM$19, #ROOM$1A, #ROOM$1F, #ROOM$20, #ROOM$28,
 . #ROOM$29, #ROOM$78, #ROOM$78, #ROOM$78, #ROOM$78, then #N$FF.
 B $B6E6,$0B
 
-g $B6F1 Table: Plural Items
-@ $B6F1 label=Table_PluralItems
-D $B6F1 Item IDs that use the plural carrying messages. #R$AE2C and #R$AE5E
-. search these #N$03 bytes.
+g $B6F1 Table: Items Which Are Plural
+@ $B6F1 label=Table_ItemsWhichArePlural
+E $B6F1 View the equivalent code in;
+. #LIST
+. { #FOREST$EEEB }
+. { #HEROES$EA9D }
+. { #JEWELS$F29B }
+. { #ANDROMEDA$9010 }
+. { #WARLORD$ED6C }
+. LIST#
+D $B6F1 All the items in the game which are plural; used by #R$AE2C and
+. #R$AE5E.
 B $B6F1,$01 Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
 L $B6F1,$01,$03
 
-g $B6F4 Data: Phrase Tokens
-@ $B6F4 label=Data_PhraseTokens
+g $B6F4 Table: Phrase Tokens
+@ $B6F4 label=Table_PhraseTokens
+E $B6F4 View the equivalent code in;
+. #LIST
+. { #HEROES$E687 }
+. { #JEWELS$E9CA }
+. { #ANDROMEDA$8940 }
+. { #WARLORD$E519 }
+. LIST#
 D $B6F4 Phrase patterns read by #R$A5DB. #R$B83D holds an address for each
 . pattern.
+B $B6F4,$01
+L $B6F4,$01,$149
 
 g $B83D Table: Phrase Pointers
 @ $B83D label=Table_PhrasePointers
@@ -4056,13 +4452,29 @@ L $B83D,$02,$50
 
 g $B8DD Table: Room Map
 @ $B8DD label=Table_RoomMap
+E $B8DD View the equivalent code in;
+. #LIST
+. { #FOREST$E934 }
+. { #HEROES$E7E6 }
+. { #JEWELS$EB10 }
+. { #ANDROMEDA$8B5A }
+. { #WARLORD$E714 }
+. LIST#
+D $B8DD Six bytes per room, in the order north, south, east, west, up, down. A
+. zero means there is no exit.
 N $B8DD Room #N((#PC-$B8DD)/$06): #ROOM((#PC-$B8DD)/$06).
-B $B8DD,$01 #IF(#PEEK(#PC)>$00)(North to room: R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
-B $B8DE,$01 #IF(#PEEK(#PC)>$00)(South to room: R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
-B $B8DF,$01 #IF(#PEEK(#PC)>$00)(East to room: R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
-B $B8E0,$01 #IF(#PEEK(#PC)>$00)(West to room: R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
-B $B8E1,$01 #IF(#PEEK(#PC)>$00)(Up to room: R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
-B $B8E2,$01 #IF(#PEEK(#PC)>$00)(Down to room: R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $B8DD,$01 #IF(#PEEK(#PC)>$00)(#IF(#PEEK(#PC)<$2F)(North to room:
+. #R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),#N(#PEEK(#PC))),N/A).
+B $B8DE,$01 #IF(#PEEK(#PC)>$00)(#IF(#PEEK(#PC)<$2F)(South to room:
+. #R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),#N(#PEEK(#PC))),N/A).
+B $B8DF,$01 #IF(#PEEK(#PC)>$00)(#IF(#PEEK(#PC)<$2F)(East to room:
+. #R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),#N(#PEEK(#PC))),N/A).
+B $B8E0,$01 #IF(#PEEK(#PC)>$00)(#IF(#PEEK(#PC)<$2F)(West to room:
+. #R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),#N(#PEEK(#PC))),N/A).
+B $B8E1,$01 #IF(#PEEK(#PC)>$00)(#IF(#PEEK(#PC)<$2F)(Up to room:
+. #R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),#N(#PEEK(#PC))),N/A).
+B $B8E2,$01 #IF(#PEEK(#PC)>$00)(#IF(#PEEK(#PC)<$2F)(Down to room:
+. #R($B8DD+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),#N(#PEEK(#PC))),N/A).
 L $B8DD,$06,$2F
 
 g $BA00 Data: Saved Room Byte
@@ -4104,9 +4516,57 @@ L $BB0B,$01,$88
 
 g $BB93 Table: Rooms With Images
 @ $BB93 label=Table_RoomsWithImages
-D $BB93 See #R$A33A.
-B $BB93,$01 Location Slot: #N(#PC-$BB93) - room #N(#PEEK(#PC)): #ROOM(#PEEK(#PC)).
-L $BB93,$01,$13
+E $BB93 View the equivalent code in;
+. #LIST
+. { #FOREST$E806 }
+. { #HEROES$FDFF }
+. { #JEWELS$E95D }
+. { #ANDROMEDA$8CFC }
+. { #WARLORD$FEF1 }
+. LIST#
+D $BB93 The #N$13 rooms that have a picture (the count is at #R$BBCD).
+. #R$A33A looks the current room up here; where it is found picks the
+. picture number in #R$BBA6 and the "already seen" bit in #R$A0A8.
+. A picture is shown the first time the player enters the room, and again
+. whenever they type LOOK.
+B $BB93,$01 Image #N$00: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$01; seen flag: bit 0 of #R$A0A8.
+B $BB94,$01 Image #N$01: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$02; seen flag: bit 1 of #R$A0A8.
+B $BB95,$01 Image #N$02: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$02; seen flag: bit 2 of #R$A0A8.
+B $BB96,$01 Image #N$03: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$02; seen flag: bit 3 of #R$A0A8.
+B $BB97,$01 Image #N$04: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$02; seen flag: bit 4 of #R$A0A8.
+B $BB98,$01 Image #N$05: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$02; seen flag: bit 5 of #R$A0A8.
+B $BB99,$01 Image #N$06: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$02; seen flag: bit 6 of #R$A0A8.
+B $BB9A,$01 Image #N$07: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$02; seen flag: bit 7 of #R$A0A8.
+B $BB9B,$01 Image #N$08: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$02; seen flag: bit 0 of #R$A0A8(#N$A0A9).
+B $BB9C,$01 Image #N$09: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$02; seen flag: bit 1 of #R$A0A8(#N$A0A9).
+B $BB9D,$01 Image #N$0A: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$02; seen flag: bit 2 of #R$A0A8(#N$A0A9).
+B $BB9E,$01 Image #N$0B: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$03; seen flag: bit 3 of #R$A0A8(#N$A0A9).
+B $BB9F,$01 Image #N$0C: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$04; seen flag: bit 4 of #R$A0A8(#N$A0A9).
+B $BBA0,$01 Image #N$0D: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$05; seen flag: bit 5 of #R$A0A8(#N$A0A9).
+B $BBA1,$01 Image #N$0E: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$06; seen flag: bit 6 of #R$A0A8(#N$A0A9).
+B $BBA2,$01 Image #N$0F: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$07; seen flag: bit 7 of #R$A0A8(#N$A0A9).
+B $BBA3,$01 Image #N$10: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$08; seen flag: bit 0 of #R$A0A8(#N$A0AA).
+B $BBA4,$01 Image #N$11: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$09; seen flag: bit 1 of #R$A0A8(#N$A0AA).
+B $BBA5,$01 Image #N$12: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$9F67 as image #N$0A; seen flag: bit 2 of #R$A0A8(#N$A0AA).
 
 g $BBA6 Table: Room Image Numbers
 @ $BBA6 label=Table_RoomImageNumbers
@@ -4217,16 +4677,65 @@ g $BD25 Data: Scenic Event Script 4
 @ $BD25 label=Data_ScenicEventScript4
 D $BD25 Script for scenic event #N$03.
 
-g $BD2E Data: Action Scripts
-@ $BD2E label=Data_ActionScripts
-D $BD2E Scenic event #N$04 starts here. The verb scripts addressed from
-. #R$B44A, and the later action scripts, continue through the rest of this
-. block.
+g $BD2E Data: Scenic Event Script 5
+@ $BD2E label=Data_ScenicEventScript5
+D $BD2E Script for scenic event #N$04.
+
+g $BD37 Data: Action Scripts
+@ $BD37 label=Data_ActionScripts
+D $BD37 The verb scripts addressed from #R$B44A.
+B $BD37,$23 Verb #N$00.
+B $BD5A,$05 Verb #N$01.
+B $BD5F,$05 Verb #N$02.
+B $BD64,$05 Verb #N$03.
+B $BD69,$06 Verb #N$04.
+B $BD6F,$06 Verb #N$05.
+B $BD75,$06 Verb #N$06.
+B $BD7B,$06 Verb #N$07.
+B $BD81,$06 Verb #N$08.
+B $BD87,$06 Verb #N$09.
+B $BD8D,$05 Verb #N$0A.
+B $BD92,$05 Verb #N$0B.
+B $BD97,$DF Verb #N$0C.
+B $BE76,$05 Verb #N$0D.
+B $BE7B,$0227 Verb #N$0E.
+B $C0A2,$016C Verb #N$0F.
+B $C20E,$43 Verb #N$10.
+B $C251,$21 Verb #N$11.
+B $C272,$54 Verb #N$12.
+B $C2C6,$30 Verb #N$13.
+B $C2F6,$33 Verb #N$14.
+B $C329,$51 Verb #N$15.
+B $C37A,$DB Verb #N$16.
+B $C455,$12 Verb #N$17.
+B $C467,$17 Verb #N$18.
+B $C47E,$10 Verb #N$19.
+B $C48E,$0E Verb #N$1A.
+B $C49C,$36 Verb #N$1B.
+B $C4D2,$22 Verb #N$1C.
+B $C4F4,$38 Verb #N$1D.
 N $C52C This action changes the map:
+B $C52C,$2A
 N $C556 This action changes the map:
+B $C556,$46
 N $C59C This action changes the map:
+B $C59C,$0B
+B $C5A7,$22 Verb #N$1E.
 N $C5C9 This action changes the map:
+B $C5C9,$37
 N $C600 This action changes the map:
+B $C600,$28
+B $C628,$3C Verb #N$1F.
+B $C664,$32 Verb #N$20.
+B $C696,$8A Verb #N$21.
+B $C720,$2D Verb #N$22.
+B $C74D,$5A Verb #N$23.
+B $C7A7,$61 Verb #N$24.
+B $C808,$27 Verb #N$25.
+B $C82F,$4F Verb #N$26.
+B $C87E,$13 Verb #N$27.
+B $C891,$29 Verb #N$28.
+B $C8BA,$2F Verb #N$29.
 
 g $CA2B Table: Messaging Offsets
 @ $CA2B label=Table_MessagingOffsets

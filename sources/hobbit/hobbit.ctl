@@ -4825,7 +4825,7 @@ M $74BA,$07 Store the token in #REGde, keeping only bits 0-3 of the high byte.
 c $74C1 Print Token
 @ $74C1 label=PrintToken
 D $74C1 Prints a dictionary token, expanding letters until the dictionary word ends.
-R $74C1 DE The token.
+R $74C1 DE The token
   $74C1,$01 Take the token's high byte.
   $74C2,$02,b$01 Keep its low nibble (bits 8-11 of the token).
   $74C4,$01 Merge in the low byte.
@@ -9985,7 +9985,7 @@ E $9F82 View the equivalent code in;
 . LIST#
 D $9F82 Reads the first location an object appears in.
 R $9F82 A Object ID
-R $9F82 O:A #N$FF if the object does not appear exactly once, otherwise the location where it first appears.
+R $9F82 O:A #N$FF if the object does not appear exactly once, otherwise the location where it first appears
   $9F82,$03 Return if this is the terminator character (#N$FF).
   $9F85,$03 Call #R$9BCA to set #REGix to the object data address.
   $9F88,$05 Does the object appear in the game once?

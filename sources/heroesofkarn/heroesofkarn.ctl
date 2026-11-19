@@ -21,6 +21,8 @@
 > $4000 @expand=#DEF(#ROOM(id) #IF($01<$id<=$41)(#HTML(&#10;)#SIM(start=$B3F1,stop=$B3FF,ix=$CE66,de=$id)#HTML(&#10;)#R({sim[HL]})(#MAP({sim[HL]})(#HTML(&#10;)UNKNOWN,49016:Inside the Ruined Cottage,49043:In the Field,49089:The Open Moorland,49138:High on the Moors,49218:The Dead Marshes,49322:The Narrow Path,49363:The Valley,49461:The Gates of Karn,49560:The Deserted Village,49608:The Plain of Stones,49662:The Gypsy Camp,49720:Pilgrims' Hill,49822:The Monastery,49931:The Wizard's Chamber,49953:The Sand Room,49968:The Hall of Gold,50023:Within the Long Barrow,50090:At the Edge of the Sea,50135:The Hall of the Mountain King,50166:The King's Anteroom,50187:The Hall of Wisdom,50207:The Star Chamber,50276:The Bird Chamber,50330:The Vast Hall,50377:The Sword Room,50393:The Gatehouse,50432:The King's Chamber,50498:The Falcon Chamber,50518:The King's Stairway,50584:The Crystal Room,50602:The Debris Room,50619:The Stair Room,50702:The Hall of Music,50721:The Hall of Infinity,50799:The Lair of the Hydra,50822:The Star Cavern,50889:The Hall of Smoke,50966:The Oil Room,50980:The Acid Room,50995:The Treasury,51009:The Crypt,51077:The Hall of the Black Knight,51159:The Hall of Jade,51242:The Ice Cavern,51258:The Cascade Cavern,51278:The Volcano Cavern,51298:The Hall of the Four Winds,51376:The Dragon's Lair,51395:The Toolroom,51409:The Torture Chamber,51483:The Pirate's Lair,51502:The Sand Cavern,51519:The Hall of Fire,51581:The Hall of the Phoenix,51606:The Steam Cavern,51689:The Limestone Cavern,51711:The Dungeon,51749:The Cellar,51761:The Sandy Beach,51778:The Sea Cavern,51794:The Plant Room,51850:The Hall of Black Magic,51875:The Bat Cavern,51891:The Hall of Stairs)),#HTML(&#10;)N/A))
 
 > $4000 @expand=#DEF(#ITEM(id) #MAP($id)(#HTML(&#10;)N/A,000:"Beren#RAW(,)the King.",001:"Istar#RAW(,)the wizard.",002:"Haldir#RAW(,)the minstrel.",003:"Khadim#RAW(,)the dwarf.",004:"A tinderbox.",005:"A frog.",006:"A swamp lizard.",007:"A bear.",008:"A sleeping bear.",009:"Copper gates#RAW(,)to the South.",010:"The gates are open.",011:"The gates are closed.",012:"Copper gates#RAW(,)to the North.",013:"The gates are open.",014:"The gates are closed.",015:"Jewelled gates#RAW(,)to the East.",016:"The gates are open.",017:"The gates are closed.",018:"Jewelled gates#RAW(,)to the West.",019:"The gates are open.",020:"The gates are closed.",021:"Golden gates#RAW(,)to the South.",022:"The gates are open.",023:"The gates are closed.",024:"Golden gates#RAW(,)to the North.",025:"The gates are open.",026:"The gates are closed.",027:"Golden gates#RAW(,)to the South.",028:"The gates are open.",029:"The gates are closed.",030:"Golden gates#RAW(,)to the North.",031:"The gates are open.",032:"The gates are closed.",033:"Some money.",034:"A barrowight.",035:"A bible.",036:"A wand.",037:"A scroll.",038:"A silver flute.",039:"A carpet.",040:"A jewelled key.",041:"A spirit.",042:"A songbird.",043:"A songbird in a wicker cage.",044:"A balrog.",045:"A crystal bridge over the chasm.",046:"A crystal bridge over the chasm.",047:"A sword.",048:"A spear.",049:"A dagger.",050:"A velvet pillow.",054:"A falcon.",055:"A bottle.",056:"A bottle of water.",057:"A bottle of acid.",058:"A bottle of oil.",059:"A broken bottle.",060:"A serpent.",061:"A dead serpent.",062:"Istar#RAW(,)held behind crystal bars.",069:"A golden lyre.",070:"A mandolin.",071:"A gold key.",072:"A hydra.",073:"A dead hydra.",074:"A ruby.",075:"A pool of oil.",076:"A pool of acid.",077:"A diamond.",078:"A venomous spider.",079:"A sleeping spider.",080:"A rusty#RAW(,)iron chest.",081:"A chest with oiled hinges.",082:"An open chest.",083:"A coffin.",084:"An open coffin.",085:"A vampire.",086:"The Black Knight.",087:"The body of the Black Knight.",088:"A jade flower.",089:"Some jade fragments.",090:"A waterfall.",091:"A wooden box.",092:"A sapphire.",093:"A dragon.",094:"A dead dragon.",095:"A crowbar.",096:"A shovel.",097:"A map.",098:"A pirate.",099:"A dead pirate.",100:"A wicker cage.",101:"A silver coin.",102:"Firegates lay North#RAW(,)East & West.",103:"A firegate to the South.",104:"A firegate to the East.",105:"A firegate to the West.",106:"A black potion.",107:"A white potion.",108:"A copper key.",109:"The guard#RAW(,)looking at you through the bars.",110:"The door is closed.",111:"The door is open.",112:"Some honey.",113:"Some meat.",114:"An emerald.",115:"A giant clam#RAW(,)tightly closed.",116:"An open clam.",117:"A pearl.",118:"A tiny plant.",119:"A plant#RAW(,)6 feet in height.",120:"A massive beanstalk.",121:"A witch.",122:"A dead witch.",123:"A silver cross.",124:"A giant bat.",125:"A dead bat.",126:"A magic mirror.",127:"Anton#RAW(,)the Gypsy King. He says #HTML(&#34;)Find me a magic mirror and I will tell your fortune.#HTML(&#34;)",128:"Anton#RAW(,)the Gypsy King. He says #HTML(&#34;)Cross my palm with silver.#HTML(&#34;)",129:"Some hot ashes.",130:"A phoenix.",131:"A jade flower#RAW(,)resting on a velvet pillow.",133:"The top of a giant beanstalk."))
+> $4000 @expand=#DEF(#OBJECT(id) #MAP($id)(#HTML(&#10;)N/A,00:"a ruby",01:"a diamond",02:"a flower",03:"a sapphire",04:"an emerald",05:"a pearl",06:"a tinderbox",07:"a frog",08:"any money",09:"a bible",10:"a wand",11:"a scroll",12:"a flute",13:"a carpet",14:"a key",15:"a songbird",16:"a sword",17:"a spear",18:"a dagger",19:"a pillow",20:"a falcon",21:"a bottle",22:"any water",23:"any acid",24:"any oil",25:"a lyre",26:"a mandolin",27:"any fragments",28:"a box",29:"a crowbar",30:"a shovel",31:"a map",32:"a cage",33:"a coin",34:"any honey",35:"any meat",36:"a cross",37:"a mirror",38:"a lizard",39:"a bear",40:"any gates",41:"a barrowight",42:"a spirit",43:"a balrog",44:"a star",45:"a serpent",46:"any stairs",47:"any bars",48:"a hydra",49:"a spider",50:"a chest",51:"a coffin",52:"a vampire",53:"the Knight",54:"a dragon",55:"a pirate",56:"any fire",57:"a potion",58:"a guard",59:"a door",60:"a clam",61:"a plant",62:"a witch",63:"a bat",64:"Anton",65:"Beren",66:"Istar",67:"Haldir",68:"Khadim",69:"a phoenix",70:"any ashes",71:"any gas"))
+> $4000 @expand=#DEF(#TOKEN(id) #MAP($id)(#HTML(&#10;)UNKNOWN,000:"H#RAW(,)HELP",001:"I#RAW(,)INVE",002:"L#RAW(,)LOOK",003:"SCOR",004:"EXAM",005:"LOAD",006:"SAVE",007:"QUIT",008:"N#RAW(,)NORT",009:"S#RAW(,)SOUT",010:"E#RAW(,)EAST",011:"W#RAW(,)WEST",012:"U#RAW(,)UP",013:"D#RAW(,)DOWN",014:"TAKE#RAW(,)GET",015:"DROP#RAW(,)THRO",016:"GIVE",017:"KISS",018:"OPEN",019:"CLOS",020:"READ",021:"WAVE",022:"PLAY",023:"KILL#RAW(,)ATTA",024:"OIL",025:"WATE",026:"DRIN",027:"DIG",028:"FUCK#RAW(,)SCRE#RAW(,)RAPE",029:"BERE",030:"ISTA",031:"HALD",032:"KHAD",033:"LIGH",034:"ORIO",035:"EMPT",036:"xxxx",037:"xxxx",038:"xxxx",039:"RUBY",040:"DIAM",041:"FLOW",042:"SAPP",043:"EMER",044:"PEAR",045:"TIND",046:"FROG",047:"MONE",048:"BIBL",049:"WAND",050:"SCRO",051:"FLUT",052:"CARP",053:"KEY",054:"SONG#RAW(,)BIRD",055:"SWOR",056:"SPEA",057:"DAGG",058:"PILL",059:"FALC",060:"BOTT",061:"ACID",062:"LYRE",063:"MAND",064:"FRAG",065:"BOX",066:"CROW",067:"SHOV",068:"MAP",069:"CAGE",070:"COIN",071:"HONE",072:"MEAT",073:"CROS",074:"MIRR",075:"LIZA",076:"BEAR",077:"GATE",078:"BARR",079:"SPIR",080:"BALR",081:"STAR",082:"SERP",083:"STAI",084:"BARS",085:"HYDR",086:"SPID",087:"CHES#RAW(,)HING",088:"COFF",089:"VAMP",090:"KNIG",091:"DRAG",092:"PIRA",093:"FIRE",094:"POTI",095:"GUAR",096:"DOOR",097:"CLAM",098:"PLAN#RAW(,)BEAN",099:"WITC",100:"BAT",101:"ANTO",102:"PHOE",103:"ASHE",104:"GAS",105:"xxxx",106:"xxxx",107:"xxxx",108:"xxxx",109:"TO#RAW(,)AT",110:"WITH#RAW(,)USIN",111:"GIAN",112:"SWAM",113:"WOOD",114:"JADE",115:"SILV",116:"GOLD",117:"JEWE",118:"WHIT",119:"BLAC",120:"MAGI",121:"RUST",122:"IRON",123:"COPP",124:"VELV",125:"WICK",126:"MARS",253:Separator,254:Terminator))
 
 b $4000 Loading Screen
 @ $4000 label=Loading
@@ -638,7 +640,21 @@ S $ADFD,$79
 
 g $AE76 Flags: Room Change
 @ $AE76 label=Flags_RoomChange
-D $AE76 Bit 0 and bit 1 gate the special move out of room #N$37.
+D $AE76 One byte of once-only and room-change flags. Bits #N$00 and #N$01
+. are tested when entering or leaving #ROOM$37, but the shipped game never
+. sets them. Bit #N$03 is tested after taking the copper key, but is never
+. set.
+. #TABLE(default,centre)
+. { =h Bit | =h Relating To }
+. { #N$00 | Enter #ROOM$37 without dying }
+. { #N$01 | Skip the phoenix transformation }
+. { #N$02 | #R$EC04(Revealing the jewelled key under the carpet) }
+. { #N$03 | Awarding points for the copper key }
+. { #N$04 | #R$EC6C(Awarding points for the gold key) }
+. { #N$05 | #R$ECC0(Awarding points for the jewelled key) }
+. { #N$06 | Unused }
+. { #N$07 | Unused }
+. TABLE#
 B $AE76,$01
 
 g $AE77 Flag: Beach Dug
@@ -661,6 +677,14 @@ S $AE7A,$04
 
 g $AE7E Table: Already Seen Room Images
 @ $AE7E label=Table_RoomImagesAlreadySeen
+E $AE7E View the equivalent code in;
+. #LIST
+. { #SHOCK$A0A8 }
+. { #FOREST$BA30 }
+. { #JEWELS$BC5C }
+. { #ANDROMEDA$6213 }
+. { #WARLORD$A774 }
+. LIST#
 D $AE7E Corresponds to whether the player has already seen the image for
 . the following rooms:
 .
@@ -683,13 +707,42 @@ S $AE80,$08
 
 g $AE88 Flags: Turn-Based Event States
 @ $AE88 label=Flag_TurnBasedEventState
-D $AE88 Holds a single byte, where each bit relates to a turn-based event.
+E $AE88 View the equivalent code in;
+. #LIST
+. { #SHOCK$A0C8 }
+. { #FOREST$BA36 }
+. { #JEWELS$BC66 }
+. { #ANDROMEDA$6219 }
+. { #WARLORD$A77E }
+. LIST#
+D $AE88 Holds a single byte, where each bit relates to a turn-based event as
+. follows:
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Relating To }
+. { #N$00 | Unused }
+. { #N$01 | Unused }
+. { #N$02 | Unused }
+. { #N$03 | Unused }
+. { #N$04 | Unused }
+. { #N$05 | Unused }
+. { #N$06 | Unused }
+. { #N$07 | Unused }
+. TABLE#
+. When the bit is set, this starts a turn counter (see #R$AE89).
 . #R$B373 decrements the matching counter in #R$AE89 and, when a counter
 . reaches zero, would call through #R$AED2. The shipped image leaves
 . #R$AED2 as #N$00 and never sets these bits.
 B $AE88,$01
 
 g $AE89 Turn-Based Event Counters
+E $AE89 View the equivalent code in;
+. #LIST
+. { #SHOCK$A0C9 }
+. { #FOREST$BA37 }
+. { #JEWELS$BC67 }
+. { #ANDROMEDA$621A }
+. { #WARLORD$A77F }
+. LIST#
 D $AE89 One countdown per bit of *#R$AE88. #R$B373 decrements a set
 . counter each turn. The shipped image never arms any of them.
 N $AE89 Unused.
@@ -798,9 +851,9 @@ g $AEE0 Pointer: Object Noun Phrases
 D $AEE0 Pointer to the object noun-phrase table.
 W $AEE0,$02
 
-g $AEE2 Pointer: Character Set
-@ $AEE2 label=Pointer_CharacterSet
-D $AEE2 Pointer to the character set used when expanding vocabulary tokens.
+g $AEE2 Pointer: Object List Table
+@ $AEE2 label=Pointer_ObjectList
+D $AEE2 Pointer to the object-word table.
 W $AEE2,$02
 
 g $AEE4 Pointer: Verbs Jump Table
@@ -1258,7 +1311,7 @@ E $B24E View the equivalent code in;
 . LIST#
 D $B24E Turn the finished command into word tokens.
 R $B24E HL Current position in the command buffer
-R $B24E A Which contains #N$0D ("ENTER") at this point.
+R $B24E A Which contains #N$0D ("ENTER") at this point
   $B24E,$01 Write #N$0D to the command buffer at the current position for use as
 . a termination character.
 N $B24F Force a newline to be "printed" to the screen.
@@ -1915,7 +1968,7 @@ R $B5A4 O:F The Z flag is set when there are no items present in the input
   $B5AC,$04 Jump to #R$B5C3 if the terminator character (#N$FF) has been
 . reached.
   $B5B0,$02 Remember the token and the count while the object list is searched.
-  $B5B2,$03 Load the pointer for the character-set pointer into #REGhl.
+  $B5B2,$03 Load the object list table pointer into #REGhl.
   $B5B5,$04 Fetch the count of the number of items in the table from the object
 . count.
   $B5B9,$02 Search to see if the item room ID is in the table.
@@ -2292,8 +2345,7 @@ E $B6AC View the equivalent code in;
 D $B6AC Parser: Validate Any Direct Object.
 R $B6AC O:A The number of valid direct objects in the user input tokens
 R $B6AC O:F The carry flag is set when the command is malformed
-R $B6AC O:F The zero flag is set when there are no valid direct objects present
-. in the input tokens
+R $B6AC O:F The zero flag is set when there are no valid direct objects present in the input tokens
 N $B6AC The first token is the verb, so target the second token for the direct
 . object.
   $B6AC,$03 Fetch the #N$AF2F(second token from the user input) and store it in
@@ -3883,7 +3935,9 @@ g $CEEA Table: Object Noun Phrases
 E $CEEA View the equivalent code in;
 . #LIST
 . { #SHOCK$AF31 }
+. { #FOREST$D4E6 }
 . { #JEWELS$D4C6 }
+. { #ANDROMEDA$85E8 }
 . { #WARLORD$C83E }
 . LIST#
 D $CEEA One word per object. Each entry points at the noun text.
@@ -4460,49 +4514,684 @@ t $E229 Messaging: "You pour the liquid away. The bottle is now em..."
   $E229,$32 "#MESSAGE$E229".
 B $E25B,$01 Terminator.
 
-b $E25C Table: Vocabulary
+t $E25C Table: Vocabulary
 @ $E25C label=Table_Vocabulary
-D $E25C Four-character words, space-padded, with a comma between synonyms. An
-. #N$FF ends the table.
-  $E25C,$025C
+E $E25C View the equivalent code in;
+. #LIST
+. { #SHOCK$B0ED }
+. { #FOREST$E4AF }
+. { #JEWELS$E61D }
+. { #ANDROMEDA$8632 }
+. { #WARLORD$E0B1 }
+. LIST#
+D $E25C Four-character words. A comma binds synonyms to the same command.
+  $E25C,$09 Command #N$00.
+  $E265,$09 Command #N$01.
+  $E26E,$09 Command #N$02.
+  $E277,$04 Command #N((#PC-$E26B)/$04).
+L $E277,$04,$05
+  $E28B,$09 Command #N$08.
+  $E294,$09 Command #N$09.
+  $E29D,$09 Command #N$0A.
+  $E2A6,$09 Command #N$0B.
+  $E2AF,$09 Command #N$0C.
+  $E2B8,$09 Command #N$0D.
+  $E2C1,$09 Command #N$0E.
+  $E2CA,$09 Command #N$0F.
+  $E2D3,$04 Command #N((#PC-$E293)/$04).
+L $E2D3,$04,$07
+  $E2EF,$09 Command #N$17.
+  $E2F8,$04 Command #N$18: #OBJECT$18.
+  $E2FC,$04 Command #N$19: #OBJECT$16.
+  $E300,$04 Command #N((#PC-$E298)/$04).
+L $E300,$04,$02
+  $E308,$0E Command #N$1C.
+  $E316,$04 Command #N((#PC-$E2A2)/$04): #OBJECT((#PC-$E212)/$04).
+L $E316,$04,$04
+  $E326,$04 Command #N((#PC-$E2A2)/$04).
+L $E326,$04,$06
+  $E33E,$04 Command #N((#PC-$E2A2)/$04): #OBJECT((#PC-$E33E)/$04).
+L $E33E,$04,$0F
+  $E37A,$09 Command #N$36: #OBJECT$0F.
+  $E383,$04 Command #N((#PC-$E2A7)/$04): #OBJECT((#PC-$E343)/$04).
+L $E383,$04,$06
+  $E39B,$04 Command #N$3D: #OBJECT$17.
+  $E39F,$04 Command #N((#PC-$E2A7)/$04): #OBJECT((#PC-$E33B)/$04).
+L $E39F,$04,$19
+  $E403,$09 Command #N$57: #OBJECT$32.
+  $E40C,$04 Command #N((#PC-$E2AC)/$04): #OBJECT((#PC-$E340)/$04).
+L $E40C,$04,$0A
+  $E434,$09 Command #N$62: #OBJECT$3D.
+  $E43D,$04 Command #N((#PC-$E2B1)/$04): #OBJECT((#PC-$E345)/$04).
+L $E43D,$04,$03
+  $E449,$04 Command #N((#PC-$E2B1)/$04): #OBJECT((#PC-$E335)/$04).
+L $E449,$04,$03
+  $E455,$04 Command #N((#PC-$E2B1)/$04).
+L $E455,$04,$04
+  $E465,$09 Command #N$6D.
+  $E46E,$09 Command #N$6E.
+  $E477,$04 Command #N((#PC-$E2BB)/$04).
+L $E477,$04,$10
+B $E4B7,$01 Terminator.
 
-b $E4B8 Table: Character Set
-@ $E4B8 label=Table_CharacterSet
-D $E4B8 Printable characters followed by token markers used when the parser
-. expands a word.
-  $E4B8,$48
+g $E4B8 Table: Object Words
+@ $E4B8 label=Table_TokenItemList
+E $E4B8 View the equivalent code in;
+. #LIST
+. { #SHOCK$B49E }
+. { #FOREST$E6BC }
+. { #JEWELS$E83E }
+. { #ANDROMEDA$8868 }
+. { #WARLORD$E308 }
+. LIST#
+D $E4B8 The vocabulary number (#R$E25C) of each of the #N$48 objects the player
+. can name (the count is at #R$AEF2). The position of a word in this list is
+. its object number, which also indexes #R$E5F7 for the items it may mean.
+.
+. Reached through #R$AEE2: #R$B5A4 counts the object words in a command, and
+. #R$B6BC looks each named object up here.
+B $E4B8,$01 Object #OBJECT$00: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4B9,$01 Object #OBJECT$01: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4BA,$01 Object #OBJECT$02: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4BB,$01 Object #OBJECT$03: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4BC,$01 Object #OBJECT$04: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4BD,$01 Object #OBJECT$05: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4BE,$01 Object #OBJECT$06: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4BF,$01 Object #OBJECT$07: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4C0,$01 Object #OBJECT$08: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4C1,$01 Object #OBJECT$09: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4C2,$01 Object #OBJECT$0A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4C3,$01 Object #OBJECT$0B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4C4,$01 Object #OBJECT$0C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4C5,$01 Object #OBJECT$0D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4C6,$01 Object #OBJECT$0E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4C7,$01 Object #OBJECT$0F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4C8,$01 Object #OBJECT$10: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4C9,$01 Object #OBJECT$11: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4CA,$01 Object #OBJECT$12: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4CB,$01 Object #OBJECT$13: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4CC,$01 Object #OBJECT$14: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4CD,$01 Object #OBJECT$15: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4CE,$01 Object #OBJECT$16: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4CF,$01 Object #OBJECT$17: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4D0,$01 Object #OBJECT$18: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4D1,$01 Object #OBJECT$19: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4D2,$01 Object #OBJECT$1A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4D3,$01 Object #OBJECT$1B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4D4,$01 Object #OBJECT$1C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4D5,$01 Object #OBJECT$1D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4D6,$01 Object #OBJECT$1E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4D7,$01 Object #OBJECT$1F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4D8,$01 Object #OBJECT$20: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4D9,$01 Object #OBJECT$21: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4DA,$01 Object #OBJECT$22: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4DB,$01 Object #OBJECT$23: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4DC,$01 Object #OBJECT$24: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4DD,$01 Object #OBJECT$25: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4DE,$01 Object #OBJECT$26: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4DF,$01 Object #OBJECT$27: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4E0,$01 Object #OBJECT$28: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4E1,$01 Object #OBJECT$29: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4E2,$01 Object #OBJECT$2A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4E3,$01 Object #OBJECT$2B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4E4,$01 Object #OBJECT$2C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4E5,$01 Object #OBJECT$2D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4E6,$01 Object #OBJECT$2E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4E7,$01 Object #OBJECT$2F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4E8,$01 Object #OBJECT$30: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4E9,$01 Object #OBJECT$31: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4EA,$01 Object #OBJECT$32: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4EB,$01 Object #OBJECT$33: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4EC,$01 Object #OBJECT$34: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4ED,$01 Object #OBJECT$35: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4EE,$01 Object #OBJECT$36: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4EF,$01 Object #OBJECT$37: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4F0,$01 Object #OBJECT$38: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4F1,$01 Object #OBJECT$39: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4F2,$01 Object #OBJECT$3A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4F3,$01 Object #OBJECT$3B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4F4,$01 Object #OBJECT$3C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4F5,$01 Object #OBJECT$3D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4F6,$01 Object #OBJECT$3E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4F7,$01 Object #OBJECT$3F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4F8,$01 Object #OBJECT$40: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4F9,$01 Object #OBJECT$41: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4FA,$01 Object #OBJECT$42: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4FB,$01 Object #OBJECT$43: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4FC,$01 Object #OBJECT$44: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4FD,$01 Object #OBJECT$45: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4FE,$01 Object #OBJECT$46: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $E4FF,$01 Object #OBJECT$47: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 
-b $E500 Table: Phrase Tokens
-@ $E500 label=Table_PhraseTokens
-D $E500 #N$FF-terminated token records. The grouping table at #R$E5F7 points
-. into this block.
-  $E500,$D3
+g $E500 Table: Item Groups
+@ $E500 label=Table_ItemGroups
+E $E500 View the equivalent code in;
+. #LIST
+. { #SHOCK$B4F4 }
+. { #FOREST$E6E6 }
+. { #JEWELS$E86E }
+. { #ANDROMEDA$888D }
+. { #WARLORD$E341 }
+. LIST#
+D $E500 For each object in #R$CEEA, in the same order: the items it may refer
+. to, ending with #N$FF. The pointers at #R$E5F7 say where each group starts.
+B $E500,$02 Object #N$00 (a ruby): #ITEM$4A.
+@ $E502 label=Data_ItemGroup_Diamond
+B $E502,$02 Object #N$01 (a diamond): #ITEM$4D.
+@ $E504 label=Data_ItemGroup_Flower
+B $E504,$03 Object #N$02 (a flower): #ITEM$58 or #ITEM$83.
+@ $E507 label=Data_ItemGroup_Sapphire
+B $E507,$02 Object #N$03 (a sapphire): #ITEM$5C.
+@ $E509 label=Data_ItemGroup_Emerald
+B $E509,$02 Object #N$04 (an emerald): #ITEM$72.
+@ $E50B label=Data_ItemGroup_Pearl
+B $E50B,$02 Object #N$05 (a pearl): #ITEM$75.
+@ $E50D label=Data_ItemGroup_Tinderbox
+B $E50D,$02 Object #N$06 (a tinderbox): #ITEM$04.
+@ $E50F label=Data_ItemGroup_Frog
+B $E50F,$02 Object #N$07 (a frog): #ITEM$05.
+@ $E511 label=Data_ItemGroup_Money
+B $E511,$02 Object #N$08 (any money): #ITEM$21.
+@ $E513 label=Data_ItemGroup_Bible
+B $E513,$02 Object #N$09 (a bible): #ITEM$23.
+@ $E515 label=Data_ItemGroup_Wand
+B $E515,$02 Object #N$0A (a wand): #ITEM$24.
+@ $E517 label=Data_ItemGroup_Scroll
+B $E517,$02 Object #N$0B (a scroll): #ITEM$25.
+@ $E519 label=Data_ItemGroup_Flute
+B $E519,$02 Object #N$0C (a flute): #ITEM$26.
+@ $E51B label=Data_ItemGroup_Carpet
+B $E51B,$02 Object #N$0D (a carpet): #ITEM$27.
+@ $E51D label=Data_ItemGroup_Key
+B $E51D,$04 Object #N$0E (a key): #ITEM$28, #ITEM$47 or #ITEM$6C.
+@ $E521 label=Data_ItemGroup_Songbird
+B $E521,$03 Object #N$0F (a songbird): #ITEM$2A or #ITEM$2B.
+@ $E524 label=Data_ItemGroup_Sword
+B $E524,$02 Object #N$10 (a sword): #ITEM$2F.
+@ $E526 label=Data_ItemGroup_Spear
+B $E526,$02 Object #N$11 (a spear): #ITEM$30.
+@ $E528 label=Data_ItemGroup_Dagger
+B $E528,$02 Object #N$12 (a dagger): #ITEM$31.
+@ $E52A label=Data_ItemGroup_Pillow
+B $E52A,$03 Object #N$13 (a pillow): #ITEM$32 or #ITEM$83.
+@ $E52D label=Data_ItemGroup_Falcon
+B $E52D,$02 Object #N$14 (a falcon): #ITEM$36.
+@ $E52F label=Data_ItemGroup_Bottle
+B $E52F,$06 Object #N$15 (a bottle): #ITEM$37, #ITEM$38, #ITEM$39,
+. #ITEM$3A or #ITEM$3B.
+@ $E535 label=Data_ItemGroup_Water
+B $E535,$03 Object #N$16 (any water): #ITEM$38 or #ITEM$5A.
+@ $E538 label=Data_ItemGroup_Acid
+B $E538,$03 Object #N$17 (any acid): #ITEM$39 or #ITEM$4C.
+@ $E53B label=Data_ItemGroup_Oil
+B $E53B,$03 Object #N$18 (any oil): #ITEM$3A or #ITEM$4B.
+@ $E53E label=Data_ItemGroup_Lyre
+B $E53E,$02 Object #N$19 (a lyre): #ITEM$45.
+@ $E540 label=Data_ItemGroup_Mandolin
+B $E540,$02 Object #N$1A (a mandolin): #ITEM$46.
+@ $E542 label=Data_ItemGroup_Fragments
+B $E542,$02 Object #N$1B (any fragments): #ITEM$59.
+@ $E544 label=Data_ItemGroup_Box
+B $E544,$02 Object #N$1C (a box): #ITEM$5B.
+@ $E546 label=Data_ItemGroup_Crowbar
+B $E546,$02 Object #N$1D (a crowbar): #ITEM$5F.
+@ $E548 label=Data_ItemGroup_Shovel
+B $E548,$02 Object #N$1E (a shovel): #ITEM$60.
+@ $E54A label=Data_ItemGroup_Map
+B $E54A,$02 Object #N$1F (a map): #ITEM$61.
+@ $E54C label=Data_ItemGroup_Cage
+B $E54C,$03 Object #N$20 (a cage): #ITEM$64 or #ITEM$2B.
+@ $E54F label=Data_ItemGroup_Coin
+B $E54F,$02 Object #N$21 (a coin): #ITEM$65.
+@ $E551 label=Data_ItemGroup_Honey
+B $E551,$02 Object #N$22 (any honey): #ITEM$70.
+@ $E553 label=Data_ItemGroup_Meat
+B $E553,$02 Object #N$23 (any meat): #ITEM$71.
+@ $E555 label=Data_ItemGroup_Cross
+B $E555,$02 Object #N$24 (a cross): #ITEM$7B.
+@ $E557 label=Data_ItemGroup_Mirror
+B $E557,$02 Object #N$25 (a mirror): #ITEM$7E.
+@ $E559 label=Data_ItemGroup_Lizard
+B $E559,$02 Object #N$26 (a lizard): #ITEM$06.
+@ $E55B label=Data_ItemGroup_Bear
+B $E55B,$03 Object #N$27 (a bear): #ITEM$07 or #ITEM$08.
+@ $E55E label=Data_ItemGroup_Gates
+B $E55E,$19 Object #N$28 (any gates): #ITEM$09 through #ITEM$20.
+@ $E577 label=Data_ItemGroup_Barrowight
+B $E577,$02 Object #N$29 (a barrowight): #ITEM$22.
+@ $E579 label=Data_ItemGroup_Spirit
+B $E579,$02 Object #N$2A (a spirit): #ITEM$29.
+@ $E57B label=Data_ItemGroup_Balrog
+B $E57B,$02 Object #N$2B (a balrog): #ITEM$2C.
+@ $E57D label=Data_ItemGroup_Star
+B $E57D,$04 Object #N$2C (a star): #ITEM$33, #ITEM$34 or #ITEM$35.
+@ $E581 label=Data_ItemGroup_Serpent
+B $E581,$03 Object #N$2D (a serpent): #ITEM$3C or #ITEM$3D.
+@ $E584 label=Data_ItemGroup_Stairs
+B $E584,$07 Object #N$2E (any stairs): #ITEM$3F through #ITEM$44.
+@ $E58B label=Data_ItemGroup_Bars
+B $E58B,$02 Object #N$2F (any bars): #ITEM$3E.
+@ $E58D label=Data_ItemGroup_Hydra
+B $E58D,$03 Object #N$30 (a hydra): #ITEM$48 or #ITEM$49.
+@ $E590 label=Data_ItemGroup_Spider
+B $E590,$03 Object #N$31 (a spider): #ITEM$4E or #ITEM$4F.
+@ $E593 label=Data_ItemGroup_Chest
+B $E593,$04 Object #N$32 (a chest): #ITEM$50, #ITEM$51 or #ITEM$52.
+@ $E597 label=Data_ItemGroup_Coffin
+B $E597,$03 Object #N$33 (a coffin): #ITEM$53 or #ITEM$54.
+@ $E59A label=Data_ItemGroup_Vampire
+B $E59A,$02 Object #N$34 (a vampire): #ITEM$55.
+@ $E59C label=Data_ItemGroup_Knight
+B $E59C,$03 Object #N$35 (the Knight): #ITEM$56 or #ITEM$57.
+@ $E59F label=Data_ItemGroup_Dragon
+B $E59F,$03 Object #N$36 (a dragon): #ITEM$5D or #ITEM$5E.
+@ $E5A2 label=Data_ItemGroup_Pirate
+B $E5A2,$03 Object #N$37 (a pirate): #ITEM$62 or #ITEM$63.
+@ $E5A5 label=Data_ItemGroup_Fire
+B $E5A5,$05 Object #N$38 (any fire): #ITEM$66, #ITEM$67, #ITEM$68 or
+. #ITEM$69.
+@ $E5AA label=Data_ItemGroup_Potion
+B $E5AA,$03 Object #N$39 (a potion): #ITEM$6A or #ITEM$6B.
+@ $E5AD label=Data_ItemGroup_Guard
+B $E5AD,$03 Object #N$3A (a guard): #ITEM$6D or item #N$84 (the guard arrest).
+@ $E5B0 label=Data_ItemGroup_Door
+B $E5B0,$03 Object #N$3B (a door): #ITEM$6E or #ITEM$6F.
+@ $E5B3 label=Data_ItemGroup_Clam
+B $E5B3,$03 Object #N$3C (a clam): #ITEM$73 or #ITEM$74.
+@ $E5B6 label=Data_ItemGroup_Plant
+B $E5B6,$05 Object #N$3D (a plant): #ITEM$76, #ITEM$77, #ITEM$78 or
+. #ITEM$85.
+@ $E5BB label=Data_ItemGroup_Witch
+B $E5BB,$03 Object #N$3E (a witch): #ITEM$79 or #ITEM$7A.
+@ $E5BE label=Data_ItemGroup_Bat
+B $E5BE,$03 Object #N$3F (a bat): #ITEM$7C or #ITEM$7D.
+@ $E5C1 label=Data_ItemGroup_Anton
+B $E5C1,$03 Object #N$40 (Anton): #ITEM$7F or #ITEM$80.
+@ $E5C4 label=Data_ItemGroup_Beren
+B $E5C4,$02 Object #N$41 (Beren): #ITEM$00.
+@ $E5C6 label=Data_ItemGroup_Istar
+B $E5C6,$03 Object #N$42 (Istar): #ITEM$01 or #ITEM$3E.
+@ $E5C9 label=Data_ItemGroup_Haldir
+B $E5C9,$02 Object #N$43 (Haldir): #ITEM$02.
+@ $E5CB label=Data_ItemGroup_Khadim
+B $E5CB,$02 Object #N$44 (Khadim): #ITEM$03.
+@ $E5CD label=Data_ItemGroup_Phoenix
+B $E5CD,$02 Object #N$45 (a phoenix): #ITEM$82.
+@ $E5CF label=Data_ItemGroup_Ashes
+B $E5CF,$02 Object #N$46 (any ashes): #ITEM$81.
+@ $E5D1 label=Data_ItemGroup_Gas
+B $E5D1,$02 Object #N$47 (any gas): #ITEM$86.
 
-b $E5D3 Table: Verb Word Tokens
+g $E5D3 Table: Verb Word Tokens
 @ $E5D3 label=Table_VerbWordTokens
-D $E5D3 Pairs of token bytes, one pair for each verb synonym group.
-  $E5D3,$24
+E $E5D3 View the equivalent code in;
+. #LIST
+. { #SHOCK$B420 }
+. { #FOREST$E7AE }
+. { #JEWELS$E90D }
+. { #ANDROMEDA$891C }
+. { #WARLORD$E489 }
+. LIST#
+D $E5D3 The vocabulary number (#R$E25C) of each of the #N$24 verbs (the count
+. is at #R$AEF4). #R$B753 looks the first word of a command up here (through
+. #R$AEEA) and jumps to the action at the same position in #R$FD63.
+B $E5D3,$01 Verb #N$00: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F715.
+B $E5D4,$01 Verb #N$01: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F756.
+B $E5D5,$01 Verb #N$02: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F773.
+B $E5D6,$01 Verb #N$03: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F77D.
+B $E5D7,$01 Verb #N$04: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F785.
+B $E5D8,$01 Verb #N$05: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F7AC.
+B $E5D9,$01 Verb #N$06: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F7BC.
+B $E5DA,$01 Verb #N$07: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F7C4.
+B $E5DB,$01 Verb #N$08: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F7E4.
+B $E5DC,$01 Verb #N$09: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F7E8.
+B $E5DD,$01 Verb #N$0A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F7EC.
+B $E5DE,$01 Verb #N$0B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F7F0.
+B $E5DF,$01 Verb #N$0C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F7F4.
+B $E5E0,$01 Verb #N$0D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F7F8.
+B $E5E1,$01 Verb #N$0E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F80D.
+B $E5E2,$01 Verb #N$0F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F8D0.
+B $E5E3,$01 Verb #N$10: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F93B.
+B $E5E4,$01 Verb #N$11: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F972.
+B $E5E5,$01 Verb #N$12: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F989.
+B $E5E6,$01 Verb #N$13: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F9DC.
+B $E5E7,$01 Verb #N$14: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$F9E3.
+B $E5E8,$01 Verb #N$15: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FA02.
+B $E5E9,$01 Verb #N$16: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FA19.
+B $E5EA,$01 Verb #N$17: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FA38.
+B $E5EB,$01 Verb #N$18: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FA73.
+B $E5EC,$01 Verb #N$19: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FA8A.
+B $E5ED,$01 Verb #N$1A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FAA5.
+B $E5EE,$01 Verb #N$1B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FAC8.
+B $E5EF,$01 Verb #N$1C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FAF9.
+B $E5F0,$01 Verb #N$1D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FB13.
+B $E5F1,$01 Verb #N$1E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FB20.
+B $E5F2,$01 Verb #N$1F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FB2D.
+B $E5F3,$01 Verb #N$20: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FB3A.
+B $E5F4,$01 Verb #N$21: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FB50.
+B $E5F5,$01 Verb #N$22: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FB67.
+B $E5F6,$01 Verb #N$23: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$FB92.
 
 w $E5F7 Table: Item Grouping
 @ $E5F7 label=Table_ItemGrouping
-D $E5F7 One word per object. Each entry points into #R$E500.
+D $E5F7 One word per object in #R$CEEA. Each entry points at that object's
+. group in #R$E500.
 W $E5F7,$02
 L $E5F7,$02,$48
 
-b $E687 Table: Phrase Patterns
-@ $E687 label=Table_PhrasePatterns
-D $E687 Token lists for the verb phrase tables. Each list is a run of item
-. tokens closed by #N$FE.
-  $E687,$015F
+g $E687 Table: Phrase Tokens
+@ $E687 label=PhraseTokens_Frog
+E $E687 View the equivalent code in;
+. #LIST
+. { #SHOCK$B6F4 }
+. { #JEWELS$E9CA }
+. { #ANDROMEDA$8940 }
+. { #WARLORD$E519 }
+. LIST#
+D $E687 The words an action expects after its verb, as vocabulary numbers
+. (#R$E25C). #N$FD separates alternative wordings and #N$FE ends a phrase.
+. An action points #REGhl at a phrase and calls #R$B575. That compares it
+. with the words after the verb and sets the zero flag when one of the
+. wordings matches the whole of the rest of the command.
+N $E687 Matches e.g. "frog".
+B $E687,$02 Checked by #R$F785, #R$F80D, #R$F8D0 and #R$F972.
+N $E689 Matches e.g. "box", "wooden box".
+@ $E689 label=PhraseTokens_Box
+B $E689,$05 Checked by #R$F785, #R$F80D, #R$F8D0 and #R$F989.
+N $E68E Matches e.g. "flower", "jade flower".
+@ $E68E label=PhraseTokens_Flower
+B $E68E,$05 Checked by #R$F785, #R$F80D and #R$F8D0.
+N $E693 Matches e.g. "map".
+@ $E693 label=PhraseTokens_Map
+B $E693,$02 Checked by #R$F785, #R$F80D, #R$F8D0 and #R$F9E3.
+N $E695 Matches e.g. "scroll".
+@ $E695 label=PhraseTokens_Scroll
+B $E695,$02 Checked by #R$F785, #R$F80D, #R$F8D0 and #R$F9E3.
+N $E697 Matches e.g. "ruby".
+@ $E697 label=PhraseTokens_Ruby
+B $E697,$02 Checked by #R$F80D and #R$F8D0.
+N $E699 Matches e.g. "diamond".
+@ $E699 label=PhraseTokens_Diamond
+B $E699,$02 Checked by #R$F80D and #R$F8D0.
+N $E69B Matches e.g. "sapphire".
+@ $E69B label=PhraseTokens_Sapphire
+B $E69B,$02 Checked by #R$F80D and #R$F8D0.
+N $E69D Matches e.g. "emerald".
+@ $E69D label=PhraseTokens_Emerald
+B $E69D,$02 Checked by #R$F80D and #R$F8D0.
+N $E69F Matches e.g. "pearl".
+@ $E69F label=PhraseTokens_Pearl
+B $E69F,$02 Checked by #R$F80D and #R$F8D0.
+N $E6A1 Matches e.g. "tinderbox".
+@ $E6A1 label=PhraseTokens_Tinderbox
+B $E6A1,$02 Checked by #R$F80D, #R$F8D0 and #R$F989.
+N $E6A3 Matches e.g. "money".
+@ $E6A3 label=PhraseTokens_Money
+B $E6A3,$02 Checked by #R$F80D and #R$F8D0.
+N $E6A5 Matches e.g. "bible".
+@ $E6A5 label=PhraseTokens_Bible
+B $E6A5,$02 Checked by #R$F80D, #R$F8D0 and #R$F9E3.
+N $E6A7 Matches e.g. "wand".
+@ $E6A7 label=PhraseTokens_Wand
+B $E6A7,$02 Checked by #R$F80D, #R$F8D0 and #R$FA02.
+N $E6A9 Matches e.g. "flute", "silver".
+@ $E6A9 label=PhraseTokens_Flute
+B $E6A9,$04 Checked by #R$F80D, #R$F8D0 and #R$FA19.
+N $E6AD Matches e.g. "carpet".
+@ $E6AD label=PhraseTokens_Carpet
+B $E6AD,$02 Checked by #R$F80D and #R$F8D0.
+N $E6AF Matches e.g. "key".
+@ $E6AF label=PhraseTokens_Key
+B $E6AF,$02 Checked by #R$F80D and #R$F8D0.
+N $E6B1 Matches e.g. "copper key".
+@ $E6B1 label=PhraseTokens_CopperKey
+B $E6B1,$03 Checked by #R$F80D and #R$F8D0.
+N $E6B4 Matches e.g. "gold key".
+@ $E6B4 label=PhraseTokens_GoldKey
+B $E6B4,$03 Checked by #R$F80D and #R$F8D0.
+N $E6B7 Matches e.g. "jewelled key".
+@ $E6B7 label=PhraseTokens_JewelledKey
+B $E6B7,$03 Checked by #R$F80D and #R$F8D0.
+N $E6BA Matches e.g. "songbird", "bird".
+@ $E6BA label=PhraseTokens_Songbird
+B $E6BA,$02 Checked by #R$F80D and #R$F8D0.
+N $E6BC Matches e.g. "sword".
+@ $E6BC label=PhraseTokens_Sword
+B $E6BC,$02 Checked by #R$F80D and #R$F8D0.
+N $E6BE Matches e.g. "spear".
+@ $E6BE label=PhraseTokens_Spear
+B $E6BE,$02 Checked by #R$F80D and #R$F8D0.
+N $E6C0 Matches e.g. "dagger".
+@ $E6C0 label=PhraseTokens_Dagger
+B $E6C0,$02 Checked by #R$F80D and #R$F8D0.
+N $E6C2 Matches e.g. "pillow", "velvet pillow".
+@ $E6C2 label=PhraseTokens_Pillow
+B $E6C2,$05 Checked by #R$F80D and #R$F8D0.
+N $E6C7 Matches e.g. "falcon".
+@ $E6C7 label=PhraseTokens_Falcon
+B $E6C7,$02 Checked by #R$F80D and #R$F8D0.
+N $E6C9 Matches e.g. "bottle".
+@ $E6C9 label=PhraseTokens_Bottle
+B $E6C9,$02 Checked by #R$F80D, #R$F8D0 and #R$FB92.
+N $E6CB Matches e.g. "water".
+@ $E6CB label=PhraseTokens_Water
+B $E6CB,$02 Checked by #R$F80D, #R$F8D0 and #R$FAA5.
+N $E6CD Matches e.g. "acid".
+@ $E6CD label=PhraseTokens_Acid
+B $E6CD,$02 Checked by #R$F80D and #R$F8D0.
+N $E6CF Matches e.g. "oil".
+@ $E6CF label=PhraseTokens_Oil
+B $E6CF,$02 Checked by #R$F80D and #R$F8D0.
+N $E6D1 Matches e.g. "lyre", "gold lyre".
+@ $E6D1 label=PhraseTokens_Lyre
+B $E6D1,$05 Checked by #R$F80D, #R$F8D0 and #R$FA19.
+N $E6D6 Matches e.g. "mandolin".
+@ $E6D6 label=PhraseTokens_Mandolin
+B $E6D6,$02 Checked by #R$F80D, #R$F8D0 and #R$FA19.
+N $E6D8 Matches e.g. "fragments", "jade fragments".
+@ $E6D8 label=PhraseTokens_Fragments
+B $E6D8,$05 Checked by #R$F80D and #R$F8D0.
+N $E6DD Matches e.g. "crowbar".
+@ $E6DD label=PhraseTokens_Crowbar
+B $E6DD,$02 Checked by #R$F80D and #R$F8D0.
+N $E6DF Matches e.g. "shovel".
+@ $E6DF label=PhraseTokens_Shovel
+B $E6DF,$02 Checked by #R$F80D and #R$F8D0.
+N $E6E1 Matches e.g. "cage", "wicker cage".
+@ $E6E1 label=PhraseTokens_Cage
+B $E6E1,$05 Checked by #R$F80D and #R$F8D0.
+N $E6E6 Matches e.g. "coin", "silver coin".
+@ $E6E6 label=PhraseTokens_Coin
+B $E6E6,$05 Checked by #R$F80D and #R$F8D0.
+N $E6EB Matches e.g. "honey".
+@ $E6EB label=PhraseTokens_Honey
+B $E6EB,$02 Checked by #R$F80D and #R$F8D0.
+N $E6ED Matches e.g. "meat".
+@ $E6ED label=PhraseTokens_Meat
+B $E6ED,$02 Checked by #R$F80D and #R$F8D0.
+N $E6EF Matches e.g. "cross", "silver cross".
+@ $E6EF label=PhraseTokens_Cross
+B $E6EF,$05 Checked by #R$F80D and #R$F8D0.
+N $E6F4 Matches e.g. "mirror", "magic mirror".
+@ $E6F4 label=PhraseTokens_Mirror
+B $E6F4,$05 Checked by #R$F80D and #R$F8D0.
+N $E6F9 Matches e.g. "potion".
+@ $E6F9 label=PhraseTokens_Potion
+B $E6F9,$02 Checked by #R$F80D, #R$F8D0 and #R$FAA5.
+N $E6FB Matches e.g. "white potion".
+@ $E6FB label=PhraseTokens_WhitePotion
+B $E6FB,$03 Checked by #R$F80D, #R$F8D0 and #R$FAA5.
+N $E6FE Matches e.g. "black potion".
+@ $E6FE label=PhraseTokens_BlackPotion
+B $E6FE,$03 Checked by #R$F80D, #R$F8D0 and #R$FAA5.
+N $E701 Matches e.g. "mirror to anton", "mirror at anton",
+. "magic mirror to anton", "magic mirror at anton".
+@ $E701 label=PhraseTokens_MirrorToAnton
+B $E701,$09 Checked by #R$F93B.
+N $E70A Matches e.g. "coin to anton", "coin at anton", "silver coin to anton",
+. "silver coin at anton".
+@ $E70A label=PhraseTokens_CoinToAnton
+B $E70A,$09 Checked by #R$F93B.
+N $E713 Matches e.g. "honey to bear", "honey at bear".
+@ $E713 label=PhraseTokens_HoneyToBear
+B $E713,$04 Checked by #R$F93B.
+N $E717 Matches e.g. "meat to falcon", "meat at falcon".
+@ $E717 label=PhraseTokens_MeatToFalcon
+B $E717,$04 Checked by #R$F93B.
+N $E71B Matches e.g. "honey to lizard", "honey at lizard",
+. "honey to swamp lizard", "honey at swamp lizard".
+@ $E71B label=PhraseTokens_HoneyToLizard
+B $E71B,$09 Checked by #R$F93B.
+N $E724 Matches e.g. "meat to lizard", "meat at lizard", "meat to swamp lizard",
+. "meat at swamp lizard".
+@ $E724 label=PhraseTokens_MeatToLizard
+B $E724,$09 Checked by #R$F93B.
+N $E72D Matches e.g. "meat to bear", "meat at bear".
+@ $E72D label=PhraseTokens_MeatToBear
+B $E72D,$04 Checked by #R$F93B.
+N $E731 Matches e.g. "meat to balrog", "meat at balrog".
+@ $E731 label=PhraseTokens_MeatToBalrog
+B $E731,$04 Checked by #R$F93B.
+N $E735 Matches e.g. "chest", "hinges", "iron chest", "iron hinges",
+. "rusty chest", "rusty hinges", "rusty iron chest", "rusty iron hinges".
+@ $E735 label=PhraseTokens_Chest
+B $E735,$0C Checked by #R$F989 and #R$FA72.
+N $E741 Matches e.g. "door".
+@ $E741 label=PhraseTokens_Door
+B $E741,$02 Checked by #R$F989.
+N $E743 Matches e.g. "gate".
+@ $E743 label=PhraseTokens_Gate
+B $E743,$02 Checked by #R$F989.
+N $E745 Matches e.g. "copper gate".
+@ $E745 label=PhraseTokens_CopperGate
+B $E745,$03 Checked by #R$F989.
+N $E748 Matches e.g. "gold gate".
+@ $E748 label=PhraseTokens_GoldGate
+B $E748,$03 Checked by #R$F989.
+N $E74B Matches e.g. "jewelled gate".
+@ $E74B label=PhraseTokens_JewelledGate
+B $E74B,$03 Checked by #R$F989.
+N $E74E Matches e.g. "coffin".
+@ $E74E label=PhraseTokens_Coffin
+B $E74E,$02 Checked by #R$F989.
+N $E750 Matches e.g. "clam", "giant clam".
+@ $E750 label=PhraseTokens_Clam
+B $E750,$05 Checked by #R$F989.
+N $E755 Matches e.g. "clam with crowbar", "clam using crowbar",
+. "giant clam with crowbar", "giant clam using crowbar".
+@ $E755 label=PhraseTokens_ClamWithCrowbar
+B $E755,$09 Checked by #R$F989.
+N $E75E Matches e.g. "money to guard", "money at guard".
+@ $E75E label=PhraseTokens_MoneyToGuard
+B $E75E,$04 Checked by #R$F93B.
+N $E762 Matches e.g. "barrowight with bible", "barrowight using bible".
+@ $E762 label=PhraseTokens_BarrowightWithBible
+B $E762,$04 Checked by #R$FA38.
+N $E766 Matches e.g. "serpent with songbird", "serpent with bird",
+. "serpent using songbird", "serpent using bird".
+@ $E766 label=PhraseTokens_SerpentWithSongbird
+B $E766,$04 Checked by #R$FA38.
+N $E76A Matches e.g. "hydra with sword", "hydra using sword".
+@ $E76A label=PhraseTokens_HydraWithSword
+B $E76A,$04 Checked by #R$FA38.
+N $E76E Matches e.g. "hydra with spear", "hydra using spear".
+@ $E76E label=PhraseTokens_HydraWithSpear
+B $E76E,$04 Checked by #R$FA38.
+N $E772 Matches e.g. "vampire with cross", "vampire using cross",
+. "vampire with silver cross", "vampire using silver cross".
+@ $E772 label=PhraseTokens_VampireWithCross
+B $E772,$09 Checked by #R$FA38.
+N $E77B Matches e.g. "knight with acid", "knight using acid",
+. "black knight with acid", "black knight using acid".
+@ $E77B label=PhraseTokens_KnightWithAcid
+B $E77B,$09 Checked by #R$FA38.
+N $E784 Matches e.g. "dragon with sword", "dragon using sword".
+@ $E784 label=PhraseTokens_DragonWithSword
+B $E784,$04 Checked by #R$FA38.
+N $E788 Matches e.g. "pirate with dagger", "pirate using dagger".
+@ $E788 label=PhraseTokens_PirateWithDagger
+B $E788,$04 Checked by #R$FA38.
+N $E78C Matches e.g. "witch with water", "witch using water".
+@ $E78C label=PhraseTokens_WitchWithWater
+B $E78C,$04 Checked by #R$FA38.
+N $E790 Matches e.g. "bat with falcon", "bat using falcon",
+. "giant bat with falcon", "giant bat using falcon".
+@ $E790 label=PhraseTokens_BatWithFalcon
+B $E790,$09 Checked by #R$FA38.
+N $E799 Matches e.g. "plant", "beanstalk".
+@ $E799 label=PhraseTokens_Plant
+B $E799,$02 Checked by #R$FA8A.
+N $E79B Matches e.g. "ashes".
+@ $E79B label=PhraseTokens_Ashes
+B $E79B,$02 Checked by #R$FA8A.
+N $E79D Matches e.g. "anton", "beren", "istar", "haldir", "khadim".
+@ $E79D label=PhraseTokens_Anton
+B $E79D,$0A Checked by #R$FAF9.
+N $E7A7 Matches e.g. "gas", "marsh gas", "gas with tinderbox",
+. "gas using tinderbox", "marsh gas with tinderbox",
+. "marsh gas using tinderbox".
+@ $E7A7 label=PhraseTokens_Gas
+B $E7A7,$0E Checked by #R$FB50.
+N $E7B5 Matches e.g. "take sword", "get sword", "take songbird", "take bird",
+. "get songbird", "get bird", "take falcon", "get falcon",
+. "kill serpent with songbird", "kill serpent with bird",
+. "kill serpent using songbird", "kill serpent using bird",
+. "attack serpent with songbird", "attack serpent with bird",
+. "attack serpent using songbird", "attack serpent using bird",
+. "kill bat with falcon", "kill bat using falcon", "attack bat with falcon",
+. "attack bat using falcon", "kill giant bat with falcon",
+. "kill giant bat using falcon", "attack giant bat with falcon",
+. "attack giant bat using falcon".
+@ $E7B5 label=PhraseTokens_TakeSword
+B $E7B5,$19 Checked by #R$FB13.
+N $E7CE Matches e.g. "take wand", "get wand", "wave wand", "read map",
+. "read scroll".
+@ $E7CE label=PhraseTokens_TakeWand
+B $E7CE,$0C Checked by #R$FB20.
+N $E7DA Matches e.g. "play lyre", "play gold lyre".
+@ $E7DA label=PhraseTokens_PlayLyre
+B $E7DA,$07 Checked by #R$FB2D.
+N $E7E1 Matches e.g. "kill pirate with dagger", "kill pirate using dagger",
+. "attack pirate with dagger", "attack pirate using dagger".
+@ $E7E1 label=PhraseTokens_KillPirateWithDagger
+B $E7E1,$05 Checked by #R$FB3A.
 
-b $E7E6 Table: Room Map
+g $E7E6 Table: Room Map
 @ $E7E6 label=Table_RoomMap
+E $E7E6 View the equivalent code in;
+. #LIST
+. { #SHOCK$B8DD }
+. { #FOREST$E934 }
+. { #JEWELS$EB10 }
+. { #ANDROMEDA$8B5A }
+. { #WARLORD$E714 }
+. LIST#
 D $E7E6 Six bytes per room, in the order north, south, east, west, up, down. A
 . zero means there is no exit.
-  $E7E6,$018C
+N $E7E6 Room #N((#PC-$E7E6)/$06): #ROOM((#PC-$E7E6)/$06).
+B $E7E6,$01 #IF(#PEEK(#PC)>$00)(North to room:
+. #R($E7E6+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E7E7,$01 #IF(#PEEK(#PC)>$00)(South to room:
+. #R($E7E6+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E7E8,$01 #IF(#PEEK(#PC)>$00)(East to room:
+. #R($E7E6+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E7E9,$01 #IF(#PEEK(#PC)>$00)(West to room:
+. #R($E7E6+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E7EA,$01 #IF(#PEEK(#PC)>$00)(Up to room:
+. #R($E7E6+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $E7EB,$01 #IF(#PEEK(#PC)>$00)(Down to room:
+. #R($E7E6+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+L $E7E6,$06,$42
 
 w $E972 Table: Configurable Exits
 @ $E972 label=Table_ConfigurableExits
+E $E972 View the equivalent code in;
+. #LIST
+. { #FOREST$EB02 }
+. { #JEWELS$ED9E }
+. { #ANDROMEDA$8D16 }
+. { #WARLORD$E978 }
+. LIST#
 D $E972 One word per configurable exit. Each entry points at the exit record
 . Game Start clears.
 W $E972,$02
@@ -4576,60 +5265,91 @@ D $E9D3 Announce that the quest is over and offer another game.
   $E9D9,$06 Call #R$AC35 to print the string and start a new line.
   $E9DF,$02 Offer another game at #R$E9BB.
 
-c $E9E1 Handler: Change Room
-@ $E9E1 label=Handler_ChangeRoom
-D $E9E1 Change room, with the special cases for the gates and the cottage.
-  $E9E1,$04 See whether the player is moving into the Hall of the Phoenix.
-  $E9E5,$03 Point #REGhl at #R$AE76.
-  $E9E8,$02 See whether the Hall of the Phoenix is safe to enter.
-  $E9EA,$02 Jump to #R$E9F8 if the zero flag is clear.
-  $E9EC,$05 Return via the "You are dead." message.
-  $E9F1,$06 Print "#MESSAGE$D04C" and start a new line.
+c $E9E1 Change Room
+@ $E9E1 label=ChangeRoom
+E $E9E1 View the equivalent code in;
+. #LIST
+. { #SHOCK$AD79 }
+. { #FOREST$ECB6 }
+. { #JEWELS$EF54 }
+. { #ANDROMEDA$8E18 }
+. { #WARLORD$EB10 }
+. LIST#
+D $E9E1 Commits a move into the destination room held in #REGa. It handles
+. the Hall of the Phoenix and the ruined cottage, calls #R$B714 to update
+. the current room, then jumps to #R$EA75 to describe the new room.
+R $E9E1 A Destination room ID
+N $E9E1 Entering the Hall of the Phoenix is fatal. Bit 0 of *#R$AE76, when
+. set, means the firegate does not incinerate the player.
+  $E9E1,$04 Jump to #R$E9F8 if the destination is not room #N$37:
+. "#ROOM$37".
+  $E9E5,$07 Jump to #R$E9F8 if bit 0 of *#R$AE76 is set.
+N $E9EC The player is dead, so do not resume the movement handler.
+  $E9EC,$01 Discard the calling address of #R$E9E1.
+  $E9ED,$04 Switch #R$E9B5 onto the stack so the next return actions a "game
+. over".
+N $E9F1 Print "#MESSAGE$D04C".
+  $E9F1,$06 Point #REGhl at #R$D04C and print it and start a new line.
   $E9F7,$01 Return.
-  $E9F8,$01 Remember the room being moved to.
-  $E9F9,$03 Read the current room into #REGa.
-  $E9FC,$04 See whether the player is leaving the Hall of the Phoenix.
-  $EA00,$03 Point #REGhl at #R$AE76.
-  $EA03,$02 See whether the ashes have already become a phoenix.
-  $EA05,$02 Jump to #R$EA36 if the zero flag is clear.
-  $EA07,$05 See whether the move is into the Hall of Black Magic.
-  $EA0C,$06 Turn the hot ashes into a phoenix.
+N $E9F8 Leaving the Hall of the Phoenix.
+@ $E9F8 label=ChangeRoom_LeavePhoenix
+  $E9F8,$01 Copy the destination room ID into #REGc.
+  $E9F9,$03 Fetch *#R$AECD into #REGa.
+  $E9FC,$04 Jump to #R$EA36 if the current room is not #N$37: "#ROOM$37".
+  $EA00,$07 Jump to #R$EA36 if bit 1 of *#R$AE76 is set.
+N $EA07 South into the Hall of Black Magic turns the ashes into a phoenix.
+  $EA07,$05 Jump to #R$EA23 if the destination is not room #N$3F:
+. "#ROOM$3F".
+  $EA0C,$06 Call #R$B613 to transform #ITEM$81 into #ITEM$82.
 N $EA12 This action changes the map:
-  $EA12,$04 Write #N$00 to clear southbound access to #ROOM$3F from #ROOM$37.
-@ $EA16 label=Handler_ChangeRoom_AshesBurst
-  $EA16,$06 Print "#MESSAGE$D087" and start a new line.
-@ $EA1C label=Handler_ChangeRoom_PhoenixAppears
-  $EA1C,$06 Pause, print "#MESSAGE$D0B0" and scroll.
+  $EA12,$04 Write #N$00 to close southbound access to #ROOM$3F from #ROOM$37.
+N $EA16 Print "#MESSAGE$D087".
+@ $EA16 label=ChangeRoom_AshesBurst
+  $EA16,$06 Point #REGhl at #R$D087 and print it and start a new line.
+N $EA1C Print "#MESSAGE$D0B0".
+@ $EA1C label=ChangeRoom_PhoenixAppears
+  $EA1C,$06 Point #REGhl at #R$D0B0 and pause, print it and scroll.
   $EA22,$01 Return.
-  $EA23,$01 Take the destination room.
-  $EA24,$01 Remember the destination room.
+N $EA23 Any other exit from the Hall of the Phoenix turns the phoenix back
+. into ashes and opens the south.
+@ $EA23 label=ChangeRoom_PhoenixToAshes
+  $EA23,$01 Copy the destination room ID into #REGa.
+  $EA24,$01 Stash the destination room ID on the stack.
   $EA25,$05 Call #R$B5D5 with item #N$82: #ITEM$82.
   $EA2A,$05 Call #R$B5DC with item #N$81: #ITEM$81.
 N $EA2F This action changes the map:
-  $EA2F,$05 Write #N$3F to open up southbound access to #ROOM$3F from
-. #ROOM$37.
-  $EA34,$01 Restore the destination room from the stack.
-  $EA35,$01 Put the destination room back.
-  $EA36,$01 Hand the destination room to the move.
+  $EA2F,$05 Write #N$3F to open southbound access to #ROOM$3F from #ROOM$37.
+  $EA34,$01 Restore the destination room ID from the stack.
+  $EA35,$01 Copy it into #REGc.
+N $EA36 Move into the destination room.
+@ $EA36 label=ChangeRoom_EnterRoom
+  $EA36,$01 Copy the destination room ID into #REGa.
   $EA37,$03 Call #R$B714 to move the player into the room.
-  $EA3A,$03 Read the current room into #REGa.
-  $EA3D,$04 See whether the player is inside the ruined cottage.
-  $EA41,$03 Read the event-state flags into #REGa.
-  $EA44,$04 See whether the cottage tasks are finished.
-  $EA48,$07 Count how many of the five gems are here.
+N $EA3A Winning in the ruined cottage.
+  $EA3A,$03 Fetch *#R$AECD into #REGa.
+  $EA3D,$04 Jump to #R$EA75 if it is not room #N$02: "#ROOM$02".
+  $EA41,$03 Fetch *#R$AE91 into #REGa.
+  $EA44,$04 Jump to #R$EA75 if it is not #N$0F (all four heroes following).
+  $EA48,$07 Count how many of the five gems at #R$EA70 are here.
+N $EA4F Count each gem that is here.
 @ $EA4F label=Cottage_CountGem
-  $EA4F,$01 Read the next gem.
-  $EA50,$03 Call #R$B560 to find where the object is.
-  $EA53,$02 Jump to #R$EA56 if the zero flag is clear.
+  $EA4F,$01 Fetch the next gem item ID.
+  $EA50,$03 Call #R$B560 to test whether it is here.
+  $EA53,$02 Jump to #R$EA56 if it is not here.
   $EA55,$01 Count a gem that is here.
-  $EA56,$01 Move on to the next gem.
-  $EA57,$02 Step down #REGb by one and jump to #R$EA4F until it is zero.
-  $EA59,$05 See whether all five gems are here.
-  $EA5E,$06 Check the list of treasures at #N$E504.
-  $EA64,$02 Jump to #R$EA75 if none of the items listed at #N$E504 is here or
-. carried.
-  $EA66,$02 Restore #REGhl, #REGhl from the stack.
-  $EA68,$08 Score four points and finish the game.
+N $EA56 Continue the gem count.
+@ $EA56 label=Cottage_CountGem_Next
+  $EA56,$01 Advance to the next gem.
+  $EA57,$02 Decrease the gem counter by one and loop back to #R$EA4F until
+. it is zero.
+  $EA59,$05 Jump to #R$EA75 if fewer than five gems are here.
+  $EA5E,$06 Call #R$B5EC with the jade-flower group at #R$E504.
+  $EA64,$02 Jump to #R$EA75 if the jade flower is neither here nor carried.
+N $EA66 The game is won, so do not resume the movement handler or the
+. command loop.
+  $EA66,$02 Discard the return address of #R$E9E1 and of its caller.
+  $EA68,$05 Call #R$B78F to score four points.
+  $EA6D,$03 Jump to #R$E9D3.
 
 b $EA70 Table: Gems
 @ $EA70 label=Table_Gems
@@ -4641,21 +5361,32 @@ c $EA75 Handler: Show The New Room
 @ $EA75 label=Handler_ShowNewRoom
 D $EA75 Draw the new room after a move.
   $EA75,$05 Call #R$B41F to show the room picture.
-  $EA7A,$05 Call #R$B560 with item #N$84: #ITEM$84.
-  $EA7F,$02 Skip the guard when he is not here.
-  $EA81,$05 Call #R$B5D5 with item #N$84: #ITEM$84.
-N $EA86 Pause, print it and scroll: #MESSAGE$D154.
-  $EA86,$06 Point at the message and pause, print it and scroll.
-N $EA8C Pause, print it and scroll: #MESSAGE$D168.
-  $EA8C,$06 Point at the message and pause, print it and scroll.
+  $EA7A,$05 Call #R$B560 with item #N$84 (unnamed; the guard arrest).
+  $EA7F,$02 Skip the arrest when that item is not here.
+  $EA81,$05 Call #R$B5D5 with item #N$84 (unnamed; the guard arrest).
+N $EA86 Print "#MESSAGE$D154".
+  $EA86,$06 Point #REGhl at #R$D154 and pause, print it and scroll.
+N $EA8C Print "#MESSAGE$D168".
+  $EA8C,$06 Point #REGhl at #R$D168 and pause, print it and scroll.
   $EA92,$05 Call #R$AC65 to pause for the frame count in #REGb.
-  $EA97,$05 Take the player to the Dungeon.
+  $EA97,$02 Take the player to room #N$3A: "#ROOM$3A".
+  $EA99,$03 Jump to #R$E9E1.
+N $EA9C The guard is not in this room.
 @ $EA9C label=Handler_ShowNewRoom_Next
   $EA9C,$01 Return.
 
-b $EA9D Data
-@ $EA9D label=Item_JadeFragments
-  $EA9D,$01
+g $EA9D Table: Items Which Are Plural
+@ $EA9D label=Table_ItemsWhichArePlural
+E $EA9D View the equivalent code in;
+. #LIST
+. { #SHOCK$B6F1 }
+. { #FOREST$EEEB }
+. { #JEWELS$F29B }
+. { #ANDROMEDA$9010 }
+. { #WARLORD$ED6C }
+. LIST#
+D $EA9D All the items in the game which are plural; used by #R$EB00.
+B $EA9D,$01 Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
 
 c $EA9E Print Response
 @ $EA9E label=PrintResponse
@@ -4727,11 +5458,33 @@ N $EABE Print "#MESSAGE$D198".
   $EABE,$03 #REGhl=#R$D198.
   $EAC1,$03 Jump to #R$EA9E.
 
-w $EAC4 Table: Pointers
-@ $EAC4 label=Handler_ExamineReplies
-D $EAC4 12 addresses.
-W $EAC4,$02
-L $EAC4,$02,$0C
+c $EAC4 Response: "It Appears To Be Bewitched"
+@ $EAC4 label=Response_ItAppearsToBeBewitched
+D $EAC4 Tell the player "It Appears To Be Bewitched"
+N $EAC4 Print "#MESSAGE$D17C".
+  $EAC4,$03 #REGhl=#R$D17C.
+  $EAC7,$03 Jump to #R$EA9E.
+
+c $EACA Response: "Like Pandora's Maybe"
+@ $EACA label=Response_LikePandorasMaybe
+D $EACA Tell the player "Like Pandora's Maybe"
+N $EACA Print "#MESSAGE$D1AF".
+  $EACA,$03 #REGhl=#R$D1AF.
+  $EACD,$03 Jump to #R$EA9E.
+
+c $EAD0 Response: "It Is Very Fragile"
+@ $EAD0 label=Response_ItIsVeryFragile
+D $EAD0 Tell the player "It Is Very Fragile"
+N $EAD0 Print "#MESSAGE$D1C5".
+  $EAD0,$03 #REGhl=#R$D1C5.
+  $EAD3,$03 Jump to #R$EA9E.
+
+c $EAD6 Response: "The Symbols Are Incomprehensible To You"
+@ $EAD6 label=Response_TheSymbolsAreIncomprehensibleToYou
+D $EAD6 Tell the player "The Symbols Are Incomprehensible To You"
+N $EAD6 Print "#MESSAGE$D1D9".
+  $EAD6,$03 #REGhl=#R$D1D9.
+  $EAD9,$03 Jump to #R$EA9E.
 
 c $EADC Response: "You Can't Go In That Direction"
 @ $EADC label=Response_YouCantGoInThatDirection
@@ -4770,26 +5523,159 @@ N $EAE8 Print "#MESSAGE$B0ED".
   $EAE8,$03 #REGhl=#R$B0ED.
   $EAEB,$03 Jump to #R$EA9E.
 
-b $EAEE Data
-@ $EAEE label=Handler_AlreadyCarrying
-  $EAEE,$0C
+c $EAEE Response: "You're Already Carrying It"
+@ $EAEE label=Response_YoureAlreadyCarryingIt
+D $EAEE Tell the player "You're Already Carrying It"
+N $EAEE Print "#MESSAGE$D202".
+  $EAEE,$03 #REGhl=#R$D202.
+  $EAF1,$03 Jump to #R$EA9E.
 
-c $EAFA Handler: Print Carrying
-@ $EAFA label=HandlerPrintCarrying
-E $EAFA View the equivalent code in;
+c $EAF4 Take: Is Player Holding Item
+@ $EAF4 label=Take_IsPlayerHoldingItem
+E $EAF4 View the equivalent code in;
 . #LIST
-. { #FOREST$EEAE }
+. { #FOREST$EEBA }
+. { #JEWELS$F26A }
+. { #ANDROMEDA$8FE2 }
+. { #WARLORD$ED75 }
 . LIST#
-D $EAFA Print Carrying.
-  $EAFA,$06 Print "#MESSAGE$B0F2".
-  $EB00,$09 See whether the object is the jade fragments.
-  $EB09,$02 Say "them" when the object is the jade fragments.
-  $EB0B,$06 Print "#MESSAGE$B10D" as the reply.
-  $EB11,$06 Print "#MESSAGE$B111" as the reply.
+D $EAF4 Refuse the take when the object is already carried or the inventory is
+. full; otherwise return so the caller can take it.
+R $EAF4 A Object ID
+R $EAF4 O:B The object ID (when returning so the take may proceed)
+  $EAF4,$03 Call #R$B5CF.
+N $EAF7 Refuse when that object is already being carried.
+  $EAF7,$02 Jump to #R$EB17 if the item is not being held.
+  $EAF9,$01 Restore #REGhl from the stack.
+N $EAFA Finish the sentence "You're already carrying" with "it" or "them".
+N $EAFA Print "#MESSAGE$B0F2".
+  $EAFA,$03 #REGhl=#R$B0F2.
+N $EAFD Print the string at #REGhl, then finish with "it." or "them.".
+@ $EAFD label=PrintStringAndItThemHandler
+  $EAFD,$03 Call #R$AC28.
+N $EB00 Search #R$EA9D among the plural items.
+@ $EB00 label=Take_AlreadyCarrying_CheckPlural
+  $EB00,$03 #REGhl=#R$EA9D.
+  $EB03,$01 Copy the object ID back into #REGa.
+  $EB04,$03 #REGbc=#N($0001,$04,$04).
+  $EB07,$02 Search #R$EA9D for the item ID among the plural items.
+  $EB09,$02 Jump to #R$EB11 if the item is plural.
+N $EB0B Print "#MESSAGE$B10D".
+  $EB0B,$03 #REGhl=#R$B10D.
+  $EB0E,$03 Jump to #R$EA9E.
+N $EB11 Print "#MESSAGE$B111".
+@ $EB11 label=Take_AlreadyCarrying_Them
+  $EB11,$03 #REGhl=#R$B111.
+  $EB14,$03 Jump to #R$EA9E.
+N $EB17 Refuse the object when the player is already holding #N$08 things.
+@ $EB17 label=Take_InventoryFull
+  $EB17,$05 Compare *#R$AE9A with #N$08.
+  $EB1C,$01 #REGb=#REGe.
+  $EB1D,$01 Return if *#R$AE9A is not equal to #N$08.
+  $EB1E,$01 Restore #REGhl from the stack.
+N $EB1F Print "#MESSAGE$B117".
+  $EB1F,$03 #REGhl=#R$B117.
+  $EB22,$03 Jump to #R$EA9E.
 
-b $EB17 Data
-@ $EB17 label=Handler_TakeIntoInventory
-  $EB17,$78
+c $EB25 Take Item
+@ $EB25 label=TakeItem
+E $EB25 View the equivalent code in;
+. #LIST
+. { #SHOCK$AA6E }
+. { #FOREST$EEED }
+. { #JEWELS$F29C }
+. { #ANDROMEDA$9014 }
+. { #WARLORD$EDA6 }
+. LIST#
+D $EB25 Places the item in the player's inventory and acknowledges success.
+R $EB25 B Item ID
+  $EB25,$02 Load #REGc with #N$01 which indicates the item will be in the
+. players inventory.
+  $EB27,$03 Call #R$B5FD.
+  $EB2A,$04 Increment *#R$AE9A by one.
+  $EB2E,$03 Jump to #R$EAE8.
+
+c $EB31 Drop: Is Player Holding Item
+@ $EB31 label=Drop_IsPlayerHoldingItem
+E $EB31 View the equivalent code in;
+. #LIST
+. { #SHOCK$AA8A }
+. { #FOREST$F045 }
+. { #JEWELS$F4DA }
+. { #WARLORD$EDB8 }
+. LIST#
+D $EB31 Refuse the drop when the object is not carried; otherwise drop it.
+R $EB31 A Object ID
+  $EB31,$03 Call #R$B5CF.
+N $EB34 Print "#MESSAGE$B191".
+  $EB34,$03 #REGhl=#R$B191.
+  $EB37,$03 Jump to #R$EAFD if the item is not being held.
+N $EB3A The player has the item in their inventory so drop it.
+@ $EB3A label=DropItem
+  $EB3A,$01 Copy the item ID into #REGb.
+  $EB3B,$04 #REGc=*#R$AECD.
+N $EB3F Alter the items location from the players inventory to the current room
+. ID.
+  $EB3F,$03 Call #R$B5FD.
+  $EB42,$04 Decrease *#R$AE9A by one.
+  $EB46,$03 Jump to #R$EAE8.
+
+c $EB49 Is Player Carrying Item
+@ $EB49 label=IsPlayerCarryingItem
+E $EB49 View the equivalent code in;
+. #LIST
+. { #WARLORD$EDD0 }
+. LIST#
+D $EB49 Return if the item is held; otherwise tell the player they are not
+. carrying it.
+R $EB49 A Item ID
+R $EB49 O:F Z flag set if the item is in the players inventory
+  $EB49,$03 Call #R$B5CF.
+  $EB4C,$01 Return if the item is in the players inventory.
+  $EB4D,$01 Restore #REGhl from the stack.
+N $EB4E Print "#MESSAGE$B191".
+  $EB4E,$03 #REGhl=#R$B191.
+  $EB51,$03 Jump to #R$EAFD.
+
+c $EB54 Check Inventory And Pick Up
+@ $EB54 label=Handler_CheckPlayerInventory_PickUpItem
+E $EB54 View the equivalent code in;
+. #LIST
+. { #WARLORD$EDB2 }
+. LIST#
+D $EB54 Check that the item can be taken, then pick it up.
+R $EB54 A Item ID
+  $EB54,$03 Call #R$EAF4.
+  $EB57,$03 Jump to #R$EB25.
+
+c $EB5A Take: Frog
+@ $EB5A label=Take_Frog
+D $EB5A Take the frog unless the swamp lizard is present.
+  $EB5A,$05 Call #R$EAF4 with item #N$05: #ITEM$05.
+  $EB5F,$05 Call #R$B560 with item #N$06: #ITEM$06.
+  $EB64,$03 Jump to #R$EB25 if #ITEM$06 is not present.
+N $EB67 Print "#MESSAGE$D21E".
+  $EB67,$03 #REGhl=#R$D21E.
+  $EB6A,$03 Jump to #R$EA9E.
+
+c $EB6D Take: Box
+@ $EB6D label=Take_Box
+D $EB6D Take the wooden box.
+  $EB6D,$05 Jump to #R$EB54 with item #N$5B: #ITEM$5B.
+
+c $EB72 Take: Flower
+@ $EB72 label=Take_Flower
+D $EB72 Take the jade flower from its pillow, or refuse if it is out of
+. reach.
+  $EB72,$05 Call #R$EAF4 with item #N$58: #ITEM$58.
+  $EB77,$05 Call #R$B560 with item #N$83: #ITEM$83.
+  $EB7C,$02 Jump to #R$EB89 if #ITEM$83 is not present.
+  $EB7E,$06 Call #R$B613 to transform #ITEM$83 into #ITEM$32.
+  $EB84,$05 Jump to #R$EB25 with item #N$58: #ITEM$58.
+N $EB89 Print "#MESSAGE$D23D".
+@ $EB89 label=Take_Flower_TooHigh
+  $EB89,$03 #REGhl=#R$D23D.
+  $EB8C,$03 Jump to #R$EA9E.
 
 c $EB8F Response: "He Says "no""
 @ $EB8F label=Response_HeSaysNo
@@ -4798,9 +5684,223 @@ N $EB8F Print "#MESSAGE$E206".
   $EB8F,$03 #REGhl=#R$E206.
   $EB92,$03 Jump to #R$EA9E.
 
-b $EB95 Data
-@ $EB95 label=Handler_TakePhrases
-  $EB95,$0196
+c $EB95 Take: Scroll
+@ $EB95 label=Take_Scroll
+D $EB95 Take the scroll.
+  $EB95,$05 Jump to #R$EB54 with item #N$25: #ITEM$25.
+
+c $EB9A Take: Ruby
+@ $EB9A label=Take_Ruby
+D $EB9A Take the ruby.
+  $EB9A,$05 Jump to #R$EB54 with item #N$4A: #ITEM$4A.
+
+c $EB9F Take: Diamond
+@ $EB9F label=Take_Diamond
+D $EB9F Take the diamond unless the spider is present.
+  $EB9F,$05 Call #R$EAF4 with item #N$4D: #ITEM$4D.
+  $EBA4,$05 Call #R$B560 with item #N$4E: #ITEM$4E.
+  $EBA9,$03 Jump to #R$EB25 if #ITEM$4E is not present.
+N $EBAC Print "#MESSAGE$D256".
+  $EBAC,$03 #REGhl=#R$D256.
+  $EBAF,$03 Jump to #R$EA9E.
+
+c $EBB2 Take: Sapphire
+@ $EBB2 label=Take_Sapphire
+D $EBB2 Take the sapphire unless the dragon is present.
+  $EBB2,$05 Call #R$EAF4 with item #N$5C: #ITEM$5C.
+  $EBB7,$05 Call #R$B560 with item #N$5D: #ITEM$5D.
+  $EBBC,$03 Jump to #R$EB25 if #ITEM$5D is not present.
+N $EBBF Print "#MESSAGE$D441".
+  $EBBF,$03 #REGhl=#R$D441.
+  $EBC2,$03 Jump to #R$EA9E.
+
+c $EBC5 Take: Emerald
+@ $EBC5 label=Take_Emerald
+D $EBC5 Take the emerald.
+  $EBC5,$05 Jump to #R$EB54 with item #N$72: #ITEM$72.
+
+c $EBCA Take: Pearl
+@ $EBCA label=Take_Pearl
+D $EBCA Take the pearl.
+  $EBCA,$05 Jump to #R$EB54 with item #N$75: #ITEM$75.
+
+c $EBCF Take: Tinderbox
+@ $EBCF label=Take_Tinderbox
+D $EBCF Take the tinderbox.
+  $EBCF,$05 Jump to #R$EB54 with item #N$04: #ITEM$04.
+
+c $EBD4 Take: Money
+@ $EBD4 label=Take_Money
+D $EBD4 Take the money unless the barrowight is present.
+  $EBD4,$05 Call #R$EAF4 with item #N$21: #ITEM$21.
+  $EBD9,$05 Call #R$B560 with item #N$22: #ITEM$22.
+  $EBDE,$03 Jump to #R$EB25 if #ITEM$22 is not present.
+N $EBE1 Print "#MESSAGE$D26F".
+  $EBE1,$03 #REGhl=#R$D26F.
+  $EBE4,$03 Jump to #R$EA9E.
+
+c $EBE7 Take: Bible
+@ $EBE7 label=Take_Bible
+D $EBE7 Take the bible.
+  $EBE7,$05 Jump to #R$EB54 with item #N$23: #ITEM$23.
+
+c $EBEC Take: Wand
+@ $EBEC label=Take_Wand
+D $EBEC Take the wand unless a strange force stops the player.
+  $EBEC,$05 Call #R$EAF4 with item #N$24: #ITEM$24.
+  $EBF1,$08 Jump to #R$EB25 if bit 1 of *#R$AE78 is set.
+N $EBF9 Print "#MESSAGE$D28C".
+  $EBF9,$03 #REGhl=#R$D28C.
+  $EBFC,$03 Jump to #R$EA9E.
+
+c $EBFF Take: Flute
+@ $EBFF label=Take_Flute
+D $EBFF Take the flute.
+  $EBFF,$05 Jump to #R$EB54 with item #N$26: #ITEM$26.
+
+c $EC04 Take: Carpet
+@ $EC04 label=Take_Carpet
+D $EC04 Take the carpet and reveal the jewelled key the first time.
+  $EC04,$05 Call #R$EAF4 with item #N$27: #ITEM$27.
+  $EC09,$03 Call #R$EB25.
+  $EC0C,$06 Return if bit 2 of *#R$AE76 is set, which relates to revealing
+. the jewelled key.
+  $EC12,$02 Set bit 2 of *#R$AE76 to signify that the jewelled key has been
+. revealed.
+  $EC14,$05 Call #R$B5DC with item #N$28: #ITEM$28.
+N $EC19 Print "#MESSAGE$D2A7".
+  $EC19,$03 #REGhl=#R$D2A7.
+  $EC1C,$03 Jump to #R$EA9E.
+
+c $EC1F Take: Key
+@ $EC1F label=Take_Key
+E $EC1F Continue on to #R$EC3A.
+D $EC1F Take the key that is here, or ask the player to be more specific.
+  $EC1F,$03 #REGhl=#R$E51D.
+  $EC22,$03 Call #R$B606.
+  $EC25,$05 Jump to #R$ECF4 if more than one key is present.
+  $EC2A,$03 #REGhl=#R$E51D.
+  $EC2D,$03 Call #R$B5EC.
+  $EC30,$05 Jump to #R$ECC0 if the key is #ITEM$28.
+  $EC35,$05 Jump to #R$EC6C if the key is #ITEM$47.
+
+c $EC3A Take: Copper Key
+@ $EC3A label=Take_CopperKey
+D $EC3A Take the copper key and open the copper gates.
+  $EC3A,$05 Call #R$B560 with item #N$6C: #ITEM$6C.
+  $EC3F,$03 Jump to #R$F589 if #ITEM$6C is not present.
+  $EC42,$05 Call #R$EAF4 with item #N$6C: #ITEM$6C.
+  $EC47,$03 Call #R$EB25.
+N $EC4A This action changes the map:
+  $EC4A,$05 Write #N$11 to open southbound access to #ROOM$11 from
+. #ROOM$09.
+  $EC4F,$05 Write #N$09 to open northbound access to #ROOM$09 from
+. #ROOM$11.
+  $EC54,$06 Call #R$B613 to transform #ITEM$0B into #ITEM$0A.
+  $EC5A,$06 Call #R$B613 to transform #ITEM$0E into #ITEM$0D.
+  $EC60,$06 Return if bit 3 of *#R$AE76 is set, which relates to taking the
+. copper key.
+  $EC66,$05 Call #R$B78F with #N$02.
+  $EC6B,$01 Return.
+
+c $EC6C Take: Gold Key
+@ $EC6C label=Take_GoldKey
+D $EC6C Take the gold key and open the golden gates.
+  $EC6C,$05 Call #R$B560 with item #N$47: #ITEM$47.
+  $EC71,$03 Jump to #R$F589 if #ITEM$47 is not present.
+  $EC74,$05 Call #R$EAF4 with item #N$47: #ITEM$47.
+  $EC79,$03 Call #R$EB25.
+N $EC7C This action changes the map:
+  $EC7C,$05 Write #N$16 to open northbound access to #ROOM$16 from
+. #ROOM$1E.
+  $EC81,$05 Write #N$1E to open southbound access to #ROOM$1E from
+. #ROOM$16.
+  $EC86,$05 Write #N$2D to open northbound access to #ROOM$2D from
+. #ROOM$35.
+  $EC8B,$05 Write #N$35 to open southbound access to #ROOM$35 from
+. #ROOM$2D.
+  $EC90,$06 Call #R$B613 to transform #ITEM$17 into #ITEM$16.
+  $EC96,$06 Call #R$B613 to transform #ITEM$1A into #ITEM$19.
+  $EC9C,$06 Call #R$B613 to transform #ITEM$1D into #ITEM$1C.
+  $ECA2,$06 Call #R$B613 to transform #ITEM$20 into #ITEM$1F.
+  $ECA8,$06 Return if bit 4 of *#R$AE76 is set, which relates to taking the
+. gold key.
+  $ECAE,$02 Set bit 4 of *#R$AE76 to signify that the gold key has been taken.
+  $ECB0,$05 Call #R$B78F with #N$02.
+  $ECB5,$06 Return if *#R$AECD is not room #N$23: "#ROOM$23".
+  $ECBB,$04 Write #N$00 to close the eastbound exit from #ROOM$23.
+  $ECBF,$01 Return.
+
+c $ECC0 Take: Jewelled Key
+@ $ECC0 label=Take_JewelledKey
+D $ECC0 Take the jewelled key and open the jewelled gates.
+  $ECC0,$05 Call #R$B560 with item #N$28: #ITEM$28.
+  $ECC5,$03 Jump to #R$F589 if #ITEM$28 is not present.
+  $ECC8,$05 Call #R$EAF4 with item #N$28: #ITEM$28.
+  $ECCD,$03 Call #R$EB25.
+N $ECD0 This action changes the map:
+  $ECD0,$05 Write #N$14 to open westbound access to #ROOM$14 from
+. #ROOM$15.
+  $ECD5,$05 Write #N$15 to open eastbound access to #ROOM$15 from
+. #ROOM$14.
+  $ECDA,$06 Call #R$B613 to transform #ITEM$11 into #ITEM$10.
+  $ECE0,$06 Call #R$B613 to transform #ITEM$14 into #ITEM$13.
+  $ECE6,$06 Return if bit 5 of *#R$AE76 is set, which relates to taking the
+. jewelled key.
+  $ECEC,$02 Set bit 5 of *#R$AE76 to signify that the jewelled key has been
+. taken.
+  $ECEE,$05 Call #R$B78F with #N$02.
+  $ECF3,$01 Return.
+
+c $ECF4 Response: "Please Be More Specific"
+@ $ECF4 label=Response_PleaseBeMoreSpecific
+E $ECF4 View the equivalent code in;
+. #LIST
+. { #FOREST$BDC5 }
+. { #JEWELS$BFF5 }
+. { #ANDROMEDA$6480 }
+. { #WARLORD$AAF5 }
+. LIST#
+D $ECF4 Tell the player "Please Be More Specific"
+N $ECF4 Print "#MESSAGE$B0B3".
+  $ECF4,$03 #REGhl=#R$B0B3.
+  $ECF7,$03 Jump to #R$EA9E.
+
+c $ECFA Response: "The Songbird Ignores You"
+@ $ECFA label=Response_TheSongbirdIgnoresYou
+D $ECFA Tell the player "The Songbird Ignores You"
+N $ECFA Print "#MESSAGE$DF69".
+  $ECFA,$03 #REGhl=#R$DF69.
+  $ECFD,$03 Jump to #R$EA9E.
+
+c $ED00 Take: Sword
+@ $ED00 label=Take_Sword
+D $ED00 Take the sword unless a strange force stops the player.
+  $ED00,$05 Call #R$EAF4 with item #N$2F: #ITEM$2F.
+  $ED05,$03 #REGa=*#R$AECD.
+  $ED08,$05 Jump to #R$EB25 if *#R$AECD is not room #N$1A:
+. "#ROOM$1A".
+  $ED0D,$08 Jump to #R$EB25 if bit 0 of *#R$AE78 is set.
+N $ED15 Print "#MESSAGE$D28C".
+  $ED15,$03 #REGhl=#R$D28C.
+  $ED18,$03 Jump to #R$EA9E.
+
+c $ED1B Take: Spear
+@ $ED1B label=Take_Spear
+D $ED1B Take the spear.
+  $ED1B,$05 Jump to #R$EB54 with item #N$30: #ITEM$30.
+
+c $ED20 Take: Dagger
+@ $ED20 label=Take_Dagger
+D $ED20 Take the dagger.
+  $ED20,$05 Jump to #R$EB54 with item #N$31: #ITEM$31.
+
+c $ED25 Response: "Even Beren Is Unable To Calm It"
+@ $ED25 label=Response_EvenBerenIsUnableToCalmIt
+D $ED25 Tell the player "Even Beren Is Unable To Calm It"
+N $ED25 Print "#MESSAGE$DF48".
+  $ED25,$03 #REGhl=#R$DF48.
+  $ED28,$03 Jump to #R$EA9E.
 
 c $ED2B Response: "Nothing Happens"
 @ $ED2B label=Response_NothingHappens
@@ -4809,28 +5909,443 @@ N $ED2B Print "#MESSAGE$DFF3".
   $ED2B,$03 #REGhl=#R$DFF3.
   $ED2E,$03 Jump to #R$EA9E.
 
-b $ED31 Data
-@ $ED31 label=Handler_TakePhrases_Next
-  $ED31,$DB
+c $ED31 Take: Bottle
+@ $ED31 label=Take_Bottle
+D $ED31 Take the bottle that is here.
+  $ED31,$03 #REGhl=#R$E52F.
+  $ED34,$03 Call #R$B5EC.
+  $ED37,$03 Jump to #R$EB54.
 
-b $EE0C Data
-@ $EE0C label=Handler_TakeAndDropPhrases
-  $EE0C,$57
+c $ED3A Take: Water
+@ $ED3A label=Take_Water
+D $ED3A Take the bottle of water, or fill an empty bottle.
+  $ED3A,$05 Call #R$B5CF with item #N$38: #ITEM$38.
+  $ED3F,$05 Call #R$EAF4 if #ITEM$38 is in the inventory.
+  $ED44,$08 Jump to #R$EB54 if #ITEM$38 is present.
+  $ED4C,$05 Call #R$B5CF with item #N$37: #ITEM$37.
+  $ED51,$02 Jump to #R$ED5F if #ITEM$37 is not in the inventory.
+  $ED53,$06 Call #R$B613 to transform #ITEM$37 into #ITEM$38.
+N $ED59 Print "#MESSAGE$D307".
+  $ED59,$03 #REGhl=#R$D307.
+  $ED5C,$03 Jump to #R$EA9E.
+
+c $ED5F Response: "You Have Nothing To Carry It In"
+@ $ED5F label=Response_YouHaveNothingToCarryItIn
+D $ED5F Tell the player "You Have Nothing To Carry It In"
+N $ED5F Print "#MESSAGE$D327".
+  $ED5F,$03 #REGhl=#R$D327.
+  $ED62,$03 Jump to #R$EA9E.
+
+c $ED65 Take: Acid
+@ $ED65 label=Take_Acid
+D $ED65 Take the bottle of acid, or fill an empty bottle.
+  $ED65,$05 Call #R$B5CF with item #N$39: #ITEM$39.
+  $ED6A,$05 Call #R$EAF4 if #ITEM$39 is in the inventory.
+  $ED6F,$08 Jump to #R$EB54 if #ITEM$39 is present.
+  $ED77,$05 Call #R$B5CF with item #N$37: #ITEM$37.
+  $ED7C,$03 Jump to #R$ED5F if #ITEM$37 is not in the inventory.
+  $ED7F,$06 Call #R$B613 to transform #ITEM$37 into #ITEM$39.
+N $ED85 Print "#MESSAGE$D348".
+  $ED85,$03 #REGhl=#R$D348.
+  $ED88,$03 Jump to #R$EA9E.
+
+c $ED8B Take: Oil
+@ $ED8B label=Take_Oil
+D $ED8B Take the bottle of oil, or fill an empty bottle.
+  $ED8B,$05 Call #R$B5CF with item #N$3A: #ITEM$3A.
+  $ED90,$05 Call #R$EAF4 if #ITEM$3A is in the inventory.
+  $ED95,$08 Jump to #R$EB54 if #ITEM$3A is present.
+  $ED9D,$05 Call #R$B5CF with item #N$37: #ITEM$37.
+  $EDA2,$03 Jump to #R$ED5F if #ITEM$37 is not in the inventory.
+  $EDA5,$06 Call #R$B613 to transform #ITEM$37 into #ITEM$3A.
+N $EDAB Print "#MESSAGE$D367".
+  $EDAB,$03 #REGhl=#R$D367.
+  $EDAE,$03 Jump to #R$EA9E.
+
+c $EDB1 Take: Lyre
+@ $EDB1 label=Take_Lyre
+D $EDB1 Take the golden lyre.
+  $EDB1,$05 Jump to #R$EB54 with item #N$45: #ITEM$45.
+
+c $EDB6 Take: Mandolin
+@ $EDB6 label=Take_Mandolin
+D $EDB6 Take the mandolin.
+  $EDB6,$05 Jump to #R$EB54 with item #N$46: #ITEM$46.
+
+c $EDBB Take: Fragments
+@ $EDBB label=Take_Fragments
+D $EDBB Take the jade fragments.
+  $EDBB,$05 Jump to #R$EB54 with item #N$59: #ITEM$59.
+
+c $EDC0 Take: Crowbar
+@ $EDC0 label=Take_Crowbar
+D $EDC0 Take the crowbar.
+  $EDC0,$05 Jump to #R$EB54 with item #N$5F: #ITEM$5F.
+
+c $EDC5 Take: Shovel
+@ $EDC5 label=Take_Shovel
+D $EDC5 Take the shovel unless the pirate is present.
+  $EDC5,$05 Jump to #R$F692 with item #N$60: #ITEM$60.
+
+c $EDCA Take: Cage
+@ $EDCA label=Take_Cage
+D $EDCA Take the cage that is here.
+  $EDCA,$03 #REGhl=#R$E54C.
+  $EDCD,$03 Call #R$B5EC.
+  $EDD0,$03 Jump to #R$EB54.
+
+c $EDD3 Take: Coin
+@ $EDD3 label=Take_Coin
+D $EDD3 Take the silver coin.
+  $EDD3,$05 Jump to #R$EB54 with item #N$65: #ITEM$65.
+
+c $EDD8 Take: Honey
+@ $EDD8 label=Take_Honey
+D $EDD8 Take the honey.
+  $EDD8,$05 Jump to #R$EB54 with item #N$70: #ITEM$70.
+
+c $EDDD Take: Meat
+@ $EDDD label=Take_Meat
+D $EDDD Take the meat.
+  $EDDD,$05 Jump to #R$EB54 with item #N$71: #ITEM$71.
+
+c $EDE2 Take: Cross
+@ $EDE2 label=Take_Cross
+D $EDE2 Take the silver cross unless the bat is present.
+  $EDE2,$05 Call #R$EAF4 with item #N$7B: #ITEM$7B.
+  $EDE7,$05 Call #R$B560 with item #N$7C: #ITEM$7C.
+  $EDEC,$03 Jump to #R$EB25 if #ITEM$7C is not present.
+N $EDEF Print "#MESSAGE$D42B".
+  $EDEF,$03 #REGhl=#R$D42B.
+  $EDF2,$03 Jump to #R$EA9E.
+
+c $EDF5 Take: Mirror
+@ $EDF5 label=Take_Mirror
+D $EDF5 Take the magic mirror.
+  $EDF5,$05 Jump to #R$EB54 with item #N$7E: #ITEM$7E.
+
+c $EDFA Take: Potion
+@ $EDFA label=Take_Potion
+E $EDFA Continue on to #R$EE0F.
+D $EDFA Take the potion that is here, or ask the player to be more
+. specific.
+  $EDFA,$03 #REGhl=#R$E5AA.
+  $EDFD,$03 Call #R$B606.
+  $EE00,$05 Jump to #R$ECF4 if more than one potion is present.
+  $EE05,$03 #REGhl=#R$E5AA.
+  $EE08,$03 Call #R$B5EC.
+  $EE0B,$04 Jump to #R$EE1C if the potion is #ITEM$6A.
+
+c $EE0F Take: White Potion
+@ $EE0F label=Take_WhitePotion
+D $EE0F Take the white potion.
+  $EE0F,$05 Call #R$B560 with item #N$6B: #ITEM$6B.
+  $EE14,$03 Jump to #R$F589 if #ITEM$6B is not present.
+  $EE17,$05 Jump to #R$EB54 with item #N$6B: #ITEM$6B.
+
+c $EE1C Take: Black Potion
+@ $EE1C label=Take_BlackPotion
+D $EE1C Take the black potion.
+  $EE1C,$05 Call #R$B560 with item #N$6A: #ITEM$6A.
+  $EE21,$03 Jump to #R$F589 if #ITEM$6A is not present.
+  $EE24,$05 Jump to #R$EB54 with item #N$6A: #ITEM$6A.
+
+c $EE29 Take: Pillow
+@ $EE29 label=Take_Pillow
+D $EE29 Take the velvet pillow; the jade flower breaks if it is still on
+. it.
+  $EE29,$05 Call #R$EAF4 with item #N$32: #ITEM$32.
+  $EE2E,$03 Call #R$EB25.
+  $EE31,$05 Call #R$B560 with item #N$83: #ITEM$83.
+  $EE36,$01 Return if #ITEM$83 is not present.
+  $EE37,$06 Call #R$B613 to transform #ITEM$83 into #ITEM$59.
+N $EE3D Print "#MESSAGE$D385".
+  $EE3D,$03 #REGhl=#R$D385.
+  $EE40,$03 Jump to #R$EA9E.
+
+c $EE43 Drop: Frog
+@ $EE43 label=Drop_Frog
+D $EE43 Drop the frog.
+  $EE43,$05 Jump to #R$EB31 with item #N$05: #ITEM$05.
+
+c $EE48 Drop: Box
+@ $EE48 label=Drop_Box
+D $EE48 Drop the wooden box.
+  $EE48,$05 Jump to #R$EB31 with item #N$5B: #ITEM$5B.
+
+c $EE4D Drop: Flower
+@ $EE4D label=Drop_Flower
+E $EE4D Continue on to #R$EE63.
+D $EE4D Drop the jade flower onto the pillow, or smash it if the pillow is not
+. here.
+  $EE4D,$05 Call #R$B5CF with item #N$58: #ITEM$58.
+  $EE52,$05 Jump to #R$EB31 with item #N$58: #ITEM$58 if the Z flag is not set.
+  $EE57,$03 Call #R$EB31.
+  $EE5A,$05 Call #R$B626 with item #N$32: #ITEM$32.
+  $EE5F,$02 Jump to #R$EE72 if the Z flag is not set.
+  $EE61,$02 #REGa=#N$32.
 
 c $EE63 Handler: Report The Kill
 @ $EE63 label=Handler_ReportTheKill
-D $EE63 Report The Kill.
-  $EE63,$03 Remove the killed item.
-  $EE66,$06 Knock the jade flower off its pillow.
-  $EE6C,$06 Print "#MESSAGE$D3CE" as the reply.
+D $EE63 Destroy the item in #REGa, then put the jade flower on the velvet
+. pillow.
+  $EE63,$03 Call #R$B5D5 to destroy the item.
+  $EE66,$06 Call #R$B613 to transform #ITEM$58 into #ITEM$83.
+N $EE6C Print "#MESSAGE$D3CE".
+  $EE6C,$03 #REGhl=#R$D3CE.
+  $EE6F,$03 Jump to #R$EA9E.
 
-b $EE72 Data
-@ $EE72 label=Handler_DropPhrases
-  $EE72,$5D
+c $EE72 Response: "The Flower Drops And Breaks Into Many Fragments"
+@ $EE72 label=Response_TheFlowerDropsAndBreaksIntoManyFragments
+D $EE72 Tell the player "The Flower Drops And Breaks Into Many Fragments"
+N $EE72 Print "#MESSAGE$D3FA".
+  $EE72,$03 #REGhl=#R$D3FA.
+  $EE75,$03 Jump to #R$EA9E.
 
-b $EECF Data
-@ $EECF label=Handler_DropPhrases_Next
-  $EECF,$0113
+c $EE78 Drop: Map
+@ $EE78 label=Drop_Map
+D $EE78 Drop the map.
+  $EE78,$05 Jump to #R$EB31 with item #N$61: #ITEM$61.
+
+c $EE7D Drop: Scroll
+@ $EE7D label=Drop_Scroll
+D $EE7D Drop the scroll.
+  $EE7D,$05 Jump to #R$EB31 with item #N$25: #ITEM$25.
+
+c $EE82 Drop: Ruby
+@ $EE82 label=Drop_Ruby
+D $EE82 Drop the ruby.
+  $EE82,$05 Jump to #R$EB31 with item #N$4A: #ITEM$4A.
+
+c $EE87 Drop: Diamond
+@ $EE87 label=Drop_Diamond
+D $EE87 Drop the diamond.
+  $EE87,$05 Jump to #R$EB31 with item #N$4D: #ITEM$4D.
+
+c $EE8C Drop: Sapphire
+@ $EE8C label=Drop_Sapphire
+D $EE8C Drop the sapphire.
+  $EE8C,$05 Jump to #R$EB31 with item #N$5C: #ITEM$5C.
+
+c $EE91 Drop: Emerald
+@ $EE91 label=Drop_Emerald
+D $EE91 Drop the emerald.
+  $EE91,$05 Jump to #R$EB31 with item #N$72: #ITEM$72.
+
+c $EE96 Drop: Pearl
+@ $EE96 label=Drop_Pearl
+D $EE96 Drop the pearl.
+  $EE96,$05 Jump to #R$EB31 with item #N$75: #ITEM$75.
+
+c $EE9B Drop: Tinderbox
+@ $EE9B label=Drop_Tinderbox
+D $EE9B Drop the tinderbox.
+  $EE9B,$05 Jump to #R$EB31 with item #N$04: #ITEM$04.
+
+c $EEA0 Drop: Money
+@ $EEA0 label=Drop_Money
+D $EEA0 Drop the money.
+  $EEA0,$05 Jump to #R$EB31 with item #N$21: #ITEM$21.
+
+c $EEA5 Drop: Bible
+@ $EEA5 label=Drop_Bible
+D $EEA5 Drop the bible.
+  $EEA5,$05 Jump to #R$EB31 with item #N$23: #ITEM$23.
+
+c $EEAA Drop: Wand
+@ $EEAA label=Drop_Wand
+D $EEAA Drop the wand.
+  $EEAA,$05 Jump to #R$EB31 with item #N$24: #ITEM$24.
+
+c $EEAF Drop: Flute
+@ $EEAF label=Drop_Flute
+D $EEAF Drop the silver flute.
+  $EEAF,$05 Jump to #R$EB31 with item #N$26: #ITEM$26.
+
+c $EEB4 Drop: Carpet
+@ $EEB4 label=Drop_Carpet
+D $EEB4 Drop the carpet.
+  $EEB4,$05 Jump to #R$EB31 with item #N$27: #ITEM$27.
+
+c $EEB9 Drop: Key
+@ $EEB9 label=Drop_Key
+E $EEB9 Continue on to #R$EED2.
+D $EEB9 Drop the key that is held, or ask the player to be more specific.
+  $EEB9,$03 #REGhl=#R$E51D.
+  $EEBC,$03 Call #R$B606.
+  $EEBF,$05 Jump to #R$ECF4 if more than one is present.
+  $EEC4,$03 #REGhl=#R$E51D.
+  $EEC7,$03 Call #R$B5EC.
+  $EECA,$04 Jump to #R$EEF3 if #REGa is #N$47.
+  $EECE,$04 Jump to #R$EF31 if #REGa is #N$28.
+
+c $EED2 Drop: Copper Key
+@ $EED2 label=Drop_CopperKey
+D $EED2 Drop the copper key and close the copper gates.
+  $EED2,$05 Call #R$B5CF with item #N$6C: #ITEM$6C.
+  $EED7,$05 Jump to #R$EB31 with item #N$6C: #ITEM$6C if the Z flag is not set.
+  $EEDC,$03 Call #R$EB31.
+  $EEDF,$07 Write #N$00 to close the matching map exits.
+  $EEE6,$06 Call #R$B613 to transform #ITEM$0A into #ITEM$0B.
+  $EEEC,$06 Call #R$B613 to transform #ITEM$0D into #ITEM$0E.
+  $EEF2,$01 Return.
+
+c $EEF3 Drop: Gold Key
+@ $EEF3 label=Drop_GoldKey
+D $EEF3 Drop the gold key and close the golden gates.
+  $EEF3,$05 Call #R$B5CF with item #N$47: #ITEM$47.
+  $EEF8,$05 Jump to #R$EB31 with item #N$47: #ITEM$47 if the Z flag is not set.
+  $EEFD,$03 Call #R$EB31.
+  $EF00,$0D Write #N$00 to close the matching map exits.
+  $EF0D,$06 Call #R$B613 to transform #ITEM$16 into #ITEM$17.
+  $EF13,$06 Call #R$B613 to transform #ITEM$19 into #ITEM$1A.
+  $EF19,$06 Call #R$B613 to transform #ITEM$1C into #ITEM$1D.
+  $EF1F,$06 Call #R$B613 to transform #ITEM$1F into #ITEM$20.
+  $EF25,$03 #REGa=*#R$AECD.
+  $EF28,$03 Return if #REGa is not #N$23.
+  $EF2B,$05 Write #N$24 to open eastbound access to #ROOM$24 from #ROOM$23.
+  $EF30,$01 Return.
+
+c $EF31 Drop: Jewelled Key
+@ $EF31 label=Drop_JewelledKey
+D $EF31 Drop the jewelled key and close the jewelled gates.
+  $EF31,$05 Call #R$B5CF with item #N$28: #ITEM$28.
+  $EF36,$05 Jump to #R$EB31 with item #N$28: #ITEM$28 if the Z flag is not set.
+  $EF3B,$03 Call #R$EB31.
+  $EF3E,$07 Write #N$00 to close the matching map exits.
+  $EF45,$06 Call #R$B613 to transform #ITEM$10 into #ITEM$11.
+  $EF4B,$06 Call #R$B613 to transform #ITEM$13 into #ITEM$14.
+  $EF51,$01 Return.
+
+c $EF52 Drop: Songbird
+@ $EF52 label=Drop_Songbird
+D $EF52 Drop the songbird in a wicker cage.
+  $EF52,$05 Jump to #R$EB31 with item #N$2B: #ITEM$2B.
+
+c $EF57 Drop: Sword
+@ $EF57 label=Drop_Sword
+D $EF57 Drop the sword.
+  $EF57,$05 Jump to #R$EB31 with item #N$2F: #ITEM$2F.
+
+c $EF5C Drop: Spear
+@ $EF5C label=Drop_Spear
+D $EF5C Drop the spear.
+  $EF5C,$05 Jump to #R$EB31 with item #N$30: #ITEM$30.
+
+c $EF61 Drop: Dagger
+@ $EF61 label=Drop_Dagger
+D $EF61 Drop the dagger.
+  $EF61,$05 Jump to #R$EB31 with item #N$31: #ITEM$31.
+
+c $EF66 Drop: Pillow
+@ $EF66 label=Drop_Pillow
+D $EF66 Drop the velvet pillow.
+  $EF66,$05 Jump to #R$EB31 with item #N$32: #ITEM$32.
+
+c $EF6B Drop: Falcon
+@ $EF6B label=Drop_Falcon
+D $EF6B Drop the falcon.
+  $EF6B,$05 Jump to #R$EB31 with item #N$36: #ITEM$36.
+
+c $EF70 Drop: Bottle
+@ $EF70 label=Drop_Bottle
+D $EF70 Drop the bottle that is held.
+  $EF70,$03 #REGhl=#R$E52F.
+  $EF73,$03 Call #R$B5EC.
+  $EF76,$03 Jump to #R$EB31.
+
+c $EF79 Drop: Water
+@ $EF79 label=Drop_Water
+D $EF79 Drop the bottle of water.
+  $EF79,$05 Jump to #R$EB31 with item #N$38: #ITEM$38.
+
+c $EF7E Drop: Acid
+@ $EF7E label=Drop_Acid
+D $EF7E Drop the bottle of acid.
+  $EF7E,$05 Jump to #R$EB31 with item #N$39: #ITEM$39.
+
+c $EF83 Drop: Oil
+@ $EF83 label=Drop_Oil
+D $EF83 Drop the bottle of oil.
+  $EF83,$05 Jump to #R$EB31 with item #N$3A: #ITEM$3A.
+
+c $EF88 Drop: Lyre
+@ $EF88 label=Drop_Lyre
+D $EF88 Drop the golden lyre.
+  $EF88,$05 Jump to #R$EB31 with item #N$45: #ITEM$45.
+
+c $EF8D Drop: Mandolin
+@ $EF8D label=Drop_Mandolin
+D $EF8D Drop the mandolin.
+  $EF8D,$05 Jump to #R$EB31 with item #N$46: #ITEM$46.
+
+c $EF92 Drop: Fragments
+@ $EF92 label=Drop_Fragments
+D $EF92 Drop the jade fragments.
+  $EF92,$05 Jump to #R$EB31 with item #N$59: #ITEM$59.
+
+c $EF97 Drop: Crowbar
+@ $EF97 label=Drop_Crowbar
+D $EF97 Drop the crowbar.
+  $EF97,$05 Jump to #R$EB31 with item #N$5F: #ITEM$5F.
+
+c $EF9C Drop: Shovel
+@ $EF9C label=Drop_Shovel
+D $EF9C Drop the shovel.
+  $EF9C,$05 Jump to #R$EB31 with item #N$60: #ITEM$60.
+
+c $EFA1 Drop: Cage
+@ $EFA1 label=Drop_Cage
+D $EFA1 Drop the cage that is held.
+  $EFA1,$03 #REGhl=#R$E54C.
+  $EFA4,$03 Call #R$B5EC.
+  $EFA7,$03 Jump to #R$EB31.
+
+c $EFAA Drop: Coin
+@ $EFAA label=Drop_Coin
+D $EFAA Drop the silver coin.
+  $EFAA,$05 Jump to #R$EB31 with item #N$65: #ITEM$65.
+
+c $EFAF Drop: Honey
+@ $EFAF label=Drop_Honey
+D $EFAF Drop the honey.
+  $EFAF,$05 Jump to #R$EB31 with item #N$70: #ITEM$70.
+
+c $EFB4 Drop: Meat
+@ $EFB4 label=Drop_Meat
+D $EFB4 Drop the meat.
+  $EFB4,$05 Jump to #R$EB31 with item #N$71: #ITEM$71.
+
+c $EFB9 Drop: Cross
+@ $EFB9 label=Drop_Cross
+D $EFB9 Drop the silver cross.
+  $EFB9,$05 Jump to #R$EB31 with item #N$7B: #ITEM$7B.
+
+c $EFBE Drop: Mirror
+@ $EFBE label=Drop_Mirror
+D $EFBE Drop the magic mirror.
+  $EFBE,$05 Jump to #R$EB31 with item #N$7E: #ITEM$7E.
+
+c $EFC3 Drop: Potion
+@ $EFC3 label=Drop_Potion
+E $EFC3 Continue on to #R$EFD8.
+D $EFC3 Drop the potion that is held, or ask the player to be more specific.
+  $EFC3,$03 #REGhl=#R$E5AA.
+  $EFC6,$03 Call #R$B606.
+  $EFC9,$05 Jump to #R$ECF4 if more than one is present.
+  $EFCE,$03 #REGhl=#R$E5AA.
+  $EFD1,$03 Call #R$B5EC.
+  $EFD4,$04 Jump to #R$EFDD if #REGa is #N$6A.
+
+c $EFD8 Drop: White Potion
+@ $EFD8 label=Drop_WhitePotion
+D $EFD8 Drop the white potion.
+  $EFD8,$05 Jump to #R$EB31 with item #N$6B: #ITEM$6B.
+
+c $EFDD Drop: Black Potion
+@ $EFDD label=Drop_BlackPotion
+D $EFDD Drop the black potion.
+  $EFDD,$05 Jump to #R$EB31 with item #N$6A: #ITEM$6A.
 
 c $EFE2 Response: "I Don't See The Point"
 @ $EFE2 label=Response_IDontSeeThePoint
@@ -4845,9 +6360,91 @@ N $EFE2 Print "#MESSAGE$D45A".
   $EFE2,$03 #REGhl=#R$D45A.
   $EFE5,$03 Jump to #R$EA9E.
 
-b $EFE8 Data
-@ $EFE8 label=Handler_ThrowPhrases
-  $EFE8,$B6
+c $EFE8 Throw: Mirror To Anton
+@ $EFE8 label=Throw_MirrorToAnton
+D $EFE8 Throw the magic mirror to Anton.
+  $EFE8,$05 Call #R$EB49 with item #N$7E: #ITEM$7E.
+  $EFED,$01 Copy #REGe into #REGa.
+  $EFEE,$03 Call #R$B5D5.
+  $EFF1,$04 Decrease *#R$AE9A by one.
+  $EFF5,$06 Call #R$B613 to transform #ITEM$7F into #ITEM$80.
+N $EFFB Print "#MESSAGE$D48B".
+  $EFFB,$03 #REGhl=#R$D48B.
+  $EFFE,$03 Jump to #R$EA9E.
+
+c $F001 Throw: Coin To Anton
+@ $F001 label=Throw_CoinToAnton
+D $F001 Throw the silver coin to Anton.
+  $F001,$05 Call #R$EB49 with item #N$65: #ITEM$65.
+  $F006,$05 Call #R$B560 with item #N$7F: #ITEM$7F.
+  $F00B,$02 Jump to #R$F013 if the Z flag is not set.
+N $F00D Print "#MESSAGE$D5FB".
+  $F00D,$03 #REGhl=#R$D5FB.
+  $F010,$03 Jump to #R$EA9E.
+  $F013,$05 Call #R$B5D5 with item #N$65: #ITEM$65.
+  $F018,$04 Decrease *#R$AE9A by one.
+  $F01C,$05 Call #R$B5D5 with item #N$80: #ITEM$80.
+N $F021 Print "#MESSAGE$D503".
+  $F021,$03 #REGhl=#R$D503.
+  $F024,$03 Jump to #R$EA9E.
+
+c $F027 Throw: Honey To Bear
+@ $F027 label=Throw_HoneyToBear
+D $F027 Throw the honey to the bear.
+  $F027,$05 Call #R$EB49 with item #N$70: #ITEM$70.
+  $F02C,$05 Call #R$B560 with item #N$07: #ITEM$07.
+  $F031,$02 Jump to #R$F039 if the Z flag is set.
+N $F033 Print "#MESSAGE$D471".
+  $F033,$03 #REGhl=#R$D471.
+  $F036,$03 Jump to #R$EA9E.
+  $F039,$05 Call #R$B5D5 with item #N$70: #ITEM$70.
+  $F03E,$04 Decrease *#R$AE9A by one.
+  $F042,$06 Call #R$B613 to transform #ITEM$07 into #ITEM$08.
+  $F048,$05 Call #R$B78F with #N$02.
+  $F04D,$05 Write #N$08 to open eastbound access to #ROOM$08 from #ROOM$07.
+N $F052 Print "#MESSAGE$D576".
+  $F052,$03 #REGhl=#R$D576.
+  $F055,$03 Jump to #R$EA9E.
+
+c $F058 Throw: Meat To Falcon
+@ $F058 label=Throw_MeatToFalcon
+D $F058 Throw the meat to the falcon.
+  $F058,$05 Call #R$EB49 with item #N$71: #ITEM$71.
+  $F05D,$01 Copy #REGe into #REGa.
+  $F05E,$03 Call #R$B5D5.
+  $F061,$04 Decrease *#R$AE9A by one.
+  $F065,$05 Call #R$B78F with #N$03.
+  $F06A,$05 Set bit 5 of *#R$AE76.
+N $F06F Print "#MESSAGE$D5B0".
+  $F06F,$03 #REGhl=#R$D5B0.
+  $F072,$03 Jump to #R$EA9E.
+
+c $F075 Throw: Honey To Lizard
+@ $F075 label=Throw_HoneyToLizard
+D $F075 Throw the honey to the swamp lizard.
+  $F075,$05 Call #R$EB49 with item #N$70: #ITEM$70.
+  $F07A,$01 Copy #REGe into #REGa.
+  $F07B,$03 Call #R$B5D5.
+  $F07E,$04 Decrease *#R$AE9A by one.
+N $F082 Print "#MESSAGE$D5E2".
+  $F082,$03 #REGhl=#R$D5E2.
+  $F085,$03 Jump to #R$EA9E.
+
+c $F088 Throw: Meat To Lizard
+@ $F088 label=Throw_MeatToLizard
+D $F088 Throw the meat to the swamp lizard.
+  $F088,$02 #REGa=#N$71.
+  $F08A,$02 Jump to #R$F077.
+
+c $F08C Throw: Meat To Bear
+@ $F08C label=Throw_MeatToBear
+D $F08C Throw the meat to the bear.
+  $F08C,$05 Call #R$EB49 with item #N$71: #ITEM$71.
+  $F091,$05 Call #R$B560 with item #N$07: #ITEM$07.
+  $F096,$02 Jump to #R$F088 if the Z flag is set.
+N $F098 Print "#MESSAGE$D471".
+  $F098,$03 #REGhl=#R$D471.
+  $F09B,$03 Jump to #R$EA9E.
 
 c $F09E Response: "You Must Be Joking!"
 @ $F09E label=Response_YouMustBeJoking
@@ -4861,9 +6458,172 @@ N $F09E Print "#MESSAGE$D626".
   $F09E,$03 #REGhl=#R$D626.
   $F0A1,$03 Jump to #R$EA9E.
 
-b $F0A4 Data
-@ $F0A4 label=Handler_GiveAndKiss
-  $F0A4,$0161
+c $F0A4 Give: Frog
+@ $F0A4 label=Give_Frog
+D $F0A4 Give the frog to Istar.
+  $F0A4,$05 Call #R$EB49 with item #N$05: #ITEM$05.
+  $F0A9,$05 Call #R$B78F with #N$04.
+  $F0AE,$05 Call #R$B5D5 with item #N$05: #ITEM$05.
+  $F0B3,$04 Decrease *#R$AE9A by one.
+  $F0B7,$01 #REGa=#N$00.
+  $F0B8,$03 Call #R$B5DC.
+N $F0BB Print "#MESSAGE$D63A".
+  $F0BB,$03 #REGhl=#R$D63A.
+  $F0BE,$03 Call #R$AC35.
+  $F0C1,$05 Set bit 0 of *#R$AE91.
+N $F0C6 Print "#MESSAGE$D66C".
+  $F0C6,$03 #REGhl=#R$D66C.
+  $F0C9,$03 Jump to #R$EAA2.
+
+c $F0CC Kiss: Box
+@ $F0CC label=Kiss_Box
+D $F0CC Kiss the wooden box.
+N $F0CC Print "#MESSAGE$D69D".
+  $F0CC,$03 #REGhl=#R$D69D.
+  $F0CF,$03 Call #R$AC35.
+  $F0D2,$03 #REGa=*#R$AECD.
+  $F0D5,$03 Return if #REGa is not #N$26.
+N $F0D8 Print "#MESSAGE$D6F0".
+  $F0D8,$03 #REGhl=#R$D6F0.
+  $F0DB,$03 Call #R$B776.
+  $F0DE,$06 Return if bit 6 of *#R$AE76 is set.
+  $F0E4,$02 Set bit 6 of *#REGhl.
+  $F0E6,$05 Call #R$B5DC with item #N$4A: #ITEM$4A.
+  $F0EB,$05 Call #R$B78F with #N$03.
+N $F0F0 Print "#MESSAGE$D71B".
+  $F0F0,$03 #REGhl=#R$D71B.
+  $F0F3,$03 Jump to #R$EAA2.
+N $F0F6 Print "#MESSAGE$D72F".
+  $F0F6,$03 #REGhl=#R$D72F.
+  $F0F9,$03 Jump to #R$EA9E.
+N $F0FC Print "#MESSAGE$D743".
+  $F0FC,$03 #REGhl=#R$D743.
+  $F0FF,$03 Jump to #R$EA9E.
+N $F102 Print "#MESSAGE$D759".
+  $F102,$03 #REGhl=#R$D759.
+  $F105,$03 Jump to #R$EA9E.
+N $F108 Print "#MESSAGE$D770".
+  $F108,$03 #REGhl=#R$D770.
+  $F10B,$03 Jump to #R$EA9E.
+N $F10E Print "#MESSAGE$D789".
+  $F10E,$03 #REGhl=#R$D789.
+  $F111,$03 Jump to #R$EA9E.
+
+c $F114 Kiss: Chest
+@ $F114 label=Kiss_Chest
+D $F114 Kiss the chest.
+  $F114,$05 Call #R$B560 with item #N$4E: #ITEM$4E.
+  $F119,$03 Jump to #R$EBAC if the Z flag is set.
+  $F11C,$03 #REGhl=#R$E593.
+  $F11F,$03 Call #R$B5EC.
+  $F122,$04 Jump to #R$F0F6 if #REGa is #N$52.
+  $F126,$04 Jump to #R$F130 if #REGa is #N$51.
+N $F12A Print "#MESSAGE$D7A2".
+  $F12A,$03 #REGhl=#R$D7A2.
+  $F12D,$03 Jump to #R$EA9E.
+  $F130,$06 Call #R$B613 to transform #ITEM$51 into #ITEM$52.
+  $F136,$05 Call #R$B5DC with item #N$03: #ITEM$03.
+  $F13B,$05 Set bit 3 of *#R$AE91.
+  $F140,$05 Call #R$B78F with #N$04.
+N $F145 Print "#MESSAGE$D7BC".
+  $F145,$03 #REGhl=#R$D7BC.
+  $F148,$03 Jump to #R$EA9E.
+N $F14B Print "#MESSAGE$D803".
+  $F14B,$03 #REGhl=#R$D803.
+  $F14E,$03 Jump to #R$EA9E.
+
+c $F151 Kiss: Gate
+@ $F151 label=Kiss_Gate
+D $F151 Kiss the gates that are here.
+  $F151,$03 #REGhl=#R$E55E.
+  $F154,$03 Call #R$B5EC.
+  $F157,$04 Jump to #R$F174 if #REGa is less than #N$0F.
+  $F15B,$04 Jump to #R$F179 if #REGa is less than #N$15.
+
+c $F15F Kiss: Jewelled Gate
+@ $F15F label=Kiss_JewelledGate
+D $F15F Kiss the jewelled gates.
+  $F15F,$03 #REGhl=#R$F9CB.
+  $F162,$03 Call #R$B5EC.
+  $F165,$03 Jump to #R$F14B if the Z flag is not set.
+  $F168,$03 #REGhl=#R$F9D3.
+  $F16B,$03 Call #R$B5EC.
+  $F16E,$03 Jump to #R$F102 if the Z flag is set.
+  $F171,$03 Jump to #R$F10E.
+
+c $F174 Kiss: Copper Gate
+@ $F174 label=Kiss_CopperGate
+D $F174 Kiss the copper gates.
+  $F174,$03 #REGhl=#R$F9C8.
+  $F177,$02 Jump to #R$F162.
+
+c $F179 Kiss: Gold Gate
+@ $F179 label=Kiss_GoldGate
+D $F179 Kiss the golden gates.
+  $F179,$03 #REGhl=#R$F9D0.
+  $F17C,$02 Jump to #R$F162.
+
+c $F17E Kiss: Coffin
+@ $F17E label=Kiss_Coffin
+D $F17E Kiss the coffin.
+  $F17E,$05 Call #R$B560 with item #N$54: #ITEM$54.
+  $F183,$03 Jump to #R$F0F6 if the Z flag is set.
+  $F186,$06 Call #R$B613 to transform #ITEM$53 into #ITEM$54.
+  $F18C,$05 Call #R$B5DC with item #N$55: #ITEM$55.
+N $F191 Print "#MESSAGE$D815".
+  $F191,$03 #REGhl=#R$D815.
+  $F194,$03 Jump to #R$EA9E.
+
+c $F197 Kiss: Clam
+@ $F197 label=Kiss_Clam
+D $F197 Kiss the giant clam.
+  $F197,$05 Call #R$B560 with item #N$74: #ITEM$74.
+  $F19C,$03 Jump to #R$F0F6 if the Z flag is set.
+N $F19F Print "#MESSAGE$D842".
+  $F19F,$03 #REGhl=#R$D842.
+  $F1A2,$03 Jump to #R$EA9E.
+
+c $F1A5 Kiss: Clam With Crowbar
+@ $F1A5 label=Kiss_ClamWithCrowbar
+D $F1A5 Open the giant clam with the crowbar.
+  $F1A5,$05 Call #R$B560 with item #N$74: #ITEM$74.
+  $F1AA,$03 Jump to #R$F0F6 if the Z flag is set.
+  $F1AD,$06 Call #R$B613 to transform #ITEM$73 into #ITEM$74.
+  $F1B3,$05 Call #R$B5DC with item #N$75: #ITEM$75.
+  $F1B8,$05 Call #R$B78F with #N$03.
+N $F1BD Print "#MESSAGE$D876".
+  $F1BD,$03 #REGhl=#R$D876.
+  $F1C0,$03 Jump to #R$EA9E.
+
+c $F1C3 Kiss: Door
+@ $F1C3 label=Kiss_Door
+D $F1C3 Kiss the door.
+  $F1C3,$05 Call #R$B560 with item #N$6F: #ITEM$6F.
+  $F1C8,$03 Jump to #R$F0F6 if the Z flag is set.
+  $F1CB,$03 Jump to #R$EAE2.
+
+c $F1CE Throw: Money To Guard
+@ $F1CE label=Throw_MoneyToGuard
+D $F1CE Throw the money to the guard.
+  $F1CE,$05 Call #R$EB49 with item #N$21: #ITEM$21.
+  $F1D3,$04 Decrease *#R$AE9A by one.
+  $F1D7,$05 Call #R$B5D5 with item #N$21: #ITEM$21.
+  $F1DC,$06 Call #R$B613 to transform #ITEM$6D into #ITEM$6C.
+  $F1E2,$06 Call #R$B613 to transform #ITEM$6E into #ITEM$6F.
+  $F1E8,$05 Write #N$3B to open eastbound access to #ROOM$3B from #ROOM$3A.
+  $F1ED,$05 Call #R$B78F with #N$02.
+N $F1F2 Print "#MESSAGE$D8A5".
+  $F1F2,$03 #REGhl=#R$D8A5.
+  $F1F5,$03 Jump to #R$EA9E.
+  $F1F8,$02 No operation.
+
+c $F1FA Close: Bible
+@ $F1FA label=Close_Bible
+D $F1FA Close the bible.
+  $F1FA,$05 Call #R$EB49 with item #N$23: #ITEM$23.
+N $F1FF Print "#MESSAGE$D8EF".
+  $F1FF,$03 #REGhl=#R$D8EF.
+  $F202,$03 Jump to #R$EA9E.
 
 c $F205 Response: "Don't Be Ridiculous"
 @ $F205 label=Response_DontBeRidiculous
@@ -4878,9 +6638,323 @@ N $F205 Print "#MESSAGE$D90C".
   $F205,$03 #REGhl=#R$D90C.
   $F208,$03 Jump to #R$EA9E.
 
-b $F20B Data
-@ $F20B label=Handler_UseAndLaterPhrases
-  $F20B,$032C
+c $F20B Response: "It Is Empty Already"
+@ $F20B label=Response_ItIsEmptyAlready
+D $F20B Tell the player "It Is Empty Already"
+N $F20B Print "#MESSAGE$E214".
+  $F20B,$03 #REGhl=#R$E214.
+  $F20E,$03 Jump to #R$EA9E.
+
+c $F211 Use: Bottle
+@ $F211 label=Use_Bottle
+D $F211 Empty the bottle that is held.
+  $F211,$03 #REGhl=#R$E52F.
+  $F214,$03 Call #R$B5EC.
+  $F217,$03 Call #R$EB49.
+  $F21A,$01 Copy #REGe into #REGa.
+  $F21B,$05 Jump to #R$F20B if #REGa is #N$37.
+  $F220,$05 Jump to #R$F205 if #REGa is #N$3B.
+  $F225,$01 Copy #REGa into #REGb.
+  $F226,$02 #REGc=#N$37.
+  $F228,$03 Call #R$B613.
+N $F22B Print "#MESSAGE$E229".
+  $F22B,$03 #REGhl=#R$E229.
+  $F22E,$03 Jump to #R$EA9E.
+
+c $F231 Wave: Flute
+@ $F231 label=Wave_Flute
+D $F231 Wave the silver flute.
+  $F231,$05 Call #R$EB49 with item #N$26: #ITEM$26.
+  $F236,$03 Call #R$EAE8.
+  $F239,$03 #REGhl=#R$E52F.
+  $F23C,$03 Call #R$B5EC.
+  $F23F,$02 Jump to #R$F251 if the Z flag is not set.
+  $F241,$04 Jump to #R$F251 if #REGa is #N$3B.
+  $F245,$01 Copy #REGa into #REGb.
+  $F246,$02 #REGc=#N$3B.
+  $F248,$03 Call #R$B613.
+N $F24B Print "#MESSAGE$D937".
+  $F24B,$03 #REGhl=#R$D937.
+  $F24E,$03 Call #R$AC35.
+  $F251,$05 Call #R$B560 with item #N$2D: #ITEM$2D.
+  $F256,$02 Jump to #R$F296 if the Z flag is set.
+  $F258,$05 Call #R$B560 with item #N$2E: #ITEM$2E.
+  $F25D,$02 Jump to #R$F296 if the Z flag is set.
+  $F25F,$05 Call #R$B560 with item #N$3E: #ITEM$3E.
+  $F264,$03 Jump to #R$F2EF if the Z flag is set.
+  $F267,$05 Call #R$B626 with item #N$58: #ITEM$58.
+  $F26C,$01 Return if the Z flag is not set.
+  $F26D,$05 Call #R$B626 with item #N$32: #ITEM$32.
+  $F272,$02 Jump to #R$F280 if the Z flag is set.
+  $F274,$06 Call #R$B613 to transform #ITEM$58 into #ITEM$59.
+N $F27A Print "#MESSAGE$D94C".
+  $F27A,$03 #REGhl=#R$D94C.
+  $F27D,$03 Jump to #R$EA9E.
+  $F280,$05 Call #R$B5D5 with item #N$58: #ITEM$58.
+  $F285,$06 Call #R$B613 to transform #ITEM$32 into #ITEM$83.
+  $F28B,$05 Call #R$B78F with #N$03.
+N $F290 Print "#MESSAGE$D97F".
+  $F290,$03 #REGhl=#R$D97F.
+  $F293,$03 Jump to #R$EA9E.
+  $F296,$05 Call #R$B5D5 with item #N$2D: #ITEM$2D.
+  $F29B,$05 Call #R$B5D5 with item #N$2E: #ITEM$2E.
+  $F2A0,$07 Write #N$00 to close the matching map exits.
+N $F2A7 Print "#MESSAGE$D9B8".
+  $F2A7,$03 #REGhl=#R$D9B8.
+  $F2AA,$03 Call #R$AC35.
+  $F2AD,$05 Call #R$B560 with item #N$2C: #ITEM$2C.
+  $F2B2,$01 Return if the Z flag is not set.
+  $F2B3,$05 Call #R$B5D5 with item #N$2C: #ITEM$2C.
+  $F2B8,$05 Call #R$B78F with #N$03.
+  $F2BD,$05 Set bit 2 of *#R$AE77.
+N $F2C2 Print "#MESSAGE$D9E4".
+  $F2C2,$03 #REGhl=#R$D9E4.
+  $F2C5,$03 Jump to #R$EAA2.
+  $F2C8,$01 No operation.
+
+c $F2C9 Wave: Mandolin
+@ $F2C9 label=Wave_Mandolin
+D $F2C9 Wave the mandolin.
+  $F2C9,$05 Call #R$EB49 with item #N$46: #ITEM$46.
+  $F2CE,$03 Call #R$EAE8.
+  $F2D1,$03 #REGa=*#R$AECD.
+  $F2D4,$03 Return if #REGa is not #N$23.
+  $F2D7,$05 Write #N$24 to open eastbound access to #ROOM$24 from #ROOM$23.
+  $F2DC,$06 Return if bit 7 of *#R$AE76 is set.
+  $F2E2,$02 Set bit 7 of *#REGhl.
+  $F2E4,$05 Call #R$B78F with #N$02.
+N $F2E9 Print "#MESSAGE$DA05".
+  $F2E9,$03 #REGhl=#R$DA05.
+  $F2EC,$03 Jump to #R$EAA2.
+  $F2EF,$06 Call #R$B613 to transform #ITEM$3E into #ITEM$01.
+  $F2F5,$05 Set bit 1 of *#R$AE91.
+  $F2FA,$05 Call #R$B78F with #N$04.
+N $F2FF Print "#MESSAGE$DA36".
+  $F2FF,$03 #REGhl=#R$DA36.
+  $F302,$03 Jump to #R$EA9E.
+
+c $F305 Play: Barrowight With Bible
+@ $F305 label=Play_BarrowightWithBible
+D $F305 Play the bible against the barrowight.
+  $F305,$05 Call #R$EB49 with item #N$23: #ITEM$23.
+  $F30A,$05 Call #R$B5D5 with item #N$22: #ITEM$22.
+  $F30F,$05 Call #R$B78F with #N$03.
+N $F314 Print "#MESSAGE$DA61".
+  $F314,$03 #REGhl=#R$DA61.
+  $F317,$03 Jump to #R$EA9E.
+N $F31A Print "#MESSAGE$DB77".
+  $F31A,$03 #REGhl=#R$DB77.
+  $F31D,$03 Jump to #R$EA9E.
+N $F320 Print "#MESSAGE$DB8A".
+  $F320,$03 #REGhl=#R$DB8A.
+  $F323,$03 Jump to #R$EA9E.
+
+c $F326 Play: Serpent With Songbird
+@ $F326 label=Play_SerpentWithSongbird
+D $F326 Play the songbird against the serpent.
+  $F326,$05 Call #R$B560 with item #N$3D: #ITEM$3D.
+  $F32B,$03 Jump to #R$F31A if the Z flag is set.
+  $F32E,$05 Call #R$EB49 with item #N$2B: #ITEM$2B.
+  $F333,$08 Jump to #R$ECFA if bit 0 of *#R$AE78 is not set.
+  $F33B,$06 Call #R$B613 to transform #ITEM$3C into #ITEM$3D.
+  $F341,$05 Write #N$1F to open westbound access to #ROOM$1F from #ROOM$20.
+  $F346,$05 Call #R$B78F with #N$03.
+N $F34B Print "#MESSAGE$DA93".
+  $F34B,$03 #REGhl=#R$DA93.
+  $F34E,$03 Jump to #R$EA9E.
+
+c $F351 Play: Hydra With Sword
+@ $F351 label=Play_HydraWithSword
+D $F351 Play the sword against the hydra.
+  $F351,$05 Call #R$B560 with item #N$49: #ITEM$49.
+  $F356,$03 Jump to #R$F31A if the Z flag is set.
+  $F359,$05 Call #R$EB49 with item #N$2F: #ITEM$2F.
+N $F35E Print "#MESSAGE$DACF".
+  $F35E,$03 #REGhl=#R$DACF.
+  $F361,$03 Jump to #R$EA9E.
+
+c $F364 Play: Hydra With Spear
+@ $F364 label=Play_HydraWithSpear
+D $F364 Play the spear against the hydra.
+  $F364,$05 Call #R$B560 with item #N$49: #ITEM$49.
+  $F369,$03 Jump to #R$F31A if the Z flag is set.
+  $F36C,$05 Call #R$EB49 with item #N$30: #ITEM$30.
+  $F371,$06 Call #R$B613 to transform #ITEM$48 into #ITEM$49.
+  $F377,$05 Write #N$23 to open westbound access to #ROOM$23 from #ROOM$24.
+  $F37C,$05 Call #R$B78F with #N$03.
+N $F381 Print "#MESSAGE$DB23".
+  $F381,$03 #REGhl=#R$DB23.
+  $F384,$03 Jump to #R$EA9E.
+
+c $F387 Play: Vampire With Cross
+@ $F387 label=Play_VampireWithCross
+D $F387 Play the silver cross against the vampire.
+  $F387,$05 Call #R$EB49 with item #N$7B: #ITEM$7B.
+  $F38C,$06 Call #R$B613 to transform #ITEM$55 into #ITEM$02.
+  $F392,$05 Set bit 2 of *#R$AE91.
+  $F397,$05 Call #R$B78F with #N$04.
+N $F39C Print "#MESSAGE$DB9D".
+  $F39C,$03 #REGhl=#R$DB9D.
+  $F39F,$03 Call #R$AC35.
+N $F3A2 Print "#MESSAGE$DBDC".
+  $F3A2,$03 #REGhl=#R$DBDC.
+  $F3A5,$03 Jump to #R$EAA2.
+
+c $F3A8 Play: Knight With Acid
+@ $F3A8 label=Play_KnightWithAcid
+D $F3A8 Play the bottle of acid against the Black Knight.
+  $F3A8,$05 Call #R$B560 with item #N$57: #ITEM$57.
+  $F3AD,$03 Jump to #R$F320 if the Z flag is set.
+  $F3B0,$05 Call #R$EB49 with item #N$39: #ITEM$39.
+  $F3B5,$06 Call #R$B613 to transform #ITEM$39 into #ITEM$37.
+  $F3BB,$06 Call #R$B613 to transform #ITEM$56 into #ITEM$57.
+  $F3C1,$05 Write #N$2A to open westbound access to #ROOM$2A from #ROOM$2B.
+  $F3C6,$05 Call #R$B78F with #N$03.
+N $F3CB Print "#MESSAGE$DC0E".
+  $F3CB,$03 #REGhl=#R$DC0E.
+  $F3CE,$03 Jump to #R$EA9E.
+
+c $F3D1 Play: Dragon With Sword
+@ $F3D1 label=Play_DragonWithSword
+D $F3D1 Play the sword against the dragon.
+  $F3D1,$05 Call #R$B560 with item #N$5E: #ITEM$5E.
+  $F3D6,$03 Jump to #R$F31A if the Z flag is set.
+  $F3D9,$05 Call #R$EB49 with item #N$2F: #ITEM$2F.
+  $F3DE,$06 Call #R$B613 to transform #ITEM$5D into #ITEM$5E.
+  $F3E4,$05 Write #N$29 to open northbound access to #ROOM$29 from #ROOM$31.
+  $F3E9,$05 Call #R$B78F with #N$03.
+N $F3EE Print "#MESSAGE$DC65".
+  $F3EE,$03 #REGhl=#R$DC65.
+  $F3F1,$03 Jump to #R$EA9E.
+  $F3F4,$01 No operation.
+N $F3F5 Print "#MESSAGE$DC9D".
+  $F3F5,$03 #REGhl=#R$DC9D.
+  $F3F8,$03 Jump to #R$EA9E.
+
+c $F3FB Play: Witch With Water
+@ $F3FB label=Play_WitchWithWater
+D $F3FB Play the bottle of water against the witch.
+  $F3FB,$05 Call #R$B560 with item #N$7A: #ITEM$7A.
+  $F400,$02 Jump to #R$F408 if the Z flag is not set.
+N $F402 Print "#MESSAGE$DCFE".
+  $F402,$03 #REGhl=#R$DCFE.
+  $F405,$03 Jump to #R$EA9E.
+  $F408,$05 Call #R$EB49 with item #N$38: #ITEM$38.
+  $F40D,$06 Call #R$B613 to transform #ITEM$38 into #ITEM$37.
+  $F413,$06 Call #R$B613 to transform #ITEM$79 into #ITEM$7A.
+  $F419,$05 Write #N$3E to open westbound access to #ROOM$3E from #ROOM$3F.
+  $F41E,$05 Call #R$B78F with #N$03.
+N $F423 Print "#MESSAGE$DCE4".
+  $F423,$03 #REGhl=#R$DCE4.
+  $F426,$03 Jump to #R$EA9E.
+  $F429,$01 No operation.
+
+c $F42A Kill: Chest
+@ $F42A label=Kill_Chest
+D $F42A Oil the rusty chest with the bottle of oil.
+  $F42A,$05 Call #R$B5CF with item #N$3A: #ITEM$3A.
+  $F42F,$02 Jump to #R$F437 if the Z flag is set.
+N $F431 Print "#MESSAGE$DD26".
+  $F431,$03 #REGhl=#R$DD26.
+  $F434,$03 Jump to #R$EA9E.
+  $F437,$05 Call #R$B560 with item #N$4E: #ITEM$4E.
+  $F43C,$02 Jump to #R$F444 if the Z flag is not set.
+N $F43E Print "#MESSAGE$D256".
+  $F43E,$03 #REGhl=#R$D256.
+  $F441,$03 Jump to #R$EA9E.
+  $F444,$06 Call #R$B613 to transform #ITEM$3A into #ITEM$37.
+  $F44A,$05 Call #R$B560 with item #N$50: #ITEM$50.
+  $F44F,$03 Jump to #R$EAE8 if the Z flag is not set.
+  $F452,$06 Call #R$B613 to transform #ITEM$50 into #ITEM$51.
+  $F458,$05 Call #R$B78F with #N$02.
+  $F45D,$03 Jump to #R$EAE8.
+
+c $F460 Oil: Plant
+@ $F460 label=Oil_Plant
+D $F460 Water the plant from the bottle of water.
+  $F460,$05 Call #R$B5CF with item #N$38: #ITEM$38.
+  $F465,$02 Jump to #R$F46D if the Z flag is set.
+N $F467 Print "#MESSAGE$DD37".
+  $F467,$03 #REGhl=#R$DD37.
+  $F46A,$03 Jump to #R$EA9E.
+  $F46D,$06 Call #R$B613 to transform #ITEM$38 into #ITEM$37.
+  $F473,$03 #REGhl=#R$E5B6.
+  $F476,$03 Call #R$B5EC.
+  $F479,$05 Jump to #R$EAE8 if #REGa is #N$78.
+  $F47E,$05 Jump to #R$EAE8 if #REGa is #N$85.
+  $F483,$04 Jump to #R$F49B if #REGa is #N$77.
+  $F487,$06 Call #R$B613 to transform #ITEM$76 into #ITEM$77.
+  $F48D,$05 Call #R$B78F with #N$03.
+  $F492,$03 Call #R$EAE8.
+N $F495 Print "#MESSAGE$DD4A".
+  $F495,$03 #REGhl=#R$DD4A.
+  $F498,$03 Jump to #R$EA9E.
+  $F49B,$06 Call #R$B613 to transform #ITEM$77 into #ITEM$78.
+  $F4A1,$05 Write #N$1E to open up access to #ROOM$1E from #ROOM$3E.
+  $F4A6,$06 Call #R$B5FD with item #N$85 in room #N$1E.
+  $F4AC,$05 Call #R$B78F with #N$02.
+  $F4B1,$03 Call #R$EAE8.
+N $F4B4 Print "#MESSAGE$DD8F".
+  $F4B4,$03 #REGhl=#R$DD8F.
+  $F4B7,$03 Jump to #R$EA9E.
+
+c $F4BA Oil: Ashes
+@ $F4BA label=Oil_Ashes
+D $F4BA Pour the bottle of water on the ashes.
+  $F4BA,$05 Call #R$B5CF with item #N$38: #ITEM$38.
+  $F4BF,$02 Jump to #R$F4C7 if the Z flag is set.
+N $F4C1 Print "#MESSAGE$DD37".
+  $F4C1,$03 #REGhl=#R$DD37.
+  $F4C4,$03 Jump to #R$EA9E.
+  $F4C7,$05 Call #R$B5D5 with item #N$81: #ITEM$81.
+  $F4CC,$05 Set bit 1 of *#R$AE76.
+  $F4D1,$06 Call #R$B613 to transform #ITEM$38 into #ITEM$37.
+  $F4D7,$05 Call #R$B78F with #N$03.
+  $F4DC,$03 Call #R$EAE8.
+N $F4DF Print "#MESSAGE$DDCC".
+  $F4DF,$03 #REGhl=#R$DDCC.
+  $F4E2,$03 Jump to #R$EA9E.
+
+c $F4E5 Drink: Water
+@ $F4E5 label=Drink_Water
+D $F4E5 Drink the bottle of water.
+  $F4E5,$05 Call #R$B560 with item #N$38: #ITEM$38.
+  $F4EA,$02 Jump to #R$F4F2 if the Z flag is not set.
+  $F4EC,$06 Call #R$B613 to transform #ITEM$38 into #ITEM$37.
+N $F4F2 Print "#MESSAGE$DE0E".
+  $F4F2,$03 #REGhl=#R$DE0E.
+  $F4F5,$03 Jump to #R$EA9E.
+
+c $F4F8 Drink: Potion
+@ $F4F8 label=Drink_Potion
+E $F4F8 Continue on to #R$F50D.
+D $F4F8 Drink the potion that is held, or ask the player to be more specific.
+  $F4F8,$03 #REGhl=#R$E5AA.
+  $F4FB,$03 Call #R$B606.
+  $F4FE,$05 Jump to #R$ECF4 if more than one is present.
+  $F503,$03 #REGhl=#R$E5AA.
+  $F506,$03 Call #R$B5EC.
+  $F509,$04 Jump to #R$F528 if #REGa is #N$6A.
+
+c $F50D Drink: White Potion
+@ $F50D label=Drink_WhitePotion
+D $F50D Drink the white potion.
+  $F50D,$05 Call #R$EB49 with item #N$6B: #ITEM$6B.
+  $F512,$05 Call #R$B5D5 with item #N$6B: #ITEM$6B.
+  $F517,$05 Set bit 0 of *#R$AE76.
+  $F51C,$05 Call #R$B78F with #N$02.
+  $F521,$04 Decrease *#R$AE9A by one.
+  $F525,$03 Jump to #R$EAE8.
+
+c $F528 Drink: Black Potion
+@ $F528 label=Drink_BlackPotion
+D $F528 Drink the black potion.
+  $F528,$05 Call #R$EB49 with item #N$6A: #ITEM$6A.
+  $F52D,$03 #REGhl=#R$E9B5.
+  $F530,$01 Swap #REGhl with the return address on the stack.
+N $F531 Print "#MESSAGE$DE2B".
+  $F531,$03 #REGhl=#R$DE2B.
+  $F534,$03 Jump to #R$EA9E.
 
 c $F537 Response: "You Have Nothing To Dig With"
 @ $F537 label=Response_YouHaveNothingToDigWith
@@ -4911,9 +6985,169 @@ D $F54C Slide the word tokens down one place so the verb is dropped.
   $F54F,$0D Slide the word tokens down one place and mark the last slot empty.
   $F55C,$01 Return.
 
-b $F55D Data
-@ $F55D label=Handler_FillAndOtherPhrases
-  $F55D,$01B8
+c $F55D Fill: Gas
+@ $F55D label=Fill_Gas
+D $F55D Light the marsh gas with the tinderbox.
+  $F55D,$05 Call #R$B5CF with item #N$04: #ITEM$04.
+  $F562,$02 Jump to #R$F56A if the Z flag is set.
+N $F564 Print "#MESSAGE$DEDC".
+  $F564,$03 #REGhl=#R$DEDC.
+  $F567,$03 Jump to #R$EA9E.
+  $F56A,$08 Jump to #R$EFE2 if bit 1 of *#R$AE77 is set.
+  $F572,$02 Set bit 1 of *#R$AE77.
+  $F574,$05 Call #R$B5D5 with item #N$06: #ITEM$06.
+  $F579,$05 Write #N$07 to open eastbound access to #ROOM$07 from #ROOM$06.
+  $F57E,$05 Call #R$B78F with #N$03.
+N $F583 Print "#MESSAGE$DEFF".
+  $F583,$03 #REGhl=#R$DEFF.
+  $F586,$03 Jump to #R$EA9E.
+
+c $F589 Response: "It Isn't Here"
+@ $F589 label=Response_ItIsntHere
+D $F589 Tell the player "It Isn't Here"
+N $F589 Print "#MESSAGE$DF39".
+  $F589,$03 #REGhl=#R$DF39.
+  $F58C,$03 Jump to #R$EA9E.
+
+c $F58F Take: Falcon
+@ $F58F label=Take_Falcon
+D $F58F Take the falcon unless a strange force stops the player.
+  $F58F,$05 Call #R$EAF4 with item #N$36: #ITEM$36.
+  $F594,$07 Jump to #R$F5A1 if bit 0 of *#R$AE78 is set.
+N $F59B Print "#MESSAGE$D2F1".
+  $F59B,$03 #REGhl=#R$D2F1.
+  $F59E,$03 Jump to #R$EA9E.
+  $F5A1,$08 Jump to #R$ED25 if bit 5 of *#R$AE76 is not set.
+  $F5A9,$05 Call #R$B78F with #N$01.
+  $F5AE,$05 Jump to #R$EB25 with item #N$36: #ITEM$36.
+
+c $F5B3 Take: Songbird
+@ $F5B3 label=Take_Songbird
+D $F5B3 Take the songbird, or cage it if the empty cage is held.
+  $F5B3,$03 #REGhl=#R$E521.
+  $F5B6,$03 Call #R$B5EC.
+  $F5B9,$05 Jump to #R$EB54 if #REGa is not #N$2A.
+  $F5BE,$07 Jump to #R$F5CB if bit 0 of *#R$AE78 is set.
+N $F5C5 Print "#MESSAGE$D2C3".
+  $F5C5,$03 #REGhl=#R$D2C3.
+  $F5C8,$03 Jump to #R$EA9E.
+  $F5CB,$05 Call #R$B5CF with item #N$64: #ITEM$64.
+  $F5D0,$03 Jump to #R$ED5F if the Z flag is not set.
+  $F5D3,$06 Call #R$B613 to transform #ITEM$64 into #ITEM$2B.
+  $F5D9,$05 Call #R$B5D5 with item #N$2A: #ITEM$2A.
+  $F5DE,$05 Call #R$B78F with #N$02.
+  $F5E3,$03 Jump to #R$EAE8.
+
+c $F5E6 Play: Bat With Falcon
+@ $F5E6 label=Play_BatWithFalcon
+D $F5E6 Play the falcon against the giant bat.
+  $F5E6,$05 Call #R$B560 with item #N$7D: #ITEM$7D.
+  $F5EB,$03 Jump to #N$00A2 if the Z flag is set.
+  $F5EE,$05 Call #R$EB49 with item #N$36: #ITEM$36.
+  $F5F3,$07 Jump to #R$F600 if bit 0 of *#R$AE78 is set.
+N $F5FA Print "#MESSAGE$DD13".
+  $F5FA,$03 #REGhl=#R$DD13.
+  $F5FD,$03 Jump to #R$EA9E.
+  $F600,$06 Call #R$B613 to transform #ITEM$7C into #ITEM$7D.
+  $F606,$05 Call #R$B78F with #N$03.
+N $F60B Print "#MESSAGE$DF83".
+  $F60B,$03 #REGhl=#R$DF83.
+  $F60E,$03 Jump to #R$EA9E.
+
+c $F611 Read: Wand
+@ $F611 label=Read_Wand
+D $F611 Read the wand.
+  $F611,$05 Call #R$EB49 with item #N$24: #ITEM$24.
+  $F616,$07 Jump to #R$F623 if bit 1 of *#R$AE78 is set.
+N $F61D Print "#MESSAGE$D28C".
+  $F61D,$03 #REGhl=#R$D28C.
+  $F620,$03 Jump to #R$EA9E.
+  $F623,$03 #REGa=*#R$AECD.
+  $F626,$04 Jump to #R$F647 if #REGa is not #N$16.
+  $F62A,$05 Call #R$B560 with item #N$29: #ITEM$29.
+  $F62F,$03 Jump to #R$ED2B if the Z flag is not set.
+  $F632,$05 Call #R$B5D5 with item #N$29: #ITEM$29.
+  $F637,$05 Write #N$15 to open westbound access to #ROOM$15 from #ROOM$16.
+  $F63C,$05 Call #R$B78F with #N$03.
+N $F641 Print "#MESSAGE$E004".
+  $F641,$03 #REGhl=#R$E004.
+  $F644,$03 Jump to #R$EA9E.
+  $F647,$04 Jump to #R$F689 if #REGa is not #N$19.
+  $F64B,$05 Call #R$B560 with item #N$2D: #ITEM$2D.
+  $F650,$03 Jump to #R$ED2B if the Z flag is set.
+  $F653,$06 Call #R$B5FD with item #N$2D in room #N$19.
+  $F659,$06 Call #R$B5FD with item #N$2E in room #N$21.
+  $F65F,$05 Write #N$21 to open southbound access to #ROOM$21 from #ROOM$19.
+  $F664,$05 Write #N$19 to open northbound access to #ROOM$19 from #ROOM$21.
+N $F669 Print "#MESSAGE$E06F".
+  $F669,$03 #REGhl=#R$E06F.
+  $F66C,$03 Call #R$AC35.
+  $F66F,$06 Return if bit 2 of *#R$AE77 is set.
+  $F675,$05 Call #R$B5DC with item #N$2C: #ITEM$2C.
+  $F67A,$04 Write #N$00 to close the southbound exit from #ROOM$19.
+  $F67E,$05 Call #R$B78F with #N$02.
+N $F683 Print "#MESSAGE$E0B0".
+  $F683,$03 #REGhl=#R$E0B0.
+  $F686,$03 Jump to #R$EA9E.
+  $F689,$04 Jump to #R$F653 if #REGa is #N$21.
+  $F68D,$03 Jump to #R$F205.
+
+c $F690 Take: Map
+@ $F690 label=Take_Map
+D $F690 Take the map unless the pirate is present.
+  $F690,$02 #REGa=#N$61.
+N $F692 Take the item in #REGa unless the pirate is present.
+@ $F692 label=Take_Map_UnlessPiratePresent
+  $F692,$03 Call #R$EAF4.
+  $F695,$05 Call #R$B560 with item #N$62: #ITEM$62.
+  $F69A,$03 Jump to #R$EB25 if the Z flag is not set.
+N $F69D Print "#MESSAGE$E0EA".
+  $F69D,$03 #REGhl=#R$E0EA.
+  $F6A0,$03 Jump to #R$EA9E.
+
+c $F6A3 Close: Map
+@ $F6A3 label=Close_Map
+D $F6A3 Close the map.
+  $F6A3,$05 Call #R$EB49 with item #N$61: #ITEM$61.
+  $F6A8,$08 Jump to #R$EAD6 if bit 1 of *#R$AE78 is not set.
+N $F6B0 Print "#MESSAGE$E103".
+  $F6B0,$03 #REGhl=#R$E103.
+  $F6B3,$03 Jump to #R$EA9E.
+
+c $F6B6 Close: Scroll
+@ $F6B6 label=Close_Scroll
+D $F6B6 Close the scroll.
+  $F6B6,$05 Call #R$EB49 with item #N$25: #ITEM$25.
+  $F6BB,$08 Jump to #R$EAD6 if bit 1 of *#R$AE78 is not set.
+N $F6C3 Print "#MESSAGE$E13F".
+  $F6C3,$03 #REGhl=#R$E13F.
+  $F6C6,$03 Jump to #R$EA9E.
+
+c $F6C9 Wave: Lyre
+@ $F6C9 label=Wave_Lyre
+D $F6C9 Wave the golden lyre.
+  $F6C9,$05 Call #R$EB49 with item #N$45: #ITEM$45.
+  $F6CE,$08 Jump to #R$EAE8 if bit 2 of *#R$AE78 is not set.
+  $F6D6,$05 Call #R$B560 with item #N$4E: #ITEM$4E.
+  $F6DB,$03 Jump to #R$EAE8 if the Z flag is not set.
+  $F6DE,$06 Call #R$B613 to transform #ITEM$4E into #ITEM$4F.
+  $F6E4,$05 Call #R$B78F with #N$03.
+N $F6E9 Print "#MESSAGE$E169".
+  $F6E9,$03 #REGhl=#R$E169.
+  $F6EC,$03 Jump to #R$EA9E.
+
+c $F6EF Play: Pirate With Dagger
+@ $F6EF label=Play_PirateWithDagger
+D $F6EF Play the dagger against the pirate.
+  $F6EF,$05 Call #R$B560 with item #N$63: #ITEM$63.
+  $F6F4,$03 Jump to #R$F320 if the Z flag is set.
+  $F6F7,$05 Call #R$EB49 with item #N$31: #ITEM$31.
+  $F6FC,$08 Jump to #R$F3F5 if bit 3 of *#R$AE78 is not set.
+  $F704,$06 Call #R$B613 to transform #ITEM$62 into #ITEM$63.
+  $F70A,$05 Call #R$B78F with #N$03.
+N $F70F Print "#MESSAGE$E1C5".
+  $F70F,$03 #REGhl=#R$E1C5.
+  $F712,$03 Jump to #R$EA9E.
 
 c $F715 Action: Help
 @ $F715 label=Action_Help
@@ -5294,9 +7528,15 @@ D $F99C Phrase pointers and handler pointers for Kiss.
 W $F99C,$02
 L $F99C,$02,$16
 
-b $F9C8 Data
+b $F9C8 Table: Gate Items
 @ $F9C8 label=Table_GateItems
-  $F9C8,$14
+D $F9C8 Lists of gate item IDs, each terminated with #N$FF. The kiss handlers
+. at #R$F151 walk these lists to see which gates are here.
+B $F9C8,$03 Copper gates: #ITEM$09 and #ITEM$0C.
+B $F9CB,$05 Golden gates: #ITEM$15, #ITEM$18, #ITEM$1B or #ITEM$1E.
+B $F9D0,$03 Jewelled gates: #ITEM$0F and #ITEM$12.
+B $F9D3,$09 Open gates: #ITEM$0A, #ITEM$0D, #ITEM$10, #ITEM$13, #ITEM$16,
+. #ITEM$19, #ITEM$1C or #ITEM$1F.
 
 c $F9DC Action: Open
 @ $F9DC label=Action_Open
@@ -5497,7 +7737,7 @@ E $FB13 View the equivalent code in;
 . LIST#
 D $FB13 Carry out the "Light" command.
 N $FB13 Match the phrase tokens.
-  $FB13,$03 #REGhl=#N$E7B5.
+  $FB13,$03 #REGhl=#R$E7B5.
   $FB16,$03 Call #R$B575.
   $FB19,$03 Jump to #R$EB8F if the tokens do not match.
   $FB1C,$04 #REGa=#N$01; jump to #R$FB45.
@@ -5506,7 +7746,7 @@ c $FB20 Action: Rub
 @ $FB20 label=Action_Rub
 D $FB20 Carry out the "Rub" command.
 N $FB20 Match the phrase tokens.
-  $FB20,$03 #REGhl=#N$E7CE.
+  $FB20,$03 #REGhl=#R$E7CE.
   $FB23,$03 Call #R$B575.
   $FB26,$03 Jump to #R$EB8F if the tokens do not match.
   $FB29,$04 #REGa=#N$02; jump to #R$FB45.
@@ -5515,7 +7755,7 @@ c $FB2D Action: Say
 @ $FB2D label=Action_Say
 D $FB2D Carry out the "Say" command.
 N $FB2D Match the phrase tokens.
-  $FB2D,$03 #REGhl=#N$E7DA.
+  $FB2D,$03 #REGhl=#R$E7DA.
   $FB30,$03 Call #R$B575.
   $FB33,$03 Jump to #R$EB8F if the tokens do not match.
   $FB36,$04 #REGa=#N$04; jump to #R$FB45.
@@ -5524,7 +7764,7 @@ c $FB3A Action: Attack
 @ $FB3A label=Action_Attack
 D $FB3A Carry out the "Attack" command.
 N $FB3A Match the phrase tokens.
-  $FB3A,$03 #REGhl=#N$E7E1.
+  $FB3A,$03 #REGhl=#R$E7E1.
   $FB3D,$03 Call #R$B575.
   $FB40,$03 Jump to #R$EB8F if the tokens do not match.
   $FB43,$02 #REGa=#N$08.
@@ -5639,8 +7879,7 @@ S $FC63,$79
 
 g $FCDC Flags: Room Change
 @ $FCDC label=Default_Flags_RoomChange
-D $FCDC Copied to #R$AE76. Bit 0 and bit 1 gate the special move out of room
-. #N$37.
+D $FCDC Copied to #R$AE76.
 B $FCDC,$01
 
 g $FCDD Flag: Beach Dug
@@ -5769,8 +8008,8 @@ g $FD46 Pointer: Object Noun Phrases
 D $FD46 Copied to #R$AEE0.
 W $FD46,$02
 
-g $FD48 Pointer: Character Set
-@ $FD48 label=Default_Pointer_CharacterSet
+g $FD48 Pointer: Object List Table
+@ $FD48 label=Default_Pointer_ObjectList
 D $FD48 Copied to #R$AEE2.
 W $FD48,$02
 
@@ -5928,7 +8167,7 @@ N $FDDF All the image routines use this same routine.
   $FDE7,$03 Call #R$ABE1.
   $FDEA,$01 Return.
 
-w $FDEB Jump Table: Room Images
+g $FDEB Jump Table: Room Images
 @ $FDEB label=JumpTable_RoomImages
 E $FDEB View the equivalent code in;
 . #LIST
@@ -5937,17 +8176,45 @@ E $FDEB View the equivalent code in;
 . { #ANDROMEDA$FA68 }
 . { #WARLORD$FEFC }
 . LIST#
-D $FDEB One word per picture slot. The oil room and the acid room share the
-. fourth entry.
-W $FDEB,$02
+D $FDEB See #R$FDFF.
+W $FDEB,$02 Location Slot: #N((#PC-$FDEB)/$02).
 L $FDEB,$02,$0A
 
-b $FDFF Table: Rooms With Images
+g $FDFF Table: Rooms With Images
 @ $FDFF label=Table_RoomsWithImages
-D $FDFF Room ids that have a picture, in the same order as #R$FDEB, then an
-. #N$00 end marker.
-B $FDFF,$01 Room #N(#PEEK(#PC)).
-L $FDFF,$01,$0A
+E $FDFF View the equivalent code in;
+. #LIST
+. { #SHOCK$BB93 }
+. { #FOREST$E806 }
+. { #JEWELS$E95D }
+. { #ANDROMEDA$8CFC }
+. { #WARLORD$FEF1 }
+. LIST#
+D $FDFF The #N$0A rooms that have a picture (the count is at #R$AEF6).
+. #R$B41F looks the current room up here (through #R$AED8); where it is found
+. picks the drawing routine in #R$FDEB and the "already seen" bit in #R$AE7E.
+. A picture is shown the first time the player enters the room, and again
+. whenever they type LOOK. An #N$00 end marker follows the list.
+B $FDFF,$01 Image #N$00: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FDAB; seen flag: bit 0 of #R$AE7E.
+B $FE00,$01 Image #N$01: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FDB1; seen flag: bit 1 of #R$AE7E.
+B $FE01,$01 Image #N$02: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FDB7; seen flag: bit 2 of #R$AE7E.
+B $FE02,$01 Image #N$03: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FDBD; seen flag: bit 3 of #R$AE7E.
+B $FE03,$01 Image #N$04: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FDBD; seen flag: bit 4 of #R$AE7E.
+B $FE04,$01 Image #N$05: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FDC3; seen flag: bit 5 of #R$AE7E.
+B $FE05,$01 Image #N$06: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FDC9; seen flag: bit 6 of #R$AE7E.
+B $FE06,$01 Image #N$07: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FDCF; seen flag: bit 7 of #R$AE7E.
+B $FE07,$01 Image #N$08: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FDD5; seen flag: bit 0 of #R$AE7E(#N$AE7F).
+B $FE08,$01 Image #N$09: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$FDDB; seen flag: bit 1 of #R$AE7E(#N$AE7F).
 B $FE09,$01 Terminator.
 
 u $FE0A

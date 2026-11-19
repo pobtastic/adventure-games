@@ -12,7 +12,7 @@
 > $4000 @expand=#IF({asm})(#DEF(#PICTURE()(title,fname,attr=0)))
 > $4000 @expand=#DEF(#ROOM(id) #IF($01<$id<=$3F)(#HTML(&#10;)#SIM(start=$6754,stop=$6762,ix=$8568,de=$id)#HTML(&#10;)#R({sim[HL]})(#MAP({sim[HL]})(#HTML(&#10;)UNKNOWN,29024:In Deep Space,29049:In orbit around an unknown planet,29084:In the Galaxy at rest,29124:The Landing Pad,29141:The Square,29181:The Corridor,29195:The Yellow Room,29212:The Armoury,29225:The Long Corridor,29244:The Green Room,29260:The Workshop,29274:The Guard Room,29290:The Storage Room,29308:The Reception Room,29328:The Conference Room,29349:The Antechamber,29366:The Assembly Room,29385:The Blue Room,29400:The Red Room,29414:The Control Room,29432:The White Room,29448:The Mirrored Room,29467:The Bottom of a Stairwell,29494:The eastern end of a Long Cavern,29528:The Hall of the Ancients,29554:The Old Cave,29568:The Crystal Chamber,29589:The Botanical Grotto,29611:The Dusty Corridor,29631:The Limestone Maze,29651:The Damp Cave,29666:The Lower Corridor,29686:The Lower Store Room,29708:The Rock Slide,29724:The Tall Canyon,29741:The Torture Chamber,29762:The Underground Stream,29786:The Sloping Corridor,29808:The Cavern of Mists,29829:The Crystal Grotto,29849:The Crystal Bridge,29869:The Creature's Lair,29890:The Alien Commander's Chamber,29921:The Reactor Room,29939:The West Bank of the Lake,29966:The Subterranean Lake,29989:The East Bank of the Lake,30016:The South Bank of the Lake,30044:The Plateau,30109:The Repair Bay,30125:The Burial Chamber,30145:Inside a Teleport,30164:The western end of a Long Cavern)),#HTML(&#10;)N/A))
 > $4000 @expand=#DEF(#ITEM(id) #MAP($id)(#HTML(&#10;)N/A,00:"A knife.",01:"A laser pistol.",02:"A coin.",03:"A crystal rod.",04:"A detonator.",05:"A metal bar.",06:"A glowing sphere.",07:"Some poison fungus.",08:"Some round stones.",09:"A key.",10:"A space axe.",11:"Some explosives.",12:"A pair of gloves.",13:"The Galaxy.",14:"The airlock is closed.",15:"The airlock is closed.",16:"The airlock is open.",17:"The airlock is open.",18:"An android guard. He has shot at you and missed.",19:"A dead android guard.",20:"A glowing sphere sitting on a sunken dish#RAW(,) on a glass pedestal.",21:"A glass pedestal with a raised dish on top.",22:"A glass pedestal with a raised dish on top.",23:"A panel with a square plate to one side.",24:"The southern exit has a square plate to the side of it.",25:"A pile of rocks at the eastern end.",26:"Some shattered rocks to one side of the eastern exit.",27:"The landing co-ordinates are set.",28:"A closed door.",29:"An open door.",30:"A creeping vine has trapped you by coiling itself around you.",31:"A withered vine.",32:"A skeleton in space patrol uniform#RAW(,)tied to rings in the wall#RAW(,)by ropes.",33:"A skeleton on the floor.",34:"An alcove containing some round stones.",35:"An empty alcove.",36:"A huge#RAW(,)blind slug is blocking the western exit. It is advancing toward you.",37:"A pool of slime on the floor.",38:"A fierce#RAW(,)scaled creature is on the bridge#RAW(,)preventing your crossing.",39:"The alien commander#RAW(,) in space armour.",40:"The dead body of the alien commander.",41:"A computer.",42:"A keyhole in the control panel.",43:"A light is flashing and you can hear a warning siren.",44:"A dead alien soldier.",45:"A dead alien soldier.",46:"A dead alien soldier.",47:"A dead alien soldier.",48:"A tractor beam is holding the ship. Takeoff is impossible.",49:"A strange alien device in one corner.",50:"Some writing on the wall.",51:"A message on the ship's computer screen.",52:"A button.",53:"The water looks inviting.",54:"The water looks inviting.",55:"The water looks inviting.",56:"A pile of rocks.",57:"A pair of gloves#RAW(,)which you are wearing.",58:"A key in the control panel. The key is set to 'OFF'.",59:"A key in the control panel. The key is set to 'ON'.",60:"A glowing sphere sitting on a raised dish on a glass pedestal.",61:"The water looks inviting.",62:"A message on the computer screen reads:- TYPE PASSWORD.",63:"A wall of rock now blocks the northern exit.",64:"The ship is ready to take off."))
-> $4000 @expand=#DEF(#OBJECT(id) #MAP($id)(#HTML(&#10;)N/A,00:Glov,01:Ship,02:Mess,03:Airl,04:Keyh,05:Gun,06:Guar,07:Sphe,08:Pede,09:Dish,10:Rod,11:Plat,12:Door,13:Vine,14:Butt,15:Deto,16:Rock,17:Coin,18:Sold,19:Axe,20:Knif,21:Skel,22:Rope,23:Ston,24:Slug,25:Fung,26:Crea,27:Bar,28:Comm,29:Pane,30:Key,31:Comp,32:Devi,33:Lake,34:Writ,35:Body,36:Expl))
+> $4000 @expand=#DEF(#OBJECT(id) #MAP($id)(#HTML(&#10;)N/A,00:"any gloves",01:"the Galaxy",02:"a message",03:"an airlock",04:"a keyhole",05:"a gun",06:"a guard",07:"a sphere",08:"a pedestal",09:"a dish",10:"a rod",11:"a plate",12:"a door",13:"a vine",14:"a button",15:"a detonator",16:"any rocks",17:"a coin",18:"a soldier",19:"an axe",20:"a knife",21:"a skeleton",22:"any ropes",23:"any stones",24:"a slug",25:"any fungus",26:"a creature",27:"a bar",28:"the commander",29:"a panel",30:"a key",31:"a computer",32:"a device",33:"a lake",34:"any writing",35:"a body",36:"any explosives"))
 > $4000 @expand=#DEF(#TOKEN(id) #MAP($id)(#HTML(&#10;)UNKNOWN,000:"H#RAW(,)HELP",001:"I#RAW(,)INVE",002:"L#RAW(,)LOOK",003:"N#RAW(,)NORT",004:"S#RAW(,)SOUT",005:"E#RAW(,)EAST",006:"W#RAW(,)WEST",007:"U#RAW(,)UP",008:"D#RAW(,)DOWN",009:"EXAM",010:"LOAD",011:"SAVE",012:"QUIT",013:"TAKE#RAW(,)GET#RAW(,)PICK",014:"DROP#RAW(,)PLAC#RAW(,)PUT#RAW(,)THRO#RAW(,)REMO#RAW(,)MOVE",015:"BLIN",016:"ENTE",017:"EXIT#RAW(,)LEAV",018:"GLOV",019:"SHIP#RAW(,)GALA",020:"YES",021:"NO",022:"POIS",023:"SQUA",024:"SCAL",025:"ANDR",026:"READ",027:"MESS",028:"LAND",029:"AIRL",030:"OPEN",031:"CLOS#RAW(,)SHUT",032:"LASE",033:"GUN#RAW(,)PIST",034:"SHOO#RAW(,)BLAS",035:"TOUC",036:"AT#RAW(,)TO",037:"EAT",038:"GUAR",039:"SPHE",040:"PEDE",041:"TURN#RAW(,)ROTA",042:"DISH",043:"ON",044:"GLOW",045:"ROD",046:"POIN",047:"PLAT",048:"DOOR",049:"SLID",050:"BODY",051:"EXPL",052:"BUTT",053:"PRES#RAW(,)PUSH",054:"DETO",055:"ROCK",056:"OFF",057:"STRA",058:"ROUN",059:"CREE",060:"VINE#RAW(,)PLAN",061:"SPAC",062:"COIN",063:"xxxx",064:"SOLD",065:"CUT#RAW(,)SLIC#RAW(,)STAB",066:"AXE",067:"KNIF",068:"SKEL",069:"ROPE",070:"STON",071:"SLUG",072:"FUNG",073:"CREA",074:"PANE",075:"COMM",076:"WITH#RAW(,)USIN",077:"META",078:"KEY",079:"FUCK#RAW(,)SCRE",080:"CRYS",081:"DEVI#RAW(,)TELE",082:"ALIE",083:"ATTA#RAW(,)KILL",084:"ROUN",085:"COMP",086:"INSE",087:"KEYH",088:"OLD#RAW(,)"OLD",089:"TYPE",090:"IN",091:"DEAD",092:"BAR",093:"WEAR",094:"SWIM",095:"LAKE#RAW(,)WATE",096:"RUN",097:"WRIT",098:"RAIS",099:"GLAS",253:Separator,254:Terminator))
 > $4000 @expand=#IF({asm})(#DEF(#FOREST(addr)(link=Forest At Worlds End)$link))
 > $4000 @expand=#IF({asm})(#DEF(#HEROES(addr)(link=Heroes Of Karn)$link))
@@ -110,7 +110,16 @@ S $61EC,$23
 
 g $620F Flags: Display State
 @ $620F label=Flag_DisplayState
-D $620F Bit 0 is set when a room picture is waiting for a keypress.
+E $620F View the equivalent code in;
+. #LIST
+. { #FOREST$BA2C }
+. LIST#
+D $620F Holds a single byte, where each bit relates to display state as
+. follows:
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Relating To }
+. { #N$00 | Room picture is waiting for a keypress }
+. TABLE#
 B $620F,$01
 
 u $6210
@@ -118,8 +127,36 @@ S $6210,$03
 
 g $6213 Table: Already Seen Room Images
 @ $6213 label=Table_RoomImagesAlreadySeen
-D $6213 One bit per entry in #R$8CFC. #R$678A tests and sets the bit for
-. the current room's picture slot.
+E $6213 View the equivalent code in;
+. #LIST
+. { #SHOCK$A0A8 }
+. { #FOREST$BA30 }
+. { #HEROES$AE7E }
+. { #JEWELS$BC5C }
+. { #WARLORD$A774 }
+. LIST#
+D $6213 Corresponds to whether the player has already seen the image for
+. the following rooms:
+.
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Room ID | =h Room Name }
+. #FOR$8CFC,$8D03,,1(n,{ #N(n-$8CFC) | #N(#PEEKn) | #ROOM(#PEEKn) })
+. TABLE#
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Room ID | =h Room Name }
+. #FOR$8D04,$8D0B,,1(n,{ #N(n-$8D04) | #N(#PEEKn) | #ROOM(#PEEKn) })
+. TABLE#
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Room ID | =h Room Name }
+. #FOR$8D0C,$8D13,,1(n,{ #N(n-$8D0C) | #N(#PEEKn) | #ROOM(#PEEKn) })
+. TABLE#
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Room ID | =h Room Name }
+. #FOR$8D14,$8D15,,1(n,{ #N(n-$8D14) | #N(#PEEKn) | #ROOM(#PEEKn) })
+. #FOR$02,$07,,1(n,{ #Nn | N/A | N/A })
+. TABLE#
+D $6213 #R$678A tests and sets the bit for the current room. The bit
+. number is the room's place in #R$8CFC.
 B $6213,b,$01
 B $6214,b,$01
 B $6215,b,$01
@@ -130,35 +167,68 @@ S $6217,$02
 
 g $6219 Flags: Turn-Based Event States
 @ $6219 label=Flag_TurnBasedEventState
-D $6219 Holds a single byte, where each bit relates to a turn-based event.
-. When the bit is set, #R$6557 runs the matching handler from #R$62A2.
+E $6219 View the equivalent code in;
+. #LIST
+. { #SHOCK$A0C8 }
+. { #FOREST$BA36 }
+. { #HEROES$AE88 }
+. { #JEWELS$BC66 }
+. { #WARLORD$A77E }
+. LIST#
+D $6219 Holds a single byte, where each bit relates to a turn-based event as
+. follows:
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Relating To }
+. { #N$00 | Android }
+. { #N$01 | Slug }
+. { #N$02 | Second android }
+. { #N$03 | Complex explodes }
+. TABLE#
+. When the bit is set, this starts a turn counter (see #R$621A).
 B $6219,$01
 
 g $621A Turn-Based Event Counters
-D $621A One countdown per bit of *#R$6219.
-N $621A Unused.
-@ $621A label=Counter_Unused_0
-N $621B Unused.
-@ $621B label=Counter_Unused_1
-N $621C Unused.
-@ $621C label=Counter_Unused_2
-N $621D Unused.
-@ $621D label=Counter_Unused_3
+E $621A View the equivalent code in;
+. #LIST
+. { #SHOCK$A0C9 }
+. { #FOREST$BA37 }
+. { #HEROES$AE89 }
+. { #JEWELS$BC67 }
+. { #WARLORD$A77F }
+. LIST#
+D $621A One countdown per bit of *#R$6219. #R$6557 decrements a set
+. counter each turn and runs the handler from #R$62A2 when it hits zero.
+N $621A Arm the android for two turns (#R$8E18 writes #N$02).
+@ $621A label=Counter_Android
+N $621B Arm the slug for six turns (#R$8E18).
+@ $621B label=Counter_Slug
+N $621C Arm the second android for six turns (#R$8E18).
+@ $621C label=Counter_SecondAndroid
+N $621D The complex is initialised to #N$15 turns in #R$997F.
+@ $621D label=Counter_ComplexExplodes
 N $621E Unused.
-@ $621E label=Counter_Unused_4
+@ $621E label=Counter_Unused_0
 N $621F Unused.
-@ $621F label=Counter_Unused_5
+@ $621F label=Counter_Unused_1
 N $6220 Unused.
-@ $6220 label=Counter_Unused_6
+@ $6220 label=Counter_Unused_2
 N $6221 Unused.
-@ $6221 label=Counter_Unused_7
+@ $6221 label=Counter_Unused_3
 B $621A,$08,$01
 
 g $6222 Flags: Scenic Event States
 @ $6222 label=Flag_ScenicEventState
-D $6222 Holds a single byte, where each set bit arms a scenic event. #R$658A
-. walks these bits and plants a message when the player is not already in
-. that event's room from #R$6224.
+D $6222 Holds a single byte, where each bit relates to a scenic event as
+. follows:
+. #TABLE(default,centre,centre)
+. { =h Bit | =h Relating To }
+. { #N$00 | Creature (#N$80) }
+. { #N$01 | Creature (#N$81) }
+. { #N$02 | Creature (#N$82) }
+. { #N$03 | Creature (#N$83) }
+. TABLE#
+. When the bit is set, #R$658A moves the event to a room from #R$8CDA
+. unless the player is already in that event's room from #R$6224.
 B $6222,$01
 
 g $6223 Current Room ID
@@ -182,7 +252,7 @@ B $622C,$01
 g $622D Load/ Save Buffer
 @ $622D label=LoadSaveBuffer
 D $622D When #R$69DC(loading) or #R$69A1(saving), this buffer holds the
-. bytes for the saved-location pointers at #R$8D16.
+. configurable-exit bytes from #R$8D16.
 B $622D,$32,$08
 
 g $625F Command Buffer
@@ -227,9 +297,17 @@ D $62A2 Handler addresses for each bit of *#R$6219. Used by #R$6557.
 W $62A2,$02 Event #N((#PC-$62A2)/$02).
 L $62A2,$02,$08
 
-g $62B2 Table: Scenic Event Message Lists
-@ $62B2 label=Table_ScenicEventMessageLists
-D $62B2 Pointers to the message lists #R$658A walks for each scenic event.
+g $62B2 Table: Scenic Event Rooms
+@ $62B2 label=Table_ScenicEventRooms
+E $62B2 View the equivalent code in;
+. #LIST
+. { #SHOCK$B6BF }
+. { #FOREST$BA9C }
+. { #JEWELS$BCCC }
+. { #WARLORD$E4E6 }
+. LIST#
+D $62B2 One address per scenic event. #R$658A reads the address, and the
+. bytes at that address are room IDs ended by #N$FF. See #R$8CDA.
 W $62B2,$02 Event #N((#PC-$62B2)/$02).
 L $62B2,$02,$08
 
@@ -281,8 +359,8 @@ g $62D0 Pointer: Room Description Table
 D $62D0 Pointer to the table containing room descriptions.
 W $62D0,$02
 
-g $62D2 Pointer: Object Noun Phrases
-@ $62D2 label=Pointer_ObjectNounPhrases
+g $62D2 Pointer: Item Grouping Table
+@ $62D2 label=Pointer_ItemGroupingTable
 W $62D2,$02
 
 g $62D4 Pointer: Object List Table
@@ -302,12 +380,14 @@ g $62DA Number Of Verb Tokens
 D $62DA The total number of verb word tokens the game has.
 W $62DA,$02
 
-g $62DC Number Of Saved Locations
-@ $62DC label=Count_SavedLocations
+g $62DC Number Of "Configurable Exits"
+@ $62DC label=Count_ConfigurableExits
+D $62DC The total number of configurable exits in the game. See #R$8D16.
 W $62DC,$02
 
-g $62DE Pointer: Saved Location Table
-@ $62DE label=Pointer_SavedLocations
+g $62DE Pointer: Configurable Exits Table
+@ $62DE label=Pointer_ConfigurableExits
+D $62DE Pointer to the table containing the configurable exits.
 W $62DE,$02
 
 t $62E0 Messaging: ">"
@@ -804,32 +884,32 @@ E $658A View the equivalent code in;
 . { #JEWELS$C4EB }
 . { #WARLORD$AFEB }
 . LIST#
-D $658A Walk the scenic-event bits and fire a handler when the player is in its
-. room.
+D $658A For each armed scenic event, walk its room list from #R$62B2 and
+. move the event to a chosen room unless the player is already there.
   $658A,$03 Fetch the scenic-event flags.
   $658D,$03 No scenic event is running.
   $6590,$03 Keep the scenic flags and test all eight bits.
 @ $6593 label=Handler_ScenicEvents_Loop1
-N $6593 Each set bit is a scenic event that can plant a message.
+N $6593 Each set bit is a scenic event that can move to a new room.
   $6593,$02 Take the next scenic-event bit.
   $6595,$02 This scenic event is not running.
-  $6597,$09 Index this scenic event's message list.
+  $6597,$09 Index this scenic event's room list.
   $65A0,$01 Remember which scenic bits are still to be checked.
-  $65A1,$04 Let the frame counter choose how far to walk the message list.
-  $65A5,$04 Find the messages for this scenic event.
-  $65A9,$04 Point at this event's messages and prepare the end marker.
+  $65A1,$04 Let the frame counter choose how far to walk the room list.
+  $65A5,$04 Find the rooms for this scenic event.
+  $65A9,$04 Point at this event's rooms and prepare the end marker.
 @ $65AD label=Handler_ScenicEvents_Loop2
-  $65AD,$06 Read the address of this event's message list.
+  $65AD,$06 Read the address of this event's room list.
 @ $65B3 label=Handler_ScenicEvents_Loop3
   $65B3,$06 Walk the list for as many frames as have passed.
-  $65B9,$01 Step back to the message those frames selected.
+  $65B9,$01 Step back to the room those frames selected.
   $65BA,$02 Recover the event number from the list index.
   $65BC,$04 Find the room this scenic event belongs to.
   $65C0,$02 Point at this event's room.
   $65C2,$01 Restore the scenic flags still to be checked.
   $65C3,$03 Fetch the current room.
   $65C6,$05 Leave the event alone when the player is already in its room.
-  $65CB,$04 Plant the chosen message in this event's room.
+  $65CB,$04 Move this scenic event to the chosen room.
 @ $65CF label=Handler_ScenicEvents_Step1
   $65CF,$02 Repeat for the remaining scenic events.
 @ $65D1 label=Handler_ScenicEvents_Step2
@@ -1291,7 +1371,7 @@ R $68A4 O:F Carry flag set when the object is not here
   $68A4,$01 Adjust the search count for the index sum.
   $68A5,$03 Fetch how many nouns the game knows.
   $68A8,$05 Turn that count into this noun's index and end marker (#N$FE).
-  $68AD,$03 Point at the noun-phrase table (*#R$62D2).
+  $68AD,$03 Point at the item groups (*#R$62D2).
   $68B0,$01 Count the phrase terminator as one more step.
   $68B1,$02 Jump to #R$68B8 to skip phrases before this noun.
 @ $68B3 label=Parser_ResolvePhrase_Loop1
@@ -1575,19 +1655,19 @@ E $69A1 View the equivalent code in;
 . { #WARLORD$A5CA }
 . LIST#
 D $69A1 Save the game position to tape.
-  $69A1,$03 Fetch how many locations the save file stores.
-  $69A4,$03 Jump to #R$69C0 if there are no saved locations to pack.
-  $69A7,$0A Copy the saved-location count into #REGb and point at the location
+  $69A1,$03 Fetch how many configurable exits the save file stores.
+  $69A4,$03 Jump to #R$69C0 if there are no configurable exits to pack.
+  $69A7,$0A Copy the configurable-exit count into #REGb and point at the
 . table and the tape workspace.
-N $69B1 Move on to the next saved-location address.
+N $69B1 Move on to the next configurable-exit address.
 @ $69B1 label=SaveGame_Copy
-  $69B1,$05 Move #REGix on to the next saved-location address and #REGde on to
-. the next packed location byte.
+  $69B1,$05 Move #REGix on to the next configurable-exit address and #REGde
+. on to the next packed byte.
 @ $69B6 label=SaveGame_StoreFlag
-  $69B6,$06 Fetch the location address from *#REGix into #REGhl.
-  $69BC,$02 Copy the location byte into the packed save buffer.
+  $69B6,$06 Fetch the exit address from *#REGix into #REGhl.
+  $69BC,$02 Copy the exit byte into the packed save buffer.
   $69BE,$02 Decrease the pack counter and loop back to #R$69B1 until every
-. location byte is packed.
+. exit byte is packed.
 N $69C0 Print "#MESSAGE$63D3".
 @ $69C0 label=SaveGame_PrintSaving
   $69C0,$06 Print "#MESSAGE$63D3".
@@ -1622,21 +1702,21 @@ N $69DC Print "#MESSAGE$63B2".
 N $69F1 Print "#MESSAGE$63C7".
   $69F1,$06 Print "#MESSAGE$63C7".
   $69F7,$01 Return.
-N $69F8 There is nothing to unpack when no saved locations were stored.
+N $69F8 There is nothing to unpack when no configurable exits were stored.
 @ $69F8 label=LoadTape_Success
-  $69F8,$03 Fetch how many locations the save file stores.
-  $69FB,$02 Return if there are no saved locations to unpack.
-  $69FD,$0A Copy the saved-location count into #REGb and point at the location
+  $69F8,$03 Fetch how many configurable exits the save file stores.
+  $69FB,$02 Return if there are no configurable exits to unpack.
+  $69FD,$0A Copy the configurable-exit count into #REGb and point at the
 . table and the tape workspace.
-N $6A07 The next saved location address.
+N $6A07 The next configurable-exit address.
 @ $6A07 label=LoadTape_WriteLoop
-  $6A07,$05 Move #REGix on to the next saved-location address and #REGde on to
-. the next packed location byte.
+  $6A07,$05 Move #REGix on to the next configurable-exit address and #REGde
+. on to the next packed byte.
 @ $6A0C label=LoadTape_Write
-  $6A0C,$06 Fetch the location address from *#REGix into #REGhl.
-  $6A12,$02 Write that packed location byte back into the game.
+  $6A0C,$06 Fetch the exit address from *#REGix into #REGhl.
+  $6A12,$02 Write that packed exit byte back into the game.
   $6A14,$02 Decrease the unpack counter and loop back to #R$6A07 until every
-. location byte is restored.
+. exit byte is restored.
   $6A16,$02 Show the room picture even if it has been seen before.
   $6A18,$03 Call #R$678A to display the room.
   $6A1B,$01 Return.
@@ -2799,77 +2879,648 @@ L $8568,$02,$02
 W $856C,$02 #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
 L $856C,$02,$3E
 
-g $85E8 Table: Nouns
-@ $85E8 label=Table_Nouns
-D $85E8 #N$25 pointers to the noun phrases the parser matches.
-W $85E8,$02 #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
+g $85E8 Table: Object Noun Phrases
+@ $85E8 label=Table_ObjectNounPhrases
+E $85E8 View the equivalent code in;
+. #LIST
+. { #SHOCK$AF31 }
+. { #FOREST$D4E6 }
+. { #HEROES$CEEA }
+. { #JEWELS$D4C6 }
+. { #WARLORD$C83E }
+. LIST#
+D $85E8 One word per object. Each entry points at the noun text.
+W $85E8,$02 Object #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$85E8)/$02)):
+. #OBJECT((#PC-$85E8)/$02).
 L $85E8,$02,$25
 
-t $8632 Messaging: Vocabulary
-@ $8632 label=Messaging_Vocabulary
-D $8632 Four-letter words. A comma ends a synonym group. The parser
-. stores the word number in the token buffer at #R$6291.
-  $8632,$235 "#MESSAGE$8632".
+t $8632 Table: Vocabulary
+@ $8632 label=Table_Vocabulary
+E $8632 View the equivalent code in;
+. #LIST
+. { #SHOCK$B0ED }
+. { #FOREST$E4AF }
+. { #HEROES$E25C }
+. { #JEWELS$E61D }
+. { #WARLORD$E0B1 }
+. LIST#
+D $8632 Four-character words. A comma binds synonyms to the same command.
+  $8632,$09 Command #N$00.
+  $863B,$09 Command #N$01.
+  $8644,$09 Command #N$02.
+  $864D,$09 Command #N$03.
+  $8656,$09 Command #N$04.
+  $865F,$09 Command #N$05.
+  $8668,$09 Command #N$06.
+  $8671,$09 Command #N$07.
+  $867A,$09 Command #N$08.
+  $8683,$04 Command #N((#PC-$865F)/$04).
+L $8683,$04,$04
+  $8693,$0E Command #N$0D.
+  $86A1,$1D Command #N$0E.
+  $86BE,$04 Command #N((#PC-$8682)/$04).
+L $86BE,$04,$02
+  $86C6,$09 Command #N$11.
+  $86CF,$04 Command #N$12: #OBJECT$00.
+  $86D3,$09 Command #N$13: #OBJECT$01.
+  $86DC,$04 Command #N((#PC-$868C)/$04).
+L $86DC,$04,$07
+  $86F8,$04 Command #N$1B: #OBJECT$02.
+  $86FC,$04 Command #N$1C.
+  $8700,$04 Command #N$1D: #OBJECT$03.
+  $8704,$04 Command #N$1E.
+  $8708,$09 Command #N$1F.
+  $8711,$04 Command #N$20.
+  $8715,$09 Command #N$21: #OBJECT$05.
+  $871E,$09 Command #N$22.
+  $8727,$04 Command #N$23.
+  $872B,$09 Command #N$24.
+  $8734,$04 Command #N$25.
+  $8738,$04 Command #N((#PC-$86A0)/$04): #OBJECT((#PC-$8720)/$04).
+L $8738,$04,$03
+  $8744,$09 Command #N$29.
+  $874D,$04 Command #N$2A: #OBJECT$09.
+  $8751,$04 Command #N((#PC-$86A5)/$04).
+L $8751,$04,$02
+  $8759,$04 Command #N$2D: #OBJECT$0A.
+  $875D,$04 Command #N$2E.
+  $8761,$04 Command #N((#PC-$86A5)/$04): #OBJECT((#PC-$8735)/$04).
+L $8761,$04,$02
+  $8769,$04 Command #N$31.
+  $876D,$04 Command #N((#PC-$86A5)/$04): #OBJECT((#PC-$86E1)/$04).
+L $876D,$04,$02
+  $8775,$04 Command #N$34: #OBJECT$0E.
+  $8779,$09 Command #N$35.
+  $8782,$04 Command #N((#PC-$86AA)/$04): #OBJECT((#PC-$8746)/$04).
+L $8782,$04,$02
+  $878A,$04 Command #N((#PC-$86AA)/$04).
+L $878A,$04,$04
+  $879A,$09 Command #N$3C: #OBJECT$0D.
+  $87A3,$04 Command #N$3D.
+  $87A7,$04 Command #N$3E: #OBJECT$11.
+  $87AB,$04 Command #N$3F.
+  $87AF,$04 Command #N$40: #OBJECT$12.
+  $87B3,$0E Command #N$41.
+  $87C1,$04 Command #N((#PC-$86B9)/$04): #OBJECT((#PC-$8775)/$04).
+L $87C1,$04,$08
+  $87E1,$04 Command #N$4A: #OBJECT$1D.
+  $87E5,$04 Command #N$4B: #OBJECT$1C.
+  $87E9,$09 Command #N$4C.
+  $87F2,$04 Command #N$4D.
+  $87F6,$04 Command #N$4E: #OBJECT$1E.
+  $87FA,$09 Command #N$4F.
+  $8803,$04 Command #N$50.
+  $8807,$09 Command #N$51: #OBJECT$20.
+  $8810,$04 Command #N$52.
+  $8814,$09 Command #N$53.
+  $881D,$04 Command #N$54.
+  $8821,$04 Command #N$55: #OBJECT$1F.
+  $8825,$04 Command #N$56.
+  $8829,$04 Command #N$57: #OBJECT$04.
+  $882D,$09 Command #N$58.
+  $8836,$04 Command #N((#PC-$86D2)/$04).
+L $8836,$04,$03
+  $8842,$04 Command #N$5C: #OBJECT$1B.
+  $8846,$04 Command #N((#PC-$86D2)/$04).
+L $8846,$04,$02
+  $884E,$09 Command #N$5F: #OBJECT$21.
+  $8857,$04 Command #N$60.
+  $885B,$04 Command #N$61: #OBJECT$22.
+  $885F,$04 Command #N((#PC-$86D7)/$04).
+L $885F,$04,$02
 B $8867,$01 Terminator.
 
-b $8868 Table: Noun Tokens
+g $8868 Table: Noun Tokens
 @ $8868 label=Table_NounTokens
-D $8868 Noun word numbers. The game loop at #R$8D2A searches this list
-. with the noun count at #R$62C8, and #R$692F reaches it through the
-. pointer at #R$62D6. #N$25 entries.
-B $8868,$01 Word #N(#PEEK(#PC)).
-L $8868,$01,$25
+E $8868 View the equivalent code in;
+. #LIST
+. { #SHOCK$B49E }
+. { #FOREST$E6BC }
+. { #HEROES$E4B8 }
+. { #JEWELS$E83E }
+. { #WARLORD$E308 }
+. LIST#
+D $8868 The vocabulary number (#R$8632) of each of the #N$25 nouns the player
+. can name (the count is at #R$62C8). The position of a word in this list is
+. its object number, which also indexes #R$85E8 for its name in
+. "I can't see ... here." replies.
+.
+. Reached through #R$62D6: #R$692F counts the object words in a command, and
+. #R$8D65 looks each named noun up here before calling #R$68A4.
+B $8868,$01 Object #OBJECT$00: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8869,$01 Object #OBJECT$01: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $886A,$01 Object #OBJECT$02: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $886B,$01 Object #OBJECT$03: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $886C,$01 Object #OBJECT$04: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $886D,$01 Object #OBJECT$05: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $886E,$01 Object #OBJECT$06: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $886F,$01 Object #OBJECT$07: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8870,$01 Object #OBJECT$08: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8871,$01 Object #OBJECT$09: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8872,$01 Object #OBJECT$0A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8873,$01 Object #OBJECT$0B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8874,$01 Object #OBJECT$0C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8875,$01 Object #OBJECT$0D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8876,$01 Object #OBJECT$0E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8877,$01 Object #OBJECT$0F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8878,$01 Object #OBJECT$10: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8879,$01 Object #OBJECT$11: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $887A,$01 Object #OBJECT$12: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $887B,$01 Object #OBJECT$13: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $887C,$01 Object #OBJECT$14: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $887D,$01 Object #OBJECT$15: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $887E,$01 Object #OBJECT$16: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $887F,$01 Object #OBJECT$17: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8880,$01 Object #OBJECT$18: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8881,$01 Object #OBJECT$19: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8882,$01 Object #OBJECT$1A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8883,$01 Object #OBJECT$1B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8884,$01 Object #OBJECT$1C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8885,$01 Object #OBJECT$1D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8886,$01 Object #OBJECT$1E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8887,$01 Object #OBJECT$1F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8888,$01 Object #OBJECT$20: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $8889,$01 Object #OBJECT$21: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $888A,$01 Object #OBJECT$22: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $888B,$01 Object #OBJECT$23: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
+B $888C,$01 Object #OBJECT$24: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)).
 
-b $888D Table: Noun Phrases
-@ $888D label=Table_NounPhrases
-D $888D Phrase tables consulted by the routine at #R$68A4. Each
-. entry is a word number followed by #N$FE when the phrase ends.
-B $888D,$01
-L $888D,$01,$8F
+g $888D Table: Item Groups
+@ $888D label=Table_ItemGroups
+E $888D View the equivalent code in;
+. #LIST
+. { #SHOCK$B4F4 }
+. { #FOREST$E6E6 }
+. { #HEROES$E500 }
+. { #JEWELS$E86E }
+. { #WARLORD$E341 }
+. LIST#
+D $888D For each object in #R$85E8, in the same order: the items it may refer
+. to, ending with #N$FE. #R$68A4 skips to this noun's group from *#R$62D2.
+B $888D,$02 Object #OBJECT$00: #ITEM$0C.
+@ $888F label=Data_ItemGroup_Galaxy
+B $888F,$03 Object #OBJECT$01: #ITEM$39 or #ITEM$0D.
+@ $8892 label=Data_ItemGroup_Message
+B $8892,$02 Object #OBJECT$02: #ITEM$1B.
+@ $8894 label=Data_ItemGroup_Airlock
+B $8894,$02 Object #OBJECT$03: #ITEM$40.
+@ $8896 label=Data_ItemGroup_Keyhole
+B $8896,$02 Object #OBJECT$04: #ITEM$30.
+@ $8898 label=Data_ItemGroup_Gun
+B $8898,$04 Object #OBJECT$05: #ITEM$33 or #ITEM$0E.
+@ $889C label=Data_ItemGroup_Guard
+B $889C,$02 Object #OBJECT$06: #ITEM$0F.
+@ $889E label=Data_ItemGroup_Sphere
+B $889E,$02 Object #OBJECT$07: #ITEM$10.
+@ $88A0 label=Data_ItemGroup_Pedestal
+B $88A0,$03 Object #OBJECT$08: #ITEM$11 or #ITEM$2A.
+@ $88A3 label=Data_ItemGroup_Dish
+B $88A3,$02 Object #OBJECT$09: #ITEM$3A.
+@ $88A5 label=Data_ItemGroup_Rod
+B $88A5,$04 Object #OBJECT$0A: #ITEM$3B, #ITEM$01 or #ITEM$12.
+@ $88A9 label=Data_ItemGroup_Plate
+B $88A9,$03 Object #OBJECT$0B: #ITEM$13 or #ITEM$06.
+@ $88AC label=Data_ItemGroup_Door
+B $88AC,$02 Object #OBJECT$0C: #ITEM$14.
+@ $88AE label=Data_ItemGroup_Vine
+B $88AE,$03 Object #OBJECT$0D: #ITEM$3C or #ITEM$14.
+@ $88B1 label=Data_ItemGroup_Button
+B $88B1,$02 Object #OBJECT$0E: #ITEM$15.
+@ $88B3 label=Data_ItemGroup_Detonator
+B $88B3,$02 Object #OBJECT$0F: #ITEM$16.
+@ $88B5 label=Data_ItemGroup_Rocks
+B $88B5,$03 Object #OBJECT$10: #ITEM$3C or #ITEM$14.
+@ $88B8 label=Data_ItemGroup_Coin
+B $88B8,$02 Object #OBJECT$11: #ITEM$15.
+@ $88BA label=Data_ItemGroup_Soldier
+B $88BA,$02 Object #OBJECT$12: #ITEM$16.
+@ $88BC label=Data_ItemGroup_Axe
+B $88BC,$04 Object #OBJECT$13: #ITEM$3C, #ITEM$03 or #ITEM$17.
+@ $88C0 label=Data_ItemGroup_Knife
+B $88C0,$03 Object #OBJECT$14: #ITEM$18 or #ITEM$1C.
+@ $88C3 label=Data_ItemGroup_Skeleton
+B $88C3,$03 Object #OBJECT$15: #ITEM$1D or #ITEM$1E.
+@ $88C6 label=Data_ItemGroup_Ropes
+B $88C6,$03 Object #OBJECT$16: #ITEM$1F or #ITEM$34.
+@ $88C9 label=Data_ItemGroup_Stones
+B $88C9,$04 Object #OBJECT$17: #ITEM$04 or #ITEM$19.
+@ $88CD label=Data_ItemGroup_Slug
+B $88CD,$02 Object #OBJECT$18: #ITEM$1A.
+@ $88CF label=Data_ItemGroup_Fungus
+B $88CF,$04 Object #OBJECT$19: #ITEM$38, #ITEM$02 or #ITEM$2C.
+@ $88D3 label=Data_ItemGroup_Creature
+B $88D3,$02 Object #OBJECT$1A: #ITEM$2D.
+@ $88D5 label=Data_ItemGroup_Bar
+B $88D5,$02 Object #OBJECT$1B: #ITEM$2E.
+@ $88D7 label=Data_ItemGroup_Commander
+B $88D7,$02 Object #OBJECT$1C: #ITEM$2F.
+@ $88D9 label=Data_ItemGroup_Panel
+B $88D9,$02 Object #OBJECT$1D: item #N$80.
+@ $88DB label=Data_ItemGroup_Key
+B $88DB,$02 Object #OBJECT$1E: item #N$81.
+@ $88DD label=Data_ItemGroup_Computer
+B $88DD,$02 Object #OBJECT$1F: item #N$82.
+@ $88DF label=Data_ItemGroup_Device
+B $88DF,$05 Object #OBJECT$20: item #N($83), #ITEM$0A, #ITEM$01 or #ITEM$20.
+@ $88E4 label=Data_ItemGroup_Lake
+B $88E4,$03 Object #OBJECT$21: #ITEM$21 or #ITEM$20.
+@ $88E7 label=Data_ItemGroup_Writing
+B $88E7,$03 Object #OBJECT$22: #ITEM$21 or #ITEM$08.
+@ $88EA label=Data_ItemGroup_Body
+B $88EA,$07 Object #OBJECT$23: #ITEM$22, #ITEM$24, #ITEM$07, #ITEM$26, #ITEM$05
+. or #ITEM$27.
+@ $88F1 label=Data_ItemGroup_Explosives
+B $88F1,$04 Object #OBJECT$24: #ITEM$28, #ITEM$17 or #ITEM$09.
+N $88F5 Further item lists, not indexed from #R$85E8.
+B $88F5,$02 #ITEM$3A.
+B $88F7,$03 #ITEM$3B or #ITEM$29.
+B $88FA,$02 #ITEM$1B.
+B $88FC,$02 #ITEM$40.
+B $88FE,$02 #ITEM$30.
+B $8900,$03 #ITEM$33 or #ITEM$31.
+B $8903,$03 #ITEM$34 or #ITEM$35.
+B $8906,$02 #ITEM$36.
+B $8908,$02 #ITEM$37.
+B $890A,$04 #ITEM$3D, #ITEM$32 or #ITEM$2C.
+B $890E,$02 #ITEM$2D.
+B $8910,$02 #ITEM$2E.
+B $8912,$02 #ITEM$2F.
+B $8914,$02 #ITEM$13.
+B $8916,$02 #ITEM$28.
+B $8918,$02 #ITEM$20.
+B $891A,$02 #ITEM$21 or #ITEM$0B.
 
-b $891C Table: Verb Search List
-@ $891C label=Table_VerbSearchList
-D $891C Verb word numbers in the same order as the handlers at
-. #R$FA20. #R$8D85 searches this list.
-B $891C,$01 Verb #N(#PEEK(#PC)).
-L $891C,$01,$24
+g $891C Table: Verb Word Tokens
+@ $891C label=Table_VerbWordTokens
+E $891C View the equivalent code in;
+. #LIST
+. { #SHOCK$B420 }
+. { #FOREST$E7AE }
+. { #HEROES$E5D3 }
+. { #JEWELS$E90D }
+. { #WARLORD$E489 }
+. LIST#
+D $891C The vocabulary number (#R$8632) of each of the #N$24 verbs (the count
+. is at #R$62DA). #R$8D85 looks the first word of a command up here and jumps
+. to the action at the same position in #R$FA20.
+B $891C,$01 Verb #N$00: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8E8D.
+B $891D,$01 Verb #N$01: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8EC4.
+B $891E,$01 Verb #N$02: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8EDA.
+B $891F,$01 Verb #N$03: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8EE4.
+B $8920,$01 Verb #N$04: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8EE8.
+B $8921,$01 Verb #N$05: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8EEC.
+B $8922,$01 Verb #N$06: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8EF0.
+B $8923,$01 Verb #N$07: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8EF4.
+B $8924,$01 Verb #N$08: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8EF8.
+B $8925,$01 Verb #N$09: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8F13.
+B $8926,$01 Verb #N$0A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8FA1.
+B $8927,$01 Verb #N$0B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8FA9.
+B $8928,$01 Verb #N$0C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8FB1.
+B $8929,$01 Verb #N$0D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$8FCD.
+B $892A,$01 Verb #N$0E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$9198.
+B $892B,$01 Verb #N$0F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$937B.
+B $892C,$01 Verb #N$10: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$93A1.
+B $892D,$01 Verb #N$11: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$93E4.
+B $892E,$01 Verb #N$12: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$941B.
+B $892F,$01 Verb #N$13: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$9469.
+B $8930,$01 Verb #N$14: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$947C.
+B $8931,$01 Verb #N$15: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$94B1.
+B $8932,$01 Verb #N$16: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$952B.
+B $8933,$01 Verb #N$17: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$9670.
+B $8934,$01 Verb #N$18: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$96BE.
+B $8935,$01 Verb #N$19: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$96E7.
+B $8936,$01 Verb #N$1A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$975A.
+B $8937,$01 Verb #N$1B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$97CA.
+B $8938,$01 Verb #N$1C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$9861.
+B $8939,$01 Verb #N$1D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$98AB.
+B $893A,$01 Verb #N$1E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$98B9.
+B $893B,$01 Verb #N$1F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$997F.
+B $893C,$01 Verb #N$20: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$99DD.
+B $893D,$01 Verb #N$21: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$9A2E.
+B $893E,$01 Verb #N$22: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$9A36.
+B $893F,$01 Verb #N$23: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)), #R$9A41.
 
-b $8940 Table: Phrase Lists
-@ $8940 label=Table_PhraseLists
-D $8940 Further phrase and object lists used while a command is
-. matched. #N$FE ends a phrase and #N$FF ends a list.
-B $8940,$01
-L $8940,$01,$21A
+g $8940 Table: Phrase Tokens
+@ $8940 label=Table_PhraseTokens
+E $8940 View the equivalent code in;
+. #LIST
+. { #SHOCK$B6F4 }
+. { #HEROES$E687 }
+. { #JEWELS$E9CA }
+. { #WARLORD$E519 }
+. LIST#
+D $8940 The words an action expects after its verb, as vocabulary numbers
+. (#R$8632). #N$FD separates alternative wordings and #N$FE ends a phrase.
+. An action points #REGhl at a phrase and calls #R$6900. That compares it
+. with the words after the verb and sets the zero flag when one of the
+. wordings matches the whole of the rest of the command.
+N $8940 Matches e.g. "detonator".
+B $8940,$02 Checked by #R$8F13, #R$9069 and #R$9198.
+N $8942 Matches e.g. "fungus", "poison fungus".
+@ $8942 label=PhraseTokens_Fungus
+B $8942,$05 Checked by #R$8F13, #R$90C6 and #R$9198.
+N $8947 Matches e.g. "explosives".
+@ $8947 label=PhraseTokens_Explosives
+B $8947,$02 Checked by #R$8F13, #R$9147 and #R$9198.
+N $8949 Matches e.g. "rocks".
+@ $8949 label=PhraseTokens_Rocks
+B $8949,$02 Checked by #R$8F13.
+N $894B Matches e.g. "device", "alien device", "strange device",
+. "strange alien device".
+@ $894B label=PhraseTokens_Device
+B $894B,$0C Checked by #R$8F13, #R$93A1 and #R$93E4.
+N $8957 Matches e.g. "writing".
+@ $8957 label=PhraseTokens_Writing
+B $8957,$02 Checked by #R$8F13 and #R$9670.
+N $8959 Matches e.g. "knife".
+@ $8959 label=PhraseTokens_Knife
+B $8959,$02 Checked by #R$9029 and #R$9198.
+N $895B Matches e.g. "axe", "space axe".
+@ $895B label=PhraseTokens_Axe
+B $895B,$05 Checked by #R$9137 and #R$9198.
+N $8960 Matches e.g. "coin".
+@ $8960 label=PhraseTokens_Coin
+B $8960,$02 Checked by #R$9049 and #R$9198.
+N $8962 Matches e.g. "key".
+@ $8962 label=PhraseTokens_Key
+B $8962,$02 Checked by #R$910A, #R$9198 and #R$98B9.
+N $8964 Matches e.g. "bar", "metal bar".
+@ $8964 label=PhraseTokens_Bar
+B $8964,$05 Checked by #R$9079 and #R$9198.
+N $8969 Matches e.g. "gun", "laser gun".
+@ $8969 label=PhraseTokens_Gun
+B $8969,$05 Checked by #R$9039 and #R$9198.
+N $896E Matches e.g. "rod", "crystal rod".
+@ $896E label=PhraseTokens_Rod
+B $896E,$05 Checked by #R$8F13, #R$9059 and #R$9198.
+N $8973 Matches e.g. "sphere", "glowing sphere".
+@ $8973 label=PhraseTokens_Sphere
+B $8973,$05 Checked by #R$9089, #R$9198 and #R$98B9.
+N $8978 Matches e.g. "stones", "round stones".
+@ $8978 label=PhraseTokens_Stones
+B $8978,$05 Checked by #R$90E5 and #R$9198.
+N $897D Matches e.g. "gloves".
+@ $897D label=PhraseTokens_Gloves
+B $897D,$02 Checked by #R$9157, #R$9198 and #R$9861.
+N $897F Matches e.g. "glowing sphere on dish", "sphere on dish",
+. "glowing sphere on raised dish", "sphere on raised dish",
+. "glowing sphere on pedestal", "sphere on pedestal",
+. "glowing sphere on glass pedestal", "sphere on glass pedestal".
+@ $897F label=PhraseTokens_Sphere_On_Dish
+B $897F,$28 Checked by #R$9198.
+N $89A7 Matches e.g. "north", "south", "east", "west", "up", "down".
+@ $89A7 label=PhraseTokens_Directions
+B $89A7,$0C Checked by #R$937B.
+N $89B3 Matches e.g. "ship".
+@ $89B3 label=PhraseTokens_Ship
+B $89B3,$02 Checked by #R$93A1 and #R$93E4.
+N $89B5 Matches e.g. "key in keyhole".
+@ $89B5 label=PhraseTokens_Key_In_Keyhole
+B $89B5,$04 Checked by #R$941B.
+N $89B9 Matches e.g. "in lake", "lake".
+@ $89B9 label=PhraseTokens_In_Lake
+B $89B9,$07 Checked by #R$947C.
+N $89C0 Matches e.g. "vine", "vine with axe", "vine with knife",
+. "creeping vine", "creeping vine with axe", "creeping vine with knife",
+. "vine with space axe", "creeping vine with space axe".
+@ $89C0 label=PhraseTokens_Vine
+B $89C0,$22 Checked by #R$94B1.
+N $89E2 Matches e.g. "rope", "rope with axe", "rope with knife",
+. "rope with space axe".
+@ $89E2 label=PhraseTokens_Rope
+B $89E2,$0F Checked by #R$94B1.
+N $89F1 Matches e.g. "vine", "creeping vine", "guard", "android guard", "slug",
+. "blind slug", "creature", "scaled creature", "commander", "alien commander",
+. "soldier", "alien soldier".
+@ $89F1 label=PhraseTokens_Attack
+B $89F1,$1E Checked by #R$952B.
+N $8A0F Matches e.g. "commander with gun", "alien commander with gun",
+. "commander with laser gun", "alien commander with laser gun".
+@ $8A0F label=PhraseTokens_Commander_With_Gun
+B $8A0F,$14 Checked by #R$952B and #R$97CA.
+N $8A23 Matches e.g. "commander with axe", "alien commander with axe",
+. "commander with space axe", "alien commander with space axe".
+@ $8A23 label=PhraseTokens_Commander_With_Axe
+B $8A23,$14 Checked by #R$952B.
+N $8A37 Matches e.g. "guard with gun", "android guard with gun",
+. "guard with laser gun", "android guard with laser gun".
+@ $8A37 label=PhraseTokens_Guard_With_Gun
+B $8A37,$14 Checked by #R$952B and #R$97CA.
+N $8A4B Matches e.g. "soldier with gun", "alien soldier with gun",
+. "soldier with laser gun", "alien soldier axe laser gun".
+@ $8A4B label=PhraseTokens_Soldier_With_Gun
+B $8A4B,$14 Checked by #R$952B and #R$97CA.
+N $8A5F Matches e.g. "slug with gun", "blind slug with gun",
+. "slug with laser gun", "blind slug with laser gun", "creature with gun",
+. "scaled creature with gun", "creature with laser gun",
+. "scaled creature with laser gun".
+@ $8A5F label=PhraseTokens_Slug_With_Gun
+B $8A5F,$28 Checked by #R$952B.
+N $8A87 Matches e.g. "axe at commander", "axe at alien commander",
+. "space axe at commander", "space axe at alien commander".
+@ $8A87 label=PhraseTokens_Axe_At_Commander
+B $8A87,$14 Checked by #R$9198.
+N $8A9B Matches e.g. "fungus at slug", "fungus at blind slug",
+. "poison fungus at slug", "poison fungus at blind slug".
+@ $8A9B label=PhraseTokens_Fungus_At_Slug
+B $8A9B,$14 Checked by #R$9198.
+N $8AAF Matches e.g. "stones at creature", "stones at scaled creature",
+. "round stones at creature", "round stones at scaled creature".
+@ $8AAF label=PhraseTokens_Stones_At_Creature
+B $8AAF,$14 Checked by #R$9198.
+N $8AC3 Matches e.g. "message".
+@ $8AC3 label=PhraseTokens_Message
+B $8AC3,$02 Checked by #R$9670.
+N $8AC5 Matches e.g. "ship".
+@ $8AC5 label=PhraseTokens_Any_Ship
+B $8AC5,$04 Checked by #R$96BE.
+N $8AC9 Matches e.g. "airlock".
+@ $8AC9 label=PhraseTokens_Airlock
+B $8AC9,$02 Checked by #R$96E7 and #R$975A.
+N $8ACB Matches e.g. "door".
+@ $8ACB label=PhraseTokens_Door
+B $8ACB,$02 Checked by #R$96E7 and #R$975A.
+N $8ACD Matches e.g. "commander", "alien commander".
+@ $8ACD label=PhraseTokens_Commander
+B $8ACD,$05 Checked by #R$97CA.
+N $8AD2 Matches e.g. "guard", "android guard".
+@ $8AD2 label=PhraseTokens_Guard
+B $8AD2,$05 Checked by #R$97CA.
+N $8AD7 Matches e.g. "soldier", "alien soldier".
+@ $8AD7 label=PhraseTokens_Soldier
+B $8AD7,$05 Checked by #R$97CA.
+N $8ADC Matches e.g. "pedestal", "glass pedestal", "pedestal with gun",
+. "pedestal with laser gun", "glass pedestal with gun",
+. "glass pedestal with laser gun".
+@ $8ADC label=PhraseTokens_Pedestal
+B $8ADC,$19 Checked by #R$97CA.
+N $8AF5 Matches e.g. "panel", "panel with gun", "panel with laser gun", "plate",
+. "plate with gun", "plate with laser gun", "square plate",
+. "square plate with gun", "square plate with laser gun".
+@ $8AF5 label=PhraseTokens_Panel
+B $8AF5,$24 Checked by #R$97CA.
+N $8B19 Matches e.g. "vine", "creeping vine", "vine with gun",
+. "creeping vine with gun", "vine with laser gun",
+. "creeping vine with laser gun".
+@ $8B19 label=PhraseTokens_Vine_With_Gun
+B $8B19,$19 Checked by #R$97CA.
+N $8B32 Matches e.g. "old".
+@ $8B32 label=PhraseTokens_Old
+B $8B32,$02 Checked by #R$997F.
+N $8B34 Matches e.g. "rod at plate", "crystal rod at plate",
+. "rod at square plate", "crystal rod at square plate".
+@ $8B34 label=PhraseTokens_Rod_At_Plate
+B $8B34,$14 Checked by #R$99DD.
+N $8B48 Matches e.g. "button", "button on detonator", "detonator button",
+. "button in device", "device button".
+@ $8B48 label=PhraseTokens_Button
+B $8B48,$10 Checked by #R$9A41.
+N $8B58 Matches e.g. "off".
+@ $8B58 label=PhraseTokens_Off
+B $8B58,$02 Checked by #R$8FCD and #R$916C.
 
-g $8B5A Table: Room Exits
-@ $8B5A label=Table_RoomExits
-D $8B5A Six direction bytes for every room, in the order north,
-. south, east, west, up and down. #N$00 means no exit.
-B $8B5A,$01
-L $8B5A,$01,$06
+g $8B5A Table: Room Map
+@ $8B5A label=Table_RoomMap
+E $8B5A View the equivalent code in;
+. #LIST
+. { #SHOCK$B8DD }
+. { #FOREST$E934 }
+. { #HEROES$E7E6 }
+. { #JEWELS$EB10 }
+. { #WARLORD$E714 }
+. LIST#
+D $8B5A Six bytes per room, in the order north, south, east, west, up, down. A
+. zero means there is no exit.
+N $8B5A Room #N((#PC-$8B5A)/$06): #ROOM((#PC-$8B5A)/$06).
+B $8B5A,$01 #IF(#PEEK(#PC)>$00)(North to room:
+. #R($8B5A+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $8B5B,$01 #IF(#PEEK(#PC)>$00)(South to room:
+. #R($8B5A+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $8B5C,$01 #IF(#PEEK(#PC)>$00)(East to room:
+. #R($8B5A+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $8B5D,$01 #IF(#PEEK(#PC)>$00)(West to room:
+. #R($8B5A+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $8B5E,$01 #IF(#PEEK(#PC)>$00)(Up to room:
+. #R($8B5A+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+B $8B5F,$01 #IF(#PEEK(#PC)>$00)(Down to room:
+. #R($8B5A+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
 L $8B5A,$06,$40
 
-b $8CDA Table: Message Numbers
-@ $8CDA label=Table_MessageNumbers
-D $8CDA Lists of message and object numbers used by the scenic
-. handlers. The entries are addressed from #R$62B2.
-B $8CDA,$01
-L $8CDA,$01,$22
+b $8CDA Data: Scenic Event Rooms
+@ $8CDA label=Data_ScenicEventRooms
+E $8CDA View the equivalent code in;
+. #LIST
+. { #SHOCK$B6C9 }
+. { #FOREST$E7D0 }
+. { #JEWELS$E933 }
+. { #WARLORD$E4AA }
+. LIST#
+D $8CDA Room IDs for each scenic event, in groups terminated by #N$FF. The
+. addresses of the groups are held by #R$62B2.
+N $8CDA Event #N$00: rooms #ROOM$18, #ROOM$19, #ROOM$1E, #ROOM$1F, #ROOM$20,
+. #ROOM$21, #ROOM$22, #ROOM$23, #ROOM$24, #ROOM$25, #ROOM$27, #ROOM$28, then
+. #N$FF.
+B $8CDA,$0D
+N $8CE7 Event #N$01: rooms #ROOM$3D, #ROOM$1B, #ROOM$29, #ROOM$2A, #ROOM$2B,
+. then #N$FF.
+B $8CE7,$06
+N $8CED Event #N$02: rooms #ROOM$2C, #ROOM$2D, #ROOM$2E, #ROOM$32, #ROOM$34,
+. then #N$FF.
+B $8CED,$06
+N $8CF3 Event #N$03: rooms #ROOM$2F, #ROOM$30, #ROOM$31, #ROOM$37, #ROOM$38,
+. #ROOM$39, #ROOM$3A, #ROOM$3B, then #N$FF.
+B $8CF3,$09
 
-b $8CFC Table: Rooms With Images
+g $8CFC Table: Rooms With Images
 @ $8CFC label=Table_RoomsWithImages
-D $8CFC Room ids that have a picture, in the same order as #R$FA68.
-D $8CFC Used by the routine at #R$678A through the pointer at #R$62CC,
-. set from #R$F8EA.
-B $8CFC,$01 Room #N(#PEEK(#PC)).
-L $8CFC,$01,$1A
+E $8CFC View the equivalent code in;
+. #LIST
+. { #SHOCK$BB93 }
+. { #FOREST$E806 }
+. { #HEROES$FDFF }
+. { #JEWELS$E95D }
+. { #WARLORD$FEF1 }
+. LIST#
+D $8CFC The #N$1A rooms that have a picture (the count is at #R$62CA).
+. #R$678A looks the current room up here (through #R$62CC); where it is found
+. picks the drawing routine in #R$FA68 and the "already seen" bit in #R$6213.
+. A picture is shown the first time the player enters the room, and again
+. whenever they type LOOK.
+B $8CFC,$01 Image #N$00: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F813; seen flag: bit 0 of #R$6213.
+B $8CFD,$01 Image #N$01: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F81B; seen flag: bit 1 of #R$6213.
+B $8CFE,$01 Image #N$02: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F823; seen flag: bit 2 of #R$6213.
+B $8CFF,$01 Image #N$03: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F82B; seen flag: bit 3 of #R$6213.
+B $8D00,$01 Image #N$04: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F838; seen flag: bit 4 of #R$6213.
+B $8D01,$01 Image #N$05: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F845; seen flag: bit 5 of #R$6213.
+B $8D02,$01 Image #N$06: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F852; seen flag: bit 6 of #R$6213.
+B $8D03,$01 Image #N$07: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F877; seen flag: bit 7 of #R$6213.
+B $8D04,$01 Image #N$08: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F87F; seen flag: bit 0 of #R$6213(#N$6214).
+B $8D05,$01 Image #N$09: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F87F; seen flag: bit 1 of #R$6213(#N$6214).
+B $8D06,$01 Image #N$0A: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F87F; seen flag: bit 2 of #R$6213(#N$6214).
+B $8D07,$01 Image #N$0B: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F87F; seen flag: bit 3 of #R$6213(#N$6214).
+B $8D08,$01 Image #N$0C: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F87F; seen flag: bit 4 of #R$6213(#N$6214).
+B $8D09,$01 Image #N$0D: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F87F; seen flag: bit 5 of #R$6213(#N$6214).
+B $8D0A,$01 Image #N$0E: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F87F; seen flag: bit 6 of #R$6213(#N$6214).
+B $8D0B,$01 Image #N$0F: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F87F; seen flag: bit 7 of #R$6213(#N$6214).
+B $8D0C,$01 Image #N$10: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F87F; seen flag: bit 0 of #R$6213(#N$6215).
+B $8D0D,$01 Image #N$11: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F87F; seen flag: bit 1 of #R$6213(#N$6215).
+B $8D0E,$01 Image #N$12: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F887; seen flag: bit 2 of #R$6213(#N$6215).
+B $8D0F,$01 Image #N$13: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F88F; seen flag: bit 3 of #R$6213(#N$6215).
+B $8D10,$01 Image #N$14: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F897; seen flag: bit 4 of #R$6213(#N$6215).
+B $8D11,$01 Image #N$15: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F897; seen flag: bit 5 of #R$6213(#N$6215).
+B $8D12,$01 Image #N$16: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F897; seen flag: bit 6 of #R$6213(#N$6215).
+B $8D13,$01 Image #N$17: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F897; seen flag: bit 7 of #R$6213(#N$6215).
+B $8D14,$01 Image #N$18: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F89F; seen flag: bit 0 of #R$6213(#N$6216).
+B $8D15,$01 Image #N$19: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+. #R$F8A7; seen flag: bit 1 of #R$6213(#N$6216).
 
-g $8D16 Table: Saved Locations
-@ $8D16 label=Table_SavedLocations
-D $8D16 Pointers copied and restored with the save file. The count
-. is stored at *#R$62DC.
-W $8D16,$02 #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
-L $8D16,$02,$0A
+g $8D16 Table: Configurable Exits
+@ $8D16 label=Table_ConfigurableExits
+E $8D16 View the equivalent code in;
+. #LIST
+. { #FOREST$EB02 }
+. { #HEROES$E972 }
+. { #JEWELS$ED9E }
+. { #WARLORD$E978 }
+. LIST#
+D $8D16 Addresses of room-map exit bytes. #R$F8AF writes the starting
+. values. #R$69A1 copies the bytes into #R$622D, and #R$69DC writes them
+. back.
+W $8D16,$02 South exit of room #N$05 (#ROOM$05).
+W $8D18,$02 Down exit of room #N$13 (#ROOM$13).
+W $8D1A,$02 South exit of room #N$17 (#ROOM$17).
+W $8D1C,$02 East exit of room #N$19 (#ROOM$19).
+W $8D1E,$02 East exit of room #N$1D (#ROOM$1D).
+W $8D20,$02 Up exit of room #N$1D (#ROOM$1D).
+W $8D22,$02 Down exit of room #N$2B (#ROOM$2B).
+W $8D24,$02 West exit of room #N$30 (#ROOM$30).
+W $8D26,$02 East exit of room #N$33 (#ROOM$33).
+W $8D28,$02 North exit of room #N$35 (#ROOM$35).
 
 c $8D2A Game Loop
 @ $8D2A label=GameLoop
@@ -3080,6 +3731,14 @@ D $8E0F Print the message in #REGhl, discard the return addresses and
 
 c $8E18 Move Player To Room
 @ $8E18 label=MovePlayerToRoom
+E $8E18 View the equivalent code in;
+. #LIST
+. { #SHOCK$AD79 }
+. { #FOREST$ECB6 }
+. { #HEROES$E9E1 }
+. { #JEWELS$EF54 }
+. { #WARLORD$EB10 }
+. LIST#
 D $8E18 Store the given room as the current room and update the exit record.
   $8E18,$01 Remember the room being entered.
   $8E19,$03 Fetch the current room.
@@ -3446,7 +4105,9 @@ c $8FE2 Take: Is Player Holding Item
 E $8FE2 View the equivalent code in;
 . #LIST
 . { #FOREST$EEBA }
+. { #HEROES$EAF4 }
 . { #JEWELS$F26A }
+. { #WARLORD$ED75 }
 . LIST#
 D $8FE2 Refuse the take when the object is already carried or the inventory is
 . full; otherwise return so the caller can take it.
@@ -3483,12 +4144,15 @@ N $900B Print "#MESSAGE$7802".
   $900B,$03 #REGhl=#R$7802.
   $900E,$02 Jump to #R$9025.
 
-b $9010 Table: Items Which Are Plural
+g $9010 Table: Items Which Are Plural
 @ $9010 label=Table_ItemsWhichArePlural
 E $9010 View the equivalent code in;
 . #LIST
+. { #SHOCK$B6F1 }
 . { #FOREST$EEEB }
+. { #HEROES$EA9D }
 . { #JEWELS$F29B }
+. { #WARLORD$ED6C }
 . LIST#
 D $9010 All the items in the game which are plural; used by #R$8FEE.
 B $9010,$01 Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
@@ -3498,8 +4162,11 @@ c $9014 Take Item
 @ $9014 label=TakeItem
 E $9014 View the equivalent code in;
 . #LIST
+. { #SHOCK$AA6E }
 . { #FOREST$EEED }
+. { #HEROES$EB25 }
 . { #JEWELS$F29C }
+. { #WARLORD$EDA6 }
 . LIST#
 D $9014 Places the item in the player's inventory and acknowledges success.
   $9014,$05 Call #R$65E6 to mark the object as carried.
@@ -5105,14 +5772,14 @@ D $F958 Copied to #R$6219. No turn-based event has started.
 B $F958,$01
 
 g $F959 Turn-Based Event Counters
-@ $F959 label=Default_Counter_Unused_0
-@ $F95A label=Default_Counter_Unused_1
-@ $F95B label=Default_Counter_Unused_2
-@ $F95C label=Default_Counter_Unused_3
-@ $F95D label=Default_Counter_Unused_4
-@ $F95E label=Default_Counter_Unused_5
-@ $F95F label=Default_Counter_Unused_6
-@ $F960 label=Default_Counter_Unused_7
+@ $F959 label=Default_Counter_Android
+@ $F95A label=Default_Counter_Slug
+@ $F95B label=Default_Counter_SecondAndroid
+@ $F95C label=Default_Counter_ComplexExplodes
+@ $F95D label=Default_Counter_Unused_0
+@ $F95E label=Default_Counter_Unused_1
+@ $F95F label=Default_Counter_Unused_2
+@ $F960 label=Default_Counter_Unused_3
 D $F959 Copied to #R$621A. One countdown per bit of *#R$6219.
 B $F959,$08,$01
 
@@ -5139,7 +5806,7 @@ B $F96B,$01
 
 g $F96C Load/ Save Buffer
 @ $F96C label=Default_LoadSaveBuffer
-D $F96C Copied to #R$622D. Initial bytes for the saved-location pointers.
+D $F96C Copied to #R$622D. Initial bytes for the configurable exits.
 B $F96C,$32,$08
 
 g $F99E Command Buffer
@@ -5175,10 +5842,12 @@ D $F9E1 Copied to #R$62A2. Handler addresses for each turn-based event bit.
 W $F9E1,$02 Event #N((#PC-$F9E1)/$02).
 L $F9E1,$02,$08
 
-g $F9F1 Table: Scenic Event Message Lists
-@ $F9F1 label=Default_Table_ScenicEventMessageLists
-D $F9F1 Copied to #R$62B2. Message-list pointers for each scenic event.
-W $F9F1,$02 Event #N((#PC-$F9F1)/$02).
+g $F9F1 Table: Scenic Event Rooms
+@ $F9F1 label=Default_Table_ScenicEventRooms
+D $F9F1 Copied to #R$62B2. Pointers to the room lists for each scenic
+. event.
+W $F9F1,$02 Event #N((#PC-$F9F1)/$02):
+. #IF(#PEEK(#PC)>$00)(#R(#PEEK(#PC)+#PEEK(#PC+$01)*$100),N/A).
 L $F9F1,$02,$08
 
 g $FA01 Pointer: Room Map Table
@@ -5221,8 +5890,8 @@ g $FA0F Pointer: Room Description Table
 D $FA0F Copied to #R$62D0.
 W $FA0F,$02
 
-g $FA11 Pointer: Object Noun Phrases
-@ $FA11 label=Default_Pointer_ObjectNounPhrases
+g $FA11 Pointer: Item Grouping Table
+@ $FA11 label=Default_Pointer_ItemGroupingTable
 D $FA11 Copied to #R$62D2.
 W $FA11,$02
 
@@ -5246,13 +5915,13 @@ g $FA19 Number Of Verb Tokens
 D $FA19 Copied to #R$62DA.
 W $FA19,$02
 
-g $FA1B Number Of Saved Locations
-@ $FA1B label=Default_Count_SavedLocations
+g $FA1B Number Of "Configurable Exits"
+@ $FA1B label=Default_Count_ConfigurableExits
 D $FA1B Copied to #R$62DC.
 W $FA1B,$02
 
-g $FA1D Pointer: Saved Location Table
-@ $FA1D label=Default_Pointer_SavedLocations
+g $FA1D Pointer: Configurable Exits Table
+@ $FA1D label=Default_Pointer_ConfigurableExits
 D $FA1D Copied to #R$62DE.
 W $FA1D,$02
 
@@ -5268,7 +5937,7 @@ E $FA20 View the equivalent code in;
 . { #JEWELS$FF3A }
 . { #WARLORD$FE89 }
 . LIST#
-D $FA20 Verb routines in the same order as the search list at #R$891C.
+D $FA20 Verb routines in the same order as #R$891C.
 . Used by #R$8D85.
 W $FA20,$02 #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
 L $FA20,$02,$24
@@ -5282,11 +5951,8 @@ E $FA68 View the equivalent code in;
 . { #JEWELS$FFA8 }
 . { #WARLORD$FEFC }
 . LIST#
-D $FA68 Handlers that draw the location pictures, in the same order
-. as the room list at #R$8CFC.
-D $FA68 Used by the routine at #R$678A through the pointer at #R$62CE,
-. set from #R$F8EA.
-W $FA68,$02 #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
+D $FA68 See #R$8CFC.
+W $FA68,$02 Location Slot: #N((#PC-$FA68)/$02).
 L $FA68,$02,$1A
 
 u $FA9C

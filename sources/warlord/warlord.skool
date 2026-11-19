@@ -5070,7 +5070,7 @@ c$A5C2 HALT          ; Halt operation (suspend CPU until the next interrupt).
 ;
 ; Used by the routines at #R$AB0A and #R$B08A.
 ;
-; O:A The first byte of the #SKOOLKID$5C78(FRAMES) variable.
+; O:A The first byte of the #SKOOLKID$5C78(FRAMES) variable
 @label=FetchFrames
 c$A5C6 LD A,($5C78)  ; #REGa=*#SKOOLKID$5C78(FRAMES).
  $A5C9 RET           ; Return.
@@ -5880,6 +5880,14 @@ g$A772 DEFB $00      ; Low byte of the temporary pointer, whose high byte is
 @label=Table_RoomImagesAlreadySeen
 g$A774 DEFB %00000000 ; Seen-image flags.
  $A775 DEFB %00000000 ; Seen-image flags.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A0A8 }
+; { #FOREST$BA30 }
+; { #HEROES$AE7E }
+; { #JEWELS$BC5C }
+; { #ANDROMEDA$6213 }
+; LIST#
 
 ; Unused
 u$A776 DEFS $08
@@ -5892,47 +5900,57 @@ u$A776 DEFS $08
 ; { =h Bit | =h Relating To }
 ; { #N$00 | Narrow underwater passage }
 ; { #N$01 | Fomorian tribe }
-; { #N$02 |  }
-; { #N$03 |  }
-; { #N$04 |  }
-; { #N$05 |  }
-; { #N$06 |  }
-; { #N$07 |  }
 ; TABLE#
-; When the bit is set, this starts a turn counter (see ..).
+; When the bit is set, this starts a turn counter (see #R$A77F).
 @label=Flag_TurnBasedEventState
-g$A77E DEFB $00      ; Turn-based event flags.
+g$A77E DEFB $00
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A0C8 }
+; { #FOREST$BA36 }
+; { #HEROES$AE88 }
+; { #JEWELS$BC66 }
+; { #ANDROMEDA$6219 }
+; LIST#
 
 ; Turn-Based Event Counters
 ;
-; .
+; One countdown per bit of *#R$A77E.
 ;
 ; .
 ;
 ; Initialised to #N$05 by #R$EBFC.
 @label=Counter_Drowning
-g$A77F DEFB $00      ; Turn counter for bit #N$00 of *#R$A77E.
+g$A77F DEFB $00
 ; Initialised to #N$05 by #R$EC21.
 @label=Counter_FomorianTribe
- $A780 DEFB $00      ; Turn counter for bit #N$01 of *#R$A77E.
+ $A780 DEFB $00
 ; Unused.
 @label=Counter_Unused_0
- $A781 DEFB $00      ; Turn counter for bit #N$02 of *#R$A77E.
+ $A781 DEFB $00
 ; Unused.
 @label=Counter_Unused_1
- $A782 DEFB $00      ; Turn counter for bit #N$03 of *#R$A77E.
+ $A782 DEFB $00
 ; Unused.
 @label=Counter_Unused_2
- $A783 DEFB $00      ; Turn counter for bit #N$04 of *#R$A77E.
+ $A783 DEFB $00
 ; Unused.
 @label=Counter_Unused_3
- $A784 DEFB $00      ; Turn counter for bit #N$05 of *#R$A77E.
+ $A784 DEFB $00
 ; Unused.
 @label=Counter_Unused_4
- $A785 DEFB $00      ; Turn counter for bit #N$06 of *#R$A77E.
+ $A785 DEFB $00
 ; Unused.
 @label=Counter_Unused_5
- $A786 DEFB $00      ; Turn counter for bit #N$07 of *#R$A77E.
+ $A786 DEFB $00
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A0C9 }
+; { #FOREST$BA37 }
+; { #HEROES$AE89 }
+; { #JEWELS$BC67 }
+; { #ANDROMEDA$621A }
+; LIST#
 
 ; Flags: Event States
 ;
@@ -5940,16 +5958,13 @@ g$A77F DEFB $00      ; Turn counter for bit #N$00 of *#R$A77E.
 ; #TABLE(default,centre,centre)
 ; { =h Bit | =h Relating To }
 ; { #N$00 | #R$F544(The Roman being captured with the rope) }
-; { #N$01 |  }
-; { #N$02 |  }
-; { #N$03 |  }
-; { #N$04 |  }
-; { #N$05 |  }
-; { #N$06 |  }
-; { #N$07 |  }
 ; TABLE#
 @label=Flag_EventStates
-g$A787 DEFB $00      ; Event flags.
+g$A787 DEFB $00
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$A0D1 }
+; LIST#
 
 ; Table: Turn-Based Event Items
 ;
@@ -9777,6 +9792,8 @@ g$C732 DEFW $0000    ; Item #N((#PC-$C732)/$02): #ITEM((#PC-$C732)/$02).
 ; LIST#
 
 ; Table: Object Noun Phrases
+;
+; One word per object. Each entry points at the noun text.
 @label=Table_ObjectNounPhrases
 g$C83E DEFW $BA66    ; Object
                      ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC))(#N((#PC-$C83E)/$02)):
@@ -9952,8 +9969,10 @@ g$C83E DEFW $BA66    ; Object
 ; View the equivalent code in;
 ; #LIST
 ; { #SHOCK$AF31 }
+; { #FOREST$D4E6 }
 ; { #HEROES$CEEA }
 ; { #JEWELS$D4C6 }
+; { #ANDROMEDA$85E8 }
 ; LIST#
 
 ; Table: Room Descriptions
@@ -10773,15 +10792,17 @@ t$E091 DEFM "You've nothing to tie him with." ; "#STR(#PC,$08)($b==$FF)".
  $E0B0 DEFB $FF                               ; Terminator.
 
 ; Table: Vocabulary
+;
+; Four-character words. A comma binds synonyms to the same command.
 @label=Table_Vocabulary
 t$E0B1 DEFM "xxxx"                ; Command #N$00.
  $E0B5 DEFM "I   ,INVE"           ; Command #N$01.
  $E0BE DEFM "L   ,LOOK"           ; Command #N$02.
- $E0C7 DEFM "SCOR"                ; Command #N$03.
- $E0CB DEFM "EXAM"                ; Command #N$04.
- $E0CF DEFM "LOAD"                ; Command #N$05.
- $E0D3 DEFM "SAVE"                ; Command #N$06.
- $E0D7 DEFM "QUIT"                ; Command #N$07.
+ $E0C7 DEFM "SCOR"                ; Command #N((#PC-$E0BB)/$04).
+ $E0CB DEFM "EXAM"                ; Command #N((#PC-$E0BB)/$04).
+ $E0CF DEFM "LOAD"                ; Command #N((#PC-$E0BB)/$04).
+ $E0D3 DEFM "SAVE"                ; Command #N((#PC-$E0BB)/$04).
+ $E0D7 DEFM "QUIT"                ; Command #N((#PC-$E0BB)/$04).
  $E0DB DEFM "N   ,NORT"           ; Command #N$08.
  $E0E4 DEFM "S   ,SOUT"           ; Command #N$09.
  $E0ED DEFM "E   ,EAST"           ; Command #N$0A.
@@ -10789,665 +10810,453 @@ t$E0B1 DEFM "xxxx"                ; Command #N$00.
  $E0FF DEFM "U   ,UP  "           ; Command #N$0C.
  $E108 DEFM "D   ,DOWN"           ; Command #N$0D.
  $E111 DEFM "TAKE,GET "           ; Command #N$0E.
- $E11A DEFM "DROP"                ; Command #N$0F.
- $E11E DEFM "THRO"                ; Command #N$10.
+ $E11A DEFM "DROP"                ; Command #N((#PC-$E0DE)/$04).
+ $E11E DEFM "THRO"                ; Command #N((#PC-$E0DE)/$04).
  $E122 DEFM "KILL,ATTA,HIT ,STRI" ; Command #N$11.
  $E135 DEFM "FREE,RELE,UNTI"      ; Command #N$12.
- $E143 DEFM "GIVE"                ; Command #N$13.
- $E147 DEFM "JUMP"                ; Command #N$14.
- $E14B DEFM "CLIM"                ; Command #N$15.
- $E14F DEFM "ENTE"                ; Command #N$16.
- $E153 DEFM "WEAR"                ; Command #N$17.
- $E157 DEFM "SWIM"                ; Command #N$18.
+ $E143 DEFM "GIVE"                ; Command #N((#PC-$E0F7)/$04).
+ $E147 DEFM "JUMP"                ; Command #N((#PC-$E0F7)/$04).
+ $E14B DEFM "CLIM"                ; Command #N((#PC-$E0F7)/$04).
+ $E14F DEFM "ENTE"                ; Command #N((#PC-$E0F7)/$04).
+ $E153 DEFM "WEAR"                ; Command #N((#PC-$E0F7)/$04).
+ $E157 DEFM "SWIM"                ; Command #N((#PC-$E0F7)/$04).
  $E15B DEFM "FUCK,SCRE,RAPE,STUF" ; Command #N$19.
- $E16E DEFM "GO  "                ; Command #N$1A.
- $E172 DEFM "CAPT"                ; Command #N$1B.
+ $E16E DEFM "GO  "                ; Command #N((#PC-$E106)/$04).
+ $E172 DEFM "CAPT"                ; Command #N((#PC-$E106)/$04).
  $E176 DEFM "PLAC,LEAN,LAY "      ; Command #N$1C.
  $E184 DEFM "BUY ,PURC"           ; Command #N$1D.
- $E18D DEFM "STEP"                ; Command #N$1E.
- $E191 DEFM "xxxx"                ; Command #N$1F.
- $E195 DEFM "DRIN"                ; Command #N$20.
- $E199 DEFM "EAT "                ; Command #N$21.
+ $E18D DEFM "STEP"                ; Command #N((#PC-$E115)/$04).
+ $E191 DEFM "xxxx"                ; Command #N((#PC-$E115)/$04).
+ $E195 DEFM "DRIN"                ; Command #N((#PC-$E115)/$04).
+ $E199 DEFM "EAT "                ; Command #N((#PC-$E115)/$04).
  $E19D DEFM "SLEE,REST"           ; Command #N$22.
- $E1A6 DEFM "xxxx"                ; Command #N$23.
- $E1AA DEFM "xxxx"                ; Command #N$24.
- $E1AE DEFM "ROMA"                ; Command #N((#PC-$E11A)/$04).
- $E1B2 DEFM "FOMO"                ; Command #N((#PC-$E11A)/$04).
- $E1B6 DEFM "BOAR"                ; Command #N((#PC-$E11A)/$04).
- $E1BA DEFM "RATS"                ; Command #N((#PC-$E11A)/$04).
- $E1BE DEFM "HARE"                ; Command #N((#PC-$E11A)/$04).
- $E1C2 DEFM "TRAP"                ; Command #N((#PC-$E11A)/$04).
- $E1C6 DEFM "POOL"                ; Command #N((#PC-$E11A)/$04).
- $E1CA DEFM "SALT"                ; Command #N((#PC-$E11A)/$04).
- $E1CE DEFM "POT "                ; Command #N((#PC-$E11A)/$04).
- $E1D2 DEFM "ACOR"                ; Command #N((#PC-$E11A)/$04).
- $E1D6 DEFM "URN "                ; Command #N((#PC-$E11A)/$04).
- $E1DA DEFM "SLAB"                ; Command #N((#PC-$E11A)/$04).
- $E1DE DEFM "RAVE"                ; Command #N((#PC-$E11A)/$04).
- $E1E2 DEFM "HELM"                ; Command #N((#PC-$E11A)/$04).
- $E1E6 DEFM "FOOD"                ; Command #N((#PC-$E11A)/$04).
- $E1EA DEFM "IRON"                ; Command #N((#PC-$E11A)/$04).
- $E1EE DEFM "MONO"                ; Command #N((#PC-$E11A)/$04).
- $E1F2 DEFM "FISS"                ; Command #N((#PC-$E11A)/$04).
- $E1F6 DEFM "WARR"                ; Command #N((#PC-$E11A)/$04).
- $E1FA DEFM "DEMO"                ; Command #N((#PC-$E11A)/$04).
- $E1FE DEFM "HUT "                ; Command #N((#PC-$E11A)/$04).
- $E202 DEFM "VASE"                ; Command #N((#PC-$E11A)/$04).
- $E206 DEFM "CAVE"                ; Command #N((#PC-$E11A)/$04).
- $E20A DEFM "SWOR"                ; Command #N((#PC-$E11A)/$04).
- $E20E DEFM "MEAT"                ; Command #N((#PC-$E11A)/$04).
- $E212 DEFM "TRAD"                ; Command #N((#PC-$E11A)/$04).
- $E216 DEFM "WOMA"                ; Command #N((#PC-$E11A)/$04).
- $E21A DEFM "WOLV"                ; Command #N((#PC-$E11A)/$04).
- $E21E DEFM "BEAR"                ; Command #N((#PC-$E11A)/$04).
- $E222 DEFM "GUAR"                ; Command #N((#PC-$E11A)/$04).
- $E226 DEFM "DRUI"                ; Command #N((#PC-$E11A)/$04).
- $E22A DEFM "AMUL,TALI"           ; Command #N$44.
- $E233 DEFM "RING"                ; Command #N$45.
- $E237 DEFM "PIG "                ; Command #N$46.
- $E23B DEFM "ROPE"                ; Command #N$47.
- $E23F DEFM "OX  "                ; Command #N$48.
- $E243 DEFM "GROO"                ; Command #N$49.
- $E247 DEFM "SHIE"                ; Command #N$4A.
- $E24B DEFM "FIRE,FLAM"           ; Command #N$4B.
- $E254 DEFM "LAKE"                ; Command #N((#PC-$E11A)/$04).
- $E258 DEFM "LADD"                ; Command #N((#PC-$E11A)/$04).
- $E25C DEFM "STRA"                ; Command #N((#PC-$E11A)/$04).
- $E260 DEFM "STAF"                ; Command #N((#PC-$E11A)/$04).
- $E264 DEFM "BODY"                ; Command #N((#PC-$E11A)/$04).
- $E268 DEFM "CLOA"                ; Command #N((#PC-$E11A)/$04).
- $E26C DEFM "SILV"                ; Command #N((#PC-$E11A)/$04).
- $E270 DEFM "PLAT"                ; Command #N((#PC-$E11A)/$04).
- $E274 DEFM "WATE"                ; Command #N((#PC-$E11A)/$04).
- $E278 DEFM "LUG "                ; Command #N((#PC-$E11A)/$04).
- $E27C DEFM "DANU"                ; Command #N((#PC-$E11A)/$04).
- $E280 DEFM "MINE"                ; Command #N((#PC-$E11A)/$04).
- $E284 DEFM "CHAR"                ; Command #N((#PC-$E11A)/$04).
- $E288 DEFM "PIT "                ; Command #N((#PC-$E11A)/$04).
- $E28C DEFM "TORC"                ; Command #N((#PC-$E11A)/$04).
- $E290 DEFM "SKUL"                ; Command #N((#PC-$E11A)/$04).
- $E294 DEFM "HILL"                ; Command #N((#PC-$E11A)/$04).
- $E298 DEFM "BROC"                ; Command #N((#PC-$E11A)/$04).
- $E29C DEFM "xxxx"                ; Command #N((#PC-$E11A)/$04).
- $E2A0 DEFM "xxxx"                ; Command #N((#PC-$E11A)/$04).
- $E2A4 DEFM "AT  "                ; Command #N((#PC-$E11A)/$04).
- $E2A8 DEFM "FROM"                ; Command #N((#PC-$E11A)/$04).
- $E2AC DEFM "AGAI"                ; Command #N((#PC-$E11A)/$04).
- $E2B0 DEFM "WILD"                ; Command #N((#PC-$E11A)/$04).
- $E2B4 DEFM "BRON"                ; Command #N((#PC-$E11A)/$04).
- $E2B8 DEFM "CLAY"                ; Command #N((#PC-$E11A)/$04).
- $E2BC DEFM "CRYS"                ; Command #N((#PC-$E11A)/$04).
- $E2C0 DEFM "PILE"                ; Command #N((#PC-$E11A)/$04).
- $E2C4 DEFM "OF  "                ; Command #N((#PC-$E11A)/$04).
- $E2C8 DEFM "STON"                ; Command #N((#PC-$E11A)/$04).
- $E2CC DEFM "YOUN"                ; Command #N((#PC-$E11A)/$04).
- $E2D0 DEFM "WHIT"                ; Command #N((#PC-$E11A)/$04).
- $E2D4 DEFM "WITH,USIN"           ; Command #N$6E.
- $E2DD DEFM "TO  "                ; Command #N$6F.
- $E2E1 DEFM "ON  ,ONTO"           ; Command #N$70.
- $E2EA DEFM "IN  ,INTO"           ; Command #N$71.
- $E2F3 DEFM "HUMA"                ; Command #N((#PC-$E12F)/$04).
- $E2F7 DEFM "OAK "                ; Command #N((#PC-$E12F)/$04).
- $E2FB DEFM "ARME"                ; Command #N((#PC-$E12F)/$04).
- $E2FF DEFM "DEEP"                ; Command #N((#PC-$E12F)/$04).
- $E303 DEFM "OUT "                ; Command #N((#PC-$E12F)/$04).
+ $E1A6 DEFM "xxxx"                ; Command #N((#PC-$E11A)/$04).
+ $E1AA DEFM "xxxx"                ; Command #N((#PC-$E11A)/$04).
+ $E1AE DEFM "ROMA"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1B2 DEFM "FOMO"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1B6 DEFM "BOAR"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1BA DEFM "RATS"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1BE DEFM "HARE"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1C2 DEFM "TRAP"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1C6 DEFM "POOL"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1CA DEFM "SALT"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1CE DEFM "POT "                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1D2 DEFM "ACOR"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1D6 DEFM "URN "                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1DA DEFM "SLAB"                ; Command #N$30: #OBJECT$34.
+ $E1DE DEFM "RAVE"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1E2 DEFM "HELM"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1E6 DEFM "FOOD"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1EA DEFM "IRON"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1EE DEFM "MONO"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1F2 DEFM "FISS"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1F6 DEFM "WARR"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1FA DEFM "DEMO"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E1FE DEFM "HUT "                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E202 DEFM "VASE"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E206 DEFM "CAVE"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E20A DEFM "SWOR"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E20E DEFM "MEAT"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E212 DEFM "TRAD"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E216 DEFM "WOMA"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E21A DEFM "WOLV"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E21E DEFM "BEAR"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E222 DEFM "GUAR"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E226 DEFM "DRUI"                ; Command #N((#PC-$E11A)/$04):
+                                  ; #OBJECT((#PC-$E1AE)/$04).
+ $E22A DEFM "AMUL,TALI"           ; Command #N$44: #OBJECT$1F.
+ $E233 DEFM "RING"                ; Command #N((#PC-$E11F)/$04):
+                                  ; #OBJECT((#PC-$E1B3)/$04).
+ $E237 DEFM "PIG "                ; Command #N((#PC-$E11F)/$04):
+                                  ; #OBJECT((#PC-$E1B3)/$04).
+ $E23B DEFM "ROPE"                ; Command #N((#PC-$E11F)/$04):
+                                  ; #OBJECT((#PC-$E1B3)/$04).
+ $E23F DEFM "OX  "                ; Command #N((#PC-$E11F)/$04):
+                                  ; #OBJECT((#PC-$E1B3)/$04).
+ $E243 DEFM "GROO"                ; Command #N$49: #OBJECT$35.
+ $E247 DEFM "SHIE"                ; Command #N$4A: #OBJECT$25.
+ $E24B DEFM "FIRE,FLAM"           ; Command #N$4B: #OBJECT$26.
+ $E254 DEFM "LAKE"                ; Command #N$4C: #OBJECT$36.
+ $E258 DEFM "LADD"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E25C DEFM "STRA"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E260 DEFM "STAF"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E264 DEFM "BODY"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E268 DEFM "CLOA"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E26C DEFM "SILV"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E270 DEFM "PLAT"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E274 DEFM "WATE"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E278 DEFM "LUG "                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E27C DEFM "DANU"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E280 DEFM "MINE"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E284 DEFM "CHAR"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E288 DEFM "PIT "                ; Command #N$59: #OBJECT$27.
+ $E28C DEFM "TORC"                ; Command #N$5A: #OBJECT$0B.
+ $E290 DEFM "SKUL"                ; Command #N$5B: #OBJECT$24.
+ $E294 DEFM "HILL"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E298 DEFM "BROC"                ; Command #N((#PC-$E124)/$04):
+                                  ; #OBJECT((#PC-$E1B8)/$04).
+ $E29C DEFM "xxxx"                ; Command #N((#PC-$E124)/$04).
+ $E2A0 DEFM "xxxx"                ; Command #N((#PC-$E124)/$04).
+ $E2A4 DEFM "AT  "                ; Command #N((#PC-$E124)/$04).
+ $E2A8 DEFM "FROM"                ; Command #N((#PC-$E124)/$04).
+ $E2AC DEFM "AGAI"                ; Command #N((#PC-$E124)/$04).
+ $E2B0 DEFM "WILD"                ; Command #N((#PC-$E124)/$04).
+ $E2B4 DEFM "BRON"                ; Command #N((#PC-$E124)/$04).
+ $E2B8 DEFM "CLAY"                ; Command #N((#PC-$E124)/$04).
+ $E2BC DEFM "CRYS"                ; Command #N((#PC-$E124)/$04).
+ $E2C0 DEFM "PILE"                ; Command #N((#PC-$E124)/$04).
+ $E2C4 DEFM "OF  "                ; Command #N((#PC-$E124)/$04).
+ $E2C8 DEFM "STON"                ; Command #N((#PC-$E124)/$04).
+ $E2CC DEFM "YOUN"                ; Command #N((#PC-$E124)/$04).
+ $E2D0 DEFM "WHIT"                ; Command #N((#PC-$E124)/$04).
+ $E2D4 DEFM "WITH,USIN"           ; Command #N$6C.
+ $E2DD DEFM "TO  "                ; Command #N$6D.
+ $E2E1 DEFM "ON  ,ONTO"           ; Command #N$6E.
+ $E2EA DEFM "IN  ,INTO"           ; Command #N$6F.
+ $E2F3 DEFM "HUMA"                ; Command #N((#PC-$E133)/$04).
+ $E2F7 DEFM "OAK "                ; Command #N((#PC-$E133)/$04).
+ $E2FB DEFM "ARME"                ; Command #N((#PC-$E133)/$04).
+ $E2FF DEFM "DEEP"                ; Command #N((#PC-$E133)/$04).
+ $E303 DEFM "OUT "                ; Command #N((#PC-$E133)/$04).
  $E307 DEFB $FF                   ; Terminator.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$B0ED }
+; { #FOREST$E4AF }
+; { #HEROES$E25C }
+; { #JEWELS$E61D }
+; { #ANDROMEDA$8632 }
+; LIST#
 
 ; Table: Token Item List
 ;
 ; A list of all tokens which relate to items.
 @label=Table_TokenItemList
-g$E308 DEFB $25      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E309 DEFB $26      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E30A DEFB $27      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E30B DEFB $28      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E30C DEFB $29      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E30D DEFB $2A      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E30E DEFB $2B      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E30F DEFB $2C      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E310 DEFB $2D      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E311 DEFB $2E      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E312 DEFB $2F      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E313 DEFB $5A      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E314 DEFB $31      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E315 DEFB $32      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E316 DEFB $33      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E317 DEFB $34      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E318 DEFB $35      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E319 DEFB $36      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E31A DEFB $37      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E31B DEFB $38      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E31C DEFB $39      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E31D DEFB $3A      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E31E DEFB $3B      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E31F DEFB $3C      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E320 DEFB $3D      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E321 DEFB $3E      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E322 DEFB $3F      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E323 DEFB $40      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E324 DEFB $41      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E325 DEFB $42      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E326 DEFB $43      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E327 DEFB $44      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E328 DEFB $45      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E329 DEFB $46      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E32A DEFB $47      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E32B DEFB $48      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E32C DEFB $5B      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E32D DEFB $4A      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E32E DEFB $4B      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E32F DEFB $59      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E330 DEFB $4D      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E331 DEFB $4E      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E332 DEFB $4F      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E333 DEFB $50      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E334 DEFB $51      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E335 DEFB $52      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E336 DEFB $53      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E337 DEFB $54      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E338 DEFB $55      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E339 DEFB $56      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E33A DEFB $57      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E33B DEFB $58      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E33C DEFB $30      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E33D DEFB $49      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E33E DEFB $4C      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E33F DEFB $5C      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E340 DEFB $5D      ; Token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+g$E308 DEFB $25      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E309 DEFB $26      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E30A DEFB $27      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E30B DEFB $28      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E30C DEFB $29      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E30D DEFB $2A      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E30E DEFB $2B      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E30F DEFB $2C      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E310 DEFB $2D      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E311 DEFB $2E      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E312 DEFB $2F      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E313 DEFB $5A      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E314 DEFB $31      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E315 DEFB $32      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E316 DEFB $33      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E317 DEFB $34      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E318 DEFB $35      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E319 DEFB $36      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E31A DEFB $37      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E31B DEFB $38      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E31C DEFB $39      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E31D DEFB $3A      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E31E DEFB $3B      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E31F DEFB $3C      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E320 DEFB $3D      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E321 DEFB $3E      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E322 DEFB $3F      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E323 DEFB $40      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E324 DEFB $41      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E325 DEFB $42      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E326 DEFB $43      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E327 DEFB $44      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E328 DEFB $45      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E329 DEFB $46      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E32A DEFB $47      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E32B DEFB $48      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E32C DEFB $5B      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E32D DEFB $4A      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E32E DEFB $4B      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E32F DEFB $59      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E330 DEFB $4D      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E331 DEFB $4E      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E332 DEFB $4F      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E333 DEFB $50      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E334 DEFB $51      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E335 DEFB $52      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E336 DEFB $53      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E337 DEFB $54      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E338 DEFB $55      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E339 DEFB $56      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E33A DEFB $57      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E33B DEFB $58      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E33C DEFB $30      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E33D DEFB $49      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E33E DEFB $4C      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E33F DEFB $5C      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
+ $E340 DEFB $5D      ; Object #OBJECT((#PC-$E308)): word #N(#PEEK(#PC)),
+                     ; #TOKEN(#PEEK(#PC)).
 ; View the equivalent code in;
 ; #LIST
 ; { #SHOCK$B49E }
+; { #FOREST$E6BC }
+; { #HEROES$E4B8 }
 ; { #JEWELS$E83E }
+; { #ANDROMEDA$8868 }
 ; LIST#
 
-; Data: Item Groups
+; Table: Item Groups
 ;
-; See #R$E417 for usage.
-@label=Data_ItemGroup_Roman
-g$E341 DEFB $02      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E342 DEFB $03      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E343 DEFB $0A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E344 DEFB $0B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E345 DEFB $0C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E346 DEFB $55      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E347 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+; For each object in #R$C83E, in the same order: the items it may refer
+; to, ending with #N$FF. The pointers at #R$E417 say where each group starts.
+@label=Table_ItemGroups
+g$E341 DEFB $02,$03,$0A,$0B,$0C,$55,$FF     ; Object #OBJECT$00: #ITEM$02, #ITEM$03, #ITEM$0A, #ITEM$0B, #ITEM$0C
+                                            ; or #ITEM$55.
 @label=Data_ItemGroup_Fomorian
- $E348 DEFB $04      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E349 DEFB $05      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E34A DEFB $0D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E34B DEFB $0E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E34C DEFB $0F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E34D DEFB $10      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E34E DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E348 DEFB $04,$05,$0D,$0E,$0F,$10,$FF     ; Object #OBJECT$01: #ITEM$04, #ITEM$05, #ITEM$0D, #ITEM$0E, #ITEM$0F
+                                            ; or #ITEM$10.
 @label=Data_ItemGroup_Boar
- $E34F DEFB $06      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E350 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E34F DEFB $06,$FF                         ; Object #OBJECT$02: #ITEM$06.
 @label=Data_ItemGroup_Rats
- $E351 DEFB $09      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E352 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E351 DEFB $09,$FF                         ; Object #OBJECT$03: #ITEM$09.
 @label=Data_ItemGroup_Hare
- $E353 DEFB $13      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E354 DEFB $26      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E355 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E353 DEFB $13,$26,$FF                     ; Object #OBJECT$04: #ITEM$13 or
+                                            ; #ITEM$26.
 @label=Data_ItemGroup_Trap
- $E356 DEFB $13      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E357 DEFB $26      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E358 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E356 DEFB $13,$26,$FF                     ; Object #OBJECT$05: #ITEM$13 or
+                                            ; #ITEM$26.
 @label=Data_ItemGroup_Pool
- $E359 DEFB $15      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E35A DEFB $16      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E35B DEFB $17      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E35C DEFB $18      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E35D DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E359 DEFB $15,$16,$17,$18,$FF             ; Object #OBJECT$06: #ITEM$15
+                                            ; through #ITEM$18.
 @label=Data_ItemGroup_Salt
- $E35E DEFB $19      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E35F DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E35E DEFB $19,$FF                         ; Object #OBJECT$07: #ITEM$19.
 @label=Data_ItemGroup_ClayPot
- $E360 DEFB $1A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E361 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E360 DEFB $1A,$FF                         ; Object #OBJECT$08: #ITEM$1A.
 @label=Data_ItemGroup_Acorns
- $E362 DEFB $1B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E363 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E362 DEFB $1B,$FF                         ; Object #OBJECT$09: #ITEM$1B.
 @label=Data_ItemGroup_Urn
- $E364 DEFB $1C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E365 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E364 DEFB $1C,$FF                         ; Object #OBJECT$0A: #ITEM$1C.
 @label=Data_ItemGroup_Torc
- $E366 DEFB $69      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E367 DEFB $6A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E368 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E366 DEFB $69,$6A,$FF                     ; Object #OBJECT$0B: #ITEM$69 or
+                                            ; #ITEM$6A.
 @label=Data_ItemGroup_Raven
- $E369 DEFB $1D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E36A DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E369 DEFB $1D,$FF                         ; Object #OBJECT$0C: #ITEM$1D.
 @label=Data_ItemGroup_Helmet
- $E36B DEFB $1F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E36C DEFB $20      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E36D DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E36B DEFB $1F,$20,$FF                     ; Object #OBJECT$0D: #ITEM$1F or
+                                            ; #ITEM$20.
 @label=Data_ItemGroup_Food
- $E36E DEFB $22      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E36F DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E36E DEFB $22,$FF                         ; Object #OBJECT$0E: #ITEM$22.
 @label=Data_ItemGroup_Iron
- $E370 DEFB $23      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E371 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E370 DEFB $23,$FF                         ; Object #OBJECT$0F: #ITEM$23.
 @label=Data_ItemGroup_StoneMonolith
- $E372 DEFB $24      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E373 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E372 DEFB $24,$FF                         ; Object #OBJECT$10: #ITEM$24.
 @label=Data_ItemGroup_Fissure
- $E374 DEFB $24      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E375 DEFB $25      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E376 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E374 DEFB $24,$25,$FF                     ; Object #OBJECT$11: #ITEM$24 or
+                                            ; #ITEM$25.
 @label=Data_ItemGroup_Warrior
- $E377 DEFB $27      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E378 DEFB $0F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E379 DEFB $10      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E37A DEFB $04      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E37B DEFB $05      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E37C DEFB $0D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E37D DEFB $0E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E37E DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E377 DEFB $27,$0F,$10,$04,$05,$0D,$0E,$FF ; Object #OBJECT$12: #ITEM$27, #ITEM$0F, #ITEM$10, #ITEM$04, #ITEM$05,
+                                            ; #ITEM$0D or #ITEM$0E.
 @label=Data_ItemGroup_ShadowLikeDemons
- $E37F DEFB $29      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E380 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E37F DEFB $29,$FF                         ; Object #OBJECT$13: #ITEM$29.
 @label=Data_ItemGroup_Hut
- $E381 DEFB $2B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E382 DEFB $2C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E383 DEFB $2F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E384 DEFB $30      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E385 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E381 DEFB $2B,$2C,$2F,$30,$FF             ; Object #OBJECT$14: #ITEM$2B,
+                                            ; #ITEM$2C, #ITEM$2F or #ITEM$30.
 @label=Data_ItemGroup_Vase
- $E386 DEFB $2E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E387 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E386 DEFB $2E,$FF                         ; Object #OBJECT$15: #ITEM$2E.
 @label=Data_ItemGroup_Cavern
- $E388 DEFB $31      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E389 DEFB $15      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E38A DEFB $16      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E38B DEFB $33      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E38C DEFB $34      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E38D DEFB $35      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E38E DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E38F DEFB $36      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E390 DEFB $11      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E391 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E388 DEFB $31,$15,$16,$33,$34,$35,$FF     ; Object #OBJECT$16: #ITEM$31, #ITEM$15, #ITEM$16, #ITEM$33, #ITEM$34
+                                            ; or #ITEM$35.
+; Further item lists, not indexed from #R$E417.
+ $E38F DEFB $36,$11,$FF                     ; #ITEM$36 or #ITEM$11.
 @label=Data_ItemGroup_Sword
- $E392 DEFB $38      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E393 DEFB $39      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E394 DEFB $59      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E395 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E392 DEFB $38,$39,$59,$FF                 ; Object #OBJECT$17: #ITEM$38,
+                                            ; #ITEM$39 or #ITEM$59.
 @label=Data_ItemGroup_Meat
- $E396 DEFB $3A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E397 DEFB $3C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E398 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E396 DEFB $3A,$3C,$FF                     ; Object #OBJECT$18: #ITEM$3A or
+                                            ; #ITEM$3C.
 @label=Data_ItemGroup_Trader
- $E399 DEFB $3C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E39A DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E399 DEFB $3C,$FF                         ; Object #OBJECT$19: #ITEM$3C.
 @label=Data_ItemGroup_Woman
- $E39B DEFB $3D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E39C DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E39B DEFB $3D,$FF                         ; Object #OBJECT$1A: #ITEM$3D.
 @label=Data_ItemGroup_Wolves
- $E39D DEFB $42      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E39E DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E39D DEFB $42,$FF                         ; Object #OBJECT$1B: #ITEM$42.
 @label=Data_ItemGroup_Bear
- $E39F DEFB $44      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3A0 DEFB $45      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3A1 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E39F DEFB $44,$45,$FF                     ; Object #OBJECT$1C: #ITEM$44 or
+                                            ; #ITEM$45.
 @label=Data_ItemGroup_Guard
- $E3A2 DEFB $46      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3A3 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3A2 DEFB $46,$FF                         ; Object #OBJECT$1D: #ITEM$46.
 @label=Data_ItemGroup_Druid
- $E3A4 DEFB $49      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3A5 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3A4 DEFB $49,$FF                         ; Object #OBJECT$1E: #ITEM$49.
 @label=Data_ItemGroup_Amulet
- $E3A6 DEFB $49      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3A7 DEFB $4B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3A8 DEFB $4C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3A9 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3A6 DEFB $49,$4B,$4C,$FF                 ; Object #OBJECT$1F: #ITEM$49,
+                                            ; #ITEM$4B or #ITEM$4C.
 @label=Data_ItemGroup_Ring
- $E3AA DEFB $4D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3AB DEFB $4E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3AC DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3AA DEFB $4D,$4E,$FF                     ; Object #OBJECT$20: #ITEM$4D or
+                                            ; #ITEM$4E.
 @label=Data_ItemGroup_Pig
- $E3AD DEFB $4F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3AE DEFB $50      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3AF DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3AD DEFB $4F,$50,$FF                     ; Object #OBJECT$21: #ITEM$4F or
+                                            ; #ITEM$50.
 @label=Data_ItemGroup_Rope
- $E3B0 DEFB $55      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3B1 DEFB $51      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3B2 DEFB $52      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3B3 DEFB $53      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3B4 DEFB $0B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3B5 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3B0 DEFB $55,$51,$52,$53,$0B,$FF         ; Object #OBJECT$22: #ITEM$55, #ITEM$51, #ITEM$52, #ITEM$53 or
+                                            ; #ITEM$0B.
 @label=Data_ItemGroup_Ox
- $E3B6 DEFB $52      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3B7 DEFB $53      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3B8 DEFB $54      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3B9 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3B6 DEFB $52,$53,$54,$FF                 ; Object #OBJECT$23: #ITEM$52
+                                            ; through #ITEM$54.
 @label=Data_ItemGroup_Skull
- $E3BA DEFB $3B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3BB DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3BA DEFB $3B,$FF                         ; Object #OBJECT$24: #ITEM$3B.
 @label=Data_ItemGroup_Shield
- $E3BC DEFB $56      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3BD DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3BC DEFB $56,$FF                         ; Object #OBJECT$25: #ITEM$56.
 @label=Data_ItemGroup_Fire
- $E3BE DEFB $11      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3BF DEFB $57      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3C0 DEFB $6E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3C1 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3BE DEFB $11,$57,$6E,$FF                 ; Object #OBJECT$26: #ITEM$11,
+                                            ; #ITEM$57 or #ITEM$6E.
 @label=Data_ItemGroup_Pit
- $E3C2 DEFB $68      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3C3 DEFB $21      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3C4 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3C2 DEFB $68,$21,$FF                     ; Object #OBJECT$27: #ITEM$68 or
+                                            ; #ITEM$21.
 @label=Data_ItemGroup_Ladder
- $E3C5 DEFB $5A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3C6 DEFB $5B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3C7 DEFB $5C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3C8 DEFB $5E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3C9 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3C5 DEFB $5A,$5B,$5C,$5E,$FF             ; Object #OBJECT$28: #ITEM$5A,
+                                            ; #ITEM$5B, #ITEM$5C or #ITEM$5E.
 @label=Data_ItemGroup_Straw
- $E3CA DEFB $5F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3CB DEFB $60      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3CC DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3CA DEFB $5F,$60,$FF                     ; Object #OBJECT$29: #ITEM$5F or
+                                            ; #ITEM$60.
 @label=Data_ItemGroup_Staff
- $E3CD DEFB $61      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3CE DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3CD DEFB $61,$FF                         ; Object #OBJECT$2A: #ITEM$61.
 @label=Data_ItemGroup_Body
- $E3CF DEFB $0C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3D0 DEFB $0D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3D1 DEFB $0E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3D2 DEFB $10      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3D3 DEFB $53      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3D4 DEFB $54      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3D5 DEFB $55      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3D6 DEFB $26      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3D7 DEFB $43      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3D8 DEFB $45      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3D9 DEFB $50      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3DA DEFB $62      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3DB DEFB $63      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3DC DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3CF DEFB $0C,$0D,$0E,$10,$53,$54,$55,$26 ; {Object #OBJECT$2B: #ITEM$0C, #ITEM$0D, #ITEM$0E, #ITEM$10, #ITEM$53,
+ $E3D7 DEFB $43,$45,$50,$62,$63,$FF         ; #ITEM$54, #ITEM$55, #ITEM$26, #ITEM$43, #ITEM$45, #ITEM$50, #ITEM$62 or
+                                            ; #ITEM$63.}
 @label=Data_ItemGroup_Cloak
- $E3DD DEFB $62      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3DE DEFB $64      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3DF DEFB $6D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3E0 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3DD DEFB $62,$64,$6D,$FF                 ; Object #OBJECT$2C: #ITEM$62,
+                                            ; #ITEM$64 or #ITEM$6D.
 @label=Data_ItemGroup_Silver
- $E3E1 DEFB $65      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3E2 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3E1 DEFB $65,$FF                         ; Object #OBJECT$2D: #ITEM$65.
 @label=Data_ItemGroup_Platform
- $E3E3 DEFB $5D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3E4 DEFB $5E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3E5 DEFB $66      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3E6 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3E3 DEFB $5D,$5E,$66,$FF                 ; Object #OBJECT$2E: #ITEM$5D,
+                                            ; #ITEM$5E or #ITEM$66.
 @label=Data_ItemGroup_Water
- $E3E7 DEFB $15      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3E8 DEFB $16      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3E9 DEFB $17      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3EA DEFB $18      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3EB DEFB $32      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3EC DEFB $6C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3ED DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3E7 DEFB $15,$16,$17,$18,$32,$6C,$FF     ; Object #OBJECT$2F: #ITEM$15, #ITEM$16, #ITEM$17, #ITEM$18, #ITEM$32
+                                            ; or #ITEM$6C.
 @label=Data_ItemGroup_Lug
- $E3EE DEFB $14      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3EF DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3EE DEFB $14,$FF                         ; Object #OBJECT$30: #ITEM$14.
 @label=Data_ItemGroup_Danu
- $E3F0 DEFB $1E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3F1 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3F0 DEFB $1E,$FF                         ; Object #OBJECT$31: #ITEM$1E.
 @label=Data_ItemGroup_Minerva
- $E3F2 DEFB $67      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3F3 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3F2 DEFB $67,$FF                         ; Object #OBJECT$32: #ITEM$67.
 @label=Data_ItemGroup_Chariot
- $E3F4 DEFB $21      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3F5 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3F4 DEFB $21,$FF                         ; Object #OBJECT$33: #ITEM$21.
 @label=Data_ItemGroup_Slab
- $E3F6 DEFB $58      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3F7 DEFB $59      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3F8 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3F6 DEFB $58,$59,$FF                     ; Object #OBJECT$34: #ITEM$58 or
+                                            ; #ITEM$59.
 @label=Data_ItemGroup_Groove
- $E3F9 DEFB $58      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3FA DEFB $59      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3FB DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3F9 DEFB $58,$59,$FF                     ; Object #OBJECT$35: #ITEM$58 or
+                                            ; #ITEM$59.
 @label=Data_ItemGroup_Lake
- $E3FC DEFB $6C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3FD DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3FC DEFB $6C,$FF                         ; Object #OBJECT$36: #ITEM$6C.
 @label=Data_ItemGroup_Hillfort
- $E3FE DEFB $6F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E3FF DEFB $70      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E400 DEFB $71      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E401 DEFB $72      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E402 DEFB $73      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E403 DEFB $74      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E404 DEFB $75      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E405 DEFB $76      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E406 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E3FE DEFB $6F,$70,$71,$72,$73,$74,$75,$76 ; {Object #OBJECT$37: #ITEM$6F
+ $E406 DEFB $FF                             ; through #ITEM$76.}
 @label=Data_ItemGroup_Broch
- $E407 DEFB $77      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E408 DEFB $78      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E409 DEFB $79      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E40A DEFB $7A      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E40B DEFB $7B      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E40C DEFB $7C      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E40D DEFB $7D      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E40E DEFB $7E      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E40F DEFB $7F      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E410 DEFB $80      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E411 DEFB $81      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E412 DEFB $82      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E413 DEFB $83      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E414 DEFB $84      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E415 DEFB $85      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
- $E416 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
-                     ; #ITEM(#PEEK(#PC))).
+ $E407 DEFB $77,$78,$79,$7A,$7B,$7C,$7D,$7E ; {Object #OBJECT$38: #ITEM$77
+ $E40F DEFB $7F,$80,$81,$82,$83,$84,$85,$FF ; through item #N$85.}
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$B4F4 }
+; { #FOREST$E6E6 }
+; { #HEROES$E500 }
+; { #JEWELS$E86E }
+; { #ANDROMEDA$888D }
+; LIST#
 
 ; Table: Item Grouping
 ;
@@ -11459,13 +11268,13 @@ g$E341 DEFB $02      ; #IF(#PEEK(#PC)==$FF)(Terminator,Item #N(#PEEK(#PC)):
 ; #TABLE(default,centre,centre,centre)
 ; { =h Item ID | =h Item Name | =h Relates To: }
 ; { #R$E353(#N$13) | #ITEM$13 | =r2 The Hare }
-; { #R$E354(#N$26) | #ITEM$26 }
+; { #R$E353(#N$26) | #ITEM$26 }
 ; { =h Item ID | =h Item Name | =h Relates To: }
 ; { #R$E36B(#N$1F) | #ITEM$1F | =r2 The Bronze Helmet }
-; { #R$E36C(#N$20) | #ITEM$20 }
+; { #R$E36B(#N$20) | #ITEM$20 }
 ; { =h Item ID | =h Item Name | =h Relates To: }
 ; { #R$E3AD(#N$4F) | #ITEM$4F | =r2 The Pig }
-; { #R$E3AE(#N$50) | #ITEM$50 }
+; { #R$E3AD(#N$50) | #ITEM$50 }
 ; TABLE#
 @label=Table_ItemGrouping
 g$E417 DEFW $E341    ; Item Group: #N((#PC-$E417)/$02):
@@ -11585,41 +11394,84 @@ g$E417 DEFW $E341    ; Item Group: #N((#PC-$E417)/$02):
 
 ; Table: Verb Word Tokens
 ;
-; A list of all available verb tokens in the game. See #R$A7EA.
+; The vocabulary number (#R$E0B1) of each of the #N$21 verbs (the count
+; is at #R$A7EA). #R$B05E looks the first word of a command up here (through
+; #R$A7E0) and jumps to the action at the same position in #R$FE89.
 @label=Table_VerbWordTokens
-g$E489 DEFB $22      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E48A DEFB $01      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E48B DEFB $02      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E48C DEFB $03      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E48D DEFB $04      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E48E DEFB $05      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E48F DEFB $06      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E490 DEFB $07      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E491 DEFB $08      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E492 DEFB $09      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E493 DEFB $0A      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E494 DEFB $0B      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E495 DEFB $0C      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E496 DEFB $0D      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E497 DEFB $0E      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E498 DEFB $0F      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E499 DEFB $13      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E49A DEFB $10      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E49B DEFB $12      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E49C DEFB $20      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E49D DEFB $14      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E49E DEFB $15      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E49F DEFB $16      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E4A0 DEFB $17      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E4A1 DEFB $1A      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E4A2 DEFB $19      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E4A3 DEFB $21      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E4A4 DEFB $1B      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E4A5 DEFB $1C      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E4A6 DEFB $1D      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E4A7 DEFB $1E      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E4A8 DEFB $11      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
- $E4A9 DEFB $18      ; Verb word token #N(#PEEK(#PC)): #TOKEN(#PEEK(#PC)).
+g$E489 DEFB $22      ; Verb #N$00: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F7FD.
+ $E48A DEFB $01      ; Verb #N$01: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F824.
+ $E48B DEFB $02      ; Verb #N$02: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F841.
+ $E48C DEFB $03      ; Verb #N$03: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F84B.
+ $E48D DEFB $04      ; Verb #N$04: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F853.
+ $E48E DEFB $05      ; Verb #N$05: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F892.
+ $E48F DEFB $06      ; Verb #N$06: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F8A1.
+ $E490 DEFB $07      ; Verb #N$07: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F8A9.
+ $E491 DEFB $08      ; Verb #N$08: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F8C9.
+ $E492 DEFB $09      ; Verb #N$09: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F8CD.
+ $E493 DEFB $0A      ; Verb #N$0A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F8D1.
+ $E494 DEFB $0B      ; Verb #N$0B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F8D5.
+ $E495 DEFB $0C      ; Verb #N$0C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F8D9.
+ $E496 DEFB $0D      ; Verb #N$0D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F8DD.
+ $E497 DEFB $0E      ; Verb #N$0E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F8F2.
+ $E498 DEFB $0F      ; Verb #N$0F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F975.
+ $E499 DEFB $13      ; Verb #N$10: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$F9B3.
+ $E49A DEFB $10      ; Verb #N$11: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FA29.
+ $E49B DEFB $12      ; Verb #N$12: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FA6A.
+ $E49C DEFB $20      ; Verb #N$13: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FA91.
+ $E49D DEFB $14      ; Verb #N$14: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FAAD.
+ $E49E DEFB $15      ; Verb #N$15: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FADD.
+ $E49F DEFB $16      ; Verb #N$16: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FB21.
+ $E4A0 DEFB $17      ; Verb #N$17: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FB5D.
+ $E4A1 DEFB $1A      ; Verb #N$18: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FB89.
+ $E4A2 DEFB $19      ; Verb #N$19: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FBB9.
+ $E4A3 DEFB $21      ; Verb #N$1A: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FBC3.
+ $E4A4 DEFB $1B      ; Verb #N$1B: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FBDE.
+ $E4A5 DEFB $1C      ; Verb #N$1C: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FBF5.
+ $E4A6 DEFB $1D      ; Verb #N$1D: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FC10.
+ $E4A7 DEFB $1E      ; Verb #N$1E: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FC2F.
+ $E4A8 DEFB $11      ; Verb #N$1F: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FC4B.
+ $E4A9 DEFB $18      ; Verb #N$20: word #N(#PEEK(#PC)), #TOKEN(#PEEK(#PC)),
+                     ; #R$FC8D.
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$B420 }
+; { #FOREST$E7AE }
+; { #HEROES$E5D3 }
+; { #JEWELS$E90D }
+; { #ANDROMEDA$891C }
+; LIST#
 
 ; Data: Scenic Event Rooms
 ;
@@ -11746,6 +11598,13 @@ g$E4AA DEFB $03      ; #IF(#PEEK(#PC)==$FF)(Terminator,Room #N(#PEEK(#PC)):
                      ; #ROOM(#PEEK(#PC))).
  $E4E5 DEFB $FF      ; #IF(#PEEK(#PC)==$FF)(Terminator,Room #N(#PEEK(#PC)):
                      ; #ROOM(#PEEK(#PC))).
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$B6C9 }
+; { #FOREST$E7D0 }
+; { #JEWELS$E933 }
+; { #ANDROMEDA$8CDA }
+; LIST#
 
 ; Table: Scenic Event Rooms
 ;
@@ -11787,6 +11646,13 @@ g$E4E6 DEFW $E4AA    ; Event #N((#PC-$E4E6)/$02):
                      ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $E506 DEFW $E4E4    ; Event #N((#PC-$E4E6)/$02):
                      ; #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$B6BF }
+; { #FOREST$BA9C }
+; { #JEWELS$BCCC }
+; { #ANDROMEDA$62B2 }
+; LIST#
 
 ; Table: Scenic Event Items
 ;
@@ -11834,7 +11700,7 @@ g$E508 DEFB $00      ; Event #N(#PC-$E508)#IF(#PEEK(#PC)>$00)( uses item ID
  $E518 DEFB $37      ; Event #N(#PC-$E508)#IF(#PEEK(#PC)>$00)( uses item ID
                      ; #N(#PEEK(#PC)), needs no item).
 
-; Data: Phrase Tokens
+; Table: Phrase Tokens
 ;
 ; The user input is broken down into tokens which represent the words
 ; they've entered. These tokens are then compared against these token patterns
@@ -12555,10 +12421,18 @@ g$E519 DEFB $2F      ; #TOKEN(#PEEK(#PC)).
 @label=PhraseTokens_Broch
  $E712 DEFB $5D      ; #TOKEN(#PEEK(#PC)).
  $E713 DEFB $FE      ; #TOKEN(#PEEK(#PC)).
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$B6F4 }
+; { #HEROES$E687 }
+; { #JEWELS$E9CA }
+; { #ANDROMEDA$8940 }
+; LIST#
 
 ; Table: Room Map
 ;
-; .
+; Six bytes per room, in the order north, south, east, west, up, down. A
+; zero means there is no exit.
 ;
 ; .
 ;
@@ -13889,6 +13763,14 @@ g$E714 DEFB $00      ; #IF(#PEEK(#PC)>$00)(North to room:
                      ; #R($E714+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
  $E977 DEFB $00      ; #IF(#PEEK(#PC)>$00)(Down to room:
                      ; #R($E714+#PEEK(#PC)*$06)(#N(#PEEK(#PC))),N/A).
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$B8DD }
+; { #FOREST$E934 }
+; { #HEROES$E7E6 }
+; { #JEWELS$EB10 }
+; { #ANDROMEDA$8B5A }
+; LIST#
 
 ; Table: Configurable Exits
 ;
@@ -13906,6 +13788,13 @@ g$E978 DEFW $E7B9    ; Exit byte at #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $E988 DEFW $E8F7    ; Exit byte at #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $E98A DEFW $E959    ; Exit byte at #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
  $E98C DEFW $E96A    ; Exit byte at #R(#PEEK(#PC+$01)*$100+#PEEK(#PC)).
+; View the equivalent code in;
+; #LIST
+; { #FOREST$EB02 }
+; { #HEROES$E972 }
+; { #JEWELS$ED9E }
+; { #ANDROMEDA$8D16 }
+; LIST#
 
 ; Event Routing
 ;
@@ -14393,6 +14282,10 @@ c$EB10 LD ($A773),A  ; Store the destination room ID at #R$A773.
 ; View the equivalent code in;
 ; #LIST
 ; { #SHOCK$AD79 }
+; { #FOREST$ECB6 }
+; { #HEROES$E9E1 }
+; { #JEWELS$EF54 }
+; { #ANDROMEDA$8E18 }
 ; LIST#
 
 ; Print And Game Over
@@ -14748,12 +14641,19 @@ c$ED60 LD A,$37      ; {Call #R$AE6B with item #N$37: #ITEM$37.
  $ED68 CALL $AEF0    ; }
  $ED6B RET           ; Return.
 
-; Table: Plural Items
+; Table: Items Which Are Plural
 ;
-; A list of item IDs which are plurals (contains only the acorns). Used
-; when referring to the item as a "them" rather than the default of "it".
-@label=Table_PluralItems
+; All the items in the game which are plural; used by #R$ED81.
+@label=Table_ItemsWhichArePlural
 g$ED6C DEFB $1B      ; Item #N(#PEEK(#PC)): #ITEM(#PEEK(#PC)).
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$B6F1 }
+; { #FOREST$EEEB }
+; { #HEROES$EA9D }
+; { #JEWELS$F29B }
+; { #ANDROMEDA$9010 }
+; LIST#
 
 ; Print String And A Newline
 ;
@@ -14833,6 +14733,13 @@ c$ED75 CALL $AEDA    ; Call #R$AEDA.
 ; Print "#STR$AA21,$08($b==$FF)".
  $EDA0 LD HL,$AA21   ; #REGhl=#R$AA21.
  $EDA3 JP $ED6D      ; Jump to #R$ED6D.
+; View the equivalent code in;
+; #LIST
+; { #FOREST$EEBA }
+; { #HEROES$EAF4 }
+; { #JEWELS$F26A }
+; { #ANDROMEDA$8FE2 }
+; LIST#
 
 ; Handler: Pick Up Item
 ;
@@ -14852,6 +14759,9 @@ c$EDA6 LD C,$01      ; {Call #R$AF08 using the item ID passed in #REGb, to chang
 ; #LIST
 ; { #SHOCK$AA6E }
 ; { #FOREST$EEED }
+; { #HEROES$EB25 }
+; { #JEWELS$F29C }
+; { #ANDROMEDA$9014 }
 ; LIST#
 
 ; Handler: Check Player Inventory And Pick Up Item
@@ -14867,6 +14777,10 @@ c$EDA6 LD C,$01      ; {Call #R$AF08 using the item ID passed in #REGb, to chang
 @label=Handler_CheckPlayerInventory_PickUpItem
 c$EDB2 CALL $ED75    ; Call #R$ED75.
  $EDB5 JP $EDA6      ; Jump to #R$EDA6.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$EB54 }
+; LIST#
 
 ; Handler: Drop Item
 ;
@@ -14898,6 +14812,9 @@ c$EDB8 CALL $AEDA    ; Call #R$AEDA.
 ; View the equivalent code in;
 ; #LIST
 ; { #SHOCK$AA8A }
+; { #FOREST$F045 }
+; { #HEROES$EB31 }
+; { #JEWELS$F4DA }
 ; LIST#
 
 ; Is Player Carrying Item?
@@ -14916,6 +14833,10 @@ c$EDD0 CALL $AEDA    ; Call #R$AEDA.
 ; Print "#STR$AA9B,$08($b==$FF)".
  $EDD5 LD HL,$AA9B   ; #REGhl=#R$AA9B.
  $EDD8 JP $ED7E      ; Jump to #R$ED7E.
+; View the equivalent code in;
+; #LIST
+; { #HEROES$EB49 }
+; LIST#
 
 ; Response: "You've Nothing To Tie Him With"
 ;
@@ -19242,30 +19163,42 @@ g$FECF DEFW $E9FA    ; Event #N((#PC-$FECF)/$02).
 
 ; Table: Rooms With Images
 ;
-; See #R$FEFC.
+; The #N$0B rooms that have a picture (the count is at #R$A7EC).
+; #R$ABB6 looks the current room up here (through #R$A7CE); where it is found
+; picks the drawing routine in #R$FEFC and the "already seen" bit in #R$A774.
+; A picture is shown the first time the player enters the room, and again
+; whenever they type LOOK.
 @label=Table_RoomsWithImages
-g$FEF1 DEFB $02      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):
-                     ; #ROOM(#PEEK(#PC)).
- $FEF2 DEFB $07      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):
-                     ; #ROOM(#PEEK(#PC)).
- $FEF3 DEFB $10      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):
-                     ; #ROOM(#PEEK(#PC)).
- $FEF4 DEFB $17      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):
-                     ; #ROOM(#PEEK(#PC)).
- $FEF5 DEFB $49      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):
-                     ; #ROOM(#PEEK(#PC)).
- $FEF6 DEFB $38      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):
-                     ; #ROOM(#PEEK(#PC)).
- $FEF7 DEFB $43      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):
-                     ; #ROOM(#PEEK(#PC)).
- $FEF8 DEFB $40      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):
-                     ; #ROOM(#PEEK(#PC)).
- $FEF9 DEFB $4F      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):
-                     ; #ROOM(#PEEK(#PC)).
- $FEFA DEFB $2A      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):
-                     ; #ROOM(#PEEK(#PC)).
- $FEFB DEFB $52      ; Location Slot: #N(#PC-$FEF1) - room #N(#PEEK(#PC)):
-                     ; #ROOM(#PEEK(#PC)).
+g$FEF1 DEFB $02      ; Image #N$00: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+                     ; #R$FF12; seen flag: bit 0 of #R$A774.
+ $FEF2 DEFB $07      ; Image #N$01: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+                     ; #R$FF18; seen flag: bit 1 of #R$A774.
+ $FEF3 DEFB $10      ; Image #N$02: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+                     ; #R$FF1E; seen flag: bit 2 of #R$A774.
+ $FEF4 DEFB $17      ; Image #N$03: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+                     ; #R$FF24; seen flag: bit 3 of #R$A774.
+ $FEF5 DEFB $49      ; Image #N$04: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+                     ; #R$FF2A; seen flag: bit 4 of #R$A774.
+ $FEF6 DEFB $38      ; Image #N$05: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+                     ; #R$FF30; seen flag: bit 5 of #R$A774.
+ $FEF7 DEFB $43      ; Image #N$06: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+                     ; #R$FF36; seen flag: bit 6 of #R$A774.
+ $FEF8 DEFB $40      ; Image #N$07: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+                     ; #R$FF3C; seen flag: bit 7 of #R$A774.
+ $FEF9 DEFB $4F      ; Image #N$08: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+                     ; #R$FF42; seen flag: bit 0 of #R$A774(#N$A775).
+ $FEFA DEFB $2A      ; Image #N$09: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+                     ; #R$FF48; seen flag: bit 1 of #R$A774(#N$A775).
+ $FEFB DEFB $52      ; Image #N$0A: room #N(#PEEK(#PC)), #ROOM(#PEEK(#PC)), drawn by
+                     ; #R$FF2A; seen flag: bit 2 of #R$A774(#N$A775).
+; View the equivalent code in;
+; #LIST
+; { #SHOCK$BB93 }
+; { #FOREST$E806 }
+; { #HEROES$FDFF }
+; { #JEWELS$E95D }
+; { #ANDROMEDA$8CFC }
+; LIST#
 
 ; Jump Table: Room Images
 ;
